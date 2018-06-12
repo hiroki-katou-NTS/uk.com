@@ -17187,7 +17187,7 @@ var nts;
                             if (disables && uk.util.isNullOrUndefined(ui.startIndex)
                                 && uk.util.isNullOrUndefined(ui.row.id)) {
                                 setTimeout(function () {
-                                    _.forEach(value, function (iv) {
+                                    _.forEach(_.intersection(disables, value), function (iv) {
                                         $grid.igGridSelection("selectRowById", iv);
                                     });
                                 }, 0);
