@@ -49,8 +49,8 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			+ " WHERE c.sID = :sid"
 			+ " AND c.stateAtr = :stateAtr";
 	private static final String QUERY_BY_EACH_PERIOD = QUERY_SID_DATE_PERIOD
-			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= eDate)"
-			+ " OR (c.stateAtr = :stateAtr AND c.disapearDate >= :sDate AND c.disapearDate <= eDate) ";
+			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= :eDate)"
+			+ " OR (c.stateAtr = :stateAtr AND c.disapearDate >= :sDate AND c.disapearDate <= :eDate) ";
 
 	@Override
 	public List<PayoutManagementData> getSid(String cid, String sid) {

@@ -90,7 +90,10 @@ module nts.uk.at.view.kdl034.a {
                                 });
                             }).fail(function(res){
                                 nts.uk.ui.block.clear();
-                                dialog.alertError (res.errorMessage);
+                                //エラーメッセージ(Msg_197) - sai version
+                                dialog.alertError ({messageId: res.errorMessageId}).then(()=>{
+                                    nts.uk.ui.windows.close();
+                                });
                             });
                     
                 }).ifNo(() => {

@@ -47,13 +47,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				.findByCode(query.getHolidayRemainingOutputCondition().getOutputItemSettingCode());
 		if (hdManagement.isPresent()) {
 
-			LocalDate endDate = (GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getEndMonth(),
-					"yyyy/MM/dd")).toLocalDate();
-			List<String> employeeIds = query.getLstEmpIds().stream().map(m -> m.getEmployeeId())
-					.collect(Collectors.toList());
-			this.regulationInfoEmployeeAdapter.sortEmployee(cId, employeeIds,
-					AppContexts.system().getInstallationType().value, null, null,
-					GeneralDateTime.localDateTime(LocalDateTime.of(endDate, LocalTime.of(0, 0))));
+			LocalDate endDate = (GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getEndMonth(), "yyyy/MM/dd")).toLocalDate();
+			List<String> employeeIds = query.getLstEmpIds().stream()
+					.map(m -> m.getEmployeeId()).collect(Collectors.toList());
+			employeeIds = this.regulationInfoEmployeeAdapter.sortEmployee(cId, employeeIds, AppContexts.system().getInstallationType().value, null, null, GeneralDateTime.localDateTime(LocalDateTime.of(endDate,LocalTime.of(0, 0))));
 
 			Map<String, String> empNameMap = query.getLstEmpIds().stream()
 					.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, EmployeeQuery::getEmployeeName));

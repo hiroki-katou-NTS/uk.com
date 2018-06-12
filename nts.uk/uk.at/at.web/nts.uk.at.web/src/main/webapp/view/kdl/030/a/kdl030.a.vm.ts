@@ -59,7 +59,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 }).fail(function(res: any) {
                     dfd.reject();
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.request.jump("../test/index.xhtml");
+//                        nts.uk.request.jump("../test/index.xhtml");
                     });
                 }).always(function(res: any) {
                     nts.uk.ui.block.clear();

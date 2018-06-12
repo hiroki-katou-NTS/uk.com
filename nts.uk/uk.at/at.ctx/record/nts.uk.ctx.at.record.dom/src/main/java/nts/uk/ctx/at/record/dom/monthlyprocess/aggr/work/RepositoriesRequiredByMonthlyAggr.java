@@ -5,9 +5,9 @@ import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
@@ -86,8 +86,9 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	EmployeeDailyPerErrorRepository getEmployeeDailyError();
 	/** 日別実績の任意項目の取得 */
 	AnyItemValueOfDailyRepo getAnyItemValueOfDaily();
-	/** 日別実績と勤怠項目の相互変換 */
-	DailyRecordToAttendanceItemConverter getDailyConverter();
+
+	/** 勤怠項目値変換 */
+	AttendanceItemConvertFactory getAttendanceItemConverter();
 	
 	/** 勤務情報の取得 */
 	WorkTypeRepository getWorkType();

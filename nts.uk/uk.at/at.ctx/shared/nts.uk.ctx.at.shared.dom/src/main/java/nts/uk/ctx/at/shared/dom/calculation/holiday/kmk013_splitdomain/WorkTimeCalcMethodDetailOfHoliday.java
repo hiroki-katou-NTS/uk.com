@@ -31,7 +31,7 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	
 	/** The not deduct late leave early. */
 	// 遅刻・早退を控除する
-	private NotUseAtr notDeductLateLeaveEarly;
+	private DeductLeaveEarly notDeductLateLeaveEarly;
 	
 	/** The calculate includ interval exemption time. */
 	// インターバル免除時間を含めて計算する
@@ -51,12 +51,12 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 * @param minusAbsenceTime the minus absence time
 	 */
 	public WorkTimeCalcMethodDetailOfHoliday(EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet,
-			Integer calculateIncludCareTime, Integer notDeductLateLeaveEarly,
+			Integer calculateIncludCareTime, DeductLeaveEarly notDeductLateLeaveEarly,
 			Integer calculateIncludIntervalExemptionTime, Integer minusAbsenceTime) {
 		super();
 		this.includeVacationSet = includeVacationSet;
 		this.calculateIncludCareTime = NotUseAtr.valueOf(calculateIncludCareTime);
-		this.notDeductLateLeaveEarly = NotUseAtr.valueOf(notDeductLateLeaveEarly);
+		this.notDeductLateLeaveEarly = notDeductLateLeaveEarly;
 		this.calculateIncludIntervalExemptionTime = NotUseAtr.valueOf(calculateIncludIntervalExemptionTime);
 		this.minusAbsenceTime = Optional.ofNullable(minusAbsenceTime == null 
 															? null 
@@ -89,14 +89,18 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 * @return 控除する場合はtrueが返る
 	 */
 	public boolean isDeductLateLeaveEarly() {
-		switch(this.notDeductLateLeaveEarly) {
-			case USE:
+		/*switch(this.notDeductLateLeaveEarly) {
+			case fasle:
 				return false;
 			case NOT_USE:
 				return true;
 			default:
 				throw new RuntimeException("unknown notDeductLateLeaveEarly");
-		}	
+		}*/
+		if (this.notDeductLateLeaveEarly.isDeduct()) {
+			return false;
+		} 
+		return true;
 	}
 	
 	
