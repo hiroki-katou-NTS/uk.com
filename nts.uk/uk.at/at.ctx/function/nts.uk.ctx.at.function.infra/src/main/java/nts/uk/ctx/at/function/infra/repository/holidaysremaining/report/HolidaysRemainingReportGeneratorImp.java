@@ -303,9 +303,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					cells.copyRows(cells, 6, firstRow + totalAddRows, 1);
 				}
 				// E1_2
-				cells.get(firstRow + i, 2).setValue(listAnnLeaGrant.get(i).getGrantDate());
+				cells.get(firstRow + i, 3).setValue(listAnnLeaGrant.get(i).getGrantDate());
 				// E1_3
-				cells.get(firstRow + i, 3).setValue(listAnnLeaGrant.get(i).getGrantDays());
+				cells.get(firstRow + i, 4).setValue(listAnnLeaGrant.get(i).getGrantDays());
 			}
 
 			// Call requestList265
