@@ -259,7 +259,7 @@ module nts.uk.at.view.kaf009.b {
                 var promiseResult = self.checkUse();
                 promiseResult.done((result) => {
                     if (result) {
-                        service.updateGoBackDirect(self.getCommand()).done(function() {
+                        service.updateGoBackDirect(self.getCommand()).done(function(data) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 if(data.autoSendMail){
                                     nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
