@@ -136,7 +136,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             self.yearMonth.subscribe(value => {
                 //期間を変更する
-                self.updateDate(value);
+                if($root.errors.isEmpty) self.updateDate(value);
             });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
