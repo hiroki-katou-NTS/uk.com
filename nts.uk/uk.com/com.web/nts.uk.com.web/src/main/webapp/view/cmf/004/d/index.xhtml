@@ -4,46 +4,113 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/dialog.xhtml">
-			<ui:define name="htmlHead">
-				<script>var dialogSize = { 
-						width: 660, 
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { 
+						width: 470, 
 						height: 500 
 					};
 				</script>
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="cmf004.d.vm.js" />
-				<com:scriptfile path="cmf004.d.start.js" />
-				<com:stylefile path="cmf004.d.style.css" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div class="contents-area dialog-content"  >
-					<div data-bind="ntsFormLabel: {}" id ="D1_1" class = "label-left">#{i18n.getText('CMF004_60')}</div>
-					<span data-bind="text: fileNameUpload"></span>
-					<br/>
-					<div data-bind="ntsFormLabel: {}" id ="D1_3" class = "label-left">#{i18n.getText('CMF004_61')}</div>
-					<span data-bind="text: timeLabel"></span>
-					<br/>
-					<div data-bind="ntsFormLabel: {}" id ="D1_5" class = "label-left">#{i18n.getText('CMF004_62')}</div>
-					<span data-bind="text: statusLabel"></span>
-					<br/>
-					<div style="width: 150%">
-						<div data-bind="ntsFormLabel: {}" id ="D2_1" class = "label-left">#{i18n.getText('CMF004_63')}</div>
-						<span data-bind="text: statusUpload"></span>
-						<br/>
-						<div data-bind="ntsFormLabel: {}" id ="D2_3" class = "label-left">#{i18n.getText('CMF004_64')}</div>
-						<span data-bind="text: statusDecom"></span>
-						<br/>
-						<div data-bind="ntsFormLabel: {}" id ="D2_5" class = "label-left">#{i18n.getText('CMF004_65')}</div>
-						<span data-bind="text: statusCheck"></span>
-						<br/>
-						<button id = "D3_1" data-bind="click : closeUp" >#{i18n.getText('CMF004_66')}</button>
-						<button id = "D3_2"  class="large proceed">#{i18n.getText('CMF004_67')}</button>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cmf004.d.vm.js" />
+			<com:scriptfile path="cmf004.d.start.js" />
+			<com:scriptfile path="cmf004.d.service.js" />
+			<com:stylefile path="cmf004.d.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="contents-area dialog-content">
+				<div class="div-table">
+					<div class="div-table-row-1"></div>
+					<div class="div-table-row">
+						<div class="div-table-col">
+							<div data-bind="ntsFormLabel: {}" id="D1_1" class="label-left">#{i18n.getText('CMF004_60')}</div>
+						</div>
+						<div class="div-table-col" style="display: inline">
+							<div class="flex valign-center fixed-height outer"
+								style="height: 37px;">
+								<span data-bind="text: fileNameUpload"></span>
+							</div>
+						</div>
+					</div>
+					<div class="div-table-row-1"></div>
+					<div class="div-table-row">
+						<div class="div-table-col">
+							<div data-bind="ntsFormLabel: {}" id="D1_3" class="label-left">#{i18n.getText('CMF004_61')}</div>
+						</div>
+						<div class="flex valign-center fixed-height outer"
+							style="height: 37px;">
+							<div class="inner">
+								<span data-bind="text: timeLabel"></span>
+							</div>
+						</div>
+					</div>
+					<div class="div-table-row-1"></div>
+					<div class="div-table-row">
+						<div class="div-table-col">
+							<div data-bind="ntsFormLabel: {}" id="D1_5" class="label-left">#{i18n.getText('CMF004_62')}</div>
+						</div>
+						<div class="flex valign-center fixed-height outer"
+							style="height: 37px;">
+							<div class="inner">
+								<span data-bind="text: statusLabel"></span>
+							</div>
+						</div>
+					</div>
+					<div class="div-table-row-1"></div>
+					<div class="div-table-row">
+						<div class="div-table-col">
+							<div class="div-table-row" />
+						</div>
+						<div class="div-table-col">
+							<div data-bind="ntsFormLabel: {}" id="D2_1" class="label-left">#{i18n.getText('CMF004_63')}</div>
+						</div>
+						<div class="flex valign-center fixed-height outer"
+							style="height: 37px;">
+							<div class="inner">
+								<span data-bind="text: statusUpload"></span>
+							</div>
+						</div>
+					</div>
+					<div class="div-table-row-1"></div>
+					<div class="div-table-row">
+						<div class="div-table-col">
+							<div class="div-table-row" />
+						</div>
+						<div class="div-table-col">
+							<div data-bind="ntsFormLabel: {}" id="D2_3" class="label-left">#{i18n.getText('CMF004_64')}</div>
+						</div>
+						<div class="flex valign-center fixed-height outer"
+							style="height: 37px;">
+							<div class="inner">
+								<span data-bind="text: statusDecom"></span>
+							</div>
+						</div>
+					</div>
+					<div class="div-table-row-1"></div>
+					<div class="div-table-row">
+						<div class="div-table-col">
+							<div class="div-table-row" />
+						</div>
+						<div class="div-table-col">
+							<div data-bind="ntsFormLabel: {}" id="D2_5" class="label-left">#{i18n.getText('CMF004_65')}</div>
+						</div>
+						<div class="flex valign-center fixed-height outer"
+							style="height: 37px;">
+							<div class="inner">
+								<span data-bind="text: statusCheck"></span>
+							</div>
+						</div>
 					</div>
 				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+
+			</div>
+			<div id="functions-area-bottom">
+				<button id="D3_1" data-bind="click : closeUp">#{i18n.getText('CMF004_66')}</button>
+				<button id="D3_2" class="large proceed">#{i18n.getText('CMF004_67')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
 </html>

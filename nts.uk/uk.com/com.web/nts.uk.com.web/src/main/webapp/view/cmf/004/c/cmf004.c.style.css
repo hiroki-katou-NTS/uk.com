@@ -1,13 +1,30 @@
-.label-left{
-	margin-left: 120px;
+.dialog-content{
+	height: 150px;
 }
-
-#C1_3 {
-	margin-top: 15px;
+.div-table {
+  display: table;         
+  width: 250px; 
+  border: 0,
+  background-color: #eee;          
+  border-spacing: 5px; 
+  margin-left: 30px; 
 }
-
-#C1_5 {
-	margin-top : 115px;
-	margin-left: 230px;
-	width: 100px;
+.div-table-row {
+  display: table-row;
+  width: 250px;
+  height:37px;
+  clear: both;
+}
+.div-table-row-1 {
+  display: table-row;
+  width: 250px;
+  height:10px;
+  clear: both;
+}
+.div-table-col {
+  float: left; 
+  margin-top :auto;
+  display: table-column;         
+  width: 120px;   
+  height: 37px;
 }
