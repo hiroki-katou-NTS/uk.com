@@ -522,6 +522,16 @@ module nts.custombinding {
                         width: 160px;
                     }
 
+                    .layout-control .item-classification th>.form-label {
+                        line-height: 31px !important;
+                        height: 31px !important;
+                    }
+
+                    .layout-control .item-classification th>.form-label>* {
+                        line-height: unset !important;
+                        height: unset !important;                        
+                    }
+
                     .layout-control .item-classification>.close-btn {
                         top: 0;
                         right: 5px;
@@ -1375,7 +1385,7 @@ module nts.custombinding {
                                             && relates.indexOf(def.perInfoCtgId) == -1;
                                     })
                                     .map(def => {
-                                        let is_relate = ((def.itemTypeState || {}).dataTypeState || {}).relatedCtgCode,
+                                        let is_relate = ((def.itemTypeState || <any>{}).dataTypeState || {}).relatedCtgCode,
                                             new_mode = !!is_relate && !!is_new,
                                             dispOrder: number = ko.toJS(opts.sortable.data).length,
                                             item: IItemClassification = {
@@ -1466,7 +1476,7 @@ module nts.custombinding {
                                     opts.sortable.pushItems(defs);
                                 }
                             } else {
-                                let dupids = dups.map((x: IItemDefinition) => x.id),
+                                let dupids: IItemDefinition = dups.map((x: IItemDefinition) => x.id),
                                     nodups = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
 
                                 if (dupids && dupids.length) {
