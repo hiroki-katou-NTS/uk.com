@@ -48,6 +48,8 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNursingRemainOutputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildNursingLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.service.CareHolidayMngService;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -81,6 +83,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	@Inject
 	private GetNextAnnLeaGrantDateAdapter getNextAnnLeaGrantDateAdapter;
+	
+	@Inject
+	private SpecialHolidayRepository specialHolidayRepository;
 
 	private static final String TEMPLATE_FILE = "report/休暇残数管理票_テンプレート.xlsx";
 	private static final String REPORT_FILE_NAME = "休暇残数管理票.xlsx";
@@ -275,7 +280,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(dataSource.getStartMonth().yearMonth(),
 				dataSource.getEndMonth().yearMonth());
 		DatePeriod datePeriod = new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth());
-
+		String cid = AppContexts.user().companyId();
+		
 		// 年休
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
 			cells.copyRows(cells, 6, firstRow, 2);
@@ -604,6 +610,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				.getSpecialHoliday();
 		for (int i = 0; i < specialHoliday.size(); i++) {
 			cells.copyRows(cells, 18, firstRow, 2);
+			Optional<SpecialHoliday> specialHolidayOpt = specialHolidayRepository.findByCidHolidayCd(cid,
+					specialHoliday.get(i));
+			if (specialHolidayOpt.isPresent()) {
+				// M1_1 特別休暇
+				cells.get(firstRow, 4).setValue(specialHolidayOpt.get().getSpecialHolidayName());
+			}
+			
 			// M2_1
 			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_17"));
 			// M2_3
@@ -611,7 +624,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 			// TODO Call requestList273
 			SpecialVacationImported specialVacationImported = complileInPeriodOfSpecialLeaveAdapter
-					.complileInPeriodOfSpecialLeave(AppContexts.user().companyId(), employee.getEmployeeId(),
+					.complileInPeriodOfSpecialLeave(cid, employee.getEmployeeId(),
 							datePeriod, false, dataSource.getBaseDate(), specialHoliday.get(i), false);
 			// Call requestList263
 			List<SpecialHolidayImported> specialHolidayList = complileInPeriodOfSpecialLeaveAdapter
@@ -685,7 +698,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 			// Call requestList341
 			ChildCareNursingRemainOutputPara currentSituationImported = childNursingLeaveMng
-					.calChildNursOfInPeriod(AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, false);
+					.calChildNursOfInPeriod(cid, employee.getEmployeeId(), datePeriod, false);
 			// N1_2 子の看護休暇_使用数
 			cells.get(firstRow, 6).setValue(currentSituationImported.getBeforeUseDays());
 			// N1_3 子の看護休暇_残数
@@ -737,7 +750,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 			// Call requestList343
 			ChildCareNursingRemainOutputPara careHoliday = careHolidayMngService.calCareRemainOfInPerior(
-					AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, false);
+					cid, employee.getEmployeeId(), datePeriod, false);
 			// O1_2 介護休暇_使用数
 			cells.get(firstRow, 6).setValue(careHoliday.getBeforeUseDays());
 			// O1_3 介護休暇_残数
@@ -794,7 +807,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// D2_2
 		cells.get(rowIndexD, 1).setValue(employee.getEmployeeName());
 		// D2_3 No.369
-		Optional<GeneralDate> grantDate = getNextAnnLeaGrantDateAdapter.algorithm(AppContexts.user().companyId(), employee.getEmployeeId());
+		Optional<GeneralDate> grantDate = getNextAnnLeaGrantDateAdapter.algorithm(cid, employee.getEmployeeId());
 		if (grantDate.isPresent()){
 			cells.get(rowIndexD + 1, 0).setValue(grantDate.get());
 		}
