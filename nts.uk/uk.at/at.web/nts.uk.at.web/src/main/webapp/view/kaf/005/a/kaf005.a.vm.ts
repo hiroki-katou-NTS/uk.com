@@ -556,7 +556,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
                 flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
                 divergenceReasonContent: divergenceReason,
-                sendMail: self.manualSendMailAtr(),
+                sendMail: self.checkBoxValue(),
                 overtimeAtr: self.overtimeAtr(),
                 calculateFlag: self.calculateFlag()
             };
