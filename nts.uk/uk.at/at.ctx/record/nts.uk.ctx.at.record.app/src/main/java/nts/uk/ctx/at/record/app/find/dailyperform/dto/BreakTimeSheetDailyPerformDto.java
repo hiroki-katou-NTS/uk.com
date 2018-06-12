@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -12,6 +11,7 @@ import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -22,27 +22,27 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BreakTimeSheetDailyPerformDto {
+public class BreakTimeSheetDailyPerformDto implements ItemConst {
 
 	/** 計上用合計時間: 控除合計時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "計上用合計時間")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = CALC)
 	private TotalDeductionTimeDto toRecordTotalTime;
 
 	/** 控除用合計時間: 控除合計時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "控除用合計時間")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = DEDUCTION)
 	private TotalDeductionTimeDto deductionTotalTime;
 
 	/** 勤務間時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "勤務間時間")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = WORKING_TIME)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer duringWork;
 
 	/** 補正後時間帯: 休憩時間帯 */
-	 @AttendanceItemLayout(layout = "D", jpPropertyName = "補正後時間帯", listMaxLength = 10, indexField = "breakFrameNo")
+	 @AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = AFTER_CORRECTED, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<BreakTimeSheetDto> correctedTimeSheet;
 
 	/** 休憩回数: 休憩外出回数 */
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "休憩回数")
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = COUNT)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer breakTimes;
 
@@ -72,7 +72,7 @@ public class BreakTimeSheetDailyPerformDto {
 		return new BreakTimeOfDaily(createDeductionTime(toRecordTotalTime), createDeductionTime(deductionTotalTime), 
 				breakTimes == null ? null : new BreakTimeGoOutTimes(breakTimes), duringWork == null ? null : new AttendanceTime(duringWork), 
 						ConvertHelper.mapTo(correctedTimeSheet, c -> new BreakTimeSheet(
-												new BreakFrameNo(c.getBreakFrameNo()), 
+												new BreakFrameNo(c.getNo()), 
 												c.getStart() == null ? null : new TimeWithDayAttr(c.getStart()),
 												c.getEnd() == null ? null : new TimeWithDayAttr(c.getEnd()), 
 												c.getBreakTime() == null ? null : new AttendanceTime(c.getBreakTime()))));

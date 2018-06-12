@@ -15,6 +15,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         endDateString: KnockoutObservable<string>;
         dispTotalRemain: KnockoutObservable<string> = ko.observable(null);
         expirationDate: KnockoutObservable<string> = ko.observable(null);
+        newDataDisable: KnockoutObservable<boolean> = ko.observable(false);
         //_____CCG001________
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
@@ -59,7 +60,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: false,
+                showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: false,
@@ -112,7 +113,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             self.selectedPeriodItem.subscribe(x =>{
                 if (x == 0) {
-                    $("#daterangepickerA .ntsDatepicker").ntsError("clear");
+                    nts.uk.ui.errors.clearAll();
                 }
             });
             
@@ -139,13 +140,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'unUsedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expriedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '85px' },
+                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'string', width: '85px' },
+                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_14'), formatter: getLawAtr, key: 'lawAtr', dataType: 'string', width: '100px' },
                     { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
                     { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
@@ -155,6 +156,23 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         name: 'Paging',
                         type: "local",
                         pageSize: 14
+                    },
+                    {
+                        name: "Resizing",
+                         columnSettings: [
+                            { columnKey: "id", allowResizing: false },
+                            { columnKey: "dayoffDatePyout", allowResizing: false },
+                            { columnKey: "occurredDays", allowResizing: false },
+                            { columnKey: "payoutTied", allowResizing: false },
+                            { columnKey: "dayoffDateSub", allowResizing: false },
+                            { columnKey: "requiredDays", allowResizing: false },
+                            { columnKey: "subTied", allowResizing: false },
+                            { columnKey: "unUsedDaysInGrid", allowResizing: false },
+                            { columnKey: "expriedDaysInGrid", allowResizing: false },
+                            { columnKey: "lawAtr", allowResizing: false },
+                            { columnKey: "link", allowResizing: false },
+                            { columnKey: "edit", allowResizing: false }, 
+                        ],
                     }
                 ],
                 ntsControls: [
@@ -209,35 +227,51 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             if (!nts.uk.ui.errors.hasError()) {
                 service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {
-                    let arrayResponse = res.compositePayOutSubMngData;
-                    let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
-                    for (let i = 0 ; i < arrayResponse.length; i++){
-                        compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
-                    }
-                    
-                    // update data to view
-                    self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
-                    self.dispTotalRemain(res.numberOfDayLeft);
-                    self.expirationDate(self.getExpirationTime(res.expirationDate));
-                    self.closureID = res.closureID;
-                    
-                    if(arrayResponse.length == 0) {
-                        dialog.alertError({ messageId: "Msg_725" });
-                    }
-                    
-                    // update grid
-                    $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
-                    
-                    // disable edit button
-                    _.forEach(self.compositePayOutSubMngData(), function(value) {
-                        let rowId = value.id;
-                        
-                        if (value.isLinked){
-                            $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
-                        } else {
-                            $("#compositePayOutSubMngDataGrid").ntsGrid("enableNtsControlAt", rowId, "edit", 'Button');
+                    if(res.haveEmploymentCode && (res.closureID != null) && (res.closureID != "")) {
+                        let arrayResponse = res.compositePayOutSubMngData;
+                        let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
+                        for (let i = 0 ; i < arrayResponse.length; i++){
+                            compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
                         }
-                    });
+                        
+                        // update data to view
+                        self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
+                        self.dispTotalRemain(res.numberOfDayLeft);
+                        self.expirationDate(self.getExpirationTime(res.expirationDate));
+                        self.closureID = res.closureID;
+                        self.newDataDisable(false);
+                        
+                        if(arrayResponse.length == 0) {
+                            dialog.alertError({ messageId: "Msg_725" });
+                        }
+                        
+                        // update grid
+                        $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+                        
+                        // disable edit button
+                        _.forEach(self.compositePayOutSubMngData(), function(value) {
+                            let rowId = value.id;
+                            
+                            if (value.isLinked){
+                                $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
+                            } else {
+                                $("#compositePayOutSubMngDataGrid").ntsGrid("enableNtsControlAt", rowId, "edit", 'Button');
+                            }
+                        });
+                    } else {
+                        // update data to view
+                        self.dispTotalRemain(0);
+                        self.expirationDate("");
+                        self.closureID = "";
+                        self.newDataDisable(true);
+                        
+                        // update grid
+                        self.compositePayOutSubMngData = ko.observableArray([]);
+                        $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+                        
+                        // add dialog
+                        dialog.alertError({ messageId: "Msg_1306" });
+                    }
                 }).fail(function(res: any) {
                     console.log(res);
                 });
@@ -253,12 +287,18 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             service.getInfoEmLogin().done(function(emp) {
                 service.getWpName().done(function(wp) {
-                    self.selectedEmployeeObject = {employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName, 
-                            workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name};
-                    self.employeeInputList.push(new EmployeeKcp009(emp.sid,
-                            emp.employeeCode, emp.employeeName, wp.name, wp.name));
-                    self.initKCP009();
-                    dfd.resolve();
+                    if(wp == null || wp.workplaceId == null || wp.workplaceId == "") {
+                        dialog.alertError({ messageId: "Msg_504" }).then(() => {
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        });
+                    } else {
+                        self.selectedEmployeeObject = {employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName, 
+                                workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name};
+                        self.employeeInputList.push(new EmployeeKcp009(emp.sid,
+                                emp.employeeCode, emp.employeeName, wp.name, wp.name));
+                        self.initKCP009();
+                        dfd.resolve();
+                    }
                 }).fail(function(result) {
                     dialog.alertError(result.errorMessage);
                     dfd.reject();
@@ -303,9 +343,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             // set data for KCP009 screen B
             if(!($("#tabpanel-2").hasClass("disappear"))) {
-                __viewContext.viewModel.viewmodelB.employeeInputList([]);
-                __viewContext.viewModel.viewmodelB.employeeInputList(self.employeeInputList());
-                $('#emp-component').ntsLoadListComponent(__viewContext.viewModel.viewmodelB.listComponentOption);
+                var screenBModel = __viewContext.viewModel.viewmodelB;
+                screenBModel.convertEmployeeCcg01ToKcp009(dataList);
             }
         }
 
@@ -580,15 +619,15 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if ((params.payoutId != null) && (params.payoutId != "")) {
                 this.id = params.payoutId;
                 
-                if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) > 0) {
+                if ((this.stateAtr !== 2) &&  moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD')) >= 0) {
                     this.unUsedDaysInGrid = "" + params.unUsedDays;
-                    this.expriedDaysInGrid = null;
+                    this.expriedDaysInGrid = "0";
                     if(params.unUsedDays > 0) {
                         this.unUsedDaysInGridText = getText("KDM001_27");
                         this.unUsedDaysInGrid = params.unUsedDays.toFixed(1);
                     }
                 } else {
-                    this.unUsedDaysInGrid = null;
+                    this.unUsedDaysInGrid = "0";
                     this.expriedDaysInGrid = "" + params.unUsedDays;
                     if(params.unUsedDays > 0) {
                         this.expriedDaysInGridText = getText("KDM001_27");
@@ -598,7 +637,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             } else if ((params.subOfHDID != null) && (params.subOfHDID != "")) {
                 this.id = params.subOfHDID;
                 this.unUsedDaysInGrid = "" + (params.remainDays * (-1));
-                this.expriedDaysInGrid = null;
+                this.expriedDaysInGrid = "0";
                 if(params.remainDays > 0) {
                     this.unUsedDaysInGridText = getText("KDM001_27");
                     this.unUsedDaysInGrid = (params.remainDays * (-1)).toFixed(1);

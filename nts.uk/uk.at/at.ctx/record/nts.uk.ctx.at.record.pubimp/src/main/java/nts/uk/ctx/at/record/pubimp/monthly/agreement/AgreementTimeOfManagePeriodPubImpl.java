@@ -107,4 +107,35 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 						fromBreakdown.getWeeklyPremiumTime(),
 						fromBreakdown.getMonthlyPremiumTime()));
 	}
+
+	@Override
+	public Map<String, Map<YearMonth, AttendanceTimeMonth>> getTimeByPeriod(List<String> employeeIds,
+			YearMonthPeriod period) {
+		
+		List<YearMonth> ymRange = new ArrayList<>();
+		YearMonth startYm = YearMonth.of(period.start().year(), period.start().month());
+		YearMonth endYm = period.end();
+		while (startYm.lessThanOrEqualTo(endYm)){
+			ymRange.add(startYm);
+			startYm = startYm.addMonths(1);
+		}
+		
+		val srcAgreementTimeList = this.agreementTimeRepo.findBySidsAndYearMonths(employeeIds, ymRange);
+		Map<String, Map<YearMonth, AttendanceTimeMonth>> result = new HashMap<>();
+		List<String> employeeIdsError = srcAgreementTimeList.stream().map( e->e.getEmployeeId()).distinct().collect(Collectors.toList());
+		
+		for(String employeeId: employeeIdsError) {			
+			Map<YearMonth, AttendanceTimeMonth> mapAttendanceTime = new HashMap<>();
+			val agreementTimeList = srcAgreementTimeList.stream().filter( e->e.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
+			
+			for (val srcAgreementTime : agreementTimeList){
+				mapAttendanceTime.put(srcAgreementTime.getYearMonth(), srcAgreementTime.getAgreementTime().getAgreementTime());
+			}
+			
+			result.put(employeeId, mapAttendanceTime);
+			
+		}
+
+		return result;
+	}
 }

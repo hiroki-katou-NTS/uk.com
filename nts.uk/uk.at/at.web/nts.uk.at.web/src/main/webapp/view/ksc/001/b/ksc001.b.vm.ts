@@ -27,11 +27,12 @@ module nts.uk.at.view.ksc001.b {
             baseDate: KnockoutObservable<Date> = ko.observable(new Date());
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
 
+            selectRebuildAtr: KnockoutObservableArray<RadioBoxModel>;  
             selectImplementAtr: KnockoutObservableArray<RadioBoxModel>;
             selectedImplementAtrCode: KnockoutObservable<number>;
+            selectRebuildAtrCode: KnockoutObservable<number>;
             checkReCreateAtrAllCase: KnockoutObservable<number> = ko.observable(0);
             checkProcessExecutionAtrRebuild: KnockoutObservable<number> = ko.observable(0);
-            checkRebuild: KnockoutObservable<number> = ko.observable(0);
             checkCreateMethodAtrPersonalInfo: KnockoutObservable<number> = ko.observable(0);
             resetMasterInfo: KnockoutObservable<boolean> = ko.observable(false);
             confirm: KnockoutObservable<boolean> = ko.observable(false);
@@ -76,13 +77,14 @@ module nts.uk.at.view.ksc001.b {
             lstCreateMethod: KnockoutObservableArray<any>;
             lstReCreate: KnockoutObservableArray<any>;
             lstProcessExecution: KnockoutObservableArray<any>;
-            lstRebuild: KnockoutObservableArray<any>;
             periodStartDate: KnockoutObservable<moment.Moment> = ko.observable(moment());
             periodEndDate: KnockoutObservable<moment.Moment> = ko.observable(moment());
 
             constructor() {
-                var self = this;
-
+                let self = this;
+                let lstRadioBoxModelImplementAtr: RadioBoxModel[] = [];
+                let lstRadioBoxModelRebuildAtr: RadioBoxModel[] = [];
+                
                 self.stepList = [
                     { content: '.step-1' },
                     { content: '.step-2' },
@@ -132,11 +134,16 @@ module nts.uk.at.view.ksc001.b {
                     }
                 }
                 self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-                var lstRadioBoxModelImplementAtr: RadioBoxModel[] = [];
+                    
                 lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.GENERALLY_CREATED, getText("KSC001_74")));
                 lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.RECREATE, getText("KSC001_75")));
+                lstRadioBoxModelRebuildAtr.push(new RadioBoxModel(ReBuildAtr.REBUILD_ALL, getText("KSC001_89")));
+                lstRadioBoxModelRebuildAtr.push(new RadioBoxModel(ReBuildAtr.REBUILD_TARGET_ONLY, getText("KSC001_90")));
+                    
                 self.selectImplementAtr = ko.observableArray(lstRadioBoxModelImplementAtr);
                 self.selectedImplementAtrCode = ko.observable(ImplementAtr.GENERALLY_CREATED);
+                self.selectRebuildAtr = ko.observableArray(lstRadioBoxModelRebuildAtr);
+                self.selectRebuildAtrCode = ko.observable(ReBuildAtr.REBUILD_ALL);
 
                 //for control field
                 self.isReCreate = ko.computed(function() {
@@ -153,7 +160,7 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 self.isRebuildTargetOnly = ko.computed(() => {
-                    return self.checkRebuild() == ReBuildAtr.REBUILD_TARGET_ONLY
+                    return self.selectRebuildAtrCode() == ReBuildAtr.REBUILD_TARGET_ONLY
                         && self.isEnableRadioboxRebuildAtr();
                 });
 
@@ -166,7 +173,6 @@ module nts.uk.at.view.ksc001.b {
                 self.lstCreateMethod = ko.observableArray(__viewContext.enums.CreateMethodAtr);
                 self.lstReCreate = ko.observableArray(__viewContext.enums.ReCreateAtr);
                 self.lstProcessExecution = ko.observableArray(__viewContext.enums.ProcessExecutionAtr);
-                self.lstRebuild = ko.observableArray(__viewContext.enums.RebuildTargetAtr)
             }
             /**
              * save to client service PersonalSchedule by employeeId
@@ -287,7 +293,7 @@ module nts.uk.at.view.ksc001.b {
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 550,
-                    maxRows: 15,
+                    maxRows: 10,
                     tabindex: 5
                 };
 
@@ -341,7 +347,7 @@ module nts.uk.at.view.ksc001.b {
                 data.implementAtr = self.selectedImplementAtrCode();
                 data.reCreateAtr = self.checkReCreateAtrAllCase();
                 data.processExecutionAtr = self.checkProcessExecutionAtrRebuild();
-                data.rebuildTargetAtr = self.checkRebuild();
+                data.rebuildTargetAtr = self.selectRebuildAtrCode();
                 data.recreateConverter = self.recreateConverter();
                 data.recreateEmployeeOffWork = self.recreateEmployeeOffWork();
                 data.recreateDirectBouncer = self.recreateDirectBouncer();
@@ -539,52 +545,42 @@ module nts.uk.at.view.ksc001.b {
                 } else {
                     lstLabelInfomation.push(getText("KSC001_36"));
 
-                    //NO2
-                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ALLCASE) {
-                        lstLabelInfomation.push(getText("KSC001_37")
-                            + getText("KSC001_4"));
-                    }
-                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ONLYUNCONFIRM) {
-                        lstLabelInfomation.push(getText("KSC001_37")
-                            + getText("KSC001_5"));
-                    }
-
                     //NO3
                     if (self.checkProcessExecutionAtrRebuild() == 0) {
                         lstLabelInfomation.push(getText("KSC001_37")
                             + getText("KSC001_7"));
 
-                        if (self.checkRebuild() == 0) {
+                        if (self.selectRebuildAtrCode() == 0) {
                             lstLabelInfomation.push("　" + getText("KSC001_38")
                                 + getText("KSC001_89"));
                         } else {
                             lstLabelInfomation.push("　" + getText("KSC001_38")
                                 + getText("KSC001_90"));
-                        }
 
-                        if (self.recreateConverter()) {
-                            lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                + getText("KSC001_91"));
-                        }
-
-                        if (self.recreateEmployeeOffWork()) {
-                            lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                + getText("KSC001_92"));
-                        }
-
-                        if (self.recreateDirectBouncer()) {
-                            lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                + getText("KSC001_93"));
-                        }
-
-                        if (self.recreateShortTermEmployee()) {
-                            lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                + getText("KSC001_94"));
-                        }
-
-                        if (self.recreateWorkTypeChange()) {
-                            lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                + getText("KSC001_95"));
+                            if (self.recreateConverter()) {
+                                lstLabelInfomation.push("　　" + getText("KSC001_38")
+                                    + getText("KSC001_91"));
+                            }
+    
+                            if (self.recreateEmployeeOffWork()) {
+                                lstLabelInfomation.push("　　" + getText("KSC001_38")
+                                    + getText("KSC001_92"));
+                            }
+    
+                            if (self.recreateDirectBouncer()) {
+                                lstLabelInfomation.push("　　" + getText("KSC001_38")
+                                    + getText("KSC001_93"));
+                            }
+    
+                            if (self.recreateShortTermEmployee()) {
+                                lstLabelInfomation.push("　　" + getText("KSC001_38")
+                                    + getText("KSC001_94"));
+                            }
+    
+                            if (self.recreateWorkTypeChange()) {
+                                lstLabelInfomation.push("　　" + getText("KSC001_38")
+                                    + getText("KSC001_95"));
+                            }
                         }
                     } else {
                         lstLabelInfomation.push(getText("KSC001_37")
@@ -610,6 +606,17 @@ module nts.uk.at.view.ksc001.b {
                                 + getText("KSC001_99"));
                         }
                     }
+                    
+                    //NO2
+                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ALLCASE) {
+                        lstLabelInfomation.push(getText("KSC001_37")
+                            + getText("KSC001_4"));
+                    }
+                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ONLYUNCONFIRM) {
+                        lstLabelInfomation.push(getText("KSC001_37")
+                            + getText("KSC001_5"));
+                    }
+                    
                 }
 
                 if (self.confirm()) {

@@ -19,7 +19,7 @@ import nts.uk.query.model.person.QueryPersonAdapter;
 public class QueryPersonAdapterImpl extends JpaRepository implements QueryPersonAdapter {
 
 	/** The find by name. */
-	private final String FIND_BY_NAME = "SELECT c FROM BpsmtPerson c"
+	private static final String FIND_BY_NAME = "SELECT c FROM BpsmtPerson c"
 			+ " WHERE c.personName LIKE LOWER(CONCAT('%', :name, '%'))"
 			+ " OR c.personName LIKE LOWER(CONCAT('%', :name, '%'))"
 			+ " OR c.personNameKana LIKE LOWER(CONCAT('%', :name, '%'))"

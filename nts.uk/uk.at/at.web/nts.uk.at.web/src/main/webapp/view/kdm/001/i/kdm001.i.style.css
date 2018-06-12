@@ -1,5 +1,6 @@
 .down-s {
 	margin-bottom: 15px;
+	margin-left: 30px;
 }
 
 .down-m {
@@ -31,4 +32,21 @@
 
 .labelTitle {
 	width: 70px;
+}
+
+.left-s {
+	margin-left: 5px;
+}
+
+.left-m {
+	margin-left: 10px;
+}
+
+.left-l {
+	margin-left: 30px;
+}
+
+.nts-datepicker-wrapper .ntsDatepicker {
+	min-width: 90px;
+	width: 90px;
 }

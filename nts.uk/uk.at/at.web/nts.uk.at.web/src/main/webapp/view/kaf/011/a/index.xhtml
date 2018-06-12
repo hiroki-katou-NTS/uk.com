@@ -34,13 +34,12 @@
 				<button class="proceed"
 					data-bind="enable: $root.errors.isEmpty, click: register">#{i18n.getText('KAF011_3')}</button>
 				<!-- A.A1_3 -->
-				<button data-bind=" click: openKDL009">#{i18n.getText('KAF011_7')}</button>
+				<button style="display: none" data-bind=" click: openKDL009">#{i18n.getText('KAF011_7')}</button>
 				<!-- A.A2_1 -->
-				<button data-bind=" click: openCMM018">#{i18n.getText('KAF011_9')}</button>
+				<button style="display: none" data-bind=" click: openCMM018">#{i18n.getText('KAF011_9')}</button>
 				<!-- A.A3_1 -->
-				<div id="ckbSendMail"
-					data-bind="if:appTypeSet().sendMailWhenRegister()==0">
-					<div data-bind="ntsCheckBox: { checked: manualSendMailAtr }">#{i18n.getText('KAF011_10')}</div>
+				<div style="display: inline-block;">
+					<div data-bind="ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail }, visible: enableSendMail">#{i18n.getText('KAF011_10')}</div>
 				</div>
 			</div>
 

@@ -25,19 +25,19 @@
 					<!-- H2 対象者 -->
 					<div data-bind="ntsFormLabel: {}">
 						<!-- H2_1 職場コード -->
-						<label data-bind="text: workCode" />
+						<span class="label" data-bind="text: workCode" ></span>
 						<!-- H2_2 職場名称 -->
-						<label style="margin-right: 10px;" data-bind="text: workName" />
+						<span class="label" style="margin-right: 10px;" data-bind="text: workName" ></span>
 						<!-- H2_3 ： -->
-						<label>#{i18n.getText('KDM001_58')}</label>
+						<span>#{i18n.getText('KDM001_58')}</span>
 						<!-- H2_4 社員コード -->
-						<label data-bind="text: employeeCode" />
+						<span class="label" data-bind="text: employeeCode" ></span>
 						<!-- H2_5 社員名 -->
-						<label data-bind="text: employeeName" />
+						<span class="label" data-bind="text: employeeName" ></span>
 					</div>
 				</div>
 				<!-- H3 -->
-				<div class="set-row">
+				<div class="set-row" style="width: 460px;margin-left: -15px;">
 					<hr />
 				</div>
 				<div style="padding: 7px 0 7px 25px">
@@ -45,7 +45,7 @@
 					<label>#{i18n.getText('KDM001_92')}</label>
 				</div>
 				<!-- H5 -->
-				<div class="padding-left-15">
+				<div class="padding-left-15" style="width: 440px;margin-left: 5px;">
 					<hr />
 				</div>
 				<table>
@@ -64,7 +64,7 @@
 								<div style="border-style: none !important;  margin-left:40px;" class="column-1"
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_77')}</div>
 								<!--H6_4  NumberOfDays -->
-								<div class="combobox-select-day" tabindex="2"
+								<div id = "H6_4" class="combobox-select-day" tabindex="2"
 									data-bind="ntsComboBox: {
 										name: '#[KDM001_86]', 
 										options: itemRequireDay,
@@ -86,7 +86,7 @@
 					<!-- H8_1 -->
 					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_85')}</div>
 					<!-- H8_2  -->
-					<div class="combobox-select-day" tabindex="3"
+					<div id = "H8_2" class="combobox-select-day" tabindex="3"
 						data-bind="ntsComboBox: {
 										name: '#[KDM001_86]', 
 										options: remainDaysList,

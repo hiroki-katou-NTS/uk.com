@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
@@ -207,16 +208,16 @@ public class MonthlyCalculation {
 	 * @param closureDate 締め日付
 	 * @param procPeriod 期間
 	 * @param workingConditionItem 労働条件項目
-	 * @param attendanceTimeOfDailysOpt 日別実績の勤怠時間リスト
 	 * @param startWeekNo 開始週NO
+	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void prepareAggregation(
 			String companyId, String employeeId,YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate,
 			DatePeriod procPeriod, WorkingConditionItem workingConditionItem,
-			Optional<List<AttendanceTimeOfDailyPerformance>> attendanceTimeOfDailysOpt,
 			int startWeekNo,
+			MonthlyCalculatingDailys monthlyCalcDailys,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		this.companyId = companyId;
@@ -356,34 +357,11 @@ public class MonthlyCalculation {
 			return;
 		}
 		
-		// 通常の取得期間を　開始日-6日～終了日　とする　（開始週の集計のため）
-		DatePeriod findPeriod = new DatePeriod(procPeriod.start().addDays(-6), procPeriod.end());
-
 		// 日別実績の勤怠時間　取得
-		if (attendanceTimeOfDailysOpt.isPresent()){
-			for (val attendanceTimeOfDaily : attendanceTimeOfDailysOpt.get()){
-				this.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
-			}
-			
-			// 前月の最終週分を追加で読み込む
-			DatePeriod prevPeriod = new DatePeriod(procPeriod.start().addDays(-6), procPeriod.start().addDays(-1));
-			val attendanceTimeOfDailysPrev =
-					repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
-			for (val attendanceTimeOfDaily : attendanceTimeOfDailysPrev){
-				this.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
-			}
-		}
-		else {
-			val attendanceTimeOfDailys =
-					repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
-			for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-				this.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
-			}
-		}
+		this.attendanceTimeOfDailyMap = monthlyCalcDailys.getAttendanceTimeOfDailyMap();
 		
 		// 日別実績の勤務情報　取得
-		val workInformationOfDailys =
-				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		val workInformationOfDailys = new ArrayList<>(monthlyCalcDailys.getWorkInfoOfDailyMap().values());
 		for (val workInformationOfDaily : workInformationOfDailys){
 			val workInfo = workInformationOfDaily.getRecordInfo();
 			this.workInformationOfDailyMap.putIfAbsent(workInformationOfDaily.getYmd(), workInfo);
@@ -666,6 +644,40 @@ public class MonthlyCalculation {
 		}
 		val agreementOperationSet = agreementOperationSetOpt.get();
 		
+		// 集計に必要な日別実績データを取得する
+		MonthlyCalculatingDailys monthlyCalcDailys = new MonthlyCalculatingDailys();
+		{
+			// 取得期間を　開始日-6日～終了日　とする　（前月の最終週の集計のため）
+			DatePeriod findPeriod = new DatePeriod(procPeriod.start().addDays(-6), procPeriod.end());
+			
+			// 日別実績の勤怠時間　取得
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyList = new ArrayList<>();
+			if (attendanceTimeOfDailysOpt.isPresent()){
+				attendanceTimeOfDailyList = attendanceTimeOfDailysOpt.get();
+			}
+			else {
+				attendanceTimeOfDailyList =
+						repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+			}
+			for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){
+				monthlyCalcDailys.getAttendanceTimeOfDailyMap().putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+			}
+			
+			// 日別実績の勤務情報　取得
+			val workInfoOfDailyList =
+					repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+			for (val workInfoOfDaily : workInfoOfDailyList){
+				monthlyCalcDailys.getWorkInfoOfDailyMap().putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
+			}
+			
+			// 日別実績の出退勤　取得
+			val timeLeaveOfDailyList =
+					repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, findPeriod);
+			for (val timeLeaveOfDaily : timeLeaveOfDailyList){
+				monthlyCalcDailys.getTimeLeaveOfDailyMap().putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
+			}
+		}
+		
 		// 集計期間を取得
 		val aggrPeriod = agreementOperationSet.getAggregatePeriod(procPeriod);
 		
@@ -701,7 +713,7 @@ public class MonthlyCalculation {
 			// 集計準備
 			MonthlyCalculation calcWork = new MonthlyCalculation();
 			calcWork.prepareAggregation(companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
-					period, workingConditionItem, attendanceTimeOfDailysOpt, weekNo, repositories);
+					period, workingConditionItem, weekNo, monthlyCalcDailys, repositories);
 			for (val errorInfo : calcWork.errorInfos){
 				if (errorInfo.getResourceId().compareTo("002") == 0) return Optional.empty();
 			}

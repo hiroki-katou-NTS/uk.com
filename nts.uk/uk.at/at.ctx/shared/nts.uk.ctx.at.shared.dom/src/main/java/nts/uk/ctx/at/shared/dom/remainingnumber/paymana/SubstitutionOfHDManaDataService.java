@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +58,7 @@ public class SubstitutionOfHDManaDataService {
 
 		subOfHDId.forEach(i -> {
 			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
-					new BigDecimal(i.getRequiredDays()), TargetSelectionAtr.MANUAL.value));
+					i.getRequiredDays(), TargetSelectionAtr.MANUAL.value));
 			// Update remain days 振休管理データ
 			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
 					.findByID(i.getSubOfHDID());
@@ -85,7 +84,7 @@ public class SubstitutionOfHDManaDataService {
 		List<String> errorList = new ArrayList<>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = addSubHdManagementService.getClosureDate(closureId, processYearMonth);
-		if (dayoffDate.compareTo(closureDate.get()) >= 0) {
+		if (closureDate.isPresent() && dayoffDate.compareTo(closureDate.get()) >= 0) {
 			errorList.add("Msg_744");
 		}
 //		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getDayoffDateBysubOfHDID(subOfHDID);

@@ -377,7 +377,8 @@ module nts.uk.com.view.cps005.b {
         selectionItem: KnockoutObservable<SelectionItemModel> = ko.observable(new SelectionItemModel(null));
         dataTypeText: KnockoutObservable<string> = ko.observable("");
         selectionItemName: string;
-        selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);;
+        selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        enable:  KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IPersonInfoItem) {
             let self = this;
 
@@ -385,6 +386,7 @@ module nts.uk.com.view.cps005.b {
                 self.id = data.id || "";
                 self.itemName(data.itemName || "");
                 self.fixedAtr(data.isFixed || 0);
+                self.enable(data.enable);
                 if (!data.itemTypeState) return;
                 self.itemType(data.itemTypeState.itemType || 2);
                 let dataTypeState = data.itemTypeState.dataTypeState;
@@ -924,6 +926,7 @@ module nts.uk.com.view.cps005.b {
         id: string;
         itemName: string;
         isFixed: number;
+        enable : boolean;
         itemTypeState: IItemTypeState;
     }
 
