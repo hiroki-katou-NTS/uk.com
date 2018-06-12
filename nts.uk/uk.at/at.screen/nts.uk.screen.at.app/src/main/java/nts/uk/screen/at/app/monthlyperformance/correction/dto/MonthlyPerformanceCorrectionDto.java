@@ -87,6 +87,8 @@ public class MonthlyPerformanceCorrectionDto {
 	 */
 	private ClosureDateDto closureDate;
 	
+	private Boolean showRegisterButton;
+	
 	public MonthlyPerformanceCorrectionDto(){
 		super();
 		this.lstFixedHeader = MPHeaderDto.GenerateFixedHeader();

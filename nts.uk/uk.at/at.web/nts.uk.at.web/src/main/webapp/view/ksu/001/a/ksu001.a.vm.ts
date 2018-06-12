@@ -1743,7 +1743,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (errSplits.length == 1) {
                     errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
                 } else {
-                    errors.push({ message: nts.uk.resource.getMessage(errSplits[0], nts.uk.resource.getText(errSplits[1]), nts.uk.resource.getText(errSplits[2])), messageId: errSplits[0], supplements: {} });
+                    errors.push({ 
+                        message: nts.uk.resource.getMessage(errSplits[0],[nts.uk.resource.getText(errSplits[1]), nts.uk.resource.getText(errSplits[2])]), 
+                        messageId: errSplits[0], 
+                        supplements: {} 
+                    });
                 }
             });
 

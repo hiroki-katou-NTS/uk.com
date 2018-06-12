@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -18,54 +19,54 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GoOutTimeSheetDailyPerformDto {
+public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 
 	/** 時間休暇使用時間: 日別実績の時間休暇使用時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "休暇使用時間", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = HOLIDAY + USAGE, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private ValicationUseDto valicationUseTime;
 
 	/** 控除用合計時間: 控除合計時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "控除用合計時間", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = DEDUCTION, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TotalDeductionTimeDto totalTimeForDeduction;
 
 	/** 計上用合計時間: 控除合計時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "計上用合計時間", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = CALC, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TotalDeductionTimeDto totalTimeForCalc;
 
 	/** 控除用コア外合計時間: 計算付き時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "控除用コア外合計時間", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = DEDUCTION + OUT_CORE, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private CalcAttachTimeDto coreTotalTimeForDeduction;
 
 	/** 計上用コア外合計時間: 計算付き時間 */
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "計上用コア外合計時間", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = CALC + OUT_CORE, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private CalcAttachTimeDto coreTotalTimeForCalc;
 
 	/** 回数: 休憩外出回数 */
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "回数", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = COUNT, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer times;
 
 	/** 外出理由: 外出理由 */
-	@AttendanceItemLayout(layout = "G", jpPropertyName = "外出理由")
+	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = REASON)
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	private int goOutReason;
+	private int attr;
 
 	/** 補正後時間帯: 外出時間帯 */
-	@AttendanceItemLayout(layout = "H", jpPropertyName = "補正後時間帯", listMaxLength = 10, indexField = "outingFrameNo")
+	@AttendanceItemLayout(layout = LAYOUT_H, jpPropertyName = AFTER_CORRECTED, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<GoOutTimeDto> goOutTime;
 
-	public String goOutReason() {
-		switch (this.goOutReason) {
+	public String enumText() {
+		switch (this.attr) {
 		case 0:
-			return "私用";
+			return E_SUPPORT;
 		case 1:
-			return "公用";
+			return E_UNION;
 		case 2:
-			return "有償";
+			return E_CHARGE;
 		case 3:
-			return "組合";
+			return E_OFFICAL;
 		default:
-			return "";
+			return EMPTY_STRING;
 		}
 	}
 	
@@ -90,7 +91,7 @@ public class GoOutTimeSheetDailyPerformDto {
 	
 	public OutingTimeOfDaily toDomain(){
 		return new OutingTimeOfDaily(times == null ? null : new BreakTimeGoOutTimes(times), 
-								ConvertHelper.getEnum(goOutReason, GoOutReason.class), valicationUseTime == null ? null : valicationUseTime.toDomain(), 
+								ConvertHelper.getEnum(attr, GoOutReason.class), valicationUseTime == null ? null : valicationUseTime.toDomain(), 
 								totalTimeForCalc == null ? null : totalTimeForCalc.createDeductionTime(),
 								totalTimeForDeduction == null ? null : totalTimeForDeduction.createDeductionTime(), 
 								ConvertHelper.mapTo(goOutTime, c -> c.toDomain()));
