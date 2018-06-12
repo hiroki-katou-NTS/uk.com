@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.AsyncTaskService;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
@@ -29,6 +30,8 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 	
 	@Inject
 	private ProcessExecutionLogManageRepository processExecLogManRepo;
+	@Inject
+	private AsyncTaskService service;
 
 	//終了ボタン押下時処理
 	@Override
@@ -38,6 +41,7 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		TerminateProcessExecutionCommand command = context.getCommand();
 		String execItemCd = command.getExecItemCd();
 		String companyId = command.getCompanyId();
+		String taskTerminate = command.getTaskTerminate();
 		//ドメインモデル「更新処理自動実行管理」を取得する
 		Optional<ProcessExecutionLogManage> processExecLogManOpt = this.processExecLogManRepo.getLogByCIdAndExecCd(companyId, execItemCd);
 		if(!processExecLogManOpt.isPresent()){
@@ -50,7 +54,6 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 			dataSetter.setData("currentStatusIsOneOrTwo", "Msg_1102");
 			return;
 		}
-		
 		
 		
 		/*
@@ -91,41 +94,49 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		}
 		*/
 		procExecLog.getTaskLogList().forEach(task ->{
-		
-			 //日別作成の処理が完了しているか確認する
-			if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CREATION.value) {
-				if (task.getStatus() == null) {
-					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-					if(execType == 1){ 
-						dataSetter.setData("interupt", "true");
+			if (task.getProcExecTask().value == ProcessExecutionTask.SCH_CREATION.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null&& !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);	
 					}
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
+					return;
+				}
+			}
+			 //日別作成の処理が完了しているか確認する
+				else if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CREATION.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null&& !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);	
+					}
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
 					return;
 				}
 			//日別計算の処理が完了しているか確認する	
 			} else if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CALCULATION.value) {
-				if (task.getStatus() == null) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null&& !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);
+						}
 					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-					if(execType == 1){ 
-						dataSetter.setData("interupt", "true");
-					}
 					return;
 				}
 			//承認結果反映の処理が完了しているか確認する	
 			} else if (task.getProcExecTask().value == ProcessExecutionTask.RFL_APR_RESULT.value) {
-				if (task.getStatus() == null) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null&& !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);
+						}
 					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-					if(execType == 1){ 
-						dataSetter.setData("interupt", "true");
-					}
 					return;
 				}
 			//月別集計の処理が完了しているか確認する	
 			} else if (task.getProcExecTask().value == ProcessExecutionTask.MONTHLY_AGGR.value) {
-				if (task.getStatus() == null) {
-					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-					if(execType == 1){ 
-						dataSetter.setData("interupt", "true");
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null && !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);
 					}
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
 					return;
 				}
 			} else{
@@ -134,7 +145,6 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 				}
 			} 
 		});
-		
 		/*
 		 * ドメインモデル「就業計算と集計実行ログ」を更新する
 		 * 
