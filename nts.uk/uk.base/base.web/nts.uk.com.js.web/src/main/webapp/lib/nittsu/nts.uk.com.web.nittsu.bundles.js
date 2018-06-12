@@ -17194,6 +17194,14 @@ var nts;
                             }
                             return true;
                         });
+                        var $oselect, $iselect;
+                        var checkAll = function () {
+                            if ($oselect && $iselect && $oselect.attr("data-chk") === "off") {
+                                $oselect.attr("data-chk", "on");
+                                $iselect.removeClass("ui-igcheckbox-normal-off");
+                                $iselect.addClass("ui-igcheckbox-normal-on");
+                            }
+                        };
                         $grid.bind('selectionchanged', function () {
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
@@ -17213,10 +17221,15 @@ var nts;
                                     disableIds_1.sort(function (i1, i2) { return i2 - i1; }).forEach(function (d) {
                                         selected_1.splice(d, 1);
                                     });
+                                    var valueCount = _.intersection(disables_1, value).length;
+                                    var ds = $grid.igGrid("option", "dataSource");
+                                    if (selected_1.length === ds.length - disables_1.length + valueCount) {
+                                        checkAll();
+                                    }
                                 }
                                 if (!nts.uk.util.isNullOrEmpty(selected_1)) {
                                     var newValue = _.map(selected_1, function (s) { return s.id; });
-                                    newValue = _.union(newValue, _.intersection(disables_1, value));
+                                    newValue = _.union(_.intersection(disables_1, value), newValue);
                                     data.value(newValue);
                                 }
                                 else {
@@ -17231,6 +17244,23 @@ var nts;
                                 else {
                                     data.value('');
                                 }
+                            }
+                        });
+                        $grid.on("iggridvirtualrecordsrender", function (evt, ui) {
+                            var disables = $grid.data("selectionDisables");
+                            var $header = ui.owner._headerParent;
+                            if (!disables || disables.length === 0 || !$header)
+                                return;
+                            var data = ui.owner.dataSource._data;
+                            var selected = $grid.ntsGridList('getSelected');
+                            var valueCount = _.intersection(disables, value).length;
+                            var selector = $header.find(".ui-iggrid-rowselector-header span");
+                            if (selector.length > 1) {
+                                $oselect = $(selector[0]);
+                                $iselect = $(selector[1]);
+                            }
+                            if (selected && (data.length - disables.length + valueCount) === selected.length) {
+                                checkAll();
                             }
                         });
                         $grid.setupSearchScroll("igGrid", virtualization);
