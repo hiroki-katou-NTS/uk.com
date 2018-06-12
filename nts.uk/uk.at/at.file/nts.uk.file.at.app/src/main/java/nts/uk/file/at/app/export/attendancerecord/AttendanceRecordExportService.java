@@ -3,6 +3,8 @@ package nts.uk.file.at.app.export.attendancerecord;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -287,10 +289,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							}
 
 							dailyData.setColumnDatas(columnDatas);
-							dailyData.setSecondCol(flag <= 15 ? false : true);
+							dailyData.setSecondCol(flag <= 16 ? false : true);
 							dailyDataList.add(dailyData);
 							// Check end of week
-							if (startDateByClosure.localDate().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+							if (startDateByClosure.localDate().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
 								AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
 								weeklyData.setDailyDatas(dailyDataList);
 								AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
@@ -517,7 +519,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			monthlyHeader.add(new AttendanceRecordReportColumnData(upperheader, lowerheader));
 		}
 
-		String exportDate = LocalDate.now().toString();
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
+		LocalDateTime presentDate = LocalDateTime.now();
+		String exportDate = presentDate.format(format).toString();
 
 		AttendanceRecordReportData recordReportData = new AttendanceRecordReportData();
 		Optional<Company> optionalCompany = companyRepo.find(companyId);
