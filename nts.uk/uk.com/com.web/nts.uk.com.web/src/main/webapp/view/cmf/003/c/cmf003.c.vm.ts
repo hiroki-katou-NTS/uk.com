@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf003.c {
            
            // systemType
            systemTypes: KnockoutObservableArray<number>;
-           selectedCode: KnockoutObservable<string>;
+           selectedCode: KnockoutObservable<string> = ko.observable('');
            currentItem: KnockoutObservable<ItemSystemType>;
            isEnable: KnockoutObservable<boolean>;
            isEditable: KnockoutObservable<boolean>;
@@ -53,7 +53,7 @@ module nts.uk.com.view.cmf003.c {
                    if(systemtypeFB != undefined) {
                     systemIdSelected = systemtypeFB.code;
                    }
-                   self.selectedCode = ko.observable(systemIdSelected);
+                   self.selectedCode(systemIdSelected);
                    
                    if (systemIdSelected != undefined ) {
                        service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
@@ -117,7 +117,7 @@ module nts.uk.com.view.cmf003.c {
                      alertError({ messageId: "Msg_577" });
                 } else {
                     setShared("CMF003_C_CATEGORIES",self.currentCateSelected());
-                    setShared("CMF003_C_SYSTEMTYPE",self.selectedCode());
+                    setShared("CMF003_C_SYSTEMTYPE",self.currentItem);
                     close();
                 }
             }
@@ -155,9 +155,9 @@ module nts.uk.com.view.cmf003.c {
        }
 
     class ItemSystemType {
-           code: number;
+           code: string;
            name: string;
-           constructor(code: number, name: string) {
+           constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
           }
