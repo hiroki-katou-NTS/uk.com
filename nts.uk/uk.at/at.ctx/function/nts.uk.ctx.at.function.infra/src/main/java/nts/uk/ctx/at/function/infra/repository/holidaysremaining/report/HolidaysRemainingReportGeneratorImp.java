@@ -698,12 +698,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 			// 子の看護休暇_使用日数
 			String grantUsedDayValue = currentSituationImported.getBeforeUseDays() + "/"
-					+ currentSituationImported.getAfterUseDays();
+					+ currentSituationImported.getAfterUseDays().orElse(0d);
 			cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
 
 			// N2_4 子の看護休暇_残日数
 			String grantReamainDayValue = currentSituationImported.getBeforeCareLeaveDays() + "/"
-					+ currentSituationImported.getAfterCareLeaveDays();
+					+ currentSituationImported.getAfterCareLeaveDays().orElse(0d);
 			cells.get(firstRow + 1, 10 + totalMonth).setValue(grantReamainDayValue);
 
 			// Set background
@@ -749,12 +749,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
 
 			// 介護休暇_使用日数
-			String grantUsedDayValue = careHoliday.getBeforeUseDays() + "/" + careHoliday.getAfterUseDays();
+			String grantUsedDayValue = careHoliday.getBeforeUseDays() + "/" + careHoliday.getAfterUseDays().orElse(0d);
 			cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
 
 			// O2_4 介護休暇_残日数
 			String grantReamainDayValue = careHoliday.getBeforeCareLeaveDays() + "/"
-					+ careHoliday.getAfterCareLeaveDays();
+					+ careHoliday.getAfterCareLeaveDays().orElse(0d);
 			cells.get(firstRow + 1, 10 + totalMonth).setValue(grantReamainDayValue);
 
 			// Set background
