@@ -197,6 +197,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		KrcmtInterimBreakDayOff entity = this.getEntityManager().find(KrcmtInterimBreakDayOff.class, key);
 		if (entity == null){
 			entity = new KrcmtInterimBreakDayOff();
+			entity.breakDayOffKey = new KrcmtInterimBreakDayOffPK();
 			entity.breakDayOffKey.breakMngId = domain.getBreakManaId();
 			entity.breakDayOffKey.dayOffMngId = domain.getDayOffManaId();
 			entity.breakMngAtr = domain.getBreakManaAtr().values;

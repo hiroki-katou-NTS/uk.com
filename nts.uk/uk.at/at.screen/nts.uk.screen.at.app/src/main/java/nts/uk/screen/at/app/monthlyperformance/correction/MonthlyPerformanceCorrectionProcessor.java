@@ -32,15 +32,12 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
-import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -53,6 +50,7 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ColumnSetting;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellStateDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPControlDisplayItem;
@@ -220,11 +218,12 @@ public class MonthlyPerformanceCorrectionProcessor {
 			} else {
 				throw new BusinessException("FormatPerformance hasn't data");
 			}
-			
+
 			List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
 			if (lstLockStatus.stream().allMatch(item -> item.getLockStatusString() != Strings.EMPTY)) {
 				screenDto.setShowRegisterButton(false);
-			} else screenDto.setShowRegisterButton(true);
+			} else
+				screenDto.setShowRegisterButton(true);
 
 			// アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId);
@@ -420,6 +419,49 @@ public class MonthlyPerformanceCorrectionProcessor {
 		displayItem.setLstHeader(lstHeader);
 		// Fixed header
 		screenDto.setLstFixedHeader(MPHeaderDto.GenerateFixedHeader());
+		screenDto.getLstFixedHeader().forEach(column -> {
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+		});
+
+		for (MPHeaderDto key : displayItem.getLstHeader()) {
+			ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
+			if (!key.getGroup().isEmpty()) {
+				displayItem.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
+				displayItem.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
+			} else {
+				if (key.getKey().contains("A")) {
+					PAttendanceItem item = param.getLstAtdItemUnique()
+							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					columnSetting.setTypeFormat(item.getAttendanceAtr());
+				}
+			}
+			displayItem.getColumnSettings().add(columnSetting);
+		}
+
+		// for (DPHeaderDto key : result.getLstHeader()) {
+		// ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
+		// if (!key.getKey().equals("Application") &&
+		// !key.getKey().equals("Submitted") &&
+		// !key.getKey().equals("ApplicationList")) {
+		// if (!key.getGroup().isEmpty()) {
+		// result.getColumnSettings().add(new
+		// ColumnSetting(key.getGroup().get(0).getKey(), false));
+		// result.getColumnSettings().add(new
+		// ColumnSetting(key.getGroup().get(1).getKey(), false));
+		// } else {
+		// /*
+		// * 時間 - thoi gian hh:mm 5, 回数: so lan 2, 金額 : so tien 3, 日数:
+		// * so ngay -
+		// */
+		// DPAttendanceItem dPItem = mapDP
+		// .get(Integer.parseInt(key.getKey().substring(1,
+		// key.getKey().length()).trim()));
+		// columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
+		// }
+		// }
+		// result.getColumnSettings().add(columnSetting);
+		//
+		// }
 
 		/**
 		 * Get Data

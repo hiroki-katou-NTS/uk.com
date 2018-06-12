@@ -50,11 +50,23 @@ module nts.uk.at.view.kaf002.m3 {
                     appStampOnlineRecordCmd: null
                 }
                 service.insert(command)
-                .done(() => {
+                .done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
-                        $('.cm-memo').focus();
-                        nts.uk.ui.block.clear();
+                        if(data.autoSendMail){
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    location.reload();
+                                });    
+                        } else {
+                            if(checkBoxValue){
+                                let command = {appID: data.appID};
+                                setShared("KDL030_PARAM", command);
+                                nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                    location.reload();
+                                });    
+                            } else {
+                                location.reload();
+                            }   
+                        }
                     });     
                 })
                 .fail(function(res) { 
@@ -81,7 +93,7 @@ module nts.uk.at.view.kaf002.m3 {
                     appStampOnlineRecordCmd: null
                 }
                 service.update(command)
-                .done(() => {
+                .done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         if(data.autoSendMail){
                             nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {

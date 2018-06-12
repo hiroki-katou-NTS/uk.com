@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
-        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
         mailFlag: KnockoutObservable<boolean> = ko.observable(true);
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         displayEndDateFlg: KnockoutObservable<boolean> = ko.observable(false);
@@ -64,7 +64,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: KnockoutObservable<string> = ko.observable('');
         //menu-bar 
-        enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti: KnockoutObservable<boolean> = ko.observable(true);
@@ -370,7 +369,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         initData(data: any) {
             let self = this;
-            self.manualSendMailAtr(!data.manualSendMailFlg);
+            self.checkBoxValue(data.manualSendMailFlg);
+            self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.employeeName(data.employeeName);
             self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);

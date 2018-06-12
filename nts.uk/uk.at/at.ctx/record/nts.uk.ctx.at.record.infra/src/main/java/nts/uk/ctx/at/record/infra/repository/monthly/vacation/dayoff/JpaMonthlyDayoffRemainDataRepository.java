@@ -72,6 +72,7 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 		KrcdtMonDayoffRemain entity = this.getEntityManager().find(KrcdtMonDayoffRemain.class, key);
 		if (entity == null){
 			entity = new KrcdtMonDayoffRemain();
+			entity.pk = new KrcdtMonDayoffRemainPK();
 			entity.pk.sid = domain.getSId();
 			entity.pk.ym = domain.getYm().v();
 			entity.pk.closureId = domain.getClosureId();

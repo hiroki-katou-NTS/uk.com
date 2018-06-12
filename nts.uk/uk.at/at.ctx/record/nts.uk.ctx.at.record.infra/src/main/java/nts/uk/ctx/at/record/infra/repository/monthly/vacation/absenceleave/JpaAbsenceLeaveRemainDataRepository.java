@@ -64,6 +64,7 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 		KrcdtMonSubOfHdRemain entity = this.getEntityManager().find(KrcdtMonSubOfHdRemain.class, key);
 		if (entity == null){
 			entity = new KrcdtMonSubOfHdRemain();
+			entity.pk = new KrcdtMonSubOfHdRemainPK();
 			entity.pk.sId = domain.getSId();
 			entity.pk.ym = domain.getYm().v();
 			entity.pk.closureId = domain.getClosureId();
