@@ -81,7 +81,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	@Override
 	public Double getTotalOccurrenceDays(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定休出管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.BREAKDAYOFF);
+		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.SUBHOLIDAY);
 		Double outputData = (double) 0;
 		for (InterimRemain interimRemain : getRemainBySidPriod) {
 			Optional<InterimBreakMng> getBreakManaBybreakManaId = breakDayOffRepo.getBreakManaBybreakMngId(interimRemain.getRemainManaID());
@@ -99,7 +99,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	@Override
 	public Double getTotalUseDays(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定代休管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.BREAKDAYOFF);
+		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.SUBHOLIDAY);
 		Double outputData = (double) 0;
 		for (InterimRemain interimRemain : getRemainBySidPriod) {
 			Optional<InterimDayOffMng> getDayoffById = breakDayOffRepo.getDayoffById(interimRemain.getRemainManaID());
@@ -156,13 +156,14 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	public BreakDayOffInterimMngData getMngDataToInterimData(String sid, DatePeriod dateData) {
 		BreakDayOffInterimMngData outPutData = new BreakDayOffInterimMngData();
 		// ドメインモデル「暫定休出管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(sid, dateData, RemainType.BREAKDAYOFF);
+		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(sid, dateData, RemainType.SUBHOLIDAY);
 		getRemainBySidPriod.stream().forEach(x -> {
 			Optional<InterimBreakMng> getBreakMng = breakDayOffRepo.getBreakManaBybreakMngId(x.getRemainManaID());
 			getBreakMng.ifPresent(a -> {
 				outPutData.lstBreakMng.add(a);
 				//ドメインモデル「暫定休出代休紐付け管理」を取得する
-				breakDayOffRepo.getBreakDayOffMng(a.getBreakMngId(), true, DataManagementAtr.INTERIM).ifPresent(b -> {
+				breakDayOffRepo.getBreakDayOffMng(a.getBreakMngId(), true, DataManagementAtr.INTERIM).stream()
+				.forEach(b -> {
 					outPutData.lstBreakDayOffMng.add(b);
 					//ドメインモデル「暫定代休管理データ」を取得する
 					breakDayOffRepo.getDayoffById(b.getDayOffManaId()).ifPresent(c -> {
@@ -363,7 +364,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	@Override
 	public Double totalExtinctionRemainOfInPeriod(String sid, DatePeriod dateData) {
 		DatePeriod tmpDateData = new DatePeriod(GeneralDate.fromString("1900/01/01", "yyyy/mm/dd"), dateData.end()); 
-		List<InterimRemain> lstInterimData = remainRepo.getRemainBySidPriod(sid, tmpDateData, RemainType.BREAKDAYOFF);
+		List<InterimRemain> lstInterimData = remainRepo.getRemainBySidPriod(sid, tmpDateData, RemainType.SUBHOLIDAY);
 		List<String> lstMngId = new ArrayList<>();
 		lstInterimData.stream().forEach(x ->{
 			lstMngId.add(x.getRemainManaID());
@@ -383,10 +384,11 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			//確定未使用日数：合計(休出管理データ->未使用日数)
 			unUseDays += leaveMng.getUnUsedDays().v();
 			//ドメインモデル「暫定休出代休紐付け管理」を取得する
-			Optional<InterimBreakDayOffMng> optBreakDayOff = breakDayOffRepo.getBreakDayOffMng(leaveMng.getID(), true, DataManagementAtr.CONFIRM);
-			if(optBreakDayOff.isPresent()) {
-				useDays += optBreakDayOff.get().getUseDays().v();
+			List<InterimBreakDayOffMng> optBreakDayOff = breakDayOffRepo.getBreakDayOffMng(leaveMng.getID(), true, DataManagementAtr.CONFIRM);
+			for (InterimBreakDayOffMng interimMng : optBreakDayOff) {
+				useDays += interimMng.getUseDays().v();
 			}
+			
 		}
 		//確定未使用日数：確定未使用日数－合計(暫定休出代休紐付け管理->使用日数)
 		Double confirmUnUseDays = unUseDays - useDays;

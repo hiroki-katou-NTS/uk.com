@@ -10,6 +10,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
@@ -17,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<CreateOvertimeCommand, String> {
+public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<CreateOvertimeCommand, ProcessResult> {
 
 	@Inject
 	private IFactoryOvertime factoryOvertime;
@@ -32,7 +33,7 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 	private RegisterAtApproveReflectionInfoService_New registerService;
 
 	@Override
-	protected String handle(CommandHandlerContext<CreateOvertimeCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<CreateOvertimeCommand> context) {
 
 		CreateOvertimeCommand command = context.getCommand();
 		// 会社ID

@@ -14,7 +14,9 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
@@ -43,6 +45,10 @@ public class AggregateMonthlyRecordValue {
 	private List<AnnLeaRemNumEachMonth> annLeaRemNumEachMonthList;
 	/** 積立年休月別残数データ */
 	private List<RsvLeaRemNumEachMonth> rsvLeaRemNumEachMonthList;
+	/** 振休月別残数データ */
+	private List<AbsenceLeaveRemainData> absenceLeaveRemainList;
+	/** 代休月別残数データ */
+	private List<MonthlyDayoffRemainData> monthlyDayoffRemainList;
 	
 	/** 年休積立年休の集計結果 */
 	@Setter
@@ -65,6 +71,8 @@ public class AggregateMonthlyRecordValue {
 		this.agreementTimeList = new ArrayList<>();
 		this.annLeaRemNumEachMonthList = new ArrayList<>();
 		this.rsvLeaRemNumEachMonthList = new ArrayList<>();
+		this.absenceLeaveRemainList = new ArrayList<>();
+		this.monthlyDayoffRemainList = new ArrayList<>();
 		
 		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
 		this.errorInfos = new HashMap<>();

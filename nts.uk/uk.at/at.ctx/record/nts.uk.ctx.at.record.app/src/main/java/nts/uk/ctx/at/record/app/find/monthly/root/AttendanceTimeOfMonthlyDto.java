@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -27,7 +28,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の勤怠時間 */
-@AttendanceItemRoot(rootName = "月別実績の勤怠時間", itemType = AttendanceItemType.MONTHLY_ITEM)
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.MONTHLY_ATTENDANCE_TIME_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	/** 会社ID */
 	private String companyId;

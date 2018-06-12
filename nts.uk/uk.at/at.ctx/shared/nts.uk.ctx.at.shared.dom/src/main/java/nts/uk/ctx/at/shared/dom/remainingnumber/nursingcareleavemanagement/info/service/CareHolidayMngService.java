@@ -14,5 +14,5 @@ public interface CareHolidayMngService {
 	 * @param mode True: 月次モード, false: その他モード
 	 * @return
 	 */
-	public List<ChildCareNursingRemainOutputPara> calCareRemainOfInPerior(String cid, String sid, DatePeriod dateData, boolean mode); 
+	public ChildCareNursingRemainOutputPara calCareRemainOfInPerior(String cid, String sid, DatePeriod dateData, boolean mode); 
 }
