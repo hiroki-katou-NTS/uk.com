@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,20 +19,33 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The persistent class for the KFNST_ATTND_REC_ITEM database table.
  * 
  */
-@Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Entity
 @Table(name="KFNST_ATTND_REC_ITEM")
 public class KfnstAttndRecItem extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The id. */
-	@EmbeddedId
-	private KfnstAttndRecItemPK id;
+	/** The record item id. */
+	@Id
+	@Column(name="RECORD_ITEM_ID")
+	private String recordItemId;
+
+	/** The cid. */
+	@Column(name="CID")
+	private String cid;
+
+	/** The column index. */
+	@Column(name="COLUMN_INDEX")
+	private BigDecimal columnIndex;
+
+	/** The export cd. */
+	@Column(name="EXPORT_CD")
+	private BigDecimal exportCd;
 
 	/** The formula type. */
 	@Column(name="FORMULA_TYPE")
@@ -62,12 +75,24 @@ public class KfnstAttndRecItem extends UkJpaEntity implements Serializable {
 	@Column(name="TIME_ITEM_ID")
 	private long timeItemId;
 
+	/** The output atr. */
+	@Column(name="OUTPUT_ATR")
+	private BigDecimal outputAtr;
+
+	/** The position. */
+	@Column(name="[POSITION]")
+	private BigDecimal position;
+
+	/** The time item id. */
+	@Column(name="TIME_ITEM_ID")
+	private BigDecimal timeItemId;
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.id;
+		return this.recordItemId;
 	}
 
 }
