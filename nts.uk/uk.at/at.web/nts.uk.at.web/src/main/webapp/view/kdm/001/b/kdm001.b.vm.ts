@@ -93,6 +93,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.selectedItem.subscribe(x => {
                 if (!self.isOnStartUp) {
                     self.selectedEmployee = _.find(self.listEmployee, item => { return item.employeeId === x; });
+                    if (!self.selectedEmployee){
+                        self.selectedEmployee = self.listEmployee[0];
+                    }
                     self.getSubstituteDataList(self.getSearchCondition());
                 }
                 self.isOnStartUp = false;
