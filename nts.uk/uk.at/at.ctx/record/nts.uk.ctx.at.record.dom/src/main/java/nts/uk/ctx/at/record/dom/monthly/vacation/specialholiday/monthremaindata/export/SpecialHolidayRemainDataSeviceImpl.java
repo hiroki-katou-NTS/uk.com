@@ -20,15 +20,18 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 	public List<SpecialHolidayRemainDataOutput> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth,
 			YearMonth endMonth) {
 		List<SpecialHolidayRemainDataOutput> lstOutData = new ArrayList<>();
-		for (YearMonth month = startMonth; month.lessThanOrEqualTo(endMonth); month.addMonths(1)) {
+		for (YearMonth month = startMonth; month.lessThanOrEqualTo(endMonth); month = month.addMonths(1)) {
 			
 			//ドメインモデル「特別休暇月別残数データ」を取得
 			List<SpecialHolidayRemainData> lstRemainData = speRemainDataRepo.getByYmStatus(sid, month, ClosureStatus.PROCESSED);
 			for (SpecialHolidayRemainData remainData : lstRemainData) {
 				SpecialHolidayRemainDataOutput dataOut = new SpecialHolidayRemainDataOutput();
-				List<SpecialHolidayRemainDataOutput> lstTmp = lstOutData.stream()
-						.filter(x -> x.getSpecialHolidayCd() == remainData.getSpecialHolidayCd() && x.getYm() == month && x.getSid() == remainData.getSid())
-						.collect(Collectors.toList());
+				List<SpecialHolidayRemainDataOutput> lstTmp = new ArrayList<>();
+				for (SpecialHolidayRemainDataOutput tmpData : lstOutData) {
+					if(tmpData.getSpecialHolidayCd() == remainData.getSpecialHolidayCd() && tmpData.getYm() == month && tmpData.getSid() == remainData.getSid()) {
+						lstTmp.add(tmpData);
+					}
+				}
 				if(lstTmp.isEmpty()) {
 					dataOut.setSid(sid);
 					dataOut.setYm(month);

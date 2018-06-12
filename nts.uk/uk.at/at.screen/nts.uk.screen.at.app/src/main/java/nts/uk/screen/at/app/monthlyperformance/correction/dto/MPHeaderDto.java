@@ -112,8 +112,10 @@ public class MPHeaderDto {
 		} else if (attendanceAtr == 1) {
 			// dto.setNtsControl("TextEditorTimeShortHM");
 			dto.setConstraint(new Constraint("Clock", false, ""));
-		} else if (attendanceAtr == 3) {
+		} else if (attendanceAtr == 2) {
 			dto.setConstraint(new Constraint("Integer", false, ""));
+		} else if (attendanceAtr == 3) {
+			dto.setConstraint(new Constraint("HalfInt", false, ""));
 		}
 //		else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 //			dto.setConstraint(new Constraint("TimeWithDay", false, ""));

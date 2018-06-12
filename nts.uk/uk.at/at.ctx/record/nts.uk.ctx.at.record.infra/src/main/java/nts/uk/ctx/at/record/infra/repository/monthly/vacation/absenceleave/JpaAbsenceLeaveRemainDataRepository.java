@@ -30,7 +30,7 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 		return  this.queryProxy().query(QUERY_BY_SID_YM_STATUS, KrcdtMonSubOfHdRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("ym", ym.v())
-				.setParameter("closureStatus", status.value)
+				.setParameter("status", status.value)
 				.getList(c -> toDomain(c));
 	}
 
@@ -64,6 +64,7 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 		KrcdtMonSubOfHdRemain entity = this.getEntityManager().find(KrcdtMonSubOfHdRemain.class, key);
 		if (entity == null){
 			entity = new KrcdtMonSubOfHdRemain();
+			entity.pk = new KrcdtMonSubOfHdRemainPK();
 			entity.pk.sId = domain.getSId();
 			entity.pk.ym = domain.getYm().v();
 			entity.pk.closureId = domain.getClosureId();
