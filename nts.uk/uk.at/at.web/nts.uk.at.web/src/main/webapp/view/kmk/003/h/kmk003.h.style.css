@@ -14,3 +14,12 @@
 .margin-second-child {
 	margin-left: 40px;
 }
+
+.style-radio-btn {
+	padding-left: 10px;
+	padding-bottom: 10px;
+}
+
+.style-checkbox-btn {
+	padding-left: 30px;
+}

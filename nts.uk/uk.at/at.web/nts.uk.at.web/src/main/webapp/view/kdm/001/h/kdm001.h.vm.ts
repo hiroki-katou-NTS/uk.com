@@ -57,6 +57,9 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         }
 
         public updateData() {
+            nts.uk.ui.errors.clearAll();
+            $("#H6_4").trigger("validate");
+            $("#H8_2").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 let self = this;

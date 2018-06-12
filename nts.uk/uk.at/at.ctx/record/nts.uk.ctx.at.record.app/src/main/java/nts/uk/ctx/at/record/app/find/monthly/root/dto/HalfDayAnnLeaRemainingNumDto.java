@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -17,21 +18,21 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 /** 半日年休残数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class HalfDayAnnLeaRemainingNumDto {
+public class HalfDayAnnLeaRemainingNumDto implements ItemConst {
 
 	/** 回数 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "回数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
 	private int times;
 
 	/** 回数付与前 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "回数付与前", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_B)
 	private int timesBeforeGrant;
 
 	/** 回数付与後 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "回数付与後", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_C)
 	private Integer timesAfterGrant;
 
 	public static HalfDayAnnLeaRemainingNumDto from(HalfDayAnnLeaRemainingNum domain) {

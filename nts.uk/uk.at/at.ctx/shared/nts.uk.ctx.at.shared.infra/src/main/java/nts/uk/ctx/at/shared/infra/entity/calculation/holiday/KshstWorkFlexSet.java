@@ -66,7 +66,7 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "WKT_INC_CHILD_NURSE_CARE")
 	public int incChildNursingCare2;
 	
-	/** 遅刻・早退を控除する*/
+	/** 控除する*/
 	@Column(name = "WKT_NOT_DEDUCT_LATELEAVE")
 	public int notDeductLateleave2;
 	
@@ -85,6 +85,10 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	/*月次法定内のみ加算*/
 	@Column(name = "ADDITION_WITHIN_MONTHLY_STATUTORY")
 	public int additionWithinMonthlyStatutory;
+	
+	/*就業時間帯毎の設定を可能とする*/
+	@Column(name = "ENABLE_SET_PER_WORK_HOUR2")
+	public int enableSetPerWorkHour2;
 	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)

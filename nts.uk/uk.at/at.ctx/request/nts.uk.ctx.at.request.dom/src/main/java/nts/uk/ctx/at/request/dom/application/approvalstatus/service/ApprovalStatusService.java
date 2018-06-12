@@ -104,7 +104,7 @@ public interface ApprovalStatusService {
 	 * アルゴリズム「承認状況社員別一覧作成」を実行する
 	 * @return 
 	 */
-	ApprovalSttByEmpListOutput getApprovalSttById(String selectedWkpId, List<String> listWkpId,
+	List<ApprovalSttByEmpListOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId,
 			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode);
 
 	/**
