@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeCondOtCommand;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeConditionErrorCommand;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
@@ -41,12 +42,18 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 	//monthly
 	@Inject
 	private FixedExtraMonFunAdapter fixedExtraMonFunAdapter;
+	
+	@Inject
+	private AlarmCheckConditionByCategoryFinder alarmCheckConByCategoryFinder;
+	
 	// ３６協定
 	@Inject
 	private IAgreeConditionErrorRepository conErrRep;
 
 	@Inject
 	private IAgreeCondOtRepository otRep;
+	
+	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
 		AlarmCheckConditionByCategoryCommand command = context.getCommand();
@@ -71,7 +78,10 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 				this.fixedExtraMonFunAdapter.deleteFixedExtraMon(monAlarmCheckID);
 			}
 			// delete List Work Record Extract Condition by list Error Alarm Code
-			MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckID,false,false,true,command.getMonAlarmCheckCon().getArbExtraCon());
+			List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
+					.getMonAlarmCheckConDto().getListEralCheckIDOld();
+			
+			MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckID,false,false,true,command.getMonAlarmCheckCon().getArbExtraCon(),listEralCheckIDOld);
 			event.toBePublished();
 		}
 		if (command.getCategory() == AlarmCategory.AGREEMENT.value) {
