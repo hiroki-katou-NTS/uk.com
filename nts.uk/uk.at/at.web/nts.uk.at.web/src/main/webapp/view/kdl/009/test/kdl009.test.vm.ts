@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl009.test {
+module kdl009.test {
     export module viewmodel {
         export class ScreenModel {
             employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -24,11 +24,87 @@ module nts.uk.at.view.kdl009.test {
             openDialog() {
                 var self = this;
                 
-                service.getEmployee(self.employeeIds(), self.baseDate).done(function(emp: any) {
-                    nts.uk.ui.errors.clearAll();
+                var param: IEmployeeParam = {
+                    employeeIds: self.employeeIds(),
+                    baseDate: self.baseDate
+                };
+                
+                service.getEmployee(param).done(function(data: DataParam) {
+                    nts.uk.ui.windows.setShared('KDL009_DATA', data);
                     
+                    if(data.employeeBasicInfo.length > 1) {
+                        nts.uk.ui.windows.sub.modal("/view/kdl/009/a/multi.xhtml");
+                    } else {
+                        nts.uk.ui.windows.sub.modal("/view/kdl/009/a/single.xhtml");
+                    }
                 });
             }
+        }
+        
+        export class DataParam {
+            employeeBasicInfo: Array<EmployeeBasicInfoDto>;
+            baseDate: string;
+            
+            constructor(param: IDataParam) {
+                var self = this;
+                self.employeeBasicInfo = ko.observable(param.employeeBasicInfo);
+                self.baseDate = ko.observable(param.baseDate);
+            }
+        }
+        
+        export interface IDataParam {
+            employeeBasicInfo: Array<EmployeeBasicInfoDto>;
+            baseDate: string;
+        }
+        
+        export class EmployeeBasicInfoDto {
+            personId: string;
+            employeeId: string;
+            businessName: string;
+            gender: number;
+            birthday: string;
+            employeeCode: string;
+            jobEntryDate: string;
+            retirementDate: string;
+            
+            constructor(param: IEmployeeBasicInfoDto) {
+                var self = this;
+                self.personId = ko.observable(param.personId);
+                self.employeeId = ko.observable(param.employeeId);
+                self.businessName = ko.observable(param.businessName);
+                self.gender = ko.observable(param.gender);
+                self.birthday = ko.observable(param.birthday);
+                self.employeeCode = ko.observable(param.employeeCode);
+                self.jobEntryDate = ko.observable(param.jobEntryDate);
+                self.retirementDate = ko.observable(param.retirementDate);
+            }
+        }
+        
+        export interface IEmployeeBasicInfoDto {
+            personId: string;
+            employeeId: string;
+            businessName: string;
+            gender: number;
+            birthday: string;
+            employeeCode: string;
+            jobEntryDate: string;
+            retirementDate: string;
+        }
+        
+        export class EmployeeParam {
+            employeeIds: Array<string>;
+            baseDate: string;
+            
+            constructor(param: IEmployeeParam) {
+                var self = this;
+                self.employeeIds = ko.observable(param.employeeIds);
+                self.baseDate = ko.observable(param.baseDate);
+            }
+        }
+        
+        export interface IEmployeeParam {
+            employeeIds: Array<string>;
+            baseDate: string;
         }
     }
 }

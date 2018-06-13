@@ -1,12 +1,11 @@
-module nts.uk.at.view.kdl009.test {
+module kdl009.test {
     export module service {
         var paths: any = {
-            getEmployee : "at/request/dialog/employmentsystem/getEmployee/{0}"
+            getEmployee : "at/request/dialog/employmentsystem/getEmployee"
         }
         
         export function getEmployee(param: EmployeeParam): JQueryPromise<Array<EmployeeBasicInfoDto>> {
-            var path = nts.uk.text.format(paths.getEmployee, param);
-            return nts.uk.request.ajax("at", path);
+            return nts.uk.request.ajax("at", paths.getEmployee, param);
         } 
     }
     

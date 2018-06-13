@@ -7,10 +7,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.Data;
+import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmployeeBasicInfoDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmploymentSystemFinder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
 
 @Path("at/request/dialog/employmentsystem")
 @Produces("application/json")
@@ -19,16 +20,34 @@ public class EmploymentSystemService extends WebService {
 	EmploymentSystemFinder employeeFinder;
 	
 	@POST
-	@Path("getEmployee/{param}")
-	public List<EmployeeBasicInfoDto> getEmployee(EmployeeParam param)
+	@Path("getEmployee")
+	public DataParam getEmployee(EmployeeParam param)
 	{		
 		// アルゴリズム「振休確認ダイアログ開始」を実行する
-		return employeeFinder.getEmployee(param.getEmployeeIds(), param.getBaseDate());
+		List<EmployeeBasicInfoDto> employeeBasicInfo = employeeFinder.getEmployee(param.getEmployeeIds(), param.getBaseDate());
+		
+		DataParam result = new DataParam(employeeBasicInfo, param.getBaseDate());
+		
+		return result;
 	}
 	
-	@Data
-	class EmployeeParam{
-		 List<String> employeeIds;
-		 String baseDate;
+	@POST
+	@Path("getAbsRecGenDigesHis")
+	public AbsRecGenerationDigestionHis getAbsRecGenDigesHis(String employeeId, String baseDate)
+	{		
+		// 振休残数情報の取得
+		return employeeFinder.getAbsRecGenDigesHis(employeeId, baseDate);
 	}
+}
+
+@Value
+class DataParam{
+	List<EmployeeBasicInfoDto> employeeBasicInfo;
+	String baseDate;
+}
+
+@Value
+class EmployeeParam{
+	 List<String> employeeIds;
+	 String baseDate;
 }
