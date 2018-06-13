@@ -37,7 +37,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	
 	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
-			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr"
 			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
 			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
@@ -184,7 +184,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				.setParameter("forAttendance", forAttendance)
 				.setParameter("forPayroll", forPayroll)
 				.setParameter("forPersonnel", forPersonnel).getList(c -> {
-					return createDomainFromEntity(c);
+					return createDomainVer3FromEntity(c);
 				});
 	}
 

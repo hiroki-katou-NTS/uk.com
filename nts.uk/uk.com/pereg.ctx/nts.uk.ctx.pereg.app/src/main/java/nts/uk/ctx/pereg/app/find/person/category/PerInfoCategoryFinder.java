@@ -212,13 +212,18 @@ public class PerInfoCategoryFinder {
 			if (lstItemDfGroupByCtgId == null || CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
 				return null;
 			}
-			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,
-					p.getCategoryParentCode().v(),
-					p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
-					p.getAddItemCls() == null ? 1 : p.getAddItemCls().value,
-					p.isCanAbolition(), p.getSalaryUseAtr().value, 
-					p.getPersonnelUseAtr().value, p.getEmploymentUseAtr().value);
+			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), 
+										 p.getCategoryName().v(),
+										 p.getCategoryType().value, 
+										 p.getCategoryCode().v(), 
+										 p.getIsAbolition().value,
+										 p.getCategoryParentCode().v(),
+										 p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
+										 p.getAddItemCls() == null ? 1 : p.getAddItemCls().value,
+										 p.isCanAbolition(), 
+										 p.getSalaryUseAtr().value, 
+										 p.getPersonnelUseAtr().value, 
+										 p.getEmploymentUseAtr().value);
 			
 		}).filter(m -> m != null).collect(Collectors.toList());
 		
