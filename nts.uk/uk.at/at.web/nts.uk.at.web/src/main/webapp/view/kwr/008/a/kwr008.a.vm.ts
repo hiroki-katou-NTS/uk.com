@@ -168,15 +168,16 @@ module nts.uk.at.view.kwr008.a {
                 nts.uk.ui.windows.setShared("KWR008_B_Param", param);
                 nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/b/index.xhtml").onClosed(() => {
                     //reload A4_2
-                    self.getOutItemSettingCode();
                     let resultData = nts.uk.ui.windows.getShared("KWR008_B_Result");
-                    if (!resultData) {
-                        self.selectedOutputItem(null);
-                        nts.uk.ui.block.clear();
-                        return;
-                    } else {
-                        self.selectedOutputItem(resultData.selectedCd);
-                    }
+                    self.getOutItemSettingCode().done(()=>{
+                        if (!resultData) {
+                            self.selectedOutputItem(null);
+                            nts.uk.ui.block.clear();
+                            return;
+                        } else {
+                            self.selectedOutputItem(resultData.selectedCd);
+                        }
+                    });
                 });
             }
 
