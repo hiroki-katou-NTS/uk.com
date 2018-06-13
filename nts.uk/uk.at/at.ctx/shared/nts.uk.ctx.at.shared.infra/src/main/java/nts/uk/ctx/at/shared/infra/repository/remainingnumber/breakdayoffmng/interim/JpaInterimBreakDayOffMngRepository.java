@@ -144,6 +144,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			entity.unUsedTimes = domain.getUnUsedTimes().v();
 			entity.unUsedDays = domain.getUnUsedDays().v();
 		}
+		this.getEntityManager().flush();
 	}
 
 	@Override

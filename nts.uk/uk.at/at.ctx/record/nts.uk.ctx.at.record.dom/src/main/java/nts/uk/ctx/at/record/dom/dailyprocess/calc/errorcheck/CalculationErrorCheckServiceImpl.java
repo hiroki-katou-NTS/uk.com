@@ -50,7 +50,10 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			//使用しない
 			if(!errorItem.getUseAtr()) continue;
 			//乖離系のシステムエラーかどうかチェック
-			if(includeDivergence(errorItem)) divergenceError.add(errorItem);
+			if(includeDivergence(errorItem)) { 
+				divergenceError.add(errorItem);
+				continue;
+			}
 			//システム固定
 			if(errorItem.getFixedAtr()) {
 				val addItems = systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter, master);

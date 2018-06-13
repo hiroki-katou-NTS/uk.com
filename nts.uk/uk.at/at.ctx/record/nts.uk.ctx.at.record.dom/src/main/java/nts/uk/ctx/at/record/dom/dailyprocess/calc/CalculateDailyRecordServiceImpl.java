@@ -28,14 +28,12 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.HolidayTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.OvertimeTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.WorkingTimesheetCalculationSetting;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
@@ -109,6 +107,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
@@ -414,7 +413,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																			   autoCalcSet, 
 																			   autoCalcSet, 
 																			   autoCalcSet),
-													new AutoCalOfLeaveEarlySetting(LeaveAttr.USE, LeaveAttr.USE),
+													new AutoCalcOfLeaveEarlySetting(true, true),
 													new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
 			integrationOfDaily.setCalAttr(calAttr);
 		}	
@@ -522,8 +521,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						                		oneRange.getTimeVacationAdditionRemainingTime().get(), //oneDay.getTimeVacationAdditionRemainingTime().get()
 						                		Optional.of(workInfo.getRecordInfo().getWorkTimeCode()), 
 						                		Optional.of(personalLabor), 
-						                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().getLeaveLate().isUse(), 
-						                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().getLeaveEarly().isUse(),
+						                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLate(), 
+						                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
 						                		illegularAddSetting, 
 						                		flexAddSetting, 
 						                		regularAddSetting, 
@@ -640,8 +639,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
                 		oneRange.getTimeVacationAdditionRemainingTime().get(), 
                 		Optional.of(workInfo.getRecordInfo().getWorkTimeCode()), 
                 		Optional.of(personalLabor), 
-                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().getLeaveLate().isUse(), 
-                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().getLeaveEarly().isUse(),
+                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLate(), 
+                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
                 		illegularAddSetting, 
                 		flexAddSetting, 
                 		regularAddSetting, 
@@ -784,7 +783,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    recordReGetClass.getWorkFlexAdditionSet(),
 				    recordReGetClass.getWorkRegularAdditionSet(),
 				    recordReGetClass.getHolidayAddtionSet(),
-				    AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
+				    AutoCalAtrOvertime.CALCULATEMBOSS,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    recordReGetClass.getHolidayCalcMethodSet(),

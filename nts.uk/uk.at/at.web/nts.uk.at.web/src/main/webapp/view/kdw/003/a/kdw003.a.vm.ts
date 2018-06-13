@@ -191,7 +191,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.showHeaderNumber.subscribe((val) => {
                 let headerText
                 _.each(self.optionalHeader, header => {
-                    if (header.headerText != "提出済みの申請" && header.headerText != "申請") {
+                    if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧"){
                         if (header.group == undefined && header.group == null) {
                             if (self.showHeaderNumber()) {
                                 headerText = header.headerText + " " + header.key.substring(1, header.key.length);
@@ -1247,8 +1247,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             let param = {
                 dateRange: {
-                    startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                    endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                    startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                    endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                 },
                 lstEmployee: lstEmployee
             };
@@ -2325,26 +2325,52 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         dislayNumberHeaderText() {
-            var self = this;
-            if (self.showHeaderNumber()) {
-                self.optionalHeader.map((header) => {
-                    if (header.headerText && header.headerText != "提出済みの申請" && header.headerText != "申請") {
-                        if (header.group == undefined || header.group == null || header.group.length == 0) {
-                            header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+            var self = this; 
+            self.optionalHeader.map((header) => {
+                let headerText = "";
+                if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
+                    if (header.group == undefined && header.group == null) {
+                        if (self.showHeaderNumber()) {
+                            headerText = header.headerText.split(" ")[0] + " " + header.key.substring(1, header.key.length);
+                            header.headerText = headerText;
+                            return header;
                         } else {
-                            header.headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
+                            headerText = header.headerText.split(" ")[0];
+                            header.headerText = headerText;
+                            return header;
+                        }
+                    } else {
+                        if (self.showHeaderNumber()) {
+                            headerText = header.headerText.split(" ")[0] + " " + header.group[1].key.substring(4, header.group[1].key.length);
+                            header.headerText = headerText;
+                            return header;
+                        } else {
+                            headerText = header.headerText.split(" ")[0];
+                            header.headerText = headerText;
+                            return header;
                         }
                     }
-                    return header;
-                });
-            } else {
-                self.optionalHeader.map((header) => {
-                    if (header.headerText && header.headerText != "提出済みの申請" && header.headerText != "申請") {
-                        header.headerText = header.headerText.split(" ")[0];
-                    }
-                    return header;
-                });
-            }
+                }
+            });
+//            if (self.showHeaderNumber()) {
+//                self.optionalHeader.map((header) => {
+//                    if (header.headerText && header.headerText != "提出済みの申請" && header.headerText != "申請") {
+//                        if (header.group == undefined || header.group == null || header.group.length == 0) {
+//                            header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+//                        } else {
+//                            header.headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
+//                        }
+//                    }
+//                    return header;
+//                });
+//            } else {
+//                self.optionalHeader.map((header) => {
+//                    if (header.headerText && header.headerText != "提出済みの申請" && header.headerText != "申請") {
+//                        header.headerText = header.headerText.split(" ")[0];
+//                    }
+//                    return header;
+//                });
+//            }
         }
 
         displayNumberZero() {
@@ -2665,7 +2691,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
                         }
                         else {
-                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            if(returnWorkLocationCD == "") self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
                             dfd3.resolve();
                         }
                     });
@@ -2702,7 +2728,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
                         }
                         else {
-                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            if(returnData == "") self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
                             nts.uk.ui.block.clear();
                             dfd4.resolve();
                         }
@@ -2777,7 +2803,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 dfd.resolve()
                             });
                         } else {
-                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            if(output == "") self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
                             dfd6.resolve()
                         }
                     })
