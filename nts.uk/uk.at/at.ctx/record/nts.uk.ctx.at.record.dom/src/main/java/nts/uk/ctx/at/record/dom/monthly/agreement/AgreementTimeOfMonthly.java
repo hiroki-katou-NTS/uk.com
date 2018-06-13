@@ -147,31 +147,40 @@ public class AgreementTimeOfMonthly {
 	 */
 	public void errorCheck(){
 		
+		// 特例限度アラーム時間に値が入っているか確認する
+		if (!this.exceptionLimitAlarmTime.isPresent()){
+			
+			// 限度アラーム時間以下
+			if (this.agreementTime.lessThanOrEqualTo(this.limitAlarmTime.v())){
+				this.status = AgreementTimeStatusOfMonthly.NORMAL;
+				return;
+			}
+			
+			// 限度エラー時間以下
+			if (this.agreementTime.lessThanOrEqualTo(this.limitErrorTime.v())){
+				this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
+				return;
+			}
+			
+			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
+			return;
+		}
+		
 		// 限度アラーム時間以下
 		if (this.agreementTime.lessThanOrEqualTo(this.limitAlarmTime.v())){
-			this.status = AgreementTimeStatusOfMonthly.NORMAL;
+			this.status = AgreementTimeStatusOfMonthly.NORMAL_SPECIAL;
 			return;
 		}
 		
 		// 限度エラー時間以下
 		if (this.agreementTime.lessThanOrEqualTo(this.limitErrorTime.v())){
-			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
+			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP;
 			return;
 		}
 		
 		// 特例限度アラーム時間以下
-		if (this.exceptionLimitAlarmTime.isPresent()){
-			if (this.exceptionLimitAlarmTime.get().lessThanOrEqualTo(0)){
-				this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
-				return;
-			}
-			if (this.agreementTime.lessThanOrEqualTo(this.exceptionLimitAlarmTime.get().v())){
-				this.status = AgreementTimeStatusOfMonthly.IN_EXCEPTION_LIMIT;
-				return;
-			}
-		}
-		else {
-			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
+		if (this.agreementTime.lessThanOrEqualTo(this.exceptionLimitAlarmTime.get().v())){
+			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP;
 			return;
 		}
 		
@@ -181,6 +190,10 @@ public class AgreementTimeOfMonthly {
 				this.status = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM;
 				return;
 			}
+		}
+		else {
+			this.status = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM;
+			return;
 		}
 		
 		// 特例限度エラー時間を超える

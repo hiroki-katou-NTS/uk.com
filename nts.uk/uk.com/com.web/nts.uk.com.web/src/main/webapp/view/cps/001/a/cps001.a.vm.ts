@@ -212,21 +212,9 @@ module cps001.a.vm {
                 }).fail((mes : any) => {
                     self.unblock();
                     if (mes.messageId == "Msg_346") {
-                        let lstCardNumber = _.map($('[id = COM1000000000000000CS00069IS00779]'), e => e.value);
-                        let listIndex = new Array();
-                        for (let i = 0; i < lstCardNumber.length; i++) {
-
-                            let duplicate = _.filter(listIndex, function(o) { return o == i; });
-
-                            if (duplicate.length == 0) {
-                                for (let j = i + 1; j < lstCardNumber.length - 1; j++) {
-                                    if (lstCardNumber[i] == lstCardNumber[j]) {
-                                        listIndex.push(j);
-                                        $($('[id = COM1000000000000000CS00069IS00779]')[j]).ntsError('set', { messageId: "Msg_346" });
-                                    }
-                                }
-                            }
-                        }
+                        let lstCardNumber = _.map($('[data-code = IS00779]'), e => e.value);
+                        let index = _.findLastIndex(lstCardNumber, function(o) { return o == mes.parameterIds[0]; });
+                        $($('[data-code = IS00779]')[index]).ntsError('set', { messageId: "Msg_346" });
                     } else {
                         alert(mes.message);
                     }
@@ -318,7 +306,6 @@ module cps001.a.vm {
                         _.defer(() => {
                             new vc(self.layout.listItemCls());
                             _.defer(() => {
-                                $('.drag-panel input:not(:disabled):first').focus();
                                 self.unblock();
                             });
                         });
@@ -371,7 +358,6 @@ module cps001.a.vm {
                             _.defer(() => {
                                 new vc(self.listItemCls());
                                 _.defer(() => {
-                                    $('.drag-panel input:not(:disabled):first').focus();
                                     __viewContext.viewModel.unblock();
                                 });
                             });
@@ -414,12 +400,12 @@ module cps001.a.vm {
         categoryType?: IT_CAT_TYPE;
     }
 
-    enum TABS {
+    export enum TABS {
         LAYOUT = <any>"layout",
         CATEGORY = <any>"category"
     }
 
-    interface IPeregQuery {
+    export interface IPeregQuery {
         ctgId: string;
         ctgCd?: string;
         empId: string;
@@ -427,19 +413,19 @@ module cps001.a.vm {
         infoId?: string;
     }
 
-    interface ILayoutQuery {
+    export interface ILayoutQuery {
         layoutId: string;
         browsingEmpId: string;
         standardDate: Date;
     }
 
-    interface IPeregCommand {
+    export interface IPeregCommand {
         personId: string;
         employeeId: string;
         inputs: Array<IPeregItemCommand>;
     }
 
-    interface IPeregItemCommand {
+    export interface IPeregItemCommand {
         /** category code */
         categoryCd: string;
         /** Record Id, but this is null when new record */
@@ -448,19 +434,19 @@ module cps001.a.vm {
         items: Array<IPeregItemValueCommand>;
     }
 
-    interface IPeregItemValueCommand {
+    export interface IPeregItemValueCommand {
         definitionId: string;
         itemCode: string;
         value: string;
         'type': number;
     }
 
-    interface IParam {
+    export interface IParam {
         showAll?: boolean;
         employeeId: string;
     }
 
-    interface IEventData {
+    export interface IEventData {
         id: string;
         iid?: string;
         tab: TABS;
@@ -470,7 +456,7 @@ module cps001.a.vm {
     }
 
     // define ITEM_CATEGORY_TYPE
-    enum IT_CAT_TYPE {
+    export enum IT_CAT_TYPE {
         SINGLE = 1, // Single info
         MULTI = 2, // Multi info
         CONTINU = 3, // Continuos history
@@ -479,7 +465,7 @@ module cps001.a.vm {
         CONTINUWED = 6 // Continuos history with end date
     }
 
-    enum ITEM_SINGLE_TYPE {
+    export enum ITEM_SINGLE_TYPE {
         STRING = 1,
         NUMERIC = 2,
         DATE = 3,

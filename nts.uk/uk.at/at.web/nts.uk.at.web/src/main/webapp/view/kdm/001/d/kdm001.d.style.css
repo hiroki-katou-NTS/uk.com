@@ -1,0 +1,64 @@
+.down-s {
+	margin-bottom: 15px;
+}
+
+.down-m {
+	margin-bottom: 25px;
+}
+
+.down-l {
+	margin-bottom: 35px;
+}
+
+#contents-area {
+	padding: 20px;
+}
+
+#D11_3 {
+	width: 110px;
+}
+#D6{
+	margin-left:20px;
+}
+#D7{
+	margin-left:20px;
+}
+#D8{
+	margin-left:20px;
+}
+#D11{
+	margin-left:20px;
+}
+#D15{
+	margin-left:20px;
+}
+#D12{
+	margin-left:30px;
+}
+
+#D12_4 {
+	width: 110px;
+}
+
+#D6_3 {
+	width: 110px;
+}
+
+#D7_1 {
+	width: 110px;
+	margin-left: 10px;
+}
+
+.labelTitle {
+	width: 70px;
+}
+
+
+.ntsDatepicker {
+    width: 90px !important;
+    margin-left: 10px !important;
+}
+.style {
+    min-width: 115px !important;
+    margin-left: 10px !important;
+}

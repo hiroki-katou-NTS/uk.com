@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.monthly.finder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,22 +60,24 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		return dto;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range) {
-		return (List<T>) ConvertHelper.yearMonthsBetween(range).stream().map(ym -> find(employeeId, ym))
-				.flatMap(List::stream).collect(Collectors.toList());
-	}
-
-	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonthPeriod range) {
-		return (List<T>) ConvertHelper.yearMonthsBetween(range).stream().map(ym -> find(employeeId, ym))
-				.flatMap(List::stream).collect(Collectors.toList());
+		return find(employeeId, ConvertHelper.yearMonthsBetween(range));
+	}
+
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range) {
+		return find(employeeId, ConvertHelper.yearMonthsBetween(range));
+	}
+
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonth yearMonth) {
+		return find(employeeId, Arrays.asList(yearMonth));
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonth yearMonth) {
+	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId,
+			Collection<YearMonth> yearMonth) {
 		List<AffiliationInfoOfMonthlyDto> aff = affi.find(employeeId, yearMonth);
 		List<AttendanceTimeOfMonthlyDto> att = attendanceTime.find(employeeId, yearMonth);
 		List<AnyItemOfMonthlyDto> any = anyItemFinder.find(employeeId, yearMonth);

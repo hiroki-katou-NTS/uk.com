@@ -14,8 +14,8 @@ public class SampleDomainEventSubscriber implements DomainEventSubscriber<Sample
 
 	@Override
 	public void handle(SampleDomainEvent domainEvent) {
-		domainEvent.getParameter();
-		
+		String param = domainEvent.getParameter();
+
 		/* do something */
 	}
 

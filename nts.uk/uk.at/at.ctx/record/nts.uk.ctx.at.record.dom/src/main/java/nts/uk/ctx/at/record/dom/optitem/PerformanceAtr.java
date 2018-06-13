@@ -65,4 +65,22 @@ public enum PerformanceAtr {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 月別実績か判定する
+	 * @return 月別実績ならtrue
+	 */
+	public boolean isMonthlyPerformance() {
+		return MONTHLY_PERFORMANCE.equals(this);
+	}
+	
+	/**
+	 * 日別実績か判定する
+	 * @return 日別実績ならtrue
+	 */
+	public boolean isDailyPerformance() {
+		return DAILY_PERFORMANCE.equals(this);
+	}	
+	
+	
 }
