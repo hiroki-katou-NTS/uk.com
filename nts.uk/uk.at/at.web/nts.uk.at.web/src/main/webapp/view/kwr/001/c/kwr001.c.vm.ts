@@ -67,11 +67,9 @@ module nts.uk.at.view.kwr001.c {
                 self.test = ko.observableArray([]);
                 
                 self.currentCodeListSwap.subscribe(function(value) {
-                    console.log(value);
                 })
                 
                 self.items.subscribe(function(value) {
-                    console.log(value);        
                 })
                 
                 self.enableBtnDel = ko.observable(false);
@@ -208,7 +206,6 @@ module nts.uk.at.view.kwr001.c {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 service.getEnumName().done(function(data: any) {
-                    console.log(data);
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -221,7 +218,6 @@ module nts.uk.at.view.kwr001.c {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 service.getEnumRemarkContentChoice().done(function(data: any) {
-                    console.log(data);
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -232,7 +228,7 @@ module nts.uk.at.view.kwr001.c {
             */
             openScreenD () {
                 var self = this;
-                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
+//                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
                 if (!_.isEmpty(self.currentCodeList())) {
                     self.storeCurrentCodeBeforeCopy(self.currentCodeList());
                 }
