@@ -83,23 +83,22 @@ public class AgentAdapterImp implements AgentAdapter {
 	@Override
 	public List<AgentDataRequestPubImport> lstAgentBySidData(String companyId, String employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
-//		List<AgentDataRequestPubImport> lstData = AgentPub.getAgentBySidDate(companyId, employeeId, startDate, endDate)
-//				.stream()
-//				.map(x -> new AgentDataRequestPubImport(companyId, 
-//						x.getEmployeeId(), 
-//						x.getRequestId(), 
-//						x.getStartDate(),
-//						x.getEndDate(), 
-//						x.getAgentSid1(), 
-//						EnumAdaptor.valueOf(x.getAgentAppType1().value,AgentAppTypeRequestImport.class),
-//						x.getAgentSid2(),
-//						EnumAdaptor.valueOf(x.getAgentAppType2().value ,AgentAppTypeRequestImport.class), 
-//						x.getAgentSid3(), 
-//						EnumAdaptor.valueOf(x.getAgentAppType3().value ,AgentAppTypeRequestImport.class),
-//						x.getAgentSid4(), 
-//						EnumAdaptor.valueOf(x.getAgentAppType4().value ,AgentAppTypeRequestImport.class))).collect(Collectors.toList());
-//		return lstData;
-		return null;
+		List<AgentDataRequestPubImport> lstData = AgentPub.getAgentBySidDate(companyId, employeeId, startDate, endDate)
+				.stream()
+				.map(x -> new AgentDataRequestPubImport(companyId, 
+						x.getEmployeeId(), 
+						x.getRequestId(), 
+						x.getStartDate(),
+						x.getEndDate(), 
+						x.getAgentSid1(), 
+						EnumAdaptor.valueOf(x.getAgentAppType1().value,AgentAppTypeRequestImport.class),
+						x.getAgentSid2(),
+						EnumAdaptor.valueOf(x.getAgentAppType2().value ,AgentAppTypeRequestImport.class), 
+						x.getAgentSid3(), 
+						EnumAdaptor.valueOf(x.getAgentAppType3().value ,AgentAppTypeRequestImport.class),
+						x.getAgentSid4(), 
+						EnumAdaptor.valueOf(x.getAgentAppType4().value ,AgentAppTypeRequestImport.class))).collect(Collectors.toList());
+		return lstData;
 	}
 
 }
