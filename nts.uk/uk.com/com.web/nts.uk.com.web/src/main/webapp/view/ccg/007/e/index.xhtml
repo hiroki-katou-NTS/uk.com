@@ -27,7 +27,7 @@
 								<label data-bind="text: '#{i18n.getText('CCG007_14')}'"><br /></label>
 							</div>
 						</td>
-						<td style="padding-bottom: 15px;"><div data-bind="text: loginId"></div></td>
+						<td style="padding-bottom: 15px;"><div data-bind="text: userName"></div></td>
 					</tr>
 					<tr>
 						<td style="padding-right: 30px; padding-bottom: 15px;">
@@ -37,7 +37,8 @@
 						<td style="padding-bottom: 15px;"><div>
 							<input tabindex="1" id="pass-current"
 								data-bind="ntsTextEditor: {
-									name: '#{i18n.getText('CCG007_2')}',
+									name: '#[CCG007_2]',
+									constraint: 'RawPassword',
 									value: passwordCurrent,
 									required: true,
 									option: {textmode: 'password',width: '180px'},
@@ -55,7 +56,8 @@
 						<td style="padding-bottom: 15px;"><div>
 								<input tabindex="2"
 									data-bind="ntsTextEditor: {
-										name: '#{i18n.getText('CCG007_2')}',
+										name: '#[CCG007_2]',
+										constraint: 'RawPassword',
 										value: passwordNew,
 										required: true,
 										option: {textmode: 'password',width: '180px'},
@@ -73,7 +75,8 @@
 						<td style="padding-bottom: 15px;"><div>
 								<input tabindex="3"
 									data-bind="ntsTextEditor: {
-										name: '#{i18n.getText('CCG007_2')}',
+										name: '#[CCG007_2]',
+										constraint: 'RawPassword',
 										value: passwordNewConfirm,
 										required: true,
 										option: {textmode: 'password',width: '180px'},

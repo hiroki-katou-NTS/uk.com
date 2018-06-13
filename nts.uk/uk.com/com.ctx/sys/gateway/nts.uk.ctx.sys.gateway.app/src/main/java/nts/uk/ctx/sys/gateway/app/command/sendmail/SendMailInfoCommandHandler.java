@@ -80,12 +80,11 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 	private SendMailReturnDto sendMail(String mailto, SendMailInfoCommand command) {
 
 		// get param input
-		String programId = AppContexts.programId();
 		String employeeId = AppContexts.user().employeeId();
 		String employeeCD = AppContexts.user().employeeCode();
 
 		// get URL from CCG033
-		String url = this.registerEmbededURL.embeddedUrlInfoRegis(programId, "H", 1, 24, employeeId,
+		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 1, 24, employeeId,
 				command.getContractCode(), command.getLoginId(), employeeCD, new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") +" \n" + url);

@@ -207,20 +207,21 @@ module nts.uk.pr.view.ccg007.c {
                     service.getCompanyInfo(companyId).done(function(data: CompanyItemModel) {
                         //get list company from server 
                         self.companyName(data.companyName);
+                        
+                         //set LoginId to dialog
+                        nts.uk.ui.windows.setShared('parentCodes', {
+                            companyCode: self.companyCode(),
+                            companyName: self.companyName(),
+                            contractCode: self.contractCode(),
+                            employeeCode : self.employeeCode()
+                        }, true);
+                        
+                        nts.uk.ui.windows.sub.modal('/view/ccg/007/g/index.xhtml',{
+                            width : 520,
+                            height : 350
+                        }).onClosed(function(): any {})
                     });
                 }
-                
-                //set LoginId to dialog
-                nts.uk.ui.windows.setShared('parentCodes', {
-                    companyCode: self.companyCode(),
-                    companyName: self.companyName(),
-                    employeeCode : self.employeeCode()
-                }, true);
-
-                nts.uk.ui.windows.sub.modal('/view/ccg/007/g/index.xhtml',{
-                    width : 520,
-                    height : 350
-                }).onClosed(function(): any {})
             }
         }
         export class CompanyItemModel {

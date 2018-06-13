@@ -13,6 +13,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.sys.gateway.app.command.sendmail.dto.SendMailReturnDto;
+import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.shr.com.context.AppContexts;
@@ -38,6 +40,9 @@ public class SendMailInfoFormGCommandHandler extends CommandHandlerWithResult<Se
 	/** The register embeded URL. */
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
+	
+	@Inject
+	private EmployeeInfoAdapter employeeInfoAdapter;
 
 	/*
 	 * (non-Javadoc)
@@ -50,20 +55,27 @@ public class SendMailInfoFormGCommandHandler extends CommandHandlerWithResult<Se
 	protected SendMailReturnDto handle(CommandHandlerContext<SendMailInfoFormGCommand> context) {
 		// get command
 		SendMailInfoFormGCommand command = context.getCommand();
-
-//		// Get RequestList 222
-//		Optional<UserImportNew> user = this.userAdapter.findUserByContractAndLoginIdNew(command.getContractCode(),
-//				command.getLoginId());
-//
-//		if (user.isPresent()) {
-//			if (user.get().getMailAddress().isEmpty()) {
-//				throw new BusinessException("Msg_1129");
-//			} else {
-//				// Send Mail アルゴリズム「メール送信実行」を実行する
-//				return this.sendMail(user.get().getMailAddress(), command);
-//			}
-//		}
 		
+		String companyId = command.getContractCode() + "-" + command.getCompanyCode();
+
+		// Get EmployeeInfo
+		EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId, command.getContractCode());
+
+		if (employee != null) {
+			//get userInfo
+			Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
+			
+			if (user.isPresent()){
+				//check mail present
+				if (user.get().getMailAddress().isEmpty()) {
+					throw new BusinessException("Msg_1129");
+				} else {
+					// Send Mail アルゴリズム「メール送信実行」を実行する
+					return this.sendMail(user.get().getMailAddress(), user.get().getLoginId(), command);
+				}
+			}
+			return new SendMailReturnDto(null);
+		}
 		return new SendMailReturnDto(null);
 	}
 
@@ -77,16 +89,15 @@ public class SendMailInfoFormGCommandHandler extends CommandHandlerWithResult<Se
 	 * @return true, if successful
 	 */
 	// Send Mail アルゴリズム「メール送信実行」を実行する
-	private SendMailReturnDto sendMail(String mailto, SendMailInfoCommand command) {
+	private SendMailReturnDto sendMail(String mailto, String loginId, SendMailInfoFormGCommand command) {
 
 		// get param input
-		String programId = AppContexts.programId();
 		String employeeId = AppContexts.user().employeeId();
 		String employeeCD = AppContexts.user().employeeCode();
 
 		// get URL from CCG033
-		String url = this.registerEmbededURL.embeddedUrlInfoRegis(programId, "H", 1, 24, employeeId,
-				command.getContractCode(), command.getLoginId(), employeeCD, new ArrayList<>());
+		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 1, 24, employeeId,
+				command.getContractCode(), loginId, employeeCD, new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") +" \n" + url);
 

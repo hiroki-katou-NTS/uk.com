@@ -208,6 +208,7 @@ module nts.uk.pr.view.ccg007.d {
                 nts.uk.ui.windows.setShared('parentCodes', {
                     companyCode: self.selectedCompanyCode(),
                     companyName: self.companyName(),
+                    contractCode: self.contractCode(),
                     employeeCode : self.employeeCode()
                 }, true);
 

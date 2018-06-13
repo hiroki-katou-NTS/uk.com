@@ -10,18 +10,18 @@ module nts.uk.pr.view.ccg007.g {
         /**
           * Function is used to check contract.
           */
-        export function submitSendMail(data : CallerParameter): JQueryPromise<any> {
+        export function submitSendMail(data : SendMailInfoFormGCommand): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.submitSendMail, data);
         }
         
         export interface CallerParameter {
             companyCode: string;
             companyName: string;
-            employeeCode : string;
             contractCode: string;
+            employeeCode : string;
         }
         
-        export interface SendMailInfoFormGCommand {
+        export class SendMailInfoFormGCommand {
             companyCode: string;
             employeeCode : string;
             contractCode: string;

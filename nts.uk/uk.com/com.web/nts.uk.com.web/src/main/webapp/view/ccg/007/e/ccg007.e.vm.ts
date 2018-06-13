@@ -6,7 +6,7 @@ module nts.uk.pr.view.ccg007.e {
 
         export class ScreenModel {
             
-            loginId: KnockoutObservable<string>;
+            userName: KnockoutObservable<string>;
             passwordCurrent: KnockoutObservable<string>;
             passwordNew: KnockoutObservable<string>;
             passwordNewConfirm: KnockoutObservable<string>;
@@ -17,7 +17,7 @@ module nts.uk.pr.view.ccg007.e {
             constructor(parentData: CallerParameter) {
                 var self = this;
                 
-                self.loginId = ko.observable(null);
+                self.userName = ko.observable(null);
                 self.passwordCurrent = ko.observable(null);
                 self.passwordNew = ko.observable(null);
                 self.passwordNewConfirm = ko.observable(null);
@@ -36,7 +36,10 @@ module nts.uk.pr.view.ccg007.e {
                 // block ui
                 nts.uk.ui.block.invisible();
                 
-                self.loginId(self.callerParameter.loginId);
+                //get userName
+                service.getUserNameByLoginId(self.callerParameter.contractCode, self.callerParameter.loginId).done(function(data) {
+                    self.userName(data.userName);
+                });
                 
                 dfd.resolve();
                 

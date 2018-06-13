@@ -6,8 +6,6 @@ module nts.uk.pr.view.ccg007.g {
         
 
         export class ScreenModel {
-            
-            companyCode: KnockoutObservable<string>;
             companyName: KnockoutObservable<string>;
             employeeCode: KnockoutObservable<string>;
             
@@ -17,7 +15,6 @@ module nts.uk.pr.view.ccg007.g {
             constructor(parentData: CallerParameter) {
                 var self = this;
                 
-                self.companyCode = ko.observable(null);
                 self.companyName = ko.observable(null);
                 self.employeeCode = ko.observable(null);
                 
@@ -35,6 +32,7 @@ module nts.uk.pr.view.ccg007.g {
                 // block ui
                 nts.uk.ui.block.invisible();
                 
+                //set infor sendMail
                 self.companyName(self.callerParameter.companyName);
                 self.employeeCode(self.callerParameter.employeeCode);
                 
@@ -55,9 +53,11 @@ module nts.uk.pr.view.ccg007.g {
                 blockUI.invisible();
                 
                 //add command
-                let command: SendMailInfoFormGCommand = new SendMailInfoFormGCommand(self.companyCode, self.employeeCode, self.callerParameter.contractCode);
+                let command: SendMailInfoFormGCommand = new SendMailInfoFormGCommand(self.callerParameter.companyCode, 
+                    self.callerParameter.employeeCode, self.callerParameter.contractCode);
                 
-                service.submitSendMail(command).done(function () {
+                //sendMail
+                service.submitSendMail(command).done(function (data) {
                     if (!nts.uk.util.isNullOrEmpty(data.url)){
                         nts.uk.ui.dialog.info({ messageId: "Msg_207" }).then(() => {
                             blockUI.invisible();
@@ -79,7 +79,7 @@ module nts.uk.pr.view.ccg007.g {
                 
                 //set LoginId to dialog
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    loginId: self.callerParameter.loginId,
+                    loginId: self.callerParameter.employeeCode,
                     contractCode: self.callerParameter.contractCode,
                     url: url
                 }, true);
