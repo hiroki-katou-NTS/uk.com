@@ -166,8 +166,10 @@ module nts.uk.com.view.cmf003.b {
                 self.isCompressPass.subscribe(function(value) {
                     if(value) {
                         self.passwordConstraint("FileCompressionPassword");
+                        $(".passwordInput").trigger("validate");
                     } else {
                         self.passwordConstraint("");
+                        $('.passwordInput').ntsError('clear');
                     }
                 });
 
@@ -549,18 +551,18 @@ module nts.uk.com.view.cmf003.b {
             private setRangePickerRequire(): void {
                 let self = this;
 
-                self.dayRequired = ko.observable(false);
-                self.monthRequired = ko.observable(false);
-                self.yearRequired = ko.observable(false);
+                self.dayRequired(false);
+                self.monthRequired(false);
+                self.yearRequired(false);
                 for (var i = 0; i < self.categorys().length; i++) {
                     if (self.categorys()[i].timeStore == 1) {
-                        self.dayRequired = ko.observable(true);
+                        self.dayRequired(true);
                     }
                     else if (self.categorys()[i].timeStore == 2) {
-                        self.monthRequired = ko.observable(true);
+                        self.monthRequired(true);
                     }
                     else if (self.categorys()[i].timeStore == 3) {
-                        self.yearRequired = ko.observable(true);
+                        self.yearRequired(true);
                     }
                 }
             }
@@ -601,6 +603,7 @@ module nts.uk.com.view.cmf003.b {
 
             private validateB(): boolean {
                 $(".form-B").trigger("validate");
+                $(".ntsDatepicker").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return false;
                 }
