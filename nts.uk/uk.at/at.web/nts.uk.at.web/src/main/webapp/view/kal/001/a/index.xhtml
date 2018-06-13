@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+			  	nts.uk.ctx.at.function.dom.alarm.extractionrange.agreement.YearOfAgreement
+			</com:ValidatorScript>
             <com:EnumScript>
 				nts.uk.ctx.at.function.dom.alarm.AlarmCategory
 			</com:EnumScript>
@@ -50,6 +53,7 @@
 											visibleItemsCount: 10,
 											value: currentAlarmCode,
 											optionsText: 'alarmName',
+											width: '300px',
 											editable: false,
 											enable: true,
 											columns: [
@@ -72,7 +76,7 @@
 										<table tabindex="4" id="fixed-table">
 											<colgroup>
 												<col width="50px"/>
-												<col width="120px"/>
+												<col width="150px"/>
 												<col width="280px"/>
 											</colgroup>
 											<thead>
@@ -85,12 +89,27 @@
 											</thead>
 											<tbody>
 												<com:ko-foreach bind="periodByCategory">
-													<tr data-bind="attr:{ categorynumber: category}">
+													<tr data-bind="attr:{ categorynumber: id}">
 														<td  class ="check_column"  data-bind="click: setClick"><div data-bind="ntsCheckBox: {checked: checkBox}"></div></td>
 														<td data-bind ="text: categoryName "></td>
+														
 														<td   class ='periodTime'>
-															<div class ='inputDate' data-bind="ntsDateRangePicker:
-															 { required: required, enable:true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: typeInput}"/>															
+															<div class ='inputDate nts-custom' data-bind="ntsDateRangePicker:
+																			 { required: required, enable:true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: typeInput}, 
+																			 visible: !visible()"/>
+																			 
+															<div class ='nts-custom' data-bind="visible: visible">
+															 	<input  data-bind="ntsTimeEditor: {
+															 									inputFormat: 'YYYY',
+															 									value: year,
+																								name: '#[KAL004_73]',															 									
+															 									required: required,
+															 									constraint: 'YearOfAgreement',
+															 									option: {textalign: 'left',
+															 											 width: '86px',
+															 											 }
+															 									}" />
+											                </div>															
 														</td>
 													</tr>
 												</com:ko-foreach>

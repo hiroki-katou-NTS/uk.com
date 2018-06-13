@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-//import nts.arc.diagnose.stopwatch.Stopwatches;
+import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
@@ -36,16 +36,15 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	private ErAlCheckService erAlCheckService;
 	
 	@Inject
-	private DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter;
+	private AttendanceItemConvertFactory converterFactory;
 	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet master) {
-		//Stopwatches.start("ERALALL");
 		String companyID = AppContexts.user().companyId();
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
 //		if(!integrationOfDaily.getEmployeeError().isEmpty() &&  integrationOfDaily.getEmployeeError() != null)
 //			addItemList = integrationOfDaily.getEmployeeError();
-		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
+		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.converterFactory.createDailyConverter().setData(integrationOfDaily);
 		//勤務実績のエラーアラーム数分ループ
 		for(ErrorAlarmWorkRecord errorItem : master.getErrorAlarm()) {
 			//使用しない
@@ -92,7 +91,6 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			}
 		}
 		integrationOfDaily.setEmployeeError(addItemList);
-		//Stopwatches.stop("ERALALL");
 		return integrationOfDaily;
 	}
 

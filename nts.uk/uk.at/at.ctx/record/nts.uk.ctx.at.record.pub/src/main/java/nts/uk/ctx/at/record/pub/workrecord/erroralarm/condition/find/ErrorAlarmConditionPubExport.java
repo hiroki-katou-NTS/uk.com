@@ -294,7 +294,7 @@ public class ErrorAlarmConditionPubExport {
 	 * @param itemDomain
 	 * @return
 	 */
-	private static ErAlAtdItemConditionPubExport convertItemDomainToDto(ErAlAttendanceItemCondition<?> itemDomain) {
+	public static ErAlAtdItemConditionPubExport convertItemDomainToDto(ErAlAttendanceItemCondition<?> itemDomain) {
 		ErAlAtdItemConditionPubExport erAlAtdItemConditionDto = new ErAlAtdItemConditionPubExport();
 		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);

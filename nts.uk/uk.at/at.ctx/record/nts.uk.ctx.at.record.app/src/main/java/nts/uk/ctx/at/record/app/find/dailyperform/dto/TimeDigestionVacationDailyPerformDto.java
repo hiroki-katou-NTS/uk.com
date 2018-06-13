@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,15 +14,15 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimeDigestionVacationDailyPerformDto {
+public class TimeDigestionVacationDailyPerformDto implements ItemConst {
 
 	/** 不足時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "不足時間")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = SHORTAGE)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer shortageTime;
 
 	/** 使用時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "使用時間")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = USAGE)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer useTime;
 	

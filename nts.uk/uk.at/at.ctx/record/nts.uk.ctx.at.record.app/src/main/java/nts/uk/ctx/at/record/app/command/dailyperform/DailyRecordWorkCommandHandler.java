@@ -55,41 +55,41 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 @Stateless
-public class DailyRecordWorkCommandHandler {
+public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	/** 勤務情報： 日別実績の勤務情報 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_WORK_INFO_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_WORK_INFO_NAME, index = 1)
+	@AttendanceItemLayout(layout = DAILY_WORK_INFO_CODE, 
+			jpPropertyName = DAILY_WORK_INFO_NAME, index = 1)
 	private WorkInformationOfDailyPerformCommandAddHandler workInfoAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_WORK_INFO_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_WORK_INFO_NAME, index = 1)
+	@AttendanceItemLayout(layout = DAILY_WORK_INFO_CODE, 
+			jpPropertyName = DAILY_WORK_INFO_NAME, index = 1)
 	private WorkInformationOfDailyPerformCommandUpdateHandler workInfoUpdateHandler;
 
 	/** 計算区分： 日別実績の計算区分 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_CALCULATION_ATTR_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_CALCULATION_ATTR_NAME, index = 2)
+	@AttendanceItemLayout(layout = DAILY_CALCULATION_ATTR_CODE, 
+			jpPropertyName = DAILY_CALCULATION_ATTR_NAME, index = 2)
 	private CalcAttrOfDailyPerformanceCommandAddHandler calcAttrAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_CALCULATION_ATTR_CODE,
-			jpPropertyName = AttendanceLayoutConst.DAILY_CALCULATION_ATTR_NAME, index = 2)
+	@AttendanceItemLayout(layout = DAILY_CALCULATION_ATTR_CODE,
+			jpPropertyName = DAILY_CALCULATION_ATTR_NAME, index = 2)
 	private CalcAttrOfDailyPerformanceCommandUpdateHandler calcAttrUpdateHandler;
 
 	/** 所属情報： 日別実績の所属情報 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_AFFILIATION_INFO_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_AFFILIATION_INFO_NAME, index = 3)
+	@AttendanceItemLayout(layout = DAILY_AFFILIATION_INFO_CODE, 
+			jpPropertyName = DAILY_AFFILIATION_INFO_NAME, index = 3)
 	private AffiliationInforOfDailyPerformCommandAddHandler affiliationInfoAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_AFFILIATION_INFO_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_AFFILIATION_INFO_NAME, index = 3)
+	@AttendanceItemLayout(layout = DAILY_AFFILIATION_INFO_CODE, 
+			jpPropertyName = DAILY_AFFILIATION_INFO_NAME, index = 3)
 	private AffiliationInforOfDailyPerformCommandUpdateHandler affiliationInfoUpdateHandler;
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
@@ -102,140 +102,140 @@ public class DailyRecordWorkCommandHandler {
 	
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_BUSINESS_TYPE_CODE,
-			jpPropertyName = AttendanceLayoutConst.DAILY_BUSINESS_TYPE_NAME, index = 4)
+	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE,
+			jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
 	private BusinessTypeOfDailyPerformCommandAddHandler businessTypeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_BUSINESS_TYPE_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_BUSINESS_TYPE_NAME, index = 4)
+	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, 
+			jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
 	private BusinessTypeOfDailyPerformCommandUpdateHandler businessTypeUpdateHandler;
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_OUTING_TIME_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_OUTING_TIME_NAME, index = 5)
+	@AttendanceItemLayout(layout = DAILY_OUTING_TIME_CODE, 
+			jpPropertyName = DAILY_OUTING_TIME_NAME, index = 5)
 	private OutingTimeOfDailyPerformanceCommandAddHandler outingTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_OUTING_TIME_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_OUTING_TIME_NAME, index = 5)
+	@AttendanceItemLayout(layout = DAILY_OUTING_TIME_CODE, 
+			jpPropertyName = DAILY_OUTING_TIME_NAME, index = 5)
 	private OutingTimeOfDailyPerformanceCommandUpdateHandler outingTimeUpdateHandler;
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_BREAK_TIME_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_BREAK_TIME_NAME, index = 6)
+	@AttendanceItemLayout(layout = DAILY_BREAK_TIME_CODE, 
+			jpPropertyName = DAILY_BREAK_TIME_NAME, index = 6)
 	private BreakTimeOfDailyPerformanceCommandAddHandler breakTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_BREAK_TIME_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_BREAK_TIME_NAME, index = 6)
+	@AttendanceItemLayout(layout = DAILY_BREAK_TIME_CODE, 
+			jpPropertyName = DAILY_BREAK_TIME_NAME, index = 6)
 	private BreakTimeOfDailyPerformanceCommandUpdateHandler breakTimeUpdateHandler;
 
 	/** 勤怠時間: 日別実績の勤怠時間 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_NAME, index = 7)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_CODE, 
+			jpPropertyName = DAILY_ATTENDANCE_TIME_NAME, index = 7)
 	private AttendanceTimeOfDailyPerformCommandAddHandler attendanceTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_NAME, index = 7)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_CODE, 
+			jpPropertyName = DAILY_ATTENDANCE_TIME_NAME, index = 7)
 	private AttendanceTimeOfDailyPerformCommandUpdateHandler attendanceTimeUpdateHandler;
 
 	/** 作業別勤怠時間: 日別実績の作業別勤怠時間 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_BY_WORK_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_BY_WORK_NAME, index = 8)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_BY_WORK_CODE, 
+			jpPropertyName = DAILY_ATTENDANCE_TIME_BY_WORK_NAME, index = 8)
 	private AttendanceTimeByWorkOfDailyCommandAddHandler attendanceTimeByWorkAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_BY_WORK_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_BY_WORK_NAME, index = 8)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_BY_WORK_CODE, 
+			jpPropertyName = DAILY_ATTENDANCE_TIME_BY_WORK_NAME, index = 8)
 	private AttendanceTimeByWorkOfDailyCommandUpdateHandler attendanceTimeByWorkUpdateHandler;
 
 	/** 出退勤: 日別実績の出退勤 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_NAME, index = 9)
+	@AttendanceItemLayout(layout = DAILY_ATTENDACE_LEAVE_CODE, 
+			jpPropertyName = DAILY_ATTENDACE_LEAVE_NAME, index = 9)
 	private TimeLeavingOfDailyPerformanceCommandAddHandler timeLeavingAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_CODE, 
-			jpPropertyName = AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_NAME, index = 9)
+	@AttendanceItemLayout(layout = DAILY_ATTENDACE_LEAVE_CODE, 
+			jpPropertyName = DAILY_ATTENDACE_LEAVE_NAME, index = 9)
 	private TimeLeavingOfDailyPerformanceCommandUpdateHandler timeLeavingUpdatedHandler;
 
 	/** 短時間勤務時間帯: 日別実績の短時間勤務時間帯 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_SHORT_TIME_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_SHORT_TIME_NAME, index = 10)
+	@AttendanceItemLayout(layout = DAILY_SHORT_TIME_CODE,  
+			jpPropertyName = DAILY_SHORT_TIME_NAME, index = 10)
 	private ShortTimeOfDailyCommandAddHandler shortWorkTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_SHORT_TIME_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_SHORT_TIME_NAME, index = 10)
+	@AttendanceItemLayout(layout = DAILY_SHORT_TIME_CODE,  
+			jpPropertyName = DAILY_SHORT_TIME_NAME, index = 10)
 	private ShortTimeOfDailyCommandUpdateHandler shortWorkTimeUpdateHandler;
 
 	/** 特定日区分: 日別実績の特定日区分 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_NAME,  index = 11)
+	@AttendanceItemLayout(layout = DAILY_SPECIFIC_DATE_ATTR_CODE,  
+			jpPropertyName = DAILY_SPECIFIC_DATE_ATTR_NAME,  index = 11)
 	private SpecificDateAttrOfDailyCommandAddHandler specificDateAttrAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_NAME,  index = 11)
+	@AttendanceItemLayout(layout = DAILY_SPECIFIC_DATE_ATTR_CODE,  
+			jpPropertyName = DAILY_SPECIFIC_DATE_ATTR_NAME,  index = 11)
 	private SpecificDateAttrOfDailyCommandUpdateHandler specificDateAttrUpdateHandler;
 
 	/** 入退門: 日別実績の入退門 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_ATTENDANCE_LEAVE_GATE_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_ATTENDANCE_LEAVE_GATE_NAME,  index = 12)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_LEAVE_GATE_CODE,  
+			jpPropertyName = DAILY_ATTENDANCE_LEAVE_GATE_NAME,  index = 12)
 	private AttendanceLeavingGateOfDailyCommandAddHandler attendanceLeavingGateAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_ATTENDANCE_LEAVE_GATE_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_ATTENDANCE_LEAVE_GATE_NAME,  index = 12)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_LEAVE_GATE_CODE,  
+			jpPropertyName = DAILY_ATTENDANCE_LEAVE_GATE_NAME,  index = 12)
 	private AttendanceLeavingGateOfDailyCommandUpdateHandler attendanceLeavingGateUpdateHandler;
 
 	/** 任意項目: 日別実績の任意項目 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_NAME,  index = 13)
+	@AttendanceItemLayout(layout = DAILY_OPTIONAL_ITEM_CODE,  
+			jpPropertyName = DAILY_ATTENDACE_LEAVE_NAME,  index = 13)
 	private OptionalItemOfDailyPerformCommandAddHandler optionalItemAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_NAME,  index = 13)
+	@AttendanceItemLayout(layout = DAILY_OPTIONAL_ITEM_CODE,  
+			jpPropertyName = DAILY_OPTIONAL_ITEM_NAME,  index = 13)
 	private OptionalItemOfDailyPerformCommandUpdateHandler optionalItemUpdateHandler;
 
 	/** 編集状態: 日別実績の編集状態 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_EDIT_STATE_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_EDIT_STATE_NAME,  index = 14)
+	@AttendanceItemLayout(layout = DAILY_EDIT_STATE_CODE,  
+			jpPropertyName = DAILY_EDIT_STATE_NAME,  index = 14)
 	private EditStateOfDailyPerformCommandAddHandler editStateAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_EDIT_STATE_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_EDIT_STATE_NAME,  index = 14)
+	@AttendanceItemLayout(layout = DAILY_EDIT_STATE_CODE,  
+			jpPropertyName = DAILY_EDIT_STATE_NAME,  index = 14)
 	private EditStateOfDailyPerformCommandUpdateHandler editStateUpdateHandler;
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_TEMPORARY_TIME_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_TEMPORARY_TIME_NAME,  index = 15)
+	@AttendanceItemLayout(layout = DAILY_TEMPORARY_TIME_CODE,  
+			jpPropertyName = DAILY_TEMPORARY_TIME_NAME,  index = 15)
 	private TemporaryTimeOfDailyPerformanceCommandAddHandler temporaryTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_TEMPORARY_TIME_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_TEMPORARY_TIME_NAME,  index = 15)
+	@AttendanceItemLayout(layout = DAILY_TEMPORARY_TIME_CODE,  
+			jpPropertyName = DAILY_TEMPORARY_TIME_NAME,  index = 15)
 	private TemporaryTimeOfDailyPerformanceCommandUpdateHandler temporaryTimeUpdateHandler;
 	
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_PC_LOG_INFO_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_PC_LOG_INFO_NAME,  index = 16)
+	@AttendanceItemLayout(layout = DAILY_PC_LOG_INFO_CODE,  
+			jpPropertyName = DAILY_PC_LOG_INFO_NAME,  index = 16)
 	private PCLogInfoOfDailyCommandAddHandler pcLogInfoAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_PC_LOG_INFO_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_PC_LOG_INFO_NAME,  index = 16)
+	@AttendanceItemLayout(layout = DAILY_PC_LOG_INFO_CODE,  
+			jpPropertyName = DAILY_PC_LOG_INFO_NAME,  index = 16)
 	private PCLogInfoOfDailyCommandUpdateHandler pcLogInfoUpdateHandler;
 
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_REMARKS_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_REMARKS_NAME,  index = 17)
+	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE,  
+			jpPropertyName = DAILY_REMARKS_NAME,  index = 17)
 	private RemarkOfDailyCommandAddHandler remarksAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = AttendanceLayoutConst.DAILY_REMARKS_CODE,  
-			jpPropertyName = AttendanceLayoutConst.DAILY_REMARKS_NAME,  index = 17)
+	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE,  
+			jpPropertyName = DAILY_REMARKS_NAME,  index = 17)
 	private RemarkOfDailyCommandUpdateHandler remarksUpdateHandler;
 	
 	@Inject
@@ -250,16 +250,15 @@ public class DailyRecordWorkCommandHandler {
 	@Inject
 	private DailyRecordWorkFinder finder;
 	
-	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_CODE,
-			AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_CODE);
+	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE);
 	
 	private final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
-		DOMAIN_CHANGED_BY_EVENT.put(AttendanceLayoutConst.DAILY_WORK_INFO_CODE, 
-									getArray(AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_CODE, 
-											AttendanceLayoutConst.DAILY_BREAK_TIME_CODE));
-		DOMAIN_CHANGED_BY_EVENT.put(AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_CODE, 
-									getArray(AttendanceLayoutConst.DAILY_BREAK_TIME_CODE));
+		DOMAIN_CHANGED_BY_EVENT.put(DAILY_WORK_INFO_CODE, 
+									getArray(DAILY_ATTENDACE_LEAVE_CODE, 
+											DAILY_BREAK_TIME_CODE));
+		DOMAIN_CHANGED_BY_EVENT.put(DAILY_ATTENDACE_LEAVE_CODE, 
+									getArray(DAILY_BREAK_TIME_CODE));
 	}
 	
 	private String[] getArray(String... arrays){
@@ -355,9 +354,9 @@ public class DailyRecordWorkCommandHandler {
 
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void handleEditStates(boolean isUpdate, DailyRecordWorkCommand command) {
-		CommandFacade<T> handler = (CommandFacade<T>) getHandler(AttendanceLayoutConst.DAILY_EDIT_STATE_CODE, isUpdate);
+		CommandFacade<T> handler = (CommandFacade<T>) getHandler(DAILY_EDIT_STATE_CODE, isUpdate);
 		if(handler != null){
-			handler.handle((T) command.getCommand(AttendanceLayoutConst.DAILY_EDIT_STATE_CODE));
+			handler.handle((T) command.getCommand(DAILY_EDIT_STATE_CODE));
 		}
 	}
 	
@@ -377,39 +376,39 @@ public class DailyRecordWorkCommandHandler {
 	
 	private CommandFacade<?> getHandler(String layout, boolean isUpdate) {
 		switch (layout) {
-		case AttendanceLayoutConst.DAILY_WORK_INFO_CODE:
+		case DAILY_WORK_INFO_CODE:
 			return isUpdate ? this.workInfoUpdateHandler : this.workInfoAddHandler;
-		case AttendanceLayoutConst.DAILY_CALCULATION_ATTR_CODE:
+		case DAILY_CALCULATION_ATTR_CODE:
 			return isUpdate ? this.calcAttrUpdateHandler : this.calcAttrAddHandler;
-		case AttendanceLayoutConst.DAILY_AFFILIATION_INFO_CODE:
+		case DAILY_AFFILIATION_INFO_CODE:
 			return isUpdate ? this.affiliationInfoUpdateHandler : this.affiliationInfoAddHandler;
-		case AttendanceLayoutConst.DAILY_BUSINESS_TYPE_CODE:
+		case DAILY_BUSINESS_TYPE_CODE:
 			return isUpdate ? this.businessTypeUpdateHandler : this.businessTypeAddHandler;
-		case AttendanceLayoutConst.DAILY_OUTING_TIME_CODE:
+		case DAILY_OUTING_TIME_CODE:
 			return isUpdate ? this.outingTimeUpdateHandler : this.outingTimeAddHandler;
-		case AttendanceLayoutConst.DAILY_BREAK_TIME_CODE:
+		case DAILY_BREAK_TIME_CODE:
 			return isUpdate ? this.breakTimeUpdateHandler : this.breakTimeAddHandler;
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_CODE:
+		case DAILY_ATTENDANCE_TIME_CODE:
 			return isUpdate ? this.attendanceTimeUpdateHandler : this.attendanceTimeAddHandler;
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
 			return isUpdate ? this.attendanceTimeByWorkUpdateHandler : this.attendanceTimeByWorkAddHandler;
-		case AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_CODE:
+		case DAILY_ATTENDACE_LEAVE_CODE:
 			return isUpdate ? this.timeLeavingUpdatedHandler : this.timeLeavingAddHandler;
-		case AttendanceLayoutConst.DAILY_SHORT_TIME_CODE:
+		case DAILY_SHORT_TIME_CODE:
 			return isUpdate ? this.shortWorkTimeUpdateHandler : this.shortWorkTimeAddHandler;
-		case AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_CODE:
+		case DAILY_SPECIFIC_DATE_ATTR_CODE:
 			return isUpdate ? this.specificDateAttrUpdateHandler : this.specificDateAttrAddHandler;
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
 			return isUpdate ? this.attendanceLeavingGateUpdateHandler : this.attendanceLeavingGateAddHandler;
-		case AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_CODE:
+		case DAILY_OPTIONAL_ITEM_CODE:
 			return isUpdate ? this.optionalItemUpdateHandler : this.optionalItemAddHandler;
-		case AttendanceLayoutConst.DAILY_EDIT_STATE_CODE:
+		case DAILY_EDIT_STATE_CODE:
 			return isUpdate ? this.editStateUpdateHandler : this.editStateAddHandler;
-		case AttendanceLayoutConst.DAILY_TEMPORARY_TIME_CODE:
+		case DAILY_TEMPORARY_TIME_CODE:
 			return isUpdate ? this.temporaryTimeUpdateHandler : this.temporaryTimeAddHandler;
-		case AttendanceLayoutConst.DAILY_PC_LOG_INFO_CODE:
+		case DAILY_PC_LOG_INFO_CODE:
 			return isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
-		case AttendanceLayoutConst.DAILY_REMARKS_CODE:
+		case DAILY_REMARKS_CODE:
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
 		default:
 			return null;
@@ -418,39 +417,39 @@ public class DailyRecordWorkCommandHandler {
 
 	private Object getDomain(String layout, IntegrationOfDaily d) {
 		switch (layout) {
-		case AttendanceLayoutConst.DAILY_WORK_INFO_CODE:
+		case DAILY_WORK_INFO_CODE:
 			return d.getWorkInformation();
-		case AttendanceLayoutConst.DAILY_CALCULATION_ATTR_CODE:
+		case DAILY_CALCULATION_ATTR_CODE:
 			return d.getCalAttr();
-		case AttendanceLayoutConst.DAILY_AFFILIATION_INFO_CODE:
+		case DAILY_AFFILIATION_INFO_CODE:
 			return d.getAffiliationInfor();
-		case AttendanceLayoutConst.DAILY_BUSINESS_TYPE_CODE:
+		case DAILY_BUSINESS_TYPE_CODE:
 			return d.getBusinessType();
-		case AttendanceLayoutConst.DAILY_OUTING_TIME_CODE:
+		case DAILY_OUTING_TIME_CODE:
 			return d.getOutingTime();
-		case AttendanceLayoutConst.DAILY_BREAK_TIME_CODE:
+		case DAILY_BREAK_TIME_CODE:
 			return d.getBreakTime();
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_CODE:
+		case DAILY_ATTENDANCE_TIME_CODE:
 			return d.getAttendanceTimeOfDailyPerformance();
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
 			return d.getAttendancetimeByWork();
-		case AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_CODE:
+		case DAILY_ATTENDACE_LEAVE_CODE:
 			return d.getAttendanceLeave();
-		case AttendanceLayoutConst.DAILY_SHORT_TIME_CODE:
+		case DAILY_SHORT_TIME_CODE:
 			return d.getShortTime();
-		case AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_CODE:
+		case DAILY_SPECIFIC_DATE_ATTR_CODE:
 			return d.getSpecDateAttr();
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
 			return d.getAttendanceLeavingGate();
-		case AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_CODE:
+		case DAILY_OPTIONAL_ITEM_CODE:
 			return d.getAnyItemValue();
-		case AttendanceLayoutConst.DAILY_EDIT_STATE_CODE:
+		case DAILY_EDIT_STATE_CODE:
 			return d.getEditState();
-		case AttendanceLayoutConst.DAILY_TEMPORARY_TIME_CODE:
+		case DAILY_TEMPORARY_TIME_CODE:
 			return d.getTempTime();
-		case AttendanceLayoutConst.DAILY_PC_LOG_INFO_CODE:
+		case DAILY_PC_LOG_INFO_CODE:
 			return d.getPcLogOnInfo();
-		case AttendanceLayoutConst.DAILY_REMARKS_CODE:
+		case DAILY_REMARKS_CODE:
 			return null;
 		default:
 			return null;
