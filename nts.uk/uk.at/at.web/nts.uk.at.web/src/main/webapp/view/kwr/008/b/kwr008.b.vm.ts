@@ -491,7 +491,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
                     }
                     info({ messageId: 'Msg_15' }).then(() => {
-                        self.selectedCode(self.currentSetOutputSettingCode().cd());
+                        self.selectedCode('');
+                        self.selectedCode(data.cd);
                         $('#B3_3').focus();
                     });
                 }).fail(err => {
@@ -561,7 +562,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let self = this;
             self.valOutFormat.subscribe((data)=>{
                 self.buildListOperationSetting([]);
-                self.outputTargetItem('');
+                if(self.sortBy() > 1){
+                    self.outputTargetItem('');
+                }
             });
             self.sortBy(sortBy || 1);
             self.cd(cd);
