@@ -780,17 +780,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 			// Position of current month
 			int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
-
-			// 子の看護休暇_使用日数
-			String grantUsedDayValue = currentSituationImported.getBeforeUseDays() + "/"
-					+ currentSituationImported.getAfterUseDays().orElse(0d);
-			cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
-
-			// N2_4 子の看護休暇_残日数
-			String grantReamainDayValue = currentSituationImported.getBeforeCareLeaveDays() + "/"
-					+ currentSituationImported.getAfterCareLeaveDays().orElse(0d);
-			cells.get(firstRow + 1, 10 + totalMonth).setValue(grantReamainDayValue);
-
+			if (currentMonth.compareTo(dataSource.getEndMonth().yearMonth()) <= 0) {
+				// 子の看護休暇_使用日数
+				String grantUsedDayValue = currentSituationImported.getBeforeUseDays() + "/"
+						+ currentSituationImported.getAfterUseDays().orElse(0d);
+				cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
+	
+				// N2_4 子の看護休暇_残日数
+				String grantReamainDayValue = currentSituationImported.getBeforeCareLeaveDays() + "/"
+						+ currentSituationImported.getAfterCareLeaveDays().orElse(0d);
+				cells.get(firstRow + 1, 10 + totalMonth).setValue(grantReamainDayValue);
+			}
 			// Set background
 			for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
 					dataSource.getEndMonth().yearMonth()); i++) {
@@ -835,16 +835,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 			// Position of current month
 			int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
-
-			// 介護休暇_使用日数
-			String grantUsedDayValue = careHoliday.getBeforeUseDays() + "/" + careHoliday.getAfterUseDays().orElse(0d);
-			cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
-
-			// O2_4 介護休暇_残日数
-			String grantReamainDayValue = careHoliday.getBeforeCareLeaveDays() + "/"
-					+ careHoliday.getAfterCareLeaveDays().orElse(0d);
-			cells.get(firstRow + 1, 10 + totalMonth).setValue(grantReamainDayValue);
-
+			if (currentMonth.compareTo(dataSource.getEndMonth().yearMonth()) <= 0) {
+				// 介護休暇_使用日数
+				String grantUsedDayValue = careHoliday.getBeforeUseDays() + "/" + careHoliday.getAfterUseDays().orElse(0d);
+				cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
+	
+				// O2_4 介護休暇_残日数
+				String grantReamainDayValue = careHoliday.getBeforeCareLeaveDays() + "/"
+						+ careHoliday.getAfterCareLeaveDays().orElse(0d);
+				cells.get(firstRow + 1, 10 + totalMonth).setValue(grantReamainDayValue);
+			}
 			// Set background
 			for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
 					dataSource.getEndMonth().yearMonth()); i++) {

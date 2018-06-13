@@ -103,6 +103,9 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		// 繰り返し詳細設定
 		RepeatDetailSetting detailSetting = new RepeatDetailSetting( weekly, monthly);
 		
+		if(command.getRepeatContent()==null){
+			command.setRepeatContent(0);
+		}
 		ExecutionTaskSetting taskSetting = new ExecutionTaskSetting(oneDayRepInr,
 									new ExecutionCode(command.getExecItemCd()),
 									companyId,
@@ -345,11 +348,13 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		taskSetting.setScheduleId(scheduleId);
 		Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
 		taskSetting.setNextExecDateTime(nextFireTime);
+		/*
 		String endScheduleId=null;
 		if(optionsEnd!=null){
 			endScheduleId = this.scheduler.scheduleOnCurrentCompany(optionsEnd).getScheduleId();
 		}
 		taskSetting.setEndScheduleId(endScheduleId);
+		*/
 		
 		if (command.isNewMode()) {
 			try {
@@ -357,19 +362,23 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 				this.repMonthDayRepo.insert(companyId, command.getExecItemCd(), days);
 			} catch (Exception e) {
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,scheduleId);
+				/*
 				if(endScheduleId!=null){
 					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,endScheduleId);
 				}
+				*/
 				throw new BusinessException("Msg_1110");
 			}
 			
 		} else {
 			ExecutionTaskSetting executionTaskSetting = this.execTaskSettingRepo.getByCidAndExecCd(companyId, command.getExecItemCd()).get();
 			String oldScheduleId = executionTaskSetting.getScheduleId();
+			/*
 			Optional<String> oldEndScheduleIdOpt = executionTaskSetting.getEndScheduleId();
 			if(oldEndScheduleIdOpt.isPresent()){
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,oldEndScheduleIdOpt.get());
 			}
+			*/
 			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,oldScheduleId);
 			try {
 				this.execTaskSettingRepo.remove(companyId,  command.getExecItemCd());
@@ -379,9 +388,11 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 				//this.execTaskSettingRepo.update(taskSetting);
 			} catch (Exception e) {
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,scheduleId);
+				/*
 				if(endScheduleId!=null){
 					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,endScheduleId);
 				}
+				*/
 				throw new BusinessException("Msg_1110");
 			}
 			
