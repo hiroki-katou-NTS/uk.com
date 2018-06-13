@@ -255,9 +255,17 @@ module nts.uk.at.view.kwr006.a {
                 });
             }
             
-            public processExcel(): void {
+            public exportExcel(): void {
+                const lul = {
+                    fileType: 0
+                }
+                service.exportSchedule(lul);
             }
-            public processPdf(): void {
+            public exportPdf(): void {
+                const lul = {
+                    fileType: 1
+                }
+                service.exportSchedule(lul);
             }
             public openScreenC(): void {
             }
