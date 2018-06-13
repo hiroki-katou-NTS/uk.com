@@ -536,7 +536,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						
 						// ドメインモデル「社員の日別実績エラー一覧」を取得する
 						List<EmployeeDailyPerError> errorList = errorListAllEmployee.stream()
-								.filter(error -> error.getEmployeeID() == employeeId && error.getDate() == workingDate).collect(Collectors.toList());
+								.filter(error -> StringUtils.equalsAnyIgnoreCase(error.getEmployeeID(), employeeId) && error.getDate().compareTo(workingDate) == 0).collect(Collectors.toList());
 						
 						List<String> lstRemarkContentStr = new ArrayList<>();
 						if (query.getCondition().getErrorAlarmCode().isPresent()) {
@@ -545,7 +545,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId, workingDate, errorList, remark.getPrintItem(), lstErAlCode);
 								if (optContent.isPresent()) {
 									// Add to remark
-									lstRemarkContentStr.add(TextResource.localize(optContent.get().getPrintItem().nameId));
+									lstRemarkContentStr.add(TextResource.localize(optContent.get().getPrintItem().shortName));
 								}
 							});
 							
@@ -558,7 +558,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							
 							List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
 							// ドメインモデル「勤務実績のエラーアラーム」を取得する
-							List<ErrorAlarmWorkRecord> lstErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCodeError(companyId, lstErrorCode);
+							List<ErrorAlarmWorkRecord> lstErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(companyId, lstErrorCode);
 							
 							for (ErrorAlarmWorkRecord error : lstErrorRecord) {
 								// コードから区分を取得する
@@ -681,7 +681,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId, workingDate, errorList, remark.getPrintItem(), lstErAlCode);
 					if (optContent.isPresent()) {
 						// Add to remark
-						lstRemarkContentStr.add(TextResource.localize(optContent.get().getPrintItem().nameId));
+						lstRemarkContentStr.add(TextResource.localize(optContent.get().getPrintItem().shortName));
 					}
 				});
 				
@@ -1963,7 +1963,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	public void createPrintArea(int currentRow, Worksheet sheet) {
 		// Get the last column and row name
 		Cells cells = sheet.getCells();
-		Cell lastCell = cells.get(currentRow, 39);
+		Cell lastCell = cells.get(currentRow - 1, 38);
 		String lastCellName = lastCell.getName();
 		
 		PageSetup pageSetup = sheet.getPageSetup();
@@ -2015,16 +2015,39 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @return the remark content
 	 */
 	public Optional<PrintRemarksContent> getRemarkContent(String employeeId, GeneralDate currentDate, List<EmployeeDailyPerError> errorList, RemarksContentChoice choice, List<ErrorAlarmWorkRecordCode> lstOutputErrorCode) {
-		// 遅刻早退
 		PrintRemarksContent printRemarksContent = null;
 		
+		// 遅刻早退
 		List<String> errorCodeList = lstOutputErrorCode.stream().map(x -> x.v()).collect(Collectors.toList());
 		if (errorList.size() > 0 && (errorCodeList.contains(SystemFixedErrorAlarm.LEAVE_EARLY.value) || errorCodeList.contains(SystemFixedErrorAlarm.LATE.value))) {
-			Optional<EmployeeDailyPerError> optError = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.LEAVE_EARLY.value) || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.LATE.value)).findFirst();
-			if (optError.isPresent() && (choice == RemarksContentChoice.LEAVING_EARLY)) {
+			// Late come
+			boolean isLateCome = false, isEarlyLeave = false;
+			Optional<EmployeeDailyPerError> optErrorLateCome = errorList.stream()
+					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.LATE.value)).findFirst();
+			if (optErrorLateCome.isPresent() && (choice == RemarksContentChoice.LEAVING_EARLY)) {
+				isLateCome = true;
+			}
+			
+			// Early leave
+			Optional<EmployeeDailyPerError> optErrorEarlyLeave = errorList.stream()
+					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.LEAVE_EARLY.value)).findFirst();
+			if (optErrorEarlyLeave.isPresent() && (choice == RemarksContentChoice.LEAVING_EARLY)) {
+				isEarlyLeave = true;
+			}
+			
+			// Both case
+			if (isLateCome && isEarlyLeave) {
+				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.LATE_COME_EARLY_LEAVE.value);
+			}
+			// Late come
+			else if (isLateCome) {
+				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.LATE_COME.value);
+			}
+			// Early leave
+			else if (isEarlyLeave) {
 				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.LEAVING_EARLY.value);
 			}
+			
 		}
 		
 		// 手入力
