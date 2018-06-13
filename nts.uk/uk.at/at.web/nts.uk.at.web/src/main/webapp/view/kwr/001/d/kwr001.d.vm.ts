@@ -64,7 +64,7 @@ module nts.uk.at.view.kwr001.d {
                     nts.uk.ui.windows.setShared('KWR001_D', dataReturnScrC);
                     nts.uk.ui.windows.close();
                 }).fail(function(err) {
-                    nts.uk.ui.dialog.error(err);
+                    nts.uk.ui.dialog.alertError(err);
                 })
             }
         };

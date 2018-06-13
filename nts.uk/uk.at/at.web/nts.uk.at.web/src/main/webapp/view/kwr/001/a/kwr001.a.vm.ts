@@ -285,15 +285,18 @@ module nts.uk.at.view.kwr001.a {
                                 self.openScreenC();
                                 break;
                             case "Msg_1141":
-                                nts.uk.ui.dialog.error({ messageId: "Msg_1141"});
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1141"});
                                 break;
                             default:
                                 break;
                         }
+                        if (!_.isNull(dataService.setMsgErrClosingPeriod)) {
+                            nts.uk.ui.dialog.alertError({ messageId: dataService.msgErrClosingPeriod});
+                        }
+                        dfd.resolve();
                     }).fail(function(error) {
-                       nts.uk.ui.dialog.alertError(error);     
-                    }).always(function() {
-                        dfd.resolve();    
+                       nts.uk.ui.dialog.alertError(error);
+                       dfd.reject();     
                     });
                 });
                 
@@ -340,8 +343,9 @@ module nts.uk.at.view.kwr001.a {
                     self.ccg001ComponentOption.baseDate = moment.utc(self.endDatepicker(), DATE_FORMAT_YYYY_MM_DD).toISOString();
                     dfd.resolve(data);
                 }).fail(function(error) {
-                   nts.uk.ui.dialog.alertError(error);     
-                });                
+                   nts.uk.ui.dialog.alertError(error);
+                   dfd.reject();
+                });
                 return dfd.promise();
             }
             
@@ -468,7 +472,7 @@ module nts.uk.at.view.kwr001.a {
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(response){
                             }).fail(function(error){
-                                nts.uk.ui.dialog.error({ messageId: error.message, messageParams: null});
+                                nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                             }).always(function() {
                                nts.uk.ui.block.clear(); 
                             });
@@ -511,29 +515,29 @@ module nts.uk.at.view.kwr001.a {
                 if (self.selectedDataOutputType() == 0) {
                     if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() && !self.checkedA10_5()
                         && !self.checkedA10_6() && !self.checkedA10_7()) {
-                        nts.uk.ui.dialog.error({ messageId: "Msg_1167" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1167" });
                         return false;
                     }    
                 } else {
                     if (!self.checkedA10_2() && !self.checkedA10_4() && !self.checkedA10_6() && !self.checkedA10_7()) {
-                        nts.uk.ui.dialog.error({ messageId: "Msg_1167" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1167" });
                         return false;
                     }
                 }
                 
                 if (self.checkedA10_7() && !self.checkedA10_10() && !self.checkedA10_11() && !self.checkedA10_12()
                         && !self.checkedA10_13() && !self.checkedA10_14()) {
-                    nts.uk.ui.dialog.error({ messageId: "Msg_1184" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1184" });
                     return false;
                 }
                 
                 if (_.isEmpty(self.selectedCodeA7_3())) {
-                    nts.uk.ui.dialog.error({ messageId: "Msg_1141" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1141" });
                     return false;
                 }
                 
                 if (_.isEmpty(self.multiSelectedCode())) {
-                    nts.uk.ui.dialog.error({ messageId: "Msg_884" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_884" });
                     return false;
                 }
                 

@@ -298,7 +298,7 @@ module nts.uk.at.view.kwr001.c {
                     })
                     
                 }).fail(function(err) {
-                    nts.uk.ui.dialog.error(err);
+                    nts.uk.ui.dialog.alertError(err);
                     dfd.reject();
                 })
                 
