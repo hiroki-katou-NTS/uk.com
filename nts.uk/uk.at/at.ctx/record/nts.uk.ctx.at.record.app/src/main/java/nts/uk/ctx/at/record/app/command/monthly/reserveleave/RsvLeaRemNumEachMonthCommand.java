@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.monthly.reserveleave;
 import lombok.Getter;
 import nts.uk.ctx.at.record.app.command.monthly.MonthlyWorkCommonCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 public class RsvLeaRemNumEachMonthCommand extends MonthlyWorkCommonCommand{
@@ -21,4 +22,11 @@ public class RsvLeaRemNumEachMonthCommand extends MonthlyWorkCommonCommand{
 		
 	}
 
+	@Override
+	public RsvLeaRemNumEachMonth toDomain() {
+		// TODO Auto-generated method stub
+		return data.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate());
+	}
+
+	
 }

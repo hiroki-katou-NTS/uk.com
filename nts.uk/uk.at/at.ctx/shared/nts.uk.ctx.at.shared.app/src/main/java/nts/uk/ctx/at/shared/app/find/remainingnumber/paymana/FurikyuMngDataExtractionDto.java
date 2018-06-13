@@ -15,4 +15,5 @@ public class FurikyuMngDataExtractionDto {
 	private int expirationDate;
 	private Double numberOfDayLeft;
 	private Integer closureID;
+	private boolean haveEmploymentCode;
 }

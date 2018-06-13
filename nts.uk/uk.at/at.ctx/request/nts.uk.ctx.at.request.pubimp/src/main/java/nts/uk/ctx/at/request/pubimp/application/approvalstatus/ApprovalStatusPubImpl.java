@@ -70,7 +70,7 @@ public class ApprovalStatusPubImpl implements ApprovalStatusPub {
 	@Override
 	public List<EmployeeEmailExport> getListEmployeeEmail(List<String> listSId) {
 		List<EmployeeEmailExport> result = new ArrayList<>();
-		List<EmployeeEmailImport> listEmpEmail = employeeRequestAdapter.getApprovalStatusEmpMailAddr(listSId);
+		List<EmployeeEmailImport> listEmpEmail = approvalStatusService.findEmpMailAddr(listSId);
 		if (listEmpEmail != null) {
 			for (EmployeeEmailImport empEmail : listEmpEmail) {
 				EmployeeEmailExport newEmp = new EmployeeEmailExport(empEmail.getSId(), empEmail.getSName(),

@@ -4,6 +4,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import dialog    = nts.uk.ui.dialog;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         workCode: KnockoutObservable<string>                      = ko.observable('');
         workplaceName: KnockoutObservable<string>                 = ko.observable('');
@@ -11,7 +12,6 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         employeeId: KnockoutObservable<string>                    = ko.observable('');
         employeeName: KnockoutObservable<string>                  = ko.observable('');
         remainDays: KnockoutObservable<number>                    = ko.observable(null);
-        unit: KnockoutObservable<string>                          = ko.observable('');
         lawAtr: KnockoutObservable<number>                        = ko.observable(null);
         pickUp: KnockoutObservable<boolean>                       = ko.observable(true);;
         pause: KnockoutObservable<boolean>                        = ko.observable(true);
@@ -30,6 +30,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
         enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
+        unit: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
         constructor() {
             let self = this;
             self.initScreen();
@@ -63,52 +64,20 @@ module nts.uk.at.view.kdm001.d.viewmodel {
 
             
             self.remainDays(null);
-            self.unit("");
         }
         
         public calRemainDays(){
             let self = this;
-            if (self.pickUp()) {
-                if (self.pause()) {
-                    if (self.checkedSplit()) {
-                        self.remainDays(self.occurredDays() - self.subDays() - self.requiredDays());
-                    } else {
-                        self.remainDays(self.occurredDays() - self.subDays());
-                    }
-                } else {
-                    self.remainDays(self.occurredDays());
-                }
-                if (self.occurredDays() != null) {
-                    self.unit("日");
-                }
-                
-            } else {
-                if (self.pause()) {
-                    if (self.checkedSplit()) {
-                        self.remainDays( - self.subDays() - self.requiredDays());
-                    } else {
-                        self.remainDays( - self.subDays());
-                    }
-                    self.unit("日");
-                } else {
-                    if (self.checkedSplit()) {
-                        self.remainDays(- self.requiredDays());
-                        self.unit("日");
-                    } else {
-                        self.remainDays(null);
-                        self.unit("");
-                    }
-                }
+            if ((!self.pickUp() && !self.pause()) ||  (!self.occurredDays() && !self.subDays())) {
+                self.remainDays(null);
+                return;
             }
-            if (isNaN(self.remainDays())) {
-               self.remainDays(null);
-               self.unit("");
-            } else {
-                if (self.remainDays() == 0) {
-                    return;
-                } else if (self.remainDays()){
-                    self.remainDays(self.remainDays().toFixed(1)); 
-                }
+            let value1 = !self.pickUp() || !self.occurredDays()? 0 : self.occurredDays();
+            let value2 = !self.pause() || !self.subDays() ? 0 : self.subDays();
+            let value3 = !self.pause() || !self.checkedSplit() || !self.requiredDays() ? 0 : self.requiredDays();
+            self.remainDays(value1 - value2 - value3);
+            if (self.remainDays() !== 0){
+                self.remainDays(self.remainDays().toFixed(1));
             }
         }
         public isNaN(x) {

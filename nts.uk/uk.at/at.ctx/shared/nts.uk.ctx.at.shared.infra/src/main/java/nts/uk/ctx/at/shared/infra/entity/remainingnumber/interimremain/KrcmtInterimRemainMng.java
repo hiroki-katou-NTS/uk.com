@@ -37,6 +37,7 @@ public class KrcmtInterimRemainMng extends UkJpaEntity implements Serializable{
 	@Column(name = "REMAIN_TYPE")
 	public int remainType;
 	/**	残数分類 */
+	@Column(name = "REMAIN_ATR")
 	public int remainAtr;
 	
 	
