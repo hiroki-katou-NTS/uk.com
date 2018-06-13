@@ -10,7 +10,6 @@ module nts.uk.at.view.kal003.a.tab {
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
     import info = nts.uk.ui.dialog.info;
     export class CheckAlarmTab {
-        dataItems: KnockoutObservableArray<any>;
         //
         listExtraResultMonthly : KnockoutObservableArray<model.ExtraResultMonthly> = ko.observableArray([]);
         isAllCheckCondition: KnockoutObservable<boolean> = ko.observable(false);
@@ -30,16 +29,7 @@ module nts.uk.at.view.kal003.a.tab {
             
             self.dataItems = ko.observableArray([]);
             //
-            self.category = ko.observable(category);
-            
-            
-            let temp = [];
-            
-            for(var i = 1; i <= 10; i++) {
-                temp.push({ rowId : i, name: '休暇の優先順位をチェックする', message: '年休を優先して使ってください' });
-            }
-            
-            self.dataItems = temp;
+            self.category = ko.observable(model.CATEGORY.MONTHLY);
             
             $("#fixed-table2").ntsFixedTable({ height: 200 });
             
@@ -78,7 +68,7 @@ module nts.uk.at.view.kal003.a.tab {
                 dialog.alertError({ messageId: "Msg_833" });
                 return;
             }
-            let extraResultMonthly = shareutils.getDefaultExtraResultMonthly(0);
+            let extraResultMonthly = shareutils.getDefaultExtraResultMonthly({ typeCheckItem : 0 });
             extraResultMonthly.rowId(self.listExtraResultMonthly().length + 1);
 
             self.listExtraResultMonthly.push(extraResultMonthly);
@@ -106,8 +96,9 @@ module nts.uk.at.view.kal003.a.tab {
 //        private showDialogKal003B(workRecordExtractingCondition: model.WorkRecordExtractingCondition, rowId: number) {
         private showDialogKal003B( extraResultMonthly :model.ExtraResultMonthly ,rowId: number) {
             let self = this;
-            let sendData = ko.toJS(extraResultMonthly);
-            sendData = { data: shareutils.convertArrayOfExtraResultMonthlyToJS(sendData, extraResultMonthly), category: self.category() };
+//            let sendData = ko.toJS(extraResultMonthly);
+//            sendData = { data: shareutils.convertArrayOfExtraResultMonthlyToJS(sendData, extraResultMonthly), category: self.category() };
+            let sendData = { data: ko.toJS( extraResultMonthly), category: self.category() };
 
             windows.setShared('inputKal003b', sendData);
             windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 600, width: 1020 }).onClosed(function(): any {
@@ -115,13 +106,15 @@ module nts.uk.at.view.kal003.a.tab {
                 let data = windows.getShared('outputKal003b');
                 if (data != null && data != undefined) {
                     if (rowId > 0 && rowId <= self.listExtraResultMonthly().length) {
-                        self.listExtraResultMonthly()[rowId - 1] = shareutils.convertTransferDataToExtraResultMonthly(data);
+                        self.listExtraResultMonthly()[rowId - 1] = model.ExtraResultMonthly.clone(data);
                         self.listExtraResultMonthly.valueHasMutated();
                     }
                 }
                 block.clear();
             });
         }
+        
+        
         
         /**
          * Execute deleting the selected WorkRecordExtractingCondition on screen 
@@ -130,6 +123,7 @@ module nts.uk.at.view.kal003.a.tab {
             let self = this;
             block.invisible();
             if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length) {
+                block.clear();
                 return;
             }
             self.listExtraResultMonthly.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
