@@ -298,6 +298,9 @@ module nts.uk.at.view.kal003.share {
             let lstErAlAtdItemConNew = [];
             for(let i = 0;i<3;i++){
                 let value = lstErAlAtdItemCon[i];
+                if(_.isNil(value)){
+                    value = getDefaultAttdItemGroup1Item()[0];                        
+                }
                 let erAlAtdItemCon = {};
                 erAlAtdItemCon["targetNO"] = i;
                 erAlAtdItemCon["conditionAtr"] = value.conditionAtr(); 
