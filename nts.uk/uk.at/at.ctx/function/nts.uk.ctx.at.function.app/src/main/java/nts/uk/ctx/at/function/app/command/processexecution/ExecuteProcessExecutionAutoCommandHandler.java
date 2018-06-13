@@ -344,7 +344,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				|| !processExecutionLogManage.getOverallStatus().isPresent())) {
 			processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
 			processExecutionLogManage.setOverallStatus(EndStatus.SUCCESS);
-		} else {
+		} else if(this.isAbnormalTermEachTask(procExecLog)) {
 			processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
 			processExecutionLogManage.setOverallStatus(EndStatus.ABNORMAL_END);
 		}
