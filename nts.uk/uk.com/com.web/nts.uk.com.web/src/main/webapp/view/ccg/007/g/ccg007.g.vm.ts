@@ -64,6 +64,8 @@ module nts.uk.pr.view.ccg007.g {
                             self.OpenDialogH(data.url);
                             blockUI.clear();
                         });
+                        
+                        blockUI.clear();
                     }
                 }).fail(function(res) {
                     //Return Dialog Error

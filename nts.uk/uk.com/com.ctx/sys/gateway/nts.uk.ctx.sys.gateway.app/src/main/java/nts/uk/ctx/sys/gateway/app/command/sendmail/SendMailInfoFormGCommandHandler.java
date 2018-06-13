@@ -59,7 +59,7 @@ public class SendMailInfoFormGCommandHandler extends CommandHandlerWithResult<Se
 		String companyId = command.getContractCode() + "-" + command.getCompanyCode();
 
 		// Get EmployeeInfo
-		EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId, command.getContractCode());
+		EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId, command.getEmployeeCode());
 
 		if (employee != null) {
 			//get userInfo
