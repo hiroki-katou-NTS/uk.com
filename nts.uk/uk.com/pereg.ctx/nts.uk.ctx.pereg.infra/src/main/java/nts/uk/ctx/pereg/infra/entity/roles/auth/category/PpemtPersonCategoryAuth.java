@@ -30,10 +30,6 @@ public class PpemtPersonCategoryAuth extends UkJpaEntity implements Serializable
 	@Column(name = "ALLOW_OTHER_REF_ATR")
 	public int allowOtherRef;	
 
-	@Basic(optional = false)
-	@Column(name = "ALLOW_OTHER_C_REF_ATR")
-	public int allowOtherCompanyRef;
-
 	@Column(name = "SELF_PAST_HIS_AUTH_TYPE")
 	public Integer selfPastHisAuth;
 
@@ -79,7 +75,6 @@ public class PpemtPersonCategoryAuth extends UkJpaEntity implements Serializable
 
 		this.allowPersonRef = domain.getAllowPersonRef().value;
 		this.allowOtherRef = domain.getAllowOtherRef().value;
-		this.allowOtherCompanyRef = domain.getAllowOtherCompanyRef().value;
 		this.selfPastHisAuth = domain.getSelfPastHisAuth() == null? null: domain.getSelfPastHisAuth().value;
 		this.selfFutureHisAuth = domain.getSelfFutureHisAuth() == null? null: domain.getSelfFutureHisAuth().value;
 		this.selfAllowAddHis = domain.getSelfAllowAddHis() == null? null: domain.getSelfAllowAddHis().value;
