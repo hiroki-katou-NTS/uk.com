@@ -107,4 +107,13 @@ public class HolidayShipmentDto {
 	 * 就業時間帯コード
 	 */
 	private String wkTimeCD;
+	
+	/**
+	 * 承認処理時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenApprovalFlg;
+	/**
+	 * 新規登録時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenRegisterFlg;
 }

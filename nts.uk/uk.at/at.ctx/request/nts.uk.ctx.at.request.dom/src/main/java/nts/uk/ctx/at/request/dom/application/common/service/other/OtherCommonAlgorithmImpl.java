@@ -285,7 +285,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Override
 	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application_New application) {
 		Optional<ApprovalTemp> opApprovalTemp = approvalTempRepository.getAppTem();
-		if(!opApprovalTemp.isPresent()){
+		if(!opApprovalTemp.isPresent()||(opApprovalTemp.get().getContent()==null)){
 			throw new RuntimeException("no setting ApprovalTemp 申請承認メールテンプレート");
 		}
 		MailResult mailResult = sendMailApprover(employeeIDList, application, opApprovalTemp.get().getContent().toString());
@@ -320,15 +320,25 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		paramIDList.add(loginID);
 		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, paramIDList, 6);
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(loginID)).findAny()
-				.map(x -> { if(CollectionUtil.isEmpty(x.getOutGoingMails())){ return null; } else { return x.getOutGoingMails().get(0).getEmailAddress(); } })
-				.orElse(null);
+				.map(x -> { 
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
+						return null; 
+					} else { 
+						return x.getOutGoingMails().get(0).getEmailAddress(); 
+					} 
+				}).orElse(null);
 		String loginName = employeeAdaptor.getEmployeeName(loginID);
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		for(String employeeID : listDestination){
 			String employeeName = employeeAdaptor.getEmployeeName(employeeID);
 			String approverMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
-					.map(x -> { if(CollectionUtil.isEmpty(x.getOutGoingMails())){ return null; } else { return x.getOutGoingMails().get(0).getEmailAddress(); } })
-					.orElse(null);
+					.map(x -> { 
+						if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
+							return null; 
+						} else { 
+							return x.getOutGoingMails().get(0).getEmailAddress(); 
+						} 
+					}).orElse(null);
 			if(Strings.isBlank(approverMail)){
 				failList.add(employeeName);
 				continue;

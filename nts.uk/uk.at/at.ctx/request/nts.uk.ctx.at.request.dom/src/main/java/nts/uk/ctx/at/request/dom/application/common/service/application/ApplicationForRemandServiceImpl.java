@@ -63,8 +63,13 @@ public class ApplicationForRemandServiceImpl implements IApplicationForRemandSer
 					y.getListApprover().forEach(z -> {
 						Optional<AffJobTitleHistoryImport> approverJobTitle = jobTitleAdapter.getJobTitlebBySIDAndDate(z.getApproverID(), app.getAppDate());
 						String approverPosition = approverJobTitle.isPresent() ? approverJobTitle.get().getJobTitleName() : "";
+						String jobtitleAgent = "";
+						if(z.getRepresenterID() != ""){
+							Optional<AffJobTitleHistoryImport> agentJobTitle = jobTitleAdapter.getJobTitlebBySIDAndDate(z.getRepresenterID(), app.getAppDate());
+							jobtitleAgent = agentJobTitle.isPresent() ? agentJobTitle.get().getJobTitleName() : "";
+						}
 						listApprover.add(new DetailApproverOutput(z.getApproverID(), z.getApproverName(), z.getRepresenterID(),
-								z.getRepresenterName(), approverPosition));
+								z.getRepresenterName(), approverPosition, jobtitleAgent));
 					});
 					listApprovalFrame
 							.add(new DetailApprovalFrameOutput(y.getPhaseOrder(), y.getApprovalReason(), listApprover));

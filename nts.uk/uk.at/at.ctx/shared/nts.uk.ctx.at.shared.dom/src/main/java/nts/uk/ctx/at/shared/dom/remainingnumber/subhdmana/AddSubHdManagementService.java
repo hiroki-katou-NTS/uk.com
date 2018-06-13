@@ -158,6 +158,8 @@ public class AddSubHdManagementService {
 						subHdManagementData.getCheckedHoliday()));
 				// ドメインモデル「代休管理データ」を読み込む
 				GeneralDate dateSubHoliday = subHdManagementData.getDateSubHoliday();
+				leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId, employeeId,
+						dateSubHoliday);
 				compensatoryDayOffManaDatas = repoComDayOffManaData.getBySidWithHolidayDateCondition(companyId,
 						employeeId, dateSubHoliday);
 				if (!compensatoryDayOffManaDatas.isEmpty() || !leaveManagementDatas.isEmpty()) {

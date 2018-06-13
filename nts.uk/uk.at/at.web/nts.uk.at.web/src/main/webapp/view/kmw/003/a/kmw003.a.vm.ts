@@ -33,6 +33,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         displayWhenZero: KnockoutObservable<boolean> = ko.observable(false);
 
         showProfileIcon: KnockoutObservable<boolean> = ko.observable(false);
+        showHeaderNumber: KnockoutObservable<boolean> = ko.observable(false);
         //ccg001 component: search employee
         ccg001: any;
         baseDate: KnockoutObservable<Date> = ko.observable(new Date());
@@ -96,6 +97,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         
         closureDateDto : KnockoutObservable<any> = ko.observable(null);
         
+        dailyPerfomanceData: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         constructor() {
             let self = this;
             self.yearMonth = ko.observable(Number(moment(new Date()).format("YYYYMM")));
@@ -133,7 +136,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             self.yearMonth.subscribe(value => {
                 //期間を変更する
-                self.updateDate(value);
+                if(!nts.uk.ui.errors.hasError() && value != undefined) self.updateDate(value);
             });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -149,6 +152,133 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     $("#dpGrid").ntsGrid("destroy");
                 }
                  self.reloadGrid();
+            });
+            
+            self.showHeaderNumber.subscribe((val) => {
+                let headerText
+                _.each(self.optionalHeader, header => {
+                    if (header.headerText != "提出済みの申請" && header.headerText != "申請") {
+                        if (header.group == undefined && header.group == null) {
+                            if (self.showHeaderNumber()) {
+                                headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+                                $("#dpGrid").ntsGrid("headerText", header.key, headerText, false);
+                            } else {
+                                headerText = header.headerText.split(" ")[0];
+                                $("#dpGrid").ntsGrid("headerText", header.key, headerText, false);
+                            }
+                        } else {
+                            if (self.showHeaderNumber()) {
+                                headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
+                                $("#dpGrid").ntsGrid("headerText", header.headerText, headerText, true);
+                            } else {
+                                headerText = header.headerText.split(" ")[0];
+                                $("#dpGrid").ntsGrid("headerText", header.headerText, headerText, true);
+                            }
+                        }
+                    }
+                });
+            });
+            
+            self.displayWhenZero.subscribe(val => {
+                //self.displayWhenZero();
+                self.displayNumberZero();
+            });
+        }
+        
+        displayNumberZero() {
+            let self = this;
+            let dataSource = $("#dpGrid").igGrid("option", "dataSource");
+            let dataTemp = [];
+            if (!self.displayWhenZero()) {
+                _.each(dataSource, data => {
+                    var dtt: any = {};
+                    _.each(data, (val, indx) => {
+                        if (String(val) == "0" || String(val) == "0:00") {
+                            dtt[indx] = "";
+                        } else {
+                            dtt[indx] = val;
+                        }
+                    });
+                    dataTemp.push(dtt);
+                });
+                $("#dpGrid").igGrid("option", "dataSource", dataTemp);
+            } else {
+                let dataSourceOld: any = self.formatDate(self.dailyPerfomanceData());
+                let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+                let group: any = _.groupBy(dataChange, "rowId");
+                _.each(dataSourceOld, data => {
+                    var dtt: any = {};
+                    if (group[data.id]) {
+                        dtt = data;
+                        _.each(group[data.id], val => {
+                            dtt[val.columnKey] = val.value;
+                        });
+                        dataTemp.push(dtt);
+                    } else {
+                        dataTemp.push(data);
+                    }
+                });
+                $("#dpGrid").igGrid("option", "dataSource", dataTemp);
+            }
+        }
+        createSumColumn(data: any) {
+            var self = this;
+            _.each(data.lstControlDisplayItem.columnSettings, function(item) {
+                if (self.displayFormat() == 0) {
+                    if (item.columnKey == "date") {
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
+                    }
+                } else {
+                    if (item.columnKey == "employeeCode") {
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
+                    }
+                }
+                if (item.typeFormat != null && item.typeFormat != undefined) {
+                    if (item.typeFormat == 2) {
+                        //so lan
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalNumber, this),
+                            order: 0
+                        }]
+                    }
+                    else if (item.typeFormat == 3) {
+                        //date
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalDay, this),
+                            order: 0
+                        }]
+                    }
+                    else if (item.typeFormat == 1) {
+                        //thoi gian
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalTime, this),
+                            order: 0
+                        }]
+                    }
+                    else if (item.typeFormat == 4) {
+                        //so tien 
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalMoney, this),
+                            order: 0
+                        }]
+                    }
+                }
+                delete item.typeFormat;
+                self.columnSettings(data.lstControlDisplayItem.columnSettings);
             });
         }
         startPage(): JQueryPromise<any> {
@@ -185,6 +315,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.dataAll(data);
                 self.itemValueAll(data.itemValues);
                 self.receiveData(data);
+                self.createSumColumn(data);
+                self.columnSettings(data.lstControlDisplayItem.columnSettings);
                 /*********************************
                  * Screen data
                  *********************************/
@@ -214,6 +346,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.extractionData();
                 self.loadGrid();
                 self.employmentCode(data.employmentCode);
+                self.dailyPerfomanceData(self.dpData);                
+                self.displayNumberZero();
                 self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
 
                 let employeeLogin: any = _.find(self.lstEmployee(), function(data) {
@@ -309,6 +443,35 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 }
             }
         };
+        
+        insertUpdate2(){
+            var self = this;
+           self.insertUpdate();
+        }
+        
+        btnSaveColumnWidth_Click() {
+            var self = this;
+            let command = {
+                lstHeader: {},
+                formatCode: self.formatCodes()
+            };
+            let jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
+            let valueTemp = 0;
+            _.forEach($.parseJSON(jsonColumnWith), (value, key) => {
+                if (key.indexOf('A') != -1) {
+                    if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
+                        command.lstHeader[key.substring(1, key.length)] = value;
+                    }
+                }
+                if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
+                    valueTemp = value;
+                } else if (key.indexOf('Name') != -1) {
+                    command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
+                    valueTemp = 0;
+                }
+            });
+//            service.saveColumnWidth(command);
+        }
         
         getPrimitiveValue(value: any, atr: any): string {
             var self = this;
@@ -623,34 +786,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     name: 'Summaries',
                     showSummariesButton: false,
                     showDropDownButton: false,
-                    columnSettings: [
-                        {
-                            columnKey: 'id', allowSummaries: false,
-                            summaryOperands: [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }]
-                        },
-                        {
-                            columnKey: 'state', allowSummaries: true,
-                            summaryOperands: [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }]
-                        },
-                        { columnKey: 'error', allowSummaries: false },
-                        { columnKey: 'employeeCode', allowSummaries: false },
-                        { columnKey: 'employeeName', allowSummaries: false },
-                        { columnKey: 'picture-person', allowSummaries: false },
-                        { columnKey: 'identify', allowSummaries: false },
-                        { columnKey: 'dailyconfirm', allowSummaries: false },
-                        { columnKey: 'dailyperformace', allowSummaries: false },
-                        {
-                            columnKey: 'time', allowSummaries: true,
-                            summaryOperands: [{
-                                rowDisplayLabel: "",
-                                type: 'custom',
-                                summaryCalculator: 1,
-                                order: 0
-                            }]
-                        },
-
-                        { columnKey: 'alert', allowSummaries: false }
-                    ],
+                    columnSettings: self.columnSettings(),
                     resultTemplate: '{1}'
                 }
             ];
@@ -715,6 +851,86 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }
             return features;
         }
+        totalDay(data) {
+            if (!$("#dpGrid").data("igGridPaging")) return;
+            let numberBefore = 0;
+            let numberAfter = 0;
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
+            let startIndex: any = currentPageIndex * pageSize;
+            let endIndex: any = startIndex + pageSize;
+            _.forEach(data, function(d, i) {                
+                let before = String(d).split('.')[0];
+                let after = String(d).split('.')[1];
+                if(isNaN(after)) after = 0;
+                let aaa =  parseInt(before);
+                let bbb =  parseInt(after);
+                numberBefore += aaa;
+                numberAfter += bbb;
+                if(numberAfter > 9){
+                    numberBefore++;
+                    numberAfter = numberAfter - 10;
+                }
+            });
+            return numberBefore + "." + numberAfter;
+        }
+        totalNumber(data) {
+            if (!$("#dpGrid").data("igGridPaging")) return;
+            let total = 0;
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
+            let startIndex: any = currentPageIndex * pageSize;
+            let endIndex: any = startIndex + pageSize;
+            _.forEach(data, function(d, i) {
+                if (i < startIndex || i >= endIndex) return;
+                let n = parseInt(d);
+                if (!isNaN(n)) total += n;
+            });
+            return total;
+        }
+        totalTime(data) {
+            if (!$("#dpGrid").data("igGridPaging")) return;
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
+            let startIndex: any = currentPageIndex * pageSize;
+            let endIndex: any = startIndex + pageSize;
+            let total = 0;
+            _.forEach(data, function(d, i) {
+                if (i < startIndex || i >= endIndex) return;
+                if (d != "") {
+                    total = total + moment.duration(d).asMinutes();
+                }
+            });
+            let hours = total > 0 ? Math.floor(total / 60) : Math.ceil(total / 60);
+            let minus = Math.abs(total % 60);
+            minus = (minus < 10) ? '0' + minus : minus;
+            return ((total < 0 && hours == 0) ? "-" + hours : hours) + ":" + minus;
+        }
+
+        totalMoney(data) {
+            if (!$("#dpGrid").data("igGridPaging")) return;
+            let total = 0;
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
+            let startIndex: any = currentPageIndex * pageSize;
+            let endIndex: any = startIndex + pageSize;
+            _.forEach(data, function(d, i) {
+                let valueResult = "";
+                if (i < startIndex || i >= endIndex) return;
+                if (String(d).indexOf(",") != -1) {
+                    for (let i = 0; i < String(d).split(',').length; i++) {
+                        valueResult += String(d).split(',')[i];
+                    }
+                    let n = parseFloat(valueResult);
+                    if (!isNaN(n)) total += n;
+                } else {
+                    let n = parseFloat(d);
+                    if (!isNaN(n)) total += n;
+                }
+            });
+            return total.toLocaleString('en');
+        }
+        
         /**
          * Setting header style
          */
@@ -829,13 +1045,19 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
                                 header["columnCssClass"] = "currency-symbol";
                                 header.constraint["min"] = "0";
-                                header.constraint["max"] = "9999999999"
+                                header.constraint["max"] = "99999999"
                             } else if (header.constraint.cDisplayType == "Clock") {
                                 header["columnCssClass"] = "right-align";
-                                header.constraint["min"] = "-10:00";
-                                header.constraint["max"] = "200:30"
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "999:59"
                             } else if (header.constraint.cDisplayType == "Integer") {
                                 header["columnCssClass"] = "right-align";
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "99"
+                            } else if (header.constraint.cDisplayType == "HalfInt") {
+                                header["columnCssClass"] = "right-align";
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "99.5"
                             }
                             delete header.constraint.primitiveValue;
                         } else {

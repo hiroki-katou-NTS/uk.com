@@ -42,7 +42,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			+ " WHERE c.breakDayOffKey.dayOffMngId = :mngId"
 			+ " AND c.dayOffMngAtr = :mngAtr";
 	private static final String QUERY_BY_EXPIRATIONDATE = "SELECT c FROM KrcmtInterimBreakMng c"
-			+ " WHERE c.breakMngId IN breakMngIds"
+			+ " WHERE c.breakMngId IN :breakMngIds"
 			+ " AND c.unUsedDays > :unUsedDays"
 			+ " AND c.expirationDate >= :startDate"
 			+ " AND c.expirationDate <= :endDate";
@@ -197,6 +197,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		KrcmtInterimBreakDayOff entity = this.getEntityManager().find(KrcmtInterimBreakDayOff.class, key);
 		if (entity == null){
 			entity = new KrcmtInterimBreakDayOff();
+			entity.breakDayOffKey = new KrcmtInterimBreakDayOffPK();
 			entity.breakDayOffKey.breakMngId = domain.getBreakManaId();
 			entity.breakDayOffKey.dayOffMngId = domain.getDayOffManaId();
 			entity.breakMngAtr = domain.getBreakManaAtr().values;
