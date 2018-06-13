@@ -1870,7 +1870,9 @@ public class ProgramsManager {
 			"/view/cmm/005/c/index.xhtml");
 	public static final Program CMF005F = new Program(WebAppId.COM, ProgramIdConsts.CMF005F, "CMF005_6",
 			"/view/cmm/005/f/index.xhtml");
-	
+	/** CCG009 */
+	public static final Program CCG009A = new Program(WebAppId.COM, ProgramIdConsts.CCG009A, "CCG009_1",
+			"/view/ccg/009/index.xhtml");
 
 	/**
 	 * All programs map.
