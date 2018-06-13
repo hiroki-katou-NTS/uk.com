@@ -123,7 +123,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,
                         categoryType: data.categoryType, isAbolition: data.abolition,
                         personEmployeeType: data.personEmployeeType, itemList: data.itemLst
-                    }, data.systemRequired, data.isExistedItemLst);
+                    }, data.canAbolition, data.isExistedItemLst);
                     if (data.itemLst.length > 0) {
                         self.currentCategory().currentItemId(data.itemLst[0].id);
                     }
@@ -457,14 +457,14 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.isExistedItemLst = ko.observable(0);
         }
 
-        setData(params: any, displayIsAbolished: number, isExistedItemLst: number) {
+        setData(params: any, displayIsAbolished: boolean, isExistedItemLst: number) {
             this.id(params.id);
             this.categoryNameDefault(params.categoryNameDefault);
             this.categoryName(params.categoryName);
             this.categoryType(params.categoryType);
             this.isAbolition(params.isAbolition);
             this.canAbolition(params.canAbolition);
-            this.displayIsAbolished(displayIsAbolished);
+            this.displayIsAbolished(displayIsAbolished == true? 1 : 0);
             this.isExistedItemLst(isExistedItemLst);
             this.personEmployeeType = params.personEmployeeType;
             this.itemList(params.itemList);

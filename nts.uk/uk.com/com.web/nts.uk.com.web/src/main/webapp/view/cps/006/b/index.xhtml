@@ -94,7 +94,7 @@
 									data-bind="ntsTextEditor: {name: '#[CPS006_16]', value: itemNameText, constraint:'ItemName', required:true}" />
 							</div>
 
-							<com:ko-if bind="currentItem().systemRequired === 0">
+							<com:ko-if bind="currentItem().canAbolition === true">
 								<div id="B2_5"
 									data-bind="ntsCheckBox: { checked: ckbIsAbolition }">#{i18n.getText('CPS006_24')}</div>
 							</com:ko-if>
