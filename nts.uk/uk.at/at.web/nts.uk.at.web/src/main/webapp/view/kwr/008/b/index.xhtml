@@ -71,7 +71,7 @@
                     <!-- B6 -->
                     <div class="valign-center control-group " style="margin-top: 5px;">
                     	<div data-bind ="ntsFormLabel: { required: true }" >#{i18n.getText('KWR008_35')}</div>
-                    	<div class="listSheetPrintingForm" data-bind="ntsSwitchButton: {
+                    	<div tabindex="8" class="listSheetPrintingForm" data-bind="ntsSwitchButton: {
 							name: '#[KWR008_35]',
 							options: listSheetPrintingForm,
 							optionsValue: 'code',
@@ -85,7 +85,7 @@
                     <div style="margin-top: 5px;">
                         <!-- B4_1 -->
                         <div style="margin-bottom: 5px" data-bind ="ntsFormLabel: { required: true }" >#{i18n.getText('KWR008_27')}</div>
-                        <div tabindex="8">
+                        <div tabindex="9">
                         <table id="table-output-items" >
                            <colgroup>
                                 <col width="38"/>
@@ -106,9 +106,9 @@
                            </thead>
                            <tbody data-bind = "foreach: outputItem()">
                               <tr>
-                                <td style="text-align: center;"><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClass, enable: $parent.checkEnable36($data) }"></div></td>
+                                <td style="text-align: center;"><div tabindex="-1" data-bind="ntsCheckBox: {checked: $data.useClass, enable: $parent.checkEnable36($data) }"></div></td>
                                 <td>
-                                    <input class="headingName" data-bind="ntsTextEditor: {
+                                    <input tabindex="-1" class="headingName" data-bind="ntsTextEditor: {
                                         name: '#[KWR008_31]',
                                         value : $data.headingName,
                                         required: false,
@@ -116,9 +116,9 @@
                                         option : { width : '190px'},
                                         constraint: 'ItemOutTblBookHeadingName'}" />
                                 </td>
-                                <td style="text-align:center;"><button id="btnSettingB16_5" class="small" data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 1">#{i18n.getText('KWR008_34')}</button></td>
+                                <td style="text-align:center;"><button tabindex="-1" id="btnSettingB16_5" class="small" data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 1">#{i18n.getText('KWR008_34')}</button></td>
                                 <td>
-                                    <div class="combo-box"
+                                    <div tabindex="-1" class="combo-box"
                                                 data-bind="ntsComboBox: {
                                                     options: $parent.valOutFormat,
                                                     optionsValue: 'code',
@@ -142,13 +142,13 @@
                     <div data-bind="visible: currentSetOutputSettingCode().printForm">
 	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px;">
 	                        <!-- B5_1 -->
-	                        <div tabindex="9" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr  }">${i18n.getText('KWR008_35')}</div>
+	                        <div tabindex="10" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr  }">${i18n.getText('KWR008_35')}</div>
 	                    </div>
 	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px; margin-bottom:5px">
 	                        <!-- B5_2 -->
 	                        <span class="label">#{i18n.getText('KWR008_36')}</span>
 	                        <!-- B5_3 -->
-	                        <div id="B5_3" tabindex="10"  data-bind="ntsRadioBoxGroup: {
+	                        <div id="B5_3" tabindex="11"  data-bind="ntsRadioBoxGroup: {
 	                            options: $parent.itemRadio,
 	                            optionsValue: 'code',
 	                            optionsText: 'name',
