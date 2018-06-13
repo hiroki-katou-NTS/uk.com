@@ -14894,7 +14894,7 @@ var nts;
                             options = _(options)
                                 .map(function (m) {
                                 var c = {}, k = ko.toJS(m), t = k[optionsText], v = k[optionsValue], n = _.omit(k, [optionsValue]), nt = _.map(props, function (p) { return k[p]; }).join(' ').trim();
-                                c[optionsValue] = v || '';
+                                c[optionsValue] = !_.isNil(v) ? v : '';
                                 c['nts_' + optionsText] = nt || t || ' ';
                                 return _.extend(n, c);
                             })
