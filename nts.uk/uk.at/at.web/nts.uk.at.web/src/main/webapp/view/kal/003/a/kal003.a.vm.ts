@@ -248,6 +248,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     obj.code = self.selectedAlarmCheckCondition().code();
                     obj.useAtr(+obj.useAtr());
                 });
+                
             }
 
             let command: any = ko.toJS(data);
@@ -415,7 +416,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 return new model.AgreeCondOt(y);
                             });
 
-                            self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
+//                            self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
+                            self.tabAgreementError.listAgreementError(_.orderBy(listAgreementErrorKnockout, ['period'], ['asc']));
                             self.tabAgreementHour.listAgreementHour(_.sortBy(listAgreementHourKnockout, ['no']));
                         }
 
