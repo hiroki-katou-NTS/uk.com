@@ -322,11 +322,11 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(loginID)).findAny()
 				.map(x -> { 
 					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
-						return null; 
+						return ""; 
 					} else { 
 						return x.getOutGoingMails().get(0).getEmailAddress(); 
 					} 
-				}).orElse(null);
+				}).orElse("");
 		String loginName = employeeAdaptor.getEmployeeName(loginID);
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		for(String employeeID : listDestination){
@@ -334,11 +334,11 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			String approverMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
 					.map(x -> { 
 						if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
-							return null; 
+							return ""; 
 						} else { 
 							return x.getOutGoingMails().get(0).getEmailAddress(); 
 						} 
-					}).orElse(null);
+					}).orElse("");
 			if(Strings.isBlank(approverMail)){
 				failList.add(employeeName);
 				continue;
@@ -397,21 +397,21 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(loginID)).findAny()
 				.map(x -> { 
 					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
-						return null; 
+						return ""; 
 					} else {
 						return x.getOutGoingMails().get(0).getEmailAddress(); 
 					} 
-				}).orElse(null);
+				}).orElse("");
 		String loginName = employeeAdaptor.getEmployeeName(loginID);
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		String applicantMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
 				.map(x -> { 
 					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
-						return null; 
+						return ""; 
 					} else { 
 						return x.getOutGoingMails().get(0).getEmailAddress(); 
 					} 
-				}).orElse(null);
+				}).orElse("");
 		if(Strings.isBlank(applicantMail)){
 			failList.add(employeeName);
 			return new MailResult(successList, failList);

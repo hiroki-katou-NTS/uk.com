@@ -131,12 +131,12 @@ public class MonthlyPerformanceDisplay {
         	for (PSheet sheet : param.getSheets()) {
     			sheet.getDisplayItems().retainAll(monthlyItemAuthDto.getListDisplayAndInputMonthly());
     			if(sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0)
-    				lstAtdItemUnique.putAll(sheet.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x)));
+    				lstAtdItemUnique.putAll(sheet.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x, (x, y) -> x)));
     		}
 		} else {
 			for (PSheet sheet2 : param.getSheets()) {
     			if(sheet2.getDisplayItems() != null && sheet2.getDisplayItems().size() > 0)
-    				lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x)));
+    				lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x, (x, y) -> x)));
     		}
 		}
 		
@@ -221,7 +221,7 @@ public class MonthlyPerformanceDisplay {
 		// Merge Attendance Item in sheet
 		for (Integer sheet : sheetNos) {
 			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
-			Set<PAttendanceItem> displayItems = new HashSet<>();
+			List<PAttendanceItem> displayItems = new ArrayList<>();
 			lstMPformats.forEach(format -> {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
@@ -230,7 +230,7 @@ public class MonthlyPerformanceDisplay {
 					sheetDto.getListDisplayTimeItem().sort((t1,t2)->t1.getDisplayOrder() - t2.getDisplayOrder());
 					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
-							.collect(Collectors.toSet()));
+							.collect(Collectors.toList()));
 				}
 			});
 			pSheet.setDisplayItems(displayItems);
@@ -286,7 +286,7 @@ public class MonthlyPerformanceDisplay {
 		// Merge Attendance Item in sheet
 		for (Integer sheet : sheetNos) {
 			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
-			Set<PAttendanceItem> displayItems = new HashSet<>();
+			List<PAttendanceItem> displayItems = new ArrayList<>();
 			monthlyRecordWorkTypeDtos.forEach(format -> {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
@@ -296,7 +296,7 @@ public class MonthlyPerformanceDisplay {
 					
 					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
-							.collect(Collectors.toSet()));
+							.collect(Collectors.toList()));
 					//displayItems.stream().sorted(Comparator.comparing(PAttendanceItem::getDisplayOrder).reversed());
 				}
 			});
@@ -386,8 +386,9 @@ public class MonthlyPerformanceDisplay {
 					// 日の実績が存在する
 					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist()
 							? LockStatus.UNLOCK : LockStatus.LOCK,
-					// TODO
-					LockStatus.UNLOCK);
+					// エラーが0件である						
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyRecordError()
+							? LockStatus.LOCK : LockStatus.UNLOCK);
 			monthlyLockStatusLst.add(monthlyLockStatus);
 		}
 		// 過去実績の修正ロック
