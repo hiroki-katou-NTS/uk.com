@@ -16,7 +16,6 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 	@Override
 	protected void handle(CommandHandlerContext<SyncServerUploadProcessingCommand> context) {
 		uploadProcessingService.uploadProcessing(context.getCommand().getFileId(), context.getCommand().getFileName(), context.getCommand().getPassword());
-		
 	}
 	
 }
