@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.shared.infra.repository;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarm;
@@ -9,7 +11,7 @@ import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmDetail;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmRepository;
 import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarm;
 import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmDetail;
-
+@Stateless
 public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageAlarmRepository{
 	// toppage alarm table
 	private final String SELECT_BYCOM = "SELECT c FROM KrcstToppageAlarm c WHERE c.companyId = :companyId ";
