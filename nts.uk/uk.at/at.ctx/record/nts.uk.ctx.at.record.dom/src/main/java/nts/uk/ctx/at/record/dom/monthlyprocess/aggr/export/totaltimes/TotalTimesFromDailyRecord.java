@@ -170,7 +170,6 @@ public class TotalTimesFromDailyRecord {
 			
 			for (val totalTimes : totalTimesList){
 				if (totalTimes.getUseAtr() == UseAtr.NotUse) continue;
-				if (totalTimes.getTotalCondition().getAtdItemId() == null) continue;
 				val totalCountNo = totalTimes.getTotalCountNo();
 				val totalCondition = totalTimes.getTotalCondition();
 				val result = results.get(totalCountNo);
@@ -231,29 +230,32 @@ public class TotalTimesFromDailyRecord {
 				}
 				if (!isTargetAttendance) continue;
 				
-				// 日別実績を回数集計用のクラスに変換
-				val dailyConverter = attendanceItemConverter.createDailyConverter();
-				val dailyItems = dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
-				
-				// 勤務時間の判断
-				val itemValOpt = dailyItems.convert(totalCondition.getAtdItemId());
-				if (!itemValOpt.isPresent()) continue;
-				if (!itemValOpt.get().getValueType().isInteger()) continue;
-				Integer itemVal = itemValOpt.get().value();
-				boolean isTargetValue = true;
-				if (totalCondition.getLowerLimitSettingAtr() == UseAtr.Use){
-					// 下限未満なら、集計しない
-					if (totalCondition.getThresoldLowerLimit() != null){
-						if (itemVal < totalCondition.getThresoldLowerLimit().v()) isTargetValue = false;
+				if (totalTimes.getTotalCondition().getAtdItemId() != null){
+					
+					// 日別実績を回数集計用のクラスに変換
+					val dailyConverter = attendanceItemConverter.createDailyConverter();
+					val dailyItems = dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
+					
+					// 勤務時間の判断
+					val itemValOpt = dailyItems.convert(totalCondition.getAtdItemId());
+					if (!itemValOpt.isPresent()) continue;
+					if (!itemValOpt.get().getValueType().isInteger()) continue;
+					Integer itemVal = itemValOpt.get().value();
+					boolean isTargetValue = true;
+					if (totalCondition.getLowerLimitSettingAtr() == UseAtr.Use){
+						// 下限未満なら、集計しない
+						if (totalCondition.getThresoldLowerLimit() != null){
+							if (itemVal < totalCondition.getThresoldLowerLimit().v()) isTargetValue = false;
+						}
 					}
-				}
-				if (totalCondition.getUpperLimitSettingAtr() == UseAtr.Use){
-					// 上限以上なら、集計しない
-					if (totalCondition.getThresoldUpperLimit() != null){
-						if (itemVal >= totalCondition.getThresoldUpperLimit().v()) isTargetValue = false;
+					if (totalCondition.getUpperLimitSettingAtr() == UseAtr.Use){
+						// 上限以上なら、集計しない
+						if (totalCondition.getThresoldUpperLimit() != null){
+							if (itemVal >= totalCondition.getThresoldUpperLimit().v()) isTargetValue = false;
+						}
 					}
+					if (!isTargetValue) continue;
 				}
-				if (!isTargetValue) continue;
 
 				// 回数を取得
 				double count = 0.0;

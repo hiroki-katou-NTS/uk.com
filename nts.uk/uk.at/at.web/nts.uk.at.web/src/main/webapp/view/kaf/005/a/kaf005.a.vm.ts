@@ -556,7 +556,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
                 flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
                 divergenceReasonContent: divergenceReason,
-                sendMail: self.manualSendMailAtr(),
+                sendMail: self.checkBoxValue(),
                 overtimeAtr: self.overtimeAtr(),
                 calculateFlag: self.calculateFlag()
             };
@@ -613,16 +613,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             service.createOvertime(overtime).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                            location.reload();
-                        });    
+                        appcommon.CommonProcess.displayMailResult(data);  
                     } else {
                         if(self.checkBoxValue()){
-                            let command = {appID: data.appID};
-                            setShared("KDL030_PARAM", command);
-                            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                                location.reload();
-                            });    
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);  
                         } else {
                             location.reload();
                         }   
