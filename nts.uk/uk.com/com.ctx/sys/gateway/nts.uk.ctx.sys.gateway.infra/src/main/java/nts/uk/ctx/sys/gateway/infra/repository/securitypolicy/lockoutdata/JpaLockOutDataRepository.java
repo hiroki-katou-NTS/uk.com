@@ -7,11 +7,11 @@ package nts.uk.ctx.sys.gateway.infra.repository.securitypolicy.lockoutdata;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -21,9 +21,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK_;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData_;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class JpaLogoutDataRepository.
  */
@@ -79,20 +81,51 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	 */
 	@Override
 	public void remove(List<String> usersID) {
-		// Get entity manager
-				EntityManager em = this.getEntityManager();
-				CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-				CriteriaDelete<SgwmtLockoutData> cq = criteriaBuilder.createCriteriaDelete(SgwmtLockoutData.class);
-				Root<SgwmtLockoutData> root = cq.from(SgwmtLockoutData.class);
-
-				// Add where conditions
-				List<Predicate> lstpredicateWhere = new ArrayList<>();
-				for (String userID : usersID) {
-					lstpredicateWhere.add(criteriaBuilder.equal(
-							root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId), userID));
-				}
-				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-				em.createQuery(cq).executeUpdate();
+		usersID.forEach(id-> {
+			SgwmtLockoutDataPK pk = new SgwmtLockoutDataPK();
+			pk.setUserId(id);
+			this.commandProxy().remove(SgwmtLockoutData.class, pk);
+		});
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository#findByContractCode(java.lang.String)
+	 */
+	@Override
+	public List<LockOutData> findByContractCode(String contractCode) {
+		List<LockOutData> lstLockOutData = new ArrayList<LockOutData>();
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<SgwmtLockoutData> query = builder.createQuery(SgwmtLockoutData.class);
+		Root<SgwmtLockoutData> root = query.from(SgwmtLockoutData.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		//Check UserId
+		predicateList.add(
+				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.contractCd), contractCode));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		//Get Result
+		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
+		if (result.isEmpty()) {
+			return null;
+		} else {
+			lstLockOutData = result.stream().map(this::toDomain).collect(Collectors.toList());
+			return lstLockOutData;
+		}
+	}
+	
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the lock out data
+	 */
+	private LockOutData toDomain(SgwmtLockoutData entity) {
+		return new LockOutData(new JpaLockOutDataGetMemento(entity));
 	}
 }

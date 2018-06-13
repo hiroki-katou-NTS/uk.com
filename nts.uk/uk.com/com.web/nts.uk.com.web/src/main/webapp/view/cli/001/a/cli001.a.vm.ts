@@ -1,20 +1,6 @@
 var multiple = true;
-var products = [
-    { "ProductID": 1, "Name": "Adjustable Race", "ProductNumber": "AR-5381","code": 'a1'},
-    { "ProductID": 2, "Name": "Bearing Ball", "ProductNumber": "BA-8327" ,"code": 'a2' },
-    { "ProductID": 3, "Name": "BB Ball Bearing", "ProductNumber": "BE-2349" ,"code": 'a3'},
-    { "ProductID": 4, "Name": "Headset Ball Bearings", "ProductNumber": "BE-2908" ,"code": 'a4'},
-    { "ProductID": 316, "Name": "Blade", "ProductNumber": "BL-2036" ,"code": 'a5'},
-    { "ProductID": 317, "Name": "LL Crankarm", "ProductNumber": "CA-5965" ,"code": 'a6'},
-    { "ProductID": 318, "Name": "ML Crankarm", "ProductNumber": "CA-6738" ,"code": 'a7'},
-    { "ProductID": 319, "Name": "HL Crankarm", "ProductNumber": "CA-7457" ,"code": 'a8'},
-    { "ProductID": 320, "Name": "Chainring Bolts", "ProductNumber": "CB-2903" ,"code": 'a9'},
-    { "ProductID": 5, "Name": "Adustable Race", "ProductNumber": "AR-5383" ,"code": 'a1'},
-    { "ProductID": 6, "Name": "Adjusable Race", "ProductNumber": "AR-5389" ,"code": 'a1'},
-    { "ProductID": 7, "Name": "djustable Race", "ProductNumber": "AR-5387" ,"code": 'a1'}
-];
 module nts.uk.com.view.cli001.a {
-
+import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
 
     export module viewmodel {
 
@@ -23,8 +9,8 @@ module nts.uk.com.view.cli001.a {
             selectedList: any;
 
             constructor() {
-                this.items = ko.observableArray([]);
-                self.dataSource = products;
+                var self = this;
+                self.dataSource = [];
                 self.selectedList = ko.observableArray([]);
                 var features = [];
                 features.push({
@@ -39,10 +25,11 @@ module nts.uk.com.view.cli001.a {
 
                 $("#grid").igGrid({
                     columns: [
-                        { headerText: nts.uk.resource.getText("CLI001_12"),key: "ProductID", dataType: "number" },
-                        { headerText: nts.uk.resource.getText("CLI001_13"), key: "Name" ,dataType: "string"},
-                        { headerText: nts.uk.resource.getText("CLI001_14"), key: "ProductNumber", dataType: "string"},
-                        { headerText: nts.uk.resource.getText("CLI001_15"), key: "code", dataType: "string"},
+                        { headerText: nts.uk.resource.getText(""),key: "userId", dataType: "string",hidden: true  },
+                        { headerText: nts.uk.resource.getText("CLI001_12"),key: "loginId", dataType: "string",width: 100 },
+                        { headerText: nts.uk.resource.getText("CLI001_13"), key: "userName" ,dataType: "string",width: 170},
+                        { headerText: nts.uk.resource.getText("CLI001_14"), key: "lockOutDateTime", dataType: "string",width: 200},
+                        { headerText: nts.uk.resource.getText("CLI001_15"), key: "logType", dataType: "number",width: 300},
                     ],
                     features: [{
                         name: 'Selection',
@@ -56,9 +43,9 @@ module nts.uk.com.view.cli001.a {
                     ],
                     virtualization: true,
                     virtualizationMode: 'continuous',
-                    width: "500px",
+                    width: "840px",
                     height: "240px",
-                    primaryKey: "ProductID",
+                    primaryKey: "userId",
                     dataSource: self.dataSource
                 });
                 $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
@@ -82,7 +69,16 @@ module nts.uk.com.view.cli001.a {
             public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-                dfd.resolve();
+                 service.findAll().done((data: Array<LockOutDataDto>) => {
+                   _self.dataSource = data;
+                     $("#grid").igGrid("dataSourceObject", _self.dataSource);
+                       $("#grid").igGrid("dataBind"); 
+                    dfd.resolve();
+                }).fail((res: any) => {
+                   
+                    dfd.reject();
+                });
+
                 return dfd.promise();
             }
 
@@ -92,9 +88,33 @@ module nts.uk.com.view.cli001.a {
             * Save
             */
             public save() {
+                var self = this;
+                if (_.isEmpty(self.selectedList())) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: "CLI001_25" });
+                }
+                else {
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(() => {
 
+                            service.removeLockOutData(self.selectedList()).done(() => {
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(function() {
+                                    //Search again and display the screen
+                                    
+                                }).fail((res: any) => {
+                                    return;
+                                });
+
+                            });
+                        }).ifNo(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_36" }).then(() => {
+                                return;
+                            });
+                        }).then(() => {
+
+                        });
+                    }
             }
 
 
+            }
         }
-    }
