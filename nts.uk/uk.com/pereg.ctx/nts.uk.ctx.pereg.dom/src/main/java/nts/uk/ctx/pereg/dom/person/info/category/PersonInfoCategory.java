@@ -161,6 +161,22 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.employmentUseAtr = EnumAdaptor.valueOf(employmentAtr, NotUseAtr.class);
 		this.canAbolition = canAbolish == 0 ? false: true;
 	}
+	
+	// đối ứng cho việc thêm  canAbolish - cps006
+	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
+			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
+			int isFixed, int canAbolish) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.categoryCode = new CategoryCode(categoryCode);
+		this.categoryParentCode = new CategoryCode(categoryParentCode);
+		this.categoryName = new CategoryName(categoryName);
+		this.personEmployeeType = EnumAdaptor.valueOf(personEmployeeType, PersonEmployeeType.class);
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+		this.canAbolition = canAbolish == 0 ? false: true;
+	}
 
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, int categoryType) {
@@ -201,6 +217,14 @@ public class PersonInfoCategory extends AggregateRoot {
 			int isAbolition, int categoryType, int isFixed) {
 		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName,
 				personEmployeeType, isAbolition, categoryType, isFixed);
+	}
+	
+	// đối ứng cho màn cps006 khi thêm trường canAbolish
+	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
+			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
+			int isAbolition, int categoryType, int isFixed, int canAbolish) {
+		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName,
+				personEmployeeType, isAbolition, categoryType, isFixed, canAbolish);
 	}
 
 	public static PersonInfoCategory createFromJavaTypeUpdate(String personInfoCategoryId, String companyId,

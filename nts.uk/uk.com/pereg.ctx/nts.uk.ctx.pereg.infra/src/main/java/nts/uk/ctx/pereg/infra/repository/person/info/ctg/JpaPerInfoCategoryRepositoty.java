@@ -336,12 +336,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		int categoryType = Integer.parseInt(String.valueOf(c[5]));
 		int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
 		int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
-		int addObj = (c[8]!= null) ? Integer.parseInt(String.valueOf(c[8])) : 1;
-		int initObj = (c[9]!= null) ? Integer.parseInt(String.valueOf(c[9])) : 1;
-		int canAbolition = Integer.parseInt(String.valueOf(c[10]));
-		int  salaryUseAtr = Integer.parseInt(String.valueOf(c[11]));
-		int  personnelUseAtr = Integer.parseInt(String.valueOf(c[12]));
-		int  employmentUseAtr = Integer.parseInt(String.valueOf(c[13]));
+		int addObj = (c[9]!= null) ? Integer.parseInt(String.valueOf(c[9])) : 1;
+		int initObj = (c[10]!= null) ? Integer.parseInt(String.valueOf(c[10])) : 1;
+		int canAbolition = Integer.parseInt(String.valueOf(c[11]));
+		int  salaryUseAtr = Integer.parseInt(String.valueOf(c[12]));
+		int  personnelUseAtr = Integer.parseInt(String.valueOf(c[13]));
+		int  employmentUseAtr = Integer.parseInt(String.valueOf(c[14]));
 		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
 				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr, addObj, initObj, salaryUseAtr,
 				employmentUseAtr, personnelUseAtr,canAbolition);
