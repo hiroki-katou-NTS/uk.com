@@ -229,7 +229,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, converter);
 		//任意項目の計算
-//		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter);
+		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter);
 		//エラーチェック
 //		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
 		IntegrationOfDaily result = calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
