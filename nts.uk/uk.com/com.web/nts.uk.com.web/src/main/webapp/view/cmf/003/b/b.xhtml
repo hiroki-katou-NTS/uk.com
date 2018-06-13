@@ -100,7 +100,7 @@
 								data-bind="ntsTextEditor: {
 											name: '#[CMF003_73]',
 											value: password,
-											required: isCompressPass, constraint: 'FileCompressionPassword',
+											required: isCompressPass, constraint: passwordConstraint,
 											option: {textmode: 'password',width: '152px'},
 											enable: true,
 											readonly: false

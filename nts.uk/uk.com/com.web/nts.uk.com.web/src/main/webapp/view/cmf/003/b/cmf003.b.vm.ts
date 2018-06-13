@@ -20,6 +20,9 @@ module nts.uk.com.view.cmf003.b {
 
             // check compress password
             isCompressPass: KnockoutObservable<boolean>;
+            
+            // check password constraint 
+            passwordConstraint: KnockoutObservable<string>;
 
             // check compress password
             isSymbol: KnockoutObservable<boolean>;
@@ -158,6 +161,15 @@ module nts.uk.com.view.cmf003.b {
 
                 self.isCompressPass = ko.observable(false);
                 self.isSymbol = ko.observable(false);
+                self.passwordConstraint = ko.observable("");
+                
+                self.isCompressPass.subscribe(function(value) {
+                    if(value) {
+                        self.passwordConstraint("FileCompressionPassword");
+                    } else {
+                        self.passwordConstraint("");
+                    }
+                });
 
                 self.stepList = [
                     { content: '.step-1' },
