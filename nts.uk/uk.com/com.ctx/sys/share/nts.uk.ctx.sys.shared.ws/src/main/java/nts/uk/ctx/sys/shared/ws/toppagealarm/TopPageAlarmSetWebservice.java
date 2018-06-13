@@ -8,10 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.shared.app.toppagealarm.command.TopPageAlarmSetCommand;
-import nts.uk.ctx.sys.shared.app.toppagealarm.command.UpdateTopPageAlarmSetCommandHandler;
-import nts.uk.ctx.sys.shared.app.toppagealarm.find.TopPageAlarmSetDto;
-import nts.uk.ctx.sys.shared.app.toppagealarm.find.TopPageAlarmSetFinder;
+import nts.uk.ctx.sys.shared.app.toppagealarmset.command.TopPageAlarmSetCommand;
+import nts.uk.ctx.sys.shared.app.toppagealarmset.command.UpdateTopPageAlarmSetCommandHandler;
+import nts.uk.ctx.sys.shared.app.toppagealarmset.find.TopPageAlarmSetDto;
+import nts.uk.ctx.sys.shared.app.toppagealarmset.find.TopPageAlarmSetFinder;
 
 @Path("sys/share/toppagealarm")
 @Produces("application/json")

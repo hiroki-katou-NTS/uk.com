@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.shared.app.toppagealarm.find;
+package nts.uk.ctx.sys.shared.app.toppagealarmset.find;
 
 import lombok.Value;
 /**
