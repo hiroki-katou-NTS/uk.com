@@ -74,43 +74,56 @@
 							<input tabindex="9" id="B4_3" data-bind="ntsTextEditor: {name: '#[CMF001_52]', value: conditionSettingCode, required: true, constraint: 'AcceptanceConditionCode', option: {width: '40px'}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.NEW}" />
 							<input tabindex="10" id="B4_4" data-bind="ntsTextEditor: {name: '#[CMF001_53]', value: conditionSettingName, required: true, constraint: 'AcceptanceConditionName', option: {width: '345px'}}" />
 						</div>
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" style="display:inline-flex;">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_54')}</div>
-							<div tabindex="11" data-bind="ntsRadioButton: { checked: deleteExistData, option: $parent.radioItemList()[0], name: '#[CMF001_55]', optionValue: 'code', optionText: 'name', group: 'DeleteDetermination'}" style="width: 110px"></div>
-							<div tabindex="12" data-bind="ntsComboBox: {
-								options: $parent.deleteExistDataMethod,
-								optionsValue: 'code',
-								name: '#[CMF001_58]',
-								value: deleteExistDataMethod,
-								optionsText: 'name',
-								editable: false,
-								enable:  deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
-								required: deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
-								columns: [
-									{ prop: 'name', length: 22 }
-								]}"></div>
+							<div class="valign-center" tabindex="11" style="width: 110px; margin-right:10px;">
+								<div data-bind="ntsRadioBoxGroup: {
+									name: '#[CMF001_55]',
+									options: $parent.radioItemList(),
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: deleteExistData}"></div>
+							</div>
+							<div tabindex="12">
+								<div data-bind="ntsComboBox: {
+									options: $parent.deleteExistDataMethod,
+									optionsValue: 'code',
+									name: '#[CMF001_58]',
+									value: deleteExistDataMethod,
+									optionsText: 'name',
+									editable: false,
+									enable:  deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
+									required: deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
+									columns: [
+										{ prop: 'name', length: 22 }
+									]}"></div>
+							</div>
 						</div>
-						<div class="valign-center">
-							<div style="width: 200px; display: inline-block"></div>
-							<div tabindex="11" data-bind="ntsRadioButton: { checked: deleteExistData, option: $parent.radioItemList()[1], name: '#[CMF001_55]', optionValue: 'code', optionText: 'name', group: 'DeleteDetermination'}" style="width: 110px"></div>
-						</div>
+						
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_59')}</div>
-							<div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
+							<div tabindex="13" style="display:inline-block">
+							<div class="cf" data-bind="ntsSwitchButton: {
 								options: $parent.acceptModes,
 								name: '#[CMF001_65]',
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: acceptMode,
 								enable: deleteExistData()==nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE }"></div>
+							</div>
 						</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_69')}</div>
-							<button id="B4_21" tabindex="14" data-bind="click: function() {$parent.openCMF001d()}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_70')}</button>
+							<div tabindex="14" style="display:inline-block">
+								<button id="B4_21"  data-bind="click: function() {$parent.openCMF001d()}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_70')}</button>
+							</div>
 							<span style="padding-left: 10px" class="label">#{i18n.getText('CMF001_71')}</span>
 							<span style="padding-left: 10px" class="label" data-bind="visible: alreadySetting()">#{i18n.getText('CMF001_77')}</span>
 							<span style="padding-left: 10px" class="label" data-bind="visible: !alreadySetting()">#{i18n.getText('CMF001_78')}</span>
 						</div>
+						
+						
+						
 					</div>
 				</div>
 			</div>

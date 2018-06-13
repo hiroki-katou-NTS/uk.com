@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,30 +14,30 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StayingTimeDto {
+public class StayingTimeDto implements ItemConst {
 
 	/** 滞在時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "滞在時間")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = STAYING)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer stayingTime;
 
 	/** 出勤前時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "出勤前時間")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = ATTENDANCE)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer beforeWoringTime;
 
 	/** 退勤後時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "退勤後時間")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = LEAVE)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer afterLeaveTime;
 
 	/** PCログオン前時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "PCログオン前時間")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = LOGON)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer beforePCLogOnTime;
 
 	/** PCログオフ後時間 */
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "PCログオフ後時間")
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = LOGOFF)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer afterPCLogOffTime;
 

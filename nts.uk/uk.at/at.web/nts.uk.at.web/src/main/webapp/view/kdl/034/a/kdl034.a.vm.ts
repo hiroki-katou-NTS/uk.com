@@ -18,9 +18,6 @@ module nts.uk.at.view.kdl034.a {
                 var self = this;
                 let param = getShared("KDL034_PARAM");
                 self.appID = param.appID;
-                //let regex = "/<br\s*[\/]?>/gi";
-                //appContent = appContent.replace(regex, "\n");
-                //appContent = $("<div>").html(appContent).text();
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -34,11 +31,18 @@ module nts.uk.at.view.kdl034.a {
                             let listApprover: Array<Approver> = [];
                             self.version = result.version;
                             self.errorFlag = result.errorFlag;
-                            applicant = new Approver(applicant.pid, applicant.pname, null, null, result.applicantPosition, "");
+                            applicant = new Approver(applicant.pid, applicant.pname, null, null, result.applicantPosition, false);
                             listApprover.push(applicant);
                             approvalFrame.forEach(function(approvalState) {
                                 approvalState.listApprover.forEach(function(approver) {
-                                    listApprover.push(new Approver(approver.approverID, approver.approverName, approvalState.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
+                                    //TH approver
+                                    listApprover.push(new Approver(approver.approverID, approver.approverName, 
+                                        approvalState.phaseOrder, approvalState.approvalReason, approver.jobtitle, false));
+                                    ////check TH agent
+                                    if(approver.representerID != ''){
+                                        listApprover.push(new Approver(approver.representerID, approver.representerName, 
+                                            approvalState.phaseOrder, approvalState.approvalReason, approver.jobtitleAgent, true));
+                                    }
                                 });
                             });
                             self.listApprover(listApprover);
@@ -46,7 +50,6 @@ module nts.uk.at.view.kdl034.a {
                         }
                         dfd.resolve();
                     }).fail(function(res: any) {
-                        //dfd.reject();
                     }).always(function(res: any){
                         nts.uk.ui.block.clear();
                     });
@@ -68,6 +71,7 @@ module nts.uk.at.view.kdl034.a {
                         }
                         nts.uk.at.view.kdl034.a.service.remand(command) 
                             .done(function(result){
+                                nts.uk.ui.block.clear();
                                 let successList: Array<string> = [];
                                 let failedList: Array<string> = [];
                                 if (result){
@@ -84,13 +88,16 @@ module nts.uk.at.view.kdl034.a {
                                     }
                                 }
                                 setShared("KDL034_PARAM_RES", command);
+                                //情報メッセージ（Msg_223）
                                 dialog.info({ messageId: "Msg_223"}).then(()=>{
                                     self.handleSendMailResult(successList, failedList);
                                 });
                             }).fail(function(res){
-                                dialog.alertError (res.errorMessage);
-                            }).always(function(){
                                 nts.uk.ui.block.clear();
+                                //エラーメッセージ(Msg_197) - sai version
+                                dialog.alertError ({messageId: res.errorMessageId}).then(()=>{
+                                    nts.uk.ui.windows.close();
+                                });
                             });
                     
                 }).ifNo(() => {
@@ -142,18 +149,17 @@ module nts.uk.at.view.kdl034.a {
             jobTitle: string;
             dispApprover: string;
             idAndPhase: string;
-            constructor(id: string, name: string, phaseOrder: number, approvalReason: string, jobTitle: string, representerName: string) {
+            constructor(id: string, name: string, phaseOrder: number, approvalReason: string, jobTitle: string, agent: boolean) {
                 this.id = id;
                 this.name = name;
                 this.phaseOrder = phaseOrder;
                 this.approvalReson = approvalReason;
                 this.jobTitle = jobTitle;
-                if (_.isNull(phaseOrder)) {
-                    this.dispApprover = "申請者：　" + jobTitle + "　" + (representerName.length == 0 ? name : representerName);
-                } else if (phaseOrder == 2) {
-                    this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + (representerName.length == 0 ? name : representerName);
-                } else {
-                    this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + (representerName.length == 0 ? name : representerName);
+                if (_.isNull(phaseOrder)) {//申請者
+                    this.dispApprover = "申請者：　" + jobTitle + "　" +  name;
+                } else {//フェーズ
+                    let nameDis = agent == true ? name + ' ' + '代行' : name;
+                    this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + nameDis;
                 }
                 this.idAndPhase = id + "__" + phaseOrder;
             }

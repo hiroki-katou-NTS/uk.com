@@ -14894,7 +14894,7 @@ var nts;
                             options = _(options)
                                 .map(function (m) {
                                 var c = {}, k = ko.toJS(m), t = k[optionsText], v = k[optionsValue], n = _.omit(k, [optionsValue]), nt = _.map(props, function (p) { return k[p]; }).join(' ').trim();
-                                c[optionsValue] = v || '';
+                                c[optionsValue] = !_.isNil(v) ? v : '';
                                 c['nts_' + optionsText] = nt || t || ' ';
                                 return _.extend(n, c);
                             })
@@ -16973,6 +16973,7 @@ var nts;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
                         $grid.data("selectionDisables", selectionDisables);
+                        $grid.data("initValue", value);
                         if (data.multiple) {
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
@@ -17135,12 +17136,29 @@ var nts;
                             if (String($grid.data("enable")) === "false")
                                 return false;
                             var disables = $grid.data("selectionDisables");
-                            if (disables && uk.util.isNullOrUndefined(ui.row.startIndex)
+                            if (disables && uk.util.isNullOrUndefined(ui.startIndex)
                                 && !uk.util.isNullOrUndefined(_.find(disables, function (d) { return ui.row.id === d; }))) {
                                 return false;
                             }
+                            if (disables && uk.util.isNullOrUndefined(ui.startIndex)
+                                && uk.util.isNullOrUndefined(ui.row.id)) {
+                                setTimeout(function () {
+                                    _.forEach(_.intersection(disables, value), function (iv) {
+                                        $grid.igGridSelection("selectRowById", iv);
+                                    });
+                                    $grid.trigger("selectionchanged");
+                                }, 0);
+                            }
                             return true;
                         });
+                        var $oselect, $iselect;
+                        var checkAll = function () {
+                            if ($oselect && $iselect && $oselect.attr("data-chk") === "off") {
+                                $oselect.attr("data-chk", "on");
+                                $iselect.removeClass("ui-igcheckbox-normal-off");
+                                $iselect.addClass("ui-igcheckbox-normal-on");
+                            }
+                        };
                         $grid.bind('selectionchanged', function () {
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
@@ -17160,10 +17178,15 @@ var nts;
                                     disableIds_1.sort(function (i1, i2) { return i2 - i1; }).forEach(function (d) {
                                         selected_1.splice(d, 1);
                                     });
+                                    var valueCount = _.intersection(disables_1, value).length;
+                                    var ds = $grid.igGrid("option", "dataSource");
+                                    if (selected_1.length === ds.length - disables_1.length + valueCount) {
+                                        checkAll();
+                                    }
                                 }
                                 if (!nts.uk.util.isNullOrEmpty(selected_1)) {
                                     var newValue = _.map(selected_1, function (s) { return s.id; });
-                                    newValue = _.union(newValue, _.intersection(disables_1, value));
+                                    newValue = _.union(_.intersection(disables_1, value), newValue);
                                     data.value(newValue);
                                 }
                                 else {
@@ -17178,6 +17201,23 @@ var nts;
                                 else {
                                     data.value('');
                                 }
+                            }
+                        });
+                        $grid.on("iggridvirtualrecordsrender", function (evt, ui) {
+                            var disables = $grid.data("selectionDisables");
+                            var $header = ui.owner._headerParent;
+                            if (!disables || disables.length === 0 || !$header)
+                                return;
+                            var data = ui.owner.dataSource._data;
+                            var selected = $grid.ntsGridList('getSelected');
+                            var valueCount = _.intersection(disables, value).length;
+                            var selector = $header.find(".ui-iggrid-rowselector-header span");
+                            if (selector.length > 1) {
+                                $oselect = $(selector[0]);
+                                $iselect = $(selector[1]);
+                            }
+                            if (selected && (data.length - disables.length + valueCount) === selected.length) {
+                                checkAll();
                             }
                         });
                         $grid.setupSearchScroll("igGrid", virtualization);
@@ -17223,13 +17263,30 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if (disables) {
-                            _.forEach(disables, function (d) {
-                                var $row = $grid.igGrid("rowById", d, false);
-                                if ($row && !$row.hasClass("row-disable")) {
-                                    $row.addClass("row-disable");
-                                }
-                            });
+                        var currentDisables = $grid.data("selectionDisables");
+                        if (currentDisables && disables
+                            && !_.isEqual(disables.sort(function (d1, d2) { return d2 - d1; }), currentDisables.sort(function (d1, d2) { return d2 - d1; }))) {
+                            $grid.data("selectionDisables", disables);
+                            var disableRows = function (arr) {
+                                _.forEach(arr, function (d) {
+                                    var $row = $grid.igGrid("rowById", d, false);
+                                    if ($row && !$row.hasClass("row-disable")) {
+                                        $row.addClass("row-disable");
+                                    }
+                                });
+                            };
+                            if (disables.length > currentDisables.length) {
+                                disableRows(_.difference(disables, currentDisables));
+                            }
+                            else {
+                                _.forEach(currentDisables, function (d) {
+                                    var $row = $grid.igGrid("rowById", d, false);
+                                    if ($row && $row.hasClass("row-disable")) {
+                                        $row.removeClass("row-disable");
+                                    }
+                                });
+                                disableRows(disables);
+                            }
                         }
                         if (String($grid.attr("filtered")) === "true") {
                             var filteredSource_1 = [];
@@ -17272,8 +17329,25 @@ var nts;
                             }
                         });
                         if (!isEqual) {
-                            _.defer(function () { $grid.trigger("selectChange"); });
-                            $grid.ntsGridList('setSelected', data.value());
+                            var clickCheckBox = false;
+                            if (!nts.uk.util.isNullOrEmpty(data.value()) && data.value().length == sources.length) {
+                                if ($grid.igGridSelection('option', 'multipleSelection')) {
+                                    var features = _.find($grid.igGrid("option", "features"), function (f) {
+                                        return f.name === "RowSelectors";
+                                    });
+                                    clickCheckBox = !nts.uk.util.isNullOrUndefined(features.enableCheckBoxes) && features.enableCheckBoxes;
+                                }
+                            }
+                            if (clickCheckBox) {
+                                $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']").click();
+                            }
+                            else {
+                                $grid.ntsGridList('setSelected', data.value());
+                            }
+                            var initVal = $grid.data("initValue");
+                            if (!disables || !initVal || _.intersection(disables, initVal).length === 0) {
+                                _.defer(function () { $grid.trigger("selectChange"); });
+                            }
                         }
                         $grid.data("ui-changed", false);
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
@@ -18187,7 +18261,7 @@ var nts;
                         if (!nts.uk.util.isNullOrEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
                             $formLabel.prependTo($container);
-                            ko.bindingHandlers["ntsFormLabel"].init($formLabel, function () {
+                            ko.bindingHandlers["ntsFormLabel"].init($formLabel[0], function () {
                                 return {};
                             }, allBindingsAccessor, viewModel, bindingContext);
                             minusWidth += $formLabel.outerWidth(true);

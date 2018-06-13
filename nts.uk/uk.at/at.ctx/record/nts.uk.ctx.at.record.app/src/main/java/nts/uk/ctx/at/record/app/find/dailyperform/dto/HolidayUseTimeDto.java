@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -16,15 +17,15 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HolidayUseTimeDto {
+public class HolidayUseTimeDto implements ItemConst {
 
 	/** 時間消化休暇使用時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間消化休暇使用時間")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_DIGESTION)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer timeDigestionVacationUseTime;
 
 	/** 使用時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "使用時間")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = USAGE)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer useTime;
 
