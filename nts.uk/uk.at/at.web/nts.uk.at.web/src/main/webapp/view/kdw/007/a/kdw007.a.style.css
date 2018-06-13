@@ -1,4 +1,3 @@
-
 #showtypeCbb {
 	margin-bottom: 10px;
 }
@@ -7,60 +6,36 @@
 	margin-left: 90px !important;
 }
 
-#lstErrorAlarm_container {
-	display: inline-block;
-}
-
-#errorAlarmWorkRecordCode, #errorAlarmWorkRecordName {
-	vertical-align: text-bottom;
-}
-
-#labelName {
+#labelName, #remark-no-label {
 	margin-left: 80px;
 }
 
-#labelUseAtr, #tab-panel, #color-label, #message-label,
-	#color-display-target-item-label {
-	margin-top: 10px;
+#labelUseAtr {
+	width: 121px;
 }
 
-#useAtr {
-	margin-left: 10px;
+#type-label, #remark-cancel-label, #color-label, #color-display-target-item-label,
+	#message-label {
+	width: 180px;
 }
 
-#typeAtr {
-	margin-left: 85px;
+#noticed-label, #boldAtr {
+	margin-left: 180px;
 }
 
 #noticed-label {
-	margin-left: 139px;
+	margin-bottom: 10px;
 }
 
-#colorpicker {
-	margin-left: 47px;
-}
-
-#messageDisplay {
-	margin-left: 10px;
-}
-
-.settingTab {
-	width: 515px;
-}
-
-#color-display-target-item-button {
-	margin-left: 14px;
+#boldAtr {
+	margin-top: 5px;
 }
 
 #messageDisplay {
 	vertical-align: text-top;
 	height: 120px;
 	width: 400px;
-	margin-top: -15px;
-}
-
-#boldAtr {
-	margin-left: 136px;
+	margin-top: -20px;
 }
 
 .table-template td {
@@ -69,11 +44,6 @@
 
 .display-list-label {
 	width: 500px;
-}
-
-.settingTab, .checkScopeTab, .conditionSettingTab1,
-	.conditionSettingTab2, .applicationTab {
-	width: 700px;
 }
 
 #application-type-grid-list_container {
@@ -94,7 +64,6 @@
 	border: 1px solid lightslategray;
 }
 
-div[id^="tab"]{
-	width: 735px;
+div[id^="tab"] {
+	width: 740px;
 }
-

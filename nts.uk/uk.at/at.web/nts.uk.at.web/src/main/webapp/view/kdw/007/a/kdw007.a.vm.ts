@@ -1070,6 +1070,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         targetNO: KnockoutObservable<number>;
         conditionAtr: KnockoutObservable<number>;
         useAtr: KnockoutObservable<boolean>;
+        inputCheckCondition: KnockoutObservable<number> = ko.observable(0);
         uncountableAtdItem: KnockoutObservable<number>;
         countableAddAtdItems: KnockoutObservableArray<number>;
         countableSubAtdItems: KnockoutObservableArray<number>;
@@ -1264,6 +1265,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     self.compareStartValue(output.compareStartValue);
                     self.compareEndValue(output.compareEndValue);
                     self.compareOperator(output.compareOperator);
+                    self.inputCheckCondition(output.inputCheckCondition);
                 }
                 self.setTextDisplay();
             });

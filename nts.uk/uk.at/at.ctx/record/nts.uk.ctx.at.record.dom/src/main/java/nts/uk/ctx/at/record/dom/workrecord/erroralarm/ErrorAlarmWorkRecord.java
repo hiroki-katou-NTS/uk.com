@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondit
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
-import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * @author hungnm 勤務実績のエラーアラーム

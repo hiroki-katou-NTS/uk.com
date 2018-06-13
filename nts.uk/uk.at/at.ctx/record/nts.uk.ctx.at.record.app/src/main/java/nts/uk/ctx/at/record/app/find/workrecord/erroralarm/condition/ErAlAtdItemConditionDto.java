@@ -27,12 +27,13 @@ public class ErAlAtdItemConditionDto {
 	private int singleAtdItem;
 	private BigDecimal compareStartValue;
 	private BigDecimal compareEndValue;
+	private Integer inputCheckCondition;
 	
 	public ErAlAtdItemConditionDto() {
 		super();
 	}
 
-	public ErAlAtdItemConditionDto(int targetNO, int conditionAtr, boolean useAtr, int uncountableAtdItem,
+	public ErAlAtdItemConditionDto(int targetNO, int conditionAtr, boolean useAtr, Integer inputCheckCondition, int uncountableAtdItem,
 			List<Integer> countableAddAtdItems, List<Integer> countableSubAtdItems, int conditionType,
 			int compareOperator, int singleAtdItem, BigDecimal compareStartValue, BigDecimal compareEndValue) {
 		super();
@@ -47,6 +48,7 @@ public class ErAlAtdItemConditionDto {
 		this.singleAtdItem = singleAtdItem;
 		this.compareStartValue = compareStartValue;
 		this.compareEndValue = compareEndValue;
+		this.inputCheckCondition = inputCheckCondition;
 	}
 	
 }

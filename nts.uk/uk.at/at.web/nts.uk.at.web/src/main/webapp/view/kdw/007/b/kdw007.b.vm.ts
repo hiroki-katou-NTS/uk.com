@@ -54,8 +54,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
             ko.utils.extend(param.data, {
                 countableAddAtdItems: _.values(param.data.countableAddAtdItems || []),
-                countableSubAtdItems: _.values(param.data.countableSubAtdItems || []),
-                inputCheckCondition: 0
+                countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
             self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
@@ -440,10 +439,10 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         TIME = 1,
         /* 回数 */
         NUMBER = 2,
-        /* 金額 */
-        AMOUNT = 3,
         /* 日数 */
-        DAYS = 4,
+        DAYS = 3,
+        /* 金額 */
+        AMOUNT = 4,
         /* マスタを参照する */
         REFER_TO_MASTER = 5
     }

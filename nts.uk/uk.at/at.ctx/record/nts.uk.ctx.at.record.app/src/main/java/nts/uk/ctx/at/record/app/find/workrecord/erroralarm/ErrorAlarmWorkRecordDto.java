@@ -149,6 +149,8 @@ public class ErrorAlarmWorkRecordDto {
 			}
 			erAlAtdItemConditionDto.setConditionType(itemDomain.getCompareSingleValue().getConditionType().value);
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);
+		} else if (itemDomain.getInputCheck() != null) {
+			erAlAtdItemConditionDto.setInputCheckCondition(itemDomain.getInputCheck().getInputCheckCondition().value);
 		}
 		return erAlAtdItemConditionDto;
 	}
