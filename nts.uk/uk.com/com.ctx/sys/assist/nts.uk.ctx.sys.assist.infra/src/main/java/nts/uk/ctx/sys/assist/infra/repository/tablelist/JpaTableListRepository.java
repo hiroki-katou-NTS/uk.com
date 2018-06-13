@@ -19,6 +19,7 @@ import com.google.common.base.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
@@ -101,6 +102,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		Class<?> tableParent = null;
 		if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
 			tableParent = this.getTypeForTableName(tableList.getParentTblName());
+			// アルゴリズム「親テーブルをJOINする」を実行する
 			query.append(" INNER JOIN ").append(tableParent.getSimpleName()).append(" p ON ");
 
 			String[] parentFields = { tableList.getFieldParent1(), tableList.getFieldParent2(),
@@ -200,72 +202,76 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 			}
 			query.append(" ) ");
 		}
-		List<Integer> indexs = new ArrayList<Integer>();
-		switch (tableList.getRetentionPeriodCls()) {
-		case ANNUAL:
-			indexs = yearIndexs;
-			break;
-		case MONTHLY:
-			indexs = yearMonthIndexs;
-			break;
-		case DAILY:
-			indexs = yearMonthDayIndexs;
-			break;
 
-		default:
-			break;
-		}
+		// 履歴区分を判別する。履歴なしの場合
+		if (tableList.getHistoryCls() == HistoryDiviSion.NO_HISTORY) {
+			List<Integer> indexs = new ArrayList<Integer>();
+			switch (tableList.getRetentionPeriodCls()) {
+			case ANNUAL:
+				indexs = yearIndexs;
+				break;
+			case MONTHLY:
+				indexs = yearMonthIndexs;
+				break;
+			case DAILY:
+				indexs = yearMonthDayIndexs;
+				break;
 
-		if (indexs.size() > 0) {
-			query.append(" AND ( ");
-			boolean isFirstOrStatement = true;
-			for (Integer index : indexs) {
-				if (!isFirstOrStatement) {
-					query.append(" OR ");
-				}
-				isFirstOrStatement = false;
-				String startDateField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
-				if (!Strings.isNullOrEmpty(startDateField)) {
-					query.append(" (t.");
-					query.append(startDateField);
-				} else {
-					query.append(" (p.");
-					query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
-				}
-
-				query.append(" >= :startDate ");
-				query.append(" AND ");
-
-				String endDateField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
-				if (!Strings.isNullOrEmpty(endDateField)) {
-					query.append(" t.");
-					query.append(endDateField);
-				} else {
-					query.append(" p.");
-					query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
-				}
-
-				query.append(" <= :endDate) ");
-
-				switch (tableList.getRetentionPeriodCls()) {
-				case ANNUAL:
-					params.add(tableList.getSaveDateFrom().year());
-					params.add(tableList.getSaveDateTo().year());
-					break;
-				case MONTHLY:
-					params.add(tableList.getSaveDateFrom().yearMonth().v());
-					params.add(tableList.getSaveDateTo().yearMonth().v());
-					break;
-				case DAILY:
-					params.add(tableList.getSaveDateFrom().toString("yyyy/MM/dd"));
-					params.add(tableList.getSaveDateTo().toString("yyyy/MM/dd"));
-					break;
-
-				default:
-					break;
-				}
+			default:
+				break;
 			}
-			query.append(" ) ");
+
+			if (indexs.size() > 0) {
+				query.append(" AND ( ");
+				boolean isFirstOrStatement = true;
+				for (Integer index : indexs) {
+					if (!isFirstOrStatement) {
+						query.append(" OR ");
+					}
+					isFirstOrStatement = false;
+					String startDateField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
+					if (!Strings.isNullOrEmpty(startDateField)) {
+						query.append(" (t.");
+						query.append(startDateField);
+					} else {
+						query.append(" (p.");
+						query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
+					}
+
+					query.append(" >= :startDate ");
+					query.append(" AND ");
+
+					String endDateField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
+					if (!Strings.isNullOrEmpty(endDateField)) {
+						query.append(" t.");
+						query.append(endDateField);
+					} else {
+						query.append(" p.");
+						query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
+					}
+
+					query.append(" <= :endDate) ");
+
+					switch (tableList.getRetentionPeriodCls()) {
+					case ANNUAL:
+						params.add(tableList.getSaveDateFrom().year());
+						params.add(tableList.getSaveDateTo().year());
+						break;
+					case MONTHLY:
+						params.add(tableList.getSaveDateFrom().yearMonth().v());
+						params.add(tableList.getSaveDateTo().yearMonth().v());
+						break;
+					case DAILY:
+						params.add(tableList.getSaveDateFrom().toString("yyyy/MM/dd"));
+						params.add(tableList.getSaveDateTo().toString("yyyy/MM/dd"));
+						break;
+
+					default:
+						break;
+					}
+				}
+				query.append(" ) ");
+			}
 		}
 
 		// 抽出条件キー固定
