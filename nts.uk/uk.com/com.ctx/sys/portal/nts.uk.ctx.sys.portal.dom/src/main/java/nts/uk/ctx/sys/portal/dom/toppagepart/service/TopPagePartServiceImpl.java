@@ -115,7 +115,7 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		List<String> listStandardWidgetID = listStandardWidget.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
 		List<StandardWidget> StandardWidget = new ArrayList<>();
 		if (!listStandardWidgetID.isEmpty()){
-			StandardWidget = standardWidgetRepository.getAll();
+			StandardWidget = standardWidgetRepository.findByTopPagePartId(listStandardWidgetID, companyID);
 		}
 		
 		// TODO: Get list OptionalWidget

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicalTimeDailyPerformDto {
+public class MedicalTimeDailyPerformDto implements ItemConst {
 
 	/** 日勤夜勤区分: 日勤夜勤区分 */
 	/**
@@ -22,32 +23,32 @@ public class MedicalTimeDailyPerformDto {
 	 */
 	// @AttendanceItemLayout(layout = "A")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
-	private int dayNightAtr;
+	private int attr;
 
 	/** 申送時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "申送時間", needCheckIDWithMethod = "dayNightAtr")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TAKE_OVER, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer takeOverTime;
 
 	/** 控除時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "控除時間", needCheckIDWithMethod = "dayNightAtr")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = DEDUCTION, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer deductionTime;
 
 	/** 勤務時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "勤務時間", needCheckIDWithMethod = "dayNightAtr")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = WORKING_TIME, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer workTime;
 
 	/** @see nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift */
-	public String dayNightAtr() {
-		switch (this.dayNightAtr) {
+	public String enumText() {
+		switch (this.attr) {
 		case 0:
-			return "日勤";
+			return E_DAY_WORK;
 		case 1:
-			return "夜勤";
+			return E_NIGHT_WORK;
 		default:
-			return "";
+			return EMPTY_STRING;
 		}
 	}
 

@@ -1065,22 +1065,6 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             /**
-             * Check base date and period whether is future or not
-             */
-            private isNotFutureDate(acquiredBaseDate: string): boolean {
-                let self = this;
-                if (self.showBaseDate && self.isFutureDate(moment.utc(acquiredBaseDate))) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_853" });
-                        return false;
-                }
-                if (self.showPeriod && self.isFutureDate(self.periodEnd())) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_860" });
-                    return false;
-                }
-                return true;
-            }
-
-            /**
              * Check future date
              */
             private isFutureDate(date: moment.Moment): boolean {
@@ -1102,29 +1086,36 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 nts.uk.ui.block.invisible(); // block ui
-
-                // Check future reference permission
-                $.when(self.setBaseDateAndPeriod(), self.getFuturePermit())
-                    .done((noValue, permit) => {
-                        if (permit || self.isNotFutureDate(self.acquiredBaseDate())) {
-                            // has permission or acquiredDate is not future
-                            self.queryParam.baseDate = self.acquiredBaseDate();
-                            if ((!self.isTab2Lazy || !self.isFirstTime) && self.showAdvancedSearchTab) {
-                                self.reloadAdvanceSearchTab().done(() => dfd.resolve());
+                self.setBaseDateAndPeriod().done(() => {
+                    if (self.isFutureDate(moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT))) {
+                        // Check future reference permission
+                        self.getFuturePermit().done(hasPermission => {
+                            if (hasPermission) {
+                                self.queryParam.baseDate = self.acquiredBaseDate();
                             } else {
-                                dfd.resolve();
-                                nts.uk.ui.block.clear(); // clear block UI
+                                self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT); // set basedate = current system date
                             }
-                        } else {
-                            // no permission and acquiredDate is future
-                            dfd.reject();
-                            nts.uk.ui.block.clear(); // clear block UI
-                        }
-                    }).fail(err => {
-                        nts.uk.ui.dialog.alertError(err);
-                        nts.uk.ui.block.clear();// clear block UI
-                    });
+                            self.loadAdvancedSearchTab().done(() => dfd.resolve());
+                        });
+                    } else {
+                        self.queryParam.baseDate = self.acquiredBaseDate();
+                        self.loadAdvancedSearchTab().done(() => dfd.resolve());
+                    }
+                }).fail(err => {
+                    nts.uk.ui.dialog.alertError(err);
+                }).always(() => nts.uk.ui.block.clear());
 
+                return dfd.promise();
+            }
+
+            private loadAdvancedSearchTab(): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
+                let self = this;
+                if ((!self.isTab2Lazy || !self.isFirstTime) && self.showAdvancedSearchTab) {
+                    self.reloadAdvanceSearchTab().done(() => dfd.resolve());
+                } else {
+                    dfd.resolve();
+                }
                 return dfd.promise();
             }
 

@@ -3,20 +3,23 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonClockOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonDivergenceOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績のPCログオン情報 */
-public class PCLogOnInfoOfMonthlyDto {
+public class PCLogOnInfoOfMonthlyDto implements ItemConst {
 
 	/** PCログオン時刻: 月別実績のPCログオン時刻 */
-	@AttendanceItemLayout(jpPropertyName = "PCログオン時刻", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = CLOCK, layout = LAYOUT_A)
 	private PCLogOnTimeOfMonthly pcLogOnTime;
 
-	@AttendanceItemLayout(jpPropertyName = "PCログオン乖離", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = DIVERGENCE, layout = LAYOUT_B)
 	/** PCログオン乖離: 月別実績のPCログオン乖離 */
 	private PCLogOnTimeOfMonthly pcLogOnDivergence;
 	
@@ -29,7 +32,7 @@ public class PCLogOnInfoOfMonthlyDto {
 	} 
 	
 	public PCLogonOfMonthly toDomain(){
-		return PCLogonOfMonthly.of(pcLogOnTime == null ? null : pcLogOnTime.toDomain(), 
-									pcLogOnDivergence == null ? null : pcLogOnDivergence.toDivergenceDomain());
+		return PCLogonOfMonthly.of(pcLogOnTime == null ? new PCLogonClockOfMonthly() : pcLogOnTime.toDomain(), 
+									pcLogOnDivergence == null ? new PCLogonDivergenceOfMonthly() : pcLogOnDivergence.toDivergenceDomain());
 	}
 }

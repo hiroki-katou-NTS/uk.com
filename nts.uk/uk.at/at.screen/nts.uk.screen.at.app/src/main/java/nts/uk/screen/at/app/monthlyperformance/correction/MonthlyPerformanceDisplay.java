@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -124,6 +125,7 @@ public class MonthlyPerformanceDisplay {
 		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder.getMonthlyItemControlByToUse(cId, employmentRoleID, newkintaiIDList, 1);
 		//取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
 		//Filter param 「表示する項目一覧」  by domain 「権限別月次項目制御」
+		screenDto.setAuthDto(monthlyItemAuthDto);
         Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();
         if (monthlyItemAuthDto != null) {
         	for (PSheet sheet : param.getSheets()) {
@@ -143,6 +145,7 @@ public class MonthlyPerformanceDisplay {
 			// ドメインモデル「月次の勤怠項目」を取得する
 			List<Integer> attdanceIds = lstAtdItemUnique.keySet().stream().collect(Collectors.toList());
 			List<MonthlyAttendanceItemDto> lstAttendanceData = repo.findByAttendanceItemId(cId, attdanceIds);
+			lstAttendanceData.sort((t1, t2) -> t1.getDisplayNumber() - t2.getDisplayNumber());
 
 			// 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する - attendanceItemLinkingRepository
 			// 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む
@@ -224,6 +227,7 @@ public class MonthlyPerformanceDisplay {
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
 				if (sheetDto != null) {
 					pSheet.setSheetName(sheetDto.getSheetName());
+					sheetDto.getListDisplayTimeItem().sort((t1,t2)->t1.getDisplayOrder() - t2.getDisplayOrder());
 					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
 							.collect(Collectors.toSet()));
@@ -288,9 +292,12 @@ public class MonthlyPerformanceDisplay {
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
 				if (sheetDto != null) {
 					pSheet.setSheetName(sheetDto.getSheetName());
+					sheetDto.getListDisplayTimeItem().sort((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder());
+					
 					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
 							.collect(Collectors.toSet()));
+					//displayItems.stream().sorted(Comparator.comparing(PAttendanceItem::getDisplayOrder).reversed());
 				}
 			});
 			pSheet.setDisplayItems(displayItems);

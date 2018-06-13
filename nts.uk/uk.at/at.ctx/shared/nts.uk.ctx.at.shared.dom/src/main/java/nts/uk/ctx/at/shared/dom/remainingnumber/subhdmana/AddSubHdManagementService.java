@@ -97,21 +97,15 @@ public class AddSubHdManagementService {
 
 			if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
 				// ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
-				Double usedDays = 0d;
 				int targetSelectionAtr = 2; // 固定値：手動
 				int usedHours = 0;
-				Double usedDay = subHdManagementData.getSelectedCodeOptionSubHoliday()
-						+ subHdManagementData.getSelectedCodeOptionSubHoliday();
 				if (subHdManagementData.getCheckedSplit()) {
-					usedDays = usedDay;
 					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(leaveId,
-							comDayOffIDSub, usedDays, usedHours, targetSelectionAtr);
+							comDayOffIDSub, subHdManagementData.getSelectedCodeOptionSubHoliday(), usedHours, targetSelectionAtr);
 					repoLeaveComDayOffMana.add(domainLeaveComDayOffManagementSub);
-				} else {
-					usedDays = subHdManagementData.getSelectedCodeOptionSubHoliday();
-				}
+				} 
 				LeaveComDayOffManagement domainLeaveComDayOffManagement = new LeaveComDayOffManagement(leaveId,
-						comDayOffID, usedDays, usedHours, targetSelectionAtr);
+						comDayOffID, subHdManagementData.getSelectedCodeSubHoliday(), usedHours, targetSelectionAtr);
 				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
 			}
 		}

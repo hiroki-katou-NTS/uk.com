@@ -13,4 +13,6 @@ public interface StandardWidgetRepository {
 	List<StandardWidget> getAll();
 	
 	Optional<StandardWidget> getByID(String ToppagePartID);
+	
+	List<StandardWidget> findByTopPagePartId(List<String> toppagePartIDs, String cID);
 }

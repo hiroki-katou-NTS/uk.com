@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,9 +22,9 @@ import nts.uk.shr.com.i18n.TextResource;
  * @author hungnm
  *
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class DPHeaderDto {
 
 	private String headerText;
@@ -144,6 +146,11 @@ public class DPHeaderDto {
 
 	public static DPHeaderDto addHeaderSubmitted() {
 		return new DPHeaderDto(TextResource.localize("KDW003_62"), "Submitted", "String", "90px", "", false, "Label",
+				false, false);
+	}
+	
+	public static DPHeaderDto addHeaderApplicationList() {
+		return new DPHeaderDto(TextResource.localize("KDW003_110"), "ApplicationList", "String", "90px", "", false, "ButtonList",
 				false, false);
 	}
 
