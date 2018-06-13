@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.infra.repository.datarestoration;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
 
 @Stateless
 public class JpaPerformDataRecoveryRepository extends JpaRepository implements PerformDataRecoveryRepository {
+
 	
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.tableListPk.categoryId =:categoryId AND storageRangeSaved =:storageRangeSaved";
 	
@@ -33,7 +35,11 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	private static final StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
 	
 	private static final StringBuilder INSERT_BY_TABLE = new StringBuilder("INSERT INTO ");
-	
+
+	private static final String SELECT_ALL_TABLE_LIST_QUERY_STRING = "SELECT f FROM SspmtTableList f";
+	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId";
+
+
 	@Override
 	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
 		return Optional.ofNullable(
@@ -150,5 +156,17 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		Query query = em.createNativeQuery(INSERT_BY_TABLE.toString());
 		query.executeUpdate();
 		
+	}
+
+	@Override
+	public List<TableList> getAllTableList() {
+		return this.queryProxy().query(SELECT_ALL_TABLE_LIST_QUERY_STRING, SspmtTableList.class)
+				.getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId) {
+		return this.queryProxy().query(SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING, SspmtTableList.class)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList(c -> c.toDomain());
 	}
 }

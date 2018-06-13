@@ -4,36 +4,54 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/dialog.xhtml">
-			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 160, height: 250 };</script>
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="cmf004.c.vm.js" />
-				<com:scriptfile path="cmf004.c.start.js" />
-				<com:stylefile path="cmf004.c.style.css" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div class="contents-area dialog-content"  >
-					<div data-bind="ntsFormLabel: {}" id ="C1_1" class = "label-left">#{i18n.getText('CMF004_50')}</div>
-					<span>復旧ファイル名(tên file khô phục)</span>
-					<br/>
-					<div data-bind="ntsFormLabel: {}" id ="C1_3" class = "label-left">#{i18n.getText('CMF004_51')}</div>
-					<input tabindex="11" id="B4_32" class="form-B"
-										data-bind="ntsTextEditor: {
-											name: '#[CMF003_73]',
-											value: password,
-											option: {textmode: 'password',width: '152px'},
-											enable: true,
-											readonly: false
-											}" />
-					<br/>
-					<div>
-						<button class="large proceed" data-bind="click: processing" id ="C1_5">#{i18n.getText('CMF004_52')}</button>
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 350, height: 350 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cmf004.c.vm.js" />
+			<com:scriptfile path="cmf004.c.start.js" />
+			<com:stylefile path="cmf004.c.style.css" />
+		</ui:define>
+		<ui:define name="content">
+			<div class="contents-area dialog-content">
+				<div class="div-table">
+					<div class="div-table-row-1"></div>
+					<div class="div-table-row">
+						<div class="div-table-col">
+							<div style="vertical-align: middle" data-bind="ntsFormLabel: {}"
+								id="C1_1" class="label-left inner">#{i18n.getText('CMF004_50')}</div>
+						</div>
+						<div class="div-table-col">
+							<div class="flex valign-center fixed-height outer"
+								style="height: 37px;">
+								<div style="display: inline;" data-bind="text: fileName"
+									id="C1_2" class="label-left cell"></div>
+							</div>
+						</div>
+					</div>
+					<div class="div-table-row-1"></div>
+					<div class="div-table-row">
+						<div class="div-table-col">
+							<div data-bind="ntsFormLabel: {}" id="C1_3">#{i18n.getText('CMF004_51')}</div>
+						</div>
+						<div class="flex valign-center fixed-height outer"
+							style="height: 37px;">
+							<div class="inner">
+								<input tabindex="11" id="B4_32"
+									data-bind="ntsTextEditor: { name: '#[CMF003_73]', value:
+									password, option: {textmode: 'password',width: '150px'},
+									enable: true, readonly: false }" /> 
+							</div>
+						</div>
 					</div>
 				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+				<div id="functions-area-bottom">
+					<button tabindex="12" id="C1_5" class="large"
+						data-bind="click: processing">#{i18n.getText('CMF001_258')}</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
 </html>

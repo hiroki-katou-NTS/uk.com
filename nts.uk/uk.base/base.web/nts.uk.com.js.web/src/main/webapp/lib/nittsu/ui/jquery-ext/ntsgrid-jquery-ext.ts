@@ -104,8 +104,11 @@ module nts.uk.ui.jqueryExtentions {
             }
             let flatCols = validation.scanValidators($self, options.columns); 
             // Cell color
-            let cellFormatter = new color.CellFormatter($self, options.features, options.ntsFeatures, flatCols);
-            $self.data(internal.CELL_FORMATTER, cellFormatter);
+            let cellFormatter = $self.data(internal.CELL_FORMATTER);
+            if (!cellFormatter) {
+                cellFormatter = new color.CellFormatter($self, options.features, options.ntsFeatures, flatCols);
+                $self.data(internal.CELL_FORMATTER, cellFormatter);
+            }
             
             $self.addClass('compact-grid nts-grid');
             if ($self.closest(".nts-grid-wrapper").length === 0) {
@@ -2574,7 +2577,7 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 disable($container: JQuery): void {
                     var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
-                    $wrapper.find("a").css("color", "#AAA").off("click");
+                    $wrapper.find("a").css("color", "#333").off("click");
                 }
             }
             

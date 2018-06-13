@@ -164,7 +164,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             self.supplementaryExplanation('2017年05月締め前');
             let listCategory: Array<CategoryInfo> = [];
             for (let i = 1; i < 10; i++) {
-                let isRecover = i % 2 ? true : false;
+                let isRecover = !!(i % 2);
                 let categoryName = '個人情報マスタ';
                 let recoveryPeriod = '日次';
                 let startOfPeriod = '2018/01/0' + i;
@@ -284,6 +284,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
 
         restoreData_click(): void {
+            nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
         }
 
         backToPreviousScreen(): void {
@@ -294,7 +295,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             if (inputType() === '日次') return PeriodEnum.DAY;
             if (inputType() === '月次') return PeriodEnum.MONTH;
             if (inputType() === '年次') return PeriodEnum.YEAR;
-            return 0;
+            return 3;
         }
 
         start(): JQueryPromise<any> {

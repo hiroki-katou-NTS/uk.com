@@ -16,7 +16,7 @@ public class AnyItemOfMonthlyCommandHandler extends CommandFacade<AnyItemOfMonth
 	@Override
 	protected void handle(CommandHandlerContext<AnyItemOfMonthlyCommand> context) {
 		if(context.getCommand().getData().isHaveData()) {
-			context.getCommand().getData().toDomain().forEach(d -> {
+			context.getCommand().toDomain().forEach(d -> {
 				repo.persistAndUpdate(d);
 			});
 		}

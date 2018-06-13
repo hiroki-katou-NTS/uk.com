@@ -59,21 +59,21 @@
 							</td>
 							<td><label data-bind="text: categoryName" /></td>
 							<td><label data-bind="text: recoveryPeriod" /></td>
-							<com:ko-if bind="$parents[1].periodInputType(recoveryPeriod) == 0">
-								<td></td>
-								<td></td>
-							</com:ko-if>
-							<com:ko-if bind="$parents[1].periodInputType(recoveryPeriod) == 1">
+							<com:ko-if bind="$parents[1].periodInputType(recoveryPeriod) == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.DAY">
 								<td class="halign-center date-period"><div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'YYYY/MM/DD'}" tabindex="2"></div></td>
 								<td class="halign-center date-period"><div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod, dateFormat: 'YYYY/MM/DD'}" tabindex="3"></div></td>
 							</com:ko-if>
-							<com:ko-if bind="$parents[1].periodInputType(recoveryPeriod) == 2">
+							<com:ko-if bind="$parents[1].periodInputType(recoveryPeriod) == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.MONTH">
 								<td class="halign-center date-period"><div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}" tabindex="2"></div></td>
 								<td class="halign-center date-period"><div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}" tabindex="3"></div></td>
 							</com:ko-if>
-							<com:ko-if bind="$parents[1].periodInputType(recoveryPeriod) == 3">
+							<com:ko-if bind="$parents[1].periodInputType(recoveryPeriod) == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.YEAR">
 								<td class="halign-center date-period"><div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'YYYY', valueFormat: 'YYYY'}" tabindex="2"></div></td>
 								<td class="halign-center date-period"><div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod,  dateFormat: 'YYYY', valueFormat: 'YYYY'}" tabindex="3"></div></td>
+							</com:ko-if>
+							<com:ko-if bind="$parents[1].periodInputType(recoveryPeriod) == 3">
+								<td></td>
+								<td></td>
 							</com:ko-if>
 							<td><label data-bind="text: recoveryMethod" /></td>
 						</tr>

@@ -18,6 +18,7 @@ public interface PerformDataRecoveryRepository {
 	void update(PerformDataRecovery domain);
 
 	void remove(String dataRecoveryProcessId);
+
 	
 	List<TableList> getByStorageRangeSaved(String categoryId,String storageRangeSaved);
 	
@@ -30,4 +31,10 @@ public interface PerformDataRecoveryRepository {
 	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName);
 	
 	void insertDataTable(Map<String, String> dataInsertDB, String tableName);
+
+
+	List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId);
+
+	List<TableList> getAllTableList();
+	
 }

@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -22,33 +23,39 @@ public class ServerPrepareMng extends AggregateRoot {
 	/**
 	 * データ保存処理ID
 	 */
+	@Setter
 	private Optional<String> dataStoreProcessId;
 
 	/**
 	 * ファイルID
 	 */
+	@Setter
 	private Optional<String> fileId;
 
 	/**
 	 * アップロードファイル名
 	 */
+	@Setter
 	private Optional<String> uploadFileName;
 
 	/**
 	 * アップロードをするしない
 	 */
+	@Setter
 	private NotUseAtr doNotUpload;
 
 	/**
 	 * パスワード
 	 */
+	@Setter
 	private Optional<FileCompressionPassword> password;
 
 	/**
 	 * 動作状態
 	 */
+	@Setter
 	private ServerPrepareOperatingCondition operatingCondition;
-
+	
 	public ServerPrepareMng(String dataRecoveryProcessId, String dataStoreProcessId, String fileId,
 			String uploadFileName, int doNotUpload, String password, int operatingCondition) {
 		super();

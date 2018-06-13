@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 public class FurikyuMngDataExtractionData {
 	private List<PayoutManagementData> payoutManagementData;
 	private List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
+	private List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout;
+	private List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToSub;
 	private int expirationDate;
 	private Double numberOfDayLeft;
 	private Integer closureId;
+	private boolean haveEmploymentCode;
 }

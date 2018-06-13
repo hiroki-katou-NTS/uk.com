@@ -8,7 +8,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
+    
     export class ScreenModel {
         //listSelectionItem
         listItems: KnockoutObservableArray<SelectionItem> = ko.observableArray([]);
@@ -535,17 +538,17 @@ module nts.uk.com.view.cps017.a.viewmodel {
         // 選択肢未登録会社へ反映する
         ReflUnrComp() {
             let self = this;
-
             let command = { 'selectionItemId' : self.perInfoSelectionItem().selectionItemId() };
 
             confirm({ messageId: "Msg_532", messageParams: ["1"] }).ifYes(() => {
+                invisible();
                 service.reflUnrComp(command).done(function() {
+                    unblock();
                     nts.uk.ui.dialog.info({ messageId: "Msg_81" }).then(() => {
                         self.focusToInput();
                     });
                 });
             }).ifNo(() => {
-                
                 return;
             })
         }

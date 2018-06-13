@@ -1842,9 +1842,9 @@ public class ProgramsManager {
     /**
      * KRD001
      */
-    public static final Program KRD001A = new Program(WebAppId.AT, ProgramIdConsts.KDR001A, "KDR001_51",
+    public static final Program KDR001A = new Program(WebAppId.AT, ProgramIdConsts.KDR001A, "KDR001_51",
             "/view/kdr/001/a/index.xhtml");   
-    public static final Program KRD001B = new Program(WebAppId.AT, ProgramIdConsts.KRD001B, "KDR001_52",
+    public static final Program KRD001B = new Program(WebAppId.AT, ProgramIdConsts.KDR001B, "KDR001_52",
             "/view/kdr/001/b/index.xhtml");
 	
 	public static final Program CMM001E = new Program(WebAppId.COM, ProgramIdConsts.CMM001E, "CMM001_68",
@@ -1860,7 +1860,7 @@ public class ProgramsManager {
 			"/view/kmw/006/e/index.xhtml");
 	public static final Program KMW006F = new Program(WebAppId.AT, ProgramIdConsts.KMW006F, "KMW006_46",
 			"/view/kmw/006/f/index.xhtml");
-	
+			
 	/** KDM001 */
 	public static final Program KDM001A = new Program(WebAppId.AT, ProgramIdConsts.KDM001A, "KDM001_131",
 			"/view/kdm/001/a/index.xhtml");
@@ -1886,6 +1886,12 @@ public class ProgramsManager {
 			"/view/kdm/001/l/index.xhtml");
 	public static final Program KDM001M = new Program(WebAppId.AT, ProgramIdConsts.KDM001M, "KDM001_143",
 			"/view/kdm/001/m/index.xhtml");
+			
+	/** CDL027 */
+	public static final Program CDL027TEST = new Program(WebAppId.COM, ProgramIdConsts.CDL027TEST, "CDL027_3",
+			"/view/cdl/027/demo/index.xhtml");
+	public static final Program CDL027 = new Program(WebAppId.COM, ProgramIdConsts.CDL027, "CDL027_3",
+			"/view/cdl/027/a/index.xhtml");
 
 	/** KWR008 **/
 	public static final Program KWR008A = new Program(WebAppId.AT, ProgramIdConsts.KWR008A, "KWR008_1",
@@ -1918,6 +1924,13 @@ public class ProgramsManager {
 			"/view/kdm/002/a/index.xhtml");
 	public static final Program KDM002B = new Program(WebAppId.AT, ProgramIdConsts.KDM002B, "KDM002_2",
 			"/view/kdm/002/b/index.xhtml");
+	
+	//KDL030
+	public static final Program KDL030 = new Program(WebAppId.AT, ProgramIdConsts.KDL030, "KDL030_1",
+			"/view/kdl/030/a/index.xhtml");
+	//KDL034
+	public static final Program KDL034 = new Program(WebAppId.AT, ProgramIdConsts.KDL034, "KDL034_1",
+			"/view/kdl/034/a/index.xhtml");
 
 	/**
 	 * All programs map.

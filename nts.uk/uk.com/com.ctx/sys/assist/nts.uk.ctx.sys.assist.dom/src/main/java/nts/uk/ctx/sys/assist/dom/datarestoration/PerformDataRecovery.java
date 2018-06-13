@@ -71,4 +71,11 @@ public class PerformDataRecovery extends AggregateRoot {
 		this.recoveryMethod        = EnumAdaptor.valueOf(recoveryMethod, RecoveryMethod.class);
 		this.recoverFromAnoCom     = EnumAdaptor.valueOf(recoverFromAnoCom, NotUseAtr.class);
 	}
+	public PerformDataRecovery(String dataRecoveryProcessId, String cid, String uploadfileId,
+			String recoveryFileName) {
+		this.dataRecoveryProcessId = dataRecoveryProcessId;
+		this.cid                   = cid;
+		this.uploadfileId          = uploadfileId;
+		this.recoveryFileName      = recoveryFileName;
+	}
 }

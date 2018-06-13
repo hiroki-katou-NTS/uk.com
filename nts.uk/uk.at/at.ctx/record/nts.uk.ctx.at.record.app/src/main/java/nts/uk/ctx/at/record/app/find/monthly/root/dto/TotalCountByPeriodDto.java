@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 /**
@@ -16,10 +17,10 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TotalCountByPeriodDto {
+public class TotalCountByPeriodDto implements ItemConst {
 
 	/** 回数集計 */
-	@AttendanceItemLayout(jpPropertyName = "回数集計", layout = "A", listMaxLength = 30, indexField = "totalCountNo")
+	@AttendanceItemLayout(jpPropertyName = AGGREGATE, layout = LAYOUT_A, listMaxLength = 30, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<TotalCountDto> totalCount;
 
 	public TotalCountByPeriod toDomain(){

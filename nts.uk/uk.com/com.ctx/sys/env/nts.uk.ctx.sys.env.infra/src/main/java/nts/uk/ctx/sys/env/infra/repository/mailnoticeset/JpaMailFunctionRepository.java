@@ -28,8 +28,8 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevmtMailFunction_;
 @Stateless
 public class JpaMailFunctionRepository extends JpaRepository implements MailFunctionRepository {
 
-	private static final Integer TRUE_VAL = 0;
-	private static final Integer FALSE_VAL = 1;
+	private static final Integer TRUE_VAL = 1;
+	private static final Integer FALSE_VAL = 0;
 
 	/*
 	 * (non-Javadoc)

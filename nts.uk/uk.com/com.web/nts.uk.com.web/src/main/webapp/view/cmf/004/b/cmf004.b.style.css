@@ -1,10 +1,10 @@
 #data-recovery-wizard {
-	width: 1280px;
+	width: 1265px;
+	height: 735px;
 }
 
 #data-recovery-wizard>.content {
-	height: 640px;
-	width: 1010px;
+    width: 850px;
 	background: none;
 	overflow: visible;
 }
@@ -14,11 +14,11 @@
 }
 
 #data-recovery-wizard .current {
-	padding-top: 0px;
+	padding-top: 0;
 }
 
 #data-recovery-wizard .div-column-1 {
-	width: 130px;
+	width: 120px;
 }
 
 #data-recovery-wizard .div-column-2 {
@@ -41,6 +41,10 @@
 	height: 28px;
 }
 
+#F4_1 tbody>tr{
+	height: 32px;
+}
+
 .row-number {
 	background-color: #CFF1A5;
 }
@@ -48,4 +52,16 @@
 #file-upload .browser-button {
 	background-color: #A4EEB0;
 	margin-left: 60px;
+}
+
+#data-recovery-wizard .caret-background.caret-right:after {
+	border-width: 0;
+}
+
+.nts-wizard > .content > .body {
+	padding: 0;
+}
+
+.fixed-flex-layout > .fixed-flex-layout-left {
+	margin-right: 15px;
 }
