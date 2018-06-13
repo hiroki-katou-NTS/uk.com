@@ -45,7 +45,7 @@ public class CisdtEraName extends UkJpaEntity implements Serializable {
 
 	/** The era name. */
 	@Column(name="ERA_NAME")
-	private Object eraName;
+	private String eraName;
 
 	/** The start date. */
 	@Column(name="START_DATE")
