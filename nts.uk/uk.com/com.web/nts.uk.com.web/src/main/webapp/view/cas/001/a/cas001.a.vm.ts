@@ -207,8 +207,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             setShared('personRole', self.currentRole());
 
-
-
             nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 if (!getShared('isCanceled')) {
@@ -227,8 +225,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 };
 
             setShared('currentRole', currentRole);
-
-
 
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
@@ -429,12 +425,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
         roleId: string;
         roleCode: string;
         roleName: string;
-        allowMapBrowse: KnockoutObservable<number>;
-        allowMapUpload: KnockoutObservable<number>;
-        allowDocUpload: KnockoutObservable<number>;
-        allowDocRef: KnockoutObservable<number>;
-        allowAvatarUpload: KnockoutObservable<number>;
-        allowAvatarRef: KnockoutObservable<number>;
         currentCategory: KnockoutObservable<PersonRoleCategory> = ko.observable(null);
 
         constructor(param: IPersonRole) {
@@ -442,23 +432,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.roleId = param ? param.roleId : '';
             self.roleCode = param ? param.roleCode : '';
             self.roleName = param ? param.name : '';
-            self.allowMapBrowse = ko.observable(param ? param.allowMapBrowse : 0);
-            self.allowMapUpload = ko.observable(param ? param.allowMapUpload : 0);
-            self.allowDocUpload = ko.observable(param ? param.allowDocUpload : 0);
-            self.allowDocRef = ko.observable(param ? param.allowDocRef : 0);
-            self.allowAvatarUpload = ko.observable(param ? param.allowAvatarUpload : 0);
-            self.allowAvatarRef = ko.observable(param ? param.allowAvatarRef : 0);
 
         }
 
         setRoleAuth(param: IPersonRole) {
             let self = this;
-            self.allowMapBrowse = ko.observable(param ? param.allowMapBrowse : 0);
-            self.allowMapUpload = ko.observable(param ? param.allowMapUpload : 0);
-            self.allowDocUpload = ko.observable(param ? param.allowDocUpload : 0);
-            self.allowDocRef = ko.observable(param ? param.allowDocRef : 0);
-            self.allowAvatarUpload = ko.observable(param ? param.allowAvatarUpload : 0);
-            self.allowAvatarRef = ko.observable(param ? param.allowAvatarRef : 0);
         }
 
 
@@ -769,23 +747,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
         roleId: string;
         roleCode: string;
         roleName: string;
-        allowMapBrowse: number;
-        allowMapUpload: number;
-        allowDocUpload: number;
-        allowDocRef: number;
-        allowAvatarUpload: number;
-        allowAvatarRef: number;
         currentCategory: PersonRoleCategoryCommand = null;
         constructor(param: PersonRole) {
             this.roleId = param.roleId;
             this.roleCode = param.roleCode;
             this.roleName = param.roleName;
-            this.allowMapBrowse = param.allowMapBrowse();
-            this.allowMapUpload = param.allowMapUpload();
-            this.allowDocUpload = param.allowDocUpload();
-            this.allowDocRef = param.allowDocRef();
-            this.allowAvatarUpload = param.allowAvatarUpload();
-            this.allowAvatarRef = param.allowAvatarRef();
             this.currentCategory = new PersonRoleCategoryCommand(param.currentCategory());
         }
     }
