@@ -47,6 +47,21 @@ module nts.layout {
                         });
                     }
                 });
+
+            setTimeout(() => {
+                let _item: any = _(items)
+                    .filter(x => _.has(x, "items") && !!x.items)
+                    .map(x => x.items)
+                    .flatten()
+                    .flatten()
+                    .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
+                    //.orderBy((x: any) => x.dispOrder)
+                    .find((x: any) => !!ko.toJS(x.editable));
+
+                if (_item) {
+                    _item.hasFocus(true);
+                }
+            }, 50);
         },
         checkError: (items: Array<any>) => {
             _(items)
@@ -1247,53 +1262,60 @@ module nts.layout {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
                     });
                 });
+            }
+
+            if (CS00017_IS00084) {
                 // 
                 CS00017_IS00084.ctrl.on('click', () => {
-                    setShared('inputCDL008', {
-                        selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
-                        baseDate: ko.toJS(CS00017_IS00082.data.value),
-                        isMultiple: false,
-                        selectedSystemType: 5,
-                        isrestrictionOfReferenceRange: false
-                    }, true);
+                    if ((!!CS00017_IS00082 && !!CS00017_IS00082.data.value()) || location.href.indexOf('/view/cps/002') > -1) {
+                        setShared('inputCDL008', {
+                            selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
+                            baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
+                            isMultiple: false,
+                            selectedSystemType: 5,
+                            isrestrictionOfReferenceRange: false
+                        }, true);
 
-                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                        // Check is cancel.
-                        if (getShared('CDL008Cancel')) {
-                            return;
-                        }
+                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                            // Check is cancel.
+                            if (getShared('CDL008Cancel')) {
+                                return;
+                            }
 
-                        //view all code of selected item 
-                        let output = getShared('outputCDL008');
-                        if (output) {
-                            CS00017_IS00084.data.value(output);
-                        }
-                    });
+                            //view all code of selected item 
+                            let output = getShared('outputCDL008');
+                            if (output) {
+                                CS00017_IS00084.data.value(output);
+                            }
+                        });
+                    }
                 });
             }
 
-            if (CS00017_IS00082 && CS00017_IS00085) {
+            if (CS00017_IS00085) {
                 CS00017_IS00085.ctrl.on('click', () => {
-                    setShared('inputCDL008', {
-                        selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
-                        baseDate: ko.toJS(CS00017_IS00082.data.value),
-                        isMultiple: false,
-                        selectedSystemType: 5,
-                        isrestrictionOfReferenceRange: false
-                    }, true);
+                    if ((!!CS00017_IS00082 && !!CS00017_IS00082.data.value()) || location.href.indexOf('/view/cps/002') > -1) {
+                        setShared('inputCDL008', {
+                            selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
+                            baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
+                            isMultiple: false,
+                            selectedSystemType: 5,
+                            isrestrictionOfReferenceRange: false
+                        }, true);
 
-                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                        // Check is cancel.
-                        if (getShared('CDL008Cancel')) {
-                            return;
-                        }
+                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                            // Check is cancel.
+                            if (getShared('CDL008Cancel')) {
+                                return;
+                            }
 
-                        //view all code of selected item 
-                        let output = getShared('outputCDL008');
-                        if (output) {
-                            CS00017_IS00085.data.value(output);
-                        }
-                    });
+                            //view all code of selected item 
+                            let output = getShared('outputCDL008');
+                            if (output) {
+                                CS00017_IS00085.data.value(output);
+                            }
+                        });
+                    }
                 });
             }
 
@@ -1660,13 +1682,6 @@ module nts.layout {
             if (!!ctrls) {
                 let categoryId = ((ctrls[0] || <any>{}).data || <any>{}).categoryId;
                 if (categoryId) {
-                    __viewContext
-                        .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')]
-                        .stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
-
-                    __viewContext.primitiveValueConstraints['StampNumber'].stringExpression = __viewContext
-                        .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')].stringExpression;
-
                     fetch.get_stc_setting().done((stt: StampCardEditing) => {
                         let _bind = $(document).data('_nts_bind') || {};
 

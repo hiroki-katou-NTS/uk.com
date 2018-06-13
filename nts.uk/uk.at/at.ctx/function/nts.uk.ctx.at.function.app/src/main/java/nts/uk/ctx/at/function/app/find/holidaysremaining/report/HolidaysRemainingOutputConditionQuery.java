@@ -8,4 +8,5 @@ public class HolidaysRemainingOutputConditionQuery {
 	private String endMonth;
 	private String outputItemSettingCode;
 	private int pageBreak;
+	private String baseDate;
 }

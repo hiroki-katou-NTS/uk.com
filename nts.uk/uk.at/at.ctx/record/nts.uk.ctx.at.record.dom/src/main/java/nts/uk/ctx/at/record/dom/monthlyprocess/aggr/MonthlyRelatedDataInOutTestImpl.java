@@ -314,7 +314,7 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 						new LimitOneMonth(0),
 						Optional.empty(),
 						Optional.of(new LimitOneMonth(400 + randomVal)),
-						AgreementTimeStatusOfMonthly.IN_EXCEPTION_LIMIT),
+						AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM),
 				AgreementTimeBreakdown.of(
 						new AttendanceTimeMonth(500 + randomVal),
 						new AttendanceTimeMonth(0),

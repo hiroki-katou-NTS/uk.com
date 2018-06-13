@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.infra.entity.setting.company.divergencereason.Krqst
 @Stateless
 public class JpaDivergenceReasonRepo extends JpaRepository implements DivergenceReasonRepository {
 	private static final String FINDER_ALL ="SELECT e FROM KrqstAppDivergenReason e";
-	private final String PLEASE ="選択してください";
+	private static final String PLEASE ="選択してください";
 	
 	private static final String FIND_FOLLOW_COMPANYID_AND_APPTYPE;
 	static{

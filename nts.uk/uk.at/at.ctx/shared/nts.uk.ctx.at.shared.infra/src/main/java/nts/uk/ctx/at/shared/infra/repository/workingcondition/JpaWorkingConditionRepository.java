@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -27,11 +27,12 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionRepository.
  */
-@RequestScoped
+@Stateless
 public class JpaWorkingConditionRepository extends JpaRepository implements WorkingConditionRepository {
 
 	/*
@@ -323,7 +324,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#getBySids(java.util.List)
 	 */
 	@Override
-	public List<WorkingCondition> getBySids(List<String> employeeIds) {
+	public List<WorkingCondition> getBySidsAndDatePeriod(List<String> employeeIds, DatePeriod datePeriod) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -343,8 +344,12 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
 			// eq company id
+			lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+					.get(KshmtWorkingCondPK_.sid).in(subList));
 			lstpredicateWhere.add(
-					root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid).in(subList));
+					criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), datePeriod.end()));
+			lstpredicateWhere.add(criteriaBuilder
+					.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), datePeriod.start()));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
