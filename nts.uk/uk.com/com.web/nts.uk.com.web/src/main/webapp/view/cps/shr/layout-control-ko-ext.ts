@@ -2023,9 +2023,12 @@ module nts.custombinding {
                                 }
                             });
                         });
-
+                        
+                        // filter group input has record id
+                        // or no record id but has data
+                        // or has record id and delete flag is true
                         inputs = _(inputs).filter(f => {
-                            return f.items.filter(m => !!m.value).length > 0 || (f.recordId && f.delete);
+                            return f.recordId || (!f.recordId && f.items.filter(m => !!m.value).length > 0) || (f.recordId && f.delete);
                         }).value();
 
                         // change value
