@@ -91,12 +91,12 @@ module nts.uk.com.view.cps005.b {
                     }
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
-                                info({ messageId: data}).then(() => {
-                                    self.reloadData();
-                                    self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
-                                    self.currentItemData().perInfoItemSelectCode.valueHasMutated();
-                                    block.clear();
-                                });
+                            info({ messageId: data }).then(() => {
+                                self.reloadData();
+                                self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
+                                self.currentItemData().perInfoItemSelectCode.valueHasMutated();
+                                block.clear();
+                            });
                         } else {
                             info({ messageId: "Msg_15" }).then(() => {
                                 self.reloadData();
@@ -208,10 +208,10 @@ module nts.uk.com.view.cps005.b {
             }
 
             checkRequired(newItemDef: any): boolean {
-                if(newItemDef.itemName == ""){
+                if (newItemDef.itemName == "") {
                     $("#item-name-control").focus();
                     block.clear();
-                    return true;    
+                    return true;
                 }
 
                 if (newItemDef.singleItem.dataType === 1) {
@@ -314,7 +314,7 @@ module nts.uk.com.view.cps005.b {
                     return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5 || c.value == 6);
                 });
                 self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
-                self.stringItemTypeEnumFilter =  _.filter(params.stringItemTypeEnum, function(c) {
+                self.stringItemTypeEnumFilter = _.filter(params.stringItemTypeEnum, function(c) {
                     return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5);
                 });
                 self.stringItemDataTypeEnum = params.stringItemDataTypeEnum || new Array();
@@ -368,7 +368,7 @@ module nts.uk.com.view.cps005.b {
         itemName: KnockoutObservable<string> = ko.observable("");
         fixedAtr: KnockoutObservable<number> = ko.observable(0);
         itemType: KnockoutObservable<number> = ko.observable(2);
-        dataType: KnockoutObservable<number> = ko.observable(1);
+        dataType: KnockoutObservable<number> = ko.observable(null);
         stringItem: KnockoutObservable<StringItemModel> = ko.observable(new StringItemModel(null));
         numericItem: KnockoutObservable<NumericItemModel> = ko.observable(new NumericItemModel(null));
         dateItem: KnockoutObservable<DateItemModel> = ko.observable(new DateItemModel(null));
@@ -378,7 +378,7 @@ module nts.uk.com.view.cps005.b {
         dataTypeText: KnockoutObservable<string> = ko.observable("");
         selectionItemName: string;
         selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        enable:  KnockoutObservable<boolean> = ko.observable(true);
+        enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IPersonInfoItem) {
             let self = this;
 
@@ -412,21 +412,17 @@ module nts.uk.com.view.cps005.b {
                         case 6:
                             self.selectionItem(new SelectionItemModel(dataTypeState));
                             break;
+                        default: break;
+
                     }
                 }
             }
 
             self.dataType.subscribe(function(value) {
-                if (value === (data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1)) return;
-//                if (__viewContext['screenModelB'].isUpdate) {
-//                    new service.Service().checkItemData(data.id).done(function(obj: boolean) {
-//                        if (obj) {
-//                            alertError({ messageId: "Msg_233" }).then(() => {
-//                                self.dataType(data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1);
-//                            });
-//                        }
-//                    });
-//                }
+                let dataState =  data == null? undefined:(data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : undefined);
+                if(!dataState) return;
+                if(dataState !== value) self.dataType(dataState); 
+                if (value === (data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : undefined) : undefined)) return;
                 self.stringItem(new StringItemModel(null));
                 self.numericItem(new NumericItemModel(null));
                 self.dateItem(new DateItemModel(null));
@@ -660,6 +656,33 @@ module nts.uk.com.view.cps005.b {
             self.timeItemMax(data.max);
         }
     }
+    export class SelectionButton {
+        select: any;
+        constructor(data: any) {
+            let self = this;
+            if (!data) return;
+            self.select("");
+        }
+    }
+    
+   export class Read {
+        select: any;
+        constructor(data: any) {
+            let self = this;
+            if (!data) return;
+            self.select("");
+        }
+    }
+   export class Radio {
+        select: any;
+        constructor(data: any) {
+            let self = this;
+            if (!data) return;
+            self.select("");
+        }
+    }
+
+
     export class TimePointItemModel {
         timePointItemMin: KnockoutObservable<number> = ko.observable();
         timePointItemMax: KnockoutObservable<number> = ko.observable();
@@ -926,7 +949,7 @@ module nts.uk.com.view.cps005.b {
         id: string;
         itemName: string;
         isFixed: number;
-        enable : boolean;
+        enable: boolean;
         itemTypeState: IItemTypeState;
     }
 
