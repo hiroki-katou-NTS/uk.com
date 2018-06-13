@@ -45,6 +45,9 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 
 		String contractCd = AppContexts.user().contractCode();
 		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
+		int salary = AppContexts.user().roles().forPayroll() != null ? 1 : 0;
+		int personnel = AppContexts.user().roles().forPersonnel() != null ? 1 : 0;
+		int employee = AppContexts.user().roles().forAttendance() != null ? 1 : 0;
 		
 		// validate categoryName
 		validateCategoryName(categoryName, zeroCompanyId);
@@ -54,7 +57,7 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		
 		// add PersonInfoCategory of zero-company.
 		PersonInfoCategory perInfoCtg = PersonInfoCategory.createFromJavaType(zeroCompanyId, newCategoryCode, categoryName,
-				categoryType);
+				categoryType, salary , employee, personnel );
 		this.perInfoCtgRep.addPerInfoCtgRoot(perInfoCtg, contractCd);
 
 		List<String> companyIdList = companyRepo.acquireAllCompany();

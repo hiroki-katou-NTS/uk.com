@@ -177,6 +177,25 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
 		this.canAbolition = canAbolish == 0 ? false: true;
 	}
+	
+	// đối ứng cho việc thêm 4 trường 	salaryAtr, employmentAtr, personelAtr
+	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType,int salaryAtr, int employmentAtr, int personelAtr) {
+		super();
+		this.personInfoCategoryId = IdentifierUtil.randomUniqueId();
+		this.categoryCode = new CategoryCode(categoryCode);
+		this.categoryParentCode = null;
+		this.categoryName = new CategoryName(categoryName);
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+		this.isFixed = IsFixed.FIXED;
+		this.addItemCls = AddItemObjCls.ENABLE;
+		this.isAbolition = IsAbolition.NOT_ABOLITION;
+		this.initValMasterCls =InitValMasterObjCls.INIT;
+		this.personEmployeeType =  PersonEmployeeType.EMPLOYEE;
+		this.salaryUseAtr = EnumAdaptor.valueOf(salaryAtr, NotUseAtr.class);
+		this.personnelUseAtr = EnumAdaptor.valueOf(personelAtr, NotUseAtr.class);
+		this.employmentUseAtr = EnumAdaptor.valueOf(employmentAtr, NotUseAtr.class);
+		this.canAbolition = true;
+	}
 
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, int categoryType) {
@@ -193,6 +212,11 @@ public class PersonInfoCategory extends AggregateRoot {
 	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName,
 			int categoryType) {
 		return new PersonInfoCategory(companyId, categoryCode, categoryName, categoryType);
+	}
+	
+	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName,
+			int categoryType, int salaryAtr, int employmentAtr, int personelAtr ) {
+		return new PersonInfoCategory(companyId, categoryCode, categoryName, categoryType,salaryAtr, employmentAtr,personelAtr);
 	}
 
 	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
