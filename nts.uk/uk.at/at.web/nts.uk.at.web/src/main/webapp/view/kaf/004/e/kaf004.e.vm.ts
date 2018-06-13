@@ -40,6 +40,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         txtlateTime2: KnockoutObservable<string> = ko.observable('1:00');
         version: number = 0;
         displayOrder: KnockoutObservable<number> = ko.observable(0);
+        actualCancelType: KnockoutObservable<string> = ko.observable('');
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             var self = this;
@@ -64,6 +65,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.applicantName(data.applicantName);
                 self.appreason(data.lateOrLeaveEarlyDto.appReason);
                 self.date(data.lateOrLeaveEarlyDto.applicationDate);
+                self.actualCancelType(data.lateOrLeaveEarlyDto.actualCancelAtr == 1?'取消する':'取消しない');
                 self.lateTime1(data.lateOrLeaveEarlyDto.lateTime1);
                 self.lateTime2(data.lateOrLeaveEarlyDto.lateTime2);
                 self.late1(data.lateOrLeaveEarlyDto.late1 == 1 ? true : false);
