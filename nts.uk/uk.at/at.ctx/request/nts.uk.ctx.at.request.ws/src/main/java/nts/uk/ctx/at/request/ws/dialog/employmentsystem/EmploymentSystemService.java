@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
@@ -32,8 +33,8 @@ public class EmploymentSystemService extends WebService {
 	}
 	
 	@POST
-	@Path("getAbsRecGenDigesHis")
-	public AbsRecGenerationDigestionHis getAbsRecGenDigesHis(String employeeId, String baseDate)
+	@Path("getAbsRecGenDigesHis/{employeeId}/{baseDate}")
+	public AbsRecGenerationDigestionHis getAbsRecGenDigesHis(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
 	{		
 		// 振休残数情報の取得
 		return employeeFinder.getAbsRecGenDigesHis(employeeId, baseDate);

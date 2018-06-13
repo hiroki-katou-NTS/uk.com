@@ -18,7 +18,7 @@ module kdl009.test {
                 self.employeeIds.push("18a38ad1-5a83-4fa0-84af-032885d965b9");
                 self.employeeIds.push("1b554e21-72ca-4b98-88e8-ecc5bc6fcb1a");
                 
-                self.baseDate = "2018-05-05";
+                self.baseDate = "20180505";
             }
             
             openDialog() {
