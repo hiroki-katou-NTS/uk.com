@@ -18187,7 +18187,7 @@ var nts;
                         if (!nts.uk.util.isNullOrEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
                             $formLabel.prependTo($container);
-                            ko.bindingHandlers["ntsFormLabel"].init($formLabel, function () {
+                            ko.bindingHandlers["ntsFormLabel"].init($formLabel[0], function () {
                                 return {};
                             }, allBindingsAccessor, viewModel, bindingContext);
                             minusWidth += $formLabel.outerWidth(true);
