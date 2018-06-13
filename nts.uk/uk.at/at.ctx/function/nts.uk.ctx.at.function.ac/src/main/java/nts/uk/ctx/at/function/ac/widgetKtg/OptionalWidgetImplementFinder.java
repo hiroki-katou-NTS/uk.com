@@ -10,6 +10,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveGrantImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveManageInforImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AttendanceTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
@@ -17,10 +20,16 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyExcessTotalTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyExcessTotalTimePubImport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.DailyExcessTotalTimeExpParam;
+import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
+import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveGrantExport;
+import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveManageInforExport;
+import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveRemainingNumberExport;
+import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.ReNumAnnLeaReferenceDateExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
@@ -66,6 +75,9 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	
 	@Inject
 	private AnnualHolidayManagementPub annualHolidayManagementPub;
+	
+	@Inject
+	private AnnLeaveRemainNumberPub annLeaveRemainNumberPub;
 	
 	@Override
 	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
@@ -146,9 +158,9 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	}
 
 	@Override
-	public NextAnnualLeaveGrantImport acquireNextHolidayGrantDate(String cId, String employeeId) {
+	public NextAnnualLeaveGrantImport acquireNextHolidayGrantDate(String cId, String employeeId, GeneralDate endDate) {
 		// TODO Auto-generated method stub
-		NextAnnualLeaveGrantExport c = annualHolidayManagementPub.acquireNextHolidayGrantDate(cId, employeeId).get(0);
+		NextAnnualLeaveGrantExport c = annualHolidayManagementPub.acquireNextHolidayGrantDate(cId, employeeId, Optional.of(endDate)).get(0);
 		return new NextAnnualLeaveGrantImport(
 				c.grantDate, 
 				c.grantDays.v(), 
@@ -156,6 +168,29 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 				c.timeAnnualLeaveMaxDays.isPresent() ? c.timeAnnualLeaveMaxDays.get().v().intValue(): 0, 
 				c.timeAnnualLeaveMaxTime.isPresent()? c.timeAnnualLeaveMaxTime.get().v().intValue(): 0, 
 				c.halfDayAnnualLeaveMaxTimes.isPresent()?c.halfDayAnnualLeaveMaxTimes.get().v().intValue(): 0);
+	}
+
+	@Override
+	public NumAnnLeaReferenceDateImport getReferDateAnnualLeaveRemainNumber(String employeeID, GeneralDate date) {
+		ReNumAnnLeaReferenceDateExport reNumAnnLeaReferenceDateExport = annLeaveRemainNumberPub.getReferDateAnnualLeaveRemainNumber(employeeID, date);
+		AnnualLeaveRemainingNumberExport remainNumber = reNumAnnLeaReferenceDateExport.getAnnualLeaveRemainNumberExport();
+		List<AnnualLeaveGrantExport> AnnualLeaveGrant = reNumAnnLeaReferenceDateExport.getAnnualLeaveGrantExports();
+		List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = reNumAnnLeaReferenceDateExport.getAnnualLeaveManageInforExports();
+		AnnualLeaveRemainingNumberImport annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(
+																				remainNumber.getAnnualLeaveGrantPreDay(),
+																				remainNumber.getAnnualLeaveGrantPreTime(),
+																				remainNumber.getNumberOfRemainGrantPre(),
+																				remainNumber.getTimeAnnualLeaveWithMinusGrantPre(),
+																				remainNumber.getAnnualLeaveGrantPostDay(),
+																				remainNumber.getAnnualLeaveGrantPostTime(),
+																				remainNumber.getNumberOfRemainGrantPost(),
+																				remainNumber.getTimeAnnualLeaveWithMinusGrantPost(),
+																				remainNumber.getAttendanceRate(),
+																				remainNumber.getWorkingDays());
+		List<AnnualLeaveGrantImport> annualLeaveGrantImport = AnnualLeaveGrant.stream().map(c->new AnnualLeaveGrantImport(c.getGrantDate(), c.getGrantNumber(), c.getDaysUsedNo(), c.getUsedMinutes(), c.getRemainDays(), c.getRemainMinutes(), c.getDeadline())).collect(Collectors.toList());
+		List<AnnualLeaveManageInforImport> annualLeaveManageInforImport = annualLeaveManageInforExports.stream().map(c->new AnnualLeaveManageInforImport(c.getYmd(), c.getDaysUsedNo(), c.getUsedMinutes(), c.getScheduleRecordAtr())).collect(Collectors.toList());
+		
+		return new NumAnnLeaReferenceDateImport(annualLeaveRemainNumberImport, annualLeaveGrantImport, annualLeaveManageInforImport);
 	}
 
 	

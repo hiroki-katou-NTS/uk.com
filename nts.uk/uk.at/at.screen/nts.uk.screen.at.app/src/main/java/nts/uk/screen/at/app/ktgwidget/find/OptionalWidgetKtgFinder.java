@@ -12,12 +12,14 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.application.importclass.ApplicationDeadlineImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.GetNumberOfRemainingHolidaysRepository;
@@ -38,6 +40,8 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetDisplay;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetInfoDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.TimeOT;
 import nts.uk.screen.at.app.ktgwidget.find.dto.WidgetDisplayItemTypeImport;
+import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHoliday;
+import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -201,17 +205,13 @@ public class OptionalWidgetKtgFinder {
 					//sử lý 10 call Request list 236
 					int timeOT = 0;
 					List<ApplicationTimeImport> applicationOvertimeImport = optionalWidgetAdapter.acquireTotalApplicationOverTimeHours(employeeId, startDate, endDate);
-					
-					//lấy ra dailyExcessTotalTimeImport những ngày không có trong applicationOvertimeImport
 					for (ApplicationTimeImport applicationOvertime : applicationOvertimeImport) {
 						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
-					//lấy ra tổng thời gian làm thêm theo ApplicationOvertime. 
 					for (ApplicationTimeImport OvertimeImport : applicationOvertimeImport) {
 						timeOT += OvertimeImport.getTotalOtHours();
 					}
-					//lấy ra tổng thời gian làm thêm theo DailyExcessTotalTime 
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
 						timeOT += dailyExcessTotalTime.getTimeOT().getTime();
 					}
@@ -220,17 +220,13 @@ public class OptionalWidgetKtgFinder {
 					//sử lý 11 call Request list 298
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalApplicationTimeUnreflected(employeeId, startDate, endDate);
-					
-					//lấy ra dailyExcessTotalTimeImport những ngày không có trong applicationOvertimeImport
 					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
 						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
-					//lấy ra tổng thời gian làm thêm theo ApplicationOvertime. 
 					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
 						time += OvertimeImport.getTotalOtHours();
 					}
-					//lấy ra tổng thời gian làm thêm theo DailyExcessTotalTime 
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
 						time += dailyExcessTotalTime.getTimeOT().getTime();
 					}
@@ -239,17 +235,13 @@ public class OptionalWidgetKtgFinder {
 					//sử lý 12 call Request list 299
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalAppHdTimeNotReflected(employeeId, startDate, endDate);
-					
-					//lấy ra dailyExcessTotalTimeImport những ngày không có trong applicationOvertimeImport
 					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
 						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
-					//lấy ra tổng thời gian làm thêm theo ApplicationOvertime. 
 					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
 						time += OvertimeImport.getTotalOtHours();
 					}
-					//lấy ra tổng thời gian làm thêm theo DailyExcessTotalTime 
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
 						time += dailyExcessTotalTime.getTimeOT().getTime();
 					}
@@ -258,17 +250,13 @@ public class OptionalWidgetKtgFinder {
 					//sử lý 13 call Request list 300
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireAppNotReflected(employeeId, startDate, endDate);
-					
-					//lấy ra dailyExcessTotalTimeImport những ngày không có trong applicationOvertimeImport
 					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
 						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
-					//lấy ra tổng thời gian làm thêm theo ApplicationOvertime. 
 					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
 						time += OvertimeImport.getTotalOtHours();
 					}
-					//lấy ra tổng thời gian làm thêm theo DailyExcessTotalTime 
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
 						time += dailyExcessTotalTime.getTimeOT().getTime();
 					}
@@ -278,10 +266,7 @@ public class OptionalWidgetKtgFinder {
 					//chưa có requestList 446 nên tạm thời return 0;
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.YEARLY_HD.value) {
 					//sử lý 15
-					// phần này lấy request list 210 của anh tân đang có vấn đề
-					NextAnnualLeaveGrantImport NextAnnualLeaveGrant = optionalWidgetAdapter.acquireNextHolidayGrantDate(companyId,employeeId);
-					
-					
+					dto.setYearlyHoliday(this.setYearlyHoliday(companyId, employeeId, startDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HAFT_DAY_OFF.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HOURS_OF_HOLIDAY_UPPER_LIMIT.value) {
@@ -315,5 +300,31 @@ public class OptionalWidgetKtgFinder {
 		}
 		return dto;
 	}
-	
+	private YearlyHoliday setYearlyHoliday(String cID, String employeeId, GeneralDate date) {
+		YearlyHoliday yearlyHoliday = new YearlyHoliday();
+		//lấy request list 210
+		NextAnnualLeaveGrantImport NextAnnualLeaveGrant = optionalWidgetAdapter.acquireNextHolidayGrantDate(cID,employeeId, date);
+		//lấy request 198
+		/*NumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = optionalWidgetAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, date);
+		
+		yearlyHoliday.setNextTime(NextAnnualLeaveGrant.getGrantDate());
+		yearlyHoliday.setNextGrantDate(NextAnnualLeaveGrant.getGrantDate());
+		yearlyHoliday.setGrantedDaysNo(NextAnnualLeaveGrant.getGrantDays().intValueExact());
+		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberImport();
+		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
+															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60), 
+															remainingNumber.getNumberOfRemainGrantPre(), 
+															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()%60)));
+		yearlyHoliday.setNextGrantDateInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
+															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60), 
+															remainingNumber.getNumberOfRemainGrantPre(), 
+															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()%60)));
+		yearlyHoliday.setAfterGrantDateInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPostDay(),
+															new TimeOT(remainingNumber.getAnnualLeaveGrantPostTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPostTime().intValue()%60), 
+															remainingNumber.getNumberOfRemainGrantPost(), 
+															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPost().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPost().intValue()%60)));
+		yearlyHoliday.setAttendanceRate(remainingNumber.getAttendanceRate());
+		yearlyHoliday.setWorkingDays(remainingNumber.getWorkingDays());*/
+		return yearlyHoliday;
+	}
 }
