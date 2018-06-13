@@ -44,8 +44,8 @@ public interface InterimRecAbasMngRepository {
 	/**
 	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
 	 * @param sid
-	 * @param recAtr
-	 * @param absAtr
+	 * @param recAtr: 振出管理データ区分
+	 * @param absAtr: 振休管理データ区分 
 	 * @param absId 振休＝absId
 	 * @return
 	 */

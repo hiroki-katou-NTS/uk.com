@@ -213,6 +213,15 @@ public class AppHolidayWorkDto {
 	 */
 	private boolean prePostCanChangeFlg;
 	
+	/**
+	 * 承認処理時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenApprovalFlg;
+	/**
+	 * 新規登録時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenRegisterFlg;
+	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
 				appHolidayWork.getVersion(),
@@ -259,7 +268,7 @@ public class AppHolidayWorkDto {
 				false,
 				false, 
 				null,
-				null,false);
+				null,false, false, false);
 	}
 	
 }

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -21,16 +21,17 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 @Data
-@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_TEMPORARY_TIME_NAME)
+@AttendanceItemRoot(rootName = ItemConst.DAILY_TEMPORARY_TIME_NAME)
 public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "勤務回数")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = COUNT)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer workTimes;
 
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "出退勤", listMaxLength = 3, indexField = "workNo")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = TIME_ZONE, 
+			listMaxLength = 3, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<WorkLeaveTimeDto> workLeaveTime;
 
 	private GeneralDate ymd;
@@ -83,7 +84,7 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
 		return c == null ? null
-				: new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()).isPresent() ? toTimeActualStamp(c.getWorking()).get() : null,
+				: new TimeLeavingWork(new WorkNo(c.getNo()), toTimeActualStamp(c.getWorking()).isPresent() ? toTimeActualStamp(c.getWorking()).get() : null,
 						toTimeActualStamp(c.getLeave()).isPresent() ? toTimeActualStamp(c.getLeave()).get() : null);
 	}
 

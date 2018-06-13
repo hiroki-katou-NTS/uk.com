@@ -263,10 +263,10 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 				temp.retrictPreMethodFlg = item.getBeforehandRestriction().getMethodCheck().value;
 				
 				// 利用する - retrictPreUseFlg - RETRICT_PRE_USE_FLG
-				temp.retrictPreUseFlg = 0;
+				temp.retrictPreUseFlg = item.getBeforehandRestriction().getToUse() ? 1 : 0;
 				
 				// 日数 - retrictPreDay - RETRICT_PRE_DAY
-				temp.retrictPreDay = 0;
+				temp.retrictPreDay = item.getBeforehandRestriction().getDateBeforehandRestriction().value;
 				
 				// 時刻 - retrictPreTimeDay - RETRICT_PRE_TIMEDAY
 				temp.retrictPreTimeDay = item.getBeforehandRestriction().getTimeBeforehandRestriction() == null ? null : item.getBeforehandRestriction().getTimeBeforehandRestriction().v();
@@ -278,7 +278,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 				temp.normalOtTime = null;
 				
 				// 日数 - 残業申請事前の受付制限
-				temp.otRestrictPreDay = item.getBeforehandRestriction().getDateBeforehandRestriction().value;
+				temp.otRestrictPreDay = item.getBeforehandRestriction().getOtRestrictPreDay().value;
 				
 				// 利用する - 残業申請事前の受付制限
 				temp.otToUse = item.getBeforehandRestriction().getOtToUse() ? 1 : 0;

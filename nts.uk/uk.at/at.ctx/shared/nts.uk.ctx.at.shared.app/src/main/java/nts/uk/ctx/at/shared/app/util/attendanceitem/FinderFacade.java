@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-public abstract class FinderFacade {
+public abstract class FinderFacade implements ItemConst{
 
 	public abstract <T extends ConvertibleAttendanceItem> T find(String employeeId, GeneralDate baseDate);
 

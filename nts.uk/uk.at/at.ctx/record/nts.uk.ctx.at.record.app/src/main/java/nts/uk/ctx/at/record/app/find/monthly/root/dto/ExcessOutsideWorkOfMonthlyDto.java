@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -17,32 +18,32 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の時間外超過 */
-public class ExcessOutsideWorkOfMonthlyDto {
+public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 
 	/** 月割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "月割増合計時間", layout = "A")
-	private Integer monthlyTotalPremiumTime;
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_PREMIUM, layout = LAYOUT_A)
+	private int monthlyTotalPremiumTime;
 	
 	/** 時間: 時間外超過 */
-	@AttendanceItemLayout(jpPropertyName = "時間", layout = "B", listMaxLength = 50, indexField = "fakeNo")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B, listMaxLength = 50, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<ExcessOutsideWorkDto> time;
 	
 	/** 週割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "週割増合計時間", layout = "C")
-	private Integer weeklyTotalPremiumTime;
+	@AttendanceItemLayout(jpPropertyName = WEEKLY_PREMIUM, layout = LAYOUT_C)
+	private int weeklyTotalPremiumTime;
 	
 	/** 変形繰越時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "変形繰越時間", layout = "D")
-	private Integer deformationCarryforwardTime;
+	@AttendanceItemLayout(jpPropertyName = IRREGULAR + CARRY_FORWARD, layout = LAYOUT_D)
+	private int deformationCarryforwardTime;
 	
 	public ExcessOutsideWorkOfMonthly toDomain() {
 		return ExcessOutsideWorkOfMonthly.of(
-						weeklyTotalPremiumTime == null ? null : new AttendanceTimeMonth(weeklyTotalPremiumTime), 
-						monthlyTotalPremiumTime == null ? null : new AttendanceTimeMonth(monthlyTotalPremiumTime), 
-						deformationCarryforwardTime == null ? null : new AttendanceTimeMonthWithMinus(deformationCarryforwardTime), 
+						new AttendanceTimeMonth(weeklyTotalPremiumTime), 
+						new AttendanceTimeMonth(monthlyTotalPremiumTime), 
+						new AttendanceTimeMonthWithMinus(deformationCarryforwardTime), 
 						ConvertHelper.mapTo(time, c -> c.toDomain()));
 	}
 	
@@ -50,11 +51,11 @@ public class ExcessOutsideWorkOfMonthlyDto {
 		ExcessOutsideWorkOfMonthlyDto dto = new ExcessOutsideWorkOfMonthlyDto();
 		if(domain != null) {
 			dto.setDeformationCarryforwardTime(domain.getDeformationCarryforwardTime() == null 
-					? null : domain.getDeformationCarryforwardTime().valueAsMinutes());
+					? 0 : domain.getDeformationCarryforwardTime().valueAsMinutes());
 			dto.setMonthlyTotalPremiumTime(domain.getMonthlyTotalPremiumTime() == null 
-					? null : domain.getMonthlyTotalPremiumTime().valueAsMinutes());
+					? 0 : domain.getMonthlyTotalPremiumTime().valueAsMinutes());
 			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime() == null 
-					? null : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
+					? 0 : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
 			dto.setTime(ExcessOutsideWorkDto.from(domain.getTime()));
 		}
 		return dto;

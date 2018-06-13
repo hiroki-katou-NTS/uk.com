@@ -93,7 +93,7 @@ module nts.uk.com.view.cdl009.a {
                 }
 
                 // Search Employees
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 self.findEmployee().done(() => {
                     $('#emp-component').focus();
                 }).always(() => nts.uk.ui.block.clear());

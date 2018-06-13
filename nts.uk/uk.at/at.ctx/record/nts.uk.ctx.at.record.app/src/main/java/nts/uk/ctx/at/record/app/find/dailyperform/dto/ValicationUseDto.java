@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -15,25 +16,25 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ValicationUseDto {
+public class ValicationUseDto implements ItemConst {
 
 	/** 時間年休使用時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間年休使用時間")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ANNUNAL_LEAVE)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer timeAnnualLeaveUseTime;
 
-	/** 超過有休使用時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "60H超休使用時間")
+	/** 超過有休使用時間 === 60H超休使用時間 */
+	@AttendanceItemLayout(layout =LAYOUT_B, jpPropertyName = EXCESS)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer excessHolidayUseTime;
 
 	/** 特別休暇使用時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "特別休暇使用時間")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = SPECIAL)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer timeSpecialHolidayUseTime;
 
 	/** 時間代休使用時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "時間代休使用時間")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = COMPENSATORY)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer timeCompensatoryLeaveUseTime;
 	
