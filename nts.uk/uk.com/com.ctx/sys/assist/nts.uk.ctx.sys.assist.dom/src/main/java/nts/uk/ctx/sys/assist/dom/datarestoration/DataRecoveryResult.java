@@ -9,10 +9,6 @@ import nts.arc.time.GeneralDateTime;
 /**
  * データ復旧の結果
  */
-/**
- * @author sang.nv
- *
- */
 @Getter
 public class DataRecoveryResult extends AggregateRoot {
 
