@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.KrcdtRsvleaMngT
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * リポジトリ実裼�暫定積立年休管球�ータ
+ * リポジトリ実装：暫定積立年休管理データ
  * @author shuichu_ishida
  */
 @Stateless
@@ -28,6 +28,9 @@ public class JpaTempReserveLeaveMngRepo extends JpaRepository implements TempRes
 			+ "ORDER BY a.PK.ymd ";
 
 	private static final String DELETE_PAST_YMD = "DELETE FROM KrcdtRsvleaMngTemp a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.ymd <= :criteriaDate ";
+	
 	private static final String SELECT_BY_EMPLOYEEID = "SELECT a FROM KrcdtRsvleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "ORDER BY a.PK.ymd ";
@@ -41,7 +44,7 @@ public class JpaTempReserveLeaveMngRepo extends JpaRepository implements TempRes
 				.map(c -> c.toDomain());
 	}
 	
-	/** 検索　�期間�*/
+	/** 検索　（期間） */
 	@Override
 	public List<TempReserveLeaveManagement> findByPeriodOrderByYmd(String employeeId, DatePeriod period) {
 
@@ -78,7 +81,7 @@ public class JpaTempReserveLeaveMngRepo extends JpaRepository implements TempRes
 		this.commandProxy().remove(KrcdtRsvleaMngTemp.class, new KrcdtRsvleaMngTempPK(employeeId, ymd));
 	}
 	
-	/** 削除　�基準日以前�*/
+	/** 削除　（基準日以前） */
 	@Override
 	public void removePastYmd(String employeeId, GeneralDate criteriaDate) {
 		
@@ -102,4 +105,6 @@ public class JpaTempReserveLeaveMngRepo extends JpaRepository implements TempRes
 				.setParameter("employeeId", employeeId)
 				.getList(c -> c.toDomain());
 	}
+	
+	
 }
