@@ -13,7 +13,7 @@ public class InPeriodOfSpecialLeave {
 	/**
 	 * 特別休暇の付与明細
 	 */
-	private List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails;
+	private SpecialLeaveGrantDetails lstSpeLeaveGrantDetails;
 	/**
 	 * 特別休暇の残数
 	 */

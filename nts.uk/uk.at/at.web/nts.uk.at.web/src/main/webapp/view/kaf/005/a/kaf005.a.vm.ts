@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     import service = nts.uk.at.view.kaf005.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -14,7 +15,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //manualSendMailAtr
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
-        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
         displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(false);
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
@@ -66,7 +67,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //加給時間
         bonusTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
         //menu-bar 
-        enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti: KnockoutObservable<boolean> = ko.observable(true);
@@ -301,7 +301,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
-            self.manualSendMailAtr(!data.manualSendMailAtr);
+            self.checkBoxValue(!data.manualSendMailAtr);
+            self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.prePostSelected(data.application.prePostAtr);
             self.displayCaculationTime(data.displayCaculationTime);
@@ -608,6 +609,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         //登録処理を実行
         registerData(overtime) {
+            var self = this;
             service.createOvertime(overtime).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
@@ -874,7 +876,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         findBychangeAppDateData(data: any) {
             var self = this;
             let overtimeDto = data;
-            self.manualSendMailAtr(!overtimeDto.manualSendMailAtr);
+            self.checkBoxValue(!overtimeDto.manualSendMailAtr);
+            self.enableSendMail(!overtimeDto.sendMailWhenRegisterFlg);
             self.prePostSelected(overtimeDto.application.prePostAtr);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.displayCaculationTime(overtimeDto.displayCaculationTime);

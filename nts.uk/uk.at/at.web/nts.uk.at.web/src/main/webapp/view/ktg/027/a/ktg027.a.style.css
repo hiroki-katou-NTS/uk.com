@@ -7,3 +7,6 @@
 #contents-area.ktg002{overflow-y: hidden;}
 .nts-datepicker-wrapper{margin-left: 30px;}
 div.nts-fixed-body-wrapper{height: 205px ! important;}
+div.btnHelp{height: 0px;}
+div.btnHelp .ntsHelpButton{top: 10px; left: 570px;}
+.ui-iggrid.nts-fixed-body-container table tr:nth-last-child(1){border-top: double;}

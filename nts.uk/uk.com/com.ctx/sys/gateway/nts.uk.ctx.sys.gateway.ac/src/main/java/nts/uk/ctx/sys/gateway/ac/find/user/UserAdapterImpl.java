@@ -23,6 +23,7 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.PasswordMessageImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserInforExImport;
 
 /**
  * The Class UserAdapterImpl.
@@ -167,6 +168,16 @@ public class UserAdapterImpl implements UserAdapter {
 	}
 	
 	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#passwordPolicyCheckForSubmit(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public CheckBeforeChangePass passwordPolicyCheckForSubmit(String userId, String newPass, String contractCode) {
+		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.passwordPolicyCheckForSubmit(userId, newPass, contractCode);
+		
+		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
+	}
+	
+	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#checkBeforeChangePassword(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -174,6 +185,16 @@ public class UserAdapterImpl implements UserAdapter {
 			String reNewPass) {
 		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.checkBeforeChangePassword(userId,
 				currentPass, newPass, reNewPass);
+		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#checkBeforeResetPassword(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public CheckBeforeChangePass checkBeforeResetPassword(String userId, String newPass, String reNewPass) {
+		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.checkBeforeResetPassword(userId, newPass,
+				reNewPass);
 		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
 	}
 	

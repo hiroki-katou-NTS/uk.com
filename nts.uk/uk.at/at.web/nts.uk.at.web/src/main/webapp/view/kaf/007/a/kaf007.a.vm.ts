@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
     import service = nts.uk.at.view.kaf007.share.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());
@@ -84,7 +85,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             
             //get Common Setting
             service.getWorkChangeCommonSetting().done(function(settingData: any) {
-                if(!nts.uk.util.isNullOrEmpty(settingData)){                    
+                if(!nts.uk.util.isNullOrEmpty(settingData)){         
+                    self.checkBoxValue(settingData.appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true : false);           
                     //申請共通設定
                     let appCommonSettingDto = settingData.appCommonSettingDto;
                     //勤務変更申請設定

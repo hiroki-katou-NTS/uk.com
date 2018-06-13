@@ -2,11 +2,11 @@ module nts.uk.pr.view.ccg007.h {
     export module viewmodel {
         import blockUI = nts.uk.ui.block;
         import CallerParameter = service.CallerParameter;
+        import ForgotPasswordCommand = service.ForgotPasswordCommand;
 
         export class ScreenModel {
             
             loginId: KnockoutObservable<string>;
-            passwordCurrent: KnockoutObservable<string>;
             passwordNew: KnockoutObservable<string>;
             passwordNewConfirm: KnockoutObservable<string>;
             
@@ -17,7 +17,6 @@ module nts.uk.pr.view.ccg007.h {
                 var self = this;
                 
                 self.loginId = ko.observable(null);
-                self.passwordCurrent = ko.observable(null);
                 self.passwordNew = ko.observable(null);
                 self.passwordNewConfirm = ko.observable(null);
                 
@@ -51,15 +50,24 @@ module nts.uk.pr.view.ccg007.h {
             public submit(): void{
                 let self = this;
                 
+                if (nts.uk.ui.errors.hasError()) {
+                    return;                   
+                }
+                
                 blockUI.invisible();
                 
-//                service.submitSendMail(self.callerParameter).done(function () {
-                    
-//                }).fail(function(res) {
-//                    //Return Dialog Error
-//                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-//                    blockUI.clear();
-//                });
+                //add command
+                let command: ForgotPasswordCommand = new ForgotPasswordCommand(self.callerParameter.url, self.passwordNew(), self.passwordNewConfirm());
+                
+                service.submitForgotPass(command).done(function () {
+                    self.closeDialog();
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                    blockUI.clear();
+                }).fail(function(res) {
+                    //Return Dialog Error
+                    nts.uk.ui.dialog.alertError(res.message);
+                    blockUI.clear();
+                });
                 
             }
             

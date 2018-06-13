@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +16,16 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
+import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -33,6 +38,8 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
@@ -51,8 +58,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
-import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless
 public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
@@ -91,6 +98,18 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
+	
+	@Inject
+	private EnvAdapter envAdapter;
+	
+	@Inject
+	private UrlEmbeddedRepository urlEmbeddedRepository;
+	
+	@Inject
+	private RegisterEmbededURL registerEmbededURL;
+	
+	@Inject
+	private IApplicationContentService applicationContentService;
 	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -262,68 +281,179 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 		return new AppCompltLeaveSyncOutput(absId, recId, synced, type);
 	}
-	@Override
-	public MailResult sendMail(List<String> listDestination, Application_New application) {
-		List<String> successList = new ArrayList<>();
-		List<String> failList = new ArrayList<>();
-		listDestination.forEach(x -> {
-			// request list 1
-			String employeeName = employeeAdaptor.getEmployeeName(x);
-			// request list 419
-			String employeeMail = "";
-			if(Strings.isBlank(employeeMail)){
-				failList.add(employeeMail);
-				return;
-			}
-			String URL = "URL";
-			Optional<AppDispName> opAppDispName = appDispNameRepository.getDisplay(application.getAppType().value);
-			if(!opAppDispName.isPresent()){
-				throw new RuntimeException("no setting AppDispName 申請表示名");
-			}
-			AppDispName appDispName = opAppDispName.get();
-			/*String mailContentToSend = I18NText.getText("Msg_703",
-					loginName, 
-					mailBody,
-					application.getAppDate(), 
-					application.getAppType().nameId,
-					empName, application.getAppDate().toLocalDate().toString(),
-					appContent, loginName, loginMail);*/
-		});
-		listDestination.forEach(x -> {
-			String email = employeeAdaptor.empEmail(x);
-			String employeeName = employeeAdaptor.getEmployeeName(x);
-			if(Strings.isNotBlank(email)) {
-				try {
-					mailsender.send("nts", email, new MailContents("nts mail", "approval mail from NTS"));
-					successList.add(employeeName);
-				} catch (SendMailFailedException e) {
-					failList.add(employeeName);
-				}
-			}
-		});
-		return new MailResult(successList, failList);
-	}
+	
 	@Override
 	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application_New application) {
 		Optional<ApprovalTemp> opApprovalTemp = approvalTempRepository.getAppTem();
 		if(!opApprovalTemp.isPresent()){
 			throw new RuntimeException("no setting ApprovalTemp 申請承認メールテンプレート");
 		}
-		return new MailResult(Collections.emptyList(), Collections.emptyList());
+		MailResult mailResult = sendMailApprover(employeeIDList, application, opApprovalTemp.get().getContent().toString());
+		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
 	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application_New application) {
-		// TODO Auto-generated method stub
-		return new MailResult(Collections.emptyList(), Collections.emptyList());
+		String inputText = I18NText.getText("Msg_1262",Collections.emptyList());
+		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText);
+		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
-	public MailResult sendMailApplicantApprove(List<String> employeeIDList, Application_New application) {
-		// TODO Auto-generated method stub
-		return new MailResult(Collections.emptyList(), Collections.emptyList());
+	public MailResult sendMailApplicantApprove(Application_New application) {
+		String inputText = I18NText.getText("Msg_1263",Collections.emptyList());
+		MailResult mailResult = sendMailApplicant(application, inputText);
+		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
-	public MailResult sendMailApplicantDeny(List<String> employeeIDList, Application_New application) {
-		// TODO Auto-generated method stub
-		return new MailResult(Collections.emptyList(), Collections.emptyList());
+	public MailResult sendMailApplicantDeny(Application_New application) {
+		String inputText = I18NText.getText("Msg_1264",Collections.emptyList());
+		MailResult mailResult = sendMailApplicant(application, inputText);
+		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
+	}
+	@Override
+	public MailResult sendMailApprover(List<String> listDestination, Application_New application, String text) {
+		List<String> successList = new ArrayList<>();
+		List<String> failList = new ArrayList<>();
+		String loginID = AppContexts.user().employeeId();
+		String companyID = AppContexts.user().companyId();
+		List<String> paramIDList = new ArrayList<>();
+		paramIDList.addAll(listDestination);
+		paramIDList.add(loginID);
+		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, paramIDList, 6);
+		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(loginID)).findAny()
+				.map(x -> { 
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
+						return null; 
+					} else { 
+						return x.getOutGoingMails().get(0).getEmailAddress(); 
+					} 
+				}).orElse(null);
+		String loginName = employeeAdaptor.getEmployeeName(loginID);
+		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
+		for(String employeeID : listDestination){
+			String employeeName = employeeAdaptor.getEmployeeName(employeeID);
+			String approverMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
+					.map(x -> { 
+						if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
+							return null; 
+						} else { 
+							return x.getOutGoingMails().get(0).getEmailAddress(); 
+						} 
+					}).orElse(null);
+			if(Strings.isBlank(approverMail)){
+				failList.add(employeeName);
+				continue;
+			}
+			String URL = "";
+			// ドメインモデル「メール内容のURL埋込設定」を取得する
+			Optional<UrlEmbedded> opUrlEmbedded = urlEmbeddedRepository.getUrlEmbeddedById(companyID);
+			if(opUrlEmbedded.isPresent()){
+				URL = registerEmbededURL.registerEmbeddedForApp(
+						application.getAppID(), 
+						application.getAppType().value, 
+						application.getPrePostAtr().value, 
+						loginID, 
+						employeeID);
+			};
+			Optional<AppDispName> opAppDispName = appDispNameRepository.getDisplay(application.getAppType().value);
+			if(!opAppDispName.isPresent()){
+				throw new RuntimeException("no setting AppDispName 申請表示名");
+			}
+			AppDispName appDispName = opAppDispName.get();
+			String appContent = applicationContentService.getApplicationContent(application);
+			String mailContentToSend = I18NText.getText("Msg_703",
+					loginName, 
+					text,
+					application.getAppDate().toLocalDate().toString(), 
+					appDispName.getDispName().toString(),
+					applicantName, 
+					application.getAppDate().toLocalDate().toString(),
+					appContent, 
+					loginName, 
+					loginMail);
+			String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
+			String mailBody = mailContentToSend;
+			if(Strings.isNotBlank(URL)){
+				mailBody += "/n" + URL;
+			}
+			try {
+				mailsender.sendFromAdmin(approverMail, new MailContents(mailTitle, mailBody));
+				successList.add(employeeName);
+			} catch (Exception e) {
+				failList.add(employeeName);
+			}
+		}
+		return new MailResult(successList, failList);
+	}
+	@Override
+	public MailResult sendMailApplicant(Application_New application, String text) {
+		List<String> successList = new ArrayList<>();
+		List<String> failList = new ArrayList<>();
+		String loginID = AppContexts.user().employeeId();
+		String companyID = AppContexts.user().companyId();
+		String employeeID = application.getEmployeeID();
+		String employeeName = employeeAdaptor.getEmployeeName(employeeID);
+		List<String> listDestination = new ArrayList<>(Arrays.asList(loginID, employeeID));
+		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, listDestination, 6);
+		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(loginID)).findAny()
+				.map(x -> { 
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
+						return null; 
+					} else {
+						return x.getOutGoingMails().get(0).getEmailAddress(); 
+					} 
+				}).orElse(null);
+		String loginName = employeeAdaptor.getEmployeeName(loginID);
+		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
+		String applicantMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
+				.map(x -> { 
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
+						return null; 
+					} else { 
+						return x.getOutGoingMails().get(0).getEmailAddress(); 
+					} 
+				}).orElse(null);
+		if(Strings.isBlank(applicantMail)){
+			failList.add(employeeName);
+			return new MailResult(successList, failList);
+		}
+		String URL = "";
+		// ドメインモデル「メール内容のURL埋込設定」を取得する
+		Optional<UrlEmbedded> opUrlEmbedded = urlEmbeddedRepository.getUrlEmbeddedById(companyID);
+		if(opUrlEmbedded.isPresent()){
+			URL = registerEmbededURL.registerEmbeddedForApp(
+					application.getAppID(), 
+					application.getAppType().value, 
+					application.getPrePostAtr().value, 
+					loginID, 
+					employeeID);
+		};
+		Optional<AppDispName> opAppDispName = appDispNameRepository.getDisplay(application.getAppType().value);
+		if(!opAppDispName.isPresent()){
+			throw new RuntimeException("no setting AppDispName 申請表示名");
+		}
+		AppDispName appDispName = opAppDispName.get();
+		String appContent = applicationContentService.getApplicationContent(application);
+		String mailContentToSend = I18NText.getText("Msg_703",
+				loginName, 
+				text,
+				application.getAppDate().toLocalDate().toString(), 
+				appDispName.getDispName().toString(),
+				applicantName, 
+				application.getAppDate().toLocalDate().toString(),
+				appContent, 
+				loginName, 
+				loginMail);
+		String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
+		String mailBody = mailContentToSend;
+		if(Strings.isNotBlank(URL)){
+			mailBody += "/n" + URL;
+		}
+		try {
+			mailsender.sendFromAdmin(applicantMail, new MailContents(mailTitle, mailBody));
+			successList.add(employeeName);
+		} catch (Exception e) {
+			failList.add(employeeName);
+		}
+		return new MailResult(successList, failList);
 	}
 }

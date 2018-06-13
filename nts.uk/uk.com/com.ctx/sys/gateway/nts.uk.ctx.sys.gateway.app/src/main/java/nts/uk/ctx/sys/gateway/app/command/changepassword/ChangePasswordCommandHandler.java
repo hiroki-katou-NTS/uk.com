@@ -40,38 +40,36 @@ public class ChangePasswordCommandHandler extends CommandHandler<ChangePasswordC
 		String userId = AppContexts.user().userId();
 		ChangePasswordCommand command = context.getCommand();
 
-		if (command.getIsPasswordUpdate()) {
-			String oldPassword = command.getOldPassword();
-			String newPassword = command.getNewPassword();
-			String confirmNewPassword = command.getConfirmNewPassword();
-			
-			if (!StringUtil.isNullOrEmpty(oldPassword, true)
-					&& !StringUtil.isNullOrEmpty(newPassword, true)
-					&& !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {
-				// Check password - Request List 383
-				CheckBeforeChangePass checkResult = this.userAdapter.checkBeforeChangePassword(userId, oldPassword, newPassword, confirmNewPassword);
-				if (checkResult.isError()) {
-					// Throw error list
-					BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-					checkResult.getMessage().forEach(item -> {
-						// get messageId
-						String msgId = item.getMessage();
-						String param = item.getParam();
-						if (param != null) {
-							bundledBusinessExceptions.addMessage(msgId, param);
-						} else {
-							bundledBusinessExceptions.addMessage(msgId);
-						}
-
-					});
-					if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
-						throw bundledBusinessExceptions;
+		String oldPassword = command.getOldPassword();
+		String newPassword = command.getNewPassword();
+		String confirmNewPassword = command.getConfirmNewPassword();
+		
+		if (!StringUtil.isNullOrEmpty(oldPassword, true)
+				&& !StringUtil.isNullOrEmpty(newPassword, true)
+				&& !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {
+			// Check password - Request List 383
+			CheckBeforeChangePass checkResult = this.userAdapter.checkBeforeChangePassword(userId, oldPassword, newPassword, confirmNewPassword);
+			if (checkResult.isError()) {
+				// Throw error list
+				BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+				checkResult.getMessage().forEach(item -> {
+					// get messageId
+					String msgId = item.getMessage();
+					String param = item.getParam();
+					if (param != null) {
+						bundledBusinessExceptions.addMessage(msgId, param);
+					} else {
+						bundledBusinessExceptions.addMessage(msgId);
 					}
-				} else {
-					// Update password - Request List 384				
-					this.userAdapter.updatePassword(userId,newPassword);
-				}	
-			}
+
+				});
+				if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
+					throw bundledBusinessExceptions;
+				}
+			} else {
+				// Update password - Request List 384				
+				this.userAdapter.updatePassword(userId,newPassword);
+			}	
 		}
 	}
 }

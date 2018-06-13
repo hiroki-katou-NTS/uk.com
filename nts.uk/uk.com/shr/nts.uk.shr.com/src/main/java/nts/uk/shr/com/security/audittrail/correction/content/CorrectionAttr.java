@@ -15,6 +15,9 @@ public enum CorrectionAttr {
 	/** 計算 */
 	CALCULATE(1),
 
+	/** 反映 */
+	REFLECT(2),
+	
 	;
 	public final int value;
 	

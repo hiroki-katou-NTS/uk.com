@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,6 +44,11 @@ public class ExtraHolidayManagementService {
 	@Inject
 	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
 	
+	@Inject
+	private CompensLeaveEmSetRepository compensLeaveEmSetRepository;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
 	public ExtraHolidayManagementOutput dataExtractionProcessing (int searchMode, String employeeId, GeneralDate startDate, GeneralDate endDate){
 		String cid = AppContexts.user().companyId();
@@ -47,6 +57,8 @@ public class ExtraHolidayManagementService {
 		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = new ArrayList<>();
 		SEmpHistoryImport empHistoryImport = null;
 		ClosureEmployment closureEmploy = null;
+		CompensatoryLeaveEmSetting compenLeaveEmpSetting = null;
+		CompensatoryLeaveComSetting compensatoryLeaveComSetting = null;
 		GeneralDate baseDate = GeneralDate.today();
 		if (searchMode == 0){
 			listLeaveData = leaveManaDataRepository.getBySidNotUnUsed(cid, employeeId);
@@ -70,6 +82,10 @@ public class ExtraHolidayManagementService {
 				closureEmploy = closureEmployment.get();
 			}
 		}
-		return new ExtraHolidayManagementOutput(listLeaveData, listCompensatoryData, listLeaveComDayOffManagement, empHistoryImport, closureEmploy);
+		if (!Objects.isNull(empHistoryImport)){
+			compenLeaveEmpSetting = compensLeaveEmSetRepository.find(cid, empHistoryImport.getEmploymentCode());
+		}
+		compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
+		return new ExtraHolidayManagementOutput(listLeaveData, listCompensatoryData, listLeaveComDayOffManagement, empHistoryImport, closureEmploy, compenLeaveEmpSetting, compensatoryLeaveComSetting);
 	}
 }

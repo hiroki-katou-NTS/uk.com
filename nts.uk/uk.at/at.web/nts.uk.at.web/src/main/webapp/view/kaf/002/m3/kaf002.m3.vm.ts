@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf002.m3 {
     import service = nts.uk.at.view.kaf002.shr.service;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    import setShared = nts.uk.ui.windows.setShared;
     export module viewmodel {
         export class ScreenModel {
             appStampList: KnockoutObservableArray<vmbase.AppStampCancel> = ko.observableArray([]); 

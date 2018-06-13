@@ -4,7 +4,7 @@ module nts.uk.pr.view.ccg007.g {
 
         // Service paths.
         var servicePath = {
-            submitSendMail: "ctx/sys/gateway/sendmail/submit"
+            submitSendMail: "ctx/sys/gateway/sendmail/submit2"
         }
 
         /**
@@ -19,6 +19,18 @@ module nts.uk.pr.view.ccg007.g {
             companyName: string;
             employeeCode : string;
             contractCode: string;
+        }
+        
+        export interface SendMailInfoFormGCommand {
+            companyCode: string;
+            employeeCode : string;
+            contractCode: string;
+            
+            constructor(companyCode: string, employeeCode: string, contractCode: string) {
+                this.companyCode = companyCode;
+                this.employeeCode = employeeCode;
+                this.contractCode = contractCode;
+            }
         }
     }
 }

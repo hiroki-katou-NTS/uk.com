@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationcommonsetting.ApprovalSetDto;
+import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.AppReflectAfterConfirm;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -41,5 +43,14 @@ public class ApplicationSettingFinder {
 					appSet.get().getAttendentTimeReflectFlg().value);
 		}
 		return null;
+	}
+	public ApprovalSetDto getAppRef(){
+		ApprovalSetDto appReflect = new ApprovalSetDto();
+		Optional<AppReflectAfterConfirm> opt = this.appSetRep.getAppRef();
+		if(opt.isPresent()){
+			appReflect.setScheduleCon(opt.get().getScheduleConfirmedAtr().value);
+			appReflect.setAchiveCon(opt.get().getAchievementConfirmedAtr().value);
+		}
+		return appReflect;
 	}
 }

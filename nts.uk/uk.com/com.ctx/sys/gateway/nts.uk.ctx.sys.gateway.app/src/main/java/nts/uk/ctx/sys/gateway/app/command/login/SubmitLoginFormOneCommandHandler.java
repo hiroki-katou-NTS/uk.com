@@ -39,7 +39,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			this.compareAccount(context.getCommand().getRequest());
 		} else {
 			String loginId = command.getLoginId();
-			String password = command.getPassword();
+			String oldPassword = command.getPassword();
 			// check validate input
 			this.checkInput(command);
 	
@@ -52,7 +52,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			}
 	
 			// check password
-			String msgErrorId = this.compareHashPassword(user.get(), password);
+			String msgErrorId = this.compareHashPassword(user.get(), oldPassword);
 			if (!StringUtil.isNullOrEmpty(msgErrorId, true)){
 				return new CheckChangePassDto(false, msgErrorId);
 			}
@@ -64,12 +64,12 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			context.getCommand().getRequest().changeSessionId();
 			this.initSession(user.get());
 			
-			//アルゴリズム「ログイン記録」を実行する１
-			if (this.checkAfterLogin(user.get())){
+			//アルゴリズム「ログイン記録」を実行する
+			if (!this.checkAfterLogin(user.get(), oldPassword)){
 				return new CheckChangePassDto(true, null);
 			}
 		}
-		return new CheckChangePassDto(false, "Msg_301");
+		return new CheckChangePassDto(false, null);
 	}
 
 	/**

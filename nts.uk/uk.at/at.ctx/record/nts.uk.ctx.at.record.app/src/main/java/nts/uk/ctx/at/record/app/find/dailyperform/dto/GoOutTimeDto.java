@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -18,14 +19,14 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GoOutTimeDto {
+public class GoOutTimeDto implements ItemConst {
 
 	/** 戻り: 勤怠打刻(実打刻付き) */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "戻り")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = BACK)
 	private WithActualTimeStampDto comeBack;
 
 	/** 外出: 勤怠打刻(実打刻付き) */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "外出")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = GO_OUT)
 	private WithActualTimeStampDto outing;
 
 	/** 外出時間: 勤怠時間 */
@@ -38,7 +39,7 @@ public class GoOutTimeDto {
 	/** 外出枠NO: 外出枠NO */
 //	@AttendanceItemLayout(layout = "D")
 //	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer outingFrameNo;
+	private Integer no;
 
 	/** 外出理由: 外出理由 */
 //	@AttendanceItemLayout(layout = "E")
@@ -56,7 +57,7 @@ public class GoOutTimeDto {
 	}
 	
 	public OutingTimeSheet toDomain(){
-		return new OutingTimeSheet(new OutingFrameNo(outingFrameNo), createTimeActual(outing), 
+		return new OutingTimeSheet(new OutingFrameNo(no), createTimeActual(outing), 
 				outingTimeCalc == null ? null : new AttendanceTime(outingTimeCalc),
 				outingTime == null ? null : new AttendanceTime(outingTime), 
 				ConvertHelper.getEnum(outingReason, GoingOutReason.class), createTimeActual(comeBack));

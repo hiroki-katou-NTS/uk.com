@@ -29,7 +29,7 @@ public interface EmployeeDailyPerErrorRepository {
 	boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate);
 	
 	boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate);
-
+	
 	boolean checkExistErrorByDate(String companyID, String employeeID, GeneralDate date);
 	
 }

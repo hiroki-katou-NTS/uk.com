@@ -9,6 +9,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
         inforOvertime: KnockoutObservableArray<InforOvertime>;
         inforOvertimeFooter: KnockoutObservable<InforOvertime>;
         closureResultModel: KnockoutObservableArray<ClosureResultModel> = ko.observableArray([]);
+        check: KnockoutObservable<boolean>;
         //color
         backgroundColor: KnockoutObservable<String>;
         color: KnockoutObservable<String>;
@@ -30,17 +31,18 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             var inforOvertime: Array<InforOvertime> = [];
             self.inforOvertimeFooter = ko.observable(new InforOvertime("", null, null, null, null, "", ""));
             self.targetMonth.subscribe((newSelect) => {
-             self.clickExtractionBtn();
+                self.clickExtractionBtn();
             });
             self.inforOvertime = ko.observableArray([]);
             self.backgroundColor = ko.observable('');
             self.color = ko.observable('');
+            self.check = ko.observable(false);
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-             block.grayout();
+            block.grayout();
             service.getOvertimeHours(self.targetMonth()).done((data) => {
                 self.closureResultModel(data.listclosureID);
                 var inforOvertime = [];
@@ -60,11 +62,11 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     if (status == 2 || status == 5) { backgroundColor = '#F6F636'; color = '#ff0000'; }
                     else if (status == 1 || status == 4) { backgroundColor = '#FD4D4D'; color = '#ffffff'; }
                     else if (status == 3) { backgroundColor = '#eb9152'; }
-                                                                             
+
                     if (!nts.uk.text.isNullOrEmpty(e.afterAppReflect.exceptionLimitErrorTime) || e.afterAppReflect.exceptionLimitErrorTime == "") {
                         timeLimit = e.afterAppReflect.exceptionLimitErrorTime;
                     }
-                    inforOvertime.push(new InforOvertime(e.employeeCD + e.empName, timeLimit, actualTime, applicationTime, totalTime, backgroundColor, color));
+                    inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName, timeLimit, actualTime, applicationTime, totalTime, backgroundColor, color));
 
                     total1 += actualTime;
                     total2 += applicationTime;
@@ -77,6 +79,13 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     var MsgID = data.overtimeHours.errorMessage;
                 nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] })
 
+                $.each(data.overtimeHours.overtimeLaborInfor, function(item) {
+                    if (item.errorMessage != null) {
+                        self.check(true);
+                        return false;
+                    }
+                });
+           
                 dfd.resolve();
                 block.clear();
             });
@@ -89,7 +98,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
         clickExtractionBtn() {
             var self = this;
             var dfd = $.Deferred();
-               block.grayout();
+            block.grayout();
             service.buttonPressingProcess(self.targetMonth(), self.selectedClosureID()).done((data) => {
                 //self.inforOvertime(data.overtimeLaborInfor());
                 var inforOvertime = [];
@@ -126,7 +135,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     if (!nts.uk.text.isNullOrEmpty(e.afterAppReflect.exceptionLimitErrorTime) || e.afterAppReflect.exceptionLimitErrorTime == "") {
                         timeLimit = e.afterAppReflect.exceptionLimitErrorTime;
                     }
-                    inforOvertime.push(new InforOvertime(e.employeeCD + e.empName, timeLimit, actualTime, applicationTime, totalTime, backgroundColor, color));
+                    inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName, timeLimit, actualTime, applicationTime, totalTime, backgroundColor, color));
 
                     total1 += actualTime;
                     total2 += applicationTime;
@@ -138,15 +147,16 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                 if (!nts.uk.text.isNullOrEmpty(data.errorMessage))
                     var MsgID = data.errorMessage;
                 nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] })
+
             });
             block.clear();
         }
-         printData(): void {
-              block.invisible();
-                let self = this;
-                service.saveAsCsv(self.inforOvertime());
-              block.clear();
-            }
+        printData(): void {
+            block.invisible();
+            let self = this;
+            service.saveAsCsv(self.inforOvertime());
+            block.clear();
+        }
 
     }
     export class ClosureResultModel {
