@@ -47,9 +47,9 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			+ " AND c.absenceMngAtr = :absenceMngAtr"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
 	private static final String DELETE_ABS_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
-			+ " WHERE c.recAbsPk.absenceMngID := :mngId";
+			+ " WHERE c.recAbsPk.absenceMngID = :mngId";
 	private static final String DELETE_REC_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
-			+ " WHERE c.recAbsPk.recruitmentMngId := :mngId";
+			+ " WHERE c.recAbsPk.recruitmentMngId = :mngId";
 	private static final String DELETE_BY_ID_ATR = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absId"
 			+ " AND c.recAbsPk.recruitmentMngId = :recId"
