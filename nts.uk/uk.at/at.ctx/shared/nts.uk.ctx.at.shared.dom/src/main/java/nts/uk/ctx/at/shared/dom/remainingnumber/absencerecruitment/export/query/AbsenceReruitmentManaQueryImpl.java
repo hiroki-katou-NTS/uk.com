@@ -62,14 +62,13 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			//アルゴリズム「期間内の振休発生数合計を取得」を実行する
 			Double occurrentDays = this.getTotalOccurrentDay(employeeId, dateData);
 			//アルゴリズム「期間内の振休使用数合計を取得」を実行する
-			Double useDays = this.getUsedDays(employeeId, dateData);			
+			Double useDays = this.getUsedDays(employeeId, dateData);	
+			//月度別代休残数集計を作成する
+			outPutData.setYm(ym);
+			outPutData.setMonthOccurrence(occurrentDays);
+			outPutData.setMonthUse(useDays);
 			//残数算出対象年月をチェックする
-			if(ym.greaterThan(closureData.getClosure().getClosureMonth().getProcessingYm())) {
-				//月度別代休残数集計を作成する
-				outPutData.setYm(ym);
-				outPutData.setMonthOccurrence(occurrentDays);
-				outPutData.setMonthUse(useDays);
-			} else {
+			if(!ym.greaterThan(closureData.getClosure().getClosureMonth().getProcessingYm())) {
 				//当月の振休残数を集計する
 				outPutData = this.calAsbRemainOfCurrentMonth(employeeId, dateData, outPutData);
 				//月末振休残数：月初振休残数＋振休発生数合計－振休使用数合計－振休消滅数合計
@@ -82,7 +81,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public Double getTotalOccurrentDay(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定振出管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.PAUSE);
+		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.PICKINGUP);
 		Double outputData = (double) 0;
 		for (InterimRemain data : getRemainBySidPriod) {
 			Optional<InterimRecMng> recData = recAbsRepo.getReruitmentById(data.getRemainManaID());
