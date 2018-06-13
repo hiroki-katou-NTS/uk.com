@@ -143,6 +143,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.statutoryAtr = domain.getStatutoryAtr().value;
 			entity.unUsedDays = domain.getUnUsedDays().v();
 		}
+		this.getEntityManager().flush();
 	}
 	
 	@Override

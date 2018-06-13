@@ -285,7 +285,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
-            localStorage.removeItem(window.location.href + '/dpGrid');
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             self.initScreen().done(() => {
@@ -311,6 +310,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let dfd = $.Deferred();
             nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
+            localStorage.removeItem(window.location.href + '/dpGrid');
             service.startScreen(self.monthlyParam()).done((data) => {
                 self.dataAll(data);
                 self.itemValueAll(data.itemValues);

@@ -618,7 +618,7 @@ module nts.uk.at.view.kal003.share.model {
         }
         public static  clone(data: any) : SpecHolidayCheckCon{
             var x = new SpecHolidayCheckCon();
-            x.extractType(data.extractType);
+            x.extractType(data.operator);
             x.numberDayDiffHoliday1(data.numberDayDiffHoliday1);
             x.numberDayDiffHoliday2(data.numberDayDiffHoliday2);
             x.errorAlarmCheckID(data.errorAlarmCheckID);
@@ -944,7 +944,7 @@ module nts.uk.at.view.kal003.share.model {
             } else {
                 self.errorAlarmCheckID=ko.observable("");
                 self.operator=ko.observable(0);
-                self.group1=ko.observable(kal003utils.getDefaultAttdItemGroup1Item());//set default group 1 for type 4, 5, 6, 7 
+                self.group1=ko.observable(kal003utils.getDefaultAttdItemGroup3Item());//set default group 1 for type 4, 5, 6, 7 
             }
         }
         
