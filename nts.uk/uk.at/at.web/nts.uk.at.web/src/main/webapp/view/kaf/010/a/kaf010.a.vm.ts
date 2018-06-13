@@ -386,7 +386,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
                 flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
-                sendMail: self.manualSendMailAtr(),
+                sendMail: self.checkBoxValue(),
                 calculateFlag: self.calculateFlag()
             };
             //登録前エラーチェック

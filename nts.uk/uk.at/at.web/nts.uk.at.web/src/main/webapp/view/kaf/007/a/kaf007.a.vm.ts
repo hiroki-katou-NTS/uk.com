@@ -194,7 +194,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.changeUnregisterValue();
             
             let workChange = ko.toJS(self.appWorkChange());
-            service.addWorkChange(workChange).done(() => {
+            service.addWorkChange(workChange).done((data) => {
                 //Success
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
