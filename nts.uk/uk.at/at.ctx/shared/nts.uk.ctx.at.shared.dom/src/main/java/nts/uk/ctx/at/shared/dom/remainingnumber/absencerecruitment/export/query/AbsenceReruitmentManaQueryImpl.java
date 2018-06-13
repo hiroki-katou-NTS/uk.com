@@ -54,6 +54,9 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		List<InterimRemainAggregateOutputData> lstOutData = new ArrayList<>();
 		//アルゴリズム「締めと残数算出対象期間を取得する」を実行する
 		ClosureRemainPeriodOutputData closureData = remainManaExport.getClosureRemainPeriod(employeeId, baseDate, startMonth, endMonth);
+		if(closureData == null) {
+			return lstOutData;
+		}
 		//残数算出対象年月を設定する
 		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)) {
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, (double) 0, (double) 0, (double) 0, (double) 0, (double) 0);
