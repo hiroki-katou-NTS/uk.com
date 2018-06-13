@@ -1,6 +1,10 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
 /**
  * データ復旧の実行
@@ -14,4 +18,16 @@ public interface PerformDataRecoveryRepository {
 	void update(PerformDataRecovery domain);
 
 	void remove(String dataRecoveryProcessId);
+	
+	List<TableList> getByStorageRangeSaved(String categoryId,String storageRangeSaved);
+	
+	List<Target> findByDataRecoveryId(String dataRecoveryProcessId);
+	
+	Optional<TableList> getByInternal(String internalFileName, String dataRecoveryProcessId);
+	
+	int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName);
+	
+	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName);
+	
+	void insertDataTable(Map<String, String> dataInsertDB, String tableName);
 }

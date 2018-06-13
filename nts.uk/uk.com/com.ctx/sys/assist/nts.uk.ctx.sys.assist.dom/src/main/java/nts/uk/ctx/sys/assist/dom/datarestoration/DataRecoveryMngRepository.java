@@ -14,4 +14,10 @@ public interface DataRecoveryMngRepository {
 	void update(DataRecoveryMng domain);
 
 	void remove(String dataRecoveryProcessId);
+	
+	void updateByOperatingCondition(String dataRecoveryProcessId, int operatingCondition);
+	
+	void updateTotalNumOfProcesses(String dataRecoveryProcessId, int totalNumOfProcesses);
+	
+	void updateProcessTargetEmpCode(String dataRecoveryProcessId, String processTargetEmpCode);
 }
