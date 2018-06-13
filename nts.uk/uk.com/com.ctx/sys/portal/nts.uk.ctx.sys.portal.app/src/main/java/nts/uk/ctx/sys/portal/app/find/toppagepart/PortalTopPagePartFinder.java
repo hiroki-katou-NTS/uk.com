@@ -55,7 +55,7 @@ public class PortalTopPagePartFinder {
 	public PlacementPartDto findPlacementPartByID(String topPagePartID) {
 		String companyID = AppContexts.user().companyId();
 		
-		val optTopPagePart = topPagePartRepository.find(topPagePartID);
+		val optTopPagePart = topPagePartRepository.findByKey(companyID,topPagePartID);
 		if (!optTopPagePart.isPresent())
 			throw new RuntimeException("Can't find TopPagePart with id: " + topPagePartID);
 		val topPagePart = optTopPagePart.get();
