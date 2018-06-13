@@ -14,21 +14,21 @@
 				<!--E3_2 復旧元ファイルラベル-->
 				<div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_81')}</div>
 				<!--E3_3 復旧ファイル-->
-				<label data-bind="text: $parent.recoverySourceFile"></label>
+				<label data-bind="text: $vm.recoverySourceFile"></label>
 			</div>
 			<div class="div-line">
 				<!--E3_4 コード名称ラベル-->
 				<div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_82')}</div>
 				<!--E3_5 保存セットコード-->
-				<label style="margin-right: 15px;" data-bind="text: $parent.recoverySourceCode"></label>
+				<label style="margin-right: 15px;" data-bind="text: $vm.recoverySourceCode"></label>
 				<!--E3_6 保存セット名称-->
-				<label data-bind="text: $parent.recoverySourceName"></label>
+				<label data-bind="text: $vm.recoverySourceName"></label>
 			</div>
 			<div class="div-line">
 				<!--E3_7 補足説明ラベル-->
 				<div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_83')}</div>
 				<!--E3_8 補足説明-->
-				<label data-bind="text: $parent.supplementaryExplanation"></label>
+				<label data-bind="text: $vm.supplementaryExplanation"></label>
 			</div>
 			<div class="div-line">
 				<!--E3_9 復旧対象カテゴリ-->
@@ -78,7 +78,7 @@
 				<!--E6_2 全件復旧-->
 				<div class="div-column-2" style="margin-left: 37px;" data-bind="ntsRadioButton: {checked: selectedRecoveryMethod, 
 												enable: true, 
-												option: $parent.recoveryMethodOptions()[0],
+												option: $vm.recoveryMethodOptions()[0],
 												optionValue: 'value',
 												optionText: 'text',
 												group: 'recoveryMethod' }"></div>
@@ -90,7 +90,7 @@
 				<!--E6_3 選択範囲復旧-->
 				<div class="div-column-2" style="margin-left: 120px;" data-bind="ntsRadioButton: {checked: selectedRecoveryMethod, 
 												enable: true, 
-												option: $parent.recoveryMethodOptions()[1],
+												option: $vm.recoveryMethodOptions()[1],
 												optionValue: 'value',
 												optionText: 'text',
 												group: 'recoveryMethod' }"></div>
