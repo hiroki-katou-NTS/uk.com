@@ -94,7 +94,7 @@ public class OutsideWorkTimeSheet {
     		VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
     		PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
     		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet) {
+    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,WorkTimezoneCommonSet commonSetting) {
 		
 		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
 		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
@@ -105,7 +105,7 @@ public class OutsideWorkTimeSheet {
 					autoCalculationSet, statutorySet, prioritySet,bonusPaySetting,midNightTimeSheet,
 					personalInfo,true,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, toDay,
-					predetermineTimeSet, siftCode, personalCondition, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet);
+					predetermineTimeSet, siftCode, personalCondition, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting);
 
 			/* 0時跨ぎ処理 */
 			OverDayEnd processOverDayEnd = new OverDayEnd();

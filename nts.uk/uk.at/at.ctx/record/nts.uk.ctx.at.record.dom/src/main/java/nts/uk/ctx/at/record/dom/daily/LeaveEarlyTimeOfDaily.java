@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -84,7 +85,7 @@ public class LeaveEarlyTimeOfDaily {
 	public static LeaveEarlyTimeOfDaily calcLeaveEarlyTime(CalculationRangeOfOneDay oneDay,
 											   WorkNo workNo,
 											   boolean leaveEarly, //日別実績の計算区分.遅刻早退の自動計算設定.早退
-											   HolidayCalcMethodSet holidayCalcMethodSet
+											   HolidayCalcMethodSet holidayCalcMethodSet,WorkTimezoneCommonSet commonSetting
 			) {
 
 		//勤務Noに一致する早退時間をListで取得する
@@ -126,7 +127,7 @@ public class LeaveEarlyTimeOfDaily {
 //																															  :NotUseAtr.NOT_USE;
 		NotUseAtr notDeductLateLeaveEarly = NotUseAtr.NOT_USE;
 		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
-			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly()) {
+			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
 				notDeductLateLeaveEarly = NotUseAtr.USE;
 			}
 		}

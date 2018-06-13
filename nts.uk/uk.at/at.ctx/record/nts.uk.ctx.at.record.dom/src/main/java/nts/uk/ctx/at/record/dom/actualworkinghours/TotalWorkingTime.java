@@ -61,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -188,7 +189,7 @@ public class TotalWorkingTime {
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   Optional<CoreTimeSetting> coreTimeSetting,
 			   DailyUnit dailyUnit,
-			   List<OverTimeFrameNo> statutoryFrameNoList
+			   List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting
 			   ) {
 		
 
@@ -234,7 +235,7 @@ public class TotalWorkingTime {
 				   																      workTimeCode,
 				   																      flexPreAppTime, 
 				   																      coreTimeSetting,
-				   																      dailyUnit);
+				   																      dailyUnit,commonSetting);
 
 		
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, 
@@ -258,7 +259,7 @@ public class TotalWorkingTime {
 																									integrationOfDaily,
 																									flexPreAppTime,
 																									flexAutoCalSet,
-																									dailyUnit, statutoryFrameNoList);
+																									dailyUnit, statutoryFrameNoList,commonSetting);
 		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;
@@ -284,10 +285,10 @@ public class TotalWorkingTime {
 		}else {
 			//遅刻（時間帯から計算）
 			for(TimeLeavingWork work : oneDay.getAttendanceLeavingWork().getTimeLeavingWorks())
-				lateTime.add(LateTimeOfDaily.calcLateTime(oneDay, work.getWorkNo(),calcAtrOfDaily.getLeaveEarlySetting().getLeaveLate().isUse(),holidayCalcMethodSet));
+				lateTime.add(LateTimeOfDaily.calcLateTime(oneDay, work.getWorkNo(),calcAtrOfDaily.getLeaveEarlySetting().getLeaveLate().isUse(),holidayCalcMethodSet,commonSetting));
 			//早退（時間帯から計算）
 			for(TimeLeavingWork work : oneDay.getAttendanceLeavingWork().getTimeLeavingWorks())
-				leaveEarlyTime.add(LeaveEarlyTimeOfDaily.calcLeaveEarlyTime(oneDay, work.getWorkNo(),calcAtrOfDaily.getLeaveEarlySetting().getLeaveEarly().isUse(),holidayCalcMethodSet));
+				leaveEarlyTime.add(LeaveEarlyTimeOfDaily.calcLeaveEarlyTime(oneDay, work.getWorkNo(),calcAtrOfDaily.getLeaveEarlySetting().getLeaveEarly().isUse(),holidayCalcMethodSet,commonSetting));
 		}
 		//日別実績の休憩時間
 		val breakTime = BreakTimeOfDaily.calcTotalBreakTime(oneDay,breakTimeCount);

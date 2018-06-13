@@ -256,7 +256,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 												   illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet, overTimeAutoCalcAtr, 
 												   scheWorkTimeDailyAtr, flexCalcMethod, holidayCalcMethodSet, bonusPayAutoCalcSet, 
 												   calcAtrOfDaily, eachWorkTimeSet, eachCompanyTimeSet, breakTimeCount, integrationOfDaily, 
-												   flexSetting, coreTimeSetting,dailyUnit,statutoryFrameNoList);
+												   flexSetting, coreTimeSetting,dailyUnit,statutoryFrameNoList,WorkTimezoneCommonSet.get());
 		/*日別実績の実績時間の計算*/
 		val actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(recordOneDay,personalCondition,
 				    vacationClass,
@@ -364,7 +364,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 															   CalAttrOfDailyPerformance calcAtrOfDaily, List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, 
 															   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, int breakTimeCount, 
 															   IntegrationOfDaily integrationOfDaily, AutoCalFlexOvertimeSetting flexAutoCalSet, 
-															   Optional<CoreTimeSetting> coreTimeSetting,DailyUnit dailyUnit, List<OverTimeFrameNo> statutoryFrameNoList) {
+															   Optional<CoreTimeSetting> coreTimeSetting,DailyUnit dailyUnit, List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting) {
 		//勤務予定時間を計算
 		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformastionOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
 		AttendanceTime scheTotalTime = new AttendanceTime(0);
@@ -394,7 +394,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 																   flexAutoCalSet, 
 																   coreTimeSetting,
 																   dailyUnit,
-																   statutoryFrameNoList
+																   statutoryFrameNoList,commonSetting
 																   );
 			scheTotalTime = totalWorkingTime.getTotalTime();
 			if(totalWorkingTime.getWithinStatutoryTimeOfDaily() != null)

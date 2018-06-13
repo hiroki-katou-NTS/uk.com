@@ -54,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
@@ -247,7 +248,7 @@ public class OverTimeOfDaily {
 												  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily, 
 												  AttendanceTime flexPreAppTime,AutoCalFlexOvertimeSetting flexOutCalcSetting,
-												  DailyUnit dailyUnit,List<OverTimeFrameNo> statutoryFrameNoList) {
+												  DailyUnit dailyUnit,List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting) {
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		//枠時間計算
@@ -273,7 +274,7 @@ public class OverTimeOfDaily {
 					late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 					leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 					workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
-					holidayAddtionSet,flexOutCalcSetting.getFlexOtTime().getUpLimitORtSet(),flexPreAppTime,dailyUnit);
+					holidayAddtionSet,flexOutCalcSetting.getFlexOtTime().getUpLimitORtSet(),flexPreAppTime,dailyUnit,commonSetting);
 		}
 
 		val overTimeWork = new AttendanceTime(0);

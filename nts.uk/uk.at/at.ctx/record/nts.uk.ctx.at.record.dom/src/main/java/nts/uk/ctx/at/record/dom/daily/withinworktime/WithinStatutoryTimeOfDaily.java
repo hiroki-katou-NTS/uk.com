@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryD
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -113,7 +114,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,
 			   												   Optional<CoreTimeSetting> coreTimeSetting,
-			   												   DailyUnit dailyUnit) {
+			   												   DailyUnit dailyUnit,WorkTimezoneCommonSet commonSetting) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		AttendanceTime actualTime = new AttendanceTime(0);
 		AttendanceTime withinpremiumTime = new AttendanceTime(0);
@@ -135,7 +136,7 @@ public class WithinStatutoryTimeOfDaily {
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
 														  calcMethod,autoCalcAtr,flexCalcMethod,workTimeDailyAtr.get(),workTimeCode,preFlexTime,coreTimeSetting,
-														  oneDay.getPredetermineTimeSetForCalc(),oneDay.getTimeVacationAdditionRemainingTime(),dailyUnit);
+														  oneDay.getPredetermineTimeSetForCalc(),oneDay.getTimeVacationAdditionRemainingTime(),dailyUnit,commonSetting);
 			
 
 		}
@@ -158,7 +159,7 @@ public class WithinStatutoryTimeOfDaily {
 																						   regularAddSetting,
 																						   holidayAddtionSet,
 																						   holidayCalcMethodSet,
-																						   dailyUnit
+																						   dailyUnit,commonSetting
 																						   );
 			actualTime = actualTime.minusMinutes(withinpremiumTime.valueAsMinutes());
 		}
@@ -193,7 +194,8 @@ public class WithinStatutoryTimeOfDaily {
 			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
 			   												   PredetermineTimeSetForCalc predetermineTimeSetForCalc,
-			   												   Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime, DailyUnit dailyUnit 
+			   												   Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime, DailyUnit dailyUnit,
+			   												   WorkTimezoneCommonSet commonSetting
 			   												   ) {
 		AttendanceTime workTime = new AttendanceTime(0);
 
@@ -220,7 +222,7 @@ public class WithinStatutoryTimeOfDaily {
 						  									 flexCalcMethod.get(),
 						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT,
 						  									 preFlexTime,coreTimeSetting,
-						  									dailyUnit
+						  									dailyUnit,commonSetting
 						  									
 					   );
 		}
@@ -241,7 +243,7 @@ public class WithinStatutoryTimeOfDaily {
 						  														  regularAddSetting,
 						  														  holidayAddtionSet,
 						  														  holidayCalcMethodSet,
-						  														  dailyUnit);
+						  														  dailyUnit,commonSetting);
 				
 				
 				

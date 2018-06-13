@@ -193,7 +193,7 @@ public class ActualWorkingTimeOfDaily {
 					flexAutoCalSet,
 					coreTimeSetting,
 					dailyUnit, 
-					statutoryFrameNoList
+					statutoryFrameNoList,WorkTimezoneCommonSet.get()
 					);
 		
 		

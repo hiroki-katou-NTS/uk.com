@@ -468,6 +468,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		PersonalLaborCondition personalLabor = new PersonalLaborCondition(oneRange.getPredetermineTimeSetForCalc().getAdditionSet());
 		
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
+			if(!flexWorkSetOpt.isPresent())return ManageReGetClass.cantCalc();
 			/* フレックス勤務 */
 			if(timeSheetAtr.isSchedule()) {
 				flexWorkSetOpt.get().getOffdayWorkTime().getRestTimezone().restoreFixRestTime(true);
@@ -542,7 +543,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						                		illegularAddSetting, 
 						                		flexAddSetting, 
 						                		regularAddSetting, 
-						                		holidayAddtionSet
+						                		holidayAddtionSet,
+						                		flexWorkSetOpt.get().getCommonSetting()
 												);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
@@ -671,7 +673,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
                 		illegularAddSetting, 
                 		flexAddSetting, 
                 		regularAddSetting, 
-                		holidayAddtionSet
+                		holidayAddtionSet,
+                		fixedWorkSetting.get().getCommonSetting()
 						);
 				//大塚モードの判定(緊急対応)
 				if(ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()))

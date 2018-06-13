@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -71,9 +72,9 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 * @param graceTimeSetting
 	 * @return
 	 */
-	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting) {
+	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting, WorkTimezoneCommonSet commonSetting) {
 //		if(this.notDeductLateLeaveEarly==NotUseAtr.USE) {//
-		if(isDeductLateLeaveEarly()) {//遅刻早退をマイナスする場合に処理に入る
+		if(isDeductLateLeaveEarly(commonSetting)) {//遅刻早退をマイナスする場合に処理に入る
 			if(deductTime.greaterThan(0) || !graceTimeSetting.isIncludeWorkingHour()) {//猶予時間の加算設定をチェック&&パラメータ「遅刻控除時間」の確認
 				return true;
 			}
@@ -88,15 +89,14 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 * 画面上で「遅刻早退をマイナスしない」のチェックボックスでチェックがある場合にここにUSEが来る為です
 	 * @return 控除する場合はtrueが返る
 	 */
-	public boolean isDeductLateLeaveEarly() {
-		/*switch(this.notDeductLateLeaveEarly) {
-			case fasle:
-				return false;
-			case NOT_USE:
+	public boolean isDeductLateLeaveEarly(WorkTimezoneCommonSet commonSetting) {
+
+		if(this.notDeductLateLeaveEarly.isEnableSetPerWorkHour()) {
+			if(commonSetting.getLateEarlySet().getCommonSet().isDelFromEmTime()) {
 				return true;
-			default:
-				throw new RuntimeException("unknown notDeductLateLeaveEarly");
-		}*/
+			}
+			return false;
+		}
 		if (this.notDeductLateLeaveEarly.isDeduct()) {
 			return false;
 		} 
