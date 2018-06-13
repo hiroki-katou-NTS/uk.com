@@ -63,6 +63,11 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	
 	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
+	private final String SELECT_LATE_LEAVE = SELECT_BY_DATE + " O"
+			+ "AND a.employeeID = :employeeID "
+			+ "AND a.stateReflectionReal = 0 "
+			+ "AND a.appType = 9 ORDER BY a.appDate ASC";
+	
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -228,6 +233,16 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
 				.setParameter("listAppID", listAppID)
 				.setParameter("companyID", companyID)
+				.getList(x -> x.toDomain());
+	}
+	@Override
+	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate,
+			GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
+				.setParameter("companyID", companyID)
+				.setParameter("employeeID", employeeID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList(x -> x.toDomain());
 	}
 }
