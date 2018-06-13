@@ -238,15 +238,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnBefore() {
             let self = this;
             var prevAppInfo = self.getPrevAppInfo();
-            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 
-                'listAppMeta':  _.map(self.listAppMeta, x => { return x.appID}), 
-                'currentApp': prevAppInfo.appID 
+            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {
+                'listAppMeta': _.map(self.listAppMeta, x => { return x.appID }),
+                'currentApp': prevAppInfo.appID
             });
         }
 
         private getPrevAppInfo(): shrvm.model.ApplicationMetadata {
             let self = this;
-            let index = _.findIndex(self.listAppMeta, x => {return x.appID == self.appID()});
+            let index = _.findIndex(self.listAppMeta, x => { return x.appID == self.appID() });
             if (index > 0) {
                 return new shrvm.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
             }
@@ -259,15 +259,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnAfter() {
             let self = this;
             var nextAppInfo = self.getNextAppInfo();
-            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 
-                'listAppMeta':  _.map(self.listAppMeta, x => {return x.appID}), 
+            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {
+                'listAppMeta': _.map(self.listAppMeta, x => { return x.appID }),
                 'currentApp': nextAppInfo.appID
             });
         }
 
         private getNextAppInfo(): shrvm.model.ApplicationMetadata {
             let self = this;
-            let index = _.findIndex(self.listAppMeta, x => {return x.appID == self.appID()});
+            let index = _.findIndex(self.listAppMeta, x => { return x.appID == self.appID() });
             if (index < self.listAppMeta.length - 1) {
                 return new shrvm.model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index + 1].appDate);
             }
@@ -293,7 +293,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     }
                 });
             }).fail(function(res: any) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+               self.showError(res);
             });
         }
         /**
@@ -315,7 +315,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     }
                 });
             }).fail(function(res: any) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+               self.showError(res);
             });
         }
 
@@ -340,7 +340,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         location.reload();
                     });
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+                  self.showError(res);
                 });
             }).ifNo(() => {
                 nts.uk.ui.block.clear();
@@ -392,9 +392,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                     });
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-                    });
+                   self.showError(res);
                 });
             }).ifNo(function() {
                 nts.uk.ui.block.clear();
@@ -464,17 +462,26 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         location.reload();
                     });
                 }).fail(function(res: any) {
-                    if (res.optimisticLock == true) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function() {
-                            location.reload();
-                        });
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
-                    }
+                    self.showError(res);
                 });
             }).ifNo(function() {
                 nts.uk.ui.block.clear();
             });
+        }
+
+        showError(res) {
+            if (res.optimisticLock == true) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function() {
+                    location.reload();
+                });
+            } else {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { 
+                nts.uk.ui.block.clear(); 
+                    if(res.messageId==="Msg_198" ){
+                         nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                    }
+                });
+            }
         }
 
         convertToApproverList(): Array<Approver> {
