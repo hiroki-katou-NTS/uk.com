@@ -411,66 +411,70 @@ public class AnnualLeaveInfo implements Cloneable {
 		
 		// 「暫定年休管理データリスト」を取得する
 		for (val tempAnnualLeaveMng : tempAnnualLeaveMngs){
+			if (!aggregatePeriodWork.getPeriod().contains(tempAnnualLeaveMng.getYmd())) continue;
+			
 			// 年休を消化する
-			
-			// 年休使用数WORK
-			ManagementDays useDaysWork = tempAnnualLeaveMng.getAnnualLeaveUse();
-			// 年休使用残数WORK
-			ManagementDays remainDaysWork = tempAnnualLeaveMng.getAnnualLeaveUse();
-			
-			// 年休付与残数を取得
-			List<AnnualLeaveGrantRemainingData> targetRemainingDatas = new ArrayList<>();
-			for (val remainingData : this.grantRemainingList){
-				if (tempAnnualLeaveMng.getYmd().before(remainingData.getGrantDate())) continue;
-				if (tempAnnualLeaveMng.getYmd().after(remainingData.getDeadline())) continue;
-				targetRemainingDatas.add(remainingData);
-			}
-			
-			// 取得設定をチェック
-			if (this.annualPaidLeaveSet.getAcquisitionSetting().annualPriority == AnnualPriority.FIFO){
-
-				// 当年付与分から消化する　（付与日　降順(DESC)）
-				targetRemainingDatas.sort((a, b) -> -a.getGrantDate().compareTo(b.getGrantDate()));
-			}
-			else {
-				
-				// 繰越分から消化する　（付与日　昇順(ASC)）
-				targetRemainingDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
-			}
-			
-			for (val targetRemainingData : targetRemainingDatas){
-				
-				// 年休を指定日数消化する
-				remainDaysWork = new ManagementDays(targetRemainingData.digest(remainDaysWork.v(), false));
-			}
-			
-			// 消化しきれなかった年休の消化処理
 			{
-				// 「年休付与残数データ」を作成する
-				val dummyRemainData = new AnnualLeaveGrantRemaining(AnnualLeaveGrantRemainingData.createFromJavaType(
-						"",
-						companyId, employeeId, tempAnnualLeaveMng.getYmd(), tempAnnualLeaveMng.getYmd(),
-						LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
-						0.0, null,
-						0.0, null, null,
-						0.0, null,
-						0.0,
-						null, null, null));
-				dummyRemainData.setDummyAtr(true);
+				// 年休使用数WORK
+				ManagementDays useDaysWork = tempAnnualLeaveMng.getAnnualLeaveUse();
+				// 年休使用残数WORK
+				ManagementDays remainDaysWork = tempAnnualLeaveMng.getAnnualLeaveUse();
 				
-				// 年休を指定日数消化する
-				remainDaysWork = new ManagementDays(dummyRemainData.digest(remainDaysWork.v(), true));
+				// 年休付与残数を取得
+				List<AnnualLeaveGrantRemainingData> targetRemainingDatas = new ArrayList<>();
+				for (val remainingData : this.grantRemainingList){
+					if (tempAnnualLeaveMng.getYmd().before(remainingData.getGrantDate())) continue;
+					if (tempAnnualLeaveMng.getYmd().after(remainingData.getDeadline())) continue;
+					targetRemainingDatas.add(remainingData);
+				}
 				
-				// 付与残数データに追加
-				this.grantRemainingList.add(dummyRemainData);
+				// 取得設定をチェック
+				if (this.annualPaidLeaveSet.getAcquisitionSetting().annualPriority == AnnualPriority.FIFO){
+
+					// 当年付与分から消化する　（付与日　降順(DESC)）
+					targetRemainingDatas.sort((a, b) -> -a.getGrantDate().compareTo(b.getGrantDate()));
+				}
+				else {
+					
+					// 繰越分から消化する　（付与日　昇順(ASC)）
+					targetRemainingDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+				}
+				
+				for (val targetRemainingData : targetRemainingDatas){
+					
+					// 年休を指定日数消化する
+					remainDaysWork = new ManagementDays(targetRemainingData.digest(remainDaysWork.v(), false));
+				}
+				
+				// 消化しきれなかった年休の消化処理
+				if (remainDaysWork.v() > 0.0)
+				{
+					// 「年休付与残数データ」を作成する
+					val dummyRemainData = new AnnualLeaveGrantRemaining(AnnualLeaveGrantRemainingData.createFromJavaType(
+							"",
+							companyId, employeeId, tempAnnualLeaveMng.getYmd(), tempAnnualLeaveMng.getYmd(),
+							LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
+							0.0, null,
+							0.0, null, null,
+							0.0, null,
+							0.0,
+							null, null, null));
+					dummyRemainData.setDummyAtr(true);
+					
+					// 年休を指定日数消化する
+					remainDaysWork = new ManagementDays(dummyRemainData.digest(remainDaysWork.v(), true));
+					
+					// 付与残数データに追加
+					this.grantRemainingList.add(dummyRemainData);
+				}
+				
+				// 実年休（年休（マイナスあり））に使用数を加算する
+				this.remainingNumber.getAnnualLeaveWithMinus().addUsedNumber(
+						useDaysWork.v(), aggregatePeriodWork.isAfterGrant());
+				
+				// 年休情報残数を更新
+				this.updateRemainingNumber();
 			}
-			
-			// 実年休（年休（マイナスあり））に使用数を加算する
-			this.remainingNumber.getAnnualLeaveWithMinus().addUsedNumber(
-					useDaysWork.v(), aggregatePeriodWork.isAfterGrant());
-			
-			// 年休情報残数を更新
-			this.updateRemainingNumber();
 		}
 		
 		// 「年休の集計結果」を返す

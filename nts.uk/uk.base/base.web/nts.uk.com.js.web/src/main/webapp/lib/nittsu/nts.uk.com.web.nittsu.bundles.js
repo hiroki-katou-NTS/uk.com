@@ -4811,6 +4811,9 @@ var nts;
                     ErrorsViewModel.prototype.gridHasError = function () {
                         return this.gridErrors().length > 0;
                     };
+                    ErrorsViewModel.prototype.clearGridErrors = function () {
+                        this.gridErrors.removeAll();
+                    };
                     ErrorsViewModel.prototype.sameCells = function (one, other) {
                         if (!one.grid.is(other.grid))
                             return false;
@@ -4955,6 +4958,11 @@ var nts;
                     return errorsViewModel().gridHasError();
                 }
                 errors_1.gridHasError = gridHasError;
+                function clearAllGridErrors() {
+                    if (nts.uk.ui._viewModel !== undefined)
+                        errorsViewModel().clearGridErrors();
+                }
+                errors_1.clearAllGridErrors = clearAllGridErrors;
                 function getErrorList() {
                     return errorsViewModel().displayErrors();
                 }
@@ -26069,7 +26077,18 @@ var nts;
                                 this.rowId = rowId;
                                 this.columnKey = columnKey;
                                 this.message = message;
+                                this.setColumnName();
                             }
+                            GridCellError.prototype.setColumnName = function () {
+                                var _this = this;
+                                var allCols = utils.getColumns(this.grid);
+                                if (!allCols)
+                                    return;
+                                var col = allCols.filter(function (c) { return c.key === _this.columnKey; });
+                                if (col.length > 0) {
+                                    this.columnName = col[0].headerText;
+                                }
+                            };
                             GridCellError.prototype.equals = function (err) {
                                 if (!this.grid.is(err.grid))
                                     return false;
@@ -26129,7 +26148,10 @@ var nts;
                             var $cell = $(cell.element);
                             decorate($cell);
                             var errorDetails = createErrorInfos($grid, cell, message);
-                            //                ui.errors.addCell(errorDetails);
+                            var setting = $grid.data(internal.SETTINGS);
+                            if (setting.errorsOnPage) {
+                                ui.errors.addCell(errorDetails);
+                            }
                             addCellError($grid, errorDetails);
                             addErrorInSheet($grid, cell);
                         }
@@ -26139,8 +26161,16 @@ var nts;
                             var setting = $grid.data(internal.SETTINGS);
                             var error = new GridCellError($grid, cell.id, cell.columnKey, message);
                             // Error column headers
-                            //                let headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
-                            var headers = setting.errorColumns;
+                            var headers;
+                            if (setting.errorsOnPage) {
+                                var columns = ko.toJS(ui.errors.errorsViewModel().option().headers());
+                                if (columns) {
+                                    headers = columns.filter(function (c) { return c.visible; }).map(function (c) { return c.name; });
+                                }
+                            }
+                            else {
+                                headers = setting.errorColumns;
+                            }
                             _.forEach(headers, function (header) {
                                 if (uk.util.isNullOrUndefined(record[header])
                                     || !uk.util.isNullOrUndefined(error[header]))
@@ -26158,7 +26188,10 @@ var nts;
                             var $editor = $cell.find(errors.EDITOR_SELECTOR);
                             if ($editor.length > 0)
                                 $editor.css(errors.NO_ERROR_STL);
-                            //                ui.errors.removeCell($grid, cell.id, cell.columnKey);
+                            var setting = $grid.data(internal.SETTINGS);
+                            if (setting.errorsOnPage) {
+                                ui.errors.removeCell($grid, cell.id, cell.columnKey);
+                            }
                             removeCellError($grid, cell.id, cell.columnKey);
                             removeErrorFromSheet($grid, cell);
                         }
@@ -27328,6 +27361,7 @@ var nts;
                             data.preventEditInError = options.preventEditInError;
                             data.dataSourceAdapter = options.dataSourceAdapter;
                             data.errorColumns = options.errorColumns;
+                            data.errorsOnPage = options.showErrorsOnPage;
                             if (!$grid.data(internal.SETTINGS)) {
                                 $grid.data(internal.SETTINGS, data);
                             }

@@ -953,7 +953,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			String sID = approver.getApproverID();
 			// ドメインモデル「代行者管理」を取得する
 			List<AgentDataRequestPubImport> lstAgentData = agentApdater.lstAgentBySidData(cId, sID, appDate, appDate);
-			Optional<AgentDataRequestPubImport> agent = lstAgentData.stream().findFirst();
+			Optional<AgentDataRequestPubImport> agent = Optional.empty();
+			if(lstAgentData != null && !lstAgentData.isEmpty()){
+				agent = lstAgentData.stream().findFirst();
+			}
 			// 対象が存在する場合
 			if (agent.isPresent()) {
 				switch (agent.get().getAgentAppType1()) {

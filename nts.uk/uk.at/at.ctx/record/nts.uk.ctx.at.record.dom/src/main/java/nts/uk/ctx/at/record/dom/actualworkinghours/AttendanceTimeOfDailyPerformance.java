@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkSchedu
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
@@ -36,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -144,7 +144,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   WorkFlexAdditionSet flexAddSetting,
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
-			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
 			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
@@ -174,7 +173,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																		 flexAddSetting,
 				   																		 regularAddSetting,
 				   																		 holidayAddtionSet,
-				   																		 overTimeAutoCalcAtr,
 				   																		 workTimeDailyAtr,
 				   																		 flexCalcMethod,
 				   																		 holidayCalcMethodSet,
@@ -219,7 +217,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   WorkFlexAdditionSet flexAddSetting,
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
-			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
 			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
@@ -244,7 +241,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		//実績,予定で渡す予定(今は実績のみ渡してる)　****要修正***
 		val workScheduleTime = calcWorkSheduleTime(recordOneDay,scheduleOneDay,schePreTimeSet, recordWorkType,scheWorkType, 
 												   personalCondition, vacationClass, workingSystem, 
-												   illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet, overTimeAutoCalcAtr, 
+												   illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,
 												   workTimeDailyAtr, flexCalcMethod, holidayCalcMethodSet, bonusPayAutoCalcSet, 
 												   calcAtrOfDaily, eachWorkTimeSet, eachCompanyTimeSet, breakTimeCount, integrationOfDaily, 
 												   flexSetting, coreTimeSetting);
@@ -257,7 +254,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				    flexAddSetting,
 				    regularAddSetting,
 				    holidayAddtionSet,
-				    overTimeAutoCalcAtr,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    holidayCalcMethodSet,
@@ -345,7 +341,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 															   WorkingSystem workingSystem, 
 															   WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
 															   WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet, 
-															   AutoCalOverTimeAttr overTimeAutoCalcAtr, Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
+															   Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
 															   Optional<SettingOfFlexWork> flexCalcMethod, HolidayCalcMethodSet holidayCalcMethodSet, 
 															   BonusPayAutoCalcSet bonusPayAutoCalcSet, 
 															   CalAttrOfDailyPerformance calcAtrOfDaily, List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, 
@@ -362,7 +358,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 																   flexAddSetting, 
 																   regularAddSetting, 
 																   holidayAddtionSet, 
-																   overTimeAutoCalcAtr, 
 																   workTimeDailyAtr, 
 																   flexCalcMethod, 
 																   holidayCalcMethodSet, 
