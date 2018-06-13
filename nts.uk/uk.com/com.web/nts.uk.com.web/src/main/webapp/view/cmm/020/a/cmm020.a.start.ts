@@ -3,7 +3,6 @@ module nts.uk.com.view.cmm020.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.start_page().done(function() {
             __viewContext.bind(screenModel);
-            screenModel.execution();
         });
     });
 }
