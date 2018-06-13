@@ -438,7 +438,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 if (checkDailyChange) {
                     service.addAndUpdate(dataUpdate).done((data) => {
                         nts.uk.ui.block.clear();
-                self.updateDate(self.yearMonth());
+                        self.updateDate(self.yearMonth());
                     })
                 }
             }
@@ -640,7 +640,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     nts.uk.ui.block.invisible();
                     nts.uk.ui.block.grayout();
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
-                    //Reload screen
+                    //Reload screen                    
+                    nts.uk.ui.errors.clearAllGridErrors();
                     if($("#dpGrid").data('igGrid')) {
                         $("#dpGrid").ntsGrid("destroy");
                     }
@@ -692,7 +693,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 userId: "4",
                 getUserId: function(k) { return String(k); },
                 errorColumns: ["ruleCode"],
-
+                showErrorsOnPage: true,
                 columns: self.headersGrid(),
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
