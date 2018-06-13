@@ -386,8 +386,9 @@ public class MonthlyPerformanceDisplay {
 					// 日の実績が存在する
 					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist()
 							? LockStatus.UNLOCK : LockStatus.LOCK,
-					// TODO
-					LockStatus.UNLOCK);
+					// エラーが0件である						
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyRecordError()
+							? LockStatus.LOCK : LockStatus.UNLOCK);
 			monthlyLockStatusLst.add(monthlyLockStatus);
 		}
 		// 過去実績の修正ロック
