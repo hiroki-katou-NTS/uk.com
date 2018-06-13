@@ -1,22 +1,30 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ejb.Stateless;
+
 import org.apache.commons.csv.CSVFormat;
+
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.system.ServerSystemProperties;
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
 
 @Stateless
 public class FileUtil {
-	
+
 	private static final String NEW_LINE_CHAR = "\r\n";
+	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 
 	public static int getNumberOfLine(InputStream inputStream, Integer endcoding) {
 		// get csv reader
@@ -33,7 +41,8 @@ public class FileUtil {
 		return count;
 	}
 
-	public static List<List<String>> getRecordByIndex(InputStream inputStream, int dataLineNum, int startLine, Integer endcoding) {
+	public static List<List<String>> getRecordByIndex(InputStream inputStream, int dataLineNum, int startLine,
+			Integer endcoding) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
 				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
@@ -53,7 +62,7 @@ public class FileUtil {
 		}
 		return result;
 	}
-	
+
 	public static List<List<String>> getAllRecord(InputStream inputStream, Integer endcoding) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
@@ -61,23 +70,63 @@ public class FileUtil {
 		List<List<String>> result = new ArrayList<>();
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
-			NtsCsvRecord colHeader = csvParsedResult.getRecords().get(0);
-			List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
-			for(NtsCsvRecord record: allRecord){
-				List<String> data = new ArrayList<>();
-				for (int i = 0; i < record.columnLength(); i++) {
+			List<String> data = new ArrayList<>();
+			if (csvParsedResult.getRecords().size() > 0) {
+				NtsCsvRecord colHeader = csvParsedResult.getRecords().get(0);
+				for (int i = 0; i <= colHeader.columnLength(); i++) {
 					data.add((String) colHeader.getColumn(i));
-					data.add((String) record.getColumn(i));
 				}
 				result.add(data);
 			}
-			
+
+			List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
+			if (allRecord.size() > 1) {
+				for (NtsCsvRecord record : allRecord) {
+					for (int i = 1; i < record.columnLength(); i++) {
+						data.add((String) record.getColumn(i));
+					}
+					result.add(data);
+				}
+			}
+
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		return result;
 	}
-	
+
+	public static List<List<String>> getAllRecord(String fileName, String fileId, Integer endcoding) {
+		// get csv reader
+		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
+				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
+		List<List<String>> result = new ArrayList<>();
+		try {
+			InputStream inputStream = createInputStreamFromFile(fileId, fileName);
+			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
+			List<String> data = new ArrayList<>();
+			if (csvParsedResult.getRecords().size() > 0) {
+				NtsCsvRecord colHeader = csvParsedResult.getRecords().get(0);
+				for (int i = 0; i <= colHeader.columnLength(); i++) {
+					data.add((String) colHeader.getColumn(i));
+				}
+				result.add(data);
+			}
+
+			List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
+			if (allRecord.size() > 1) {
+				for (NtsCsvRecord record : allRecord) {
+					for (int i = 1; i < record.columnLength(); i++) {
+						data.add((String) record.getColumn(i));
+					}
+					result.add(data);
+				}
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+
 	public static List<String> getRecord(InputStream inputStream, int[] columns, int index, Integer endcoding) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
@@ -94,14 +143,23 @@ public class FileUtil {
 		}
 		return result;
 	}
+
 	private static Charset getCharset(Integer valueEncoding) {
 		RecoveryCharset encoding = EnumAdaptor.valueOf(valueEncoding, RecoveryCharset.class);
-        switch (encoding) {
-        case Shift_JIS:
-            return Charset.forName("Shift_JIS");
-        default:
-            return StandardCharsets.UTF_8;
-        }
-    }
-}
+		switch (encoding) {
+		case Shift_JIS:
+			return Charset.forName("Shift_JIS");
+		default:
+			return StandardCharsets.UTF_8;
+		}
+	}
 
+	public static InputStream createInputStreamFromFile(String fileId, String fileName) {
+		String filePath = DATA_STORE_PATH + "//packs//" + fileId + "//temp//" + fileName + ".csv";
+		try {
+			return new FileInputStream(new File(filePath));
+		} catch (FileNotFoundException e) {
+			return null;
+		}
+	}
+}

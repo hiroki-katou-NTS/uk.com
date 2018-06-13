@@ -8,27 +8,27 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
+import nts.arc.system.ServerSystemProperties;
 import nts.gul.file.archive.ArchiveFormat;
 import nts.gul.file.archive.FileArchiver;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
+import nts.uk.shr.infra.file.storage.stream.DefaultStoredFileStreamService;
 
 @Stateless
 public class DataExtractionService {
 	@Inject
 	private StoredFileStreamService fileStreamService;
-	private static final String TEMP_PATH = "D://UK//temp";
-	private static final String PACK_PATH = "D://UK//temp//packs";
 	@Inject
 	private ServerPrepareMngRepository serverPrepareMngRepository;
+	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 	// アルゴリズム「ファイル解凍処理」を実行する
 	public ServerPrepareMng extractData(ServerPrepareMng serverPrepareMng){
-		
 		String fileId = serverPrepareMng.getFileId().get();
 		serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTING);
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
-		Path destinationDirectory = Paths.get(PACK_PATH + "//" + fileId);
+		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
 		String password = serverPrepareMng.getPassword().isPresent() ? serverPrepareMng.getPassword().get().v(): null;
 		FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, password, destinationDirectory);
 		//処理結果ログを追加する
