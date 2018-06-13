@@ -472,7 +472,7 @@ public class TotalWorkingTime {
 			case LEAVE_EARLY:
 				if(!this.getLeaveEarlyTimeOfDaily().isEmpty())
 					returnErrorItem.addAll(this.getLeaveEarlyTimeOfDaily().stream().map(tc -> tc.checkError(employeeId, targetDate,"早退時間", attendanceItemDictionary, new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value))).flatMap(tc -> tc.stream()).collect(Collectors.toList()));;
-												   
+				break;		   
 			default :
 				throw new RuntimeException("unknown error item Atr in DailyCalc:"+checkAtr);
 		}

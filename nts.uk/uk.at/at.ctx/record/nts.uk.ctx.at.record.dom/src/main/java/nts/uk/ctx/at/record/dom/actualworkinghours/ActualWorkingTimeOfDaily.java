@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -34,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -48,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -276,6 +280,65 @@ public class ActualWorkingTimeOfDaily {
 		return new DivergenceTimeOfDaily(returnList);
 	}
 
+	/**
+	 * Dtoの中身(日別実績の勤怠時間)を入れ替える 
+	 * @param workScheduleTime 
+	 * @return
+	 */
+	private static DailyRecordToAttendanceItemConverter rePlaceIntegrationDto(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
+																		   String employeeId,
+																		   GeneralDate ymd,
+																		   TotalWorkingTime totalWorkingTime,
+																		   AttendanceTime constraintDifferenceTime,
+																		   ConstraintTime constraintTime,
+																		   AttendanceTime timeDifferenceWorkingHours,
+																		   PremiumTimeOfDailyPerformance premiumTime, WorkScheduleTimeOfDaily workScheduleTime) {
+		//Dtoの中身になっている
+		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
+		//integraionOfDailyを入れ替える
+		DivergenceTimeOfDaily diver = new DivergenceTimeOfDaily(Collections.emptyList());
+		if(integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			diver = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
+		}
+		val attendanceTimeForDivergence = new AttendanceTimeOfDailyPerformance(employeeId, 
+																			   ymd,
+																			   /*計画所定時間 引数の計画所定に入れ替える*/
+																			   //integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
+																			   workScheduleTime,
+																			   /*実績所定労働時間 引数の実績所定に入れ替える*/
+																			   new ActualWorkingTimeOfDaily(constraintDifferenceTime,
+																					   						constraintTime, 
+																					   						timeDifferenceWorkingHours, 
+																					   						totalWorkingTime,
+																					   						//integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
+																					   						//new DivergenceTimeOfDaily(Collections.emptyList()),
+//																					   						new DivergenceTimeOfDaily(Collections.emptyList()),
+																					   						diver,
+																					   						premiumTime),
+																			   //滞在時間
+																			   new StayingTimeOfDaily(new AttendanceTime(0),
+																					   				  new AttendanceTime(0),
+																					   				  new AttendanceTime(0),
+																					   				  new AttendanceTime(0),
+																					   				  new AttendanceTime(0)),
+																			   
+																				/*不就労時間*/
+																				new AttendanceTimeOfExistMinus(0),
+																				/*予定差異時間の計算*/
+																				new AttendanceTimeOfExistMinus(0),
+																				/*医療時間*/
+																				new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT,
+																																 new AttendanceTime(0),
+																																 new AttendanceTime(0),
+																																 new AttendanceTime(0)));
+//																			   integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
+//																			   integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime(),
+//																			   integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getBudgetTimeVariance(),
+//																			   integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
+		//DtoのWithを使って入替
+		return forCalcDivergenceDto.withAttendanceTime(attendanceTimeForDivergence);
+		
+	}
 
 	/**
 	 * 乖離時間の計算 

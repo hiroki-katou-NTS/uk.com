@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -79,10 +80,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	private StayingTimeOfDaily stayingTime;
 	
 	//不就労時間 - 勤怠時間
-	private AttendanceTime unEmployedTime;
+	private AttendanceTimeOfExistMinus unEmployedTime;
 	
 	//予実差異時間 - 勤怠時間
-	private AttendanceTime budgetTimeVariance;
+	private AttendanceTimeOfExistMinus budgetTimeVariance;
 	
 	//医療時間 - 日別実績の医療時間
 	private MedicalCareTimeOfDaily medicalCareTime;
@@ -93,8 +94,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 											 WorkScheduleTimeOfDaily schedule,
 											 ActualWorkingTimeOfDaily actual,
 											 StayingTimeOfDaily stay,
-											 AttendanceTime budget,
-											 AttendanceTime unEmploy) {
+											 AttendanceTimeOfExistMinus budget,
+											 AttendanceTimeOfExistMinus unEmploy) {
 		this.employeeId = employeeId;
 		this.ymd = ymd;
 		this.workScheduleTimeOfDaily = schedule;
@@ -106,7 +107,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	
 	public AttendanceTimeOfDailyPerformance(String employeeId, GeneralDate ymd,
 			WorkScheduleTimeOfDaily workScheduleTimeOfDaily, ActualWorkingTimeOfDaily actualWorkingTimeOfDaily,
-			StayingTimeOfDaily stayingTime, AttendanceTime unEmployedTime, AttendanceTime budgetTimeVariance,
+			StayingTimeOfDaily stayingTime, AttendanceTimeOfExistMinus unEmployedTime, AttendanceTimeOfExistMinus budgetTimeVariance,
 			MedicalCareTimeOfDaily medicalCareTime) {
 		super();
 		this.employeeId = employeeId;
@@ -300,7 +301,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		/*不就労時間*/
 		val unEmployedTime = stayingTime.getStayingTime().minusMinutes(actualWorkingTimeOfDaily.getTotalWorkingTime().calcTotalDedTime(recordOneDay).valueAsMinutes()).valueAsMinutes() - actualWorkingTimeOfDaily.getTotalWorkingTime().getActualTime().valueAsMinutes();
 		/*予定差異時間の計算*/
-		val budgetTimeVariance = workScheduleTime.getWorkScheduleTime().getTotal().minusMinutes(actualWorkingTimeOfDaily.getTotalWorkingTime().getTotalTime().valueAsMinutes());
+		val budgetTimeVariance = new AttendanceTimeOfExistMinus(workScheduleTime.getWorkScheduleTime().getTotal().minusMinutes(actualWorkingTimeOfDaily.getTotalWorkingTime().getTotalTime().valueAsMinutes()).valueAsMinutes());
 		/*医療時間*/
 		val medicalCareTime = new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT,
 														 new AttendanceTime(0),
@@ -312,7 +313,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 													workScheduleTime,
 													actualWorkingTimeOfDaily,
 													stayingTime,
-													new AttendanceTime(unEmployedTime),
+													new AttendanceTimeOfExistMinus(unEmployedTime),
 													budgetTimeVariance,
 													medicalCareTime);
 		

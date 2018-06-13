@@ -94,6 +94,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
@@ -935,20 +936,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 		
 		//予実差異時間
-		AttendanceTime scheActDiffTime = new AttendanceTime(0);
+		AttendanceTimeOfExistMinus scheActDiffTime = new AttendanceTimeOfExistMinus(0);
 		//総労働時間が編集している項目リストに含まれていなければ再計算
 		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent() ) {
-			AttendanceTime scheTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily().getWorkScheduleTime().getTotal();
+			AttendanceTimeOfExistMinus scheTime = new AttendanceTimeOfExistMinus(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily().getWorkScheduleTime().getTotal().valueAsMinutes());
 			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()!= null
 					&&calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
 					&& !attendanceItemIdList.contains(new Integer(559))) {
-				AttendanceTime totalWorkTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime();
+				AttendanceTimeOfExistMinus totalWorkTime = new AttendanceTimeOfExistMinus(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime().valueAsMinutes());
 				scheActDiffTime = scheTime.minusMinutes(totalWorkTime.valueAsMinutes());
-				scheActDiffTime = scheActDiffTime.lessThan(0)?new AttendanceTime(0):scheActDiffTime;
 			}
 		}
 		//不就労時間
-		AttendanceTime alreadlyDedBindTime = new AttendanceTime(0);
+		AttendanceTimeOfExistMinus alreadlyDedBindTime = new AttendanceTimeOfExistMinus(0);
 		//総労働時間が編集している項目リストに含まれていなければ再計算
 		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			alreadlyDedBindTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime();
@@ -956,11 +956,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				&& calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()!= null
 				&& !attendanceItemIdList.contains(new Integer(559))) {
 				//↓で総控除時間を引く
-				alreadlyDedBindTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime().getStayingTime()
-										.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcTotalDedTime(calculationRangeOfOneDay).valueAsMinutes());
-				//alreadlyDedBindTime = alreadlyDedBindTime.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime().valueAsMinutes());
+				alreadlyDedBindTime = new AttendanceTimeOfExistMinus(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime().getStayingTime()
+															.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcTotalDedTime(calculationRangeOfOneDay).valueAsMinutes()).valueAsMinutes());
 				alreadlyDedBindTime = alreadlyDedBindTime.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().recalcActualTime().valueAsMinutes());
-				alreadlyDedBindTime = alreadlyDedBindTime.lessThan(0)?new AttendanceTime(0):alreadlyDedBindTime;
 			}
 		}
 		
