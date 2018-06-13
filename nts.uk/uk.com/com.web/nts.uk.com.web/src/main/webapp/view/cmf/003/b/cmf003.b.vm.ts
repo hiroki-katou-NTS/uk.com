@@ -221,11 +221,13 @@ module nts.uk.com.view.cmf003.b {
                 self.dayStartDateString.subscribe(function(value) {
                     self.dayValue().startDate = value;
                     self.dayValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.dayEndDateString.subscribe(function(value) {
                     self.dayValue().endDate = value;
                     self.dayValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 //Date Ranger Picker : type month
@@ -238,11 +240,13 @@ module nts.uk.com.view.cmf003.b {
                 self.monthStartDateString.subscribe(function(value) {
                     self.monthValue().startDate = value;
                     self.monthValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.monthEndDateString.subscribe(function(value) {
                     self.monthValue().endDate = value;
                     self.monthValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 //Date Ranger Picker : type year
@@ -255,11 +259,13 @@ module nts.uk.com.view.cmf003.b {
                 self.yearStartDateString.subscribe(function(value) {
                     self.yearValue().startDate = value;
                     self.yearValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.yearEndDateString.subscribe(function(value) {
                     self.yearValue().endDate = value;
                     self.yearValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
                 //Defaut D4_7
                 self.dateDefaut = ko.observable("2018/04/19");

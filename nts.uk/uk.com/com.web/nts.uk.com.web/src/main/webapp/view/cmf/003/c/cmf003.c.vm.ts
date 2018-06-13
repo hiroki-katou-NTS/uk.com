@@ -58,7 +58,6 @@ module nts.uk.com.view.cmf003.c {
                 self.selectedCode.subscribe(value => {
                     if (value) {
                     self.currentItem = _.find(self.systemTypes(), a => a.code === value);
-                    self.currentCateSelected([]);
                         service.getConditionList(parseInt(self.selectedCode())).done(function(data: Array<any>) {
                             if (systemtypeFB != undefined) {
                                 _.forOwn(categoriesFB, function(index) {
@@ -66,7 +65,6 @@ module nts.uk.com.view.cmf003.c {
                                             return e.categoryId == index.categoryId;
                                         });
                                 });
-                                systemtypeFB = undefined;
                                 self.currentCateSelected(categoriesFB);
                            }
                             self.categoriesDefault(data);
