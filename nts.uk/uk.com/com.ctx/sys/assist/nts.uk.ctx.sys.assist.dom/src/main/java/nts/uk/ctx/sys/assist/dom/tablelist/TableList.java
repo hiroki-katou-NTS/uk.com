@@ -732,10 +732,4 @@ public class TableList extends AggregateRoot {
 		this.fieldParent10 = fieldParent10;
 		this.surveyPreservation = EnumAdaptor.valueOf(surveyPreservation, NotUseAtr.class);
 	}
-
-	
-
-	
-	
-
 }
