@@ -358,7 +358,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				|| !processExecutionLogManage.getOverallStatus().isPresent())) {
 			processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
 			processExecutionLogManage.setOverallStatus(EndStatus.SUCCESS);
-		} else {
+		} else if(this.isAbnormalTermEachTask(procExecLog)) {
 			processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
 			processExecutionLogManage.setOverallStatus(EndStatus.ABNORMAL_END);
 		}
@@ -416,7 +416,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if (execSetting != null) {
 			//execSetting.setNextExecDateTime();
 			String scheduleId = execSetting.getScheduleId();
-			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
+			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
 			execSetting.setNextExecDateTime(nextFireTime);
 			this.execSettingRepo.update(execSetting);
 		}

@@ -12,7 +12,17 @@ module nts.uk.at.view.kmw003.a {
                     $("#dpGrid").ntsGrid("directEnter", "right", "");
                 }
             });
-            __viewContext.bind(screenModel);
+            
+            let dialogOptions = {
+               forGrid: true,
+                headers: [
+                    new nts.uk.ui.errors.ErrorHeader("employeeCode", "Employee code", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("employeeName", "Employee name", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("columnName", "columnName", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true)
+                ] 
+            }
+            __viewContext.bind(screenModel, dialogOptions);
         });
     });
 }
