@@ -213,20 +213,8 @@ module cps001.a.vm {
                     self.unblock();
                     if (mes.messageId == "Msg_346") {
                         let lstCardNumber = _.map($('[data-code = IS00779]'), e => e.value);
-                        let listIndex = new Array();
-                        for (let i = 0; i < lstCardNumber.length; i++) {
-
-                            let duplicate = _.filter(listIndex, function(o) { return o == i; });
-
-                            if (duplicate.length == 0) {
-                                for (let j = i + 1; j < lstCardNumber.length - 1; j++) {
-                                    if (lstCardNumber[i] == lstCardNumber[j]) {
-                                        listIndex.push(j);
-                                        $($('[data-code = IS00779]')[j]).ntsError('set', { messageId: "Msg_346" });
-                                    }
-                                }
-                            }
-                        }
+                        let index = _.findLastIndex(lstCardNumber, function(o) { return o == mes.parameterIds[0]; });
+                        $($('[data-code = IS00779]')[index]).ntsError('set', { messageId: "Msg_346" });
                     } else {
                         alert(mes.message);
                     }

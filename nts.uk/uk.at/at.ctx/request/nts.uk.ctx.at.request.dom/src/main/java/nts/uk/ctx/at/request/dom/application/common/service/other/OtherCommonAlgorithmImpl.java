@@ -285,7 +285,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Override
 	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application_New application) {
 		Optional<ApprovalTemp> opApprovalTemp = approvalTempRepository.getAppTem();
-		if(!opApprovalTemp.isPresent()){
+		if(!opApprovalTemp.isPresent()||(opApprovalTemp.get().getContent()==null)){
 			throw new RuntimeException("no setting ApprovalTemp 申請承認メールテンプレート");
 		}
 		MailResult mailResult = sendMailApprover(employeeIDList, application, opApprovalTemp.get().getContent().toString());

@@ -1475,8 +1475,8 @@ module nts.custombinding {
                                     opts.sortable.pushItems(defs);
                                 }
                             } else {
-                                let dupids: IItemDefinition = dups.map((x: IItemDefinition) => x.id),
-                                    nodups = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
+                                let dupids: Array<any> = dups.map((x: IItemDefinition) => x.id),
+                                    nodups: Array<any> = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
 
                                 if (dupids && dupids.length) {
                                     // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合

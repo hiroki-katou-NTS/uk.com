@@ -4,7 +4,9 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
@@ -22,4 +24,6 @@ public class ExtraHolidayManagementOutput {
 	private ClosureEmployment closureEmploy; 
 	private CompensatoryLeaveEmSetting compensatoryLeaveEmSetting;
 	private CompensatoryLeaveComSetting compensatoryLeaveComSetting;
+	private SWkpHistImport sWkpHistImport;
+	private PersonEmpBasicInfoImport PersonEmpBasicInfoImport;
 }
