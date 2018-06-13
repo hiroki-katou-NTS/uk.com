@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -41,6 +39,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet master) {
+		Stopwatches.start("ERALALL");
 		String companyID = AppContexts.user().companyId();
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
 		List<ErrorAlarmWorkRecord> divergenceError = new ArrayList<>();
@@ -52,50 +51,24 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			//乖離系のシステムエラーかどうかチェック
 			if(includeDivergence(errorItem)) divergenceError.add(errorItem);
 			//システム固定
+			List<EmployeeDailyPerError>  addItems = new ArrayList<>();
 			if(errorItem.getFixedAtr()) {
-				val addItems = systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter, master);
-				if(!addItems.isEmpty() && addItems != null) {
-					for(val item : addItems) {
-						Boolean flg = true;
-						
-						//addListにふくまれていなければ追加する
-						for(EmployeeDailyPerError addedItem : addItemList) {
-							if(item.getErrorAlarmWorkRecordCode().equals(addedItem.getErrorAlarmWorkRecordCode())) {
-								flg = false;
-								break;
-							}
-						}
-						if(flg) addItemList.add(item);
-					}
-					//addItemList.addAll(addItems);
-				}
+				addItems = systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter, master);
 			}
 			//ユーザ設定
 			else {
-				val addItems = erAlCheckService.checkErrorFor(companyID, integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				addItems = erAlCheckService.checkErrorFor(companyID, integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 						integrationOfDaily.getAffiliationInfor().getYmd(), errorItem, integrationOfDaily);
-				if(!addItems.isEmpty() && addItems != null) {
-					for(val item : addItems) {
-						Boolean flg = true;
-						
-						//addListにふくまれていなければ追加する
-						for(EmployeeDailyPerError addedItem : addItemList) {
-							if(item.getErrorAlarmWorkRecordCode().equals(addedItem.getErrorAlarmWorkRecordCode())) {
-								flg = false;
-								break;
-							}
-						}
-						if(flg) addItemList.add(item);
-					}
-					//addItemList.addAll(addItems);
-				}
+				addItemList.addAll(addItems);
 			}
+			addItemList.addAll(addItems);
 		}
 		
 		//乖離系のエラーはここでまとめてチェック(レスポンス対応のため)
 		addItemList.addAll(divergenceErrorCheck(integrationOfDaily, master, divergenceError));
 		
 		integrationOfDaily.setEmployeeError(addItemList);
+		Stopwatches.stop("ERALALL");
 		return integrationOfDaily;
 	}
 	
