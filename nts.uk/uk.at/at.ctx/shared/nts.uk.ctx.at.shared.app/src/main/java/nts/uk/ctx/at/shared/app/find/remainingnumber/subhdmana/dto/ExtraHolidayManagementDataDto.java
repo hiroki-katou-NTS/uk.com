@@ -27,7 +27,9 @@ public class ExtraHolidayManagementDataDto {
 	ClosureEmploymentDto closureEmploy;
 	String empSettingExpiredDate;
 	String companySettingExpiredDate;
-
+	SWkpHistDto wkHistory;
+	String employeeCode;
+	String employeeName;
 	public static ExtraHolidayManagementDataDto convertToDto(ExtraHolidayManagementOutput extraHolidayManagementOutput){
 		String cid = AppContexts.user().companyId();
 		// From domain
@@ -92,6 +94,16 @@ public class ExtraHolidayManagementDataDto {
 			if (extraHolidayManagementOutput.getCompensatoryLeaveComSetting().isManaged())
 				companySettingExpiredDate = extraHolidayManagementOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
 		}
-		return new ExtraHolidayManagementDataDto(listExtraData, sEmpHistoryDto, closureEmployDto, empSettingExpiredDate, companySettingExpiredDate);
+		SWkpHistDto sWkpHist = null;
+		if (!Objects.isNull(extraHolidayManagementOutput.getSWkpHistImport())){
+			sWkpHist = SWkpHistDto.convertToDto(extraHolidayManagementOutput.getSWkpHistImport());
+		}
+		String employeeCode = "";
+		String employeeName = "";
+		if (!Objects.isNull(extraHolidayManagementOutput.getPersonEmpBasicInfoImport())){
+			employeeCode = extraHolidayManagementOutput.getPersonEmpBasicInfoImport().getEmployeeCode();
+			employeeName = extraHolidayManagementOutput.getPersonEmpBasicInfoImport().getBusinessName();
+		}
+		return new ExtraHolidayManagementDataDto(listExtraData, sEmpHistoryDto, closureEmployDto, empSettingExpiredDate, companySettingExpiredDate, sWkpHist, employeeCode, employeeName);
 	}
 }
