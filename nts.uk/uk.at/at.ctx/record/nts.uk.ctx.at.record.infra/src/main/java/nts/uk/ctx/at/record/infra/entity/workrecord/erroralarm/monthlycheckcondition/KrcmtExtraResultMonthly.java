@@ -122,8 +122,8 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 				!isCheckConMonthly?null:domain.getCheckConMonthly().get().isUseGroup2()?1:0,
 				!isCheckConMonthly?null:domain.getCheckConMonthly().get().getGroup1().getAtdItemConGroupId(),
 				!isCheckConMonthly?null:KrcstErAlConGroup.toEntity(domain.getCheckConMonthly().get().getGroup1()),
-				!isCheckConMonthly?null:domain.getCheckConMonthly().get().getGroup2().getAtdItemConGroupId(),
-				!isCheckConMonthly?null:KrcstErAlConGroup.toEntity(domain.getCheckConMonthly().get().getGroup2())
+				!isCheckConMonthly?null:(domain.getCheckConMonthly().get().getGroup2()==null?null:domain.getCheckConMonthly().get().getGroup2().getAtdItemConGroupId()),
+				!isCheckConMonthly?null:(domain.getCheckConMonthly().get().getGroup2() == null?null:KrcstErAlConGroup.toEntity(domain.getCheckConMonthly().get().getGroup2()))
 				);
 	}
 	

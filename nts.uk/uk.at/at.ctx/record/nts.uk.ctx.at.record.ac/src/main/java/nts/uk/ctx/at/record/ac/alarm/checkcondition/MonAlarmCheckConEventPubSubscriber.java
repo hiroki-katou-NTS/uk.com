@@ -85,17 +85,17 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 				if (extraResultMonthly.getTypeCheckItem() == 0) {
 
 					// add SpecHolidayCheckCon
-					
+					extraResultMonthly.getSpecHolidayCheckCon().setErrorAlarmCheckID(extraResultMonthly.getErrorAlarmCheckID());
 					SpecHolidayCheckCon specHolidayCheckCon = convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon());
 					addSpecHolidayCheckCon(specHolidayCheckCon);
 				} else if (extraResultMonthly.getTypeCheckItem() == 1 || extraResultMonthly.getTypeCheckItem() == 2) {
 					// add listAgreementCheckCon36
-					
+					extraResultMonthly.getAgreementCheckCon36().setErrorAlarmCheckID(extraResultMonthly.getErrorAlarmCheckID());
 					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
 					addAgreementCheckCon36(agreementCheckCon36);
 				} else if (extraResultMonthly.getTypeCheckItem() == 3) {
 					// add CheckRemainNumberMon
-					
+					extraResultMonthly.getCheckRemainNumberMon().setErrorAlarmCheckID(extraResultMonthly.getErrorAlarmCheckID());
 					CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
 					addCheckRemainNumberMon(checkRemainNumberMon);
 				}
@@ -113,7 +113,7 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 						break;
 					}
 				}
-				if(checkExist) {
+				if(!checkExist) {
 					listEralIdRemove.add(eralIdOld);
 				}
 			}
@@ -138,19 +138,21 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 					updateSpecHolidayCheckCon(convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon()));
 					removeAgreementCheckCon36(extraResultMonthly.getErrorAlarmCheckID());
 					removeCheckRemainNumberMon(extraResultMonthly.getErrorAlarmCheckID());
-				} else if (extraResultMonthly.getTypeCheckItem() == 1 || extraResultMonthly.getTypeCheckItem() == 2) {
+				} else if (extraResultMonthly.getTypeCheckItem() == 3) {
 					// update CheckRemainNumberMon
 					CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
 					updateCheckRemainNumberMon(checkRemainNumberMon);
 					removeAgreementCheckCon36(extraResultMonthly.getErrorAlarmCheckID());
 					removeSpecHolidayCheckCon(extraResultMonthly.getErrorAlarmCheckID());
-				} else if (extraResultMonthly.getTypeCheckItem() == 8) {
-
-				} else { // when typecheck = 3 4 5 6 7	
+				} else if (extraResultMonthly.getTypeCheckItem() == 1 || extraResultMonthly.getTypeCheckItem() == 2 ) {
 					// update agreementCheckCon36
 					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
 					updateAgreementCheckCon36(agreementCheckCon36);
 					removeSpecHolidayCheckCon(extraResultMonthly.getErrorAlarmCheckID());
+					removeCheckRemainNumberMon(extraResultMonthly.getErrorAlarmCheckID());
+				} else { // when typecheck = 3 4 5 6 7 8
+					removeAgreementCheckCon36(extraResultMonthly.getErrorAlarmCheckID());
+					removeSpecHolidayCheckCon(extraResultMonthly.getErrorAlarmCheckID());	
 					removeCheckRemainNumberMon(extraResultMonthly.getErrorAlarmCheckID());
 				}
 			}
@@ -252,7 +254,7 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 
 	private CheckRemainNumberMon convertToCheckRemainNumberMonAdapterPubDto(CheckRemainNumberMonAdapterPubDto dto) {
 		CheckedCondition checkedCondition = new CheckedCondition();
-		if (dto.getCheckOperatorType() == 1) {
+		if (dto.getCheckOperatorType() == 0) {
 			checkedCondition = convertToCompareSingleValueAdapterPubDto(dto.getCompareSingleValueEx());
 		} else {
 			checkedCondition = convertToCompareRangeAdapterPubDto(dto.getCompareRangeEx());
@@ -275,7 +277,8 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 	}
 
 	private CompareSingleValue<CheckConValueRemainingNumber> convertToCompareSingleValueAdapterPubDto(CompareSingleValueAdapterPubDto dto) {
-		CheckConValueRemainingNumber value = new CheckConValueRemainingNumber(dto.getValue().getDaysValue(), dto.getValue().getTimeValue() == null ? null : Optional.of(dto.getValue().getTimeValue()));
+		CheckConValueRemainingNumber value = new CheckConValueRemainingNumber(
+				dto.getValue().getDaysValue(), dto.getValue().getTimeValue() == null ? null : Optional.of(dto.getValue().getTimeValue()));
 		CompareSingleValue<CheckConValueRemainingNumber> data = new CompareSingleValue<>(dto.getCompareOpertor(), 0);
 		data.setValue(value);
 		return data;
@@ -297,11 +300,16 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 		if (toDto.getCheckConMonthly() != null) {
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = toDto.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon().stream().filter(item -> item.getCompareStartValue() != null)
 					.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon, companyId, errorAlarmCode)).collect(Collectors.toList());
-			List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = toDto.getCheckConMonthly().getGroup2().getLstErAlAtdItemCon().stream().filter(item -> item.getCompareStartValue() != null)
+			List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = null;
+			if(toDto.getCheckConMonthly().getGroup2()!=null) {
+				conditionsGroup2 = toDto.getCheckConMonthly().getGroup2().getLstErAlAtdItemCon().stream().filter(item -> item.getCompareStartValue() != null)
 					.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon, companyId, errorAlarmCode)).collect(Collectors.toList());
+			}
 			attendanceItemCon = AttendanceItemCondition.init(toDto.getCheckConMonthly().getOperatorBetweenGroups(), toDto.getCheckConMonthly().isGroup2UseAtr());
 			attendanceItemCon.setGroup1(setErAlConditionsAttendanceItem(toDto.getCheckConMonthly().getGroup1().getConditionOperator(), conditionsGroup1));
-			attendanceItemCon.setGroup2(setErAlConditionsAttendanceItem(toDto.getCheckConMonthly().getGroup2().getConditionOperator(), conditionsGroup2));
+			if(toDto.getCheckConMonthly().getGroup2()!=null) {
+				attendanceItemCon.setGroup2(setErAlConditionsAttendanceItem(toDto.getCheckConMonthly().getGroup2().getConditionOperator(), conditionsGroup2));
+			}
 		}
 		return new ExtraResultMonthly(toDto.getErrorAlarmCheckID(), toDto.getSortBy(), new NameAlarmExtractionCondition(toDto.getNameAlarmExtraCon()), toDto.isUseAtr(), EnumAdaptor.valueOf(toDto.getTypeCheckItem(), TypeMonCheckItem.class),
 				new HowDisplayMessage(toDto.isMessageBold(), toDto.getMessageColor()), new MessageDisplay(toDto.getDisplayMessage()), attendanceItemCon);

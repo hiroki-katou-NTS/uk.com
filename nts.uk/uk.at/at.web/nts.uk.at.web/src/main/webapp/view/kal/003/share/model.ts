@@ -408,10 +408,16 @@ module nts.uk.at.view.kal003.share.model {
     
     var mapping = {'compareRangeEx': {
             create: function(options) {
+                if(_.isNil(options.data)){
+                    return ko.observable({});    
+                }
                 return ko.observable(CompareRangeImport.clone(options.data));
             }
         },'compareSingleValueEx': {
             create: function(options) {
+                if(_.isNil(options.data)){
+                    return ko.observable({});     
+                }
                 return ko.observable(CompareSingleValueImport.clone(options.data));
             }
         },
@@ -478,14 +484,46 @@ module nts.uk.at.view.kal003.share.model {
             self.inputs = ko.observableArray([]);
         }
         
-//        customValidateInput(){
-//            let self = this;
-//            let x = 0, maxInputs = self.inputs().length,
-//                pairCount = maxInputs/2;
-//            for(let idx = 0; idx < pairCount; idx++){
-//                //self.inputs()[idx]
-//            } 
-//        }
+        customValidateInput(){
+            let self = this;
+            if(self.typeCheckItem() === 1 || self.typeCheckItem() === 2 || self.typeCheckItem() === 8){
+                return;
+            }
+            let pair = 2, pairNext = 1;
+            if(self.typeCheckItem() === 3){
+                pair = 4, pairNext = 2;
+            }
+            let x = 0, maxInputs = self.inputs().length,
+                    pairCount = maxInputs/pair;
+            for(let idx = 0; idx < pairCount; idx++){
+                for(let idy = 0; idy < pairNext; idy++){
+                    let currentIdx = idx + idy;
+                    let pairTargetIdx = idx + idy + pairNext;
+                    self.inputs()[currentIdx].value.subscribe((newVal) => {
+                        let startPairValue: InputModel = self.inputs()[currentIdx];
+                        let endPairValue: InputModel = self.inputs()[pairTargetIdx];
+                        if(endPairValue.enable()){
+                            //validate start and end pair;
+                            if(parseInt(newVal)>=parseInt(endPairValue.value())){
+                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });    
+                            }
+                                
+                            // set error;    
+                        }
+                    });
+                    self.inputs()[pairTargetIdx].value.subscribe((newVal) => {
+                        let startPairValue: InputModel = self.inputs()[currentIdx];
+                        let endPairValue: InputModel = self.inputs()[pairTargetIdx];
+                        if(startPairValue.enable()){
+                            if(parseInt(newVal)<=parseInt(startPairValue.value())){
+                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });    
+                            }   
+                        }
+                    });
+                } 
+                idx += pair;
+            } 
+        }
         
         openSelect(viewmodel: ScreenModel){
               
@@ -498,19 +536,19 @@ module nts.uk.at.view.kal003.share.model {
         value: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
         visible: KnockoutObservable<boolean>;
-//        inputId: KnockoutObservable<string>;
+        inputId: string;
         constructor(typeInput:number,required: boolean,value: number,enable: boolean,visible: boolean){
             this.typeInput = ko.observable(typeInput);
             this.required= ko.observable(required);
             this.value= ko.observable(value);
             this.enable= ko.observable(enable);
             this.visible= ko.observable(visible);
-//            this.inputId = nts.uk.util.randomId();
+            this.inputId = nts.uk.util.randomId();
         }
         
         public static  clone(data: any):InputModel{
             var x = new InputModel();
-//            x.inputId(data.inputId);
+            x.inputId = data.inputId;
             x.typeInput(data.typeInput);
             x.required(data.required);
             x.value(data.value);
@@ -599,6 +637,7 @@ module nts.uk.at.view.kal003.share.model {
             if(inputs){
                 x.inputs(mapInputs(inputs)());        
             }
+            x.customValidateInput();
             return x;
         }
     }
@@ -619,6 +658,7 @@ module nts.uk.at.view.kal003.share.model {
         listItemID : KnockoutObservableArray<number>;
         constructor(data : any){
             super();
+            let self = this;
             this.extractType=ko.observable(0);
             this.textLabel=ko.observable("");
             this.haveTypeVacation=ko.observable(true);
@@ -628,17 +668,19 @@ module nts.uk.at.view.kal003.share.model {
             this.haveGroup=ko.observable(false);
             this.haveInput=ko.observable(3);
             this.typeCheckItem =ko.observable(3);
-            
+            this.operator=ko.computed(() => {
+                return  self.extractType();   
+            });
             if(!nts.uk.util.isNullOrUndefined(data)){
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
-                this.operator=ko.observable(data.checkOperatorType || 0);
-                this.checkOperatorType=ko.observable(data.extractType >5 ?1:0);
+                this.checkOperatorType=ko.observable(data.checkOperatorType || 0);
                 this.checkVacation=ko.observable(data.checkVacation || 0);
                 if(data.noinit !== true){
-                    this.compareRangeEx=ko.observable(data && data.compareRangeEx?new CompareRangeImport(data.compareRangeEx) : null);
-                    this.compareSingleValueEx=ko.observable(data && data.compareSingleValueEx? new CompareSingleValueImport( data.compareSingleValueEx) : null);
+                    this.extractType(data.compareRangeEx ? data.compareRangeEx.compareOperator : data.compareSingleValueEx.compareOperator);
+                    this.compareRangeEx=ko.observable(data.compareRangeEx?new CompareRangeImport(data.compareRangeEx) : null);
+                    this.compareSingleValueEx=ko.observable(data.compareSingleValueEx? new CompareSingleValueImport( data.compareSingleValueEx) : null);
                 }
-                this.listItemID=ko.observableArray(data && data.listItemID? data.listItemID : null);    
+                this.listItemID=ko.observableArray(data.listItemID? data.listItemID : null);    
             }else{
                 this.errorAlarmCheckID=ko.observable("");
                 this.operator=ko.observable(0);
@@ -655,8 +697,7 @@ module nts.uk.at.view.kal003.share.model {
         public static  clone(data: any):CheckRemainNumberMon{
             var x = new CheckRemainNumberMon({noinit: true});
             x.errorAlarmCheckID(data.errorAlarmCheckID);
-            x.operator(data.operator);
-            x.extractType(data.extractType);
+            x.extractType(data.operator);
             x.textLabel(data.textLabel);
             x.haveTypeVacation(data.haveTypeVacation);
             x.haveCombobox(data.haveCombobox);
@@ -675,6 +716,7 @@ module nts.uk.at.view.kal003.share.model {
             if(inputs){
                 x.inputs(mapInputs(inputs)());        
             }
+            x.customValidateInput();
             return x;
         }
 
@@ -689,6 +731,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.inputs()[2].required(true);
                     self.inputs()[3].enable(true);
                     self.inputs()[3].required(true);
+                    self.inputs()[3].value.valueHasMutated();
                 } else {
                     self.checkOperatorType(0);
                     self.inputs()[2].enable(false);
@@ -825,7 +868,7 @@ module nts.uk.at.view.kal003.share.model {
             this.haveGroup=ko.observable(false);
             if(!nts.uk.util.isNullOrUndefined(data)){
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
-                this.extractType=ko.observable(data.classification == 0 ? 1 : 2);
+                this.extractType=ko.observable(data.compareOperator || 0);
                 this.textLabel=ko.observable(data.classification == 0 ? "エラー時間" : "アラーム時間");
                 this.operator=ko.observable(data.compareOperator || 0);
                 this.haveInput=ko.observable(data.classification == 0 ? 1 : 2);
@@ -867,6 +910,7 @@ module nts.uk.at.view.kal003.share.model {
 //            x.inputs= mapInputs(data.inputs);
             x.setupScrible();
 //            x.input(mapInputs(data.inputs));
+            x.customValidateInput();
             return x;
         }
     }
@@ -932,6 +976,7 @@ module nts.uk.at.view.kal003.share.model {
             if(data.inputs){
                 x.inputs(mapInputs(data.inputs)());
             }
+            x.customValidateInput();
             return x;
         }
         //
@@ -957,6 +1002,7 @@ module nts.uk.at.view.kal003.share.model {
                 if(v > 5){
                     self.inputs()[1].enable(true);
                     self.inputs()[1].required(true);
+                    self.inputs()[1].value.valueHasMutated();
                 } else {
                     self.inputs()[1].enable(false);
                     self.inputs()[1].required(false);

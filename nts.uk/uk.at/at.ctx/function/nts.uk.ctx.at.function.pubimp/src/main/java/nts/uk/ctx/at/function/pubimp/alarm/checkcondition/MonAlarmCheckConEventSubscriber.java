@@ -85,8 +85,8 @@ public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<Mo
 				checkRemainNumberMon.getErrorAlarmCheckID(),
 				checkRemainNumberMon.getCheckVacation(),
 				checkRemainNumberMon.getCheckOperatorType(),
-				convertToCompareRangeImport(checkRemainNumberMon.getCompareRangeEx()),
-				convertToCompareSingleValueImport(checkRemainNumberMon.getCompareSingleValueEx()),
+				checkRemainNumberMon.getCompareRangeEx()==null?null: convertToCompareRangeImport(checkRemainNumberMon.getCompareRangeEx()),
+				checkRemainNumberMon.getCompareSingleValueEx()==null?null:convertToCompareSingleValueImport(checkRemainNumberMon.getCompareSingleValueEx()),
 				checkRemainNumberMon.getListItemID()
 				);
 	}
@@ -126,7 +126,7 @@ public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<Mo
 		return new AttendanceItemConAdapterPubDto(
 				export.getOperatorBetweenGroups(),
 				convertToErAlConAttendanceItem(export.getGroup1()),
-				convertToErAlConAttendanceItem(export.getGroup2()),
+				export.getGroup2() ==null ?null:convertToErAlConAttendanceItem(export.getGroup2()),
 				export.isGroup2UseAtr()
 				);
 	}

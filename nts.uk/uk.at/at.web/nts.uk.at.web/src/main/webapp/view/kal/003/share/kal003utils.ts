@@ -270,6 +270,10 @@ module nts.uk.at.view.kal003.share {
                         
                         checkConMonthly["group2"] = mapGroup(con.group2());
                         checkConMonthly["group2UseAtr"] = con.group2UseAtr();
+                    }else{
+                        checkConMonthly["operatorBetweenGroups"] = 0;
+                        checkConMonthly["group2"] = null;
+                        checkConMonthly["group2UseAtr"] = false;    
                     } 
                     convertExtraResultMonthly["checkConMonthly"] = checkConMonthly;
                     convertExtraResultMonthly["specHolidayCheckCon"] = null;
@@ -285,9 +289,34 @@ module nts.uk.at.view.kal003.share {
             let group = {};
             group["atdItemConGroupId"] = groupX.atdItemConGroupId;
             group["conditionOperator"] = groupX.conditionOperator;
-            group["lstErAlAtdItemCon"] = groupX.lstErAlAtdItemCon;
+            group["lstErAlAtdItemCon"] = mapEralConAttd(groupX.lstErAlAtdItemCon());
             return group;
+            
         }
+        
+        function mapEralConAttd(lstErAlAtdItemCon: Array<any>): any{
+            let lstErAlAtdItemConNew = [];
+            for(let i = 0;i<3;i++){
+                let value = lstErAlAtdItemCon[i];
+                let erAlAtdItemCon = {};
+                erAlAtdItemCon["targetNO"] = i;
+                erAlAtdItemCon["conditionAtr"] = value.conditionAtr(); 
+                erAlAtdItemCon["useAtr"] = value.useAtr(); 
+                erAlAtdItemCon["uncountableAtdItem"] = value.uncountableAtdItem; 
+                erAlAtdItemCon["countableAddAtdItems"] = value.countableAddAtdItems(); 
+                erAlAtdItemCon["countableSubAtdItems"] = value.countableSubAtdItems(); 
+                erAlAtdItemCon["conditionType"] = value.conditionType(); 
+                erAlAtdItemCon["compareOperator"] = value.compareOperator(); 
+                erAlAtdItemCon["singleAtdItem"] = value.singleAtdItem; 
+                erAlAtdItemCon["compareStartValue"] = value.compareStartValue(); 
+                erAlAtdItemCon["compareEndValue"] = value.compareEndValue(); 
+                
+                lstErAlAtdItemConNew.push(erAlAtdItemCon);
+            }
+            return lstErAlAtdItemConNew;
+            
+        }
+        
         
         function mapCheckConValueRemain( daysValue : number,timeValue : number) : any{
             let checkConValueRemainValue = {}; 

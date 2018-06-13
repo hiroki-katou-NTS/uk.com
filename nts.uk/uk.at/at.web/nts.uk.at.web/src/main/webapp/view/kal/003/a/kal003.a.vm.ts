@@ -266,7 +266,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         });
                     });
                 }).fail(error => {
-                    alertError(error);
+                    nts.uk.ui.dialog.error({ messageId: error.messageId}).then(() =>{ 
+                        $("#A3_2").focus();
+                    });
                 }).always(() => {
                     block.clear();
                 });

@@ -47,10 +47,10 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 	public int checkOperatorType;
 	
 	
-	@OneToOne(mappedBy = "comparerange")
+	@OneToOne(mappedBy = "comparerange", cascade = CascadeType.ALL)
 	public KrcmtCompareRange krcmtCompareRange;
 
-	@OneToOne(mappedBy = "comparesingle")
+	@OneToOne(mappedBy = "comparesingle",cascade = CascadeType.ALL)
 	public KrcmtCompareSingleVal krcmtCompareSingleVal;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
