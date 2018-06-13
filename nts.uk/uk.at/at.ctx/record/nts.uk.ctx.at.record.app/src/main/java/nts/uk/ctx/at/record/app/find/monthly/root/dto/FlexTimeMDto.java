@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -15,25 +16,25 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 /** フレックス時間 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlexTimeMDto {
+public class FlexTimeMDto implements ItemConst {
 
 	/** フレックス時間: 計算付き月間時間(マイナス有り) */
-	@AttendanceItemLayout(jpPropertyName = "フレックス時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	private TimeMonthWithCalculationDto flexTime;
 
 	/** 事前フレックス時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "事前フレックス時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeFlexTime;
 
 	/** 法定外フレックス時間: 勤怠月間時間(マイナス有り) */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定外フレックス時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = ILLEGAL, layout = LAYOUT_C)
 	private int illegalFlexTime;
 
 	/** 法定内フレックス時間: 勤怠月間時間(マイナス有り) */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定内フレックス時間", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_D)
 	private int legalFlexTime;
 
 	public FlexTime toDomain() {

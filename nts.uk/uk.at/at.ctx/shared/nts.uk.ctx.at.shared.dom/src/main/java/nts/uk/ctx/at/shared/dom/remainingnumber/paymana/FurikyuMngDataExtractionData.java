@@ -17,4 +17,5 @@ public class FurikyuMngDataExtractionData {
 	private int expirationDate;
 	private Double numberOfDayLeft;
 	private Integer closureId;
+	private boolean haveEmploymentCode;
 }

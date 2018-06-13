@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,16 +14,16 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の所定労働時間 */
-public class PrescribedWorkingTimeOfMonthlyDto {
+public class PrescribedWorkingTimeOfMonthlyDto implements ItemConst {
 
 	/** 計画所定労働時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "計画所定労働時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = PLAN, layout = LAYOUT_A)
 	private int scheduleTime;
 
 	/** 実績所定労働時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "実績所定労働時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = ACTUAL, layout = LAYOUT_B)
 	private int recordTime;
 	
 	public PrescribedWorkingTimeOfMonthly toDomain() {

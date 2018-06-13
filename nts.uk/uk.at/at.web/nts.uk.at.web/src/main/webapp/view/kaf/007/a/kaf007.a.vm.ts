@@ -85,7 +85,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             
             //get Common Setting
             service.getWorkChangeCommonSetting().done(function(settingData: any) {
-                if(!nts.uk.util.isNullOrEmpty(settingData)){                    
+                if(!nts.uk.util.isNullOrEmpty(settingData)){         
+                    self.checkBoxValue(settingData.appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true : false);           
                     //申請共通設定
                     let appCommonSettingDto = settingData.appCommonSettingDto;
                     //勤務変更申請設定
@@ -193,20 +194,14 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.changeUnregisterValue();
             
             let workChange = ko.toJS(self.appWorkChange());
-            service.addWorkChange(workChange).done(() => {
+            service.addWorkChange(workChange).done((data) => {
                 //Success
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                            location.reload();
-                        });    
+                        appcommon.CommonProcess.displayMailResult(data);   
                     } else {
                         if(self.checkBoxValue()){
-                            let command = {appID: data.appID};
-                            setShared("KDL030_PARAM", command);
-                            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                                location.reload();
-                            });    
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);   
                         } else {
                             location.reload();
                         }   

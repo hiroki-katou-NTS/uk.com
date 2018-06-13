@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.IllegalMidnightTime;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -14,15 +15,15 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 法定外深夜時間 */
-public class IllegalMidnightTimeDto {
+public class IllegalMidnightTimeDto implements ItemConst {
 
 	/** 時間 */
-	@AttendanceItemLayout(jpPropertyName="時間", layout="A")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	private TimeMonthWithCalculationDto time;
-	
+
 	/** 事前時間 */
-	@AttendanceItemLayout(jpPropertyName="事前時間", layout="B")
-	@AttendanceItemValue(type=ValueType.INTEGER)
+	@AttendanceItemLayout(jpPropertyName = BEFOR_APPLICATION, layout = LAYOUT_B)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private int beforeTime;
 	
 	public static IllegalMidnightTimeDto from(IllegalMidnightTime domain) {

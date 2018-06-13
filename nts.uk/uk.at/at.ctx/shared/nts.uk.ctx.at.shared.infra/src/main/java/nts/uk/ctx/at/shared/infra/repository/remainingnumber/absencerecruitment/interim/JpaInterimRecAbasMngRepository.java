@@ -47,14 +47,14 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			+ " AND c.absenceMngAtr = :absenceMngAtr"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
 	private static final String DELETE_ABS_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
-			+ " WHERE c.recAbsPk.absenceMngID := mngId";
+			+ " WHERE c.recAbsPk.absenceMngID = :mngId";
 	private static final String DELETE_REC_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
-			+ " WHERE c.recAbsPk.recruitmentMngId := mngId";
+			+ " WHERE c.recAbsPk.recruitmentMngId = :mngId";
 	private static final String DELETE_BY_ID_ATR = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absId"
 			+ " AND c.recAbsPk.recruitmentMngId = :recId"
-			+ " AND c.absenceMngAtr = absAtr"
-			+ " AND c.recruitmentMngAtr = recAtr";
+			+ " AND c.absenceMngAtr = :absAtr"
+			+ " AND c.recruitmentMngAtr = :recAtr";
 			
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
@@ -176,6 +176,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		KrcmtInterimRecAbs entity = this.getEntityManager().find(KrcmtInterimRecAbs.class, key);
 		if (entity == null){
 			entity = new KrcmtInterimRecAbs();
+			entity.recAbsPk = new KrcmtInterimRecAbsPK();
 			entity.recAbsPk.absenceMngID = domain.getAbsenceMngId();
 			entity.recAbsPk.recruitmentMngId = domain.getRecruitmentMngId();
 			entity.absenceMngAtr = domain.getAbsenceMngAtr().values;
@@ -224,8 +225,8 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		List<KrcmtInterimRecAbs> lstEntity = this.queryProxy().query(DELETE_BY_ID_ATR, KrcmtInterimRecAbs.class)
 				.setParameter("absId", absId)
 				.setParameter("recId", recId)
-				.setParameter("absAtr", absAtr)
-				.setParameter("recAtr", recAtr)
+				.setParameter("absAtr", absAtr.values)
+				.setParameter("recAtr", recAtr.values)
 				.getList();
 		lstEntity.stream().forEach(x -> {
 			this.commandProxy().remove(x);

@@ -66,7 +66,7 @@ public class KshstHourPayAaddSet extends UkJpaEntity implements Serializable{
 	@Column(name = "CALC_INC_CARE_TIME")
 	public int calculateIncludCareTime;
 	
-	/*遅刻・早退を控除する*/
+	/*控除する*/
 	@Column(name = "NOT_DEDUCT_LATE_LEAVE_EARLY")
 	public int notDeductLateLeaveEarly;
 	
@@ -77,6 +77,10 @@ public class KshstHourPayAaddSet extends UkJpaEntity implements Serializable{
 	/*就業時間帯毎の設定を可能とする*/
 	@Column(name = "ENABLE_SELECT_PER_WORK_HOUR1")
 	public int enableSetPerWorkHour1;
+	
+	/*就業時間帯毎の設定を可能とする*/
+	@Column(name = "ENABLE_SELECT_PER_WORK_HOUR2")
+	public int enableSetPerWorkHour2;
 	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
