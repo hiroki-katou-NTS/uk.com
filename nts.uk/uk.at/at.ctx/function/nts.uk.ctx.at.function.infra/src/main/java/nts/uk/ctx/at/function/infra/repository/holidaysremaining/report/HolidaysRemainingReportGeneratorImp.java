@@ -200,7 +200,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private void printWorkplaceBreakPage(Worksheet worksheet, YearMonth currentMonth,
 			HolidayRemainingDataSource dataSource) throws Exception {
 		int firstRow = NUMBER_ROW_OF_PAGE;
-		List<HolidaysRemainingEmployee> listEmployee = (List) dataSource.getMapEmployees().values();
+		List<HolidaysRemainingEmployee> listEmployee = dataSource.getMapEmployees().values().stream()
+				.collect(Collectors.toList());
 		List<HolidaysRemainingEmployee> employees = listEmployee.stream()
 				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode)).collect(Collectors.toList());
 		firstRow = printEachWorkplace(worksheet, firstRow, employees, currentMonth, dataSource);
@@ -277,14 +278,59 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		int rowIndexD = firstRow;
 		Cells cells = worksheet.getCells();
-		int totalRowDetails = 0;
-		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(dataSource.getStartMonth().yearMonth(),
-				dataSource.getEndMonth().yearMonth());
-		DatePeriod datePeriod = new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth());
-		String cid = AppContexts.user().companyId();
 
+		firstRow = printAnnualHoliday(cells, firstRow, employee, currentMonth, dataSource);
+
+		firstRow = printYearlyReserved(cells, firstRow, employee, currentMonth, dataSource);
+
+		firstRow = printSubstituteHoliday(cells, firstRow, employee, currentMonth, dataSource);
+
+		firstRow = printPauseHoliday(cells, firstRow, employee, currentMonth, dataSource);
+
+		firstRow = printSpecialHoliday(cells, firstRow, employee, currentMonth, dataSource);
+
+		firstRow = printChildNursingVacation(cells, firstRow, employee, currentMonth, dataSource);
+
+		firstRow = printNursingCareLeave(cells, firstRow, employee, currentMonth, dataSource);
+
+		int totalRowDetails = countRowEachPerson(dataSource);
+		if (totalRowDetails < MIN_ROW_DETAILS) {
+			cells.copyRows(cells, 25, firstRow, MIN_ROW_DETAILS - totalRowDetails);
+			firstRow += (MIN_ROW_DETAILS - totalRowDetails);
+		}
+
+		// D2_1
+		cells.get(rowIndexD, 0).setValue(employee.getEmployeeCode());
+		// D2_2
+		cells.get(rowIndexD, 1).setValue(employee.getEmployeeName());
+		// D2_3 No.369
+		Optional<GeneralDate> grantDate = getNextAnnLeaGrantDateAdapter.algorithm(AppContexts.user().companyId(),
+				employee.getEmployeeId());
+		if (grantDate.isPresent()) {
+			cells.get(rowIndexD + 1, 0).setValue(grantDate.get());
+		}
+
+		// D2_4
+		cells.get(rowIndexD + 2, 0).setValue(employee.getEmploymentName());
+		// D2_5
+		cells.get(rowIndexD + 3, 0).setValue(employee.getJobTitle());
+
+		// Set Style
+		for (int index = 0; index < NUMBER_COLUMN; index++) {
+			setTopBorderStyle(cells.get(rowIndexD, index));
+			setBottomBorderStyle(cells.get(firstRow - 1, index));
+		}
+
+		return firstRow;
+	}
+
+	private int printAnnualHoliday(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
+			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		// 年休
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
+			YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(dataSource.getStartMonth().yearMonth(),
+					dataSource.getEndMonth().yearMonth());
+			DatePeriod datePeriod = new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth());
 			int totalAddRows = 2;
 			cells.copyRows(cells, 6, firstRow, totalAddRows);
 			// E1_1
@@ -360,12 +406,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			}
 
 			firstRow += totalAddRows;
-			totalRowDetails += totalAddRows;
 		}
+		return firstRow;
+	}
 
+	private int printYearlyReserved(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
+			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		// 積立年休
-		// --------------------------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getYearlyReserved().isYearlyReserved()) {
+			YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(dataSource.getStartMonth().yearMonth(),
+					dataSource.getEndMonth().yearMonth());
 			cells.copyRows(cells, 8, firstRow, 2);
 			// H1_1
 			cells.get(firstRow, 2).setValue(TextResource.localize("Com_FundedPaidHoliday"));
@@ -436,13 +486,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			}
 
 			firstRow += 2;
-			totalRowDetails += 2;
 		}
+		return firstRow;
+	}
 
-		// ------------------------------------------------------------------------------------------------------
-
+	private int printSubstituteHoliday(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
+			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		// 代休
-		// ------------------------------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getSubstituteHoliday()
 				.isOutputItemSubstitute()) {
 			cells.copyRows(cells, 10, firstRow, 4);
@@ -526,13 +576,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			}
 
 			firstRow += 4;
-			totalRowDetails += 4;
 		}
+		return firstRow;
+	}
 
-		// ---------------------------------------------------------------------------------------------------
-
+	private int printPauseHoliday(Cells cells, int firstRow, HolidaysRemainingEmployee employee, YearMonth currentMonth,
+			HolidayRemainingDataSource dataSource) throws Exception {
 		// 振休
-		// --------------------------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause().isPauseItem()) {
 			cells.copyRows(cells, 14, firstRow, 4);
 			// J1_1
@@ -611,16 +661,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			}
 
 			firstRow += 4;
-			totalRowDetails += 4;
 		}
+		return firstRow;
+	}
 
-		// -----------------------------------------------------------------------------------------------
-
+	private int printSpecialHoliday(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
+			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		// 特別休暇
-		// ------------------------------------------------------------------------------
 		List<Integer> specialHoliday = dataSource.getHolidaysRemainingManagement().getListItemsOutput()
 				.getSpecialHoliday();
 
+		DatePeriod datePeriod = new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth());
+		String cid = AppContexts.user().companyId();
 		List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(cid);
 
 		for (int i = 0; i < specialHoliday.size(); i++) {
@@ -695,15 +747,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			}
 
 			firstRow += 2;
-			totalRowDetails += 2;
 		}
 
-		// ---------------------------------------------------------------------------------------
+		return firstRow;
+	}
 
+	private int printChildNursingVacation(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
+			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		// 子の看護休暇
-		// -----------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getChildNursingVacation()
 				.isChildNursingLeave()) {
+			DatePeriod datePeriod = new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth());
+			String cid = AppContexts.user().companyId();
 			cells.copyRows(cells, 20, firstRow, 2);
 			// N1_1
 			cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_47"));
@@ -748,14 +803,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			}
 
 			firstRow += 2;
-			totalRowDetails += 2;
 		}
+		return firstRow;
+	}
 
-		// -----------------------------------------------------------------------------------------
-
+	private int printNursingCareLeave(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
+			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		// 介護休暇
-		// -------------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getNursingcareLeave().isNursingLeave()) {
+			DatePeriod datePeriod = new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth());
+			String cid = AppContexts.user().companyId();
+
 			cells.copyRows(cells, 22, firstRow, 2);
 			// O1_1
 			cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_48"));
@@ -808,37 +866,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			}
 
 			firstRow += 2;
-			totalRowDetails += 2;
 		}
-
-		// ------------------------------------------------------------------------------------------
-
-		if (totalRowDetails < MIN_ROW_DETAILS) {
-			cells.copyRows(cells, 25, firstRow, MIN_ROW_DETAILS - totalRowDetails);
-			firstRow += (MIN_ROW_DETAILS - totalRowDetails);
-		}
-
-		// D2_1
-		cells.get(rowIndexD, 0).setValue(employee.getEmployeeCode());
-		// D2_2
-		cells.get(rowIndexD, 1).setValue(employee.getEmployeeName());
-		// D2_3 No.369
-		Optional<GeneralDate> grantDate = getNextAnnLeaGrantDateAdapter.algorithm(cid, employee.getEmployeeId());
-		if (grantDate.isPresent()) {
-			cells.get(rowIndexD + 1, 0).setValue(grantDate.get());
-		}
-
-		// D2_4
-		cells.get(rowIndexD + 2, 0).setValue(employee.getEmploymentName());
-		// D2_5
-		cells.get(rowIndexD + 3, 0).setValue(employee.getJobTitle());
-
-		// Set Style
-		for (int index = 0; index < NUMBER_COLUMN; index++) {
-			setTopBorderStyle(cells.get(rowIndexD, index));
-			setBottomBorderStyle(cells.get(firstRow - 1, index));
-		}
-
 		return firstRow;
 	}
 
