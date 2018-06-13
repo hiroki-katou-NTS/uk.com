@@ -402,7 +402,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		if (execSetting != null) {
 			//execSetting.setNextExecDateTime();
 			String scheduleId = execSetting.getScheduleId();
-			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
+			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
 			execSetting.setNextExecDateTime(nextFireTime);
 			this.execSettingRepo.update(execSetting);
 		}
