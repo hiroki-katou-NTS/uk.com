@@ -30,32 +30,35 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimRecAbasMngRepository extends JpaRepository implements InterimRecAbasMngRepository{
 
-	private static final String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.recruitmentMngId = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private static final String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private static final String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
+	private String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
 			+ " WHERE c.recruitmentMngId in :mngIds"
 			+ " AND c.unUsedDays > :unUsedDays"
 			+ " AND c.expirationDate >= :startDate"
 			+ " AND c.expirationDate <= :endDate";
 	
-	private static final String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absenceMngID"
 			+ " AND c.absenceMngAtr = :absenceMngAtr"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
-	private static final String DELETE_ABS_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
+	private String DELETE_ABS_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
 			+ " WHERE c.recAbsPk.absenceMngID = :mngId";
-	private static final String DELETE_REC_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
+	private String DELETE_REC_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
 			+ " WHERE c.recAbsPk.recruitmentMngId = :mngId";
-	private static final String DELETE_BY_ID_ATR = "SELECT c FROM KrcmtInterimRecAbs c"
+	private String DELETE_BY_ID_ATR = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absId"
 			+ " AND c.recAbsPk.recruitmentMngId = :recId"
 			+ " AND c.absenceMngAtr = :absAtr"
 			+ " AND c.recruitmentMngAtr = :recAtr";
-			
+	private String QUERY_REC_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
+			+ " WHERE c.recAbsPk.recruitmentMngId = :recruitmentMngId"
+			+ " AND c.absenceMngAtr = :absenceMngAtr"
+			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
 		return this.queryProxy().find(recId, KrcmtInterimRecMng.class)
@@ -243,5 +246,14 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		lstEntity.stream().forEach(x -> {
 			this.commandProxy().remove(x);
 		});
+	}
+
+	@Override
+	public List<InterimRecAbsMng> getRecBySidMngAtr(DataManagementAtr recAtr, DataManagementAtr absAtr, String recId) {
+		return this.queryProxy().query(QUERY_REC_BY_SID_MNGID, KrcmtInterimRecAbs.class)
+				.setParameter("recruitmentMngId", recId)
+				.setParameter("absenceMngAtr", absAtr.values)
+				.setParameter("recruitmentMngAtr", recAtr.values)
+				.getList(x -> toDomainRecAbs(x));
 	}
 }

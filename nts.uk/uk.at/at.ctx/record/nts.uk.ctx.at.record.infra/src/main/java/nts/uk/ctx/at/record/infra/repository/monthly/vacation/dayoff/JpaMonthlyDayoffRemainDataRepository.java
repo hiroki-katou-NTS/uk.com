@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 @Stateless
 public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implements MonthlyDayoffRemainDataRepository{
 	
-	private static final String QUERY_BY_SID_YM_STATUS = "SELECT c FROM KrcdtMonDayoffRemain　c "
+	private String QUERY_BY_SID_YM_STATUS = "SELECT c FROM KrcdtMonDayoffRemain　c "
 			+ " WHERE c.pk.sid = :employeeId"
 			+ " AND c.pk.ym = :ym"
 			+ " AND c.closureStatus = :status"
