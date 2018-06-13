@@ -806,8 +806,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 });
             } else if (typeCheck == 7) {
                 //With type 金額 - AmountMoney
-                service.getAttendanceItemByAtrNew(3,mode).done((lstAtdItem) => {
-                    service.getOptItemByAtrNew(3,mode).done((lstOptItem) => {
+                service.getAttendanceItemByAtrNew(4,mode).done((lstAtdItem) => {
+                    service.getOptItemByAtrNew(4,mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -815,8 +815,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                 });
             } else if(typeCheck == 5) { // 日数
-                service.getAttendanceItemByAtrNew(4,mode).done((lstAtdItem) => {
-                    service.getOptItemByAtrNew(4,mode).done((lstOptItem) => {
+                service.getAttendanceItemByAtrNew(3,mode).done((lstAtdItem) => {
+                    service.getOptItemByAtrNew(3,mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
