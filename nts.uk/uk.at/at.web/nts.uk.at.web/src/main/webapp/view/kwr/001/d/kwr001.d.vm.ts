@@ -28,7 +28,6 @@ module nts.uk.at.view.kwr001.d {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-//                var data = nts.uk.ui.windows.getShared('KWR001_D');
                 
                 service.getDataStartPage().done(function(data: any) {
                     let arr: ItemModel[] = [];

@@ -228,7 +228,7 @@ module nts.uk.at.view.kwr001.c {
             */
             openScreenD () {
                 var self = this;
-//                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
+                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
                 if (!_.isEmpty(self.currentCodeList())) {
                     self.storeCurrentCodeBeforeCopy(self.currentCodeList());
                 }
