@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
@@ -110,7 +109,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AutoCalAtrOvertime autoCalcSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet, 
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
-			   												   AutoCalOverTimeAttr autoCalcAtr, 
+			   												   AutoCalAtrOvertime autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
 			   												   WorkTimeDailyAtr workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
@@ -163,7 +162,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   HolidayAddtionSet holidayAddtionSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet,
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
-			   												   AutoCalOverTimeAttr autoCalcAtr, 
+			   												   AutoCalAtrOvertime autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
 			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting) {

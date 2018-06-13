@@ -43,8 +43,11 @@ public class DetermineActualResultLock {
 			//日のロック状態を判定する
 			currentLockStatus = actualLock.get().getDailyLockState();
 		}else{
-			//月のロック状態を判定する
-			currentLockStatus = actualLock.get().getMonthlyLockState();
+			currentLockStatus = actualLock.get().getDailyLockState();
+			if (currentLockStatus != LockStatus.LOCK) {
+				//月のロック状態を判定する
+				currentLockStatus = actualLock.get().getMonthlyLockState();
+			}
 		}
 		//ロック状態をチェックする
 		if (currentLockStatus.equals(LockStatus.UNLOCK)) {

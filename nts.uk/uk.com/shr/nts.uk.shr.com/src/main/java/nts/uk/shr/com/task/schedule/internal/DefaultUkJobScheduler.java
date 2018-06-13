@@ -48,6 +48,11 @@ public class DefaultUkJobScheduler implements UkJobScheduler {
 		return this.scheduler.getNextFireTime(jobClass, createJobContextKey(scheduleId));
 	}
 
+	@Override
+	public Optional<GeneralDateTime> getNextFireTime(String scheduleId) {
+		return this.scheduler.getNextFireTime(createJobContextKey(scheduleId));
+	}
+	
 	private static String createJobContextKey(String scheduleId) {
 		return scheduleId + "@" + AppContexts.user().companyId();
 	}

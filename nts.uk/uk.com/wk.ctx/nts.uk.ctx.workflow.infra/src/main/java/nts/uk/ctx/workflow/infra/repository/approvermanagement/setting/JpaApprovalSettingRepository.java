@@ -14,7 +14,7 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.WwfstApproval
 
 @Stateless
 public class JpaApprovalSettingRepository extends JpaRepository implements ApprovalSettingRepository {
-	private final String SQL_FIND = "SELECT c FROM WwfstApprovalSetting c WHERE c.companyId = :companyId";
+	private static final String SQL_FIND = "SELECT c FROM WwfstApprovalSetting c WHERE c.companyId = :companyId";
 
 	@Override
 	public Optional<PrincipalApprovalFlg> getPrincipalByCompanyId(String companyId) {
