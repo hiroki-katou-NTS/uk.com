@@ -45,13 +45,7 @@ public class OptionalItemValueDto implements ItemConst {
 	}
 
 	public static OptionalItemValueDto from(AnyItemValue c) {
-		if (c != null) {
-			OptionalItemValueDto dto = new OptionalItemValueDto();
-			dto.no = c.getItemNo().v();
-			dto.correctValue(c, null);
-			return dto;
-		}
-		return null;
+		return from(c, null);
 	}
 
 	public static OptionalItemValueDto from(AnyItemValue c, OptionalItemAtr attr) {
@@ -65,13 +59,7 @@ public class OptionalItemValueDto implements ItemConst {
 	}
 
 	public static OptionalItemValueDto from(AnyItemOfMonthly c) {
-		if (c != null) {
-			OptionalItemValueDto dto = new OptionalItemValueDto();
-			dto.no = c.getAnyItemId();
-			dto.correctValue(c, null);
-			return dto;
-		}
-		return null;
+		return from(c, null);
 	}
 
 	public static OptionalItemValueDto from(AnyItemOfMonthly c, OptionalItemAtr attr) {

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -28,15 +29,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	private List<OptionalItemValueDto> optionalItems;
 
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain) {
-		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
-		if (domain != null) {
-			dto.setDate(domain.getYmd());
-			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setOptionalItems(
-					ConvertHelper.mapTo(domain.getItems(), (c) -> OptionalItemValueDto.from(c)));
-			dto.exsistData();
-		}
-		return dto;
+		return getDto(domain, null);
 	}
 
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain, Map<Integer, OptionalItem> master) {
@@ -58,10 +51,6 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 //			}
 		});
 		optionalItems.removeIf(item -> !item.isHaveData());
-	}
-
-	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
-		return master.get(c.getItemNo().v()).getOptionalItemAtr();
 	}
 
 	@Override
@@ -88,5 +77,14 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		optionalItems.removeIf(item -> !item.isHaveData());
 		return new AnyItemValueOfDaily(employeeId, date,
 				ConvertHelper.mapTo(optionalItems, c -> c == null ? null : c.toDomain()));
+	}
+
+	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
+		OptionalItem optItem = master == null ? null : master.get(c.getItemNo().v());
+		OptionalItemAtr attr = null;
+		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+			attr = optItem.getOptionalItemAtr();
+		}
+		return attr;
 	}
 }
