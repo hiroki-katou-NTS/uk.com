@@ -783,7 +783,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    recordReGetClass.getWorkFlexAdditionSet(),
 				    recordReGetClass.getWorkRegularAdditionSet(),
 				    recordReGetClass.getHolidayAddtionSet(),
-				    AutoCalAtrOvertime.CALCULATEMBOSS,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    recordReGetClass.getHolidayCalcMethodSet(),
