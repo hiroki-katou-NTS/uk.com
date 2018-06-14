@@ -56,7 +56,7 @@
 								<label id="B3_14">#{i18n.getText('CMF003_34')}</label>
 							</td>
 							<td>
-								<div id="B4_16" tabindex="7"
+								<div id="B4_16" tabindex="7" class="form-B"
 									data-bind="ntsDateRangePicker: { 
 						required: dayRequired, enable: dayEnable, name: '#[CMF003_37]', 
 						showNextPrevious: true, value: dayValue}" />
@@ -67,7 +67,7 @@
 								<label id="B3_14">#{i18n.getText('CMF003_35')}</label>
 							</td>							
 							<td>
-								<div id="B4_17" tabindex="8"
+								<div id="B4_17" tabindex="8" class="form-B"
 									data-bind="ntsDateRangePicker: { 
 						required: monthRequired, enable: monthEnable, name: '#[CMF003_38]',
 						showNextPrevious: true, value: monthValue, type: 'yearmonth'}" />
@@ -78,7 +78,7 @@
 								<label id="B3_14">#{i18n.getText('CMF003_36')}</label>
 							</td>
 							<td>
-								<div id="B4_18" tabindex="9"
+								<div id="B4_18" tabindex="9" class="form-B"
 									data-bind="ntsDateRangePicker: {
 						required: yearRequired, enable: yearEnable, name: '#[CMF003_39]',
 						showNextPrevious: true, value: yearValue, type: 'year', jumpUnit: 'year'}" />
@@ -92,11 +92,11 @@
 					<table class="compressed-password">
 						<tr>
 							<td>
-								<div id="B4_31" tabindex="10"
+								<div id="B4_31" tabindex="10" class="form-B"
 									data-bind="ntsCheckBox: { checked: isCompressPass }">
 									#{i18n.getText('CMF003_46')}</div>
 							</td>
-							<td><input tabindex="11" id="B4_32" class="form-B"
+							<td><input tabindex="11" id="B4_32" class="form-B passwordInput"
 								data-bind="ntsTextEditor: {
 											name: '#[CMF003_73]',
 											value: password,
@@ -109,11 +109,11 @@
 						</tr>
 						<tr>
 							<td><span id="B4_33">#{i18n.getText('CMF003_56')}</span></td>
-							<td><input tabindex="11" id="B4_41" class="form-B"
+							<td><input tabindex="11" id="B4_41" class="form-B passwordInput"
 								data-bind="ntsTextEditor: {
 											name: '#[CMF003_74]',
 											value: confirmPassword,
-											required: isCompressPass, constraint: 'FileCompressionPassword', 
+											required: isCompressPass, constraint: passwordConstraint, 
 											option: {textmode: 'password',width: '152px'},
 											enable: true,
 											readonly: false

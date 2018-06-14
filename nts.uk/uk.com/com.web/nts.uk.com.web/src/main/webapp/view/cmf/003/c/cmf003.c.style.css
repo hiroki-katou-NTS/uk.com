@@ -32,3 +32,10 @@
 #btnRight {
 	margin-left: 10px;
 }
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	#swap-list-grid1_displayContainer, #swap-list-grid2_displayContainer,
+	#swap-list-grid1_scrollContainer, #swap-list-grid2_scrollContainer {
+		height: 361px !important;
+	}
+}
