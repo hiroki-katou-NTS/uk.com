@@ -389,11 +389,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 service.deleteApp(deleteCmd, self.appType()).done(function(data) {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
-                        //kiểm tra list người xác nhận, nếu khác null thì show info 392
-                        if (data.autoSendMail) {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                        if (self.appType() != 10) {
+                            //kiểm tra list người xác nhận, nếu khác null thì show info 392
+                            if (data.autoSendMail) {
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                                });
+                            } else {
                                 nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-                            });
+                            }
                         } else {
                             nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                         }
@@ -404,8 +408,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).ifNo(function() {
                 nts.uk.ui.block.clear();
             });
-
-
         }
 
         getHolidayShipmentCmd(memo) {
