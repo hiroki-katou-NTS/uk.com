@@ -76,53 +76,46 @@
 						</div>
 						<div class="valign-center control-group" style="display:inline-flex;">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_54')}</div>
-							<div class="valign-center" tabindex="11" style="width: 110px; margin-right:10px;">
-								<div data-bind="ntsRadioBoxGroup: {
+							<div class="valign-center"  style="width: 110px; margin-right:10px;">
+								<div tabindex="11" data-bind="ntsRadioBoxGroup: {
 									name: '#[CMF001_55]',
 									options: $parent.radioItemList(),
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: deleteExistData}"></div>
 							</div>
-							<div tabindex="12">
-								<div data-bind="ntsComboBox: {
-									options: $parent.deleteExistDataMethod,
-									optionsValue: 'code',
-									name: '#[CMF001_58]',
-									value: deleteExistDataMethod,
-									optionsText: 'name',
-									editable: false,
-									enable:  deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
-									required: deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
-									columns: [
-										{ prop: 'name', length: 22 }
-									]}"></div>
-							</div>
+							<div tabindex="12" data-bind="ntsComboBox: {
+								options: $parent.deleteExistDataMethod,
+								optionsValue: 'code',
+								name: '#[CMF001_58]',
+								value: deleteExistDataMethod,
+								optionsText: 'name',
+								editable: false,
+								enable:  deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
+								required: deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
+								width: 342,
+								columns: [
+									{ prop: 'name' }
+								]}"></div>
 						</div>
 						
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_59')}</div>
-							<div tabindex="13" style="display:inline-block">
-							<div class="cf" data-bind="ntsSwitchButton: {
+							<div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
 								options: $parent.acceptModes,
 								name: '#[CMF001_65]',
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: acceptMode,
 								enable: deleteExistData()==nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE }"></div>
-							</div>
 						</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_69')}</div>
-							<div tabindex="14" style="display:inline-block">
-								<button id="B4_21"  data-bind="click: function() {$parent.openCMF001d()}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_70')}</button>
-							</div>
+							<button tabindex="14" id="B4_21"  data-bind="click: function() {$parent.openCMF001d()}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_70')}</button>
 							<span style="padding-left: 10px" class="label">#{i18n.getText('CMF001_71')}</span>
 							<span style="padding-left: 10px" class="label" data-bind="visible: alreadySetting()">#{i18n.getText('CMF001_77')}</span>
 							<span style="padding-left: 10px" class="label" data-bind="visible: !alreadySetting()">#{i18n.getText('CMF001_78')}</span>
 						</div>
-						
-						
 						
 					</div>
 				</div>
