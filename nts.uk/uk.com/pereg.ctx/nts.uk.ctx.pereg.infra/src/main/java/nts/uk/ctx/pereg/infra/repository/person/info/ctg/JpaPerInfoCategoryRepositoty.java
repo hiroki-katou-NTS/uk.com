@@ -37,7 +37,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	
 	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
-			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder,"
+			+ " co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr"
 			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
 			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
@@ -135,7 +136,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	private final static String SELECT_CTG_WITH_AUTH = SELECT_NO_WHERE
 			+ " INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId"
-			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)"
+			+ " WHERE ca.cid = :cid "
+			+ " AND co.categoryParentCd IS NULL "
+			+ " AND co.salaryUseAtr = :forPayroll "
+			+ " AND co.personnelUseAtr = :forPersonnel "
+			+ " AND co.employmentUseAtr = :forAttendance "
+			+ " AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)"
 			+ " AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId"
 			+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i"
 			+ "	JOIN PpemtPersonItemAuth iau ON i.ppemtPerInfoItemPK.perInfoItemDefId = iau.ppemtPersonItemAuthPk.personItemDefId "
@@ -515,7 +521,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth,
-			boolean isOtherComapany) {
+			boolean isOtherComapany , int forAttendance , int forPayroll , int forPersonnel) {
 		String fullQuery = "";
 		if (isOtherComapany) {
 			fullQuery = SELECT_CTG_WITH_AUTH
@@ -525,7 +531,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					+ " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) ORDER BY po.disporder";
 		}
 		return this.queryProxy().query(fullQuery, Object[].class).setParameter("cid", companyId)
-				.setParameter("roleId", roleId).setParameter("selfAuth", selfAuth).setParameter("otherAuth", otherAuth)
+				.setParameter("roleId", roleId)
+				.setParameter("selfAuth", selfAuth)
+				.setParameter("otherAuth", otherAuth)
+				.setParameter("forAttendance", forAttendance)
+				.setParameter("forPayroll", forPayroll)
+				.setParameter("forPersonnel", forPersonnel)
 				.getList(c -> {
 					return createDomainPerInfoCtgFromEntity(c);
 				});
