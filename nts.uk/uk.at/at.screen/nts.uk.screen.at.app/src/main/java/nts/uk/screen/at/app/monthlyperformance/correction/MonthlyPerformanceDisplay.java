@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -124,17 +125,18 @@ public class MonthlyPerformanceDisplay {
 		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder.getMonthlyItemControlByToUse(cId, employmentRoleID, newkintaiIDList, 1);
 		//取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
 		//Filter param 「表示する項目一覧」  by domain 「権限別月次項目制御」
+		screenDto.setAuthDto(monthlyItemAuthDto);
         Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();
         if (monthlyItemAuthDto != null) {
         	for (PSheet sheet : param.getSheets()) {
     			sheet.getDisplayItems().retainAll(monthlyItemAuthDto.getListDisplayAndInputMonthly());
     			if(sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0)
-    				lstAtdItemUnique.putAll(sheet.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x)));
+    				lstAtdItemUnique.putAll(sheet.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x, (x, y) -> x)));
     		}
 		} else {
 			for (PSheet sheet2 : param.getSheets()) {
     			if(sheet2.getDisplayItems() != null && sheet2.getDisplayItems().size() > 0)
-    				lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x)));
+    				lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x, (x, y) -> x)));
     		}
 		}
 		
@@ -143,6 +145,7 @@ public class MonthlyPerformanceDisplay {
 			// ドメインモデル「月次の勤怠項目」を取得する
 			List<Integer> attdanceIds = lstAtdItemUnique.keySet().stream().collect(Collectors.toList());
 			List<MonthlyAttendanceItemDto> lstAttendanceData = repo.findByAttendanceItemId(cId, attdanceIds);
+			lstAttendanceData.sort((t1, t2) -> t1.getDisplayNumber() - t2.getDisplayNumber());
 
 			// 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する - attendanceItemLinkingRepository
 			// 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む
@@ -218,15 +221,16 @@ public class MonthlyPerformanceDisplay {
 		// Merge Attendance Item in sheet
 		for (Integer sheet : sheetNos) {
 			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
-			Set<PAttendanceItem> displayItems = new HashSet<>();
+			List<PAttendanceItem> displayItems = new ArrayList<>();
 			lstMPformats.forEach(format -> {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
 				if (sheetDto != null) {
 					pSheet.setSheetName(sheetDto.getSheetName());
+					sheetDto.getListDisplayTimeItem().sort((t1,t2)->t1.getDisplayOrder() - t2.getDisplayOrder());
 					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
-							.collect(Collectors.toSet()));
+							.collect(Collectors.toList()));
 				}
 			});
 			pSheet.setDisplayItems(displayItems);
@@ -282,15 +286,18 @@ public class MonthlyPerformanceDisplay {
 		// Merge Attendance Item in sheet
 		for (Integer sheet : sheetNos) {
 			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
-			Set<PAttendanceItem> displayItems = new HashSet<>();
+			List<PAttendanceItem> displayItems = new ArrayList<>();
 			monthlyRecordWorkTypeDtos.forEach(format -> {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
 				if (sheetDto != null) {
 					pSheet.setSheetName(sheetDto.getSheetName());
+					sheetDto.getListDisplayTimeItem().sort((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder());
+					
 					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
-							.collect(Collectors.toSet()));
+							.collect(Collectors.toList()));
+					//displayItems.stream().sorted(Comparator.comparing(PAttendanceItem::getDisplayOrder).reversed());
 				}
 			});
 			pSheet.setDisplayItems(displayItems);
@@ -379,8 +386,9 @@ public class MonthlyPerformanceDisplay {
 					// 日の実績が存在する
 					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist()
 							? LockStatus.UNLOCK : LockStatus.LOCK,
-					// TODO
-					LockStatus.UNLOCK);
+					// エラーが0件である						
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyRecordError()
+							? LockStatus.LOCK : LockStatus.UNLOCK);
 			monthlyLockStatusLst.add(monthlyLockStatus);
 		}
 		// 過去実績の修正ロック

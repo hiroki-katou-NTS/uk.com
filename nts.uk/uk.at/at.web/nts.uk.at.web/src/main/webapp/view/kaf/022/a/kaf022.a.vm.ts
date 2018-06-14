@@ -2106,20 +2106,20 @@ module nts.uk.at.view.kmf022 {
                     });
                 }
                 data.appDead = dataA4;
-                data.appSet = {
-                    companyId: self.companyId(),
-                    reasonDisp: self.selectedIdA5_14(),
-                    warnDateDisp: self.selectedCodeA5_16(),
-                    overtimePre: self.selectedIdA5_18(),
-                    hdPre: self.selectedIdA5_19(),
-                    msgAdvance: self.selectedIdA5_20(),
-                    overtimePerfom: self.selectedIdA5_21(),
-                    hdPerform: self.selectedIdA5_22(),
-                    msgExceeded: self.selectedIdA5_23(),
-                    scheduleCon: self.selectedIdA5_24(),
-                    achiveCon: self.selectedIdA5_25(),
-
-                };
+//                data.appSet = {
+//                    companyId: self.companyId(),
+//                    reasonDisp: self.selectedIdA5_14(),
+//                    warnDateDisp: self.selectedCodeA5_16(),
+//                    overtimePre: self.selectedIdA5_18(),
+//                    hdPre: self.selectedIdA5_19(),
+//                    msgAdvance: self.selectedIdA5_20(),
+//                    overtimePerfom: self.selectedIdA5_21(),
+//                    hdPerform: self.selectedIdA5_22(),
+//                    msgExceeded: self.selectedIdA5_23(),
+//                    scheduleCon: self.selectedIdA5_24(),
+//                    achiveCon: self.selectedIdA5_25(),
+//
+//                };
                 data.appCommon = {
                     companyId: self.companyId(),
                     showWkpNameBelong: self.selectedIdA10_3(),
@@ -2150,14 +2150,14 @@ module nts.uk.at.view.kmf022 {
                 data.appliSet = {
                     companyId: self.companyId(),
                     baseDateFlg: self.baseDateFlg(),
-                    advanceExcessMessDispAtr: self.advanceExcessMessDispAtr(),
-                    hwAdvanceDispAtr: self.hwAdvanceDispAtr(),
-                    hwActualDispAtr: self.hwActualDispAtr(),
-                    actualExcessMessDispAtr: self.actualExcessMessDispAtr(),
-                    otAdvanceDispAtr: self.otAdvanceDispAtr(),
-                    otActualDispAtr: self.otActualDispAtr(),
-                    warningDateDispAtr: self.warningDateDispAtr(),
-                    appReasonDispAtr: self.appReasonDispAtr(),
+                    advanceExcessMessDispAtr: self.selectedIdA5_20(),
+                    hwAdvanceDispAtr: self.selectedIdA5_19(),
+                    hwActualDispAtr: self.selectedIdA5_22(),
+                    actualExcessMessDispAtr: self.selectedIdA5_23(),
+                    otAdvanceDispAtr: self.selectedIdA5_18(),
+                    otActualDispAtr: self.selectedIdA5_21(),
+                    warningDateDispAtr: self.selectedCodeA5_16(),
+                    appReasonDispAtr: self.selectedIdA5_14(),
                     scheReflectFlg: self.selectedIdA9_8(),
                     priorityTimeReflectFlg: self.selectedIdA9_9(),
                     appContentChangeFlg: self.selectedIdA17_4(),
@@ -2171,6 +2171,8 @@ module nts.uk.at.view.kmf022 {
                     displayPrePostFlg: self.selectedIdA12_5(),
                     displaySearchTimeFlg: self.selectedIdA12_6(),
                     manualSendMailAtr: self.selectedIdA12_7(),
+                    scheduleConfirmedAtr: self.selectedIdA5_24(),
+                    achievementConfirmedAtr: self.selectedIdA5_25()
                     //todo wait -check 
                 };
                 data.appName = ko.toJS(self.listDataA6());

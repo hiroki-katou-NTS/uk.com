@@ -7,13 +7,13 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -75,19 +75,19 @@ public class TempDayoffServiceImpl implements TempDayoffService {
 				period.start(),
 				period.end(),
 				new DayOffDayAndTimes(
-						new AttendanceDaysMonth(occurDays),
+						new RemainDataDaysMonth(occurDays),
 						Optional.empty()),
 				new DayOffDayAndTimes(
-						new AttendanceDaysMonth(usedDays),
+						new RemainDataDaysMonth(usedDays),
 						Optional.empty()),
 				new DayOffRemainDayAndTimes(
-						new ReserveLeaveRemainingDayNumber(remainDays),
+						new AttendanceDaysMonthToTal(remainDays),
 						Optional.empty()),
 				new DayOffRemainDayAndTimes(
-						new ReserveLeaveRemainingDayNumber(carryforwardDays),
+						new AttendanceDaysMonthToTal(carryforwardDays),
 						Optional.empty()),
 				new DayOffDayAndTimes(
-						new AttendanceDaysMonth(0.0),
+						new RemainDataDaysMonth(0.0),
 						Optional.empty()));
 	}
 }

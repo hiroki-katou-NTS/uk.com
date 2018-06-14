@@ -39,8 +39,8 @@ public class KrcstMonsetEmpIrgAggr extends UkJpaEntity implements Serializable {
 	/** マッチング：雇用月別実績集計設定 */
 	@OneToOne
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "KRCST_MONSET_EMP_REG_AGGR.CID", insertable = false, updatable = false),
-		@JoinColumn(name = "EMP_CD", referencedColumnName = "KRCST_MONSET_EMP_REG_AGGR.EMP_CD", insertable = false, updatable = false)
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "EMP_CD", referencedColumnName = "EMP_CD", insertable = false, updatable = false)
 	})
 	public KrcstMonsetEmpRegAggr krcstMonsetEmpRegAggr;
 	

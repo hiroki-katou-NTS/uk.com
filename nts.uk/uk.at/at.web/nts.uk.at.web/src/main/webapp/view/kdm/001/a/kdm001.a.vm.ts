@@ -104,11 +104,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
             
             self.selectedItem.subscribe(x =>{
-                if(self.selectedEmployee().length > 0) {
-                    self.selectedEmployeeObject = _.find(self.selectedEmployee(), item => { return item.employeeId === x; });
-                }
-                    
-                self.updateDataList();
+                self.updateDataList(true);
             });
             
             self.selectedPeriodItem.subscribe(x =>{
@@ -190,7 +186,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 let params = getShared('KDM001_A_PARAMS');
                 
                 if (params.isSuccess) {
-                    self.updateDataList();
+                    self.updateDataList(false);
                 }
                 
                 $('#compositePayOutSubMngDataGrid').focus();
@@ -211,10 +207,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         clickGetDataList() {
             let self = this;
 
-            self.updateDataList();
+            self.updateDataList(false);
         }
         
-        updateDataList() {
+        updateDataList(isSelectEmp) {
             let self = this;
             let empId = self.selectedItem();
             let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
@@ -260,7 +256,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         });
                     } else {
                         // update data to view
-                        self.dispTotalRemain("");
+                        self.dispTotalRemain(0);
                         self.expirationDate("");
                         self.closureID = "";
                         self.newDataDisable(true);
@@ -272,11 +268,48 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         // add dialog
                         dialog.alertError({ messageId: "Msg_1306" });
                     }
+                    
+                    if(_.isNil(res.swkpHistImport)) {
+                        self.selectedEmployeeObject = {employeeId: res.personEmpBasicInfoImport.employeeId, employeeCode: res.personEmpBasicInfoImport.employeeCode, employeeName: res.personEmpBasicInfoImport.businessName, 
+                                workplaceId: "", workplaceCode: "", workplaceName: ""};
+                    } else {
+                        self.selectedEmployeeObject = {employeeId: res.personEmpBasicInfoImport.employeeId, employeeCode: res.personEmpBasicInfoImport.employeeCode, employeeName: res.personEmpBasicInfoImport.businessName, 
+                                workplaceId: res.swkpHistImport.workplaceId, workplaceCode: res.swkpHistImport.workplaceCode, workplaceName: res.swkpHistImport.workplaceName};
+                    }
                 }).fail(function(res: any) {
                     console.log(res);
                 });
                 
                 $('#compositePayOutSubMngDataGrid').focus();
+            } else {
+                service.getFurikyuMngDataExtraction(empId, startDate, endDate, false).done(function(res: any) {
+                    if(!res.haveEmploymentCode || (res.closureID == null) || (res.closureID == "")) {
+                        // update data to view
+                        self.dispTotalRemain(0);
+                        self.expirationDate("");
+                        self.closureID = "";
+                        self.newDataDisable(true);
+                        
+                        // update grid
+                        self.compositePayOutSubMngData = ko.observableArray([]);
+                        $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+                        
+                        // add dialog
+                        dialog.alertError({ messageId: "Msg_1306" });
+                    } else {
+                        self.newDataDisable(false);
+                    }
+                    
+                    if(_.isNil(res.swkpHistImport)) {
+                        self.selectedEmployeeObject = {employeeId: res.personEmpBasicInfoImport.employeeId, employeeCode: res.personEmpBasicInfoImport.employeeCode, employeeName: res.personEmpBasicInfoImport.businessName, 
+                                workplaceId: "", workplaceCode: "", workplaceName: ""};
+                    } else {
+                        self.selectedEmployeeObject = {employeeId: res.personEmpBasicInfoImport.employeeId, employeeCode: res.personEmpBasicInfoImport.employeeCode, employeeName: res.personEmpBasicInfoImport.businessName, 
+                                workplaceId: res.swkpHistImport.workplaceId, workplaceCode: res.swkpHistImport.workplaceCode, workplaceName: res.swkpHistImport.workplaceName};
+                    }
+                }).fail(function(res: any) {
+                    console.log(res);
+                });
             }
         }
         
@@ -289,7 +322,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 service.getWpName().done(function(wp) {
                     if(wp == null || wp.workplaceId == null || wp.workplaceId == "") {
                         dialog.alertError({ messageId: "Msg_504" }).then(() => {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
                     } else {
                         self.selectedEmployeeObject = {employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName, 
@@ -364,7 +397,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
-                        self.updateDataList();
+                        self.updateDataList(false);
                     }
                 });
             } else {
@@ -372,7 +405,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
-                        self.updateDataList();
+                        self.updateDataList(false);
                     }
                 });
             }
@@ -388,7 +421,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
-                        self.updateDataList();
+                        self.updateDataList(false);
                     }
                 });
             } else {
@@ -396,7 +429,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
-                        self.updateDataList();
+                        self.updateDataList(false);
                     }
                 });
             }
