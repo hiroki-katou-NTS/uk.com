@@ -418,15 +418,15 @@ module nts.uk.com.view.cps005.b {
 
             self.dataType.subscribe(function(value) {
                 if (value === (data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1)) return;
-                if (__viewContext['screenModelB'].isUpdate) {
-                    new service.Service().checkItemData(data.id).done(function(obj: boolean) {
-                        if (obj) {
-                            alertError({ messageId: "Msg_233" }).then(() => {
-                                self.dataType(data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1);
-                            });
-                        }
-                    });
-                }
+//                if (__viewContext['screenModelB'].isUpdate) {
+//                    new service.Service().checkItemData(data.id).done(function(obj: boolean) {
+//                        if (obj) {
+//                            alertError({ messageId: "Msg_233" }).then(() => {
+//                                self.dataType(data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1);
+//                            });
+//                        }
+//                    });
+//                }
                 self.stringItem(new StringItemModel(null));
                 self.numericItem(new NumericItemModel(null));
                 self.dateItem(new DateItemModel(null));

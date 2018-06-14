@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
@@ -19,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
@@ -84,10 +84,10 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 						domain.isSpecificRaisingSalaryCalcAtr() ? 1 : 0);
 	}
 
-	private static AutoCalOfLeaveEarlySettingDto newAutoCalcLeaveSetting(AutoCalOfLeaveEarlySetting domain) {
-		return domain == null ? null : new AutoCalOfLeaveEarlySettingDto(
-						domain.getLeaveEarly() == null ? 0 : domain.getLeaveEarly().value, 
-						domain.getLeaveEarly() == null ? 0 : domain.getLeaveLate().value);
+	private static AutoCalOfLeaveEarlySettingDto newAutoCalcLeaveSetting(AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting) {
+		return autoCalcOfLeaveEarlySetting == null ? null : new AutoCalOfLeaveEarlySettingDto(
+						autoCalcOfLeaveEarlySetting.isLate() ? 1 : 0, 
+						autoCalcOfLeaveEarlySetting.isLeaveEarly() ? 1 : 0);
 	}
 
 	private static AutoCalHolidaySettingDto newAutoCalcHolidaySetting(AutoCalRestTimeSetting domain) {
@@ -156,10 +156,10 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 				newAutoCalcSetting(this.holidayTimeSetting.getLateNightTime()));
 	}
 
-	private AutoCalOfLeaveEarlySetting createAutoCalcLeaveSetting() {
-		return this.leaveEarlySetting == null ? null : new AutoCalOfLeaveEarlySetting(
-				getEnum(this.leaveEarlySetting.getLeaveEarly(), LeaveAttr.class),
-				getEnum(this.leaveEarlySetting.getLeaveLate(), LeaveAttr.class));
+	private AutoCalcOfLeaveEarlySetting createAutoCalcLeaveSetting() {
+		return this.leaveEarlySetting == null ? null : new AutoCalcOfLeaveEarlySetting(
+				this.leaveEarlySetting.getLeaveEarly() == 1 ? true : false ,
+				this.leaveEarlySetting.getLeaveLate() == 1 ? true : false);
 	}
 
 	private AutoCalOvertimeSetting createAutoOverTimeSetting() {
