@@ -122,7 +122,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     self.lateTime2(self.late2() ? 60 : 0);
                     self.earlyTime2(self.early2() ? 30 : 0);
                 }
-                nts.uk.ui.block.invisible();
+                
                 let txtReasonTmp = self.selectedCode();
                 if(!nts.uk.text.isNullOrEmpty(self.selectedCode())){
                     let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
@@ -149,6 +149,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     appReason: self.appreason(),
                     appApprovalPhaseCmds: self.approvalList
                 };
+                nts.uk.ui.block.invisible();
                 service.updateLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                         location.reload();

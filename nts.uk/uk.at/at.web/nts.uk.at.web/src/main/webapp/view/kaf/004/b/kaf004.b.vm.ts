@@ -63,13 +63,10 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     });
             });
             self.date.subscribe(value => {
+                if(!$("#inputdate").ntsError("hasError")){
                 nts.uk.ui.block.invisible();
-                self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false)
-                    .done(() => {
-                        nts.uk.ui.block.clear();
-                    }).fail(() => {
-                        nts.uk.ui.block.clear();
-                    });
+                self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false).always(()=>{nts.uk.ui.block.clear();});
+                }
             });
         }
 
@@ -144,7 +141,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
                         prePostAtr = 0;
                     }
-                    nts.uk.ui.block.invisible();
+                    
                     let txtReasonTmp = self.selectedCode();
                     if (!nts.uk.text.isNullOrEmpty(self.selectedCode())) {
                         let reasonText = _.find(self.ListTypeReason(), function(data) { return data.reasonID == self.selectedCode() });
@@ -168,6 +165,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         reasonTemp: txtReasonTmp,
                         appReason: self.appreason()
                     };
+                    nts.uk.ui.block.invisible();
                     service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             location.reload();
