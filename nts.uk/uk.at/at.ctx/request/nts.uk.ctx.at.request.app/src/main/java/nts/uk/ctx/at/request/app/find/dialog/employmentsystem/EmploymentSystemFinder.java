@@ -10,10 +10,10 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecAbsHistoryOutputPara;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -23,7 +23,7 @@ public class EmploymentSystemFinder {
 	EmployeeRequestAdapter employeeRequestAdapter;
 	
 	@Inject
-	ClosureEmploymentService closureEmploymentService;
+	ClosureService closureService;
 	
 	@Inject
 	AbsenceReruitmentManaQuery absenceReruitmentManaQuery;
@@ -59,7 +59,7 @@ public class EmploymentSystemFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
-		DatePeriod closingPeriod = closureEmploymentService.findClosurePeriod(employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
+		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
 		
 		// アルゴリズム「振出振休発生消化履歴の取得」を実行する
 		List<RecAbsHistoryOutputPara> greneraGigesHis = absenceReruitmentManaQuery
