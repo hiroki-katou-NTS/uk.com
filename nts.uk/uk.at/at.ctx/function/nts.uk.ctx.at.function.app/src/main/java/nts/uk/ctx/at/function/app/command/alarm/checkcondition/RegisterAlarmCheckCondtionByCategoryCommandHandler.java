@@ -126,9 +126,19 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition() ;
-				//add list mon
+				//update list mon
 				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
 						.getMonAlarmCheckConDto().getListEralCheckIDOld();
+				for(int i = 0;i<command.getMonAlarmCheckCon().getArbExtraCon().size();i++) {
+					if(command.getMonAlarmCheckCon().getArbExtraCon().get(i).getErrorAlarmCheckID().equals("")) {
+						command.getMonAlarmCheckCon().getArbExtraCon().get(i).setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
+					}
+				}
+				
+				extractionCondition = command.getMonAlarmCheckCon() == null ? null
+						: new MonAlarmCheckCon(IdentifierUtil.randomUniqueId(),
+								command.getMonAlarmCheckCon().getArbExtraCon().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
+								);					
 				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckCon.getMonAlarmCheckConID(),true,false,false,command.getMonAlarmCheckCon().getArbExtraCon(),listEralCheckIDOld);
 				event.toBePublished();
 		
