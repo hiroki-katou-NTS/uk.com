@@ -67,7 +67,7 @@ module cps001.e.vm {
             permision().done((data: Array<IPersonAuth>) => {
                 if (data) {
                     for (var i = 0; i < data.length; i++) {
-                        if (data[i].functionNo == FunctionNo.No4) {
+                        if (data[i].functionNo == FunctionNo.No4_Allow_UploadMap) {
                             if (data[i].available == false) {
                                 self.enaBtnSave(false);
                                 $(".upload-btn").attr('disabled', 'disabled');

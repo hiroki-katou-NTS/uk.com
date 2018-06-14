@@ -18,7 +18,7 @@ module cps001.f {
             service.getCurrentEmpPermision().done((data: Array<IPersonAuth>) => {
                 if (data) {
                     for (var i = 0; i < data.length; i++) {
-                        if (data[i].functionNo == FunctionNo.No6) {
+                        if (data[i].functionNo == FunctionNo.No6_Allow_UploadDoc) {
                             if (data[i].available == false) {
                                 $(".browser-button").attr('disabled', 'disabled');
                                 $(".delete-button").attr('disabled', 'disabled');
@@ -72,7 +72,13 @@ function LinkButtonClick() {
         __viewContext['viewModel'].fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
         $('.filenamelabel').show();
         __viewContext['viewModel'].filename(res.originalName);
-        nts.uk.request.specials.donwloadFile(rowItem.fileId);
+        if(__viewContext['viewModel'].allowDowloadFile()){
+           nts.uk.request.specials.donwloadFile(rowItem.fileId); 
+        }else{
+            $(".browser-button").attr('disabled', 'disabled');
+            $(".delete-button").attr('disabled', 'disabled');
+        }
+        
 
     });
 }

@@ -318,7 +318,7 @@ module nts.custom.component {
                         modal('../f/index.xhtml').onClosed(() => { });
                     },
                     avatar: () => {
-                        let auth = params.auth,
+                        let auth = ko.toJS(params.auth),
                             person = params.person,
                             id = ko.toJS(params.employee.id);
 
@@ -359,25 +359,26 @@ module nts.custom.component {
 
             fetch.perm().done((data: Array<IPersonAuth>) => {
                 if (data) {
-                    debugger;
-                    _.forEach(data, function(value : IPersonAuth) {
+                    _.forEach(data, function(value: IPersonAuth) {
                         if (value.functionNo == FunctionNo.No3_Allow_RefAva) {
-                           params.auth.allowAvatarRef(!!value.available);
+                            params.auth.allowAvatarRef(!!value.available);
                         }
                         if (value.functionNo == FunctionNo.No5_Allow_RefMap) {
-                           params.auth.allowMapBrowse(!!value.available);
+                            params.auth.allowMapBrowse(!!value.available);
                         }
                         if (value.functionNo == FunctionNo.No7_Allow_RefDoc) {
-                           params.auth.allowDocRef(!!value.available);
+                            params.auth.allowDocRef(!!value.available);
                         }
                         if (value.functionNo == FunctionNo.No8_Allow_Print) {
-                            params.auth.allowDocRef(!!value.available);
+                            params.auth.allowPrintRef(!!value.available);
                         }
                     });
                 } else {
                     params.auth.allowDocRef(false);
                     params.auth.allowAvatarRef(false);
                     params.auth.allowMapBrowse(false);
+                    params.auth.allowPrintRef(false);
+                    params.person.avatar(DEF_AVATAR);
                 }
             });
 
@@ -389,9 +390,16 @@ module nts.custom.component {
 
                 fetch.employee(id).done((emp: IData) => {
                     if (emp) {
-                        fetch.avartar(id).done(avatar => {
-                            person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
-                        }).fail(msg => person.avatar(DEF_AVATAR));
+                        if (params.auth.allowAvatarRef()) {
+                            debugger;
+                            fetch.avartar(id).done(avatar => {
+                                person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
+                            }).fail(msg => person.avatar(DEF_AVATAR));
+                        } else {
+                            debugger;
+                            person.avatar(DEF_AVATAR);
+                        }
+
 
                         person.id(emp.pid);
 
@@ -469,7 +477,7 @@ module nts.custom.component {
                         .value();
 
                     params.employees(datas || []);
-                    
+
                     let _ids = _.map(datas, m => m.employeeId);
                     if (_ids.length) {
                         if (_ids.indexOf(params.employeeId()) > -1) {
@@ -524,7 +532,7 @@ module nts.custom.component {
         position?: string;
         contractCodeType?: string;
     }
-    
+
     enum FunctionNo {
         No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
         No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
