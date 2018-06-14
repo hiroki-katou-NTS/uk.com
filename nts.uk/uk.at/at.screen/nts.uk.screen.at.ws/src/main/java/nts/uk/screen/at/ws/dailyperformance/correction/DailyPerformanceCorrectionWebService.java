@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -45,6 +46,9 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportDto;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportService;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferFinder;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
@@ -95,6 +99,12 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DPLoadRowProcessor loadRowProcessor;
+	
+	@Inject
+	private DailyPerformErrorReferExportService dailyPerformErrorExportService;
+
+	@Inject
+	private DailyPerformErrorReferFinder dailyPerforErrorReferFinder;
 	
 	@POST
 	@Path("startScreen")
@@ -261,4 +271,17 @@ public class DailyPerformanceCorrectionWebService {
 	public DailyPerformanceCorrectionDto reloadRow(DPPramLoadRow param) {
 		return loadRowProcessor.reloadGrid(param);
 	}
+	
+	@POST
+	@Path("exportCsv")
+	public ExportServiceResult exportCsvErrorInfor(List<DailyPerformErrorReferExportDto> command) {
+		return this.dailyPerformErrorExportService.start(command);
+	}
+
+	@POST
+	@Path("getErrAndAppTypeCd")
+	public Map<String, List<EnumConstant>> findByCidAndListErrCd(List<String> listErrorCode) {
+		return this.dailyPerforErrorReferFinder.findByCidAndListErrCd(listErrorCode);
+	}
+
 }
