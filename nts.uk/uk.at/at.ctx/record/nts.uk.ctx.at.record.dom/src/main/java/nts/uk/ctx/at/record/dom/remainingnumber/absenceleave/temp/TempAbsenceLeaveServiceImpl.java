@@ -61,7 +61,8 @@ public class TempAbsenceLeaveServiceImpl implements TempAbsenceLeaveService {
 			if (usedDays == null) usedDays = 0.0;
 			remainDays = carryforwardDays + occurDays - usedDays;
 		}
-		
+		// 暫定振休・振出管理データを削除
+		this.interimAbsRecService.remove(employeeId, period);
 		// 振休月別残数データを返す
 		return new AbsenceLeaveRemainData(
 				employeeId,

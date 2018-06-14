@@ -156,7 +156,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.statutoryAtr = domain.getStatutoryAtr().value;
 			entity.unUsedDays = domain.getUnUsedDays().v();
 		}
-		this.getEntityManager().flush();
+		//this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -178,7 +178,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.requiredDays = domain.getRequeiredDays().v();
 			entity.unOffsetDay = domain.getUnOffsetDays().v();
 		}
-		this.getEntityManager().flush();
+		//this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -206,7 +206,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.useDays = domain.getUseDays().v();
 			entity.selectedAtr = domain.getSelectedAtr().value;
 		}
-		this.getEntityManager().flush();
+		//this.getEntityManager().flush();
 	}
 
 	@Override
