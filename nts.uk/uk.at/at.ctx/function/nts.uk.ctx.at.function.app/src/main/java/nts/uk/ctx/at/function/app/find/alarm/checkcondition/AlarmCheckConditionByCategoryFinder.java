@@ -121,6 +121,7 @@ public class AlarmCheckConditionByCategoryFinder {
 		MonAlarmCheckCon monAlarmCheckCon = new MonAlarmCheckCon("",Collections.emptyList());
 		List<FixedExtraMonFunDto> listFixedExtraMonFun = new ArrayList<>();
 		List<ExtraResultMonthlyDomainEventDto> arbExtraCon = new ArrayList<>();
+		List<String> listEralCheckIDOld = new ArrayList<>();
 		// AgreeConditionErrorFinder
 		List<AgreeConditionError> listConError = errorRep.findAll(domain.getCode().v(), domain.getCategory().value);
 		List<AgreeNameError> listAgreeNameError = this.nameRep.findAll();
@@ -170,6 +171,7 @@ public class AlarmCheckConditionByCategoryFinder {
 
 			//get arbExtraCon
 			arbExtraCon = extraResultMonthly.getListExtraResultMonByListEralID(monAlarmCheckCon.getArbExtraCon());
+			listEralCheckIDOld = monAlarmCheckCon.getArbExtraCon();
 			// get fixExtra monthly
 			List<FixedExtraItemMonFunImport> dataFixedExtraMon = fixExtraItemMon.getAllFixedExtraItemMon();
 			listFixedExtraMonFun = fixExtraMon.getByEralCheckID(monAlarmCheckCon.getMonAlarmCheckConID()).stream().map(c -> FixedExtraMonFunDto.convertToImport(c)).collect(Collectors.toList());
@@ -189,7 +191,7 @@ public class AlarmCheckConditionByCategoryFinder {
 						domain.getExtractTargetCondition().getLstJobTitleId(), domain.getExtractTargetCondition().getLstBusinessTypeCode()),
 				domain.getListRoleId(), schedule4WCondition,
 				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(), dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(), lstWorkRecordExtraCon, listFixedConditionWkRecord),
-				new MonAlarmCheckConDto(listFixedExtraMonFun,arbExtraCon), new AlarmChkCondAgree36Dto(listCondError, listCondOt));
+				new MonAlarmCheckConDto(listFixedExtraMonFun,arbExtraCon,listEralCheckIDOld), new AlarmChkCondAgree36Dto(listCondError, listCondOt));
 	}
 
 	private AlarmCheckConditionByCategoryDto minValueFromDomain(AlarmCheckConditionByCategory domain) {

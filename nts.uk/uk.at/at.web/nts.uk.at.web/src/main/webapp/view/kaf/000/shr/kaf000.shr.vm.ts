@@ -1,5 +1,5 @@
 module nts.uk.at.view.kaf000.shr{
-    
+    import setShared = nts.uk.ui.windows.setShared;
     export module model {
         // loại người đăng nhập
         // người đại diện tương đương người approver, người confirm có ưu tiên cao hơn
@@ -271,6 +271,55 @@ module nts.uk.at.view.kaf000.shr{
                 }
                return true;
             }
+            
+            public static displayMailResult(data: ProcessResult): void {
+                let autoSuccessMail = "", autoFailMail = "";
+                data.autoSuccessMail.forEach((value, index) => { 
+                    autoSuccessMail += value;
+                    if(index != data.autoSuccessMail.length-1){
+                        autoSuccessMail += ",";        
+                    }     
+                });
+                data.autoFailMail.forEach((value, index) => { 
+                    autoFailMail += value;
+                    if(index != data.autoFailMail.length-1){
+                        autoFailMail += ",";        
+                    }     
+                });
+                if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                            location.reload();
+                        });
+                    });        
+                } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                        location.reload();
+                    });    
+                } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                        location.reload();
+                    });    
+                } else {
+                    location.reload();        
+                }
+            }
+            
+            public static openDialogKDL030(data: string): void {
+                let command = {appID: data};
+                setShared("KDL030_PARAM", command);
+                nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                    location.reload();
+                });    
+            }
+        }
+        
+        interface ProcessResult {
+            isProcessDone: boolean,
+            isAutoSendMail: boolean,
+            autoSuccessMail: Array<string>,
+            autoFailMail: Array<string>,
+            appID: string    
         }
         
     }

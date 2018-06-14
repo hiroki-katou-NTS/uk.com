@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.ac.holidaysremaining;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +19,9 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.GetConfirmedAnnualL
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeaveEachMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
-import nts.uk.ctx.at.record.pub.remainnumber.annualleave.GetAnnLeaGrantNumOfCurrentMon;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.NextHolidayGrantDate;
+import nts.uk.ctx.at.shared.pub.remainingnumber.grantremainingdata.AnnLeaGrantRemDataPub;
+import nts.uk.ctx.at.shared.pub.remainingnumber.grantremainingdata.AnnualLeaveGrantRemainDataExport;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -32,14 +32,15 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 	private AnnLeaveRemainNumberPub annLeaveRemainNumberPub;
 
 	@Inject
-	private GetAnnLeaGrantNumOfCurrentMon getAnnLeaGrantNumOfCurrentMon;
+	private GetConfirmedAnnualLeave getConfirmedAnnualLeave;
 
 	@Inject
-	private GetConfirmedAnnualLeave getConfirmedAnnualLeave;
+	private AnnLeaGrantRemDataPub annLeaGrantRemDataPub;
 
 	@Override
 	public List<AnnLeaveUsageStatusOfThisMonthImported> getAnnLeaveUsageOfThisMonth(String employeeId,
 			DatePeriod datePeriod) {
+		// RequestList363
 		List<AggrResultOfAnnualLeaveEachMonth> aggrResults = annLeaveRemainNumberPub
 				.getAnnLeaveRemainAfterThisMonth(employeeId, datePeriod);
 		if (aggrResults == null)
@@ -69,6 +70,7 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 
 	@Override
 	public AnnLeaveOfThisMonthImported getAnnLeaveOfThisMonth(String employeeId) {
+		// RequestList265
 		AnnLeaveOfThisMonth annLeave = annLeaveRemainNumberPub.getAnnLeaveOfThisMonth(employeeId);
 		if (annLeave == null)
 			return null;
@@ -80,6 +82,7 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 
 	@Override
 	public NextHolidayGrantDateImported getNextHolidayGrantDate(String companyId, String employeeId) {
+		// RequestList369
 		NextHolidayGrantDate nextHoloday = annLeaveRemainNumberPub.getNextHolidayGrantDate(companyId, employeeId);
 		if (nextHoloday == null)
 			return null;
@@ -88,9 +91,13 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 	}
 
 	@Override
-	public BigDecimal algorithm(String employeeId) {
+	public List<AnnLeaGrantNumberImported> algorithm(String employeeId) {
+		List<AnnualLeaveGrantRemainDataExport> listAnnualLeave = annLeaGrantRemDataPub
+				.getAnnualLeaveGrantRemainingData(employeeId);
 		// requestList281
-		return getAnnLeaGrantNumOfCurrentMon.algorithm(employeeId).getGrantDays().v();
+		return listAnnualLeave.stream().map(item -> {
+			return new AnnLeaGrantNumberImported(item.getGrantDate(), item.getGrantNumberDays());
+		}).collect(Collectors.toList());
 	}
 
 	@Override

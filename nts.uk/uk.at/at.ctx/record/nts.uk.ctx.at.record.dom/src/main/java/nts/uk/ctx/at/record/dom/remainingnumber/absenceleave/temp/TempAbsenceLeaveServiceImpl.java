@@ -7,9 +7,11 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -71,10 +73,10 @@ public class TempAbsenceLeaveServiceImpl implements TempAbsenceLeaveService {
 				ClosureStatus.UNTREATED,
 				period.start(),
 				period.end(),
-				new AttendanceDaysMonth(occurDays),
-				new AttendanceDaysMonth(usedDays),
-				new AttendanceDaysMonth(remainDays),
-				new AttendanceDaysMonth(carryforwardDays),
-				new AttendanceDaysMonth(0.0));
+				new RemainDataDaysMonth(occurDays),
+				new RemainDataDaysMonth(usedDays),
+				new AttendanceDaysMonthToTal(remainDays),
+				new AttendanceDaysMonthToTal(carryforwardDays),
+				new RemainDataDaysMonth(0.0));
 	}
 }
