@@ -136,7 +136,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             self.yearMonth.subscribe(value => {
                 //期間を変更する
-                if(!nts.uk.ui.errors.hasError() && value != undefined) self.updateDate(value);
+                if(nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined) self.updateDate(value);
             });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -311,6 +311,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
             localStorage.removeItem(window.location.href + '/dpGrid');
+            nts.uk.ui.errors.clearAllGridErrors();
             service.startScreen(self.monthlyParam()).done((data) => {
                 self.dataAll(data);
                 self.itemValueAll(data.itemValues);
