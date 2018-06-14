@@ -26,12 +26,10 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRate
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.absenceleave.temp.InterimAbsenceRecruitService;
 import nts.uk.ctx.at.record.dom.remainingnumber.absenceleave.temp.TempAbsenceLeaveService;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.record.dom.remainingnumber.dayoff.temp.InterimBreakDayoffService;
 import nts.uk.ctx.at.record.dom.remainingnumber.dayoff.temp.TempDayoffService;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -54,12 +52,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Getter
 public class AggregateMonthlyRecordServiceProc {
-	/** 暫定代休・休出管理データ */
-	@Inject
-	private InterimBreakDayoffService interimBreakDayoffService;
-	/** 暫定振休・振出管理データ */
-	@Inject
-	private InterimAbsenceRecruitService interimAbsRecService;
 	/** 月別集計が必要とするリポジトリ */
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	/** 期間中の年休積休残数を取得 */
@@ -769,8 +761,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getAbsenceLeaveRemainList().add(
 				this.tempAbsenceLeaveService.algorithm(this.companyId, this.employeeId, this.yearMonth,
 						period, this.closureId, this.closureDate));
-		// 暫定振休・振出管理データを削除
-		this.interimAbsRecService.remove(employeeId, period);
+		
 	}
 	
 	/**
@@ -782,8 +773,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getMonthlyDayoffRemainList().add(
 				this.tempDayoffService.algorithm(this.companyId, this.employeeId, this.yearMonth,
 						period, this.closureId, this.closureDate));
-		// 暫定代休・休出管理データを削除
-		this.interimBreakDayoffService.remove(employeeId, period);
+		
 	}
 	
 	/**
