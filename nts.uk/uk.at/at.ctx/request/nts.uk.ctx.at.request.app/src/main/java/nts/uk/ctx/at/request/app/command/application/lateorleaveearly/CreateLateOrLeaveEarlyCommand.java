@@ -17,7 +17,7 @@ public class CreateLateOrLeaveEarlyCommand {
 	private String appID;
 	
     /** 申請日*/
-	private GeneralDate applicationDate;
+	private String applicationDate;
 	
 	private int prePostAtr;
 	
@@ -56,5 +56,9 @@ public class CreateLateOrLeaveEarlyCommand {
 	
 	/** 申請理由 appReason */
 	private String appReason;
+	
+	public GeneralDate getApplicationDate() {
+	return GeneralDate.fromString(this.applicationDate, "yyyy/MM/dd");
+	}
 
 }
