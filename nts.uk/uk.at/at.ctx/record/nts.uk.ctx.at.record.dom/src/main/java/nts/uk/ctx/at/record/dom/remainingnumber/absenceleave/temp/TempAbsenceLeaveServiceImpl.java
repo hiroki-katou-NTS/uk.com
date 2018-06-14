@@ -36,8 +36,7 @@ public class TempAbsenceLeaveServiceImpl implements TempAbsenceLeaveService {
 	public AbsenceLeaveRemainData algorithm(String companyId, String employeeId, YearMonth yearMonth,
 			DatePeriod period, ClosureId closureId, ClosureDate closureDate) {
 		
-		// 暫定振休・振出管理データを削除
-		this.interimAbsRecService.remove(employeeId, period);
+		
 		
 		// 月初の振休残数を取得　→　繰越数
 		Double carryforwardDays = this.absRecMngQuery.useDays(employeeId);

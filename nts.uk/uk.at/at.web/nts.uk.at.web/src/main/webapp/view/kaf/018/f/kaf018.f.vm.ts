@@ -35,6 +35,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         dataWkpSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
+        multiSelectedWorkplaceId: Array<any>;
 
         // 実績確認済
         colorConfirmed = 'bg-actual-verified';
@@ -85,6 +86,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.isConfirmData = params.isConfirmData;
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
+                self.multiSelectedWorkplaceId = params.multiSelectedWorkplaceId;
             }
 
             self.dtPrev(new Date(self.startDateFormat));
@@ -335,7 +337,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.setColorForCellHeaderDetail().done(function(detailHeaderDeco) {
                     let initExTable = self.setFormatData(leftmostDeco, detailHeaderDeco, detailContentDeco, listData);
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "64px", bodyRowHeight: "23px", bodyHeight: "308px",
+                        headerHeight: "64px", bodyRowHeight: "23px", bodyHeight: "299px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         remainSizes: false,
@@ -584,6 +586,14 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 leftmostDeco.push(new shareModel.CellColor("sName", item.index, "emp-name" + item.index));
             })
             return leftmostDeco;
+        }
+
+        goBackA() {
+            var self = this;
+            let params = {
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
+            };
+            nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);
         }
     }
 
