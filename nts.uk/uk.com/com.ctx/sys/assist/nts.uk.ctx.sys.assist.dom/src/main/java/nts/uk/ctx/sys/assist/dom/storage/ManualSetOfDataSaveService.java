@@ -642,6 +642,13 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private List<String> getTextHeaderCsv3(Class<?> type) {
+		List<String> columnCommons = new ArrayList<>();
+		for (Field field : type.getSuperclass().getDeclaredFields()) {
+			Column column = field.getDeclaredAnnotation(Column.class);
+			if (column != null)
+				columnCommons.add(column.name());
+		}
+		
 		List<String> columnNames = new ArrayList<>();
 		for (Field field : type.getDeclaredFields()) {
 			if (field.isAnnotationPresent(EmbeddedId.class)) {
@@ -658,6 +665,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}
 
 		List<String> columnFix = new ArrayList<>(LST_NAME_ID_HEADER_TABLE_CSV3);
+		columnFix.addAll(columnCommons);
 		columnFix.addAll(columnNames);
 		return columnFix;
 	}
