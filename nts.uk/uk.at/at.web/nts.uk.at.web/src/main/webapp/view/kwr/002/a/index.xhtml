@@ -35,7 +35,7 @@
 				<!--The component container-->
 				<div id="ccgcomponent" tabindex="3"></div>
 
-				<div class="drag-panel" style="margin-left: 85px; margin-top: 20px">
+				<div class="drag-panel" style="margin-left: 85px; margin-top: 30px">
 					<div style="margin-bottom: 10px">
 						<label>#{i18n.getText('KWR002_11')}</label>
 					</div>
@@ -51,7 +51,7 @@
 					</table>
 
 				</div>
-				<div class="drag-panel" style="margin-left: 30px; margin-top: 20px">
+				<div class="drag-panel" style="margin-left: 30px; margin-top: 30px">
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_17')}</div>
 					<div style="padding: 40px; margin-bottom: 40px"
 						id="daterangepicker" tabindex="5"
@@ -69,7 +69,7 @@
 							data-bind="ntsComboBox: {
 								options: attendanceRecordList,
 								optionsValue: 'code',
-								visibleItemsCount: 20,
+								visibleItemsCount: 10,
 								value: selectedCode,
 								optionsText: 'name',
 								editable:  false,
@@ -88,13 +88,7 @@
 
 				</div>
 			</div>
-			<hr></hr>
-			<div id="foot-area" class="fixed-flex-layout">
-				<!-- <div class="buttons">
-					<button class="proceed x-large">#{i18n.getText('KWR002_120')}</button>
-					<button>#{i18n.getText('KWR002_121')}</button>
-				</div> -->
-			</div>
+			
 		</ui:define>
 	</ui:composition>
 </body>
