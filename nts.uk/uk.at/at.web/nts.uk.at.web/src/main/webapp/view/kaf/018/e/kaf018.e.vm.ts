@@ -183,6 +183,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 listWkp: self.listWkpActive,
                 selectedWplIndex: index(),
                 listEmployeeCode: self.listEmpCd,
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
             };
             nts.uk.request.jump('/view/kaf/018/f/index.xhtml', params);
         }
