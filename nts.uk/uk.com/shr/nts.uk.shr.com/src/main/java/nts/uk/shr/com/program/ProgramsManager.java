@@ -1908,7 +1908,9 @@ public class ProgramsManager {
 			"/view/kdl/030/a/index.xhtml");
 	//KDL034
 	public static final Program KDL034 = new Program(WebAppId.AT, ProgramIdConsts.KDL034, "KDL034_1",
-			"/view/kdl/034/a/index.xhtml");	/** CCG009 */
+			"/view/kdl/034/a/index.xhtml");
+
+	/** CCG009 */
 	public static final Program CCG009A = new Program(WebAppId.COM, ProgramIdConsts.CCG009A, "CCG009_1",
 			"/view/ccg/009/index.xhtml");
 
