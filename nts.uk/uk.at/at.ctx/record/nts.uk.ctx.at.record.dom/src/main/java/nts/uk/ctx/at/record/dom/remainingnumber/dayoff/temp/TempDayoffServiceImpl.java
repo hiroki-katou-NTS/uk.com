@@ -60,7 +60,8 @@ public class TempDayoffServiceImpl implements TempDayoffService {
 			if (usedDays == null) usedDays = 0.0;
 			remainDays = carryforwardDays + occurDays - usedDays;
 		}
-		
+		// 暫定代休・休出管理データを削除
+		this.interimBreakDayoffService.remove(employeeId, period);
 		// 代休月別残数データを返す
 		return new MonthlyDayoffRemainData(
 				employeeId,
