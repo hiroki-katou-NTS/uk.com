@@ -93,7 +93,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
 		final int numMonth = (int) startYm.until(endYm, ChronoUnit.MONTHS) + 1;
 		ExportData exportData = new ExportData();
-		LocalDate endYmd = LocalDate.of(startYm.getYear(), endYm.getMonthValue(), 1).plus(1, ChronoUnit.MONTHS).minus(1,
+		LocalDate endYmd = LocalDate.of(endYm.getYear(), endYm.getMonthValue(), 1).plus(1, ChronoUnit.MONTHS).minus(1,
 				ChronoUnit.DAYS);
 		List<String> employeeIds = employees.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
 		// init map employees data
@@ -248,6 +248,10 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
 			empData.setAnnualWorkSchedule(annualWorkScheduleData);
 		});
+		/*// アルゴリズム「任意項目の作成」を実行する
+		this.createOptionalItems2(exportData, yearMonthPeriod, employeeIds,
+				listItemOut.stream().filter(item -> !item.isItem36AgreementTime()).collect(Collectors.toList()),
+				startYm, numMonth);*/
 	}
 
 	/**
@@ -316,6 +320,19 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		return data;
 	}
 
+	private void createOptionalItems2(ExportData exportData, YearMonthPeriod yearMonthPeriod, List<String> employeeIds,
+			List<ItemOutTblBook> listItemOut, YearMonth startYm, int numMonth) {
+		listItemOut.forEach(itemOut -> {
+			// アルゴリズム「出力項目の値の算出」を実行する
+			Map<String, AnnualWorkScheduleData> empData = this.createOptionalItem2(yearMonthPeriod, employeeIds,
+					itemOut, startYm, numMonth);
+			employeeIds.forEach(empId -> {
+				AnnualWorkScheduleData data = empData.get(empId);
+				exportData.getEmployees().get(empId).getAnnualWorkSchedule().put(itemOut.getCd().v(), data);
+			});
+		});
+	}
+
 	/**
 	 * 出力項目の値の算出
 	 * 
@@ -335,6 +352,25 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// アルゴリズム「月平均の算出」を実行する
 		return AnnualWorkScheduleData
 				.fromMonthlyAttendanceList(itemOutTblBook, monthlyAttendanceResult, startYm, numMonth).calc();
+	}
+
+	private Map<String, AnnualWorkScheduleData> createOptionalItem2(YearMonthPeriod yearMonthPeriod,
+			List<String> employeeIds, ItemOutTblBook itemOut, YearMonth startYm, int numMonth) {
+		// アルゴリズム「対象期間の月次データの取得」を実行する
+		List<Integer> itemIds = itemOut.getListOperationSetting().stream().map(os -> os.getAttendanceItemId())
+				.collect(Collectors.toList());
+		List<MonthlyAttendanceResultImport> monthlyAttendanceResult = monthlyAttendanceItemAdapter
+				.getMonthlyValueOf(employeeIds, yearMonthPeriod, itemIds);
+		// アルゴリズム「月平均の算出」を実行する
+		Map<String, AnnualWorkScheduleData> empData = new HashMap<>();
+		employeeIds.forEach(empId -> {
+			List<MonthlyAttendanceResultImport> listMonthly = monthlyAttendanceResult.stream()
+					.filter(x -> x.getEmployeeId().equals(empId)).collect(Collectors.toList());
+			// アルゴリズム「月平均の算出」を実行する
+			empData.put(empId, AnnualWorkScheduleData
+					.fromMonthlyAttendanceList(itemOut, listMonthly, startYm, numMonth).calc());
+		});
+		return empData;
 	}
 
 	/**
