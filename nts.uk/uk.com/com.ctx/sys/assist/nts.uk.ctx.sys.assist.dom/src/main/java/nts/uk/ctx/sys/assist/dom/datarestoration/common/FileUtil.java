@@ -9,18 +9,14 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.ejb.Stateless;
-
+import java.util.Objects;
 import org.apache.commons.csv.CSVFormat;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
 
-@Stateless
 public class FileUtil {
 
 	private static final String NEW_LINE_CHAR = "\r\n";
@@ -70,23 +66,13 @@ public class FileUtil {
 		List<List<String>> result = new ArrayList<>();
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
-			List<String> data = new ArrayList<>();
-			if (csvParsedResult.getRecords().size() > 0) {
-				NtsCsvRecord colHeader = csvParsedResult.getRecords().get(0);
-				for (int i = 0; i <= colHeader.columnLength(); i++) {
-					data.add((String) colHeader.getColumn(i));
+			List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
+			for (NtsCsvRecord record : allRecord) {
+				List<String> data = new ArrayList<>();
+				for (int i = 0; i < record.columnLength(); i++) {
+					data.add((String) record.getColumn(i));
 				}
 				result.add(data);
-			}
-
-			List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
-			if (allRecord.size() > 1) {
-				for (NtsCsvRecord record : allRecord) {
-					for (int i = 1; i < record.columnLength(); i++) {
-						data.add((String) record.getColumn(i));
-					}
-					result.add(data);
-				}
 			}
 
 		} catch (IOException e) {
@@ -102,20 +88,12 @@ public class FileUtil {
 		List<List<String>> result = new ArrayList<>();
 		try {
 			InputStream inputStream = createInputStreamFromFile(fileId, fileName);
-			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
-			List<String> data = new ArrayList<>();
-			if (csvParsedResult.getRecords().size() > 0) {
-				NtsCsvRecord colHeader = csvParsedResult.getRecords().get(0);
-				for (int i = 0; i <= colHeader.columnLength(); i++) {
-					data.add((String) colHeader.getColumn(i));
-				}
-				result.add(data);
-			}
-
-			List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
-			if (allRecord.size() > 1) {
+			if (!Objects.isNull(inputStream)){
+				CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
+				List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
 				for (NtsCsvRecord record : allRecord) {
-					for (int i = 1; i < record.columnLength(); i++) {
+					List<String> data = new ArrayList<>();
+					for (int i = 0; i < record.columnLength(); i++) {
 						data.add((String) record.getColumn(i));
 					}
 					result.add(data);
@@ -155,11 +133,19 @@ public class FileUtil {
 	}
 
 	public static InputStream createInputStreamFromFile(String fileId, String fileName) {
-		String filePath = DATA_STORE_PATH + "//packs//" + fileId + "//temp//" + fileName + ".csv";
+		String filePath = DATA_STORE_PATH + "//packs//" + fileId + "temp//" + fileName + ".csv";
 		try {
 			return new FileInputStream(new File(filePath));
 		} catch (FileNotFoundException e) {
 			return null;
 		}
+	}
+
+	public static String getStoragePath() {
+		return DATA_STORE_PATH;
+	}
+
+	public static String getCsvStoragePath(String fileId) {
+		return DATA_STORE_PATH + "//packs//" + fileId + "temp";
 	}
 }

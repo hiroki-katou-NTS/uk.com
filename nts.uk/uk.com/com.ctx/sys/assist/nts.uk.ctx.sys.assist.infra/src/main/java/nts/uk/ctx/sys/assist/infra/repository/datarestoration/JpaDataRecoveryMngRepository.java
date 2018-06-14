@@ -11,7 +11,9 @@ import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoveryMng;
 
 @Stateless
 public class JpaDataRecoveryMngRepository extends JpaRepository implements DataRecoveryMngRepository {
-
+	
+	public static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtDataRecoveryMng t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId ";
+	
 	@Override
 	public Optional<DataRecoveryMng> getDataRecoveryMngById(String dataRecoveryProcessId) {
 		return Optional
@@ -31,5 +33,32 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 	@Override
 	public void remove(String dataRecoveryProcessId) {
 		this.commandProxy().remove(SspmtDataRecoveryMng.class, dataRecoveryProcessId);
+	}
+
+	@Override
+	public void updateByOperatingCondition(String dataRecoveryProcessId, int operatingCondition) {
+		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId, SspmtDataRecoveryMng.class);
+		entity.ifPresent(x->{
+			x.operatingCondition = operatingCondition;
+			this.commandProxy().update(x);
+		});
+	}
+
+	@Override
+	public void updateTotalNumOfProcesses(String dataRecoveryProcessId, int totalNumOfProcesses) {
+		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId, SspmtDataRecoveryMng.class);
+		entity.ifPresent(x->{
+			x.totalNumOfProcesses = totalNumOfProcesses;
+			this.commandProxy().update(x);
+		});
+	}
+
+	@Override
+	public void updateProcessTargetEmpCode(String dataRecoveryProcessId, String processTargetEmpCode) {
+		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId, SspmtDataRecoveryMng.class);
+		entity.ifPresent(x->{
+			x.processTargetEmpCode = processTargetEmpCode;
+			this.commandProxy().update(x);
+		});
 	}
 }
