@@ -144,7 +144,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   WorkFlexAdditionSet flexAddSetting,
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
-			   AutoCalAtrOvertime overTimeAutoCalcAtr,
 			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
@@ -174,7 +173,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																		 flexAddSetting,
 				   																		 regularAddSetting,
 				   																		 holidayAddtionSet,
-				   																		 overTimeAutoCalcAtr,
 				   																		 workTimeDailyAtr,
 				   																		 flexCalcMethod,
 				   																		 holidayCalcMethodSet,
@@ -219,7 +217,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   WorkFlexAdditionSet flexAddSetting,
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
-			   AutoCalAtrOvertime overTimeAutoCalcAtr,
 			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
@@ -244,10 +241,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		//実績,予定で渡す予定(今は実績のみ渡してる)　****要修正***
 		val workScheduleTime = calcWorkSheduleTime(recordOneDay,scheduleOneDay,schePreTimeSet, recordWorkType,scheWorkType, 
 												   personalCondition, vacationClass, workingSystem, 
-												   illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet, overTimeAutoCalcAtr, 
+												   illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,
 												   workTimeDailyAtr, flexCalcMethod, holidayCalcMethodSet, bonusPayAutoCalcSet, 
 												   calcAtrOfDaily, eachWorkTimeSet, eachCompanyTimeSet, breakTimeCount, integrationOfDaily, 
-												   flexSetting, coreTimeSetting);
+												   coreTimeSetting);
 		/*日別実績の実績時間の計算*/
 		val actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(recordOneDay,personalCondition,
 				    vacationClass,
@@ -257,7 +254,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				    flexAddSetting,
 				    regularAddSetting,
 				    holidayAddtionSet,
-				    overTimeAutoCalcAtr,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    holidayCalcMethodSet,
@@ -273,7 +269,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					fixRestTimeSetting,
 					integrationOfDaily,
 					scheWorkType, 
-					flexSetting, 
 					dailyUnit,
 					workScheduleTime,coreTimeSetting);
 		
@@ -345,12 +340,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 															   WorkingSystem workingSystem, 
 															   WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
 															   WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet, 
-															   AutoCalAtrOvertime overTimeAutoCalcAtr, Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
+															   Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
 															   Optional<SettingOfFlexWork> flexCalcMethod, HolidayCalcMethodSet holidayCalcMethodSet, 
 															   BonusPayAutoCalcSet bonusPayAutoCalcSet, 
 															   CalAttrOfDailyPerformance calcAtrOfDaily, List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, 
 															   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, int breakTimeCount, 
-															   IntegrationOfDaily integrationOfDaily, AutoCalFlexOvertimeSetting flexAutoCalSet, 
+															   IntegrationOfDaily integrationOfDaily, 
 															   Optional<CoreTimeSetting> coreTimeSetting) {
 		//勤務予定時間を計算
 		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheduleOneDay,
@@ -362,7 +357,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 																   flexAddSetting, 
 																   regularAddSetting, 
 																   holidayAddtionSet, 
-																   overTimeAutoCalcAtr, 
 																   workTimeDailyAtr, 
 																   flexCalcMethod, 
 																   holidayCalcMethodSet, 
@@ -372,7 +366,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 																   eachCompanyTimeSet, 
 																   breakTimeCount, 
 																   integrationOfDaily, 
-																   flexAutoCalSet, 
 																   coreTimeSetting);
 		int overWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime():0;
