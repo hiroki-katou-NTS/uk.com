@@ -384,9 +384,10 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (listWorkplaceHistItem != null) {
 			optWorkplaceHistItem = listWorkplaceHistItem.stream()
 					.filter(workplaceHistItem -> workplaceHistItem.getPeriod().contains(targetDate)).findFirst();
-			if (!optWorkplaceHistItem.isPresent()) {
-				return true;
-			}
+		} 
+
+		if (!optWorkplaceHistItem.isPresent()) {
+			return true;
 		}
 
 		// 取得した職場IDとパラメータ.職場IDを比較する
