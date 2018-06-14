@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -81,12 +82,20 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	 */
 	@Override
 	public void remove(List<String> usersID) {
-		usersID.forEach(id-> {
-			SgwmtLockoutDataPK pk = new SgwmtLockoutDataPK();
-			pk.setUserId(id);
-			this.commandProxy().remove(SgwmtLockoutData.class, pk);
-		});
-		
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaDelete<SgwmtLockoutData> cq = criteriaBuilder.createCriteriaDelete(SgwmtLockoutData.class);
+		Root<SgwmtLockoutData> root = cq.from(SgwmtLockoutData.class);
+
+		// Add where conditions
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		for (String userID : usersID) {
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId), userID));
+		}
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		em.createQuery(cq).executeUpdate();
 	}
 
 	/* (non-Javadoc)
@@ -111,12 +120,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 
 		//Get Result
 		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
-		if (result.isEmpty()) {
-			return null;
-		} else {
-			lstLockOutData = result.stream().map(this::toDomain).collect(Collectors.toList());
-			return lstLockOutData;
-		}
+		return result.stream().map(this::toDomain).collect(Collectors.toList());
 	}
 	
 	/**

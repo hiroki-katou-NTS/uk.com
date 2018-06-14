@@ -10,7 +10,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 
+/**
+ * Gets the lst user id.
+ *
+ * @return the lst user id
+ */
 @Getter
+
+/**
+ * Sets the lst user id.
+ *
+ * @param lstUserId the new lst user id
+ */
 @Setter
 public class LockOutDataDeleteCommand {
 	

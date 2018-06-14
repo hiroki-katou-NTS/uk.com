@@ -5,6 +5,7 @@ import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
     export module viewmodel {
 
         export class ScreenModel {
+            
             dataSource: any;
             selectedList: any;
 
@@ -23,13 +24,14 @@ import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
                 features.push({ name: 'Sorting', type: 'local' });
                 features.push({ name: 'RowSelectors', enableCheckBoxes: multiple, enableRowNumbering: true });
 
-                $("#grid").igGrid({
+                $("#cli001-igGrid").igGrid({
                     columns: [
                         { headerText: nts.uk.resource.getText(""),key: "userId", dataType: "string",hidden: true  },
                         { headerText: nts.uk.resource.getText("CLI001_12"),key: "loginId", dataType: "string",width: 100 },
                         { headerText: nts.uk.resource.getText("CLI001_13"), key: "userName" ,dataType: "string",width: 170},
                         { headerText: nts.uk.resource.getText("CLI001_14"), key: "lockOutDateTime", dataType: "string",width: 200},
-                        { headerText: nts.uk.resource.getText("CLI001_15"), key: "logType", dataType: "number",width: 300},
+                        { headerText: nts.uk.resource.getText("CLI001_15"), key: "logType", dataType: "string",width: 300,
+                            formatter: v => v == 1 ? '強制ロック' : ''},
                     ],
                     features: [{
                         name: 'Selection',
@@ -39,7 +41,11 @@ import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
                         rowSelectionChanged: this.selectionChanged.bind(this)
                     },
                         { name: 'Sorting', type: 'local' },
-                        { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }
+                        { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true },
+                        { name: 'Paging',
+                            pageSize: 100,
+                            currentPageIndex: 0
+                        },
                     ],
                     virtualization: true,
                     virtualizationMode: 'continuous',
@@ -48,8 +54,8 @@ import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
                     primaryKey: "userId",
                     dataSource: self.dataSource
                 });
-                $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
-                $("#grid").setupSearchScroll("igGrid", true);
+                $("#cli001-igGrid").closest('.ui-iggrid').addClass('nts-gridlist');
+                $("#cli001-igGrid").setupSearchScroll("igGrid", true);
 
             }
 
@@ -71,8 +77,8 @@ import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
                 let dfd = $.Deferred<any>();
                  service.findAll().done((data: Array<LockOutDataDto>) => {
                    _self.dataSource = data;
-                     $("#grid").igGrid("dataSourceObject", _self.dataSource);
-                       $("#grid").igGrid("dataBind"); 
+                     $("#cli001-igGrid").igGrid("dataSourceObject", _self.dataSource);
+                       $("#cli001-igGrid").igGrid("dataBind"); 
                     dfd.resolve();
                 }).fail((res: any) => {
                    
@@ -81,25 +87,53 @@ import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
 
                 return dfd.promise();
             }
-
+            
+            /**
+            * open dialog
+            */
+            public openDialogUserInfo(){
+                 nts.uk.ui.windows.setShared("CLI_DIALOG_B_INPUT_DATA");
+                    nts.uk.ui.windows.sub.modal("/view/cli/001/b/index.xhtml").onClosed(() => {
+                        nts.uk.ui.block.clear();
+                    });
+            }
+            
+             /**
+             * Set focus
+             */
+            public setInitialFocus(): void {
+                let self = this;
+                 
+                if (_.isEmpty(self.dataSource)) {
+                    $('#add-Lock').focus();
+               }else {
+                     $('#tableGrid').focus();
+               }
+            }
 
 
             /**
             * Save
             */
             public save() {
+                
                 var self = this;
                 if (_.isEmpty(self.selectedList())) {
+                    $('#add-Lock').focus();
                     nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: "CLI001_25" });
                 }
                 else {
+                    $('#tableGrid').focus();
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(() => {
 
-                            service.removeLockOutData(self.selectedList()).done(() => {
+                            let command = {lstUserId:self.selectedList()};
+                            service.removeLockOutData(command).done(() => {
                                 nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(function() {
                                     //Search again and display the screen
-                                    
+                                     $("#cli001-igGrid").igGrid("dataSourceObject", _self.dataSource);
+                                     $("#cli001-igGrid").igGrid("dataBind"); 
+                              
                                 }).fail((res: any) => {
                                     return;
                                 });
@@ -118,3 +152,4 @@ import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
 
             }
         }
+        }}

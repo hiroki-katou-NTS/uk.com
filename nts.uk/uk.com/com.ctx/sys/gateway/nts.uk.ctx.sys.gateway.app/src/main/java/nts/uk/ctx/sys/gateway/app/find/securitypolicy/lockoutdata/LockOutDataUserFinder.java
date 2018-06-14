@@ -38,28 +38,27 @@ public class LockOutDataUserFinder {
 	 *
 	 * @return the list
 	 */
-	public List<LockOutDataUserDto> findAll(){
-		
+	public List<LockOutDataUserDto> findAll() {
+
 		List<LockOutDataUserDto> lstLockOutDataUserDto = new ArrayList<LockOutDataUserDto>();
 		String contractCd = AppContexts.user().contractCode();
-		
+
 		List<LockOutData> lstLockOutData = lockOutDataRepository.findByContractCode(contractCd);
-		lstLockOutData.forEach(item->{
-			LockOutDataUserDto lockOutDataUserDto = new LockOutDataUserDto();
-			if(item != null){
-				lockOutDataUserDto.setLockOutDateTime(item.getLockOutDateTime());
-				lockOutDataUserDto.setLogType((item.getLogType().value));
-				lockOutDataUserDto.setUserId(item.getUserId());
-			}
-			Optional<UserImport> findByUserId = userAdapter.findByUserId(item.getUserId());
-			if(findByUserId.isPresent()){
-				lockOutDataUserDto.setLoginId(findByUserId.get().getLoginId());
-				lockOutDataUserDto.setUserName(findByUserId.get().getUserName());
-			}
-			lstLockOutDataUserDto.add(lockOutDataUserDto);
-			
-		});
-		
+			lstLockOutData.forEach(item -> {
+				LockOutDataUserDto lockOutDataUserDto = new LockOutDataUserDto();
+				if (item != null) {
+					lockOutDataUserDto.setLockOutDateTime(item.getLockOutDateTime());
+					lockOutDataUserDto.setLogType((item.getLogType().value));
+					lockOutDataUserDto.setUserId(item.getUserId());
+				}
+				Optional<UserImport> findByUserId = userAdapter.findByUserId(item.getUserId());
+				if (findByUserId.isPresent()) {
+					lockOutDataUserDto.setLoginId(findByUserId.get().getLoginId().trim());
+					lockOutDataUserDto.setUserName(findByUserId.get().getUserName());
+				}
+				lstLockOutDataUserDto.add(lockOutDataUserDto);
+
+			});
 		return lstLockOutDataUserDto;
 	}
 
