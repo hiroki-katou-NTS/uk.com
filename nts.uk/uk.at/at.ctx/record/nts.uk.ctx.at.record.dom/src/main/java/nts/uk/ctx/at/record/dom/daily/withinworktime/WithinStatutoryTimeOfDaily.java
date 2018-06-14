@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
@@ -106,7 +107,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   WorkFlexAdditionSet flexAddSetting,
 			   												   WorkRegularAdditionSet regularAddSetting,
 			   												   HolidayAddtionSet holidayAddtionSet,
-			   												   AutoCalAtrOvertime autoCalcSet,
+			   												   CalAttrOfDailyPerformance autoCalcSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet, 
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
@@ -161,7 +162,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   HolidayAddtionSet holidayAddtionSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet,
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
-			   												   AutoCalAtrOvertime autoCalcAtr, 
+			   												   CalAttrOfDailyPerformance autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
 			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting) {
@@ -187,8 +188,9 @@ public class WithinStatutoryTimeOfDaily {
 						  									 calcMethod,
 						  									 autoCalcAtr,
 						  									 flexCalcMethod.get(),
-						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT,
-						  									 preFlexTime,coreTimeSetting
+						  									 preFlexTime,
+						  									 coreTimeSetting,
+						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT
 						   );
 			}
 			else {
