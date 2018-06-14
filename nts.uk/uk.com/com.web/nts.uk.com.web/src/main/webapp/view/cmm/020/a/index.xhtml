@@ -22,22 +22,25 @@
 				<!-- A1_1 -->
 				<button tabindex="1" data-bind="click: newItem">#{i18n.getText('CMM020_1')}</button>
 				<!-- A1_2 -->
-				<button tabindex="2" data-bind="click: createEra" class="proceed">#{i18n.getText('CMM020_2')}</button>
+				<button tabindex="2"
+					data-bind="click: createEra,enable: activeUpdate" class="proceed">#{i18n.getText('CMM020_2')}</button>
 				<!-- A1_4 -->
-				<button tabindex="3" data-bind="click: deleteEra" class="danger"
-					style="margin-right: 0px;">#{i18n.getText('CMM020_4')}</button>
+				<button tabindex="3"
+					data-bind="click: deleteEra,enable: activeDelete" class="danger"
+					style="margin-left: 170px;">#{i18n.getText('CMM020_4')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left"
 					style="padding-top: 20px; padding-left: 20px; margin-right: 5px;">
 					<!-- A2_1 -->
 					<div
-						data-bind="ntsPanel:{width: '260px', height: '410px', showIcon: false, visible: true, direction: 'right'}">
+						data-bind="ntsPanel:{width: '260px', height: '390px', showIcon: false, visible: true, direction: 'right'}">
 						<!-- A2_2 -->
 						<div>
 							<table id="single-list" tabindex="6"
 								data-bind="ntsGridList: {
-								width: 260,
+									name: '#[CMM020_5]',
+									width: 260,
 									height: 390,
 									options: dataSource,
 									optionsValue: 'eraId',
@@ -55,66 +58,66 @@
 					<div class="table fixed-height">
 						<table>
 							<colgroup>
-								<col width="230" />
+								<col width="130" />
 								<col width="*" />
 							</colgroup>
 							<tbody>
-								<tr style="margin-top: 5px;" class="row">
-									<td colspan="1" class="th-col1">
+								<tr class="row">
+									<td>
 										<!-- A3_1 -->
-										<div class="form-label"
-											data-bind="ntsFormLabel: {required: true, constraint: currentName">#{i18n.getText('CMM020_6')}</div>
+										<div
+											data-bind="ntsFormLabel: {constraint: 'EraName',required: true}">#{i18n.getText('CMM020_6')}</div>
 									</td>
+									<td colspan="2" class="th-col2">
+										<div>
+											<input
+												data-bind="ntsTextEditor: {
+													value:currentName,
+													constraint: 'EraName',
+													required: true,
+													enable: true,
+													readonly: !activeUpdate(),
+													option: {width: '55px'}}" />
+										</div>
+									</td>
+								</tr>
 
-									<td colspan="2" class="th-col2">
-										<div data-bind="with: texteditor" class="form-label">
+								<tr class="row">
+									<td>
+										<!-- A3_1 -->
+										<div
+											data-bind="ntsFormLabel: {constraint: 'SymbolName',required: true}">#{i18n.getText('CMM020_7')}</div>
+									</td>
+									<td>
+										<div>
 											<input
 												data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+													value:currentSymbol,
+													constraint: 'SymbolName',
+													required: true,
+													enable: true,
+													readonly: !activeUpdate(),
+													option: {width: '55px'}}" />
 										</div>
 									</td>
 								</tr>
-								<tr style="margin-top: 20px;">
-									<td colspan="1" class="th-col1">
-										<div class="form-label"
-											data-bind="ntsFormLabel: {required: true, constraint: currentSymbol">#{i18n.getText('CMM020_7')}</div>
+
+								<tr class="row">
+									<td>
+										<!-- A3_1 -->
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM020_8')}</div>
 									</td>
-									<!-- A3_4 -->
-									<td colspan="2" class="th-col2">
-										<div data-bind="with: texteditor" class="form-label">
+									<td>
+										<div>
 											<input
-												data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
-										</div>
-									</td>
-								</tr>
-								<tr style="margin-top: 20px;">
-									<td colspan="1" class="th-col1">
-										<!-- A3_5 -->
-										<div class="form-label"
-											data-bind="ntsFormLabel: {required: true, constraint: currentStartDate">#{i18n.getText('CMM020_8')}</div>
-									</td>
-									<!-- A3_6 -->
-									<td colspan="2" class="th-col2">
-										<div data-bind="with: texteditor" class="form-label">
-											<input
-												data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												data-bind="ntsTimeEditor: {
+													value: currentStartDate,
+													option: {width: '100px'},
+													required: true,
+													enable: true,
+													readonly: !activeUpdate(),
+													immediate: false,
+													inputFormat: 'date'}" />
 										</div>
 									</td>
 								</tr>

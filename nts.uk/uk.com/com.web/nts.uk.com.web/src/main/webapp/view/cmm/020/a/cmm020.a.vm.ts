@@ -1,8 +1,8 @@
 module nts.uk.com.view.cmm020.a {
     //    import MasterCopyDataCommand = nts.uk.com.view.cmm001.f.model.MasterCopyDataCommand;
+    const LAST_INDEX_ERA_NAME_SYTEM: number = 3;
     export module viewmodel {
         export class ScreenModel {
-
             texteditor: any;
             simpleValue: KnockoutObservable<string>;
 
@@ -16,10 +16,15 @@ module nts.uk.com.view.cmm020.a {
             currentSymbol: KnockoutObservable<string>;
             currentStartDate: KnockoutObservable<string>;
             currentCode: KnockoutObservable<string>;
+            eraSelected: KnockoutObservable<model.EraItem>;
+            activeUpdate: KnockoutObservable<boolean>;
+            activeDelete: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
 
+                self.activeUpdate = ko.observable(false);
+                self.activeDelete = ko.observable(false);
                 self.simpleValue = ko.observable("123");
                 self.texteditor = {
                     value: ko.observable(''),
@@ -41,6 +46,7 @@ module nts.uk.com.view.cmm020.a {
                     { headerText: nts.uk.resource.getText('CMM020_8'), key: 'startDate', width: 70, formatter: _.escape }
                 ]);
 
+                self.eraSelected = ko.observable(null);
                 self.dataSource = ko.observableArray([]);
                 self.eraName = ko.observable('');
                 self.eraSymbol = ko.observable('');
@@ -50,6 +56,25 @@ module nts.uk.com.view.cmm020.a {
                 self.currentSymbol = ko.observable('');
                 self.currentStartDate = ko.observable('');
                 self.currentCode = ko.observable('');
+                self.currentCode.subscribe(function(codeChanged) {
+                    self.clearError();
+                    if (codeChanged == undefined || codeChanged == "") {
+                        self.refreshEraShow();
+                        self.activeUpdate(false);
+                        self.activeDelete(false);
+                    } else {
+                        let currentEra = self.dataSource().filter(e => e.eraId === codeChanged)[0];
+                        if (!_.isEmpty(currentEra)) {
+                            self.eraSelected(currentEra);
+                            self.setValueCurrentEraShow(currentEra);
+                            //check era is system value, set active btn update and delete
+                            var indexOfEraSelected = self.dataSource().indexOf(currentEra);
+                            self.activeUpdate(indexOfEraSelected > LAST_INDEX_ERA_NAME_SYTEM);
+                            self.activeDelete(indexOfEraSelected == self.dataSource().length - 1);
+
+                        };
+                    }
+                });
             }
 
             /**
@@ -59,14 +84,22 @@ module nts.uk.com.view.cmm020.a {
                 let self = this;
                 var dfd = $.Deferred();
 
+                //call ws get all era
+                var listEraName: model.EraItem[] = [];
                 for (let i = 0; i <= 3; i++) {
-                    this.dataSource.push(new model.EraItem("test"+i, "00"+i, "fsf", "fdsfas"));
+                    listEraName.push(new model.EraItem("code" + i, "Name" + i, "Sb" + i, "2018/06/1" + (5-i)));
                 }
-
-                //                service.getEraList().then(function(listEra: Array<model.EraItem>) {
-                //                    self.listEra(listEra);
-                //                    dfd.resolve();
-                //                });
+                listEraName.push(new model.EraItem("code5", "CusName", "CusSb", "2018/06/25"));
+                listEraName.push(new model.EraItem("code6", "222", "222", "2018/06/23"));
+                if (listEraName === undefined || listEraName.length == 0) {
+                    self.dataSource();
+                } else {
+                    self.dataSource(listEraName);
+                    let eraNameFirst = _.first(listEraName);
+                    self.currentCode(eraNameFirst.eraId);
+                    self.setValueCurrentEraShow(eraNameFirst);
+                }
+                console.log(!self.activeUpdate());
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -98,8 +131,26 @@ module nts.uk.com.view.cmm020.a {
                     console.log(res);
                 });
             }
-        }
+            private setValueCurrentEraShow(currentEra: model.EraItem) {
+                var self = this;
+                self.currentName(currentEra.eraName);
+                self.currentSymbol(currentEra.eraSymbol);
+                self.currentStartDate(currentEra.startDate);
+            }
+            private refreshEraShow() {
+                var self = this;
+                self.currentName('');
+                self.currentSymbol('');
+                self.currentStartDate('');
+            }
+            clearError(): void {
+                if ($('.nts-editor').ntsError("hasError")) {
+                    $('.nts-input').ntsError('clear');
+                }
+            }
 
+
+        }
         export module model {
 
             export class EraItem {
