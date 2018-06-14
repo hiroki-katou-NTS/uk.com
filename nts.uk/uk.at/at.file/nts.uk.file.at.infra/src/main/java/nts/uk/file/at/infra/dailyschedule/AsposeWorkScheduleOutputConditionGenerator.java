@@ -776,7 +776,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}).collect(Collectors.toList());
 		workplaceData.setGrossTotal(lstWorkplaceGrossTotal);
 		workplaceData.getLstChildWorkplaceReportData().values().forEach(child -> {
-			child.getWorkplaceTotal().getTotalWorkplaceValue().stream().forEach(val -> {
+			child.getGrossTotal().stream().forEach(val -> {
 				int attendanceId = val.getAttendanceId();
 				
 				switch (val.getValueType()) {
