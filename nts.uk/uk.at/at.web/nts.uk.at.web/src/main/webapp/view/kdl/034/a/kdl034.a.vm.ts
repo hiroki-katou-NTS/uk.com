@@ -18,6 +18,7 @@ module nts.uk.at.view.kdl034.a {
                 var self = this;
                 let param = getShared("KDL034_PARAM");
                 self.appID = param.appID;
+                self.version = param.version;
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -29,7 +30,6 @@ module nts.uk.at.view.kdl034.a {
                             let applicant = result.applicant;
                             let approvalFrame = result.approvalFrameDtoForRemand;
                             let listApprover: Array<Approver> = [];
-                            self.version = result.version;
                             self.errorFlag = result.errorFlag;
                             applicant = new Approver(applicant.pid, applicant.pname, null, null, result.applicantPosition, false);
                             listApprover.push(applicant);
