@@ -381,7 +381,7 @@ public class AnnualLeaveInfo implements Cloneable {
 				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
 				grantDays, null,
 				0.0, null, null,
-				0.0, null,
+				grantDays, null,
 				0.0,
 				prescribedDays,
 				deductedDays,
