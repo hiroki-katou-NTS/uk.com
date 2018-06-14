@@ -33,6 +33,7 @@ import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
+import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -355,18 +356,18 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		rowCsv.put(headerCsv.get(4), tableList.getSupplementaryExplanation());
 		rowCsv.put(headerCsv.get(5), tableList.getCategoryId());
 		rowCsv.put(headerCsv.get(6), tableList.getCategoryName());
-		rowCsv.put(headerCsv.get(7), tableList.getRetentionPeriodCls());
-		rowCsv.put(headerCsv.get(8), tableList.getStorageRangeSaved());
+		rowCsv.put(headerCsv.get(7), TextResource.localize(tableList.getRetentionPeriodCls().nameId));
+		rowCsv.put(headerCsv.get(8), TextResource.localize(tableList.getStorageRangeSaved().nameId));
 		rowCsv.put(headerCsv.get(9), tableList.getScreenRetentionPeriod());
 		rowCsv.put(headerCsv.get(10), tableList.getReferenceYear());
 		rowCsv.put(headerCsv.get(11), tableList.getReferenceMonth());
-		rowCsv.put(headerCsv.get(12), tableList.getSurveyPreservation());
-		rowCsv.put(headerCsv.get(13), tableList.getAnotherComCls());
+		rowCsv.put(headerCsv.get(12), tableList.getSurveyPreservation().value);
+		rowCsv.put(headerCsv.get(13), TextResource.localize(tableList.getAnotherComCls().nameId));
 		rowCsv.put(headerCsv.get(14), tableList.getTableNo());
 		rowCsv.put(headerCsv.get(15), tableList.getTableJapaneseName());
 		rowCsv.put(headerCsv.get(16), tableList.getTableEnglishName());
-		rowCsv.put(headerCsv.get(17), tableList.getHistoryCls());
-		rowCsv.put(headerCsv.get(18), tableList.getHasParentTblFlg());
+		rowCsv.put(headerCsv.get(17), tableList.getHistoryCls() == HistoryDiviSion.NO_HISTORY ? "0：なし" : "1：あり");
+		rowCsv.put(headerCsv.get(18), tableList.getHasParentTblFlg() == NotUseAtr.NOT_USE ? "0：なし" : "1：あり");
 		rowCsv.put(headerCsv.get(19), tableList.getParentTblJpName());
 		rowCsv.put(headerCsv.get(20), tableList.getParentTblName());
 		rowCsv.put(headerCsv.get(21), tableList.getFieldParent1());
@@ -460,7 +461,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		rowCsv.put(headerCsv.get(109), tableList.getCompressedFileName());
 		rowCsv.put(headerCsv.get(110), tableList.getInternalFileName());
 		rowCsv.put(headerCsv.get(111), tableList.getDataRecoveryProcessId());
-		rowCsv.put(headerCsv.get(112), tableList.getCanNotBeOld());
+		rowCsv.put(headerCsv.get(112), tableList.getCanNotBeOld() == 0 ? "復旧しない" : "復旧する");
 		rowCsv.put(headerCsv.get(113), tableList.getSelectionTargetForRes());
 
 		dataSourceCsv.add(rowCsv);
@@ -648,7 +649,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			if (column != null)
 				columnCommons.add(column.name());
 		}
-		
+
 		List<String> columnNames = new ArrayList<>();
 		for (Field field : type.getDeclaredFields()) {
 			if (field.isAnnotationPresent(EmbeddedId.class)) {
