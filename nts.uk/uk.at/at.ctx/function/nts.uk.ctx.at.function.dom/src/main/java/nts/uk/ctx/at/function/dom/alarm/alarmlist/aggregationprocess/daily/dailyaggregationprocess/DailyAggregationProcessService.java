@@ -451,7 +451,7 @@ public class DailyAggregationProcessService {
 						if(recordWorkInfoFunAdapterDto.isPresent()) {
 							workTime = recordWorkInfoFunAdapterDto.get().getWorkTimeCode();
 
-							if(workTime == null || workTime.equals("")) continue;
+							if(workTime == null) continue;
 
 							Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
 							if(checkWorkTime.isPresent()) {
