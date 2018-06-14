@@ -795,19 +795,24 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			});
 		});
 		
-		// Calculate total of employees of current level (after calculating total of child workplace
+		// Calculate total of employees of current level (after calculating total of child workplace)
 		List<EmployeeReportData> lstReportData = workplaceData.getLstEmployeeReportData();
 		if (lstReportData != null && lstReportData.size() > 0) {
 			workplaceData.getLstEmployeeReportData().stream().forEach(employeeData -> {
 				// Put attendanceId into map
 				lstAttendanceId.stream().forEach(attendanceId -> {
 					int attendanceDisplay = attendanceId.getAttendanceDisplay();
-					employeeData.mapPersonalTotal.put(attendanceDisplay, new TotalValue(attendanceDisplay, "0", TotalValue.STRING));
-					TotalValue totalVal = new TotalValue();
-					totalVal.setAttendanceId(attendanceDisplay);
-					totalVal.setValue("0");
-					totalVal.setValueType(TotalValue.STRING);
-					lstTotalValue.add(totalVal);
+					if (!employeeData.mapPersonalTotal.containsKey(attendanceDisplay)) {
+						employeeData.mapPersonalTotal.put(attendanceDisplay, new TotalValue(attendanceDisplay, "0", TotalValue.STRING));
+						TotalValue totalVal = new TotalValue();
+						totalVal.setAttendanceId(attendanceDisplay);
+						totalVal.setValue("0");
+						totalVal.setValueType(TotalValue.STRING);
+						Optional<TotalValue> optWorkplaceTotalValue = lstTotalValue.stream().filter(x -> x.getAttendanceId() == attendanceDisplay).findFirst();
+						if (!optWorkplaceTotalValue.isPresent()) {
+							lstTotalValue.add(totalVal);
+						}
+					}
 				});
 				
 				// Add into total by attendanceId
@@ -1892,8 +1897,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			break;
 		}
 		
-		int currentPage, nextPage;
-		
 		List<DailyPersonalPerformanceData> employeeReportData = rootWorkplace.getLstDailyPersonalData();
 		if (employeeReportData != null && !employeeReportData.isEmpty()) {
 			// B4_1
@@ -2008,19 +2011,32 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			// B6_2
 			currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheet, dataRowCount, headerRowCount, maxRowPerPage, true);
 		}
-
-		// Child workplace
-		Map<String, DailyWorkplaceData> mapChildWorkplace = rootWorkplace.getLstChildWorkplaceData();
-		for (Map.Entry<String, DailyWorkplaceData> entry: mapChildWorkplace.entrySet()) {
-			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, entry.getValue(), dataRowCount, condition, headerRowCount);
 		
+		boolean firstWorkplace = true;
+
+		
+		Map<String, DailyWorkplaceData> mapChildWorkplace = rootWorkplace.getLstChildWorkplaceData();
+		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
+				condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) &&
+				mapChildWorkplace.size() > 0) && rootWorkplace.level != 0) {
+			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			
+			sheet.getHorizontalPageBreaks().add(currentRow);
+		}
+		// Child workplace
+		for (Map.Entry<String, DailyWorkplaceData> entry: mapChildWorkplace.entrySet()) {
 			// Page break by workplace
-			if (condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) {
+			if ((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
+					condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) && !firstWorkplace) {
 				Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
 	        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 				
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}
+			firstWorkplace = false;
+			
+			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, entry.getValue(), dataRowCount, condition, headerRowCount);
 		}
 		
 		// Workplace hierarchy total
