@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * @author hungnm
+ * @author HungTT
  *
  */
 @AllArgsConstructor

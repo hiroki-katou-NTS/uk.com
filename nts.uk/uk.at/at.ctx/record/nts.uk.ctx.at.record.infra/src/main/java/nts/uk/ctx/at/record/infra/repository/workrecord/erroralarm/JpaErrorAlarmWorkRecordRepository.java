@@ -31,8 +31,6 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 
 	private static final String FIND_BY_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId ";
 	private static final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.eralCheckId = :eralCheckId ";
-//	private static final String FIND_LIST_CODE = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
-//			+ " AND a.kwrmtErAlWorkRecordPK.errorAlarmCode = :errorAlarmCode ";
 	private static final String FIND_ALL_ER_AL_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
 			+ " AND a.useAtr = 1 AND a.typeAtr IN (0,1)";
 	private static final String SELECT_ERAL_BY_LIST_CODE_ERROR = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId AND s.typeAtr = 0";
@@ -81,6 +79,8 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		targetEntity.messageColor = domainAfterConvert.messageColor;
 		targetEntity.typeAtr = domainAfterConvert.typeAtr;
 		targetEntity.useAtr = domainAfterConvert.useAtr;
+		targetEntity.remarkCancelErrorInput = domainAfterConvert.remarkCancelErrorInput;
+		targetEntity.remarkColumnNo = domainAfterConvert.remarkColumnNo;
 		this.commandProxy().update(targetEntity);
 	}
 
