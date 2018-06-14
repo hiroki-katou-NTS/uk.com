@@ -1,5 +1,7 @@
 package nts.uk.file.at.app.export.dailyschedule.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,11 +28,14 @@ public class DailyWorkplaceData {
 	public DailyWorkplaceData parent;
 	
 	/** The lst daily personal data. */
-	public List<DailyPersonalPerformanceData> lstDailyPersonalData;
+	public List<DailyPersonalPerformanceData> lstDailyPersonalData = new ArrayList<>();
 	
 	/** The lst child workplace data. */
-	public Map<String, DailyWorkplaceData> lstChildWorkplaceData;
+	public Map<String, DailyWorkplaceData> lstChildWorkplaceData = new HashMap<String, DailyWorkplaceData>();
 	
 	/** The workplace total. */
 	public WorkplaceTotal workplaceTotal;
+	
+	/** The workplace hierarchy total. */
+	public WorkplaceTotal workplaceHierarchyTotal;
 }
