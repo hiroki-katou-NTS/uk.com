@@ -70,6 +70,7 @@
 					editable: false,
 					enable: true,
 					required: checkedHoliday,
+					selectFirstIfNull : false,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
@@ -116,7 +117,7 @@
 					optionsText: 'name',
 					editable: false,
 					enable: true,
-					selectFirstIfNull : true,
+					selectFirstIfNull : false,
 					required: checkedSubHoliday,
 					columns: [
 						{ prop: 'name', length: 5 },
@@ -148,8 +149,8 @@
 							optionsText: 'name',
 							editable: false,
 							enable: checkedSplit() &amp;&amp; checkedSubHoliday(),
+							selectFirstIfNull : false,
 							required: checkedSplit,
-							selectFirstIfNull : true,
 							columns: [
 								{ prop: 'name', length: 5 },
 							]}">
@@ -165,7 +166,10 @@
 					<div class="labelTitle"
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- I15_1 残数 -->
-					<span class="label" data-bind="text: unit" ></span><span class="label" data-bind="text: dayRemaining"></span><span class="label" data-bind="text: unitDay" ></span>
+					<span class="label" data-bind="text: dayRemaining"></span>
+					<span class="label" data-bind="if: dayRemaining" >
+						<label data-bind="text: unitDay"></label>
+					</span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">

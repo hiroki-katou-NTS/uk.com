@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.TimeMonthWithCalculationDto;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.Late;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LeaveEarly;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -20,7 +21,7 @@ public class CommonTimeCountDto {
 	@AttendanceItemLayout(jpPropertyName = "回数", layout = "A")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 回数: 勤怠月間回数 */
-	private Integer times;
+	private int times;
 
 	@AttendanceItemLayout(jpPropertyName = "時間", layout = "B")
 	/** 時間: 計算付き月間時間 */
@@ -30,7 +31,7 @@ public class CommonTimeCountDto {
 		CommonTimeCountDto dto = new CommonTimeCountDto();
 		if(domain != null) {
 			dto.setTime(TimeMonthWithCalculationDto.from(domain.getTime()));
-			dto.setTimes(domain.getTimes() == null ? null : domain.getTimes().v());
+			dto.setTimes(domain.getTimes() == null ? 0 : domain.getTimes().v());
 		}
 		return dto;
 	}
@@ -39,18 +40,18 @@ public class CommonTimeCountDto {
 		CommonTimeCountDto dto = new CommonTimeCountDto();
 		if(domain != null) {
 			dto.setTime(TimeMonthWithCalculationDto.from(domain.getTime()));
-			dto.setTimes(domain.getTimes() == null ? null : domain.getTimes().v());
+			dto.setTimes(domain.getTimes() == null ? 0 : domain.getTimes().v());
 		}
 		return dto;
 	}
 	
 	public Late toLate() {
-		return Late.of(times == null ? null : new AttendanceTimesMonth(times),
-						time == null ? null : time.toDomain());
+		return Late.of(new AttendanceTimesMonth(times),
+						time == null ? new TimeMonthWithCalculation() : time.toDomain());
 	}
 	
 	public LeaveEarly toLeaveEarly() {
-		return LeaveEarly.of(times == null ? null : new AttendanceTimesMonth(times),
-							time == null ? null : time.toDomain());
+		return LeaveEarly.of(new AttendanceTimesMonth(times),
+							time == null ? new TimeMonthWithCalculation() : time.toDomain());
 	}
 }

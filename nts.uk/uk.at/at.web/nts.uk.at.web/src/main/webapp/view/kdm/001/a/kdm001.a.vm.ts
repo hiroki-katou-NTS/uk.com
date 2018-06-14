@@ -158,9 +158,20 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     },
                     {
                         name: "Resizing",
-                        columnSettings: [
-                            { allowResizing: false },
-                        ]
+                         columnSettings: [
+                            { columnKey: "id", allowResizing: false },
+                            { columnKey: "dayoffDatePyout", allowResizing: false },
+                            { columnKey: "occurredDays", allowResizing: false },
+                            { columnKey: "payoutTied", allowResizing: false },
+                            { columnKey: "dayoffDateSub", allowResizing: false },
+                            { columnKey: "requiredDays", allowResizing: false },
+                            { columnKey: "subTied", allowResizing: false },
+                            { columnKey: "unUsedDaysInGrid", allowResizing: false },
+                            { columnKey: "expriedDaysInGrid", allowResizing: false },
+                            { columnKey: "lawAtr", allowResizing: false },
+                            { columnKey: "link", allowResizing: false },
+                            { columnKey: "edit", allowResizing: false }, 
+                        ],
                     }
                 ],
                 ntsControls: [
@@ -585,7 +596,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if ((params.payoutId != null) && (params.payoutId != "")) {
                 this.id = params.payoutId;
                 
-                if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) >= 0) {
+                if ((this.stateAtr !== 2) &&  moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD')) >= 0) {
                     this.unUsedDaysInGrid = "" + params.unUsedDays;
                     this.expriedDaysInGrid = "0";
                     if(params.unUsedDays > 0) {

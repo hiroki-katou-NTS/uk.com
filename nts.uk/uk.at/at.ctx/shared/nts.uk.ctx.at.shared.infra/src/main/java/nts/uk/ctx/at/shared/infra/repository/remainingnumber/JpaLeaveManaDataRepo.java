@@ -171,10 +171,10 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
 				.query(QUERY_BYID, KrcmtLeaveManaData.class)
 				.setParameter("leaveIDs", leaveIds).getList();
-		for(KrcmtLeaveManaData busItem: listListMana){
-			busItem.subHDAtr =  DigestionAtr.UNUSED.value;
-			busItem.unUsedDays = busItem.occurredDays;
-		}
+			for(KrcmtLeaveManaData busItem: listListMana){
+				busItem.subHDAtr =  DigestionAtr.UNUSED.value;
+				busItem.unUsedDays = busItem.occurredDays;
+			}
 		this.commandProxy().updateAll(listListMana);
 	}
 	
@@ -194,8 +194,16 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 	@Override
-	public void udpate(LeaveManagementData domain) {
-		this.commandProxy().update(this.toEntity(domain));
+	public void udpateByHolidaySetting(String leaveId, Boolean isCheckedExpired, GeneralDate expiredDate, Double occurredDays, Double unUsedDays) {
+		KrcmtLeaveManaData entity = this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
+		if (Objects.isNull(entity)) {
+			throw new BusinessException("Msg_198");
+		}
+		entity.subHDAtr     = isCheckedExpired ? 2 : entity.subHDAtr;
+		entity.expiredDate  = expiredDate;
+		entity.occurredDays = occurredDays;
+		entity.unUsedDays   = unUsedDays;
+		this.commandProxy().update(entity);
 	}
 
 	@Override

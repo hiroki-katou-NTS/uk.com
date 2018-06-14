@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,6 +25,9 @@ public class FurikyuMngDataExtractionService {
 	private PayoutManagementDataRepository payoutManagementDataRepository;
 	
 	@Inject
+	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+	
+	@Inject
 	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 	
 	@Inject
@@ -36,7 +41,9 @@ public class FurikyuMngDataExtractionService {
 	
 	public FurikyuMngDataExtractionData getFurikyuMngDataExtraction(String sid, GeneralDate startDate, GeneralDate endDate, boolean isPeriod) {
 		List<PayoutManagementData> payoutManagementData;
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToSub = new ArrayList<PayoutSubofHDManagement>();
 		Double numberOfDayLeft;
 		int expirationDate;
 		Integer closureId;
@@ -51,11 +58,27 @@ public class FurikyuMngDataExtractionService {
 			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidRemainDayAndInPayout(sid);
 		}
 		
+		if (!payoutManagementData.isEmpty()){
+			List<String> listPayoutID = payoutManagementData.stream().map(x ->{
+				return x.getPayoutId();
+			}).collect(Collectors.toList());
+			
+			payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListPayoutID(listPayoutID);
+		}
+		
+		if (!substitutionOfHDManagementData.isEmpty()){
+			List<String> listSubID = substitutionOfHDManagementData.stream().map(x ->{
+				return x.getSubOfHDID();
+			}).collect(Collectors.toList());
+			
+			payoutSubofHDManagementLinkToSub = payoutSubofHDManaRepository.getByListSubID(listSubID);
+		}
+		
 		numberOfDayLeft = getNumberOfDayLeft(sid);
 		expirationDate = getExpirationDate(sid);
 		closureId = getClosureId(sid);
 		
-		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, expirationDate, numberOfDayLeft, closureId);
+		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId);
 	}
 	
 	public Double getNumberOfDayLeft(String sID) {

@@ -29,4 +29,13 @@ public class EnvAdapterImpl implements EnvAdapter {
 		return outGoingMails.stream().map(x -> new OutGoingMailImport(x.getEmailAddress()))
 				.collect(Collectors.toList());
 	}
+	@Override
+	public OutGoingMailImport findMailBySid(List<MailDestinationImport> lsMail, String sID){
+		for (MailDestinationImport mail : lsMail) {
+			if(mail.getEmployeeID().equals(sID)){
+				return mail.getOutGoingMails().isEmpty() ? null : mail.getOutGoingMails().get(0);
+			}
+		}
+		return null;
+	}
 }
