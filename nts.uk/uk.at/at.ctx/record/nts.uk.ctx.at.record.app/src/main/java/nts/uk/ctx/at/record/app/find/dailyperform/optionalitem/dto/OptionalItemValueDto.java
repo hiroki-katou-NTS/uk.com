@@ -197,13 +197,13 @@ public class OptionalItemValueDto implements ItemConst {
 			this.itemAttr = attr;
 			switch (itemAttr) {
 			case AMOUNT:
-				this.value = String.valueOf(c.getAmount().get().v());
+				this.value = String.valueOf(c.getAmount().orElse(new AnyItemAmount(0)).v());
 				break;
 			case NUMBER:
-				this.value = c.getTimes().get().v().toPlainString();
+				this.value = c.getTimes().orElse(new AnyItemTimes(BigDecimal.ZERO)).v().toPlainString();
 				break;
 			case TIME:
-				this.value = String.valueOf(c.getTime().get().valueAsMinutes());
+				this.value = String.valueOf(c.getTime().orElse(new AnyItemTime(0)).valueAsMinutes());
 				break;
 			default:
 				break;
@@ -224,13 +224,13 @@ public class OptionalItemValueDto implements ItemConst {
 			this.itemAttr = attr;
 			switch (itemAttr) {
 			case AMOUNT:
-				this.value = String.valueOf(c.getAmount().get().v());
+				this.value = String.valueOf(c.getAmount().orElse(new AnyAmountMonth(0)).v());
 				break;
 			case NUMBER:
-				this.value = c.getTimes().get().v().toPlainString();
+				this.value = c.getTimes().orElse(new AnyTimesMonth(0.0)).v().toPlainString();
 				break;
 			case TIME:
-				this.value = String.valueOf(c.getTime().get().valueAsMinutes());
+				this.value = String.valueOf(c.getTime().orElse(new AnyTimeMonth(0)).valueAsMinutes());
 				break;
 			default:
 				break;
