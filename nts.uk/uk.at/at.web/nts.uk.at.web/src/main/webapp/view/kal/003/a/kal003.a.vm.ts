@@ -153,11 +153,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 service.getAllFixedExtraItemMon().done((data: Array<any>) => {
                     if (data && data.length) {
                         let _list: Array<model.FixedExtraMonFun> = _.map(data, acc => {
-                            return new model.FixedExtraMonFun({ monAlarmCheckID: "", monAlarmCheckName: acc.monAlarmCheckName, fixedExtraItemMonNo: acc.fixedExtraItemMonNo, message: acc.message, useAtr: false });
+                            return new model.FixedExtraMonFun({ monAlarmCheckID: "", monAlarmCheckName: acc.fixedExtraItemMonName, fixedExtraItemMonNo: acc.fixedExtraItemMonNo, message: acc.message, useAtr: false });
                         });
                         self.tabAlarmcheck.listFixedExtraMonFun(_list);
                     }
                 });
+                self.tabCheckAlarm.listExtraResultMonthly([]);
 
             }
 
@@ -438,6 +439,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 }).always(() => {
                     block.clear();
                 });
+            }else{
+                
             }
         }
 
