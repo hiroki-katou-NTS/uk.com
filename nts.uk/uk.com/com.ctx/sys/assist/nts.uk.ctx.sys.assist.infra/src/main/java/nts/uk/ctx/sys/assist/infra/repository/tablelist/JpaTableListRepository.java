@@ -89,9 +89,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	}
 
 	@Override
-	public List<?> getDataDynamic(TableList tableList) {
-		Class<?> tableExport = this.getTypeForTableName(tableList.getTableEnglishName());
-
+	public List<?> getDataDynamic(TableList tableList, Class<?> tableExport ) {
 		StringBuffer query = new StringBuffer("");
 
 		// Select
