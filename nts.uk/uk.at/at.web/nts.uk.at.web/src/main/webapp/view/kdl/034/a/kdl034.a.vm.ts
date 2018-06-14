@@ -109,8 +109,7 @@ module nts.uk.at.view.kdl034.a {
                 let sucessListAsStr = "";
                 if (numOfSuccess ==0 && numOfFailed == 0){
                     nts.uk.ui.windows.close();
-                }
-                if (numOfSuccess !=0 && numOfFailed == 0){
+                }else if (numOfSuccess !=0 && numOfFailed == 0){
                     let msg = getMessage('Msg_392');
                     dialog.info({message: msg.replace("{0}", successList.join('\n')), messageId: "Msg_392"}).then(()=>{
                         nts.uk.ui.windows.close();
