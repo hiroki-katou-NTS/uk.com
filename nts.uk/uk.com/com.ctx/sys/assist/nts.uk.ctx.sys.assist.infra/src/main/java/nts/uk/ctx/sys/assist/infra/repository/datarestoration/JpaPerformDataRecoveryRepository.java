@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
 
 @Stateless
 public class JpaPerformDataRecoveryRepository extends JpaRepository implements PerformDataRecoveryRepository {
-
+	private static final String SELECT_PERFORM_DATA_RECOVERYBY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT f FROM SspmtPerformDataRecovery f WHERE  f.dataRecoveryProcessId =:dataRecoveryProcessId";
 	private static final String SELECT_ALL_TABLE_LIST_QUERY_STRING = "SELECT f FROM SspmtTableList f";
 	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId";
 
@@ -48,6 +48,12 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	@Override
 	public List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId) {
 		return this.queryProxy().query(SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING, SspmtTableList.class)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<PerformDataRecovery> getPerformDataByRecoveryProcessingId(String dataRecoveryProcessId) {
+		return this.queryProxy().query(SELECT_PERFORM_DATA_RECOVERYBY_RECOVERY_PROCESSING_ID_QUERY_STRING, SspmtPerformDataRecovery.class)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList(c -> c.toDomain());
 	}
 }
