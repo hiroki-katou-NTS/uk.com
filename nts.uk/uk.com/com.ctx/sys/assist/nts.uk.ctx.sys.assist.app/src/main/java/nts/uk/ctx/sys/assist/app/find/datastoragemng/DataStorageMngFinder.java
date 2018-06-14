@@ -24,7 +24,11 @@ public class DataStorageMngFinder
     }
     
     public DataStorageMngDto getDataStorageMngById(String storeProcessingId){
-        return DataStorageMngDto.fromDomain(finder.getDataStorageMngById(storeProcessingId).get());
+    	if(finder.getDataStorageMngById(storeProcessingId).isPresent()) {
+    		return DataStorageMngDto.fromDomain(finder.getDataStorageMngById(storeProcessingId).get());
+    	} else {
+    		return null;
+    	}
     }
 
 }

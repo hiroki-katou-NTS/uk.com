@@ -166,7 +166,7 @@ module nts.uk.com.view.cmf003.b {
                 self.isCompressPass.subscribe(function(value) {
                     if(value) {
                         self.passwordConstraint("FileCompressionPassword");
-                        $(".passwordInput").trigger("validate");
+                        //$(".passwordInput").trigger("validate");
                     } else {
                         self.passwordConstraint("");
                         $('.passwordInput').ntsError('clear');
@@ -204,7 +204,7 @@ module nts.uk.com.view.cmf003.b {
                 self.itemTitleAtr = ko.observableArray([
                     { value: 0, titleAtrName: resource.getText('CMF003_88') },
                     { value: 1, titleAtrName: resource.getText('CMF003_89') }]);
-                self.selectedTitleAtr = ko.observable(null);
+                self.selectedTitleAtr = ko.observable(0);
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
 

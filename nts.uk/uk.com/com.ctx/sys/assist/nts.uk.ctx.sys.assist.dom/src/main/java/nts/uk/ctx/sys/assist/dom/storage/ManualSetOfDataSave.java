@@ -110,7 +110,6 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	private List<TargetEmployees> employees;
 	private List<TargetCategory> category;
 
-
 	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
@@ -152,11 +151,7 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
 		this.saveSetName = new SaveSetName(saveSetName);
 		this.referenceDate = referenceDate;
-		
-		if (getCompressedPassword() != null) {
-			this.compressedPassword = new FileCompressionPassword(CommonKeyCrypt.encrypt(compressedPassword));
-		}
-		
+		this.compressedPassword = new FileCompressionPassword(compressedPassword);
 		this.executionDateAndTime = executionDateAndTime;
 		this.daySaveEndDate = daySaveEndDate;
 		this.daySaveStartDate = daySaveStartDate;

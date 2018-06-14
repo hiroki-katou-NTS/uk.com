@@ -68,6 +68,7 @@ module nts.uk.com.view.cmf003.c {
                                 self.currentCateSelected(categoriesFB);
                            }
                             self.categoriesDefault(data);
+                            $("#swap-list-grid1 tr:first-child").focus();
                             
                         }).fail(function(error) {
                             alertError(error);

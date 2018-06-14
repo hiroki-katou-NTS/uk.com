@@ -6,9 +6,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtManualSetOfDataSave;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaManualSetOfDataSaveRepository extends JpaRepository implements ManualSetOfDataSaveRepository {
@@ -36,11 +38,12 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 	private SspmtManualSetOfDataSave toEntity(ManualSetOfDataSave dom) {
 		return new SspmtManualSetOfDataSave(dom.getCid(), dom.getStoreProcessingId(), dom.getSystemType().value,
 				dom.getPasswordAvailability().value, dom.getSaveSetName().v(), dom.getReferenceDate(),
-				dom.getCompressedPassword() != null  ? dom.getCompressedPassword().v() : null,
-				dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(),
-				dom.getDaySaveStartDate(), dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(),
-				dom.getSuppleExplanation(), dom.getEndYear().v().intValue(), dom.getStartYear().v().intValue(),
-				dom.getPresenceOfEmployee().value, dom.getIdentOfSurveyPre().value, dom.getPractitioner());
+				(dom.getCompressedPassword() != null && dom.getPasswordAvailability() == NotUseAtr.USE)
+						? CommonKeyCrypt.encrypt(dom.getCompressedPassword().v()) : null,
+				dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(), dom.getDaySaveStartDate(),
+				dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(), dom.getSuppleExplanation(),
+				dom.getEndYear().v().intValue(), dom.getStartYear().v().intValue(), dom.getPresenceOfEmployee().value,
+				dom.getIdentOfSurveyPre().value, dom.getPractitioner());
 	}
 
 	@Override

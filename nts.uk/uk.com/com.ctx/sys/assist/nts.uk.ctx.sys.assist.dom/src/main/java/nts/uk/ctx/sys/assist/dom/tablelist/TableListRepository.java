@@ -9,5 +9,5 @@ public interface TableListRepository {
 	String getFieldForColumnName(Class<?> tableType, String columnName);
 	List<TableList> getByOffsetAndNumber(String storeProcessingId, int offset, int number);
 	List<TableList> getByProcessingId(String storeProcessingId);
-	List<?> getDataDynamic(TableList tableList);
+	List<?> getDataDynamic(TableList tableList, Class<?> tableExport);
 }

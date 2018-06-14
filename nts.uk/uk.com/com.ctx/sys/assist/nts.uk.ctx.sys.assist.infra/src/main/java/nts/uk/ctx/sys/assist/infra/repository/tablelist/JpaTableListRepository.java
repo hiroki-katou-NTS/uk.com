@@ -89,9 +89,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	}
 
 	@Override
-	public List<?> getDataDynamic(TableList tableList) {
-		Class<?> tableExport = this.getTypeForTableName(tableList.getTableEnglishName());
-
+	public List<?> getDataDynamic(TableList tableList, Class<?> tableExport ) {
 		StringBuffer query = new StringBuffer("");
 
 		// Select
@@ -289,7 +287,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 			}
 		}
 
-		Query queryString = getEntityManager().createNativeQuery(sql.toString());
+		Query queryString = getEntityManager().createNativeQuery(sql.toString(), tableExport);
 		queryString.setParameter(1, 1);
 		queryString.setParameter(2, 1);
 		for (int i = 0; i < params.size(); i++) {
