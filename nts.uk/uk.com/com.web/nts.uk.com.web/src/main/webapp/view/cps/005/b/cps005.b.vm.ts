@@ -538,7 +538,127 @@ module nts.uk.com.view.cps005.b {
                     return;
                 }
                 if (self.fixedAtr() == 1) {
-                    if (dataState !== value) self.dataType(dataState)  return;
+                    if (dataState !== value) self.dataType(dataState)
+                    return;
+                } else {
+                    if (self.enable()) {
+                        self.stringItem(new StringItemModel(null));
+                        self.numericItem(new NumericItemModel(null));
+                        self.dateItem(new DateItemModel(null));
+                        self.timeItem(new TimeItemModel(null));
+                        self.timePointItem(new TimePointItemModel(null));
+                        self.selectionItem(new SelectionItemModel(null));
+                        nts.uk.ui.errors.clearAll();
+                        if (value === 6) {
+                            self.selectionItem().selectionItemRefType(2);
+                            if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
+                                service.getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
+                                    __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                                        if (data.length > 0) {
+                                            self.selectionItem().selectionLst([]);
+                                            self.selectionItem().selectionLst(data);
+                                            self.selectionItem().selectionLst.valueHasMutated();
+
+                                        } else {
+                                            self.selectionItem().selectionLst.removeAll();
+                                            self.selectionItem().selectionLst([]);
+                                            self.selectionItem().selectionLst.valueHasMutated();
+
+                                        }
+
+
+                                    });
+
+                            }
+
+                            self.selectionItem().selectionItemId.subscribe(function(value) {
+                                if (!value) {
+                                    return;
+                                }
+                                service.getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                                    if (data.length > 0) {
+                                        self.selectionItem().selectionLst([]);
+                                        self.selectionItem().selectionLst(data);
+                                        self.selectionItem().selectionLst.valueHasMutated();
+
+                                    } else {
+                                        self.selectionItem().selectionLst.removeAll();
+                                        self.selectionItem().selectionLst([]);
+                                        self.selectionItem().selectionLst.valueHasMutated();
+
+                                    }
+
+                                });
+                            });
+                        } else if (value === 2) {
+                            $('#numericItemMin').blur(() => {
+                                $(this).val(parseFloat($(this).val()));
+                            });
+
+                            self.numericItem().numericItemMinus.subscribe(function(data: number) {
+                                self.numericItem().decimalPart.valueHasMutated();
+                            })
+
+                            self.numericItem().integerPart.subscribe(function(x: number) {
+                                self.numericItem().decimalPart.valueHasMutated();
+                            });
+
+                            self.numericItem().decimalPart.subscribe(function(x: number) {
+
+                                let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
+                                writeConstraint("NumericItemMin", {
+                                    mantissaMaxLength: x == 0 ? 0 : parseInt(x),
+                                    min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                    max: maxValue
+                                });
+
+                                $('#numericItemMax').trigger('change');
+                                $('#numericItemMin').trigger('change');
+                                if (x != self.numericItem().oldDecimalPart) {
+                                    nts.uk.ui.errors.clearAll();
+                                }
+
+                            });
+                            let init = true;
+                            self.numericItem().numericItemMin.subscribe(function(x: number) {
+
+                                if (!self.numericItem().integerPart()) {
+                                    $('#integerPart').trigger('change');
+                                    return;
+                                }
+                                let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, self.numericItem().decimalPart() || 0) - 1) / Math.pow(10, self.numericItem().decimalPart() || 0));
+                                if (init) {
+                                    writeConstraint("NumericItemMin", {
+                                        mantissaMaxLength: self.numericItem().decimalPart() == 0 ? 0 : parseInt(self.numericItem().decimalPart()),
+                                        min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                        max: maxValue
+                                    });
+                                    init = false;
+                                    $('#numericItemMin').trigger('change');
+                                }
+                                writeConstraint("NumericItemMax", {
+                                    mantissaMaxLength: parseInt(self.numericItem().decimalPart()),
+                                    min: x ? parseFloat(x.toString()) : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                    max: maxValue
+                                });
+                                $('#numericItemMax').trigger('change');
+                            });
+                            self.numericItem().numericItemMax.subscribe(function(x: number) {
+
+                                if (!self.numericItem().integerPart()) {
+
+                                    $('#integerPart').trigger('change');
+                                    return;
+                                }
+                                if (init) {
+                                    self.numericItem().numericItemMin.valueHasMutated();
+                                }
+                            });
+                        }
+                    }
+
+
+
                 }
             });
         }
