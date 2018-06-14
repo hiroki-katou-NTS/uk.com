@@ -68,14 +68,14 @@ public class DataRecoveryMng extends AggregateRoot {
 			Integer categoryTotalCount, Integer totalNumOfProcesses, Integer numOfProcesses,
 			String processTargetEmpCode, Integer suspendedState, Integer operatingCondition, GeneralDate recoveryDate) {
 		this.dataRecoveryProcessId = dataRecoveryProcessId;
-		this.errorCount = errorCount;
-		this.categoryCnt = categoryCnt;
-		this.categoryTotalCount = categoryTotalCount;
-		this.totalNumOfProcesses = Optional.ofNullable(totalNumOfProcesses);
-		this.numOfProcesses = Optional.ofNullable(numOfProcesses);
-		this.processTargetEmpCode = Optional.ofNullable(processTargetEmpCode);
-		this.suspendedState = EnumAdaptor.valueOf(suspendedState, NotUseAtr.class);
-		this.operatingCondition = EnumAdaptor.valueOf(operatingCondition, DataRecoveryOperatingCondition.class);
-		this.recoveryDate = recoveryDate;
+		this.errorCount            = errorCount;
+		this.categoryCnt           = categoryCnt;
+		this.categoryTotalCount    = categoryTotalCount;
+		this.totalNumOfProcesses   = Optional.ofNullable(totalNumOfProcesses);
+		this.numOfProcesses        = Optional.ofNullable(numOfProcesses);
+		this.processTargetEmpCode  = Optional.ofNullable(processTargetEmpCode);
+		this.suspendedState        = EnumAdaptor.valueOf(suspendedState, NotUseAtr.class);
+		this.operatingCondition    = EnumAdaptor.valueOf(operatingCondition, DataRecoveryOperatingCondition.class);
+		this.recoveryDate          = recoveryDate;
 	}
 }

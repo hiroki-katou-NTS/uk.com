@@ -25,6 +25,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         fileId: KnockoutObservable<string> = ko.observable(null);
         fileName: KnockoutObservable<string> = ko.observable(null);
         //Screen E, F, G, H
+        dataRecoveryProcessId: KnockoutObservable<string> = ko.observable(null);
         recoverySourceFile: KnockoutObservable<string> = ko.observable("");
         recoverySourceCode: KnockoutObservable<string> = ko.observable("");
         recoverySourceName: KnockoutObservable<string> = ko.observable("");
@@ -46,11 +47,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         recoveryMethodDescription1: KnockoutObservable<string> = ko.observable("");
         recoveryMethodDescription2: KnockoutObservable<string> = ko.observable("");
         dataRecoverySummary: KnockoutObservable<DataRecoverySummary> = ko.observable(new DataRecoverySummary([], 0, [], []));
-        optionsEmployee: KnockoutObservableArray<NtsGridListColumn>;
 
         constructor() {
             let self = this;
-            
             //Fixed table
             if (/Chrome/.test(navigator.userAgent)) {
                 $("#E4_1").ntsFixedTable({ height: 164, width: 700 });
@@ -77,13 +76,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 maxWidth: 450,
                 maxRows: 15
             };
-
-            //Screen H
-            self.optionsEmployee = ko.observableArray([
-                { headerText: 'employeeId', key: 'employeeId', width: 100, hidden: true },
-                { headerText: 'コード', key: 'employeeCode', width: 100, hidden: false },
-                { headerText: '名称', key: 'employeeName', width: 150, hidden: false }
-            ]);
 
             self.startDateString.subscribe(value => {
                 self.dataRecoverySelection().executePeriodInput().startDate = value;
@@ -158,31 +150,44 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenE(): void {
             let self = this;
-            self.recoverySourceFile('パターンA20170321_001.zip');
-            self.recoverySourceCode('001');
-            self.recoverySourceName('手動セットA');
-            self.supplementaryExplanation('2017年05月締め前');
-            let listCategory: Array<CategoryInfo> = [];
-            for (let i = 1; i < 10; i++) {
-                let isRecover = !!(i % 2);
-                let categoryName = '個人情報マスタ';
-                let recoveryPeriod = '日次';
-                let startOfPeriod = '2018/01/0' + i;
-                let endOfPeriod = '2018/01/31';
-                if (i % 2 == 0) {
-                    recoveryPeriod = '月次';
-                    startOfPeriod = '2018/01';
-                    endOfPeriod = '2018/01';
+
+            //Get Data TableList for Screen E
+            service.findTableList('11111111-5a91-4e42-9a29-fefa858942d5').done(function(data: Array<any>) {
+                let listCategory: Array<CategoryInfo> = [];
+                let isRecover: KnockoutObservable<boolean>;
+                let iscanNotBeOld: KnockoutObservable<boolean>;
+                //let iscanNotBeOld: KnockoutObservable<string>;
+                if (data && data.length) {
+                    for (let i = 0; i < data.length; i++) {
+                        rowNumber = i + 1;
+                        isRecover = (data[i].anotherComCls == 0) ? false : true;
+                        iscanNotBeOld = (data[i].canNotBeOld === '0') ? false : true;
+                        let categoryName = data[i].categoryName;
+                        let recoveryPeriod = data[i].retentionPeriodCls;
+                        let startOfPeriod = data[i].saveDateFrom;
+                        let endOfPeriod = data[i].saveDateTo;
+                        let recoveryMethod = data[i].storageRangeSaved % 2 ? getText('CMF004_305') : getText('CMF004_306');
+                        listCategory.push(new CategoryInfo(rowNumber, isRecover, categoryName, recoveryPeriod, startOfPeriod, endOfPeriod, recoveryMethod, iscanNotBeOld));
+                    }
+                    self.dataContentConfirm().dataContentcategoryList(listCategory);
+                    self.recoverySourceFile(data[0].compressedFileName + '.zip');
+                    self.recoverySourceCode(data[0].saveSetCode);
+                    self.recoverySourceName(data[0].saveSetName);
+                    self.supplementaryExplanation(data[0].supplementaryExplanation);
                 }
-                if (i % 3 == 0) {
-                    recoveryPeriod = '年次';
-                    startOfPeriod = '2018';
-                    endOfPeriod = '2018';
-                }
-                let recoveryMethod = i % 2 ? getText('CMF004_305') : getText('CMF004_306');
-                listCategory.push(new CategoryInfo(i, isRecover, categoryName, recoveryPeriod, startOfPeriod, endOfPeriod, recoveryMethod));
-            }
-            self.dataContentConfirm().dataContentcategoryList(listCategory);
+
+            }).fail(function(error) {
+
+            }).always(() => {
+
+            });
+        }
+
+        getTextRecovery(recoveryPeriod): string {
+            if (recoveryPeriod() === 0) return getText("Enum_TimeStore_FULL_TIME");
+            if (recoveryPeriod() === 1) return getText("Enum_TimeStore_DAILY");
+            if (recoveryPeriod() === 2) return getText("Enum_TimeStore_MONTHLY");
+            if (recoveryPeriod() === 3) return getText("Enum_TimeStore_ANNUAL");
         }
 
         /**
@@ -203,6 +208,17 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenH(): void {
             let self = this;
+
+
+            //Get Data PerformDataRecover for Screen H
+            service.findPerformDataRecover('11111111-5a91-4e42-9a29-fefa858942d5').done(function(data: Array<any>) {
+
+            }).fail(function(error) {
+
+            }).always(() => {
+
+            });
+
             let _categoryList = self.getRecoveryCategory(self.changeDataRecoveryPeriod().changeDataCategoryList());
             let _employeeList = self.getRecoveryEmployee(self.selectedEmployeeCode());
             let _recoveryMethod = self.dataContentConfirm().selectedRecoveryMethod();
@@ -270,7 +286,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         nextToScreenF(): void {
             let self = this;
             self.initScreenF();
-            $('#data-recovery-wizard').ntsWizard("next");
+            nts.uk.ui.errors.clearAll();
+            let checkItemE = _.filter(self.dataContentConfirm().dataContentcategoryList(), x => { return x.isRecover() == true; }).length;
+            (checkItemE == 0) ? $('#E5_2').ntsError('set', { messageId: "Msg_1256" }) : $('#data-recovery-wizard').ntsWizard("next");
         }
 
         nextToScreenG(): void {
@@ -289,13 +307,14 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         backToPreviousScreen(): void {
             $('#data-recovery-wizard').ntsWizard("prev");
+            nts.uk.ui.errors.clearAll();
         }
 
         periodInputType(inputType): number {
-            if (inputType() === '日次') return PeriodEnum.DAY;
-            if (inputType() === '月次') return PeriodEnum.MONTH;
-            if (inputType() === '年次') return PeriodEnum.YEAR;
-            return 3;
+            if (inputType() === 0) return PeriodEnum.FULLTIME;
+            if (inputType() === 1) return PeriodEnum.DAY;
+            if (inputType() === 2) return PeriodEnum.MONTH;
+            if (inputType() === 3) return PeriodEnum.YEAR;
         }
 
         start(): JQueryPromise<any> {
@@ -308,33 +327,36 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     }
 
     export enum PeriodEnum {
-        DAY   = 0, //日次
-        MONTH = 1, //月次
-        YEAR  = 2  //年次
+        FULLTIME = 0, //全期間一律
+        DAY = 1, //日次
+        MONTH = 2, //月次
+        YEAR = 3  //年次
     }
 
     export enum RecoveryMethod {
-        RESTORE_ALL    = 0, //全件復旧
+        RESTORE_ALL = 0, //全件復旧
         SELECTED_RANGE = 1 //選択した範囲で復旧
     }
 
     export class CategoryInfo {
         rowNumber: KnockoutObservable<number>;
-        isRecover: KnockoutObservable<boolean>;
+        isRecover: KnockoutObservable<boolean>;        
         categoryName: KnockoutObservable<string>;
         recoveryPeriod: KnockoutObservable<string>;
         recoveryMethod: KnockoutObservable<string>;
         startOfPeriod: KnockoutObservable<string>;
         endOfPeriod: KnockoutObservable<string>;
-        constructor(rowNumber: number, isRecover: boolean, categoryName: string, recoveryPeriod: string, startOfPeriod: string, endOfPeriod: string, recoveryMethod: string) {
+        iscanNotBeOld: KnockoutObservable<boolean>;
+        constructor(rowNumber: number, isRecover: boolean, categoryName: string, recoveryPeriod: string, startOfPeriod: string, endOfPeriod: string, recoveryMethod: string, iscanNotBeOld: boolean) {
             let self = this;
-            self.rowNumber      = ko.observable(rowNumber);
-            self.isRecover      = ko.observable(isRecover);
-            self.categoryName   = ko.observable(categoryName);
+            self.rowNumber = ko.observable(rowNumber);
+            self.isRecover = ko.observable(isRecover);
+            self.categoryName = ko.observable(categoryName);
             self.recoveryPeriod = ko.observable(recoveryPeriod);
-            self.startOfPeriod  = ko.observable(startOfPeriod);
-            self.endOfPeriod    = ko.observable(endOfPeriod);
+            self.startOfPeriod = ko.observable(startOfPeriod);
+            self.endOfPeriod = ko.observable(endOfPeriod);
             self.recoveryMethod = ko.observable(recoveryMethod);
+            self.iscanNotBeOld = ko.observable(iscanNotBeOld);
         }
     }
 
@@ -359,13 +381,13 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         saveFileName: string;
         constructor(input: IRecoveryFileInfo) {
             let self = this;
-            self.saveSetCode              = input.saveSetCode;
-            self.saveSetName              = input.saveSetName;
+            self.saveSetCode = input.saveSetCode;
+            self.saveSetName = input.saveSetName;
             self.supplementaryExplanation = input.supplementaryExplanation;
-            self.storageStartDate         = input.storageStartDate;
-            self.executeCategory          = input.executeCategory;
-            self.targetNumber             = input.targetNumber;
-            self.saveFileName             = input.saveFileName;
+            self.storageStartDate = input.storageStartDate;
+            self.executeCategory = input.executeCategory;
+            self.targetNumber = input.targetNumber;
+            self.saveFileName = input.saveFileName;
         }
     }
 
@@ -380,10 +402,10 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         selectedRecoveryFile: KnockoutObservable<string>;
         constructor(selectedUploadCls: number, selectedSaveFileCls: number, executePeriodInput: any, recoveryFileList: Array<any>, selectedRecoveryFile: string) {
             let self = this;
-            self.selectedUploadCls    = ko.observable(selectedUploadCls);
-            self.selectedSaveFileCls  = ko.observable(selectedSaveFileCls);
-            self.executePeriodInput   = ko.observable(executePeriodInput);
-            self.recoveryFileList     = ko.observableArray(recoveryFileList);
+            self.selectedUploadCls = ko.observable(selectedUploadCls);
+            self.selectedSaveFileCls = ko.observable(selectedSaveFileCls);
+            self.executePeriodInput = ko.observable(executePeriodInput);
+            self.recoveryFileList = ko.observableArray(recoveryFileList);
             self.selectedRecoveryFile = ko.observable(selectedRecoveryFile);
         }
     }
@@ -397,7 +419,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         constructor(categoryList: Array<any>, selectedRecoveryMethod: number) {
             let self = this;
             self.dataContentcategoryList = ko.observableArray(categoryList);
-            self.selectedRecoveryMethod  = ko.observable(selectedRecoveryMethod);
+            self.selectedRecoveryMethod = ko.observable(selectedRecoveryMethod);
         }
     }
 
@@ -423,9 +445,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         constructor(recoveryCategoryList: Array<any>, recoveryMethod: number, recoveryEmployee: Array<any>, selectedEmployee: Array<any>) {
             let self = this;
             self.recoveryCategoryList = ko.observableArray(recoveryCategoryList);
-            self.recoveryMethod       = ko.observable(recoveryMethod);
-            self.recoveryEmployee     = ko.observableArray(recoveryEmployee);
-            self.selectedEmployee     = ko.observableArray(selectedEmployee);
+            self.recoveryMethod = ko.observable(recoveryMethod);
+            self.recoveryEmployee = ko.observableArray(recoveryEmployee);
+            self.selectedEmployee = ko.observableArray(selectedEmployee);
         }
     }
 
@@ -441,10 +463,10 @@ module nts.uk.com.view.cmf004.b.viewmodel {
      * KCP005
      */
     export class ListType {
-        static EMPLOYMENT     = 1;
+        static EMPLOYMENT = 1;
         static CLASSIFICATION = 2;
-        static JOB_TITLE      = 3;
-        static EMPLOYEE       = 4;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
     }
 
     export interface UnitModel {
@@ -456,8 +478,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     export class SelectType {
         static SELECT_BY_SELECTED_CODE = 1;
-        static SELECT_ALL              = 2;
-        static SELECT_FIRST_ITEM       = 3;
-        static NO_SELECT               = 4;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
     }
 }

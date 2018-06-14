@@ -18,6 +18,8 @@ public interface PerformDataRecoveryRepository {
 	void update(PerformDataRecovery domain);
 
 	void remove(String dataRecoveryProcessId);
+	
+	List<PerformDataRecovery> getPerformDataByRecoveryProcessingId(String dataRecoveryProcessId);
 
 	
 	List<TableList> getByStorageRangeSaved(String categoryId,String storageRangeSaved);

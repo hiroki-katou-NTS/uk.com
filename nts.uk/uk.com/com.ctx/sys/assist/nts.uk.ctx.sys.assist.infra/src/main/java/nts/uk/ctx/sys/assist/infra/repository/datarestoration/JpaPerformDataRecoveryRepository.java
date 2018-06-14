@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.infra.repository.datarestoration;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
 @Stateless
 public class JpaPerformDataRecoveryRepository extends JpaRepository implements PerformDataRecoveryRepository {
 
+
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.tableListPk.categoryId =:categoryId AND storageRangeSaved =:storageRangeSaved ORDER BY DESC tableNo";
 
 	private static final String SELECT_ALL_TARGET = "SELECT t FROM SspmtTarget t WHERE  t.targetPk.dataRecoveryProcessId =:dataRecoveryProcessId ";
@@ -33,6 +35,8 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	private static final StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
 
 	private static final StringBuilder INSERT_BY_TABLE = new StringBuilder("INSERT INTO ");
+
+	private static final String SELECT_PERFORM_DATA_RECOVERYBY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT f FROM SspmtPerformDataRecovery f WHERE  f.dataRecoveryProcessId =:dataRecoveryProcessId";
 
 	private static final String SELECT_ALL_TABLE_LIST_QUERY_STRING = "SELECT f FROM SspmtTableList f";
 	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId";
@@ -149,7 +153,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		query.executeUpdate();
 
 	}
-
+	
 	@Override
 	public List<TableList> getAllTableList() {
 		return this.queryProxy().query(SELECT_ALL_TABLE_LIST_QUERY_STRING, SspmtTableList.class)
@@ -176,4 +180,11 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 		query.executeUpdate();
 	}
+	@Override
+	public List<PerformDataRecovery> getPerformDataByRecoveryProcessingId(String dataRecoveryProcessId) {
+		return this.queryProxy().query(SELECT_PERFORM_DATA_RECOVERYBY_RECOVERY_PROCESSING_ID_QUERY_STRING, SspmtPerformDataRecovery.class)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList(c -> c.toDomain());
+
+	}
+
 }
