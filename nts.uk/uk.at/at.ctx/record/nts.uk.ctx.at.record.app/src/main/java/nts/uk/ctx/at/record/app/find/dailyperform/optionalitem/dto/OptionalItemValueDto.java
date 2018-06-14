@@ -193,25 +193,28 @@ public class OptionalItemValueDto implements ItemConst {
 	}
 	
 	private void correctValue(AnyItemValue c, OptionalItemAtr attr){
+		String amountOrDef = String.valueOf(c.getAmount().orElse(new AnyItemAmount(0)).v());
+		String countOrDef = c.getTimes().orElse(new AnyItemTimes(BigDecimal.ZERO)).v().toPlainString();
+		String timeOrDef = String.valueOf(c.getTime().orElse(new AnyItemTime(0)).valueAsMinutes());
 		if(attr != null){
 			this.itemAttr = attr;
 			switch (itemAttr) {
 			case AMOUNT:
-				this.value = String.valueOf(c.getAmount().orElse(new AnyItemAmount(0)).v());
+				this.value = amountOrDef;
 				break;
 			case NUMBER:
-				this.value = c.getTimes().orElse(new AnyItemTimes(BigDecimal.ZERO)).v().toPlainString();
+				this.value = countOrDef;
 				break;
 			case TIME:
-				this.value = String.valueOf(c.getTime().orElse(new AnyItemTime(0)).valueAsMinutes());
+				this.value = timeOrDef;
 				break;
 			default:
 				break;
 			}
 		} else {
-			ItemAndV amount = new ItemAndV(OptionalItemAtr.AMOUNT, String.valueOf(c.getAmount().orElse(new AnyItemAmount(0)).v()));
-			ItemAndV time = new ItemAndV(OptionalItemAtr.TIME, String.valueOf(c.getTime().orElse(new AnyItemTime(0)).v()));
-			ItemAndV number = new ItemAndV(OptionalItemAtr.NUMBER, c.getTimes().orElse(new AnyItemTimes(BigDecimal.ZERO)).v().toPlainString());
+			ItemAndV amount = new ItemAndV(OptionalItemAtr.AMOUNT, amountOrDef);
+			ItemAndV time = new ItemAndV(OptionalItemAtr.TIME, timeOrDef);
+			ItemAndV number = new ItemAndV(OptionalItemAtr.NUMBER, countOrDef);
 			ItemAndV maxed = Collections.max(Arrays.asList(amount, time, number), (c1, c2) -> c1.value.compareTo(c2.value));
 			this.itemAttr = maxed.attr;
 			this.value = maxed.value;
@@ -220,25 +223,28 @@ public class OptionalItemValueDto implements ItemConst {
 	}
 	
 	private void correctValue(AnyItemOfMonthly c, OptionalItemAtr attr){
+		String amountOrDef = String.valueOf(c.getAmount().orElse(new AnyAmountMonth(0)).v());
+		String countOrDef = c.getTimes().orElse(new AnyTimesMonth(0.0)).v().toPlainString();
+		String timeOrDef = String.valueOf(c.getTime().orElse(new AnyTimeMonth(0)).valueAsMinutes());
 		if(attr != null){
 			this.itemAttr = attr;
 			switch (itemAttr) {
 			case AMOUNT:
-				this.value = String.valueOf(c.getAmount().orElse(new AnyAmountMonth(0)).v());
+				this.value = amountOrDef;
 				break;
 			case NUMBER:
-				this.value = c.getTimes().orElse(new AnyTimesMonth(0.0)).v().toPlainString();
+				this.value = countOrDef;
 				break;
 			case TIME:
-				this.value = String.valueOf(c.getTime().orElse(new AnyTimeMonth(0)).valueAsMinutes());
+				this.value = timeOrDef;
 				break;
 			default:
 				break;
 			}
 		} else {
-			ItemAndV amount = new ItemAndV(OptionalItemAtr.AMOUNT, String.valueOf(c.getAmount().orElse(new AnyAmountMonth(0)).v()));
-			ItemAndV time = new ItemAndV(OptionalItemAtr.TIME, String.valueOf(c.getTime().orElse(new AnyTimeMonth(0)).v()));
-			ItemAndV number = new ItemAndV(OptionalItemAtr.NUMBER, c.getTimes().orElse(new AnyTimesMonth(0.0)).v().toPlainString());
+			ItemAndV amount = new ItemAndV(OptionalItemAtr.AMOUNT, amountOrDef);
+			ItemAndV time = new ItemAndV(OptionalItemAtr.TIME, timeOrDef);
+			ItemAndV number = new ItemAndV(OptionalItemAtr.NUMBER, countOrDef);
 			ItemAndV maxed = Collections.max(Arrays.asList(amount, time, number), (c1, c2) -> c1.value.compareTo(c2.value));
 			this.itemAttr = maxed.attr;
 			this.value = maxed.value;
