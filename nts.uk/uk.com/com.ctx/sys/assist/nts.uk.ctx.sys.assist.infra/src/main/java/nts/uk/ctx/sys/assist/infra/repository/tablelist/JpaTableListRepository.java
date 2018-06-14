@@ -54,6 +54,13 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	@Override
 	public String getFieldForColumnName(Class<?> tableType, String columnName) {
+		for (Field field : tableType.getSuperclass().getDeclaredFields()) {
+			Column column = field.getDeclaredAnnotation(Column.class);
+			if (column != null && column.name().equals(columnName)) {			
+				return field.getName();
+			}
+		}
+		
 		for (Field field : tableType.getDeclaredFields()) {
 			if (field.isAnnotationPresent(EmbeddedId.class)) {
 				Class<?> pk = field.getType();

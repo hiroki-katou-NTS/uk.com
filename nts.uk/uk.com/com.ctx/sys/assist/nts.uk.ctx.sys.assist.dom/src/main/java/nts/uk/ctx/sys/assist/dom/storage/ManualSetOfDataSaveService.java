@@ -171,7 +171,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
 		String cId = optManualSetting.getCid();
 		for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
-			
+
 			String categoryName = "";
 			int storageRangeSaved = 0;
 			TimeStore retentionPeriodCls = null;
@@ -618,9 +618,20 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	private Object getValueByPropertyName(Object object, String fieldName) {
 		try {
-			Field field = object.getClass().getDeclaredField(fieldName);
-			field.setAccessible(true);
-			return field.get(object);
+			Field[] fieldSuperclasses = object.getClass().getSuperclass().getDeclaredFields();
+			for (Field field : fieldSuperclasses) {
+				if (field.getName().equals(fieldName)) {
+					field.setAccessible(true);
+					return field.get(object);
+				}
+			}
+			Field[] fields = object.getClass().getDeclaredFields();
+			for (Field field : fields) {
+				if (field.getName().equals(fieldName)) {
+					field.setAccessible(true);
+					return field.get(object);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
