@@ -24,6 +24,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         selectedWplId: KnockoutObservable<string>;
         selectedWplName: KnockoutObservable<string>;
         listEmpCd: Array<string>;
+        multiSelectedWorkplaceId: Array<any>;
 
         enableNext: KnockoutObservable<boolean>;
         enablePre: KnockoutObservable<boolean>;
@@ -35,7 +36,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         dataWkpSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
-        multiSelectedWorkplaceId: Array<any>;
 
         // 実績確認済
         colorConfirmed = 'bg-actual-verified';
@@ -337,7 +337,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.setColorForCellHeaderDetail().done(function(detailHeaderDeco) {
                     let initExTable = self.setFormatData(leftmostDeco, detailHeaderDeco, detailContentDeco, listData);
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "64px", bodyRowHeight: "23px", bodyHeight: "299px",
+                        headerHeight: "64px", bodyRowHeight: "23px", bodyHeight: "308px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         remainSizes: false,
@@ -587,7 +587,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             })
             return leftmostDeco;
         }
-
+        
         goBackA() {
             var self = this;
             let params = {
