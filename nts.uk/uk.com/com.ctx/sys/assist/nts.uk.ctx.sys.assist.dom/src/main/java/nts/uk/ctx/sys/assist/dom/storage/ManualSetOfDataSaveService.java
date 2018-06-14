@@ -179,8 +179,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}).collect(Collectors.toList());
 		List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
 		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
-
+		String cId = optManualSetting.getCid();
 		for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
+			
 			String categoryName = "";
 			int storageRangeSaved = 0;
 			TimeStore retentionPeriodCls = null;
@@ -221,12 +222,12 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				}
 
 			}
-			String internalFileName = storeProcessingId + categoryName + categoryFieldMt.getTableJapanName();
+			String internalFileName = cId + categoryName + categoryFieldMt.getTableJapanName();
 
 			// B42
 			String datetimenow = LocalDateTime.now().toString();
 			SaveSetName savename = optManualSetting.getSaveSetName();
-			compressedFileName = storeProcessingId + savename.toString() + datetimenow;
+			compressedFileName = cId + savename.toString() + datetimenow;
 
 			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId, "",
 					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(), categoryFieldMt.getTableEnglishName(),
