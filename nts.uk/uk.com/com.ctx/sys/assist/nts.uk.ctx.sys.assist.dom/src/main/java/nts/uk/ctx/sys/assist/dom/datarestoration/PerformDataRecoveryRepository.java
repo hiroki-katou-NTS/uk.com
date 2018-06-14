@@ -17,6 +17,8 @@ public interface PerformDataRecoveryRepository {
 	void update(PerformDataRecovery domain);
 
 	void remove(String dataRecoveryProcessId);
+	
+	List<PerformDataRecovery> getPerformDataByRecoveryProcessingId(String dataRecoveryProcessId);
 
 	List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId);
 

@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.assist.ws.datarestoration;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -19,7 +17,7 @@ public class ScreenItemWebService {
 
 	@POST
 	@Path("findPerformDataRecover/{dataRecoveryProcessId}")
-	public List<ScreenItemDto> findPerformDataRecover(@PathParam("dataRecoveryProcessId") String dataRecoveryProcessId) {
+	public ScreenItemDto findPerformDataRecover(@PathParam("dataRecoveryProcessId") String dataRecoveryProcessId) {
 		return screenItemFinder.getTargetById(dataRecoveryProcessId);
 	}
 }
