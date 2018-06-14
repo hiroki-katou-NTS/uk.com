@@ -78,6 +78,7 @@
 					</div>
 				</div>
 			</div>
+			<com:ko-if bind="appCommonSetting().appTypeDiscreteSetting().typicalReasonDisplayFlg()!=0">
 			<div class="valign-center control-group">
 				<div  class="text_form_label"  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_17')}</div>
 				<div id="combo-box"
@@ -94,13 +95,16 @@
 								
 								]}"></div>
 			</div>
+			</com:ko-if>
+			<com:ko-if bind="appCommonSetting().appTypeDiscreteSetting().displayReasonFlg()!=0">
 			<div class="valign-center control-group">
 				<div  class="text_form_label" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_18')}</div>
 				
-					<textarea
+					<textarea id="appReason"
 						data-bind="ntsMultilineEditor: {
 								name: '#[KAF004_18]',
 								value: appreason,
+								required:true,
 								option: {
 									resizeable: false,
 			                    	width: '500'
@@ -109,6 +113,7 @@
 								}" />
 				
 			</div>
+			</com:ko-if>
 		</div>		
 		<div class="right-contents">
 			<div class="panel panel-gray-bg panel-frame004" style="height: 400px !important; margin-left: 100px !important">

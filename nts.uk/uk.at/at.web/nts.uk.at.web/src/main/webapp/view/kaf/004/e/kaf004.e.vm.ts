@@ -114,6 +114,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         
         update() {
             var self = this;
+            $('#appReason').ntsError('check');
             if (!nts.uk.ui.errors.hasError()) {
                 //DuDT: 2017.10.27処理が対応できてない、とりあえず値が固定する
                 if(self.showScreen() === 'F'){
