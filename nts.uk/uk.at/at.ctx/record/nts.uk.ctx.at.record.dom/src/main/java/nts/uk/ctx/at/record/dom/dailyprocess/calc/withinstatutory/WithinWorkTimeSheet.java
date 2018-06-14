@@ -12,7 +12,6 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
@@ -157,7 +156,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													WorkRegularAdditionSet regularAddSetting, 
 													HolidayAddtionSet holidayAddtionSet, 
 													CalcMethodOfNoWorkingDay calcMethod, 
-													AutoCalOverTimeAttr autoCalcAtr, 
 													Optional<SettingOfFlexWork> flexCalcMethod, 
 													WorkTimeDailyAtr workTimeDailyAtr, 
 													Optional<WorkTimeCode> workTimeCode, 
@@ -217,7 +215,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					 regularAddSetting, 
 					 holidayAddtionSet, 
 					 calcMethod, 
-					 autoCalcAtr, 
 					 flexCalcMethod, 
 					 workTimeDailyAtr, 
 					 workTimeCode, 
@@ -280,7 +277,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			WorkRegularAdditionSet regularAddSetting, 
 			HolidayAddtionSet holidayAddtionSet, 
 			CalcMethodOfNoWorkingDay calcMethod, 
-			AutoCalOverTimeAttr autoCalcAtr, 
 			Optional<SettingOfFlexWork> flexCalcMethod, 
 			WorkTimeDailyAtr workTimeDailyAtr, 
 			Optional<WorkTimeCode> workTimeCode, 
@@ -322,7 +318,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				holidayAddtionSet, 
 				holidayCalcMethodSet, 
 				calcMethod, 
-				autoCalcAtr, 
 				flexCalcMethod, 
 				workTimeDailyAtr, 
 				workTimeCode, 
@@ -356,7 +351,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			 HolidayAddtionSet holidayAddtionSet, 
 			 HolidayCalcMethodSet holidayCalcMethodSet, 
 			 CalcMethodOfNoWorkingDay calcMethod, 
-			 AutoCalOverTimeAttr autoCalcAtr, 
 			 Optional<SettingOfFlexWork> flexCalcMethod, 
 			 WorkTimeDailyAtr workTimeDailyAtr, 
 			 Optional<WorkTimeCode> workTimeCode, 
@@ -381,7 +375,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				  holidayAddtionSet, 
 				  holidayCalcMethodSet, 
 				  calcMethod, 
-				  autoCalcAtr, 
 				  flexCalcMethod, 
 				  workTimeDailyAtr, 
 				  workTimeCode, 
@@ -439,7 +432,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			 HolidayAddtionSet holidayAddtionSet, 
 			 HolidayCalcMethodSet holidayCalcMethodSet, 
 			 CalcMethodOfNoWorkingDay calcMethod, 
-			 AutoCalOverTimeAttr autoCalcAtr, 
 			 Optional<SettingOfFlexWork> flexCalcMethod, 
 			 WorkTimeDailyAtr workTimeDailyAtr, 
 			 Optional<WorkTimeCode> workTimeCode, 
@@ -464,7 +456,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 												  holidayAddtionSet, 
 												  holidayCalcMethodSet, 
 												  calcMethod, 
-												  autoCalcAtr, 
 												  flexCalcMethod, 
 												  workTimeDailyAtr, 
 												  workTimeCode, 
@@ -521,7 +512,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																 HolidayAddtionSet holidayAddtionSet, 
 																 HolidayCalcMethodSet holidayCalcMethodSet, 
 																 CalcMethodOfNoWorkingDay calcMethod, 
-																 AutoCalOverTimeAttr autoCalcAtr, 
 																 Optional<SettingOfFlexWork> flexCalcMethod, 
 																 WorkTimeDailyAtr workTimeDailyAtr, 
 																 Optional<WorkTimeCode> workTimeCode, 
@@ -544,7 +534,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 														   holidayAddtionSet, 
 														   holidayCalcMethodSet, 
 														   calcMethod, 
-														   autoCalcAtr, 
 														   flexCalcMethod, 
 														   workTimeDailyAtr, 
 														   workTimeCode, 

@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -89,7 +90,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @return
 	 */
 	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
-																	 CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalAtrOvertime autoCalcAtr,WorkType workType,
+																	 CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,
+//																	 AutoCalAtrOvertime autoCalcAtr,
+																	 WorkType workType,
 																	 Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 			   														 VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 			   														 StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
@@ -106,7 +109,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 IntegrationOfDaily integrationOfDaily, AttendanceTime flexPreAppTime, AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   														 DailyUnit dailyUnit,List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting) {
 		//残業時間
-		val overTime = calculationOverTime(oneDay,overTimeAutoCalcSet,calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,
+		val overTime = calculationOverTime(oneDay,overTimeAutoCalcSet,calcMethod,holidayCalcMethodSet,
+//										   autoCalcAtr,
+										   workType,flexCalcMethod,
 										   predetermineTimeSet,vacationClass,timevacationUseTimeOfDaily,
 				   						   statutoryDivision,siftCode,
 				   						   personalCondition,
@@ -138,7 +143,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param flexAutoCalSet 
 	 */
 	private static OverTimeOfDaily calculationOverTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,
-													   CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalAtrOvertime autoCalcAtr,WorkType workType,
+													   CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,
+//													   AutoCalAtrOvertime autoCalcAtr,
+													   WorkType workType,
 													   Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 													   VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 													   StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
@@ -159,7 +166,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   oneDay.getWithinWorkingTimeSheet().get(),
 													   calcMethod,
 													   holidayCalcMethodSet,
-													   autoCalcAtr,
+//													   autoCalcAtr,
 													   workType,
 													   flexCalcMethod,
 													   predetermineTimeSet,

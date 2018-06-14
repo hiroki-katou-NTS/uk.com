@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
@@ -109,7 +110,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AutoCalAtrOvertime autoCalcSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet, 
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
-			   												   AutoCalAtrOvertime autoCalcAtr, 
+//			   												   AutoCalAtrOvertime autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
 			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
@@ -136,7 +137,9 @@ public class WithinStatutoryTimeOfDaily {
 				workTime = calcWithinStatutoryTime(oneDay.getWithinWorkingTimeSheet().get(),personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
-														  calcMethod,autoCalcAtr,flexCalcMethod,workTimeDailyAtr.get(),workTimeCode,preFlexTime,coreTimeSetting,
+														  calcMethod,
+//														  autoCalcAtr,
+														  flexCalcMethod,workTimeDailyAtr.get(),workTimeCode,preFlexTime,coreTimeSetting,
 														  oneDay.getPredetermineTimeSetForCalc(),oneDay.getTimeVacationAdditionRemainingTime(),dailyUnit,commonSetting);
 			
 
@@ -190,7 +193,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   HolidayAddtionSet holidayAddtionSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet,
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
-			   												   AutoCalAtrOvertime autoCalcAtr, 
+//			   												   AutoCalAtrOvertime autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
 			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
@@ -219,7 +222,7 @@ public class WithinStatutoryTimeOfDaily {
 						  									 holidayAddtionSet,
 						  									 holidayCalcMethodSet,
 						  									 calcMethod,
-						  									 flexautoCalcAtr,
+						  									 AutoCalAtrOvertime.CALCULATEMBOSS,
 						  									 flexCalcMethod.get(),
 						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT,
 						  									 preFlexTime,coreTimeSetting,
