@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				 nts.uk.ctx.at.request.dom.application.AppReason
+				 nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf004.b.style.css" />
@@ -62,9 +63,8 @@
 								<div id="lblInputDate" class="leftWidth"
 									data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KAF004_12')}</div>
 								<!-- Datepicker -->
-								<div id="inputdate" tabindex="1"
-									data-bind="ntsDatePicker: {value: date, 
-															dateFormat: 'YYYY/MM/DD',
+								<div id="inputdate" 
+									data-bind="ntsDatePicker: {value:appCommonSetting().generalDate, 
 															required: true,
 															name: '#[KAF004_41]' }"></div>
 							</div>
@@ -76,6 +76,7 @@
 										data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
 									<input id="inpLate1"
 										data-bind="ntsTimeEditor: {value: lateTime1, 
+															constraint:'TimeDay',
 															inputFormat: 'time',
 															mode: 'time' , 
 															required: late1,
@@ -86,8 +87,10 @@
 										data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
 									<input id="inpEarlyTime1"
 										data-bind="ntsTimeEditor: {value: earlyTime1, 
+															constraint:'TimeDay',
 															inputFormat: 'time',
 															mode: 'time' ,
+															constraint:'TimeDay',
 															required: early1 ,
 															name: '#[KAF004_43]'}" />
 								</div>
@@ -100,7 +103,9 @@
 												data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 											<input class="col1" id="inpLate2"
 												data-bind="ntsTimeEditor: {value: lateTime2, 
+																constraint:'TimeDay',
 															   inputFormat: 'time',
+															   constraint:'TimeDay',
 															   mode: 'time' ,
 															   required: late2,
 															   name: '#[KAF004_50]'}" />
@@ -110,7 +115,9 @@
 												data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
 											<input class="col2" id="inpEarlyTime2"
 												data-bind="ntsTimeEditor: {value: earlyTime2, 
+																constraint:'TimeDay',
 																inputFormat: 'time',
+																constraint:'TimeDay',
 																mode: 'time' ,
 																required: early2 ,
 																name: '#[KAF004_51]'}" />
@@ -125,7 +132,7 @@
 									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF004_12')}</div>
 								<!-- Datepicker -->
 								<div id="inputdate"
-									data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD',name: '#[KAF004_41]'}"></div>
+									data-bind="ntsDatePicker: {value:appCommonSetting().generalDate,required: true, dateFormat: 'YYYY/MM/DD',name: '#[KAF004_41]'}"></div>
 							</div>
 							<div class="valign-center control-group">
 								<div class="leftWidth" id="lblTime"
@@ -172,7 +179,7 @@
 									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF004_12')}</div>
 								<!-- Datepicker -->
 								<div id="inputdate"
-									data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD',name: '#[KAF004_41]'}"></div>
+									data-bind="ntsDatePicker: {value:appCommonSetting().generalDate,required: true, dateFormat: 'YYYY/MM/DD',name: '#[KAF004_41]'}"></div>
 							</div>
 							<div class="valign-center control-group">
 								<div class="leftWidth" id="lblFixTimeD1"
@@ -219,26 +226,26 @@
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_12')}</div>
 								<!--TimeEditor -->
 								<input style="margin-left: 60px;"
-									data-bind="ntsTimeEditor: {value: date, inputFormat: 'date', readonly:true, dateFormat: 'YYYY/MM/DD'}" />
+									data-bind="ntsTimeEditor: {value:appCommonSetting().generalDate, inputFormat: 'date',constraint:'TimeDay', readonly:true, dateFormat: 'YYYY/MM/DD'}" />
 							</div>
 							<div class="valign-center control-group">
 								<div id="lblLate1E" class="leftWidth"
 									data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_13')}</div>
 								<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
 								<input
-									data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time' , required: late1}" />
+									data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',constraint:'TimeDay',mode: 'time' , required: late1}" />
 								<!-- <div data-bind="text: ko.toJSON(lateTime1)	"></div> -->
 								<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
 								<input
-									data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time', required: early1}" />
+									data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',constraint:'TimeDay',mode: 'time', required: early1}" />
 								<br />
 								<div class="valign-center control-group row4">
 									<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 									<input class="col1"
-										data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time' , required: late2}" />
+										data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',constraint:'TimeDay',mode: 'time' , required: late2}" />
 									<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
 									<input class="col2"
-										data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time' , required: early2}" />
+										data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',constraint:'TimeDay',mode: 'time' , required: early2}" />
 								</div>
 							</div>
 						</com:ko-if>
@@ -247,31 +254,31 @@
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_12')}</div>
 								<!--TimeEditor -->
 								<input style="margin-left: 60px;"
-									data-bind="ntsTimeEditor: {value: date, inputFormat: 'date',readonly:true, dateFormat: 'YYYY/MM/DD'}" />
+									data-bind="ntsTimeEditor: {value:appCommonSetting().generalDate, inputFormat: 'date',constraint:'TimeDay',readonly:true, dateFormat: 'YYYY/MM/DD'}" />
 							</div>
 							<div class="valign-center control-group">
 								<div id="lblLate1F" class='leftWidth'
 									data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_13')}</div>
 								<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
 								<input
-									data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'}" />
+									data-bind="ntsTimeEditor: {value: lateTime1, constraint:'TimeDay',inputFormat: 'time',mode: 'time'}" />
 								<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
 								<input
-									data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" />
+									data-bind="ntsTimeEditor: {value: earlyTime1,constraint:'TimeDay',inputFormat: 'time',mode: 'time'}" />
 								<br />
 								<div class="valign-center control-group row4">
 									<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 									<input class="col1"
-										data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}" />
+										data-bind="ntsTimeEditor: {value: lateTime2, constraint:'TimeDay',inputFormat: 'time',mode: 'time'}" />
 									<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
 									<input class="col2"
-										data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time'}" />
+										data-bind="ntsTimeEditor: {value: earlyTime2, constraint:'TimeDay',inputFormat: 'time',mode: 'time'}" />
 								</div>
 							</div>
 
 						</com:ko-if>
-						<div class="valign-center control-group"
-							data-bind="visible:appCommonSetting().appTypeDiscreteSetting().typicalReasonDisplayFlg()!=0">
+						<com:ko-if bind="appCommonSetting().appTypeDiscreteSetting().typicalReasonDisplayFlg()!=0">
+						<div class="valign-center control-group">
 							<div id="lblReasonTemp" class="leftWidth"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_17')}</div>
 							<div id="inpReasonTemp"
@@ -288,13 +295,15 @@
 							
 							]}"></div>
 						</div>
-						<div class="valign-center control-group"
-							data-bind="visible:appCommonSetting().appTypeDiscreteSetting().displayReasonFlg()!=0">
+						</com:ko-if>
+						<com:ko-if bind="appCommonSetting().appTypeDiscreteSetting().displayReasonFlg()!=0">
+						<div class="valign-center control-group">
 							<div style="vertical-align: top;" class="leftWidth" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_18')}</div>
 							<div id="multiline">
 								<textarea id="appReason" style="height: 120px;"
 									data-bind="ntsMultilineEditor: {
 								name: '#[KAF004_18]',
+								required:true,
 								value: appreason,
 								option: {
 									resizeable: false,
@@ -304,6 +313,7 @@
 							}" />
 							</div>
 						</div>
+						</com:ko-if>
 						<div data-bind="if: kaf000_a2">
 							<div data-bind="with: kaf000_a2">
 								<ui:include src="../../000/a/index2_New.xhtml" />
