@@ -8,8 +8,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
     export class ScreenModel {
         dateType: string = 'YYYY/MM/DD';
-        // date editor
-        date: KnockoutObservable<string> = ko.observable(moment().format(this.dateType));
         //latetime editor
         lateTime1: KnockoutObservable<number> = ko.observable(null);
         lateTime2: KnockoutObservable<number> = ko.observable(null);
@@ -43,7 +41,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         //DisplayOrder
         displayOrder: KnockoutObservable<number> = ko.observable(0);
 
-        appCommonSetting: KnockoutObservable<AppComonSetting> = ko.observable(null);
+        appCommonSetting: KnockoutObservable<AppComonSetting> = ko.observable(new AppComonSetting());
 
         constructor() {
             var self = this;
@@ -62,7 +60,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
             });
-            self.date.subscribe(value => {
+            self.appCommonSetting().generalDate.subscribe(value => {
                 if(!$("#inputdate").ntsError("hasError")){
                 nts.uk.ui.block.invisible();
                 self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false).always(()=>{nts.uk.ui.block.clear();});
@@ -84,7 +82,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     }
                 });
                 self.appCommonSetting(new AppComonSetting(data.appCommonSettingDto));
-
                 self.displayOrder(data.workManagementMultiple.useATR);
                 self.applicantName(data.applicantName);
                 self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
@@ -117,6 +114,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             if (errorFlag != 0) {
                 nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function() { nts.uk.ui.block.clear(); });
             } else {
+                $('#appReason').ntsError('check');
                 if (!nts.uk.ui.errors.hasError()) {
                     /**  0: 事前の受付制限
                          1: 事後の受付制限
@@ -152,7 +150,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     }
                     let lateOrLeaveEarly: LateOrLeaveEarly = {
                         prePostAtr: prePostAtr,
-                        applicationDate: self.date(),
+                        applicationDate: self.appCommonSetting().generalDate(),
                         sendMail: self.sendMail(),
                         late1: self.late1() ? 1 : 0,
                         lateTime1: self.lateTime1(),
@@ -181,8 +179,10 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
     class AppComonSetting {
         appTypeDiscreteSetting = ko.observable(null);
-        constructor(data) {
+        generalDate = ko.observable(null);
+        constructor(data?) {
             if (data) {
+                //this.generalDate(data.generalDate);
                 this.appTypeDiscreteSetting(new AppTypeDiscreteSetting(data.appTypeDiscreteSettingDtos[0]));
             }
 
