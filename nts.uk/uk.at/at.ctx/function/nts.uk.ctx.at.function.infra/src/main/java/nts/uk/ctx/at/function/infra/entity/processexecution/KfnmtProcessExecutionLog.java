@@ -109,8 +109,6 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 			KfnmtExecutionTaskLog innitExecutionTaskLog = this.taskLogList.get(0);
 			int size = this.taskLogList.size();
 			for (int i = 1; i < size; i++) {
-				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.taskId != this.taskLogList.get(i).kfnmtExecTaskLogPK.taskId)
-					continue;
 				if(innitExecutionTaskLog.getUpdDate().compareTo(this.taskLogList.get(i).getUpdDate())==1){
 					innitExecutionTaskLog = this.taskLogList.get(i);
 				}
