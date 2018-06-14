@@ -105,27 +105,18 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				// get closure history
 				List<ClosureHistory> closureHistory = closure.getClosureHistories();
 
-				// get init yearMonthMax
-				YearMonth yearMonthMax = closureHistory.stream()
-						.min(Comparator.comparing(ClosureHistory::getStartYearMonth))
-						.orElseThrow(NoSuchElementException::new).getStartYearMonth();
-
-				// find yearMonthMax
+				// find closure history
 				for (ClosureHistory history : closureHistory) {
-					YearMonth histYearMonth = history.getStartYearMonth();
-					if (histYearMonth.greaterThan(yearMonthMax)
-							&& histYearMonth.greaterThanOrEqualTo(request.getStartDate().yearMonth())
-							&& histYearMonth.lessThanOrEqualTo(request.getEndDate().yearMonth())) {
-						yearMonthMax = histYearMonth;
+					if (history.getStartYearMonth().lessThanOrEqualTo(request.getEndDate().yearMonth())
+							&& history.getEndYearMonth().greaterThanOrEqualTo(request.getEndDate().yearMonth())) {
 						closureDate = history.getClosureDate();
 
 					}
 				}
 
-				// check if yearMonthMax is init value
+				// check if closure is found
 
-				if (yearMonthMax.greaterThanOrEqualTo(request.getStartDate().yearMonth())
-						&& yearMonthMax.lessThanOrEqualTo(request.getEndDate().yearMonth())) {
+				if (closureDate.getClosureDay().v() != 0) {
 
 					// get upper-daily-singleItem list
 					List<Integer> singleIdUpper = this.singleAttendanceRepo

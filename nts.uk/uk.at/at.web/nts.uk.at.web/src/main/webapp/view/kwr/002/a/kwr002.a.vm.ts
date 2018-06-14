@@ -279,7 +279,7 @@ module nts.uk.com.view.kwr002.a {
                 let self = this;
                 console.log(self.currentCodeList());
                 if (self.selectedEmployee().length <= 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1129" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
                     return;
                 }
                 self.exportDto(new ExportDto(self.selectedEmployee(), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));
@@ -294,7 +294,7 @@ module nts.uk.com.view.kwr002.a {
                 // mode = 2 for export file excel
                 let self = this;
                 if (self.selectedEmployee().length <= 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1129" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
                     return;
                 }
 
