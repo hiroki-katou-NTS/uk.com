@@ -5,28 +5,43 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
+/**
+ * The Class EraNameDom.
+ */
+//元号
 @Getter
 @Setter
 public class EraNameDom extends AggregateRoot {
 	
 	/** The era name id. */
+	//元号ID
 	private String eraNameId;
 
 	/** The end date. */
+	//終了年月日
 	private GeneralDate endDate;
 
 	/** The era name. */
+	//元号
 	private EraName eraName;
 
 	/** The start date. */
+	//開始年月日
 	private GeneralDate startDate;
 
 	/** The symbol. */
-	private String symbol;
+	//記号
+	private SymbolName symbol;
 
 	/** The system type. */
+	//システム規定区分
 	private SystemType systemType;
 
+	/**
+	 * Instantiates a new era name dom.
+	 *
+	 * @param memento the memento
+	 */
 	public EraNameDom(EraNameDomGetMemento memento) {
 		this.eraNameId = memento.getEraNameId();		
 		this.endDate = memento.getEndDate();
@@ -36,6 +51,11 @@ public class EraNameDom extends AggregateRoot {
 		this.systemType = memento.getSystemType();
 	}
 	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
 	public void saveToMemento(EraNameDomSetMemento memento) {
 		memento.setEraNameId(this.eraNameId);
 		memento.setEndDate(this.endDate);
@@ -45,6 +65,9 @@ public class EraNameDom extends AggregateRoot {
 		memento.setSystemType(this.systemType);
 	}
 	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
 	@Override
 	public void validate() {
 		super.validate();

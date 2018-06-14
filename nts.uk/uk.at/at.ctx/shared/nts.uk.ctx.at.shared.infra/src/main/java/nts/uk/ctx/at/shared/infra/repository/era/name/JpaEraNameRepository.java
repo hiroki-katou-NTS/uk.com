@@ -19,6 +19,9 @@ import nts.uk.ctx.at.shared.dom.era.name.EraNameDomRepository;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDomSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.era.name.CisdtEraName;
 
+/**
+ * The Class JpaEraNameRepository.
+ */
 @Stateless
 public class JpaEraNameRepository extends JpaRepository implements EraNameDomRepository{
 	
@@ -74,6 +77,12 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 		this.commandProxy().insert(this.toEntity(domain));
 	};
 	
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the cisdt era name
+	 */
 	private CisdtEraName toEntity(EraNameDom domain) {
 		CisdtEraName entity = this.queryProxy().find(domain.getEraNameId(), CisdtEraName.class)
 				.orElse(new CisdtEraName());
@@ -84,6 +93,12 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 		return entity;
 	}
 	
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the era name dom
+	 */
 	private EraNameDom toDomain(CisdtEraName entity) {
 		EraNameDomGetMemento memento = new JpaEraNameGetMemento(entity);
 		return new EraNameDom(memento);
