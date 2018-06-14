@@ -364,7 +364,6 @@ module nts.custombinding {
                         padding: 0;
                         overflow: hidden;
                         line-height: 31px;
-                        text-align: center;
                         position: absolute;
                         background: #CFF1A5;
                         box-sizing: border-box;
@@ -522,6 +521,16 @@ module nts.custombinding {
                         width: 160px;
                     }
 
+                    .layout-control .item-classification th>.form-label {
+                        line-height: 31px !important;
+                        height: 31px !important;
+                    }
+
+                    .layout-control .item-classification th>.form-label>* {
+                        line-height: unset !important;
+                        height: unset !important;                        
+                    }
+
                     .layout-control .item-classification>.close-btn {
                         top: 0;
                         right: 5px;
@@ -589,6 +598,17 @@ module nts.custombinding {
 
                     .layout-control.inputable .nts-help-button-image .caret-helpbutton.caret-left {
                         top: unset !important;
+                    }
+                    
+                    .layout-control .ntsHelpButton {
+                        margin-left: -50px;
+                        margin-right: 15px;
+                    }
+
+                    .layout-control .ntsHelpButton button {
+                        top: 3px;
+                        height: 27px;
+                        vertical-align: middle;
                     }
                 </style>`;
 
@@ -815,8 +835,7 @@ module nts.custombinding {
                     <!-- ko if: resourceId -->
                         <button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: resourceId }, text: text('？')">？</button>
                     <!-- /ko -->                    
-                    <!-- ko let: { 
-                                nameid : itemDefId.replace(/[-_]/g, ''),
+                    <!-- ko let: {
                                 DATE_TYPE: {
                                     YYYYMMDD: 1,
                                     YYYYMM: 2,
@@ -854,58 +873,58 @@ module nts.custombinding {
                                 }
                             } -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
-                        <input data-bind=" ntsTextEditor: {
-                                name: itemName,
-                                value: value,
-                                constraint:  _.endsWith(nameid, 'CS00069IS00779') ? 'StampNumber' : nameid,
-                                required: required,
-                                option: {
-                                    textmode: 'text'
-                                },
-                                enable: editable,
-                                readonly: readonly,
-                                immediate: false
-                            },  attr: {
-                                id: nameid,
-                                nameid: nameid,
-                                title: itemName,
-                                'data-title': itemName,
-                                'data-code': itemCode,
-                                'data-category': categoryCode,
-                                'data-required': required,
-                                'data-defv': defValue
-                            }," />
-                        <!-- /ko -->
-                        <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA, STRING_TYPE.CARDNO].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
-                        <textarea data-bind="ntsMultilineEditor: {
-                                name: itemName,
-                                value: value,
-                                constraint: nameid,
-                                required: required,
-                                option: {
-                                    textmode: 'text'
-                                },
-                                enable: editable,
-                                readonly: readonly,
-                                immediate: false 
-                            }, attr: { 
-                                id: nameid, 
-                                nameid: nameid,
-                                title: itemName,
-                                'data-title': itemName,
-                                'data-code': itemCode,
-                                'data-category': categoryCode,
-                                'data-required': required,
-                                'data-defv': defValue
-                            }" />
-                        <!-- /ko -->
+                            <!-- ko if: [STRING_TYPE.NUMERIC, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                            <input data-bind=" ntsTextEditor: {
+                                    name: itemName,
+                                    value: value,
+                                    constraint: constraint || nameid,
+                                    required: required,
+                                    option: {
+                                        textmode: 'text'
+                                    },
+                                    enable: editable,
+                                    readonly: readonly,
+                                    immediate: false
+                                }, attr: {
+                                    id: nameid,
+                                    nameid: nameid,
+                                    title: itemName,
+                                    'data-title': itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': defValue
+                                }, hasFocus: hasFocus" />                                    
+                            <!-- /ko -->
+                            <!-- ko if: ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80) -->
+                            <textarea data-bind="ntsMultilineEditor: {
+                                    name: itemName,
+                                    value: value,
+                                    constraint: constraint || nameid,
+                                    required: required,
+                                    option: {
+                                        textmode: 'text'
+                                    },
+                                    enable: editable,
+                                    readonly: readonly,
+                                    immediate: false 
+                                }, attr: { 
+                                    id: nameid, 
+                                    nameid: nameid,
+                                    title: itemName,
+                                    'data-title': itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': defValue
+                                }, hasFocus: hasFocus" />
+                            <!-- /ko -->
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMERIC -->
                         <input data-bind="ntsNumberEditor: { 
                                     name: itemName,
                                     value: value,
-                                    constraint: nameid,
+                                    constraint: constraint || nameid,
                                     required: required,
                                     option: {
                                         textalign: 'left',
@@ -923,7 +942,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }" />
+                                }, hasFocus: hasFocus" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.DATE -->
                         <!-- ko if: index != 2 -->
@@ -932,10 +951,11 @@ module nts.custombinding {
                                 value: value,
                                 startDate: startDate,
                                 endDate: endDate,
-                                constraint: nameid,
+                                constraint: constraint || nameid,
                                 dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                 enable: editable,
-                                readonly: readonly
+                                readonly: readonly,
+                                required: required
                             }, attr: { 
                                 id: nameid, 
                                 nameid: nameid,
@@ -945,7 +965,7 @@ module nts.custombinding {
                                 'data-category': categoryCode,
                                 'data-required': required,
                                 'data-defv': defValue
-                            }"></div>
+                            }, hasFocus: hasFocus"></div>
                         <!-- /ko -->
                         <!-- ko if: index == 2 -->
                         <!-- ko if: typeof ctgType !== 'undefined' -->
@@ -958,10 +978,11 @@ module nts.custombinding {
                                     value: value,
                                     startDate: startDate,
                                     endDate: endDate,
-                                    constraint: nameid,
+                                    constraint: constraint || nameid,
                                     dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                     enable: editable,
-                                    readonly: readonly
+                                    readonly: readonly,
+                                    required: required
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
@@ -971,7 +992,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }"></div>
+                                }, hasFocus: hasFocus"></div>
                             <!-- /ko -->
                         <!-- /ko -->
                         <!-- ko if: typeof ctgType === 'undefined' -->
@@ -980,10 +1001,11 @@ module nts.custombinding {
                                     value: value,
                                     startDate: startDate,
                                     endDate: endDate,
-                                    constraint: nameid,
+                                    constraint: constraint || nameid,
                                     dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                     enable: editable,
-                                    readonly: readonly
+                                    readonly: readonly,
+                                    required: required
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
@@ -993,7 +1015,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }"></div>
+                                }, hasFocus: hasFocus"></div>
                         <!-- /ko -->
                         <!-- /ko -->
                         <!-- /ko -->
@@ -1001,7 +1023,7 @@ module nts.custombinding {
                         <input data-bind="ntsTimeEditor: {
                                     name: itemName,
                                     value: value,
-                                    constraint: nameid,
+                                    constraint: constraint || nameid,
                                     required: required,
                                     inputFormat: 'time',
                                     enable: editable,
@@ -1016,12 +1038,12 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }" />
+                                }, hasFocus: hasFocus" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT -->
                         <input data-bind="ntsTimeWithDayEditor: { 
                                     name: itemName,
-                                    constraint: nameid,
+                                    constraint: constraint || nameid,
                                     value: value,
                                     enable: editable, 
                                     readonly: readonly,
@@ -1035,7 +1057,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }" />
+                                }, hasFocus: hasFocus" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
                         <div data-bind="ntsComboBox: {
@@ -1061,7 +1083,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }", style='width: 200px; min-width: 200px; max-width: 580px;'></div>
+                                }, hasFocus: hasFocus", style='width: 200px; min-width: 200px; max-width: 580px;'></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
                             <div data-bind="ntsRadioBoxGroup: {
@@ -1079,7 +1101,7 @@ module nts.custombinding {
                                 'data-defv': defValue,
                                 title: itemName,
                                 'data-title': itemName,
-                            }"></div>
+                            }, hasFocus: hasFocus"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_BUTTON -->
                             <button data-bind="attr: { 
@@ -1090,7 +1112,7 @@ module nts.custombinding {
                                 'data-category': categoryCode,
                                 'data-required': required,
                                 'data-defv': defValue
-                             }, text: text('CPS001_106'), enable: editable">選択</button>
+                             }, text: text('CPS001_106'), enable: editable, hasFocus: hasFocus">選択</button>
                             <label class="value-text readonly" data-bind="html: textValue"></label>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY -->
@@ -1117,7 +1139,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_127'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable, hasFocus: hasFocus">選択</button>
                             </div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMBERIC_BUTTON -->
@@ -1125,7 +1147,7 @@ module nts.custombinding {
                                 <input data-bind="ntsNumberEditor: { 
                                             name: itemName,
                                             value: value,
-                                            constraint: nameid,
+                                            constraint: constraint || nameid,
                                             required: required,
                                             option: {
                                                 textalign: 'left',
@@ -1143,7 +1165,7 @@ module nts.custombinding {
                                             'data-category': categoryCode,
                                             'data-required': required,
                                             'data-defv': defValue
-                                        }" />                            
+                                        }, hasFocus: hasFocus" />                            
                                 <button data-bind="attr: { 
                                     id: nameid, 
                                     title: itemName,
@@ -1166,7 +1188,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_127'), enable: editable" class="hidden">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable, hasFocus: hasFocus" class="hidden">選択</button>
                             </div>
                         <!-- /ko -->
                     <!-- /ko -->
@@ -1362,7 +1384,7 @@ module nts.custombinding {
                                             && relates.indexOf(def.perInfoCtgId) == -1;
                                     })
                                     .map(def => {
-                                        let is_relate = ((def.itemTypeState || {}).dataTypeState || {}).relatedCtgCode,
+                                        let is_relate = ((def.itemTypeState || <any>{}).dataTypeState || {}).relatedCtgCode,
                                             new_mode = !!is_relate && !!is_new,
                                             dispOrder: number = ko.toJS(opts.sortable.data).length,
                                             item: IItemClassification = {
@@ -1453,8 +1475,8 @@ module nts.custombinding {
                                     opts.sortable.pushItems(defs);
                                 }
                             } else {
-                                let dupids = dups.map((x: IItemDefinition) => x.id),
-                                    nodups = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
+                                let dupids: Array<any> = dups.map((x: IItemDefinition) => x.id),
+                                    nodups: Array<any> = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
 
                                 if (dupids && dupids.length) {
                                     // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
@@ -1535,6 +1557,8 @@ module nts.custombinding {
                                         constraint.charType = 'Any';
                                         break;
                                     case ITEM_STRING_TYPE.CARDNO:
+                                        constraint.itemCode = 'StampNumber';
+                                        constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
                                     case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                         constraint.charType = 'AnyHalfWidth';
                                         break;
@@ -1614,14 +1638,6 @@ module nts.custombinding {
 
                     if (constraints && constraints.length) {
                         exceptConsts = [];
-
-                        // fix bug stampNumber error msg
-                        let stampNumber = _.clone(_.find(constraints, c => _.endsWith(c.itemCode, 'CS00069IS00779')));
-                        if (stampNumber) {
-                            stampNumber.itemCode = "StampNumber";
-                            constraints.push(stampNumber);
-                        }
-
                         writeConstraints(constraints);
                     }
                 },
@@ -1803,10 +1819,14 @@ module nts.custombinding {
                         item = {};
                     }
 
+                    // focus flag of control
+                    def.hasFocus = ko.observable(false);
+
                     def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
                     def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
                     def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
                     def.required = _.has(def, "required") && def.required || !!item.isRequired;
+                    //def.required = _.has(def, "required") ? (ko.isObservable(def.required) ? def.required : ko.observable(def.required)) : ko.observable(!!item.isRequired);
 
                     def.resourceId = _.has(def, "resourceId") && def.resourceId || undefined;
 
@@ -1836,7 +1856,7 @@ module nts.custombinding {
 
                     if (def.item && def.item.dataTypeValue == ITEM_SINGLE_TYPE.SELECTION) {
                         let data = ko.toJS(def.lstComboBoxValue),
-                            selected = _.find(data, f => f.optionValue == def.value());
+                            selected = _.find(data, (f: any) => f.optionValue == def.value());
 
                         if (!selected) {
                             def.value(undefined);
@@ -1847,10 +1867,12 @@ module nts.custombinding {
                         def.value.subscribe(v => {
                             if (v) {
                                 let data = ko.toJS(def.lstComboBoxValue),
-                                    selected = _.find(data, f => f.optionValue == v);
+                                    selected: any = _.find(data, (f: any) => f.optionValue == v);
+
                                 if (selected) {
                                     def.textValue(selected.optionText);
                                 } else {
+                                    def.value(undefined);
                                     def.textValue(`${v}&nbsp;&nbsp;&nbsp;${text('CPS001_107')}`);
                                 }
                             } else {
@@ -2001,9 +2023,12 @@ module nts.custombinding {
                                 }
                             });
                         });
-
+                        
+                        // filter group input has record id
+                        // or no record id but has data
+                        // or has record id and delete flag is true
                         inputs = _(inputs).filter(f => {
-                            return f.items.filter(m => !!m.value).length > 0 || (f.recordId && f.delete);
+                            return f.recordId || (!f.recordId && f.items.filter(m => !!m.value).length > 0) || (f.recordId && f.delete);
                         }).value();
 
                         // change value
@@ -2090,9 +2115,16 @@ module nts.custombinding {
                                             ITEM_SINGLE_TYPE.TIME,
                                             ITEM_SINGLE_TYPE.TIMEPOINT
                                         ].indexOf((x.item || {}).dataTypeValue) > -1 &&
-                                        x.itemDefId.replace(/[-_]/g, '');
+                                        x.itemDefId.replace(/[-_]/g, ''),
+                                    nameid = x.itemDefId.replace(/[-_]/g, '');
+
+                                // fix stampcard validate
+                                if ([ITEM_STRING_TYPE.CARDNO].indexOf((x.item || {}).stringItemType) > -1) {
+                                    constraint = 'StampNumber';
+                                }
 
                                 return _.extend(x, {
+                                    nameid: nameid,
                                     parent: parent,
                                     childs: childs,
                                     constraint: constraint || undefined
@@ -2225,9 +2257,16 @@ module nts.custombinding {
                                     ITEM_SINGLE_TYPE.TIME,
                                     ITEM_SINGLE_TYPE.TIMEPOINT
                                 ].indexOf((col.item || {}).dataTypeValue) > -1 &&
-                                col.itemDefId.replace(/[-_]/g, '');
+                                col.itemDefId.replace(/[-_]/g, ''),
+                            nameid = col.itemDefId.replace(/[-_]/g, '');
+
+                        // fix stampcard validate
+                        if ([ITEM_STRING_TYPE.CARDNO].indexOf((col.item || {}).stringItemType) > -1) {
+                            constraint = 'StampNumber';
+                        }
 
                         return _.extend(col, {
+                            nameid: nameid,
                             parent: parent,
                             childs: childs,
                             constraint: constraint || undefined

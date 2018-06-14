@@ -4,6 +4,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -12,26 +13,26 @@ import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Data
-@AttendanceItemRoot(rootName = "日別実績の所属情報")
+@AttendanceItemRoot(rootName = ItemConst.DAILY_AFFILIATION_INFO_NAME)
 public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
 	private GeneralDate baseDate; 
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "雇用コード")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = EMPLOYEMENT)
 	@AttendanceItemValue
 	private String employmentCode;
 
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "職位ID")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = JOB_TITLE)
 	@AttendanceItemValue
 	private String jobId;
 
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "職場ID")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = WORKPLACE)
 	@AttendanceItemValue
 	private String workplaceID;
 
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "分類コード")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = CLASSIFICATION)
 	@AttendanceItemValue
 	private String classificationCode;
 

@@ -45,7 +45,8 @@ public class RemandImpl implements RemandService {
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
 		List<ApprovalPhaseState> listApprovalPhase = approvalRootState.getListApprovalPhaseState();
 		listApprovalPhase.sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
-		listApprovalPhase.forEach(approvalPhaseState -> {
+		List<ApprovalPhaseState> listUpperPhase = listApprovalPhase.stream().filter(x -> x.getPhaseOrder() >= order).collect(Collectors.toList());
+		listUpperPhase.forEach(approvalPhaseState -> {
 			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED);
 			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
 				phaseNotApprovalFlag = Boolean.logicalAnd(phaseNotApprovalFlag, approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED));
@@ -62,10 +63,11 @@ public class RemandImpl implements RemandService {
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 		});
+		ApprovalPhaseState currentPhase = listApprovalPhase.stream().filter(x -> x.getPhaseOrder()==order).findFirst().get();
+		currentPhase.setApprovalAtr(ApprovalBehaviorAtr.REMAND);
 		approvalRootStateRepository.update(approvalRootState, rootType);
 		// 送信者ID＝送信先リスト
-		ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(listApprovalPhase.size()-order);
-		List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
+		List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(currentPhase);
 		ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, approvers);
 		approvers.addAll(approvalRepresenterOutput.getListAgent());
 		return approvers.stream().distinct().collect(Collectors.toList());
@@ -74,6 +76,18 @@ public class RemandImpl implements RemandService {
 	@Override
 	public void doRemandForApplicant(String companyID, String rootStateID, Integer rootType) {
 		releaseAllAtOnceService.doReleaseAllAtOnce(companyID, rootStateID, rootType);
+	}
+
+	@Override
+	public Integer getCurrentApprovePhase(String rootStateID, Integer rootType) {
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
+		if(!opApprovalRootState.isPresent()){
+			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		}
+		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		List<ApprovalPhaseState> listApprovalPhase = approvalRootState.getListApprovalPhaseState();
+		listApprovalPhase.sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
+		return listApprovalPhase.stream().filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED).findFirst().get().getPhaseOrder()+1;
 	}
 
 }
