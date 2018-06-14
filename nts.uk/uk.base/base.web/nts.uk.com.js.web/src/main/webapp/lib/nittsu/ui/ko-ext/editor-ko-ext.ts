@@ -515,7 +515,8 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
-            return new text.TimeFormatter({ inputFormat: inputFormat });
+            var mode: string = (data.mode !== undefined) ? ko.unwrap(data.mode) : ""
+            return new text.TimeFormatter({ inputFormat: inputFormat, mode: mode });
         }
 
         getValidator(data: any): validation.IValidator {

@@ -5161,6 +5161,21 @@ div .ex-area-line.x-stay {
   border: 1px solid DodgerBlue;
 }
 
+/* line 1, ../sass/components/_datetime.scss */
+.component-container{
+    display: inline-block;
+}
+
+/* line 4, ../sass/components/_datetime.scss */
+.time-container{
+    margin-left: 5px;
+}
+
+/* line 7, ../sass/components/_datetime.scss */
+.datetimepairrange-component{
+   	display: inline-block;
+}
+
 /* line 51, ../sass/base.scss */
 html {
   font-size: 14px;

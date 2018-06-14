@@ -457,7 +457,12 @@ module nts.uk.ui.validation {
             let maxStr, minStr;
             // Time duration
             if(this.mode === "time"){
-                var timeParse = time.minutesBased.duration.parseString(inputText);
+                var timeParse;
+                if(this.outputFormat.indexOf("s") >= 0){
+                    timeParse = time.secondsBased.duration.parseString(inputText);    
+                } else {
+                    timeParse = time.minutesBased.duration.parseString(inputText);
+                }
                 if (timeParse.success) {
                     result.success(timeParse.toValue());
                 } else {
