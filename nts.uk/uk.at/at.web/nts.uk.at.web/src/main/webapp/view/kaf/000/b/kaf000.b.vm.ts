@@ -323,7 +323,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         btnRemand() {
             let self = this;
-            let command = {appID: self.appID()};
+            let command = {appID: self.appID(), version: self.dataApplication().version };
             setShared("KDL034_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml").onClosed(() => {
                 location.reload();
