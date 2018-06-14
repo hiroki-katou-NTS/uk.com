@@ -8,7 +8,6 @@
 }
 .one{
 	margin-left: 20px;
-	margin-bottom: 25px;
 	margin-top:10px;
 }
 .two{
@@ -20,7 +19,8 @@
 }
 #labelRight{
 	margin-left: 340px; 
-	margin-bottom: 25px;
+	margin-top: 15px;
+	margin-bottom: 20px;
 }
 #swap-list{
 	margin-left: 20px;
