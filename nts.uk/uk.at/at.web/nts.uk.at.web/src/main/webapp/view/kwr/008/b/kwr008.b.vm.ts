@@ -172,23 +172,25 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 for (let i = 0, count = data.length; i < count; i++) {
                     self.listStandardImportSetting.push(new SetOutputSettingCode(dataSorted[i]));
                 }
-                var KWR008BParam = nts.uk.ui.windows.getShared("KWR008_B_Param");
-                if (KWR008BParam && KWR008BParam.selectedCd) {
-                    self.selectedCode(KWR008BParam.selectedCd);
-                    self.updateMode(KWR008BParam.selectedCd);
-                }
-
+                
+                //get list value output format
                 service.getValueOutputFormat().done(data => {
                     for (let i = 0, count = data.length; i < count; i++) {
                         self.valOutFormat.push(new model.ItemModel(data[i].value+'', data[i].localizedName));
                     }
-                }).always(function() {
-                    dfd.resolve(self);
-                    block.clear();
                 });
+                
+                //get parameter from B
+                let KWR008BParam = nts.uk.ui.windows.getShared("KWR008_B_Param");
+                if (KWR008BParam && KWR008BParam.selectedCd) {
+                    self.selectedCode(KWR008BParam.selectedCd);
+                    self.updateMode(KWR008BParam.selectedCd);
+                }else{ //case no param
+                    self.checkListItemOutput();    
+                }
+                        
             }).always(function() {
                 dfd.resolve(self);
-                self.checkListItemOutput();
                 block.clear();
             });
             
