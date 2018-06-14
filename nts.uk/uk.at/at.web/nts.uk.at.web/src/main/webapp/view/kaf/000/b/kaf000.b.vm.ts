@@ -284,13 +284,17 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
             let approveCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
             service.approveApp(approveCmd, self.appType()).done(function(data) {
-                nts.uk.ui.dialog.info({ messageId: 'Msg_220' }).then(function() {
-                    if(data.autoSendMail){
-                        appcommon.CommonProcess.displayMailResult(data);     
-                    } else {
-                        location.reload();
-                    }
-                });
+                if(data){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_220' }).then(function() {
+                        if(data.autoSendMail){
+                            appcommon.CommonProcess.displayMailResult(data);     
+                        } else {
+                            location.reload();
+                        }
+                    });
+                }else{
+                    nts.uk.ui.block.clear();    
+                }
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
             });
