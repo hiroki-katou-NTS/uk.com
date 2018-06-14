@@ -1,5 +1,5 @@
 #ex_accept_wizard {
-	width: 1400px;
+	width: 1270px;
 	height: 480px;
 }
 
@@ -9,7 +9,7 @@
 }
 
 #ex_accept_wizard>.content {
-	width: 1140px;
+	width: 1010px;
 	height: 590px;
 	background: none;
 	margin-left: 5px;
@@ -100,7 +100,7 @@
 }
 
 #D5_1 {
-	margin-left: 100px;
+	margin-left: 150px;
 }
 
 #E3_1 {
@@ -173,7 +173,7 @@
 .selectionEmployee {
 	border: 1px solid #ccc !important;
 	border-radius: 5px;
-	margin: 0px 115px 0px 90px;
+	margin: 0px 0px 0px 90px;
 	padding: 20px;
 	width: 600px;
 	float: right;
@@ -204,7 +204,7 @@
 }
 
 #contents-area {
-	overflow-x: hidden;
+	overflow-x: auto;
 }
 
 #A3_2 {
@@ -235,7 +235,7 @@
 
 .bot-right-panel{
 	float: right;
-    margin-right: 525px;
+    margin-right: 400px;
 }
 
 .other .space {

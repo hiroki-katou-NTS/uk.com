@@ -87,6 +87,6 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 			targetEmployeesRepo.addAll(lstEmplAll);
 		}
 		
-		manualSetOfDataSaveService.start(storeProcessingId);
+		manualSetOfDataSaveService.start(domain);
 	}
 }
