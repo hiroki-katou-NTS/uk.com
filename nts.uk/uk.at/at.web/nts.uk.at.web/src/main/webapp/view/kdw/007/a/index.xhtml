@@ -129,6 +129,7 @@
 										width: '150px',
 										optionsText: 'name',
 										selectFirstIfNull: true,
+										enable: selectedErrorAlarm().remarkCancelErrorInput() == 1,
 										columns: [
 											{ prop: 'code', length: 4 },
 											{ prop: 'name', length: 10 },
@@ -409,24 +410,33 @@
 		                            </tr>
 		                            <com:ko-foreach bind="selectedErrorAlarm().erAlAtdItemConditionGroup1">
 		                            	<tr>
-		                            		<com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
-				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
-				                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayTarget"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+		                            		<com:ko-if bind="$data.conditionType() == 0 || $data.conditionType() == 1">
+			                            		<com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
+					                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+					                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayTarget"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+				                            	</com:ko-if>
+				                            	<com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+				                            		<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+					                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+				                            	</com:ko-if>
+				                            	<com:ko-if bind="$data.compareOperator() &lt; 6">
+					                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+					                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+				                            	</com:ko-if>
 			                            	</com:ko-if>
-			                            	<com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+			                            	<com:ko-if bind="$data.conditionType() == 2">
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-			                            		<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
-				                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-			                            	</com:ko-if>
-			                            	<com:ko-if bind="$data.compareOperator() &lt; 6">
-				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
 				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
-				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
+				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.inputCheckCondition() == 0 ? '入力されていない' : '入力されている'"></span></td>
 				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
 			                            	</com:ko-if>

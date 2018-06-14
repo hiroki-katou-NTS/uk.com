@@ -16,8 +16,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         ]);
         
         enumInputCheckCondition: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0, name: "入力されていない" },
-            { code: 1, name: "入力されている" }
+            { code: 0, name: nts.uk.resource.getText("KDW007_108") },
+            { code: 1, name: nts.uk.resource.getText("KDW007_107") }
         ]);
 
         enumCompareOperator: KnockoutObservableArray<any> = ko.observableArray([
@@ -96,9 +96,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 if (value === 0) {
                     $('#display-compare-item').ntsError('clear');
                     $(".value-input").trigger("validate");
-                } else {
+                } else if (value === 1) {
                     $('.value-input').ntsError('clear');
                     $("#display-compare-item").trigger("validate");
+                } else {
+                    $('#display-compare-item').ntsError('clear');
+                    $('.value-input').ntsError('clear');
                 }
             });
 
@@ -131,15 +134,10 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 setTimeout(() => {
                     switch (t) {
                         case 0:
-                            break;
                         case 1:
-                            break;
                         case 2:
-                            break;
                         case 3:
-                            break;
                         case 4:
-                            break;
                         case 5:
                             break;
                         case 6:
@@ -301,7 +299,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             let self = this;
             self.getListItemByAtr().done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-                if (self.currentAtdItemCondition.conditionAtr() === 2) {
+                if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
                     //Open dialog KDL021
                     nts.uk.ui.windows.setShared('Multiple', false);
                     nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);

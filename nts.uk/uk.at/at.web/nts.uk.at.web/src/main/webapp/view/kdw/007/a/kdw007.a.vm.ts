@@ -20,8 +20,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") }
         ]);
         listRemarkCancelErrorInput: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
-            { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") }
+            { code: '0', name: nts.uk.resource.getText("KDW007_110") },
+            { code: '1', name: nts.uk.resource.getText("KDW007_109") }
         ]);
         listRemarkColumnNo: KnockoutObservableArray<any> = ko.observableArray([
             { code: 833, name: "備考1" },
@@ -92,6 +92,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 self.screenMode(ScreenMode.Monthly);
             } 
             self.selectedErrorAlarm = ko.observable(new ErrorAlarmWorkRecord(self.screenMode()));
+            service.getAttendanceItemByCodes([833, 834, 835, 836, 837], self.screenMode()).done((lstItems) => {
+                if (lstItems && lstItems.length > 0) {
+                    let lstItemCode = lstItems.map((item) => { return item; });
+                }
+            });
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
                     let foundItem: ErrorAlarmWorkRecord = _.find(self.lstErrorAlarm(), (item) => {
@@ -144,7 +149,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             }
         }
 
-        changeSelectedErrorAlarm(foundItem: ErrorAlarmWorkRecord) {
+        changeSelectedErrorAlarm(foundItem) {
             let self = this;
             nts.uk.ui.errors.clearAll();
             if (self.screenMode() == ScreenMode.Daily) {
@@ -1070,7 +1075,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         targetNO: KnockoutObservable<number>;
         conditionAtr: KnockoutObservable<number>;
         useAtr: KnockoutObservable<boolean>;
-        inputCheckCondition: KnockoutObservable<number> = ko.observable(0);
+        inputCheckCondition: KnockoutObservable<number>;
         uncountableAtdItem: KnockoutObservable<number>;
         countableAddAtdItems: KnockoutObservableArray<number>;
         countableSubAtdItems: KnockoutObservableArray<number>;
@@ -1101,6 +1106,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
             self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
             self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.inputCheckCondition = param && param.inputCheckCondition ? ko.observable(param.inputCheckCondition) : ko.observable(0);
             self.displayLeftCompare = ko.observable("");
             self.displayLeftOperator = ko.observable("");
             self.displayTarget = ko.observable("");

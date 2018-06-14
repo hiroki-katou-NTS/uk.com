@@ -84,6 +84,7 @@ public class ErrorAlarmWorkRecordDto {
 		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);
 		erAlAtdItemConditionDto.setUseAtr(itemDomain.isUse());
+//		erAlAtdItemConditionDto.setConditionType(itemDomain.getType().);
 		// Check Target
 		// チェック対象
 		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
@@ -151,6 +152,7 @@ public class ErrorAlarmWorkRecordDto {
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);
 		} else if (itemDomain.getInputCheck() != null) {
 			erAlAtdItemConditionDto.setInputCheckCondition(itemDomain.getInputCheck().getInputCheckCondition().value);
+			erAlAtdItemConditionDto.setConditionType(itemDomain.getType().value);
 		}
 		return erAlAtdItemConditionDto;
 	}
@@ -184,40 +186,6 @@ public class ErrorAlarmWorkRecordDto {
 		this.operatorGroup1 = operatorGroup1;
 		this.operatorGroup2 = operatorGroup2;
 		this.group2UseAtr = group2UseAtr;
-	}
-
-	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr,
-			int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, String displayMessage, int boldAtr,
-			String messageColor, int cancelableAtr, Integer errorDisplayItem,
-			AlarmCheckTargetConditionDto alCheckTargetCondition, WorkTypeConditionDto workTypeCondition,
-			WorkTimeConditionDto workTimeCondition, int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode,
-			int operatorBetweenGroups, int operatorGroup1, int operatorGroup2,
-			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1,
-			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2) {
-		super();
-		this.companyId = companyId;
-		this.code = code;
-		this.name = name;
-		this.fixedAtr = fixedAtr;
-		this.useAtr = useAtr;
-		this.remarkCancelErrorInput = remarkCancelErrorInput;
-		this.remarkColumnNo = remarkColumnNo;
-		this.typeAtr = typeAtr;
-		this.displayMessage = displayMessage;
-		this.boldAtr = boldAtr;
-		this.messageColor = messageColor;
-		this.cancelableAtr = cancelableAtr;
-		this.errorDisplayItem = errorDisplayItem;
-		this.alCheckTargetCondition = alCheckTargetCondition;
-		this.workTypeCondition = workTypeCondition;
-		this.workTimeCondition = workTimeCondition;
-		this.operatorBetweenPlanActual = operatorBetweenPlanActual;
-		this.lstApplicationTypeCode = lstApplicationTypeCode;
-		this.operatorBetweenGroups = operatorBetweenGroups;
-		this.operatorGroup1 = operatorGroup1;
-		this.operatorGroup2 = operatorGroup2;
-		this.erAlAtdItemConditionGroup1 = erAlAtdItemConditionGroup1;
-		this.erAlAtdItemConditionGroup2 = erAlAtdItemConditionGroup2;
 	}
 
 	public static ErrorAlarmWorkRecordDto fromDomain(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
