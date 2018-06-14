@@ -1,7 +1,8 @@
 package nts.uk.screen.at.app.dailymodify.command;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,7 +11,6 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.editstatecolor.EditStateColorOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstatecolor.EditStateColorOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Pa
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
@@ -49,6 +51,9 @@ public class DailyModifyCommandFacade {
 	
 	@Inject
 	private RegisterDayApproval registerDayApproval;
+
+	@Inject
+	private OptionalItemRepository optionalMasterRepo;
 
 	public void handleAdd(DailyModifyQuery query) {
 		this.handler.handleAdd(createCommand(AppContexts.user().employeeId(), toDto(query), query));
@@ -91,22 +96,26 @@ public class DailyModifyCommandFacade {
 	}
 
 	private DailyRecordDto toDto(DailyModifyQuery query) {
-		DailyRecordDto oldValues = finder.find(query.getEmployeeId(), query.getBaseDate());
-		oldValues = AttendanceItemUtil.fromItemValues(oldValues, query.getItemValues());
-		oldValues.getTimeLeaving().ifPresent(dto -> {
-			if(dto.getWorkAndLeave() != null) dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
-		});
-		return oldValues;
+		return toDto(Arrays.asList(query)).get(0);
 	}
 	
 	private List<DailyRecordDto> toDto(List<DailyModifyQuery> query) {
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		List<DailyRecordDto> oldValues = finder.find(query.stream()
-									.collect(Collectors.toMap(c -> c.getEmployeeId(), c -> c.getBaseDate())));
+									.collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
+												Collectors.collectingAndThen(Collectors.toList(), 
+													c -> c.stream().map(q -> q.getBaseDate())
+																	.collect(Collectors.toList())))));
 		return oldValues.stream().map(o -> {
 			List<ItemValue> itemValues = query.stream().filter(q -> q.getBaseDate().equals(o.workingDate()) 
 																&& q.getEmployeeId().equals(o.employeeId()))
 									.findFirst().get().getItemValues();
 			AttendanceItemUtil.fromItemValues(o, itemValues);
+			o.getOptionalItem().ifPresent(optional -> {
+				optional.correctItems(optionalMaster);
+			});
 			o.getTimeLeaving().ifPresent(dto -> {
 				if(dto.getWorkAndLeave() != null) 
 					dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
@@ -127,15 +136,15 @@ public class DailyModifyCommandFacade {
 	}
 
 	public void handleEditCell(List<DPItemValue> data) {
-		String sid = AppContexts.user().employeeId();
-		List<EditStateOfDailyPerformance> editData = data.stream().map(x -> {
-			return new EditStateOfDailyPerformance(x.getEmployeeId(), x.getItemId(), x.getDate(),
-					sid.equals(x.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
-							: EditStateSetting.HAND_CORRECTION_OTHER);
-		}).collect(Collectors.toList());
-		EditStateColorOfDailyPerformCommand command = new EditStateColorOfDailyPerformCommand();
-		command.getData().addAll(editData);
-		editStateHandler.handle(command);
+//		String sid = AppContexts.user().employeeId();
+//		List<EditStateOfDailyPerformance> editData = data.stream().map(x -> {
+//			return new EditStateOfDailyPerformance(x.getEmployeeId(), x.getItemId(), x.getDate(),
+//					sid.equals(x.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
+//							: EditStateSetting.HAND_CORRECTION_OTHER);
+//		}).collect(Collectors.toList());
+//		EditStateColorOfDailyPerformCommand command = new EditStateColorOfDailyPerformCommand();
+//		command.getData().addAll(editData);
+//		editStateHandler.handle(command);
 	}
 
 	public void insertSign(List<DPItemCheckBox> dataCheckSign) {

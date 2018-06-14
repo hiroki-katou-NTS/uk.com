@@ -2739,6 +2739,10 @@ button.nts-switch-button[disabled]:hover {
   display: none;
 }
 
+.ui-iggrid table .row-disable {
+  background-color: #CCC;
+}
+
 /* line 1, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs {
   border: none;
@@ -4124,7 +4128,7 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid tr td.ntsgrid-disable.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover {
   background-color: #CCC;
-  color: gray;
+  color: #333;
 }
 
 /* line 31, ../sass/components/_ntsgrid.scss */
@@ -4612,6 +4616,22 @@ div .ex-area-line.x-stay {
   text-decoration: underline;
   cursor: pointer;
   user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  width: 100%;
+}
+
+.x-cell-overflow {
+  position: absolute;
+  display: inline-block;
+  background: #ffc;
+  border: solid 1px #aaa;
+  padding: 5px;
+  z-index: 120100;
+  -webkit-box-shadow: 1px 1px 5px 1px #888;
+  -moz-box-shadow: 1px 1px 5px 1px #888;
+  box-shadow: 1px 1px 5px 1px #888;
 }
 
 /*****************************

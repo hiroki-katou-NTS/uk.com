@@ -14,7 +14,7 @@ public interface ShortTimeOfDailyPerformanceRepository {
 	
 	List<ShortTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 	
-	List<ShortTimeOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	List<ShortTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 	
 	void updateByKey(ShortTimeOfDailyPerformance shortWork);
 	

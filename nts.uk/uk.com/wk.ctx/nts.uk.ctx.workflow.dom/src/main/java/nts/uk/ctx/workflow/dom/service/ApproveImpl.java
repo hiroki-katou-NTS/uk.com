@@ -106,6 +106,7 @@ public class ApproveImpl implements ApproveService {
 			});
 			Boolean approveApprovalPhaseStateFlag = this.isApproveApprovalPhaseStateComplete(companyID, approvalPhaseState);
 			if(approveApprovalPhaseStateFlag.equals(Boolean.FALSE)){
+				approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 				break;
 			}
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);

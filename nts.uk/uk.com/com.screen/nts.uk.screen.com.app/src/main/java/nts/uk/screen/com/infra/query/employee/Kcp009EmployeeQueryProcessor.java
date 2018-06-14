@@ -31,7 +31,8 @@ public class Kcp009EmployeeQueryProcessor {
 	 * @return the optional
 	 */
 	public Optional<Kcp009EmployeeSearchData> searchByCode(String code, System system) {
-		EmployeeReferenceRange employeeReferenceRange = this.getEmployeeReferenceRange();
+		//TODO: get Employee reference range (社員参照範囲を取得する).
+		EmployeeReferenceRange employeeReferenceRange = EmployeeReferenceRange.AllEmployee;
 		Optional<Kcp009EmployeeSearchData> foundEmployee = Optional.ofNullable(null);
 		GeneralDate systemDate = GeneralDate.today();
 		String companyId = AppContexts.user().companyId();
@@ -48,13 +49,4 @@ public class Kcp009EmployeeQueryProcessor {
 		return foundEmployee;
 	}
 	
-	/**
-	 * Gets the employee reference range.
-	 *
-	 * @return the employee reference range
-	 */
-	private EmployeeReferenceRange getEmployeeReferenceRange() {
-		//TODO: get Employee reference range (社員参照範囲を取得する).
-		return EmployeeReferenceRange.AllEmployee;
-	}
 }

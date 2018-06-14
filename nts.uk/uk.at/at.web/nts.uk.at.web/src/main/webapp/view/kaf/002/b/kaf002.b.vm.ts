@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf002.b {
             screenMode: number = 0;
             employeeID: string = '';
             autoSendMail: KnockoutObservable<boolean> = ko.observable(false);
+            checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 var self = this;
                 __viewContext.transferred.ifPresent(data => {
@@ -23,7 +24,7 @@ module nts.uk.at.view.kaf002.b {
                 self.kaf000_a2 = new kaf000.a.viewmodel.ScreenModel();
                 self.startPage()
                 .done((commonSet: vmbase.AppStampNewSetDto)=>{
-                    self.autoSendMail(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true : false);
+                    self.autoSendMail(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false : true);
                     self.employeeID = commonSet.employeeID;
                     self.kaf000_a2.getAppDataDate(
                         applicationType, 
@@ -82,7 +83,7 @@ module nts.uk.at.view.kaf002.b {
 
             register() {
                 var self = this;
-                self.cm.register(self.kaf000_a2.errorFlag, self.kaf000_a2.errorMsg);
+                self.cm.register(self.kaf000_a2.errorFlag, self.kaf000_a2.errorMsg, self.checkBoxValue());
             }
             
             performanceReference(){

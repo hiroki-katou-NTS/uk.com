@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
@@ -84,6 +85,8 @@ public class MonthlyCalculation {
 	private WorkingConditionItem workingConditionItem;
 	/** 労働制 */
 	private WorkingSystem workingSystem;
+	/** 社員 */
+	private EmployeeImport employee;
 	/** 職場ID */
 	private String workplaceId;
 	/** 雇用コード */
@@ -109,8 +112,8 @@ public class MonthlyCalculation {
 	/** 週別実績の勤怠時間 */
 	private List<AttendanceTimeOfWeekly> attendanceTimeWeeks;
 
-	/** 処理週NO */
-	private int procWeekNo;
+	/** 開始週NO */
+	private int startWeekNo;
 	/** 年度 */
 	private Year year;
 	/** 管理期間の36協定時間 */
@@ -144,6 +147,7 @@ public class MonthlyCalculation {
 		this.procPeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.workingConditionItem = null;
 		this.workingSystem = WorkingSystem.REGULAR_WORK;
+		this.employee = null;
 		this.workplaceId = "empty";
 		this.employmentCd = "empty";
 		this.isRetireMonth = false;
@@ -157,7 +161,7 @@ public class MonthlyCalculation {
 		this.originalData = null;
 		this.attendanceTimeWeeks = new ArrayList<>();
 
-		this.procWeekNo = 0;
+		this.startWeekNo = 0;
 		this.year = new Year(0);
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
 		this.errorInfos = new ArrayList<>();
@@ -229,8 +233,8 @@ public class MonthlyCalculation {
 		this.settingsByFlex = new SettingRequiredByFlex();
 		
 		// 社員を取得する
-		EmployeeImport employee = repositories.getEmpEmployee().findByEmpId(employeeId);
-		if (employee == null){
+		this.employee = repositories.getEmpEmployee().findByEmpId(employeeId);
+		if (this.employee == null){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"002", new ErrMessageContent(TextResource.localize("Msg_1156"))));
 			return;
@@ -238,7 +242,7 @@ public class MonthlyCalculation {
 		
 		// 退職月か確認する　（変形労働勤務の月単位集計：精算月判定に利用）
 		this.isRetireMonth = false;
-		if (procPeriod.contains(employee.getRetiredDate())) this.isRetireMonth = true;
+		if (procPeriod.contains(this.employee.getRetiredDate())) this.isRetireMonth = true;
 		
 		// 期間終了日時点の雇用コードを取得する
 		val syEmploymentOpt = repositories.getSyEmployment().findByEmployeeId(
@@ -360,8 +364,14 @@ public class MonthlyCalculation {
 			for (val attendanceTimeOfDaily : attendanceTimeOfDailysOpt.get()){
 				this.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 			}
-			// 日別実績を渡された時は、渡された期間を適用する
-			findPeriod = procPeriod;
+			
+			// 前月の最終週分を追加で読み込む
+			DatePeriod prevPeriod = new DatePeriod(procPeriod.start().addDays(-6), procPeriod.start().addDays(-1));
+			val attendanceTimeOfDailysPrev =
+					repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
+			for (val attendanceTimeOfDaily : attendanceTimeOfDailysPrev){
+				this.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+			}
 		}
 		else {
 			val attendanceTimeOfDailys =
@@ -418,7 +428,7 @@ public class MonthlyCalculation {
 				employeeId, yearMonth, closureId, closureDate);
 		
 		// 週NO　確認
-		this.procWeekNo = startWeekNo;
+		this.startWeekNo = startWeekNo;
 		
 		// 年度　設定
 		this.year = new Year(this.yearMonth.year());
@@ -462,7 +472,7 @@ public class MonthlyCalculation {
 					aggrPeriod, this.workingSystem, this.closureOpt, aggrAtr,
 					this.employmentCd, this.settingsByReg, this.settingsByDefo,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap,
-					this.aggregateTime, null, this.procWeekNo, repositories);
+					this.aggregateTime, null, this.startWeekNo, this.employee, repositories);
 			this.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
 			this.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
 			
@@ -480,9 +490,10 @@ public class MonthlyCalculation {
 
 			// フレックス勤務の月別実績を集計する
 			val aggrValue = this.flexTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, aggrPeriod, this.workingSystem, aggrAtr, flexAggrMethod,
-					this.settingsByFlex, this.attendanceTimeOfDailyMap, this.aggregateTime, null,
-					repositories);
+					this.yearMonth, this.closureId, this.closureDate, aggrPeriod, this.workingSystem,
+					aggrAtr, this.closureOpt, flexAggrMethod, this.settingsByFlex,
+					this.attendanceTimeOfDailyMap, this.aggregateTime, null,
+					this.startWeekNo, repositories);
 			this.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
 			this.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
 			
@@ -513,8 +524,29 @@ public class MonthlyCalculation {
 		
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
-		this.agreementTimeOfManagePeriod.aggregate(this.companyId, this.year, aggrPeriod.end(),
-				aggrAtr, this, repositories);
+		this.agreementTimeOfManagePeriod.aggregate(aggrPeriod.end(), aggrAtr, this, repositories);
+		
+		// 月別実績の36協定へ値を移送
+		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
+	}
+	
+	/**
+	 * 総労働時間と36協定時間の再計算
+	 * @param aggrPeriod 集計期間
+	 * @param aggrAtr 集計区分
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void recalcTotalAndAgreement(
+			DatePeriod aggrPeriod,
+			MonthlyAggregateAtr aggrAtr,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 総労働時間を計算
+		this.calcTotalWorkingTime();
+		
+		// 管理期間の36協定時間の作成
+		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
+		this.agreementTimeOfManagePeriod.aggregate(aggrPeriod.end(), aggrAtr, this, repositories);
 		
 		// 月別実績の36協定へ値を移送
 		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
@@ -595,7 +627,7 @@ public class MonthlyCalculation {
 	 * 総労働時間の計算
 	 * @param datePeriod 期間
 	 */
-	private void calcTotalWorkingTime(){
+	public void calcTotalWorkingTime(){
 
 		this.totalWorkingTime = new AttendanceTimeMonth(this.aggregateTime.getTotalWorkingTargetTime().v() +
 				this.actualWorkingTime.getTotalWorkingTargetTime().v() +
@@ -612,6 +644,8 @@ public class MonthlyCalculation {
 	 * @param procPeriod 期間
 	 * @param isRetireMonth 退職月度かどうか
 	 * @param attendanceTimeOfDailysOpt 日別実績の勤怠時間リスト
+	 * @param annualLeaveDeductDays 年休控除日数
+	 * @param absenceDeductTime 欠勤控除時間
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public Optional<AgreementTimeOfManagePeriod> aggregateAgreementTime(
@@ -619,6 +653,8 @@ public class MonthlyCalculation {
 			ClosureId closureId, ClosureDate closureDate,
 			DatePeriod procPeriod,
 			Optional<List<AttendanceTimeOfDailyPerformance>> attendanceTimeOfDailysOpt,
+			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
+			Optional<AttendanceTimeMonth> absenceDeductTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 36協定運用設定を取得
@@ -656,7 +692,7 @@ public class MonthlyCalculation {
 
 			// 処理期間を計算　（一か月の集計期間と労働条件履歴期間の重複を確認する）
 			val term = this.workingConditions.get(historyId);
-			DatePeriod period = this.confirmProcPeriod(aggrPeriod.getPeriod(), term);
+			DatePeriod period = MonthlyCalculation.confirmProcPeriod(aggrPeriod.getPeriod(), term);
 			if (period == null) {
 				// 履歴の期間と重複がない時
 				continue;
@@ -672,12 +708,17 @@ public class MonthlyCalculation {
 			calcWork.year = aggrPeriod.getYear();
 			
 			// 集計中の労働制を確認する
-			Optional<AttendanceDaysMonth> annualLeaveDeductDays = Optional.empty();
-			Optional<AttendanceTimeMonth> absenceDeductTime = Optional.empty();
 			if (calcWork.workingSystem == WorkingSystem.FLEX_TIME_WORK){
 				
 				// 年休控除日数と欠勤控除時間があるか確認する
-				//*****（未）　受取方法が未設計のため、設計確認要。
+				if (annualLeaveDeductDays.isPresent() || absenceDeductTime.isPresent()){
+					if (!annualLeaveDeductDays.isPresent()){
+						annualLeaveDeductDays = Optional.of(new AttendanceDaysMonth(0.0));
+					}
+					if (!absenceDeductTime.isPresent()){
+						absenceDeductTime = Optional.of(new AttendanceTimeMonth(0));
+					}
+				}
 			}
 			
 			// 履歴ごとに月別実績を集計する
@@ -762,7 +803,7 @@ public class MonthlyCalculation {
 	 * @param comparison 比較対象期間
 	 * @return 重複期間　（null = 重複なし）
 	 */
-	private DatePeriod confirmProcPeriod(DatePeriod target, DatePeriod comparison){
+	public static DatePeriod confirmProcPeriod(DatePeriod target, DatePeriod comparison){
 
 		DatePeriod overlap = null;		// 重複期間
 		
@@ -912,6 +953,104 @@ public class MonthlyCalculation {
 		}
 		
 		return notExistTime;
+	}
+	
+	/**
+	 * 週の集計をする日か確認する
+	 * @param procYmd 処理日
+	 * @param weekStart 週開始
+	 * @param datePeriod 期間（月別集計用）
+	 * @param closureOpt 締め
+	 * @return true：集計する、false：集計しない
+	 */
+	public static boolean isAggregateWeek(GeneralDate procYmd, WeekStart weekStart, DatePeriod datePeriod,
+			Optional<Closure> closureOpt){
+		
+		// 週開始から集計する曜日を求める　（週開始の曜日の前日の曜日が「集計する曜日」）
+		int aggregateWeek = 0;
+		switch (weekStart){
+		case Monday:
+			aggregateWeek = 7;
+			break;
+		case Tuesday:
+			aggregateWeek = 1;
+			break;
+		case Wednesday:
+			aggregateWeek = 2;
+			break;
+		case Thursday:
+			aggregateWeek = 3;
+			break;
+		case Friday:
+			aggregateWeek = 4;
+			break;
+		case Saturday:
+			aggregateWeek = 5;
+			break;
+		case Sunday:
+			aggregateWeek = 6;
+			break;
+		case TighteningStartDate:
+			
+			// 締め開始日を取得する
+			GeneralDate closureDate = datePeriod.start();
+			if (closureOpt.isPresent()){
+				val closure = closureOpt.get();
+				val closurePeriodOpt = closure.getClosurePeriodByYmd(datePeriod.start());
+				if (closurePeriodOpt.isPresent()){
+					closureDate = closurePeriodOpt.get().getPeriod().start();
+				}
+			}
+			
+			// 締め開始日の曜日から集計する曜日を求める
+			aggregateWeek = closureDate.dayOfWeek() - 1;
+			if (aggregateWeek == 0) aggregateWeek = 7;
+			break;
+		}
+		
+		// 集計する曜日を処理日の曜日と比較する
+		val procWeek = procYmd.dayOfWeek();
+		if (procWeek != aggregateWeek){
+			if (!procYmd.equals(datePeriod.end())) return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 週開始と同じ曜日かどうか
+	 * @param procYmd 処理日
+	 * @param weekStart 週開始
+	 * @return true：同じ、false：同じでない
+	 */
+	public static boolean isWeekStart(GeneralDate procYmd, WeekStart weekStart){
+		
+		val procWeek = procYmd.dayOfWeek();
+		switch (weekStart){
+		case Monday:
+			if (procWeek == 1) return true;
+			break;
+		case Tuesday:
+			if (procWeek == 2) return true;
+			break;
+		case Wednesday:
+			if (procWeek == 3) return true;
+			break;
+		case Thursday:
+			if (procWeek == 4) return true;
+			break;
+		case Friday:
+			if (procWeek == 5) return true;
+			break;
+		case Saturday:
+			if (procWeek == 6) return true;
+			break;
+		case Sunday:
+			if (procWeek == 7) return true;
+			break;
+		default:
+			break;
+		}
+		return false;
 	}
 	
 	/**

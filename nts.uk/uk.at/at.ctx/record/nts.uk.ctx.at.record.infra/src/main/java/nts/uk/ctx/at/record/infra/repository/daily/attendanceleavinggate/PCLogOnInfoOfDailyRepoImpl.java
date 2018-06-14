@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.infra.repository.daily.attendanceleavinggate;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -80,7 +79,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 	}
 
 	@Override
-	public List<PCLogOnInfoOfDaily> finds(Map<String, GeneralDate> param) {
+	public List<PCLogOnInfoOfDaily> finds(Map<String, List<GeneralDate>> param) {
 		if (param.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -89,9 +88,9 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		TypedQueryWrapper<KrcdtDayPcLogonInfo> tQuery=  this.queryProxy().query(query, KrcdtDayPcLogonInfo.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(toList(tQuery.setParameter("sid", p.keySet())
-										.setParameter("date", new HashSet<>(p.values()))
+										.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 										.getList().stream()
-										.filter(c -> c.id.ymd.equals(p.get(c.id.sid)))
+										.filter(c -> p.get(c.id.sid).contains(c.id.ymd))
 										));
 		});
 		return result;

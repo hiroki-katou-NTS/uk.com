@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionRepository.
@@ -157,23 +159,6 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	private void add(List<KshmtWorkingCond> entities) {
 		this.commandProxy().insertAll(entities);
 		this.getEntityManager().flush();
-	}
-
-	/**
-	 * Update.
-	 *
-	 * @param entities
-	 *            the entities
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#
-	 * update(nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition)
-	 */
-	private void update(List<KshmtWorkingCond> entities) {
-		this.commandProxy().updateAll(entities);
 	}
 
 	/**
@@ -333,6 +318,59 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		}
 
 		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#getBySids(java.util.List)
+	 */
+	@Override
+	public List<WorkingCondition> getBySidsAndDatePeriod(List<String> employeeIds, DatePeriod datePeriod) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkingCond> cq = criteriaBuilder.createQuery(KshmtWorkingCond.class);
+
+		// root data
+		Root<KshmtWorkingCond> root = cq.from(KshmtWorkingCond.class);
+
+		// select root
+		cq.select(root);
+		
+		List<KshmtWorkingCond> result =  new ArrayList<>();
+		
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			
+			// eq company id
+			lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+					.get(KshmtWorkingCondPK_.sid).in(subList));
+			lstpredicateWhere.add(
+					criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), datePeriod.end()));
+			lstpredicateWhere.add(criteriaBuilder
+					.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), datePeriod.start()));
+
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			// creat query
+			TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);
+			
+			result.addAll(query.getResultList());
+		});
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Collections.emptyList();
+		}
+		
+		return result.parallelStream()
+				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
+				.keySet().parallelStream()
+				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(result)))
+				.collect(Collectors.toList());
+
 	}
 
 }

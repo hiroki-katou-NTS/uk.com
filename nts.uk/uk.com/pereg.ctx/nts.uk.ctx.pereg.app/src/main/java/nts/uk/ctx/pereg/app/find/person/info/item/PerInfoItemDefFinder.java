@@ -140,13 +140,13 @@ public class PerInfoItemDefFinder {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		List<SelectionInitDto> selectionDtoList = new ArrayList<>();
 
-		if (itemDefDto.getItemTypeState().getItemType() == 2) {
+		if (itemDefDto.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
 			ItemTypeStateDto x = itemDefDto.getItemTypeState();
-			if (x.getItemType() == 2) {
+			if (x.getItemType() == ItemType.SINGLE_ITEM.value) {
 				SingleItemDto y = (SingleItemDto) x;
-				if (y.getDataTypeState().getDataTypeValue() == 6) {
+				if (y.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value) {
 					SelectionItemDto selelection = (SelectionItemDto) y.getDataTypeState();
-					if (selelection.getReferenceType().value == 2) {
+					if (selelection.getReferenceType().value == ReferenceTypes.DESIGNATED_MASTER.value) {
 						String typeCode = ((CodeNameRefTypeDto) selelection).getTypeCode();
 						GeneralDate baseDateConvert = GeneralDate.today();
 						String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
@@ -174,19 +174,39 @@ public class PerInfoItemDefFinder {
 				itemDefDto.getItemTypeState(), selectionItemRefTypes,
 				selectionDtoList.size() > 0 ? selectionDtoList.get(0).getSelectionItemName() : " ",
 				// sua loi them sel item lst
-				selectionDtoList);
+				selectionDtoList, true);
 		
 	}
 
+	/**
+	 * get item detail for cps005
+	 * @param perInfoItemDefId
+	 * @param personEmployeeType
+	 * @return
+	 */
 	public PerInfoItemChangeDefDto getPerInfoItemDefById(String perInfoItemDefId, int personEmployeeType) {
 		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
+		String contractCd = AppContexts.user().contractCode();
 
 		Optional<PersonInfoItemDefinition> itemDefinitionOpt = this.pernfoItemDefRep
 				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode());
+		
+		boolean enable = true;
 		if (itemDefinitionOpt.isPresent()) {
 
 			List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
 					ukResouce);
+			
+			List<String> companyIdList = companyRepo.acquireAllCompany();
+			PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(itemDefinitionOpt.get().getPerInfoCategoryId(), contractCd)
+					.orElse(null);
+			List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
+					category.getCategoryCode().v());
+			
+			String itemCode = itemDefinitionOpt.get().getItemCode().v();
+			if ( empInfoRepo.hasItemData(itemCode, perInfoCtgIds) || perItemRepo.hasItemData(perInfoCtgIds, itemCode)) {
+				enable = false;
+			}
 			PerInfoItemDefDto itemDefDto = mappingFromDomaintoDto(itemDefinitionOpt.get(), 0);
 
 			// get selection list
@@ -215,7 +235,7 @@ public class PerInfoItemDefFinder {
 					itemDefDto.getItemTypeState(), selectionItemRefTypes,
 					selectionDtoList.size() > 0 ? selectionDtoList.get(0).getSelectionItemName() : " ",
 					// sua loi them sel item lst
-					selectionDtoList);
+					selectionDtoList, enable);
 		} else {
 			return null;
 		}
@@ -560,5 +580,20 @@ public class PerInfoItemDefFinder {
 
 		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(),
 				x.getIsAbolition() == IsAbolition.NOT_ABOLITION)).collect(Collectors.toList());
+	}
+	
+
+	public List<ItemOrder> getAllItemOrderByCtgId(String ctgId, List<String> itemId, String ctgCode) {
+		String contractCd = AppContexts.user().contractCode();
+		List<PersonInfoItemDefinition> itemLst = this.pernfoItemDefRep.getItemLstByListId(itemId, ctgId, ctgCode,
+				contractCd);
+		List<PerInfoItemDefOrder> itemOrder = this.pernfoItemDefRep.getItemOrderByCtgId(ctgId);
+		return itemLst.stream().map(c -> {
+			PerInfoItemDefOrder io = itemOrder.stream()
+					.filter(order -> order.getPerInfoItemDefId().equals(c.getPerInfoItemDefId())).findFirst().get();
+				return new ItemOrder(io.getPerInfoItemDefId(), io.getPerInfoCtgId(), c.getItemCode().v(),
+						c.getItemParentCode().v(), io.getDispOrder().v(), io.getDisplayOrder().v());
+		}).collect(Collectors.toList());
+
 	}
 }
