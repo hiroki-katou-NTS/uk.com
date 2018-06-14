@@ -937,7 +937,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					Optional<TotalValue> optTotalWorkplaceVal = lstTotalHierarchyValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 					TotalValue totalWorkplaceValue;
 					if (optTotalWorkplaceVal.isPresent()) {
-						totalWorkplaceValue = optTotalVal.get();
+						totalWorkplaceValue = optTotalWorkplaceVal.get();
 						if ((totalWorkplaceValue.getValueType() == TotalValue.INTEGER || totalWorkplaceValue.getValueType() == TotalValue.BIG_DECIMAL) && actualValue.getValue() != null) {
 							totalWorkplaceValue.setValue(String.valueOf(Integer.parseInt(totalWorkplaceValue.getValue()) + Integer.parseInt(actualValue.getValue())));
 						}
@@ -1925,6 +1925,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_LIGHTBLUE_ROW + dataRowCount);
 				Range dateRange = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]);
 				dateRange.copy(dateRangeTemp);
+				dateRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 				
 				// B5_1
 				Cell erAlMark = cells.get(currentRow, 0);
