@@ -33,6 +33,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate";
+	private String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c.remainMngId = :remainMngId";
 	
 	@Override
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
@@ -83,16 +84,12 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			entity.remainType = domain.getRemainType().value;
 			entity.remainAtr = domain.getRemainAtr().value;
 		}
-		this.getEntityManager().flush();
+		//this.getEntityManager().flush();
 	}
 
 	@Override
 	public void deleteById(String mngId) {
-		Optional<KrcmtInterimRemainMng> optData = this.queryProxy().find(mngId, KrcmtInterimRemainMng.class);
-		if(optData.isPresent()) {
-			this.commandProxy().remove(KrcmtInterimRemainMng.class, mngId);
-		}
-		
+		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("remainMngId", mngId);
 	}
 
 	@Override

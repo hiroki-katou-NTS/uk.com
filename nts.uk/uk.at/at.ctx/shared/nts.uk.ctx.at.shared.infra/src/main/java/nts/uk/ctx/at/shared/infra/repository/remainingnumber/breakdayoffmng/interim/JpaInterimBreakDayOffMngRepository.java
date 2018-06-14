@@ -41,6 +41,13 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private String QUERY_DAYOFF_MNG = "SELECT c FROM KrcmtInterimBreakDayOff c"
 			+ " WHERE c.breakDayOffKey.dayOffMngId = :mngId"
 			+ " AND c.dayOffMngAtr = :mngAtr";
+	private String DELETE_BREAK_MNG = "DELETE FROM KrcmtInterimBreakDayOff c"
+			+ " WHERE c.breakDayOffKey.breakMngId = :mngId"
+			+ " AND c.breakMngAtr = :mngAtr";
+	private String DELETE_DAYOFF_MNG = "DELETE FROM KrcmtInterimBreakDayOff c"
+			+ " WHERE c.breakDayOffKey.dayOffMngId = :mngId"
+			+ " AND c.dayOffMngAtr = :mngAtr";
+	
 	private String QUERY_BY_EXPIRATIONDATE = "SELECT c FROM KrcmtInterimBreakMng c"
 			+ " WHERE c.breakMngId IN :breakMngIds"
 			+ " AND c.unUsedDays > :unUsedDays"
@@ -50,6 +57,11 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			+ " WHERE c.breakDayOffKey.breakMngId = :mngId";
 	private String QUERY_DAYOFF_BY_ID = "SELECT c FROM KrcmtInterimBreakDayOff c"
 			+ " WHERE c.breakDayOffKey.dayOffMngId = :mngId";
+	private String DELETE_BREAK_BYID = "DELETE FROM KrcmtInterimBreakDayOff c"
+			+ " WHERE c.breakDayOffKey.breakMngId = :mngId";
+	private String DELETE_DAYOFF_BY_ID = "DELETE FROM KrcmtInterimBreakDayOff c"
+			+ " WHERE c.breakDayOffKey.dayOffMngId = :mngId";
+	
 	private String QUERY_BYID_AND_ATR = "SELECT c FROM KrcmtInterimBreakDayOff c"
 			+ " WHERE c.breakDayOffKey.breakMngId = :breakId"
 			+ " AND c.breakDayOffKey.dayOffMngId = :dayOffId"
@@ -57,6 +69,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			+ " AND c.dayOffMngAtr = :dayOffAtr";
 	private String QUERY_DAYOFF_ID_ATR = QUERY_DAYOFF_MNG + " AND c.breakMngAtr = :breakMngAtr";
 	private String QUERY_BREAK_ID_ATR = QUERY_BREAK_MNG + " AND c.dayOffMngAtr = :dayOffMngAtr";
+	private String DELETE_DAYOFFMNG_BYID = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.dayOffMngId = :dayOffMngId";
+	private String DELETE_BREAKMNG_BYID = "DELETE FROM KrcmtInterimBreakMng c WHERE c.breakMngId = :breakMngId";
 	@Override
 	public Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId) {
 		return this.queryProxy().find(breakManaId, KrcmtInterimBreakMng.class)
@@ -145,15 +159,13 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			entity.unUsedTimes = domain.getUnUsedTimes().v();
 			entity.unUsedDays = domain.getUnUsedDays().v();
 		}
-		this.getEntityManager().flush();
+		//this.getEntityManager().flush();
 	}
 
 	@Override
 	public void deleteInterimBreakMng(String mngId) {
-		Optional<KrcmtInterimBreakMng> optData = this.queryProxy().find(mngId, KrcmtInterimBreakMng.class);
-		optData.ifPresent(x -> {
-			this.commandProxy().remove(KrcmtInterimBreakMng.class, mngId);
-		});
+		this.getEntityManager().createQuery(DELETE_BREAKMNG_BYID, KrcmtInterimBreakMng.class)
+		.setParameter("breakMngId", mngId).executeUpdate();
 	}
 	
 	@Override
@@ -183,10 +195,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 
 	@Override
 	public void deleteInterimDayOffMng(String mngId) {
-		Optional<KrcmtInterimDayOffMng> optData = this.queryProxy().find(mngId, KrcmtInterimDayOffMng.class);
-		optData.ifPresent(x -> {
-			this.commandProxy().remove(KrcmtInterimDayOffMng.class, mngId);
-		});
+		this.getEntityManager().createQuery(DELETE_DAYOFFMNG_BYID, KrcmtInterimDayOffMng.class)
+		.setParameter("dayOffMngId", mngId).executeUpdate();
 	}
 
 	@Override
@@ -220,38 +230,28 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 
 	@Override
 	public void deleteBreakDayOffById(String mngId, boolean isBreak) {
-		List<KrcmtInterimBreakDayOff> lstEntity = this.queryProxy().query(isBreak ? QUERY_BREAK_BYID : QUERY_DAYOFF_BY_ID, KrcmtInterimBreakDayOff.class)
-				.setParameter("mngId", mngId)
-				.getList();
-		lstEntity.stream().forEach(x -> {
-			this.commandProxy().remove(x);
-		});
+		this.getEntityManager().createQuery(isBreak ? DELETE_BREAK_BYID : DELETE_DAYOFF_BY_ID, KrcmtInterimBreakDayOff.class)
+		.setParameter("mngId", mngId)
+		.executeUpdate();	
 	}
 
 	@Override
 	public void deleteBreakDayOfByIdAndAtr(String breakId, String dayOffId, DataManagementAtr breakAtr,
 			DataManagementAtr dayOffAtr) {
-		Optional<KrcmtInterimBreakDayOff>  optEntity = this.queryProxy().query(QUERY_BYID_AND_ATR,KrcmtInterimBreakDayOff.class)
+		this.getEntityManager().createQuery(QUERY_BYID_AND_ATR,KrcmtInterimBreakDayOff.class)
 				.setParameter("breakId", breakId)
 				.setParameter("dayOffId", dayOffId)
 				.setParameter("breakAtr", breakAtr)
 				.setParameter("dayOffAtr", dayOffAtr)
-				.getSingle();				
-		optEntity.ifPresent(x -> {
-			this.commandProxy().remove(x);
-		});
-		
+				.executeUpdate();
 	}
 
 	@Override
 	public void deleteBreakDayOfById(String mngId, DataManagementAtr mngAtr, boolean isBreak) {
-		List<KrcmtInterimBreakDayOff> lstEntity = this.queryProxy().query(isBreak ? QUERY_BREAK_MNG : QUERY_DAYOFF_MNG, KrcmtInterimBreakDayOff.class)
+		this.getEntityManager().createQuery(isBreak ? DELETE_BREAK_MNG : DELETE_DAYOFF_MNG, KrcmtInterimBreakDayOff.class)
 			.setParameter("mngId", mngId)
 			.setParameter("mngAtr", mngAtr.values)
-			.getList();
-		lstEntity.stream().forEach(x -> {
-			this.commandProxy().remove(x);
-		});
+			.executeUpdate();		
 	}
 	@Override
 	public List<InterimBreakDayOffMng> getDayOffByIdAndDataAtr(DataManagementAtr breakAtr, DataManagementAtr dayOffAtr,
