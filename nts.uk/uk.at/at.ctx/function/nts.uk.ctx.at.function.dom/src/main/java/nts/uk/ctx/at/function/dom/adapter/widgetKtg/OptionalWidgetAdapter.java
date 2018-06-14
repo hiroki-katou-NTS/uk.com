@@ -43,8 +43,11 @@ public interface OptionalWidgetAdapter {
 	List<ApplicationTimeImport> acquireAppNotReflected(String sId, GeneralDate startDate, GeneralDate endDate);
 	
 	/**get request list 210*/
-	NextAnnualLeaveGrantImport acquireNextHolidayGrantDate(String cId, String employeeId, GeneralDate endDate);
+	List<NextAnnualLeaveGrantImport> acquireNextHolidayGrantDate(String cId, String employeeId, GeneralDate endDate);
 	
 	/**get request list 198*/
 	NumAnnLeaReferenceDateImport getReferDateAnnualLeaveRemainNumber(String employeeID,GeneralDate date);
+	
+	/**get request list 446*/
+	List<LateOrLeaveEarlyImport> engravingCancelLateorLeaveearly(String employeeID, GeneralDate startDate, GeneralDate endDate);
 }

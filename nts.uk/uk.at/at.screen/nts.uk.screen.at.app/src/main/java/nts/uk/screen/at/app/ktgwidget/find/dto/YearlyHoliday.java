@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 public class YearlyHoliday {
 
 	/*次回付与日*/
-	private GeneralDate nextTime = GeneralDate.today();
+	private GeneralDate nextTime;
 	
 	/*付与日数*/
 	private int grantedDaysNo = 0;
@@ -21,7 +21,7 @@ public class YearlyHoliday {
 	private YearlyHolidayInfo nextTimeInfo = new YearlyHolidayInfo();
 	
 	/*次回付与日*/
-	private GeneralDate nextGrantDate = GeneralDate.today();
+	private GeneralDate nextGrantDate;
 	/*付与前*/
 	private YearlyHolidayInfo nextGrantDateInfo  = new YearlyHolidayInfo();
 	/*付与後*/

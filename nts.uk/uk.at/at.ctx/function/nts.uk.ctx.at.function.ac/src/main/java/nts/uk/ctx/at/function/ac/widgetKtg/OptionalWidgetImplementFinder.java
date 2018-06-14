@@ -17,6 +17,7 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AttendanceTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.LateOrLeaveEarlyImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.ReNumAnnLeaRefer
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
+import nts.uk.ctx.at.request.pub.application.lateorleaveearly.LateOrLeaveEarlyPub;
 import nts.uk.ctx.at.request.pub.application.recognition.AppHdTimeNotReflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.AppNotReflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
@@ -78,6 +80,9 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	
 	@Inject
 	private AnnLeaveRemainNumberPub annLeaveRemainNumberPub;
+	
+	@Inject
+	private LateOrLeaveEarlyPub lateOrLeaveEarlyPub;
 	
 	@Override
 	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
@@ -158,16 +163,29 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	}
 
 	@Override
-	public NextAnnualLeaveGrantImport acquireNextHolidayGrantDate(String cId, String employeeId, GeneralDate endDate) {
+	public List<NextAnnualLeaveGrantImport> acquireNextHolidayGrantDate(String cId, String employeeId, GeneralDate endDate) {
 		// TODO Auto-generated method stub
-		NextAnnualLeaveGrantExport c = annualHolidayManagementPub.acquireNextHolidayGrantDate(cId, employeeId, Optional.of(endDate)).get(0);
-		return new NextAnnualLeaveGrantImport(
+		List<NextAnnualLeaveGrantExport> ListNext = annualHolidayManagementPub.acquireNextHolidayGrantDate(cId, employeeId, Optional.of(endDate));
+		if(ListNext.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		return ListNext.stream().map(c -> new NextAnnualLeaveGrantImport(c.getGrantDate(), 
+																		c.getGrantDays().v(), 
+																		c.getTimes().v(), 
+																		c.getTimeAnnualLeaveMaxDays().isPresent() ? c.getTimeAnnualLeaveMaxDays().get().v().intValue(): 0, 
+																		c.getTimeAnnualLeaveMaxTime().isPresent()? c.getTimeAnnualLeaveMaxTime().get().v().intValue(): 0, 
+																		c.getHalfDayAnnualLeaveMaxTimes().isPresent()?c.getHalfDayAnnualLeaveMaxTimes().get().v().intValue(): 0))
+																		.collect(Collectors.toList());
+		
+		
+		/*return new NextAnnualLeaveGrantImport(
 				c.grantDate, 
 				c.grantDays.v(), 
 				c.times.v().intValue(), 
 				c.timeAnnualLeaveMaxDays.isPresent() ? c.timeAnnualLeaveMaxDays.get().v().intValue(): 0, 
 				c.timeAnnualLeaveMaxTime.isPresent()? c.timeAnnualLeaveMaxTime.get().v().intValue(): 0, 
-				c.halfDayAnnualLeaveMaxTimes.isPresent()?c.halfDayAnnualLeaveMaxTimes.get().v().intValue(): 0);
+				c.halfDayAnnualLeaveMaxTimes.isPresent()?c.halfDayAnnualLeaveMaxTimes.get().v().intValue(): 0);*/
 	}
 
 	@Override
@@ -191,6 +209,14 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		List<AnnualLeaveManageInforImport> annualLeaveManageInforImport = annualLeaveManageInforExports.stream().map(c->new AnnualLeaveManageInforImport(c.getYmd(), c.getDaysUsedNo(), c.getUsedMinutes(), c.getScheduleRecordAtr())).collect(Collectors.toList());
 		
 		return new NumAnnLeaReferenceDateImport(annualLeaveRemainNumberImport, annualLeaveGrantImport, annualLeaveManageInforImport);
+	}
+
+	@Override
+	public List<LateOrLeaveEarlyImport> engravingCancelLateorLeaveearly(String employeeID, GeneralDate startDate,
+			GeneralDate endDate) {
+		
+		return lateOrLeaveEarlyPub.engravingCancelLateorLeaveearly(employeeID, startDate, endDate).stream()
+				.map(c -> new LateOrLeaveEarlyImport(c.getAppDate(), c.getEarly1(), c.getLate1(), c.getEarly2(), c.getLate2())).collect(Collectors.toList());
 	}
 
 	

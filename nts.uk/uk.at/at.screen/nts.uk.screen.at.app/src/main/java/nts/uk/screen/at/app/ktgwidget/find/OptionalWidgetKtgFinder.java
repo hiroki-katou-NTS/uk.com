@@ -303,9 +303,14 @@ public class OptionalWidgetKtgFinder {
 	private YearlyHoliday setYearlyHoliday(String cID, String employeeId, GeneralDate date) {
 		YearlyHoliday yearlyHoliday = new YearlyHoliday();
 		//lấy request list 210
-		NextAnnualLeaveGrantImport NextAnnualLeaveGrant = optionalWidgetAdapter.acquireNextHolidayGrantDate(cID,employeeId, date);
+/*		
+		List<NextAnnualLeaveGrantImport> listNextAnnualLeaveGrant = optionalWidgetAdapter.acquireNextHolidayGrantDate(cID,employeeId, date);
+		if(listNextAnnualLeaveGrant.isEmpty()) {
+			return yearlyHoliday;
+		}
+		NextAnnualLeaveGrantImport NextAnnualLeaveGrant = listNextAnnualLeaveGrant.get(0); 
 		//lấy request 198
-		/*NumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = optionalWidgetAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, date);
+		NumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = optionalWidgetAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, date);
 		
 		yearlyHoliday.setNextTime(NextAnnualLeaveGrant.getGrantDate());
 		yearlyHoliday.setNextGrantDate(NextAnnualLeaveGrant.getGrantDate());
