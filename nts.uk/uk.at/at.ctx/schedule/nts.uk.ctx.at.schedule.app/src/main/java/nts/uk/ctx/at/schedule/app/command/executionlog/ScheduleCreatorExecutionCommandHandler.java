@@ -615,9 +615,10 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		if (listEmpHistItem != null) {
 			optEmpHistItem = listEmpHistItem.stream()
 					.filter(empHistItem -> empHistItem.getPeriod().contains(dateBeforeCorrection.end())).findFirst();
-			if (!optEmpHistItem.isPresent()) {
-				return new StateAndValueDatePeriod(dateBeforeCorrection, false);
-			}
+		}
+
+		if (!optEmpHistItem.isPresent()) {
+			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
 		}
 
 		// ドメインモデル「雇用に紐づく就業締め」を取得
