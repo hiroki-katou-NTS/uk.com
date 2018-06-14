@@ -52,6 +52,7 @@ import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
@@ -69,6 +70,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWit
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
@@ -417,7 +419,9 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 
 		// No 20 get submitted application
-		Map<String, String> appMapDateSid = getApplication(listEmployeeId, dateRange);
+		// disable check box sign
+		Map<String, Boolean> disableSignMap = new HashMap<>();
+		Map<String, String> appMapDateSid = getApplication(listEmployeeId, dateRange, disableSignMap);
 		
 		//get  check box sign(Confirm day)
 		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
@@ -428,20 +432,20 @@ public class DailyPerformanceCorrectionProcessor {
 		mapDataIntoGrid(screenDto, sId, appMapDateSid, signDayMap, listEmployeeId, resultDailyMap, mode, displayFormat,
 				identityProcessDtoOpt, approvalUseSettingDtoOpt, dateRange, employeeAndDateRange, objectShare,
 				companyId, disItem, mapDP, dPControlDisplayItem, dailyRecEditSetsMap,
-				workInfoOfDaily, NAME_EMPTY, NAME_NOT_FOUND);
+				workInfoOfDaily, disableSignMap, NAME_EMPTY, NAME_NOT_FOUND);
 		// set cell data
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start1));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
 		return screenDto;
 	}
 
-	private void mapDataIntoGrid(DailyPerformanceCorrectionDto screenDto, String sId, Map<String, String> appMapDateSid,
+	public void mapDataIntoGrid(DailyPerformanceCorrectionDto screenDto, String sId, Map<String, String> appMapDateSid,
 			Map<String, Boolean> signDayMap, List<String> listEmployeeId, 
 			Map<String, DailyModifyResult> resultDailyMap, Integer mode, Integer displayFormat,
 			Optional<IdentityProcessUseSetDto> identityProcessDtoOpt, Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt,
 			DateRange dateRange, Map<String, DatePeriod> employeeAndDateRange, ObjectShare objectShare, String companyId,
 			DisplayItem disItem,  Map<Integer, DPAttendanceItem> mapDP, DPControlDisplayItem dPControlDisplayItem,
-			Map<String, Integer> dailyRecEditSetsMap, List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily,
+			Map<String, Integer> dailyRecEditSetsMap, List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily, Map<String, Boolean> disableSignMap,
 			String NAME_EMPTY, String NAME_NOT_FOUND){
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
@@ -472,6 +476,10 @@ public class DailyPerformanceCorrectionProcessor {
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION_LIST, "", "", ""));
 			//set checkbox sign
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
+			// state check box sign
+			if(disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate())){
+				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+			}
 			//get status check box 
 			Map<String, ApproveRootStatusForEmpDto> approvalDayMap =  getCheckApproval(approvalStatusAdapter, listEmployeeId, dateRange, sId, mode);
 			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
@@ -485,7 +493,7 @@ public class DailyPerformanceCorrectionProcessor {
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
 
 				if (lock || data.isApproval()) {
-					lockCell(screenDto, data);
+					lockCell(screenDto, data, true);
 					if (data.isApproval()) {
 						val typeLock = data.getState();
 						if (typeLock.equals(""))
@@ -497,7 +505,7 @@ public class DailyPerformanceCorrectionProcessor {
 				}
 				
 				if(data.isSign() && mode == ScreenMode.NORMAL.value){
-					lockCell(screenDto, data);
+					lockCell(screenDto, data, false);
 					lock = true;
 				}
 				
@@ -679,12 +687,12 @@ public class DailyPerformanceCorrectionProcessor {
 		return resultDailyMap.isEmpty() ? null : resultDailyMap.get(mergeString(sId, "|", date.toString()));
 	}
 
-	public void lockCell(DailyPerformanceCorrectionDto screenDto, DPDataDto data) {
+	public void lockCell(DailyPerformanceCorrectionDto screenDto, DPDataDto data, boolean lockSign) {
 		//screenDto.setLock(data.getId(), LOCK_DATE, STATE_DISABLE);
 		//screenDto.setLock(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
 		//screenDto.setLock(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
 		//screenDto.setLock(data.getId(), LOCK_ERROR, STATE_DISABLE);
-		screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+		if(lockSign) screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 		//screenDto.setLock(data.getId(), LOCK_PIC, STATE_DISABLE);
 		screenDto.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
 		screenDto.setLock(data.getId(), COLUMN_SUBMITTED, STATE_DISABLE);
@@ -732,7 +740,7 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		return lock;
 	}
-    public Map<String,  String> getApplication(List<String> listEmployeeId, DateRange dateRange){
+    public Map<String,  String> getApplication(List<String> listEmployeeId, DateRange dateRange, Map<String, Boolean> disableSignMap){
 		// No 20 get submitted application
 		Map<String, String> appMapDateSid = new HashMap<>();
 		List<ApplicationExportDto> appplication = listEmployeeId.isEmpty() ? Collections.emptyList()
@@ -744,6 +752,17 @@ public class DailyPerformanceCorrectionProcessor {
 				appMapDateSid.put(key, appMapDateSid.get(key) + "  " + x.getAppTypeName());
 			} else {
 				appMapDateSid.put(key, x.getAppTypeName());
+			}
+			
+			if (disableSignMap != null) {
+				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
+						|| x.getReflectState() == ReflectedState_New.REMAND.value)
+						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.ABSENCE_APPLICATION.value;
+				if (disableSignMap.containsKey(key)) {
+					disableSignMap.put(key, disableSignMap.get(key) || disable);
+				} else {
+					disableSignMap.put(key, disable);
+				}
 			}
 		});
 		return appMapDateSid;
@@ -992,7 +1011,7 @@ public class DailyPerformanceCorrectionProcessor {
 		List<ErrorReferenceDto> lstErrorRefer = new ArrayList<>();
 		List<DPErrorDto> lstError = this.repo.getListDPError(dateRange,
 				lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList()));
-		Map<String, String> appMapDateSid = getApplication(new ArrayList<>(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet())), dateRange);
+		Map<String, String> appMapDateSid = getApplication(new ArrayList<>(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet())), dateRange, null);
 		if (lstError.size() > 0) {
 			// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
 			// Get list error setting

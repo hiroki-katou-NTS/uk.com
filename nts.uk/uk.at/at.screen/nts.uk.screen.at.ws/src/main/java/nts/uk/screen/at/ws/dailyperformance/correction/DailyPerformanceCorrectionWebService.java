@@ -191,7 +191,7 @@ public class DailyPerformanceCorrectionWebService {
 				itemInputErors.addAll(itemInputs);
 			}
 			
-			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInputItem28(itemCovert);
+			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInput28And1(itemCovert);
 			itemInputError28.addAll(itemInputs28);
 			
 		});

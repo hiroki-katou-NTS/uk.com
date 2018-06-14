@@ -574,7 +574,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let fst: FlexShortage = self.flexShortage();
 
                 //fst.parent = ko.observable(self);
-                $.when(fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay))).done(() => {
+                $.when(fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay), data.flexShortage.redConditionMessage, data.flexShortage.messageNotForward)).done(() => {
                     self.itemMonthLayout(data);
                     self.itemValueMonthParent = data.flexShortage.monthParent;
                     nts.uk.ui.block.clear();
@@ -1223,7 +1223,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let dateCon = _.find(self.dpData, (item: any) => {
                     return item.id == value.rowId.substring(1, value.rowId.length);
                 });
-                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: nts.uk.resource.getMessage("Msg_1270"), itemName: "", columnKey: value.itemId };
+                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.layoutCode, itemName: "", columnKey: value.itemId };
                 //                let item = _.find(self.optionalHeader, (data) => {
                 //                    return String(data.key) === "A" + value.itemId;
                 //                })
@@ -3039,13 +3039,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         nameAbsentDeductionTime: any;
         initLoad = 0;
         messageRed: KnockoutObservable<any> = ko.observable();
+        messageNoForward: KnockoutObservable<any> = ko.observable();
 
         constructor(parent: any, dataCalc: CalcFlex, breakTimeDay: BreakTimeDay) {
             let self = this;
             this.nameNoOfHolidays = nts.uk.resource.getText('Com_PaidHoliday');
             this.nameAbsentDeductionTime = nts.uk.resource.getText('KDW003_79');
-            this.messageRed(nts.uk.resource.getText('KDW003_80', ["-15:00"]));
-            self.bindData(dataCalc, breakTimeDay);
+            //this.messageRed(nts.uk.resource.getText('KDW003_80', ["15:00"]));
+            self.bindData(dataCalc, breakTimeDay, "", "");
             self.noOfHolidays.subscribe(val => {
                 let parent = ko.toJS(__viewContext.vm);
                 if (self.initLoad > 0) {
@@ -3061,19 +3062,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
         };
 
-        bindData = (dataCalc: CalcFlex, breakTimeDay: BreakTimeDay): JQueryPromise<any> => {
+        bindData(dataCalc: CalcFlex, breakTimeDay: BreakTimeDay, redConditionMessage: any, messageNotForward: any): JQueryPromise<any> {
             let dfd = $.Deferred();
             if (!dataCalc || !breakTimeDay) {
                 return;
             }
-
             let self = this,
                 val18 = dataCalc.value18,
                 val21 = dataCalc.value21,
                 val189 = dataCalc.value189,
                 val190 = dataCalc.value190,
                 val191 = dataCalc.value191;
-
+            self.messageRed(nts.uk.resource.getText('KDW003_80', [redConditionMessage]));
+            self.messageNoForward(messageNotForward);
             self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val21)) * (-1)), self.convertToHours(Number(val21) * (-1))]));
             //self.nextMonthTransferredMoneyTime(self.convertToHours(Number(val18) * (-1)));
             self.noOfHolidays(Number(val189));
@@ -3081,8 +3082,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.initLoad = 1;
             self.calc(dataCalc, breakTimeDay).done(() => {
                 dfd.resolve();
-            }
-            );
+            });
             //self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay);
             return dfd.promise();
         }

@@ -258,7 +258,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				dailyProcessor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
 				boolean lock = dailyProcessor.checkLockAndSetState(employeeAndDateRange, data);
 				if (lock) {
-					dailyProcessor.lockCell(screenDto, data);
+					dailyProcessor.lockCell(screenDto, data, true);
 				}
 				if (resultOfOneRow != null) {
 					itemValueMap = resultOfOneRow.getItems().stream()
