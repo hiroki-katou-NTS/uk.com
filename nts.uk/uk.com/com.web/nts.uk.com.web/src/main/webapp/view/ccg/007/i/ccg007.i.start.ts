@@ -3,7 +3,7 @@ module nts.uk.pr.view.ccg007.i {
         var screenModel = new i.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-//            $('#employee-code-inp').focus();
+            $('#close-policy').focus();
         });
     });
 }

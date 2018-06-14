@@ -33,8 +33,8 @@
 	                <tr>
 	                    <td style="width: 140px; padding-left: 30px;"><div class="label">#{i18n.getText('CCG007_34')}</div></td>
 	                    <td>
-	                        <div class="label" data-bind="text: alphabetDigit"></div>
 	                        <div class="label" data-bind="text: numberOfDigits"></div>
+	                        <div class="label" data-bind="text: alphabetDigit"></div>
 	                        <div class="label" data-bind="text: symbolCharacters"></div>
 	                    </td>
 	                </tr>
@@ -48,7 +48,7 @@
 				
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="1" data-bind="click: closeDialog">#{i18n.getText('CCG007_20')}</button>
+				<button tabindex="1" id="close-policy" data-bind="click: closeDialog">#{i18n.getText('CCG007_20')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

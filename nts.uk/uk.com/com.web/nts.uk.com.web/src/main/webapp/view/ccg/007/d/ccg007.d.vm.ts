@@ -23,6 +23,14 @@ module nts.uk.pr.view.ccg007.d {
                 self.isSaveLoginInfo = ko.observable(true);
                 self.contractCode = ko.observable('');
                 self.contractPassword = ko.observable('');
+                
+                self.selectedCompanyCode.subscribe(function(code) {
+                    _.each(self.companyList(), function (item, index) {
+                        if ((item.companyCode == code)) {
+                            self.companyName(item.companyName);
+                        }
+                    });
+                });
             }
             start(): JQueryPromise<void> {
                 var self = this;

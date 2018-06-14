@@ -39,8 +39,8 @@ module nts.uk.pr.view.ccg007.i {
                     //set text
                     self.lowestDigits(nts.uk.text.format(nts.uk.resource.getText("CCG007_33"), data.lowestDigits));
                     self.numberOfDigits(nts.uk.text.format(nts.uk.resource.getText("CCG007_35"), data.numberOfDigits));
-                    self.symbolCharacters(nts.uk.text.format(nts.uk.resource.getText("CCG007_36"), data.symbolCharacters));
-                    self.alphabetDigit(nts.uk.text.format(nts.uk.resource.getText("CCG007_37"), data.alphabetDigit));
+                    self.alphabetDigit(nts.uk.text.format(nts.uk.resource.getText("CCG007_36"), data.alphabetDigit));
+                    self.symbolCharacters(nts.uk.text.format(nts.uk.resource.getText("CCG007_37"), data.symbolCharacters));
                     self.historyCount(nts.uk.text.format(nts.uk.resource.getText("CCG007_39"), data.historyCount));
                 }).fail(function(res) {
                     //Return Dialog Error
