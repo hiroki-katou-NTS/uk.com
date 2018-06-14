@@ -158,8 +158,8 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private AutoCalcOfLeaveEarlySetting createAutoCalcLeaveSetting() {
 		return this.leaveEarlySetting == null ? null : new AutoCalcOfLeaveEarlySetting(
-				this.leaveEarlySetting.getLeaveEarly() == 1 ? true : false ,
-				this.leaveEarlySetting.getLeaveLate() == 1 ? true : false);
+				this.leaveEarlySetting.getLeaveLate() == 1 ? true : false,
+				this.leaveEarlySetting.getLeaveEarly() == 1 ? true : false);
 	}
 
 	private AutoCalOvertimeSetting createAutoOverTimeSetting() {
