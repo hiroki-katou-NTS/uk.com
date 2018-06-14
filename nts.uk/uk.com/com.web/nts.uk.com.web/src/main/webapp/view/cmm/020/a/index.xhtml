@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.era.name.EraName
+				nts.uk.ctx.at.shared.dom.era.name.SymbolName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm020.a.style.css" />
 			<com:scriptfile path="cmm020.a.start.js" />
@@ -33,18 +37,14 @@
 						<div>
 							<table id="single-list" tabindex="6"
 								data-bind="ntsGridList: {
-								columns: [
-									{ headerText: 'eraId', key: 'eraId', width: 100, hidden: true },
-					                { headerText: '#{i18n.getText('CMM020_6')}', key: 'eraName', width: 60, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMM020_7')}', key: 'eraSymbol', width: 45, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMM020_8')}', key: 'startDate', width: 70, formatter: _.escape }
-					            ],
-					            options: listEra,
-								optionsValue: 'eraId',
-								multiple: false,
-								value: currentCode,
-								height: '390px',
-								width: '260px;'
+								width: 260,
+									height: 390,
+									options: dataSource,
+									optionsValue: 'eraId',
+									columns: columns,
+									multiple: false,
+									value: currentCode,
+									enable: true
 							}">
 							</table>
 						</div>

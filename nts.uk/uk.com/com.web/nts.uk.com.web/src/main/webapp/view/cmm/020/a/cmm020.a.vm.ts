@@ -1,15 +1,13 @@
 module nts.uk.com.view.cmm020.a {
-
     //    import MasterCopyDataCommand = nts.uk.com.view.cmm001.f.model.MasterCopyDataCommand;
-
     export module viewmodel {
-
         export class ScreenModel {
 
             texteditor: any;
             simpleValue: KnockoutObservable<string>;
 
-            listEra: KnockoutObservableArray<any>;
+            columns: KnockoutObservableArray<any>;
+            dataSource: KnockoutObservableArray<model.EraItem>;
             eraName: KnockoutObservable<string>;
             eraSymbol: KnockoutObservable<string>;
             startDate: KnockoutObservable<string>;
@@ -17,8 +15,8 @@ module nts.uk.com.view.cmm020.a {
             currentName: KnockoutObservable<string>;
             currentSymbol: KnockoutObservable<string>;
             currentStartDate: KnockoutObservable<string>;
-            currentCode: KnockoutObservable<any;>;
-            
+            currentCode: KnockoutObservable<string>;
+
             constructor() {
                 let self = this;
 
@@ -36,8 +34,14 @@ module nts.uk.com.view.cmm020.a {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
+                self.columns = ko.observableArray([
+                    { headerText: 'eraId', key: 'eraId', width: 100, hidden: true },
+                    { headerText: nts.uk.resource.getText('CMM020_6'), key: 'eraName', width: 60, formatter: _.escape },
+                    { headerText: nts.uk.resource.getText('CMM020_7'), key: 'eraSymbol', width: 45, formatter: _.escape },
+                    { headerText: nts.uk.resource.getText('CMM020_8'), key: 'startDate', width: 70, formatter: _.escape }
+                ]);
 
-                self.listEra = ko.observableArray([]);
+                self.dataSource = ko.observableArray([]);
                 self.eraName = ko.observable('');
                 self.eraSymbol = ko.observable('');
                 self.startDate = ko.observable('');
@@ -45,7 +49,7 @@ module nts.uk.com.view.cmm020.a {
                 self.currentName = ko.observable('');
                 self.currentSymbol = ko.observable('');
                 self.currentStartDate = ko.observable('');
-                self.currentCode = ko.observable();
+                self.currentCode = ko.observable('');
             }
 
             /**
@@ -56,7 +60,7 @@ module nts.uk.com.view.cmm020.a {
                 var dfd = $.Deferred();
 
                 for (let i = 0; i <= 3; i++) {
-                    this.listEra.push(new model.EraItem("test", "00", "fsf", "fdsfas"));
+                    this.dataSource.push(new model.EraItem("test"+i, "00"+i, "fsf", "fdsfas"));
                 }
 
                 //                service.getEraList().then(function(listEra: Array<model.EraItem>) {

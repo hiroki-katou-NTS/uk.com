@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.era.name;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(36)
+@StringMaxLength(4)
 public class EraName extends StringPrimitiveValue<EraName> {
 	
 	/** The Constant serialVersionUID. */
