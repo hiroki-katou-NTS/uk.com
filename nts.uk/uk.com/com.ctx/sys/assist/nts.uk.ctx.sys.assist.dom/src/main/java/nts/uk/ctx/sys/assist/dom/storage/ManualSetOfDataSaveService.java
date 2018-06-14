@@ -570,7 +570,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 					.createContainer();
 			NotUseAtr passwordAvailability = optManualSetting.getPasswordAvailability();
-			String fileName = AppContexts.user().companyId() + ZIP_EXTENSION;
+			String fileName = AppContexts.user().companyId() + optManualSetting.getSaveSetName()
+					+ LocalDateTime.now().toString() + ZIP_EXTENSION;
 			if (passwordAvailability == NotUseAtr.NOT_USE) {
 				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName);
 			}
