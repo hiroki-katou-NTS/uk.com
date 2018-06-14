@@ -15,6 +15,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         endDateString: KnockoutObservable<string>;
         dispTotalRemain: KnockoutObservable<string> = ko.observable(null);
         expirationDate: KnockoutObservable<string> = ko.observable(null);
+        newDataDisable: KnockoutObservable<boolean> = ko.observable(false);
         //_____CCG001________
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
@@ -103,11 +104,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
             
             self.selectedItem.subscribe(x =>{
-                if(self.selectedEmployee().length > 0) {
-                    self.selectedEmployeeObject = _.find(self.selectedEmployee(), item => { return item.employeeId === x; });
-                }
-                    
-                self.updateDataList();
+                self.updateDataList(true);
             });
             
             self.selectedPeriodItem.subscribe(x =>{
@@ -189,7 +186,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 let params = getShared('KDM001_A_PARAMS');
                 
                 if (params.isSuccess) {
-                    self.updateDataList();
+                    self.updateDataList(false);
                 }
                 
                 $('#compositePayOutSubMngDataGrid').focus();
@@ -210,10 +207,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         clickGetDataList() {
             let self = this;
 
-            self.updateDataList();
+            self.updateDataList(false);
         }
         
-        updateDataList() {
+        updateDataList(isSelectEmp) {
             let self = this;
             let empId = self.selectedItem();
             let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
@@ -226,40 +223,93 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             if (!nts.uk.ui.errors.hasError()) {
                 service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {
-                    let arrayResponse = res.compositePayOutSubMngData;
-                    let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
-                    for (let i = 0 ; i < arrayResponse.length; i++){
-                        compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
-                    }
-                    
-                    // update data to view
-                    self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
-                    self.dispTotalRemain(res.numberOfDayLeft);
-                    self.expirationDate(self.getExpirationTime(res.expirationDate));
-                    self.closureID = res.closureID;
-                    
-                    if(arrayResponse.length == 0) {
-                        dialog.alertError({ messageId: "Msg_725" });
-                    }
-                    
-                    // update grid
-                    $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
-                    
-                    // disable edit button
-                    _.forEach(self.compositePayOutSubMngData(), function(value) {
-                        let rowId = value.id;
-                        
-                        if (value.isLinked){
-                            $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
-                        } else {
-                            $("#compositePayOutSubMngDataGrid").ntsGrid("enableNtsControlAt", rowId, "edit", 'Button');
+                    if(res.haveEmploymentCode && (res.closureID != null) && (res.closureID != "")) {
+                        let arrayResponse = res.compositePayOutSubMngData;
+                        let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
+                        for (let i = 0 ; i < arrayResponse.length; i++){
+                            compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
                         }
-                    });
+                        
+                        // update data to view
+                        self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
+                        self.dispTotalRemain(res.numberOfDayLeft);
+                        self.expirationDate(self.getExpirationTime(res.expirationDate));
+                        self.closureID = res.closureID;
+                        self.newDataDisable(false);
+                        
+                        if(arrayResponse.length == 0) {
+                            dialog.alertError({ messageId: "Msg_725" });
+                        }
+                        
+                        // update grid
+                        $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+                        
+                        // disable edit button
+                        _.forEach(self.compositePayOutSubMngData(), function(value) {
+                            let rowId = value.id;
+                            
+                            if (value.isLinked){
+                                $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
+                            } else {
+                                $("#compositePayOutSubMngDataGrid").ntsGrid("enableNtsControlAt", rowId, "edit", 'Button');
+                            }
+                        });
+                    } else {
+                        // update data to view
+                        self.dispTotalRemain(0);
+                        self.expirationDate("");
+                        self.closureID = "";
+                        self.newDataDisable(true);
+                        
+                        // update grid
+                        self.compositePayOutSubMngData = ko.observableArray([]);
+                        $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+                        
+                        // add dialog
+                        dialog.alertError({ messageId: "Msg_1306" });
+                    }
+                    
+                    if(_.isNil(res.swkpHistImport)) {
+                        self.selectedEmployeeObject = {employeeId: res.personEmpBasicInfoImport.employeeId, employeeCode: res.personEmpBasicInfoImport.employeeCode, employeeName: res.personEmpBasicInfoImport.businessName, 
+                                workplaceId: "", workplaceCode: "", workplaceName: ""};
+                    } else {
+                        self.selectedEmployeeObject = {employeeId: res.personEmpBasicInfoImport.employeeId, employeeCode: res.personEmpBasicInfoImport.employeeCode, employeeName: res.personEmpBasicInfoImport.businessName, 
+                                workplaceId: res.swkpHistImport.workplaceId, workplaceCode: res.swkpHistImport.workplaceCode, workplaceName: res.swkpHistImport.workplaceName};
+                    }
                 }).fail(function(res: any) {
                     console.log(res);
                 });
                 
                 $('#compositePayOutSubMngDataGrid').focus();
+            } else {
+                service.getFurikyuMngDataExtraction(empId, startDate, endDate, false).done(function(res: any) {
+                    if(!res.haveEmploymentCode || (res.closureID == null) || (res.closureID == "")) {
+                        // update data to view
+                        self.dispTotalRemain(0);
+                        self.expirationDate("");
+                        self.closureID = "";
+                        self.newDataDisable(true);
+                        
+                        // update grid
+                        self.compositePayOutSubMngData = ko.observableArray([]);
+                        $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+                        
+                        // add dialog
+                        dialog.alertError({ messageId: "Msg_1306" });
+                    } else {
+                        self.newDataDisable(false);
+                    }
+                    
+                    if(_.isNil(res.swkpHistImport)) {
+                        self.selectedEmployeeObject = {employeeId: res.personEmpBasicInfoImport.employeeId, employeeCode: res.personEmpBasicInfoImport.employeeCode, employeeName: res.personEmpBasicInfoImport.businessName, 
+                                workplaceId: "", workplaceCode: "", workplaceName: ""};
+                    } else {
+                        self.selectedEmployeeObject = {employeeId: res.personEmpBasicInfoImport.employeeId, employeeCode: res.personEmpBasicInfoImport.employeeCode, employeeName: res.personEmpBasicInfoImport.businessName, 
+                                workplaceId: res.swkpHistImport.workplaceId, workplaceCode: res.swkpHistImport.workplaceCode, workplaceName: res.swkpHistImport.workplaceName};
+                    }
+                }).fail(function(res: any) {
+                    console.log(res);
+                });
             }
         }
         
@@ -270,12 +320,18 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             service.getInfoEmLogin().done(function(emp) {
                 service.getWpName().done(function(wp) {
-                    self.selectedEmployeeObject = {employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName, 
-                            workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name};
-                    self.employeeInputList.push(new EmployeeKcp009(emp.sid,
-                            emp.employeeCode, emp.employeeName, wp.name, wp.name));
-                    self.initKCP009();
-                    dfd.resolve();
+                    if(wp == null || wp.workplaceId == null || wp.workplaceId == "") {
+                        dialog.alertError({ messageId: "Msg_504" }).then(() => {
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        });
+                    } else {
+                        self.selectedEmployeeObject = {employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName, 
+                                workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name};
+                        self.employeeInputList.push(new EmployeeKcp009(emp.sid,
+                                emp.employeeCode, emp.employeeName, wp.name, wp.name));
+                        self.initKCP009();
+                        dfd.resolve();
+                    }
                 }).fail(function(result) {
                     dialog.alertError(result.errorMessage);
                     dfd.reject();
@@ -341,7 +397,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
-                        self.updateDataList();
+                        self.updateDataList(false);
                     }
                 });
             } else {
@@ -349,7 +405,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
-                        self.updateDataList();
+                        self.updateDataList(false);
                     }
                 });
             }
@@ -365,7 +421,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
-                        self.updateDataList();
+                        self.updateDataList(false);
                     }
                 });
             } else {
@@ -373,7 +429,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
-                        self.updateDataList();
+                        self.updateDataList(false);
                     }
                 });
             }

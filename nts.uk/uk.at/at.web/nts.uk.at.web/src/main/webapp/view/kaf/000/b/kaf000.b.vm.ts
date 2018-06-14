@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
     import Approver = nts.uk.at.view.kdl034.a.viewmodel.Approver;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export abstract class ScreenModel {
         // Metadata
         appID: KnockoutObservable<string>;
@@ -285,9 +286,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             service.approveApp(approveCmd, self.appType()).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: 'Msg_220' }).then(function() {
                     if(data.autoSendMail){
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                            location.reload();
-                        });    
+                        appcommon.CommonProcess.displayMailResult(data);     
                     } else {
                         location.reload();
                     }
@@ -308,9 +307,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 if(data.processDone){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_222' }).then(function() {
                         if(data.autoSendMail){
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                location.reload();
-                            });    
+                            appcommon.CommonProcess.displayMailResult(data);     
                         } else {
                             location.reload();
                         }
@@ -343,9 +340,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     if(data.processDone){
                         nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
                             if(data.autoSendMail){
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    location.reload();
-                                });    
+                                appcommon.CommonProcess.displayMailResult(data);    
                             } else {
                                 location.reload();
                             }

@@ -6,20 +6,21 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.EndClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の勤務時刻 */
-public class WorkHourOfMonthlyDto {
+public class WorkHourOfMonthlyDto implements ItemConst {
 
 	/** PCログオン情報: 月別実績のPCログオン情報 */
-	@AttendanceItemLayout(jpPropertyName = "PCログオン情報", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = PC, layout = LAYOUT_A)
 	private PCLogOnInfoOfMonthlyDto pcLogOnInfo;
 
 	/** 終業時刻: 月別実績の終業時刻 */
-	@AttendanceItemLayout(jpPropertyName = "終業時刻", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = END_WORK, layout = LAYOUT_B)
 	private EndWorkHourOfMonthlyDto endWorkHours;
 	
 	public static WorkHourOfMonthlyDto from(WorkClockOfMonthly domain){

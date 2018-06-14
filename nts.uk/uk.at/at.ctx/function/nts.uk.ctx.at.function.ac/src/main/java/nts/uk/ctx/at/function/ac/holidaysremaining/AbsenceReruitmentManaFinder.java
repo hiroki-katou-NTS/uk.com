@@ -30,12 +30,12 @@ public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter
 	public List<CurrentHolidayRemainImported> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
 		// requestList270
-//		List<InterimRemainAggregateOutputData> lstAbsRecRemainAggregate = absenceReruitmentManaQuery
-//				.getAbsRecRemainAggregate(employeeId, baseDate, startMonth, endMonth);\
+		List<InterimRemainAggregateOutputData> lstAbsRecRemainAggregate = absenceReruitmentManaQuery
+				.getAbsRecRemainAggregate(employeeId, baseDate, startMonth, endMonth);
 		// TODO requestList270 fail
-		InterimRemainAggregateOutputData itemImported = new InterimRemainAggregateOutputData(GeneralDate.today().yearMonth().addMonths(1), 0d, 0d, 0d, 0d, 0d);
-		List<InterimRemainAggregateOutputData> lstAbsRecRemainAggregate = new ArrayList<>();
-		lstAbsRecRemainAggregate.add(itemImported);
+//		InterimRemainAggregateOutputData itemImported = new InterimRemainAggregateOutputData(GeneralDate.today().yearMonth().addMonths(1), 0d, 0d, 0d, 0d, 0d);
+//		List<InterimRemainAggregateOutputData> lstAbsRecRemainAggregate = new ArrayList<>();
+//		lstAbsRecRemainAggregate.add(itemImported);
 		
 		if (lstAbsRecRemainAggregate == null)
 			return null;
@@ -52,14 +52,14 @@ public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter
 	public List<StatusOfHolidayImported> getDataCurrentMonthOfEmployee(String employeeId, YearMonth startMonth,
 			YearMonth endMonth) {
 		// requestList260
-//		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrentMonthOfEmployee = monthlyAbsenceleaveRemainExport
-//				.getDataCurrentMonthOfEmployee(employeeId, startMonth, endMonth);
+		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrentMonthOfEmployee = monthlyAbsenceleaveRemainExport
+				.getDataCurrentMonthOfEmployee(employeeId, startMonth, endMonth);
 		
 		// TODO requestList260 fail
-		AbsenceleaveCurrentMonthOfEmployee itemImported = new AbsenceleaveCurrentMonthOfEmployee(
-				AppContexts.user().employeeId(), GeneralDate.today().yearMonth().addMonths(-1), 0d, 0d, 0d, 0d, 0d);
-		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrentMonthOfEmployee = new ArrayList<>();
-		lstDataCurrentMonthOfEmployee.add(itemImported);
+//		AbsenceleaveCurrentMonthOfEmployee itemImported = new AbsenceleaveCurrentMonthOfEmployee(
+//				AppContexts.user().employeeId(), GeneralDate.today().yearMonth().addMonths(-1), 0d, 0d, 0d, 0d, 0d);
+//		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrentMonthOfEmployee = new ArrayList<>();
+//		lstDataCurrentMonthOfEmployee.add(itemImported);
 		
 		if (lstDataCurrentMonthOfEmployee == null)
 			return null;

@@ -48,12 +48,15 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	@Override
 	public List<InterimRemainAggregateOutputData> getInterimRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
-		
+		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>();
 		//アルゴリズム「締めと残数算出対象期間を取得する」を実行する
 		ClosureRemainPeriodOutputData closureData = remainManaExport.getClosureRemainPeriod(employeeId, baseDate, startMonth, endMonth);
+		if(closureData == null) {
+			return lstData;
+		}
 		//残数算出対象年月を設定する
-		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>(); 
-		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym.addMonths(1)) {
+		
+		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)) {
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, (double) 0, (double) 0, (double) 0, (double) 0, (double) 0);
 			//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);
@@ -63,12 +66,11 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			Double useDays = this.getTotalUseDays(employeeId, dateData);
 			//残数算出対象年月をチェックする
 			//残数算出対象年月＞締め.当月.処理年月
-			if(ym.greaterThan(closureData.getClosure().getClosureMonth().getProcessingYm())) {
-				//月度別代休残数集計を作成する
-				outPutData.setYm(ym);
-				outPutData.setMonthOccurrence(occurrentDays);
-				outPutData.setMonthUse(useDays);
-			} else {
+			//月度別代休残数集計を作成する
+			outPutData.setYm(ym);
+			outPutData.setMonthOccurrence(occurrentDays);
+			outPutData.setMonthUse(useDays);
+			if(!ym.greaterThan(closureData.getClosure().getClosureMonth().getProcessingYm())) {
 				//当月の代休残数を集計する
 				outPutData = this.aggregatedDayoffCurrentMonth(employeeId, dateData, outPutData);
 				//月末代休残数：月初代休残数＋代休発生数合計－代休使用数合計－代休消滅数合計
@@ -81,7 +83,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	@Override
 	public Double getTotalOccurrenceDays(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定休出管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.SUBHOLIDAY);
+		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.BREAK);
 		Double outputData = (double) 0;
 		for (InterimRemain interimRemain : getRemainBySidPriod) {
 			Optional<InterimBreakMng> getBreakManaBybreakManaId = breakDayOffRepo.getBreakManaBybreakMngId(interimRemain.getRemainManaID());
@@ -128,7 +130,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	@Override
 	public BreakDayOffOutputHisData getBreakDayOffData(String cid, String sid, GeneralDate baseDate) {
 		// TODO 確定管理データを取得する
-		
+		/*
 		//暫定管理データを取得する
 		BreakDayOffInterimMngData interimMngData = this.getMngData(sid, baseDate);
 		//休出履歴を作成する
@@ -138,8 +140,9 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//休出代休履歴対照情報を作成する
 		List<BreakDayOffHistory> lstOutput = this.lstBreakDayOffHis(interimMngData.getLstBreakDayOffMng(), lstBreakHis, lstDayOffHis);
 		//残数集計情報を作成する
-		AsbRemainTotalInfor totalOutput = this.totalInfor(lstBreakHis, lstDayOffHis);
-		
+		AsbRemainTotalInfor totalOutput = this.totalInfor(lstBreakHis, lstDayOffHis);*/
+		List<BreakDayOffHistory> lstOutput = this.lstBreakDayOffHis(null, null, null);
+		AsbRemainTotalInfor totalOutput = this.totalInfor(null, null);
 		return new BreakDayOffOutputHisData(lstOutput, totalOutput);
 	}
 	@Override
@@ -229,7 +232,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		List<BreakDayOffHistory> lstOutputData = new ArrayList<>();
 		//紐付き対象のない休出代休履歴対象情報を作成してListに追加する
 		//休出履歴を抽出する ・  休出管理データ.未使用日数＞0
-		List<BreakHistoryData> lstBreakUnUse = lstBreakHis.stream().filter(x -> x.getUnUseDays() > 0).collect(Collectors.toList());
+		/*List<BreakHistoryData> lstBreakUnUse = lstBreakHis.stream().filter(x -> x.getUnUseDays() > 0).collect(Collectors.toList());
 		lstBreakUnUse.stream().forEach(x -> {
 			BreakDayOffHistory outData = new BreakDayOffHistory();
 			outData.setHisDate(x.getBreakDate());
@@ -290,14 +293,14 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		if(!lstInterimOutput.isEmpty()) {
 			lstOutputData.addAll(lstInterimOutput);	
 		}
-		Collections.sort(lstOutputData, Comparator.comparing(BreakDayOffHistory :: getHisDate));
+		Collections.sort(lstOutputData, Comparator.comparing(BreakDayOffHistory :: getHisDate));*/
 		return lstOutputData;
 	}
 	@Override
 	public AsbRemainTotalInfor totalInfor(List<BreakHistoryData> lstBreakHis, List<DayOffHistoryData> lstDayOffHis) {
 		AsbRemainTotalInfor outputData = new AsbRemainTotalInfor((double) 0, (double)0, (double) 0, (double) 0, (double) 0);
 		//実績使用日数を算出する
-		List<DayOffHistoryData> dayOffHisRecord = lstDayOffHis.stream()
+		/*List<DayOffHistoryData> dayOffHisRecord = lstDayOffHis.stream()
 				.filter(x -> x.getCreateAtr() == MngDataAtr.RECORD)
 				.collect(Collectors.toList());
 		dayOffHisRecord.stream().forEach(y -> {
@@ -339,7 +342,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		for (DayOffHistoryData dayOffHistoryData : dayOffHisCarry) {
 			carryDayOff += dayOffHistoryData.getUnOffsetDays();
 		}
-		outputData.setCarryForwardDays(carryDays - carryDayOff);
+		outputData.setCarryForwardDays(carryDays - carryDayOff);*/
 		return outputData;
 	}
 	@Override

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
@@ -18,26 +19,26 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 /** 積立年休 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReserveLeaveDto {
+public class ReserveLeaveDto implements ItemConst {
 
 	/** 使用数 */
-	@AttendanceItemLayout(jpPropertyName = "使用数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = USAGE, layout = LAYOUT_A)
 	private ReserveLeaveUsedNumberDto usedNumber;
 
 	/** 残数 */
-	@AttendanceItemLayout(jpPropertyName = "残数", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = REMAIN, layout = LAYOUT_B)
 	private CommonLeaveRemainingNumberDto remainingNumber;
 
 	/** 残数付与前 */
-	@AttendanceItemLayout(jpPropertyName = "残数付与前", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_C)
 	private CommonLeaveRemainingNumberDto remainingNumberBeforeGrant;
 
 	/** 残数付与後 */
-	@AttendanceItemLayout(jpPropertyName = "残数付与後", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_D)
 	private CommonLeaveRemainingNumberDto remainingNumberAfterGrant;
 
 	/** 未消化数 */
-	@AttendanceItemLayout(jpPropertyName = "未消化数", layout = "E")
+	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_E)
 	private double undigestedNumber;
 
 	public static ReserveLeaveDto from(ReserveLeave domain) {
