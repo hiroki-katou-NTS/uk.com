@@ -1475,8 +1475,8 @@ module nts.custombinding {
                                     opts.sortable.pushItems(defs);
                                 }
                             } else {
-                                let dupids: IItemDefinition = dups.map((x: IItemDefinition) => x.id),
-                                    nodups = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
+                                let dupids: Array<any> = dups.map((x: IItemDefinition) => x.id),
+                                    nodups: Array<any> = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
 
                                 if (dupids && dupids.length) {
                                     // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
@@ -1826,6 +1826,7 @@ module nts.custombinding {
                     def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
                     def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
                     def.required = _.has(def, "required") && def.required || !!item.isRequired;
+                    //def.required = _.has(def, "required") ? (ko.isObservable(def.required) ? def.required : ko.observable(def.required)) : ko.observable(!!item.isRequired);
 
                     def.resourceId = _.has(def, "resourceId") && def.resourceId || undefined;
 
@@ -2022,9 +2023,12 @@ module nts.custombinding {
                                 }
                             });
                         });
-
+                        
+                        // filter group input has record id
+                        // or no record id but has data
+                        // or has record id and delete flag is true
                         inputs = _(inputs).filter(f => {
-                            return f.items.filter(m => !!m.value).length > 0 || (f.recordId && f.delete);
+                            return f.recordId || (!f.recordId && f.items.filter(m => !!m.value).length > 0) || (f.recordId && f.delete);
                         }).value();
 
                         // change value

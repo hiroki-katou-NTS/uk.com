@@ -83,6 +83,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			entity.remainType = domain.getRemainType().value;
 			entity.remainAtr = domain.getRemainAtr().value;
 		}
+		this.getEntityManager().flush();
 	}
 
 	@Override

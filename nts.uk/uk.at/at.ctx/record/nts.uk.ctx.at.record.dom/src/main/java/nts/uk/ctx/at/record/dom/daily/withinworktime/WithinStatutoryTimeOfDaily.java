@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
@@ -107,10 +107,9 @@ public class WithinStatutoryTimeOfDaily {
 			   												   WorkFlexAdditionSet flexAddSetting,
 			   												   WorkRegularAdditionSet regularAddSetting,
 			   												   HolidayAddtionSet holidayAddtionSet,
-			   												   AutoCalAtrOvertime autoCalcSet,
+			   												   CalAttrOfDailyPerformance autoCalcSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet, 
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
-			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
 			   												   WorkTimeDailyAtr workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
@@ -121,7 +120,7 @@ public class WithinStatutoryTimeOfDaily {
 		workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
-														  calcMethod,autoCalcAtr,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime,coreTimeSetting);
+														  calcMethod,autoCalcSet,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime,coreTimeSetting);
 		//実働時間の計算
 		if(oneDay.getWithinWorkingTimeSheet().isPresent())
 			actualTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
@@ -141,7 +140,7 @@ public class WithinStatutoryTimeOfDaily {
 																						   holidayCalcMethodSet);
 			
 		//所定内深夜時間の計算
-		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay,autoCalcSet);
+		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay);
 
 		 
 		return new WithinStatutoryTimeOfDaily(workTime,actualTime,midNightTime);
@@ -163,7 +162,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   HolidayAddtionSet holidayAddtionSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet,
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
-			   												   AutoCalOverTimeAttr autoCalcAtr, 
+			   												   CalAttrOfDailyPerformance autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
 			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting) {
@@ -189,8 +188,9 @@ public class WithinStatutoryTimeOfDaily {
 						  									 calcMethod,
 						  									 autoCalcAtr,
 						  									 flexCalcMethod.get(),
-						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT,
-						  									 preFlexTime,coreTimeSetting
+						  									 preFlexTime,
+						  									 coreTimeSetting,
+						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT
 						   );
 			}
 			else {

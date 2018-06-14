@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -198,7 +199,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				}).collect(Collectors.toList());
 				screenDto.setLstEmployee(lstEmployeeDto);
 			}
-
+            screenDto.setLoginUser(employeeId);
 			// screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(),
 			// employeeId, new DateRange(
 			// screenDto.getSelectedActualTime().getEndDate(),
@@ -246,6 +247,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		else {
 			// TODO 対象外
 		}
+		screenDto.createAccessModifierCellState();
 		return screenDto;
 	}
 
@@ -393,6 +395,12 @@ public class MonthlyPerformanceCorrectionProcessor {
 		 */
 		MPControlDisplayItem displayItem = screenDto.getLstControlDisplayItem();
 		MonthlyPerformanceParam param = screenDto.getParam();
+
+		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
+		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
+			throw new BusinessException("Msg_1261");
+		}
+		
 		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {
 			MPSheetDto sh = new MPSheetDto(c.getSheetNo(), c.getSheetName());
 			for (PAttendanceItem attend : c.getDisplayItems()) {
@@ -438,38 +446,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 			displayItem.getColumnSettings().add(columnSetting);
 		}
 
-		// for (DPHeaderDto key : result.getLstHeader()) {
-		// ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
-		// if (!key.getKey().equals("Application") &&
-		// !key.getKey().equals("Submitted") &&
-		// !key.getKey().equals("ApplicationList")) {
-		// if (!key.getGroup().isEmpty()) {
-		// result.getColumnSettings().add(new
-		// ColumnSetting(key.getGroup().get(0).getKey(), false));
-		// result.getColumnSettings().add(new
-		// ColumnSetting(key.getGroup().get(1).getKey(), false));
-		// } else {
-		// /*
-		// * 時間 - thoi gian hh:mm 5, 回数: so lan 2, 金額 : so tien 3, 日数:
-		// * so ngay -
-		// */
-		// DPAttendanceItem dPItem = mapDP
-		// .get(Integer.parseInt(key.getKey().substring(1,
-		// key.getKey().length()).trim()));
-		// columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
-		// }
-		// }
-		// result.getColumnSettings().add(columnSetting);
-		//
-		// }
-
 		/**
 		 * Get Data
 		 */
-		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
-		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
-			throw new BusinessException("Msg_1261");
-		}
+		
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<String> listEmployeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 				.collect(Collectors.toList());
@@ -491,12 +471,17 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		Map<String, MonthlyPerformaceLockStatus> lockStatusMap = param.getLstLockStatus().stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
+		String employeeIdLogin = AppContexts.user().employeeId();
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
+			//lock check box1 identify 
+			if(!employeeIdLogin.equals(employeeId)){
+				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+			}
 			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) ? ""
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
-
+       
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
 					employeeId, "", false, false, false, "");
 			// Setting data for dynamic column

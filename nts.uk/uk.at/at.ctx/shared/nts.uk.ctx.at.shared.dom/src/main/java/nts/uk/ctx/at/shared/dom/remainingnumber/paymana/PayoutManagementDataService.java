@@ -110,7 +110,7 @@ public class PayoutManagementDataService {
 						splitMana.getHolidayDate().getDayoffDate().orElse(null), closureDate, closureId, checkedSplit, pickUp));
 			if (checkedSplit) {
 				if (this.checkInfoSubPayMana(splitMana.getCid(), splitMana.getSID(), splitMana.getHolidayDate().getDayoffDate().orElse(null))
-						|| this.checkInfoPayMana(subMana.getCid(), subMana.getSID(), subMana.getHolidayDate().getDayoffDate().orElse(null))) {
+						|| this.checkInfoPayMana(splitMana.getCid(), splitMana.getSID(), splitMana.getHolidayDate().getDayoffDate().orElse(null))) {
 					errors.add("Msg_737_splitMana");
 				}
 			}
