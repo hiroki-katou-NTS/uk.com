@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -12,25 +13,27 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreaterAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.interimremain.KrcmtInterimRemainMng;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 @Stateless
 public class JpaInterimRemainRepository extends JpaRepository  implements InterimRemainRepository{
-	private String QUERY_BY_SID_PRIOD = "SELECT c FROM KrcmtInterimRemainMng c"
+	
+	private static final String QUERY_BY_SID_PRIOD = "SELECT c FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate"
 			+ " AND c.remainType = :remainType";
-	private String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcmtInterimRemainMng c"
+	private static final String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate"
 			+ " AND c.remainType = :remainType";
-	private String DELETE_BY_SID_PRIOD = "DELETE FROM KrcmtInterimRemainMng c"
+	private static final String DELETE_BY_SID_PRIOD = "DELETE FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate";
+	
 	@Override
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
 		return this.queryProxy().query(QUERY_BY_SID_PRIOD, KrcmtInterimRemainMng.class)
@@ -48,29 +51,41 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 				EnumAdaptor.valueOf(c.remainType, RemainType.class),
 				EnumAdaptor.valueOf(c.remainAtr, RemainAtr.class));
 	}
+	
 	@Override
 	public Optional<InterimRemain> getById(String remainId) {
 		return this.queryProxy().find(remainId, KrcmtInterimRemainMng.class)
 				.map(x -> convertToDomainSet(x));
 	}
+
 	@Override
-	public void createInterimRemain(InterimRemain domain) {
-		this.commandProxy().insert(toEntity(domain));
+	public void persistAndUpdateInterimRemain(InterimRemain domain) {
+
+		// キー
+		val key = domain.getRemainManaID();
+		
+		// 登録・更新
+		KrcmtInterimRemainMng entity = this.getEntityManager().find(KrcmtInterimRemainMng.class, key);
+		if (entity == null){
+			entity = new KrcmtInterimRemainMng();
+			entity.remainMngId = domain.getRemainManaID();
+			entity.sId = domain.getSID();
+			entity.ymd = domain.getYmd();
+			entity.createrAtr = domain.getCreatorAtr().value;
+			entity.remainType = domain.getRemainType().value;
+			entity.remainAtr = domain.getRemainAtr().value;
+			this.getEntityManager().persist(entity);
+		}
+		else {
+			entity.sId = domain.getSID();
+			entity.ymd = domain.getYmd();
+			entity.createrAtr = domain.getCreatorAtr().value;
+			entity.remainType = domain.getRemainType().value;
+			entity.remainAtr = domain.getRemainAtr().value;
+		}
+		this.getEntityManager().flush();
 	}
-	private KrcmtInterimRemainMng toEntity(InterimRemain domain) {
-		KrcmtInterimRemainMng entity = new KrcmtInterimRemainMng();
-		entity.remainMngId = domain.getRemainManaID();
-		entity.sId = domain.getSID();
-		entity.ymd = domain.getYmd();
-		entity.createrAtr = domain.getCreatorAtr().value;
-		entity.remainType = domain.getRemainType().value;
-		entity.remainAtr = domain.getRemainAtr().value;
-		return entity;
-	}
-	@Override
-	public void updateInterimRemain(InterimRemain domain) {
-		this.commandProxy().update(toEntity(domain));
-	}
+
 	@Override
 	public void deleteById(String mngId) {
 		Optional<KrcmtInterimRemainMng> optData = this.queryProxy().find(mngId, KrcmtInterimRemainMng.class);
@@ -79,6 +94,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		}
 		
 	}
+
 	@Override
 	public void deleteBySidPeriodType(String employeeId, DatePeriod dateData, RemainType remainType) {
 		this.getEntityManager().createQuery(DELETE_BY_SID_PRIOD_TYPE)
@@ -89,6 +105,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 				.executeUpdate();
 		
 	}
+	
 	@Override
 	public void deleteBySidPeriod(String employeeId, DatePeriod dateData) {
 		this.getEntityManager().createQuery(DELETE_BY_SID_PRIOD)
@@ -97,6 +114,4 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			.setParameter("endDate", dateData.end())
 			.executeUpdate();
 	}
-	
-
 }

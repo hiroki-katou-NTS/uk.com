@@ -18,6 +18,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         listEmployee: Array<EmployeeInfo>;
         leaveSettingExpiredDate: string;
         compenSettingEmpExpiredDate: string
+        isHaveError: KnockoutObservable<boolean> = ko.observable(false);
+        unknowEmployeeInfo = false;
         //_____CCG001________
         ccgcomponent: GroupOption;
         listEmployeeKCP009: KnockoutObservableArray<EmployeeSearchDto>;
@@ -92,6 +94,12 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.selectedItem.subscribe(x => {
                 if (!self.isOnStartUp) {
                     self.selectedEmployee = _.find(self.listEmployee, item => { return item.employeeId === x; });
+                    if (!self.selectedEmployee){
+                        self.selectedEmployee = new EmployeeInfo(x, "", "", "", "", "");
+                        self.unknowEmployeeInfo = true;
+                    } else {
+                        self.unknowEmployeeInfo = false;
+                    }
                     self.getSubstituteDataList(self.getSearchCondition());
                 }
                 self.isOnStartUp = false;
@@ -146,13 +154,32 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
-                    self.closureEmploy = result.closureEmploy;
-                    self.listExtractData = result.extraData;
-                    self.convertToDisplayList();
-                    self.updateSubstituteDataList();
-                    if (result.empSettingExpiredDate.length>0){
-                        self.dispExpiredDate(result.empSettingExpiredDate);
-                    } else self.dispExpiredDate(result.companySettingExpiredDate);
+                    if (self.unknowEmployeeInfo){ 
+                        if (result.wkHistory){
+                            self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
+                            self.selectedEmployee.workplaceCode = result.wkHistory.workplaceCode;
+                            self.selectedEmployee.workplaceName = result.wkHistory.workplaceName;
+                            self.selectedEmployee.employeeCode = result.employeeCode;
+                            self.selectedEmployee.employeeName = result.employeeName;
+                        }
+                    }
+                    if (result.closureEmploy && result.sempHistoryImport){
+                        self.closureEmploy = result.closureEmploy;
+                        self.listExtractData = result.extraData;
+                        self.convertToDisplayList();
+                        self.updateSubstituteDataList();
+                        self.isHaveError(false);
+                        if (result.empSettingExpiredDate.length>0){
+                            self.dispExpiredDate(result.empSettingExpiredDate);
+                        } else self.dispExpiredDate(result.companySettingExpiredDate);
+                    } else {
+                        self.subData = [];
+                        self.updateSubstituteDataList();
+                        self.dispTotalRemainHours('0' + getText('KDM001_27'));
+                        self.dispExpiredDate('');
+                        self.isHaveError(true);
+                        dialog.alertError({messageId: 'Msg_1306'});
+                    }
                 }).fail(function(result) {
                     dialog.alertError(result.errorMessage);
                 });
@@ -298,21 +325,30 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             searchCondition = { employeeId: null, stateDate: null, endDate: null };
             service.getInfoEmLogin().done(function(loginerInfo) {
                 service.getSubsitutionData(searchCondition).done(function(result) {
-                    let wkHistory = result.wkHistory;
-                    self.closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
-                    self.listEmployee = [];
-                    self.selectedEmployee = new EmployeeInfo(loginerInfo.sid, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
-                    self.listEmployee.push(self.selectedEmployee);
-                    self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
-                        loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
-                    self.listExtractData = result.extraHolidayManagementDataDto.extraData;
-                    self.convertToDisplayList();
-                    self.updateSubstituteDataList();
-                    if (result.extraHolidayManagementDataDto.empSettingExpiredDate.length>0){
-                        self.dispExpiredDate(result.extraHolidayManagementDataDto.empSettingExpiredDate);
-                    } else self.dispExpiredDate(result.extraHolidayManagementDataDto.companySettingExpiredDate);
-                    self.initKCP009();
-                    self.disableLinkedData();
+                    if (result.extraHolidayManagementDataDto.closureEmploy && result.extraHolidayManagementDataDto.sempHistoryImport){
+                        let wkHistory = result.wkHistory;
+                        self.closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
+                        self.listEmployee = [];
+                        self.selectedEmployee = new EmployeeInfo(loginerInfo.sid, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
+                        self.listEmployee.push(self.selectedEmployee);
+                        self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                            loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
+                        self.listExtractData = result.extraHolidayManagementDataDto.extraData;
+                        self.convertToDisplayList();
+                        self.updateSubstituteDataList();
+                        self.isHaveError(false);
+                        if (result.extraHolidayManagementDataDto.empSettingExpiredDate.length>0){
+                            self.dispExpiredDate(result.extraHolidayManagementDataDto.empSettingExpiredDate);
+                        } else self.dispExpiredDate(result.extraHolidayManagementDataDto.companySettingExpiredDate);
+                        self.initKCP009();
+                        self.disableLinkedData();
+                    }else{
+                        self.subData = [];
+                        self.updateSubstituteDataList();
+                        self.isHaveError(true);
+                        dialog.alertError({messageId: 'Msg_1306'});
+                        self.dispTotalRemainHours('0' + getText('KDM001_27'));
+                    }
                     dfd.resolve();
                 }).fail(function(result) {
                     dialog.alertError(result.errorMessage);

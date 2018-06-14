@@ -86,7 +86,6 @@ module nts.uk.at.view.kdm001.share.model {
         } else {
             return "0" + getText('KDM001_27');
         }
-
     }
 
     export class ItemModel {

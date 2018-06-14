@@ -54,6 +54,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmail
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
@@ -157,6 +159,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
+	
+	@Inject
+	private EnvAdapter envAdapter;
 	
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
@@ -354,11 +359,20 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 */
 	@Override
 	public List<EmployeeEmailImport> findEmpMailAddr(List<String> listsId) {
+		String cid = AppContexts.user().companyId();
 		// imported（就業）「個人社員基本情報」を取得する
 		List<EmployeeEmailImport> listEmployee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(listsId);
-		// TODO 419
 		// Imported（申請承認）「社員メールアドレス」を取得する
-		listEmployee = new ArrayList<>();
+		List<MailDestinationImport> listMailEmp = envAdapter.getEmpEmailAddress(cid, listsId, 6);
+		for (EmployeeEmailImport emp : listEmployee) {
+			Optional<MailDestinationImport> empMailOtp = listMailEmp.stream()
+					.filter(x -> x.getEmployeeID().equals(emp.getSId())).findFirst();
+			empMailOtp.ifPresent(empMail -> {
+				if (empMail.getOutGoingMails().isEmpty())
+					return;
+				emp.setMailAddr(empMail.getOutGoingMails().get(0).getEmailAddress());
+			});
+		}
 		return listEmployee;
 	}
 
@@ -399,6 +413,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
 		List<String> listError = new ArrayList<>();
 		for (MailTransmissionContentOutput mailTransmission : listMailContent) {
+			// TODO Chờ đối ứng EmbeddedURL
 			// アルゴリズム「承認状況メール埋込URL取得」を実行する
 			// String embeddedURL =
 			// this.getEmbeddedURL(mailTransmission.getSId(), domain, mailType);
@@ -423,16 +438,16 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 承認状況メール埋込URL取得
 	 */
-	//Chưa đối ứng phần EmbeddedURL
-	//TODO
-/*	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
+	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
 		List<String> listUrl = new ArrayList<>();
+		String contractCD = AppContexts.user().contractCode();
+		String employeeCD = AppContexts.user().employeeCode();
 		// 承認状況メールテンプレート.URL承認埋込
 		if (NotUseAtr.USE.equals(domain.getUrlApprovalEmbed())) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
 			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "activeMode", "approval"));
 			// アルゴリズム「埋込URL情報登録」を実行する
-			String url1 = registerEmbededURL.embeddedUrlInfoRegis("CMM045", "A", 1, 1, eid, "", listTask);
+			String url1 = registerEmbededURL.embeddedUrlInfoRegis("CMM045", "A", 1, 1, eid, contractCD, "", employeeCD, listTask);
 			listUrl.add(url1);
 		}
 		// 承認状況メールテンプレート.URL日別埋込
@@ -446,24 +461,24 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "errorRef", "true"));
 			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "changePeriod", "true"));
 			// アルゴリズム「埋込URL情報登録」を実行する
-			String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW003", "A", 1, 1, eid, "", listTask);
+			String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW003", "A", 1, 1, eid, contractCD, "", employeeCD, listTask);
 			listUrl.add(url2);
 		}
 		// 承認状況メールテンプレート.URL月別埋込
 		if (NotUseAtr.USE.equals(domain.getUrlMonthEmbed())) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
 			// アルゴリズム「埋込URL情報登録」を実行する
-			String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, "", listTask);
+			String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, listTask);
 			listUrl.add(url3);
 		}
 		String title = TextResource.localize("KAF018_190");
 		String url = StringUtils.join(listUrl, "/n");
 		return title + "/n" + url;
 	}
-*/
+
 	@Override
 	public String confirmApprovalStatusMailSender() {
-		String sId = AppContexts.user().userId();
+		String sId = AppContexts.user().employeeId();
 		List<String> listSId = new ArrayList<>();
 		listSId.add(sId);
 		// アルゴリズム「承認状況社員メールアドレス取得」を実行する
@@ -677,9 +692,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public ApprovalSttByEmpListOutput getApprovalSttById(String selectedWkpId, List<String> listWkpId,
+	public List<ApprovalSttByEmpListOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId,
 			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode) {
-		List<DailyStatusOutput> listDailyStatus = new ArrayList<>();
+		List<ApprovalSttByEmpListOutput> lstApprovalSttByEmpList = new ArrayList<>();
 		// アルゴリズム「承認状況取得社員」を実行する
 		List<ApprovalStatusEmployeeOutput> listAppSttEmp = this.getApprovalStatusEmployee(selectedWkpId, startDate,
 				endDate, listEmpCode);
@@ -707,9 +722,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況日別状態作成」を実行する
 			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt.getStartDate(), appStt.getEndDate(),
 					listApprovalContent);
-			listDailyStatus.add(new DailyStatusOutput(appStt.getSid(), empName, dailyStatus));
+			lstApprovalSttByEmpList.add(new ApprovalSttByEmpListOutput(appStt.getSid(), empName, dailyStatus, appStt.getStartDate(), appStt.getEndDate()));
 		}
-		return new ApprovalSttByEmpListOutput(listDailyStatus, listAppSttEmp);
+		return lstApprovalSttByEmpList;
 	}
 
 	/**
@@ -938,7 +953,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			String sID = approver.getApproverID();
 			// ドメインモデル「代行者管理」を取得する
 			List<AgentDataRequestPubImport> lstAgentData = agentApdater.lstAgentBySidData(cId, sID, appDate, appDate);
-			Optional<AgentDataRequestPubImport> agent = lstAgentData.stream().findFirst();
+			Optional<AgentDataRequestPubImport> agent = Optional.empty();
+			if(lstAgentData != null && !lstAgentData.isEmpty()){
+				agent = lstAgentData.stream().findFirst();
+			}
 			// 対象が存在する場合
 			if (agent.isPresent()) {
 				switch (agent.get().getAgentAppType1()) {

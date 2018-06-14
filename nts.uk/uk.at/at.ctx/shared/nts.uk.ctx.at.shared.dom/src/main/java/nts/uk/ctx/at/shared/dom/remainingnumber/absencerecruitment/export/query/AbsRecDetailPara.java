@@ -35,6 +35,9 @@ public class AbsRecDetailPara {
 	/**
 	 * 振休の未相殺
 	 */
-	private UnOffsetOfAbs unOffsetOfAbs;
-	
+	private UnOffsetOfAbs unOffsetOfAb;
+	/**
+	 * 振出の未使用
+	 */
+	private UnUseOfRec unUseOfRec;
 }

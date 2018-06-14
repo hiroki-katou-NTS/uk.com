@@ -1,25 +1,27 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.dto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 
 /**
  * TODO
  */
-@Getter
-@Setter
+@Data
 public class MonthlyPerformanceCorrectionDto {
 
 	private Set<ItemValue> itemValues;
@@ -87,6 +89,10 @@ public class MonthlyPerformanceCorrectionDto {
 	 */
 	private ClosureDateDto closureDate;
 	
+	private Boolean showRegisterButton;
+	
+	private MonthlyItemControlByAuthDto authDto;
+	
 	public MonthlyPerformanceCorrectionDto(){
 		super();
 		this.lstFixedHeader = MPHeaderDto.GenerateFixedHeader();
@@ -96,5 +102,55 @@ public class MonthlyPerformanceCorrectionDto {
 		this.itemValues = new HashSet<>();
 		this.data = new HashMap<>();
 		
+	}
+	
+	public void setLoginUser(String employeeId){
+		this.lstEmployee = lstEmployee.stream().map(x -> {
+			x.setLoginUser(x.getId().equals(employeeId));
+			return x;
+		}).collect(Collectors.toList());
+	}
+	
+	private Optional<MPCellStateDto> findExistCellState(String dataId, String columnKey) {
+		String rowId, column;
+		for (int i = 0; i < this.lstCellState.size(); i++) {
+			rowId = this.lstCellState.get(i).getRowId();
+			column = this.lstCellState.get(i).getColumnKey();
+			if (rowId != null && column != null & rowId.equals( String.valueOf(dataId))
+					&& column.equals(String.valueOf(columnKey))) {
+				return Optional.of(this.lstCellState.get(i));
+			}
+		}
+		return Optional.empty();
+	}
+	
+	/** Set disable cell & Create not existed cell */
+	public void createAccessModifierCellState() {
+		//Map<Integer, PAttendanceItem>  pAItemMap = this.param.getLstAtdItemUnique();
+		if(this.getAuthDto() == null) return;
+		for(MonthlyPerformanceEmployeeDto emp : this.lstEmployee){
+			this.getAuthDto().getListDisplayAndInputMonthly().forEach(header -> {
+				if (!header.isYouCanChangeIt() && header.isCanBeChangedByOthers()) {
+					if (emp.isLoginUser()) {
+						setStateCell("A"+header.getItemMonthlyId(), emp.getId(), "ntsgrid-disable");
+					}
+				} else if (!header.isCanBeChangedByOthers() && header.isYouCanChangeIt()) {
+					if (!emp.isLoginUser()) {
+						setStateCell("A"+header.getItemMonthlyId(), emp.getId(), "ntsgrid-disable");
+					}
+				} else if (!header.isCanBeChangedByOthers() && !header.isYouCanChangeIt()) {
+					setStateCell("A"+header.getItemMonthlyId(), emp.getId(), "ntsgrid-disable");
+				}
+			});
+		};
+	}
+	
+	private void setStateCell(String columnKey, String rowId, String state){
+		Optional<MPCellStateDto> mp = findExistCellState(rowId, columnKey);
+		if(mp.isPresent()){
+			mp.get().addState(state);
+		}else{
+			this.lstCellState.add(new MPCellStateDto(rowId, columnKey, Arrays.asList(state)));
+		}
 	}
 }

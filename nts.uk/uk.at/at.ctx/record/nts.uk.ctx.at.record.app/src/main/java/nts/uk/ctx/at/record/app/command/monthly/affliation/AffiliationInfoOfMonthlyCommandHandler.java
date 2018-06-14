@@ -16,7 +16,7 @@ public class AffiliationInfoOfMonthlyCommandHandler extends CommandFacade<Affili
 	@Override
 	protected void handle(CommandHandlerContext<AffiliationInfoOfMonthlyCommand> context) {
 		if(context.getCommand().getData().isHaveData()) {
-			repo.persistAndUpdate(context.getCommand().getData().toDomain());
+			repo.persistAndUpdate(context.getCommand().toDomain());
 		}
 		
 	}
