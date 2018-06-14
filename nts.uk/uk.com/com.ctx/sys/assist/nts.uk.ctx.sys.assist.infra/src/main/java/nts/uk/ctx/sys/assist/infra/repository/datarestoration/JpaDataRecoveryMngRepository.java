@@ -61,4 +61,9 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 			this.commandProxy().update(x);
 		});
 	}
+
+	@Override
+	public Optional<DataRecoveryMng> getByUploadId(String dataRecoveryProcessId) {
+		return this.queryProxy().find(dataRecoveryProcessId, SspmtDataRecoveryMng.class).map(SspmtDataRecoveryMng::toDomain);
+	}
 }

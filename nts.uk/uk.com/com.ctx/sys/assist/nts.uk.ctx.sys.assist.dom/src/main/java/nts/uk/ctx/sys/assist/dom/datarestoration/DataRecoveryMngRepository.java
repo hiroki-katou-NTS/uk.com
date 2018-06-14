@@ -20,4 +20,6 @@ public interface DataRecoveryMngRepository {
 	void updateTotalNumOfProcesses(String dataRecoveryProcessId, int totalNumOfProcesses);
 	
 	void updateProcessTargetEmpCode(String dataRecoveryProcessId, String processTargetEmpCode);
+	
+	Optional<DataRecoveryMng> getByUploadId(String dataRecoveryProcessId);
 }

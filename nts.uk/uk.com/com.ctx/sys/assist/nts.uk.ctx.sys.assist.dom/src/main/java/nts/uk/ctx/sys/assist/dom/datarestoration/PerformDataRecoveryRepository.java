@@ -37,4 +37,6 @@ public interface PerformDataRecoveryRepository {
 
 	List<TableList> getAllTableList();
 	
+	void deleteEmployeeHis(String tableName,Boolean whereCid , Boolean whereEmId, String cid, String employeeId);
+	
 }
