@@ -224,6 +224,8 @@ module nts.layout {
                 self.haft_int();
 
                 self.card_no();
+                
+               // self.annLeaGrantRemnNum();
 
                 validate.initCheckError(lstCls);
             }, 50);
@@ -1267,7 +1269,7 @@ module nts.layout {
             if (CS00017_IS00084) {
                 // 
                 CS00017_IS00084.ctrl.on('click', () => {
-                    if (!!CS00017_IS00082.data.value() || location.href.indexOf('/view/cps/002') > -1) {
+                    if ((!!CS00017_IS00082 && !!CS00017_IS00082.data.value() && moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").isValid()) || location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
                             selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
                             baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
@@ -1294,7 +1296,7 @@ module nts.layout {
 
             if (CS00017_IS00085) {
                 CS00017_IS00085.ctrl.on('click', () => {
-                    if (!!CS00017_IS00082.data.value() || location.href.indexOf('/view/cps/002') > -1) {
+                    if ((!!CS00017_IS00082 && !!CS00017_IS00082.data.value() && moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").isValid()) || location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
                             selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
                             baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
@@ -1398,6 +1400,83 @@ module nts.layout {
                 CS00024_IS00280.data.value.valueHasMutated();
             }
         }
+        
+        // 次回年休付与情報を取得する
+        /*annLeaGrantRemnNum = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                CS00037_IS00385: IFindData = finder.find('CS00037', 'IS00385'),
+                CS00037_IS00386: IFindData = finder.find('CS00037', 'IS00386'),
+                CS00037_IS00390: IFindData = finder.find('CS00037', 'IS00390'),
+                CS00037_IS00391: IFindData = finder.find('CS00037', 'IS00391'),
+                CS00037_IS00393: IFindData = finder.find('CS00037', 'IS00393'),
+                CS00037_IS00394: IFindData = finder.find('CS00037', 'IS00394'),
+                CS00037_IS00396: IFindData = finder.find('CS00037', 'IS00396'),
+                CS00037_IS00397: IFindData = finder.find('CS00037', 'IS00397'),
+                validate = () => {
+                    let v390 = ko.toJS($(CS00037_IS00390.id).val()),
+                        v391 = ko.toJS($(CS00037_IS00391.id).val()),
+                        v393 = ko.toJS($(CS00037_IS00393.id).val()),
+                        v394 = ko.toJS($(CS00037_IS00394.id).val()),
+                        v396 = ko.toJS($(CS00037_IS00396.id).val()),
+                        v397 = ko.toJS($(CS00037_IS00397.id).val());
+
+                    // change require of control
+                    if (v390 || v391 || v393 || v394 || v396 || v397) {
+                        CS00037_IS00385.data.required(true);
+                        CS00037_IS00386.data.required(true);
+                        CS00037_IS00390.data.required(true);
+                        CS00037_IS00391.data.required(true);
+                        CS00037_IS00393.data.required(true);
+                        CS00037_IS00394.data.required(true);
+                        CS00037_IS00396.data.required(true);
+                        CS00037_IS00397.data.required(true);
+                    } else {
+                        CS00037_IS00385.data.required(false);
+                        CS00037_IS00386.data.required(false);
+                        CS00037_IS00390.data.required(false);
+                        CS00037_IS00391.data.required(false);
+                        CS00037_IS00393.data.required(false);
+                        CS00037_IS00394.data.required(false);
+                        CS00037_IS00396.data.required(false);
+                        CS00037_IS00397.data.required(false);
+                    }
+
+                    // validate again;
+                    $(CS00037_IS00390.id).trigger('change');
+                    $(CS00037_IS00391.id).trigger('change');
+                    $(CS00037_IS00393.id).trigger('change');
+                    $(CS00037_IS00394.id).trigger('change');
+                    $(CS00037_IS00396.id).trigger('change');
+                    $(CS00037_IS00397.id).trigger('change');
+
+                };
+
+
+            $(CS00037_IS00390.id).on('change', () => {
+                validate();
+            }).trigger('change');
+
+            $(CS00037_IS00391.id).on('change', () => {
+                validate();
+            }).trigger('change');
+
+            $(CS00037_IS00393.id).on('change', () => {
+                validate();
+            }).trigger('change');
+
+            $(CS00037_IS00394.id).on('change', () => {
+                validate();
+            }).trigger('change');
+
+            $(CS00037_IS00396.id).on('change', () => {
+                validate();
+            }).trigger('change');
+
+            $(CS00037_IS00397.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        } */
 
         specialLeaveInformation = () => {
             let self = this,
