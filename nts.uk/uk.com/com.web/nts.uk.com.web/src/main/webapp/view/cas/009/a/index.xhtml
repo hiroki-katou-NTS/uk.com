@@ -16,7 +16,11 @@
 
 			<com:stylefile path="/view/ccg/025/component/component.css" />
 			<com:scriptfile path="/view/ccg/025/component/component.vm.js" />
-			<com:scriptfile path="/view/ccg/025/component/component.service.js" />
+			<com:scriptfile path="/view/ccg/025/component/component.service.js" />		
+
+			<com:stylefile path="/view/ccg/026/component/component.css" />
+			<com:scriptfile path="/view/ccg/026/component/component.service.js" />
+			<com:scriptfile path="/view/ccg/026/component/component.vm.js" />
 
 			<com:stylefile path="cas009.a.style.css" />
 			<com:scriptfile path="cas009.a.service.js" />
@@ -42,7 +46,7 @@
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="container cf">
 					<div id="left-content" class="fixed-flex-layout-left"
-						data-bind="with: $vm.component">
+						data-bind="with: $vm.component025">
 						<div id='text_list' tabindex="5">#{i18n.getText('CAS009_7')}</div>
 						<div id='list_role' tabindex="6">
 							<ui:include src="/view/ccg/025/component/index.xhtml" />
@@ -150,6 +154,17 @@
 											optionsText: 'name',
 											value: referFutureDate
 										}"></div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" data-bind="with: $vm.component026">
+							        <div data-bind="ntsFormLabel: {
+							                required: true
+							            },
+							            style: {
+							                'margin-bottom': '10px'
+							            }">#{i18n.getText('CAS009_22')}</div>
+									<ui:include src="/view/ccg/026/component/index.xhtml" />
 								</td>
 							</tr>
 						</table>

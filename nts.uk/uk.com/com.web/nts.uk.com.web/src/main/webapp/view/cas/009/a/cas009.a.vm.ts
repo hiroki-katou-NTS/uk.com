@@ -1,7 +1,6 @@
 module cas009.a.viewmodel {
     import EnumConstantDto = cas009.a.service.model.EnumConstantDto;
     import service = cas009.a.service;
-    import ccg = nts.uk.com.view.ccg025.a;
     import windows = nts.uk.ui.windows;
     import block = nts.uk.ui.block;
     import alertError = nts.uk.ui.dialog.alertError;
@@ -11,7 +10,9 @@ module cas009.a.viewmodel {
     import info = nts.uk.ui.dialog.info;
     import confirm = nts.uk.ui.dialog.confirm;
     import errors = nts.uk.ui.errors;
-    import ComponentModel = ccg.component.viewmodel.ComponentModel;
+
+    import ComponentModelCCG025 = nts.uk.com.view.ccg025.a.component.viewmodel.ComponentModel;
+    import ComponentModelCCG026 = nts.uk.com.view.ccg026.component.viewmodel.ComponentModel;
 
     export class ScreenModel {
         selectedRole: Role = new Role();
@@ -30,9 +31,14 @@ module cas009.a.viewmodel {
 
         enumRange: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
 
-        component: ComponentModel = new ComponentModel({
+        component025: ComponentModelCCG025 = new ComponentModelCCG025({
             roleType: 8,
             multiple: false
+        });
+
+        component026: ComponentModelCCG026 = new ComponentModelCCG026({
+            classification: 8,
+            maxRow: 6
         });
 
         enableDetail: KnockoutObservable<boolean> = ko.observable(true);
@@ -41,15 +47,16 @@ module cas009.a.viewmodel {
             let self = this,
                 role = self.selectedRole;
 
-            _.extend(self.component, {
-                currentCode: role.roleId
+            _.extend(self, {
+                roleId: self.component025.currentCode,
+                listRole: self.component025.listRole
             });
 
             // subscribe and change data
             role.roleId.subscribe(rid => {
                 let roles = ko.toJS(self.listRole),
-                    exist = _.find(roles, r => r.roleId == rid);
-
+                    exist: IRole = _.find(roles, (r: IRole) => r.roleId == rid);
+                debugger;
                 if (exist) {
                     role.createMode(false);
 
@@ -69,6 +76,8 @@ module cas009.a.viewmodel {
                     role.referFutureDate(false);
                     role.employeeReferenceRange(0);
                 }
+
+                //self.component026.roleId(rid);
             });
 
             // call reload data
@@ -128,27 +137,21 @@ module cas009.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
-            self.component.startPage().done(function() {
-                let roles = ko.toJS(self.component.listRole),
-                    roleIds: Array<string> = _.map(roles, x => x.roleId);
+            self.component025.startPage().done(() => {
+                let roles = ko.toJS(self.component025.listRole),
+                    roleIds: Array<string> = _.map(roles, (x: IRole) => x.roleId);
 
-                if (!_.size(roleIds.length)) {
+                if (_.size(roleIds)) {
                     service.getPersonInfoRole(roleIds).done(resp => {
-                        let roles = ko.toJS(self.component.listRole);
-
-                        self.listRole(_.map(roles, x => {
-                            let role = _.clone(x),
-                                pinfo: any = _.find(resp, o => o.roleId == x.roleId);
-
-                            return _.extend(role, {
-                                referFutureDate: pinfo.referFutureDate
-                            });
-                        }));
-
+                        _.each(self.component025.listRole(), (r: IRole) => {
+                            let pinfo: IRole = _.find(resp, (o: IRole) => o.roleId == r.roleId);
+                            if (pinfo) {
+                                r.referFutureDate = pinfo.referFutureDate;
+                            }
+                        });
                         dfd.resolve();
                     });
                 } else {
-                    self.listRole([]);
                     self.createNew();
                     dfd.resolve();
                 }
@@ -248,18 +251,18 @@ module cas009.a.viewmodel {
         }
     }
 
-    interface IRole {
+    export interface IRole {
         name: string;
         roleId: string;
         roleCode: string;
         assignAtr: number;
-        referFutureDate: boolean;
+        referFutureDate?: boolean;
         employeeReferenceRange: number;
 
         createMode: boolean;
     }
 
-    class Role {
+    export class Role {
         roleId: KnockoutObservable<string> = ko.observable('');
         roleCode: KnockoutObservable<string> = ko.observable('');
         roleName: KnockoutObservable<string> = ko.observable('');
@@ -274,7 +277,7 @@ module cas009.a.viewmodel {
 
         constructor() {
             let self = this;
-            
+
             // subscribe for focus and clear errors
             self.roleId.subscribe(m => {
                 _.defer(() => {
@@ -290,4 +293,42 @@ module cas009.a.viewmodel {
             });
         }
     }
+}
+
+enum ROLE_TYPE {
+    /** The system manager. */
+    // システム管理者
+    SYSTEM_MANAGER = 0,
+
+    /** The company manager. */
+    // 会社管理者
+    COMPANY_MANAGER = 1,
+
+    /** The group comapny manager. */
+    // グループ会社管理者
+    GROUP_COMAPNY_MANAGER = 2,
+
+    /** The employment. */
+    // 就業
+    EMPLOYMENT = 3,
+
+    /** The salary. */
+    // 給与
+    SALARY = 4,
+
+    /** The human resource. */
+    // 人事
+    HUMAN_RESOURCE = 5,
+
+    /** The office helper. */
+    // オフィスヘルパー
+    OFFICE_HELPER = 6,
+
+    /** The my number. */
+    // マイナンバー
+    MY_NUMBER = 7,
+
+    /** The personal info. */
+    // 個人情報
+    PERSONAL_INFO = 8
 }
