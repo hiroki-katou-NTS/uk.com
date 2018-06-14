@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
-import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
 @Stateless
 public class SurfaceItemFinder {
@@ -19,11 +18,7 @@ public class SurfaceItemFinder {
 				.collect(Collectors.toList());
 	}
 
-	public List<SurfaceItemDto> getSurfaceItemById(String dataRecoveryProcessId) {
-		List<TableList> optTableList = finder.getByRecoveryProcessingId(dataRecoveryProcessId);
-		if (!optTableList.isEmpty()) {
-			return optTableList.stream().map(c -> SurfaceItemDto.fromDomain(c)).collect(Collectors.toList());
-		}
-		return null;
+	public SurfaceItemDto getSurfaceItemById(String dataRecoveryProcessId) {
+		return SurfaceItemDto.fromDomain(finder.getByRecoveryProcessingId(dataRecoveryProcessId).get(0));
 	}
 }

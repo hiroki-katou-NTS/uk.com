@@ -32,7 +32,7 @@ public class SurfaceItemDto {
 	/**
 	 * 別会社区分
 	 */
-	private int anotherComCls;
+	private RecoverFormCompanyOther anotherComCls;
 	/**
 	 * カテゴリ名
 	 */
@@ -40,7 +40,7 @@ public class SurfaceItemDto {
 	/**
 	 * 保存期間区分
 	 */
-	private int retentionPeriodCls;
+	private TimeStore retentionPeriodCls;
 	/**
 	 * 保存日付From
 	 */
@@ -50,18 +50,14 @@ public class SurfaceItemDto {
 	 */
 	private GeneralDate saveDateTo;
 	/**
-	 * 復旧対象可不可
-	 */
-	private String canNotBeOld;
-	/**
 	 * 保存時保存範囲
 	 */
 	private String storageRangeSaved;
 
 	public static SurfaceItemDto fromDomain(TableList domain) {
 		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode(), domain.getSaveSetName(),
-				domain.getSupplementaryExplanation(), domain.getAnotherComCls().value, domain.getCategoryName(),
-				domain.getRetentionPeriodCls().value, domain.getSaveDateFrom(), domain.getSaveDateTo(),
-				domain.getCanNotBeOld(), domain.getStorageRangeSaved());
+				domain.getSupplementaryExplanation(), domain.getAnotherComCls(), domain.getCategoryName(),
+				domain.getRetentionPeriodCls(), domain.getSaveDateFrom(), domain.getSaveDateTo(),
+				domain.getStorageRangeSaved());
 	}
 }

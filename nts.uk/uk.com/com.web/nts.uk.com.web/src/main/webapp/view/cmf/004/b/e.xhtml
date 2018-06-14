@@ -61,10 +61,10 @@
 						<tr>
 							<td class="halign-right row-number"><label data-bind="text: rowNumber" /></td>
 							<td class="halign-center">
-								<div id="E5_2" data-bind="ntsCheckBox: { checked: isRecover, enable: iscanNotBeOld}"></div>
+								<div data-bind="ntsCheckBox: { checked: isRecover }"></div>
 							</td>
 							<td><label data-bind="text: categoryName" /></td>
-							<td><label data-bind="text: $vm.getTextRecovery(recoveryPeriod)" /></td>
+							<td><label data-bind="text: recoveryPeriod" /></td>
 							<td class="halign-center"><label data-bind="text: startOfPeriod" /></td>
 							<td class="halign-center"><label data-bind="text: endOfPeriod" /></td>
 							<td><label data-bind="text: recoveryMethod" /></td>
