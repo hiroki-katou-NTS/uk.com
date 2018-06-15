@@ -44,7 +44,8 @@ public class UpdatePersonInfoRoleAuthCommandHandler extends CommandHandler<Updat
 			if (ctgLstUpdate.size() > 0) {
 				ctgLstUpdate.stream().forEach(ctg -> {
 					PersonInfoCategoryAuth addCtg = new PersonInfoCategoryAuth(c, ctg.getPersonInfoCategoryAuthId(),
-							ctg.getAllowPersonRef(), ctg.getAllowOtherRef(), ctg.getSelfPastHisAuth(),
+							ctg.getAllowPersonRef(), ctg.getAllowOtherRef(), ctg.getAllowOtherCompanyRef(), 
+							ctg.getSelfPastHisAuth(),
 							ctg.getSelfFutureHisAuth(), ctg.getSelfAllowAddHis(), ctg.getSelfAllowDelHis(),
 							ctg.getOtherPastHisAuth(), ctg.getOtherFutureHisAuth(), ctg.getOtherAllowAddHis(),
 							ctg.getOtherAllowDelMulti(), ctg.getSelfAllowAddMulti(), ctg.getSelfAllowDelMulti(),

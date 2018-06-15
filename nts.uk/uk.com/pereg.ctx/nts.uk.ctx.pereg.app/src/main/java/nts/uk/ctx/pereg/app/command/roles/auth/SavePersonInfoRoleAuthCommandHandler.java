@@ -47,7 +47,7 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 		if (ctgAuthOpt.isPresent()) {
 			PersonInfoCategoryAuth oldCtgAuth = ctgAuthOpt.get();
 			oldCtgAuth.updateFromJavaType(ctgCmd.getCategoryType(), ctgCmd.getAllowPersonRef(),
-					ctgCmd.getAllowOtherRef(), ctgCmd.getSelfPastHisAuth(), ctgCmd.getSelfFutureHisAuth(),
+					ctgCmd.getAllowOtherRef(),ctgCmd.getAllowOtherCompanyRef(), ctgCmd.getSelfPastHisAuth(), ctgCmd.getSelfFutureHisAuth(),
 					ctgCmd.getSelfAllowAddHis(), ctgCmd.getSelfAllowDelHis(), ctgCmd.getOtherPastHisAuth(),
 					ctgCmd.getOtherFutureHisAuth(), ctgCmd.getOtherAllowAddHis(), ctgCmd.getOtherAllowDelHis(),
 					ctgCmd.getSelfAllowAddMulti(), ctgCmd.getSelfAllowDelMulti(), ctgCmd.getOtherAllowAddMulti(),
@@ -58,6 +58,7 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 		} else {
 			PersonInfoCategoryAuth ctg = PersonInfoCategoryAuth.createFromJavaType(ctgCmd.getCategoryType(), roleId,
 					ctgCmd.getCategoryId(), ctgCmd.getAllowPersonRef(), ctgCmd.getAllowOtherRef(),
+					ctgCmd.getAllowOtherCompanyRef(),
 					ctgCmd.getSelfPastHisAuth(), ctgCmd.getSelfFutureHisAuth(), ctgCmd.getSelfAllowAddHis(),
 					ctgCmd.getSelfAllowDelHis(), ctgCmd.getOtherPastHisAuth(), ctgCmd.getOtherFutureHisAuth(),
 					ctgCmd.getOtherAllowAddHis(), ctgCmd.getOtherAllowDelHis(), ctgCmd.getSelfAllowAddMulti(),

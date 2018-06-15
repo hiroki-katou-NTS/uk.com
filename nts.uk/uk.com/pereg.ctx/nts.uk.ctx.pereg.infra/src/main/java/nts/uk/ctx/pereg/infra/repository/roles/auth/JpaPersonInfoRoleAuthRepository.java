@@ -36,6 +36,7 @@ public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements Pe
 	private PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		return PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
 				entity.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, entity.allowPersonRef, entity.allowOtherRef,
+				entity.allowOtherCompanyRef,
 				entity.selfPastHisAuth, entity.selfFutureHisAuth, entity.selfAllowAddHis, entity.selfAllowDelHis,
 				entity.otherPastHisAuth, entity.otherFutureHisAuth, entity.otherAllowAddHis, entity.otherAllowDelHis,
 				entity.selfAllowAddMulti, entity.selfAllowDelMulti, entity.otherAllowAddMulti,

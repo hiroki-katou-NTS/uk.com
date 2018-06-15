@@ -28,6 +28,8 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 
 	private PersonInfoPermissionType allowOtherRef;
 
+	private PersonInfoPermissionType allowOtherCompanyRef;
+
 	private PersonInfoAuthType selfPastHisAuth;
 
 	private PersonInfoAuthType selfFutureHisAuth;
@@ -75,7 +77,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 	 */
 	public PersonInfoCategoryAuth(String roleId, String personInfoCategoryAuthId,
 			PersonInfoPermissionType allowPersonRef, PersonInfoPermissionType allowOtherRef,
-			PersonInfoAuthType selfPastHisAuth,
+			PersonInfoPermissionType allowOtherCompanytRef, PersonInfoAuthType selfPastHisAuth,
 			PersonInfoAuthType selfFutureHisAuth, PersonInfoPermissionType selfAllowAddHis,
 			PersonInfoPermissionType selfAllowDelHis, PersonInfoAuthType otherPastHisAuth,
 			PersonInfoAuthType otherFutureHisAuth, PersonInfoPermissionType otherAllowAddHis,
@@ -87,6 +89,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		this.personInfoCategoryAuthId = personInfoCategoryAuthId;
 		this.allowPersonRef = allowPersonRef;
 		this.allowOtherRef = allowOtherRef;
+		this.allowOtherCompanyRef = allowOtherCompanytRef;
 		this.selfPastHisAuth = selfPastHisAuth;
 		this.selfFutureHisAuth = selfFutureHisAuth;
 		this.selfAllowAddHis = selfAllowAddHis;
@@ -104,7 +107,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 	// multi type - 複数情報権限
 	public PersonInfoCategoryAuth(String roleId, String categoryId,
 			PersonInfoPermissionType allowPersonRef, PersonInfoPermissionType allowOtherRef,
-			PersonInfoPermissionType selfAllowAddMulti,
+			PersonInfoPermissionType allowOtherCompanytRef, PersonInfoPermissionType selfAllowAddMulti,
 			PersonInfoPermissionType selfAllowDelMulti, PersonInfoPermissionType otherAllowAddMulti,
 			PersonInfoPermissionType otherAllowDelMulti) {
 		super();
@@ -112,6 +115,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		this.personInfoCategoryAuthId = categoryId;
 		this.allowPersonRef = allowPersonRef;
 		this.allowOtherRef = allowOtherRef;
+		this.allowOtherCompanyRef = allowOtherCompanytRef;
 		this.selfAllowAddMulti = selfAllowAddMulti;
 		this.selfAllowDelMulti = selfAllowDelMulti;
 		this.otherAllowAddMulti = otherAllowAddMulti;
@@ -120,17 +124,18 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 
 	// single info type - 単一情報
 	public PersonInfoCategoryAuth(String roleId, String personInfoCategoryAuthId,
-			PersonInfoPermissionType allowPersonRef, PersonInfoPermissionType allowOtherRef) {
+			PersonInfoPermissionType allowPersonRef, PersonInfoPermissionType allowOtherRef, PersonInfoPermissionType allowOtherCompanytRef) {
 
 		this.roleId = roleId;
 		this.personInfoCategoryAuthId = personInfoCategoryAuthId;
 		this.allowPersonRef = allowPersonRef;
 		this.allowOtherRef = allowOtherRef;
+		this.allowOtherCompanyRef = allowOtherCompanytRef;
 	}
 
 	// history type -履歴情報
 	public PersonInfoCategoryAuth(String roleId, String personInfoCategoryAuthId,
-			PersonInfoPermissionType allowPersonRef, PersonInfoPermissionType allowOtherRef, PersonInfoAuthType selfPastHisAuth,
+			PersonInfoPermissionType allowPersonRef, PersonInfoPermissionType allowOtherRef, PersonInfoPermissionType allowOtherCompanytRef, PersonInfoAuthType selfPastHisAuth,
 			PersonInfoAuthType selfFutureHisAuth, PersonInfoPermissionType selfAllowAddHis,
 			PersonInfoPermissionType selfAllowDelHis, PersonInfoAuthType otherPastHisAuth,
 			PersonInfoAuthType otherFutureHisAuth, PersonInfoPermissionType otherAllowAddHis,
@@ -139,6 +144,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		this.personInfoCategoryAuthId = personInfoCategoryAuthId;
 		this.allowPersonRef = allowPersonRef;
 		this.allowOtherRef = allowOtherRef;
+		this.allowOtherCompanyRef = allowOtherCompanytRef;
 		this.selfPastHisAuth = selfPastHisAuth;
 		this.selfFutureHisAuth = selfFutureHisAuth;
 		this.selfAllowAddHis = selfAllowAddHis;
@@ -150,7 +156,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 	}
 	
 	public static PersonInfoCategoryAuth createFromJavaType(String roleId, String personInfoCategoryAuthId,
-			int allowPersonRef, int allowOtherRef, Integer selfPastHisAuth,
+			int allowPersonRef, int allowOtherRef, int allowOtherCompanytRef, Integer selfPastHisAuth,
 			Integer selfFutureHisAuth, Integer selfAllowAddHis, Integer selfAllowDelHis, Integer otherPastHisAuth,
 			Integer otherFutureHisAuth, Integer otherAllowAddHis, Integer otherAllowDelHis, Integer selfAllowAddMulti,
 			Integer selfAllowDelMulti, Integer otherAllowAddMulti, Integer otherAllowDelMulti) {
@@ -160,6 +166,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		ctg.setPersonInfoCategoryAuthId(personInfoCategoryAuthId);
 		ctg.setAllowPersonRef(EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class));
 		ctg.setAllowOtherRef(EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class));
+		ctg.setAllowOtherCompanyRef(EnumAdaptor.valueOf(allowOtherCompanytRef, PersonInfoPermissionType.class));
 		
 		//lich su
 		if(selfPastHisAuth != null) {
@@ -212,7 +219,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 	}
 
 	public static PersonInfoCategoryAuth createFromJavaType(int categoryType, String roleId, String categoryId,
-			int allowPersonRef, int allowOtherRef, int selfPastHisAuth,
+			int allowPersonRef, int allowOtherRef, int allowOtherCompanytRef, int selfPastHisAuth,
 			int selfFutureHisAuth, int selfAllowAddHis, int selfAllowDelHis, int otherPastHisAuth,
 			int otherFutureHisAuth, int otherAllowAddHis, int otherAllowDelHis, int selfAllowAddMulti,
 			int selfAllowDelMulti, int otherAllowAddMulti, int otherAllowDelMulti) {
@@ -221,17 +228,17 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		switch (type) {
 		case SINGLEINFO:
 			return PersonInfoCategoryAuth.createSingleFromJavaType(roleId, categoryId,
-					allowPersonRef, allowOtherRef);
+					allowPersonRef, allowOtherRef, allowOtherCompanytRef);
 		case MULTIINFO:
 			return  PersonInfoCategoryAuth.createMultiFromJavaType(roleId, categoryId,
-					allowPersonRef, allowOtherRef,
+					allowPersonRef, allowOtherRef, allowOtherCompanytRef,
 					selfAllowAddMulti, selfAllowDelMulti, otherAllowAddMulti,
 					otherAllowDelMulti);
 		case CONTINUOUSHISTORY:
 		case NODUPLICATEHISTORY:
 		case DUPLICATEHISTORY:
 			return PersonInfoCategoryAuth.createHisFromJavaType(roleId, categoryId,
-					allowPersonRef, allowOtherRef, 
+					allowPersonRef, allowOtherRef, allowOtherCompanytRef,
 					selfPastHisAuth, selfFutureHisAuth,
 					selfAllowAddHis, selfAllowDelHis, otherPastHisAuth,
 					otherFutureHisAuth, otherAllowAddHis, otherAllowDelHis);
@@ -249,6 +256,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		return new PersonInfoCategoryAuth(roleId, personInfoCategoryAuthId,
 				EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(1, PersonInfoAuthType.class), EnumAdaptor.valueOf(1, PersonInfoAuthType.class),
 				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
@@ -261,12 +269,13 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class));
 	}
 
-	public void updateFromJavaType(int ctgType, int allowPersonRef, int allowOtherRef, int selfPastHisAuth,
+	public void updateFromJavaType(int ctgType, int allowPersonRef, int allowOtherRef, int allowOtherCompanyRef, int selfPastHisAuth,
 			int selfFutureHisAuth, int selfAllowAddHis, int selfAllowDelHis, int otherPastHisAuth,
 			int otherFutureHisAuth, int otherAllowAddHis, int otherAllowDelHis, int selfAllowAddMulti,
 			int selfAllowDelMulti, int otherAllowAddMulti, int otherAllowDelMulti) {
 		this.allowPersonRef = EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class);
 		this.allowOtherRef = EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class);
+    	this.allowOtherCompanyRef = EnumAdaptor.valueOf(allowOtherCompanyRef, PersonInfoPermissionType.class);
 		
          switch(EnumAdaptor.valueOf(ctgType, CategoryType.class)) {
          case MULTIINFO:
@@ -297,11 +306,12 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 
 	// multi type - 複数情報権限
 	public static PersonInfoCategoryAuth createMultiFromJavaType(String roleId, String personInfoCategoryAuthId,
-			int allowPersonRef, int allowOtherRef,  int selfAllowAddMulti,
+			int allowPersonRef, int allowOtherRef, int allowOtherCompanytRef, int selfAllowAddMulti,
 			int selfAllowDelMulti, int otherAllowAddMulti, int otherAllowDelMulti) {
 		return new PersonInfoCategoryAuth(roleId, personInfoCategoryAuthId,
 				EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(allowOtherCompanytRef, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(selfAllowAddMulti, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(selfAllowDelMulti, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(otherAllowAddMulti, PersonInfoPermissionType.class),
@@ -310,20 +320,22 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 
 	// single info type - 単一情報
 	public static PersonInfoCategoryAuth createSingleFromJavaType(String roleId, String ctgAuthId, int allowPersonRef,
-			int allowOtherRef) {
+			int allowOtherRef, int allowOtherCompanytRef) {
 		return new PersonInfoCategoryAuth(roleId, ctgAuthId,
 				EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class),
-				EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class));
+				EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(allowOtherCompanytRef, PersonInfoPermissionType.class));
 	}
 
 	// history type -履歴情報
 	public static PersonInfoCategoryAuth createHisFromJavaType(String roleId, String ctgAuthId, int allowPersonRef,
-			int allowOtherRef, int selfPastHisAuth, int selfFutureHisAuth,
+			int allowOtherRef, int allowOtherCompanytRef, int selfPastHisAuth, int selfFutureHisAuth,
 			int selfAllowAddHis, int selfAllowDelHis, int otherPastHisAuth, int otherFutureHisAuth,
 			int otherAllowAddHis, int otherAllowDelHis) {
 		return new PersonInfoCategoryAuth(roleId, ctgAuthId,
 				EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(allowOtherCompanytRef, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(selfPastHisAuth, PersonInfoAuthType.class),
 				EnumAdaptor.valueOf(selfFutureHisAuth, PersonInfoAuthType.class),
 				EnumAdaptor.valueOf(selfAllowAddHis, PersonInfoPermissionType.class),

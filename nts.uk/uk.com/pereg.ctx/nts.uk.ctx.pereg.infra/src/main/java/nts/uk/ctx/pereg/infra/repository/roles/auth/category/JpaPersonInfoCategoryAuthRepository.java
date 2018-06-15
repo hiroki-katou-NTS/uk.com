@@ -74,12 +74,13 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
 				entity.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, entity.allowPersonRef, entity.allowOtherRef,
-				entity.selfPastHisAuth, entity.selfFutureHisAuth, entity.selfAllowAddHis,
+				entity.allowOtherCompanyRef, entity.selfPastHisAuth, entity.selfFutureHisAuth, entity.selfAllowAddHis,
 				entity.selfAllowDelHis, entity.otherPastHisAuth, entity.otherFutureHisAuth, entity.otherAllowAddHis,
 				entity.otherAllowDelHis, entity.selfAllowAddMulti, entity.selfAllowDelMulti, entity.otherAllowAddMulti,
 				entity.otherAllowDelMulti);
 		return domain;
 	}
+
 
 	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
 		val domain = new PersonInfoCategoryDetail();
