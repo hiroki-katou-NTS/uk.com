@@ -74,7 +74,7 @@ module nts.uk.pr.view.ccg007.f {
                 localStorage.setItem('url', url);
                 
                 //jump CCG007H
-                nts.uk.request.jump("/view/ccg/007/h/index.xhtml");
+                nts.uk.ui.windows.getSelf().parent.globalContext.nts.uk.request.jump("/view/ccg/007/h/index.xhtml");
             }
             
             /**

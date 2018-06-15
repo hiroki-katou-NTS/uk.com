@@ -3,7 +3,7 @@ module nts.uk.pr.view.ccg007.h {
         var screenModel = new h.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-//            $('#employee-code-inp').focus();
+            $('#password-input').focus();
         });
     });
 }
