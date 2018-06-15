@@ -11,7 +11,6 @@ module cps002.a.service {
             getStamCardEditing: 'record/stamp/stampcardedit/find',
             getLayout: 'person/newlayout/check-new-layout',
             getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
-            getSelfRoleAuth: 'roles/auth/get-self-auth',
             getUserSetting: 'usersetting/getUserSetting',
             getLastRegHistory: 'empreghistory/getLastRegHistory',
             getGenerateEmplCodeAndComId: 'addemployee/getGenerateEmplCodeAndComId',
@@ -201,21 +200,6 @@ module cps002.a.service {
         let self = this;
         _.defer(() => block.invisible());
         nts.uk.request.ajax(regpath + paths.getAllInitValueItemSetting, command)
-            .done(function(res) {
-                dfd.resolve(res);
-            }).fail(function(res) {
-                dfd.reject(res);
-            }).always(() => {
-                _.defer(() => block.clear());
-            });
-        return dfd.promise();
-    }
-
-    export function getSelfRoleAuth() {
-        let dfd = $.Deferred<any>();
-        let self = this;
-        _.defer(() => block.invisible());
-        nts.uk.request.ajax(regpath + paths.getSelfRoleAuth)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {

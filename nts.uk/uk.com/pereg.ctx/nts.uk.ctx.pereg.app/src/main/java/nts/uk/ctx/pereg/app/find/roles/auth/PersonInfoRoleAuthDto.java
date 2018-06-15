@@ -1,6 +1,8 @@
-package nts.uk.ctx.pereg.app.find.roles.auth;
+// dan_pv removed 2018/06/15
 
-import lombok.Value;
-@Value
-public class PersonInfoRoleAuthDto {
-}
+//package nts.uk.ctx.pereg.app.find.roles.auth;
+//
+//import lombok.Value;
+//@Value
+//public class PersonInfoRoleAuthDto {
+//}
