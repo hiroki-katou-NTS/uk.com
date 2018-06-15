@@ -182,7 +182,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         let conError = new model.AgreeConditionErrorDto(temp);
                         listName.push(conError);
                     });
-                    self.tabAgreementError.listAgreementError(_.orderBy(listName, ['period'], ['asc']));
+                    self.tabAgreementError.listAgreementError(_.orderBy(listName, ['errorAlarm', 'period'], ['asc', 'asc']));
                     i = 0;
                 });
             }
@@ -418,7 +418,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             });
 
 //                            self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
-                            self.tabAgreementError.listAgreementError(_.orderBy(listAgreementErrorKnockout, ['period'], ['asc']));
+                            self.tabAgreementError.listAgreementError(_.orderBy(listAgreementErrorKnockout, ['errorAlarm', 'period'], ['asc', 'asc']));
                             self.tabAgreementHour.listAgreementHour(_.sortBy(listAgreementHourKnockout, ['no']));
                         }
 
