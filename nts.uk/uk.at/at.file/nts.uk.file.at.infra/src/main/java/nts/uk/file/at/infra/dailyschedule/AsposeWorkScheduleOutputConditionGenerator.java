@@ -1209,6 +1209,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		WorkplaceReportData workplaceReportData = null;
 		
 		for (Map.Entry<String, WorkplaceReportData> entry : rootWorkplace.lstChildWorkplaceReportData.entrySet()) {
+			if (workplaceReportData != null) {
+				break;
+			}
 			String key = entry.getKey();
 			WorkplaceReportData childWorkplace = entry.getValue();
 			if (StringUtils.equalsIgnoreCase(key, hierarchyCode)) {
@@ -1275,6 +1278,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		DailyWorkplaceData workplaceReportData = null;
 		
 		for (Map.Entry<String, DailyWorkplaceData> entry : rootWorkplace.lstChildWorkplaceData.entrySet()) {
+			if (workplaceReportData != null) {
+				break;
+			}
 			String key = entry.getKey();
 			DailyWorkplaceData childWorkplace = entry.getValue();
 			if (StringUtils.equalsIgnoreCase(key, hierarchyCode)) {
