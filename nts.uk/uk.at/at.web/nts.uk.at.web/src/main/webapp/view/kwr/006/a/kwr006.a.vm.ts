@@ -239,7 +239,8 @@ module nts.uk.at.view.kwr006.a {
 
             public startPage(): JQueryPromise<void>  {
                 var dfd = $.Deferred<void>();
-                dfd.resolve();
+                let self = this;
+                self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
                 return dfd.promise();
             }
             
@@ -260,6 +261,8 @@ module nts.uk.at.view.kwr006.a {
                 if (!self.hasSelectedEmployees()) {
                     return;
                 }
+
+                self.saveWorkScheduleOutputCondition();
                 
                 const lul = {
                     fileType: 0
@@ -272,14 +275,44 @@ module nts.uk.at.view.kwr006.a {
                 if (!self.hasSelectedEmployees()) {
                     return;
                 }
+
+                self.saveWorkScheduleOutputCondition();
+
                 const lul = {
                     fileType: 1
+                    
                 }
                 service.exportSchedule(lul);
             }
 
             public openScreenC(): void {
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml');
+            }
+
+            /**
+             * Load domain characteristic: WorkScheduleOutputCondition
+             */
+            private loadWorkScheduleOutputCondition(): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
+                service.restoreCharacteristic().done(data => {
+                    if (_.isNil(data)) {
+                        // TODO: create new
+                    } else {
+                        // update
+                    }
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * Save domain characteristic: WorkScheduleOutputCondition
+             */
+            private saveWorkScheduleOutputCondition(): JQueryPromise<void> {
+                // TODO: tao view model cho WorkScheduleOutputCondition
+                let dfd = $.Deferred<void>();
+                dfd.resolve();
+                return dfd.promise();
             }
 
             private hasSelectedEmployees(): boolean {
