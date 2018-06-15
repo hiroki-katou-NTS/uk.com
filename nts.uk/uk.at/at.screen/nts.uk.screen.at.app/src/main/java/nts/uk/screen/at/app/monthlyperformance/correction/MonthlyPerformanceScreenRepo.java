@@ -3,7 +3,9 @@ package nts.uk.screen.at.app.monthlyperformance.correction;
 import java.util.List;
 import java.util.Map;
 
+import nts.arc.time.YearMonth;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 
@@ -17,4 +19,6 @@ public interface MonthlyPerformanceScreenRepo {
 	List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange);
 	
 	List<MonthlyAttendanceItemDto> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds);
+	
+	List<EditStateOfMonthlyPerformanceDto> findEditStateOfMonthlyPer(YearMonth processingDate, List<String> employeeIds, List<Integer> attendanceItemIds);
 }
