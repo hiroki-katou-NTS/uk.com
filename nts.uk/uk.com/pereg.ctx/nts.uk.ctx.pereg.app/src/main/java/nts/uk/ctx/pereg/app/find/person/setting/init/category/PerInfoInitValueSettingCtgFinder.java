@@ -29,8 +29,11 @@ public class PerInfoInitValueSettingCtgFinder {
 
 	public List<PerInfoInitValueSettingCtg> getAllCategory(String settingId) {
 		String companyId = AppContexts.user().companyId();
+		int salary = AppContexts.user().roles().forPayroll() != null ? 1 : 0;
+		int personnel = AppContexts.user().roles().forPersonnel() != null ? 1 : 0;
+		int employee = AppContexts.user().roles().forAttendance() != null ? 1 : 0;
 
-		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId, settingId);
+		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId, settingId, salary, personnel, employee);
 		List<String> ctgId = ctgLst.stream().map(c ->  c.getPerInfoCtgId())
 				.collect(Collectors.toList());
 		List<String> ctgFilter = this.settingItemRepo.isExistItem(ctgId);
@@ -45,8 +48,6 @@ public class PerInfoInitValueSettingCtgFinder {
 			
 		});
 		
-
-
 		if (ctgList.size() > 0) {
 
 			return ctgList.stream().map(c -> {
