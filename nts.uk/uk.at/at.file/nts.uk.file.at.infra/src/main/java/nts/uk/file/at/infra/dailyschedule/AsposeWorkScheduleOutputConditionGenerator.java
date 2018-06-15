@@ -1829,7 +1829,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace()) {
 					// Condition: not root workplace (lvl = 0), level within picked hierarchy zone, enable cumulative workplace.
 					tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
-				} else if (totalOutput.isGrossTotal())
+				} else if (totalOutput.isGrossTotal() && level == 0)
 					// Condition: enable gross total, also implicitly root workplace
 					tagStr = WorkScheOutputConstants.GROSS_TOTAL;
 				else
@@ -1889,8 +1889,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	cell.setStyle(style);
 			            }
 			        }
+			        currentRow += dataRowCount;
 				}
-				currentRow += dataRowCount;
 			}
 		}
 		
@@ -1914,12 +1914,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Cells cells = sheet.getCells();
 		List<WorkplaceDailyReportData> lstDailyReportData = dailyReport.getLstDailyReportData();
 		
-		for (WorkplaceDailyReportData dailyReportData: lstDailyReportData) {
+		Iterator<WorkplaceDailyReportData> iteratorWorkplaceData  = lstDailyReportData.iterator();
+		
+		while(iteratorWorkplaceData.hasNext()) {
+			WorkplaceDailyReportData dailyReportData = iteratorWorkplaceData.next();
 			Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 			dateRange.copy(dateRangeTemp);
 			rowPageTracker.useOneRowAndCheckResetRemainingRow();
-			dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+			dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 			
 			// B3_1
 			Cell dateTagCell = cells.get(currentRow, 0);
@@ -1936,9 +1939,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			DailyWorkplaceData rootWorkplace = dailyReportData.getLstWorkplaceData();
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker);
 		
-			// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
-			rowPageTracker.resetRemainingRow();
-			sheet.getHorizontalPageBreaks().add(currentRow);
+			if (iteratorWorkplaceData.hasNext()) {
+				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
+				rowPageTracker.resetRemainingRow();
+				sheet.getHorizontalPageBreaks().add(currentRow);
+			}
 		}
 		
 		// Gross total after all the rest of the data
@@ -2109,6 +2114,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Range workplaceTotal = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]);
 			workplaceTotal.copy(workplaceTotalTemp);
 			workplaceTotal.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+			workplaceTotal.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
 				rowPageTracker.useRemainingRow(dataRowCount);
 				rowPageTracker.resetRemainingRow();
@@ -2154,7 +2160,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		// Workplace hierarchy total
 		int level = rootWorkplace.getLevel();
-		if (level != 0 && level >= condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal().getHighestLevelEnabled()) {
+		if (level != 0 && level >= condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal().getHighestLevelEnabled() && condition.getSettingDetailTotalOutput().isCumulativeWorkplace()) {
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
 				sheet.getHorizontalPageBreaks().add(currentRow);
 				rowPageTracker.resetRemainingRow();
