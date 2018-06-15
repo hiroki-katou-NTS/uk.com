@@ -119,9 +119,9 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	/**
 	 * 保存ファイル名
 	 */
-	@Basic(optional = false)
-	@Column(name = "SAVE_FILE_NAME")
-	public String saveFileName;
+//	@Basic(optional = false)
+//	@Column(name = "SAVE_FILE_NAME")
+//	public String saveFileName;
 
 	/**
 	 * 保存形態
@@ -830,7 +830,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	public TableList toDomain() {
 		return new TableList(tableListPk.categoryId, categoryName, dataStorageProcessingId, dataRecoveryProcessId,
 				tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid, fieldAcqDateTime,
-				fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName, saveFileName,
+				fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName,
 				saveForm, saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls, internalFileName,
 				anotherComCls, referenceYear, referenceMonth, compressedFileName, fieldChild1, fieldChild2, fieldChild3,
 				fieldChild4, fieldChild5, fieldChild6, fieldChild7, fieldChild8, fieldChild9, fieldChild10, historyCls,
@@ -855,7 +855,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				domain.getTableJapaneseName(), domain.getTableEnglishName(), domain.getFieldAcqCid(),
 				domain.getFieldAcqDateTime(), domain.getFieldAcqEmployeeId(), domain.getFieldAcqEndDate(),
 				domain.getFieldAcqStartDate(), domain.getSaveSetCode(), domain.getSaveSetName(),
-				domain.getSaveFileName(), domain.getSaveForm(), domain.getSaveDateFrom(), domain.getSaveDateTo(),
+			    domain.getSaveForm(), domain.getSaveDateFrom(), domain.getSaveDateTo(),
 				domain.getStorageRangeSaved().value, domain.getRetentionPeriodCls().value, domain.getInternalFileName(),
 				domain.getAnotherComCls().value, domain.getReferenceYear(), domain.getReferenceMonth(),
 				domain.getCompressedFileName(), domain.getFieldChild1(), domain.getFieldChild2(),
