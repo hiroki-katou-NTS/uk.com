@@ -28,13 +28,10 @@ public class TableListRestorationService {
 	@Inject
 	private ServerPrepareMngRepository serverPrepareMngRepository;
 
-	private FileUtil fileUtil;
-
-
 	// アルゴリズム「テーブル一覧の復元」を実行する
 	public List<Object> restoreTableList(ServerPrepareMng serverPrepareMng) {
 		List<TableList> tableList = new ArrayList<>();
-		List<List<String>> tableListContent = fileUtil.getAllRecord(serverPrepareMng.getFileId().get(),
+		List<List<String>> tableListContent = FileUtil.getAllRecord(serverPrepareMng.getFileId().get(),
 				TABLELIST_CSV, 3);
 		if (tableListContent.size() < 2) {
 			try {
@@ -93,11 +90,12 @@ public class TableListRestorationService {
 							tableListSetting.get(111), Integer.parseInt(tableListSetting.get(112)), Integer.parseInt(tableListSetting.get(113)));
 				}
 			} catch (NumberFormatException e) {
-				throw e;
+				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.TABLE_LIST_FAULT);
+				serverPrepareMngRepository.update(serverPrepareMng);
 			}
 		} else {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.TABLE_LIST_FAULT);
-			serverPrepareMngRepository.add(serverPrepareMng);
+			serverPrepareMngRepository.update(serverPrepareMng);
 		}
 		return Arrays.asList(serverPrepareMng, tableList);
 	}

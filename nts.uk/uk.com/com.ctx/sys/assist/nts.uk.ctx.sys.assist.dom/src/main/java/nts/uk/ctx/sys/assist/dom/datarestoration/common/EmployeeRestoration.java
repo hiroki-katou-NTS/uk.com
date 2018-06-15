@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +23,9 @@ public class EmployeeRestoration {
 		} else {
 			List<List<String>> targetEmployee = FileUtil.getAllRecord(inputStream, 3);
 			if (targetEmployee.size() > 0) {
-				
+				for(List<String> employeeInfo : targetEmployee){
+					
+				}
 			}
 		}
 		return Arrays.asList(serverPrepareMng, performDataRecovery, tableList);

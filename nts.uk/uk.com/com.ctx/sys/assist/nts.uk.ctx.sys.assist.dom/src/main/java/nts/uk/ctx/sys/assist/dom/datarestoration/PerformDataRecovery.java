@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -52,21 +53,25 @@ public class PerformDataRecovery extends AggregateRoot {
 	/**
 	 * 復旧対象者数
 	 */
+	@Setter
 	private int numPeopleBeRestore;
 
 	/**
 	 * 保存対象者数
 	 */
+	@Setter
 	private int numPeopleSave;
 
 	/**
 	 * 復旧方法
 	 */
+	@Setter
 	private RecoveryMethod recoveryMethod;
 
 	/**
 	 * 別会社復旧
 	 */
+	@Setter
 	private NotUseAtr recoverFromAnoCom;
 
 	public PerformDataRecovery(String dataRecoveryProcessId, String cid, List<Target> targets, String saveProcessId, String uploadfileId, String recoveryFileName, List<RestorationTarget> restorationTarget, int numPeopleBeRestore, int numPeopleSave, int recoveryMethod, int recoverFromAnoCom) {

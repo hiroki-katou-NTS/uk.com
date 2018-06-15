@@ -19,9 +19,7 @@ public class CompanyDeterminationProcess {
 		String cid = tableList.get(1).getFieldAcqCid();
 		
 		if (AppContexts.user().companyId().equals(cid)){
-			// SET performDataRecovery TO ALL
-			
-			//performDataRecovery.
+			//performDataRecovery.setRecoverFromAnoCom(recoverFromAnoCom);
 		} else {
 			// SET performDataRecovery TO ANOTHER COMPANY
 			boolean isRecoveryOtherCompanyNoOccur = true;
