@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.pub.vacation.setting.nursingleave;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -20,8 +21,8 @@ public interface ShNursingLeaveSettingPub {
 	 * @param mode the mode
 	 * @return the child nursing remain export
 	 */
-	// RequestList206: 期間内の子看護残を集計する
-	// ＜INPUT＞・会社ID・社員ID・集計開始日・集計終了日・モード
+	// RequestList206: æœŸé–“å†…ã�®å­�çœ‹è­·æ®‹ã‚’é›†è¨ˆã�™ã‚‹
+	// ï¼œINPUTï¼žãƒ»ä¼šç¤¾IDãƒ»ç¤¾å“¡IDãƒ»é›†è¨ˆé–‹å§‹æ—¥ãƒ»é›†è¨ˆçµ‚äº†æ—¥ãƒ»ãƒ¢ãƒ¼ãƒ‰
 	ChildNursingRemainExport aggrChildNursingRemainPeriod(String companyId, String employeeId, DatePeriod period, Integer mode);
 
 	/**
@@ -33,7 +34,7 @@ public interface ShNursingLeaveSettingPub {
 	 * @param mode the mode
 	 * @return the child nursing remain export
 	 */
-	// RequestList207: 期間内の介護残を集計する
-	// ＜INPUT＞ ・会社ID ・社員ID ・集計開始日 ・集計終了日 ・モード
-	ChildNursingRemainExport aggrNursingRemainPeriod(String companyId, String employeeId, DatePeriod period, Integer mode);
+	// RequestList207: æœŸé–“å†…ã�®ä»‹è­·æ®‹ã‚’é›†è¨ˆã�™ã‚‹
+	// ï¼œINPUTï¼ž ãƒ»ä¼šç¤¾ID ãƒ»ç¤¾å“¡ID ãƒ»é›†è¨ˆé–‹å§‹æ—¥ ãƒ»é›†è¨ˆçµ‚äº†æ—¥ ãƒ»ãƒ¢ãƒ¼ãƒ‰
+	ChildNursingRemainExport aggrNursingRemainPeriod(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate , Integer mode);
 }
