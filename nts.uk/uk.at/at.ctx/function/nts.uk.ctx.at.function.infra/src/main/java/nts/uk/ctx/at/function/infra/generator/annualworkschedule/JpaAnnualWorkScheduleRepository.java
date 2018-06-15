@@ -185,8 +185,12 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * @return
 	 */
 	private List<String> sortEmployees(List<String> employeeIds, LocalDate endYmd) {
-		return employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, 1, null, null,
+		List<String> listEmp = employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, 1, null, null,
 				GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0))));
+		if (listEmp == null || listEmp.isEmpty()) {
+			throw new BusinessException("Msg_885");
+		}
+		return listEmp;
 	}
 
 	/**
@@ -383,16 +387,15 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// 年度から集計期間を取得
 		Optional<DatePeriod> datePeriod = getAgreementPeriodFromYearPub.algorithm(fiscalYear, closure);
 		// ドメイン「３６協定運用設定」を取得する
-		Optional<AgreementOperationSettingImport> agreementSetObj = agreementOperationSettingAdapter.find(cid);
+		Month startMonth;
+		startMonth = new Month(startYm.getMonthValue());
 		// 指定期間36協定時間の取得
 		PeriodAtrOfAgreement unitMonth;
-		Month startMonth;
 		if (outputAgreementTime.equals(OutputAgreementTime.TWO_MONTH)) {
 			unitMonth = PeriodAtrOfAgreement.TWO_MONTHS;
 		} else {
 			unitMonth = PeriodAtrOfAgreement.THREE_MONTHS;
 		}
-		startMonth = new Month(startYm.getMonthValue());
 		// 年度のエンド : 管理期間の36協定時間．年度＋(３６協定運用設定．起算月-1月)＋末日
 		GeneralDate criteria = GeneralDate.ymd(startYm.getYear(), startYm.getMonthValue(), 1).addDays(-1);
 		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, unitMonth);
