@@ -34,7 +34,7 @@ module nts.uk.pr.view.ccg007.h {
                 // block ui
                 nts.uk.ui.block.invisible();
                 
-                self.loginId(self.callerParameter.loginId);
+//                self.loginId(self.callerParameter.loginId);
                 
                 dfd.resolve();
                 
@@ -68,7 +68,16 @@ module nts.uk.pr.view.ccg007.h {
                     nts.uk.ui.dialog.alertError(res.message);
                     blockUI.clear();
                 });
-                
+            }
+            
+            //open dialog I 
+            OpenDialogI() {
+                let self = this;
+
+                nts.uk.ui.windows.sub.modal('/view/ccg/007/i/index.xhtml',{
+                    width : 520,
+                    height : 300
+                }).onClosed(function(): any {})
             }
             
             /**

@@ -30,9 +30,10 @@ public class ChangeUserPasswordPublisherImpl implements ChangeUserPasswordPublis
 		// NPUT．パスワードをハッシュ化する
 		String newPassHash = PasswordHash.generate(newPassword, userId);
 
-		String loginId = AppContexts.user().employeeCode();
+		//set LogId
 		String logId = UUID.randomUUID().toString();
-
+		
+		//get domain PasswordChangeLog
 		PasswordChangeLog passwordChangeLog = new PasswordChangeLog(logId, userId, GeneralDateTime.now(),
 				new HashPassword(newPassHash));
 
@@ -42,7 +43,6 @@ public class ChangeUserPasswordPublisherImpl implements ChangeUserPasswordPublis
 		// ドメインモデル「ユーザ」を更新登録する
 		User user = userRepository.getByUserID(userId).get();
 		user.setPassword(new HashPassword(newPassHash));
-		user.setLoginID(new LoginID(loginId));
 		userRepository.update(user);
 	}
 
