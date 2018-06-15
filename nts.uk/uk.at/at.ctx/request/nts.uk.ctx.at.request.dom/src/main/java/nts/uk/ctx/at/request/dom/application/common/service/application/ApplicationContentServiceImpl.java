@@ -31,6 +31,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
@@ -214,6 +215,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					count++;
 				}
 				for (val x : overTime.getOverTimeInput()) {
+					if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
+						continue;
+					}
 					if (x.getApplicationTime().v() > 0) {
 						totalWorkUnit += x.getApplicationTime().v();
 						if (count < 3) {
@@ -364,6 +368,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					count++;
 				}
 				for (val x : overTime.getOverTimeInput()) {
+					if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
+						continue;
+					}
 					if (x.getApplicationTime().v() > 0) {
 						totalWorkUnit += x.getApplicationTime().v();
 						if (count < 3) {
@@ -589,6 +596,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						int totalWorkUnit = 0;
 						if (!Objects.isNull(appWork.getHolidayWorkInputs())){
 							for (val x : appWork.getHolidayWorkInputs()) {
+								if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
+									continue;
+								}
 								if (x.getApplicationTime().v() > 0) {
 									totalWorkUnit += x.getApplicationTime().v();
 									if (count < 3) {
@@ -668,6 +678,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							int totalWorkUnit = 0;
 							if (!Objects.isNull(preAppWork.getHolidayWorkInputs())){
 								for (val x : preAppWork.getHolidayWorkInputs()) {
+									if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
+										continue;
+									}
 									if (x.getApplicationTime().v() > 0) {
 										totalWorkUnit += x.getApplicationTime().v();
 										if (count < 3) {
@@ -739,6 +752,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						int totalWorkUnit = 0;
 						if (!Objects.isNull(appWork.getHolidayWorkInputs())){
 							for (val x : appWork.getHolidayWorkInputs()) {
+								if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
+									continue;
+								}
 								if (x.getApplicationTime().v() > 0) {
 									totalWorkUnit += x.getApplicationTime().v();
 									if (count < 3) {

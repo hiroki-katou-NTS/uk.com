@@ -427,6 +427,7 @@ public class DailyAggregationProcessService {
 		List<FixedConWorkRecordAdapterDto> listFixed =  fixedConWorkRecordAdapter.getAllFixedConWorkRecordByID(dailyAlarmCondition.getDailyAlarmConID());
 		for(int i = 0;i < listFixed.size();i++) {
 			if(listFixed.get(i).isUseAtr()) {
+				FixedConWorkRecordAdapterDto fixedData = listFixed.get(i);
 				switch(i) {
 				case 0 :
 					for(GeneralDate date : period.getListDate()) {
@@ -436,7 +437,9 @@ public class DailyAggregationProcessService {
 							workType = recordWorkInfo.get().getWorkTypeCode();
 							Optional<ValueExtractAlarm> checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
 							if(checkWorkType.isPresent()) {
-								listValueExtractAlarm.add(checkWorkType.get());
+								ValueExtractAlarm tmp = checkWorkType.get();
+								tmp.setComment(Optional.ofNullable(fixedData.getMessage()));
+								listValueExtractAlarm.add(tmp);
 							}
 						}	
 					}
@@ -448,32 +451,46 @@ public class DailyAggregationProcessService {
 						if(recordWorkInfoFunAdapterDto.isPresent()) {
 							workTime = recordWorkInfoFunAdapterDto.get().getWorkTimeCode();
 
-							if(workTime == null || workTime.equals("")) continue;
+							if(workTime == null || workTime.isEmpty()) continue;
 
 							Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
 							if(checkWorkTime.isPresent()) {
-								listValueExtractAlarm.add(checkWorkTime.get());
+								ValueExtractAlarm tmp = checkWorkTime.get();
+								tmp.setComment(Optional.ofNullable(fixedData.getMessage()));
+								listValueExtractAlarm.add(tmp);
 							}
 						} 
 					}
 					break;
-				case 2 : 
-					 List<ValueExtractAlarm> listCheckPrincipalUnconfirm = fixedCheckItemAdapter.checkPrincipalUnconfirm(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
-					 if(!listCheckPrincipalUnconfirm.isEmpty()) {
-						 listValueExtractAlarm.addAll(listCheckPrincipalUnconfirm);
-					 }
+				case 2:
+					List<ValueExtractAlarm> listCheckPrincipalUnconfirm = fixedCheckItemAdapter.checkPrincipalUnconfirm(
+							employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
+					if (!listCheckPrincipalUnconfirm.isEmpty()) {
+						for (ValueExtractAlarm tmp : listCheckPrincipalUnconfirm) {
+							tmp.setComment(Optional.ofNullable(fixedData.getMessage()));
+						}
+						listValueExtractAlarm.addAll(listCheckPrincipalUnconfirm);
+					}
 					break;
-				case 3 :
-					List<ValueExtractAlarm> listCheckAdminUnverified = fixedCheckItemAdapter.checkAdminUnverified(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
-					if(!listCheckAdminUnverified.isEmpty()) {
-						 listValueExtractAlarm.addAll(listCheckAdminUnverified);
-					 }
+				case 3:
+					List<ValueExtractAlarm> listCheckAdminUnverified = fixedCheckItemAdapter.checkAdminUnverified(
+							employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
+					if (!listCheckAdminUnverified.isEmpty()) {
+						for (ValueExtractAlarm tmp : listCheckAdminUnverified) {
+							tmp.setComment(Optional.ofNullable(fixedData.getMessage()));
+						}
+						listValueExtractAlarm.addAll(listCheckAdminUnverified);
+					}
 					break;
-				default :
-					List<ValueExtractAlarm> listCheckingData = fixedCheckItemAdapter.checkingData(employee.getWorkplaceId(),employee.getId(), period.getStartDate(), period.getEndDate());
-					if(!listCheckingData.isEmpty()) {
-						 listValueExtractAlarm.addAll(listCheckingData);
-					 }
+				default:
+					List<ValueExtractAlarm> listCheckingData = fixedCheckItemAdapter.checkingData(
+							employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
+					if (!listCheckingData.isEmpty()) {
+						for (ValueExtractAlarm tmp : listCheckingData) {
+							tmp.setComment(Optional.ofNullable(fixedData.getMessage()));
+						}
+						listValueExtractAlarm.addAll(listCheckingData);
+					}
 					break;
 				}//end switch
 			}//end if

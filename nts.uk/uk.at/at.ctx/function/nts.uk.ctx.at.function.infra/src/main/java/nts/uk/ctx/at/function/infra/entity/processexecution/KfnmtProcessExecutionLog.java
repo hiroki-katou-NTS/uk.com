@@ -109,9 +109,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 			KfnmtExecutionTaskLog innitExecutionTaskLog = this.taskLogList.get(0);
 			int size = this.taskLogList.size();
 			for (int i = 1; i < size; i++) {
-				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.taskId != this.taskLogList.get(i).kfnmtExecTaskLogPK.taskId)
-					continue;
-				if(innitExecutionTaskLog.getUpdDate().compareTo(this.taskLogList.get(i).getUpdDate())==1){
+				if(innitExecutionTaskLog.getUpdDate()!=null && this.taskLogList.get(i).getUpdDate()!=null && innitExecutionTaskLog.getUpdDate().before(this.taskLogList.get(i).getUpdDate())){
 					innitExecutionTaskLog = this.taskLogList.get(i);
 				}
 			}
@@ -142,9 +140,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 			KfnmtExecutionTaskLog innitExecutionTaskLog = stTaskList.get(0);
 			int size = stTaskList.size();
 			for (int i = 1; i < size; i++) {
-				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.taskId != stTaskList.get(i).kfnmtExecTaskLogPK.taskId)
-					continue;
-				if(innitExecutionTaskLog.getUpdDate()!=null && stTaskList.get(i).getUpdDate()!=null && innitExecutionTaskLog.getUpdDate().compareTo(stTaskList.get(i).getUpdDate())== -1){
+				if(innitExecutionTaskLog.getUpdDate()!=null && stTaskList.get(i).getUpdDate()!=null && innitExecutionTaskLog.getUpdDate().before(stTaskList.get(i).getUpdDate())){
 					innitExecutionTaskLog = stTaskList.get(i);
 				}
 			}

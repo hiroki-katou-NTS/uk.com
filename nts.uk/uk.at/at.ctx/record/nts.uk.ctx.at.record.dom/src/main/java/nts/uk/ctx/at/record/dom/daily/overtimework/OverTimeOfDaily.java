@@ -225,10 +225,10 @@ public class OverTimeOfDaily {
 	 * @return 計算結果
 	 */
 	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,
-												  AutoCalOvertimeSetting overTimeAutoCalcSet,
 												  WithinWorkTimeSheet withinWorkTimeSheetList,
 												  CalcMethodOfNoWorkingDay calcMethod,
 												  HolidayCalcMethodSet holidayCalcMethodSet,
+												  CalAttrOfDailyPerformance autoCalcAtr,
 												  WorkType workType,
 												  Optional<SettingOfFlexWork> flexCalcMethod,
 												  PredetermineTimeSetForCalc predetermineTimeSet,
@@ -251,9 +251,9 @@ public class OverTimeOfDaily {
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		//枠時間計算
-		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet,workType,eachWorkTimeSet,eachCompanyTimeSet,integrationOfDaily, statutoryFrameNoList );
+		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(autoCalcAtr.getOvertimeSetting(),workType,eachWorkTimeSet,eachCompanyTimeSet,integrationOfDaily);
 		//残業内の深夜時間計算
-		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,overTimeAutoCalcSet));
+		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,autoCalcAtr.getOvertimeSetting()));
 		//変形法定内残業時間計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
