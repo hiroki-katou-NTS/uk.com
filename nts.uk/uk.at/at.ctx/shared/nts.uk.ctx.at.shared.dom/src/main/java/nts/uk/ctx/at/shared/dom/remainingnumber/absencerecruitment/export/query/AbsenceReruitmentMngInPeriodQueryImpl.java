@@ -415,13 +415,10 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		//パラメータ「List<振休振出明細>」を取得
 		List<AbsRecDetailPara> lstDetailTmp = new ArrayList<>();
 		for (AbsRecDetailPara detailData : lstDetailTmp) {
-			if(!detailData.getYmdData().getDayoffDate().isPresent()) {
-				lstDetailTmp.add(detailData);
-			} else {
-				if(detailData.getYmdData().getDayoffDate().get().beforeOrEquals(dateData.end())
+			if(!detailData.getYmdData().getDayoffDate().isPresent()
+					|| detailData.getYmdData().getDayoffDate().get().beforeOrEquals(dateData.end())
 						&& detailData.getYmdData().getDayoffDate().get().afterOrEquals(dateData.start())) {
-					lstDetailTmp.add(detailData);
-				}
+				lstDetailTmp.add(detailData);				
 			}
 		}
 		for (AbsRecDetailPara detailChk : lstDetailTmp) {

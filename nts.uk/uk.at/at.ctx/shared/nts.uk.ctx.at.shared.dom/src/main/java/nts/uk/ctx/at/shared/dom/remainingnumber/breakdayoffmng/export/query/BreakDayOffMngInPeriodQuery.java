@@ -3,10 +3,12 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface BreakDayOffMngInPeriodQuery {
 	/**
@@ -58,7 +60,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param lstDetailData
 	 * @return
 	 */
-	double calcCarryForwardDays(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData);
+	CarryForwardDayTimes calcCarryForwardDays(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData);
 	/**
 	 * 6.残数と未消化数を集計する
 	 * @param baseDate
@@ -79,4 +81,30 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @return
 	 */
 	BreakDayOffDetail getNotTypeBreak(InterimDayOffMng detailData, InterimRemain remainData);
+	/**
+	 * 4.未使用の休出(暫定)を取得する
+	 * @param inputParam
+	 * @return
+	 */
+	List<BreakDayOffDetail> lstInterimBreakDetail(BreakDayOffRemainMngParam inputParam);
+	/**
+	 * 4-1.代休と紐付けをしない休出を取得する
+	 * @param breakMng
+	 * @param remainData
+	 * @return
+	 */
+	BreakDayOffDetail getNotTypeDayOff(InterimBreakMng breakMng, InterimRemain remainData);
+	/**
+	 * 5.時系列順で相殺する
+	 * @param lstDataDetail
+	 * @return
+	 */
+	List<BreakDayOffDetail> lstSortForTime(List<BreakDayOffDetail> lstDataDetail);
+	/**
+	 * 7.発生数・使用数を計算する
+	 * @param lstDataDetail
+	 * @param dateData
+	 * @return
+	 */
+	RemainUnDigestedDayTimes getRemainOccurrenceUseDayTimes(List<BreakDayOffDetail> lstDataDetail, DatePeriod dateData);
 }
