@@ -256,18 +256,39 @@ module nts.uk.at.view.kwr006.a {
             }
             
             public exportExcel(): void {
+                let self = this;
+                if (!self.hasSelectedEmployees()) {
+                    return;
+                }
+                
                 const lul = {
                     fileType: 0
                 }
                 service.exportSchedule(lul);
             }
+
             public exportPdf(): void {
+                let self = this;
+                if (!self.hasSelectedEmployees()) {
+                    return;
+                }
                 const lul = {
                     fileType: 1
                 }
                 service.exportSchedule(lul);
             }
+
             public openScreenC(): void {
+                nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml');
+            }
+
+            private hasSelectedEmployees(): boolean {
+                let self = this;
+                if (_.isEmpty(self.multiSelectedCode())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
+                    return false;
+                }
+                return true;
             }
         }
         
