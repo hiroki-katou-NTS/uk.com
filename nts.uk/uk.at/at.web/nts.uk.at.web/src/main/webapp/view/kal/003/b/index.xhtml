@@ -20,6 +20,8 @@
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue 
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue 
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod
+                <!-- monthly -->
+                nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
             </com:ValidatorScript>
             <com:EnumScript>
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem 
@@ -172,8 +174,6 @@
                                             <div>#{i18n.getText('KAL003_58')}</div>
                                         </td>
                                         <td class="pad_left_5px">
-
-                                            <div id="ba2_2_3">
                                                 <!-- BA2-2 -->
                                                 <button id="btnSettingBA2_2" data-bind="click : $parent.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_57')}</button>
                                                 <!-- BA2-3 -->
@@ -181,8 +181,6 @@
                                          value: $parent.displayAttendanceItemSelections_BA2_3,
                                          require: true,
                                          readonly: true}" />
-
-                                            </div>
                                         </td>
                                         <td class="pad_left_5px">
                                             <!-- BA2-4, BA2-5 -->
@@ -603,7 +601,7 @@
                     <div id="content" class="cf" data-bind="with: extraResultMonthly">
                         <div id="div_common_header">
                             <!-- row 1 -->
-                            <table>
+                            <table style="width: 100%">
                                 <thead>
                                     <colgroup>
                                         <col width="150px" />
@@ -633,15 +631,15 @@
                                     <com:ko bind="currentConditions" tag="foreach">
                                         <tr class="row">
                                             <!-- B1-1: チェック項目 - Item check-->
-                                            <td class="pad_left_10px" style=" padding-bottom: 50px;">
+                                            <td class="pad_left_10px">
                                                 <com:ko bind="typeCheckItem() !== 8" tag="if">
                                                     <div>#{i18n.getText('チェック条件')}</div>
                                                 </com:ko>
                                             </td>
                                             <td class="pad_left_5px">
-                                            <div> </div>
+                                            <div id = "checkCondition"> 
                                                 <com:ko bind="haveTypeVacation() === true" tag="if">
-                                                    <div id="comBoxOperator" class="combo-box" data-bind="ntsComboBox: {
+                                                    <div  class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: viewModel.listTypeCheckVacation,
                                                 optionsValue: 'value',
@@ -656,7 +654,7 @@
                                                     </div>
                                                 </com:ko>
                                                 <com:ko bind="haveComboboxFrame() === true" tag="if">
-                                                    <div id="comBoxOperator" class="combo-box" data-bind="ntsComboBox: {
+                                                    <div style="margin-left: 15px;"  class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: viewModel.listSpecialholidayframe,
                                                 optionsValue: 'specialHdFrameNo',
@@ -674,17 +672,15 @@
                                                 <com:ko bind="haveSelect() === true" tag="if">
                                                 	<br />
                                                     <!-- bind select -->
-                                                    <div >
                                                         <button id="btnSettingBA2_2" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
-                                                        <input id="display-target-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
+                                                        <input id="display-target-item" class="display-list-label nts-input " data-bind="ntsTextEditor: {
 											   value: selectText,
-											   require: true,
+											   required: true,
 											   readonly: true}" />
-                                                    </div>
                                                 </com:ko>
                                                 <com:ko bind="haveCombobox() === true" tag="if">
                                                     <!-- bind combo -->
-                                                    <div id="comBoxOperator" class="combo-box" data-bind="ntsComboBox: {
+                                                    <div style="margin-top: 3px;" class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: function(){
                                                 	if($data.typeCheckItem() !== 1 &amp;&amp; $data.typeCheckItem() !== 2){
@@ -707,29 +703,33 @@
 
                                                 <com:ko bind="haveInput() === 0" tag="if">
                                                     <!-- bind input -->
-                                                    <div data-bind="text : textLabel"></div>
-                                                    <!-- <input style="width: 50px;" data-bind="ntsNumberEditor: {value: numberDayDiffHoliday1 ,required: true}" />日
-									<input style="width: 50px;" data-bind="ntsNumberEditor: {value: numberDayDiffHoliday2 , enable : 　　,required: true }" />日 -->
+                                                    <span data-bind="text : textLabel"></span>
                                                     <com:ko bind="inputs" tag="foreach">
-                                                        <input style="width: 50px;" data-bind="ntsNumberEditor: {value: value ,required: required,enable : enable}, attr: { id: inputId}" />日
+                                                        <input style="width: 50px;" data-bind="ntsNumberEditor: {
+                                                        value: value ,
+                                                        required: required,
+                                                        enable : enable,
+                                                        constraint: 'MonthlyDays'
+                                                        
+                                                        }, attr: { id: inputId}" />#{i18n.getText('KAL003_84')}
                                                     </com:ko>
                                                 </com:ko>
                                                 <com:ko bind="haveInput() === 1 || haveInput() === 2" tag="if">
                                                     <!-- bind input -->
-                                                    <div data-bind="text : textLabel"></div>
-                                                    <input style="width: 50px;" data-bind="ntsTimeEditor: {value: eralBeforeTime,required: true ,mode:'time', inputFormat: 'time'}, attr: { id: inputId}" />
+                                                    <span data-bind="text : textLabel"></span>
+                                                    <input style="width: 50px;" data-bind="ntsTimeEditor: {value: eralBeforeTime,required: true ,mode:'time', inputFormat: 'time'}" />
                                                 </com:ko>
                                                 <com:ko bind="haveInput() === 3" tag="if">
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsNumberEditor: {value: value ,required: required,enable : enable}, attr: { id: inputId}" />日
+                                                            <input style="width: 50px;margin-left: 15px;" data-bind="ntsNumberEditor: {value: value ,required: required,enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_103')}
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: {value: value ,required: required,mode:'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />時間
+                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: {value: value ,required: required,mode:'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_105')}
                                                         </com:ko>
                                                     </com:ko>
-                                                    <div data-bind="text : textLabel"></div>
+                                                    <span data-bind="text : textLabel"></span>
                                                 </com:ko>
                                                 
                                                 <com:ko bind="haveInput() === 4 || haveInput() === 5 ||haveInput() === 6 ||haveInput() === 7 " tag="if">
@@ -742,7 +742,7 @@
                                                             <input style="width: 50px;" data-bind="ntsTimeEditor: {value: value ,required: required,mode : 'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />
                                                         </com:ko>
                                                     </com:ko>
-                                                    <div data-bind="text : textLabel"></div>
+                                                    <span data-bind="text : textLabel"></span>
                                                 </com:ko>
                                                 <com:ko bind="haveGroup() === true" tag="if">
                                                     <!-- bind group: AttendanceItemCondition -->
@@ -841,9 +841,7 @@
 	                                                                    	</td>
 	                                                                	</tr>
 	                                                            	</com:ko>
-	                                                            </com:ko>
-                                                            </com:ko>
-                                                            <tr style="height: 50px;">
+	                                                            	<tr style="height: 50px;">
                                                             	<td>
                                                             		<div>#{i18n.getText('KAL003_36')}</div>
                                                             	</td>
@@ -853,19 +851,23 @@
 							                                            options:viewModel.swANDOR_B7_2,
 							                                            optionsValue: 'value',
 							                                            optionsText: 'localizedName',
-							                                            value: operator,
+							                                            value: $parent.operator,
 							                                            enable: true }"></div>
                                                             	</td>
                                                             </tr>
+	                                                            </com:ko>
+                                                            </com:ko>
+                                                            
                                                         </tbody>
                                                     </table>
                                                 </com:ko>
+                                                </div>
                                             </td>
                                         </tr>
                                     </com:ko>
                                     <tr class="row">
                                         <td class="pad_left_10px">
-                                            <div>#{i18n.getText('メッセージ色')}</div>
+                                            <div>#{i18n.getText('KAL003_28')}2222</div>
                                         </td>
                                         <td class="pad_left_5px">
                                             <div id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, width: 60}" />
@@ -873,7 +875,7 @@
                                     </tr>
                                     <tr class="row">
                                         <td class="pad_left_10px">
-                                            <div>#{i18n.getText('表記するメッセージ')}</div>
+                                            <div>#{i18n.getText('KAL003_25')}333</div>
                                         </td>
                                         <td class="pad_left_5px">
                                             <textarea style="width: 400px;height: 100px;" id="message" data-bind="ntsMultilineEditor: { value: displayMessage }" />
@@ -884,7 +886,7 @@
 
                                         </td>
                                         <td class="pad_left_5px">
-                                            <div data-bind="ntsCheckBox: { checked: messageBold , text: 'メッセージを太字にする' }"></div>
+                                            <div data-bind="ntsCheckBox: { checked: messageBold}">#{i18n.getText('KAL003_29')}</div>
                                             <!-- </div><div>#{i18n.getText('メッセージを太字にする')}</div> -->
                                         </td>
                                     </tr>
