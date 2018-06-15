@@ -835,7 +835,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 法定内深夜時間の計算
 	 * @return　法定内深夜時間
 	 */
-	public AttendanceTime calcMidNightTime(AutoCalAtrOvertime autoCalcSet) {
+	public AttendanceTime calcMidNightTime() {
 		int totalMidNightTime = 0;
 		int totalDedTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()
