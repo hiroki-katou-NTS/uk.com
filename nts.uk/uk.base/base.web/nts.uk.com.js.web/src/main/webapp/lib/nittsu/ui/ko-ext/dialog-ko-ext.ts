@@ -110,7 +110,7 @@ module nts.uk.ui.koExtentions {
             
             getCurrentWindow().done(function(self){
                 var id = 'ntsErrorDialog_' + self.id;
-                var $dialog = $("<div>", { "id": id });
+                var $dialog = $("<div>", { "id": id, "class": "ntsErrorDialog" });
                 PS.$('body').append($dialog);
                 // Create Buttons
                 var dialogbuttons = [];
@@ -177,14 +177,22 @@ module nts.uk.ui.koExtentions {
                         maxrowsHeight = $dialog.dialog("option", "maxHeight");
                     }
                     $dialog.dialog("option", "height", maxrowsHeight);
-                });
+                });  
                 
-                PS.$("body").bind("dialogclosed", function(evt, eData){
-                    if($dialog.data("winid") === eData.dialogId){
-                        $dialog.dialog("close");
-                        $dialog.remove();
-                    }
-                });    
+                PS.$("body").data(self.id, $dialog);
+                if(self.isRoot){
+                    $("body").bind("dialogclosed", function(evt, eData){
+//                            console.log(eData.dialogId);
+                        let $cDialog = $("#ntsErrorDialog_" + eData.dialogId);
+                        
+                        if(!nts.uk.util.isNullOrEmpty($cDialog)){
+                            $("body").data(eData.dialogId).dialog("destroy");
+//                            $cDialog.dialog().dialog("destroy");
+//                            console.log("destroyed");
+                            $cDialog.remove();
+                        }
+                    });  
+                }
             });
         }
 
