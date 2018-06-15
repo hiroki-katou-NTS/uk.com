@@ -8,6 +8,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK_;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec_;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -15,8 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class JpaAttendanceRecordExportRepository extends JpaRepository implements AttendanceRecordExportRepository {
 
 	static final long UPPER_POSITION = 1;
+	static final long LOWER_POSITION = 2;
 
 	/*
 	 * (non-Javadoc)
@@ -61,57 +62,47 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		// query data
 		List<KfnstAttndRec> entityList = em.createQuery(cq).getResultList();
 
-		List<AttendanceRecordExport> domainList = new ArrayList<AttendanceRecordExport>();
+		List<AttendanceRecordExport> domainList = domainsFrom(entityList);
 
-		// for each item of entityList
-		entityList.forEach(item1 -> {
-			// find domain is exist?,
-			if (!findInList(domainList, item1)) {
-				long columnIndex1 = item1.getId().getColumnIndex();
-				long position1 = item1.getId().getPosition();
-				// if not exist, toDomain
-				entityList.forEach(item2 -> {
-					// find if the same columnIndex
-					if (columnIndex1 == item2.getId().getColumnIndex() && position1 != item2.getId().getPosition()) {
-						// toDomain
-						AttendanceRecordExport domain = new AttendanceRecordExport();
-						if (columnIndex1 == UPPER_POSITION)
-							domain = this.toDomain(item1, item2);
-						else
-							domain = this.toDomain(item2, item1);
-						// Add domain to list
-						domainList.add(domain);
-					}
-				});
-			}
-			if (!findInList(domainList, item1)) {
-				AttendanceRecordExport domain = new AttendanceRecordExport();
-				domain = this.toDomain(item1, null);
-				// Add domain to list
-				domainList.add(domain);
-			}
-		});
-
-		return domainList.stream().filter(item -> item != null).collect(Collectors.toList());
+		return domainList.stream().filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
 	/**
-	 * Find in list.
 	 *
-	 * @param list
-	 *            the list
-	 * @param item
-	 *            the item
-	 * @return the boolean
+	 * @param entityList
+	 * @return
 	 */
-	public Boolean findInList(List<AttendanceRecordExport> list, KfnstAttndRec item) {
+	private List<AttendanceRecordExport> domainsFrom(List<KfnstAttndRec> entityList) {
+		List<AttendanceRecordExport> domainList = new ArrayList<>();
 
-		for (AttendanceRecordExport e : list) {
-			if (e.getColumnIndex() == (int) item.getId().getColumnIndex())
-				return true;
+		Map<Long, MutablePair<KfnstAttndRec,KfnstAttndRec>> map = new HashMap<>();
+
+		for (KfnstAttndRec item : entityList) {
+			boolean isNew = false;
+			long key = item.getId().getColumnIndex();
+			MutablePair<KfnstAttndRec, KfnstAttndRec> exist = map.get(key);
+			if (exist == null) {
+				exist = new MutablePair<>();
+				isNew = true;
+			}
+
+			if (item.getId().getPosition() == LOWER_POSITION) {
+				exist.setRight(item);
+			} else if (item.getId().getPosition() == UPPER_POSITION) {
+				exist.setLeft(item);
+			}
+
+			if (isNew)
+				map.put(key, exist);
 		}
 
-		return false;
+		map.forEach((k, v) -> {
+			AttendanceRecordExport domain = new AttendanceRecordExport();
+			domain= toDomain(v.left,v.right);
+			domainList.add(domain);
+		});
+
+		return domainList;
 	}
 
 	/*
@@ -145,39 +136,11 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		// query data
 		List<KfnstAttndRec> entityList = em.createQuery(cq).getResultList();
 
-		List<AttendanceRecordExport> domainList = new ArrayList<AttendanceRecordExport>();
+		Map<Long, MutablePair<KfnstAttndRec,KfnstAttndRec>> map = new HashMap<>();
 
-		// for each item of entityList
-		entityList.forEach(item1 -> {
-			// find domain is exist?,
-			if (!findInList(domainList, item1)) {
+		List<AttendanceRecordExport> domainList = domainsFrom(entityList);
 
-				long columnIndex1 = item1.getId().getColumnIndex();
-				long position1 = item1.getId().getPosition();
-				// if not exist, toDomain
-				entityList.forEach(item2 -> {
-					// find if the same columnIndex
-					if (columnIndex1 == item2.getId().getColumnIndex() && position1 != item2.getId().getPosition()) {
-						// toDomain
-						AttendanceRecordExport domain = new AttendanceRecordExport();
-						if (position1 == UPPER_POSITION)
-							domain = this.toDomain(item1, item2);
-						else
-							domain = this.toDomain(item2, item1);
-						// Add domain to list
-						domainList.add(domain);
-					}
-				});
-			}
-			if (!findInList(domainList, item1)) {
-				AttendanceRecordExport domain = new AttendanceRecordExport();
-				domain = this.toDomain(item1, null);
-				// Add domain to list
-				domainList.add(domain);
-			}
-		});
-
-		return domainList.stream().filter(item -> item != null).collect(Collectors.toList());
+		return domainList.stream().filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
 	/*
