@@ -60,7 +60,7 @@ public class RecoveryStorageService {
 			List<TableListByCategory> tableListByCategory = new ArrayList<>();
 			List<TableList> tables = performDataRecoveryRepository
 					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), STORAGE_RANGE_SAVED);
-			
+
 			TableListByCategory tableCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
 					tables);
 			tableListByCategory.add(tableCategory);
@@ -112,33 +112,31 @@ public class RecoveryStorageService {
 								employeeDataMngInfoImport.getEmployeeId(), targetDataByCate);
 
 						// phan biet error - TO DO
-						
-						if(check) {
+
+						if (check) {
 							// update trạng thái dataRecoveryMngRepository - TO
 							// DO
 						} else {
 							// error - TO DO
 						}
-						
 
 					}
 
 				}
-				
+
 				if (check) {
 					// の処理対象社員コードをクリアする
 					dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId, null);
 
 					// カテゴリの中の日付単位の処理 - TO DO
-					
-					
+
 				} else {
-					
+
 					dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 1);
 				}
 
 			}
-			
+
 			// のカテゴリカウントをカウントアップ
 			if (check) {
 				index++;
@@ -146,11 +144,9 @@ public class RecoveryStorageService {
 			} else {
 				check = false;
 			}
-			
+
 		}
 
-		
-		
 		if (check) {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 3);
 		} else {
@@ -181,7 +177,6 @@ public class RecoveryStorageService {
 		for (DataRecoveryTable dataRecoveryTable : targetDataByCate) {
 
 			// check date [日付処理の設定] - TO DO
-			
 
 			// check phân loại lịch sử
 			Optional<TableList> tableList = performDataRecoveryRepository
@@ -213,8 +208,7 @@ public class RecoveryStorageService {
 					whereEmId = true;
 				}
 				if (tableList.get().getHistoryCls().value == 1) {
-					deleteEmployeeHistory( employeeId, tableName, whereCid,
-							whereEmId);
+					deleteEmployeeHistory(employeeId, tableName, whereCid, whereEmId);
 				}
 			}
 
@@ -228,8 +222,6 @@ public class RecoveryStorageService {
 
 		return true;
 	}
-
-	
 
 	@SuppressWarnings("unused")
 	public int crudDataByTable(List<List<String>> targetDataTable, String employeeId, String employeeCode,
@@ -415,138 +407,138 @@ public class RecoveryStorageService {
 
 			Map<String, String> filedWhere = new HashMap<>();
 			List<String> dataRow = targetDataTable.get(i);
-			if (indexUpdate1 != null) {
-				V_FILED_KEY_UPDATE_1 = dataRow.get(indexUpdate1);
-				filedWhere.put(FILED_KEY_UPDATE_1, V_FILED_KEY_UPDATE_1);
-			}
-
-			if (indexUpdate2 != null) {
-				V_FILED_KEY_UPDATE_2 = dataRow.get(indexUpdate2);
-				filedWhere.put(FILED_KEY_UPDATE_2, V_FILED_KEY_UPDATE_2);
-			}
-
-			if (indexUpdate3 != null) {
-				V_FILED_KEY_UPDATE_3 = dataRow.get(indexUpdate3);
-				filedWhere.put(FILED_KEY_UPDATE_3, V_FILED_KEY_UPDATE_3);
-			}
-
-			if (indexUpdate4 != null) {
-				V_FILED_KEY_UPDATE_4 = dataRow.get(indexUpdate4);
-				filedWhere.put(FILED_KEY_UPDATE_4, V_FILED_KEY_UPDATE_4);
-			}
-
-			if (indexUpdate5 != null) {
-				V_FILED_KEY_UPDATE_5 = dataRow.get(indexUpdate5);
-				filedWhere.put(FILED_KEY_UPDATE_5, V_FILED_KEY_UPDATE_5);
-			}
-
-			if (indexUpdate6 != null) {
-				V_FILED_KEY_UPDATE_6 = dataRow.get(indexUpdate6);
-				filedWhere.put(FILED_KEY_UPDATE_6, V_FILED_KEY_UPDATE_6);
-			}
-
-			if (indexUpdate7 != null) {
-				V_FILED_KEY_UPDATE_7 = dataRow.get(indexUpdate7);
-				filedWhere.put(FILED_KEY_UPDATE_7, V_FILED_KEY_UPDATE_7);
-			}
-
-			if (indexUpdate8 != null) {
-				V_FILED_KEY_UPDATE_8 = dataRow.get(indexUpdate8);
-				filedWhere.put(FILED_KEY_UPDATE_8, V_FILED_KEY_UPDATE_8);
-			}
-
-			if (indexUpdate9 != null) {
-				V_FILED_KEY_UPDATE_9 = dataRow.get(indexUpdate9);
-				filedWhere.put(FILED_KEY_UPDATE_9, V_FILED_KEY_UPDATE_9);
-			}
-
-			if (indexUpdate10 != null) {
-				V_FILED_KEY_UPDATE_10 = dataRow.get(indexUpdate10);
-				filedWhere.put(FILED_KEY_UPDATE_10, V_FILED_KEY_UPDATE_10);
-			}
-
-			if (indexUpdate11 != null) {
-				V_FILED_KEY_UPDATE_11 = dataRow.get(indexUpdate11);
-				filedWhere.put(FILED_KEY_UPDATE_11, V_FILED_KEY_UPDATE_11);
-			}
-
-			if (indexUpdate12 != null) {
-				V_FILED_KEY_UPDATE_12 = dataRow.get(indexUpdate12);
-				filedWhere.put(FILED_KEY_UPDATE_12, V_FILED_KEY_UPDATE_12);
-			}
-
-			if (indexUpdate13 != null) {
-				V_FILED_KEY_UPDATE_13 = dataRow.get(indexUpdate13);
-				filedWhere.put(FILED_KEY_UPDATE_13, V_FILED_KEY_UPDATE_13);
-			}
-
-			if (indexUpdate14 != null) {
-				V_FILED_KEY_UPDATE_14 = dataRow.get(indexUpdate14);
-				filedWhere.put(FILED_KEY_UPDATE_14, V_FILED_KEY_UPDATE_14);
-			}
-
-			if (indexUpdate15 != null) {
-				V_FILED_KEY_UPDATE_15 = dataRow.get(indexUpdate15);
-				filedWhere.put(FILED_KEY_UPDATE_15, V_FILED_KEY_UPDATE_15);
-			}
-
-			if (indexUpdate16 != null) {
-				V_FILED_KEY_UPDATE_16 = dataRow.get(indexUpdate16);
-				filedWhere.put(FILED_KEY_UPDATE_16, V_FILED_KEY_UPDATE_16);
-			}
-
-			if (indexUpdate17 != null) {
-				V_FILED_KEY_UPDATE_17 = dataRow.get(indexUpdate17);
-				filedWhere.put(FILED_KEY_UPDATE_17, V_FILED_KEY_UPDATE_17);
-			}
-
-			if (indexUpdate18 != null) {
-				V_FILED_KEY_UPDATE_18 = dataRow.get(indexUpdate18);
-				filedWhere.put(FILED_KEY_UPDATE_18, V_FILED_KEY_UPDATE_18);
-			}
-
-			if (indexUpdate19 != null) {
-				V_FILED_KEY_UPDATE_19 = dataRow.get(indexUpdate19);
-				filedWhere.put(FILED_KEY_UPDATE_19, V_FILED_KEY_UPDATE_19);
-			}
-
-			if (indexUpdate20 != null) {
-				V_FILED_KEY_UPDATE_20 = dataRow.get(indexUpdate20);
-				filedWhere.put(FILED_KEY_UPDATE_20, V_FILED_KEY_UPDATE_20);
-			}
-
-			int count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME);
-
-			if (count == 2) {
-				// error return false
-			} else if (count == 1) {
-				// delete data
-				performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME);
-			}
-
-			Map<String, String> dataInsertDB = new HashMap<>();
-
-			for (int j = 0; j < targetDataHeader.size(); j++) {
-				if (targetDataHeader.get(j).equals(COLUMN_NAME_CID)) {
-					dataInsertDB.put(targetDataHeader.get(j), cidCurrent);
-				} else {
-					dataInsertDB.put(targetDataHeader.get(j), dataRow.get(j));
+			if (dataRow.get(1).equals(employeeId)) {
+				if (indexUpdate1 != null) {
+					V_FILED_KEY_UPDATE_1 = dataRow.get(indexUpdate1);
+					filedWhere.put(FILED_KEY_UPDATE_1, V_FILED_KEY_UPDATE_1);
 				}
+
+				if (indexUpdate2 != null) {
+					V_FILED_KEY_UPDATE_2 = dataRow.get(indexUpdate2);
+					filedWhere.put(FILED_KEY_UPDATE_2, V_FILED_KEY_UPDATE_2);
+				}
+
+				if (indexUpdate3 != null) {
+					V_FILED_KEY_UPDATE_3 = dataRow.get(indexUpdate3);
+					filedWhere.put(FILED_KEY_UPDATE_3, V_FILED_KEY_UPDATE_3);
+				}
+
+				if (indexUpdate4 != null) {
+					V_FILED_KEY_UPDATE_4 = dataRow.get(indexUpdate4);
+					filedWhere.put(FILED_KEY_UPDATE_4, V_FILED_KEY_UPDATE_4);
+				}
+
+				if (indexUpdate5 != null) {
+					V_FILED_KEY_UPDATE_5 = dataRow.get(indexUpdate5);
+					filedWhere.put(FILED_KEY_UPDATE_5, V_FILED_KEY_UPDATE_5);
+				}
+
+				if (indexUpdate6 != null) {
+					V_FILED_KEY_UPDATE_6 = dataRow.get(indexUpdate6);
+					filedWhere.put(FILED_KEY_UPDATE_6, V_FILED_KEY_UPDATE_6);
+				}
+
+				if (indexUpdate7 != null) {
+					V_FILED_KEY_UPDATE_7 = dataRow.get(indexUpdate7);
+					filedWhere.put(FILED_KEY_UPDATE_7, V_FILED_KEY_UPDATE_7);
+				}
+
+				if (indexUpdate8 != null) {
+					V_FILED_KEY_UPDATE_8 = dataRow.get(indexUpdate8);
+					filedWhere.put(FILED_KEY_UPDATE_8, V_FILED_KEY_UPDATE_8);
+				}
+
+				if (indexUpdate9 != null) {
+					V_FILED_KEY_UPDATE_9 = dataRow.get(indexUpdate9);
+					filedWhere.put(FILED_KEY_UPDATE_9, V_FILED_KEY_UPDATE_9);
+				}
+
+				if (indexUpdate10 != null) {
+					V_FILED_KEY_UPDATE_10 = dataRow.get(indexUpdate10);
+					filedWhere.put(FILED_KEY_UPDATE_10, V_FILED_KEY_UPDATE_10);
+				}
+
+				if (indexUpdate11 != null) {
+					V_FILED_KEY_UPDATE_11 = dataRow.get(indexUpdate11);
+					filedWhere.put(FILED_KEY_UPDATE_11, V_FILED_KEY_UPDATE_11);
+				}
+
+				if (indexUpdate12 != null) {
+					V_FILED_KEY_UPDATE_12 = dataRow.get(indexUpdate12);
+					filedWhere.put(FILED_KEY_UPDATE_12, V_FILED_KEY_UPDATE_12);
+				}
+
+				if (indexUpdate13 != null) {
+					V_FILED_KEY_UPDATE_13 = dataRow.get(indexUpdate13);
+					filedWhere.put(FILED_KEY_UPDATE_13, V_FILED_KEY_UPDATE_13);
+				}
+
+				if (indexUpdate14 != null) {
+					V_FILED_KEY_UPDATE_14 = dataRow.get(indexUpdate14);
+					filedWhere.put(FILED_KEY_UPDATE_14, V_FILED_KEY_UPDATE_14);
+				}
+
+				if (indexUpdate15 != null) {
+					V_FILED_KEY_UPDATE_15 = dataRow.get(indexUpdate15);
+					filedWhere.put(FILED_KEY_UPDATE_15, V_FILED_KEY_UPDATE_15);
+				}
+
+				if (indexUpdate16 != null) {
+					V_FILED_KEY_UPDATE_16 = dataRow.get(indexUpdate16);
+					filedWhere.put(FILED_KEY_UPDATE_16, V_FILED_KEY_UPDATE_16);
+				}
+
+				if (indexUpdate17 != null) {
+					V_FILED_KEY_UPDATE_17 = dataRow.get(indexUpdate17);
+					filedWhere.put(FILED_KEY_UPDATE_17, V_FILED_KEY_UPDATE_17);
+				}
+
+				if (indexUpdate18 != null) {
+					V_FILED_KEY_UPDATE_18 = dataRow.get(indexUpdate18);
+					filedWhere.put(FILED_KEY_UPDATE_18, V_FILED_KEY_UPDATE_18);
+				}
+
+				if (indexUpdate19 != null) {
+					V_FILED_KEY_UPDATE_19 = dataRow.get(indexUpdate19);
+					filedWhere.put(FILED_KEY_UPDATE_19, V_FILED_KEY_UPDATE_19);
+				}
+
+				if (indexUpdate20 != null) {
+					V_FILED_KEY_UPDATE_20 = dataRow.get(indexUpdate20);
+					filedWhere.put(FILED_KEY_UPDATE_20, V_FILED_KEY_UPDATE_20);
+				}
+
+				int count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME);
+
+				if (count == 2) {
+					// error return false
+				} else if (count == 1) {
+					// delete data
+					performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME);
+				}
+
+				Map<String, String> dataInsertDB = new HashMap<>();
+
+				for (int j = 0; j < targetDataHeader.size(); j++) {
+					if (targetDataHeader.get(j).equals(COLUMN_NAME_CID)) {
+						dataInsertDB.put(targetDataHeader.get(j), cidCurrent);
+					} else {
+						dataInsertDB.put(targetDataHeader.get(j), dataRow.get(j));
+					}
+				}
+				// insert data
+				performDataRecoveryRepository.insertDataTable(dataInsertDB, TABLE_NAME);
 			}
-			// insert data
-			performDataRecoveryRepository.insertDataTable(dataInsertDB, TABLE_NAME);
 
 		}
 
 		return 0;
 	}
 
-	public void deleteEmployeeHistory( String employeeId, String tableName,
-			Boolean whereCid, Boolean whereEmId) {
+	public void deleteEmployeeHistory(String employeeId, String tableName, Boolean whereCid, Boolean whereEmId) {
+		// Delete history
 		String cidCurrent = AppContexts.user().companyId();
 		performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereEmId, cidCurrent, employeeId);
-		// Delete history
-		
 	}
 
 }
