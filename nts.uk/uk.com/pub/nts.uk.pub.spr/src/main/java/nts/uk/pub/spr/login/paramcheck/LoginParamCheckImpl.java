@@ -22,13 +22,13 @@ import nts.uk.shr.com.time.AttendanceClock;
 @Stateless
 public class LoginParamCheckImpl implements LoginParamCheck {
 
-	private final String DATE_FORMAT1 = "yyyy/MM/dd";
+	private static final String DATE_FORMAT1 = "yyyy/MM/dd";
 	
-	private final String DATE_FORMAT2 = "yyyy/MM/d";
+	private static final String DATE_FORMAT2 = "yyyy/MM/d";
 	
-	private final String DATE_FORMAT3 = "yyyy/M/dd";
+	private static final String DATE_FORMAT3 = "yyyy/M/dd";
 	
-	private final String DATE_FORMAT4 = "yyyy/M/d";
+	private static final String DATE_FORMAT4 = "yyyy/M/d";
 	
 	@Inject
 	private EmployeeSprPub employeeSprPub;

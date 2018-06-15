@@ -49,8 +49,8 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			+ " WHERE c.sID = :sid"
 			+ " AND c.stateAtr = :stateAtr";
 	private static final String QUERY_BY_EACH_PERIOD = QUERY_SID_DATE_PERIOD
-			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= eDate)"
-			+ " OR (c.stateAtr = :stateAtr AND c.disapearDate >= :sDate AND c.disapearDate <= eDate) ";
+			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= :eDate)"
+			+ " OR (c.stateAtr = :stateAtr AND c.disapearDate >= :sDate AND c.disapearDate <= :eDate) ";
 
 	@Override
 	public List<PayoutManagementData> getSid(String cid, String sid) {
@@ -183,7 +183,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	public List<PayoutManagementData> getByStateAtr(String sid, DigestionAtr stateAtr) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_STATEATR, KrcmtPayoutManaData.class)
 				.setParameter("sid", sid)
-				.setParameter("stateAtr", stateAtr)
+				.setParameter("stateAtr", stateAtr.value)
 				.getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}

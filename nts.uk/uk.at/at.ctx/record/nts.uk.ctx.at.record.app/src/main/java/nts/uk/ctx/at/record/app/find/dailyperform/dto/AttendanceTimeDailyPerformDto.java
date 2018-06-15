@@ -4,18 +4,19 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /** 日別実績の勤怠時間 */
 @Getter
 @Setter
-@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_NAME)
+@AttendanceItemRoot(rootName = ItemConst.DAILY_ATTENDANCE_TIME_NAME)
 public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 
 	/** 年月日: 年月日 */
@@ -25,28 +26,28 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 	private String employeeID;
 
 	/** 実績時間: 日別実績の勤務実績時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "実績時間")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ACTUAL)
 	private ActualWorkTimeDailyPerformDto actualWorkTime;
 
 	/** 勤務予定時間: 日別実績の勤務予定時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "勤務予定時間")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = PLAN)
 	private WorkScheduleTimeDailyPerformDto scheduleTime;
 
 	/** 滞在時間: 日別実績の滞在時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "滞在時間")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = STAYING)
 	private StayingTimeDto stayingTime;
 
 	/** 医療時間: 日別実績の医療時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "医療時間", enumField = "dayNightAtr")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = MEDICAL, enumField = DEFAULT_ENUM_FIELD_NAME)
 	private MedicalTimeDailyPerformDto medicalTime;
 
 	/** 予実差異時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "予実差異時間")
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = PLAN_ACTUAL_DIFF)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer budgetTimeVariance;
 
 	/** 不就労時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "不就労時間")
+	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = UNEMPLOYED)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer unemployedTime;
 	
@@ -68,7 +69,7 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 		}
 		return items;
 	}
-	private static Integer getAttendanceTime(AttendanceTime domain) {
+	private static Integer getAttendanceTime(AttendanceTimeOfExistMinus domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 
@@ -97,7 +98,7 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 				scheduleTime == null ? null : scheduleTime.toDomain(), 
 				actualWorkTime == null ? null : actualWorkTime.toDomain(),
 				stayingTime == null ? null : stayingTime.toDomain(), 
-				budgetTimeVariance == null ? null : new AttendanceTime(budgetTimeVariance),
-				unemployedTime == null ? null : new AttendanceTime(unemployedTime));
+				budgetTimeVariance == null ? null : new AttendanceTimeOfExistMinus(budgetTimeVariance),
+				unemployedTime == null ? null : new AttendanceTimeOfExistMinus(unemployedTime));
 	}
 }

@@ -14,7 +14,12 @@ public interface TopPagePartRepository {
 	 * @return Optional TopPagePart
 	 */
 	Optional<TopPagePart> find(String topPagePartID);
-
+	/**
+	 * @param cID
+	 * @param topPagePartID
+	 * @return
+	 */
+	Optional<TopPagePart> findByKey(String cID, String topPagePartID);
 	/**
 	 * Find all TopPagePart
 	 *

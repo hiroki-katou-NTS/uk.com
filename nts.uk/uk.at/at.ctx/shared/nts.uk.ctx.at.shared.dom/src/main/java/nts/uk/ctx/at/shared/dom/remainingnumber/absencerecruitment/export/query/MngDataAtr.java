@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query;
 
 import lombok.AllArgsConstructor;
-
+/**
+ * 管理データ状態区分
+ * @author do_dt
+ *
+ */
 @AllArgsConstructor
 public enum MngDataAtr {
 	/**	予定 */

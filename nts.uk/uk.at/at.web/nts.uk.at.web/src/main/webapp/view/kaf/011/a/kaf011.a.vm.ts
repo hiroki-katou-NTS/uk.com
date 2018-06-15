@@ -43,7 +43,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         employeeName: KnockoutObservable<string> = ko.observable('');
         
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
-        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
 
         drawalReqSet: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
 
@@ -75,6 +75,19 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 }
 
             });
+
+            self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
+                    $('#recTimeBtn').ntsError("clear");
+                }
+            });
+
+            self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
+                    $('#absTimeBtn').ntsError("clear");
+                }
+            });
+
         }
         enablePrepost() {
             let self = this;
@@ -129,7 +142,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.absWk().setWkTypes(data.absWkTypes || []);
                 self.appReasons(data.appReasonComboItems || []);
                 self.employeeID(data.employeeID);
-                self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr == 1 ? false : true);
+                self.checkBoxValue(data.applicationSetting.manualSendMailAtr == 1 ? true : false);
+                self.enableSendMail(!data.sendMailWhenRegisterFlg);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
@@ -207,7 +221,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
             let isControlError = self.validateControl();
             if (isControlError) { return; }
-            
+
             let isCheckReasonError = !self.checkReason();
             if (isCheckReasonError) { return; }
             block.invisible();
