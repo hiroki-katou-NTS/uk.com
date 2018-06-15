@@ -19,6 +19,8 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	private String GET_ALL_BY_SID = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid ORDER BY a.registerDate, a.cardNo ASC";
 
 	private String GET_BY_CARD_ID = "SELECT a FROM KwkdtStampCard a WHERE a.cardId = :cardid";
+	
+	private String GET_BY_CONTRACT_CODE = "SELECT a.cardNo FROM KwkdtStampCard a WHERE a.contractCd = :contractCd";
 
 	private String GET_BY_CARD_NO_AND_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.cardNo = :cardNo and a.contractCd = :contractCd";
 
@@ -32,6 +34,16 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		return entities.stream()
 				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
 				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<String> getListStampCardByContractCode(String contractCd) {
+		List<String> lstCardNo = this.queryProxy().query(GET_BY_CONTRACT_CODE, String.class)
+				.setParameter("contractCd", contractCd).getList();
+		if (lstCardNo.isEmpty())
+			return Collections.emptyList();
+
+		return lstCardNo;
 	}
 
 	@Override
@@ -100,5 +112,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		entity.registerDate = data.getRegisterDate();
 		entity.contractCd = data.getContractCd().v();
 	}
+
+	
 
 }

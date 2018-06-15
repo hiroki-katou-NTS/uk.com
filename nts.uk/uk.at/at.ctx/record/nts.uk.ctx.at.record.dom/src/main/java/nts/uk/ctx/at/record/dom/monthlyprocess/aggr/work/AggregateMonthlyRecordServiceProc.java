@@ -7,6 +7,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -22,7 +24,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.absenceleave.temp.TempAbsenceLeaveService;
@@ -51,7 +52,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Getter
 public class AggregateMonthlyRecordServiceProc {
-
 	/** 月別集計が必要とするリポジトリ */
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	/** 期間中の年休積休残数を取得 */
@@ -60,8 +60,6 @@ public class AggregateMonthlyRecordServiceProc {
 	private TempAbsenceLeaveService tempAbsenceLeaveService;
 	/** （仮対応用）代休 */
 	private TempDayoffService tempDayoffService;
-	/** 月別実績と勤怠項目の相互変換 */
-	private MonthlyRecordToAttendanceItemConverter itemConverter;
 	
 	/** 集計結果 */
 	private AggregateMonthlyRecordValue aggregateResult;
@@ -96,12 +94,10 @@ public class AggregateMonthlyRecordServiceProc {
 			RepositoriesRequiredByMonthlyAggr repositories,
 			GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod,
 			TempAbsenceLeaveService tempAbsenceLeaveService,
-			TempDayoffService tempDayoffService,
-			MonthlyRecordToAttendanceItemConverter itemConverter){
+			TempDayoffService tempDayoffService){
 
 		this.repositories = repositories;
 		this.getAnnAndRsvRemNumWithinPeriod = getAnnAndRsvRemNumWithinPeriod;
-		this.itemConverter = itemConverter;
 		this.tempAbsenceLeaveService = tempAbsenceLeaveService;
 		this.tempDayoffService = tempDayoffService;
 	}
@@ -638,10 +634,11 @@ public class AggregateMonthlyRecordServiceProc {
 		val oldDataOpt = this.repositories.getAttendanceTimeOfMonthly().find(
 				this.employeeId, this.yearMonth, this.closureId, this.closureDate);
 		if (!oldDataOpt.isPresent()) return attendanceTime;
-		val oldItemConvert = this.itemConverter.withAttendanceTime(oldDataOpt.get());
+		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
+		val oldItemConvert = monthlyConverter.withAttendanceTime(oldDataOpt.get());
 
 		// 計算後データを確認
-		val convert = this.itemConverter.withAttendanceTime(attendanceTime);
+		val convert = monthlyConverter.withAttendanceTime(attendanceTime);
 		
 		// 月別実績の編集状態を取得
 		
@@ -688,10 +685,10 @@ public class AggregateMonthlyRecordServiceProc {
 		this.annualAndReserveLeaveRemain(period);
 		
 		// 振休（仮対応）
-		//this.absenceLeaveRemain_temp(period);
+		this.absenceLeaveRemain_temp(period);
 		
 		// 代休（仮対応）
-		//this.dayoffRemain_temp(period);
+		this.dayoffRemain_temp(period);
 	}
 	
 	/**
@@ -764,6 +761,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getAbsenceLeaveRemainList().add(
 				this.tempAbsenceLeaveService.algorithm(this.companyId, this.employeeId, this.yearMonth,
 						period, this.closureId, this.closureDate));
+		
 	}
 	
 	/**
@@ -775,6 +773,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getMonthlyDayoffRemainList().add(
 				this.tempDayoffService.algorithm(this.companyId, this.employeeId, this.yearMonth,
 						period, this.closureId, this.closureDate));
+		
 	}
 	
 	/**

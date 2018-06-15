@@ -19,6 +19,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         leaveSettingExpiredDate: string;
         compenSettingEmpExpiredDate: string
         isHaveError: KnockoutObservable<boolean> = ko.observable(false);
+        unknowEmployeeInfo = false;
         //_____CCG001________
         ccgcomponent: GroupOption;
         listEmployeeKCP009: KnockoutObservableArray<EmployeeSearchDto>;
@@ -93,6 +94,12 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.selectedItem.subscribe(x => {
                 if (!self.isOnStartUp) {
                     self.selectedEmployee = _.find(self.listEmployee, item => { return item.employeeId === x; });
+                    if (!self.selectedEmployee){
+                        self.selectedEmployee = new EmployeeInfo(x, "", "", "", "", "");
+                        self.unknowEmployeeInfo = true;
+                    } else {
+                        self.unknowEmployeeInfo = false;
+                    }
                     self.getSubstituteDataList(self.getSearchCondition());
                 }
                 self.isOnStartUp = false;
@@ -147,6 +154,15 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
+                    if (self.unknowEmployeeInfo){ 
+                        if (result.wkHistory){
+                            self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
+                            self.selectedEmployee.workplaceCode = result.wkHistory.workplaceCode;
+                            self.selectedEmployee.workplaceName = result.wkHistory.workplaceName;
+                            self.selectedEmployee.employeeCode = result.employeeCode;
+                            self.selectedEmployee.employeeName = result.employeeName;
+                        }
+                    }
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
                         self.listExtractData = result.extraData;
@@ -159,7 +175,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     } else {
                         self.subData = [];
                         self.updateSubstituteDataList();
-                        self.dispTotalRemainHours('');
+                        self.dispTotalRemainHours('0' + getText('KDM001_27'));
                         self.dispExpiredDate('');
                         self.isHaveError(true);
                         dialog.alertError({messageId: 'Msg_1306'});
@@ -330,7 +346,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                         self.subData = [];
                         self.updateSubstituteDataList();
                         self.isHaveError(true);
-                        dialog.alertError({messageId: 'Msg_1306'}); 
+                        dialog.alertError({messageId: 'Msg_1306'});
+                        self.dispTotalRemainHours('0' + getText('KDM001_27'));
                     }
                     dfd.resolve();
                 }).fail(function(result) {
