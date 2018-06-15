@@ -39,3 +39,10 @@
 		height: 361px !important;
 	}
 }
+
+@supports (-ms-ime-align:auto) {
+    #swap-list-grid1_displayContainer, #swap-list-grid2_displayContainer,
+	#swap-list-grid1_scrollContainer, #swap-list-grid2_scrollContainer {
+		height: 366px !important;
+	}
+}
