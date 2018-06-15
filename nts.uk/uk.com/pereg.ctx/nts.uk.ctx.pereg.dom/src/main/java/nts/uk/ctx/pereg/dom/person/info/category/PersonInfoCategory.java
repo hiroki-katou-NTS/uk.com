@@ -182,6 +182,7 @@ public class PersonInfoCategory extends AggregateRoot {
 	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType,int salaryAtr, int employmentAtr, int personelAtr) {
 		super();
 		this.personInfoCategoryId = IdentifierUtil.randomUniqueId();
+		this.companyId = companyId;
 		this.categoryCode = new CategoryCode(categoryCode);
 		this.categoryParentCode = null;
 		this.categoryName = new CategoryName(categoryName);
