@@ -51,14 +51,21 @@ public class CreScheWithBusinessDayCalService {
 	 * @param workTypeCode
 	 * @param workTimeCode
 	 */
-	public BusinessDayCal getScheduleBreakTime(String companyId, String workTypeCode, String workTimeCode) {
+	public BusinessDayCal getScheduleBreakTime(String companyId, String workTypeCode, String workTimeCode,
+			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting) {
 		// 入力パラメータ「就業時間帯コード」をチェック
 		if (Strings.isBlank(workTimeCode) || "000".equals(workTimeCode)) {
 			return null;
 		}
 
 		// ドメインモデル「勤務種類」を取得する
-		Optional<WorkType> workTypeOpt = workTypeRepository.findByPK(companyId, workTypeCode);
+		// Optional<WorkType> workTypeOpt =
+		// workTypeRepository.findByPK(companyId, workTypeCode);
+		// EA No2018
+		// 勤務種類一覧から入力パラメータ.勤務種類コードと一致する情報を取得する
+		Optional<WorkType> workTypeOpt = listWorkType.stream()
+				.filter(x -> (x.getCompanyId().equals(companyId) && x.getWorkTypeCode().toString().equals(workTypeCode)))
+				.findFirst();
 		if (!workTypeOpt.isPresent()) {
 			throw new RuntimeException("Work Type Not Found:" + workTypeCode);
 		}
@@ -69,7 +76,12 @@ public class CreScheWithBusinessDayCalService {
 		DailyWork dailyWork = workType.getDailyWork();
 
 		// ドメインモデル「就業時間帯の設定」を取得する
-		Optional<WorkTimeSetting> workTimeSettingOpt = workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		// Optional<WorkTimeSetting> workTimeSettingOpt = workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		// EA No2018
+		// 就業時間帯一覧から入力パラメータ.就業時間帯コードと一致する情報を取得する
+		Optional<WorkTimeSetting> workTimeSettingOpt = listWorkTimeSetting.stream()
+				.filter(x -> (x.getCompanyId().equals(companyId) && x.getWorktimeCode().toString().equals(workTimeCode)))
+				.findFirst();
 		if (!workTimeSettingOpt.isPresent()) {
 			return null;
 		}
@@ -111,7 +123,7 @@ public class CreScheWithBusinessDayCalService {
 	public BusinessDayCal determineSetWorkingHours(WorkTimeSetting workTimeSetting, String companyId,
 			String workTimeCode, boolean isHoliday, DailyWork dailyWork) {
 		BusinessDayCal data = new BusinessDayCal();
-		
+
 		// 「就業時間帯勤務区分. 就業時間帯の設定方法」を判断
 		switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
 		// ［固定勤務設定］
@@ -120,13 +132,14 @@ public class CreScheWithBusinessDayCalService {
 			if (!fixedWorkSetting.isPresent()) {
 				return null;
 			}
-			
+
 			if (isHoliday) {
 				// 固定勤務設定. 休日勤務時間帯. 休憩時間帯
 				data.setTimezones(fixedWorkSetting.get().getOffdayWorkTimezone().getRestTimezone().getLstTimezone());
 			} else {
 				// 「固定勤務設定. 平日勤務時間帯. 休憩時間帯」
-				List<FixRestTimezoneSet> lstTimezone = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().map(x -> x.getRestTimezone()).collect(Collectors.toList());
+				List<FixRestTimezoneSet> lstTimezone = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream()
+						.map(x -> x.getRestTimezone()).collect(Collectors.toList());
 				List<DeductionTime> timezones = new ArrayList<>();
 				lstTimezone.forEach(item -> {
 					timezones.addAll(item.getLstTimezone());
@@ -140,17 +153,17 @@ public class CreScheWithBusinessDayCalService {
 			if (!flowWorkSetting.isPresent()) {
 				return null;
 			}
-			
+
 			if (isHoliday) {
 				// 流動勤務設定. 休日勤務時間帯. 休憩時間帯. 固定休憩時間帯
 				data.setTimezones(flowWorkSetting.get().getOffdayWorkTimezone().getRestTimeZone().getFixedRestTimezone()
 						.getTimezones());
 			} else {
-				//流動勤務設定. 平日勤務時間帯. 休憩時間帯. 固定休憩時間帯」
-				data.setTimezones(flowWorkSetting.get().getHalfDayWorkTimezone().getRestTimezone().getFixedRestTimezone()
-						.getTimezones());
+				// 流動勤務設定. 平日勤務時間帯. 休憩時間帯. 固定休憩時間帯」
+				data.setTimezones(flowWorkSetting.get().getHalfDayWorkTimezone().getRestTimezone()
+						.getFixedRestTimezone().getTimezones());
 			}
-			
+
 			break;
 		// ［時差勤務設定］
 		case DIFFTIME_WORK:
@@ -160,26 +173,26 @@ public class CreScheWithBusinessDayCalService {
 			if (!diffTimeWorkSetting.isPresent()) {
 				return null;
 			}
-			
+
 			if (isHoliday) {
-				//「時差勤務設定. 休日勤務時間帯. 休憩時間帯」
+				// 「時差勤務設定. 休日勤務時間帯. 休憩時間帯」
 				List<DiffTimeDeductTimezone> lsDiffTimeDeductTimezone = diffTimeWorkSetting.get()
 						.getDayoffWorkTimezone().getRestTimezone().getRestTimezones();
 				List<DeductionTime> lsDeductionTime = new ArrayList<DeductionTime>(lsDiffTimeDeductTimezone);
 				data.setTimezones(lsDeductionTime);
 			} else {
-				//「時差勤務設定. 平日勤務時間帯. 休憩時間帯」
+				// 「時差勤務設定. 平日勤務時間帯. 休憩時間帯」
 				List<DiffTimeHalfDayWorkTimezone> lsDiffTimeDeductTimezone = diffTimeWorkSetting.get()
 						.getHalfDayWorkTimezones();
-				
+
 				List<DeductionTime> timezones = new ArrayList<>();
 				lsDiffTimeDeductTimezone.forEach(item -> {
 					timezones.addAll(item.getRestTimezone().getRestTimezones());
 				});
-				
+
 				data.setTimezones(timezones);
 			}
-			
+
 			break;
 		}
 
