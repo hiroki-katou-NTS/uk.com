@@ -23,12 +23,12 @@ import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.K
 @Stateless
 public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository implements GoBackDirectlyCommonSettingRepository {
 
-	public final String SELECT_NO_WHERE = "SELECT c FROM KrqstGoBackDirectSet c";
+	public static final String SELECT_NO_WHERE = "SELECT c FROM KrqstGoBackDirectSet c";
 
 	/**
 	 * 
 	 */
-	public final String SELECT_WITH_COMPANY_ID = SELECT_NO_WHERE 
+	public static final String SELECT_WITH_COMPANY_ID = SELECT_NO_WHERE 
 			+ " WHERE c.krqstGoBackDirectSetPK.companyID =:companyID";
 
 	/**

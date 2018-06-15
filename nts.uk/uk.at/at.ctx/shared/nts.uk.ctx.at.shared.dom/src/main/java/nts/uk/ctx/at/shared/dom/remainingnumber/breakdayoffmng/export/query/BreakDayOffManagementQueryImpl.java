@@ -48,11 +48,14 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	@Override
 	public List<InterimRemainAggregateOutputData> getInterimRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
-		
+		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>();
 		//アルゴリズム「締めと残数算出対象期間を取得する」を実行する
 		ClosureRemainPeriodOutputData closureData = remainManaExport.getClosureRemainPeriod(employeeId, baseDate, startMonth, endMonth);
+		if(closureData == null) {
+			return lstData;
+		}
 		//残数算出対象年月を設定する
-		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>();
+		
 		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)) {
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, (double) 0, (double) 0, (double) 0, (double) 0, (double) 0);
 			//アルゴリズム「指定年月の締め期間を取得する」を実行する
@@ -63,12 +66,11 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			Double useDays = this.getTotalUseDays(employeeId, dateData);
 			//残数算出対象年月をチェックする
 			//残数算出対象年月＞締め.当月.処理年月
-			if(ym.greaterThan(closureData.getClosure().getClosureMonth().getProcessingYm())) {
-				//月度別代休残数集計を作成する
-				outPutData.setYm(ym);
-				outPutData.setMonthOccurrence(occurrentDays);
-				outPutData.setMonthUse(useDays);
-			} else {
+			//月度別代休残数集計を作成する
+			outPutData.setYm(ym);
+			outPutData.setMonthOccurrence(occurrentDays);
+			outPutData.setMonthUse(useDays);
+			if(!ym.greaterThan(closureData.getClosure().getClosureMonth().getProcessingYm())) {
 				//当月の代休残数を集計する
 				outPutData = this.aggregatedDayoffCurrentMonth(employeeId, dateData, outPutData);
 				//月末代休残数：月初代休残数＋代休発生数合計－代休使用数合計－代休消滅数合計
@@ -81,7 +83,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	@Override
 	public Double getTotalOccurrenceDays(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定休出管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.SUBHOLIDAY);
+		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.BREAK);
 		Double outputData = (double) 0;
 		for (InterimRemain interimRemain : getRemainBySidPriod) {
 			Optional<InterimBreakMng> getBreakManaBybreakManaId = breakDayOffRepo.getBreakManaBybreakMngId(interimRemain.getRemainManaID());

@@ -1,60 +1,54 @@
-module nts.uk.com.view.cps005.b {
-    export module service {
-        export class Service {
-            paths = {
-                getAllPerInfoItemDefByCtgId: "ctx/pereg/person/info/ctgItem/findby/categoryId1/{0}/{1}",
-                getPerInfoItemDefById: "ctx/pereg/person/info/ctgItem/findby/itemId/{0}/{1}",
-                addItemDef: "ctx/pereg/person/info/ctgItem/add",
-                updateItemDef: "ctx/pereg/person/info/ctgItem/update",
-                removeItemDef: "ctx/pereg/person/info/ctgItem/remove",
-                getAllSelectionItem: "ctx/pereg/person/info/setting/selection/findAllSelectionItem",
-                filterHisSel: "ctx/pereg/person/info/setting/selection/findSelectionInit",
-                checkItemData: "ctx/pereg/person/info/ctgItem/check/itemData/{0}"
+module nts.uk.com.view.cps005.b.service {
+    import ajax = nts.uk.request.ajax;
 
-            }
+    let paths = {
+        getAllPerInfoItemDefByCtgId: "ctx/pereg/person/info/ctgItem/findby/categoryId1/{0}/{1}",
+        getPerInfoItemDefById: "ctx/pereg/person/info/ctgItem/findby/itemId/{0}/{1}",
+        addItemDef: "ctx/pereg/person/info/ctgItem/add",
+        updateItemDef: "ctx/pereg/person/info/ctgItem/update",
+        removeItemDef: "ctx/pereg/person/info/ctgItem/remove",
+        getAllSelectionItem: "ctx/pereg/person/info/setting/selection/findAllSelectionItem",
+        filterHisSel: "ctx/pereg/person/info/setting/selection/findSelectionInit",
+        checkItemData: "ctx/pereg/person/info/ctgItem/check/itemData/{0}"
 
-            constructor() {
+    };
 
-            }
+    export function getAllPerInfoItemDefByCtgId(categoryId: string, personEmployeeType: number) {
+        let _path = nts.uk.text.format(paths.getAllPerInfoItemDefByCtgId, categoryId, personEmployeeType);
+        return ajax("com", _path);
+    };
 
-            getAllPerInfoItemDefByCtgId(categoryId: string,  personEmployeeType: number): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getAllPerInfoItemDefByCtgId, categoryId, personEmployeeType);
-                return nts.uk.request.ajax("com", _path);
-            };
+    export function getPerInfoItemDefById(itemId: string, personEmployeeType: number) {
+        let _path = nts.uk.text.format(paths.getPerInfoItemDefById, itemId, personEmployeeType);
+        return ajax("com", _path);
+    };
 
-            getPerInfoItemDefById(itemId: string, personEmployeeType: number): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getPerInfoItemDefById, itemId, personEmployeeType);
-                return nts.uk.request.ajax("com", _path);
-            };
+    export function getAllSelectionItem() {
+        return ajax("com", paths.getAllSelectionItem);
+    };
 
-            getAllSelectionItem(): JQueryPromise<any> {
-                return nts.uk.request.ajax("com", this.paths.getAllSelectionItem);
-            };
+    export function addItemDef(newItemDef: any) {
+        return ajax("com", paths.addItemDef, newItemDef);
+    };
 
-            addItemDef(newItemDef: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("com", this.paths.addItemDef, newItemDef);
-            };
+    export function updateItemDef(newItemDef: any) {
+        return ajax("com", paths.updateItemDef, newItemDef);
+    };
 
-            updateItemDef(newItemDef: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("com", this.paths.updateItemDef, newItemDef);
-            };
+    export function removeItemDef(removeCommand: any) {
+        return ajax("com", paths.removeItemDef, removeCommand);
+    };
 
-            removeItemDef(removeCommand: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("com", this.paths.removeItemDef, removeCommand);
-            };
-            
-            getAllSelByHistory(selectionItemId: string, selectionItemClsAtr : number) {
-                let query = {
-                    selectionItemId : selectionItemId, 
-                    selectionItemClsAtr : selectionItemClsAtr, 
-                    cps006 : false
-                }
-                return nts.uk.request.ajax(this.paths.filterHisSel, query);
-            };
-            
-            checkItemData(itemId: string){
-               return nts.uk.request.ajax(nts.uk.text.format(this.paths.checkItemData, itemId));
-            };
+    export function getAllSelByHistory(selectionItemId: string, selectionItemClsAtr: number) {
+        let query = {
+            selectionItemId: selectionItemId,
+            selectionItemClsAtr: selectionItemClsAtr,
+            cps006: false
         }
-    }
+        return ajax(paths.filterHisSel, query);
+    };
+
+    export function checkItemData(itemId: string) {
+        return ajax(nts.uk.text.format(paths.checkItemData, itemId));
+    };
 }
