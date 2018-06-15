@@ -4385,7 +4385,7 @@ var nts;
                         // Check Constraint
                         if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                             var maxLength = this.constraint.maxLength;
-                            if (this.constraint.charType == "Any")
+                            if (this.constraint.charType == "Any" || this.constraint.charType === "Kana")
                                 maxLength = nts.uk.text.getCharTypeByType("Any").getViewLength(maxLength);
                             result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
                             return result;
