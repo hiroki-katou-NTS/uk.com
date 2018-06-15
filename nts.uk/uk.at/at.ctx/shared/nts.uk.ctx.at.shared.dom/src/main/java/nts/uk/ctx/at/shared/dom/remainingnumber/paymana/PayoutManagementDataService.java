@@ -114,7 +114,6 @@ public class PayoutManagementDataService {
 					errors.add("Msg_737_splitMana");
 				}
 			}
-
 		}
 		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, splitMana.getRequiredDays().v(),subMana.getRequiredDays().v(), payMana.getOccurredDays().v() ));
 		if (errors.isEmpty()) {
@@ -199,7 +198,7 @@ public class PayoutManagementDataService {
 			if (stateAtr == DigestionAtr.EXPIRED.value) {
 				errorList.add("Msg_1212");
 				return errorList;
-			} else if (dayoffDate.compareTo(expiredDate) > 0) {
+			} else if (dayoffDate.compareTo(expiredDate) >= 0) {
 				errorList.add("Msg_825");
 			}
 			return errorList;
