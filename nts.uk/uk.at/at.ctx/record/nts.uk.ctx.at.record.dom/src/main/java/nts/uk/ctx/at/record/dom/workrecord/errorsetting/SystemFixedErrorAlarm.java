@@ -29,10 +29,10 @@ public enum SystemFixedErrorAlarm {
 	DOUBLE_STAMP("S006"),
 	
 	// 遅刻
-	LATE("007"),
+	LATE("S007"),
 	
 	// 早退
-	LEAVE_EARLY("008"),
+	LEAVE_EARLY("S008"),
 	
 	// 事前残業申請超過
 	PRE_OVERTIME_APP_EXCESS("S009"),
