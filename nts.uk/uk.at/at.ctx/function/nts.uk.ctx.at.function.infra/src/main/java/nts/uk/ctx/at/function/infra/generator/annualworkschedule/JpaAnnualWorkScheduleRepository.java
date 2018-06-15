@@ -285,8 +285,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		List<AgreementTimeByPeriodImport> listExcesMonths = new ArrayList<>();
 		if (displayFormat.equals(OutputAgreementTime.TWO_MONTH)
 				|| displayFormat.equals(OutputAgreementTime.THREE_MONTH)) {
-			listExcesMonths = this.create36AgreementFewMonth(cid, employeeId, fiscalYear, startYm,
-					OutputAgreementTime.THREE_MONTH);
+			listExcesMonths = this.create36AgreementFewMonth(cid, employeeId, fiscalYear, startYm, displayFormat);
 		}
 
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
