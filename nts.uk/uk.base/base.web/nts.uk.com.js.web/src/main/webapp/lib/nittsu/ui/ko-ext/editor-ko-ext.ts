@@ -75,6 +75,8 @@ module nts.uk.ui.koExtentions {
             var valueUpdate: string = (immediate === true) ? 'input' : 'change';
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : {};
             this.editorOption = $.extend(this.getDefaultOption(), option);
+            var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
+            $input.data("setValOnRequiredError", setValOnRequiredError);
             var characterWidth: number = 9;
             if (constraint && constraint.maxLength && !$input.is("textarea")) {
                 let autoWidth = constraint.maxLength * characterWidth;
@@ -111,6 +113,10 @@ module nts.uk.ui.koExtentions {
                     if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
                         $input.ntsError('clear');
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                    }
+                    if($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)){
+                        valueChanging.markUserChange($input);
+                        value(newText);
                     }
                     
                     // valueChanging.markUserChange($input);
@@ -166,6 +172,8 @@ module nts.uk.ui.koExtentions {
             var placeholder: string = this.editorOption.placeholder;
             var textalign: string = this.editorOption.textalign;
             var width: string = this.editorOption.width;
+            var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
+            $input.data("setValOnRequiredError", setValOnRequiredError);
             
             disable.saveDefaultValue($input, option.defaultValue);
             
@@ -227,6 +235,8 @@ module nts.uk.ui.koExtentions {
             var value: KnockoutObservable<string> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
+            var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
+            $input.data("setValOnRequiredError", setValOnRequiredError);
             var characterWidth: number = 9;
             
             self.loadConstraints(constraintName, $input).done(() => {
@@ -299,6 +309,11 @@ module nts.uk.ui.koExtentions {
                         }
                     } else {
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        
+                        if($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)){
+                            valueChanging.markUserChange($input);
+                            value(newText);
+                        }
                         // valueChanging.markUserChange($input);
                         // value(newText);
                     } 
@@ -573,7 +588,8 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
-            return new text.TimeFormatter({ inputFormat: inputFormat });
+            var mode: string = (data.mode !== undefined) ? ko.unwrap(data.mode) : ""
+            return new text.TimeFormatter({ inputFormat: inputFormat, mode: mode });
         }
 
         getValidator(data: any): validation.IValidator {
