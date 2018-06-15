@@ -74,7 +74,7 @@
 											options: dataOutputType,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedDataOutputType,
+											value: monthlyWorkScheduleConditionModel.outputType,
 											required: true,
 											enable: true }"></div>
 									</div>
@@ -112,7 +112,7 @@
 											options: itemListTypePageBrake,
 											optionsValue: 'code',
 											visibleItemsCount: 3,
-											value: selectedCodeA9_2,
+											value: monthlyWorkScheduleConditionModel.pageBreakIndicator,
 											optionsText: 'name',
 											columns: [
 												{ prop: 'name', length: 5 },
@@ -124,44 +124,44 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_16')}</div>
 									</div>
 									
-									<table class="table2">
+									<table class="table2" data-bind="with: monthlyWorkScheduleConditionModel.totalOutputSetting">
 										<tr>
 											<td class="A10-left">
 												<!-- A10_2 -->
-												<div tabindex="10" data-bind="ntsCheckBox: { checked: checkedA10_2 }">#{i18n.getText('KWR006_17')}</div>
+												<div tabindex="10" data-bind="ntsCheckBox: { checked: details }">#{i18n.getText('KWR006_17')}</div>
 												<!-- A10_3 -->
-												<div tabindex="11" data-bind="ntsCheckBox: { checked: checkedA10_3, enable: enableByOutputFormat }">#{i18n.getText('KWR006_18')}</div>
+												<div tabindex="11" data-bind="ntsCheckBox: { checked: personalTotal, enable: isIndividualTypeSelected }">#{i18n.getText('KWR006_18')}</div>
 												<!-- A10_4 -->
-												<div tabindex="12" data-bind="ntsCheckBox: { checked: checkedA10_4 }">#{i18n.getText('KWR006_19')}</div>
+												<div tabindex="12" data-bind="ntsCheckBox: { checked: workplaceTotal }">#{i18n.getText('KWR006_19')}</div>
 												<!-- A10_5 -->
-												<div tabindex="13" data-bind="ntsCheckBox: { checked: checkedA10_5, enable: enableByOutputFormat }">#{i18n.getText('KWR006_21')}</div>
+												<div tabindex="13" data-bind="ntsCheckBox: { checked: grossTotal, enable: isIndividualTypeSelected }">#{i18n.getText('KWR006_21')}</div>
 												
 											</td>
 											<td>
 												<!-- A10_6 -->
-												<div tabindex="14" data-bind="ntsCheckBox: { checked: checkedA10_6 }">#{i18n.getText('KWR006_22')}</div>
+												<div tabindex="14" data-bind="ntsCheckBox: { checked: cumulativeWorkplace }">#{i18n.getText('KWR006_22')}</div>
 												<!-- A11_1 -->
-												<div class="panel panel-frame">
+												<div class="panel panel-frame" data-bind="with: workplaceHierarchyTotal">
 													<!-- A11_2 -->
 													<div tabindex="" class="label">#{i18n.getText('KWR006_23')}</div>
 													<!-- A11_3 -->
-													<div tabindex="15" data-bind="ntsCheckBox: { checked: checkedA11_3, enable: enableByCumulativeWkp }">#{i18n.getText('KWR006_24')}</div>
+													<div tabindex="15" data-bind="ntsCheckBox: { checked: firstLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_24')}</div>
 													<!-- A11_4 -->
-													<div tabindex="16" data-bind="ntsCheckBox: { checked: checkedA11_4, enable: enableByCumulativeWkp }">#{i18n.getText('KWR006_25')}</div>
+													<div tabindex="16" data-bind="ntsCheckBox: { checked: secondLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_25')}</div>
 													<!-- A11_5 -->
-													<div tabindex="17" data-bind="ntsCheckBox: { checked: checkedA11_5, enable: enableByCumulativeWkp }">#{i18n.getText('KWR006_26')}</div>
+													<div tabindex="17" data-bind="ntsCheckBox: { checked: thirdLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_26')}</div>
 													<!-- A11_6 -->
-													<div tabindex="18" data-bind="ntsCheckBox: { checked: checkedA11_6, enable: enableByCumulativeWkp }">#{i18n.getText('KWR006_27')}</div>
+													<div tabindex="18" data-bind="ntsCheckBox: { checked: fourthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_27')}</div>
 													<!-- A11_7 -->
-													<div tabindex="19" data-bind="ntsCheckBox: { checked: checkedA11_7, enable: enableByCumulativeWkp }">#{i18n.getText('KWR006_28')}</div>
+													<div tabindex="19" data-bind="ntsCheckBox: { checked: fifthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_28')}</div>
 													<!-- A11_8 -->
-													<div tabindex="20" data-bind="ntsCheckBox: { checked: checkedA11_8, enable: enableByCumulativeWkp }">#{i18n.getText('KWR006_29')}</div>
+													<div tabindex="20" data-bind="ntsCheckBox: { checked: sixthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_29')}</div>
 													<!-- A11_9 -->
-													<div tabindex="21" data-bind="ntsCheckBox: { checked: checkedA11_9, enable: enableByCumulativeWkp }">#{i18n.getText('KWR006_30')}</div>
+													<div tabindex="21" data-bind="ntsCheckBox: { checked: seventhLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_30')}</div>
 													<!-- A11_10 -->
-													<div tabindex="22" data-bind="ntsCheckBox: { checked: checkedA11_10, enable: enableByCumulativeWkp }">#{i18n.getText('KWR006_31')}</div>
+													<div tabindex="22" data-bind="ntsCheckBox: { checked: eightLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_31')}</div>
 													<!-- A11_11 -->
-													<div tabindex="23" data-bind="ntsCheckBox: { checked: checkedA11_11, enable: enableByCumulativeWkp }">#{i18n.getText('KWR006_32')}</div>
+													<div tabindex="23" data-bind="ntsCheckBox: { checked: ninthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_32')}</div>
 													
 													<!-- A11_12 -->
 													<div class="label A10_19">#{i18n.getText('KWR006_33')}</div>

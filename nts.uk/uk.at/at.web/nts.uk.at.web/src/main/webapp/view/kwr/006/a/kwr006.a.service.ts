@@ -3,13 +3,13 @@ module nts.uk.at.view.kwr006.a {
         var paths = {
            exportSchedule: "screen/at/monthlyschedule/export"
         }
-        export function saveCharacteristic(data: WorkScheduleOutputConditionDto): JQueryPromise<void> {
-            nts.uk.characteristics.save("MonthlyWorkScheduleCondition" +
+        export function saveCharacteristic(data: model.MonthlyWorkScheduleConditionDto): JQueryPromise<void> {
+            return nts.uk.characteristics.save("MonthlyWorkScheduleCondition" +
                 "_companyId_" + data.companyId +
                 "_userId_" + data.userId, data);
         }
 
-        export function restoreCharacteristic(): JQueryPromise<WorkScheduleOutputConditionDto> {
+        export function restoreCharacteristic(): JQueryPromise<model.MonthlyWorkScheduleConditionDto> {
             return nts.uk.characteristics.restore("MonthlyWorkScheduleCondition" +
                 "_companyId_" + __viewContext.user.companyId +
                 "_userId_" + __viewContext.user.employeeId);
@@ -18,44 +18,40 @@ module nts.uk.at.view.kwr006.a {
         export function exportSchedule(query: any): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportSchedule, query);
         }
-        
-        export interface WorkScheduleOutputConditionDto {
-            companyId: string;
-            userId: string;
-            outputType: number;
-            pageBreakIndicator: number;
-            condition: MonthlyWorkScheduleConditionDto;
-        }
 
-        export interface MonthlyWorkScheduleConditionDto {
-            companyId: string;
-            userId: string;
-            outputType: number;
-            pageBreakIndicator: number;
-            totalOutputSetting: WorkScheduleSettingTotalOutputDto;
+        export module model {
+            
+            export interface MonthlyWorkScheduleConditionDto {
+                companyId: string;
+                userId: string;
+                outputType: number;
+                pageBreakIndicator: number;
+                totalOutputSetting: WorkScheduleSettingTotalOutputDto;
+            }
+            
+            export interface WorkScheduleSettingTotalOutputDto {
+                details: boolean;
+                personalTotal: boolean;
+                workplaceTotal: boolean; 
+                grossTotal: boolean;
+               
+                workplaceHierarchyTotal: TotalWorkplaceHierachyDto;
+            }
+    
+            export interface TotalWorkplaceHierachyDto {
+                firstLevel: boolean;
+                secondLevel: boolean;
+                thirdLevel: boolean;
+                fourthLevel: boolean;
+                fifthLevel: boolean;
+                sixthLevel: boolean;
+                seventhLevel: boolean;
+                eightLevel: boolean;
+                ninthLevel: boolean;
+                 cumulativeWorkplace: boolean;
+            }
         }
         
-        export interface WorkScheduleSettingTotalOutputDto {
-            details: boolean;
-            personalTotal: boolean;
-            workplaceTotal: boolean; 
-            totalNumberDay: boolean;
-            grossTotal: boolean;
-            cumulativeWorkplace: boolean;
-            workplaceHierarchyTotal: TotalWorkplaceHierachyDto;
-        }
-
-        export interface TotalWorkplaceHierachyDto {
-            firstLevel: boolean;
-            secondLevel: boolean;
-            thirdLevel: boolean;
-            fourthLevel: boolean;
-            fifthLevel: boolean;
-            sixthLevel: boolean;
-            seventhLevel: boolean;
-            eightLevel: boolean;
-            ninthLevel: boolean;
-        }
     }
 
 }
