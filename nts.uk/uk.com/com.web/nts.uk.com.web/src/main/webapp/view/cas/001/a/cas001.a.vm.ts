@@ -37,8 +37,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
             { headerText: 'コード', key: 'categoryId', width: 200, hidden: true },
             { headerText: getText('CAS001_10'), key: 'categoryName', width: 165 },
             {
-              headerText: getText('CAS001_69'), key: 'setting', width: 80, //formatter: makeIcon
-               template: '{{if ${setting} == "true"}} <span>●</span>{{else }} <span></span> {{/if}}'
+                headerText: getText('CAS001_69'), key: 'setting', width: 80, //formatter: makeIcon
+                template: '{{if ${setting} == "true"}} <span>●</span>{{else }} <span></span> {{/if}}'
             }
         ]);
 
@@ -63,24 +63,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 if (newRoleId == "" || self.personRoleList().length < 1) {
                     return;
                 }
-
-
+                
                 let newPersonRole = _.find(self.personRoleList(), (role) => { return role.roleId === newRoleId });
-
-
-                service.getPersonRoleAuth(newRoleId).done((result: IPersonRole) => {
-
-                    newPersonRole.setRoleAuth(result);
-
+                
+                if (newPersonRole) {
                     self.currentRole(newPersonRole);
-                });
+                }
 
                 newPersonRole.loadRoleCategoriesList(newRoleId, false).done(() => {
                     if (!self.currentCategoryId()) {
                         newPersonRole.setCtgSelectedId(self.roleCategoryList());
                     }
-
-
                 });
 
             });
