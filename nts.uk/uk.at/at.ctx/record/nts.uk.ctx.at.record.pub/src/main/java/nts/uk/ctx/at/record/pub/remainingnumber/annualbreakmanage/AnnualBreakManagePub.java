@@ -8,7 +8,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AnnualBreakManagePub {
 	/**
-	 * RequestList 304 - 90%
+	 * RequestList 304
 	 * アルゴリズム「社員ID、期間をもとに期間内に年休付与日がある社員を抽出する」を実行する
 	 * @param employeeId
 	 * @param startDate
@@ -18,7 +18,7 @@ public interface AnnualBreakManagePub {
 	List<AnnualBreakManageExport> getEmployeeId(List<String> employeeId, GeneralDate startDate, GeneralDate endDate);
 	
 	/**
-	 * RequestList 327 - 90%
+	 * RequestList 327
 	 * 指定年月日時点の年休残数を取得
 	 * @param employeeId
 	 * @param confirmDay
@@ -33,4 +33,6 @@ public interface AnnualBreakManagePub {
 	 * @return
 	 */
 	List<NextAnnualLeaveGrant> calculateNextHolidayGrant(String employeeId, DatePeriod time);
+	
+	List<YearlyHolidaysTimeRemainingExport> getNumberOfAnnualHolidayGrantedBeforeCloseDate(String companyId, GeneralDate startDate, GeneralDate designatedStartDate);
 }

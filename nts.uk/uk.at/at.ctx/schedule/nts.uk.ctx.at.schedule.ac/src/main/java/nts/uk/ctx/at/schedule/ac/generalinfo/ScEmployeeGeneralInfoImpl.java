@@ -24,7 +24,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class ScEmployeeGeneralInfoImpl implements ScEmployeeGeneralInfoAdapter {
 
 	@Inject
-	public EmployeeGeneralInfoPub employeeGeneralInfoPub;
+	private EmployeeGeneralInfoPub employeeGeneralInfoPub;
 
 	@Override
 	public EmployeeGeneralInfoImported getPerEmpInfo(List<String> employeeIds, DatePeriod period) {
@@ -65,6 +65,7 @@ public class ScEmployeeGeneralInfoImpl implements ScEmployeeGeneralInfoAdapter {
 
 		return new EmployeeGeneralInfoImported(employmentImported, exClassificationHistoryImported,
 				exJobTitleHistoryImported, exWorkPlaceHistoryImported);
+
 	}
 
 }
