@@ -346,7 +346,7 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		}
 		String scheduleId = this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
 		taskSetting.setScheduleId(scheduleId);
-		Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
+		Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
 		taskSetting.setNextExecDateTime(nextFireTime);
 		/*
 		String endScheduleId=null;
@@ -456,7 +456,12 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		StringBuilder cronExpress = new StringBuilder();
 		StringBuilder cronExpress2 = null;
 		StringBuilder cronExpress3 = null;
-		switch (command.getRepeatContent().intValue()) {
+		int repeatContent =   command.getRepeatContent().intValue();
+		//fixbug when not repeat day week month
+		if(!command.isRepeatCls()){
+			repeatContent = 0;
+		}
+		switch (repeatContent) {
 		case 0: //day
 			if(repeatMinute==null){
 				cronExpress.append("0 "+startMinute+" "+startHours+" * * ? ");

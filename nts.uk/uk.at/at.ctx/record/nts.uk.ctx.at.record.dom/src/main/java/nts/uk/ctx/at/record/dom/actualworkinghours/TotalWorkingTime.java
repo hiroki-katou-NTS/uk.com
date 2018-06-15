@@ -177,7 +177,6 @@ public class TotalWorkingTime {
 			   WorkFlexAdditionSet flexAddSetting,
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
-//			   AutoCalAtrOvertime overTimeAutoCalcAtr,
 			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
@@ -226,7 +225,7 @@ public class TotalWorkingTime {
 				   																      flexAddSetting,
 				   																      regularAddSetting,
 				   																      holidayAddtionSet,
-				   																      flexAutoCalSet.getFlexOtTime().getCalAtr(),
+				   																      calcAtrOfDaily,
 				   																      holidayCalcMethodSet, 
 				   																      CalcMethodOfNoWorkingDay.isCalculateFlexTime, 
 //				   																      overTimeAutoCalcAtr, 
@@ -239,11 +238,9 @@ public class TotalWorkingTime {
 
 		
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, 
-																									calcAtrOfDaily.getOvertimeSetting(), 
-																									calcAtrOfDaily.getHolidayTimeSetting().getRestTime(), 
 																									CalcMethodOfNoWorkingDay.isCalculateFlexTime,
 																									holidayCalcMethodSet,
-//																									overTimeAutoCalcAtr,
+																									calcAtrOfDaily,
 																									workType,flexCalcMethod,oneDay.getPredetermineTimeSetForCalc()
 																									,vacationClass,oneDay.getTimeVacationAdditionRemainingTime().get(),
 																									StatutoryDivision.Nomal,
@@ -337,9 +334,7 @@ public class TotalWorkingTime {
 		
 		//総労働時間
 		
-		int flexTime = workTimeDailyAtr.isPresent() && workTimeDailyAtr.get().isFlex() 
-						? excesstime.getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().valueAsMinutes()
-						:0;
+		int flexTime = workTimeDailyAtr.isPresent()&&workTimeDailyAtr.get().isFlex() ? excesstime.getOverTimeWork().get().getFlexTime().getFlexTime().getTime().valueAsMinutes():0;
 		flexTime = (flexTime<0)?0:flexTime;
 		val totalWorkTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
 						  					   + withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 

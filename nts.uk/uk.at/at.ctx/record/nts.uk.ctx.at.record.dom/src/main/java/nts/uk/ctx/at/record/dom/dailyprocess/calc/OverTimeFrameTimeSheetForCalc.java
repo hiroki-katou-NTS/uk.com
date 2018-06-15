@@ -242,8 +242,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 											  	duplispecifiedBonusPayTimeSheet,
 											  	duplicatemidNightTimeSheet,
 											  	overTimeFrameTime,
-											  	StatutoryAtr.Statutory,
-											  	false,
+											  	StatutoryAtr.Excess,
+											  	overTimeHourSet.isEarlyOTUse(),
 											  	overTimeHourSet.getWorkTimezoneNo(),
 											  	false,
 											  	Optional.of(overTimeHourSet.getSettlementOrder()),
@@ -450,7 +450,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                     										,this.specBonusPayTimesheet
                     										,this.midNightTimeSheet
                     										,this.getFrameTime().changeFrameNo(statutoryOverFrameNo.isPresent()?statutoryOverFrameNo.get().getLegalOTframeNo().v():this.getFrameTime().getOverWorkFrameNo().v())
-                    										,StatutoryAtr.DeformationCriterion
+                    										,StatutoryAtr.Statutory
                     										,this.goEarly
                     										,this.getOverTimeWorkSheetNo()
                     										,this.asTreatBindTime
@@ -481,7 +481,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                                                          ,Collections.emptyList()
                                                          ,beforeMid
                                                          ,this.getFrameTime().changeFrameNo(statutoryOverFrameNo.isPresent()?statutoryOverFrameNo.get().getLegalOTframeNo().v():this.getFrameTime().getOverWorkFrameNo().v())
-                                                         ,StatutoryAtr.DeformationCriterion
+                                                         ,StatutoryAtr.Statutory
                                                          ,this.goEarly
                                                          ,this.getOverTimeWorkSheetNo()
                                                          ,this.asTreatBindTime
@@ -511,7 +511,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                                                          ,Collections.emptyList()
                                                          ,afterMid
                                                          ,this.getFrameTime().changeFrameNo(this.getFrameTime().getOverWorkFrameNo().v())
-                                                         ,StatutoryAtr.DeformationCriterion
+                                                         ,StatutoryAtr.Excess
                                                          ,this.goEarly
                                                          ,this.getOverTimeWorkSheetNo()
                                                          ,this.asTreatBindTime

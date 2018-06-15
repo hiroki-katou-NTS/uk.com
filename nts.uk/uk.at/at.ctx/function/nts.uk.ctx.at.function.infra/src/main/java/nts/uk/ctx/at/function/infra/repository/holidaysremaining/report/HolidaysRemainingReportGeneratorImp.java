@@ -46,9 +46,12 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.BreakSelection;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNursingRemainOutputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildNursingLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.service.CareHolidayMngService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -87,6 +90,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
+
+	@Inject
+	private SpecialLeaveGrantRepository specialLeaveGrantRepository;
 
 	private static final String TEMPLATE_FILE = "report/休暇残数管理票_テンプレート.xlsx";
 	private static final String REPORT_FILE_NAME = "休暇残数管理票.xlsx";
@@ -690,7 +696,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			// M2_3
 			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_18"));
 
-			// TODO Call requestList273
+			// TODO Call requestList273 remove
 			SpecialVacationImported specialVacationImported = complileInPeriodOfSpecialLeaveAdapter
 					.complileInPeriodOfSpecialLeave(cid, employee.getEmployeeId(), datePeriod, false,
 							dataSource.getBaseDate(), specialHolidayCode, false);
@@ -699,10 +705,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					.getSpeHoliOfConfirmedMonthly(employee.getEmployeeId(), dataSource.getStartMonth().yearMonth(),
 							dataSource.getEndMonth().yearMonth());
 
+			// ドメインモデル「特別休暇付与残数データ」を取得
+			List<SpecialLeaveGrantRemainingData> listSpecialLeaveGrant = specialLeaveGrantRepository.getAllByExpStatus(
+					employee.getEmployeeId(), specialHolidayCode, LeaveExpirationStatus.AVAILABLE.value);
+			
+			// 全てのドメインモデル「特別休暇付与残数データ」の残時間を合計		
+			Double dayNumbers = listSpecialLeaveGrant.stream()
+					.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
+			
 			// M1_2 特別休暇１_付与数日数
 			cells.get(firstRow, 4).setValue(specialVacationImported.getGrantDate());
 			// M1_3 特別休暇１_月初残日数
-			cells.get(firstRow, 5).setValue(specialVacationImported.getFirstMonthRemNumDays());
+			cells.get(firstRow, 5).setValue(dayNumbers);
 			// M1_4 特別休暇１_使用数日数
 			cells.get(firstRow, 6).setValue(specialVacationImported.getUsedDate());
 			// M1_5 特別休暇１_残数日数
@@ -730,12 +744,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 						cells.get(firstRow + 1, 10 + totalMonth).setValue(specialVacationImported.getRemainDate());
 					}
 				}
-
-				// Current month
-				if (currentMonth.compareTo(specialVacationImported.getGrantDate().yearMonth()) == 0) {
-
-				}
 			}
+			
 
 			// Set background
 			for (int index = 0; index <= totalMonths(dataSource.getStartMonth().yearMonth(),
@@ -785,7 +795,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				String grantUsedDayValue = currentSituationImported.getBeforeUseDays() + "/"
 						+ currentSituationImported.getAfterUseDays().orElse(0d);
 				cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
-	
+
 				// N2_4 子の看護休暇_残日数
 				String grantReamainDayValue = currentSituationImported.getBeforeCareLeaveDays() + "/"
 						+ currentSituationImported.getAfterCareLeaveDays().orElse(0d);
@@ -837,9 +847,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
 			if (currentMonth.compareTo(dataSource.getEndMonth().yearMonth()) <= 0) {
 				// 介護休暇_使用日数
-				String grantUsedDayValue = careHoliday.getBeforeUseDays() + "/" + careHoliday.getAfterUseDays().orElse(0d);
+				String grantUsedDayValue = careHoliday.getBeforeUseDays() + "/"
+						+ careHoliday.getAfterUseDays().orElse(0d);
 				cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
-	
+
 				// O2_4 介護休暇_残日数
 				String grantReamainDayValue = careHoliday.getBeforeCareLeaveDays() + "/"
 						+ careHoliday.getAfterCareLeaveDays().orElse(0d);
