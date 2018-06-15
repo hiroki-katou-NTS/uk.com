@@ -171,16 +171,10 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    location.reload();
-                                });    
+                                appcommon.CommonProcess.displayMailResult(data);    
                             } else {
                                 if(self.checkBoxValue()){
-                                    let command = {appID: data.appID};
-                                    setShared("KDL030_PARAM", command);
-                                    nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                                        location.reload();
-                                    });    
+                                    appcommon.CommonProcess.openDialogKDL030(data.appID);    
                                 } else {
                                     location.reload();
                                 }   
