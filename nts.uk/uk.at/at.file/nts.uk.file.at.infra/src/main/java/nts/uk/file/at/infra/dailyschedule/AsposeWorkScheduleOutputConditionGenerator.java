@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -359,21 +360,35 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		reportData.setHeaderData(new DailyPerformanceHeaderData());
 		collectHeaderData(reportData.getHeaderData(), condition);
 		collectDisplayMap(reportData.getHeaderData(), outputItem);
+		GeneralDate endDate = query.getEndDate();
+		
+		WorkScheduleQueryData queryData = new WorkScheduleQueryData();
+		queryData.setQuery(query);
+		
+		List<GeneralDate> lstDate = new DateRange(query.getStartDate(), endDate).toListDate();
+		queryData.setDatePeriod(lstDate);
 		
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
 		
 		for (String employeeId: query.getEmployeeId()) {
-			WkpHistImport workplaceImport = workplaceAdapter.findWkpBySid(employeeId, query.getEndDate());
+			WkpHistImport workplaceImport = workplaceAdapter.findWkpBySid(employeeId, endDate);
 			lstWorkplaceId.add(workplaceImport.getWorkplaceId());
+			queryData.getLstWorkplaceImport().add(workplaceImport);
 		}
+		
+		String companyId = AppContexts.user().companyId();
+		
+		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = workplaceConfigRepository.findByWkpIdsAtTime(companyId, endDate, lstWorkplaceId);
+		queryData.setLstWorkplaceConfigInfo(lstWorkplaceConfigInfo);
 		
 		// Collect child workplace, automatically sort into tree map
 		for (String entry: lstWorkplaceId) {
-			lstWorkplace.putAll(collectWorkplaceHierarchy(entry, query.getEndDate()));
+			lstWorkplace.putAll(collectWorkplaceHierarchy(entry, endDate, lstWorkplaceConfigInfo));
 		}
 		
 		List<AttendanceResultImport> lstAttendanceResultImport = attendaceAdapter.getValueOf(query.getEmployeeId(), new DatePeriod(query.getStartDate(), query.getEndDate()), AttendanceResultImportAdapter.convertList(outputItem.getLstDisplayedAttendance(), x -> x.getAttendanceDisplay()));
+		queryData.setLstAttendanceResultImport(lstAttendanceResultImport);
 		
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
 		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
@@ -384,12 +399,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
 		
-		String companyId = AppContexts.user().companyId();
 		List<WorkType> lstWorkType = worktypeRepo.findByCompanyId(companyId);
+		queryData.setLstWorkType(lstWorkType);
 		List<WorkTimeSetting> lstWorkTime = workTimeRepo.findByCompanyId(companyId);
+		queryData.setLstWorkTime(lstWorkTime);
 		
 		// Sort attendance display
 		List<AttendanceItemsDisplay> lstAttendanceItemsDisplay = outputItem.getLstDisplayedAttendance().stream().sorted((o1,o2) -> o1.getOrderNo() - o2.getOrderNo()).collect(Collectors.toList());
+		queryData.setLstDisplayItem(lstAttendanceItemsDisplay);
 		
 		if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE) {
 			WorkplaceReportData data = new WorkplaceReportData();
@@ -398,11 +415,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			analyzeInfoExportByEmployee(lstWorkplace, data);
 			
-			for (String employeeId: query.getEmployeeId()) {
-				EmployeeReportData employeeData = collectEmployeePerformanceDataByEmployee(reportData, query, lstAttendanceResultImport, employeeId, lstWorkType, lstWorkTime, lstAttendanceItemsDisplay);
+			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(query.getEmployeeId());
+			
+			for (EmployeeDto dto: lstEmloyeeDto) {
+				EmployeeReportData employeeData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto);
 				
 				// Calculate total count day
-				totalDayCountWs.calculateAllDayCount(employeeId, new DateRange(query.getStartDate(), query.getEndDate()), employeeData.totalCountDay);
+				if (condition.getSettingDetailTotalOutput().isTotalNumberDay()) {
+					totalDayCountWs.calculateAllDayCount(dto.getEmployeeId(), new DateRange(query.getStartDate(), query.getEndDate()), employeeData.totalCountDay);
+				}
 			}
 			
 			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
@@ -427,9 +448,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				analyzeInfoExportByDate(lstWorkplaceTemp, x.getLstWorkplaceData(), lstAddedCode);
 			});
 			
-			
-			List<GeneralDate> lstDate = new DateRange(query.getStartDate(), query.getEndDate()).toListDate();
-			collectEmployeePerformanceDataByDate(reportData, query, lstAttendanceResultImport, lstDate, lstWorkType, lstWorkTime, lstAttendanceItemsDisplay);
+			collectEmployeePerformanceDataByDate(reportData, queryData);
 			// Calculate workplace total
 			lstReportData.forEach(dailyData -> {
 				calculateTotalExportByDate(dailyData.getLstWorkplaceData());
@@ -470,13 +489,21 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param lstWorkType the lst work type
 	 * @param lstDisplayItem the lst display item
 	 */
-	private void collectEmployeePerformanceDataByDate(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query,
-			List<AttendanceResultImport> lstAttendanceResultImport, List<GeneralDate> datePeriod, List<WorkType> lstWorkType, List<WorkTimeSetting> lstWorkTime, List<AttendanceItemsDisplay> lstDisplayItem) {
+	private void collectEmployeePerformanceDataByDate(DailyPerformanceReportData reportData, WorkScheduleQueryData queryData) {
 		String companyId = AppContexts.user().companyId();
+		WorkScheduleOutputQuery query = queryData.getQuery();
 		GeneralDate endDate = query.getEndDate();
 		WorkScheduleOutputCondition condition = query.getCondition();
 		// Always has item because this has passed error check
 		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByCidAndCode(companyId, condition.getCode().v()).get();
+		
+		// Get all data from query data container
+		List<GeneralDate> datePeriod = queryData.getDatePeriod();
+		List<AttendanceResultImport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
+		List<AttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
+		List<WorkType> lstWorkType = queryData.getLstWorkType();
+		List<WorkTimeSetting> lstWorkTime = queryData.getLstWorkTime();
+		List<WkpHistImport> lstWorkplaceHistImport = queryData.getLstWorkplaceImport();
 		
 		// Get all error alarm code
 		List<ErrorAlarmWorkRecordCode> lstErAlCode = condition.getErrorAlarmCode().get();
@@ -488,12 +515,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		// Get list remark check box from screen C (UI)
 		List<PrintRemarksContent> lstRemarkContent = outSche.getLstRemarkContent();
 		
+		Set<String> lstAllErrorCode = errorListAllEmployee.stream().map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toSet());
+		List<String> tempErrorCode = new ArrayList<>();
+		tempErrorCode.addAll(lstAllErrorCode);
+		List<ErrorAlarmWorkRecord> lstAllErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(companyId, tempErrorCode);
+		
 		for (String employeeId: lstEmployeeId) {
 			Optional<EmployeeDto> optEmployeeDto = lstEmployeeDto.stream().filter(employee -> StringUtils.equalsAnyIgnoreCase(employee.getEmployeeId(),employeeId)).findFirst();
 			
 			datePeriod.stream().forEach(date -> {
-				Optional<WorkplaceDailyReportData> optDailyWorkplaceData =  reportData.getDailyReportData().getLstDailyReportData().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
-				DailyWorkplaceData dailyWorkplaceData = findWorkplace(employeeId,optDailyWorkplaceData.get().getLstWorkplaceData(), endDate);
+				Optional<WorkplaceDailyReportData> optDailyWorkplaceData = reportData.getDailyReportData().getLstDailyReportData().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
+				DailyWorkplaceData dailyWorkplaceData = findWorkplace(employeeId,optDailyWorkplaceData.get().getLstWorkplaceData(), endDate, lstWorkplaceHistImport, queryData.getLstWorkplaceConfigInfo());
 				if (dailyWorkplaceData != null) {
 					DailyPersonalPerformanceData personalPerformanceDate = new DailyPersonalPerformanceData();
 					if (optEmployeeDto.isPresent())
@@ -527,7 +559,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							
 							List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
 							// ドメインモデル「勤務実績のエラーアラーム」を取得する
-							List<ErrorAlarmWorkRecord> lstErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(companyId, lstErrorCode);
+							//List<ErrorAlarmWorkRecord> lstErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(companyId, lstErrorCode);
+							
+							List<ErrorAlarmWorkRecord> lstErrorRecord = lstAllErrorRecord.stream().filter(err -> {
+								return  lstErrorCode.contains(err.getCode().v());
+							}).collect(Collectors.toList());
 							
 							for (ErrorAlarmWorkRecord error : lstErrorRecord) {
 								// コードから区分を取得する
@@ -610,22 +646,30 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param lstDisplayItem the lst display item
 	 * @return the employee report data
 	 */
-	private EmployeeReportData collectEmployeePerformanceDataByEmployee(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query,
-			List<AttendanceResultImport> lstAttendanceResultImport, String employeeId, List<WorkType> lstWorkType, List<WorkTimeSetting> lstWorkTime, List<AttendanceItemsDisplay> lstDisplayItem) {
+	private EmployeeReportData collectEmployeePerformanceDataByEmployee(DailyPerformanceReportData reportData, WorkScheduleQueryData queryData, EmployeeDto employeeDto) {
 		String companyId = AppContexts.user().companyId();
+		WorkScheduleOutputQuery query = queryData.getQuery();
 		GeneralDate endDate = query.getEndDate();
 		WorkScheduleOutputCondition condition = query.getCondition();
 		
 		// Always has item because this has passed error check
 		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByCidAndCode(companyId, condition.getCode().v()).get();
 		
-		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), endDate);
+		// Get all data from query data container
+		List<AttendanceResultImport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
+		List<AttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
+		List<WorkType> lstWorkType = queryData.getLstWorkType();
+		List<WorkTimeSetting> lstWorkTime = queryData.getLstWorkTime();
+		List<WkpHistImport> lstWorkplaceImport = queryData.getLstWorkplaceImport();
+		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = queryData.getLstWorkplaceConfigInfo();
+		String employeeId = employeeDto.getEmployeeId();
+		
+		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), endDate, lstWorkplaceImport, lstWorkplaceConfigInfo);
 		EmployeeReportData employeeData = new EmployeeReportData();
 		
 		List<ErrorAlarmWorkRecordCode> lstErAlCode = condition.getErrorAlarmCode().get();
 		
 		// Employee code and name
-		EmployeeDto employeeDto = employeeAdapter.findByEmployeeId(employeeId);
 		employeeData.employeeName = employeeDto.getEmployeeName();
 		employeeData.employeeCode = employeeDto.getEmployeeCode();
 		
@@ -1035,17 +1079,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param baseDate the base date
 	 * @return the workplace report data
 	 */
-	public WorkplaceReportData findWorkplace(String employeeId, WorkplaceReportData rootWorkplace, GeneralDate baseDate) {
+	public WorkplaceReportData findWorkplace(String employeeId, WorkplaceReportData rootWorkplace, GeneralDate baseDate,
+			List<WkpHistImport> lstWorkplaceHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
 		Map<String, WorkplaceReportData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceReportData();
-		WkpHistImport workplaceImport = workplaceAdapter.findWkpBySid(employeeId, baseDate);
-		WorkplaceHierarchy code = workplaceConfigRepository.find(AppContexts.user().companyId(), baseDate, workplaceImport.getWorkplaceId()).get().getLstWkpHierarchy().get(0);
+		WkpHistImport workplaceImport = lstWorkplaceHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
+		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
 		HierarchyCode hierarchyCode = code.getHierarchyCode();
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
 			return mapWorkplaceInfo.get(hierarchyCode.v());
 		}
 		else {
 			for (Map.Entry<String, WorkplaceReportData> keySet : mapWorkplaceInfo.entrySet()) {
-				WorkplaceReportData data = findWorkplace(employeeId, keySet.getValue(), baseDate);
+				WorkplaceReportData data = findWorkplace(employeeId, keySet.getValue(), baseDate, lstWorkplaceHistImport, lstWorkplaceConfigInfo);
 				if (data != null)
 					return data;
 			}
@@ -1061,18 +1106,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param baseDate the base date
 	 * @return the workplace report data
 	 */
-	public DailyWorkplaceData findWorkplace(String employeeId, DailyWorkplaceData rootWorkplace, GeneralDate baseDate) {
+	public DailyWorkplaceData findWorkplace(String employeeId, DailyWorkplaceData rootWorkplace, GeneralDate baseDate, 
+			List<WkpHistImport> lstWkpHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
 		
 		Map<String, DailyWorkplaceData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceData();
-		WkpHistImport workplaceImport = workplaceAdapter.findWkpBySid(employeeId, baseDate);
-		WorkplaceHierarchy code = workplaceConfigRepository.find(AppContexts.user().companyId(), baseDate, workplaceImport.getWorkplaceId()).get().getLstWkpHierarchy().get(0);
+		WkpHistImport workplaceImport = lstWkpHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
+		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
 		HierarchyCode hierarchyCode = code.getHierarchyCode();
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
 			return mapWorkplaceInfo.get(hierarchyCode.v());
 		}
 		else {
 			for (Map.Entry<String, DailyWorkplaceData> keySet : mapWorkplaceInfo.entrySet()) {
-				DailyWorkplaceData data = findWorkplace(employeeId, keySet.getValue(), baseDate);
+				DailyWorkplaceData data = findWorkplace(employeeId, keySet.getValue(), baseDate, lstWkpHistImport, lstWorkplaceConfigInfo);
 				if (data != null)
 					return data;
 			}
@@ -1087,9 +1133,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param baseDate the base date
 	 * @return the map
 	 */
-	public Map<String, WorkplaceInfo> collectWorkplaceHierarchy(String workplaceId, GeneralDate baseDate) {
+	public Map<String, WorkplaceInfo> collectWorkplaceHierarchy(String workplaceId, GeneralDate baseDate, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>();
-		Optional<WorkplaceConfigInfo> optHierachyInfo = workplaceConfigRepository.find(AppContexts.user().companyId(), baseDate, workplaceId);
+		Optional<WorkplaceConfigInfo> optHierachyInfo = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceId)).findFirst();
 		optHierachyInfo.ifPresent(info -> {
 			List<WorkplaceHierarchy> lstHierarchy = info.getLstWkpHierarchy();
 			for (WorkplaceHierarchy hierarchy: lstHierarchy) {
@@ -1098,7 +1144,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				
 				// Recursive
 				if (!StringUtils.equals(workplace.getWorkplaceId(), workplaceId)) {
-					collectWorkplaceHierarchy(workplace.getWorkplaceId(), baseDate);
+					collectWorkplaceHierarchy(workplace.getWorkplaceId(), baseDate, lstWorkplaceConfigInfo);
 				}
 			}
 		});
@@ -1711,8 +1757,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	        }
 		}
 		
-		// Process to child workplace
 		Map<String, WorkplaceReportData> mapChildWorkplace = workplaceReportData.getLstChildWorkplaceReportData();
+		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
+				condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) &&
+				mapChildWorkplace.size() > 0) && workplaceReportData.level != 0) {
+			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			
+			sheet.getHorizontalPageBreaks().add(currentRow);
+		}
+		// Process to child workplace
 		Iterator<Map.Entry<String, WorkplaceReportData>> it = mapChildWorkplace.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, WorkplaceReportData> entry = it.next();
