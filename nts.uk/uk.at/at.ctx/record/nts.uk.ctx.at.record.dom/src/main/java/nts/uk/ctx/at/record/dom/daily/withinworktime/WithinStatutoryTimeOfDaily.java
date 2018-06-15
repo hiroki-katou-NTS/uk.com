@@ -107,10 +107,8 @@ public class WithinStatutoryTimeOfDaily {
 			   												   WorkFlexAdditionSet flexAddSetting,
 			   												   WorkRegularAdditionSet regularAddSetting,
 			   												   HolidayAddtionSet holidayAddtionSet,
-			   												   AutoCalAtrOvertime autoCalcSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet, 
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
-//			   												   AutoCalAtrOvertime autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
 			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
@@ -138,7 +136,6 @@ public class WithinStatutoryTimeOfDaily {
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
 														  calcMethod,
-//														  autoCalcAtr,
 														  flexCalcMethod,workTimeDailyAtr.get(),workTimeCode,preFlexTime,coreTimeSetting,
 														  oneDay.getPredetermineTimeSetForCalc(),oneDay.getTimeVacationAdditionRemainingTime(),dailyUnit,commonSetting);
 			
@@ -148,28 +145,17 @@ public class WithinStatutoryTimeOfDaily {
 									
 		//実働時間の計算
 		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
-			actualTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
-																						   CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,
-																						   vacationClass,
-																						   oneDay.getTimeVacationAdditionRemainingTime().get(),
-																						   StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
-																						   workTimeCode,
-																						   personalCondition,
-																						   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-																						   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-																						   workingSystem,
-																						   illegularAddSetting,
-																						   flexAddSetting,
-																						   regularAddSetting,
-																						   holidayAddtionSet,
-																						   holidayCalcMethodSet,
-																						   dailyUnit,commonSetting
-																						   );
+			actualTime =  calcWithinStatutoryTime(oneDay.getWithinWorkingTimeSheet().get(),personalCondition,vacationClass,workType,
+					  							  late,leaveEarly,workingSystem,illegularAddSetting,
+					  							  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
+					  							  calcMethod,
+					  							  flexCalcMethod,workTimeDailyAtr.get(),workTimeCode,preFlexTime,coreTimeSetting,
+					  							  oneDay.getPredetermineTimeSetForCalc(),oneDay.getTimeVacationAdditionRemainingTime(),dailyUnit,commonSetting);
 			actualTime = actualTime.minusMinutes(withinpremiumTime.valueAsMinutes());
 		}
 			
 		//所定内深夜時間の計算
-		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay,autoCalcSet);
+		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay);
 
 		 
 		return new WithinStatutoryTimeOfDaily(workTime,actualTime,withinpremiumTime,midNightTime);

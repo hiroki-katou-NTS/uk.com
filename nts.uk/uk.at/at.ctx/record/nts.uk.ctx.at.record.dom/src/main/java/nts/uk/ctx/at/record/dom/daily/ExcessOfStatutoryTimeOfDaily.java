@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
@@ -89,16 +90,13 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param flexAutoCalSet 
 	 * @return
 	 */
-	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
+	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(CalculationRangeOfOneDay oneDay,
 																	 CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,
-//																	 AutoCalAtrOvertime autoCalcAtr,
 																	 WorkType workType,
 																	 Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 			   														 VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 			   														 StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 			   														 Optional<PersonalLaborCondition> personalCondition, 
-			   														 boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-			   														 boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   														 WorkingSystem workingSystem, WorkDeformedLaborAdditionSet illegularAddSetting,
 			   														 WorkFlexAdditionSet flexAddSetting,
 			   														 WorkRegularAdditionSet regularAddSetting,
@@ -106,24 +104,24 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   														 List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
-			   														 IntegrationOfDaily integrationOfDaily, AttendanceTime flexPreAppTime, AutoCalFlexOvertimeSetting flexAutoCalSet,
-			   														 DailyUnit dailyUnit,List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting) {
+			   														 IntegrationOfDaily integrationOfDaily, AttendanceTime flexPreAppTime,
+			   														 DailyUnit dailyUnit,List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting,
+			   														 CalAttrOfDailyPerformance calcAtrOfDaily) {
 		//残業時間
-		val overTime = calculationOverTime(oneDay,overTimeAutoCalcSet,calcMethod,holidayCalcMethodSet,
-//										   autoCalcAtr,
+		val overTime = calculationOverTime(oneDay,calcAtrOfDaily.getOvertimeSetting(),calcMethod,holidayCalcMethodSet,
 										   workType,flexCalcMethod,
 										   predetermineTimeSet,vacationClass,timevacationUseTimeOfDaily,
 				   						   statutoryDivision,siftCode,
 				   						   personalCondition,
-				   						   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-				   						   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
+				   						   calcAtrOfDaily.getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+				   						   calcAtrOfDaily.getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   						   workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
 				   						   holidayAddtionSet,workTimeDailyAtr,
 										   eachWorkTimeSet.stream().filter(tc -> tc.getOriginAtr().isOverTime()).findFirst(),
 										   eachCompanyTimeSet.stream().filter(tc -> tc.getOccurrenceType().isOverTime()).findFirst(),
-										   integrationOfDaily,flexPreAppTime,flexAutoCalSet,dailyUnit, statutoryFrameNoList,commonSetting);
+										   integrationOfDaily,flexPreAppTime,calcAtrOfDaily.getFlexExcessTime(),dailyUnit, statutoryFrameNoList,commonSetting);
 		//休出時間
-		val workHolidayTime = calculationHolidayTime(oneDay,holidayAutoCalcSetting,workType,
+		val workHolidayTime = calculationHolidayTime(oneDay,calcAtrOfDaily.getHolidayTimeSetting().getRestTime(),workType,
 													 eachWorkTimeSet.stream().filter(tc -> !tc.getOriginAtr().isOverTime()).findFirst(),
 													 eachCompanyTimeSet.stream().filter(tc -> !tc.getOccurrenceType().isOverTime()).findFirst(),
 													 integrationOfDaily);
@@ -166,11 +164,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   oneDay.getWithinWorkingTimeSheet().get(),
 													   calcMethod,
 													   holidayCalcMethodSet,
-//													   autoCalcAtr,
 													   workType,
 													   flexCalcMethod,
 													   predetermineTimeSet,
-//													   oneDay.getTemporaryDeductionTimeSheet(),
 													   vacationClass,
 													   timevacationUseTimeOfDaily,
 													   statutoryDivision,siftCode,

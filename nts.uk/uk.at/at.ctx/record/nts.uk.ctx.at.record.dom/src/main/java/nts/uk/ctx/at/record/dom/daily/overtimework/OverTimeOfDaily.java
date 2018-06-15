@@ -263,7 +263,6 @@ public class OverTimeOfDaily {
 			
 			val changeVariant = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetList);
 			flexTime =  changeVariant.createWithinWorkTimeSheetAsFlex(calcMethod,holidayCalcMethodSet,flexOutCalcSetting.getFlexOtTime().getCalAtr(),workType,
-					//flexCalcMethod.get(),
 					new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
 																	   new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
 					predetermineTimeSet,

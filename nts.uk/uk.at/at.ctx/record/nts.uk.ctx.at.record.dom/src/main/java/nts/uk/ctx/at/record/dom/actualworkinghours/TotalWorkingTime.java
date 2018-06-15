@@ -177,7 +177,6 @@ public class TotalWorkingTime {
 			   WorkFlexAdditionSet flexAddSetting,
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
-//			   AutoCalAtrOvertime overTimeAutoCalcAtr,
 			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
@@ -186,7 +185,6 @@ public class TotalWorkingTime {
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
 			   int breakTimeCount, IntegrationOfDaily integrationOfDaily,
-			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   Optional<CoreTimeSetting> coreTimeSetting,
 			   DailyUnit dailyUnit,
 			   List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting
@@ -226,10 +224,8 @@ public class TotalWorkingTime {
 				   																      flexAddSetting,
 				   																      regularAddSetting,
 				   																      holidayAddtionSet,
-				   																      flexAutoCalSet.getFlexOtTime().getCalAtr(),
 				   																      holidayCalcMethodSet, 
 				   																      CalcMethodOfNoWorkingDay.isCalculateFlexTime, 
-//				   																      overTimeAutoCalcAtr, 
 				   																      flexCalcMethod, 
 				   																      workTimeDailyAtr, 
 				   																      workTimeCode,
@@ -239,18 +235,13 @@ public class TotalWorkingTime {
 
 		
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, 
-																									calcAtrOfDaily.getOvertimeSetting(), 
-																									calcAtrOfDaily.getHolidayTimeSetting().getRestTime(), 
 																									CalcMethodOfNoWorkingDay.isCalculateFlexTime,
 																									holidayCalcMethodSet,
-//																									overTimeAutoCalcAtr,
 																									workType,flexCalcMethod,oneDay.getPredetermineTimeSetForCalc()
 																									,vacationClass,oneDay.getTimeVacationAdditionRemainingTime().get(),
 																									StatutoryDivision.Nomal,
 																									workTimeCode,
 																									personalCondition,
-																									calcAtrOfDaily.getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-																									calcAtrOfDaily.getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																									workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
 																									holidayAddtionSet,
 																									workTimeDailyAtr,
@@ -258,8 +249,7 @@ public class TotalWorkingTime {
 																									eachCompanyTimeSet,
 																									integrationOfDaily,
 																									flexPreAppTime,
-																									flexAutoCalSet,
-																									dailyUnit, statutoryFrameNoList,commonSetting);
+																									dailyUnit, statutoryFrameNoList,commonSetting,calcAtrOfDaily);
 		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;
