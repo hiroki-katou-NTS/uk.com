@@ -58,7 +58,7 @@ public class FileUtil {
 		}
 		return result;
 	}
-
+	
 	public static List<List<String>> getAllRecord(InputStream inputStream, Integer endcoding) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
@@ -104,7 +104,29 @@ public class FileUtil {
 		}
 		return result;
 	}
-
+	
+	public static List<String> getCsvHeader(String fileName, String fileId, Integer endcoding) {
+		// get csv reader
+		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
+				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
+		List<String> data = new ArrayList<>();
+		try {
+			InputStream inputStream = createInputStreamFromFile(fileId, fileName);
+			if (!Objects.isNull(inputStream)){
+				CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
+				if(!csvParsedResult.getRecords().isEmpty()){
+					NtsCsvRecord header = csvParsedResult.getRecords().get(0);
+					for (int i = 0; i < header.columnLength(); i++) {
+						data.add((String) header.getColumn(i));
+					}
+				}
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return data;
+	}
+	
 	public static List<String> getRecord(InputStream inputStream, int[] columns, int index, Integer endcoding) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)

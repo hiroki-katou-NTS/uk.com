@@ -43,6 +43,9 @@ public class ServerPreparationService {
 	@Inject
 	private CompanyDeterminationProcess companyDeterminationProcess;
 	
+	@Inject
+	private TableItemValidation tableItemValidation;
+	
 	// アルゴリズム「サーバー準備処理」を実行する
 	public ServerPrepareMng serverPreparationProcessing(ServerPrepareMng serverPrepareMng){
 		serverPrepareMng = dataExtractionService.extractData(serverPrepareMng);
@@ -51,20 +54,19 @@ public class ServerPreparationService {
 		
 		//アルゴリズム「テーブル一覧の復元」を実行する
 		List<Object> restoreTableResult = tableListRestorationService.restoreTableList(serverPrepareMng);
-		List<TableList> tableList = (List<TableList>)(restoreTableResult.get(0));
-		serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(1);
-		Optional<ServerPrepareMng> op_serverPrepareMng = serverPrepareMngRepository.getServerPrepareMngById(serverPrepareMng.getDataRecoveryProcessId());
-		if (!op_serverPrepareMng.isPresent()){
-			return null;
-			
-		} else {
-			serverPrepareMng = op_serverPrepareMng.get();
-			
-		}
-		if (!tableList.isEmpty()){
+		serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(0);
+		List<TableList> tableList = (List<TableList>)(restoreTableResult.get(1));
+		if (serverPrepareMng.getOperatingCondition() != ServerPrepareOperatingCondition.TABLE_LIST_FAULT){
 			serverPrepareMng = thresholdConfigurationCheck.checkFileConfiguration(serverPrepareMng, tableList);
 			if (serverPrepareMng.getOperatingCondition() != ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY){
 				List<Object> sperateCompanyResult = companyDeterminationProcess.sperateCompanyDeterminationProcess(serverPrepareMng, performDataRecovery, tableList);
+				serverPrepareMng = (ServerPrepareMng) sperateCompanyResult.get(0);
+				performDataRecovery = (PerformDataRecovery) sperateCompanyResult.get(1);
+				tableList = (List<TableList>)(sperateCompanyResult.get(2));
+				serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
+				if(serverPrepareMng.getOperatingCondition() != ServerPrepareOperatingCondition.TABLE_ITEM_DIFFERENCE){
+					
+				}
 			}
 		}
 		

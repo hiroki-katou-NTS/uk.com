@@ -59,9 +59,10 @@ public class SurfaceItemDto {
 	private String storageRangeSaved;
 
 	public static SurfaceItemDto fromDomain(TableList domain) {
-		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode(), domain.getSaveSetName(),
-				domain.getSupplementaryExplanation(), domain.getAnotherComCls().value, domain.getCategoryName(),
-				domain.getRetentionPeriodCls().value, domain.getSaveDateFrom(), domain.getSaveDateTo(),
-				domain.getCanNotBeOld(), domain.getStorageRangeSaved());
+		return null;
+//				new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode(), domain.getSaveSetName(),
+//				domain.getSupplementaryExplanation(), domain.getAnotherComCls().value, domain.getCategoryName(),
+//				domain.getRetentionPeriodCls().value, domain.getSaveDateFrom(), domain.getSaveDateTo(),
+//				domain.getCanNotBeOld(), domain.getStorageRangeSaved());
 	}
 }
