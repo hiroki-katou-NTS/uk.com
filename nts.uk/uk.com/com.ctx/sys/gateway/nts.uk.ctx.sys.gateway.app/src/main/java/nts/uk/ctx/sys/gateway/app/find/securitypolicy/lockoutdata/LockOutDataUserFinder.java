@@ -7,15 +7,14 @@ package nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.SearchUser;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -60,6 +59,13 @@ public class LockOutDataUserFinder {
 
 			});
 		return lstLockOutDataUserDto;
+	}
+
+	/*
+	 * Author: Nguyen Van Hanh
+	 */
+	public List<SearchUser> findUserByUserIDName(String searchInput) {
+		return lockOutDataRepository.findUserByUserIDName(searchInput);
 	}
 
 }
