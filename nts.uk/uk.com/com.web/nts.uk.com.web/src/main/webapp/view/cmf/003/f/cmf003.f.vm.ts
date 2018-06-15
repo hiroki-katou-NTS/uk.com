@@ -184,6 +184,7 @@ module nts.uk.com.view.cmf003.f {
             // close popup
             public close(): void {
                  nts.uk.ui.windows.close();
+                 $("#E1_1").focus();
             }
             
             public getStatusEnum(value): string {
