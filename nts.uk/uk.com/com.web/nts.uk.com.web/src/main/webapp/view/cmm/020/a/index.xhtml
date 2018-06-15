@@ -75,9 +75,9 @@
 													value:currentName,
 													constraint: 'EraName',
 													required: true,
-													enable: true,
-													readonly: !activeUpdate(),
-													option: {width: '55px'}}" />
+													enable: activeUpdate(),
+													option: {width: '55px'}},
+													hasFocus: isFocus" />
 										</div>
 									</td>
 								</tr>
@@ -95,8 +95,7 @@
 													value:currentSymbol,
 													constraint: 'SymbolName',
 													required: true,
-													enable: true,
-													readonly: !activeUpdate(),
+													enable: activeUpdate(),
 													option: {width: '55px'}}" />
 										</div>
 									</td>
@@ -112,10 +111,9 @@
 											<input
 												data-bind="ntsTimeEditor: {
 													value: currentStartDate,
-													option: {width: '100px'},
+													option: {width: '86px'},
 													required: true,
-													enable: true,
-													readonly: !activeUpdate(),
+													enable: activeUpdate(),
 													immediate: false,
 													inputFormat: 'date'}" />
 										</div>

@@ -4,21 +4,21 @@ module nts.uk.com.view.cmm020.a {
          * define path to service
          */
         var paths: any = {
-            getEraList: "",
-            createEraName: "",
+            getAllEraNameItem: "",
+            saveEraName: "",
             deleteEraName: ""
         };
 
-        export function getEraList() {
-            return nts.uk.request.ajax(paths.getEraList);
+        export function getAllEraNameItem(): JQueryPromise<Array<viewmodel.model.EraItem>> {
+            return nts.uk.request.ajax("at", paths.getAllEraNameItem);
         }
 
-        export function createEraName(date: any): JQueryPromise<void> {
-            return nts.uk.request.ajax(paths.createEraName, date);
+        export function createEraName(eraNameItem: viewmodel.model.EraItem): JQueryPromise<void> {
+            return nts.uk.request.ajax("at", paths.saveEraName,eraNameItem);
         }
 
-        export function deleteEraName(date: any): JQueryPromise<void> {
-            return nts.uk.request.ajax(paths.deleteEraName, date);
+        export function deleteEraName(eraNameItem: viewmodel.model.EraItem): JQueryPromise<void> {
+            return nts.uk.request.ajax("at", paths.deleteEraName,eraNameItem);
         }
     }
 

@@ -1,17 +1,16 @@
 module nts.uk.com.view.cmm020.a {
-    //    import MasterCopyDataCommand = nts.uk.com.view.cmm001.f.model.MasterCopyDataCommand;
+    import blockUI = nts.uk.ui.block;
+
     const LAST_INDEX_ERA_NAME_SYTEM: number = 3;
     export module viewmodel {
         export class ScreenModel {
             texteditor: any;
-            simpleValue: KnockoutObservable<string>;
 
             columns: KnockoutObservableArray<any>;
             dataSource: KnockoutObservableArray<model.EraItem>;
             eraName: KnockoutObservable<string>;
             eraSymbol: KnockoutObservable<string>;
             startDate: KnockoutObservable<string>;
-            inputData: KnockoutObservable<any>;
             currentName: KnockoutObservable<string>;
             currentSymbol: KnockoutObservable<string>;
             currentStartDate: KnockoutObservable<string>;
@@ -19,13 +18,16 @@ module nts.uk.com.view.cmm020.a {
             eraSelected: KnockoutObservable<model.EraItem>;
             activeUpdate: KnockoutObservable<boolean>;
             activeDelete: KnockoutObservable<boolean>;
+            indexOfDelete: KnockoutObservable<number>;
+            isFocus : KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
 
+                self.indexOfDelete = ko.observable(-1);
                 self.activeUpdate = ko.observable(false);
                 self.activeDelete = ko.observable(false);
-                self.simpleValue = ko.observable("123");
+                self.isFocus = ko.observable(false);
                 self.texteditor = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -51,7 +53,6 @@ module nts.uk.com.view.cmm020.a {
                 self.eraName = ko.observable('');
                 self.eraSymbol = ko.observable('');
                 self.startDate = ko.observable('');
-                self.inputData = ko.observable();
                 self.currentName = ko.observable('');
                 self.currentSymbol = ko.observable('');
                 self.currentStartDate = ko.observable('');
@@ -87,17 +88,21 @@ module nts.uk.com.view.cmm020.a {
                 //call ws get all era
                 var listEraName: model.EraItem[] = [];
                 for (let i = 0; i <= 3; i++) {
-                    listEraName.push(new model.EraItem("code" + i, "Name" + i, "Sb" + i, "2018/06/1" + (5-i)));
+                    listEraName.push(new model.EraItem("code" + i, "Nam" + i, "Sb" + i, "2016/06/1" + (5 - i)));
                 }
-                listEraName.push(new model.EraItem("code5", "CusName", "CusSb", "2018/06/25"));
-                listEraName.push(new model.EraItem("code6", "222", "222", "2018/06/23"));
+                listEraName.push(new model.EraItem("code5", "T", "CusSb", "2018/06/25"));
+                listEraName.push(new model.EraItem("code6", "D", "222", "2018/3/28"));
                 if (listEraName === undefined || listEraName.length == 0) {
                     self.dataSource();
                 } else {
+                    //                   var list1 = _.sortBy(listEraName, [function(o) {
+                    //                        return new Date(o.startDate);
+                    //                    }]);
+                    var listEraName = _.orderBy(listEraName, [function(item) { return new Date(item.startDate); }], ['asc']);
                     self.dataSource(listEraName);
-                    let eraNameFirst = _.first(listEraName);
-                    self.currentCode(eraNameFirst.eraId);
-                    self.setValueCurrentEraShow(eraNameFirst);
+                    let eraNameLast = _.last(listEraName);
+                    self.currentCode(eraNameLast.eraId);
+                    self.setValueCurrentEraShow(eraNameLast);
                 }
                 console.log(!self.activeUpdate());
                 dfd.resolve();
@@ -105,7 +110,11 @@ module nts.uk.com.view.cmm020.a {
             }
 
             public newItem() {
-
+                var self = this;
+                self.refreshEraShow();    
+                self.currentCode(null);
+                self.activeUpdate(true);
+                self.isFocus(true);
             }
 
             /**
@@ -113,10 +122,20 @@ module nts.uk.com.view.cmm020.a {
              */
             public createEra(): void {
                 var self = this;
-                service.createEraName(self.inputData).done(function(res: any) {
-
-                }).fail(function(res: any) {
-                    console.log(res);
+                $('.nts-input').trigger("validate");
+                _.defer(() => {
+                    if (!$('.nts-editor').ntsError("hasError")) {
+                        //                        if (!nts.uk.text.isNullOrEmpty(self.divReasonCode()) && !nts.uk.text.isNullOrEmpty(self.divReasonContent())) {
+                        //                            if (self.enableCode() == false) {
+                        //                                self.convertCode(self.divReasonCode());
+                        //                                self.updateDivReason();
+                        //                            } else {
+                        //                                if (self.enableCode() == true) {//add divergence
+                        //                                    self.addDivReason();
+                        //                                }
+                        //                            }
+                        //                        }
+                    }
                 });
             }
 
@@ -125,14 +144,29 @@ module nts.uk.com.view.cmm020.a {
              */
             public deleteEra(): void {
                 var self = this;
-                service.deleteEraName(self.inputData).done(function(res: any) {
+                blockUI.invisible();
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    var eraNameDelete = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate());
+                    self.indexOfDelete(_.findIndex(self.dataSource(), function(e) {
+                        return e.eraId == self.currentCode();
+                    }));
 
-                }).fail(function(res: any) {
-                    console.log(res);
-                });
+                    service.deleteEraName(eraNameDelete).done(function() {
+                        blockUI.clear();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            blockUI.clear();
+                            //self.getDivReasonList_afterDelete();
+                            $("#inpReason").focus();
+                        });
+                    });
+                }).ifNo(function() {
+                    blockUI.clear();
+                    return;
+                })
             }
             private setValueCurrentEraShow(currentEra: model.EraItem) {
                 var self = this;
+                self.isFocus(true);
                 self.currentName(currentEra.eraName);
                 self.currentSymbol(currentEra.eraSymbol);
                 self.currentStartDate(currentEra.startDate);
@@ -147,6 +181,14 @@ module nts.uk.com.view.cmm020.a {
                 if ($('.nts-editor').ntsError("hasError")) {
                     $('.nts-input').ntsError('clear');
                 }
+            }
+            private getEraNameAfterDelete() {
+                var self = this;
+                service.getAllEraNameItem().done(function(listEraName:Array<model.EraItem>) {
+                    self.dataSource(listEraName);
+                    let lastEraName = _.last(listEraName);
+                    self.currentCode(lastEraName.eraId);
+                });
             }
 
 
