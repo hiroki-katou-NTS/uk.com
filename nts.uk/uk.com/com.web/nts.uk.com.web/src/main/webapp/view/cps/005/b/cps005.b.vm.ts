@@ -27,7 +27,7 @@ module nts.uk.com.view.cps005.b {
                 let self = this,
                     dfd = $.Deferred();
                 block.invisible();
-                new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
+                service.getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
                     self.currentItemData(new ItemDataModel(data));
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
@@ -48,7 +48,7 @@ module nts.uk.com.view.cps005.b {
                     dfd = $.Deferred();
                 self.currentItemData().personInfoItemList([]);
                 self.currentItemData().selectionItemLst([]);
-                new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
+                service.getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                         self.currentItemData().selectionItemLst(data.selectionItemLst);
@@ -89,14 +89,14 @@ module nts.uk.com.view.cps005.b {
                     if (newItemDef.singleItem.decimalPart === null) {
                         newItemDef.singleItem.decimalPart = 0;
                     }
-                    new service.Service().updateItemDef(newItemDef).done(function(data: string) {
+                    service.updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
-                                info({ messageId: data}).then(() => {
-                                    self.reloadData();
-                                    self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
-                                    self.currentItemData().perInfoItemSelectCode.valueHasMutated();
-                                    block.clear();
-                                });
+                            info({ messageId: data }).then(() => {
+                                self.reloadData();
+                                self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
+                                self.currentItemData().perInfoItemSelectCode.valueHasMutated();
+                                block.clear();
+                            });
                         } else {
                             info({ messageId: "Msg_15" }).then(() => {
                                 self.reloadData();
@@ -129,7 +129,7 @@ module nts.uk.com.view.cps005.b {
                     if (newItemDef.singleItem.decimalPart === null) {
                         newItemDef.singleItem.decimalPart = 0;
                     }
-                    new service.Service().addItemDef(newItemDef).done(function(data: string) {
+                    service.addItemDef(newItemDef).done(function(data: string) {
 
                         info({ messageId: "Msg_15" }).then(() => {
 
@@ -165,7 +165,7 @@ module nts.uk.com.view.cps005.b {
                 if (!self.currentItemData().perInfoItemSelectCode()) return;
                 let indexItemDelete = _.findIndex(self.currentItemData().personInfoItemList(), function(item) { return item.id == removeModel.perInfoItemDefId; });
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    new service.Service().removeItemDef(removeModel).done(function(data: string) {
+                    service.removeItemDef(removeModel).done(function(data: string) {
                         if (data) {
                             info({ messageId: data }).then(() => { block.clear(); });
                             block.clear();
@@ -208,10 +208,10 @@ module nts.uk.com.view.cps005.b {
             }
 
             checkRequired(newItemDef: any): boolean {
-                if(newItemDef.itemName == ""){
+                if (newItemDef.itemName == "") {
                     $("#item-name-control").focus();
                     block.clear();
-                    return true;    
+                    return true;
                 }
 
                 if (newItemDef.singleItem.dataType === 1) {
@@ -314,7 +314,7 @@ module nts.uk.com.view.cps005.b {
                     return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5 || c.value == 6);
                 });
                 self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
-                self.stringItemTypeEnumFilter =  _.filter(params.stringItemTypeEnum, function(c) {
+                self.stringItemTypeEnumFilter = _.filter(params.stringItemTypeEnum, function(c) {
                     return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5);
                 });
                 self.stringItemDataTypeEnum = params.stringItemDataTypeEnum || new Array();
@@ -327,7 +327,7 @@ module nts.uk.com.view.cps005.b {
                 self.perInfoItemSelectCode.subscribe(newItemId => {
                     nts.uk.ui.errors.clearAll();
                     if (textUK.isNullOrEmpty(newItemId)) return;
-                    new service.Service().getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: IPersonInfoItem) {
+                    service.getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: IPersonInfoItem) {
                         nts.uk.ui.errors.clearAll();
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
@@ -368,7 +368,7 @@ module nts.uk.com.view.cps005.b {
         itemName: KnockoutObservable<string> = ko.observable("");
         fixedAtr: KnockoutObservable<number> = ko.observable(0);
         itemType: KnockoutObservable<number> = ko.observable(2);
-        dataType: KnockoutObservable<number> = ko.observable(1);
+        dataType: KnockoutObservable<number> = ko.observable(1);;
         stringItem: KnockoutObservable<StringItemModel> = ko.observable(new StringItemModel(null));
         numericItem: KnockoutObservable<NumericItemModel> = ko.observable(new NumericItemModel(null));
         dateItem: KnockoutObservable<DateItemModel> = ko.observable(new DateItemModel(null));
@@ -378,10 +378,9 @@ module nts.uk.com.view.cps005.b {
         dataTypeText: KnockoutObservable<string> = ko.observable("");
         selectionItemName: string;
         selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        enable:  KnockoutObservable<boolean> = ko.observable(true);
+        enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IPersonInfoItem) {
             let self = this;
-
             if (data) {
                 self.id = data.id || "";
                 self.itemName(data.itemName || "");
@@ -392,7 +391,7 @@ module nts.uk.com.view.cps005.b {
                 let dataTypeState = data.itemTypeState.dataTypeState;
                 if (!dataTypeState) return;
                 if (self.itemType() == 2) {
-                    self.dataType(dataTypeState.dataTypeValue || 1);
+                    self.dataType = ko.observable(dataTypeState.dataTypeValue);
                     switch (self.dataType()) {
                         case 1:
                             self.stringItem(new StringItemModel(dataTypeState));
@@ -412,133 +411,254 @@ module nts.uk.com.view.cps005.b {
                         case 6:
                             self.selectionItem(new SelectionItemModel(dataTypeState));
                             break;
+                        default: break;
+
                     }
                 }
             }
-
             self.dataType.subscribe(function(value) {
                 if (value === (data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1)) return;
-//                if (__viewContext['screenModelB'].isUpdate) {
-//                    new service.Service().checkItemData(data.id).done(function(obj: boolean) {
-//                        if (obj) {
-//                            alertError({ messageId: "Msg_233" }).then(() => {
-//                                self.dataType(data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1);
-//                            });
-//                        }
-//                    });
-//                }
-                self.stringItem(new StringItemModel(null));
-                self.numericItem(new NumericItemModel(null));
-                self.dateItem(new DateItemModel(null));
-                self.timeItem(new TimeItemModel(null));
-                self.timePointItem(new TimePointItemModel(null));
-                self.selectionItem(new SelectionItemModel(null));
-                nts.uk.ui.errors.clearAll();
-                if (value === 6) {
-                    self.selectionItem().selectionItemRefType(2);
-                    if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
-                        new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
-                            __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
-                                if (data.length > 0) {
-                                    self.selectionItem().selectionLst([]);
-                                    self.selectionItem().selectionLst(data);
-                                    self.selectionItem().selectionLst.valueHasMutated();
+                let dataState = data == null ? undefined : (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : undefined);
+                if (!dataState) {
+                    if (self.enable()) {
+                        self.stringItem(new StringItemModel(null));
+                        self.numericItem(new NumericItemModel(null));
+                        self.dateItem(new DateItemModel(null));
+                        self.timeItem(new TimeItemModel(null));
+                        self.timePointItem(new TimePointItemModel(null));
+                        self.selectionItem(new SelectionItemModel(null));
+                        nts.uk.ui.errors.clearAll();
+                        if (value === 6) {
+                            self.selectionItem().selectionItemRefType(2);
+                            if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
+                                service.getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
+                                    __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                                        if (data.length > 0) {
+                                            self.selectionItem().selectionLst([]);
+                                            self.selectionItem().selectionLst(data);
+                                            self.selectionItem().selectionLst.valueHasMutated();
 
-                                } else {
-                                    self.selectionItem().selectionLst.removeAll();
-                                    self.selectionItem().selectionLst([]);
-                                    self.selectionItem().selectionLst.valueHasMutated();
+                                        } else {
+                                            self.selectionItem().selectionLst.removeAll();
+                                            self.selectionItem().selectionLst([]);
+                                            self.selectionItem().selectionLst.valueHasMutated();
 
-                                }
+                                        }
 
 
-                            });
-
-                    }
-
-                    self.selectionItem().selectionItemId.subscribe(function(value) {
-                        if (!value) {
-                            return;
-                        }
-                        new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
-                            if (data.length > 0) {
-                                self.selectionItem().selectionLst([]);
-                                self.selectionItem().selectionLst(data);
-                                self.selectionItem().selectionLst.valueHasMutated();
-
-                            } else {
-                                self.selectionItem().selectionLst.removeAll();
-                                self.selectionItem().selectionLst([]);
-                                self.selectionItem().selectionLst.valueHasMutated();
+                                    });
 
                             }
 
-                        });
-                    });
-                } else if (value === 2) {
-                    $('#numericItemMin').blur(() => {
-                        $(this).val(parseFloat($(this).val()));
-                    });
+                            self.selectionItem().selectionItemId.subscribe(function(value) {
+                                if (!value) {
+                                    return;
+                                }
+                                service.getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                                    if (data.length > 0) {
+                                        self.selectionItem().selectionLst([]);
+                                        self.selectionItem().selectionLst(data);
+                                        self.selectionItem().selectionLst.valueHasMutated();
 
-                    self.numericItem().numericItemMinus.subscribe(function(data: number) {
-                        self.numericItem().decimalPart.valueHasMutated();
-                    })
+                                    } else {
+                                        self.selectionItem().selectionLst.removeAll();
+                                        self.selectionItem().selectionLst([]);
+                                        self.selectionItem().selectionLst.valueHasMutated();
 
-                    self.numericItem().integerPart.subscribe(function(x: number) {
-                        self.numericItem().decimalPart.valueHasMutated();
-                    });
+                                    }
 
-                    self.numericItem().decimalPart.subscribe(function(x: number) {
-
-                        let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
-                        writeConstraint("NumericItemMin", {
-                            mantissaMaxLength: x == 0 ? 0 : parseInt(x),
-                            min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
-                            max: maxValue
-                        });
-
-                        $('#numericItemMax').trigger('change');
-                        $('#numericItemMin').trigger('change');
-                        if (x != self.numericItem().oldDecimalPart) {
-                            nts.uk.ui.errors.clearAll();
-                        }
-
-                    });
-                    let init = true;
-                    self.numericItem().numericItemMin.subscribe(function(x: number) {
-
-                        if (!self.numericItem().integerPart()) {
-                            $('#integerPart').trigger('change');
-                            return;
-                        }
-                        let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, self.numericItem().decimalPart() || 0) - 1) / Math.pow(10, self.numericItem().decimalPart() || 0));
-                        if (init) {
-                            writeConstraint("NumericItemMin", {
-                                mantissaMaxLength: self.numericItem().decimalPart() == 0 ? 0 : parseInt(self.numericItem().decimalPart()),
-                                min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
-                                max: maxValue
+                                });
                             });
-                            init = false;
-                            $('#numericItemMin').trigger('change');
-                        }
-                        writeConstraint("NumericItemMax", {
-                            mantissaMaxLength: parseInt(self.numericItem().decimalPart()),
-                            min: x ? parseFloat(x.toString()) : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
-                            max: maxValue
-                        });
-                        $('#numericItemMax').trigger('change');
-                    });
-                    self.numericItem().numericItemMax.subscribe(function(x: number) {
+                        } else if (value === 2) {
+                            $('#numericItemMin').blur(() => {
+                                $(this).val(parseFloat($(this).val()));
+                            });
 
-                        if (!self.numericItem().integerPart()) {
+                            self.numericItem().numericItemMinus.subscribe(function(data: number) {
+                                self.numericItem().decimalPart.valueHasMutated();
+                            })
 
-                            $('#integerPart').trigger('change');
-                            return;
+                            self.numericItem().integerPart.subscribe(function(x: number) {
+                                self.numericItem().decimalPart.valueHasMutated();
+                            });
+
+                            self.numericItem().decimalPart.subscribe(function(x: number) {
+
+                                let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
+                                writeConstraint("NumericItemMin", {
+                                    mantissaMaxLength: x == 0 ? 0 : parseInt(x),
+                                    min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                    max: maxValue
+                                });
+
+                                $('#numericItemMax').trigger('change');
+                                $('#numericItemMin').trigger('change');
+                                if (x != self.numericItem().oldDecimalPart) {
+                                    nts.uk.ui.errors.clearAll();
+                                }
+
+                            });
+                            let init = true;
+                            self.numericItem().numericItemMin.subscribe(function(x: number) {
+
+                                if (!self.numericItem().integerPart()) {
+                                    $('#integerPart').trigger('change');
+                                    return;
+                                }
+                                let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, self.numericItem().decimalPart() || 0) - 1) / Math.pow(10, self.numericItem().decimalPart() || 0));
+                                if (init) {
+                                    writeConstraint("NumericItemMin", {
+                                        mantissaMaxLength: self.numericItem().decimalPart() == 0 ? 0 : parseInt(self.numericItem().decimalPart()),
+                                        min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                        max: maxValue
+                                    });
+                                    init = false;
+                                    $('#numericItemMin').trigger('change');
+                                }
+                                writeConstraint("NumericItemMax", {
+                                    mantissaMaxLength: parseInt(self.numericItem().decimalPart()),
+                                    min: x ? parseFloat(x.toString()) : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                    max: maxValue
+                                });
+                                $('#numericItemMax').trigger('change');
+                            });
+                            self.numericItem().numericItemMax.subscribe(function(x: number) {
+
+                                if (!self.numericItem().integerPart()) {
+
+                                    $('#integerPart').trigger('change');
+                                    return;
+                                }
+                                if (init) {
+                                    self.numericItem().numericItemMin.valueHasMutated();
+                                }
+                            });
                         }
-                        if (init) {
-                            self.numericItem().numericItemMin.valueHasMutated();
+                    }
+                    return;
+                }
+                if (self.fixedAtr() == 1) {
+                    if (dataState !== value) self.dataType(dataState)
+                    return;
+                } else {
+                    if (self.enable()) {
+                        self.stringItem(new StringItemModel(null));
+                        self.numericItem(new NumericItemModel(null));
+                        self.dateItem(new DateItemModel(null));
+                        self.timeItem(new TimeItemModel(null));
+                        self.timePointItem(new TimePointItemModel(null));
+                        self.selectionItem(new SelectionItemModel(null));
+                        nts.uk.ui.errors.clearAll();
+                        if (value === 6) {
+                            self.selectionItem().selectionItemRefType(2);
+                            if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
+                                service.getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
+                                    __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                                        if (data.length > 0) {
+                                            self.selectionItem().selectionLst([]);
+                                            self.selectionItem().selectionLst(data);
+                                            self.selectionItem().selectionLst.valueHasMutated();
+
+                                        } else {
+                                            self.selectionItem().selectionLst.removeAll();
+                                            self.selectionItem().selectionLst([]);
+                                            self.selectionItem().selectionLst.valueHasMutated();
+
+                                        }
+
+
+                                    });
+
+                            }
+
+                            self.selectionItem().selectionItemId.subscribe(function(value) {
+                                if (!value) {
+                                    return;
+                                }
+                                service.getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                                    if (data.length > 0) {
+                                        self.selectionItem().selectionLst([]);
+                                        self.selectionItem().selectionLst(data);
+                                        self.selectionItem().selectionLst.valueHasMutated();
+
+                                    } else {
+                                        self.selectionItem().selectionLst.removeAll();
+                                        self.selectionItem().selectionLst([]);
+                                        self.selectionItem().selectionLst.valueHasMutated();
+
+                                    }
+
+                                });
+                            });
+                        } else if (value === 2) {
+                            $('#numericItemMin').blur(() => {
+                                $(this).val(parseFloat($(this).val()));
+                            });
+
+                            self.numericItem().numericItemMinus.subscribe(function(data: number) {
+                                self.numericItem().decimalPart.valueHasMutated();
+                            })
+
+                            self.numericItem().integerPart.subscribe(function(x: number) {
+                                self.numericItem().decimalPart.valueHasMutated();
+                            });
+
+                            self.numericItem().decimalPart.subscribe(function(x: number) {
+
+                                let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
+                                writeConstraint("NumericItemMin", {
+                                    mantissaMaxLength: x == 0 ? 0 : parseInt(x),
+                                    min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                    max: maxValue
+                                });
+
+                                $('#numericItemMax').trigger('change');
+                                $('#numericItemMin').trigger('change');
+                                if (x != self.numericItem().oldDecimalPart) {
+                                    nts.uk.ui.errors.clearAll();
+                                }
+
+                            });
+                            let init = true;
+                            self.numericItem().numericItemMin.subscribe(function(x: number) {
+
+                                if (!self.numericItem().integerPart()) {
+                                    $('#integerPart').trigger('change');
+                                    return;
+                                }
+                                let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, self.numericItem().decimalPart() || 0) - 1) / Math.pow(10, self.numericItem().decimalPart() || 0));
+                                if (init) {
+                                    writeConstraint("NumericItemMin", {
+                                        mantissaMaxLength: self.numericItem().decimalPart() == 0 ? 0 : parseInt(self.numericItem().decimalPart()),
+                                        min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                        max: maxValue
+                                    });
+                                    init = false;
+                                    $('#numericItemMin').trigger('change');
+                                }
+                                writeConstraint("NumericItemMax", {
+                                    mantissaMaxLength: parseInt(self.numericItem().decimalPart()),
+                                    min: x ? parseFloat(x.toString()) : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                    max: maxValue
+                                });
+                                $('#numericItemMax').trigger('change');
+                            });
+                            self.numericItem().numericItemMax.subscribe(function(x: number) {
+
+                                if (!self.numericItem().integerPart()) {
+
+                                    $('#integerPart').trigger('change');
+                                    return;
+                                }
+                                if (init) {
+                                    self.numericItem().numericItemMin.valueHasMutated();
+                                }
+                            });
                         }
-                    });
+                    }
+
+
+
                 }
             });
         }
@@ -660,6 +780,7 @@ module nts.uk.com.view.cps005.b {
             self.timeItemMax(data.max);
         }
     }
+
     export class TimePointItemModel {
         timePointItemMin: KnockoutObservable<number> = ko.observable();
         timePointItemMax: KnockoutObservable<number> = ko.observable();
@@ -681,6 +802,7 @@ module nts.uk.com.view.cps005.b {
             self.dateItemType(data.dateItemType || 1);
         }
     }
+
     export class SelectionItemModel {
         selectionItemRefType: KnockoutObservable<number> = ko.observable(0);
         selectionItemRefTypeText: KnockoutObservable<string> = ko.observable("");
@@ -722,7 +844,7 @@ module nts.uk.com.view.cps005.b {
             if (self.selectionItemId() === undefined || self.selectionItemId() === "") {
                 if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
 
-                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
+                    service.getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
                         __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.selectionLst.removeAll();
@@ -741,7 +863,7 @@ module nts.uk.com.view.cps005.b {
                 }
             } else {
 
-                new service.Service().getAllSelByHistory(ko.toJS(self.selectionItemId),
+                service.getAllSelByHistory(ko.toJS(self.selectionItemId),
                     __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                         if (data.length > 0) {
                             self.selectionLst.removeAll();
@@ -762,7 +884,7 @@ module nts.uk.com.view.cps005.b {
                 if (!value) {
                     return;
                 }
-                new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                service.getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                     if (data.length > 0) {
                         self.selectionLst.removeAll();
                         self.selectionLst(data);
@@ -926,7 +1048,7 @@ module nts.uk.com.view.cps005.b {
         id: string;
         itemName: string;
         isFixed: number;
-        enable : boolean;
+        enable: boolean;
         itemTypeState: IItemTypeState;
     }
 
@@ -973,7 +1095,6 @@ module nts.uk.com.view.cps005.b {
         selectionLst: Array<any>;
         selectionId: string;
         selectionItemName?: string;
-
     }
 
     export enum ISFIXED {
@@ -982,6 +1103,21 @@ module nts.uk.com.view.cps005.b {
 
         // 1:固定(Fixed)
         FIXED = 1
+    }
+
+    export enum DataTypeValue {
+        STRING = 1,
+        NUMBERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6,
+        SELECTION_RADIO = 7,
+        SELECTION_BUTTON = 8,
+        READONLY = 9,
+        RELATED_CATEGORY = 10,
+        NUMBERIC_BUTTON = 11,
+        READONLY_BUTTON = 12
     }
 
 }
