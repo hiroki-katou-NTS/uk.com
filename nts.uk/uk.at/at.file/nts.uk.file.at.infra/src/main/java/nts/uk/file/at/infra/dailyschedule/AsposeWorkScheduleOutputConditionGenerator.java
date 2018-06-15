@@ -1700,6 +1700,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			        Range dayCountRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DAYCOUNT_ROW);
 					Range dayCountRange = cells.createRange(currentRow, 0, 2, 39);
 					dayCountRange.copy(dayCountRangeTemp);
+					dayCountRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 					if (rowPageTracker.checkRemainingRowSufficient(2) == 0) {
 						rowPageTracker.useRemainingRow(2);
 						rowPageTracker.resetRemainingRow();
