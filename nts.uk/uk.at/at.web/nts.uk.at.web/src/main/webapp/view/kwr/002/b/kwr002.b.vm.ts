@@ -45,6 +45,8 @@ module nts.uk.com.view.kwr002.b {
                         self.newMode(false);
                         newModeFlag = false;
                     })
+                }else{
+                    this.onNew(false);
                 }
             });
         };
@@ -87,7 +89,7 @@ module nts.uk.com.view.kwr002.b {
                     self.aRES(newVal);
 
                     if (_.isEmpty(newVal)) {
-                        this.onNew()
+                        this.onNew(true)
                     } else {
                         self.aRES(newVal);
                         self.setCurrentCodeAfterDelete();
@@ -117,14 +119,14 @@ module nts.uk.com.view.kwr002.b {
                     }
 
                 } else {
-                    self.onNew();
+                    self.onNew(true);
                 }
                 dfd.resolve();
             });
         }
 
         /** new mode */
-        onNew() {
+        onNew(isFocus: boolean) {
             let self = this;
             errors.clearAll();
             let params = {
@@ -137,7 +139,7 @@ module nts.uk.com.view.kwr002.b {
             self.currentARESCode("");
             self.newMode(true);
             newModeFlag = true;
-            $("#code").focus();
+            if (isFocus) $("#code").focus();
         }
 
         onRegister() {
@@ -211,7 +213,7 @@ module nts.uk.com.view.kwr002.b {
                         self.currentARESCode(firstData.code);
                     }
                 } else {
-                    self.onNew();
+                    self.onNew(true);
                 }
             }).always(() => {
                 block.clear();
@@ -277,7 +279,7 @@ module nts.uk.com.view.kwr002.b {
                     let firstData = _.first(data);
                     self.currentARESCode(firstData.code);
                 } else {
-                    self.onNew();
+                    self.onNew(true);
                 }
                 dfd.resolve();
             }).fail(function (error) {
