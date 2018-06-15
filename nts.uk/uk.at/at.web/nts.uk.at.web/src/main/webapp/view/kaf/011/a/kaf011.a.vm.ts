@@ -77,13 +77,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
 
             self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
-                if (newWkTimeCD) {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
                     $('#recTimeBtn').ntsError("clear");
                 }
             });
 
             self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
-                if (newWkTimeCD) {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
                     $('#absTimeBtn').ntsError("clear");
                 }
             });

@@ -86,8 +86,9 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private static AutoCalOfLeaveEarlySettingDto newAutoCalcLeaveSetting(AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting) {
 		return autoCalcOfLeaveEarlySetting == null ? null : new AutoCalOfLeaveEarlySettingDto(
-						autoCalcOfLeaveEarlySetting.isLate() ? 1 : 0, 
-						autoCalcOfLeaveEarlySetting.isLeaveEarly() ? 1 : 0);
+						autoCalcOfLeaveEarlySetting.isLeaveEarly() ? 1 : 0,
+						autoCalcOfLeaveEarlySetting.isLate() ? 1 : 0 
+						);
 	}
 
 	private static AutoCalHolidaySettingDto newAutoCalcHolidaySetting(AutoCalRestTimeSetting domain) {
