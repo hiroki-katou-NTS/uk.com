@@ -379,7 +379,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("FROM KrcstWorkFixed a ");
 		builderString.append("WHERE a.krcstWorkFixedPK.closureId = :closureId ");
 		builderString.append("AND a.krcstWorkFixedPK.cid = :cid ");
-		builderString.append("AND a.processYm = :yearMonth ");
+		builderString.append("AND a.krcstWorkFixedPK.cid = :cid ");
+		builderString.append("AND a.confirmCls = 1 ");
 		SEL_FIND_WORK_FIXED = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -949,13 +950,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public Optional<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
-		Optional<WorkFixedDto> workOp = this.queryProxy().query(SEL_FIND_WORK_FIXED, KrcstWorkFixed.class)
+	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
+		List<WorkFixedDto> workOp = this.queryProxy().query(SEL_FIND_WORK_FIXED, KrcstWorkFixed.class)
 				.setParameter("closureId", closureId).setParameter("cid", AppContexts.user().companyId())
-				.setParameter("yearMonth", yearMonth)
-				.getSingle(w -> new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
+				.getList(w -> new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
 						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid()));
-		return workOp.isPresent() ? workOp : Optional.empty();
+		return workOp;
 	}
 
 	@Override

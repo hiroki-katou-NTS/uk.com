@@ -201,13 +201,14 @@ public class DPLoadRowProcessor {
 				boolean lock = process.checkLockAndSetState(employeeAndDateRange, data);
 
 				if (lock || data.isApproval()) {
-					process.lockCell(result, data, true);
+					if(lock) process.lockCell(result, data, true);
 					if (data.isApproval()) {
 						val typeLock = data.getState();
 						if (typeLock.equals(""))
 							data.setState("lock|" + LOCK_EDIT_APPROVAL);
 						else
 							data.setState(typeLock + "|" + LOCK_EDIT_APPROVAL);
+						 process.lockCell(result, data, false);
 						lock = true;
 					}
 				}

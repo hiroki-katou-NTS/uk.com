@@ -162,7 +162,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	Optional<ActualLockDto> findAutualLockById(String companyId, int closureId);
 	
-	Optional<WorkFixedDto> findWorkFixed(int closureId, int yearMonth);
+	List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth);
 	
 	OperationOfDailyPerformanceDto findOperationOfDailyPerformance();
 	

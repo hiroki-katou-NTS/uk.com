@@ -70,7 +70,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWit
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
@@ -493,13 +492,14 @@ public class DailyPerformanceCorrectionProcessor {
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
 
 				if (lock || data.isApproval()) {
-					lockCell(screenDto, data, true);
+					if(lock) lockCell(screenDto, data, true);
 					if (data.isApproval()) {
 						val typeLock = data.getState();
 						if (typeLock.equals(""))
 							data.setState("lock|" + LOCK_EDIT_APPROVAL);
 						else
 							data.setState(typeLock + "|" + LOCK_EDIT_APPROVAL);
+						lockCell(screenDto, data, false);
 						lock = true;
 					}
 				}
@@ -857,10 +857,10 @@ public class DailyPerformanceCorrectionProcessor {
 //					}
 				}
 				// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
-				Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
-				if (workFixedOp.isPresent()) {
+				List<WorkFixedDto> workFixeds = repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
+				for (WorkFixedDto workFixedOp : workFixeds) {
 					employeeAndDateRange.put(mergeString(x.getSid(), "|", x.getClosureId().toString(),
-							"|" + workFixedOp.get().getWkpId(), "|", LOCK_EDIT_CELL_WORK), datePeriod);
+							"|" + workFixedOp.getWkpId(), "|", LOCK_EDIT_CELL_WORK), datePeriod);
 				}
 			});
 		}
@@ -1028,7 +1028,7 @@ public class DailyPerformanceCorrectionProcessor {
 							DPErrorDto value = lstError.get(id);
 							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId),
 									value.getEmployeeId(), "", "", value.getProcessingDate(),
-									value.getErrorCode(), value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay() : value.getErrorAlarmMessage(), x, "",
+									value.getErrorCode(), value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay() : value.getErrorAlarmMessage(), lstError.get(id).getAttendanceItemId().get(x), "",
 									errorSetting.isBoldAtr(), errorSetting.getMessageColor(), appMapDateSid.containsKey(value.getEmployeeId()+"|"+value.getProcessingDate()) ? appMapDateSid.get(value.getEmployeeId()+"|"+value.getProcessingDate()) : ""));
 							rowId ++;
 						};
