@@ -91,6 +91,7 @@ module nts.uk.com.view.cmf003.c {
             }
 
             remove() {
+                let self = this;
                 self.categoriesDefault.shift();
             }
 

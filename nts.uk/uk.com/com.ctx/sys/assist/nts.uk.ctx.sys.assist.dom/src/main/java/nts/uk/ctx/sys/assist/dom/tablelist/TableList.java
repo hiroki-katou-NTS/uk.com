@@ -85,10 +85,10 @@ public class TableList extends DomainObject {
 	 */
 	private String saveSetName;
 
-	/**
-	 * 保存ファイル名
-	 */
-	private String saveFileName;
+//	/**
+//	 * 保存ファイル名
+//	 */
+//	private String saveFileName;
 
 	/**
 	 * 保存形態
@@ -592,7 +592,7 @@ public class TableList extends DomainObject {
 	public TableList(String categoryId, String categoryName, String dataStorageProcessingId,
 			String dataRecoveryProcessId, int tableNo, String tableJapaneseName, String tableEnglishName,
 			String fieldAcqCid, String fieldAcqDateTime, String fieldAcqEmployeeId, String fieldAcqEndDate,
-			String fieldAcqStartDate, String saveSetCode, String saveSetName, String saveFileName, String saveForm,
+			String fieldAcqStartDate, String saveSetCode, String saveSetName, String saveForm,
 			GeneralDate saveDateFrom, GeneralDate saveDateTo, int storageRangeSaved, int retentionPeriodCls,
 			String internalFileName, int anotherComCls, String referenceYear, String referenceMonth,
 			String compressedFileName, String fieldChild1, String fieldChild2, String fieldChild3, String fieldChild4,
@@ -631,7 +631,6 @@ public class TableList extends DomainObject {
 		this.fieldAcqStartDate = fieldAcqStartDate;
 		this.saveSetCode = saveSetCode;
 		this.saveSetName = saveSetName;
-		this.saveFileName = saveFileName;
 		this.saveForm = saveForm;
 		this.saveDateFrom = saveDateFrom;
 		this.saveDateTo = saveDateTo;
