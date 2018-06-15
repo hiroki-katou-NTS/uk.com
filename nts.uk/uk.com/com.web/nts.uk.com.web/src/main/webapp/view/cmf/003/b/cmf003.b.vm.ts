@@ -14,7 +14,9 @@ module nts.uk.com.view.cmf003.b {
 
     export module viewmodel {
         export class ScreenModel {
-
+            
+            buton_E_enable: KnockoutObservable<string> = ko.observable(true);
+            
             // systemtype from C
             systemtypeFromC: KnockoutObservable<ItemCombobox>;
 
@@ -158,7 +160,8 @@ module nts.uk.com.view.cmf003.b {
 
             constructor() {
                 var self = this;
-
+                
+                
                 self.isCompressPass = ko.observable(false);
                 self.isSymbol = ko.observable(false);
                 self.passwordConstraint = ko.observable("");
@@ -583,6 +586,7 @@ module nts.uk.com.view.cmf003.b {
                 } else {
                     self.initE();
                     self.next();
+                    $("#E5_2").focus();
                 }
             }
 
@@ -677,7 +681,9 @@ module nts.uk.com.view.cmf003.b {
                         };
 
                         setShared("CMF001_E_PARAMS", params);
-                        nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
+                        nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml").onClosed(() => {
+                            self.buton_E_enable(false);
+                        });
                     }
                 }).fail((err) => {
                 });
