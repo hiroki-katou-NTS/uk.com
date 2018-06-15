@@ -138,16 +138,11 @@ module nts.uk.com.view.kwr002.a {
                         employee = self.findByIdEmployee(i);
                         self.selectedEmployee.push(employee);
                     }
-                    console.log(self.selectedEmployee());
                 });
-                
-                self.selectedCode.subscribe((codechange) => {
-                    console.log(codechange);
-                    console.log(self.selectedCode());
-                })
+            
             }
 
-            public start_page(): JQueryPromise<any> {
+            public start_pagse<any> {
 
                 blockUI.invisible();
                 let self = this;
@@ -366,7 +361,7 @@ module nts.uk.com.view.kwr002.a {
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
-            }
+                    }
         }
 
         export interface GroupOption {
