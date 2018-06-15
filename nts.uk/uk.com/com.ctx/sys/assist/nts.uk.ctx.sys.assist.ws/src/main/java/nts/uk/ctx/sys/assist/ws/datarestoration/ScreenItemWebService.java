@@ -19,7 +19,7 @@ public class ScreenItemWebService {
 
 	@POST
 	@Path("findPerformDataRecover/{dataRecoveryProcessId}")
-	public List<ScreenItemDto> findPerformDataRecover(@PathParam("dataRecoveryProcessId") String dataRecoveryProcessId) {
+	public ScreenItemDto findPerformDataRecover(@PathParam("dataRecoveryProcessId") String dataRecoveryProcessId) {
 		return screenItemFinder.getTargetById(dataRecoveryProcessId);
 	}
 }

@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.assist.infra.entity.datarestoration;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,6 +13,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
+import nts.uk.ctx.sys.assist.dom.datarestoration.RestorationTarget;
+import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -92,9 +96,16 @@ public class SspmtPerformDataRecovery extends UkJpaEntity implements Serializabl
 		return dataRecoveryProcessId;
 	}
 
-	public PerformDataRecovery toDomain() {
-		return new PerformDataRecovery(this.dataRecoveryProcessId, this.cid, this.saveProcessId, this.uploadfileId,
-				this.recoveryFileName, this.numPeopleBeRestore, this.numPeopleSave, this.recoveryMethod,
+	public PerformDataRecovery toDomain(List<SspmtTarget> targets, List<SspmtRestorationTarget> restorationTarget) {
+		return new PerformDataRecovery(this.dataRecoveryProcessId,
+				this.cid, targets.stream().map(x -> new Target(x.targetPk.dataRecoveryProcessId, x.targetPk.sid, x.scd, x.bussinessName)).collect(Collectors.toList()),
+				this.saveProcessId,
+				this.uploadfileId,
+				this.recoveryFileName,
+				restorationTarget.stream().map(x -> new RestorationTarget(x.restorationTargetPk.dataRecoveryProcessId, x.restorationTargetPk.recoveryCategory, x.retentionPeriodIndicator, x.recoveryTargetStartYear, x.recoveryTargetEndYear, x.recoveryTargetStartYm, x.recoveryTargetEndYm, x.recoveryTargetStartDate, x.recoveryTargetEndDate)).collect(Collectors.toList()),
+				this.numPeopleBeRestore,
+				this.numPeopleSave,
+				this.recoveryMethod,
 				this.recoverFromAnoCom);
 	}
 

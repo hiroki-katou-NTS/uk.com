@@ -19,9 +19,6 @@ public interface PerformDataRecoveryRepository {
 
 	void remove(String dataRecoveryProcessId);
 	
-	List<PerformDataRecovery> getPerformDataByRecoveryProcessingId(String dataRecoveryProcessId);
-
-	
 	List<TableList> getByStorageRangeSaved(String categoryId,String storageRangeSaved);
 	
 	List<Target> findByDataRecoveryId(String dataRecoveryProcessId);

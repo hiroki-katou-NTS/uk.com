@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtPerformDataRecovery;
+import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtRestorationTarget;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtTarget;
 import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
 
@@ -36,16 +37,18 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static final StringBuilder INSERT_BY_TABLE = new StringBuilder("INSERT INTO ");
 
-	private static final String SELECT_PERFORM_DATA_RECOVERYBY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT f FROM SspmtPerformDataRecovery f WHERE  f.dataRecoveryProcessId =:dataRecoveryProcessId";
-
 	private static final String SELECT_ALL_TABLE_LIST_QUERY_STRING = "SELECT f FROM SspmtTableList f";
 	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId";
+	private static final String SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID  = "SELECT t FROM SspmtTarget t WHERE t.targetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
+    private static final String SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID  = "SELECT st FROM SspmtRestorationTarget st WHERE st.restorationTargetPk.dataRecoveryProcessId:dataRecoveryProcessId";
 
 	@Override
-	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
-		return Optional.ofNullable(
-				this.getEntityManager().find(SspmtPerformDataRecovery.class, dataRecoveryProcessId).toDomain());
-	}
+    public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
+        List<SspmtTarget> targetData = this.queryProxy().query(SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtTarget.class).setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList();
+        List<SspmtRestorationTarget> restorationTarget = this.queryProxy().query(SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtRestorationTarget.class).setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList();
+        return Optional.ofNullable(
+                this.getEntityManager().find(SspmtPerformDataRecovery.class, dataRecoveryProcessId).toDomain(targetData, restorationTarget));
+    }
 
 	@Override
 	public void add(PerformDataRecovery domain) {
@@ -68,7 +71,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class).setParameter("categoryId", categoryId)
 				.setParameter("storageRangeSaved", storageRangeSaved).getResultList();
 
-		return listTable.stream().map(item -> item.toDomain()).collect(Collectors.toList());
+		return listTable.stream().map(SspmtTableList::toDomain).collect(Collectors.toList());
 	}
 
 	@Override
@@ -76,7 +79,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		List<SspmtTarget> listTarget = this.getEntityManager().createQuery(SELECT_ALL_TARGET, SspmtTarget.class)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getResultList();
 
-		return listTarget.stream().map(item -> item.toDomain()).collect(Collectors.toList());
+		return listTarget.stream().map(SspmtTarget::toDomain).collect(Collectors.toList());
 	}
 
 	@Override
@@ -90,48 +93,41 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	public int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName) {
 		if (tableName != null) {
 			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE ");
+            COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere));
+            return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString())
+                    .getSingleResult();
 		}
-		int i = 0;
-		for (Map.Entry<String, String> filed : filedWhere.entrySet()) {
-			if (!filed.getValue().toString().isEmpty()) {
-				i++;
-				if (i != 0) {
-					COUNT_BY_TABLE_SQL.append(" AND ").append(filed.getKey() + " = ").append(filed.getValue());
-				} else {
-					COUNT_BY_TABLE_SQL.append(filed.getKey() + " = ").append(filed.getValue());
-				}
-			}
-		}
-
-		Integer countData = (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString())
-				.getSingleResult();
-
-		return countData;
+		return 0;
 	}
 
-	@Override
+    private StringBuilder makeWhereClause(Map<String, String> filedWhere) {
+	    StringBuilder whereClause = new StringBuilder();
+        int i = 0;
+        for (Map.Entry<String, String> filed : filedWhere.entrySet()) {
+            if (!filed.getValue().isEmpty()) {
+                i++;
+                if (i != 0) {
+                    whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(filed.getValue());
+                } else {
+                    whereClause.append(filed.getKey()).append(" = ").append(filed.getValue());
+                }
+            }
+        }
+        return whereClause;
+    }
+
+    @Override
 	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName) {
 
 		EntityManager em = this.getEntityManager();
 
 		if (tableName != null) {
 			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-		}
-		int i = 0;
-		for (Map.Entry<String, String> filed : filedWhere.entrySet()) {
-			if (!filed.getValue().toString().isEmpty()) {
-				i++;
-				if (i != 0) {
-					COUNT_BY_TABLE_SQL.append(" AND ").append(filed.getKey() + " = ").append(filed.getValue());
-				} else {
-					COUNT_BY_TABLE_SQL.append(filed.getKey() + " = ").append(filed.getValue());
-				}
-			}
-		}
+            DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere));
 
-		Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
-		query.executeUpdate();
-
+            Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
+            query.executeUpdate();
+		}
 	}
 
 	@Override
@@ -157,13 +153,13 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	@Override
 	public List<TableList> getAllTableList() {
 		return this.queryProxy().query(SELECT_ALL_TABLE_LIST_QUERY_STRING, SspmtTableList.class)
-				.getList(c -> c.toDomain());
+				.getList(SspmtTableList::toDomain);
 	}
 
 	@Override
 	public List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId) {
 		return this.queryProxy().query(SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING, SspmtTableList.class)
-				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList(c -> c.toDomain());
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList(SspmtTableList::toDomain);
 	}
 
 	@Override
@@ -172,19 +168,12 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		EntityManager em = this.getEntityManager();
 		DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
 		if (whereCid) {
-			DELETE_BY_TABLE_SQL.append("CID = " + cid);
+			DELETE_BY_TABLE_SQL.append("CID = ").append(cid);
 		}
 		if (whereEmId) {
-			DELETE_BY_TABLE_SQL.append("SID = " + employeeId);
+			DELETE_BY_TABLE_SQL.append("SID = ").append(employeeId);
 		}
 		Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 		query.executeUpdate();
 	}
-	@Override
-	public List<PerformDataRecovery> getPerformDataByRecoveryProcessingId(String dataRecoveryProcessId) {
-		return this.queryProxy().query(SELECT_PERFORM_DATA_RECOVERYBY_RECOVERY_PROCESSING_ID_QUERY_STRING, SspmtPerformDataRecovery.class)
-				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList(c -> c.toDomain());
-
-	}
-
 }

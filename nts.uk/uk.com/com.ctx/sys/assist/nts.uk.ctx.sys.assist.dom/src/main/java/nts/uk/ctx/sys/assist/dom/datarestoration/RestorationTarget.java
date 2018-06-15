@@ -17,7 +17,6 @@ import nts.uk.shr.com.time.calendar.period.YearPeriod;
 /**
  * 復旧対象
  */
-@AllArgsConstructor
 @Getter
 public class RestorationTarget extends DomainObject {
 
