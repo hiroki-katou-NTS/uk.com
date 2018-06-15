@@ -1,6 +1,7 @@
 module nts.uk.com.view.cmf003.f {
     
     import getShared = nts.uk.ui.windows.getShared;
+    import getText = nts.uk.resource.getText;
     
     export module viewmodel {
         export class ScreenModel {
@@ -29,21 +30,20 @@ module nts.uk.com.view.cmf003.f {
             monthStartValue : string;
             monthEndValue : string;
             yearStartValue : string;
-            yearStartValue : string;
-            
-            // received dataStorageMng from server
-            dataStorageMng: KnockoutObservable<string>;
+            yearEndValue : string;
             
             // dialog mode
             dialogMode: KnockoutObservable<string>;
             
+            // check file has been downloaded already
+            isDownloaded: KnockoutObservable<boolean>;
+            
             constructor() {
                 let self = this;
-                var params =  nts.uk.ui.windows.getShared("CMF001_E_PARAMS");
+                let params =  nts.uk.ui.windows.getShared("CMF001_E_PARAMS");
                 
                 self.timeStart = new Date();
                 self.timeOver = ko.observable('00:00:00');
-                self.dataStorageMng = ko.observable({});
                 self.storeProcessingId = params.storeProcessingId;
                 self.dataSaveSetName = params.dataSaveSetName;
                 self.dayStartValue = moment.utc(params.dayValue.startDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
@@ -51,7 +51,7 @@ module nts.uk.com.view.cmf003.f {
                 self.monthStartValue = moment.utc(params.monthValue.startDate, 'YYYY/MM/DD').format("YYYY/MM");
                 self.monthEndValue = moment.utc(params.monthValue.endDate, 'YYYY/MM/DD').format("YYYY/MM");
                 self.yearStartValue = moment.utc(params.yearValue.startDate, 'YYYY/MM/DD').format("YYYY");
-                self.yearStartValue = moment.utc(params.yearValue.endDate, 'YYYY/MM/DD').format("YYYY");
+                self.yearEndValue = moment.utc(params.yearValue.endDate, 'YYYY/MM/DD').format("YYYY");
                 
                 // init F1_7
                 self.status = ko.observable('');
@@ -59,6 +59,7 @@ module nts.uk.com.view.cmf003.f {
                 self.categoryTotalCount = ko.observable(0);
                 self.errorCount = ko.observable(0);
                 self.dialogMode = ko.observable("saving");
+                self.isDownloaded = ko.observable(false);
             }
             
             //開始
@@ -80,10 +81,10 @@ module nts.uk.com.view.cmf003.f {
                 let storeProcessingId = self.storeProcessingId;
                 
                 service.findDataStorageMng(storeProcessingId).done(function(res: any) {
-                    var storageMng = res;
-                    
+                    let storageMng = res;
+
                     // F1_6 set time over 
-                    var timeNow = new Date();
+                    let timeNow = new Date();
                     let over = (timeNow.getSeconds()+timeNow.getMinutes()*60+ timeNow.getHours()*60*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60*60);
                     let time = new Date(null);
                     time.setSeconds(over); // specify value for SECONDS here
@@ -91,7 +92,7 @@ module nts.uk.com.view.cmf003.f {
                     self.timeOver(result);
                     
                     // F1_7
-                    self.status(getStatusEnum(storageMng.operatingCondition));
+                    self.status(self.getStatusEnum(storageMng.operatingCondition));
                     self.categoryCount(storageMng.categoryCount);
                     self.categoryTotalCount(storageMng.categoryTotalCount);
                     self.errorCount(storageMng.errorCount);
@@ -106,16 +107,20 @@ module nts.uk.com.view.cmf003.f {
                         if(storageMng.operatingCondition == 4) {
                             self.dialogMode("done");
                             
-                            // comfirm down load when done
+                            // confirm down load when done
                             nts.uk.ui.dialog.confirm({ messageId: "Msg_334" })
                             .ifYes(() => {
                                 service.findResultOfSaving(storeProcessingId).done(function(res: any) {
-                                    //TODO download by file id 
+                                    let fileId = res.fileId;
+                                    nts.uk.request.specials.donwloadFile(fileId);
+                                    self.isDownloaded(true);
+                                    $('#F3_3').focus();
                                 }).fail(function(res: any) {
                                     console.log("Get fileId fail");
                                 });                            
                             })
                             .ifNo(() => {
+                                $('#F3_3').focus();
                                 return;
                             });
                         }
@@ -123,12 +128,13 @@ module nts.uk.com.view.cmf003.f {
                         // end: update dialog to Error/Interrupt mode
                         if((storageMng.operatingCondition == 5) || (storageMng.operatingCondition == 6)) {
                             self.dialogMode("error_interrupt");
+                            $('#F3_3').focus();
                         }
                         
                         // delete dataStorageMng of process when end
                         let dataStorageMng = new DataStorageMng(storeProcessingId, 0, 0, 0, 0, 0);
                         service.deleteDataStorageMng(dataStorageMng).done(function(res: any) {
-                            console.log("delete cuccess");
+                            console.log("delete success");
                         }).fail(function(res: any) {
                             console.log("delete fails");
                         });
@@ -146,7 +152,7 @@ module nts.uk.com.view.cmf003.f {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                 .ifYes(() => {
                     service.setInterruptSaving(dataStorageMng).done(function(res: any) {
-                        console.log("interrupt cuccess");
+                        console.log("interrupt success");
                     }).fail(function(res: any) {
                         console.log("interrupt fail");
                     });
@@ -157,11 +163,15 @@ module nts.uk.com.view.cmf003.f {
             }
             
             public download(): void {
-                // comfirm down load when click button
+                let self = this;
+                
+                // confirm down load when click button
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_388" })
                 .ifYes(() => {
                     service.findResultOfSaving(self.storeProcessingId).done(function(res: any) {
-                        //TODO download by file id 
+                        let fileId = res.fileId;
+                        nts.uk.request.specials.donwloadFile(fileId);
+                        self.isDownloaded(true);
                     }).fail(function(res: any) {
                         console.log("Get fileId fail");
                     });
@@ -174,6 +184,24 @@ module nts.uk.com.view.cmf003.f {
             // close popup
             public close(): void {
                  nts.uk.ui.windows.close();
+            }
+            
+            public getStatusEnum(value): string {
+                if (value && value === 0) {
+                    return getText('Enum_OperatingCondition_INPREPARATION');
+                } else if (value && value === 1) {
+                    return getText('Enum_OperatingCondition_SAVING');
+                } else if (value && value === 2) {
+                    return getText('Enum_OperatingCondition_INPROGRESS');
+                } else if (value && value === 3) {
+                    return getText('Enum_OperatingCondition_DELETING');
+                } else if (value && value === 4) {
+                    return getText('Enum_OperatingCondition_DONE');
+                } else if (value && value === 5) {
+                    return getText('Enum_OperatingCondition_INTERRUPTION_END');
+                } else if (value && value === 6) {
+                    return getText('Enum_OperatingCondition_ABNORMAL_TERMINATION');
+                }
             }
         }
         
@@ -193,24 +221,6 @@ module nts.uk.com.view.cmf003.f {
                 this.categoryTotalCount = categoryTotalCount;
                 this.errorCount = errorCount;
                 this.operatingCondition = operatingCondition;
-            }
-        }
-        
-        function getStatusEnum(value) {
-            if (value && value === '0') {
-                return getText('Enum_OperatingCondition_INPREPARATION');
-            } else if (value && value === '1') {
-                return getText('Enum_OperatingCondition_SAVING');
-            } else if (value && value === '2') {
-                return getText('Enum_OperatingCondition_INPROGRESS');
-            } else if (value && value === '3') {
-                return getText('Enum_OperatingCondition_DELETING');
-            } else if (value && value === '4') {
-                return getText('Enum_OperatingCondition_DONE');
-            } else if (value && value === '5') {
-                return getText('Enum_OperatingCondition_INTERRUPTION_END');
-            } else if (value && value === '6') {
-                return getText('Enum_OperatingCondition_ABNORMAL_TERMINATION');
             }
         }
     }

@@ -1,3 +1,4 @@
+
 .image-left{
 	float: left;
 	margin-right: 20px;
@@ -14,7 +15,8 @@
 .button-image {
 	padding-top: 40px;
 	margin-left: 100px;
-	margin-right: 100px;	
+	margin-right: 100px;
+	display: flex;	
 }
 
 .title {
