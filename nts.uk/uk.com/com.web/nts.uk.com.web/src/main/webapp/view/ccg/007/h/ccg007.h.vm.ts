@@ -1,27 +1,22 @@
 module nts.uk.pr.view.ccg007.h {
     export module viewmodel {
         import blockUI = nts.uk.ui.block;
-        import CallerParameter = service.CallerParameter;
         import ForgotPasswordCommand = service.ForgotPasswordCommand;
 
         export class ScreenModel {
             
-            loginId: KnockoutObservable<string>;
+            userName: KnockoutObservable<string>;
             passwordNew: KnockoutObservable<string>;
             passwordNewConfirm: KnockoutObservable<string>;
             
             // Parameter from caller screen.
-            callerParameter: CallerParameter;
             
-            constructor(parentData: CallerParameter) {
+            constructor() {
                 var self = this;
                 
-                self.loginId = ko.observable(null);
+                self.userName = ko.observable(null);
                 self.passwordNew = ko.observable(null);
                 self.passwordNewConfirm = ko.observable(null);
-                
-                //parent data
-                self.callerParameter = parentData;
             }
             
             /**
@@ -34,7 +29,13 @@ module nts.uk.pr.view.ccg007.h {
                 // block ui
                 nts.uk.ui.block.invisible();
                 
-//                self.loginId(self.callerParameter.loginId);
+                //get userName
+                service.getUserNameByLoginId(localStorage.getItem('contractCode'), localStorage.getItem('loginId')).done(function(data) {
+                    self.userName(data.userName);
+                    //remove loginId and contractCode in LocalStorage
+                    localStorage.removeItem('loginId');
+                    localStorage.removeItem('contractCode');
+                });
                 
                 dfd.resolve();
                 
@@ -57,9 +58,10 @@ module nts.uk.pr.view.ccg007.h {
                 blockUI.invisible();
                 
                 //add command
-                let command: ForgotPasswordCommand = new ForgotPasswordCommand(self.callerParameter.url, self.passwordNew(), self.passwordNewConfirm());
+                let command: ForgotPasswordCommand = new ForgotPasswordCommand(localStorage.getItem('url'), self.passwordNew(), self.passwordNewConfirm());
                 
                 service.submitForgotPass(command).done(function () {
+                    localStorage.removeItem('url');
                     self.closeDialog();
                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                     blockUI.clear();

@@ -68,17 +68,13 @@ module nts.uk.pr.view.ccg007.f {
             private OpenDialogH(url: string) {
                 let self = this;
                 
-                //set LoginId to dialog
-                nts.uk.ui.windows.setShared('parentCodes', {
-                    loginId: self.callerParameter.loginId,
-                    contractCode: self.callerParameter.contractCode,
-                    url: url
-                }, true);
-
-                nts.uk.ui.windows.sub.modal('/view/ccg/007/h/index.xhtml',{
-                    width : 700,
-                    height : 350
-                }).onClosed(function(): any {})
+                //set LoginId and contractCode to LocalStorage
+                localStorage.setItem('loginId', self.loginId());
+                localStorage.setItem('contractCode', self.callerParameter.contractCode);
+                localStorage.setItem('url', url);
+                
+                //jump CCG007H
+                nts.uk.request.jump("/view/ccg/007/h/index.xhtml");
             }
             
             /**
