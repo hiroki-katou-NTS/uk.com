@@ -27,6 +27,9 @@ public class TableListRestorationService {
 
 	@Inject
 	private ServerPrepareMngRepository serverPrepareMngRepository;
+	
+	@Inject
+	private TableListRepository tableListRepository;
 
 	// アルゴリズム「テーブル一覧の復元」を実行する
 	public List<Object> restoreTableList(ServerPrepareMng serverPrepareMng) {
@@ -88,6 +91,7 @@ public class TableListRestorationService {
 							tableListSetting.get(104), tableListSetting.get(105), tableListSetting.get(106),
 							saveDateFrom, saveDateTo, tableListSetting.get(109), tableListSetting.get(110),
 							tableListSetting.get(111), Integer.parseInt(tableListSetting.get(112)), Integer.parseInt(tableListSetting.get(113)));
+					tableListRepository.add(tableListData);
 				}
 			} catch (NumberFormatException e) {
 				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.TABLE_LIST_FAULT);

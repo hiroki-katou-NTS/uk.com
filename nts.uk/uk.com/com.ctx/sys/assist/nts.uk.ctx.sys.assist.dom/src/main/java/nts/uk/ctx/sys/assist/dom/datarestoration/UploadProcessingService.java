@@ -22,9 +22,8 @@ public class UploadProcessingService {
 	
 	
 	//アップロード処理
-	public ServerPrepareMng uploadProcessing(String fileId, String fileName, String password){
+	public ServerPrepareMng uploadProcessing(String processId, String fileId, String fileName, String password){
 		//サーバー準備動作管理への登録
-		String processId = UUID.randomUUID().toString();
 		ServerPrepareMng serverPrepareMng = new ServerPrepareMng(processId, null, null, null, 0, null, ServerPrepareOperatingCondition.UPLOADING.value);
 		serverPrepareMngRepository.add(serverPrepareMng);
 		serverPrepareMng = serverUploadProcessingService.serverUploadProcessing(serverPrepareMng, fileId, fileName, password);

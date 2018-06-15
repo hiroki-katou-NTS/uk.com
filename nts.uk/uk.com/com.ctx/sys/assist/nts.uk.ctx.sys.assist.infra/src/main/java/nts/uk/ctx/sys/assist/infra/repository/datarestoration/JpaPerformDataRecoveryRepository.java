@@ -176,4 +176,9 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 		query.executeUpdate();
 	}
+	
+	public void addTargetEmployee(Target domain){
+		this.commandProxy().insert(SspmtTarget.toEntity(domain));
+	}
+	
 }
