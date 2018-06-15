@@ -105,12 +105,6 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		HeaderData header = new HeaderData();
 		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
 		header.setTitle(companyAdapter.getCurrentCompany().map(m -> m.getCompanyName()).orElse(""));
-		// A1_2
-		header.setReportName("★年間勤務表（1ヶ月）");
-		if (OutputAgreementTime.TWO_MONTH.equals(setOutItemsWoSc.getDisplayFormat()))
-			header.setReportName("★年間勤務表（2ヶ月）");
-		else if (OutputAgreementTime.THREE_MONTH.equals(setOutItemsWoSc.getDisplayFormat()))
-			header.setReportName("★年間勤務表（3ヶ月）");
 		// B1_1 + B1_2
 		String periodStr = startYm.until(endYm, ChronoUnit.MONTHS) == 0
 				? startYm.format(DateTimeFormatter.ofPattern(YM_FORMATER))
@@ -120,7 +114,12 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		List<ItemOutTblBook> listItemOut = setOutItemsWoSc.getListItemOutTblBook().stream()
 				.filter(item -> item.isUseClassification()) // ドメインモデル「帳表に出力する項目．使用区分」をチェックする
 				.sorted((i1, i2) -> Integer.compare(i1.getSortBy(), i2.getSortBy())).collect(Collectors.toList());
-		if (printFormat == 0) {
+		if (printFormat == 1) {
+			// A1_2
+			header.setReportName(TextResource.localize("KWR008_58"));			
+		}else{
+			// A1_2
+			header.setReportName(TextResource.localize("KWR008_57"));
 			listItemOut = listItemOut.stream().filter(x -> !x.isItem36AgreementTime()).collect(Collectors.toList());
 		}
 		exportData.setExportItems(listItemOut.stream().map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v()))
@@ -185,8 +184,12 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * @return
 	 */
 	private List<String> sortEmployees(List<String> employeeIds, LocalDate endYmd) {
-		return employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, 1, null, null,
+		List<String> listEmp = employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, 1, null, null,
 				GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0))));
+		if (listEmp == null || listEmp.isEmpty()) {
+			throw new BusinessException("Msg_885");
+		}
+		return listEmp;
 	}
 
 	/**
@@ -383,16 +386,15 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// 年度から集計期間を取得
 		Optional<DatePeriod> datePeriod = getAgreementPeriodFromYearPub.algorithm(fiscalYear, closure);
 		// ドメイン「３６協定運用設定」を取得する
-		Optional<AgreementOperationSettingImport> agreementSetObj = agreementOperationSettingAdapter.find(cid);
+		Month startMonth;
+		startMonth = new Month(startYm.getMonthValue());
 		// 指定期間36協定時間の取得
 		PeriodAtrOfAgreement unitMonth;
-		Month startMonth;
 		if (outputAgreementTime.equals(OutputAgreementTime.TWO_MONTH)) {
 			unitMonth = PeriodAtrOfAgreement.TWO_MONTHS;
 		} else {
 			unitMonth = PeriodAtrOfAgreement.THREE_MONTHS;
 		}
-		startMonth = new Month(startYm.getMonthValue());
 		// 年度のエンド : 管理期間の36協定時間．年度＋(３６協定運用設定．起算月-1月)＋末日
 		GeneralDate criteria = GeneralDate.ymd(startYm.getYear(), startYm.getMonthValue(), 1).addDays(-1);
 		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, unitMonth);
