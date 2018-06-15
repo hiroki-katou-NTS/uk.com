@@ -105,12 +105,6 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		HeaderData header = new HeaderData();
 		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
 		header.setTitle(companyAdapter.getCurrentCompany().map(m -> m.getCompanyName()).orElse(""));
-		// A1_2
-		header.setReportName("★年間勤務表（1ヶ月）");
-		if (OutputAgreementTime.TWO_MONTH.equals(setOutItemsWoSc.getDisplayFormat()))
-			header.setReportName("★年間勤務表（2ヶ月）");
-		else if (OutputAgreementTime.THREE_MONTH.equals(setOutItemsWoSc.getDisplayFormat()))
-			header.setReportName("★年間勤務表（3ヶ月）");
 		// B1_1 + B1_2
 		String periodStr = startYm.until(endYm, ChronoUnit.MONTHS) == 0
 				? startYm.format(DateTimeFormatter.ofPattern(YM_FORMATER))
@@ -120,7 +114,12 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		List<ItemOutTblBook> listItemOut = setOutItemsWoSc.getListItemOutTblBook().stream()
 				.filter(item -> item.isUseClassification()) // ドメインモデル「帳表に出力する項目．使用区分」をチェックする
 				.sorted((i1, i2) -> Integer.compare(i1.getSortBy(), i2.getSortBy())).collect(Collectors.toList());
-		if (printFormat == 0) {
+		if (printFormat == 1) {
+			// A1_2
+			header.setReportName(TextResource.localize("KWR008_58"));			
+		}else{
+			// A1_2
+			header.setReportName(TextResource.localize("KWR008_57"));
 			listItemOut = listItemOut.stream().filter(x -> !x.isItem36AgreementTime()).collect(Collectors.toList());
 		}
 		exportData.setExportItems(listItemOut.stream().map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v()))
