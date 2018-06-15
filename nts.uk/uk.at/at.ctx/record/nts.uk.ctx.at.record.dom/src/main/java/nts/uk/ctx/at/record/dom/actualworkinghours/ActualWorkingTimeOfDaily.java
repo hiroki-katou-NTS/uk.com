@@ -167,7 +167,6 @@ public class ActualWorkingTimeOfDaily {
 			   Optional<FixRestTimezoneSet> fixRestTimeSetting, 
 			   IntegrationOfDaily integrationOfDaily,
 			   Optional<WorkType> scheWorkType,
-			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   DailyUnit dailyUnit, WorkScheduleTimeOfDaily workScheduleTime,Optional<CoreTimeSetting> coreTimeSetting,
 			   Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet
 			   ,List<OverTimeFrameNo> statutoryFrameNoList) {
@@ -192,7 +191,6 @@ public class ActualWorkingTimeOfDaily {
 					eachCompanyTimeSet,
 					breakTimeCount,
 					integrationOfDaily,
-					flexAutoCalSet,
 					coreTimeSetting,
 					dailyUnit, 
 					statutoryFrameNoList,WorkTimezoneCommonSet.get()
