@@ -91,10 +91,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 
 		// Add where conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		for (String userID : usersID) {
-			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId), userID));
-		}
+		lstpredicateWhere.add(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId).in(usersID));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		em.createQuery(cq).executeUpdate();
 	}

@@ -46,9 +46,15 @@ module nts.uk.com.view.cli001.a {
             /**
             * open dialog
             */
-            public openDialogUserInfo() {
-                nts.uk.ui.windows.setShared("CLI_DIALOG_B_INPUT_DATA");
+            public openDialogAddLockOutData() {
+                let _self = this;
                 nts.uk.ui.windows.sub.modal("/view/cli/001/b/index.xhtml").onClosed(() => {
+                    let data = nts.uk.ui.windows.getShared("dataCd001.a");
+                    if (!nts.uk.util.isNullOrUndefined(data))
+                        service.findAll().done((data: Array<LockOutDataDto>) => {
+                            _self.items(data);
+                        });
+                    console.log(data);
                     nts.uk.ui.block.clear();
                 });
             }
@@ -62,7 +68,7 @@ module nts.uk.com.view.cli001.a {
                 if (_.isEmpty(self.items)) {
                     $('#add-Lock').focus();
                 } else {
-                   $('#tableGrid').focus();
+                    $('#tableGrid').focus();
                 }
             }
 
@@ -70,7 +76,7 @@ module nts.uk.com.view.cli001.a {
             /**
             * Save
             */
-            public save() {
+            public unLock() {
 
                 var self = this;
                 if (_.isEmpty(self.currentCodeList())) {
@@ -81,9 +87,7 @@ module nts.uk.com.view.cli001.a {
                     $('#tableGrid').focus();
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                         .ifYes(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(() => {
                                 let command = { lstUserId: self.currentCodeList() };
-
                                 service.removeLockOutData(command).done(() => {
                                     nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
                                         //Search again and display the screen
@@ -93,11 +97,9 @@ module nts.uk.com.view.cli001.a {
                                         });
                                     });
                                 }).fail((res: any) => {
-                                    return;    
+                                    return;
                                 });
-
-                            });
-                        }).ifNo(() => nts.uk.ui.dialog.info({ messageId: "Msg_36" }));
+                        }).ifNo();
                 }
             }
 

@@ -13,9 +13,13 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
 
+/**
+ * The Class LockOutDataDeleteCommandHandler.
+ */
 @Stateless
 public class LockOutDataDeleteCommandHandler  extends CommandHandler<LockOutDataDeleteCommand>  {
 	
+	/** The lock out data repository. */
 	@Inject
 	private LockOutDataRepository lockOutDataRepository;
 

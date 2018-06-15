@@ -41,7 +41,7 @@ public class LockOutDataUserFinder {
 
 		List<LockOutDataUserDto> lstLockOutDataUserDto = new ArrayList<LockOutDataUserDto>();
 		String contractCd = AppContexts.user().contractCode();
-
+		//get list LockOutData
 		List<LockOutData> lstLockOutData = lockOutDataRepository.findByContractCode(contractCd);
 			lstLockOutData.forEach(item -> {
 				LockOutDataUserDto lockOutDataUserDto = new LockOutDataUserDto();
