@@ -20,6 +20,9 @@ module nts.uk.com.view.cmf003.b {
 
             // check compress password
             isCompressPass: KnockoutObservable<boolean>;
+            
+            // check password constraint 
+            passwordConstraint: KnockoutObservable<string>;
 
             // check compress password
             isSymbol: KnockoutObservable<boolean>;
@@ -158,6 +161,17 @@ module nts.uk.com.view.cmf003.b {
 
                 self.isCompressPass = ko.observable(false);
                 self.isSymbol = ko.observable(false);
+                self.passwordConstraint = ko.observable("");
+                
+                self.isCompressPass.subscribe(function(value) {
+                    if(value) {
+                        self.passwordConstraint("FileCompressionPassword");
+                        $(".passwordInput").trigger("validate");
+                    } else {
+                        self.passwordConstraint("");
+                        $('.passwordInput').ntsError('clear');
+                    }
+                });
 
                 self.stepList = [
                     { content: '.step-1' },
@@ -176,9 +190,9 @@ module nts.uk.com.view.cmf003.b {
 
                 this.columnCategorys = ko.observableArray([
                     { headerText: '', key: 'categoryId', width: 100, hidden: true },
-                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 320 },
+                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 280 },
                     { headerText: getText('CMF003_31'), formatter: timeStore, key: 'timeStore', width: 80 },
-                    { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storageRangeSaved', width: 80 }
+                    { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storageRangeSaved', width: 130 }
                 ]);
 
                 this.columnEmployees = ko.observableArray([
@@ -190,7 +204,7 @@ module nts.uk.com.view.cmf003.b {
                 self.itemTitleAtr = ko.observableArray([
                     { value: 0, titleAtrName: resource.getText('CMF003_88') },
                     { value: 1, titleAtrName: resource.getText('CMF003_89') }]);
-                self.selectedTitleAtr = ko.observable(null);
+                self.selectedTitleAtr = ko.observable(0);
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
 
@@ -207,11 +221,13 @@ module nts.uk.com.view.cmf003.b {
                 self.dayStartDateString.subscribe(function(value) {
                     self.dayValue().startDate = value;
                     self.dayValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.dayEndDateString.subscribe(function(value) {
                     self.dayValue().endDate = value;
                     self.dayValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 //Date Ranger Picker : type month
@@ -224,11 +240,13 @@ module nts.uk.com.view.cmf003.b {
                 self.monthStartDateString.subscribe(function(value) {
                     self.monthValue().startDate = value;
                     self.monthValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.monthEndDateString.subscribe(function(value) {
                     self.monthValue().endDate = value;
                     self.monthValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 //Date Ranger Picker : type year
@@ -241,11 +259,13 @@ module nts.uk.com.view.cmf003.b {
                 self.yearStartDateString.subscribe(function(value) {
                     self.yearValue().startDate = value;
                     self.yearValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.yearEndDateString.subscribe(function(value) {
                     self.yearValue().endDate = value;
                     self.yearValue.valueHasMutated();
+                    $('.datepickerE').ntsError('clear');
                 });
                 //Defaut D4_7
                 self.dateDefaut = ko.observable("2018/04/19");
@@ -537,18 +557,18 @@ module nts.uk.com.view.cmf003.b {
             private setRangePickerRequire(): void {
                 let self = this;
 
-                self.dayRequired = ko.observable(false);
-                self.monthRequired = ko.observable(false);
-                self.yearRequired = ko.observable(false);
+                self.dayRequired(false);
+                self.monthRequired(false);
+                self.yearRequired(false);
                 for (var i = 0; i < self.categorys().length; i++) {
                     if (self.categorys()[i].timeStore == 1) {
-                        self.dayRequired = ko.observable(true);
+                        self.dayRequired(true);
                     }
                     else if (self.categorys()[i].timeStore == 2) {
-                        self.monthRequired = ko.observable(true);
+                        self.monthRequired(true);
                     }
                     else if (self.categorys()[i].timeStore == 3) {
-                        self.yearRequired = ko.observable(true);
+                        self.yearRequired(true);
                     }
                 }
             }
@@ -589,6 +609,7 @@ module nts.uk.com.view.cmf003.b {
 
             private validateB(): boolean {
                 $(".form-B").trigger("validate");
+                $(".ntsDatepicker").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return false;
                 }
@@ -634,16 +655,7 @@ module nts.uk.com.view.cmf003.b {
 
             private gotoscreenF(): void {
                 let self = this;
-                let params = {};
-                params.dataSaveSetName = self.dataSaveSetName();
-                params.dayValue = self.dayValue();
-                params.monthValue = self.monthValue();
-                params.yearValue = self.yearValue();
-
-                setShared("CMF001_E_PARAMS", params);
-
                 self.saveManualSetting();
-                // nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
             }
 
             private saveManualSetting(): void {
@@ -654,10 +666,20 @@ module nts.uk.com.view.cmf003.b {
                     moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
                     self.selectedTitleAtr(), Number(self.isSymbol()), self.targetEmployee(), self.categorys());
 
-                service.addMalSet(manualSetting).done(() => {
+                service.addMalSet(manualSetting).done((res) => {
+                    if((res != null) && (res != "")) {
+                        let params = {
+                            storeProcessingId: res,
+                            dataSaveSetName : self.dataSaveSetName(),
+                            dayValue : self.dayValue(),
+                            monthValue : self.monthValue(),
+                            yearValue : self.yearValue()
+                        };
 
-                }).fail(res => {
-
+                        setShared("CMF001_E_PARAMS", params);
+                        nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
+                    }
+                }).fail((err) => {
                 });
             }
         }//end screemodule
@@ -848,9 +870,9 @@ module nts.uk.com.view.cmf003.b {
 
         function storageRangeSaved(value, row) {
             if (value && value === '0') {
-                return getText('Enum_Storage_Range_Saved_EARCH_EMP');
+                return getText('Enum_StorageRangeSaved_EARCH_EMP');
             } else if (value && value === '1') {
-                return getText('Enum_Storage_Range_Saved_ALL_EMP');
+                return getText('Enum_StorageRangeSaved_ALL_EMP');
             }
         }
     }

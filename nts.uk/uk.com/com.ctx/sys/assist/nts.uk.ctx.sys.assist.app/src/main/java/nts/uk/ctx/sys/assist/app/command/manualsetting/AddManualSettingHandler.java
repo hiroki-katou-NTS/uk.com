@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMng;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMngRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
@@ -52,10 +51,10 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 	protected void handle(CommandHandlerContext<ManualSettingCommand> context) {
 		
 		String companyId = AppContexts.user().companyId();
-		String storeProcessingId = IdentifierUtil.randomUniqueId();
+
 		String employeeIDLogin = AppContexts.user().employeeId();
-		
 		ManualSettingCommand manualSetCmd = context.getCommand();
+		String storeProcessingId = manualSetCmd.getStoreProcessingId();
 	    List<TargetCategoryCommand> lstcategories = manualSetCmd.getCategory();
 	    List<TargetCategory> targetCategory = lstcategories.stream().map(item -> {
 	    	return new TargetCategory(storeProcessingId, item.getCategoryId());
@@ -88,6 +87,6 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 			targetEmployeesRepo.addAll(lstEmplAll);
 		}
 		
-		manualSetOfDataSaveService.start(storeProcessingId);
+		manualSetOfDataSaveService.start(domain);
 	}
 }

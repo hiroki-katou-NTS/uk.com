@@ -10,7 +10,7 @@
 							<script>
 				                var dialogSize = {
 				                    width : 900,
-				                    height : 750
+				                    height : 700
 				                };
             				</script>
 				<com:scriptfile set="IGNITE" />
@@ -32,17 +32,18 @@
 									optionsValue: 'code',
 									visibleItemsCount: 5,
 									optionsText: 'name',
+									enable: (currentCateSelected().length == 0), 
+									selectFirstIfNull: true,
 									name: '#{i18n.getText('CMF003_59')}'
 									}"></div>
 	
 				</div>
-				<br></br>
 				<div id = "labelLeft"  data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_60')}</div>
 				<div id = "labelRight" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF003_61')}</div>
 				<div   id="swap-list"
 					data-bind="ntsSwapList: {
 								showSearchBox: { showLeft : true},
-								height: 450,
+								height: 455,
 								dataSource: categoriesDefault,
 								primaryKey: 'categoryId',
 								columns: columns,
@@ -56,10 +57,6 @@
 	
 				<button id="btnLeft" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CMF003_71')}</button>
 				<button id = "btnRight" data-bind="click : closeUp" >#{i18n.getText('CMF003_72')}</button>
-	
-				<script type='text/javascript'>
-							
-				</script>
 			</ui:define>
 	</ui:composition>
    	</body>

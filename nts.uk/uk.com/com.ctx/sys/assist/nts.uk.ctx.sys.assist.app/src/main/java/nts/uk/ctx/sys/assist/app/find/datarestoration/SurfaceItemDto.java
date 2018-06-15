@@ -52,16 +52,16 @@ public class SurfaceItemDto {
 	/**
 	 * 復旧対象可不可
 	 */
-	private String canNotBeOld;
+	private int canNotBeOld;
 	/**
 	 * 保存時保存範囲
 	 */
-	private String storageRangeSaved;
+	private int storageRangeSaved;
 
 	public static SurfaceItemDto fromDomain(TableList domain) {
 		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode(), domain.getSaveSetName(),
 				domain.getSupplementaryExplanation(), domain.getAnotherComCls().value, domain.getCategoryName(),
 				domain.getRetentionPeriodCls().value, domain.getSaveDateFrom(), domain.getSaveDateTo(),
-				domain.getCanNotBeOld(), domain.getStorageRangeSaved());
+				domain.getCanNotBeOld(), domain.getStorageRangeSaved().value);
 	}
 }
