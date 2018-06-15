@@ -50,7 +50,11 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 */
 	@Override
 	public ExportAtr getExportAtr() {
-		return ExportAtr.valueOf((int) this.upperEntity.getId().getOutputAtr());
+		if(this.upperEntity!=null) {
+			return ExportAtr.valueOf((int) this.upperEntity.getId().getOutputAtr());
+		}else {
+			return ExportAtr.valueOf((int) this.lowerEntity.getId().getOutputAtr());
+		}
 	}
 
 	/*
@@ -61,7 +65,11 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 */
 	@Override
 	public int getColumnIndex() {
-		return (int) this.upperEntity.getId().getColumnIndex();
+		if(this.upperEntity!=null) {
+			return (int) this.upperEntity.getId().getColumnIndex();
+		}else{
+			return (int) this.lowerEntity.getId().getColumnIndex();
+		}
 	}
 
 	/*
@@ -72,8 +80,12 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 */
 	@Override
 	public Boolean isUseAtr() {
-		// ZERO = false, ONE = true
-		return this.upperEntity.getUseAtr().compareTo(BigDecimal.ONE) == 0;
+		if(this.upperEntity!=null) {
+			// ZERO = false, ONE = true
+			return this.upperEntity.getUseAtr().compareTo(BigDecimal.ONE) == 0;
+		}else {
+			return this.lowerEntity.getUseAtr().compareTo(BigDecimal.ONE) == 0;
+		}
 	}
 
 	/*
