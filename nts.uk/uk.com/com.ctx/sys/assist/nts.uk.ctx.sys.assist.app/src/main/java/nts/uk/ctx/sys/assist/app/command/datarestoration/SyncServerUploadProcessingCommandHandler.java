@@ -19,7 +19,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 	@Override
 	protected void handle(CommandHandlerContext<SyncServerUploadProcessingCommand> context) {
 		val asyncTask = context.asAsync();
-		uploadProcessingService.uploadProcessing(UUID.randomUUID().toString(), context.getCommand().getFileId(), context.getCommand().getFileName(), context.getCommand().getPassword());
+		uploadProcessingService.uploadProcessing(context.getCommand().getProcessingId(), context.getCommand().getFileId(), context.getCommand().getFileName(), context.getCommand().getPassword());
 	}
 	
 }

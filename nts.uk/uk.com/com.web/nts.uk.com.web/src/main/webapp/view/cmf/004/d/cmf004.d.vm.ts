@@ -5,11 +5,12 @@ module nts.uk.com.view.cmf004.d {
         import setShared = nts.uk.ui.windows.setShared;
         import getShared = nts.uk.ui.windows.getShared;
         export class ScreenModel {
-
+            // interval 1000ms request to server
+            interval: any;
             fileName: KnockoutObservable<string> = ko.observable('');
             fileId: KnockoutObservable<string> = ko.observable('');
             password: KnockoutObservable<string> = ko.observable('');
-
+            processingId: string = nts.uk.util.randomId();
             fileNameUpload: KnockoutObservable<string>;
             timeLabel: KnockoutObservable<string>;
             statusLabel: KnockoutObservable<string>;
@@ -31,28 +32,35 @@ module nts.uk.com.view.cmf004.d {
                     self.password(fileInfo.password);
                 }
             }
-            
+
             startPage(): JQueryPromise<any> {
                 let self = this, dfd = $.Deferred();
                 let fileInfo = {
+                    processingId: self.processingId,
                     fileId: self.fileId(),
-                    fileName: self.fileName(), 
+                    fileName: self.fileName(),
                     password: self.password()
                 };
-                nts.uk.com.view.cmf004.d.service.extractData(fileInfo).done(function(result){
+                service.extractData(fileInfo).done(function(result) {
                     dfd.resolve();
-                }).fail(function(result){
+                    self.interval = setInterval(self.confirmProcess, 1000, self);
+                    service.checkProcess(self.processingId).done(function(res: any) {
+                        
+                    }).fail(function(res: any) {
+                        
+                    });
+                }).fail(function(result) {
                     dfd.reject();
-                }); 
+                });
                 return dfd.promise();
             }
-             
+
             closeUp() {
-            
+
             }
-            continueProcessing(){
-        
-            } 
+            continueProcessing() {
+
+            }
         }
     }
 }
