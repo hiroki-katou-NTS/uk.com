@@ -453,13 +453,13 @@ public class ApprovalStatusFinder {
 		String appContent = "";
 		AppGoBackInfoFull appGoBackInfo = appDetailInfoRepo.getAppGoBackInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_258");
-		appContent += Objects.isNull(appGoBackInfo.getGoWorkAtr1()) ? "" : I18NText.getText("KAF018_259");
+		appContent += !Objects.isNull(appGoBackInfo.getGoWorkAtr1()) && appGoBackInfo.getGoWorkAtr1() == 1 ? I18NText.getText("KAF018_259") : "";
 		appContent += appGoBackInfo.getWorkTimeStart1();
-		appContent += Objects.isNull(appGoBackInfo.getBackHomeAtr1()) ? "" : I18NText.getText("KAF018_260");
+		appContent += !Objects.isNull(appGoBackInfo.getBackHomeAtr1()) && appGoBackInfo.getBackHomeAtr1() == 1 ? I18NText.getText("KAF018_260") : "";
 		appContent += appGoBackInfo.getWorkTimeEnd1();
-		appContent += Objects.isNull(appGoBackInfo.getGoWorkAtr2()) ? "" : I18NText.getText("KAF018_259");
+		appContent += !Objects.isNull(appGoBackInfo.getGoWorkAtr2()) && appGoBackInfo.getGoWorkAtr2() == 1 ? I18NText.getText("KAF018_259") : "";
 		appContent += appGoBackInfo.getWorkTimeStart2();
-		appContent += Objects.isNull(appGoBackInfo.getBackHomeAtr2()) ? "" : I18NText.getText("KAF018_260");
+		appContent += !Objects.isNull(appGoBackInfo.getBackHomeAtr2()) && appGoBackInfo.getBackHomeAtr2() == 1 ? I18NText.getText("KAF018_260") : "";
 		appContent += appGoBackInfo.getWorkTimeEnd2();
 		return appContent;
 	}
