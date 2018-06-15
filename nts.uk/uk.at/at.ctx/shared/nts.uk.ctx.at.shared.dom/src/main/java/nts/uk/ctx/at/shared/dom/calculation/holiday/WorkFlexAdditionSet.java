@@ -116,4 +116,11 @@ public class WorkFlexAdditionSet extends AggregateRoot{
 		
 		this.vacationCalcMethodSet = calcMethodSet;
 	}
+
+	public WorkFlexAdditionSet(String companyId, HolidayCalcMethodSet vacationCalcMethodSet) {
+		super();
+		this.companyId = companyId;
+		this.vacationCalcMethodSet = vacationCalcMethodSet;
+	}
+	
 }
