@@ -491,6 +491,8 @@ module nts.uk.com.view.cmf003.b {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
+                
+                $("#nts-component-list button:nth-child(3)").trigger( "click" );
             }
 
             /**
