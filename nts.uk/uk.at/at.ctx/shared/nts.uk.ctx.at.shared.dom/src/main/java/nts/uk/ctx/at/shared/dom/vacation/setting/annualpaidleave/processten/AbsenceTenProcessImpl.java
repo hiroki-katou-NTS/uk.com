@@ -92,7 +92,7 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 		SubstitutionHolidayOutput result = new SubstitutionHolidayOutput();
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
 		Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyID, employeeID, baseDate);
-		if(empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
+		if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
 			throw new BusinessException("khong co employeeCode");
 		}
 		int isManageByTime = 0;
