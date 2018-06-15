@@ -9,9 +9,6 @@ public class ForgotPasswordCommand {
 	
 	/** The url. */
 	private String url;
-	
-	/** The old password. */
-	private String oldPassword;
 
 	/** The new password. */
 	private String newPassword;

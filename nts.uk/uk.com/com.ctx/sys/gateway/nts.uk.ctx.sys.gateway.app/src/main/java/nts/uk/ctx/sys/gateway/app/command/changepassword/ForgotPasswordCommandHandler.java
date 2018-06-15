@@ -30,7 +30,6 @@ public class ForgotPasswordCommandHandler extends CommandHandler<ForgotPasswordC
 		String userId = AppContexts.user().userId();
 		ForgotPasswordCommand command = context.getCommand();
 
-		String oldPassword = command.getOldPassword();
 		String newPassword = command.getNewPassword();
 		String confirmNewPassword = command.getConfirmNewPassword();
 		
@@ -40,8 +39,7 @@ public class ForgotPasswordCommandHandler extends CommandHandler<ForgotPasswordC
 		//check PassLimitExpire
 		this.registerEmbededURL.checkPassLimitExpire(urlId);
 		
-		if (!StringUtil.isNullOrEmpty(oldPassword, true)
-				&& !StringUtil.isNullOrEmpty(newPassword, true)
+		if (!StringUtil.isNullOrEmpty(newPassword, true)
 				&& !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {
 			// Check password - Request List 445
 			CheckBeforeChangePass checkResult = this.userAdapter.checkBeforeResetPassword(userId, newPassword, confirmNewPassword);
