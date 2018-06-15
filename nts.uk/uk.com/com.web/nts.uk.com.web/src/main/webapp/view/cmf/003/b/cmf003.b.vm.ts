@@ -543,6 +543,7 @@ module nts.uk.com.view.cmf003.b {
                         if (self.password() == self.confirmPassword()) {
                             if (self.categorys().length > 0) {
                                 self.next();
+                                $(".selectEmpType").focus();
                             } else {
                                 alertError({ messageId: 'Msg_463' });
                             }
@@ -552,6 +553,7 @@ module nts.uk.com.view.cmf003.b {
                     } else {
                         if (self.categorys().length > 0) {
                             self.next();
+                            $(".selectEmpType").focus();
                         } else {
                             alertError({ messageId: 'Msg_463' });
                         }
@@ -625,6 +627,7 @@ module nts.uk.com.view.cmf003.b {
             private previousB(): void {
                 var self = this;
                 self.previous();
+                $(".selectEmpType").focus();
             }
             private backToA() {
                 let self = this;
