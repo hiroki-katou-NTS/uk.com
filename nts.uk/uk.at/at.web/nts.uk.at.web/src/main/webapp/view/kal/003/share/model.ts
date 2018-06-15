@@ -879,7 +879,7 @@ module nts.uk.at.view.kal003.share.model {
             if(!nts.uk.util.isNullOrUndefined(data)){
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
                 this.extractType=ko.observable(data.compareOperator || 0);
-                this.textLabel=ko.observable(data.classification == 0 ? nts.uk.resource.getText("KAL003_86"): nts.uk.resource.getText("KAL003_87"));
+                this.textLabel=ko.observable(data.classification == 0 ? nts.uk.resource.getText("KAL003_158"): nts.uk.resource.getText("KAL003_159"));
                 this.operator=ko.observable(data.compareOperator || 0);
                 this.haveInput=ko.observable(data.classification == 0 ? 1 : 2);
                 this.typeCheckItem =ko.observable(data.classification == 0 ? 1 : 2 );
