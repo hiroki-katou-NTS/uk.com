@@ -16,12 +16,14 @@ import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtD
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtFinder;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorFinder;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeNameErrorDto;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeNameErrorFinder;
 
 @Path("at/function/alarm/checkcondition/agree36")
 @Produces("application/json")
 public class Agree36WebService extends WebService{
 	@Inject
-	private AgreeCondOtFinder condOtFinder;
+	private AgreeNameErrorFinder nameFinder;
 	@Inject
 	private AgreeConditionErrorFinder condErrorFinder;
 	@Inject
@@ -29,11 +31,11 @@ public class Agree36WebService extends WebService{
 	@Inject
 	private UpdateAgreeCondOtCommandHandler updateConOt;
 	
-//	@POST
-//	@Path("findcondot")
-//	public List<AgreeCondOtDto> finder(){
-//		return this.condOtFinder.finder();
-//	}
+	@POST
+	@Path("findName")
+	public List<AgreeNameErrorDto> finder(){
+		return this.nameFinder.findName();
+	}
 	
 //	@POST
 //	@Path("finderror")
