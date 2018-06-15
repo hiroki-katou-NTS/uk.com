@@ -238,7 +238,6 @@ public class TotalWorkingTime {
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, 
 																									CalcMethodOfNoWorkingDay.isCalculateFlexTime,
 																									holidayCalcMethodSet,
-																									calcAtrOfDaily,
 																									workType,flexCalcMethod,oneDay.getPredetermineTimeSetForCalc()
 																									,vacationClass,oneDay.getTimeVacationAdditionRemainingTime().get(),
 																									StatutoryDivision.Nomal,

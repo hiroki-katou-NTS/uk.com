@@ -251,7 +251,7 @@ public class OverTimeOfDaily {
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		//枠時間計算
-		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(autoCalcAtr.getOvertimeSetting(),workType,eachWorkTimeSet,eachCompanyTimeSet,integrationOfDaily);
+		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(autoCalcAtr.getOvertimeSetting(),workType,eachWorkTimeSet,eachCompanyTimeSet,integrationOfDaily, statutoryFrameNoList);
 		//残業内の深夜時間計算
 		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,autoCalcAtr.getOvertimeSetting()));
 		//変形法定内残業時間計算

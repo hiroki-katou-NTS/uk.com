@@ -109,7 +109,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 DailyUnit dailyUnit,List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting,
 			   														 CalAttrOfDailyPerformance calcAtrOfDaily) {
 		//残業時間
-		val overTime = calculationOverTime(oneDay,calcAtrOfDaily.getOvertimeSetting(),calcMethod,holidayCalcMethodSet,
+		val overTime = calculationOverTime(oneDay,calcAtrOfDaily,calcMethod,holidayCalcMethodSet,
 										   workType,flexCalcMethod,
 										   predetermineTimeSet,vacationClass,timevacationUseTimeOfDaily,
 				   						   statutoryDivision,siftCode,
@@ -141,9 +141,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param flexPreAppTime 
 	 * @param flexAutoCalSet 
 	 */
-	private static OverTimeOfDaily calculationOverTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,
+	private static OverTimeOfDaily calculationOverTime(CalculationRangeOfOneDay oneDay,CalAttrOfDailyPerformance autoCalcSet,
 													   CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,
-//													   AutoCalAtrOvertime autoCalcAtr,
 													   WorkType workType,
 													   Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 													   VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
@@ -164,6 +163,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   oneDay.getWithinWorkingTimeSheet().get(),
 													   calcMethod,
 													   holidayCalcMethodSet,
+													   autoCalcSet,
 													   workType,
 													   flexCalcMethod,
 													   predetermineTimeSet,
@@ -203,14 +203,14 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param integrationOfDaily 
 	 * @return
 	 */
-	private static HolidayWorkTimeOfDaily calculationHolidayTime(CalculationRangeOfOneDay oneDay,AutoCalRestTimeSetting holidayAutoCalcSetting,
+	private static HolidayWorkTimeOfDaily calculationHolidayTime(CalculationRangeOfOneDay oneDay,AutoCalSetting autoCalSetting,
 			 													 WorkType workType,
 			 													Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			 													 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		if(oneDay.getOutsideWorkTimeSheet().isPresent()) {
 			if(oneDay.getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().isPresent()) {
 				return HolidayWorkTimeOfDaily.calculationTime(oneDay.getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().get(), 
-															  holidayAutoCalcSetting.getRestTime(),
+															  autoCalSetting,
 															  workType,
 															  eachWorkTimeSet,
 															  eachCompanyTimeSet,

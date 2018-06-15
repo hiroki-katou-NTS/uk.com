@@ -127,13 +127,10 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				   										  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   										  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   										  workingSystem, illegularAddSetting, flexAddSetting, regularAddSetting,
-				   										  holidayAddtionSet);
-				   										  holidayAddtionSet,dailyUnit,commonSetting
-				   										  );
-				   										  holidayAddtionSet,
-				   										  flexUpper);
+				   										  holidayAddtionSet,dailyUnit,commonSetting,
+				   										  flexLimitSetting);
 		/*事前申請を上限とする制御*/
-		AttendanceTimeOfExistMinus afterLimitFlexTime = decisionLimit(flexUpper,calcflexTime,preAppTime);
+		AttendanceTimeOfExistMinus afterLimitFlexTime = decisionLimit(flexLimitSetting,calcflexTime,preAppTime);
 		
 		return new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(afterLimitFlexTime),new AttendanceTime(0));
 	}
@@ -179,9 +176,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 												   WorkingSystem workingSystem,WorkDeformedLaborAdditionSet illegularAddSetting,
 													 WorkFlexAdditionSet flexAddSetting,
 													 WorkRegularAdditionSet regularAddSetting,
-													 HolidayAddtionSet holidayAddtionSet) {
-													 HolidayAddtionSet holidayAddtionSet,DailyUnit dailyUnit,WorkTimezoneCommonSet commonSetting) {
-													 HolidayAddtionSet holidayAddtionSet,
+													 HolidayAddtionSet holidayAddtionSet,DailyUnit dailyUnit,WorkTimezoneCommonSet commonSetting,
 													 TimeLimitUpperLimitSetting flexUpper//こいつは残さないとだめ
 													 ) {
 		/*法定労働時間の算出*/
@@ -313,7 +308,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 									   AutoCalAtrOvertime flexAutoCalcAtr, //フレの上限時間設定
 									   SettingOfFlexWork flexCalcMethod,
 									   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
-									   DailyUnit dailyUnit,WorkTimezoneCommonSet commonSetting
+									   DailyUnit dailyUnit,WorkTimezoneCommonSet commonSetting,
 									   TimeLimitUpperLimitSetting flexUpper//こいつは残さないといけない
 			   ) {
 		AttendanceTime withinTime = super.calcWorkTime(premiumAtr,
@@ -353,10 +348,11 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 																 flexAddSetting, 
 																 regularAddSetting, 
 																 holidayAddtionSet, 
+																 flexUpper,
 																 preFlexTime,
-																 dailyUnit,commonSetting
+																 dailyUnit,
+																 commonSetting
 																 );
-																 flexUpper);
 		AttendanceTime result = new AttendanceTime(0);
 		if(flexTime.getFlexTime().getTime().greaterThan(0)) {
 			result = withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());

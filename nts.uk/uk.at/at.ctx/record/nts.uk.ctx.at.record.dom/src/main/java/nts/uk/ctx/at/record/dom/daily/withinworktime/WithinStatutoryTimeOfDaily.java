@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
@@ -133,9 +134,9 @@ public class WithinStatutoryTimeOfDaily {
 																										  
 										:new AttendanceTime(0);
 			
-			//就業時間の計算
-			if(workTimeDailyAtr.isPresent())
-				workTime = calcWithinStatutoryTime(oneDay.getWithinWorkingTimeSheet().get(),personalCondition,vacationClass,workType,
+		//就業時間の計算
+		if(workTimeDailyAtr.isPresent())
+			workTime = calcWithinStatutoryTime(oneDay.getWithinWorkingTimeSheet().get(),personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
 														  calcMethod,
@@ -212,9 +213,11 @@ public class WithinStatutoryTimeOfDaily {
 						  									 calcMethod,
 						  									 AutoCalAtrOvertime.CALCULATEMBOSS,
 						  									 flexCalcMethod.get(),
-						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT,
-						  									 preFlexTime,coreTimeSetting,
-						  									dailyUnit,commonSetting
+						  									 preFlexTime,
+						  									coreTimeSetting,
+						  									dailyUnit,
+						  									commonSetting,
+						  									TimeLimitUpperLimitSetting.NOUPPERLIMIT
 						  									
 					   );
 		}
