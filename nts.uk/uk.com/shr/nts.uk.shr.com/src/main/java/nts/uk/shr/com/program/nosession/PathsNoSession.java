@@ -20,7 +20,8 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/shr/infra/file/storage/.*",
 			"/i18n/.*",
 			"/ctx/sys/gateway/login/.*",
-			"/ctx/sys/gateway/sendmail/.*"
+			"/ctx/sys/gateway/sendmail/.*",
+			"/ctx/sys/gateway/changepassword/.*"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
