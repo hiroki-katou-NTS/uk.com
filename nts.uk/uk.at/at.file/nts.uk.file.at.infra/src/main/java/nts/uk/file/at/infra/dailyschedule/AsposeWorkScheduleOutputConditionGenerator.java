@@ -1928,7 +1928,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 			dateRange.copy(dateRangeTemp);
 			rowPageTracker.useOneRowAndCheckResetRemainingRow();
-			dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+			//dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 			
 			// B3_1
 			Cell dateTagCell = cells.get(currentRow, 0);
