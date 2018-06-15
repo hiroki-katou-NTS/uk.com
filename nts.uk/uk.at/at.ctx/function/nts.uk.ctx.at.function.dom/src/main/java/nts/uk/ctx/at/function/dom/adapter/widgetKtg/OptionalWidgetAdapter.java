@@ -49,5 +49,8 @@ public interface OptionalWidgetAdapter {
 	NumAnnLeaReferenceDateImport getReferDateAnnualLeaveRemainNumber(String employeeID,GeneralDate date);
 	
 	/**get request list 446*/
-	List<LateOrLeaveEarlyImport> engravingCancelLateorLeaveearly(String employeeID, GeneralDate startDate, GeneralDate endDate);
+	List<DailyLateAndLeaveEarlyTimeImport> engravingCancelLateorLeaveearly(String employeeID, GeneralDate startDate, GeneralDate endDate);
+	
+	/**get request list 197*/
+	List<DailyLateAndLeaveEarlyTimeImport> getLateLeaveEarly(String employeeId, DatePeriod datePeriod);
 }

@@ -16,15 +16,18 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberIm
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AttendanceTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyLateAndLeaveEarlyTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.LateOrLeaveEarlyImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyExcessTotalTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyExcessTotalTimePubImport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyLateAndLeaveEarlyTimePub;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyLateAndLeaveEarlyTimePubExport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyLateAndLeaveEarlyTimePubImport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.DailyExcessTotalTimeExpParam;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveGrantExport;
@@ -83,6 +86,9 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	
 	@Inject
 	private LateOrLeaveEarlyPub lateOrLeaveEarlyPub;
+	
+	@Inject
+	private DailyLateAndLeaveEarlyTimePub dailyLateAndLeaveEarlyTimePub;
 	
 	@Override
 	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
@@ -212,11 +218,21 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	}
 
 	@Override
-	public List<LateOrLeaveEarlyImport> engravingCancelLateorLeaveearly(String employeeID, GeneralDate startDate,
+	public List<DailyLateAndLeaveEarlyTimeImport> engravingCancelLateorLeaveearly(String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
 		
 		return lateOrLeaveEarlyPub.engravingCancelLateorLeaveearly(employeeID, startDate, endDate).stream()
-				.map(c -> new LateOrLeaveEarlyImport(c.getAppDate(), c.getEarly1(), c.getLate1(), c.getEarly2(), c.getLate2())).collect(Collectors.toList());
+				.map(c -> new DailyLateAndLeaveEarlyTimeImport(c.getAppDate(), 
+																c.getEarly1()==1?true:false, 
+																c.getLate1()==1?true:false, 
+																c.getEarly2()==1?true:false, 
+																c.getLate2()==1?true:false)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DailyLateAndLeaveEarlyTimeImport> getLateLeaveEarly(String employeeId, DatePeriod datePeriod) {
+		DailyLateAndLeaveEarlyTimePubExport map = dailyLateAndLeaveEarlyTimePub.getLateLeaveEarly(new DailyLateAndLeaveEarlyTimePubImport(employeeId, datePeriod));
+		return map.getList().stream().map(c -> new DailyLateAndLeaveEarlyTimeImport(c.getDate(), c.isLate1(), c.isLeaveEarly1(), c.isLate2(), c.isLeaveEarly2())).collect(Collectors.toList());
 	}
 
 	

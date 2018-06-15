@@ -15,11 +15,13 @@ import nts.uk.ctx.at.function.dom.adapter.application.importclass.ApplicationDea
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyLateAndLeaveEarlyTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.LateOrLeaveEarlyImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.GetNumberOfRemainingHolidaysRepository;
@@ -263,7 +265,45 @@ public class OptionalWidgetKtgFinder {
 					dto.setNightWorktime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.LATE_OR_EARLY_RETREAT.value) {
 					//sử lý 14
-					//chưa có requestList 446 nên tạm thời return 0;
+					// get request list 197 
+					List<DailyLateAndLeaveEarlyTimeImport> dailyLateAndLeaveEarlyTime = optionalWidgetAdapter.getLateLeaveEarly(employeeId, datePeriod);
+					//get request list 446
+					List<DailyLateAndLeaveEarlyTimeImport> lateOrLeaveEarly = optionalWidgetAdapter.engravingCancelLateorLeaveearly(employeeId, startDate, endDate);
+					
+					int lateRetreat = 0;
+					int earlyRetreat = 0;
+					for (DailyLateAndLeaveEarlyTimeImport daily : dailyLateAndLeaveEarlyTime) {
+						for (DailyLateAndLeaveEarlyTimeImport approve : lateOrLeaveEarly) {
+							if(approve.getDate().equals(daily.getDate())) {
+								if(daily.isLate1()&& approve.isLate1()) {
+									daily.setLate1(false);
+								}
+								if(daily.isLate2()&&approve.isLate2()) {
+									daily.setLate2(false);
+								}
+								if(daily.isLeaveEarly1()&&approve.isLeaveEarly1() ) {
+									daily.setLeaveEarly1(false);
+								}
+								if(daily.isLeaveEarly2()&&approve.isLeaveEarly2() ) {
+									daily.setLeaveEarly2(false);
+								}
+							}
+						}
+						if(daily.isLate1()) {
+							lateRetreat += 1;
+						}
+						if(daily.isLate2()) {
+							lateRetreat += 1;
+						}
+						if(daily.isLeaveEarly1()) {
+							earlyRetreat += 1;
+						}
+						if(daily.isLeaveEarly2()) {
+							earlyRetreat += 1;
+						}
+					}
+					dto.setLateRetreat(lateRetreat);
+					dto.setEarlyRetreat(earlyRetreat);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.YEARLY_HD.value) {
 					//sử lý 15
 					dto.setYearlyHoliday(this.setYearlyHoliday(companyId, employeeId, startDate));
@@ -302,8 +342,7 @@ public class OptionalWidgetKtgFinder {
 	}
 	private YearlyHoliday setYearlyHoliday(String cID, String employeeId, GeneralDate date) {
 		YearlyHoliday yearlyHoliday = new YearlyHoliday();
-		//lấy request list 210
-/*		
+		//lấy request list 210		
 		List<NextAnnualLeaveGrantImport> listNextAnnualLeaveGrant = optionalWidgetAdapter.acquireNextHolidayGrantDate(cID,employeeId, date);
 		if(listNextAnnualLeaveGrant.isEmpty()) {
 			return yearlyHoliday;
@@ -329,7 +368,7 @@ public class OptionalWidgetKtgFinder {
 															remainingNumber.getNumberOfRemainGrantPost(), 
 															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPost().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPost().intValue()%60)));
 		yearlyHoliday.setAttendanceRate(remainingNumber.getAttendanceRate());
-		yearlyHoliday.setWorkingDays(remainingNumber.getWorkingDays());*/
+		yearlyHoliday.setWorkingDays(remainingNumber.getWorkingDays());
 		return yearlyHoliday;
 	}
 }
