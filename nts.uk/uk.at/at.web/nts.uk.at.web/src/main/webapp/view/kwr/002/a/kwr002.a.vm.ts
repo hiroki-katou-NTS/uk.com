@@ -61,7 +61,7 @@ module nts.uk.com.view.kwr002.a {
 
                 self.attendanceRecordList = ko.observableArray([]);
 
-                self.selectedCode = ko.observable('');
+                self.selectedCode = ko.observable(null);
 
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KWR002_13"), key: 'id', width: 140, hidden: true },
@@ -140,6 +140,11 @@ module nts.uk.com.view.kwr002.a {
                     }
                     console.log(self.selectedEmployee());
                 });
+                
+                self.selectedCode.subscribe((codechange) => {
+                    console.log(codechange);
+                    console.log(self.selectedCode());
+                })
             }
 
             public start_page(): JQueryPromise<any> {
@@ -163,7 +168,7 @@ module nts.uk.com.view.kwr002.a {
                     } else {
                         var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
                         self.attendanceRecordList(sortArray);
-                        self.selectedCode = ko.observable(sortArray[0].code);
+                        self.selectedCode(sortArray[0].code);
                     }
                     dfd.resolve();
                 })
@@ -334,12 +339,14 @@ module nts.uk.com.view.kwr002.a {
 
                     service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
                         if (listAttendance === undefined || listAttendance.length == 0) {
+                            self.attendanceRecordList(null);
+                            self.selectedCode(null);
                             $('#print').attr("disabled", "disabled")
                             $('#exportExcel').attr("disabled", "disabled")
                         } else {
                             var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
                             self.attendanceRecordList(sortArray);
-                            self.selectedCode = ko.observable(sortArray[0].code);
+                            self.selectedCode(sortArray[0].code);
                         }
                         console.log(self.attendanceRecordList());
 
@@ -352,11 +359,10 @@ module nts.uk.com.view.kwr002.a {
 
                 return dfd.promise();
             }
-
+}
         export class AttendanceRecordExportSettingDto {
             code: string;
             name: string;
-
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
