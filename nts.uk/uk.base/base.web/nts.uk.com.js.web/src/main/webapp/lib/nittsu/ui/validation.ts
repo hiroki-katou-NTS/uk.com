@@ -310,7 +310,7 @@ module nts.uk.ui.validation {
             // Check Constraint
             if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
             	let maxLength = this.constraint.maxLength;
-            	if (this.constraint.charType == "Any")
+            	if (this.constraint.charType == "Any" || this.constraint.charType === "Kana")
             		maxLength = nts.uk.text.getCharTypeByType("Any").getViewLength(maxLength);
                 result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
                             [ this.name, maxLength ]), validateResult.errorCode);
