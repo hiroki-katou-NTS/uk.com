@@ -243,18 +243,12 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 				annualWorkScheduleData.putAll(this.create36AgreementTime(cid, yearMonthPeriod, empId,
 						outputAgreementTime36.get(), fiscalYear, startYm, numMonth, displayFormat));
 			}
-
-			// アルゴリズム「任意項目の作成」を実行する
-			annualWorkScheduleData.putAll(this.createOptionalItems(yearMonthPeriod, empId,
-					listItemOut.stream().filter(item -> !item.isItem36AgreementTime()).collect(Collectors.toList()),
-					startYm, numMonth));
-
 			empData.setAnnualWorkSchedule(annualWorkScheduleData);
 		});
-		/*// アルゴリズム「任意項目の作成」を実行する
-		this.createOptionalItems2(exportData, yearMonthPeriod, employeeIds,
+		// アルゴリズム「任意項目の作成」を実行する
+		this.createOptionalItems(exportData, yearMonthPeriod, employeeIds,
 				listItemOut.stream().filter(item -> !item.isItem36AgreementTime()).collect(Collectors.toList()),
-				startYm, numMonth);*/
+				startYm, numMonth);
 	}
 
 	/**
@@ -312,22 +306,11 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * @param listItemOut
 	 *            「36協定時間」以外の出力対象の項目設定（List）
 	 */
-	private Map<String, AnnualWorkScheduleData> createOptionalItems(YearMonthPeriod yearMonthPeriod, String employeeId,
-			List<ItemOutTblBook> listItemOut, YearMonth startYm, int numMonth) {
-		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
-		listItemOut.forEach(itemOut -> {
-			// アルゴリズム「出力項目の値の算出」を実行する
-			data.put(itemOut.getCd().v(),
-					this.createOptionalItem(yearMonthPeriod, employeeId, itemOut, startYm, numMonth));
-		});
-		return data;
-	}
-
-	private void createOptionalItems2(ExportData exportData, YearMonthPeriod yearMonthPeriod, List<String> employeeIds,
+	private void createOptionalItems(ExportData exportData, YearMonthPeriod yearMonthPeriod, List<String> employeeIds,
 			List<ItemOutTblBook> listItemOut, YearMonth startYm, int numMonth) {
 		listItemOut.forEach(itemOut -> {
 			// アルゴリズム「出力項目の値の算出」を実行する
-			Map<String, AnnualWorkScheduleData> empData = this.createOptionalItem2(yearMonthPeriod, employeeIds,
+			Map<String, AnnualWorkScheduleData> empData = this.createOptionalItem(yearMonthPeriod, employeeIds,
 					itemOut, startYm, numMonth);
 			employeeIds.forEach(empId -> {
 				AnnualWorkScheduleData data = empData.get(empId);
@@ -346,18 +329,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * @param itemOutTblBook
 	 * @return
 	 */
-	private AnnualWorkScheduleData createOptionalItem(YearMonthPeriod yearMonthPeriod, String employeeId,
-			ItemOutTblBook itemOutTblBook, YearMonth startYm, int numMonth) {
-		// アルゴリズム「対象期間の月次データの取得」を実行する
-		List<MonthlyAttendanceResultImport> monthlyAttendanceResult = monthlyAttendanceItemAdapter
-				.getMonthlyValueOf(employeeId, yearMonthPeriod, itemOutTblBook.getListOperationSetting().stream()
-						.map(os -> os.getAttendanceItemId()).collect(Collectors.toList()));
-		// アルゴリズム「月平均の算出」を実行する
-		return AnnualWorkScheduleData
-				.fromMonthlyAttendanceList(itemOutTblBook, monthlyAttendanceResult, startYm, numMonth).calc();
-	}
-
-	private Map<String, AnnualWorkScheduleData> createOptionalItem2(YearMonthPeriod yearMonthPeriod,
+	private Map<String, AnnualWorkScheduleData> createOptionalItem(YearMonthPeriod yearMonthPeriod,
 			List<String> employeeIds, ItemOutTblBook itemOut, YearMonth startYm, int numMonth) {
 		// アルゴリズム「対象期間の月次データの取得」を実行する
 		List<Integer> itemIds = itemOut.getListOperationSetting().stream().map(os -> os.getAttendanceItemId())
@@ -396,7 +368,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			unitMonth = PeriodAtrOfAgreement.THREE_MONTHS;
 		}
 		// 年度のエンド : 管理期間の36協定時間．年度＋(３６協定運用設定．起算月-1月)＋末日
-		GeneralDate criteria = GeneralDate.ymd(startYm.getYear(), startYm.getMonthValue(), 1).addDays(-1);
+		GeneralDate criteria = datePeriod.get().end();
 		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, unitMonth);
 	}
 
@@ -406,17 +378,10 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	private void createAnnualWorkScheduleAttendance(ExportData exportData, YearMonthPeriod yearMonthPeriod,
 			List<String> employeeIds, List<ItemOutTblBook> listItemOut, YearMonth startYm, int numMonth,
 			OutputAgreementTime displayFormat) {
-		employeeIds.forEach(empId -> {
-			EmployeeData empData = exportData.getEmployees().get(empId);
-			Map<String, AnnualWorkScheduleData> annualWorkScheduleData = new HashMap<>();
-
-			// アルゴリズム「任意項目の作成」を実行する
-			annualWorkScheduleData.putAll(this.createOptionalItems(yearMonthPeriod, empId,
-					listItemOut.stream().filter(item -> !item.isItem36AgreementTime()).collect(Collectors.toList()),
-					startYm, numMonth));
-
-			empData.setAnnualWorkSchedule(annualWorkScheduleData);
-		});
+		// アルゴリズム「任意項目の作成」を実行する
+		this.createOptionalItems(exportData, yearMonthPeriod, employeeIds,
+				listItemOut.stream().filter(item -> !item.isItem36AgreementTime()).collect(Collectors.toList()),
+				startYm, numMonth);
 	}
 
 	/**
