@@ -60,7 +60,10 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		//「振出振休明細」をソートする 
 		lstAbsRec = lstAbsRec.stream().sorted((a, b) -> a.getYmdData().getDayoffDate().isPresent() ? a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().get())
 				: GeneralDate.max().compareTo(GeneralDate.max())).collect(Collectors.toList());
-		lstAbsRec = this.offsetSortTimes(lstAbsRec);
+		//アルゴリズム「時系列順で相殺する」を実行する
+		lstAbsRec = this.offsetSortTimes(lstAbsRec);		
+		//消化区分と消滅日を計算する
+		lstAbsRec = this.calDigestionAtr(lstAbsRec, paramInput.getBaseDate());
 		//残数と未消化を集計する
 		AbsDaysRemain remainUnDigestedDays = this.getRemainUnDigestedDays(lstAbsRec, paramInput.getBaseDate());
 		//発生数・使用数を計算する
@@ -122,8 +125,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				MngDataStatus.CONFIRMED,
 				confirmAbsData.getHolidayDate(), 
 				OccurrenceDigClass.DIGESTION,
-				unOffsetData,
-				null);
+				Optional.of(unOffsetData),
+				Optional.empty());
 		return outData;
 		
 	}
@@ -152,10 +155,16 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 						confirmRecData.getPayoutId(), 
 						confirmRecData.getOccurredDays().v(), 
 						EnumAdaptor.valueOf(confirmRecData.getLawAtr().value, StatutoryAtr.class), 
-						unUseDays);
+						unUseDays,
+						DigestionAtr.USED,
+						Optional.empty());
 				//Khong ton tai 1 ngay vua co nghi bu va di lam bu
 				AbsRecDetailPara dataDetail = new AbsRecDetailPara(sid, 
-						MngDataStatus.CONFIRMED, confirmRecData.getPayoutDate(), OccurrenceDigClass.OCCURRENCE, null, unUseDayOfRec);
+						MngDataStatus.CONFIRMED,
+						confirmRecData.getPayoutDate(),
+						OccurrenceDigClass.OCCURRENCE,
+						Optional.empty(),
+						Optional.of(unUseDayOfRec));
 				lstDataDetail.add(dataDetail);	
 			}			
 		}		
@@ -176,15 +185,16 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			//「振出振休明細」．発生消化区分をチェックする
 			if(detailData.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
 				//残日数 -= ループ中の「振休の未相殺」．未相殺日数
-				outData.setRemainDays(outData.getRemainDays() - detailData.getUnOffsetOfAb().getUnOffSetDays());
+				outData.setRemainDays(outData.getRemainDays() - detailData.getUnOffsetOfAb().get().getUnOffSetDays());
 			} else if (detailData.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
+				UnUseOfRec recData = detailData.getUnUseOfRec().get();
 				//期限切れかをチェックする
-				if(detailData.getUnUseOfRec().getExpirationDate().before(baseDate)) {
+				if(recData.getExpirationDate().before(baseDate)) {
 					//未消化日数 += ループ中の「振出の未使用」．未使用日数
-					outData.setUnDigestedDays(outData.getUnDigestedDays() + detailData.getUnUseOfRec().getUnUseDays());
+					outData.setUnDigestedDays(outData.getUnDigestedDays() + recData.getUnUseDays());
 				} else {
 					//残日数 += ループ中の「振出の未使用」．未使用日数
-					outData.setRemainDays(outData.getRemainDays() + detailData.getUnUseOfRec().getUnUseDays());
+					outData.setRemainDays(outData.getRemainDays() + recData.getUnUseDays());
 				}
 			}
 			
@@ -269,7 +279,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				dataAtr,
 				date,
 				OccurrenceDigClass.DIGESTION,
-				unOffset, null);
+				Optional.of(unOffset),
+				Optional.empty());
 		return outData;
 	}
 
@@ -281,6 +292,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		//INPUT．モードをチェックする
 		if(paramInput.isMode()) {
 			//TODO 暫定残数管理データを作成するアルゴリズムが出来たらリンクする
+			
 		} else {
 			//ドメインモデル「暫定振出管理データ」を取得する
 			lstInterimMng =  interimRepo.getRemainBySidPriod(paramInput.getSid(), paramInput.getDateData(), RemainType.PICKINGUP);
@@ -337,7 +349,9 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				interimRecMng.getRecruitmentMngId(),
 				interimRecMng.getOccurrenceDays().v(),
 				interimRecMng.getStatutoryAtr(),
-				unUseDays);
+				unUseDays,
+				DigestionAtr.USED,
+				Optional.empty());
 		CompensatoryDayoffDate date = new CompensatoryDayoffDate(true, Optional.of(remainData.getYmd()));
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
 		if(remainData.getCreatorAtr() == CreaterAtr.SCHEDULE) {
@@ -345,7 +359,12 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		} else if (remainData.getCreatorAtr() == CreaterAtr.RECORD){
 			dataAtr = MngDataStatus.RECORD;
 		}
-		AbsRecDetailPara outputData = new AbsRecDetailPara(remainData.getSID(), dataAtr, date, OccurrenceDigClass.OCCURRENCE, null, unUseInfo);
+		AbsRecDetailPara outputData = new AbsRecDetailPara(remainData.getSID(),
+				dataAtr,
+				date,
+				OccurrenceDigClass.OCCURRENCE,
+				Optional.empty(),
+				Optional.of(unUseInfo));
 		return outputData;
 	}
 
@@ -360,35 +379,37 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		List<AbsRecDetailPara> lstRecTmp = lstRecDetailData;
 		//「振出振休明細」(振休)をループする
 		for (AbsRecDetailPara absDetailPara : lstAbsDetailData) {
+			UnOffsetOfAbs absData = absDetailPara.getUnOffsetOfAb().get();
 			//ループ中の「振休の未相殺」．未相殺日数をチェックする
-			if(absDetailPara.getUnOffsetOfAb().getUnOffSetDays() <= 0) {
+			if(absData.getUnOffSetDays() <= 0) {
 				continue;
 			}
 			//「振出振休明細」(振出)をループする
 			for (AbsRecDetailPara recDetailData : lstRecDetailData) {
+				UnUseOfRec recData = recDetailData.getUnUseOfRec().get();
 				//期限切れかをチェックする
 				//日付不明の場合、false：期限切れてない、相殺可
 				GeneralDate chkDate = absDetailPara.getYmdData().getDayoffDate().isPresent() ? absDetailPara.getYmdData().getDayoffDate().get() : GeneralDate.min();
 				
 				//ループ中の「振出未使用」．未使用日数をチェックする
-				if(recDetailData.getUnUseOfRec().getExpirationDate().before(chkDate)
-						|| recDetailData.getUnUseOfRec().getUnUseDays() < 0) {
+				if(recData.getExpirationDate().before(chkDate)
+						|| recData.getUnUseDays() < 0) {
 					continue;
 				}
 				//振出振休相殺できる日数の大小チェックする
-				if(absDetailPara.getUnOffsetOfAb().getUnOffSetDays() > recDetailData.getUnUseOfRec().getUnUseDays()) {
+				if(absData.getUnOffSetDays() > recData.getUnUseDays()) {
 					//ループ中の「振休の未相殺」．未相殺日数 -= ループ中の「振出の未使用」．未使用日数
 					lstAbsTmp.remove(absDetailPara);
-					absDetailPara.getUnOffsetOfAb().setUnOffSetDays(absDetailPara.getUnOffsetOfAb().getUnOffSetDays() - recDetailData.getUnUseOfRec().getUnUseDays());					
+					absDetailPara.getUnOffsetOfAb().get().setUnOffSetDays(absData.getUnOffSetDays() - recData.getUnUseDays());					
 					lstAbsTmp.add(absDetailPara);
 					//ループ中の「振出の未使用」．未使用日数 = 0
 					lstRecTmp.remove(recDetailData);
-					recDetailData.getUnUseOfRec().setUnUseDays(0);
+					recDetailData.getUnUseOfRec().get().setUnUseDays(0);
 					lstRecTmp.add(recDetailData);
 				} else {
 					//ループ中の「振休の未相殺」．未相殺日数 = 0
 					lstAbsTmp.remove(absDetailPara);
-					absDetailPara.getUnOffsetOfAb().setUnOffSetDays(0);					
+					absDetailPara.getUnOffsetOfAb().get().setUnOffSetDays(0);					
 					lstAbsTmp.add(absDetailPara);
 					break;
 				}
@@ -396,7 +417,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			}
 			//相殺できる振出があるかチェックする
 			//全ての「振出振休明細」(振出)．「振出の未使用」．未使用日数が0の場合、相殺できる振出がないとする。
-			List<AbsRecDetailPara> lstRecTmpChk = lstRecTmp.stream().filter(x -> x.getUnUseOfRec().getUnUseDays() == 0)
+			List<AbsRecDetailPara> lstRecTmpChk = lstRecTmp.stream().filter(x -> x.getUnUseOfRec().get().getUnUseDays() == 0)
 					.collect(Collectors.toList());
 			if(!lstRecTmpChk.isEmpty() && lstRecTmpChk.size() == lstRecTmp.size()) {
 				break;
@@ -425,12 +446,37 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			//処理中の振出振休明細．発生消化区分をチェック
 			if(detailChk.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
 				//振出発生日数 += 振出の未使用．発生日数
-				outputData.setRemainDays(outputData.getRemainDays() + detailChk.getUnUseOfRec().getUnUseDays());
+				outputData.setRemainDays(outputData.getRemainDays() + detailChk.getUnUseOfRec().get().getUnUseDays());
 			} else {
 				//振休使用日数 += 振休の未相殺．必要日数
-				outputData.setUnDigestedDays(outputData.getUnDigestedDays() + detailChk.getUnOffsetOfAb().getRequestDays());
+				outputData.setUnDigestedDays(outputData.getUnDigestedDays() + detailChk.getUnOffsetOfAb().get().getRequestDays());
 			}
 		}
 		return outputData;
+	}
+
+	@Override
+	public List<AbsRecDetailPara> calDigestionAtr(List<AbsRecDetailPara> lstDetailData, GeneralDate baseDate) {
+		lstDetailData.stream().forEach(x -> {
+			UnUseOfRec recData = x.getUnUseOfRec().get();
+			//ループ中の「振出振休明細．発生消化区分」をチェック
+			if(x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
+				if(recData.getUnUseDays() <= 0) {
+					//振出の未使用．振休消化区分　←　"消化済"
+					x.getUnUseOfRec().get().setDigestionAtr(DigestionAtr.USED);
+				} else {
+					if(recData.getExpirationDate().after(baseDate)) {
+						//振出の未使用．振休消化区分　←　"未消化"
+						x.getUnUseOfRec().get().setDigestionAtr(DigestionAtr.UNUSED);
+					} else {
+						//振出の未使用．振休消化区分　←　"消滅"
+						x.getUnUseOfRec().get().setDigestionAtr(DigestionAtr.EXPIRED);
+						//振出の未使用．消滅日　←　振出の未使用．使用期限日
+						x.getUnUseOfRec().get().setDisappearanceDate(Optional.of(recData.getExpirationDate()));
+					}
+				}
+			}
+		});
+		return lstDetailData;
 	}
 }

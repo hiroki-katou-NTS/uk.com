@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
@@ -25,6 +26,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -37,6 +40,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	private LeaveManaDataRepository breakConfrimRepo;
 	@Inject
 	private InterimRemainRepository interimRemainRepo;
+	@Inject
+	private AbsenceTenProcess tenProcess;
 	@Override
 	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam) {
 		//アルゴリズム「未相殺の代休(確定)を取得する」を実行する
@@ -46,8 +51,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		if(!lstBreakData.isEmpty()) {
 			lstDetailData.addAll(lstBreakData);
 		}
-		//TODO 繰越数を計算する
-		CarryForwardDayTimes calcCarryForwardDays = this.calcCarryForwardDays(inputParam.getBaseDate(), lstDetailData);
+		//繰越数を計算する
+		CarryForwardDayTimes calcCarryForwardDays = this.calcCarryForwardDays(inputParam.getBaseDate(), lstDetailData, inputParam.getSid());
 		//3.未相殺の代休(暫定)を取得する
 		List<BreakDayOffDetail> lstInterimDayOffDetail = this.lstInterimDayOffDetail(inputParam);
 		if(!lstInterimDayOffDetail.isEmpty()) {
@@ -63,8 +68,10 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				: GeneralDate.max().compareTo(GeneralDate.max())).collect(Collectors.toList());
 		//アルゴリズム「時系列順で相殺する」を実行する
 		lstDetailData = this.lstSortForTime(lstDetailData);
+		//消化区分と消滅日を計算する
+		lstDetailData = this.calDigestionAtr(lstDetailData, inputParam.getBaseDate());
 		//残数と未消化数を集計する
-		RemainUnDigestedDayTimes remainUnDigestedDayTimes = this.getRemainUnDigestedDayTimes(inputParam.getBaseDate(), lstDetailData);
+		RemainUnDigestedDayTimes remainUnDigestedDayTimes = this.getRemainUnDigestedDayTimes(inputParam.getBaseDate(), lstDetailData, inputParam.getSid());
 		//発生数・使用数を計算する
 		RemainUnDigestedDayTimes getRemainOccurrenceUseDayTimes = this.getRemainOccurrenceUseDayTimes(lstDetailData, inputParam.getDateData());
 		BreakDayOffRemainMngOfInPeriod outputData = new BreakDayOffRemainMngOfInPeriod(lstDetailData, 
@@ -183,7 +190,9 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				breakConfirm.getOccurredDays().v(),
 				breakConfirm.getHalfDayTime().v(),
 				unUseTimes, 
-				unUseDays);
+				unUseDays,
+				DigestionAtr.USED,
+				Optional.empty());
 		BreakDayOffDetail outputData = new BreakDayOffDetail(sid, 
 				MngDataStatus.CONFIRMED, 
 				breakConfirm.getComDayOffDate(),
@@ -194,20 +203,58 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
-	public CarryForwardDayTimes calcCarryForwardDays(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData) {
+	public CarryForwardDayTimes calcCarryForwardDays(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid) {
 		CarryForwardDayTimes outputData = new CarryForwardDayTimes(0, 0);
 		//アルゴリズム「6.残数と未消化数を集計する」を実行
-		
+		RemainUnDigestedDayTimes dayTimes = this.getRemainUnDigestedDayTimes(baseDate, lstDetailData, sid);
+		//取得した「残日数」「残時間数」を返す
+		outputData.setCarryForwardDays(dayTimes.getRemainDays());
+		outputData.setCarryForwardTime(dayTimes.getRemainTimes());
 		return outputData;
 	}
 
 	@Override
 	public RemainUnDigestedDayTimes getRemainUnDigestedDayTimes(GeneralDate baseDate,
-			List<BreakDayOffDetail> lstDetailData) {
+			List<BreakDayOffDetail> lstDetailData, String sid) {
 		//残日数 = 0、残時間数 = 0、未消化日数 = 0、未消化時間 = 0（初期化）
 		RemainUnDigestedDayTimes outputData = new RemainUnDigestedDayTimes(0, 0, 0, 0);
-		//TODO アルゴリズム「代休の設定を取得する」を実行する
-		
+		//アルゴリズム「代休の設定を取得する」を実行する
+		String cid = AppContexts.user().companyId();
+		SubstitutionHolidayOutput dayOffSetting = tenProcess.getSettingForSubstituteHoliday(cid, sid, baseDate);
+		//「休出代休明細」をループする
+		for (BreakDayOffDetail detailData : lstDetailData) {
+			//ループ中の「休出代休明細」．発生消化区分をチェックする
+			if(detailData.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
+				//期限切れかをチェックする
+				if(detailData.getUnUserOfBreak().get().getExpirationDate().before(baseDate)) {
+					//時間代休管理区分をチェックする
+					if(dayOffSetting != null && dayOffSetting.isSubstitutionFlg()) {
+						//未消化時間 += ループ中の「休出の未使用」．未使用時間 
+						outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + detailData.getUnUserOfBreak().get().getUnUsedTimes());
+					} else {
+						//未消化日数 += ループ中の「休出の未使用」．未使用日数
+						outputData.setUnDigestedDays(outputData.getUnDigestedDays() + detailData.getUnUserOfBreak().get().getUnUsedDays());
+						//ループ中の「休出の未使用」．未使用日数をチェックする
+						if(detailData.getUnUserOfBreak().get().getUnUsedDays() == 1) {
+							//未消化時間 += ループ中の「休出の未使用」．１日相当時間
+							outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + detailData.getUnUserOfBreak().get().getOnedayTime());
+						} else if (detailData.getUnUserOfBreak().get().getUnUsedDays() == 0.5) {
+							//未消化時間 += ループ中の「休出の未使用」．半日相当時間
+							outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + detailData.getUnUserOfBreak().get().getHaftDayTime());
+						}
+					}
+				} else {
+					//残日数 += ループ中の「休出の未使用」．未使用日数、残時間 += ループ中の「休出の未使用」．未使用時間
+					outputData.setRemainDays(outputData.getRemainDays() + detailData.getUnUserOfBreak().get().getUnUsedDays());
+					outputData.setRemainTimes(outputData.getRemainTimes() + detailData.getUnUserOfBreak().get().getUnUsedTimes());
+				}
+			} else {
+				//残日数 -= ループ中の「代休の未相殺」．未相殺日数、残時間 -= ループ中の「代休の未相殺」．未相殺時間 
+				outputData.setUnDigestedDays(outputData.getUnDigestedDays() - detailData.getUnOffsetOfDayoff().get().getUnOffsetDay());
+				outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() - detailData.getUnOffsetOfDayoff().get().getUnOffsetTimes());
+								
+			}
+		}
 		return outputData;
 	}
 
@@ -383,7 +430,9 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				breakMng.getOccurrenceDays().v(),
 				breakMng.getHaftDayTime().v(),
 				unUseTimes,
-				unUseDays);
+				unUseDays,
+				DigestionAtr.USED,
+				Optional.empty());
 		BreakDayOffDetail outData = new BreakDayOffDetail(remainData.getSID(),
 				dataAtr,
 				date,
@@ -485,6 +534,34 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				
 		}
 		return outputData;
+	}
+
+	@Override
+	public List<BreakDayOffDetail> calDigestionAtr(List<BreakDayOffDetail> lstDetail, GeneralDate baseDate) {
+		lstDetail.stream().forEach(x -> {
+			UnUserOfBreak breakData = x.getUnUserOfBreak().get();
+			//ループ中の「休出代休明細．発生消化区分」をチェック
+			if(x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
+				//ループ中の「休出の未使用」の「未使用日数」と「未使用時間」をチェックする
+				if(breakData.getUnUsedDays() == 0
+						&& breakData.getUnUsedTimes() == 0) {
+					//休出の未使用．代休消化区分　←　"消化済"
+					x.getUnUserOfBreak().get().setDigestionAtr(DigestionAtr.USED);
+				} else {
+					//ループ中の「休出の未使用．使用期限日」と「INPUT．基準日」を比較
+					if(breakData.getExpirationDate().after(baseDate)) {
+						//休出の未使用．代休消化区分　←　"未消化"
+						x.getUnUserOfBreak().get().setDigestionAtr(DigestionAtr.UNUSED);						
+					} else {
+						//休出の未使用．代休消化区分　←　"消滅"
+						x.getUnUserOfBreak().get().setDigestionAtr(DigestionAtr.EXPIRED);
+						//代出の未使用．消滅日　←　代出の未使用．使用期限日
+						x.getUnUserOfBreak().get().setDisappearanceDate(Optional.of(breakData.getExpirationDate()));
+					}
+				}
+			}
+		});
+		return lstDetail;
 	}
 
 }
