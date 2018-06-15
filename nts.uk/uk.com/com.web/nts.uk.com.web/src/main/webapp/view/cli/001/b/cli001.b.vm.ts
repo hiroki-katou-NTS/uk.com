@@ -40,8 +40,14 @@ module cli001.b.viewmodel {
             });
         }
 
-        unlock(): void {
-            alert(this.currentId());
+        lockdata(): void {
+            let self = this;
+            nts.uk.ui.windows.setShared("dataCd001.a", new ItemModel('0000 0000 000 1', '00001', 'name'));
+            nts.uk.ui.windows.close();
+        }
+
+        cancel() {
+            nts.uk.ui.windows.close();
         }
     }
 
