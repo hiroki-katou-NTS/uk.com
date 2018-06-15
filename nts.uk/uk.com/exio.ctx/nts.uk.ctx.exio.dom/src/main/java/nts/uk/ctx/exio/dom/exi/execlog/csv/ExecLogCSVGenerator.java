@@ -19,23 +19,23 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 public class ExecLogCSVGenerator extends AsposeCellsReportGenerator implements ExecLogCSVReportGenerator{
 
-	private final String REPORT_ID = "CSV_GENERATOR";
+	private static final String REPORT_ID = "CSV_GENERATOR";
 	
-	private final int COND_IMPORT_ROW = 0;
+	private static final int COND_IMPORT_ROW = 0;
 	
-	private final int DATE_TIME_ROW = 1;
+	private static final int DATE_TIME_ROW = 1;
 	
-	private final int TOTAL_COUNT_ROW = 2;
+	private static final int TOTAL_COUNT_ROW = 2;
 	
-	private final int NORMAL_COUNT_ROW = 3;
+	private static final int NORMAL_COUNT_ROW = 3;
 	
-	private final int ERROR_COUNT_ROW = 4;
+	private static final int ERROR_COUNT_ROW = 4;
 	
-	private final int CSV_START_COLUMN = 0;
+	private static final int CSV_START_COLUMN = 0;
 	
-	private final int CSV_HEADER_START_ROW = 5;
+	private static final int CSV_HEADER_START_ROW = 5;
 	
-	private final int CSV_DATA_START_ROW = 6;
+	private static final int CSV_DATA_START_ROW = 6;
 	
 	@Override
 	public void generate(FileGeneratorContext generatorContext, ExecLogCSVFileData dataSource) {
