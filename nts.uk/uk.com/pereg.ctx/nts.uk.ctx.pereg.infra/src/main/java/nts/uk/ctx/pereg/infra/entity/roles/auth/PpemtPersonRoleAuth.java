@@ -56,21 +56,4 @@ public class PpemtPersonRoleAuth extends UkJpaEntity implements Serializable {
 		return this.ppemtPersonRoleAuthPk;
 	}
 
-	public PpemtPersonRoleAuth updateFromDomain(PersonInfoRoleAuth domain) {
-
-		this.allowMapUpload = domain.getAllowMapUpload().value;
-
-		this.allowMapBrowse = domain.getAllowMapBrowse().value;
-
-		this.allowDocUpload = domain.getAllowDocUpload().value;
-
-		this.allowDocRef = domain.getAllowDocRef().value;
-
-		this.allowAvatarUpload = domain.getAllowAvatarUpload().value;
-
-		this.allowAvatarRef = domain.getAllowAvatarRef().value;
-
-		return this;
-	}
-
 }
