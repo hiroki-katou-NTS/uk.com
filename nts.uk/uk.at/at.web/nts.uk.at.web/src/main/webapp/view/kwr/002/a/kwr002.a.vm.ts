@@ -132,7 +132,7 @@ module nts.uk.com.view.kwr002.a {
                 }
 
                 self.currentCodeList.subscribe(function(employeeId: any) {
-                    let employee;
+                    let employee : any;
                     self.selectedEmployee.removeAll();
                     for (let i of employeeId) {
                         employee = self.findByIdEmployee(i);
@@ -142,7 +142,7 @@ module nts.uk.com.view.kwr002.a {
             
             }
 
-            public start_pagse<any> {
+            public start_page() : JQueryPromise<any> {
 
                 blockUI.invisible();
                 let self = this;
