@@ -40,13 +40,16 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         changeDataRecoveryPeriod: KnockoutObservable<ChangeDataRecoveryPeriod> = ko.observable(new ChangeDataRecoveryPeriod([]));
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
         //KCP005
-        kcp005ComponentOption: any;
-        selectedEmployeeCode: KnockoutObservableArray<string> = ko.observableArray([]);
-        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
+        kcp005ComponentOptionScreenG: any;
+        selectedEmployeeCodeScreenG: KnockoutObservableArray<string> = ko.observableArray([]);
+        employeeListScreenG: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         //Screen H
         recoveryMethodDescription1: KnockoutObservable<string> = ko.observable("");
         recoveryMethodDescription2: KnockoutObservable<string> = ko.observable("");
         dataRecoverySummary: KnockoutObservable<DataRecoverySummary> = ko.observable(new DataRecoverySummary([], 0, [], []));
+        kcp005ComponentOptionScreenH: any;
+        selectedEmployeeCodeScreenH: KnockoutObservableArray<string> = ko.observableArray([]);
+        employeeListScreenH: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -60,21 +63,36 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             }
             $("#H4_1").ntsFixedTable({ height: 164, width: 700 });
 
-            //_____KCP005________
-            self.kcp005ComponentOption = {
+            //_____KCP005G________
+            self.kcp005ComponentOptionScreenG = {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.EMPLOYEE,
-                employeeInputList: self.employeeList,
+                employeeInputList: self.employeeListScreenG,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                selectedCode: self.selectedEmployeeCode,
+                selectedCode: self.selectedEmployeeCodeScreenG,
                 isDialog: false,
                 isShowNoSelectRow: false,
                 alreadySettingList: [],
                 isShowWorkPlaceName: false,
                 isShowSelectAllButton: true,
-                maxWidth: 450,
                 maxRows: 15
+            };
+
+            //_____KCP005H________
+            self.kcp005ComponentOptionScreenH = {
+                isShowAlreadySet: false,
+                isMultiSelect: true,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeListScreenH,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedEmployeeCodeScreenH,
+                isDialog: false,
+                isShowNoSelectRow: false,
+                alreadySettingList: [],
+                isShowWorkPlaceName: false,
+                isShowSelectAllButton: false,
+                maxRows: 20
             };
 
             self.startDateString.subscribe(value => {
@@ -220,7 +238,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             });
 
             let _categoryList = self.getRecoveryCategory(self.changeDataRecoveryPeriod().changeDataCategoryList());
-            let _employeeList = self.getRecoveryEmployee(self.selectedEmployeeCode());
+            let _employeeList = self.getRecoveryEmployee(self.selectedEmployeeCodeScreenG());
             let _recoveryMethod = self.dataContentConfirm().selectedRecoveryMethod();
             let _recoveryMethodDescription1 = _.filter(self.recoveryMethodOptions(), x => { return x.value == _recoveryMethod }).map(x1 => { return x1.text }).toString();
             let _recoveryMethodDescription2 = self.getRecoveryMethodDescription2(_recoveryMethod);
