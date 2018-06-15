@@ -166,7 +166,7 @@ module nts.uk.com.view.cmf003.b {
                 self.isCompressPass.subscribe(function(value) {
                     if(value) {
                         self.passwordConstraint("FileCompressionPassword");
-                        //$(".passwordInput").trigger("validate");
+                        $(".passwordInput").trigger("validate");
                     } else {
                         self.passwordConstraint("");
                         $('.passwordInput').ntsError('clear');
@@ -680,7 +680,6 @@ module nts.uk.com.view.cmf003.b {
                         nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
                     }
                 }).fail((err) => {
-                    console.log("++++++++++++");
                 });
             }
         }//end screemodule
