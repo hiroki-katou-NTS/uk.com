@@ -114,11 +114,13 @@ module nts.uk.at.view.kwr008.a {
             getOutItemSettingCode() {
                 var self = this;
                 var dfd = $.Deferred();
-                self.outputItem([]);
                 service.getOutItemSettingCode().done((dataArr: Array<share.OutputSettingCodeDto>) => {
+                    let outItemSettingCode = [];
                     _.forEach(dataArr, data => {
-                        self.outputItem.push(new share.ItemModel(data.cd, data.name));
+                       outItemSettingCode.push(new share.ItemModel(data.cd, data.name));
                     });
+                    
+                    self.outputItem(outItemSettingCode);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -176,7 +178,11 @@ module nts.uk.at.view.kwr008.a {
                             return;
                         } else {
                             self.selectedOutputItem(resultData.selectedCd);
+                            nts.uk.ui.block.clear();
                         }
+                    }).fail(err=>{
+                        nts.uk.ui.dialog.alertError({ messageId: err.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.block.clear();        
                     });
                 });
             }
