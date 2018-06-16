@@ -19,7 +19,6 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
 public class JpaTopPagePartRepository extends JpaRepository implements TopPagePartRepository {
 
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID";
-	private final String SELECT_SINGLE_BY_KEY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID AND c.ccgmtTopPagePartPK.companyID = :cID";
 	private final String SELECT_BY_COMPANY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID";
 	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";
 	private final String SELECT_BY_TYPES = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID "
@@ -130,13 +129,5 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 			domain.getType().value,
 			domain.getSize().getWidth().v(), domain.getSize().getHeight().v()
 		);
-	}
-
-	@Override
-	public Optional<TopPagePart> findByKey(String cID, String topPagePartID) {
-		return this.queryProxy().query(SELECT_SINGLE_BY_KEY, CcgmtTopPagePart.class)
-				.setParameter("topPagePartID", topPagePartID)
-				.setParameter("cID", cID)
-				.getSingle(c -> toDomain(c));
 	}
 }

@@ -15,11 +15,9 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -57,17 +55,14 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 		if(!this.isHaveData()) {
 			return new ArrayList<>();
 		}
-		
-		values.removeIf(item -> !item.isHaveData());
-		
 		return ConvertHelper.mapTo(values, any -> AnyItemOfMonthly.of(employeeId == null ? this.employeeId : employeeId, 
 				ym == null ? yearMonth : ym, 
 				ConvertHelper.getEnum(closureID, ClosureId.class),
 				closureDate == null ? this.closureDate == null ? null : this.closureDate.toDomain() : closureDate.toDomain(),
 				any.getNo(),
-				Optional.of(any.getMonthlyTimeOrDefault()),
-				Optional.of(any.getMonthlyTimesOrDefault()), 
-				Optional.of(any.getMonthlyAmountOrDefault())));
+				Optional.ofNullable(any.getMonthlyTime()),
+				Optional.ofNullable(any.getMonthlyTimes()), 
+				Optional.ofNullable(any.getMonthlyAmount())));
 		
 	}
 
@@ -96,19 +91,15 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 			dto.setEmployeeId(domain.get(0).getEmployeeId());
 			dto.setYearMonth(domain.get(0).getYearMonth());
 			domain.stream().forEach(d -> {
-				dto.getValues().add(OptionalItemValueDto.from(d, getAttrFromMaster(master, d)));
+				dto.getValues().add(OptionalItemValueDto.from(d));
+				if(master == null || master.get(d.getAnyItemId()) == null){
+					dto.getValues().add(OptionalItemValueDto.from(d, null));
+				} else {
+					dto.getValues().add(OptionalItemValueDto.from(d, master.get(d.getAnyItemId()).getOptionalItemAtr()));
+				}
 			});
 			dto.exsistData();
 		}
 		return dto;
-	}
-
-	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemOfMonthly c) {
-		OptionalItem optItem = master == null ? null : master.get(c.getAnyItemId());
-		OptionalItemAtr attr = null;
-		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.MONTHLY_PERFORMANCE){
-			attr = optItem.getOptionalItemAtr();
-		}
-		return attr;
 	}
 }

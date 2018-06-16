@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
-import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 
@@ -47,5 +47,5 @@ public interface LateOrLeaveEarlyRepository {
 	 */
  	 ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType);
  	 
- 	List<LateOrLeaveEarly> findByActualCancelAtr(List<String> listAppID, Integer actualCancelAtr);
+ 	 
 }

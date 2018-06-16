@@ -35,7 +35,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6 };
 	
-	private static final String  HEADER ="HEADER";
+	private static String  HEADER ="HEADER";
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EmployeeUnregisterOutputDataSoure dataSource) {

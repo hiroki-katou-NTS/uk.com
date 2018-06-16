@@ -51,7 +51,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 @Stateless
 public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;

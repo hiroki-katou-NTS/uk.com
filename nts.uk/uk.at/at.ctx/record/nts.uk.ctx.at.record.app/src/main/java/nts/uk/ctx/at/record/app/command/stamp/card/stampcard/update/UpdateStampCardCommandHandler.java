@@ -46,7 +46,7 @@ public class UpdateStampCardCommandHandler extends CommandHandler<UpdateStampCar
 					contractCode);
 
 			if (duplicate.isPresent() && origin.isPresent() && origin.get().getStampNumber().toString() != duplicate.get().getStampNumber().toString()) {
-				throw new BusinessException("Msg_346" , command.getStampNumber());
+				throw new BusinessException("Msg_346");
 			}
 			
 			// update domain

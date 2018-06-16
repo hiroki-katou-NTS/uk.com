@@ -35,19 +35,6 @@ public class SpecialHolidayFrameFinder {
 	}
 	
 	/**
-	 * Find by company id. and 使用区分　=　true
-	 *
-	 * @return the list
-	 */
-	public List<SpecialHolidayFrameDto> findSpecialHolidayFrame() {
-		// user contexts
-		String companyId = AppContexts.user().companyId();
-		
-		return this.specialHolidayFrameRepository.findSpecialHolidayFrame(companyId).stream().map(c -> SpecialHolidayFrameDto.fromDomain(c))
-				.collect(Collectors.toList());
-	}
-	
-	/**
 	 * Find by frame no.
 	 *
 	 * @return the data

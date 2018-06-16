@@ -87,17 +87,15 @@ public class AutoCalOvertimeSetting extends DomainObject {
 	}
 
 	public AutoCalSetting decisionUseCalcSetting(StatutoryAtr statutoryAtr,boolean goEarlyAtr) {
-		if(statutoryAtr.isStatutory()) {
+		switch(statutoryAtr) {
+		case DeformationCriterion:
+		case Excess:
+			return goEarlyAtr?this.earlyOtTime:this.normalOtTime;
+		case Statutory:
 			return this.legalOtTime;
+		default:
+			throw new RuntimeException("unknown StatutoryAtr When dicision Ot AutoCalc Setting:"+statutoryAtr);
 		}
-		else {
-			if(goEarlyAtr) {
-				return this.earlyOtTime;
-			}
-			else {
-				return this.normalOtTime;
-			}
-		}			
 	}
 	
 	/**

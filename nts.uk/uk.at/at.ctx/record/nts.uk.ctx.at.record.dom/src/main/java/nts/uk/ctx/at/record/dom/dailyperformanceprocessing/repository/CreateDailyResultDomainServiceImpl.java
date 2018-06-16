@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -21,12 +19,11 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDomainService {
 
-//	@Inject
-//	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+	@Inject
+	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 
 	@Inject
 	private CreateDailyResultEmployeeDomainService createDailyResultEmployeeDomainService;
@@ -36,11 +33,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	
 	@Inject
 	private EmployeeGeneralInfoService employeeGeneralInfoService;
-	
-	@Inject
-	private UpdateLogInfoWithNewTransaction updateLogInfoWithNewTransaction; 
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 			DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
@@ -60,7 +53,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 			if (executionContent == ExecutionContent.DAILY_CREATION) {
 
 				// ④ログ情報（実行ログ）を更新する
-				updateLogInfoWithNewTransaction.updateLogInfo(empCalAndSumExecLogID, 0, ExecutionStatus.PROCESSING.value);
+				empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, 0, ExecutionStatus.PROCESSING.value);
 				
 				EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService.getEmployeeGeneralInfo(emloyeeIds, periodTime);
 
@@ -86,7 +79,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 				;
 				if (status == ProcessState.SUCCESS) {
 					if (executionAttr.value == 0) {
-						updateLogInfoWithNewTransaction.updateLogInfo(empCalAndSumExecLogID, 0,
+						empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, 0,
 								ExecutionStatus.DONE.value);
 					}
 				}

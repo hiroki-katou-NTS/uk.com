@@ -15,9 +15,9 @@ import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBack
 @Stateless
 public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBackDirectlyRepository {
 
-	public static final String SELECT_NO_WHERE = "SELECT c FROM KrqdtGoBackDirectly c";
+	public final String SELECT_NO_WHERE = "SELECT c FROM KrqdtGoBackDirectly c";
 
-	public static final String SELECT_WITH_APP_ID = SELECT_NO_WHERE 
+	public final String SELECT_WITH_APP_ID = SELECT_NO_WHERE 
 			+ " WHERE c.krqdtGoBackDirectlyPK.companyID =:companyID"
 			+ " AND c.krqdtGoBackDirectlyPK.appID =:appID ";
 

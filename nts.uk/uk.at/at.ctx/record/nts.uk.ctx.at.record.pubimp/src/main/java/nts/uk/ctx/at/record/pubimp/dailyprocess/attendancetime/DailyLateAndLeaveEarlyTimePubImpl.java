@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,7 +18,6 @@ import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyLateAndLeaveEar
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyLateAndLeaveEarlyTimePubExport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyLateAndLeaveEarlyTimePubImport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.LateLeaveEarlyAtr;
-import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.LateLeaveEarlyManage;
 
 /**
  * RequestListNo197
@@ -47,46 +45,9 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 			}
 			returnMap.put(nowDomain.getYmd(), returnList);
 		}
-		
-		
-		return plainMap(returnMap);
+		return new DailyLateAndLeaveEarlyTimePubExport(returnMap);
 	}
 
-	/**
-	 * MapからListへの変換
-	 * @param returnMap 変換したいmap
-	 * @return 変換後List
-	 */
-	private DailyLateAndLeaveEarlyTimePubExport plainMap(Map<GeneralDate, List<LateLeaveEarlyAtr>> returnMap) {
-		List<LateLeaveEarlyManage> list = new ArrayList<>();
-		for(Map.Entry<GeneralDate, List<LateLeaveEarlyAtr>> e : returnMap.entrySet()) {
-			//X枠目の遅刻、早退が入っているかチェック
-			Optional<LateLeaveEarlyAtr> element1 = e.getValue().stream().filter(tc -> tc.getWorkNo().v().intValue() == 1).findFirst();
-			boolean late1 = element1.isPresent() && e.getValue().get(element1.get().getWorkNo().v() - 1).isLate()
-							?true
-							:false;
-			boolean leaveEarly1 = element1.isPresent() && e.getValue().get(element1.get().getWorkNo().v() - 1).isLeaveEarly()
-								  ?true
-								  :false;
-			
-			
-			Optional<LateLeaveEarlyAtr> element2 = e.getValue().stream().filter(tc -> tc.getWorkNo().v().intValue() == 2).findFirst();
-			boolean late2 = element2.isPresent() && e.getValue().get(element2.get().getWorkNo().v() - 1).isLate()
-							?true
-							:false;
-			boolean leaveEarly2 = element2.isPresent() && e.getValue().get(element1.get().getWorkNo().v() - 1).isLeaveEarly()
-								  ?true
-								  :false;
-			list.add(new LateLeaveEarlyManage(e.getKey(), late1,late2,leaveEarly1,leaveEarly2));
-			
-		}
-		return new DailyLateAndLeaveEarlyTimePubExport(list);
-	}
-
-	/**
-	 * 早退の埋め込み(遅刻取得時に作成したクラスに対して埋め込む) 
-	 * @return
-	 */
 	private List<LateLeaveEarlyAtr> getLeaveEarlyList(List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily,
 			List<LateLeaveEarlyAtr> returnList) {
 		
@@ -105,9 +66,6 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 		return returnList;
 	}
 
-	/**
-	 * 遅刻の取得
-	 */
 	private List<LateLeaveEarlyAtr> getLateList(List<LateTimeOfDaily> lateTimeOfDaily) {
 		List<LateLeaveEarlyAtr> returnList = new ArrayList<>();
 		for(LateTimeOfDaily a : lateTimeOfDaily) {

@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
@@ -102,8 +101,8 @@ public class DailyModifyCommandFacade {
 	
 	private List<DailyRecordDto> toDto(List<DailyModifyQuery> query) {
 		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE)
-				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		List<DailyRecordDto> oldValues = finder.find(query.stream()
 									.collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
 												Collectors.collectingAndThen(Collectors.toList(), 
@@ -131,7 +130,8 @@ public class DailyModifyCommandFacade {
 														.withWokingDate(query.getBaseDate())
 														.withData(dto)
 														.fromItems(query.getItemValues());
-		command.getEditState().updateDatas(convertTo(sid, query));
+		List<EditStateOfDailyPerformance> editData = convertTo(sid, query);
+		command.getEditState().updateDatas(editData);
 		return command;
 	}
 

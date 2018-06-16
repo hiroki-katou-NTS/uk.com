@@ -154,7 +154,9 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 service.updateLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         if(data.autoSendMail){
-                            appcommon.CommonProcess.displayMailResult(data);  
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                location.reload();
+                            });    
                         } else {
                             location.reload();
                         }

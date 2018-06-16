@@ -23,7 +23,7 @@ public class PeriodByAlarmCategory {
 	public List<GeneralDate> getListDate() {
 		List<GeneralDate> result = new ArrayList<GeneralDate>();
 		GeneralDate date = GeneralDate.localDate(startDate.localDate());
-		while (date.beforeOrEquals(endDate)) {
+		while (date.before(endDate)) {
 			result.add(date);
 			date = date.addDays(1);
 		}

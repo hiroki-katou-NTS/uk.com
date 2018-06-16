@@ -12,6 +12,4 @@ public interface UkJobScheduler {
 	void unscheduleOnCurrentCompany(Class<? extends ScheduledJob> jobClass, String scheduleId);
 	
 	Optional<GeneralDateTime> getNextFireTime(Class<? extends ScheduledJob> jobClass, String scheduleId);
-	
-	Optional<GeneralDateTime> getNextFireTime(String scheduleId);
 }

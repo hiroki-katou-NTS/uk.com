@@ -64,12 +64,16 @@
 
 #b212224 {
 	display: block;
+	width: 250px;
 	float: left;
 }
 
+#b23 {
+	float: left;
+}
 
 #b858988 {
 	display: block;
-	width: 500px;
+	width: 270px;
 	margin-left: 13px;
 }

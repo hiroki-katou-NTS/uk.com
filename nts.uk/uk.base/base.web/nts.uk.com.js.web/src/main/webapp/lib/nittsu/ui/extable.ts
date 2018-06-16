@@ -709,7 +709,7 @@ module nts.uk.ui.exTable {
             if (rowCount > 1) {
                 _.forEach(Object.keys(level), function(key: any) {
                     _.forEach(level[key], function(col: any) {
-                        if (util.isNullOrUndefined(col.colspan)) {
+                        if (util.isNullOrUndefined(col.colspan) || col.colspan === 1) {
                             col.rowspan = rowCount - parseInt(key);
                         }
                     });
@@ -1086,7 +1086,7 @@ module nts.uk.ui.exTable {
                 let tdStyle = "; border-width: 1px; overflow: hidden; white-space: nowrap; border-collapse: collapse;";
                 if (!util.isNullOrUndefined(cell.rowspan) && cell.rowspan > 1) $td.setAttribute("rowspan", cell.rowspan);
                 if (!util.isNullOrUndefined(cell.colspan) && cell.colspan > 1) $td.setAttribute("colspan", cell.colspan);
-                else if (util.isNullOrUndefined(cell.colspan) && !self.visibleColumnsMap[cell.key]) tdStyle += "; display: none;";
+                else if (!self.visibleColumnsMap[cell.key]) tdStyle += "; display: none;";
                 let column = self.columnsMap[cell.key];
                 
                 if (!util.isNullOrUndefined(cell.icon) && cell.icon.for === "header") {
@@ -1134,7 +1134,7 @@ module nts.uk.ui.exTable {
                     let oneLevel = self.levelStruct[rowIdx];
                     _.forEach(oneLevel, function(cell: any) {
                         if (!self.visibleColumnsMap[cell.key] && !self.hiddenColumnsMap[cell.key]
-                            && util.isNullOrUndefined(cell.colspan)) return;
+                            && (util.isNullOrUndefined(cell.colspan) || cell.colspan == 1)) return;
                         let $cell = self.cell(cell.headerText, rowIdx, cell);
                         $tr.appendChild($cell);
                         if (!util.isNullOrUndefined(headerCellStyleFt)) {
@@ -4818,10 +4818,10 @@ module nts.uk.ui.exTable {
             let $_container = $($container);
             $container.addXEventListener(events.MOUSE_WHEEL, function(event: any) {
                 let delta = event.deltaY;
-                let direction = delta < 0 ? -1 : 1;
-                let value = $_container.scrollTop();
+                let direction = delta > 0 ? -1 : 1;
+                let value = $_container.scrollTop() + Math.round(event.deltaY);
 //                $container.stop().animate({ scrollTop: value }, 10);
-                let os = helper.isIE() ? 25 : 50;
+                let os = helper.isIE() ? 110 : 50;
                 $_container.scrollTop(value + direction * os);
                 event.preventDefault();
                 event.stopImmediatePropagation();

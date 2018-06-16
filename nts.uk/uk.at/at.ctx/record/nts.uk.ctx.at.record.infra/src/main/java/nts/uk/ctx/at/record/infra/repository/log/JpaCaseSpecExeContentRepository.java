@@ -14,9 +14,9 @@ import nts.uk.ctx.at.record.infra.entity.log.KrcstCaseSpecExeContent;
 @Stateless
 public class JpaCaseSpecExeContentRepository extends JpaRepository implements CaseSpecExeContentRepository {
 	
-	private static final String SELECT_FROM_CASE = " SELECT c FROM KrcstCaseSpecExeContent c ";
+	private final String SELECT_FROM_CASE = " SELECT c FROM KrcstCaseSpecExeContent c ";
 	
-	private static final String SELECT_CASE_BY_CODE =SELECT_FROM_CASE
+	private final String SELECT_CASE_BY_CODE =SELECT_FROM_CASE
 			+ " WHERE c.krcstCaseSpecExeContentPK.caseSpecExeContentID = :caseSpecExeContentID";
 
 	@Override

@@ -24,74 +24,74 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtPsAppro
 @Stateless
 public class JpaPersonApprovalRootRepository extends JpaRepository implements PersonApprovalRootRepository{
 
-	 private static final String FIND_ALL = "SELECT c FROM WwfmtPsApprovalRoot c";
-	 private static final String FIND_BY_CID = FIND_ALL
+	 private final String FIND_ALL = "SELECT c FROM WwfmtPsApprovalRoot c";
+	 private final String FIND_BY_CID = FIND_ALL
 			   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId";
-	 private static final String FIN_BY_EMP = FIND_ALL
+	 private final String FIN_BY_EMP = FIND_ALL
 			   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			   + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
-	 private static final String SELECT_PS_APR_BY_ENDATE = FIN_BY_EMP
+	 private final String SELECT_PS_APR_BY_ENDATE = FIN_BY_EMP
 			   + " AND c.endDate = :endDate" 
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType = :applicationType";
-	 private static final String SELECT_PS_APR_BY_ENDATE_APP_NULL = FIN_BY_EMP 
+	 private final String SELECT_PS_APR_BY_ENDATE_APP_NULL = FIN_BY_EMP 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType IS NULL";
-	 private static final String SELECT_PS_APR_BY_ENDATE_CONFIRM = FIN_BY_EMP 
+	 private final String SELECT_PS_APR_BY_ENDATE_CONFIRM = FIN_BY_EMP 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr";
-	 private static final String FIND_BY_BASEDATE = FIN_BY_EMP
+	 private final String FIND_BY_BASEDATE = FIN_BY_EMP
 			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " AND c.employmentRootAtr = :rootAtr" 
 			   + " AND c.applicationType = :appType";
-	 private static final String FIND_BY_BASEDATE_OF_COM = FIN_BY_EMP
+	 private final String FIND_BY_BASEDATE_OF_COM = FIN_BY_EMP
 			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " AND c.employmentRootAtr = 0";
-	 private static final String FIND_ALL_BY_BASEDATE = FIND_ALL + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+	 private final String FIND_ALL_BY_BASEDATE = FIND_ALL + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " ORDER BY c.wwfmtPsApprovalRootPK.employeeId";
-	 private static final String FIND_BY_APP_TYPE = FIN_BY_EMP
+	 private final String FIND_BY_APP_TYPE = FIN_BY_EMP
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType = :applicationType"
 			   + " ORDER BY c.startDate DESC";
-	 private static final String SELECT_PSAPR_BY_APP_NULL = FIN_BY_EMP 
+	 private final String SELECT_PSAPR_BY_APP_NULL = FIN_BY_EMP 
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType IS NULL"
 			   + " ORDER BY c.startDate DESC";
-	 private static final String FIND_BY_CFR_TYPE = FIN_BY_EMP 
+	 private final String FIND_BY_CFR_TYPE = FIN_BY_EMP 
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
-	 private static final String FIND_PS_APP_LASTEST = FIN_BY_EMP
+	 private final String FIND_PS_APP_LASTEST = FIN_BY_EMP
 			 + " AND c.endDate = :endDate";
-	 private static final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
+	 private final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.confirmationRootType = :confirmationRootType"
 				+ " AND c.employmentRootAtr = :employmentRootAtr";
-	private static final String FIND_BY_DATE_EMP = FIND_BY_CID 
+	private final String FIND_BY_DATE_EMP = FIND_BY_CID 
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.employmentRootAtr = :employmentRootAtr";
-	 private static final String FIND_COMMON_PS_APP_LASTEST = FIN_BY_EMP
+	 private final String FIND_COMMON_PS_APP_LASTEST = FIN_BY_EMP
 			 + " AND c.employmentRootAtr = 0 "
 			 + " AND c.applicationType IS NULL"
 			 + " AND c.startDate = (SELECT MAX(c1.startDate) FROM WwfmtPsApprovalRoot c1 WHERE c1.wwfmtPsApprovalRootPK.companyId = :companyId AND c1.wwfmtPsApprovalRootPK.employeeId = :employeeId AND c1.employmentRootAtr = 0 AND c1.applicationType IS NULL)";
-	 private static final String FIND_MONTHLY_PS_APP_LASTEST = FIN_BY_EMP
+	 private final String FIND_MONTHLY_PS_APP_LASTEST = FIN_BY_EMP
 			 + " AND c.employmentRootAtr = 2"
 			 + " AND c.confirmationRootType = 1"
 			 + " AND c.startDate = (SELECT MAX(c1.startDate) FROM WwfmtPsApprovalRoot c1 WHERE c1.wwfmtPsApprovalRootPK.companyId = :companyId AND c1.wwfmtPsApprovalRootPK.employeeId = :employeeId AND c1.employmentRootAtr = 2 AND c1.confirmationRootType = 1)";
-	 private static final String FIND_PART_HISTORY = FIN_BY_EMP
+	 private final String FIND_PART_HISTORY = FIN_BY_EMP
 			 + " AND ((c.employmentRootAtr = 0 AND (c.applicationType IS NULL)) OR (c.employmentRootAtr = 2 AND c.confirmationRootType = 1))"
 			 + " ORDER BY c.startDate DESC";
-	 private static final String SELECT_PS_APR_BY_STARTDATE = FIN_BY_EMP
+	 private final String SELECT_PS_APR_BY_STARTDATE = FIN_BY_EMP
 			 + " AND c.startDate = :startDate";
-	 private static final String FIND_BY_EMP_CONFIRM = FIN_BY_EMP
+	 private final String FIND_BY_EMP_CONFIRM = FIN_BY_EMP
 			 + " AND c.startDate <= :baseDate"
 			 + " AND c.endDate >= :baseDate"
 			 + " AND c.confirmationRootType = :confirmationRootType"

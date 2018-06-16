@@ -32,7 +32,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class JpaAppStampRepository extends JpaRepository implements AppStampRepository {
 	
-	private static final String FIND_BY_APP_ID = "SELECT a FROM KrqdtAppStamp a "
+	private final String FIND_BY_APP_ID = "SELECT a FROM KrqdtAppStamp a "
 			+ "WHERE a.krqdpAppStampPK.companyID = :companyID "
 			+ "AND a.krqdpAppStampPK.appID = :appID";
 	

@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.AttendanceItemConAdapterDto;
-import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.AgreementCheckCon36FunImport;
-import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.SpecHolidayCheckConFunImport;
-import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.checkremainnumber.CheckRemainNumberMonFunImport;
 
 @Getter
 @Setter
@@ -31,12 +30,6 @@ public class ExtraResultMonthlyDomainEventDto {
 	/**月次のチェック条件*/
 	private AttendanceItemConAdapterDto checkConMonthly;
 	
-	private SpecHolidayCheckConFunImport specHolidayCheckCon ;
-	
-	private CheckRemainNumberMonFunImport checkRemainNumberMon;
-	
-	private AgreementCheckCon36FunImport agreementCheckCon36;
-	
 	public ExtraResultMonthlyDomainEventDto(String errorAlarmCheckID, int sortBy, String nameAlarmExtraCon, boolean useAtr, int typeCheckItem, boolean messageBold, String messageColor, String displayMessage,
 			AttendanceItemConAdapterDto checkConMonthly) {
 		super();
@@ -50,25 +43,7 @@ public class ExtraResultMonthlyDomainEventDto {
 		this.displayMessage = displayMessage;
 		this.checkConMonthly = checkConMonthly;
 	}
-
-	public ExtraResultMonthlyDomainEventDto(String errorAlarmCheckID, int sortBy, String nameAlarmExtraCon, boolean useAtr, int typeCheckItem, boolean messageBold, String messageColor, String displayMessage,
-			AttendanceItemConAdapterDto checkConMonthly, SpecHolidayCheckConFunImport specHolidayCheckCon, CheckRemainNumberMonFunImport checkRemainNumberMon, AgreementCheckCon36FunImport agreementCheckCon36) {
-		super();
-		this.errorAlarmCheckID = errorAlarmCheckID;
-		this.sortBy = sortBy;
-		this.nameAlarmExtraCon = nameAlarmExtraCon;
-		this.useAtr = useAtr;
-		this.typeCheckItem = typeCheckItem;
-		this.messageBold = messageBold;
-		this.messageColor = messageColor;
-		this.displayMessage = displayMessage;
-		this.checkConMonthly = checkConMonthly;
-		this.specHolidayCheckCon = specHolidayCheckCon;
-		this.checkRemainNumberMon = checkRemainNumberMon;
-		this.agreementCheckCon36 = agreementCheckCon36;
-	}
 	
 	
 
-	
 }

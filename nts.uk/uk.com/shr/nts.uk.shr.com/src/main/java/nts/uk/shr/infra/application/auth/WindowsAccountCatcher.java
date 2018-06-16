@@ -12,7 +12,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.AppContextsConfig;
 
 /**
@@ -39,16 +38,7 @@ public class WindowsAccountCatcher implements Filter {
 			String account = principal.getName();
 			Optional<WindowsAccount> accOpt = getAccountInfo(account);
 			accOpt.ifPresent(AppContextsConfig::setWindowsAccount);
-			
-			// Only for debug
-			WindowsAccount ac = AppContexts.windowsAccount();
-			if (ac == null) {
-				AppContextsConfig.setWindowsAccount(new WindowsAccount(principal.getName(), null));
-			} else {
-				AppContextsConfig.setWindowsAccount(new WindowsAccount(ac.getDomain() + ";" + principal.getName(), ac.getUserName()));
-			}
 		}
-		
 		chain.doFilter(request, response);
 	}
 	

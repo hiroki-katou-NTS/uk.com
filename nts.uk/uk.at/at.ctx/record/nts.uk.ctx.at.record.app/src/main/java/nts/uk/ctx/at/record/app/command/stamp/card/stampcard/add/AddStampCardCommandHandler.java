@@ -42,7 +42,7 @@ public class AddStampCardCommandHandler extends CommandHandlerWithResult<AddStam
 			String contractCode = AppContexts.user().contractCode();
 			Optional<StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(command.getStampNumber(), contractCode);
 			if (stampCard.isPresent()) {
-				throw new BusinessException("Msg_346", command.getStampNumber());
+				throw new BusinessException("Msg_346");
 			}
 		}
 

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.function.dom.adapter.holidaysremaining;
 
+import java.math.BigDecimal;
 import java.util.List;
-
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -10,7 +10,7 @@ public interface AnnLeaveRemainingAdapter {
 	 * RequestList #No.363
 	 * @param employeeId
 	 * @param datePeriod
-	 * @return
+	 * @return hàm được sử dụng
 	 */
 	public List<AnnLeaveUsageStatusOfThisMonthImported> getAnnLeaveUsageOfThisMonth(String employeeId,
 			DatePeriod datePeriod);
@@ -26,7 +26,7 @@ public interface AnnLeaveRemainingAdapter {
 	 * RequestList #No.363
 	 * @param employeeId
 	 * @param datePeriod
-	 * @return
+	 * @return hàm được tìm thấy
 	 */
 	public NextHolidayGrantDateImported getNextHolidayGrantDate(String companyId, String employeeId);
 
@@ -36,7 +36,7 @@ public interface AnnLeaveRemainingAdapter {
 	 * @return 年休付与数 
 	 * RequestList281
 	 */
-	public List<AnnLeaGrantNumberImported> algorithm(String employeeId);
+	public BigDecimal algorithm(String employeeId);
 	
 	/**
 	 * 社員の月毎の確定済み年休を取得する

@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.LateLeaveEarlyManage;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.LateLeaveEarlyAtr;
 
 /**
  *  RequestListNo197
@@ -12,14 +14,14 @@ import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.LateLeav
  */
 @Getter
 public class DailyLateAndLeaveEarlyTimePubExport {
-	//Output list
-	List<LateLeaveEarlyManage> list;
-	
+	//年月日
+	Map<GeneralDate,List<LateLeaveEarlyAtr>> map;
+
 	/**
-	 * Constructor
-	 */
-	public DailyLateAndLeaveEarlyTimePubExport(List<LateLeaveEarlyManage> list) {
+	 *  Constructor
+	 */ 
+	public DailyLateAndLeaveEarlyTimePubExport(Map<GeneralDate, List<LateLeaveEarlyAtr>> map) {
 		super();
-		this.list = list;
+		this.map = map;
 	}
 }

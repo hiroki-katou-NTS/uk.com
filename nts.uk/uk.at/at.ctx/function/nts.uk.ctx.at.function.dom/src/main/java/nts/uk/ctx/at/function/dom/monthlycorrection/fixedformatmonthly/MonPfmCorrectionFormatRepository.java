@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface MonPfmCorrectionFormatRepository {
@@ -17,7 +16,5 @@ public interface MonPfmCorrectionFormatRepository {
 	void updateMonPfmCorrectionFormat (MonPfmCorrectionFormat monPfmCorrectionFormat);
 	
 	void deleteMonPfmCorrectionFormat (String companyID, String monthlyPfmFormatCode );
-	
-	void updateWidthMonthly(Map<Integer, Integer> lstHeader, List<String> formatCodes);
 	
 }

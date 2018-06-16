@@ -435,9 +435,9 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         /* 回数 */
         NUMBER = 2,
         /* 金額 */
-        AMOUNT = 4,
+        AMOUNT = 3,
         /* 日数 */
-        DAYS = 3,
+        DAYS = 4,
         /* マスタを参照する */
         REFER_TO_MASTER = 5
     }

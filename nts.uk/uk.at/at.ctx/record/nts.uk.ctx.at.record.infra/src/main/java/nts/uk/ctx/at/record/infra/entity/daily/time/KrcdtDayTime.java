@@ -2143,7 +2143,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				new StayingTimeOfDaily(new AttendanceTime(this.aftPcLogoffTime),
 						new AttendanceTime(this.bfrPcLogonTime), new AttendanceTime(this.bfrWorkTime),
 						new AttendanceTime(this.stayingTime), new AttendanceTime(this.aftLeaveTime)),
-				new AttendanceTimeOfExistMinus(this.budgetTimeVariance), new AttendanceTimeOfExistMinus(this.unemployedTime));
+				new AttendanceTime(this.budgetTimeVariance), new AttendanceTime(this.unemployedTime));
 		
 	}
 	

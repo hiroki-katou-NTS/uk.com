@@ -71,7 +71,7 @@ public class AppDataDateFinder {
 	@Inject
 	private ApplicationSettingRepository applicationSettingRepository;
 	
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID){
 		String companyID = AppContexts.user().companyId();

@@ -26,9 +26,9 @@ public class WithinStatutoryMidNightTime {
 	  * 所定内深夜時間の計算指示を出す
 	  * @return　所定内深夜時間
 	  */
-	 public static WithinStatutoryMidNightTime calcPredetermineMidNightTime(CalculationRangeOfOneDay oneDay) {
+	 public static WithinStatutoryMidNightTime calcPredetermineMidNightTime(CalculationRangeOfOneDay oneDay,AutoCalAtrOvertime autoCalcSet) {
 		 if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
-			val calcTime = oneDay.getWithinWorkingTimeSheet().get().calcMidNightTime();
+			val calcTime = oneDay.getWithinWorkingTimeSheet().get().calcMidNightTime(autoCalcSet);
 			return new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));
 		 }
 		 else {

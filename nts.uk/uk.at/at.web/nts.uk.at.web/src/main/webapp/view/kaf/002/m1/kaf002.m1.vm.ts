@@ -2,7 +2,6 @@ module nts.uk.at.view.kaf002.m1 {
     import service = nts.uk.at.view.kaf002.shr.service;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
     import setShared = nts.uk.ui.windows.setShared;
-    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export module viewmodel {
         export class ScreenModel {
             stampAtr: KnockoutObservable<number> = ko.observable(1);
@@ -131,10 +130,16 @@ module nts.uk.at.view.kaf002.m1 {
                     .done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
-                                appcommon.CommonProcess.displayMailResult(data);    
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    location.reload();
+                                });    
                             } else {
                                 if(checkBoxValue){
-                                    appcommon.CommonProcess.openDialogKDL030(data.appID);   
+                                    let command = {appID: data.appID};
+                                    setShared("KDL030_PARAM", command);
+                                    nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                        location.reload();
+                                    });    
                                 } else {
                                     location.reload();
                                 }   
@@ -174,7 +179,9 @@ module nts.uk.at.view.kaf002.m1 {
                     .done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
-                                appcommon.CommonProcess.displayMailResult(data);    
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    location.reload();
+                                });    
                             } else {
                                 location.reload();
                             }

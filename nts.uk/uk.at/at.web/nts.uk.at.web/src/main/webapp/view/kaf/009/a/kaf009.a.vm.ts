@@ -291,10 +291,16 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             service.insertGoBackDirect(self.getCommand()).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
-                        appcommon.CommonProcess.displayMailResult(data);     
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                            location.reload();
+                        });    
                     } else {
                         if(self.checkBoxValue()){
-                            appcommon.CommonProcess.openDialogKDL030(data.appID);    
+                            let command = {appID: data.appID};
+                            setShared("KDL030_PARAM", command);
+                            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                location.reload();
+                            });    
                         } else {
                             location.reload();
                         }   

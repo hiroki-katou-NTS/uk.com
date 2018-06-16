@@ -15,13 +15,7 @@ module nts.uk.at.view.kal003.a.service {
         getJobNamesByIds: "bs/employee/jobtitle/getNamesByIds",
         getBusTypeNamesByCodes: "at/record/worktypeselection/getNamesByCodes",
           //monthly
-        getAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly",
-        
-        getName: "at/function/alarm/checkcondition/agree36/findName"
-    }
-        
-    export function getName(): JQueryPromise<Array<any>>{
-        return ajax("at", paths.getName);
+        getAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly"
     }
 
     export function getAllData(category: number): JQueryPromise<any> {

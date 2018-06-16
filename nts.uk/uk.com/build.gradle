@@ -324,7 +324,6 @@ project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ws') {
 project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
-		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 

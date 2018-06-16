@@ -99,12 +99,6 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				return null;
 			// 社員に対応する締め期間を取得する
 			DatePeriod datePeriod = checkShortageFlex.findClosurePeriod(employeeId, startDate.get());
-			
-			// If closuedate is null
-			if (datePeriod == null){
-				return null;
-			}
-			
 			// 期間中の年休残数を取得
 			Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
 					datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),

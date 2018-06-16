@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.app.command.workrecord.log;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -16,13 +14,12 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ProcessFlo
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@Transactional
 public class CheckProcessCommandHandler extends AsyncCommandHandler<CheckProcessCommand> {
 		
 	@Inject
 	private ProcessFlowOfDailyCreationDomainService processFlowOfDailyCreationDomainService;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	protected void handle(CommandHandlerContext<CheckProcessCommand> context) {
 		val asyncContext = context.asAsync();

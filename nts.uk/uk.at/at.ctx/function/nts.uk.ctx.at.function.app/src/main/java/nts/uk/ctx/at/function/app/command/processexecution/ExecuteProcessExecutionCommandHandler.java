@@ -356,11 +356,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// ドメインモデル「更新処理自動実行管理」を更新する
 		if (!this.isAbnormalTermEachTask(procExecLog) && (processExecutionLogManage.getOverallStatus() == null
 				|| !processExecutionLogManage.getOverallStatus().isPresent())) {
+			processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
 			processExecutionLogManage.setOverallStatus(EndStatus.SUCCESS);
-		} else if(this.isAbnormalTermEachTask(procExecLog)) {
+		} else {
+			processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
 			processExecutionLogManage.setOverallStatus(EndStatus.ABNORMAL_END);
 		}
-		processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
 		this.processExecLogManaRepo.update(processExecutionLogManage);
 
 		List<ExecutionTaskLog> taskLogList = this.execTaskLogRepo.getAllByCidExecCdExecId(companyId, execItemCd,
@@ -415,7 +416,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if (execSetting != null) {
 			//execSetting.setNextExecDateTime();
 			String scheduleId = execSetting.getScheduleId();
-			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
+			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
 			execSetting.setNextExecDateTime(nextFireTime);
 			this.execSettingRepo.update(execSetting);
 		}

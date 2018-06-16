@@ -29,16 +29,4 @@ public class AbsRecRemainMngOfInPeriod {
 	 * 未消化日数
 	 */
 	private double unDigestedDays;
-	/**
-	 * 発生日数
-	 */
-	private double occurrenceDays;
-	/**
-	 * 使用日数
-	 */
-	private double useDays;
-	/**
-	 * 繰越日数
-	 */
-	private double carryForwardDays;
 }

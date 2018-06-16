@@ -3617,24 +3617,13 @@ module nts.uk.ui.jqueryExtentions {
                 grid: JQuery;
                 rowId: any;
                 columnKey: string;
-                columnName: string;
                 message: string;
                 
                 constructor(grid: JQuery, rowId: any, columnKey: any, message: string) {
                     this.grid = grid;
                     this.rowId = rowId;
                     this.columnKey = columnKey;
-                    this.message = message;
-                    this.setColumnName();   
-                }
-                
-                setColumnName() {
-                    let allCols = utils.getColumns(this.grid);
-                    if (!allCols) return;
-                    let col = allCols.filter(c => c.key === this.columnKey);
-                    if (col.length > 0) {
-                        this.columnName = col[0].headerText;
-                    }
+                    this.message = message;   
                 }
                 
                 equals(err: GridCellError) {
@@ -3690,10 +3679,7 @@ module nts.uk.ui.jqueryExtentions {
                 let $cell = $(cell.element);
                 decorate($cell);
                 let errorDetails = createErrorInfos($grid, cell, message);
-                let setting = $grid.data(internal.SETTINGS);
-                if (setting.errorsOnPage) {
-                    ui.errors.addCell(errorDetails);
-                }
+//                ui.errors.addCell(errorDetails);
                 addCellError($grid, errorDetails);
                 addErrorInSheet($grid, cell);
             }
@@ -3703,15 +3689,8 @@ module nts.uk.ui.jqueryExtentions {
                 let setting: any = $grid.data(internal.SETTINGS);
                 let error: any = new GridCellError($grid, cell.id, cell.columnKey, message);
                 // Error column headers
-                let headers;
-                if (setting.errorsOnPage) {
-                    let columns = ko.toJS(ui.errors.errorsViewModel().option().headers());
-                    if (columns) {
-                        headers = columns.filter(c => c.visible).map(c => c.name); 
-                    }
-                } else { 
-                    headers = setting.errorColumns;
-                }
+//                let headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
+                let headers = setting.errorColumns;
                 _.forEach(headers, function(header: any) {
                     if (util.isNullOrUndefined(record[header]) 
                         || !util.isNullOrUndefined(error[header])) return;
@@ -3727,10 +3706,7 @@ module nts.uk.ui.jqueryExtentions {
                 $cell.css(NO_ERROR_STL);
                 let $editor = $cell.find(EDITOR_SELECTOR);
                 if ($editor.length > 0) $editor.css(NO_ERROR_STL);
-                let setting = $grid.data(internal.SETTINGS);
-                if (setting.errorsOnPage) {
-                    ui.errors.removeCell($grid, cell.id, cell.columnKey);
-                }
+//                ui.errors.removeCell($grid, cell.id, cell.columnKey);
                 removeCellError($grid, cell.id, cell.columnKey);
                 removeErrorFromSheet($grid, cell);
             }
@@ -4921,7 +4897,6 @@ module nts.uk.ui.jqueryExtentions {
                 data.preventEditInError = options.preventEditInError;
                 data.dataSourceAdapter = options.dataSourceAdapter;
                 data.errorColumns = options.errorColumns;
-                data.errorsOnPage = options.showErrorsOnPage;
                 if (!$grid.data(internal.SETTINGS)) {
                     $grid.data(internal.SETTINGS, data);
                 } else {

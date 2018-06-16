@@ -23,15 +23,15 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprova
 @Stateless
 public class JpaApprovalPhaseRepository extends JpaRepository implements ApprovalPhaseRepository{
 	
-	private static final String SELECT_FROM_APPHASE = "SELECT c FROM WwfmtApprovalPhase c"
+	private final String SELECT_FROM_APPHASE = "SELECT c FROM WwfmtApprovalPhase c"
 			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
-	private static final String SELECT_APPHASE = SELECT_FROM_APPHASE
+	private final String SELECT_APPHASE = SELECT_FROM_APPHASE
 			+ " AND c.wwfmtApprovalPhasePK.approvalPhaseId = :approvalPhaseId";
 	private static final String DELETE_APHASE_BY_BRANCHID = "DELETE from WwfmtApprovalPhase c "
 			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
-	private static final String SELECT_FIRST_APPHASE = SELECT_FROM_APPHASE
+	private final String SELECT_FIRST_APPHASE = SELECT_FROM_APPHASE
 			+ " AND c.displayOrder = 1";
 
 	/**

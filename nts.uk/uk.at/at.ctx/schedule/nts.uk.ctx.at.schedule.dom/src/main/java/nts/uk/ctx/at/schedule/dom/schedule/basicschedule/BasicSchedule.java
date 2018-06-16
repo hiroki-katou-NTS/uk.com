@@ -107,8 +107,6 @@ public class BasicSchedule extends AggregateRoot {
 		this.workTimeCode = workTimeCode;
 		this.confirmedAtr = confirmedAtr;
 	}
-	
-	
 
 	/**
 	 * Creates the from java type.
@@ -234,11 +232,5 @@ public class BasicSchedule extends AggregateRoot {
 	
 	public void setWorkScheduleMaster(ScheMasterInfo scheduleMaster) {
 		this.workScheduleMaster = scheduleMaster;
-	}
-
-	public BasicSchedule(String workTypeCode, ScheMasterInfo workScheduleMaster) {
-		super();
-		this.workTypeCode = workTypeCode;
-		this.workScheduleMaster = workScheduleMaster;
 	}
 }

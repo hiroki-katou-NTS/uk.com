@@ -258,14 +258,21 @@ public class TotalTimesFromDailyRecord {
 				}
 
 				// 回数を取得
-				double count = 1.0;
-				switch (workType.getAttendanceHolidayAttr()){
-				case MORNING:
-				case AFTERNOON:
-					count += 0.5;
-					break;
-				default:
-					break;
+				double count = 0.0;
+				if (workType.isOneDay()){
+					// 1日出勤系なら、1.0日を加算
+					if (workType.isAttendanceOrShootingOrHolidayWork(workType.getDailyWork().getOneDay())){
+						count += 1.0;
+					}
+				}
+				else {
+					// 午前出勤系・午後出勤系なら、それぞれ0.5日を加算
+					if (workType.isAttendanceOrShootingOrHolidayWork(workType.getDailyWork().getMorning())){
+						count += 0.5;
+					}
+					if (workType.isAttendanceOrShootingOrHolidayWork(workType.getDailyWork().getAfternoon())){
+						count += 0.5;
+					}
 				}
 				switch (totalTimes.getCountAtr()){
 				case ONEDAY:

@@ -8,8 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -35,7 +33,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowOfDailyCreationDomainService{
 	
@@ -62,7 +59,6 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public <C> void processFlowOfDailyCreation(AsyncCommandHandlerContext<C> asyncContext, ExecutionAttr executionAttr, DatePeriod periodTime,
 			String empCalAndSumExecLogID) {

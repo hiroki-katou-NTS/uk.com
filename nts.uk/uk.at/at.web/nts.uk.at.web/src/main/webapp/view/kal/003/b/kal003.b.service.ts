@@ -12,8 +12,6 @@ module nts.uk.at.view.kal003.b.service {
             getAttendanceItemByCodes:       "at/record/divergencetime/AttendanceDivergenceName",
             findWorkTypeByCodes:            "at/share/worktype/findNotDeprecatedByListCode",
             getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
-            getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/",
-            
 
             getEnumSingleValueCompareTypse: "/at/function/alarm/checkcondition/kal003b/getEnumSingleValueCompareTypse",
             getEnumRangeCompareType:        "/at/function/alarm/checkcondition/kal003b/getEnumRangeCompareType",
@@ -21,13 +19,6 @@ module nts.uk.at.view.kal003.b.service {
             getEnumTargetSelectionRange:    "/at/function/alarm/checkcondition/kal003b/getEnumTargetSelectionRange",
             getEnumTargetServiceType:       "/at/function/alarm/checkcondition/kal003b/getEnumTargetServiceType",
             getEnumLogicalOperator:         "/at/function/alarm/checkcondition/kal003b/getEnumLogicalOperator",
-            //monthly
-            getAttdItemMonByAtr:         "at/record/attendanceitem/monthly/findbyatr/{0}",
-            getSpecialholidayframe : "at/share/worktype/specialholidayframe/findspecbyabolish",
-            
-            getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
-            getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
-            getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/"
 
     }
 
@@ -99,34 +90,5 @@ module nts.uk.at.view.kal003.b.service {
     }
     export function getEnumLogicalOperator() : JQueryPromise<any> {
         return req_ajax(paths.getEnumLogicalOperator);
-    }
-    //monthly
-     export function getAttdItemMonByAtr(atr:number) : JQueryPromise<any>  {
-        return nts.uk.request.ajax("at", paths.getAttdItemMonByAtr,atr);
-    }
-    
-    export function getSpecialholidayframe() : JQueryPromise<any>  {
-        return nts.uk.request.ajax("at", paths.getSpecialholidayframe);
-    }
-    
-     export function getAttendanceItemByCodesNew(codes, mode) {
-        if (mode == 1) //monthly
-            return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByCodes, codes);
-        else
-            return nts.uk.request.ajax("at", paths.getAttendanceItemByCodes, codes);
-    }
-
-    export function getAttendanceItemByAtrNew(atr, mode) {
-        if (mode == 1) //monthly
-            return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByAtr + atr);
-        else //daily
-            return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
-    }
-
-    export function getOptItemByAtrNew(atr, mode) {
-        if (mode == 1) //monthly
-            return nts.uk.request.ajax("at", paths.getMonthlyOptItemByAtr + atr);
-        else //daily
-            return nts.uk.request.ajax("at", paths.getOptItemByAtr + atr);
     }
 }

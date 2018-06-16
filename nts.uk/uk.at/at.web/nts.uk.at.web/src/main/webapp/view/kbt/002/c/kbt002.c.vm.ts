@@ -328,7 +328,7 @@ module nts.uk.at.view.kbt002.c {
             oneDayRepCls:        KnockoutObservable<number> = ko.observable(null);
             oneDayRepInterval:   KnockoutObservable<number> = ko.observable(null);
             repeatCls:           KnockoutObservable<boolean> = ko.observable(false);
-            repeatContent:       KnockoutObservable<number> = ko.observable(0);
+            repeatContent:       KnockoutObservable<number> = ko.observable(null);
             endDateCls:          KnockoutObservable<number> = ko.observable(null);
             endDate:             KnockoutObservable<string> = ko.observable('');
             enabledSetting:      KnockoutObservable<boolean> = ko.observable(false);
@@ -374,7 +374,7 @@ module nts.uk.at.view.kbt002.c {
                     self.oneDayRepCls(param.oneDayRepCls);
                     self.oneDayRepInterval(param.oneDayRepInterval || 0);
                     self.repeatCls(param.repeatCls || false);
-                    self.repeatContent(param.repeatContent || 0);
+                    self.repeatContent(param.repeatContent);
                     self.endDateCls(param.endDateCls);
                     self.endDate(param.endDate || curDate);
                     self.enabledSetting(param.enabledSetting || false);
@@ -433,11 +433,6 @@ module nts.uk.at.view.kbt002.c {
                     self.december(false);
                     self.repeatMonthDateList([]);
                 }
-            //fixed release 14/6
-            self.endTimeCls(0);
-            self.endDateCls(0);
-            self.oneDayRepInterval(0);
-            self.oneDayRepCls(0);
             }
         }
         export class ItemModel {

@@ -4,7 +4,7 @@ module nts.custom.component {
         template: `
         <div class="form-group">
             <div data-bind="ntsFormLabel: {text: text('CPS001_35')}"></div>
-            <div data-bind="ntsDatePicker: { name: text('CPS001_35'), value: standardDate, dateFormat: 'YYYY/MM/DD'}"></div>
+            <div data-bind="ntsDatePicker: { value: standardDate, dateFormat: 'YYYY/MM/DD'}"></div>
             <button data-bind="click: function() { id.valueHasMutated() }, text: text('CPS001_37')"></button>
         </div>`,
         viewModel: function(params: any) {

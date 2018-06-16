@@ -39,14 +39,5 @@ public class WorkTimeHolidayCalcMethod extends DomainObject{
 		this.calculateActualOperation = CalcurationByActualTimeAtr.valueOf(calculateActualOperation);
 		this.advancedSet = Optional.ofNullable(advancedSet);
 	}
-
-	public WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr calculateActualOperation,
-			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet) {
-		super();
-		this.calculateActualOperation = calculateActualOperation;
-		this.advancedSet = advancedSet;
-	}
-	
-	
 }
 

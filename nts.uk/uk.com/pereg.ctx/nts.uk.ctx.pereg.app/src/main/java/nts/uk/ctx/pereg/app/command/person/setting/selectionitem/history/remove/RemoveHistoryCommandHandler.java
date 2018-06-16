@@ -24,14 +24,11 @@ public class RemoveHistoryCommandHandler extends CommandHandler<RemoveHistoryCom
 	@Override
 	protected void handle(CommandHandlerContext<RemoveHistoryCommand> context) {
 		RemoveHistoryCommand command = context.getCommand();
-
+		
 		String selectionItemId = command.getSelectionItemId();
 		String historyId = command.getHistId();
-
-		String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
-		String companyId = roleId != null ? AppContexts.user().zeroCompanyIdInContract()
-				: AppContexts.user().companyId();
-
+		String companyId = AppContexts.user().companyId();
+		
 		selectionHistoryService.deleteSelectionHistory(selectionItemId, companyId, historyId);
 
 	}

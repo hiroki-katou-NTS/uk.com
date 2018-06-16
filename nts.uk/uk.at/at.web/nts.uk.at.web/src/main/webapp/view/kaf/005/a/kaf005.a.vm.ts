@@ -358,7 +358,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.workTypeChangeFlg(data.workTypeChangeFlg);
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
-            self.convertAppOvertimeReferDto(data);
             // 休憩時間
             for (let i = 1; i < 11; i++) {
                 self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i, null, null, null,""));
@@ -614,10 +613,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             service.createOvertime(overtime).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
-                        appcommon.CommonProcess.displayMailResult(data);  
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                            location.reload();
+                        });    
                     } else {
                         if(self.checkBoxValue()){
-                            appcommon.CommonProcess.openDialogKDL030(data.appID);  
+                            let command = {appID: data.appID};
+                            setShared("KDL030_PARAM", command);
+                            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                location.reload();
+                            });    
                         } else {
                             location.reload();
                         }   

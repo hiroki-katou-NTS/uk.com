@@ -15,10 +15,7 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatFinder;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceFormatDto;
-import nts.uk.screen.at.app.monthlyperformance.correction.MPUpdateColWidthCommand;
-import nts.uk.screen.at.app.monthlyperformance.correction.MPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.monthlyperformance.correction.MonthlyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.MonthlyPerformanceReload;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
@@ -47,9 +44,6 @@ public class MonthlyPerformanceCorrectionWebService {
 	@Inject
 	private MonthModifyCommandFacade monthModifyCommandFacade;
 	
-	@Inject
-	private MPUpdateColWidthCommandHandler commandHandler;
-	
 	@POST
 	@Path("startScreen")
 	public MonthlyPerformanceCorrectionDto startScreen(MonthlyPerformanceParam param) throws InterruptedException {
@@ -75,13 +69,6 @@ public class MonthlyPerformanceCorrectionWebService {
 				.collect(Collectors.toList());
 //		return null;
 	}
-	
-	@POST
-	@Path("updatecolumnwidth")
-	public void getError(MPUpdateColWidthCommand command){
-		this.commandHandler.handle(command);
-	}
-	
 	@POST
 	@Path("addAndUpdate")
 	public Map<Integer, List<MPItemParent>> addAndUpdate(MPItemParent dataParent) {

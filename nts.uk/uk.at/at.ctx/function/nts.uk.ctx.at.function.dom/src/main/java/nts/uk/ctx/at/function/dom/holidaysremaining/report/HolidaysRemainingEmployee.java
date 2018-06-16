@@ -6,22 +6,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class HolidaysRemainingEmployee {
-	private String employeeId;
-	private String employeeCode;
-	private String employeeName;
-	private String workplaceCode;
-	private String workplaceName;
-	private String employmentName;
-	private String jobTitle;
-	public HolidaysRemainingEmployee(String employeeId, String employeeCode, String employeeName, String workplaceCode,
-			String workplaceName, String employmentName, String jobTitle) {
+	public HolidaysRemainingEmployee(String employeeCode, String employeeId, String employeeName, String workplaceCode,
+			String workplaceId, String workplaceName) {
 		super();
-		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
+		this.employeeId = employeeId;
 		this.employeeName = employeeName;
 		this.workplaceCode = workplaceCode;
+		this.workplaceId = workplaceId;
 		this.workplaceName = workplaceName;
-		this.employmentName = employmentName;
-		this.jobTitle = jobTitle;
 	}
+	private String employeeCode;
+	private String employeeId;
+	private String employeeName;
+	private String workplaceCode;
+	private String workplaceId;
+	private String workplaceName;
 }
