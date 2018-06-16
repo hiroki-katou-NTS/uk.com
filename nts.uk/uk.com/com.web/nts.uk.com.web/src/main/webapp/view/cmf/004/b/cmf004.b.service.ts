@@ -20,4 +20,5 @@ module nts.uk.com.view.cmf004.b.service {
         let _path = format(paths.findTableList, dataRecoveryProcessId);
         return ajax('com', _path);
     }
+    
 }

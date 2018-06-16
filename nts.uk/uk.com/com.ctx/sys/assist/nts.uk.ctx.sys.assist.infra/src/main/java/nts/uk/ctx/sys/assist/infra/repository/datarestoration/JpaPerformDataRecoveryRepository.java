@@ -40,7 +40,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	private static final String SELECT_ALL_TABLE_LIST_QUERY_STRING = "SELECT f FROM SspmtTableList f";
 	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId";
 	private static final String SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID  = "SELECT t FROM SspmtTarget t WHERE t.targetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
-    private static final String SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID  = "SELECT st FROM SspmtRestorationTarget st WHERE st.restorationTargetPk.dataRecoveryProcessId:dataRecoveryProcessId";
+    private static final String SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID  = "SELECT st FROM SspmtRestorationTarget st WHERE st.restorationTargetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
 
 	@Override
     public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {

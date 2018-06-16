@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -23,7 +24,7 @@ public class ScreenItemDto {
 	/**
 	 * 保存処理ID
 	 */
-	private Optional<String> saveProcessId;
+	private String saveProcessId;
 
 	/**
 	 * アップロードファイルID
@@ -54,11 +55,18 @@ public class ScreenItemDto {
 	 * 別会社復旧
 	 */
 	private int recoverFromAnoCom;
+	
+	/**
+	 * 会社ID
+	 */
+	private List<TargetItemDto> targets;
 
 	public static ScreenItemDto fromDomain(PerformDataRecovery domain) {
-		return new ScreenItemDto(domain.getDataRecoveryProcessId(), domain.getCid(), domain.getSaveProcessId(),
+		return new ScreenItemDto(domain.getDataRecoveryProcessId(), domain.getCid(), domain.getSaveProcessId().orElse(null),
 				domain.getUploadfileId(), domain.getRecoveryFileName(), domain.getNumPeopleBeRestore(),
-				domain.getNumPeopleSave(), domain.getRecoveryMethod().value, domain.getRecoverFromAnoCom().value);
+				domain.getNumPeopleSave(), domain.getRecoveryMethod().value, domain.getRecoverFromAnoCom().value, domain.getTargets().stream().map(x -> {
+					return TargetItemDto.convertToDto(x);
+				}).collect(Collectors.toList()));
 	}
 
 }
