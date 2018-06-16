@@ -35,7 +35,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'コード', dataType: 'string', key: 'payoutId', width: 100, hidden: true },
                 { headerText: getText("KDM001_95"), key: 'dayoffDate', width: 110 },
-                { headerText: getText("KDM001_96"), key: 'occurredDays', formatter:model.formatterDay, width: 100 },
+                { headerText: getText("KDM001_96"), key: 'unUsedDays', formatter:model.formatterDay, width: 100 },
             ]);
             self.initScreen();
 
@@ -64,7 +64,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                 if (self.dateHoliday() === x.dayoffDate) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_766" });
                 } else {
-                    sumNum = sumNum + x.occurredDays;
+                    sumNum = sumNum + x.unUsedDays;
                     residualValue = (sumNum - day);
                     self.residualDay(residualValue);
                     self.residualDayDisplay(model.formatterDay(residualValue));
@@ -84,7 +84,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel>) => {
                 if (data && data.length > 0) {
                     _.forEach(data, function(item) {
-                        self.items.push(new ItemModel(item.payoutId, item.dayoffDate,item.occurredDays));
+                        self.items.push(new ItemModel(item.payoutId, item.dayoffDate,item.unUsedDays));
                         if (item.linked){
                             self.currentCodeList.push(item.payoutId);
                         }
@@ -92,7 +92,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                     let sortData = _.sortBy(self.items(), o => o.dayoffDate,'asc');
                     self.items(sortData);
                     _.forEach(self.items(), function(item: ItemModel) {
-                        if(parseFloat(item.occurredDays) > parseFloat(self.info.rowValue.requiredDays)) {
+                        if(parseFloat(item.unUsedDays) > parseFloat(self.info.rowValue.requiredDays)) {
                             self.disables.push(item.payoutId);    
                         }    
                     })
@@ -139,15 +139,15 @@ module nts.uk.at.view.kdm001.f.viewmodel {
             } else if (self.currentCodeList().length >= 3) {
                 $('#multi-list').ntsError('set', { messageId: "Msg_743" });
                 return false;
-            } else if (self.currentCodeList().length == 1 && self.currentList()[0].occurredDays !== parseFloat(self.numberDay())) {
+            } else if (self.currentCodeList().length == 1 && self.currentList()[0].unUsedDays > parseFloat(self.numberDay())) {
                 $('#multi-list').ntsError('set', { messageId: "Msg_732" });
                 return false;
             } else if (self.currentCodeList().length == 2) {
-                if (self.currentList()[0].occurredDays === 1) {
+                if (self.currentList()[0].unUsedDays === 1) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_743" });
                     return false;
                 }
-                if (parseFloat(self.numberDay()) !== (self.currentList()[0].occurredDays + self.currentList()[1].occurredDays)) {
+                if (parseFloat(self.numberDay()) !== (self.currentList()[0].unUsedDays + self.currentList()[1].unUsedDays)) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_732" });
                     return false;
                 }
@@ -166,11 +166,11 @@ module nts.uk.at.view.kdm001.f.viewmodel {
     class ItemModel {
         payoutId: string;
         dayoffDate: string;
-        occurredDays: string;
-        constructor(code: string, date: string, occurredDays: string) {
+        unUsedDays: string;
+        constructor(code: string, date: string, unUsedDays: string) {
             this.payoutId = code;
             this.dayoffDate = date;
-            this.occurredDays = occurredDays;
+            this.unUsedDays = unUsedDays;
         }
     }
 

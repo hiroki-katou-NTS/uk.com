@@ -266,14 +266,14 @@ public class PayoutManagementDataService {
 			// Update remain days 振出管理データ
 			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
 			if (payoutMan.isPresent()) {
-				payoutMan.get().setRemainNumber(item.getUsedDays().v().doubleValue());
+				payoutMan.get().setRemainNumberToFree(item.getUsedDays().v());
 				payoutMan.get().setStateAtr(DigestionAtr.UNUSED.value);
 				payoutManagementDataRepository.update(payoutMan.get());
 			}
 		});
 		subOfHDId.forEach(i -> {
 			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(i.getPayoutId(), subId,
-					i.getOccurredDays(), TargetSelectionAtr.MANUAL.value));
+					i.getUnUsedDays(), TargetSelectionAtr.MANUAL.value));
 			// Update remain days 振出管理データ
 			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(i.getPayoutId());
 			if (payoutMan.isPresent()) {
