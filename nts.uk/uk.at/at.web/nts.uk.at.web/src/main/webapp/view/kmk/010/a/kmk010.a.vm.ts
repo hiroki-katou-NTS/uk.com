@@ -415,7 +415,7 @@ module nts.uk.at.view.kmk010.a {
                 this.productNumber(dto.productNumber);
                 self.attendanceItemIds(dto.attendanceItemIds);
                 if (isUpdate && self.attendanceItemIds() && self.attendanceItemIds().length > 0) {
-                    nts.uk.at.view.kmk010.a.service.findAllMonthlyAttendanceItem().done(function(data) {
+                    nts.uk.at.view.kmk010.a.service.findAllDailyAttendanceItem().done(function(data) {
                         var selectedName: string[] = [];
                         for (var item of data) {
                             for (var id of self.attendanceItemIds()) {
@@ -447,11 +447,9 @@ module nts.uk.at.view.kmk010.a {
              */
             public openDialogDailyAttendanceItems(): void {
                 var self = this;
-                nts.uk.at.view.kmk010.a.service.findAllMonthlyAttendanceItem().done(function(dataAllItem){
+                nts.uk.at.view.kmk010.a.service.findAllDailyAttendanceItem().done(function(dataAllItem){
                     // Map to model
-                    nts.uk.at.view.kmk010.a.service.findAllAttendanceItemOvertime().done(function(dataCanSelecte: any) {
-                        dataCanSelecte = _.filter(dataCanSelecte, function(o: any) { return o.attendanceItemType == 2; }); // 時間外超過
-                        dataCanSelecte = dataCanSelecte.map(o => o.attendanceItemId);
+                    nts.uk.at.view.kmk010.a.service.findAllAttendanceItemOvertime().done(function(dataCanSelecte) {
                         nts.uk.ui.windows.setShared('AllAttendanceObj', dataCanSelecte);
                         nts.uk.ui.windows.setShared('SelectedAttendanceId', self.attendanceItemIds());
                         nts.uk.ui.windows.setShared('Multiple', true);

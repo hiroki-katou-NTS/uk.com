@@ -30,12 +30,12 @@ public class MonthlyDayoffRemainFinder implements MonthlyDayoffRemainAdapter {
 	public List<StatusHolidayImported> lstDayoffCurrentMonthOfEmployee(String employeeId, YearMonth startMonth,
 			YearMonth endMonth) {
 		// 259
-		List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonth = monthlyDayoffRemainExport
-				.lstDayoffCurrentMonthOfEmployee(employeeId, startMonth, endMonth);
+//		List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonth = monthlyDayoffRemainExport
+//				.lstDayoffCurrentMonthOfEmployee(employeeId, startMonth, endMonth);
 		// TODO 259 Fail
-//		DayoffCurrentMonthOfEmployee itemImported = new DayoffCurrentMonthOfEmployee(AppContexts.user().employeeId(), GeneralDate.today().yearMonth().addMonths(-1), 0d, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0);
-//		List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonth = new ArrayList<>();
-//		lstDayoffCurrentMonth.add(itemImported);		
+		DayoffCurrentMonthOfEmployee itemImported = new DayoffCurrentMonthOfEmployee(AppContexts.user().employeeId(), GeneralDate.today().yearMonth().addMonths(-1), 0d, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0);
+		List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonth = new ArrayList<>();
+		lstDayoffCurrentMonth.add(itemImported);		
 		
 		if (lstDayoffCurrentMonth == null)
 			return null;
@@ -53,14 +53,14 @@ public class MonthlyDayoffRemainFinder implements MonthlyDayoffRemainAdapter {
 	public List<CurrentHolidayImported> getInterimRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
 		// 269
-		List<InterimRemainAggregateOutputData> lstInterimRemainAggregate = breakDayOffManagementQuery
-				.getInterimRemainAggregate(employeeId, baseDate, startMonth, endMonth);
+//		List<InterimRemainAggregateOutputData> lstInterimRemainAggregate = breakDayOffManagementQuery
+//				.getInterimRemainAggregate(employeeId, baseDate, startMonth, endMonth);
 		
 		// TODO 269 Fail
-//		InterimRemainAggregateOutputData itemImported = new InterimRemainAggregateOutputData(
-//				GeneralDate.today().yearMonth().addMonths(1), 0d, 0d, 0d, 0d, 0d);
-//		List<InterimRemainAggregateOutputData> lstInterimRemainAggregate = new ArrayList<>();
-//		lstInterimRemainAggregate.add(itemImported);
+		InterimRemainAggregateOutputData itemImported = new InterimRemainAggregateOutputData(
+				GeneralDate.today().yearMonth().addMonths(1), 0d, 0d, 0d, 0d, 0d);
+		List<InterimRemainAggregateOutputData> lstInterimRemainAggregate = new ArrayList<>();
+		lstInterimRemainAggregate.add(itemImported);
 		
 		if (lstInterimRemainAggregate == null)
 			return null;

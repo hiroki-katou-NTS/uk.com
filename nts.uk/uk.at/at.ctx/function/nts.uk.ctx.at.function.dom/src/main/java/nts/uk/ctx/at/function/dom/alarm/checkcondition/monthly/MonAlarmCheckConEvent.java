@@ -23,17 +23,14 @@ public class MonAlarmCheckConEvent extends DomainEvent {
 	private boolean checkDelete;
 	
 	private List<ExtraResultMonthlyDomainEventDto> listExtraResultMonthly = new ArrayList<>();
-	
-	private List<String> listEralCheckIDOld = new ArrayList<>();
 
-	public MonAlarmCheckConEvent(String monAlarmCheckConID, boolean checkUpdate, boolean checkAdd, boolean checkDelete, List<ExtraResultMonthlyDomainEventDto> listExtraResultMonthly, List<String> listEralCheckIDOld) {
+	public MonAlarmCheckConEvent(String monAlarmCheckConID, boolean checkUpdate, boolean checkAdd, boolean checkDelete, List<ExtraResultMonthlyDomainEventDto> listExtraResultMonthly) {
 		super();
 		this.monAlarmCheckConID = monAlarmCheckConID;
 		this.checkUpdate = checkUpdate;
 		this.checkAdd = checkAdd;
 		this.checkDelete = checkDelete;
 		this.listExtraResultMonthly = listExtraResultMonthly;
-		this.listEralCheckIDOld = listEralCheckIDOld;
 	}
 
 }

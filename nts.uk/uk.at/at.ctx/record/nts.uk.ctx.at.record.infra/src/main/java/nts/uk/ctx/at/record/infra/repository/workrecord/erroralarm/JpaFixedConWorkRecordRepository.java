@@ -14,15 +14,15 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcmtFixedConditi
 @Stateless
 public class JpaFixedConWorkRecordRepository extends JpaRepository implements  FixedConditionWorkRecordRepository {
 
-	private static final String SELECT_FROM_FIXED_CON = " SELECT c FROM KrcmtFixedConditionWorkRecord c ";
+	private final String SELECT_FROM_FIXED_CON = " SELECT c FROM KrcmtFixedConditionWorkRecord c ";
 	
-	private static final String SELECT_FIXED_CON_BY_ALARM_ID =SELECT_FROM_FIXED_CON 
+	private final String SELECT_FIXED_CON_BY_ALARM_ID =SELECT_FROM_FIXED_CON 
 			+ " WHERE c.krcmtFixedConditionWorkRecordPK.dailyAlarmConID = :dailyAlarmConID ";
 	
-	private static final String SELECT_FIXED_CON_BY_CODE =SELECT_FIXED_CON_BY_ALARM_ID 
+	private final String SELECT_FIXED_CON_BY_CODE =SELECT_FIXED_CON_BY_ALARM_ID 
 			+ " AND c.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo = :fixConWorkRecordNo ";
 	
-	private static final String DELETE_FIXED_CON_BY_DAILY_ID =  "DELETE FROM KrcmtFixedConditionWorkRecord c "
+	private final String DELETE_FIXED_CON_BY_DAILY_ID =  "DELETE FROM KrcmtFixedConditionWorkRecord c "
 			+ " WHERE c.krcmtFixedConditionWorkRecordPK.dailyAlarmConID = :dailyAlarmConID ";
 	@Override
 	public List<FixedConditionWorkRecord> getAllFixedConditionWorkRecord() {

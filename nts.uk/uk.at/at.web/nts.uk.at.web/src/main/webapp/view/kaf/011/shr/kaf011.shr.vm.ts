@@ -214,7 +214,16 @@ module nts.uk.at.view.kaf011.shr {
                             wkTypeCD: self.wkTypeCD(),
                             wkTimeCD: newWkTimeCD
                         };
-                    if (newWkTimeCD && vm.screenModeNew()) {
+
+
+                    if (!newWkTimeCD && !vm.screenModeNew()) {
+                        $('#recTimeBtn').ntsError("clear");
+                        $('#absTimeBtn').ntsError("clear");
+                        vm.checkRecTime();
+                        vm.checkAbsTime();
+                    }
+
+                    if (newWkTimeCD) {
                         block.invisible();
                         service.getSelectedWorkingHours(changeWkTypeParam).done((data: IChangeWorkType) => {
                             self.setDataFromWkDto(data);
@@ -226,7 +235,6 @@ module nts.uk.at.view.kaf011.shr {
                         });;
 
                     }
-
                 });
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
@@ -234,15 +242,15 @@ module nts.uk.at.view.kaf011.shr {
                         wkTypeCD: newWkType,
                         wkTimeCD: self.wkTimeCD()
                     };
-                    if (vm.screenModeNew()) {
-                        block.invisible();
-                        service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
-                            self.setDataFromWkDto(data);
 
-                        }).always(() => {
-                            block.clear();
-                        });
-                    }
+                    block.invisible();
+                    service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
+                        self.setDataFromWkDto(data);
+
+                    }).always(() => {
+                        block.clear();
+                    });
+
                 });
                 self.wkTypes.subscribe((items) => {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
@@ -432,7 +440,7 @@ module nts.uk.at.view.kaf011.shr {
                 };
                 block.invisible();
                 service.changeAbsDateToHoliday(saveCmd).done((payoutType) => {
-                    nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { appID: self.absWk().appID(), appDate: self.absWk().appDate(), payoutType: payoutType, applicant: [self.employeeID()], uiType: 1 });
+                    nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { appID: self.absWk().appID(), appDate: self.absWk().appDate(), payoutType: payoutType, applicant: [self.employeeID()], uiType: 1} );
                 }).fail((error) => {
                     alError({ messageId: error.messageId, messageParams: error.parameterIds });
                 }).always(() => {

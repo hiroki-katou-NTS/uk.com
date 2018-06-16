@@ -38,8 +38,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaRequestSettingRepository extends JpaRepository implements RequestSettingRepository{
-	private static final String SELECT_NO_WHERE = "SELECT c FROM KrqstApplicationSetting c ";
-	private static final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.krqstApplicationSettingPK.companyID = :companyID";
+	private final String SELECT_NO_WHERE = "SELECT c FROM KrqstApplicationSetting c ";
+	private final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.krqstApplicationSettingPK.companyID = :companyID";
 	/**
 	 * ドメインモデル「承認一覧表示設定」を取得する
 	 */

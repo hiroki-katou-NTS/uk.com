@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstEr
 @Stateless
 public class JpaErAlApplicationRepository extends JpaRepository implements ErAlApplicationRepository {
 
-	private static final String GET_ERAL_BY_CODE = " SELECT c FROM KrcstErAlApplication c "
+	private final String GET_ERAL_BY_CODE = " SELECT c FROM KrcstErAlApplication c "
 			+ " WHERE c.krcstErAlApplicationPK.cid = :cid" + " AND c.krcstErAlApplicationPK.errorCd = :errorCd";
 
 	@Override

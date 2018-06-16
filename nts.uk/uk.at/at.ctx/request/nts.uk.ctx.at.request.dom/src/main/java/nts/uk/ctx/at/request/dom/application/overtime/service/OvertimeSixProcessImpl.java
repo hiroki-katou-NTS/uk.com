@@ -31,7 +31,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 @Stateless
 public class OvertimeSixProcessImpl implements OvertimeSixProcess{
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	final String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
 	private IErrorCheckBeforeRegister IErrorCheckBeforeRegister;
 	@Inject

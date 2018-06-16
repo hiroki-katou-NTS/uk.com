@@ -5,7 +5,6 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attend
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -23,9 +22,6 @@ import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtTimeChkMonthly;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -74,22 +70,4 @@ public class KrcstErAlConGroup extends UkJpaEntity implements Serializable {
 		this.conditionOperator = conditionOperator;
 		this.lstAtdItemCon = lstAtdItemCon;
 	}
-	
-	public static KrcstErAlConGroup toEntity() {
-		return null;
-	}
-	
-	public static KrcstErAlConGroup toEntity(ErAlConditionsAttendanceItem domain) {
-        return new KrcstErAlConGroup(domain.getAtdItemConGroupId(), domain.getConditionOperator().value,
-                domain.getLstErAlAtdItemCon().stream().map(item -> KrcmtErAlAtdItemCon.toEntity(domain.getAtdItemConGroupId(), item)).collect(Collectors.toList()));
-    }
-    
-    public ErAlConditionsAttendanceItem toDomain(String companyId,String errorAlarmCode) {
-        return new ErAlConditionsAttendanceItem(
-                this.conditionGroupId,
-                EnumAdaptor.valueOf(this.conditionOperator, LogicalOperator.class),
-                this.lstAtdItemCon.stream().map(c->c.toDomain(c, companyId, errorAlarmCode)).collect(Collectors.toList())
-                );
-        
-    }
 }

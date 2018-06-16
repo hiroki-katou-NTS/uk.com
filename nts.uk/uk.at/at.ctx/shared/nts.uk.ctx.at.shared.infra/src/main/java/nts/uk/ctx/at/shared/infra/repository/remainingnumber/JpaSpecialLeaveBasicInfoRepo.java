@@ -15,11 +15,11 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSp
 @Stateless
 public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements SpecialLeaveBasicInfoRepository {
 
-	private static final String FIND_QUERY = "SELECT s FROM KrcmtSpecialLeaveInfo s WHERE s.key.employeeId = :employeeId ";
+	private String FIND_QUERY = "SELECT s FROM KrcmtSpecialLeaveInfo s WHERE s.key.employeeId = :employeeId ";
 
-	private static final String FIND_QUERY_BYSIDCD = String.join(" ", FIND_QUERY, "AND s.key.spLeaveCD = :spLeaveCD");
+	private String FIND_QUERY_BYSIDCD = String.join(" ", FIND_QUERY, "AND s.key.spLeaveCD = :spLeaveCD");
 	
-	private static final String QUERY_BY_SID_LEAVECD_ISUSE = "SELECT s FROM KrcmtSpecialLeaveInfo s"
+	private String QUERY_BY_SID_LEAVECD_ISUSE = "SELECT s FROM KrcmtSpecialLeaveInfo s"
 			+ " WHERE s.key.employeeId = :employeeId "
 			+ " AND s.key.spLeaveCD = :spLeaveCD "
 			+ " AND s.useCls = :useCls";

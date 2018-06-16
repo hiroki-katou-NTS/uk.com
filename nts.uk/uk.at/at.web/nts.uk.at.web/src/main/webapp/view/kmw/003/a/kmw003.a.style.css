@@ -62,14 +62,14 @@
 }
 
 #setting-content {
-	height: 90px;
+	height: 125px;
 	width: 240px;
 	border: 1px solid gray;
 	border-radius: 5px;
 	position: absolute;
 	z-index: 2;
 	background-color: white;
-	margin-left: 450px;
+	margin-left: 762px;
     margin-top: 124px;
 	padding: 15px;
 	visibility: hidden;

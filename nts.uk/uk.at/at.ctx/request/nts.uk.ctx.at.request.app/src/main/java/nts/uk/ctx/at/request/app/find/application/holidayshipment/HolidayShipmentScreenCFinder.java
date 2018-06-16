@@ -32,10 +32,16 @@ public class HolidayShipmentScreenCFinder {
 	@Inject
 	private ApplicationReasonRepository appResonRepo;
 
+	String companyID, employeeID;
+
+	GeneralDate baseDate;
+
+	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+	final static String DATE_FORMAT = "yyyy/MM/dd";
+
 	public HolidayShipmentDto startPage(String sid, GeneralDate baseDate, int uiType) {
-		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		companyID = AppContexts.user().companyId();
+		employeeID = AppContexts.user().employeeId();
 		// アルゴリズム「起動前共通処理（新規）」を実行する
 		HolidayShipmentDto output = aFinder.commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
 		// アルゴリズム「事前事後区分の判断」を実行する

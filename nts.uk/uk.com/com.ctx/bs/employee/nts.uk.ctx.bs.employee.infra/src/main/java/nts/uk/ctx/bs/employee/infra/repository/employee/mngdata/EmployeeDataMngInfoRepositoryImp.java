@@ -99,8 +99,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	/** The select by cid and sid. */
 	public final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
-
+	
 	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
+
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -251,15 +252,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public List<EmployeeSimpleInfo> findByIds(List<String> lstId) {
-		List<EmployeeSimpleInfo> emps = new ArrayList<EmployeeSimpleInfo>();
-
-		CollectionUtil.split(lstId, 1000, ids -> {
-			List<EmployeeSimpleInfo> _emps = queryProxy().query(SELECT_INFO_BY_IDS, Object[].class)
-					.setParameter("lstId", ids)
-					.getList(m -> new EmployeeSimpleInfo(m[0].toString(), m[1].toString(), m[2].toString()));
-			emps.addAll(_emps);
-		});
-
+		List<EmployeeSimpleInfo> emps = queryProxy().query(SELECT_INFO_BY_IDS, Object[].class)
+				.setParameter("lstId", lstId)
+				.getList(m -> new EmployeeSimpleInfo(m[0].toString(), m[1].toString(), m[2].toString()));
+		
 		return emps;
 	}
 
@@ -434,8 +430,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public List<EmployeeDataMngInfo> getAllByCid(String cid) {
-		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy().query(GET_ALL, BsymtEmployeeDataMngInfo.class)
-				.setParameter("cid", cid).getList();
+		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy()
+				.query(GET_ALL, BsymtEmployeeDataMngInfo.class).setParameter("cid", cid).getList();
 
 		return toListEmployeeDataMngInfo(listEntity);
 	}

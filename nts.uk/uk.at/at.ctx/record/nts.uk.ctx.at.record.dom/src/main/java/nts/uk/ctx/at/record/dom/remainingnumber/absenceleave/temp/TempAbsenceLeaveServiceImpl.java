@@ -7,11 +7,9 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
-import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -36,7 +34,8 @@ public class TempAbsenceLeaveServiceImpl implements TempAbsenceLeaveService {
 	public AbsenceLeaveRemainData algorithm(String companyId, String employeeId, YearMonth yearMonth,
 			DatePeriod period, ClosureId closureId, ClosureDate closureDate) {
 		
-		
+		// 暫定振休・振出管理データを削除
+		this.interimAbsRecService.remove(employeeId, period);
 		
 		// 月初の振休残数を取得　→　繰越数
 		Double carryforwardDays = this.absRecMngQuery.useDays(employeeId);
@@ -61,8 +60,7 @@ public class TempAbsenceLeaveServiceImpl implements TempAbsenceLeaveService {
 			if (usedDays == null) usedDays = 0.0;
 			remainDays = carryforwardDays + occurDays - usedDays;
 		}
-		// 暫定振休・振出管理データを削除
-		this.interimAbsRecService.remove(employeeId, period);
+		
 		// 振休月別残数データを返す
 		return new AbsenceLeaveRemainData(
 				employeeId,
@@ -73,10 +71,10 @@ public class TempAbsenceLeaveServiceImpl implements TempAbsenceLeaveService {
 				ClosureStatus.UNTREATED,
 				period.start(),
 				period.end(),
-				new RemainDataDaysMonth(occurDays),
-				new RemainDataDaysMonth(usedDays),
-				new AttendanceDaysMonthToTal(remainDays),
-				new AttendanceDaysMonthToTal(carryforwardDays),
-				new RemainDataDaysMonth(0.0));
+				new AttendanceDaysMonth(occurDays),
+				new AttendanceDaysMonth(usedDays),
+				new AttendanceDaysMonth(remainDays),
+				new AttendanceDaysMonth(carryforwardDays),
+				new AttendanceDaysMonth(0.0));
 	}
 }

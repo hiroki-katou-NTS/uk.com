@@ -24,12 +24,12 @@ import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppTy
 @Stateless
 public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements AppTypeDiscreteSettingRepository {
 
-	public static final String SELECT_NO_WHERE = "SELECT c FROM KrqstAppTypeDiscrete c";
+	public final String SELECT_NO_WHERE = "SELECT c FROM KrqstAppTypeDiscrete c";
 
-	public static final String SELECT_WITH_CID = SELECT_NO_WHERE 
+	public final String SELECT_WITH_CID = SELECT_NO_WHERE 
 			+ " WHERE c.krqstAppTypeDiscretePK.companyID = :companyID";
 
-	public static final String SELECT_WITH_APP_TYPE = SELECT_NO_WHERE
+	public final String SELECT_WITH_APP_TYPE = SELECT_NO_WHERE
 			+ " WHERE c.krqstAppTypeDiscretePK.companyID = :companyID"
 			+ " AND c.krqstAppTypeDiscretePK.appType = :appType ";
 

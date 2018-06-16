@@ -21,13 +21,15 @@ public class CancelHolidayShipmentCommandHandler extends CommandHandler<HolidayS
 	@Inject
 	private CompltLeaveSimMngRepository CompLeaveRepo;
 
-	
+	String companyID, employeeID;
+	Long version;
 
 	@Override
 	protected void handle(CommandHandlerContext<HolidayShipmentCommand> context) {
-		 
 		HolidayShipmentCommand command = context.getCommand();
-		String companyID = AppContexts.user().companyId();
+		companyID = AppContexts.user().companyId();
+		employeeID = AppContexts.user().employeeId();
+		version = command.getAppVersion();
 		// アルゴリズム「振休振出申請の取消」を実行する
 		cancelAppForPaidLeave(companyID, command);
 	}

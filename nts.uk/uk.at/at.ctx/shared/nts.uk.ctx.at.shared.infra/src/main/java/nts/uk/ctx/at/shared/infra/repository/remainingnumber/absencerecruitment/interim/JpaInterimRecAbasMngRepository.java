@@ -30,45 +30,32 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimRecAbasMngRepository extends JpaRepository implements InterimRecAbasMngRepository{
 
-	private String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.recruitmentMngId = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
+	private static final String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
 			+ " WHERE c.recruitmentMngId in :mngIds"
 			+ " AND c.unUsedDays > :unUsedDays"
 			+ " AND c.expirationDate >= :startDate"
 			+ " AND c.expirationDate <= :endDate";
-	private String DELETE_RECMNG_BY_ID = "DELETE FROM KrcmtInterimRecMng c"
-			+ " WHERE c.recruitmentMngId = :mngId";
-	private String DELETE_ABSMNG_BY_ID = "DELETE FROM KrcmtInterimAbsMng c"
-			+ " WHERE c.absenceMngId = :mngId";
-	private String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
+	
+	private static final String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absenceMngID"
 			+ " AND c.absenceMngAtr = :absenceMngAtr"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
-	private String DELETE_ABS_BY_MNGID = "DELETE FROM KrcmtInterimRecAbs c "
-			+ " WHERE c.recAbsPk.absenceMngID = :mngId";
-	private String DELETE_REC_BY_MNGID = "DELETE FROM KrcmtInterimRecAbs c "
-			+ " WHERE c.recAbsPk.recruitmentMngId = :mngId";
-	private String DELETE_BY_ID_ATR = "DELETE FROM KrcmtInterimRecAbs c"
+	private static final String DELETE_ABS_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
+			+ " WHERE c.recAbsPk.absenceMngID := mngId";
+	private static final String DELETE_REC_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
+			+ " WHERE c.recAbsPk.recruitmentMngId := mngId";
+	private static final String DELETE_BY_ID_ATR = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absId"
 			+ " AND c.recAbsPk.recruitmentMngId = :recId"
-			+ " AND c.absenceMngAtr = :absAtr"
-			+ " AND c.recruitmentMngAtr = :recAtr";
-	private String QUERY_REC_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
-			+ " WHERE c.recAbsPk.recruitmentMngId = :recruitmentMngId"
-			+ " AND c.absenceMngAtr = :absenceMngAtr"
-			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
-	private String DELETE_REC_BY_ID = "DELETE FROM KrcmtInterimRecAbs c"
-			+ " WHERE c.recAbsPk.recruitmentMngId = :remainID"
-			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String DELETE_ABS_BY_ID = "DELETE FROM KrcmtInterimRecAbs c"
-			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
-			+ " AND c.recruitmentMngAtr = :mngAtr";
-	
+			+ " AND c.absenceMngAtr = absAtr"
+			+ " AND c.recruitmentMngAtr = recAtr";
+			
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
 		return this.queryProxy().find(recId, KrcmtInterimRecMng.class)
@@ -156,7 +143,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.statutoryAtr = domain.getStatutoryAtr().value;
 			entity.unUsedDays = domain.getUnUsedDays().v();
 		}
-		//this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -178,7 +164,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.requiredDays = domain.getRequeiredDays().v();
 			entity.unOffsetDay = domain.getUnOffsetDays().v();
 		}
-		//this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -206,51 +191,56 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.useDays = domain.getUseDays().v();
 			entity.selectedAtr = domain.getSelectedAtr().value;
 		}
-		//this.getEntityManager().flush();
 	}
 
 	@Override
 	public void deleteInterimRecMng(String recruitmentMngId) {
-		this.getEntityManager().createQuery(DELETE_RECMNG_BY_ID).setParameter("mngId", recruitmentMngId).executeUpdate();		
+		Optional<KrcmtInterimRecMng> entityOpt = this.queryProxy().find(recruitmentMngId, KrcmtInterimRecMng.class);
+		entityOpt.ifPresent(x -> {
+			this.commandProxy().remove(KrcmtInterimRecMng.class, recruitmentMngId);
+		});		
 	}
 
 	@Override
 	public void deleteInterimAbsMng(String absenceMngId) {
-		this.getEntityManager().createQuery(DELETE_ABSMNG_BY_ID).setParameter("mngId", absenceMngId).executeUpdate();	
+		Optional<KrcmtInterimAbsMng> entityOpt = this.queryProxy().find(absenceMngId, KrcmtInterimAbsMng.class);
+		entityOpt.ifPresent(x -> {
+			this.commandProxy().remove(KrcmtInterimAbsMng.class, absenceMngId);
+		});
 	}
 
 	@Override
-	public void deleteInterimRecAbsMng(String mndId, boolean isRec) {		
-		this.getEntityManager().createQuery(isRec ? DELETE_REC_BY_MNGID : DELETE_ABS_BY_MNGID)
-				.setParameter("mngId", mndId).executeUpdate();	
+	public void deleteInterimRecAbsMng(String mndId, boolean isRec) {
+		List<KrcmtInterimRecAbs> lstData = this.queryProxy().query(isRec ? DELETE_REC_BY_MNGID : DELETE_ABS_BY_MNGID, KrcmtInterimRecAbs.class)
+				.setParameter("mngId", mndId)
+				.getList();
+		lstData.stream().forEach(x -> {
+			this.commandProxy().remove(x);
+		});		
 	}
 
 	@Override
 	public void deleteRecAbsMngByIdAndAtr(String recId, String absId, DataManagementAtr recAtr,
 			DataManagementAtr absAtr) {
-		this.getEntityManager().createQuery(DELETE_BY_ID_ATR, KrcmtInterimRecAbs.class)
+		List<KrcmtInterimRecAbs> lstEntity = this.queryProxy().query(DELETE_BY_ID_ATR, KrcmtInterimRecAbs.class)
 				.setParameter("absId", absId)
 				.setParameter("recId", recId)
-				.setParameter("absAtr", absAtr.values)
-				.setParameter("recAtr", recAtr.values)
-				.executeUpdate();
+				.setParameter("absAtr", absAtr)
+				.setParameter("recAtr", recAtr)
+				.getList();
+		lstEntity.stream().forEach(x -> {
+			this.commandProxy().remove(x);
+		});
 	}
 
 	@Override
 	public void deleteRecAbsMngByIDAtr(String mngId, DataManagementAtr mngAtr, boolean isRec) {
-		this.getEntityManager().createQuery(isRec ? DELETE_REC_BY_ID : DELETE_ABS_BY_ID, KrcmtInterimRecAbs.class)
+		List<KrcmtInterimRecAbs> lstEntity = this.queryProxy().query(isRec ? QUERY_REC_BY_ID : QUERY_ABS_BY_ID, KrcmtInterimRecAbs.class)
 			.setParameter("remainID", mngId)
-			.setParameter("mngAtr", mngAtr.values)
-			.executeUpdate();
-			
-	}
-
-	@Override
-	public List<InterimRecAbsMng> getRecBySidMngAtr(DataManagementAtr recAtr, DataManagementAtr absAtr, String recId) {
-		return this.queryProxy().query(QUERY_REC_BY_SID_MNGID, KrcmtInterimRecAbs.class)
-				.setParameter("recruitmentMngId", recId)
-				.setParameter("absenceMngAtr", absAtr.values)
-				.setParameter("recruitmentMngAtr", recAtr.values)
-				.getList(x -> toDomainRecAbs(x));
+			.setParameter("mngAtr", mngAtr.values)			
+			.getList();
+		lstEntity.stream().forEach(x -> {
+			this.commandProxy().remove(x);
+		});
 	}
 }

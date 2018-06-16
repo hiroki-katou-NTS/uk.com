@@ -20,7 +20,7 @@ public class SspdtResultLogDeletionPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Basic(optional=false)
 	@Column(name = "SEQ_ID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "del_log_generator")
-	@SequenceGenerator(name="del_log_generator", sequenceName = "SSPCS_DELETE_LOG", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "log_generator")
+	@SequenceGenerator(name="log_generator", sequenceName = "log_seq", allocationSize=1)
     public int seqId;
 }

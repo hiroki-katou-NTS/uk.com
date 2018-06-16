@@ -16,16 +16,11 @@ public class MonAlarmCheckConDto {
 	private List<FixedExtraMonFunDto> listFixExtraMon = new ArrayList<>();
 	/**任意抽出条件*/
 	List<ExtraResultMonthlyDomainEventDto> arbExtraCon = new ArrayList<>();
-	
-	private List<String> listEralCheckIDOld = new ArrayList<>();
-
-	public MonAlarmCheckConDto(List<FixedExtraMonFunDto> listFixExtraMon, List<ExtraResultMonthlyDomainEventDto> arbExtraCon, List<String> listEralCheckIDOld) {
+	public MonAlarmCheckConDto(List<FixedExtraMonFunDto> listFixExtraMon, List<ExtraResultMonthlyDomainEventDto> arbExtraCon) {
 		super();
 		this.listFixExtraMon = listFixExtraMon;
 		this.arbExtraCon = arbExtraCon;
-		this.listEralCheckIDOld = listEralCheckIDOld;
 	}
-	
 
 	
 

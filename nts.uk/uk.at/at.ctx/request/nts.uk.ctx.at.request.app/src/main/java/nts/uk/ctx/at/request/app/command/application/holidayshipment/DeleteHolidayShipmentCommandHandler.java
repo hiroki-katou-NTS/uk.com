@@ -21,29 +21,33 @@ public class DeleteHolidayShipmentCommandHandler extends CommandHandler<HolidayS
 	@Inject
 	private CompltLeaveSimMngRepository CompLeaveRepo;
 
+	String companyID, employeeID;
+	Long version;
+
 	@Override
 	protected void handle(CommandHandlerContext<HolidayShipmentCommand> context) {
 		HolidayShipmentCommand command = context.getCommand();
-		String companyID = AppContexts.user().companyId();
-		Long version = command.getAppVersion();
+		companyID = AppContexts.user().companyId();
+		employeeID = AppContexts.user().employeeId();
+		version = command.getAppVersion();
 		// アルゴリズム「振休振出申請の削除」を実行する
-		deleteAppForPaidLeave(command,companyID,version);
+		deleteAppForPaidLeave(command);
 
 	}
 
-	private void deleteAppForPaidLeave(HolidayShipmentCommand command,String companyID,Long version) {
+	private void deleteAppForPaidLeave(HolidayShipmentCommand command) {
 
 		boolean isDeleteRec = command.getRecAppID() != null;
 		boolean isDeleteAbs = command.getAbsAppID() != null;
 
 		if (isDeleteAbs) {
 			// アルゴリズム「削除処理」を実行する
-			deleteProcess(companyID, command.getAbsAppID(),version);
+			deleteProcess(companyID, command.getAbsAppID());
 		}
 
 		if (isDeleteRec) {
 			// アルゴリズム「削除処理」を実行する
-			deleteProcess(companyID, command.getRecAppID(),version);
+			deleteProcess(companyID, command.getRecAppID());
 		}
 		if (isDeleteAbs && isDeleteRec) {
 			// ドメインモデル「振休振出同時申請管理」を1件削除する
@@ -63,7 +67,7 @@ public class DeleteHolidayShipmentCommandHandler extends CommandHandler<HolidayS
 
 	}
 
-	private void deleteProcess(String companyID, String appID,Long version) {
+	private void deleteProcess(String companyID, String appID) {
 		// アルゴリズム「詳細画面削除後の処理」を実行する
 		this.afterDelete.screenAfterDelete(companyID, appID, version);
 	}

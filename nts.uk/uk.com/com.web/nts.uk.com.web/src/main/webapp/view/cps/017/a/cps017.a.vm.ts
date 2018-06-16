@@ -386,18 +386,34 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                     self.enableCreateNew(true);
                                 }
 
+                                //                                self.listSelection.valueHasMutated();
+                                //                                self.focusToInput();
+
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     if (itemList.length == 1) {
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_530" }).then(() => {
+                                        nts.uk.ui.dialog.confirm({ messageId: "Msg_530" }).then(() => {
+                                            self.listSelection.valueHasMutated();
+                                            perInfoSelectionItem.selectionItemId.valueHasMutated();
+                                            self.focusToInput();
                                         });
+                                        self.listSelection.valueHasMutated();
+                                        perInfoSelectionItem.selectionItemId.valueHasMutated();
+                                        self.focusToInput();
                                     }
                                     self.listSelection.valueHasMutated();
                                     perInfoSelectionItem.selectionItemId.valueHasMutated();
                                     self.focusToInput();
                                 });
+                                //$("#name").focus();
                             }
                         });
+                    //                    perInfoSelectionItem.selectionItemId.valueHasMutated();
+                    //                    self.listSelection.valueHasMutated();
+                    //                    self.focusToInput();
+                    //$("#name").focus();
                 });
+                //$("#name").focus();
+                //self.focusToInput();
             }
 
         }

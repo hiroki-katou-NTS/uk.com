@@ -11,7 +11,7 @@ module nts.custom.component {
         get_category: (sid) => ajax(`ctx/pereg/employee/category/getall/${sid}`),
         get_hist_data: (params) => ajax(`ctx/pereg/employee/category/getlistinfocategory`, params),
         category: {
-            'delete': (query) => ajax('facade/pereg/delete', query),
+            delete: (query) => ajax('facade/pereg/delete', query),
             perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`),
         }
     };
@@ -278,6 +278,7 @@ module nts.custom.component {
                             categoryType = ko.toJS(params.combobox.object.categoryType);
 
                         fetch.category.perm(rid, cid).done((perm: ICatAuth) => {
+
                             if (categoryType == IT_CAT_TYPE.MULTI) {
                                 if (perm && !!(is_self ? perm.selfAllowDelMulti : perm.otherAllowDelMulti)) {
                                     confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -301,6 +302,7 @@ module nts.custom.component {
                                             });
                                         }).fail(msg => {
                                             alert(msg);
+                                            __viewContext.viewModel.unblock();
                                         });
                                     });
                                 }
@@ -327,6 +329,7 @@ module nts.custom.component {
                                             });
                                         }).fail(msg => {
                                             alert(msg);
+                                            __viewContext.viewModel.unblock();
                                         });
                                     });
                                 }
@@ -363,51 +366,51 @@ module nts.custom.component {
                     params.combobox.value(undefined);
 
                     fetch.get_layout(sid).done((data: Array<any>) => {
-                        if (ko.toJS(params.tab) == TABS.LAYOUT) {
-                            if (data.length) {
-                                params.gridlist.options(data);
+                        if (data.length) {
+                            params.gridlist.options(data);
 
-                                let id = ko.toJS(params.gridlist.value),
-                                    ids = _.map(data, d => d.maintenanceLayoutID);
+                            let id = ko.toJS(params.gridlist.value),
+                                ids = _.map(data, d => d.maintenanceLayoutID);
 
-                                if (otab == t) {
-                                    if (ids.indexOf(id) == -1) {
-                                        params.gridlist.value(ids[0]);
-                                    } else {
-                                        params.gridlist.value.valueHasMutated();
-                                    }
+                            if (otab == t) {
+                                if (ids.indexOf(id) == -1) {
+                                    params.gridlist.value(ids[0]);
                                 } else {
-                                    if (ids[0] != id) {
-                                        params.gridlist.value(ids[0]);
-                                    } else {
-                                        params.gridlist.value.valueHasMutated();
-                                    }
+                                    params.gridlist.value.valueHasMutated();
+                                }
+                            } else {
+                                if (ids[0] != id) {
+                                    params.gridlist.value(ids[0]);
+                                } else {
+                                    params.gridlist.value.valueHasMutated();
                                 }
                             }
+                        } else {
+                            __viewContext.viewModel.unblock();
                         }
                     });
                 } else {
                     fetch.get_category(sid).done((data: Array<ICategory>) => {
-                        if (ko.toJS(params.tab) == TABS.CATEGORY) {
-                            if (data.length) {
-                                params.combobox.options(data);
-                                let id = ko.toJS(params.combobox.value),
-                                    ids = _.map(data, d => d.id);
+                        if (data.length) {
+                            params.combobox.options(data);
+                            let id = ko.toJS(params.combobox.value),
+                                ids = _.map(data, d => d.id);
 
-                                if (otab == t) {
-                                    if (ids.indexOf(id) == -1) {
-                                        params.combobox.value(ids[0]);
-                                    } else {
-                                        params.combobox.value.valueHasMutated();
-                                    }
+                            if (otab == t) {
+                                if (ids.indexOf(id) == -1) {
+                                    params.combobox.value(ids[0]);
                                 } else {
-                                    if (ids[0] != id) {
-                                        params.combobox.value(ids[0]);
-                                    } else {
-                                        params.combobox.value.valueHasMutated();
-                                    }
+                                    params.combobox.value.valueHasMutated();
+                                }
+                            } else {
+                                if (ids[0] != id) {
+                                    params.combobox.value(ids[0]);
+                                } else {
+                                    params.combobox.value.valueHasMutated();
                                 }
                             }
+                        } else {
+                            __viewContext.viewModel.unblock();
                         }
                     });
                 }
@@ -420,7 +423,7 @@ module nts.custom.component {
                 __viewContext.viewModel.block();
 
                 if (v) {
-                    let cat: any = _.find(ko.toJS(params.combobox.options), (t: any) => t.id == v);
+                    let cat = _.find(ko.toJS(params.combobox.options), t => t.id == v);
                     if (cat) {
                         let obj = params.combobox.object;
                         obj.categoryCode(cat.categoryCode);
@@ -459,47 +462,45 @@ module nts.custom.component {
                                     oids = _.map(options, o => o.optionValue);
 
                                 fetch.get_hist_data(query).done(data => {
-                                    if (ko.toJS(params.tab) == TABS.CATEGORY) {
-                                        let title = _.find(data, x => !x.optionValue),
-                                            _data = _.filter(data, x => !!x.optionValue),
-                                            ids = _.map(_data, m => m.optionValue),
-                                            id = ko.toJS(params.gridlist.value);
+                                    let title = _.find(data, x => !x.optionValue),
+                                        _data = _.filter(data, x => !!x.optionValue),
+                                        ids = _.map(_data, m => m.optionValue),
+                                        id = ko.toJS(params.gridlist.value);
 
-                                        if (title) {
-                                            $('#category-data_optionText').text(title.optionText);
-                                        }
+                                    if (title) {
+                                        $('#category-data_optionText').text(title.optionText);
+                                    }
 
-                                        params.gridlist.options(_data);
-                                        if (_data.length) {
-                                            if (id && ids.indexOf(id) == -1 || oval != v) {
-                                                if (ids[0] != id) {
-                                                    params.gridlist.value(ids[0]);
-                                                } else {
-                                                    params.gridlist.value.valueHasMutated();
-                                                }
+                                    params.gridlist.options(_data);
+                                    if (_data.length) {
+                                        if (id && ids.indexOf(id) == -1 || oval != v) {
+                                            if (ids[0] != id) {
+                                                params.gridlist.value(ids[0]);
                                             } else {
-                                                let nid = _.find(ids, _i => oids.indexOf(_i) == -1);
-
-                                                if (nid) {
-                                                    params.gridlist.value(nid);
-                                                }
-                                                else if (id) {
-                                                    params.gridlist.value.valueHasMutated();
-                                                } else {
-                                                    params.gridlist.value(ids[0]);
-                                                }
+                                                params.gridlist.value.valueHasMutated();
                                             }
                                         } else {
-                                            params.change.call(null, {
-                                                id: v,
-                                                iid: undefined,
-                                                tab: TABS.CATEGORY,
-                                                act: 'add',
-                                                ccode: ko.toJS(params.combobox.object.categoryCode),
-                                                ctype: ko.toJS(params.combobox.object.categoryType)
-                                            });
-                                            params.gridlist.value(undefined);
+                                            let nid = _.find(ids, _i => oids.indexOf(_i) == -1);
+
+                                            if (nid) {
+                                                params.gridlist.value(nid);
+                                            }
+                                            else if (id) {
+                                                params.gridlist.value.valueHasMutated();
+                                            } else {
+                                                params.gridlist.value(ids[0]);
+                                            }
                                         }
+                                    } else {
+                                        params.change.call(null, {
+                                            id: v,
+                                            iid: undefined,
+                                            tab: TABS.CATEGORY,
+                                            act: 'add',
+                                            ccode: ko.toJS(params.combobox.object.categoryCode),
+                                            ctype: ko.toJS(params.combobox.object.categoryType)
+                                        });
+                                        params.gridlist.value(undefined);
                                     }
                                 });
                                 break;
@@ -514,38 +515,36 @@ module nts.custom.component {
                                 }
 
                                 fetch.get_hist_data(query).done(data => {
-                                    if (ko.toJS(params.tab) == TABS.CATEGORY) {
-                                        let title = _.find(data, x => !x.optionValue),
-                                            _data = _.filter(data, x => !!x.optionValue),
-                                            ids = _.map(_data, m => m.optionValue),
-                                            id = ko.toJS(params.gridlist.value);
+                                    let title = _.find(data, x => !x.optionValue),
+                                        _data = _.filter(data, x => !!x.optionValue),
+                                        ids = _.map(_data, m => m.optionValue),
+                                        id = ko.toJS(params.gridlist.value);
 
-                                        if (title) {
-                                            $('#category-data_optionText').text(title.optionText);
-                                        }
+                                    if (title) {
+                                        $('#category-data_optionText').text(title.optionText);
+                                    }
 
-                                        params.gridlist.options(_data);
-                                        if (_data.length) {
-                                            if (ids.indexOf(id) == -1 || oval != v) {
-                                                if (ids[0] != id) {
-                                                    params.gridlist.value(ids[0]);
-                                                } else {
-                                                    params.gridlist.value.valueHasMutated();
-                                                }
+                                    params.gridlist.options(_data);
+                                    if (_data.length) {
+                                        if (ids.indexOf(id) == -1 || oval != v) {
+                                            if (ids[0] != id) {
+                                                params.gridlist.value(ids[0]);
                                             } else {
                                                 params.gridlist.value.valueHasMutated();
                                             }
                                         } else {
-                                            params.change.call(null, {
-                                                id: v,
-                                                iid: undefined,
-                                                tab: TABS.CATEGORY,
-                                                act: 'add',
-                                                ccode: ko.toJS(params.combobox.object.categoryCode),
-                                                ctype: ko.toJS(params.combobox.object.categoryType)
-                                            });
-                                            params.gridlist.value(undefined);
+                                            params.gridlist.value.valueHasMutated();
                                         }
+                                    } else {
+                                        params.change.call(null, {
+                                            id: v,
+                                            iid: undefined,
+                                            tab: TABS.CATEGORY,
+                                            act: 'add',
+                                            ccode: ko.toJS(params.combobox.object.categoryCode),
+                                            ctype: ko.toJS(params.combobox.object.categoryType)
+                                        });
+                                        params.gridlist.value(undefined);
                                     }
                                 });
                                 break;
@@ -553,6 +552,8 @@ module nts.custom.component {
                     } else {
                         params.combobox.value(undefined);
                     }
+                } else {
+                    __viewContext.viewModel.unblock();
                 }
                 params.combobox.oval = v;
             });
@@ -566,51 +567,50 @@ module nts.custom.component {
                         categoryType = ko.toJS(params.combobox.object.categoryType);
 
                     fetch.category.perm(rid, cid).done((perm: ICatAuth) => {
-                        if (ko.toJS(params.tab) == TABS.CATEGORY) {
-                            if (categoryType == IT_CAT_TYPE.MULTI) {
-                                if (perm && !!(is_self ? perm.selfAllowAddMulti : perm.otherAllowAddMulti)) {
-                                    params.permisions.add(true);
-                                } else {
-                                    params.permisions.add(false);
-                                }
-
-                                if (perm && !!(is_self ? perm.selfAllowDelMulti : perm.otherAllowDelMulti)) {
-                                    params.permisions.delete(true);
-                                } else {
-                                    params.permisions.delete(false);
-                                }
+                        if (categoryType == IT_CAT_TYPE.MULTI) {
+                            if (perm && !!(is_self ? perm.selfAllowAddMulti : perm.otherAllowAddMulti)) {
+                                params.permisions.add(true);
                             } else {
-                                if (perm && !!(is_self ? (perm.selfAllowAddHis && perm.selfFutureHisAuth == 3) : (perm.otherAllowAddHis && perm.otherFutureHisAuth == 3))) {
-                                    params.permisions.add(true);
-                                    params.permisions.copy(true);
-                                } else {
-                                    params.permisions.add(false);
-                                    params.permisions.copy(false);
-                                }
+                                params.permisions.add(false);
+                            }
 
-                                if (perm && !!(is_self ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
-                                    if (ids.indexOf(v) > -1) {
-                                        if (ids.indexOf(v) == 0) {
+                            if (perm && !!(is_self ? perm.selfAllowDelMulti : perm.otherAllowDelMulti)) {
+                                params.permisions.delete(true);
+                            } else {
+                                params.permisions.delete(false);
+                            }
+                        } else {
+                            if (perm && !!(is_self ? (perm.selfAllowAddHis && perm.selfFutureHisAuth == 3) : (perm.otherAllowAddHis && perm.otherFutureHisAuth == 3))) {
+                                params.permisions.add(true);
+                                params.permisions.copy(true);
+                            } else {
+                                params.permisions.add(false);
+                                params.permisions.copy(false);
+                            }
+
+                            if (perm && !!(is_self ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
+                                if (ids.indexOf(v) > -1) {
+                                    if (ids.indexOf(v) == 0) {
+                                        params.permisions.delete(true);
+                                    } else {
+                                        if (categoryType == IT_CAT_TYPE.NODUPLICATE) {
                                             params.permisions.delete(true);
                                         } else {
-                                            if (categoryType == IT_CAT_TYPE.NODUPLICATE) {
-                                                params.permisions.delete(true);
-                                            } else {
-                                                params.permisions.delete(false);
-                                            }
+                                            params.permisions.delete(false);
                                         }
-                                    } else {
-                                        params.permisions.delete(false);
                                     }
                                 } else {
                                     params.permisions.delete(false);
                                 }
+                            } else {
+                                params.permisions.delete(false);
                             }
                         }
                     });
                 }
 
                 if (!v) {
+                    __viewContext.viewModel.unblock();
                     return;
                 }
 

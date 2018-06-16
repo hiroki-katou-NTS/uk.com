@@ -25,7 +25,7 @@ public class CheckConfirmService {
 		List<Identification> listIdentification = identificationRepository.findByEmployeeID(employeeID, startDate, endDate);
 		//取得した「日の本人確認」をもとにListを作成する
 		GeneralDate date = GeneralDate.localDate(startDate.localDate());
-		while(date.beforeOrEquals(endDate)) {
+		while(date.before(endDate)) {
 			boolean checkExist = false;
 			for(Identification identification : listIdentification) {
 				if(date.equals(identification.getProcessingYmd())){

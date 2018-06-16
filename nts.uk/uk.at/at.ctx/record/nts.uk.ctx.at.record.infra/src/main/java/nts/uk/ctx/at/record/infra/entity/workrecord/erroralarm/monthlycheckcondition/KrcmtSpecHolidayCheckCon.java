@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,17 +27,17 @@ public class KrcmtSpecHolidayCheckCon extends UkJpaEntity implements Serializabl
 	public int compareOperator;
 	
 	@Column(name = "NUMBER_DAY_DIFF_HOLIDAY_1")
-	public BigDecimal numberDayDiffHoliday1;
+	public int numberDayDiffHoliday1;
 	
 	@Column(name = "NUMBER_DAY_DIFF_HOLIDAY_2")
-	public BigDecimal numberDayDiffHoliday2;
+	public Integer numberDayDiffHoliday2;
 	
 	@Override
 	protected Object getKey() {
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtSpecHolidayCheckCon(String errorAlarmCheckID, int compareOperator, BigDecimal numberDayDiffHoliday1, BigDecimal numberDayDiffHoliday2) {
+	public KrcmtSpecHolidayCheckCon(String errorAlarmCheckID, int compareOperator, int numberDayDiffHoliday1, Integer numberDayDiffHoliday2) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.compareOperator = compareOperator;
@@ -50,8 +49,8 @@ public class KrcmtSpecHolidayCheckCon extends UkJpaEntity implements Serializabl
 		return new KrcmtSpecHolidayCheckCon(
 				domain.getErrorAlarmCheckID(),
 				domain.getCompareOperator(),
-				new BigDecimal( domain.getNumberDayDiffHoliday1().v()),
-				!domain.getNumberDayDiffHoliday2().isPresent()?null:new BigDecimal(domain.getNumberDayDiffHoliday2().get().v())
+				domain.getNumberDayDiffHoliday1().v().intValue(),
+				!domain.getNumberDayDiffHoliday2().isPresent()?null:domain.getNumberDayDiffHoliday2().get().v().intValue()
 				);
 	}
 	
@@ -59,8 +58,8 @@ public class KrcmtSpecHolidayCheckCon extends UkJpaEntity implements Serializabl
 		return new SpecHolidayCheckCon(
 				this.errorAlarmCheckID,
 				this.compareOperator,
-				new MonthlyDays(this.numberDayDiffHoliday1.doubleValue()),
-				this.numberDayDiffHoliday2==null?null: new MonthlyDays(this.numberDayDiffHoliday2.doubleValue())
+				new MonthlyDays(new Double(this.numberDayDiffHoliday1)),
+				this.numberDayDiffHoliday2==null?null:new MonthlyDays(new Double(this.numberDayDiffHoliday2))
 				);
 	}
 

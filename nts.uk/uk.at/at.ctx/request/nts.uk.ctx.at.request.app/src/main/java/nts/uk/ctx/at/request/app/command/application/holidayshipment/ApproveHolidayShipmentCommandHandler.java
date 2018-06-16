@@ -14,6 +14,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ApproveHolidayShipmentCommandHandler extends CommandHandler<HolidayShipmentCommand> {
 
+	String companyID, employeeID, memo;
+	Long version;
+
 	@Inject
 	private DetailBeforeUpdate detailBefUpdate;
 	@Inject
@@ -21,30 +24,31 @@ public class ApproveHolidayShipmentCommandHandler extends CommandHandler<Holiday
 
 	@Override
 	protected void handle(CommandHandlerContext<HolidayShipmentCommand> context) {
+
 		HolidayShipmentCommand command = context.getCommand();
-		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		Long version = command.getAppVersion();
-		String memo = context.getCommand().getMemo();
+		companyID = AppContexts.user().companyId();
+		employeeID = AppContexts.user().employeeId();
+		version = command.getAppVersion();
+		memo = context.getCommand().getMemo();
 		// アルゴリズム「振休振出申請の承認」を実行する
-		approvalApplication(command,companyID,employeeID,version,memo);
+		approvalApplication(command);
 	}
 
-	private void approvalApplication(HolidayShipmentCommand command,String companyID,String employeeeID,Long version,String memo) {
+	private void approvalApplication(HolidayShipmentCommand command) {
 		boolean isApprovalRec = command.getRecAppID() != null;
 		boolean isApprovalAbs = command.getAbsAppID() != null;
 		if (isApprovalRec) {
 			// アルゴリズム「承認処理」を実行する
-			approvalProcessing(companyID, command.getRecAppID(),employeeeID,version,memo);
+			approvalProcessing(companyID, command.getRecAppID());
 		}
 		if (isApprovalAbs) {
 			// アルゴリズム「承認処理」を実行する
-			approvalProcessing(companyID, command.getAbsAppID(),employeeeID,version,memo);
+			approvalProcessing(companyID, command.getAbsAppID());
 
 		}
 	}
 
-	private void approvalProcessing(String companyID, String appID,String employeeID,Long version,String memo ) {
+	private void approvalProcessing(String companyID, String appID) {
 		// アルゴリズム「詳細画面登録前の処理」を実行する
 		detailBefUpdate.processBeforeDetailScreenRegistration(companyID, employeeID, GeneralDate.today(), 1, appID,
 				PrePostAtr.PREDICT, version);

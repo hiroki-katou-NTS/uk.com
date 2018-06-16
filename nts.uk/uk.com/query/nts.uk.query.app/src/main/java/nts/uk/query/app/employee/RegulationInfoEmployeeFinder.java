@@ -199,7 +199,6 @@ public class RegulationInfoEmployeeFinder {
 		// check param referenceRange
 		switch (EmployeeReferenceRange.valueOf(queryDto.getReferenceRange())) {
 		case ONLY_MYSELF:
-			isSearchOnlyMe = true;
 			break;
 		case ALL_EMPLOYEE:
 			if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {

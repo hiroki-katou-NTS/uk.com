@@ -33,18 +33,6 @@ public class SpecialHolidayFrameService {
 	 * @return the list
 	 */
 	@POST
-	@Path("findspecbyabolish")
-	public List<SpecialHolidayFrameDto> findSpecialHolidayFrame() {
-		return this.find.findSpecialHolidayFrame();
-	}
-	
-
-	/**
-	 * Find all. 使用区分　=　true
-	 *
-	 * @return the list
-	 */
-	@POST
 	@Path("findAll")
 	public List<SpecialHolidayFrameDto> findAll() {
 		return this.find.findAll();

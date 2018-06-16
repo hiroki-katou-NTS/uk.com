@@ -376,9 +376,6 @@ public class ExcessOutsideWorkMng {
 					flexAggregateMethod, this.workingConditionItem, this.workplaceId, this.employmentCd,
 					this.settingsByFlex, aggrValue.getAggregateTotalWorkingTime(), repositories);
 			
-			// 月次明細に計算結果をコピーする
-			this.monthlyDetail.setFromAggregateTotalWorkingTime(aggrValue.getAggregateTotalWorkingTime());
-			
 			// フレックス時間勤務の逆時系列割り当て
 			if (flexAggregateMethod == FlexAggregateMethod.FOR_CONVENIENCE){
 				

@@ -8,7 +8,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
 /**
@@ -41,7 +40,7 @@ public class CalAttrOfDailyPerformance extends AggregateRoot {
 	private AutoCalOvertimeSetting overtimeSetting;
 	
 	//遅刻早退: 遅刻早退の自動計算設定
-	private AutoCalcOfLeaveEarlySetting leaveEarlySetting;
+	private AutoCalOfLeaveEarlySetting leaveEarlySetting;
 	
 	//乖離時間: 乖離時間の自動計算設定
 	private AutoCalcSetOfDivergenceTime divergenceTime; 

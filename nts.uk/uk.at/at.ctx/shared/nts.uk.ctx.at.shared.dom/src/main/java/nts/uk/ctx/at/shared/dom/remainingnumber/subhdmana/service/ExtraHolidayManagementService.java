@@ -10,12 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -54,12 +50,6 @@ public class ExtraHolidayManagementService {
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
-	@Inject
-	private SysWorkplaceAdapter syWorkplaceAdapter;
-	
-	@Inject
-	private EmpEmployeeAdapter empEmployeeAdapter;
-	
 	public ExtraHolidayManagementOutput dataExtractionProcessing (int searchMode, String employeeId, GeneralDate startDate, GeneralDate endDate){
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> listLeaveData = null;
@@ -92,18 +82,10 @@ public class ExtraHolidayManagementService {
 				closureEmploy = closureEmployment.get();
 			}
 		}
-		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
 		if (!Objects.isNull(empHistoryImport)){
 			compenLeaveEmpSetting = compensLeaveEmSetRepository.find(cid, empHistoryImport.getEmploymentCode());
 		}
-		List<String> employeeIds = new ArrayList<>();
-		employeeIds.add(employeeId);
-		List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
-		PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
-		if (!employeeBasicInfo.isEmpty()){
-			personEmpBasicInfoImport = employeeBasicInfo.get(0);
-		}
 		compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
-		return new ExtraHolidayManagementOutput(listLeaveData, listCompensatoryData, listLeaveComDayOffManagement, empHistoryImport, closureEmploy, compenLeaveEmpSetting, compensatoryLeaveComSetting, sWkpHistImport.orElse(null), personEmpBasicInfoImport);
+		return new ExtraHolidayManagementOutput(listLeaveData, listCompensatoryData, listLeaveComDayOffManagement, empHistoryImport, closureEmploy, compenLeaveEmpSetting, compensatoryLeaveComSetting);
 	}
 }

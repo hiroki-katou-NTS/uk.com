@@ -24,8 +24,7 @@ module cps001.a.service {
             getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}',
             permision: 'ctx/pereg/roles/auth/get-self-auth',
         },
-        file: '/shr/infra/file/storage/infor/{0}',
-        lstcardno:'at/record/stamp/stampcard/getListCardNo'
+        file: '/shr/infra/file/storage/infor/{0}'
     };
 
     export function getPerson(id: string) {
@@ -86,9 +85,5 @@ module cps001.a.service {
 
     export function getFileInfo(id: string) {
         return ajax(paths.file, id);
-    }
-    
-    export function getLstCardNoByContractCd() {
-        return ajax('at', paths.lstcardno);
     }
 }

@@ -23,7 +23,7 @@
 }
 
 .row {
-	height: 55px;
+	height: 40px;
 }
 
 #single-list-dataSource tr td {
@@ -56,10 +56,4 @@
 
 .nts-switch-button {
 	width: 80px;
-}
-
-#content-left.fixed-flex-layout-left {
-	float: left;
-	margin-top: 67px;
-	margin-left: 40px;
 }

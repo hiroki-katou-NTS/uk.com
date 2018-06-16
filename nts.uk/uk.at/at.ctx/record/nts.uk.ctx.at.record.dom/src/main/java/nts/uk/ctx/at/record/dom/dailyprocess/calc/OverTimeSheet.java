@@ -351,17 +351,16 @@ public class OverTimeSheet {
 	 * @return　自動計算設定
 	 */
 	private AutoCalSetting getCalcSetByAtr(AutoCalOvertimeSetting autoCalcSet,StatutoryAtr statutoryAtr, boolean goEarly) {
-		if(statutoryAtr.isStatutory() ) {
-			return autoCalcSet.getLegalMidOtTime();
+		if(statutoryAtr.isStatutory() && !goEarly) {
+			return autoCalcSet.getLegalOtTime();
+		}
+		else if(statutoryAtr.isStatutory() && goEarly) {
+			return autoCalcSet.getEarlyOtTime();
 		}
 		else {
-			if(goEarly) {
-				return autoCalcSet.getEarlyMidOtTime();
-			}
-			else {
-				return autoCalcSet.getNormalMidOtTime();
-			}
+			return autoCalcSet.getNormalOtTime();
 		}
+		
 	}
 	
 	

@@ -7,8 +7,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -52,6 +50,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Getter
 public class AggregateMonthlyRecordServiceProc {
+
 	/** 月別集計が必要とするリポジトリ */
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	/** 期間中の年休積休残数を取得 */
@@ -761,7 +760,6 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getAbsenceLeaveRemainList().add(
 				this.tempAbsenceLeaveService.algorithm(this.companyId, this.employeeId, this.yearMonth,
 						period, this.closureId, this.closureDate));
-		
 	}
 	
 	/**
@@ -773,7 +771,6 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getMonthlyDayoffRemainList().add(
 				this.tempDayoffService.algorithm(this.companyId, this.employeeId, this.yearMonth,
 						period, this.closureId, this.closureDate));
-		
 	}
 	
 	/**

@@ -11,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /** 日別実績の勤怠時間 */
 @Getter
@@ -69,7 +68,7 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 		}
 		return items;
 	}
-	private static Integer getAttendanceTime(AttendanceTimeOfExistMinus domain) {
+	private static Integer getAttendanceTime(AttendanceTime domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 
@@ -98,7 +97,7 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 				scheduleTime == null ? null : scheduleTime.toDomain(), 
 				actualWorkTime == null ? null : actualWorkTime.toDomain(),
 				stayingTime == null ? null : stayingTime.toDomain(), 
-				budgetTimeVariance == null ? null : new AttendanceTimeOfExistMinus(budgetTimeVariance),
-				unemployedTime == null ? null : new AttendanceTimeOfExistMinus(unemployedTime));
+				budgetTimeVariance == null ? null : new AttendanceTime(budgetTimeVariance),
+				unemployedTime == null ? null : new AttendanceTime(unemployedTime));
 	}
 }

@@ -18,9 +18,6 @@ import nts.uk.ctx.at.record.app.find.attdItemLinking.AttendanceItemLinkingFinder
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.MonthlyAttendanceItemNameDto;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
@@ -42,15 +39,12 @@ public class AttendanceItemsFinder {
 
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
-	
-	@Inject
-	private AttendanceItemNameAdapter monthlyAttendanceItemNameAdapter;
 
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 	
 	@Inject
-	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
+	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
 
 	/** The attd item linking finder. */
 	@Inject
@@ -94,7 +88,7 @@ public class AttendanceItemsFinder {
 
 		return attendanceItemDtos;
 	}
-	
+
 	public List<AttdItemDto> findAll() {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -133,44 +127,6 @@ public class AttendanceItemsFinder {
 		return attendanceItemDtos;
 	}
 
-	public List<AttdItemDto> findAllMonthly() {
-		LoginUserContext login = AppContexts.user();
-		String companyId = login.companyId();
-
-		List<AttdItemDto> attendanceItemDtos = new ArrayList<>();
-
-		// 勤怠項目
-		List<MonthlyAttendanceItem> monthlyAttendanceItems = this.monthlyAttendanceItemRepository.findAll(companyId);
-
-		if (monthlyAttendanceItems.isEmpty()) {
-			return attendanceItemDtos;
-		}
-
-		// get list attendanceItemId
-		List<Integer> attendanceItemIds = monthlyAttendanceItems.stream().map(f -> {
-			return f.getAttendanceItemId();
-		}).collect(Collectors.toList());
-
-		List<MonthlyAttendanceItemNameDto> monthlyAttendanceItemNameDtos = this.monthlyAttendanceItemNameAdapter.
-				getMonthlyAttendanceItemName(attendanceItemIds);
-
-		Map<Integer, MonthlyAttendanceItem> monthlyAttendanceItemMap = monthlyAttendanceItems.stream()
-				.collect(Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, c -> c));
-
-		monthlyAttendanceItemNameDtos.forEach(f -> {
-			AttdItemDto attendanceItemDto = new AttdItemDto();
-			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
-			attendanceItemDto.setAttendanceItemName(f.getAttendanceItemName());
-			attendanceItemDto.setAttendanceItemDisplayNumber(f.getAttendanceItemDisplayNumber());
-			MonthlyAttendanceItem monthlyAttendanceItem = monthlyAttendanceItemMap.get(f.getAttendanceItemId());
-			attendanceItemDto.setDailyAttendanceAtr(monthlyAttendanceItem.getMonthlyAttendanceAtr().value);
-			attendanceItemDto.setNameLineFeedPosition(monthlyAttendanceItem.getNameLineFeedPosition());
-			attendanceItemDtos.add(attendanceItemDto);
-		});
-
-		return attendanceItemDtos;
-	}
-	
 	public List<AttdItemDto> findListByAttendanceAtr(int dailyAttendanceAtr) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -199,7 +155,7 @@ public class AttendanceItemsFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		List<AttdItemDto> attendanceItemDtos = this.monthlyAttendanceItemRepository
+		List<AttdItemDto> attendanceItemDtos = this.monthlyAttendanceItemRepo
 				.findByAtr(companyId, EnumAdaptor.valueOf(monthlyAttendanceAtr, MonthlyAttendanceItemAtr.class)).stream()
 				.map(f -> {
 					AttdItemDto attdItemDto = new AttdItemDto();

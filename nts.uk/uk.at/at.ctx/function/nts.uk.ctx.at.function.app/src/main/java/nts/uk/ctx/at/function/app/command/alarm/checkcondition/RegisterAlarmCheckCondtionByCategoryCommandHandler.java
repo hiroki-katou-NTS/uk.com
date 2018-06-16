@@ -17,7 +17,6 @@ import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCondOtCommand;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeConditionErrorCommand;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
@@ -37,7 +36,6 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -67,9 +65,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 
 	@Inject
 	private IAgreeCondOtRepository otRep;
-	
-	@Inject
-	private AlarmCheckConditionByCategoryFinder alarmCheckConByCategoryFinder;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -126,21 +121,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition() ;
-				//update list mon
-				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
-						.getMonAlarmCheckConDto().getListEralCheckIDOld();
-				for(int i = 0;i<command.getMonAlarmCheckCon().getArbExtraCon().size();i++) {
-					if(command.getMonAlarmCheckCon().getArbExtraCon().get(i).getErrorAlarmCheckID().equals("")) {
-						command.getMonAlarmCheckCon().getArbExtraCon().get(i).setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
-					}
-				}
-				
-				extractionCondition = command.getMonAlarmCheckCon() == null ? null
-						: new MonAlarmCheckCon(IdentifierUtil.randomUniqueId(),
-								command.getMonAlarmCheckCon().getArbExtraCon().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
-								);					
-				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckCon.getMonAlarmCheckConID(),true,false,false,command.getMonAlarmCheckCon().getArbExtraCon(),listEralCheckIDOld);
-				event.toBePublished();
+				//TODO: 
 		
 				//update list fixedExtraMonFun
 				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
@@ -166,7 +147,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 															x.getCode(), x.getUseAtr(), x.getPeriod(), 
 															x.getErrorAlarm(), x.getMessageDisp())
 				).collect(Collectors.toList());
-				List<Integer> useList = listError.stream().map(x -> x.getUseAtr().value).collect(Collectors.toList());
 				for(AgreeConditionError item : listError){
 					if(item.getId() != null){
 						Optional<AgreeConditionError> oldOption = conErrRep.findById(item.getId(), item.getCode().v(), 
@@ -189,8 +169,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 								x.getCategory(), x.getCode(), 
 								x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp())
 				).collect(Collectors.toList());
-				boolean check = useList.contains(1);
-				if(!check && listOt.isEmpty()){
+				if(listOt.isEmpty()){
 					throw new BusinessException("Msg_832"); 
 				}
 				if(listOt.size() > 10){
@@ -254,16 +233,13 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
-				for(ExtraResultMonthlyDomainEventDto item:command.getMonAlarmCheckCon().getArbExtraCon()) {
-					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
-				}
+				
 				extractionCondition = command.getMonAlarmCheckCon() == null ? null
 						: new MonAlarmCheckCon(monAlarmCheckConID,
 								command.getMonAlarmCheckCon().getArbExtraCon().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
 								);
 				//add list mon
-				List<String> listEralCheckIDOld = new ArrayList<>();
-				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckConID,false,true,false,command.getMonAlarmCheckCon().getArbExtraCon(),listEralCheckIDOld);
+				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckConID,false,true,false,command.getMonAlarmCheckCon().getArbExtraCon());
 				event.toBePublished();
 				//add list fixedExtraMonFun
 				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
@@ -282,12 +258,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			case AGREEMENT:
 				// update agree conditon ot
 				List<AgreeCondOtCommand> listOt = new ArrayList<>();
-				List<AgreeConditionErrorCommand> listError = new ArrayList<>();
-				listError = command.getCondAgree36().getListCondError();
 				listOt = command.getCondAgree36().getListCondOt();
-				List<Integer> useList = listError.stream().map(x -> x.getUseAtr()).collect(Collectors.toList());
-				boolean check = useList.contains(1);
-				if(!check && listOt.isEmpty()){
+				if(listOt.isEmpty()){
 					throw new BusinessException("Msg_832"); 
 				}
 				if(listOt.size() > 10){

@@ -52,6 +52,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
@@ -112,7 +113,6 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -1167,8 +1167,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getCalAtr()));
 
 		// //遅刻早退: 遅刻早退の自動計算設定
-		AutoCalcOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalcOfLeaveEarlySetting(true,
-				true);
+		AutoCalOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalOfLeaveEarlySetting(LeaveAttr.USE,
+				LeaveAttr.USE);
 		// 乖離時間: 乖離時間の自動計算設定
 		AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(
 				DivergenceTimeAttr.USE);

@@ -42,9 +42,9 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 	private ApproverRepository repoApprover;
 	@Inject
 	private ApprovalBranchRepository repoBranch;
-	private static final int COMPANY = 0;
-	private static final int WORKPLACE = 1;
-	private static final int EDIT = 1;
+	private final int COMPANY = 0;
+	private final int WORKPLACE = 1;
+	private final int EDIT = 1;
 	@Override
 	protected void handle(CommandHandlerContext<UpdateWorkAppApprovalRByHistCommand> context) {
 		UpdateWorkAppApprovalRByHistCommand  objUpdateItem = context.getCommand();

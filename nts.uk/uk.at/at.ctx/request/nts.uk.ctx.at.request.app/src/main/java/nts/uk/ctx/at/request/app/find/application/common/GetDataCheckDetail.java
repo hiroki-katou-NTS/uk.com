@@ -13,7 +13,7 @@ public class GetDataCheckDetail {
 	@Inject
 	private BeforePreBootMode beforePreBootMode;
 	
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	/**
 	 * 

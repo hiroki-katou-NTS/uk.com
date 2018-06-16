@@ -82,22 +82,6 @@ public class MonthlyDetail {
 	}
 	
 	/**
-	 * 集計総労働時間から月次明細を設定
-	 * @param aggregateTotalWorkingTime 集計総労働時間
-	 */
-	public void setFromAggregateTotalWorkingTime(AggregateTotalWorkingTime aggregateTotalWorkingTime){
-		
-		this.workTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesWorks();
-		this.overTime = aggregateTotalWorkingTime.getOverTime().getAggregateOverTimeMap();
-		this.holidayWorkTime = aggregateTotalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap();
-		
-		val vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
-		this.annualLeaveUseTime = vacationUseTime.getAnnualLeave().getTimeSeriesWorks();
-		this.retentionYearlyUseTime = vacationUseTime.getRetentionYearly().getTimeSeriesWorks();
-		this.specialHolidayUseTime = vacationUseTime.getSpecialHoliday().getTimeSeriesWorks();
-	}
-	
-	/**
 	 * 週割増時間を日単位で割り当てる
 	 * @param procDate 処理日
 	 * @param weeklyPTForAssign 逆時系列割り当て用の週割増時間
@@ -118,7 +102,13 @@ public class MonthlyDetail {
 		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
 		
 		// 各時系列ワーク　確認
-		this.setFromAggregateTotalWorkingTime(aggregateTotalWorkingTime);
+		this.workTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesWorks();
+		val vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
+		this.annualLeaveUseTime = vacationUseTime.getAnnualLeave().getTimeSeriesWorks();
+		this.retentionYearlyUseTime = vacationUseTime.getRetentionYearly().getTimeSeriesWorks();
+		this.specialHolidayUseTime = vacationUseTime.getSpecialHoliday().getTimeSeriesWorks();
+		this.overTime = aggregateTotalWorkingTime.getOverTime().getAggregateOverTimeMap();
+		this.holidayWorkTime = aggregateTotalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap();
 		
 		this.excessOutsideWorkMng = excessOutsideWorkMng;
 		
@@ -554,7 +544,13 @@ public class MonthlyDetail {
 		AttendanceTimeMonthWithMinus monthlyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
 		
 		// 各時系列ワーク　確認
-		this.setFromAggregateTotalWorkingTime(aggregateTotalWorkingTime);
+		this.workTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesWorks();
+		val vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
+		this.annualLeaveUseTime = vacationUseTime.getAnnualLeave().getTimeSeriesWorks();
+		this.retentionYearlyUseTime = vacationUseTime.getRetentionYearly().getTimeSeriesWorks();
+		this.specialHolidayUseTime = vacationUseTime.getSpecialHoliday().getTimeSeriesWorks();
+		this.overTime = aggregateTotalWorkingTime.getOverTime().getAggregateOverTimeMap();
+		this.holidayWorkTime = aggregateTotalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap();
 		
 		this.excessOutsideWorkMng = excessOutsideWorkMng;
 		

@@ -63,8 +63,8 @@ public class CommonApprovalRootFinder {
 	private EmployeeAdapter employeeAdapter;
 	@Inject
 	private EmployeeWithRangeAdapter employeeWithRangeAdapter;
-	private static final int COMPANY = 0;
-	private static final int WORKPLACE = 1;
+	private final int COMPANY = 0;
+	private final int WORKPLACE = 1;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * まとめて登録モード

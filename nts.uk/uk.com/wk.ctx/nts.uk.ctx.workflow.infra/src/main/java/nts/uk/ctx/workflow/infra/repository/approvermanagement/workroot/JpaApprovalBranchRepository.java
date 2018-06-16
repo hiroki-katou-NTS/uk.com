@@ -20,7 +20,7 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtBranchP
 @Stateless
 public class JpaApprovalBranchRepository extends JpaRepository implements ApprovalBranchRepository{
 
-	private static final String SELECT_FROM_APBRANCH = "SELECT c FROM WwfmtBranch c"
+	private final String SELECT_FROM_APBRANCH = "SELECT c FROM WwfmtBranch c"
 			+ " WHERE c.wwfmtBranchPK.companyId = :companyId"
 			+ " AND c.wwfmtBranchPK.branchId = :branchId";
 

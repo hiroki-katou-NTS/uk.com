@@ -23,7 +23,7 @@ public class AtJobTitleAdapterImpl implements AtJobTitleAdapter{
 		if (jobTitle.isPresent()){
 			return Optional.of(new AffJobTitleHistoryImport(jobTitle.get().getJobTitleId(), jobTitle.get().getJobTitleCode(),jobTitle.get().getJobTitleName()));
 		}
-		return Optional.ofNullable(null);
+		return null;
 	}
 
 }

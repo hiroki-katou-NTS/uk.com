@@ -18,5 +18,5 @@ public class DetailApproverDto {
 	
 	public String jobtitle;
 	
-	public String jobtitleAgent;
+	
 }

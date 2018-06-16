@@ -18,7 +18,6 @@ $wizard_image_size: 60px;
 .nts-wizard {
     display: block;
     width: 1000px;
-    height: 100%;
     overflow: hidden;
 	
 	a { outline: 0; }
@@ -217,7 +216,6 @@ $wizard_image_size: 60px;
 	&.vertical > .steps {
 	    float: left;
 	    width: 30%;
-	    height: 100%;
 	    background-color: rgb(160,160,160);
 	    
 	    > ul > li {

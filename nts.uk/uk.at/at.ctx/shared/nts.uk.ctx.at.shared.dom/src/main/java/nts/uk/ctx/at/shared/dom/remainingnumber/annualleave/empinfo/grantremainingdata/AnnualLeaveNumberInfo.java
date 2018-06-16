@@ -65,7 +65,7 @@ public class AnnualLeaveNumberInfo {
 		val grantDays = this.grantNumber.getDays().v();
 		val usedDays = this.usedNumber.getDays().v();
 		if (grantDays != 0){
-			String usedPer = new DecimalFormat("#.#").format(usedDays/grantDays);
+			String usedPer = new DecimalFormat("#.##").format(usedDays/grantDays);
 			this.usedPercent = new AnnualLeaveUsedPercent(new BigDecimal(usedPer));
 		}
 	}
@@ -80,7 +80,7 @@ public class AnnualLeaveNumberInfo {
 		val grantDays = this.grantNumber.getDays().v();
 		val usedDays = this.usedNumber.getDays().v();
 		if (grantDays != 0){
-			String usedPer = new DecimalFormat("#.#").format(usedDays/grantDays);
+			String usedPer = new DecimalFormat("#.##").format(usedDays/grantDays);
 			this.usedPercent = new AnnualLeaveUsedPercent(new BigDecimal(usedPer));
 		}
 	}

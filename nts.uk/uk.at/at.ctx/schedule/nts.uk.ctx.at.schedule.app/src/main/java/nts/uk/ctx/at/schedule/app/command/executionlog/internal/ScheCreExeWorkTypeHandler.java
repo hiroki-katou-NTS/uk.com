@@ -266,11 +266,6 @@ public class ScheCreExeWorkTypeHandler {
 					employmentInfo -> employmentInfo.getStandardDate().equals(command.getBaseGetter().getToDate()))
 					.findFirst();
 		}
-		// Khong co truong hop k lay duoc thong tin nhan vien
-		// van check isPresent cho dung luong tam!
-		if (!optEmploymentInfo.isPresent()) {
-			return null;
-		}
 
 		// employment status is INCUMBENT
 		if (optEmploymentInfo.get().getEmploymentState() == ScheCreExeWorkTimeHandler.INCUMBENT) {
@@ -282,7 +277,6 @@ public class ScheCreExeWorkTypeHandler {
 				|| optEmploymentInfo.get().getEmploymentState() == ScheCreExeWorkTimeHandler.LEAVE_OF_ABSENCE) {
 			return this.getWorktypeCodeLeaveHolidayType(command, optEmploymentInfo, listWorkingConItem);
 		}
-		
 		return ScheCreExeWorkTimeHandler.DEFAULT_CODE;
 	}
 

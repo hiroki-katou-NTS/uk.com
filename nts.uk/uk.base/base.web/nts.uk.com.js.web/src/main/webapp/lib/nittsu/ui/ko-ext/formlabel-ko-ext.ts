@@ -92,44 +92,14 @@ module nts.uk.ui.koExtentions {
                         constraint.innerHTML = util.getConstraintMes(primitive);
                     }
                 } else {
-                    getConstraintText(primitive).done(constraintText => {
-                        if (!__viewContext.primitiveValueConstraints[primitive]) {
-                            constraint.innerHTML = 'UNKNOW_PRIMITIVE';
-                        } else {
-                            constraint.innerHTML = constraintText;
-                        }
-                    });
+                    if (!__viewContext.primitiveValueConstraints[primitive]) {
+                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                    } else {
+                        constraint.innerHTML = util.getConstraintMes(primitive);
+                    }
                 }
             }
         }
-    }
-    
-    function getConstraintText(constraint: any) {
-        let dfd = $.Deferred();
-        if (constraint === "EmployeeCode" && (!__viewContext.primitiveValueConstraints
-            || !__viewContext.primitiveValueConstraints.EmployeeCode)) {
-            request.ajax("com", "/bs/employee/setting/code/find").done(res => {
-                
-                if (!__viewContext.primitiveValueConstraints) {
-                    __viewContext.primitiveValueConstraints = {};
-                }
-                
-                let employeeCodeConstr = {
-                    valueType: "String",
-                    charType: "AlphaNumeric",
-                    maxLength: res.numberOfDigits
-                };
-                
-                __viewContext.primitiveValueConstraints.EmployeeCode = employeeCodeConstr;
-                let label = text.getCharTypeByType(employeeCodeConstr.charType).buildConstraintText(res.numberOfDigits);
-                dfd.resolve(label);
-            });
-        } else {
-            let label = util.getConstraintMes(constraint);
-            dfd.resolve(label);
-        }
-        
-        return dfd.promise();
     }
 
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();

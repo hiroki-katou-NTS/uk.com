@@ -4,8 +4,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang3.ThreadUtils;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.AgreementCheckCon36;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.AgreementCheckCon36Repository;
@@ -29,7 +27,7 @@ public class JpaSpecHolidayCheckConRepository extends JpaRepository implements S
 	@Override
 	public void addSpecHolidayCheckCon(SpecHolidayCheckCon specHolidayCheckCon) {
 		this.commandProxy().insert(KrcmtSpecHolidayCheckCon.toEntity(specHolidayCheckCon));
-		this.getEntityManager().flush();
+		
 	}
 
 	@Override
@@ -41,14 +39,12 @@ public class JpaSpecHolidayCheckConRepository extends JpaRepository implements S
 		updateEntity.numberDayDiffHoliday1 = newEntity.numberDayDiffHoliday1;
 		updateEntity.numberDayDiffHoliday2 = newEntity.numberDayDiffHoliday2;
 		this.commandProxy().update(updateEntity);
-		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void deleteSpecHolidayCheckCon(String errorAlarmCheckID) {
 		KrcmtSpecHolidayCheckCon newEntity = this.queryProxy().find(errorAlarmCheckID, KrcmtSpecHolidayCheckCon.class).get();
 		this.commandProxy().remove(newEntity);
-		this.getEntityManager().flush();
 	}
 	
 	

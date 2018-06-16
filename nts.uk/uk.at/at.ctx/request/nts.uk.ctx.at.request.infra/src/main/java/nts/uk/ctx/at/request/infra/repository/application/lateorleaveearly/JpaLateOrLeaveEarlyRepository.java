@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.infra.repository.application.lateorleaveearly;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -18,12 +17,9 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	
 	//private final String SELECT= "SELECT c FROM KrqdtAppLateOrLeave c";
 	//private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppLateOrLeavePK.companyID = :companyID";
-	private static final String SELECT_SINGLE = "SELECT c"
+	private final String SELECT_SINGLE = "SELECT c"
 			+ " FROM KrqdtAppLateOrLeave c"
 			+ " WHERE c.krqdtAppLateOrLeavePK.appID = :appID AND c.krqdtAppLateOrLeavePK.companyID = :companyID";
-	private static final String SELECT_LIST_CANCEL_ATR = "SELECT c FROM KrqdtAppLateOrLeave c "
-			+ "WHERE c.krqdtAppLateOrLeavePK.appID IN :listAppID AND c.actualCancelAtr = :actualCancelAtr";
-	
 	@Override
 	public Optional<LateOrLeaveEarly> findByCode(String companyID, String appID) {
 		return this.queryProxy()
@@ -77,14 +73,6 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-	@Override
-	public List<LateOrLeaveEarly> findByActualCancelAtr(List<String> listAppID, Integer actualCancelAtr) {
-		return this.queryProxy()
-				.query(SELECT_LIST_CANCEL_ATR, KrqdtAppLateOrLeave.class)
-				.setParameter("listAppID", listAppID)
-				.setParameter("actualCancelAtr", actualCancelAtr)
-				.getList(c -> c.toDomain());
 	};
 	
 

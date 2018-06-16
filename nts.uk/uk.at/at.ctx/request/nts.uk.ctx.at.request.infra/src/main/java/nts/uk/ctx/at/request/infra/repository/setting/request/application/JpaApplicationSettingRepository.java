@@ -28,12 +28,12 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaApplicationSettingRepository extends JpaRepository implements ApplicationSettingRepository {
 
-	public static final String SELECT_NO_WHERE = "SELECT c FROM KrqstApplicationSetting c";
+	public final String SELECT_NO_WHERE = "SELECT c FROM KrqstApplicationSetting c";
 
-	public static final String SELECT_WITH_CID = SELECT_NO_WHERE 
+	public final String SELECT_WITH_CID = SELECT_NO_WHERE 
 			+ " WHERE c.krqstApplicationSettingPK.companyID := companyID";
 
-	public static final String SELECT_WITH_APP_TYPE = SELECT_NO_WHERE
+	public final String SELECT_WITH_APP_TYPE = SELECT_NO_WHERE
 			+ " WHERE c.krqstApplicationSettingPK.companyID := companyID"
 			+ " AND c.krqstApplicationSettingPK.appType := appType ";
 
