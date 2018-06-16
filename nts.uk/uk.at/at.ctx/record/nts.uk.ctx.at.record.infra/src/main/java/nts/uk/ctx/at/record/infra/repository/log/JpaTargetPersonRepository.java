@@ -15,16 +15,16 @@ import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExeTargetStt;
 @Stateless
 public class JpaTargetPersonRepository extends JpaRepository implements TargetPersonRepository {
 
-	private final String SELECT_FROM_TARGET = "SELECT c FROM KrcdtEmpExeTarget c ";
-	private final String SELECT_ALL_TARGET = SELECT_FROM_TARGET
+	private static final String SELECT_FROM_TARGET = "SELECT c FROM KrcdtEmpExeTarget c ";
+	private static final String SELECT_ALL_TARGET = SELECT_FROM_TARGET
 			+ " WHERE c.krcdtEmpExeTargetPK.employeeId = :employeeId ";
-	private final String SELECT_TARGET_BY_ID = SELECT_ALL_TARGET
+	private static final String SELECT_TARGET_BY_ID = SELECT_ALL_TARGET
 			+ " AND c.krcdtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
-	private final String SELECT_TARGET_PERSON = SELECT_FROM_TARGET
+	private static final String SELECT_TARGET_PERSON = SELECT_FROM_TARGET
 			+ " WHERE c.krcdtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
-	private final String SELECT_BY_LOG_ID = SELECT_FROM_TARGET
+	private static final String SELECT_BY_LOG_ID = SELECT_FROM_TARGET
 			+ "WHERE c.krcdtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID";
 
 	@Override

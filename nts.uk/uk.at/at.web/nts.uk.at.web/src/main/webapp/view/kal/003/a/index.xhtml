@@ -37,6 +37,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
+					<a class="goback link-button" tabindex="1" data-bind="ntsLinkButton: { jump: '../../002/a/index.xhtml' }">#{i18n.getText('KAL004_3')}</a>
 					<button tabindex="1" data-bind="click: openKAL003dDialog">#{i18n.getText('KAL003_5')}</button>
 					<button tabindex="2"
 						data-bind="click: registerAlarmCheckCondition, enable: $root.errors.isEmpty"

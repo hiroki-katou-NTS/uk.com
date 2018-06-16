@@ -20,20 +20,20 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOffManaDataRepository {
 
-private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :employeeId AND a.cID = :cid";
+	private static final String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :employeeId AND a.cID = :cid";
 	
-	private String GET_BY_REDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
+	private static final String GET_BY_REDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
 
-	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
+	private static final String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
 
-	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID, " AND a.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
+	private static final String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID, " AND a.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
 
-	private String GET_BYSID_BY_HOLIDAYDATECONDITION = "SELECT c FROM KrcmtComDayoffMaData c WHERE c.sID = :employeeId AND c.cID = :cid AND c.dayOff = :dateSubHoliday";
+	private static final String GET_BYSID_BY_HOLIDAYDATECONDITION = "SELECT c FROM KrcmtComDayoffMaData c WHERE c.sID = :employeeId AND c.cID = :cid AND c.dayOff = :dateSubHoliday";
 	
 	
-	private String GET_BY_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID IN :comDayOffIDs";
+	private static final String GET_BY_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID IN :comDayOffIDs";
 	
-	private String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData c"
+	private static final String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData c"
 			+ " WHERE c.dayOff >= :startDate"
 			+ " AND c.dayOff <= :endDate"
 			+ " AND c.sID = :sid";
@@ -177,14 +177,20 @@ private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :
 	}
 	
 	@Override
-	public void updateReDayReqByComDayId(List<String> comDayIds) {
+	public void updateReDayReqByComDayId(List<String> comDayIds,Boolean check) {
 		List<KrcmtComDayoffMaData> KrcmtComDayoffMaData = this.queryProxy()
 				.query(GET_BY_LISTID, KrcmtComDayoffMaData.class)
 				.setParameter("comDayOffIDs",comDayIds)
 				.getList();
+		if(check) {
 			for(KrcmtComDayoffMaData busItem: KrcmtComDayoffMaData){
 				busItem.remainDays =  busItem.requiredDays;
 			}
+		} else {
+			for(KrcmtComDayoffMaData busItem: KrcmtComDayoffMaData){
+				busItem.remainDays =  0.5;
+			}
+		}
 		this.commandProxy().updateAll(KrcmtComDayoffMaData);
 	}
 

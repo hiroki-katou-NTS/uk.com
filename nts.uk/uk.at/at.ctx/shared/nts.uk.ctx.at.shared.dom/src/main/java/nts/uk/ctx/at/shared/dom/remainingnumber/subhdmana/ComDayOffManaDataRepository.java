@@ -47,7 +47,7 @@ public interface ComDayOffManaDataRepository {
 	
 	void updateReDayByComDayId(List<String> comDayIds);
 	
-	void updateReDayReqByComDayId(List<String> comDayIds);
+	void updateReDayReqByComDayId(List<String> comDayIds, Boolean check);
 	
 	Optional<CompensatoryDayOffManaData> getBycomdayOffId(String comDayOffId);
 	

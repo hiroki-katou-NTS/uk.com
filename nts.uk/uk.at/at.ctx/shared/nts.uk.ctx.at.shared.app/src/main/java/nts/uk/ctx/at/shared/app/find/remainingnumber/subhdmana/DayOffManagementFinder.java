@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.DayOffManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.DayOffResult;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveManaDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.shr.com.context.AppContexts;
@@ -33,8 +32,15 @@ public class DayOffManagementFinder {
 		daysFreeOffMana = comDayOffManaDataRepository.getByReDay(companyId, employeeId);
 		List<CompensatoryDayOffManaData> daysOffMana = new ArrayList<>();
 		daysOffMana = comDayOffManaDataRepository.getBySidComDayOffIdWithReDay(companyId, employeeId, leaveId);
-		resultDayFreeMana = daysFreeOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().orElse(null),p.getRequireDays().v().toString(),false,p.getComDayOffID())).collect(Collectors.toList());
-		resultDaysOffMana = daysOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().orElse(null),p.getRequireDays().v().toString(),true,p.getComDayOffID())).collect(Collectors.toList());
+		resultDayFreeMana = daysFreeOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().orElse(null),p.getRemainDays().v().toString(),false,p.getComDayOffID())).collect(Collectors.toList());
+		resultDaysOffMana = daysOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().orElse(null),p.getRemainDays().v().toString(),true,p.getComDayOffID())).collect(Collectors.toList());
+		for (DayOffManagementDto dayOffMana : resultDaysOffMana) {
+			for (DayOffManagementDto dayOffManaFree : resultDayFreeMana) {
+				if(dayOffMana.getComDayOffId().equals(dayOffManaFree.getComDayOffId())) {
+					resultDayFreeMana.remove(dayOffManaFree);
+				}
+			}
+		}
 		dayOffAll.addAll(resultDaysOffMana);
 		dayOffAll.addAll(resultDayFreeMana);
 		Collections.sort(dayOffAll, new Comparator<DayOffManagementDto>() {
