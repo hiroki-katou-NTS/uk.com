@@ -43,10 +43,9 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
-	 * CalculateAttendanceRecordRepositoty#getCalculateAttendanceRecord(java.lang.
-	 * String,
-	 * nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode,
-	 * long, long, long)
+	 * CalculateAttendanceRecordRepositoty#getCalculateAttendanceRecord(java.
+	 * lang. String, nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
+	 * ExportSettingCode, long, long, long)
 	 */
 	@Override
 	public Optional<CalculateAttendanceRecord> getCalculateAttendanceRecord(String companyId,
@@ -126,6 +125,8 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * @return the calculate attendance record
 	 */
 	private CalculateAttendanceRecord toDomain(KfnstAttndRec kfnstAttndRec) {
+		if(kfnstAttndRec.getId().getCid()==null)
+			return new CalculateAttendanceRecord();
 		// get KfnstAttndRecItem by KfnstAttndRecPK
 		KfnstAttndRecPK kfnstAttndRecPK = kfnstAttndRec.getId();
 		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
@@ -205,8 +206,9 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	private KfnstAttndRecItem toEntityAttndRecItemSubtracted(ExportSettingCode exportSettingCode, long columnIndex,
 			long position, long exportArt, int timeItemId) {
 		UID uid = new UID();
-		KfnstAttndRecItem kfnstAttendRecItem =  new KfnstAttndRecItem(uid.toString(),  AppContexts.user().companyId(), columnIndex,  exportSettingCode.v(),  new BigDecimal(SUBTRACT_FORMULA_TYPE),  exportArt
-				,  position, timeItemId);
+		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(uid.toString(), AppContexts.user().companyId(),
+				columnIndex, exportSettingCode.v(), new BigDecimal(SUBTRACT_FORMULA_TYPE), exportArt, position,
+				timeItemId);
 		return kfnstAttendRecItem;
 	}
 
@@ -216,8 +218,8 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		// KfnstAttndRecItemPK(AppContexts.user().companyId(),
 		// exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
 		UID uid = new UID();
-		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(uid.toString(),  AppContexts.user().companyId(), columnIndex,  exportSettingCode.v(),  new BigDecimal(ADD_FORMULA_TYPE),  exportArt
-				,  position, timeItemId);
+		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(uid.toString(), AppContexts.user().companyId(),
+				columnIndex, exportSettingCode.v(), new BigDecimal(ADD_FORMULA_TYPE), exportArt, position, timeItemId);
 		return kfnstAttendRecItem;
 	}
 
@@ -239,7 +241,8 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
 	 * CalculateAttendanceRecordRepositoty#
-	 * getIdCalculateAttendanceRecordDailyByPosition(java.lang.String, long, long)
+	 * getIdCalculateAttendanceRecordDailyByPosition(java.lang.String, long,
+	 * long)
 	 */
 	@Override
 	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String companyId,
@@ -267,8 +270,28 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 
 		// query data
 		List<KfnstAttndRec> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+		List<KfnstAttndRec> kfnstAttndRecItemsTotal = new ArrayList<>();
+
+		for (int i = 7; i <= 9; i++) {
+			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
+				KfnstAttndRec item = new KfnstAttndRec();
+				item.setId(new KfnstAttndRecPK());
+				kfnstAttndRecItemsTotal.add(item);
+			} else {
+				kfnstAttndRecItemsTotal.add(this.findIndexInList(i, kfnstAttndRecItems));
+			}
+		}
 		return kfnstAttndRecItems.isEmpty() ? new ArrayList<CalculateAttendanceRecord>()
 				: kfnstAttndRecItems.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+	}
+
+	private KfnstAttndRec findIndexInList(int i, List<KfnstAttndRec> list) {
+		for (KfnstAttndRec item : list) {
+			if (item.getId().getColumnIndex() == i)
+				return item;
+		}
+
+		return null;
 	}
 
 	/*
@@ -276,7 +299,8 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
 	 * CalculateAttendanceRecordRepositoty#
-	 * getIdCalculateAttendanceRecordMonthlyByPosition(java.lang.String, long, long)
+	 * getIdCalculateAttendanceRecordMonthlyByPosition(java.lang.String, long,
+	 * long)
 	 */
 	@Override
 	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String companyId,
@@ -300,7 +324,17 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 
 		// query data
 		List<KfnstAttndRec> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+		List<KfnstAttndRec> kfnstAttndRecItemsTotal = new ArrayList<>();
+		for (int i = 1; i <= 12; i++) {
+			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
+				KfnstAttndRec item = new KfnstAttndRec();
+				item.setId(new KfnstAttndRecPK());
+				kfnstAttndRecItemsTotal.add(item);
+			} else {
+				kfnstAttndRecItemsTotal.add(this.findIndexInList(i, kfnstAttndRecItems));
+			}
+		}
 		return kfnstAttndRecItems.isEmpty() ? new ArrayList<CalculateAttendanceRecord>()
-				: kfnstAttndRecItems.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+				: kfnstAttndRecItemsTotal.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 }

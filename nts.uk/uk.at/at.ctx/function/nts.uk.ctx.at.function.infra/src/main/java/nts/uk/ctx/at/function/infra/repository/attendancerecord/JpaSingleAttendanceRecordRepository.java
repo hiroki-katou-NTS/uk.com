@@ -48,9 +48,9 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
-	 * SingleAttendanceRecordRepository#getSingleAttendanceRecord(java.lang.String,
-	 * nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode,
-	 * long, long, long)
+	 * SingleAttendanceRecordRepository#getSingleAttendanceRecord(java.lang.
+	 * String, nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
+	 * ExportSettingCode, long, long, long)
 	 */
 	@Override
 	public Optional<SingleAttendanceRecord> getSingleAttendanceRecord(String companyId,
@@ -64,9 +64,9 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
-	 * SingleAttendanceRecordRepository#addSingleAttendanceRecord(java.lang.String,
-	 * nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode,
-	 * long, long,
+	 * SingleAttendanceRecordRepository#addSingleAttendanceRecord(java.lang.
+	 * String, nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
+	 * ExportSettingCode, long, long,
 	 * nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord)
 	 */
 	@Override
@@ -80,9 +80,9 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
-	 * SingleAttendanceRecordRepository#updateSingleAttendanceRecord(nts.uk.ctx.at.
-	 * function.dom.attendancerecord.export.setting.ExportSettingCode, long, long,
-	 * long, boolean,
+	 * SingleAttendanceRecordRepository#updateSingleAttendanceRecord(nts.uk.ctx.
+	 * at. function.dom.attendancerecord.export.setting.ExportSettingCode, long,
+	 * long, long, boolean,
 	 * nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord)
 	 */
 	@Override
@@ -114,8 +114,8 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 					singleAttendanceRecord));
 		} else {
 			UID uid = new UID();
-			kfnstAttndRecItem =  new KfnstAttndRecItem(uid.toString(), companyId, columnIndex,  exportSettingCode.v(),  new BigDecimal(SINGLE_FORMULA_TYPE),  exportArt
-					,  position, singleAttendanceRecord.getTimeItemId());
+			kfnstAttndRecItem = new KfnstAttndRecItem(uid.toString(), companyId, columnIndex, exportSettingCode.v(),
+					new BigDecimal(SINGLE_FORMULA_TYPE), exportArt, position, singleAttendanceRecord.getTimeItemId());
 			this.commandProxy().insert(kfnstAttndRecItem);
 		}
 		this.getEntityManager().flush();
@@ -127,9 +127,8 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
 	 * SingleAttendanceRecordRepository#deleteSingleAttendanceRecord(java.lang.
-	 * String,
-	 * nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode,
-	 * long, long,
+	 * String, nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
+	 * ExportSettingCode, long, long,
 	 * nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord)
 	 */
 	@Override
@@ -236,8 +235,9 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 			long exportArt, SingleAttendanceRecord singleAttendanceRecord) {
 		String companyId = AppContexts.user().companyId();
 		UID uid = new UID();
-		KfnstAttndRecItem kfnstAttndRecItem = new KfnstAttndRecItem(uid.toString(), companyId, columnIndex,  exportSettingCode.v(),  new BigDecimal(SINGLE_FORMULA_TYPE),  exportArt
-				,  position, singleAttendanceRecord.getTimeItemId());
+		KfnstAttndRecItem kfnstAttndRecItem = new KfnstAttndRecItem(uid.toString(), companyId, columnIndex,
+				exportSettingCode.v(), new BigDecimal(SINGLE_FORMULA_TYPE), exportArt, position,
+				singleAttendanceRecord.getTimeItemId());
 		return kfnstAttndRecItem;
 	}
 
@@ -245,8 +245,8 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
-	 * SingleAttendanceRecordRepository#getIdSingleAttendanceRecordByPosition(java.
-	 * lang.String, long, long)
+	 * SingleAttendanceRecordRepository#getIdSingleAttendanceRecordByPosition(
+	 * java. lang.String, long, long)
 	 */
 	@Override
 	public List<Integer> getIdSingleAttendanceRecordByPosition(String companyId, long exportCode, long position) {
@@ -262,7 +262,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.cid), companyId));
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.exportCd), exportCode));
-		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnstAttndRecItem_.columnIndex), (long)6));
+		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnstAttndRecItem_.columnIndex), (long) 6));
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.position), position));
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.outputAtr), 1));
 
@@ -270,8 +270,28 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 
 		// query data
 		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
-		return kfnstAttndRecItems.isEmpty() ? new ArrayList<Integer>()
-				: kfnstAttndRecItems.stream().map(item -> (int) item.getTimeItemId()).collect(Collectors.toList());
 
+		List<KfnstAttndRecItem> kfnstAttndRecItemsTotal = new ArrayList<>();
+		for (int i = 1; i <= 6; i++) {
+			if (this.findIndexInList(i, kfnstAttndRecItems)==null) {
+				KfnstAttndRecItem item = new KfnstAttndRecItem();
+				item.setTimeItemId(0);
+				kfnstAttndRecItemsTotal.add(item);
+			} else
+				kfnstAttndRecItemsTotal.add(this.findIndexInList(i, kfnstAttndRecItems));
+		}
+
+		return kfnstAttndRecItems.isEmpty() ? new ArrayList<Integer>()
+				: kfnstAttndRecItemsTotal.stream().map(item -> (int) item.getTimeItemId()).collect(Collectors.toList());
+
+	}
+
+	private KfnstAttndRecItem findIndexInList(int i, List<KfnstAttndRecItem> list) {
+		for (KfnstAttndRecItem item : list) {
+			if (item.getColumnIndex() == i)
+				return item;
+		}
+
+		return null;
 	}
 }
