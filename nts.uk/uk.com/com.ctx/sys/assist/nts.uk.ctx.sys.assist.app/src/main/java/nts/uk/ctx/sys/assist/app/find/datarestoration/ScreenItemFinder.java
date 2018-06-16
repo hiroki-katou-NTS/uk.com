@@ -14,7 +14,7 @@ public class ScreenItemFinder {
 
 	public ScreenItemDto getTargetById(String dataRecoveryProcessId) {
 		Optional<PerformDataRecovery> optPerformData = finder.getPerformDatRecoverById(dataRecoveryProcessId);
-		if (!optPerformData.isPresent()) {
+		if (optPerformData.isPresent()) {
 			return ScreenItemDto.fromDomain(optPerformData.get());
 		}
 		return null;
