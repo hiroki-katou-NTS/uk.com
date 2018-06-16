@@ -29,9 +29,6 @@ public class ServerPreparationService {
 	private TableListRestorationService tableListRestorationService;
 	
 	@Inject
-	private TableListRepository tableListRepository;
-	
-	@Inject
 	private PerformDataRecoveryRepository performDataRecoveryRepository;
 	
 	@Inject
@@ -46,30 +43,41 @@ public class ServerPreparationService {
 	@Inject
 	private TableItemValidation tableItemValidation;
 	
+	@Inject
+	private EmployeeRestoration employeeRestoration;
+	
 	// アルゴリズム「サーバー準備処理」を実行する
 	public ServerPrepareMng serverPreparationProcessing(ServerPrepareMng serverPrepareMng){
 		serverPrepareMng = dataExtractionService.extractData(serverPrepareMng);
-		//ドメインモデル「データ復旧の実行」に新規に書き出す
-		PerformDataRecovery performDataRecovery = new PerformDataRecovery(serverPrepareMng.getDataRecoveryProcessId(), AppContexts.user().companyId(), serverPrepareMng.getFileId().get(), serverPrepareMng.getUploadFileName().get());
-		
-		//アルゴリズム「テーブル一覧の復元」を実行する
-		List<Object> restoreTableResult = tableListRestorationService.restoreTableList(serverPrepareMng);
-		serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(0);
-		List<TableList> tableList = (List<TableList>)(restoreTableResult.get(1));
-		if (serverPrepareMng.getOperatingCondition() != ServerPrepareOperatingCondition.TABLE_LIST_FAULT){
-			serverPrepareMng = thresholdConfigurationCheck.checkFileConfiguration(serverPrepareMng, tableList);
-			if (serverPrepareMng.getOperatingCondition() != ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY){
-				List<Object> sperateCompanyResult = companyDeterminationProcess.sperateCompanyDeterminationProcess(serverPrepareMng, performDataRecovery, tableList);
-				serverPrepareMng = (ServerPrepareMng) sperateCompanyResult.get(0);
-				performDataRecovery = (PerformDataRecovery) sperateCompanyResult.get(1);
-				tableList = (List<TableList>)(sperateCompanyResult.get(2));
-				serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
-				if(serverPrepareMng.getOperatingCondition() != ServerPrepareOperatingCondition.TABLE_ITEM_DIFFERENCE){
+		if (checkNormalFile(serverPrepareMng)){
+			PerformDataRecovery performDataRecovery = new PerformDataRecovery(serverPrepareMng.getDataRecoveryProcessId(), AppContexts.user().companyId(), serverPrepareMng.getFileId().get(), serverPrepareMng.getUploadFileName().get());
+			//アルゴリズム「テーブル一覧の復元」を実行する
+			List<Object> restoreTableResult = tableListRestorationService.restoreTableList(serverPrepareMng);
+			serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(0);
+			List<TableList> tableList = (List<TableList>)(restoreTableResult.get(1));
+			if (checkNormalFile(serverPrepareMng)){
+				// アルゴリズム「テーブル一覧の復元」を実行する
+				serverPrepareMng = thresholdConfigurationCheck.checkFileConfiguration(serverPrepareMng, tableList);
+				if (checkNormalFile(serverPrepareMng)){
+					// アルゴリズム「別会社判定処理」を実行する
+					List<Object> sperateCompanyResult = companyDeterminationProcess.sperateCompanyDeterminationProcess(serverPrepareMng, performDataRecovery, tableList);
+					serverPrepareMng = (ServerPrepareMng) sperateCompanyResult.get(0);
+					performDataRecovery = (PerformDataRecovery) sperateCompanyResult.get(1);
+					tableList = (List<TableList>)(sperateCompanyResult.get(2));
+					if (checkNormalFile(serverPrepareMng)){
+						serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
+						if (checkNormalFile(serverPrepareMng)){
+							employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery, tableList);
+						}
+					}
 					
 				}
 			}
 		}
-		
+		//ドメインモデル「データ復旧の実行」に新規に書き出す
 		return serverPrepareMng;
+	}
+	public boolean checkNormalFile (ServerPrepareMng serverPrepareMng){
+		return serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_FILE_STRUCTURE;
 	}
 }

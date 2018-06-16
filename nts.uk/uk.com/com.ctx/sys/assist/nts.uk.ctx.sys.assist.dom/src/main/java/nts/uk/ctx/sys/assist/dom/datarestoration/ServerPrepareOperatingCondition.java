@@ -86,7 +86,7 @@ public enum ServerPrepareOperatingCondition {
 	/**
 	 * 調査保存不可
 	 */
-	CAN_NOT_SAVE_SURVEY     (15, "Enum_OperatingCondition_");
+	CAN_NOT_SAVE_SURVEY     (15, "Enum_OperatingCondition_CAN_NOT_SAVE_SURVEY");
 	
 	/** The value. */
 	public final int value;

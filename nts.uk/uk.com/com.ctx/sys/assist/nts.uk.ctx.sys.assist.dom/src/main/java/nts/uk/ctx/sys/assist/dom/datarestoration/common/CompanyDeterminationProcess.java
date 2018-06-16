@@ -7,23 +7,26 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
+import nts.uk.ctx.sys.assist.dom.datarestoration.RecoveryMethod;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class CompanyDeterminationProcess {
 	// アルゴリズム「別会社判定処理」を実行する
 	public List<Object> sperateCompanyDeterminationProcess(ServerPrepareMng serverPrepareMng, PerformDataRecovery performDataRecovery, List<TableList> tableList){
 		String cid = tableList.get(1).getFieldAcqCid();
-		
+		performDataRecovery.setRecoverFromAnoCom(NotUseAtr.NOT_USE);
 		if (AppContexts.user().companyId().equals(cid)){
-			// SET performDataRecovery TO ALL
-			
-			//performDataRecovery.
+			//TODO
+			performDataRecovery.setRecoverFromAnoCom(NotUseAtr.USE);
+			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
 		} else {
-			// SET performDataRecovery TO ANOTHER COMPANY
+			//TODO
+			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
 			boolean isRecoveryOtherCompanyNoOccur = true;
 			for(int i = 0; i < tableList.size(); i++){
 				TableList tableListRecord = tableList.get(i);
