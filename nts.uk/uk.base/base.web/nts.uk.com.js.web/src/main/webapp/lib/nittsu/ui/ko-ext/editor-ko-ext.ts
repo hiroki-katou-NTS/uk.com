@@ -75,8 +75,6 @@ module nts.uk.ui.koExtentions {
             var valueUpdate: string = (immediate === true) ? 'input' : 'change';
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : {};
             this.editorOption = $.extend(this.getDefaultOption(), option);
-            var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
-            $input.data("setValOnRequiredError", setValOnRequiredError);
             var characterWidth: number = 9;
             if (constraint && constraint.maxLength && !$input.is("textarea")) {
                 let autoWidth = constraint.maxLength * characterWidth;
@@ -113,10 +111,6 @@ module nts.uk.ui.koExtentions {
                     if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
                         $input.ntsError('clear');
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                    }
-                    if($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)){
-                        valueChanging.markUserChange($input);
-                        value(newText);
                     }
                     
                     // valueChanging.markUserChange($input);
@@ -172,8 +166,6 @@ module nts.uk.ui.koExtentions {
             var placeholder: string = this.editorOption.placeholder;
             var textalign: string = this.editorOption.textalign;
             var width: string = this.editorOption.width;
-            var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
-            $input.data("setValOnRequiredError", setValOnRequiredError);
             
             disable.saveDefaultValue($input, option.defaultValue);
             
@@ -228,24 +220,18 @@ module nts.uk.ui.koExtentions {
      * TextEditor Processor
      */
     class TextEditorProcessor extends EditorProcessor {
-        $input: JQuery;
-        
+
         init($input: JQuery, data: any) {
             let self = this;
             var value: KnockoutObservable<string> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constraint = validation.getConstraint(constraintName);
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-            var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
-            $input.data("setValOnRequiredError", setValOnRequiredError);
             var characterWidth: number = 9;
-            
-            self.loadConstraints(constraintName, $input).done(() => {
-                let constraint = validation.getConstraint(constraintName);
-                if (constraint && constraint.maxLength && !$input.is("textarea")) {
-                    let autoWidth = constraint.maxLength * characterWidth;
-                    $input.width(autoWidth);
-                }
-            });
+            if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                var autoWidth = constraint.maxLength * characterWidth;
+                $input.width(autoWidth);
+            }
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
@@ -309,11 +295,6 @@ module nts.uk.ui.koExtentions {
                         }
                     } else {
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                        
-                        if($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)){
-                            valueChanging.markUserChange($input);
-                            value(newText);
-                        }
                         // valueChanging.markUserChange($input);
                         // value(newText);
                     } 
@@ -339,7 +320,6 @@ module nts.uk.ui.koExtentions {
         }
 
         update($input: JQuery, data: any) {
-            this.$input = $input;
             super.update($input, data);
             var textmode: string = this.editorOption.textmode;
             $input.attr('type', textmode);
@@ -358,10 +338,6 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            let formatOption = this.$input.data("editorFormatOption");
-            if (formatOption) {
-                $.extend(this.editorOption, formatOption);
-            }
             this.editorOption.autofill = (constraint && constraint.isZeroPadded) ? constraint.isZeroPadded : this.editorOption.autofill;
             return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
         }
@@ -383,57 +359,8 @@ module nts.uk.ui.koExtentions {
             if(data.constraint=="StampNumber"){
                 return new validation.PunchCardNoValidator(name, constraintName, { required: required });
             }
-            if (data.constraint === "EmployeeCode") {
-                return new validation.EmployeeCodeValidator(name, { required: required });
-            }
 
             return new validation.StringValidator(name, constraintName, { required: required });
-        }
-        
-        loadConstraints(name: string, $input: JQuery) {
-            let self = this;
-            let dfd = $.Deferred();
-            if (name !== "EmployeeCode" || (__viewContext.primitiveValueConstraints 
-                && __viewContext.primitiveValueConstraints.EmployeeCode)) { 
-                dfd.resolve();
-                return dfd.promise();
-            }
-            
-            request.ajax("com", "/bs/employee/setting/code/find").done(res => {
-                if (!__viewContext.primitiveValueConstraints) {
-                    __viewContext.primitiveValueConstraints = {};
-                }
-                
-                let employeeCodeConstr = {
-                    valueType: "String",
-                    charType: "AlphaNumeric",
-                    maxLength: res.numberOfDigits
-                };
-                
-                __viewContext.primitiveValueConstraints.EmployeeCode = employeeCodeConstr;
-                let formatOption = { autofill: true };
-                
-                if (res.ceMethodAttr === 0) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 1) {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 2) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = " ";
-                } else {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = " ";   
-                }
-                
-                $input.data("editorFormatOption", formatOption);
-                dfd.resolve();
-            }).fail(res => {
-                dfd.reject();
-            });
-            
-            return dfd.promise();
         }
     }
 
@@ -588,8 +515,7 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
-            var mode: string = (data.mode !== undefined) ? ko.unwrap(data.mode) : ""
-            return new text.TimeFormatter({ inputFormat: inputFormat, mode: mode });
+            return new text.TimeFormatter({ inputFormat: inputFormat });
         }
 
         getValidator(data: any): validation.IValidator {

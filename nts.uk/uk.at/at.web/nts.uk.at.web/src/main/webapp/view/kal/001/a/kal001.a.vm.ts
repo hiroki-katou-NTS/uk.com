@@ -41,12 +41,12 @@ module nts.uk.at.view.kal001.a.model {
             self.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: false,
+                showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: false,
-                showAllClosure: false,
+                showBaseDate: true,
+                showClosure: true,
+                showAllClosure: true,
                 showPeriod: true,
                 periodFormatYM: false,
                 
@@ -134,17 +134,20 @@ module nts.uk.at.view.kal001.a.model {
                     }).fail((errorCheckTime) =>{
                         alertError(errorCheckTime);
                     }).always(()=>{
-                        $('#extract').focus();
                         block.clear();    
                     });
                                         
                 }else{
                      dfd.resolve();  
                 }
+
+                
             }).fail((errorAlarm)=>{
                  alertError(errorAlarm);
                  block.clear();
             });
+            
+
             return dfd.promise();
         }
         
@@ -240,7 +243,6 @@ module nts.uk.at.view.kal001.a.model {
                               nts.uk.ui.dialog.info({ messageId: "Msg_835" });   
                               return;
                         }
-                        
                         
                         nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
                         modal("/view/kal/001/b/index.xhtml").onClosed(() => {

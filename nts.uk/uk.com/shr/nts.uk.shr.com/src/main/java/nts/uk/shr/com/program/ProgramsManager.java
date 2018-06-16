@@ -1131,30 +1131,6 @@ public class ProgramsManager {
 	 */
 	public static final Program KDW008C = new Program(WebAppId.AT, ProgramIdConsts.KDW008C, "KDW008_33",
 			"/view/kdw/008/c/index.xhtml");
-	
-	/**
-	 * KWR001A
-	 */
-	public static final Program KWR001A = new Program(WebAppId.AT, ProgramIdConsts.KWR001A, "KWR001_1",
-			"/view/kwr/001/a/index.xhtml");
-	
-	/**
-	 * KWR001B
-	 */
-	public static final Program KWR001B = new Program(WebAppId.AT, ProgramIdConsts.KWR001B, "KWR001_2",
-			"/view/kwr/001/b/index.xhtml");
-	
-	/**
-	 * KWR001C
-	 */
-	public static final Program KWR001C = new Program(WebAppId.AT, ProgramIdConsts.KWR001C, "KWR001_3",
-			"/view/kwr/001/c/index.xhtml");
-	
-	/**
-	 * KWR001D
-	 */
-	public static final Program KWR001D = new Program(WebAppId.AT, ProgramIdConsts.KWR001D, "KWR001_4",
-			"/view/kwr/001/d/index.xhtml");
 
 	/**
 	 * CPS006A
