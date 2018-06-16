@@ -99,10 +99,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 	}
 
 	private <T extends MonthlyItemCommon,U extends MonthlyItemCommon> T filterItem(List<T> att, U a) {
-		return att.stream().filter(at -> 
-				at.getClosureDate().equals(a.getClosureDate()) 
-				&& at.employeeId().equals(a.employeeId()) 
-				&& at.yearMonth().equals(a.yearMonth()) 
+		return att.stream().filter(at -> at.getClosureDate().equals(a.getClosureDate()) 
 				&& at.getClosureID() == a.getClosureID()).findFirst().orElse(null);
 	}
 }

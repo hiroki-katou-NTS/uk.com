@@ -3,7 +3,7 @@ module nts.uk.at.view.kmk010.a {
     export module service {
         var paths = {
             findAllOvertimeCalculationMethod: "ctx/at/shared/outsideot/setting/findAll/method",
-            findAllAttendanceItemOvertime: "at/share/attendanceType/getAtdId",
+            findAllAttendanceItemOvertime: "ctx/at/shared/outsideot/setting/findAll/attendanceItem",
             findAllOvertimeUnit: "ctx/at/shared/outsideot/setting/findAll/unit",
             findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/rounding",
             findAllOvertimeRoundingSub: "ctx/at/shared/outsideot/setting/findAll/roundingsub",

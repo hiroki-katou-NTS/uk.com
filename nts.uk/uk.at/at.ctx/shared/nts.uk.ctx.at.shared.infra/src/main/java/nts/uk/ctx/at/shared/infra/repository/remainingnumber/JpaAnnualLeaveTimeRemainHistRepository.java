@@ -26,13 +26,12 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 	}
 
 	@Override
-	public List<AnnualLeaveTimeRemainingHistory> findByCalcDateClosureDate(String employeeId, GeneralDate calculationStartDate, 
+	public List<AnnualLeaveTimeRemainingHistory> findByCalcDateClosureDate(GeneralDate calculationStartDate,
 			GeneralDate closureStartDate) {
-		String sql = "SELECT a FROM KrcdtAnnLeaTimeRemainHist a WHERE a.grantProcessDate >= :calculationStartDate AND a.grantProcessDate <= :closureStartDate AND a.sid = :employeeId";
+		String sql = "SELECT a FROM KrcdtAnnLeaTimeRemainHist a WHERE a.grantProcessDate >= :calculationStartDate AND a.grantProcessDate <= :closureStartDate";
 		return this.queryProxy().query(sql, KrcdtAnnLeaTimeRemainHist.class)
 				.setParameter("calculationStartDate", calculationStartDate)
-				.setParameter("closureStartDate", closureStartDate)
-				.setParameter("employeeId", employeeId).getList(item -> item.toDomain());
+				.setParameter("closureStartDate", closureStartDate).getList(item -> item.toDomain());
 	}
 
 }

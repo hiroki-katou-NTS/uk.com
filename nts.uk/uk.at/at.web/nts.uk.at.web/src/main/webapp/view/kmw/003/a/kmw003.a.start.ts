@@ -16,8 +16,8 @@ module nts.uk.at.view.kmw003.a {
             let dialogOptions = {
                forGrid: true,
                 headers: [
-                    new nts.uk.ui.errors.ErrorHeader("employeeCode", "社員コード", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("employeeName", "社員名", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("employeeCode", "社員J1コード", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("employeeName", "社員J1名", "auto", true),
                     new nts.uk.ui.errors.ErrorHeader("columnName", "対象項目", "auto", true),
                     new nts.uk.ui.errors.ErrorHeader("message", "エラー内容", "auto", true)
                 ] 

@@ -17,16 +17,16 @@ import nts.uk.ctx.at.record.infra.entity.log.KrcdtErrMessageInfoPK;
 @Stateless
 public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMessageInfoRepository {
 
-	private static final String SELECT_FROM_ERR_MESSAGE = "SELECT c FROM KrcdtErrMessageInfo c ";
+	private final String SELECT_FROM_ERR_MESSAGE = "SELECT c FROM KrcdtErrMessageInfo c ";
 	
-	private static final String SELECT_ERR_MESSAGE_BY_EMPID = SELECT_FROM_ERR_MESSAGE
+	private final String SELECT_ERR_MESSAGE_BY_EMPID = SELECT_FROM_ERR_MESSAGE
 			+ " WHERE c.krcdtErrMessageInfoPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 	
-	private static final String SELECT_ERR_MESSAGE_BY_EXECONTEXT = SELECT_FROM_ERR_MESSAGE
+	private final String SELECT_ERR_MESSAGE_BY_EXECONTEXT = SELECT_FROM_ERR_MESSAGE
 			+ " WHERE c.krcdtErrMessageInfoPK.empCalAndSumExecLogID = :empCalAndSumExecLogID"
 			+ " AND c.krcdtErrMessageInfoPK.executionContent = :executionContent";
 	
-	private static final String SELECT_ERR_MESSAGE_BYID = SELECT_ERR_MESSAGE_BY_EMPID
+	private final String SELECT_ERR_MESSAGE_BYID = SELECT_ERR_MESSAGE_BY_EMPID
 			+ " AND c.krcdtErrMessageInfoPK.executionContent = :executionContent ";
 	
 	

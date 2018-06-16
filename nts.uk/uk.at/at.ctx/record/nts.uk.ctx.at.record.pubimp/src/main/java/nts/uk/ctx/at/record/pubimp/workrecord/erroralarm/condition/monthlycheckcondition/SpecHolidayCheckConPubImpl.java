@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.condition.monthlycheckcondition;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -30,8 +29,8 @@ public class SpecHolidayCheckConPubImpl implements SpecHolidayCheckConPub {
 		return new SpecHolidayCheckConPubEx(
 				domain.getErrorAlarmCheckID(),
 				domain.getCompareOperator(),
-				new BigDecimal(domain.getNumberDayDiffHoliday1().v()),
-				!domain.getNumberDayDiffHoliday2().isPresent()?null:new BigDecimal(domain.getNumberDayDiffHoliday2().get().v())
+				domain.getNumberDayDiffHoliday1().v().intValue(),
+				!domain.getNumberDayDiffHoliday2().isPresent()?null:domain.getNumberDayDiffHoliday2().get().v().intValue()
 				);
 	}
 

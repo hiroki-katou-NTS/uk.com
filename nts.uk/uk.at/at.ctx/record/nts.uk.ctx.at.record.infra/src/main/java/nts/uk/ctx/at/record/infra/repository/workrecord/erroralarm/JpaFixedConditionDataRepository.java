@@ -12,8 +12,8 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcmtFixedConditi
 @Stateless
 public class JpaFixedConditionDataRepository extends JpaRepository implements FixedConditionDataRepository  {
 
-	private static final String SELECT_FROM_FIXED_CON_DATA = " SELECT c FROM KrcmtFixedConditionData c ";
-	private static final String SELECT_FROM_FIXED_BY_NO = SELECT_FROM_FIXED_CON_DATA 
+	private final String SELECT_FROM_FIXED_CON_DATA = " SELECT c FROM KrcmtFixedConditionData c ";
+	private final String SELECT_FROM_FIXED_BY_NO = SELECT_FROM_FIXED_CON_DATA 
 			+ " WHERE c.fixConWorkRecordNo = :fixConWorkRecordNo ";
 	
 	@Override

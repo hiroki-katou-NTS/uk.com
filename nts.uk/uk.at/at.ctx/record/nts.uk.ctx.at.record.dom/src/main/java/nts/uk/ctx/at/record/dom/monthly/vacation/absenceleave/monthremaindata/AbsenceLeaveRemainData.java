@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 /**
  * 振休月別残数データ
@@ -33,13 +34,13 @@ public class AbsenceLeaveRemainData extends AggregateRoot{
 	/**	終了年月日 */
 	private GeneralDate endDate;
 	/**	発生日数 */
-	private RemainDataDaysMonth occurredDay;
+	private AttendanceDaysMonth occurredDay;
 	/**	使用日数 */
-	private RemainDataDaysMonth usedDays;
+	private AttendanceDaysMonth usedDays;
 	/**	残日数 */
-	private AttendanceDaysMonthToTal remainingDays;
+	private AttendanceDaysMonth remainingDays;
 	/**	繰越日数 */
-	private AttendanceDaysMonthToTal carryforwardDays;
+	private AttendanceDaysMonth carryforwardDays;
 	/**	未消化日数 */
-	private RemainDataDaysMonth unUsedDays;
+	private AttendanceDaysMonth unUsedDays;
 }

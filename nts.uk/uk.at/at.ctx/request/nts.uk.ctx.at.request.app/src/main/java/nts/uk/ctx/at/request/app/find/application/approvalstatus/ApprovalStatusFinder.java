@@ -277,6 +277,7 @@ public class ApprovalStatusFinder {
 		List<ApplicationDetailDto> listApplicationDetail = new ArrayList<>();
 		List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
 		List<AppCompltLeaveSync> lstCompltLeaveSync = appList.getListSync();
+		//List<ApplicationDto_New> listApp = new ArrayList<>();
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
 			
@@ -514,13 +515,12 @@ public class ApprovalStatusFinder {
 		String frameName = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
+				frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
+				time += overFrame.getApplicationTime();
+				countItem++;
 				if (countItem > 2) {
-					time += overFrame.getApplicationTime();
 					countRest = lstFrame.size() - 3;
-				} else {
-					frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
-					time += overFrame.getApplicationTime();
-					countItem++;
+					break;
 				}
 			}
 		}

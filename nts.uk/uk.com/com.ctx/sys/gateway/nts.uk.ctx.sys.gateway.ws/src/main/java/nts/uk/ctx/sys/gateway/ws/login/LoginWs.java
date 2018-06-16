@@ -32,8 +32,6 @@ import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.application.auth.WindowsAccount;
 
 /**
  * The Class LoginWs.
@@ -195,15 +193,5 @@ public class LoginWs extends WebService {
 		}
 		command.setRequest(request);
 		return new JavaTypeResult(this.submitForm3.handle(command));
-	}
-	
-	@Path("account")
-	@POST
-	public WindowsAccountDto getWindowsAccount() {
-		WindowsAccountDto dto = new WindowsAccountDto();
-		WindowsAccount account = AppContexts.windowsAccount();
-		dto.domain = account != null ? account.getDomain() : null;
-		dto.userName = account != null ? account.getUserName() : null;
-		return dto;
 	}
 }

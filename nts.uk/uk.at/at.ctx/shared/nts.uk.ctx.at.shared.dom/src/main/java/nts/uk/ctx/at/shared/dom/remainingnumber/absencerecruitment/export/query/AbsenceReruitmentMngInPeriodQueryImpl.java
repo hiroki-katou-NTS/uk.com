@@ -49,14 +49,10 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		double carryForwardDays = this.calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec);
 		//アルゴリズム「未相殺の振休(暫定)を取得する」を実行する
 		List<AbsRecDetailPara> lstInterim = this.getUnOffsetDaysAbsInterim(paramInput);
-		if(!lstInterim.isEmpty()) {
-			lstAbsRec.addAll(lstInterim);	
-		}		
+		lstAbsRec.addAll(lstInterim);
 		//アルゴリズム「未使用の振出(暫定)を取得する」を実行する
 		List<AbsRecDetailPara> lstInterimRec = this.getUnUseDayInterimRec(paramInput);
-		if(!lstInterimRec.isEmpty()) {
-			lstAbsRec.addAll(lstInterimRec);	
-		}		
+		lstAbsRec.addAll(lstInterimRec);
 		//「振出振休明細」をソートする 
 		lstAbsRec = lstAbsRec.stream().sorted((a, b) -> a.getYmdData().getDayoffDate().isPresent() ? a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().get())
 				: GeneralDate.max().compareTo(GeneralDate.max())).collect(Collectors.toList());
@@ -83,9 +79,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		for (SubstitutionOfHDManagementData x : lstUnOffsetDays) {
 			//アルゴリズム「暫定振出と紐付けをしない確定振休を取得する」を実行する
 			AbsRecDetailPara output = this.getInterimAndConfirmAbs(sid, x);
-			if(output != null) {
-				lstOutput.add(output);	
-			}			
+			lstOutput.add(output);
 		}		
 		return lstOutput;
 	}
@@ -99,7 +93,6 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 
 	@Override
 	public AbsRecDetailPara getInterimAndConfirmAbs(String sid, SubstitutionOfHDManagementData confirmAbsData) {
-		AbsRecDetailPara outData = new AbsRecDetailPara();
 		//ドメインモデル「暫定振出振休紐付け管理」を取得する
 		List<InterimRecAbsMng> lstInterim = recAbsRepo.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM, confirmAbsData.getSubOfHDID());
 		double unUseDays = 0;
@@ -111,14 +104,11 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		} else {
 			unUseDays =  confirmAbsData.getRemainDays().v() - unUseDays;
 		}
-		if(unUseDays < 0) {
-			return null;
-		}
 		//未相殺日数：INPUT.未相殺日数－合計(暫定振出振休紐付け管理.使用日数)
 		UnOffsetOfAbs unOffsetData = new UnOffsetOfAbs(confirmAbsData.getSubOfHDID(), confirmAbsData.getRequiredDays().v(), unUseDays);
 		//INPUT．振休管理データを「振出振休明細」に追加する
 		
-		outData = new AbsRecDetailPara(sid, 
+		AbsRecDetailPara outData = new AbsRecDetailPara(sid, 
 				MngDataStatus.CONFIRMED,
 				confirmAbsData.getHolidayDate(), 
 				OccurrenceDigClass.DIGESTION,
@@ -138,7 +128,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		for (PayoutManagementData confirmRecData : lstConfirmRec) {
 			double unUseDays = 0;
 			//アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
-			List<InterimRecAbsMng> lstInterim = recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
+			List<InterimRecAbsMng> lstInterim = recAbsRepo.getBySidMng(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
 			for (InterimRecAbsMng interimData : lstInterim) {
 				unUseDays += interimData.getUseDays().v();
 			}
@@ -146,18 +136,16 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				unUseDays = confirmRecData.getUnUsedDays().v();
 			} else {
 				unUseDays = confirmRecData.getUnUsedDays().v() - unUseDays;
-			}	
-			if(unUseDays > 0) {
-				UnUseOfRec unUseDayOfRec = new UnUseOfRec(confirmRecData.getExpiredDate(), 
-						confirmRecData.getPayoutId(), 
-						confirmRecData.getOccurredDays().v(), 
-						EnumAdaptor.valueOf(confirmRecData.getLawAtr().value, StatutoryAtr.class), 
-						unUseDays);
-				//Khong ton tai 1 ngay vua co nghi bu va di lam bu
-				AbsRecDetailPara dataDetail = new AbsRecDetailPara(sid, 
-						MngDataStatus.CONFIRMED, confirmRecData.getPayoutDate(), OccurrenceDigClass.OCCURRENCE, null, unUseDayOfRec);
-				lstDataDetail.add(dataDetail);	
-			}			
+			}
+			UnUseOfRec unUseDayOfRec = new UnUseOfRec(confirmRecData.getExpiredDate(), 
+					confirmRecData.getPayoutId(), 
+					confirmRecData.getOccurredDays().v(), 
+					EnumAdaptor.valueOf(confirmRecData.getLawAtr().value, StatutoryAtr.class), 
+					unUseDays);
+			//Khong ton tai 1 ngay vua co nghi bu va di lam bu
+			AbsRecDetailPara dataDetail = new AbsRecDetailPara(sid, 
+					MngDataStatus.CONFIRMED, confirmRecData.getPayoutDate(), OccurrenceDigClass.OCCURRENCE, null, unUseDayOfRec);
+			lstDataDetail.add(dataDetail);
 		}		
 		return lstDataDetail;
 	}
@@ -401,10 +389,9 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			if(!lstRecTmpChk.isEmpty() && lstRecTmpChk.size() == lstRecTmp.size()) {
 				break;
 			}
-		}
-		if(!lstRecTmp.isEmpty()) {
-			lstAbsTmp.addAll(lstRecTmp);	
-		}
+		}		
+		lstAbsTmp.addAll(lstRecTmp);
+		
 		return lstAbsTmp;
 	}
 

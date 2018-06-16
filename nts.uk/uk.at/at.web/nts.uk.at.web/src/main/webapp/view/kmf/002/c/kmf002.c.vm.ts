@@ -150,13 +150,12 @@ module nts.uk.at.view.kmf002.c {
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     _self.selectedEmployee(data.listEmployee);
-                    let tempArr: UnitModel[] = [];
+                    _self.employeeList.removeAll();
                     _.forEach(data.listEmployee, function(value: any) {
                         _self.mapEmployeeCode.set(value.employeeCode, value.employeeId);
                         _self.mapEmployeeID.set(value.employeeId, value.employeeCode);
-                        tempArr.push({ code: value.employeeCode, name: value.employeeName, workplaceName: value.workplaceName});  
+                        _self.employeeList.push({ code: value.employeeCode, name: value.employeeName, workplaceName: value.workplaceName});  
                     });
-                    _self.employeeList(tempArr);
                     _self.findAllEmployeeRegister();
                     _self.initKCP004();
                 }

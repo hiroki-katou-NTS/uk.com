@@ -910,10 +910,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
         btnDecision() {
             let self = this;
             $('.nts-input').trigger("validate");
-            if (errors.hasError() === true) {
-                nts.uk.ui.errors.show();
-                return;
-            }
+                    if (errors.hasError() === true) {
+                        nts.uk.ui.errors.show();
+                        return;
+                    }
             switch (self.category()) {
                 case sharemodel.CATEGORY.DAILY:
                     let workRecordExtractingCondition = self.workRecordExtractingCondition();

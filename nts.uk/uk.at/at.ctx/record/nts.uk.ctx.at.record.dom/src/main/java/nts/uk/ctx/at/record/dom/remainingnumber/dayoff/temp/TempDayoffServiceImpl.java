@@ -7,13 +7,13 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -36,6 +36,9 @@ public class TempDayoffServiceImpl implements TempDayoffService {
 	@Override
 	public MonthlyDayoffRemainData algorithm(String companyId, String employeeId, YearMonth yearMonth,
 			DatePeriod period, ClosureId closureId, ClosureDate closureDate) {
+		
+		// 暫定代休・休出管理データを削除
+		this.interimBreakDayoffService.remove(employeeId, period);
 		
 		// 月初の代休残数を取得　→　繰越数
 		Double carryforwardDays = this.breakDayoffMngQuery.getDayOffRemainOfBeginMonth(companyId, employeeId);
@@ -60,8 +63,7 @@ public class TempDayoffServiceImpl implements TempDayoffService {
 			if (usedDays == null) usedDays = 0.0;
 			remainDays = carryforwardDays + occurDays - usedDays;
 		}
-		// 暫定代休・休出管理データを削除
-		this.interimBreakDayoffService.remove(employeeId, period);
+		
 		// 代休月別残数データを返す
 		return new MonthlyDayoffRemainData(
 				employeeId,
@@ -73,19 +75,19 @@ public class TempDayoffServiceImpl implements TempDayoffService {
 				period.start(),
 				period.end(),
 				new DayOffDayAndTimes(
-						new RemainDataDaysMonth(occurDays),
+						new AttendanceDaysMonth(occurDays),
 						Optional.empty()),
 				new DayOffDayAndTimes(
-						new RemainDataDaysMonth(usedDays),
+						new AttendanceDaysMonth(usedDays),
 						Optional.empty()),
 				new DayOffRemainDayAndTimes(
-						new AttendanceDaysMonthToTal(remainDays),
+						new ReserveLeaveRemainingDayNumber(remainDays),
 						Optional.empty()),
 				new DayOffRemainDayAndTimes(
-						new AttendanceDaysMonthToTal(carryforwardDays),
+						new ReserveLeaveRemainingDayNumber(carryforwardDays),
 						Optional.empty()),
 				new DayOffDayAndTimes(
-						new RemainDataDaysMonth(0.0),
+						new AttendanceDaysMonth(0.0),
 						Optional.empty()));
 	}
 }

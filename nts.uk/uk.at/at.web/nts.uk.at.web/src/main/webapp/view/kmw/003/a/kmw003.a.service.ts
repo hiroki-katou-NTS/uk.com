@@ -1,7 +1,7 @@
 module nts.uk.at.view.kmw003.a.service {
     var paths: any = {
         startScreen: "screen/at/monthlyperformance/startScreen",
-        saveColumnWidth: "screen/at/monthlyperformance/updatecolumnwidth",
+        saveColumnWidth: "screen/at/correctionofdailyperformance/updatecolumnwidth",
         selectErrorCode: "screen/at/correctionofdailyperformance/errorCode",
         selectFormatCode: "screen/at/correctionofdailyperformance/selectCode",
         findCodeName: "screen/at/correctionofdailyperformance/findCodeName",

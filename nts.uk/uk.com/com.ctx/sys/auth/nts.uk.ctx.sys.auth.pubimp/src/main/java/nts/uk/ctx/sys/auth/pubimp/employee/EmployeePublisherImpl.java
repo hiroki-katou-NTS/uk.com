@@ -97,8 +97,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 				if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
 					return Optional.of(new NarrowEmpByReferenceRange(sID));
 				} else if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
-					if(sID.contains(employeeIDLogin))
-					result.add(employeeIDLogin);
+					sID.remove(employeeIDLogin);
 					return Optional.of(new NarrowEmpByReferenceRange(sID));
 				} else {
 					// ドメインモデル「職場管理者」をすべて取得する

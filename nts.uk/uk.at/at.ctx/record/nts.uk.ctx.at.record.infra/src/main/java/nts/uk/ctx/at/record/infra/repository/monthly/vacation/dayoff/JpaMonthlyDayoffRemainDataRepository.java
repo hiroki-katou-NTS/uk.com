@@ -9,23 +9,22 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeDayoffRemain;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainDataRepository;
-import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.RemainDataTimesMonth;
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.dayoff.KrcdtMonDayoffRemain;
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.dayoff.KrcdtMonDayoffRemainPK;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 @Stateless
 public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implements MonthlyDayoffRemainDataRepository{
 	
-	private String QUERY_BY_SID_YM_STATUS = "SELECT c FROM KrcdtMonDayoffRemain　c "
+	private static final String QUERY_BY_SID_YM_STATUS = "SELECT c FROM KrcdtMonDayoffRemain　c "
 			+ " WHERE c.pk.sid = :employeeId"
 			+ " AND c.pk.ym = :ym"
 			+ " AND c.closureStatus = :status"
@@ -51,11 +50,11 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 				EnumAdaptor.valueOf(c.closureStatus, ClosureStatus.class),
 				c.startDate,
 				c.endDate,
-				new DayOffDayAndTimes(new RemainDataDaysMonth(c.occurredDays), Optional.of(new RemainDataTimesMonth(c.occurredTimes))),
-				new DayOffDayAndTimes(new RemainDataDaysMonth(c.usedDays), Optional.of(new RemainDataTimesMonth(c.usedTimes))),
-				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.remainingDays), Optional.of(new RemainingMinutes(c.remainingTimes))),
-				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.carryforwardDays), Optional.of(new RemainingMinutes(c.carryforwardTimes))),
-				new DayOffDayAndTimes(new RemainDataDaysMonth(c.unUsedDays), Optional.of(new RemainDataTimesMonth(c.unUsedTimes))));
+				new DayOffDayAndTimes(new AttendanceDaysMonth(c.occurredDays), Optional.of(new TimeDayoffRemain(c.occurredTimes))),
+				new DayOffDayAndTimes(new AttendanceDaysMonth(c.usedDays), Optional.of(new TimeDayoffRemain(c.usedTimes))),
+				new DayOffRemainDayAndTimes(new ReserveLeaveRemainingDayNumber(c.remainingDays), Optional.of(new RemainingMinutes(c.remainingTimes))),
+				new DayOffRemainDayAndTimes(new ReserveLeaveRemainingDayNumber(c.carryforwardDays), Optional.of(new RemainingMinutes(c.carryforwardTimes))),
+				new DayOffDayAndTimes(new AttendanceDaysMonth(c.unUsedDays), Optional.of(new TimeDayoffRemain(c.unUsedTimes))));
 	}
 	
 	@Override

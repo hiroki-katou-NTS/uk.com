@@ -46,18 +46,10 @@ public interface InterimRecAbasMngRepository {
 	 * @param sid
 	 * @param recAtr: 振出管理データ区分
 	 * @param absAtr: 振休管理データ区分 
-	 * @param absId 振休ID
+	 * @param absId 振休＝absId
 	 * @return
 	 */
 	List<InterimRecAbsMng> getBySidMng(DataManagementAtr recAtr, DataManagementAtr absAtr, String absId);
-	/**
-	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
-	 * @param recAtr 振出管理データ区分
-	 * @param absAtr 振休管理データ区分 
-	 * @param recId 振出ID
-	 * @return
-	 */
-	List<InterimRecAbsMng> getRecBySidMngAtr(DataManagementAtr recAtr, DataManagementAtr absAtr, String recId);
 	
 	/**
 	 * 暫定振出管理データ　を追加および更新

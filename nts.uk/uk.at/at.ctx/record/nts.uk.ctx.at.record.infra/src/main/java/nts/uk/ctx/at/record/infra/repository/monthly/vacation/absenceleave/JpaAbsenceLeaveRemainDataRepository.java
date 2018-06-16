@@ -8,18 +8,17 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainDataRepository;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.absenceleave.KrcdtMonSubOfHdRemain;
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.absenceleave.KrcdtMonSubOfHdRemainPK;
 
 @Stateless
 public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implements AbsenceLeaveRemainDataRepository{
 	
-	private String QUERY_BY_SID_YM_STATUS = "SELECT c FROM KrcdtMonSubOfHdRemain c"
+	private static final String QUERY_BY_SID_YM_STATUS = "SELECT c FROM KrcdtMonSubOfHdRemain c"
 			+ " WHERE c.pk.sId = :employeeId"
 			+ " AND c.pk.ym = :ym"
 			+ " AND c.closureStatus = :status"
@@ -44,11 +43,11 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 				EnumAdaptor.valueOf(c.closureStatus, ClosureStatus.class),
 				c.startDate,
 				c.endDate,
-				new RemainDataDaysMonth(c.occurredDays),
-				new RemainDataDaysMonth(c.usedDays),
-				new AttendanceDaysMonthToTal(c.remainingDays),
-				new AttendanceDaysMonthToTal(c.carryForWardDays),
-				new RemainDataDaysMonth(c.unUsedDays));
+				new AttendanceDaysMonth(c.occurredDays),
+				new AttendanceDaysMonth(c.usedDays),
+				new AttendanceDaysMonth(c.remainingDays),
+				new AttendanceDaysMonth(c.carryForWardDays),
+				new AttendanceDaysMonth(c.unUsedDays));
 	}
 
 	@Override

@@ -47,7 +47,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
-import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -399,7 +398,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	private void createWorkScheduleByBusinessDayCalenda(ScheduleCreatorExecutionCommand command,
 			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
-		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
 		// EA No1689
 		List<EmploymentInfoImported> listEmploymentInfo = mapEmploymentStatus.get(workingConditionItem.getEmployeeId());
 		Optional<EmploymentInfoImported> optEmploymentInfo = Optional.empty();
@@ -419,27 +417,18 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
 					.find(workingConditionItem.getEmployeeId(), command.getToDate());
 
+			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
 			if (optionalBasicSchedule.isPresent()) {
 				BasicSchedule basicSchedule = optionalBasicSchedule.get();
 
 				// 登録前削除区分をTrue（削除する）とする
 				command.setIsDeleteBeforInsert(true); // FIX BUG #87113
 				// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
-				// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
 				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
 					this.createWorkScheduleByRecreate(command, basicSchedule, workingConditionItem, optEmploymentInfo,
 							empGeneralInfo, mapEmploymentStatus, listWorkingConItem);
 				}
 			} else {
-				// EA No1841
-				ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
-				BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
-				if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
-						&& !this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command,
-								basicSche, optEmploymentInfo, workingConditionItem, empGeneralInfo)) {
-					return;
-				}
-
 				// 登録前削除区分をTrue（削除する）とする
 				command.setIsDeleteBeforInsert(false); // FIX BUG #87113
 
@@ -615,10 +604,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		if (listEmpHistItem != null) {
 			optEmpHistItem = listEmpHistItem.stream()
 					.filter(empHistItem -> empHistItem.getPeriod().contains(dateBeforeCorrection.end())).findFirst();
-		}
-
-		if (!optEmpHistItem.isPresent()) {
-			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+			if (!optEmpHistItem.isPresent()) {
+				return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+			}
 		}
 
 		// ドメインモデル「雇用に紐づく就業締め」を取得

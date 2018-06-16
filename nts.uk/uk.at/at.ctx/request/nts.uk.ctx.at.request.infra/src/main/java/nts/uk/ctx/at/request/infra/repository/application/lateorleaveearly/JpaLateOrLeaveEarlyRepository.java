@@ -21,7 +21,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	private static final String SELECT_SINGLE = "SELECT c"
 			+ " FROM KrqdtAppLateOrLeave c"
 			+ " WHERE c.krqdtAppLateOrLeavePK.appID = :appID AND c.krqdtAppLateOrLeavePK.companyID = :companyID";
-	private static final String SELECT_LIST_CANCEL_ATR = "SELECT c FROM KrqdtAppLateOrLeave c "
+	private final String SELECT_LIST_CANCEL_ATR = "SELECT c FROM KrqdtAppLateOrLeave c "
 			+ "WHERE c.krqdtAppLateOrLeavePK.appID IN :listAppID AND c.actualCancelAtr = :actualCancelAtr";
 	
 	@Override

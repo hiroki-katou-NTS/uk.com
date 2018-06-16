@@ -34,13 +34,5 @@ public interface AnnualBreakManagePub {
 	 */
 	List<NextAnnualLeaveGrant> calculateNextHolidayGrant(String employeeId, DatePeriod time);
 	
-	/**
-	 * 締め開始日以前に付与された年休残数を取得する
-	 * @param employeeId
-	 * @param companyId
-	 * @param startDate
-	 * @param designatedStartDate
-	 * @return
-	 */
-	List<YearlyHolidaysTimeRemainingExport> getNumberOfAnnualHolidayGrantedBeforeCloseDate(String employeeId, String companyId, GeneralDate startDate, GeneralDate designatedStartDate);
+	List<YearlyHolidaysTimeRemainingExport> getNumberOfAnnualHolidayGrantedBeforeCloseDate(String companyId, GeneralDate startDate, GeneralDate designatedStartDate);
 }
