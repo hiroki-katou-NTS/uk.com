@@ -42,7 +42,7 @@ public class DayOffManagementService {
 		if (dayOffManagementData.getDaysOffMana().size() == 0) {
 			response.add("Msg_738");
 		} else if (dayOffManagementData.getDaysOffMana().size() == 1
-				&& !dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(dayOffManagementData.getNumberDayParam())) {
+				&& Integer.parseInt(dayOffManagementData.getDaysOffMana().get(0).getRemainDays()) > Integer.parseInt((dayOffManagementData.getNumberDayParam()))) {
 			response.add("Msg_733");
 		} else if (dayOffManagementData.getDaysOffMana().size() == 2) {
 			
@@ -74,8 +74,20 @@ public class DayOffManagementService {
 					.collect(Collectors.toList());
 			
 			// update remainDays by current selected
+			
+			Double currentRemainDay = 0.0;
+			Boolean check = false;
+			
+			for (int i = 0; i < daysOffMana.size(); i++) {
+				currentRemainDay = currentRemainDay + daysOffMana.get(i).getRemainDays().v();
+			}
+			
+			if(currentRemainDay == Double.parseDouble(dayOffManagementData.getNumberDayParam())) {
+				check = true;
+			}
+			
 			if (!currentComDaySelect.isEmpty()) {
-				comDayOffManaDataRepository.updateReDayReqByComDayId(currentComDaySelect);
+				comDayOffManaDataRepository.updateReDayReqByComDayId(currentComDaySelect,check);
 			}
 			
 			// delete List LeaveComDayOff

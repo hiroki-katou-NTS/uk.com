@@ -43,7 +43,7 @@ public class LeaveManagementService {
 		if (leaveManagementData.getLeaveMana().size() == 0) {
 			response.add("Msg_736");
 		} else if (leaveManagementData.getLeaveMana().size() == 1
-				&& !leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(leaveManagementData.getNumberDayParam())) {
+				&& Integer.parseInt(leaveManagementData.getLeaveMana().get(0).getRemainDays()) > Integer.parseInt(leaveManagementData.getNumberDayParam())) {
 			response.add("Msg_734");
 		} else if (leaveManagementData.getLeaveMana().size() == 2) {
 			if(leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY)) {
@@ -77,9 +77,18 @@ public class LeaveManagementService {
 			List<String> currentLeaveMana = leaveManaUpdate.stream().map(LeaveManagementData::getID)
 					.collect(Collectors.toList());
 			// update Sub by current leave
+			Double occurrentDay = 0.0;
+			Boolean check = false;
 			
+			for (int i = 0; i < leaveManaUpdate.size(); i++) {
+				occurrentDay = occurrentDay + leaveManaUpdate.get(i).getOccurredDays().v();
+			}
+			
+			if(occurrentDay == Double.parseDouble(leaveManagementData.getNumberDayParam())) {
+				check = true;
+			}
 			if (!currentLeaveMana.isEmpty()) {
-				leaveManaDataRepository.updateSubByLeaveId(currentLeaveMana);
+				leaveManaDataRepository.updateSubByLeaveId(currentLeaveMana,check);
 
 			}
 			
