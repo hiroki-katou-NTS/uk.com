@@ -39,7 +39,7 @@ public class RecoveryStorageService {
 	@Inject
 	private DataReEmployeeAdapter empDataMngRepo;
 
-	public static final String STORAGE_RANGE_SAVED = "Employee_unit";
+	public static final String STORAGE_RANGE_SAVED = "0";
 
 	public static final String COLUMN_NAME_CID = "CID";
 
@@ -55,6 +55,7 @@ public class RecoveryStorageService {
 		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 0);
 
 		// 処理対象のカテゴリを処理する
+
 		for (int i = 0; i < listCategory.size(); i++) {
 
 			List<TableListByCategory> tableListByCategory = new ArrayList<>();
@@ -64,78 +65,10 @@ public class RecoveryStorageService {
 			TableListByCategory tableCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
 					tables);
 			tableListByCategory.add(tableCategory);
-
-			// current category
-			List<DataRecoveryTable> targetDataByCate = new ArrayList<>();
 			int index = 0;
-			for (TableListByCategory currentTableByCategory : tableListByCategory) {
 
-				// カテゴリ単位の復旧
-				if (currentTableByCategory.getTables().size() > 0) {
-
-					// -- Get List data từ file CSV
-					// Create [対象データ] TargetData
-					Set<String> hashId = new HashSet<>();
-					for (int j = 0; j < currentTableByCategory.getTables().size(); j++) {
-						List<List<String>> dataRecovery = FileUtil.getAllRecord(
-								currentTableByCategory.getTables().get(j).getInternalFileName(), uploadId, 3);
-
-						// -- Tổng hợp ID Nhân viên duy nhất từ List Data
-						for (List<String> dataRow : dataRecovery) {
-							hashId.add(dataRow.get(1));
-						}
-
-						DataRecoveryTable targetData = new DataRecoveryTable(dataRecovery,
-								currentTableByCategory.getTables().get(j).getInternalFileName());
-						targetDataByCate.add(targetData);
-					}
-
-					// Get employeeCode By employeeID
-					List<EmployeeDataReInfoImport> employeeInfos = new ArrayList<>();
-					Iterator<String> it = hashId.iterator();
-					while (it.hasNext()) {
-						Optional<EmployeeDataReInfoImport> employeeInfo = empDataMngRepo.getSdataMngInfo(it.next());
-						employeeInfo.ifPresent(x -> {
-							employeeInfos.add(x);
-						});
-					}
-
-					// Foreach [社員コード＿ID]
-					for (EmployeeDataReInfoImport employeeDataMngInfoImport : employeeInfos) {
-
-						// Update current employeeCode
-						dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId,
-								employeeDataMngInfoImport.getEmployeeCode());
-
-						// 対象社員データ処理
-						this.recoveryDataByEmployee(dataRecoveryProcessId, employeeDataMngInfoImport.getEmployeeCode(),
-								employeeDataMngInfoImport.getEmployeeId(), targetDataByCate);
-
-						// phan biet error - TO DO
-
-						if (check) {
-							// update trạng thái dataRecoveryMngRepository - TO
-							// DO
-						} else {
-							// error - TO DO
-						}
-
-					}
-
-				}
-
-				if (check) {
-					// の処理対象社員コードをクリアする
-					dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId, null);
-
-					// カテゴリの中の日付単位の処理 - TO DO
-
-				} else {
-
-					dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 1);
-				}
-
-			}
+			// カテゴリ単位の復旧
+			exCurrentCategory(tableListByCategory, uploadId, dataRecoveryProcessId);
 
 			// のカテゴリカウントをカウントアップ
 			if (check) {
@@ -175,40 +108,24 @@ public class RecoveryStorageService {
 
 		// Data current đối tượng [カレント対象データ]
 		for (DataRecoveryTable dataRecoveryTable : targetDataByCate) {
-
-			// check date [日付処理の設定] - TO DO
-
-			// check phân loại lịch sử
+			
 			Optional<TableList> tableList = performDataRecoveryRepository
 					.getByInternal(dataRecoveryTable.getFileNameCsv(), dataRecoveryProcessId);
+			// check date [日付処理の設定] 
+			
+			
+			
+			
+
+			
 			Boolean whereCid = false;
 			Boolean whereEmId = false;
 			if (tableList.isPresent()) {
+				
+				// 履歴区分の判別する - check phân loại lịch sử	
 				String tableName = tableList.get().getTableEnglishName();
-				if (tableList.get().getClsKeyQuery1().equals("0") || tableList.get().getClsKeyQuery2().equals("0")
-						|| tableList.get().getClsKeyQuery3().equals("0")
-						|| tableList.get().getClsKeyQuery4().equals("0")
-						|| tableList.get().getClsKeyQuery5().equals("0")
-						|| tableList.get().getClsKeyQuery6().equals("0")
-						|| tableList.get().getClsKeyQuery7().equals("0")
-						|| tableList.get().getClsKeyQuery8().equals("0")
-						|| tableList.get().getClsKeyQuery9().equals("0")
-						|| tableList.get().getClsKeyQuery10().equals("0")) {
-					whereCid = true;
-				}
-				if (tableList.get().getClsKeyQuery1().equals("5") || tableList.get().getClsKeyQuery2().equals("5")
-						|| tableList.get().getClsKeyQuery3().equals("5")
-						|| tableList.get().getClsKeyQuery4().equals("5")
-						|| tableList.get().getClsKeyQuery5().equals("5")
-						|| tableList.get().getClsKeyQuery6().equals("5")
-						|| tableList.get().getClsKeyQuery7().equals("5")
-						|| tableList.get().getClsKeyQuery8().equals("5")
-						|| tableList.get().getClsKeyQuery9().equals("5")
-						|| tableList.get().getClsKeyQuery10().equals("5")) {
-					whereEmId = true;
-				}
 				if (tableList.get().getHistoryCls().value == 1) {
-					deleteEmployeeHistory(employeeId, tableName, whereCid, whereEmId);
+					deleteEmployeeHistory(tableList,employeeId, tableName, whereCid, whereEmId);
 				}
 			}
 
@@ -217,6 +134,9 @@ public class RecoveryStorageService {
 			// 対象社員の日付順の処理
 			this.crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode, dataRecoveryProcessId,
 					dataRecoveryTable.getFileNameCsv());
+			
+			// phân biệt DELETE/INSERT error và Setting error
+			
 
 		}
 
@@ -529,16 +449,189 @@ public class RecoveryStorageService {
 				// insert data
 				performDataRecoveryRepository.insertDataTable(dataInsertDB, TABLE_NAME);
 			}
-
 		}
 
 		return 0;
 	}
 
-	public void deleteEmployeeHistory(String employeeId, String tableName, Boolean whereCid, Boolean whereEmId) {
+	public void deleteEmployeeHistory(Optional<TableList> tableList, String employeeId, String tableName, Boolean whereCid, Boolean whereEmId) {
 		// Delete history
+		
+		if (tableList.get().getClsKeyQuery1().equals("0") || tableList.get().getClsKeyQuery2().equals("0")
+				|| tableList.get().getClsKeyQuery3().equals("0")
+				|| tableList.get().getClsKeyQuery4().equals("0")
+				|| tableList.get().getClsKeyQuery5().equals("0")
+				|| tableList.get().getClsKeyQuery6().equals("0")
+				|| tableList.get().getClsKeyQuery7().equals("0")
+				|| tableList.get().getClsKeyQuery8().equals("0")
+				|| tableList.get().getClsKeyQuery9().equals("0")
+				|| tableList.get().getClsKeyQuery10().equals("0")) {
+			whereCid = true;
+		}
+		if (tableList.get().getClsKeyQuery1().equals("5") || tableList.get().getClsKeyQuery2().equals("5")
+				|| tableList.get().getClsKeyQuery3().equals("5")
+				|| tableList.get().getClsKeyQuery4().equals("5")
+				|| tableList.get().getClsKeyQuery5().equals("5")
+				|| tableList.get().getClsKeyQuery6().equals("5")
+				|| tableList.get().getClsKeyQuery7().equals("5")
+				|| tableList.get().getClsKeyQuery8().equals("5")
+				|| tableList.get().getClsKeyQuery9().equals("5")
+				|| tableList.get().getClsKeyQuery10().equals("5")) {
+			whereEmId = true;
+		}
+		
 		String cidCurrent = AppContexts.user().companyId();
 		performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereEmId, cidCurrent, employeeId);
 	}
 
+	public void exCurrentCategory(List<TableListByCategory> tableListByCategory, String uploadId,
+			String dataRecoveryProcessId) {
+
+		Boolean check = false;
+
+		// カテゴリの中の社員単位の処理
+		exCurrentTable(tableListByCategory, dataRecoveryProcessId, uploadId);
+
+		if (check) {
+			// の処理対象社員コードをクリアする
+			dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId, null);
+
+			// カテゴリの中の日付単位の処理 - TO DO
+
+		} else {
+
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 1);
+		}
+
+	}
+
+	public void exCurrentTable(List<TableListByCategory> tableListByCategory, String dataRecoveryProcessId,
+			String uploadId) {
+
+		Boolean check = false;
+		List<DataRecoveryTable> targetDataByCate = new ArrayList<>();
+		for (TableListByCategory currentTableByCategory : tableListByCategory) {
+
+			// カテゴリ単位の復旧
+			if (currentTableByCategory.getTables().size() > 0) {
+
+				// -- Get List data từ file CSV
+				// Create [対象データ] TargetData
+				Set<String> hashId = new HashSet<>();
+				for (int j = 0; j < currentTableByCategory.getTables().size(); j++) {
+					List<List<String>> dataRecovery = FileUtil
+							.getAllRecord(currentTableByCategory.getTables().get(j).getInternalFileName(), uploadId, 3);
+
+					// -- Tổng hợp ID Nhân viên duy nhất từ List Data
+					for (List<String> dataRow : dataRecovery) {
+						hashId.add(dataRow.get(1));
+					}
+
+					DataRecoveryTable targetData = new DataRecoveryTable(dataRecovery,
+							currentTableByCategory.getTables().get(j).getInternalFileName());
+					targetDataByCate.add(targetData);
+				}
+
+				// 対象社員コード＿ID
+				List<EmployeeDataReInfoImport> employeeInfos = new ArrayList<>();
+				Iterator<String> it = hashId.iterator();
+				while (it.hasNext()) {
+					Optional<EmployeeDataReInfoImport> employeeInfo = empDataMngRepo.getSdataMngInfo(it.next());
+					employeeInfo.ifPresent(x -> {
+						employeeInfos.add(x);
+					});
+				}
+
+				// Foreach 対象社員コード＿ID
+				for (EmployeeDataReInfoImport employeeDataMngInfoImport : employeeInfos) {
+
+					// Update current employeeCode
+					dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId,
+							employeeDataMngInfoImport.getEmployeeCode());
+
+					// 対象社員データ処理
+					this.recoveryDataByEmployee(dataRecoveryProcessId, employeeDataMngInfoImport.getEmployeeCode(),
+							employeeDataMngInfoImport.getEmployeeId(), targetDataByCate);
+
+					// phan biet error - TO DO
+
+					if (check) {
+						// update trạng thái dataRecoveryMngRepository - TO
+						// DO
+					} else {
+						// error - TO DO
+					}
+
+				}
+
+			}
+
+		}
+	}
+	
+	
+	public List<String> settingDate(List<String> rowData, Optional<TableList> tableList) {
+		
+		// 「テーブル一覧」の抽出キー区から日付項目を設定する
+		List<String> checkKeyQuery = new ArrayList<>();
+		List<String> resultsSetting = new ArrayList<>();
+		Integer timeStore = null ;
+		int count6 =0, count7 =0, count8 =0;
+		if(tableList.isPresent()) {
+			checkKeyQuery.add(tableList.get().getClsKeyQuery1());
+			checkKeyQuery.add(tableList.get().getClsKeyQuery2());
+			checkKeyQuery.add(tableList.get().getClsKeyQuery3());
+			checkKeyQuery.add(tableList.get().getClsKeyQuery4());
+			checkKeyQuery.add(tableList.get().getClsKeyQuery5());
+			checkKeyQuery.add(tableList.get().getClsKeyQuery6());
+			checkKeyQuery.add(tableList.get().getClsKeyQuery7());
+			checkKeyQuery.add(tableList.get().getClsKeyQuery8());
+			checkKeyQuery.add(tableList.get().getClsKeyQuery9());
+			checkKeyQuery.add(tableList.get().getClsKeyQuery10());
+			timeStore = tableList.get().getRetentionPeriodCls().value;
+		}
+		for (String keyQuery : checkKeyQuery) {
+			if(keyQuery.equals("6")) {
+				count6 ++;
+			} else if (keyQuery.equals("7")) {
+				count7 ++;
+			} else if (keyQuery.equals("8")) {
+				count8 ++;
+			}
+		}
+		
+		// không date
+		if(count6 == 0 && count7 == 0 && count8 == 0) {
+			resultsSetting.add("-9");
+		} else if (count6 != 0 && count7 == 0 && count8 == 0) {
+			// năm hoặc phạm vi năm
+			resultsSetting.add("6");
+			if(count6 == 2) {
+				resultsSetting.add("6");
+			}
+		} else if (count6 == 0 && count7 != 0 && count8 == 0) {
+			// tháng năm hoặc là phạm vi tháng năm
+			resultsSetting.add("7");
+			if(count6 == 2) {
+				resultsSetting.add("7");
+			}
+		} else if (count6 == 0 && count7 == 0 && count8 != 0) {
+			// ngày tháng năm hoặc phạm vi ngày tháng năm
+			resultsSetting.add("8");
+			if(count6 == 2) {
+				resultsSetting.add("8");
+			}
+		}
+		
+		// 保存期間区分と日付設定を判別
+		if(timeStore == 0 && !resultsSetting.get(0).equals("-9") || timeStore == 1 && !resultsSetting.get(0).equals("6")
+				|| timeStore == 2 && !resultsSetting.get(0).equals("7") || timeStore == 2 && !resultsSetting.get(0).equals("8")) {
+			resultsSetting.clear();
+			return resultsSetting;
+		}
+		
+		return resultsSetting;
+		
+	}
+	
 }
