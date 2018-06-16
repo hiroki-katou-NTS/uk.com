@@ -27,9 +27,9 @@ public class UploadProcessingService {
 		ServerPrepareMng serverPrepareMng = new ServerPrepareMng(processId, null, null, null, 0, null, ServerPrepareOperatingCondition.UPLOADING.value);
 		serverPrepareMngRepository.add(serverPrepareMng);
 		serverPrepareMng = serverUploadProcessingService.serverUploadProcessing(serverPrepareMng, fileId, fileName, password);
-//		if (serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.UPLOAD_COMPLETED){
-//			serverPreparationService.serverPreparationProcessing(serverPrepareMng);
-//		}
+		if (serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.UPLOAD_COMPLETED){
+			serverPreparationService.serverPreparationProcessing(serverPrepareMng);
+		}
 		return serverPrepareMng;
 	}
 }

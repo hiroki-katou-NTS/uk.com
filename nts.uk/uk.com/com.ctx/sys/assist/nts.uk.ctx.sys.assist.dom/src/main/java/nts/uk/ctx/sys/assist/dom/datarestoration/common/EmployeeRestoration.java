@@ -26,6 +26,7 @@ public class EmployeeRestoration {
 	@Inject
 	private ResultOfSavingRepository resultOfSavingRepository;
 	private static final String TARGET_CSV = "対象社員";
+	// アルゴリズム「対象社員の復元」を実行する
 	public List<Object> restoreTargerEmployee(ServerPrepareMng serverPrepareMng, PerformDataRecovery performDataRecovery, List<TableList> tableList){
 		InputStream inputStream = FileUtil.createInputStreamFromFile(serverPrepareMng.getFileId().get(), TARGET_CSV);
 		if(Objects.isNull(inputStream)){
@@ -45,6 +46,7 @@ public class EmployeeRestoration {
 				performDataRecovery.setNumPeopleBeRestore(numOfPeopleRestore);
 				performDataRecovery.setNumPeopleSave(numPeopleSave);
 				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECK_COMPLETED);
+				performDataRecoveryRepository.add(performDataRecovery);
 			}
 		}
 		return Arrays.asList(serverPrepareMng, performDataRecovery, tableList);

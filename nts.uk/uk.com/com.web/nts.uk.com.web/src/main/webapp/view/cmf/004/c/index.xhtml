@@ -8,6 +8,9 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 350, height: 350 };</script>
+			<com:ValidatorScript>
+                    nts.uk.ctx.sys.assist.dom.storage.FileCompressionPassword
+            </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="cmf004.c.vm.js" />
 			<com:scriptfile path="cmf004.c.start.js" />
@@ -38,17 +41,20 @@
 						<div class="flex valign-center fixed-height outer"
 							style="height: 37px;">
 							<div class="inner">
-								<input tabindex="11" id="B4_32"
-									data-bind="ntsTextEditor: { name: '#[CMF003_73]', value:
-									password, option: {textmode: 'password',width: '150px'},
+								<input tabindex="1" id="C1_4"
+									data-bind="ntsTextEditor: { 
+									name: '#[CMF003_73]', 
+									value: password, 
+									constraint: 'FileCompressionPassword',
+									option: {textmode: 'password',width: '150px'},
 									enable: true, readonly: false }" /> 
 							</div>
 						</div>
 					</div>
 				</div>
 				<div id="functions-area-bottom">
-					<button tabindex="12" id="C1_5" class="large"
-						data-bind="click: processing">#{i18n.getText('CMF001_258')}</button>
+					<button tabindex="2" id="C1_5" class="large"
+						data-bind="click: processing, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_258')}</button>
 				</div>
 			</div>
 		</ui:define>

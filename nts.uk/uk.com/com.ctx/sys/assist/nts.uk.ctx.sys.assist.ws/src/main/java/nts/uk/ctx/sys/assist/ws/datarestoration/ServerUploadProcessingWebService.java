@@ -5,6 +5,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.task.AsyncTaskInfo;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.SyncServerUploadProcessingCommand;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.SyncServerUploadProcessingCommandHandler;
 import nts.uk.ctx.sys.assist.app.find.datarestoration.ServerPrepareManagementFinder;
@@ -19,9 +20,9 @@ public class ServerUploadProcessingWebService {
 	private ServerPrepareManagementFinder serverPrepareManagementFinder;
 	@POST
 	@Path("extractData")
-	public void uploadProcessing(SyncServerUploadProcessingCommand command) {
-		serverUploadProcessingCommandHandler.handle(command);
-		return;
+	public AsyncTaskInfo uploadProcessing(SyncServerUploadProcessingCommand command) {
+		AsyncTaskInfo taskInfo = serverUploadProcessingCommandHandler.handle(command);
+		return taskInfo;
 	}
 	
 	@POST
