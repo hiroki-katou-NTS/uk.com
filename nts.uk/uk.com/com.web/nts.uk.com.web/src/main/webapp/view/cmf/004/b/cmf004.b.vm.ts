@@ -221,24 +221,36 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             self.changeDataRecoveryPeriod().changeDataCategoryList(_itemList);
         }
 
-        /**
-         * H:データ復旧サマリ
-         */
-        initScreenH(): void {
+        initScreenG(): void {
             let self = this;
-
-
-            //Get Data PerformDataRecover for Screen H
+            //Get Data PerformDataRecover for Screen KCP 005
             service.findPerformDataRecover('11111111-5a91-4e42-9a29-fefa858942d5').done(function(data: Array<any>) {
-
+                if (data.targets.length && data.targets.length) {
+                    self.employeeListScreenG.removeAll();
+                    for (let i = 0; i < data.targets.length; i++) {
+                        let scd = data.targets[i].scd;
+                        let sid = data.targets[i].sid;
+                        let bussinessName = data.targets[i].bussinessName;
+                        self.employeeListScreenG.push({code : scd, workplaceName : bussinessName, name : bussinessName });   
+                    }
+                }               
             }).fail(function(error) {
 
             }).always(() => {
 
             });
+            
+            
+        }
 
+        /**
+         * H:データ復旧サマリ
+         */
+        initScreenH(): void {
+            let self = this;
             let _categoryList = self.getRecoveryCategory(self.changeDataRecoveryPeriod().changeDataCategoryList());
-            let _employeeList = self.getRecoveryEmployee(self.selectedEmployeeCodeScreenG());
+            let _employeeList = self.getRecoveryEmployee(self.employeeListScreenG(), self.selectedEmployeeCodeScreenG());
+            self.employeeListScreenH(_employeeList);
             let _recoveryMethod = self.dataContentConfirm().selectedRecoveryMethod();
             let _recoveryMethodDescription1 = _.filter(self.recoveryMethodOptions(), x => { return x.value == _recoveryMethod }).map(x1 => { return x1.text }).toString();
             let _recoveryMethodDescription2 = self.getRecoveryMethodDescription2(_recoveryMethod);
@@ -278,11 +290,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         /**
          * Get recovery employee
          */
-        getRecoveryEmployee(selectedEmployeeIds: Array<string>): Array<any> {
+        getRecoveryEmployee(dataEmployeeList: Array<string>, selectedEmployeeList: Array<string>): Array<any> {
             let self = this;
             let employeeList: Array<any> = [];
-            _.each(selectedEmployeeIds, x => {
-                let employee = _.find(self.selectedEmployee(), x1 => { return x1.employeeCode === x });
+            _.each(selectedEmployeeList, x => {
+                let employee = _.find(dataEmployeeList, x1 => { return x1.code === x });
                 if (employee) {
                     employeeList.push(employee);
                 }
@@ -310,6 +322,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
 
         nextToScreenG(): void {
+            let self = this;
+            self.initScreenG();
             $('#data-recovery-wizard').ntsWizard("next");
         }
 
@@ -358,7 +372,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     export class CategoryInfo {
         rowNumber: KnockoutObservable<number>;
-        isRecover: KnockoutObservable<boolean>;        
+        isRecover: KnockoutObservable<boolean>;
         categoryName: KnockoutObservable<string>;
         recoveryPeriod: KnockoutObservable<string>;
         recoveryMethod: KnockoutObservable<string>;
@@ -489,9 +503,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     export interface UnitModel {
         code: string;
-        name?: string;
         workplaceName?: string;
-        isAlreadySetting?: boolean;
+        name?: string;
+        isAlreadySetting : KnockoutObservable<boolean> = ko.observable(true);
     }
 
     export class SelectType {

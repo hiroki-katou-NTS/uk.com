@@ -81,7 +81,7 @@ public class FileUtil {
 		return result;
 	}
 
-	public static List<List<String>> getAllRecord(String fileName, String fileId, Integer endcoding) {
+	public static List<List<String>> getAllRecord(String fileId, String fileName, Integer endcoding) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
 				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));

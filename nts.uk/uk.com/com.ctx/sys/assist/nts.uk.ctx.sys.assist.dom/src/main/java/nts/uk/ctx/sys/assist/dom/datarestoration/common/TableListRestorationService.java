@@ -36,9 +36,9 @@ public class TableListRestorationService {
 		List<TableList> tableList = new ArrayList<>();
 		List<List<String>> tableListContent = FileUtil.getAllRecord(serverPrepareMng.getFileId().get(),
 				TABLELIST_CSV, 3);
-		if (tableListContent.size() < 2) {
+		if (tableListContent.size() > 1) {
 			try {
-				for (List<String> tableListSetting : tableListContent) {
+				for (List<String> tableListSetting : tableListContent.subList(1, tableListContent.size()-1)) {
 					TimeStore retentionPeriodCls = EnumAdaptor.valueOf(Integer.parseInt(tableListSetting.get(7)),
 							TimeStore.class);
 					StorageRangeSaved storageRangeSaved = EnumAdaptor.valueOf(Integer.parseInt(tableListSetting.get(8)),
