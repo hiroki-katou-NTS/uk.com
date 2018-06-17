@@ -34,6 +34,7 @@ public class TableList extends DomainObject {
 	/**
 	 * データ復旧処理ID
 	 */
+	@Setter
 	private String dataRecoveryProcessId;
 
 	/**

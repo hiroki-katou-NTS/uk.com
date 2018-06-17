@@ -28,14 +28,14 @@ public class EmployeeRestoration {
 	private static final String TARGET_CSV = "対象社員";
 	// アルゴリズム「対象社員の復元」を実行する
 	public List<Object> restoreTargerEmployee(ServerPrepareMng serverPrepareMng, PerformDataRecovery performDataRecovery, List<TableList> tableList){
-		InputStream inputStream = FileUtil.createInputStreamFromFile(serverPrepareMng.getFileId().get(), TARGET_CSV);
+		InputStream inputStream = CsvFileUtil.createInputStreamFromFile(serverPrepareMng.getFileId().get(), TARGET_CSV);
 		if(Objects.isNull(inputStream)){
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
 		} else {
-			List<List<String>> targetEmployee = FileUtil.getAllRecord(inputStream, 3);
+			List<List<String>> targetEmployee = CsvFileUtil.getAllRecord(inputStream, 3);
 			if (targetEmployee.size() > 0) {
 				for(List<String> employeeInfo : targetEmployee){
-					performDataRecoveryRepository.addTargetEmployee(new Target(employeeInfo.get(0), employeeInfo.get(1), employeeInfo.get(2), CommonKeyCrypt.decrypt(employeeInfo.get(3))));
+					performDataRecoveryRepository.addTargetEmployee(new Target(serverPrepareMng.getDataRecoveryProcessId(), employeeInfo.get(0), employeeInfo.get(1), CommonKeyCrypt.decrypt(employeeInfo.get(2))));
 				}
 				int numOfPeopleRestore = 0;
 				int numPeopleSave = targetEmployee.size();

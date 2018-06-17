@@ -14,25 +14,25 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class ThresholdConfigurationCheck {
 
-	
+	private static final String EXTENSION = ".csv";
 	// アルゴリズム「テーブル一覧の復元」を実行する
 	public ServerPrepareMng checkFileConfiguration(ServerPrepareMng serverPrepareMng, List<TableList> tableList){
 		boolean fileConfigError = false;
-		if (tableList.size()>1){
-			NotUseAtr survey = tableList.get(1).getSurveyPreservation();
-			String csvStoragePath = FileUtil.getCsvStoragePath(serverPrepareMng.getFileId().get());
+		if (!tableList.isEmpty()){
+			NotUseAtr survey = tableList.get(0).getSurveyPreservation();
+			String csvStoragePath = CsvFileUtil.getCsvStoragePath(serverPrepareMng.getFileId().get());
 			File f = new File(csvStoragePath);
 			if (f.exists()){
 				List<String> listFileName = Arrays.asList(f.list());
-				if (tableList.size() -1 == listFileName.size() -2){
-					if (tableList.size() > 1){
-						if(survey == NotUseAtr.NOT_USE) serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY);
-						for(int i = 1; i < tableList.size(); i++){
-							String tableJapanName = tableList.get(i).getTableJapaneseName();
-							if(!listFileName.contains(tableJapanName)){
-								fileConfigError = true;
-								break;
-							}
+				if (tableList.size() == listFileName.size() -2){
+					if(survey == NotUseAtr.NOT_USE) serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY);
+					for(int i = 0; i < tableList.size(); i++){
+						//TODO
+						// Chua xac dinh su dung thuoc tinh nao
+						String tableJapanName = tableList.get(i).getInternalFileName();
+						if(!listFileName.contains(tableJapanName + EXTENSION)){
+							fileConfigError = true;
+							break;
 						}
 					}
 				} else fileConfigError = true;
