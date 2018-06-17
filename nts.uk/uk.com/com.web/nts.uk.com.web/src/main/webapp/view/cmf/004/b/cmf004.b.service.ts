@@ -3,7 +3,8 @@ module nts.uk.com.view.cmf004.b.service {
     import format = nts.uk.text.format;
     var paths = {
         findPerformDataRecover: "ctx/sys/assist/datarestoration/findPerformDataRecover/{0}",
-        findTableList: "ctx/sys/assist/datarestoration/findTableList/{0}"
+        findTableList: "ctx/sys/assist/datarestoration/findTableList/{0}",
+        findDataRecoverySelection: "ctx/sys/assist/datarestoration/findDataRecoverySelection"
     }
     /**
      * get SSPMT_PERFORM_DAT_RECOVER
@@ -19,6 +20,13 @@ module nts.uk.com.view.cmf004.b.service {
     export function findTableList(dataRecoveryProcessId: string): JQueryPromise<any> {
         let _path = format(paths.findTableList, dataRecoveryProcessId);
         return ajax('com', _path);
+    }
+    
+    /**
+     * get for screen B
+    */
+    export function findDataRecoverySelection(paramSearch): JQueryPromise<any> {
+        return ajax('com', paths.findDataRecoverySelection, paramSearch);
     }
     
 }

@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
-import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
 @Data

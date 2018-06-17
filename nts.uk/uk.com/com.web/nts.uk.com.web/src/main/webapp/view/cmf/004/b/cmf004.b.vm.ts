@@ -149,6 +149,21 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenB(): void {
             let self = this;
+
+            self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
+            self.endDateString(moment.utc().format("YYYY/MM/DD"));
+            let paramSearch = {
+                startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD HH:MM:SS").toISOString(),
+                endDate  : moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD HH:MM:SS").toISOString()
+            }
+            service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
+
+            }).fail(function(error) {
+
+            }).always(() => {
+
+            });
+
             for (let i = 1; i < 100; i++) {
                 let item = {
                     saveSetCode: i < 10 ? '00' + i : '0' + i,
