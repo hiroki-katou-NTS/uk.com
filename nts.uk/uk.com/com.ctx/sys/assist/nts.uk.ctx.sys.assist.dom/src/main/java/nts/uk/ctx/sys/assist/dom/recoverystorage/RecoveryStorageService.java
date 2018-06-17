@@ -20,7 +20,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataReEmployeeAdapter;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
-import nts.uk.ctx.sys.assist.dom.datarestoration.common.FileUtil;
+import nts.uk.ctx.sys.assist.dom.datarestoration.common.CsvFileUtil;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -519,7 +519,7 @@ public class RecoveryStorageService {
 				// Create [対象データ] TargetData
 				Set<String> hashId = new HashSet<>();
 				for (int j = 0; j < currentTableByCategory.getTables().size(); j++) {
-					List<List<String>> dataRecovery = FileUtil
+					List<List<String>> dataRecovery = CsvFileUtil
 							.getAllRecord(currentTableByCategory.getTables().get(j).getInternalFileName(), uploadId, 3);
 
 					// -- Tổng hợp ID Nhân viên duy nhất từ List Data

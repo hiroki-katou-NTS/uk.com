@@ -18,7 +18,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class CompanyDeterminationProcess {
 	// アルゴリズム「別会社判定処理」を実行する
 	public List<Object> sperateCompanyDeterminationProcess(ServerPrepareMng serverPrepareMng, PerformDataRecovery performDataRecovery, List<TableList> tableList){
-		String cid = tableList.get(1).getFieldAcqCid();
+		String cid = tableList.get(0).getFieldAcqCid();
 		performDataRecovery.setRecoverFromAnoCom(NotUseAtr.NOT_USE);
 		if (AppContexts.user().companyId().equals(cid)){
 			//TODO

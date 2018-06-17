@@ -21,6 +21,7 @@ public class ServerUploadProcessingService {
 	//アルゴリズム「サーバーアップロード処理」を実行する
 	public ServerPrepareMng serverUploadProcessing(ServerPrepareMng serverPrepareMng, String fileId, String fileName, String password){
 		Optional<StoredFileInfo> fileInfo = fileInfoRepository.find(fileId);
+		
 		if(fileInfo.isPresent()){
 			serverPrepareMng.setFileId(Optional.of(fileId));
 			serverPrepareMng.setUploadFileName(Optional.of(fileName));

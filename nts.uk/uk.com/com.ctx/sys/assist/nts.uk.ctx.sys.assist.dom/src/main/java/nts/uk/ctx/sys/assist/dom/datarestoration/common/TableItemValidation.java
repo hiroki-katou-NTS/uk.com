@@ -24,13 +24,14 @@ public class TableItemValidation {
 		String fileId = serverPrepareMng.getFileId().get();
 		for(int i = 1; i < tableList.size(); i++){
 			List<String> csvHeader = getActualCsvHeader(fileId, tableList.get(i).getInternalFileName());
+			if (csvHeader.isEmpty()) return true;
 			List<String> tableColumn = tableColumnRepository.getTableColumnName(tableList.get(i).getTableEnglishName());
 			if (!tableColumn.containsAll(csvHeader)) return true;
 		}
 		return false;
 	}
 	private List<String> getActualCsvHeader(String fileId, String fileName){
-		List<String> csvHeader = FileUtil.getCsvHeader(fileName, fileId, 3);
+		List<String> csvHeader = CsvFileUtil.getCsvHeader(fileName, fileId, 3);
 		return csvHeader.subList(4, csvHeader.size()-1);
 	}
 }

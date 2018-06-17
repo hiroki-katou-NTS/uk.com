@@ -65,8 +65,10 @@ public class ServerPreparationService {
 					performDataRecovery = (PerformDataRecovery) sperateCompanyResult.get(1);
 					tableList = (List<TableList>)(sperateCompanyResult.get(2));
 					if (checkNormalFile(serverPrepareMng)){
+						// アルゴリズム「テーブル項目チェック」を実行する
 						serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
 						if (checkNormalFile(serverPrepareMng)){
+							// アルゴリズム「対象社員の復元」を実行する
 							employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery, tableList);
 						}
 					}
@@ -74,7 +76,6 @@ public class ServerPreparationService {
 				}
 			}
 		}
-		//ドメインモデル「データ復旧の実行」に新規に書き出す
 		return serverPrepareMng;
 	}
 	public boolean checkNormalFile (ServerPrepareMng serverPrepareMng){
