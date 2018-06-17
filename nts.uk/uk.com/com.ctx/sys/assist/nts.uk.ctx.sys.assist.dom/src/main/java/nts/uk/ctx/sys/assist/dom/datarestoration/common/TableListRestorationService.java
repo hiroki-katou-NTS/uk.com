@@ -23,7 +23,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class TableListRestorationService {
 	private static final String TABLELIST_CSV = "保存対象テーブル一覧";
-	private static final String dateFormat = "yy/mm/dd";
+	private static final String dateFormat = "yyyy/MM/dd";
 
 	@Inject
 	private ServerPrepareMngRepository serverPrepareMngRepository;
@@ -34,11 +34,11 @@ public class TableListRestorationService {
 	// アルゴリズム「テーブル一覧の復元」を実行する
 	public List<Object> restoreTableList(ServerPrepareMng serverPrepareMng) {
 		List<TableList> tableList = new ArrayList<>();
-		List<List<String>> tableListContent = FileUtil.getAllRecord(serverPrepareMng.getFileId().get(),
+		List<List<String>> tableListContent = CsvFileUtil.getAllRecord(serverPrepareMng.getFileId().get(),
 				TABLELIST_CSV, 3);
 		if (tableListContent.size() > 1) {
 			try {
-				for (List<String> tableListSetting : tableListContent.subList(1, tableListContent.size()-1)) {
+				for (List<String> tableListSetting : tableListContent.subList(1, tableListContent.size())) {
 					TimeStore retentionPeriodCls = EnumAdaptor.valueOf(Integer.parseInt(tableListSetting.get(7)),
 							TimeStore.class);
 					StorageRangeSaved storageRangeSaved = EnumAdaptor.valueOf(Integer.parseInt(tableListSetting.get(8)),
@@ -51,8 +51,8 @@ public class TableListRestorationService {
 							HistoryDiviSion.class);
 					NotUseAtr hasParentTblFlg = EnumAdaptor.valueOf(Integer.parseInt(tableListSetting.get(18)),
 							NotUseAtr.class);
-					GeneralDate saveDateFrom = GeneralDate.fromString(tableListSetting.get(108), dateFormat);
-					GeneralDate saveDateTo = GeneralDate.fromString(tableListSetting.get(109), dateFormat);
+					GeneralDate saveDateFrom = GeneralDate.fromString(tableListSetting.get(107), dateFormat);
+					GeneralDate saveDateTo = GeneralDate.fromString(tableListSetting.get(108), dateFormat);
 					TableList tableListData = new TableList(tableListSetting.get(0), tableListSetting.get(1),
 							tableListSetting.get(2), tableListSetting.get(3), tableListSetting.get(4),
 							tableListSetting.get(5), tableListSetting.get(6), retentionPeriodCls,
@@ -91,8 +91,11 @@ public class TableListRestorationService {
 							tableListSetting.get(104), tableListSetting.get(105), tableListSetting.get(106),
 							saveDateFrom, saveDateTo, tableListSetting.get(109), tableListSetting.get(110),
 							tableListSetting.get(111), Integer.parseInt(tableListSetting.get(112)), Integer.parseInt(tableListSetting.get(113)));
-					tableListRepository.add(tableListData);
+					tableListData.setDataRecoveryProcessId(serverPrepareMng.getDataRecoveryProcessId());
+					tableList.add(tableListData);
+					tableListRepository.updateByStorageId(tableListData.getDataStorageProcessingId(), serverPrepareMng.getDataRecoveryProcessId());
 				}
+				
 			} catch (NumberFormatException e) {
 				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.TABLE_LIST_FAULT);
 				serverPrepareMngRepository.update(serverPrepareMng);

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,8 +18,9 @@ import nts.arc.system.ServerSystemProperties;
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 
-public class FileUtil {
+public class CsvFileUtil {
 
 	private static final String NEW_LINE_CHAR = "\r\n";
 	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
@@ -155,9 +158,10 @@ public class FileUtil {
 	}
 
 	public static InputStream createInputStreamFromFile(String fileId, String fileName) {
-		String filePath = DATA_STORE_PATH + "//packs//" + fileId + "temp//" + fileName + ".csv";
+		String filePath = DATA_STORE_PATH + "//packs//" + fileId + "//temp//" + fileName + ".csv";
 		try {
 			return new FileInputStream(new File(filePath));
+//			CommonKeyCrypt.decrypt(nts.gul.file.FileUtil.NoCheck.newInputStream(Paths.get(filePath)));
 		} catch (FileNotFoundException e) {
 			return null;
 		}
@@ -169,5 +173,9 @@ public class FileUtil {
 
 	public static String getCsvStoragePath(String fileId) {
 		return DATA_STORE_PATH + "//packs//" + fileId + "temp";
+	}
+	
+	private static Path pathToTargetStoredFile(String fileId) {
+		return new File(DATA_STORE_PATH).toPath().resolve(fileId);
 	}
 }
