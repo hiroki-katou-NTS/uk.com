@@ -34,7 +34,7 @@ public class EmployeeRestoration {
 		} else {
 			List<List<String>> targetEmployee = CsvFileUtil.getAllRecord(inputStream, 3);
 			if (targetEmployee.size() > 0) {
-				for(List<String> employeeInfo : targetEmployee){
+				for(List<String> employeeInfo : targetEmployee.subList(1, targetEmployee.size())){
 					performDataRecoveryRepository.addTargetEmployee(new Target(serverPrepareMng.getDataRecoveryProcessId(), employeeInfo.get(0), employeeInfo.get(1), CommonKeyCrypt.decrypt(employeeInfo.get(2))));
 				}
 				int numOfPeopleRestore = 0;

@@ -161,7 +161,6 @@ public class CsvFileUtil {
 		String filePath = DATA_STORE_PATH + "//packs//" + fileId + "//temp//" + fileName + ".csv";
 		try {
 			return new FileInputStream(new File(filePath));
-//			CommonKeyCrypt.decrypt(nts.gul.file.FileUtil.NoCheck.newInputStream(Paths.get(filePath)));
 		} catch (FileNotFoundException e) {
 			return null;
 		}
@@ -172,10 +171,6 @@ public class CsvFileUtil {
 	}
 
 	public static String getCsvStoragePath(String fileId) {
-		return DATA_STORE_PATH + "//packs//" + fileId + "temp";
-	}
-	
-	private static Path pathToTargetStoredFile(String fileId) {
-		return new File(DATA_STORE_PATH).toPath().resolve(fileId);
+		return DATA_STORE_PATH + "//packs//" + fileId + "//temp";
 	}
 }
