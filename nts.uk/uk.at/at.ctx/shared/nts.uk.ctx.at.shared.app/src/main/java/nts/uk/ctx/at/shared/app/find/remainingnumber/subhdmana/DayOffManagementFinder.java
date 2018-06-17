@@ -34,13 +34,15 @@ public class DayOffManagementFinder {
 		daysOffMana = comDayOffManaDataRepository.getBySidComDayOffIdWithReDay(companyId, employeeId, leaveId);
 		resultDayFreeMana = daysFreeOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().orElse(null),p.getRemainDays().v().toString(),false,p.getComDayOffID())).collect(Collectors.toList());
 		resultDaysOffMana = daysOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().orElse(null),p.getRemainDays().v().toString(),true,p.getComDayOffID())).collect(Collectors.toList());
+		List<DayOffManagementDto> dayOffManaRemove = new ArrayList<>();
 		for (DayOffManagementDto dayOffMana : resultDaysOffMana) {
 			for (DayOffManagementDto dayOffManaFree : resultDayFreeMana) {
 				if(dayOffMana.getComDayOffId().equals(dayOffManaFree.getComDayOffId())) {
-					resultDayFreeMana.remove(dayOffManaFree);
+					dayOffManaRemove.add(dayOffManaFree);
 				}
 			}
 		}
+		resultDayFreeMana.removeAll(dayOffManaRemove);
 		dayOffAll.addAll(resultDaysOffMana);
 		dayOffAll.addAll(resultDayFreeMana);
 		Collections.sort(dayOffAll, new Comparator<DayOffManagementDto>() {

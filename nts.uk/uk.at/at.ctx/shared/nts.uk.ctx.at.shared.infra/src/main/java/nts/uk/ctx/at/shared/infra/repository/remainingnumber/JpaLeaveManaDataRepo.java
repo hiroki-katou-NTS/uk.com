@@ -167,29 +167,29 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 	
 	@Override
-	public void updateSubByLeaveId(List<String> leaveIds, Boolean check) {
-		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
-				.query(QUERY_BYID, KrcmtLeaveManaData.class)
-				.setParameter("leaveIDs", leaveIds).getList();
+	public void updateSubByLeaveId(String leaveId, Boolean check) {
+		KrcmtLeaveManaData entity = this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
 		if(check) {
-			for(KrcmtLeaveManaData busItem: listListMana){
-				busItem.subHDAtr =  DigestionAtr.UNUSED.value;
-				busItem.unUsedDays = busItem.occurredDays;
-			}
+			entity.subHDAtr =  DigestionAtr.UNUSED.value;
+			entity.unUsedDays = entity.occurredDays;
 		} else {
-			for(KrcmtLeaveManaData busItem: listListMana){
-				busItem.unUsedDays = 0.5;
-			}
+			entity.subHDAtr =  DigestionAtr.UNUSED.value;
+			entity.unUsedDays = 0.5;
 		}
-		this.commandProxy().updateAll(listListMana);
+		this.commandProxy().update(entity);
 	}
 	
 	
 	@Override
 	public void updateUnUseDayLeaveId(String leaveId,Double unUsedDay) {
 		KrcmtLeaveManaData leaveMana =  this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
-		leaveMana.unUsedDays = unUsedDay;
-		leaveMana.subHDAtr = 1;
+		if(unUsedDay < leaveMana.occurredDays) {
+			leaveMana.unUsedDays = unUsedDay;
+			leaveMana.subHDAtr = 0;
+		} else {
+			leaveMana.unUsedDays = unUsedDay;
+			leaveMana.subHDAtr = 1;
+		}
 		this.commandProxy().update(leaveMana);
 	}
 	
