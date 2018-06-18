@@ -36,9 +36,9 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			 " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId",
 			 " AND c.abolitionAtr = 0",
 			//  them dieu kien luong, nhan su, viec lam
-			 " AND ((cm.salaryUseAtr = :salaryUseAtr AND :salaryUseAtr = 1) OR (1 = 1))",
+			 " AND (((cm.salaryUseAtr = :salaryUseAtr AND :salaryUseAtr = 1) OR (1 = 1))",
 			 " OR  ((cm.personnelUseAtr = :personnelUseAtr AND :personnelUseAtr = 1) OR (1 = 1))",
-			 " OR  ((cm.employmentUseAtr = :employmentUseAtr AND :employmentUseAtr = 1) OR (1 = 1))",
+			 " OR  ((cm.employmentUseAtr = :employmentUseAtr AND :employmentUseAtr = 1) OR (1 = 1)))",
 			 "	ORDER BY co.disporder");
 
 	private final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName "

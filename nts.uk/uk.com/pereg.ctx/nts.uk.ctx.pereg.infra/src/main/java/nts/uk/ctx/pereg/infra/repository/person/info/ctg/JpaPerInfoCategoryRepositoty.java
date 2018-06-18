@@ -29,9 +29,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			 " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
 			 " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
 			 " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid",
-			 " AND ((co.salaryUseAtr = :salaryUseAtr AND :salaryUseAtr = 1) OR (1 = 1))",
+			 " AND (((co.salaryUseAtr = :salaryUseAtr AND :salaryUseAtr = 1) OR (1 = 1))",
 			 " OR  ((co.personnelUseAtr = :personnelUseAtr AND :personnelUseAtr = 1) OR (1 = 1))",
-			 " OR  ((co.employmentUseAtr = :employmentUseAtr AND :employmentUseAtr = 1) OR (1 = 1))",
+			 " OR  ((co.employmentUseAtr = :employmentUseAtr AND :employmentUseAtr = 1) OR (1 = 1)))",
 			 " ORDER BY po.disporder");
 
 	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
