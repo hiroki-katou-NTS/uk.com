@@ -29,4 +29,6 @@ public abstract class MonthlyFinderFacade extends FinderFacade {
 	public abstract <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range);
 	
 	public abstract <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonth yearMonth);
+
+	public abstract <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, Collection<YearMonth> yearMonth);
 }

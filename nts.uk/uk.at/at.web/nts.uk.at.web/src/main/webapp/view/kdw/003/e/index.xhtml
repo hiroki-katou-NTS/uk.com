@@ -9,8 +9,8 @@
 			<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 300,
-					height : 400
+					width : 280,
+					height : 350
 				};
 			</script>
 				<com:scriptfile set="IGNITE" />
@@ -34,7 +34,11 @@
 											multiple: false,
 											value: selectedCode,
 											enable: true,
-											rows: 5 }"></div>
+											rows: 5,
+											columns: [
+														{ key: 'name', length: 15 }
+													]
+											 }"></div>
 				</div>
 				<div id="functions-area-bottom">
 					<button class="proceed" data-bind="click: extract">#{i18n.getText('KDW003_49')}</button>

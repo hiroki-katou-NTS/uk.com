@@ -21,4 +21,13 @@ public interface EmployeeInfoAdapter {
 //	List<EmployeeInfoDtoImport> getEmployeesAtWorkByBaseDate(String companyId , GeneralDate baseDate);
 	
 	List<EmployeeInfoDtoImport> getEmployees(List<String> employeeIds);
+	
+	/**
+	 * Gets the employee info.
+	 *
+	 * @param companyId the company id
+	 * @param employeeCode the employee code
+	 * @return the employee info
+	 */
+	EmployeeInfoDtoImport getEmployeeInfo(String companyId, String employeeCode);
 }

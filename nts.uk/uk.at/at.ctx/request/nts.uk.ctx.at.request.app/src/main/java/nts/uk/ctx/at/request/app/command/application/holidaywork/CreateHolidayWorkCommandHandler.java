@@ -9,12 +9,13 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
-public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<CreateHolidayWorkCommand, String> {
+public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<CreateHolidayWorkCommand, ProcessResult> {
 	@Inject
 	private IFactoryHolidayWork factoryHolidayWork;
 	@Inject
@@ -24,7 +25,7 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 	@Inject
 	private RegisterAtApproveReflectionInfoService_New registerService;
 	@Override
-	protected String handle(CommandHandlerContext<CreateHolidayWorkCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<CreateHolidayWorkCommand> context) {
 		
 		CreateHolidayWorkCommand command = context.getCommand();
 		// 会社ID

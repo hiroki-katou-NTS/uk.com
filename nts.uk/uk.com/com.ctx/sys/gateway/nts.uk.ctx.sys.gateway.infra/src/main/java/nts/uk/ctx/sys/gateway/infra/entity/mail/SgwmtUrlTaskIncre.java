@@ -19,6 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
 * 
 */
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "SGWMT_URL_TASK_INCRE")
@@ -37,39 +38,33 @@ public class SgwmtUrlTaskIncre extends UkJpaEntity implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "TASK_INCRE_KEY")
-    public String key;
+    public String taskIncreKey;
     
     /**
     * 値
     */
     @Basic(optional = false)
     @Column(name = "TASK_INCRE_VALUE")
-    public String value;
+    public String taskIncreValue;
+    
+    @ManyToOne
+    @PrimaryKeyJoinColumns({
+    	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
+    	@PrimaryKeyJoinColumn(name="EMBEDDED_ID", referencedColumnName="EMBEDDED_ID")
+    })
+    private SgwmtUrlExecInfo urlExecInfo;
     
     @Override
     protected Object getKey()
     {
         return urlTaskIncrePk;
     }
-    
-    @ManyToOne
-	@PrimaryKeyJoinColumns({
-		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
-		@PrimaryKeyJoinColumn(name="EMBEDDED_ID",referencedColumnName="EMBEDDED_ID")
-	})
-	private SgwmtUrlExecInfo sgwmtUrlExecInfo;
 
-    
     public UrlTaskIncre toDomain() {
-        return UrlTaskIncre.createFromJavaType(this.urlTaskIncrePk.embeddedId, this.urlTaskIncrePk.cid, this.urlTaskIncrePk.taskIncreId, this.key, this.value);
+        return new UrlTaskIncre(this.urlTaskIncrePk.embeddedId, this.urlTaskIncrePk.cid, this.urlTaskIncrePk.taskIncreId, this.taskIncreKey, this.taskIncreValue);
     }
     public static SgwmtUrlTaskIncre toEntity(UrlTaskIncre domain) {
-        return new SgwmtUrlTaskIncre(new SgwmtUrlTaskIncrePk(domain.getEmbeddedId(), domain.getCid(), domain.getTaskIncreId()), domain.getKey(), domain.getValue());
+        return new SgwmtUrlTaskIncre(new SgwmtUrlTaskIncrePk(domain.getEmbeddedId(), domain.getCid(), domain.getTaskIncreId()), domain.getTaskIncreKey(), domain.getTaskIncreValue(), null);
     }
-	public SgwmtUrlTaskIncre(SgwmtUrlTaskIncrePk urlTaskIncrePk, String key, String value) {
-		super();
-		this.urlTaskIncrePk = urlTaskIncrePk;
-		this.key = key;
-		this.value = value;
-	}
+
 }

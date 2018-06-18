@@ -49,7 +49,7 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		if (domainHistOpt.isPresent()) {
 			domainHist = domainHistOpt.get();
 		} else {
-			domainHist = SelectionHistory.createNewHistorySelection(selectItemID, companyId);
+			domainHist = SelectionHistory.createNewHistorySelection(companyId, selectItemID);
 		}
 
 		// add new history

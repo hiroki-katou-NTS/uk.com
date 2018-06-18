@@ -10,12 +10,6 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.RemoveSelectionItemCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.RemoveSelectionItemCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.UpdateSelectionItemCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.UpdateSelectionItemCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.add.AddSelectionHistoryCommand;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.add.AddSelectionHistoryCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.edit.EditHistoryCommand;
@@ -30,6 +24,12 @@ import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.remov
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.remove.RemoveSelectionCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.update.UpdateSelectionCommand;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.update.UpdateSelectionCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.add.AddSelectionItemCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.add.AddSelectionItemCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.remove.RemoveSelectionItemCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.remove.RemoveSelectionItemCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.update.UpdateSelectionItemCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.update.UpdateSelectionItemCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionorder.update.UpdateSelOrderCommand;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionorder.update.UpdateSelOrderCommandHandler;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;

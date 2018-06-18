@@ -20,14 +20,13 @@ import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkPlaceHisto
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmp;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpAdaptor;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHis;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
- * 勤務予定マスタ情報を取得する(lấy các thông tin master 勤務予定マスタ情報)
+ * 勤務予定マスタ情報を取得する
+ * 
+ * lấy các thông tin master 勤務予定マスタ情報
  * 
  * @author sonnh1
  *
@@ -41,16 +40,10 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	@Inject
 	private I18NResourcesForUK internationalization;
 
-	@Inject
-	private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
-
-	@Inject
-	private BusinessTypeOfEmpAdaptor businessTypeOfEmpAdaptor;
-
 	@Override
 	public Optional<ScheduleMasterInformationDto> getScheduleMasterInformationDto(String employeeId,
-			GeneralDate baseDate, String exeId, EmployeeGeneralInfoImported empGeneralInfo) {
-		
+			GeneralDate baseDate, String exeId, EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+
 		Optional<ScheduleMasterInformationDto> result = Optional.of(new ScheduleMasterInformationDto());
 
 		Map<String, List<ExEmploymentHistItemImported>> mapEmploymentHist = empGeneralInfo.getEmploymentDto().stream()
@@ -92,7 +85,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 		}
 
 		// 勤務種別コードを取得する
-		this.acquireWorkTypeCode(employeeId, baseDate, result);
+		this.acquireWorkTypeCode(employeeId, baseDate, result, listBusTypeOfEmpHis);
 
 		return result;
 	}
@@ -110,7 +103,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	private boolean setEmployeeCode(String exeId, String employeeId, GeneralDate baseDate,
 			Optional<ScheduleMasterInformationDto> result,
 			Map<String, List<ExEmploymentHistItemImported>> mapEmploymentHist) {
-
+		// EA No1678
 		List<ExEmploymentHistItemImported> listEmpHistItem = mapEmploymentHist.get(employeeId);
 		if (listEmpHistItem != null) {
 			Optional<ExEmploymentHistItemImported> optEmpHistItem = listEmpHistItem.stream()
@@ -121,12 +114,6 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 			}
 		}
 
-		// if (employmentHistoryImported.isPresent()) {
-		// String employmentCode =
-		// employmentHistoryImported.get().getEmploymentCode();
-		// result.get().setEmployeeCode(employmentCode);
-		// return true;
-		// }
 		ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Employment"),
 				exeId, baseDate, employeeId);
 		this.scheduleErrorLogRepository.add(scheduleErrorLog);
@@ -144,10 +131,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	private void getClassificationCode(String employeeId, GeneralDate baseDate,
 			Optional<ScheduleMasterInformationDto> result,
 			Map<String, List<ExClassificationHistItemImported>> mapClassificationHist) {
-		// Imported「所属分類履歴」から分類コードを取得する(lấy 分類コード từ Imported「所属分類履歴」)
-		// Optional<SClsHistImported> hisExport =
-		// this.syClassificationAdapter.findSClsHistBySid(companyId, employeeId,
-		// baseDate);
+		// EA No1679
 		List<ExClassificationHistItemImported> listClassHistItem = mapClassificationHist.get(employeeId);
 		if (listClassHistItem != null) {
 			Optional<ExClassificationHistItemImported> optClassHistItem = listClassHistItem.stream()
@@ -155,12 +139,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 			if (optClassHistItem.isPresent()) {
 				result.get().setClassificationCode(optClassHistItem.get().getClassificationCode());
 			}
-		}
-		// if (hisExport.isPresent()) {
-		// String classificationCode = hisExport.get().getClassificationCode();
-		// result.get().setClassificationCode(classificationCode);
-		// }
-		else {
+		} else {
 			result.get().setClassificationCode(null);
 		}
 	}
@@ -178,22 +157,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	private boolean acquireJobTitleId(String exeId, String employeeId, GeneralDate baseDate,
 			Optional<ScheduleMasterInformationDto> result,
 			Map<String, List<ExJobTitleHistItemImported>> mapJobTitleHist) {
-		// Imported「所属職位履歴」から職位IDを取得する(lấy 職位ID từ Imported「所属職位履歴」)
-		// Optional<EmployeeJobHistImported> employeeJobHisOptional =
-		// this.syJobTitleAdapter.findBySid(employeeId,
-		// baseDate);
-		// if (employeeJobHisOptional.isPresent()) {
-		// String jobId = employeeJobHisOptional.get().getJobTitleID();
-		// result.get().setJobId(jobId);
-		// return true;
-		// }
-		// else {
-		// ScheduleErrorLog scheduleErrorLog = new
-		// ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Jobtitle"),
-		// exeId, baseDate, employeeId);
-		// this.scheduleErrorLogRepository.add(scheduleErrorLog);
-		// return false;
-		// }
+		// EA No1680
 		List<ExJobTitleHistItemImported> listJobTitleHistItem = mapJobTitleHist.get(employeeId);
 		if (listJobTitleHistItem != null) {
 			Optional<ExJobTitleHistItemImported> optJobTitleHistItem = listJobTitleHistItem.stream()
@@ -223,21 +187,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	private boolean acquireWorkplaceId(String exeId, String employeeId, GeneralDate baseDate,
 			Optional<ScheduleMasterInformationDto> result,
 			Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist) {
-		// Imported「所属職場履歴」から職場IDを取得する(lấy職場ID từ Imported「所属職場履歴」)
-		// Optional<SWkpHistImported> swkpHisOptional =
-		// this.syWorkplaceAdapter.findBySid(employeeId, baseDate);
-		// if (swkpHisOptional.isPresent()) {
-		// String workPlaceId = swkpHisOptional.get().getWorkplaceId();
-		// result.get().setWorkplaceId(workPlaceId);
-		// return true;
-		// } else {
-		// ScheduleErrorLog scheduleErrorLog = new
-		// ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Workplace"),
-		// exeId, baseDate, employeeId);
-		// this.scheduleErrorLogRepository.add(scheduleErrorLog);
-		// return false;
-		// }
-
+		// EA No1681
 		List<ExWorkplaceHistItemImported> listWorkplaceHistItem = mapWorkplaceHist.get(employeeId);
 		if (listWorkplaceHistItem != null) {
 			Optional<ExWorkplaceHistItemImported> optWorkplaceHistItem = listWorkplaceHistItem.stream()
@@ -265,23 +215,20 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	 */
 
 	private void acquireWorkTypeCode(String employeeId, GeneralDate baseDate,
-			Optional<ScheduleMasterInformationDto> result) {
+			Optional<ScheduleMasterInformationDto> result, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
-		Optional<BusinessTypeOfEmpHis> businessTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
-				.findByBaseDateAndSid(baseDate, employeeId);
+		// EA No2022
+		Optional<BusinessTypeOfEmpDto> businessTypeOfEmpHis = listBusTypeOfEmpHis.stream()
+				.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getStartDate().beforeOrEquals(baseDate)
+						&& x.getEndDate().afterOrEquals(baseDate)))
+				.findFirst();
+
 		if (!businessTypeOfEmpHis.isPresent()) {
 			result.get().setBusinessTypeCode(null);
 			return;
 		}
-		// ドメインモデル「社員の勤務種別」を取得する
-		Optional<BusinessTypeOfEmp> businessTypeOfEmp = this.businessTypeOfEmpAdaptor.getBySidAndHistId(employeeId,
-				businessTypeOfEmpHis.get().getHistoryId());
-		if (!businessTypeOfEmp.isPresent()) {
-			result.get().setBusinessTypeCode(null);
-			return;
-		}
 
-		result.get().setBusinessTypeCode(businessTypeOfEmp.get().getBusinessTypeCode());
+		result.get().setBusinessTypeCode(businessTypeOfEmpHis.get().getBusinessTypeCd());
 	}
 
 	/**

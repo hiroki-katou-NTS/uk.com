@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,16 +16,21 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessFinder;
+import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
+import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
+import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
@@ -32,8 +39,6 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -46,6 +51,8 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ColumnSetting;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellStateDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPControlDisplayItem;
@@ -104,6 +111,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 	@Inject
 	private DailyPerformanceScreenRepo dailyPerformanceScreenRepo;
 
+	@Inject
+	private RegulationInfoEmployeeQueryAdapter regulationInfoEmployeePub;
+
 	/** 月次の勤怠項目の制御 */
 	@Inject
 	private ControlOfMonthlyFinder controlOfMonthlyFinder;
@@ -158,9 +168,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		// アルゴリズム「締め情報の表示」を実行する
 		Integer yearMonth = 0;
-		if (presentClosingPeriodExport.isPresent()) {
-			yearMonth = presentClosingPeriodExport.get().getProcessingYm().v();
-			// 処理年月
+		if (param.getYearMonth() == 0) {
+			if (presentClosingPeriodExport.isPresent()) {
+				yearMonth = presentClosingPeriodExport.get().getProcessingYm().v();
+				// 処理年月
+				screenDto.setProcessDate(yearMonth);
+			}
+		} else {
+			yearMonth = param.getYearMonth();
 			screenDto.setProcessDate(yearMonth);
 		}
 		// 5. アルゴリズム「締め情報の表示」を実行する
@@ -171,12 +186,31 @@ public class MonthlyPerformanceCorrectionProcessor {
 		if (param.getInitMenuMode() == 0) {
 			// 7. アルゴリズム「通常モードで起動する」を実行する
 			// アルゴリズム「<<Public>> 就業条件で社員を検索して並び替える」を実行する
-			screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(), employeeId, new DateRange(
-					screenDto.getSelectedActualTime().getEndDate(), screenDto.getSelectedActualTime().getEndDate())));
-			List<MonthlyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(param.getInitScreenMode(),
-					employeeId, screenDto.getLstEmployee());
-			// TODO List<String> employeeIds = lstEmployeeData.stream().map(e ->
-			// e.getId()).collect(Collectors.toList());
+
+			if (param.getLstEmployees() != null && !param.getLstEmployees().isEmpty()) {
+				screenDto.setLstEmployee(param.getLstEmployees());
+			} else {
+				List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
+						createQueryEmployee(new ArrayList<>(), presentClosingPeriodExport.get().getClosureStartDate(),
+								presentClosingPeriodExport.get().getClosureStartDate()));
+
+				List<MonthlyPerformanceEmployeeDto> lstEmployeeDto = regulationRs.stream().map(item -> {
+					return new MonthlyPerformanceEmployeeDto(item.getEmployeeId(), item.getEmployeeCode(),
+							item.getEmployeeName(), item.getWorkplaceName(), item.getWorkplaceId(), "", false);
+				}).collect(Collectors.toList());
+				screenDto.setLstEmployee(lstEmployeeDto);
+			}
+			screenDto.setLoginUser(employeeId);
+			// screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(),
+			// employeeId, new DateRange(
+			// screenDto.getSelectedActualTime().getEndDate(),
+			// screenDto.getSelectedActualTime().getEndDate())));
+			// List<MonthlyPerformanceEmployeeDto> lstEmployeeData =
+			// extractEmployeeData(param.getInitScreenMode(),
+			// employeeId, screenDto.getLstEmployee());
+			// // TODO List<String> employeeIds = lstEmployeeData.stream().map(e
+			// ->
+			// // e.getId()).collect(Collectors.toList());
 			List<String> employeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 					.collect(Collectors.toList());
 			// アルゴリズム「表示フォーマットの取得」を実行する(Thực hiện 「Lấy format hiển thị」)
@@ -187,11 +221,18 @@ public class MonthlyPerformanceCorrectionProcessor {
 				throw new BusinessException("FormatPerformance hasn't data");
 			}
 
+			List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
+			if (lstLockStatus.stream().allMatch(item -> item.getLockStatusString() != Strings.EMPTY)) {
+				screenDto.setShowRegisterButton(false);
+			} else
+				screenDto.setShowRegisterButton(true);
+
 			// アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId);
-			
+
 			// set data of lstControlDisplayItem
-			List<Integer> attdanceIds = screenDto.getParam().getLstAtdItemUnique().keySet().stream().collect(Collectors.toList());
+			List<Integer> attdanceIds = screenDto.getParam().getLstAtdItemUnique().keySet().stream()
+					.collect(Collectors.toList());
 			screenDto.getLstControlDisplayItem().setItemIds(attdanceIds);
 			screenDto.getLstControlDisplayItem().getLstAttendanceItem();
 
@@ -207,7 +248,39 @@ public class MonthlyPerformanceCorrectionProcessor {
 		else {
 			// TODO 対象外
 		}
+		screenDto.createAccessModifierCellState();
 		return screenDto;
+	}
+
+	private RegulationInfoEmployeeQuery createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
+			GeneralDate endDate) {
+		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
+		query.setBaseDate(GeneralDate.today());
+		query.setReferenceRange(EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value);
+		query.setFilterByEmployment(false);
+		query.setEmploymentCodes(Collections.emptyList());
+		// query.setFilterByDepartment(false);
+		// query.setDepartmentCodes(Collections.emptyList());
+		query.setFilterByWorkplace(false);
+		query.setWorkplaceCodes(Collections.emptyList());
+		query.setFilterByClassification(false);
+		query.setClassificationCodes(Collections.emptyList());
+		query.setFilterByJobTitle(false);
+		query.setJobTitleCodes(Collections.emptyList());
+		query.setFilterByWorktype(false);
+		query.setWorktypeCodes(Collections.emptyList());
+		query.setPeriodStart(startDate);
+		query.setPeriodEnd(endDate);
+		query.setIncludeIncumbents(true);
+		query.setIncludeWorkersOnLeave(true);
+		query.setIncludeOccupancy(true);
+		// query.setIncludeAreOnLoan(true);
+		// query.setIncludeGoingOnLoan(false);
+		query.setIncludeRetirees(false);
+		query.setRetireStart(GeneralDate.today());
+		query.setRetireEnd(GeneralDate.today());
+		query.setFilterByClosure(false);
+		return query;
 	}
 
 	private List<MonthlyPerformanceAuthorityDto> getAuthority(MonthlyPerformanceCorrectionDto screenDto) {
@@ -242,15 +315,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		// 対象締め：締めID
 		return closureId;
-	}
-
-	private List<MonthlyPerformanceEmployeeDto> extractEmployeeData(Integer initScreen, String sId,
-			List<MonthlyPerformanceEmployeeDto> emps) {
-		if (initScreen == 0) {
-			return emps.stream().filter(x -> x.getId().equals(sId)).collect(Collectors.toList());
-		}
-		return emps;
-
 	}
 
 	/**
@@ -332,6 +396,12 @@ public class MonthlyPerformanceCorrectionProcessor {
 		 */
 		MPControlDisplayItem displayItem = screenDto.getLstControlDisplayItem();
 		MonthlyPerformanceParam param = screenDto.getParam();
+
+		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
+		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
+			throw new BusinessException("Msg_1261");
+		}
+
 		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {
 			MPSheetDto sh = new MPSheetDto(c.getSheetNo(), c.getSheetName());
 			for (PAttendanceItem attend : c.getDisplayItems()) {
@@ -358,14 +428,29 @@ public class MonthlyPerformanceCorrectionProcessor {
 		displayItem.setLstHeader(lstHeader);
 		// Fixed header
 		screenDto.setLstFixedHeader(MPHeaderDto.GenerateFixedHeader());
+		screenDto.getLstFixedHeader().forEach(column -> {
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+		});
+
+		for (MPHeaderDto key : displayItem.getLstHeader()) {
+			ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
+			if (!key.getGroup().isEmpty()) {
+				displayItem.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
+				displayItem.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
+			} else {
+				if (key.getKey().contains("A")) {
+					PAttendanceItem item = param.getLstAtdItemUnique()
+							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					columnSetting.setTypeFormat(item.getAttendanceAtr());
+				}
+			}
+			displayItem.getColumnSettings().add(columnSetting);
+		}
 
 		/**
 		 * Get Data
 		 */
-		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
-		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
-			throw new BusinessException("Msg_1261");
-		}
+
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<String> listEmployeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 				.collect(Collectors.toList());
@@ -373,7 +458,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				.collect(Collectors.toList());
 		results = new GetDataMonthly(listEmployeeIds, new YearMonth(yearMonth), ClosureId.valueOf(closureId),
 				screenDto.getClosureDate().toDomain(), attdanceIds, monthlyModifyQueryProcessor).call();
-		if(results.size() > 0){
+		if (results.size() > 0) {
 			screenDto.getItemValues().addAll(results.get(0).getItems());
 		}
 		Map<String, MonthlyModifyResult> employeeDataMap = results.stream()
@@ -387,9 +472,18 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		Map<String, MonthlyPerformaceLockStatus> lockStatusMap = param.getLstLockStatus().stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
+		String employeeIdLogin = AppContexts.user().employeeId();
+
+		List<EditStateOfMonthlyPerformanceDto> editStateOfMonthlyPerformanceDtos = this.repo
+				.findEditStateOfMonthlyPer(new YearMonth(screenDto.getProcessDate()), listEmployeeIds, attdanceIds);
+
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
+			// lock check box1 identify
+			if (!employeeIdLogin.equals(employeeId)) {
+				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+			}
 			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) ? ""
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 
@@ -397,6 +491,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 					employeeId, "", false, false, false, "");
 			// Setting data for dynamic column
 			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
+			
+			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream().filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			if (null != rowData) {
 				if (null != rowData.getItems()) {
 					rowData.getItems().forEach(item -> {
@@ -406,7 +502,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 						String attendanceKey = mergeString(ADD_CHARACTER, "" + item.getItemId());
 						PAttendanceItem pA = param.getLstAtdItemUnique().get(item.getItemId());
 						List<String> cellStatus = new ArrayList<>();
-						int attendanceAtr = item.getValueType().value;
 
 						if (pA.getAttendanceAtr() == 1) {
 							int minute = 0;
@@ -434,6 +529,15 @@ public class MonthlyPerformanceCorrectionProcessor {
 						}
 						// Cell Data
 						lstCellState.add(new MPCellStateDto(employeeId, attendanceKey, cellStatus));
+
+						Optional<EditStateOfMonthlyPerformanceDto> dto = newList.stream().filter(item2 -> item2.getAttendanceItemId().equals(item.getItemId())).findFirst();
+						if (dto.isPresent()) {
+							if (dto.get().getStateOfEdit() == 0) {
+								screenDto.setStateCell(attendanceKey, employeeId, HAND_CORRECTION_MYSELF);
+							} else {
+								screenDto.setStateCell(attendanceKey, employeeId, HAND_CORRECTION_OTHER);
+							}
+						}
 					});
 				}
 			}
