@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
@@ -66,6 +68,18 @@ public class LockOutDataUserFinder {
 	 */
 	public List<SearchUser> findUserByUserIDName(String searchInput) {
 		return lockOutDataRepository.findUserByUserIDName(searchInput);
+	}
+	
+	/**
+	 * Find lock out data by user id.
+	 *
+	 * @param UserId the user id
+	 * @return the lock out data dto
+	 */
+	public LockOutDataDto findLockOutDataByUserId(String UserId) {
+		LockOutData lockOutData = lockOutDataRepository.findByUserId(UserId).get();
+		return new LockOutDataDto(lockOutData.getUserId(), lockOutData.getLockOutDateTime(),
+				lockOutData.getLogType().value, lockOutData.getContractCode().v(), lockOutData.getLoginMethod().value);
 	}
 
 }

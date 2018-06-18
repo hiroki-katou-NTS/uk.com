@@ -4,26 +4,38 @@ module nts.uk.com.view.cli001.a {
         var servicePath: any = {
             
             removeLockOutData: "ctx/sys/gateway/securitypolicy/lockoutdata/remove",
-            findLockOutData: "ctx/sys/gateway/securitypolicy/lockoutdata/find"
-            
+            findLockOutData: "ctx/sys/gateway/securitypolicy/lockoutdata/find",
+            findByUserId: "ctx/sys/gateway/securitypolicy/lockoutdata/findByUserId/"
             
         }
         export function removeLockOutData(command: any): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.removeLockOutData, command);
         }
         
-        export function findAll(): JQueryPromise<Array<model.LockOutDataDto>>{
-            return nts.uk.request.ajax(servicePath.findLockOutData);
+        export function findAll(): JQueryPromise<Array<model.LockOutDataUserDto>>{
+           return nts.uk.request.ajax(servicePath.findLockOutData);
+            
+        }
+        export function findByUserId(userId : string): JQueryPromise<model.LockOutDataDto>{
+            return nts.uk.request.ajax(servicePath.findByUserId + userId);
         }
         
         export module model{
-            export interface LockOutDataDto{
+            export interface LockOutDataUserDto{
                 logType: number;
                 loginId: string;
                 userId: string;
                 userName: string
                 lockOutDateTime: string;
             }
+        export interface LockOutDataDto {
+            logType: number;
+            contractCode: string;
+            userId: string;
+            loginMethod: number;
+            lockOutDateTime: string;
+        }
+            
         }
         }
     }

@@ -1,5 +1,6 @@
 var multiple = true;
 module nts.uk.com.view.cli001.a {
+    import LockOutDataUserDto = nts.uk.com.view.cli001.a.service.model.LockOutDataUserDto;
     import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
 
     export module viewmodel {
@@ -31,7 +32,7 @@ module nts.uk.com.view.cli001.a {
             public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-                service.findAll().done((data: Array<LockOutDataDto>) => {
+                service.findAll().done((data: Array<LockOutDataUserDto>) => {
                     _self.items(data);
 
                     dfd.resolve();
@@ -50,9 +51,10 @@ module nts.uk.com.view.cli001.a {
                 let _self = this;
                 nts.uk.ui.windows.sub.modal("/view/cli/001/b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("dataCd001.a");
-                    if (!nts.uk.util.isNullOrUndefined(data))
-                        service.findAll().done((data: Array<LockOutDataDto>) => {
-                            _self.items(data);
+                    let userId = { userId: data.userID };
+                    if (!nts.uk.util.isNullOrUndefined(userId))
+                        service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
+                             _self.items().push({ logType: dto.logType == 1? '強制ロック' : '', loginId: data.loginID,userId:dto.userId,userName:data.userName,lockOutDateTime:dto.lockOutDateTime});
                         });
                     console.log(data);
                     nts.uk.ui.block.clear();
@@ -91,7 +93,7 @@ module nts.uk.com.view.cli001.a {
                                 service.removeLockOutData(command).done(() => {
                                     nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
                                         //Search again and display the screen
-                                        service.findAll().done((data: Array<LockOutDataDto>) => {
+                                        service.findAll().done((data: Array<LockOutDataUserDto>) => {
                                             self.items(data);
                                             self.currentCodeList([]);
                                         });

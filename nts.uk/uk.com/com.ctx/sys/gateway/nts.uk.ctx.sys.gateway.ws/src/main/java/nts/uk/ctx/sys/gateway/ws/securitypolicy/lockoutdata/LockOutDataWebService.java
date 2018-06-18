@@ -9,14 +9,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.securitypolicy.lockoutdata.LockOutDataDeleteCommand;
 import nts.uk.ctx.sys.gateway.app.command.securitypolicy.lockoutdata.LockOutDataDeleteCommandHandler;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.LockOutDataUserFinder;
+import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.SearchInput;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.SearchUser;
 
 /**
@@ -46,11 +49,29 @@ public class LockOutDataWebService extends WebService {
 		this.lockOutDataDeleteCommandHandler.handle(command);
 	}
 	
+	/**
+	 * Find lock out data.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("find")
 	public List<LockOutDataUserDto> findLockOutData() {
 
 		 return this.lockOutDataUserFinder.findAll();
+	}
+	
+	/**
+	 * Find lock out by user id.
+	 *
+	 * @param UserId the user id
+	 * @return the lock out data
+	 */
+	@POST
+	@Path("findByUserId/{userId}")
+	public LockOutDataDto findLockOutByUserId(@PathParam("userId") String userId) {
+		
+		 return this.lockOutDataUserFinder.findLockOutDataByUserId(userId);
 	}
 
 	/*
