@@ -1209,6 +1209,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		WorkplaceReportData workplaceReportData = null;
 		
 		for (Map.Entry<String, WorkplaceReportData> entry : rootWorkplace.lstChildWorkplaceReportData.entrySet()) {
+			if (workplaceReportData != null) {
+				break;
+			}
 			String key = entry.getKey();
 			WorkplaceReportData childWorkplace = entry.getValue();
 			if (StringUtils.equalsIgnoreCase(key, hierarchyCode)) {
@@ -1275,6 +1278,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		DailyWorkplaceData workplaceReportData = null;
 		
 		for (Map.Entry<String, DailyWorkplaceData> entry : rootWorkplace.lstChildWorkplaceData.entrySet()) {
+			if (workplaceReportData != null) {
+				break;
+			}
 			String key = entry.getKey();
 			DailyWorkplaceData childWorkplace = entry.getValue();
 			if (StringUtils.equalsIgnoreCase(key, hierarchyCode)) {
@@ -1694,6 +1700,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			        Range dayCountRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DAYCOUNT_ROW);
 					Range dayCountRange = cells.createRange(currentRow, 0, 2, 39);
 					dayCountRange.copy(dayCountRangeTemp);
+					dayCountRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 					if (rowPageTracker.checkRemainingRowSufficient(2) == 0) {
 						rowPageTracker.useRemainingRow(2);
 						rowPageTracker.resetRemainingRow();
@@ -1922,7 +1929,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 			dateRange.copy(dateRangeTemp);
 			rowPageTracker.useOneRowAndCheckResetRemainingRow();
-			dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+			//dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 			
 			// B3_1
 			Cell dateTagCell = cells.get(currentRow, 0);
@@ -2009,9 +2016,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			while (dataIterator.hasNext()){
 				DailyPersonalPerformanceData employee = dataIterator.next();
 				
-				List<ActualValue> lstItem = employee.getActualValue();
-				if (lstItem == null) continue;  // Skip to next record if performance is null
-				
 				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
 					sheet.getHorizontalPageBreaks().add(currentRow);
 					rowPageTracker.resetRemainingRow();
@@ -2044,50 +2048,53 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Range employeeRange = cells.createRange(currentRow, 1, dataRowCount, 2);
 				employeeRange.merge();
 				
-				// B5_3
-				// Divide list into smaller lists (max 16 items)
-				int size = lstItem.size();
-				int numOfChunks = (int)Math.ceil((double)size / CHUNK_SIZE);
-				int start, length;
-				List<ActualValue> lstItemRow;
-				
-				int curRow = currentRow;
-	
-		        for(int i = 0; i < numOfChunks; i++) {
-		            start = i * CHUNK_SIZE;
-		            length = Math.min(size - start, CHUNK_SIZE);
-	
-		            lstItemRow = lstItem.subList(start, start + length);
-		            for (int j = 0; j < length; j++) {
-		            	// Column 4, 6, 8,...
-		            	ActualValue actualValue = lstItemRow.get(j);
-		            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		            	Style style = cell.getStyle();
-		            	switch (actualValue.getValueType()) {
-						case ActualValue.INTEGER:
-							String value = actualValue.getValue();
-							if (value != null)
-								cell.setValue(getTimeAttr(value));
-							else
-								cell.setValue(getTimeAttr("0"));
-							style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-							break;
-						case ActualValue.BIG_DECIMAL:
-						case ActualValue.DATE:
-						case ActualValue.STRING:
-							cell.setValue(actualValue.getValue());
-							style.setHorizontalAlignment(TextAlignmentType.LEFT);
-						}
-		            	setFontStyle(style);
-		            	cell.setStyle(style);
-		            }
-		            
-		            curRow++;
-		        }
-		        
-		        // B5_4
-		        Cell remarkCell = cells.get(currentRow,35);
-		        remarkCell.setValue(employee.getDetailedErrorData());
+				List<ActualValue> lstItem = employee.getActualValue();
+				if (lstItem != null) {
+					// B5_3
+					// Divide list into smaller lists (max 16 items)
+					int size = lstItem.size();
+					int numOfChunks = (int)Math.ceil((double)size / CHUNK_SIZE);
+					int start, length;
+					List<ActualValue> lstItemRow;
+					
+					int curRow = currentRow;
+		
+			        for(int i = 0; i < numOfChunks; i++) {
+			            start = i * CHUNK_SIZE;
+			            length = Math.min(size - start, CHUNK_SIZE);
+		
+			            lstItemRow = lstItem.subList(start, start + length);
+			            for (int j = 0; j < length; j++) {
+			            	// Column 4, 6, 8,...
+			            	ActualValue actualValue = lstItemRow.get(j);
+			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
+			            	Style style = cell.getStyle();
+			            	switch (actualValue.getValueType()) {
+							case ActualValue.INTEGER:
+								String value = actualValue.getValue();
+								if (value != null)
+									cell.setValue(getTimeAttr(value));
+								else
+									cell.setValue(getTimeAttr("0"));
+								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+								break;
+							case ActualValue.BIG_DECIMAL:
+							case ActualValue.DATE:
+							case ActualValue.STRING:
+								cell.setValue(actualValue.getValue());
+								style.setHorizontalAlignment(TextAlignmentType.LEFT);
+							}
+			            	setFontStyle(style);
+			            	cell.setStyle(style);
+			            }
+			            
+			            curRow++;
+			        }
+			        
+			        // B5_4
+			        Cell remarkCell = cells.get(currentRow,35);
+			        remarkCell.setValue(employee.getDetailedErrorData());
+				}
 		        currentRow += dataRowCount;
 		        colorWhite = !colorWhite; // Change to other color
 		        

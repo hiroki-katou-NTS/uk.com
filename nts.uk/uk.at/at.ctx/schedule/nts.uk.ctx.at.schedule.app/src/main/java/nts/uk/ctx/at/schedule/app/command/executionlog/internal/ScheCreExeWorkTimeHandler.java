@@ -25,13 +25,10 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -59,10 +56,6 @@ public class ScheCreExeWorkTimeHandler {
 	/** The work type repository. */
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-
-	/** The work time repository. */
-	@Inject
-	private WorkTimeSettingRepository workTimeRepository;
 
 	/** The pred time repository. */
 	@Inject
@@ -130,7 +123,8 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return
 	 */
 	public Optional<String> getWorktime(WorkTimeGetterCommand command, EmployeeGeneralInfoImported empGeneralInfo,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
+			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
+			List<WorkTimeSetting> listWorkTimeSetting) {
 
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
 				.getBasicWorkSetting(command.toBasicWorkSetting(), empGeneralInfo);
@@ -140,7 +134,8 @@ public class ScheCreExeWorkTimeHandler {
 			commandGetter.setWorkTypeCode(optionalBasicWorkSetting.get().getWorktypeCode().v());
 			commandGetter.setWorkingCode(optionalBasicWorkSetting.get().getWorkingCode() == null ? null
 					: optionalBasicWorkSetting.get().getWorkingCode().v());
-			return this.getWorkingTimeZoneCode(commandGetter, mapEmploymentStatus, listWorkingConItem);
+			return this.getWorkingTimeZoneCode(commandGetter, mapEmploymentStatus, listWorkingConItem,
+					listWorkTimeSetting);
 		}
 		return Optional.empty();
 	}
@@ -732,7 +727,8 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return
 	 */
 	public Optional<String> getWorkingTimeZoneCode(WorkTimeZoneGetterCommand command,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
+			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
+			List<WorkTimeSetting> listWorkTimeSetting) {
 
 		String worktimeCode = null;
 
@@ -761,8 +757,14 @@ public class ScheCreExeWorkTimeHandler {
 		}
 
 		// check not exist data work
-		if (!this.workTimeRepository.findByCode(command.getBaseGetter().getCompanyId(), worktimeCode).isPresent()) {
-
+		// EA No2020
+		// 就業時間帯一覧から変換した就業時間帯コードと一致する情報を取得する
+		final String workTimeCode = worktimeCode;
+		Optional<WorkTimeSetting> workTimeSetting = listWorkTimeSetting.stream()
+				.filter(x -> (x.getCompanyId().equals(command.getBaseGetter().getCompanyId())
+						&& x.getWorktimeCode().toString().equals(workTimeCode)))
+				.findFirst();
+		if (!workTimeSetting.isPresent()) {
 			// add error message 591
 			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_591");
 		} else {

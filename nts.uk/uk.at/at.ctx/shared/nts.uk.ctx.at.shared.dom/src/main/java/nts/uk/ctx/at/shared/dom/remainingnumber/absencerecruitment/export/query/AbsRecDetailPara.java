@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,9 +37,9 @@ public class AbsRecDetailPara {
 	/**
 	 * 振休の未相殺
 	 */
-	private UnOffsetOfAbs unOffsetOfAb;
+	private Optional<UnOffsetOfAbs> unOffsetOfAb;
 	/**
 	 * 振出の未使用
 	 */
-	private UnUseOfRec unUseOfRec;
+	private Optional<UnUseOfRec> unUseOfRec;
 }

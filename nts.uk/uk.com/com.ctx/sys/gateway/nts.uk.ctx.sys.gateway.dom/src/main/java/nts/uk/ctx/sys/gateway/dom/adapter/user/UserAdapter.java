@@ -28,7 +28,7 @@ public interface UserAdapter {
 	 * @param associatePersonId the associate person id
 	 * @return the user by associate id
 	 */
-	Optional<UserImport> findUserByAssociateId(String associatePersonId);
+	Optional<UserImportNew> findUserByAssociateId(String associatePersonId);
 	
 	
 	/**
@@ -46,13 +46,73 @@ public interface UserAdapter {
 	 * @param userId the user id
 	 * @return the optional
 	 */
-	Optional<UserImport> findByUserId(String userId);
+	Optional<UserImportNew> findByUserId(String userId);
 	
 	/**
-	 * requestlist 313 adapter
+	 * Password policy check.
+	 *
+	 * @param userId the user id
+	 * @param newPass the new pass
+	 * @param contractCode the contract code
+	 * @return the check before change pass input
+	 */
+	//check passPolicy
+	CheckBeforeChangePass passwordPolicyCheck(String userId, String newPass, String contractCode);
+	
+	/**
+	 * Password policy check for submit.
+	 *
+	 * @param userId the user id
+	 * @param newPass the new pass
+	 * @param contractCode the contract code
+	 * @return the check before change pass
+	 */
+	//check passPolicy
+	CheckBeforeChangePass passwordPolicyCheckForSubmit(String userId, String newPass, String contractCode);
+	
+	/**
+	 * Check before change password.
+	 *
+	 * @param userId the user id
+	 * @param currentPass the current pass
+	 * @param newPass the new pass
+	 * @param reNewPass the re new pass
+	 * @return the check before change pass
+	 */
+	CheckBeforeChangePass checkBeforeChangePassword(String userId, String currentPass, String newPass, String reNewPass);
+	
+	/**
+	 * Check before reset password.
+	 *
+	 * @param userId the user id
+	 * @param newPass the new pass
+	 * @param reNewPass the re new pass
+	 * @return the check before change pass
+	 */
+	//check before Reset Pass
+	CheckBeforeChangePass checkBeforeResetPassword(String userId, String newPass, String reNewPass);
+	
+	/**
+	 * Update password.
+	 *
+	 * @param userId the user id
+	 * @param newPassword the new password
+	 */
+	void updatePassword(String userId,String newPassword);
+	 
+	/** requestlist 313 adapter
 	 * @param userId
 	 * @return
 	 */
 	Optional<UserInforExImport> getByEmpID(String empID);
 
+	
+	/**
+	 * Find user by contract and login id new.
+	 *
+	 * @param contractCode the contract code
+	 * @param loginId the login id
+	 * @return the optional
+	 */
+	Optional<UserImportNew> findUserByContractAndLoginIdNew(String contractCode, String loginId);
 }
