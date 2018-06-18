@@ -6,17 +6,36 @@ import nts.uk.ctx.pereg.dom.roles.functionauth.primitive.AuthFunctionDescription
 import nts.uk.ctx.pereg.dom.roles.functionauth.primitive.AuthFunctionName;
 import nts.uk.ctx.pereg.dom.roles.functionauth.primitive.AuthFunctionNumber;
 
+/**
+ * @author danpv
+ * domain name: 個人情報の機能
+ */
 @Getter
 public class PersonInfoAuthDescription extends AggregateRoot {
 
+	/**
+	 * No
+	 */
 	private AuthFunctionNumber functionNo;
 
+	/**
+	 * 表示名
+	 */
 	private AuthFunctionName functionName;
 
+	/**
+	 * 説明文
+	 */
 	private AuthFunctionDescription description;
 
+	/**
+	 * 表示順
+	 */
 	private int orderNumber;
 
+	/**
+	 * 初期値
+	 */
 	private boolean defaultAvailable;
 
 	private PersonInfoAuthDescription(AuthFunctionNumber functionNo, AuthFunctionName functionName,
