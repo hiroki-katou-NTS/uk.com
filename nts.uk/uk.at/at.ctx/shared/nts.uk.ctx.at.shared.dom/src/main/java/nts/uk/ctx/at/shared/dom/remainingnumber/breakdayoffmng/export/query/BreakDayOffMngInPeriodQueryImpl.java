@@ -318,7 +318,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	public BreakDayOffDetail getNotTypeBreak(InterimDayOffMng detailData, InterimRemain remainData) {
 		//ドメインモデル「暫定休出代休紐付け管理」を取得する
 		List<InterimBreakDayOffMng> lstDayOff = breakDayOffInterimRepo.getBreakDayOffMng(remainData.getRemainManaID(), false, DataManagementAtr.INTERIM);
-		//未相殺日数と未相殺時間を設定する //TODO tai sao ko lay luon ngay 未相殺日数
+		//未相殺日数と未相殺時間を設定する
 		double unOffsetDays = detailData.getRequiredDay().v();
 		Integer unOffsetTimes = detailData.getRequiredTime().v();
 		for (InterimBreakDayOffMng interimMng : lstDayOff) {
@@ -467,11 +467,13 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				if(breakMng.getExpirationDate().before(dayOffData.getYmdData().getDayoffDate().isPresent() ? dayOffData.getYmdData().getDayoffDate().get() : GeneralDate.min())
 						|| (breakMng.getUnUsedDays() <= 0 && breakMng.getUnUsedTimes() <= 0)) {
 					continue;
-				}
-				//TODO 休出代休相殺できる日数の大小チェックする xac nhan lai cau lenh if
+				}				
 				lstDayoffTmp.remove(dayOffData);
 				lstBreackTmp.remove(breakData);
-				if(dayOffMng.getUnOffsetDay() > breakMng.getUnUsedDays()) {
+				//ループ中の「代休の未相殺」．未相殺日数 > ループ中の「休出の未使用」．未使用日数
+				//OR ループ中の「代休の未相殺」．未相殺時間> ループ中の「休出の未使用」．未使用時間
+				if(dayOffMng.getUnOffsetDay() > breakMng.getUnUsedDays()
+						|| dayOffMng.getUnOffsetTimes() > breakMng.getUnUsedTimes()) {
 					//ループ中の「代休の未相殺」．未相殺日数  -= ループ中の「休出の未使用」．未使用日数 、ループ中の「代休の未相殺」．未相殺時間 -= ループ中の「休出の未使用」．未使用時間 
 					dayOffMng.setUnOffsetDay(dayOffMng.getUnOffsetDay() - breakMng.getUnUsedDays());
 					dayOffMng.setUnOffsetTimes(dayOffMng.getUnOffsetTimes() - breakMng.getUnUsedTimes());
