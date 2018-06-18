@@ -137,6 +137,9 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		BreakDayOffConfirmMngData confirmMngData = this.getConfirMngData(sid, baseDate);
 		//暫定管理データを取得する
 		BreakDayOffInterimMngData interimMngData = this.getMngData(sid, baseDate, confirmMngData.getBreakMngData());
+		if(interimMngData == null) {
+			return null;
+		}
 		//休出履歴を作成する
 		List<BreakHistoryData> lstBreakHis = this.breakHisData(interimMngData.getLstBreakMng(), confirmMngData.getBreakMngData());
 		//代休履歴を作成する
@@ -151,6 +154,9 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	public BreakDayOffInterimMngData getMngData(String sid, GeneralDate baseDate, List<LeaveManagementData> breakMngConfirmData) {
 		//対象期間を決定する
 		DatePeriod dateData = remainManaExport.periodCovered(sid, baseDate);
+		if(dateData == null) {
+			return null;
+		}
 		//指定期間内に発生した暫定休出と紐付いた確定代休・暫定代休を取得する
 		BreakDayOffInterimMngData outPutData = this.getMngDataToInterimData(sid, dateData);
 		//指定期間内に使用した暫定代休を取得する  ドメインモデル「暫定代休管理データ」を取得する
@@ -236,7 +242,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			breakData.setOccurrenceDays(x.getOccurrenceDays().v());
 			remainRepo.getById(x.getBreakMngId()).ifPresent(y -> {
 				breakData.setMngAtr(EnumAdaptor.valueOf(y.getCreatorAtr().value, MngDataAtr.class));
-				breakData.setBreakDate(new CompensatoryDayoffDate(true, Optional.of(y.getYmd())));
+				breakData.setBreakDate(new CompensatoryDayoffDate(false, Optional.of(y.getYmd())));
 			});
 			outputData.add(breakData);
 		});
@@ -270,7 +276,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			Optional<InterimRemain> remainData = remainRepo.getById(x.getDayOffManaId());
 			remainData.ifPresent(y -> {
 				dayOffData.setCreateAtr(EnumAdaptor.valueOf(y.getCreatorAtr().value, MngDataAtr.class));
-				dayOffData.setDayOffDate(new CompensatoryDayoffDate(true, Optional.of(y.getYmd())));
+				dayOffData.setDayOffDate(new CompensatoryDayoffDate(false, Optional.of(y.getYmd())));
 			});
 			dayOffData.setDayOffId(x.getDayOffManaId());
 			dayOffData.setRequeiredDays(x.getRequiredDay().v());
