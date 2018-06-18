@@ -20,37 +20,37 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 public class AnnualLeaveGrantDto implements ItemConst {
 
 	/** 付与日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double grantDays;
 	
 	/** 付与労働日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = LABOR, layout = LAYOUT_B)
 	private double grantWorkingDays;
 	
 	/** 付与所定日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_C)
 	private double grantPrescribedDays;
 	
 	/** 付与控除日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION, layout = LAYOUT_D)
 	private double grantDeductedDays;
 	
 	/** 控除日数付与前 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION + BEFORE, layout = LAYOUT_E)
 	private double deductedDaysBeforeGrant;
 	
 	/** 控除日数付与後 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION + AFTER, layout = LAYOUT_F)
 	private double deductedDaysAfterGrant;
 	
 	/** 出勤率 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.RATE)
 	@AttendanceItemLayout(jpPropertyName = ATTENDANCE + RATE, layout = LAYOUT_G)
 	private double attendanceRate;
 

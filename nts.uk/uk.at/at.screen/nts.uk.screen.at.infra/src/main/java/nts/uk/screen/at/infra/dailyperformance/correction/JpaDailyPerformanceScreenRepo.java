@@ -236,7 +236,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
 		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
 		builderString
-				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.KrcmtBusinessTypeOfHistoryPK.historyId");
+				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
 		builderString.append(" WHERE b.sId IN :lstSID");
 		builderString.append(" AND h.startDate <= :endYmd");
 		builderString.append(" AND h.endDate >= :startYmd");

@@ -110,7 +110,14 @@ public interface InterimRecAbasMngRepository {
 	 * 暫定振出振休紐付け管理  を削除
 	 * @param mngId
 	 * @param recAtr
-	 * @param isRec 　True：　振出、False：　振休
+	 * @param isRec True：　振出、False：　振休
 	 */
 	void deleteRecAbsMngByIDAtr(String mngId, DataManagementAtr mngAtr, boolean isRec);
+	/**
+	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
+	 * @param recIds ・振出管理データ IN (振出管理データ.振出データID)
+	 * @param recMngAtr ・振出管理データ区分
+	 * @return
+	 */
+	List<InterimRecAbsMng> getRecByIdsMngAtr(List<String> recIds, DataManagementAtr recMngAtr);
 }

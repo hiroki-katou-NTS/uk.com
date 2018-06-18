@@ -19,17 +19,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 public class AnnualLeaveUsedDaysDto implements ItemConst {
 
 	/** 使用日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double usedDays;
 
 	/** 使用日数付与前 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_B)
 	private double usedDaysBeforeGrant;
 
 	/** 使用日数付与後 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_C)
 	private Double usedDaysAfterGrant;
 

@@ -22,17 +22,17 @@ public class CalcAttachTimeDto implements ItemConst {
 
 	/** 計算時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = CALC)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer calcTime;
 
 	/** 時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer time;
 	
 	/** 乖離時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = DIVERGENCE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer divergenceTime;
 
 	public CalcAttachTimeDto(Integer calcTime, Integer time) {
