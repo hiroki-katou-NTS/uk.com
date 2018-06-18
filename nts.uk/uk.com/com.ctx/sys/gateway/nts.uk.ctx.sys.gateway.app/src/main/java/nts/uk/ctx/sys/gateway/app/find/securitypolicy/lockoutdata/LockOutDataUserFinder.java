@@ -7,13 +7,14 @@ package nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.SearchUser;
@@ -52,7 +53,7 @@ public class LockOutDataUserFinder {
 					lockOutDataUserDto.setLogType((item.getLogType().value));
 					lockOutDataUserDto.setUserId(item.getUserId());
 				}
-				Optional<UserImport> findByUserId = userAdapter.findByUserId(item.getUserId());
+				Optional<UserImportNew> findByUserId = userAdapter.findByUserId(item.getUserId());
 				if (findByUserId.isPresent()) {
 					lockOutDataUserDto.setLoginId(findByUserId.get().getLoginId().trim());
 					lockOutDataUserDto.setUserName(findByUserId.get().getUserName());

@@ -67,7 +67,7 @@ module nts.uk.com.view.cli001.a {
             public setInitialFocus(): void {
                 let self = this;
 
-                if (_.isEmpty(self.items)) {
+                if (_.isEmpty(self.items())) {
                     $('#add-Lock').focus();
                 } else {
                     $('#tableGrid').focus();
