@@ -1953,27 +1953,29 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 		}
 		
-		// Gross total after all the rest of the data
-		if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
-			sheet.getHorizontalPageBreaks().add(currentRow);
-			rowPageTracker.resetRemainingRow();
+		if (condition.getSettingDetailTotalOutput().isGrossTotal()) {
+			// Gross total after all the rest of the data
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+				sheet.getHorizontalPageBreaks().add(currentRow);
+				rowPageTracker.resetRemainingRow();
+			}
+			Range wkpGrossTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+			Range wkpGrossTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+			wkpGrossTotalRange.copy(wkpGrossTotalRangeTemp);
+			wkpGrossTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+				rowPageTracker.useRemainingRow(dataRowCount);
+				rowPageTracker.resetRemainingRow();
+			}
+			else {
+				rowPageTracker.useRemainingRow(dataRowCount);
+			}
+			
+			Cell grossTotalCellTag = cells.get(currentRow, 0);
+			grossTotalCellTag.setValue(WorkScheOutputConstants.GROSS_TOTAL);
+			
+			currentRow = writeGrossTotal(currentRow, dailyReport.getListTotalValue(), sheet, dataRowCount, rowPageTracker);
 		}
-		Range wkpGrossTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-		Range wkpGrossTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
-		wkpGrossTotalRange.copy(wkpGrossTotalRangeTemp);
-		wkpGrossTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-		if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
-			rowPageTracker.useRemainingRow(dataRowCount);
-			rowPageTracker.resetRemainingRow();
-		}
-		else {
-			rowPageTracker.useRemainingRow(dataRowCount);
-		}
-		
-		Cell grossTotalCellTag = cells.get(currentRow, 0);
-		grossTotalCellTag.setValue(WorkScheOutputConstants.GROSS_TOTAL);
-		
-		currentRow = writeGrossTotal(currentRow, dailyReport.getListTotalValue(), sheet, dataRowCount, rowPageTracker);
 		
 		return currentRow;
 	}
@@ -1995,11 +1997,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 		Range workplaceRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 		workplaceRange.copy(workplaceRangeTemp);
-		rowPageTracker.useOneRowAndCheckResetRemainingRow();
+		
 		boolean colorWhite = true; // true = white, false = light blue, start with white row
 		
 		List<DailyPersonalPerformanceData> employeeReportData = rootWorkplace.getLstDailyPersonalData();
 		if (employeeReportData != null && !employeeReportData.isEmpty()) {
+			rowPageTracker.useOneRowAndCheckResetRemainingRow();
 			// B4_1
 			Cell workplaceTagCell = cells.get(currentRow, 0);
 			workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE);
