@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class CommonTimeCountDto implements ItemConst {
 
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	/** 回数: 勤怠月間回数 */
 	private int times;
 

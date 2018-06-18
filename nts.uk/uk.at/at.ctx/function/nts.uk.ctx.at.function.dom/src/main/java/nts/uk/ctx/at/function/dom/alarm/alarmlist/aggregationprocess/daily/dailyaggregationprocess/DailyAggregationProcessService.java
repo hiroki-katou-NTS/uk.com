@@ -435,6 +435,7 @@ public class DailyAggregationProcessService {
 						Optional<RecordWorkInfoFunAdapterDto> recordWorkInfo = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date);
 						if(recordWorkInfo.isPresent()) {
 							workType = recordWorkInfo.get().getWorkTypeCode();
+							if(workType == null || workType.isEmpty()) continue;
 							Optional<ValueExtractAlarm> checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
 							if(checkWorkType.isPresent()) {
 								ValueExtractAlarm tmp = checkWorkType.get();
@@ -450,9 +451,7 @@ public class DailyAggregationProcessService {
 						Optional<RecordWorkInfoFunAdapterDto> recordWorkInfoFunAdapterDto = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date);
 						if(recordWorkInfoFunAdapterDto.isPresent()) {
 							workTime = recordWorkInfoFunAdapterDto.get().getWorkTimeCode();
-
 							if(workTime == null || workTime.isEmpty()) continue;
-
 							Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
 							if(checkWorkTime.isPresent()) {
 								ValueExtractAlarm tmp = checkWorkTime.get();
@@ -489,6 +488,8 @@ public class DailyAggregationProcessService {
 						for (ValueExtractAlarm tmp : listCheckingData) {
 							tmp.setComment(Optional.ofNullable(fixedData.getMessage()));
 						}
+						List<String> listDate = listCheckingData.stream().map(u -> u.getAlarmValueDate()).collect(Collectors.toList());
+						listValueExtractAlarm = listValueExtractAlarm.stream().filter(o -> !listDate.contains(o.getAlarmValueDate())).collect(Collectors.toList());
 						listValueExtractAlarm.addAll(listCheckingData);
 					}
 					break;
