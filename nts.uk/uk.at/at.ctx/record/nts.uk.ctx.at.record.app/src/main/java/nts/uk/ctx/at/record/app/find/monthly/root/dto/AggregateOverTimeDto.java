@@ -26,7 +26,7 @@ public class AggregateOverTimeDto implements ItemConst {
 	private TimeMonthWithCalculationDto overTime;
 
 	/** 事前残業時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeOverTime;
 
@@ -35,12 +35,12 @@ public class AggregateOverTimeDto implements ItemConst {
 	private TimeMonthWithCalculationDto transferOverTime;
 
 	/** 法定内残業時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_D)
 	private int legalOverTime;
 
 	/** 法定内振替残業時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LEGAL + TRANSFER, layout = LAYOUT_E)
 	private int legalTransferOverTime;
 

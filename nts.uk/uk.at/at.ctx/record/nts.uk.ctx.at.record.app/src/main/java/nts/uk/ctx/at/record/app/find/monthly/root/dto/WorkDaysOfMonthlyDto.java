@@ -38,12 +38,12 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 	private LeaveOfMonthlyDto leave;
 
 	/** 休出日数: 月別実績の休出日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK, layout = LAYOUT_B)
 	private double holidayWorkDays;
 
 	/** 休日日数: 月別実績の休日日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = HOLIDAY, layout = LAYOUT_C)
 	private double holidayDays;
 
@@ -52,12 +52,12 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 	private PayDaysOfMonthlyDto payDays;
 
 	/** 勤務回数: 月別実績の勤務回数 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_E)
 	private int workTimes;
 
 	/** 勤務日数: 月別実績の勤務日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_F)
 	private double workDays;
 
@@ -66,7 +66,7 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 	private CommonDaysOfMonthlyDto absenceDays;
 
 	/** 出勤日数: 月別実績の出勤日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = ATTENDANCE, layout = LAYOUT_H)
 	private double attendanceDays;
 
@@ -79,17 +79,17 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 	private List<AggregateSpecificDaysDto> specificDays;
 
 	/** 二回勤務回数: 月別実績の二回勤務回数 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = TWO_TIMES + COUNT, layout = LAYOUT_K)
 	private int twoTimesWorkTimes;
 
 	/** 臨時勤務回数: 月別実績の臨時勤務回数 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = TEMPORARY, layout = LAYOUT_L)
 	private int temporaryWorkTimes;
 	
 	/** 振出日数: 月別実績の振出日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = TRANSFER, layout = LAYOUT_M)
 	private double transferdays;
 
