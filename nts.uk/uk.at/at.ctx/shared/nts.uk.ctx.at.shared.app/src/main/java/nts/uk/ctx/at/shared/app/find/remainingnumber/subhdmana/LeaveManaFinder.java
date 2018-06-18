@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveManaDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveManaResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,6 +24,9 @@ public class LeaveManaFinder {
 	
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepository;
+	
+	@Inject
+	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
 	
 	public LeaveManaResult getByComDayOffId(String comDayOffID, String employeeId) {
 		List<LeaveManaDto>  resultLeaveMana = new ArrayList<>();
@@ -41,6 +46,13 @@ public class LeaveManaFinder {
 				if(leaveManagementData.getLeaveManaID().equals(leaveManaDataFree.getLeaveManaID())) {
 					leaveDataRemove.add(leaveManaDataFree);
 				}
+			}
+			List<LeaveComDayOffManagement> leaveComDayOffManagement = leaveComDayOffManaRepository.getByLeaveID(leaveManagementData.getLeaveManaID());
+			
+			if(leaveComDayOffManagement.size() == 2 && leaveManagementData.getNumberDay().equals("0.0")) {
+				leaveManagementData.setNumberDay("0.5");
+			} else if (leaveComDayOffManagement.size() == 1 && leaveManagementData.getNumberDay().equals("0.0")) {
+				leaveManagementData.setNumberDay(leaveComDayOffManagement.get(0).getUsedDays().v().toString());
 			}
 		}
 		resultLeaveFreeMana.removeAll(leaveDataRemove);

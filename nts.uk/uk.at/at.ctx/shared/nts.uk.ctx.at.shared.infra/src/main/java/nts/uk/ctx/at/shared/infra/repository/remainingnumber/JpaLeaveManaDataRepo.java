@@ -183,7 +183,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	@Override
 	public void updateUnUseDayLeaveId(String leaveId,Double unUsedDay) {
 		KrcmtLeaveManaData leaveMana =  this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
-		if(unUsedDay < leaveMana.occurredDays) {
+		if(unUsedDay < leaveMana.occurredDays && unUsedDay !=0.0 ) {
 			leaveMana.unUsedDays = unUsedDay;
 			leaveMana.subHDAtr = 0;
 		} else {

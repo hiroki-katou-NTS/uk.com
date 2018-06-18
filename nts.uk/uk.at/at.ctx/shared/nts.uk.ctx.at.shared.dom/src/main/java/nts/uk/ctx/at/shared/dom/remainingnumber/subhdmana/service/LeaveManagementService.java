@@ -41,7 +41,7 @@ public class LeaveManagementService {
 		for (int i = 0; i < leaveManagementData.getLeaveMana().size(); i++) {
 			Optional<LeaveManagementData> leaveMana = leaveManaDataRepository
 					.getByLeaveId(leaveManagementData.getLeaveMana().get(i).getLeaveManaID());
-			if (String.valueOf(leaveMana.get().getUnUsedDays()).equals("0.0")) {
+			if (leaveManagementData.getLeaveMana().get(i).getRemainDays().equals("0.0")) {
 				leaveManagementData.getLeaveMana().get(i)
 						.setRemainDays(leaveMana.get().getOccurredDays().v().toString());
 			}
@@ -79,7 +79,12 @@ public class LeaveManagementService {
 
 			List<String> currentLeaveMana = leaveManaUpdate.stream().map(LeaveManagementData::getID)
 					.collect(Collectors.toList());
-			
+
+			// delete List LeaveComDayOff
+			if (leavesComDay.size() >= 1) {
+				leaveComDayOffManaRepository.deleteByComDayOffID(leaveManagementData.getComDayOffID());
+			}
+
 			// update Sub by current leave
 			Boolean check = false;
 			if (!currentLeaveMana.isEmpty()) {
@@ -89,13 +94,9 @@ public class LeaveManagementService {
 						check = true;
 					}
 					leaveManaDataRepository.updateSubByLeaveId(item, check);
+					check = false;
 				}
 
-			}
-
-			// delete List LeaveComDayOff
-			if (leavesComDay.size() >= 1) {
-				leaveComDayOffManaRepository.deleteByComDayOffID(leaveManagementData.getComDayOffID());
 			}
 
 			// insert List LeaveComDayOff

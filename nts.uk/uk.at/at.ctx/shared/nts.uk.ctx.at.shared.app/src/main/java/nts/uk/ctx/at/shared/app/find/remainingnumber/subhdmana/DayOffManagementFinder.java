@@ -13,6 +13,8 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.DayOffManagem
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.DayOffResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -20,6 +22,9 @@ public class DayOffManagementFinder {
 	
 	@Inject
 	private ComDayOffManaDataRepository comDayOffManaDataRepository;
+	
+	@Inject
+	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
 	
 	
 	public DayOffResult getBySidWithReDay(String leaveId, String employeeId) {
@@ -41,6 +46,13 @@ public class DayOffManagementFinder {
 					dayOffManaRemove.add(dayOffManaFree);
 				}
 			}
+			List<LeaveComDayOffManagement> leaveComDayOffManagement = leaveComDayOffManaRepository.getBycomDayOffID(dayOffMana.getComDayOffId());
+			if(dayOffMana.getNumberDay().equals("0.0") && leaveComDayOffManagement.size() == 2) {
+				dayOffMana.setNumberDay("0.5");
+			} else if(dayOffMana.getNumberDay().equals("0.0") && leaveComDayOffManagement.size() == 1) {
+				dayOffMana.setNumberDay(leaveComDayOffManagement.get(0).getUsedDays().v().toString());
+			}
+			
 		}
 		resultDayFreeMana.removeAll(dayOffManaRemove);
 		dayOffAll.addAll(resultDaysOffMana);
