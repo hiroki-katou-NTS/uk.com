@@ -42,11 +42,11 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
 
-	private final int numberRowOfPage = 52;
+	private static final int numberRowOfPage = 52;
 
-	private final int maxRowOfApp = 5;
+	private static final int maxRowOfApp = 5;
 
-	private final int numberOfColumns = 13;
+	private static final int numberOfColumns = 13;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, MasterApproverRootOutputDataSource dataSource) {

@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
@@ -29,6 +31,12 @@ public class FurikyuMngDataExtractionService {
 	
 	@Inject
 	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+	
+	@Inject
+	private SysWorkplaceAdapter syWorkplaceAdapter;
+	
+	@Inject
+	private EmpEmployeeAdapter empEmployeeAdapter;
 	
 	@Inject
 	private EmpSubstVacationRepository empSubstVacationRepository;
@@ -89,7 +97,19 @@ public class FurikyuMngDataExtractionService {
 		expirationDate = getExpirationDate(sid, empCD);
 		closureId = getClosureId(sid, empCD);
 		
-		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId, haveEmploymentCode);
+		SWkpHistImport sWkpHistImport = null;
+		if(syWorkplaceAdapter.findBySid(sid, GeneralDate.today()).isPresent()) {
+			sWkpHistImport = syWorkplaceAdapter.findBySid(sid, GeneralDate.today()).get();
+		}
+		List<String> employeeIds = new ArrayList<>();
+		employeeIds.add(sid);
+		List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
+		PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
+		if (!employeeBasicInfo.isEmpty()){
+			personEmpBasicInfoImport = employeeBasicInfo.get(0);
+		}
+		
+		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
 	}
 	
 	public Double getNumberOfDayLeft(String sID) {

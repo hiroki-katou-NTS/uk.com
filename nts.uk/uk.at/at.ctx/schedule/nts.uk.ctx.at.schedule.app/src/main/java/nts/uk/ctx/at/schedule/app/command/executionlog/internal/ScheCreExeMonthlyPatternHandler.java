@@ -24,6 +24,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
@@ -127,9 +128,17 @@ public class ScheCreExeMonthlyPatternHandler {
 			// 登録前削除区分をTrue（削除する）とする(chuyển 登録前削除区分 = true)
 			command.setIsDeleteBeforInsert(true);
 		} else {
+			// EA修正履歴 No1840
+			// 入力パラメータ「実施区分」を判断
+			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
+			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
+			if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
+					&& !this.scheduleCreationDeterminationProcess(command, basicSche, optEmploymentInfo,
+							workingConditionItem, empGeneralInfo)) {
+				return;
+			}
 			// need set false if not wrong
 			// 「勤務予定基本情報」 データなし
-			// no something
 			command.setIsDeleteBeforInsert(false);
 		}
 
@@ -345,6 +354,8 @@ public class ScheCreExeMonthlyPatternHandler {
 	/**
 	 * 異動者を再作成するか判定する
 	 * 
+	 * (異動者再作成を判定する)
+	 * 
 	 * @param empId
 	 * @param targetDate
 	 * @param recreateConverter
@@ -353,16 +364,17 @@ public class ScheCreExeMonthlyPatternHandler {
 	 */
 	private boolean isCreate(String empId, GeneralDate targetDate, Boolean recreateConverter, String wkpId,
 			EmployeeGeneralInfoImported empGeneralInfo) {
+		// パラメータ.異動者を再作成を判定する
 		if (!recreateConverter) {
 			return true;
 		}
-		// Imported「所属職場履歴」から職場IDを取得する(lấy職場ID từ Imported「所属職場履歴」)
-		// Optional<SWkpHistImported> swkpHisOptional =
-		// this.syWorkplaceAdapter.findBySid(empId, targetDate);
-		// if (!swkpHisOptional.isPresent()) {
-		// return true;
-		// }
 
+		// EA No1842
+		if (null == wkpId) {
+			return false;
+		}
+
+		// EA No1677
 		Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist = empGeneralInfo.getWorkplaceDto().stream()
 				.collect(Collectors.toMap(ExWorkPlaceHistoryImported::getEmployeeId,
 						ExWorkPlaceHistoryImported::getWorkplaceItems));
@@ -372,9 +384,10 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (listWorkplaceHistItem != null) {
 			optWorkplaceHistItem = listWorkplaceHistItem.stream()
 					.filter(workplaceHistItem -> workplaceHistItem.getPeriod().contains(targetDate)).findFirst();
-			if (!optWorkplaceHistItem.isPresent()) {
-				return true;
-			}
+		} 
+
+		if (!optWorkplaceHistItem.isPresent()) {
+			return true;
 		}
 
 		// 取得した職場IDとパラメータ.職場IDを比較する

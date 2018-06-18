@@ -75,10 +75,10 @@ public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 	
 				// get formula by id
 				Formula leftItem = formulas.stream()
-						.filter(item -> item.getFormulaId().equals(formulaSetting.getLeftItem().getFormulaItemId()))
+						.filter(item -> item.getFormulaId().equals(formulaSetting.getLeftItem().getFormulaItemId().get()))
 						.findFirst().get();
 				Formula rightItem = formulas.stream()
-						.filter(item -> item.getFormulaId().equals(formulaSetting.getRightItem().getFormulaItemId()))
+						.filter(item -> item.getFormulaId().equals(formulaSetting.getRightItem().getFormulaItemId().get()))
 						.findFirst().get();
 	
 				// compare left item's attribute vs right item's attribute
