@@ -11,7 +11,6 @@ import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.PaperSizeType;
 import com.aspose.cells.Range;
-import com.aspose.cells.VerticalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
@@ -37,6 +36,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/KWR002.xlsx";
+	
+	/** The Constant PDF_EXT. */
+	private static final String PDF_EXT = ".pdf";
+	
+	/** The Constant EXCEL_EXT. */
+	private static final String EXCEL_EXT = ".xlsx";
 
 	private static final String REPORT_START_PAGE_ROW = "REPORT_START_PAGE_ROW";
 
@@ -76,9 +81,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	/** The Constant SEAL_COL_ADDR. */
 	private static final List<String> SEAL_COL_ADDR = Arrays
 			.asList(new String[] { "AN6", "AL6", "AJ6", "AH6", "AF6", "AD6" });
-
-	/** The Constant START_REPORT_COL1. */
-	private static final String START_REPORT_COL1 = "A";
 
 	/** The Constant END_REPORT_COL2. */
 	private static final String END_REPORT_COL2 = "AO";
@@ -182,35 +184,35 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			// Start loop to create report for earch month
 			Map<String, List<AttendanceRecordReportEmployeeData>> reportDatas = data.getReportData();
 			for (String sheetName : reportDatas.keySet()) {
-				int sheetPage = 0;
-				int startNewPage = 0;
-
-				// create new sheet from template sheet
-				worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName);
-				// get new sheet
-				Worksheet worksheet = worksheetCollection.get(sheetName);
-
+				int sheetPage = 1;
 				// get list employee data
 				List<AttendanceRecordReportEmployeeData> reportEmployeeDatas = reportDatas.get(sheetName);
 				// Generate employee report page
 				for (AttendanceRecordReportEmployeeData employeeData : reportEmployeeDatas) {
+					int startNewPage = 0;
 
-					startNewPage = this.generateEmployeeReportPage(startNewPage, worksheet, employeeData, page, sheetPage,
+					// create new sheet from template sheet
+					worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName + "-" + sheetPage);
+					// get new sheet
+					Worksheet worksheet = worksheetCollection.get(sheetName + "-" + sheetPage);
+
+					startNewPage = this.generateEmployeeReportPage(startNewPage, worksheet, employeeData, page,
 							reportPageTmpl, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
 					sheetPage++;
 					page++;
-				}
 
-				// create print area
-				PageSetup pageSetup = worksheet.getPageSetup();
-				pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
-				
-				if (dataSource.getMode() == EXPORT_PDF) {
-					pageSetup.setFitToPagesWide(1);
-					pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-				}
+					// create print area
+					PageSetup pageSetup = worksheet.getPageSetup();
+					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
+					
+					if (dataSource.getMode() == EXPORT_PDF) {
+						pageSetup.setFitToPagesWide(1);
+						pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+					}
 
-				worksheet.getCells().deleteColumns(42, 20, true);
+					// Delete template column
+					worksheet.getCells().deleteColumns(42, 20, true);
+				}
 			}
 
 			// delete template sheet
@@ -221,12 +223,11 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					+ data.getExportDateTime().replaceAll(" ", "_").replaceAll(":", "").replaceAll("/", "");
 
 			if (dataSource.getMode() == EXPORT_EXCEL) {
-				// save as PDF file
-				fileName = fileName + ".xlsx";
-				reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName));
+				// save as excel file
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
 			} else if (dataSource.getMode() == EXPORT_PDF) {
-				fileName = fileName + ".pdf";
-				reportContext.saveAsPdf(this.createNewFile(generatorContext, fileName));
+				// save as PDF file
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, fileName + PDF_EXT));
 			}
 
 		} catch (Exception e) {
@@ -264,8 +265,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	 *            the employee data
 	 * @param page
 	 *            the page
-	 * @param sheetPage
-	 *            the sheet page
 	 * @param pageTmpl
 	 *            the page tmpl
 	 * @param dailyWTmpl
@@ -278,15 +277,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	 *             the exception
 	 */
 	private int generateEmployeeReportPage(int startNewPage, Worksheet worksheet,
-			AttendanceRecordReportEmployeeData employeeData, int page, int sheetPage, Range pageTmpl, Range dailyWTmpl,
+			AttendanceRecordReportEmployeeData employeeData, int page, Range pageTmpl, Range dailyWTmpl,
 			Range dailyBTmpl, Range weeklyRangeTmpl) throws Exception {
-		if (sheetPage > 0) {
-			// copy new report place
-			Range newReportPage = worksheet.getCells().createRange(START_REPORT_COL1 + (startNewPage + 1));
-			newReportPage.copy(pageTmpl);
-			HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
-			hPageBreaks.add(END_REPORT_COL2 + (startNewPage + 1));
-		}
 
 		// Add page number
 		Range pageNumberRange = worksheet.getCells().createRange(String.format(PAGE_NUMBER_ADDR,
@@ -334,9 +326,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		}
 
 		// update start page row value
-		startNewPage = dataRow.get(REPORT_START_PAGE_ROW);
+		startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
+		
+		HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
+		hPageBreaks.add(END_REPORT_COL2 + (startNewPage + 1));
 
-		return startNewPage - 1;
+		return startNewPage;
 	}
 
 	/**
