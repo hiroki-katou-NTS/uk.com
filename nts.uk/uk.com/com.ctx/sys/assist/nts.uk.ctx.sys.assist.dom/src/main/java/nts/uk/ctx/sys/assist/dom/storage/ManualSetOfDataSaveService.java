@@ -136,7 +136,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		ResultState resultState = selectTargetTable(storeProcessingId, manualSetting);
 
 		if (resultState != ResultState.NORMAL_END) {
-			evaluateAbnormalEnd(storeProcessingId, 0);
+			evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
 			return;
 		}
 
