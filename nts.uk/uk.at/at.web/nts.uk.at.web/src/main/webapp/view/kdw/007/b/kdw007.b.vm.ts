@@ -60,7 +60,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
 
             caic.conditionAtr.subscribe(v => {
-
+                $(".value-input").ntsError("clear");
                 caic.uncountableAtdItem(null);
                 caic.countableAddAtdItems([]);
                 caic.countableSubAtdItems([]);
@@ -90,6 +90,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                         { code: 2, name: "入力チェック", enable: true }
                     ]);
                 }
+                self.validateRange();
             });
 
             caic.conditionType.subscribe((value) => {
@@ -103,16 +104,6 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                     $('#display-compare-item').ntsError('clear');
                     $('.value-input').ntsError('clear');
                 }
-            });
-
-            caic.conditionAtr.subscribe((value) => {
-                $(".value-input").ntsError("clear");
-                caic.compareStartValue(0);
-                caic.compareEndValue(0);
-            });
-
-            caic.compareOperator.subscribe((value) => {
-                self.validateRange();
             });
 
             $(".value-input").blur(() => {
@@ -182,7 +173,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         fillTextDisplayTarget() {
             let self = this;
             self.displayTargetAtdItems("");
-            if (self.currentAtdItemCondition.conditionAtr() === 2) {
+            if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
                 if (self.currentAtdItemCondition.uncountableAtdItem()) {
                     service.getAttendanceItemByCodes([self.currentAtdItemCondition.uncountableAtdItem()], self.mode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {

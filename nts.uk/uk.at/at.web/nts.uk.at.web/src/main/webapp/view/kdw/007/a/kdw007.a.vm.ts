@@ -23,13 +23,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { code: '0', name: nts.uk.resource.getText("KDW007_110") },
             { code: '1', name: nts.uk.resource.getText("KDW007_109") }
         ]);
-        listRemarkColumnNo: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 833, name: "備考1" },
-            { code: 834, name: "備考2" },
-            { code: 835, name: "備考3" },
-            { code: 836, name: "備考4" },
-            { code: 837, name: "備考5" }
-        ]);
+        listRemarkColumnNo: KnockoutObservableArray<any> = ko.observableArray([]);
         listTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
             { code: '0', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Error") },
             { code: '1', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Alarm") },
@@ -92,11 +86,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 self.screenMode(ScreenMode.Monthly);
             } 
             self.selectedErrorAlarm = ko.observable(new ErrorAlarmWorkRecord(self.screenMode()));
-            service.getAttendanceItemByCodes([833, 834, 835, 836, 837], self.screenMode()).done((lstItems) => {
-                if (lstItems && lstItems.length > 0) {
-                    let lstItemCode = lstItems.map((item) => { return item; });
-                }
-            });
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
                     let foundItem: ErrorAlarmWorkRecord = _.find(self.lstErrorAlarm(), (item) => {
@@ -171,6 +160,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             
             if (self.screenMode() == ScreenMode.Daily) {
                 self.sideBar(1);
+                service.getAttendanceItemByCodes([833, 834, 835, 836, 837], self.screenMode()).done((lstItems) => {
+                    if (lstItems && lstItems.length > 0) {
+                        let lstItemCode = lstItems.map((item) => { return { code: item.attendanceItemId, name: item.attendanceItemName }; });
+                        self.listRemarkColumnNo(lstItemCode);        
+                    }
+                });
                 service.getAll().done((lstData: Array<any>) => {
                     if (lstData && lstData.length > 0) {
                         let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
@@ -1175,40 +1170,44 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         setDisplayCompare() {
             let self = this;
             let conditionAtr = self.conditionAtr();
-            if (self.compareOperator() > 5) {
-                // Compare with a range
-                let rawStartValue = self.compareStartValue();
-                let rawEndValue = self.compareEndValue();
-                let textDisplayLeftCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue.toString() : nts.uk.time.parseTime(parseInt(rawStartValue.toString()), true).format();
-                let textDisplayRightCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue.toString() : nts.uk.time.parseTime(parseInt(rawEndValue.toString()), true).format();
-                self.displayLeftCompare(textDisplayLeftCompare);
-                self.displayRightCompare(textDisplayRightCompare);
-            } else {
-                // Compare with single value
-                if (self.conditionType() === 0) {
-                    // If is compare with a fixed value
-                    let rawValue = self.compareStartValue();
-                    let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
+            if (self.conditionType() < 2) {
+                if (self.compareOperator() > 5) {
+                    // Compare with a range
+                    let rawStartValue = self.compareStartValue();
+                    let rawEndValue = self.compareEndValue();
+                    let textDisplayLeftCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue.toString() : nts.uk.time.parseTime(parseInt(rawStartValue.toString()), true).format();
+                    let textDisplayRightCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue.toString() : nts.uk.time.parseTime(parseInt(rawEndValue.toString()), true).format();
                     self.displayLeftCompare(textDisplayLeftCompare);
-                    self.displayRightCompare("");
+                    self.displayRightCompare(textDisplayRightCompare);
                 } else {
-                    // If is compare with a attendance item
-                    if (self.singleAtdItem()) {
-                        service.getAttendanceItemByCodes([self.singleAtdItem()], self.screenMode).done((lstItems) => {
-                            if (lstItems && lstItems.length > 0) {
-                                self.displayLeftCompare(lstItems[0].attendanceItemName);
-                                self.displayRightCompare("");
-                            }
-                        });
+                    // Compare with single value
+                    if (self.conditionType() === 0) {
+                        // If is compare with a fixed value
+                        let rawValue = self.compareStartValue();
+                        let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
+                        self.displayLeftCompare(textDisplayLeftCompare);
+                        self.displayRightCompare("");
+                    } else {
+                        // If is compare with a attendance item
+                        if (self.singleAtdItem()) {
+                            service.getAttendanceItemByCodes([self.singleAtdItem()], self.screenMode).done((lstItems) => {
+                                if (lstItems && lstItems.length > 0) {
+                                    self.displayLeftCompare(lstItems[0].attendanceItemName);
+                                    self.displayRightCompare("");
+                                }
+                            });
+                        }
                     }
                 }
+            } else {
+                self.displayLeftCompare(self.inputCheckCondition() == 0 ? nts.uk.resource.getText("KDW007_108") : nts.uk.resource.getText("KDW007_107"));
             }
         }
 
         setDisplayTarget() {
             let self = this;
             self.displayTarget("");
-            if (self.conditionAtr() === 2) {
+            if (self.conditionAtr() === 2 || self.conditionType() === 2) {
                 if (self.uncountableAtdItem()) {
                     service.getAttendanceItemByCodes([self.uncountableAtdItem()], self.screenMode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {

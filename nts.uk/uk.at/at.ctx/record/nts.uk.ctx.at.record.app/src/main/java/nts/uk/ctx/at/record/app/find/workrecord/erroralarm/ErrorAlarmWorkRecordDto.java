@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanAct
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
@@ -87,7 +88,7 @@ public class ErrorAlarmWorkRecordDto {
 //		erAlAtdItemConditionDto.setConditionType(itemDomain.getType().);
 		// Check Target
 		// チェック対象
-		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
+		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY || itemDomain.getType() == ErrorAlarmConditionType.INPUT_CHECK) {
 			erAlAtdItemConditionDto.setUncountableAtdItem(itemDomain.getUncountableTarget().getAttendanceItem());
 		} else {
 			erAlAtdItemConditionDto.setCountableAddAtdItems(

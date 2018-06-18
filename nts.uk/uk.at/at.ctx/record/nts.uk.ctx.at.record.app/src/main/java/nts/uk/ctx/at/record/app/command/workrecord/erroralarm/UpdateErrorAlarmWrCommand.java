@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondit
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
@@ -115,7 +116,7 @@ public class UpdateErrorAlarmWrCommand {
 				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr(),
 				atdItemCon.getConditionType());
 		// Set Target
-		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
+		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value || atdItemCon.getConditionType() == ErrorAlarmConditionType.INPUT_CHECK.value) {
 			atdItemConDomain.setUncountableTarget(atdItemCon.getUncountableAtdItem());
 		} else {
 			atdItemConDomain.setCountableTarget(atdItemCon.getCountableAddAtdItems(),
