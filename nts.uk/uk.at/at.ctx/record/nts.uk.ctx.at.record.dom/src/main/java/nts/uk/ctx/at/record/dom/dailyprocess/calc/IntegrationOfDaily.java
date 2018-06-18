@@ -73,6 +73,7 @@ public class IntegrationOfDaily {
 	private Optional<SpecificDateAttrOfDailyPerfor> specDateAttr;
 	//日別実績の入退門
 	private Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate;
+	@Setter
 	//日別実績の任意項目
 	private Optional<AnyItemValueOfDaily> anyItemValue;
 	//日別実績の編集状態

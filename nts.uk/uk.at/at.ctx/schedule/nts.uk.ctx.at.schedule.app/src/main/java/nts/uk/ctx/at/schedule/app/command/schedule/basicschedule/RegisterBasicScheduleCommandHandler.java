@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.app.command.schedule.basicschedule;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  * 
  * @author sonnh1
  */
-@RequestScoped
+@Stateless
 public class RegisterBasicScheduleCommandHandler
 		extends CommandHandlerWithResult<List<RegisterBasicScheduleCommand>, List<String>> {
 	@Inject

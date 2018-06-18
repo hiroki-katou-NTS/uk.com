@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReferen
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 
 @Data
 @AllArgsConstructor
@@ -220,6 +221,15 @@ public class OverTimeDto {
 	private boolean resultCaculationTimeFlg;
 	private boolean workTypeChangeFlg;
 	
+	/**
+	 * 承認処理時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenApprovalFlg;
+	/**
+	 * 新規登録時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenRegisterFlg;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -270,6 +280,8 @@ public class OverTimeDto {
 				false,
 				false,
 				null,
+				false,
+				false,
 				false,
 				false);
 	}

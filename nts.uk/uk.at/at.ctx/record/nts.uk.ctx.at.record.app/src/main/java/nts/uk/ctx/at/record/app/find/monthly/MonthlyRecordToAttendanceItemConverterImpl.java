@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-
 import nts.uk.ctx.at.record.app.find.monthly.root.AffiliationInfoOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnnLeaRemNumEachMonthDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnyItemOfMonthlyDto;
@@ -23,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
-@Stateless
 public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecordToAttendanceItemConverter {
 
 	private final MonthlyRecordWorkDto monthlyRecord;

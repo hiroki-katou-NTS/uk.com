@@ -26,6 +26,7 @@
 							<td class="pad_5">
 								<div tabindex="1" id="combo-box"
 									data-bind="ntsComboBox: {
+										width: '250px',
 										name: '#{i18n.getText('CCG007_7')}',
 										options: companyList,
 										optionsValue: 'companyCode',
@@ -36,8 +37,8 @@
 										editable: false,
 										enable: true,
 										columns: [
-											{ prop: 'companyCode', length: 2 },
-											{ prop: 'companyName', length: 12, lengthDropDown: 20},
+											{ prop: 'companyCode', length: 5 },
+											{ prop: 'companyName', length: 11},
 										]}"></div>
 							</td>
 						</tr>
@@ -81,6 +82,20 @@
 									data-bind="click: submitLogin" class="full_width proceed large">
 									<div data-bind="text: '#{i18n.getText('CCG007_3')}'"></div>
 								</button></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td class="pad_5">
+									<button tabindex="4"
+										data-bind="click: function() {
+											nts.uk.request.ajax('ctx/sys/gateway/login/account').done(data => {
+												alert('domain: ' + data.domain + '\n' + 'user name: ' + data.userName)
+											})
+										}"
+										class="full_width proceed large">
+										<span>Get Windows Account</span>
+									</button>
+							</td>
 						</tr>
 						<tr>
 							<td></td>

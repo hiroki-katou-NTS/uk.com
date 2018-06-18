@@ -21,8 +21,8 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPagePersonSetPK
 @Stateless
 @Transactional
 public class JpaTopPagePersonSetRepository extends JpaRepository implements TopPagePersonSetRepository {
-	private final String SEL = "SELECT c FROM CcgptTopPagePersonSet c ";
-	private final String SELECT_BY_LIST_SID = SEL + "WHERE c.ccgptTopPagePersonSetPK.companyId = :companyId "
+	private static final String SEL = "SELECT c FROM CcgptTopPagePersonSet c ";
+	private static final String SELECT_BY_LIST_SID = SEL + "WHERE c.ccgptTopPagePersonSetPK.companyId = :companyId "
 			+ " AND c.ccgptTopPagePersonSetPK.employeeId IN :employeeId";
 
 	private TopPagePersonSet toDomain(CcgptTopPagePersonSet entity) {

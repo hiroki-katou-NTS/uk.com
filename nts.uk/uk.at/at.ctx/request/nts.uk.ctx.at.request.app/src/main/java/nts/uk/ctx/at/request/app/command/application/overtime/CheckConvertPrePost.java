@@ -47,7 +47,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class CheckConvertPrePost {
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	static final String DATE_FORMAT = "yyyy/MM/dd";
 	final static String ZEZO_TIME = "0:00";
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
