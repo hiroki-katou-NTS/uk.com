@@ -9,13 +9,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
-import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleGenerator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
@@ -51,8 +49,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		}
 
 		ExportData data = this.repostory.outputProcess(companyId, query.getSetItemsOutputCd(), fiscalYear, startYm,
-				endYm, employees, query.getPrintFormat());
-		data.setPageBreak(EnumAdaptor.valueOf(query.getBreakPage(), PageBreakIndicator.class));
+				endYm, employees, query.getPrintFormat(), query.getBreakPage());
 		// invoke generator
 		this.generator.generate(context.getGeneratorContext(), data);
 	}
