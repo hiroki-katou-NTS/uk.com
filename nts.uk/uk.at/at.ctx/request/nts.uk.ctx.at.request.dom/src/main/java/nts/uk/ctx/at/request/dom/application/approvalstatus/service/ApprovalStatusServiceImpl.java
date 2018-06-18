@@ -37,7 +37,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttDetailRecord;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentResultOutput;
@@ -79,6 +78,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
@@ -163,6 +164,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Inject
 	private EnvAdapter envAdapter;
 	
+	@Inject
+	private RequestSettingRepository requestSetRepo;
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
@@ -810,8 +813,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContentsSorted);
 		// ドメインモデル「休暇申請設定」を取得する
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
-
-		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet, listSync);
+		
+		boolean displayPrePostFlg = this.isDisplayPrePostFlg(companyId);
+		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet, listSync, displayPrePostFlg);
 	}
 
 	/**
@@ -1062,5 +1066,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}
 		}).collect(Collectors.toList());
 		
+	}
+	
+	private boolean isDisplayPrePostFlg(String companyID) {
+		Optional<RequestSetting> requestSetting = this.requestSetRepo.findByCompany(companyID);
+		if (requestSetting.isPresent()
+				&& requestSetting.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtr().value == 1)
+			return true;
+		return false;
 	}
 }
