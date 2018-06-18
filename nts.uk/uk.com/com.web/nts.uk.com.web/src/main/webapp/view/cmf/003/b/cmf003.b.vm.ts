@@ -688,6 +688,7 @@ module nts.uk.com.view.cmf003.b {
                         setShared("CMF001_E_PARAMS", params);
                         nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml").onClosed(() => {
                             self.buton_E_enable(false);
+                            $(".goback").focus();
                         });
                     }
                 }).fail((err) => {
