@@ -36,10 +36,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/KWR002.xlsx";
-	
+
 	/** The Constant PDF_EXT. */
 	private static final String PDF_EXT = ".pdf";
-	
+
 	/** The Constant EXCEL_EXT. */
 	private static final String EXCEL_EXT = ".xlsx";
 
@@ -183,28 +183,27 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 			// Start loop to create report for earch month
 			Map<String, List<AttendanceRecordReportEmployeeData>> reportDatas = data.getReportData();
-			for (String sheetName : reportDatas.keySet()) {
-				int sheetPage = 1;
+			for (String employeeCd : reportDatas.keySet()) {
 				// get list employee data
-				List<AttendanceRecordReportEmployeeData> reportEmployeeDatas = reportDatas.get(sheetName);
+				List<AttendanceRecordReportEmployeeData> reportEmployeeDatas = reportDatas.get(employeeCd);
 				// Generate employee report page
 				for (AttendanceRecordReportEmployeeData employeeData : reportEmployeeDatas) {
 					int startNewPage = 0;
-
+					String sheetName = employeeCd + "-" + employeeData.getReportYearMonth();
+					
 					// create new sheet from template sheet
-					worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName + "-" + sheetPage);
+					worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName);
+					
 					// get new sheet
-					Worksheet worksheet = worksheetCollection.get(sheetName + "-" + sheetPage);
-
+					Worksheet worksheet = worksheetCollection.get(sheetName);
 					startNewPage = this.generateEmployeeReportPage(startNewPage, worksheet, employeeData, page,
 							reportPageTmpl, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
-					sheetPage++;
 					page++;
 
 					// create print area
 					PageSetup pageSetup = worksheet.getPageSetup();
 					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
-					
+
 					if (dataSource.getMode() == EXPORT_PDF) {
 						pageSetup.setFitToPagesWide(1);
 						pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
@@ -327,7 +326,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 		// update start page row value
 		startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
-		
+
 		HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
 		hPageBreaks.add(END_REPORT_COL2 + (startNewPage + 1));
 

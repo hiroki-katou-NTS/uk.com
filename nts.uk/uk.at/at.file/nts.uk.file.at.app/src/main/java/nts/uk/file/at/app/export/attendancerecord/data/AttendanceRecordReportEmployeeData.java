@@ -33,6 +33,9 @@ public class AttendanceRecordReportEmployeeData {
 
 	/** The year month. */
 	private String yearMonth;
+	
+	/** The report year month. */
+	private String reportYearMonth;
 
 	/** The monthly data. */
 	private List<AttendanceRecordReportColumnData> employeeMonthlyData;
