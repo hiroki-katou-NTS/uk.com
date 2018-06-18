@@ -6,6 +6,7 @@ import java.time.Month;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.era.name.SystemType;
 @Stateless
 public class EraNameSaveCommandHandler extends CommandHandler<EraNameSaveCommand> {
 	
-	private final GeneralDate LAST_END_DATE = GeneralDate.localDate(LocalDate.of(9999, Month.DECEMBER, 31));
+	private static final GeneralDate LAST_END_DATE = GeneralDate.localDate(LocalDate.of(9999, Month.DECEMBER, 31));
 	
 	@Inject
 	private EraNameDomRepository repo;
@@ -36,26 +37,26 @@ public class EraNameSaveCommandHandler extends CommandHandler<EraNameSaveCommand
 			if(SystemType.SYSTEM.value.equals(command.getSystemType())){
 				throw new RuntimeException("Invalid EraName");
 			}
-	
+			
 			// get previous era name item
 			EraNameDom preItem = this.repo.getEraNameByEndDate(GeneralDate.localDate(domain.getStartDate().localDate().minusDays(1)));
-			// check if the last item
-			if(domain.getEndDate().equals(LAST_END_DATE)) {
-				// check if start date is invalid
-				if(!domain.getStartDate().after(preItem.getStartDate()))
-					throw new RuntimeException("Invalid Start Date");
-			}
-			else {
-				// get next era name items
-				EraNameDom nextItem = this.repo.getEraNameByStartDate(domain.getEndDate().addDays(1));
-				// check if start date is invalid
-				if(!domain.getStartDate().after(preItem.getStartDate()) || domain.getStartDate().before(nextItem.getStartDate()))
-					throw new RuntimeException("Invalid Start Date");
-			}
+			
 			// update saved item
 			domain.setEraName(new EraName(command.getEraName()));
 			domain.setSymbol(new SymbolName(command.getEraSymbol()));
 			domain.setStartDate(command.getStartDate());
+
+			// check if updated start date is invalid
+			if(!command.getStartDate().after(preItem.getStartDate()))
+				throw new BusinessException("Msg_452");
+			// check if the last item
+			else if(!domain.getEndDate().equals(LAST_END_DATE)) {
+				// get next era name items
+				EraNameDom nextItem = this.repo.getEraNameByStartDate(domain.getEndDate().addDays(1));
+				// check if updated start date is invalid
+				if(!command.getStartDate().before(nextItem.getStartDate()))
+					throw new BusinessException("Msg_453");
+			}
 			this.repo.updateEraName(domain);
 			
 			// update end date of previous item
@@ -70,9 +71,9 @@ public class EraNameSaveCommandHandler extends CommandHandler<EraNameSaveCommand
 
 			// add new era name item
 			domain = command.toDomain();
-			// check if start date is invalid
+			// check if updated start date is invalid
 			if(!domain.getStartDate().after(preItem.getStartDate()))
-				throw new RuntimeException("Invalid Start Date");
+				throw new BusinessException("Msg_452");
 			
 			domain.setSystemType(SystemType.NOT_SYSTEM);
 			domain.setEndDate(LAST_END_DATE);

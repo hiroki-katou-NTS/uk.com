@@ -65,10 +65,6 @@ public class EraNameDom extends AggregateRoot {
 		memento.setSystemType(this.systemType);
 	}
 	
-	public static EraNameDom createFromJavaType() {
-		return new EraNameDom();
-	}
-	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
