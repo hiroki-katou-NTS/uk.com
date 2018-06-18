@@ -108,7 +108,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             nts.uk.ui.errors.clearAll();
             let self = this;
             
-            let command = new PayoutSubofHDManagementCommand(self.info.selectedEmployee.employeeId, self.info.rowValue.id,self.residualDay(), self.currentList());
+            let command = new PayoutSubofHDManagementCommand(self.info.selectedEmployee.employeeId, self.info.rowValue.id,Math.abs(self.residualDay()), self.currentList());
             if (!self.validate()){
                 return;
             }
