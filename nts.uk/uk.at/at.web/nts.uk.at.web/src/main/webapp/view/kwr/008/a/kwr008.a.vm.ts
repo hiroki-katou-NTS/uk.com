@@ -380,7 +380,7 @@ module nts.uk.at.view.kwr008.a {
                     maxWidth: 550,
                     maxRows: 15
                 };
-
+                self.selectedEmployeeCode(dataList);
             }
 
             /**

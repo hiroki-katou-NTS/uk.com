@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -30,13 +31,12 @@ import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeOfManag
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
-import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
-import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYearAdapter;
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeData;
@@ -78,21 +78,20 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	@Inject
 	private GetAgreementPeriodFromYearAdapter getAgreementPeriodFromYearPub;
 	@Inject
-	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
-	@Inject
 	private AgreementTimeByPeriodAdapter agreementTimeByPeriodAdapter;
 
 	public static final String YM_FORMATER = "uuuu/MM";
 
 	@Override
 	public ExportData outputProcess(String cid, String setItemsOutputCd, Year fiscalYear, YearMonth startYm,
-			YearMonth endYm, List<Employee> employees, int printFormat) {
+			YearMonth endYm, List<Employee> employees, int printFormat, int breakPage) {
 		// 帳表出力前チェックをする
 		this.checkBeforOutput(startYm, endYm, employees);
 		// ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する -> client
 
 		final int numMonth = (int) startYm.until(endYm, ChronoUnit.MONTHS) + 1;
 		ExportData exportData = new ExportData();
+		exportData.setPageBreak(EnumAdaptor.valueOf(breakPage, PageBreakIndicator.class));
 		LocalDate endYmd = LocalDate.of(endYm.getYear(), endYm.getMonthValue(), 1).plus(1, ChronoUnit.MONTHS).minus(1,
 				ChronoUnit.DAYS);
 		List<String> employeeIds = employees.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
@@ -116,8 +115,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 				.sorted((i1, i2) -> Integer.compare(i1.getSortBy(), i2.getSortBy())).collect(Collectors.toList());
 		if (printFormat == 1) {
 			// A1_2
-			header.setReportName(TextResource.localize("KWR008_58"));			
-		}else{
+			header.setReportName(TextResource.localize("KWR008_58"));
+		} else {
 			// A1_2
 			header.setReportName(TextResource.localize("KWR008_57"));
 			listItemOut = listItemOut.stream().filter(x -> !x.isItem36AgreementTime()).collect(Collectors.toList());
@@ -145,7 +144,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		header.setMonths(this.createMonthLabels(startYmClone, endYmClone));
 		exportData.setHeader(header);
 		// 社員を並び替える
-		exportData.setEmployeeIds(this.sortEmployees(employeeIds, endYmd));
+		// exportData.setEmployeeIds(this.sortEmployees(employeeIds, endYmd));
+		this.sortEmployees(exportData, endYmd);
 		// 「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		if (printFormat == 1) {
 			// アルゴリズム「年間勤務表の作成」を実行する
@@ -186,10 +186,38 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	private List<String> sortEmployees(List<String> employeeIds, LocalDate endYmd) {
 		List<String> listEmp = employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, 1, null, null,
 				GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0))));
-		if (listEmp == null || listEmp.isEmpty()) {
+		return listEmp;
+	}
+
+	private void sortEmployees(ExportData exportData, LocalDate endYmd) {
+		List<String> listEmpSorted = new ArrayList<>();
+		if (exportData.getPageBreak().equals(PageBreakIndicator.WORK_PLACE)) {
+			// Get all workplace
+			List<String> listWorkPlace = new ArrayList<>();
+			for (Map.Entry<String, EmployeeData> empData : exportData.getEmployees().entrySet()) {
+				listWorkPlace.add(empData.getValue().getEmployeeInfo().getWorkplaceCode());
+			}
+			// Distinct, sort work place
+			listWorkPlace = listWorkPlace.stream().distinct().sorted().collect(Collectors.toList());
+			// Sort employee foreach workplace
+			for (String wkp : listWorkPlace) {
+				List<String> listEmpIdOrgin = exportData.getEmployees().entrySet().stream()
+						.filter(x -> x.getValue().getEmployeeInfo().getWorkplaceCode().equals(wkp)).map(x -> x.getKey())
+						.collect(Collectors.toList());
+				List<String> listEmp =  this.sortEmployees(listEmpIdOrgin, endYmd);
+				listEmpSorted.addAll(listEmp);
+			}
+		} else {
+			List<String> listEmpIdOrgin = exportData.getEmployees().entrySet().stream().map(x -> x.getKey())
+					.collect(Collectors.toList());
+			List<String> listEmp = this.sortEmployees(listEmpIdOrgin, endYmd);
+			listEmpSorted.addAll(listEmp);
+		}	
+
+		if (listEmpSorted.isEmpty()) {
 			throw new BusinessException("Msg_885");
 		}
-		return listEmp;
+		exportData.setEmployeeIds(listEmpSorted);
 	}
 
 	/**
@@ -309,8 +337,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			List<ItemOutTblBook> listItemOut, YearMonth startYm, int numMonth) {
 		listItemOut.forEach(itemOut -> {
 			// アルゴリズム「出力項目の値の算出」を実行する
-			Map<String, AnnualWorkScheduleData> empData = this.createOptionalItem(yearMonthPeriod, employeeIds,
-					itemOut, startYm, numMonth);
+			Map<String, AnnualWorkScheduleData> empData = this.createOptionalItem(yearMonthPeriod, employeeIds, itemOut,
+					startYm, numMonth);
 			employeeIds.forEach(empId -> {
 				AnnualWorkScheduleData data = empData.get(empId);
 				exportData.getEmployees().get(empId).getAnnualWorkSchedule().put(itemOut.getCd().v(), data);
@@ -341,8 +369,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			List<MonthlyAttendanceResultImport> listMonthly = monthlyAttendanceResult.stream()
 					.filter(x -> x.getEmployeeId().equals(empId)).collect(Collectors.toList());
 			// アルゴリズム「月平均の算出」を実行する
-			empData.put(empId, AnnualWorkScheduleData
-					.fromMonthlyAttendanceList(itemOut, listMonthly, startYm, numMonth).calc());
+			empData.put(empId,
+					AnnualWorkScheduleData.fromMonthlyAttendanceList(itemOut, listMonthly, startYm, numMonth).calc());
 		});
 		return empData;
 	}
@@ -366,7 +394,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		} else {
 			unitMonth = PeriodAtrOfAgreement.THREE_MONTHS;
 		}
-		// 年度のエンド : 管理期間の36協定時間．年度＋(３６協定運用設定．起算月-1月)＋末日
+		// 基準日 = 「年度から集計期間を取得する」のOutputのenddate
 		GeneralDate criteria = datePeriod.get().end();
 		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, unitMonth);
 	}
@@ -411,32 +439,23 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 */
 	private List<String> createMonthPeriodLabels(YearMonth startYm, YearMonth endYm,
 			OutputAgreementTime outputAgreementTime) {
-		List<String> monthPeriodLabels = null;
-		int standardMonth = 4; // 36協定の起算月⇒4月の場合
-		YearMonth stardardYm = YearMonth.of(startYm.getYear(), standardMonth);
-		if (stardardYm.isAfter(startYm))
-			stardardYm = stardardYm.minusYears(1);
-
+		int start = startYm.getMonthValue();
+		int end = endYm.getMonthValue();
 		int distances = 0;
 		if (OutputAgreementTime.TWO_MONTH.equals(outputAgreementTime))
 			distances = 2;
 		else if (OutputAgreementTime.THREE_MONTH.equals(outputAgreementTime))
 			distances = 3;
-
-		if (distances != 0) {
-			monthPeriodLabels = new ArrayList<>();
-			stardardYm = stardardYm.plusMonths(stardardYm.until(startYm, ChronoUnit.MONTHS) / distances * distances);
-			int groupStartM, groupEndM;
-			do {
-				groupStartM = (stardardYm.isBefore(startYm) ? startYm : stardardYm).getMonthValue();
-				stardardYm = stardardYm.plusMonths(distances - 1);
-				groupEndM = (stardardYm.isAfter(endYm) ? endYm : stardardYm).getMonthValue();
-				if (groupStartM == groupEndM)
-					monthPeriodLabels.add(String.valueOf(groupStartM));
-				else
-					monthPeriodLabels.add(groupStartM + "～" + groupEndM);
-				stardardYm = stardardYm.plusMonths(1);
-			} while (!stardardYm.isAfter(endYm));
+		if (distances == 0)
+			return null;
+		List<String> monthPeriodLabels = new ArrayList<>();
+		for (int periodStart = start; periodStart <= end;) {
+			int periodEnd = periodStart + distances - 1;
+			if (periodEnd >= end) {
+				periodEnd = end;
+			}
+			monthPeriodLabels.add(periodStart + "～" + periodEnd);
+			periodStart = periodStart + distances;
 		}
 		return monthPeriodLabels;
 	}
