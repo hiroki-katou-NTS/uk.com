@@ -110,7 +110,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         public create(): void {
             nts.uk.ui.errors.clearAll();
             let self = this;
-            let command = new SubOfHDPayoutManaDataCommand(self.info.selectedEmployee.employeeId, self.info.rowValue.id, self.residualDay(), self.currentList());
+            let command = new SubOfHDPayoutManaDataCommand(self.info.selectedEmployee.employeeId, self.info.rowValue.id, Math.abs(self.residualDay()), self.currentList());
     
             if (!self.validate()) {
                 return;
