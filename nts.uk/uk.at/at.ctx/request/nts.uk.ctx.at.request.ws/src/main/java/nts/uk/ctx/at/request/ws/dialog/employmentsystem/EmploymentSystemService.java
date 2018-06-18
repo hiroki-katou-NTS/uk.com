@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.DetailConfirmDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmployeeBasicInfoDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmploymentSystemFinder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
@@ -30,16 +31,24 @@ public class EmploymentSystemService extends WebService {
 	{		
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
 		LocalDate localDate = LocalDate.now();
-		String baseDate = dtf.format(localDate);
+		String systemDate = dtf.format(localDate);
+		String baseDate = param.getBaseDate().isEmpty() ? systemDate : param.getBaseDate();
 		
 		// アルゴリズム「代休確認ダイア起動」を実行する
-		List<EmployeeBasicInfoDto> employeeBasicInfo = employeeFinder.getEmployee(param.getEmployeeIds(), param.getBaseDate().isEmpty() ? baseDate : param.getBaseDate());
+		List<EmployeeBasicInfoDto> employeeBasicInfo = employeeFinder.getEmployeeData(param.getEmployeeIds(), baseDate);
 				
-		DataParam result = new DataParam(employeeBasicInfo, param.getBaseDate().isEmpty() ? baseDate : param.getBaseDate());
+		DataParam result = new DataParam(employeeBasicInfo, baseDate);
 		
 		return result;
 	}
 	
+	@POST
+	@Path("getDetailsConfirm/{employeeId}/{baseDate}")
+	public DetailConfirmDto getDetailsConfirm(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
+	{		
+		// アルゴリズム「代休確認ダイア詳細取得」を実行する
+		return employeeFinder.getDetailsConfirm(employeeId, baseDate);
+	}
 	
 	// Code for KDL009
 	

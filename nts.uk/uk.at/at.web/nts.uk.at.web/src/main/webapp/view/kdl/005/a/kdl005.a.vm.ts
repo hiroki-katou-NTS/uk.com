@@ -15,13 +15,13 @@ module nts.uk.at.view.kdl005.a {
             employeeList: KnockoutObservableArray<UnitModel>;
             
             legendOptions: any;
-            kdl009Data: KnockoutObservable<any>;
+            kdl005Data: KnockoutObservable<any>;
             employeeInfo: KnockoutObservable<string>;
             
             constructor() {
                 var self = this;
                 
-                self.kdl009Data = nts.uk.ui.windows.getShared("KDL005_DATA");
+                self.kdl005Data = nts.uk.ui.windows.getShared("KDL005_DATA");
 
                 self.employeeInfo = ko.observable("");
                 
@@ -31,12 +31,12 @@ module nts.uk.at.view.kdl005.a {
                     ]
                 };
                 
-                if(self.kdl009Data.employeeBasicInfo.length > 1) {
+                if(self.kdl005Data.employeeBasicInfo.length > 1) {
                     self.selectedCode.subscribe(function(value) {
-                        let itemName = _.find(self.kdl009Data.employeeBasicInfo, ['employeeCode', value]);
+                        let itemName = _.find(self.kdl005Data.employeeBasicInfo, ['employeeCode', value]);
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemName.businessName]));
                         
-                        service.getAbsRecGenDigesHis(value, self.kdl009Data.baseDate).done(function(data) {
+                        service.getDetailsConfirm(value, self.kdl005Data.baseDate).done(function(data) {
                             let name = '';
                         }).fail(function(res) {
                               
@@ -44,7 +44,7 @@ module nts.uk.at.view.kdl005.a {
                     });  
                         
                     self.baseDate = ko.observable(new Date());
-                    self.selectedCode(self.kdl009Data.employeeBasicInfo[0].employeeCode);
+                    self.selectedCode(self.kdl005Data.employeeBasicInfo[0].employeeCode);
                     self.multiSelectedCode = ko.observableArray([]);
                     self.isShowAlreadySet = ko.observable(false);
                     self.alreadySettingList = ko.observableArray([
@@ -56,7 +56,7 @@ module nts.uk.at.view.kdl005.a {
                     self.isMultiSelect = ko.observable(false);
                     self.isShowWorkPlaceName = ko.observable(false);
                     self.isShowSelectAllButton = ko.observable(false);
-                    this.employeeList = ko.observableArray<UnitModel>(_.map(self.kdl009Data.employeeBasicInfo,x=>{return {code:x.employeeCode ,name:x.businessName};}));
+                    this.employeeList = ko.observableArray<UnitModel>(_.map(self.kdl005Data.employeeBasicInfo,x=>{return {code:x.employeeCode ,name:x.businessName};}));
                     self.listComponentOption = {
                         isShowAlreadySet: self.isShowAlreadySet(),
                         isMultiSelect: self.isMultiSelect(),
@@ -75,7 +75,7 @@ module nts.uk.at.view.kdl005.a {
                     
                     $("#date-fixed-table").ntsFixedTable({ height: 320, width: 650 });
                 } else {
-                    self.employeeInfo(nts.uk.resource.getText("KDL009_25", [self.kdl009Data.employeeBasicInfo[0].employeeCode, self.kdl009Data.employeeBasicInfo[0].employeeCode.businessName]));
+                    self.employeeInfo(nts.uk.resource.getText("KDL009_25", [self.kdl005Data.employeeBasicInfo[0].employeeCode, self.kdl005Data.employeeBasicInfo[0].employeeCode.businessName]));
                     
                     $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
                 }
