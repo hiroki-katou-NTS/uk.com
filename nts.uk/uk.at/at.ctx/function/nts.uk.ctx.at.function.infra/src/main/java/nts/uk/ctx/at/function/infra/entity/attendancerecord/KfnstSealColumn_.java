@@ -13,5 +13,5 @@ public class KfnstSealColumn_ {
     public static volatile SingularAttribute<KfnstSealColumn, BigDecimal> exportCd;
     public static volatile SingularAttribute<KfnstSealColumn, String> sealStampName;
     public static volatile SingularAttribute<KfnstSealColumn, String> cid;
-
+    public static volatile SingularAttribute<KfnstSealColumn, BigDecimal> sealOrder;
 }

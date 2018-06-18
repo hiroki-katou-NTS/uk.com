@@ -1,16 +1,17 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
 import java.math.BigDecimal;
-import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -99,9 +100,12 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		this.deleteSealStamp(attendanceRecordExpSet.getCompanyId(), attendanceRecordExpSet.getCode());
 
 		// Add seal stamp List
-		this.commandProxy().insertAll(attendanceRecordExpSet.getSealStamp().stream().map(
-				e -> toSealStampEntity(attendanceRecordExpSet.getCompanyId(), attendanceRecordExpSet.getCode().v(), e))
-				.collect(Collectors.toList()));
+		int order = 1;
+		long expCode = attendanceRecordExpSet.getCode().v();
+		String cid = attendanceRecordExpSet.getCompanyId();
+		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
+			this.commandProxy().insert(toSealStampEntity(cid, expCode, seal, order++));
+		}
 
 	}
 
@@ -116,10 +120,11 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	 *            the seal name
 	 * @return the kfnst seal column
 	 */
-	private KfnstSealColumn toSealStampEntity(String cId, long code, SealColumnName sealName) {
-		UID columnId= new UID();
-		
-		return new KfnstSealColumn(columnId.toString(), cId, new BigDecimal(code), sealName.toString());
+	private KfnstSealColumn toSealStampEntity(String cId, long code, SealColumnName sealName, int order) {
+		UUID columnId = UUID.randomUUID();
+
+		return new KfnstSealColumn(columnId.toString(), cId, new BigDecimal(code), sealName.toString(),
+				new BigDecimal(order));
 	}
 
 	/**
@@ -148,31 +153,35 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	@Override
 	public void addAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
 		addKfnstAttndRecOutSet(attendanceRecordExpSet);
-		if (attendanceRecordExpSet.getSealStamp() != null) addKfnstSealcolumns(attendanceRecordExpSet);
+		if (attendanceRecordExpSet.getSealStamp() != null)
+			addKfnstSealcolumns(attendanceRecordExpSet);
 	}
 
-    private void addKfnstSealcolumns(AttendanceRecordExportSetting attendanceRecordExpSet) {
-        String cid = attendanceRecordExpSet.getCompanyId();
-        ExportSettingCode settingCode = attendanceRecordExpSet.getCode();
-        //remove Seal stamps
-        deleteSealStamp(cid, settingCode);
+	private void addKfnstSealcolumns(AttendanceRecordExportSetting attendanceRecordExpSet) {
+		String cid = attendanceRecordExpSet.getCompanyId();
+		ExportSettingCode settingCode = attendanceRecordExpSet.getCode();
+		// remove Seal stamps
+		deleteSealStamp(cid, settingCode);
 
-        // Insert Seal Stamp List
-        this.commandProxy().insertAll(attendanceRecordExpSet.getSealStamp().stream().map(e ->
-                toSealStampEntity(cid, settingCode.v(), e)).collect(Collectors.toList()));
-        this.getEntityManager().flush();
-    }
+		// Insert Seal Stamp List
+		int order = 1;
+		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
+			this.commandProxy().insert(toSealStampEntity(cid, settingCode.v(), seal, order++));
+		}
+		this.getEntityManager().flush();
+	}
 
-    private void addKfnstAttndRecOutSet(AttendanceRecordExportSetting attendanceRecordExpSet){
-        KfnstAttndRecOutSetPK pk = new KfnstAttndRecOutSetPK(attendanceRecordExpSet.getCompanyId(), attendanceRecordExpSet.getCode().v());
-        Optional<KfnstAttndRecOutSet> entityFromDb = this.queryProxy().find(pk, KfnstAttndRecOutSet.class);
-        if(entityFromDb.isPresent()) {
-            this.commandProxy().update(toEntity(attendanceRecordExpSet));
-        }else {
-            // Insert Attendance
-            this.commandProxy().insert(toEntity(attendanceRecordExpSet));
-        }
-    }
+	private void addKfnstAttndRecOutSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
+		KfnstAttndRecOutSetPK pk = new KfnstAttndRecOutSetPK(attendanceRecordExpSet.getCompanyId(),
+				attendanceRecordExpSet.getCode().v());
+		Optional<KfnstAttndRecOutSet> entityFromDb = this.queryProxy().find(pk, KfnstAttndRecOutSet.class);
+		if (entityFromDb.isPresent()) {
+			this.commandProxy().update(toEntity(attendanceRecordExpSet));
+		} else {
+			// Insert Attendance
+			this.commandProxy().insert(toEntity(attendanceRecordExpSet));
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -185,7 +194,7 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	@Override
 	public void deleteAttendanceRecExpSet(AttendanceRecordExportSetting domain) {
 		this.commandProxy().remove(toEntity(domain));
-		deleteSealStamp(domain.getCompanyId(),domain.getCode());
+		deleteSealStamp(domain.getCompanyId(), domain.getCode());
 	}
 
 	/*
@@ -207,13 +216,14 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstSealColumn_.cid), companyId));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstSealColumn_.exportCd), code));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstSealColumn_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstSealColumn_.exportCd), code));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// order by
+		cq.orderBy(criteriaBuilder.asc(root.get(KfnstSealColumn_.sealOrder)));
 
 		// query data
 		List<KfnstSealColumn> sealStampEntity = em.createQuery(cq).getResultList();
@@ -252,9 +262,9 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		KfnstAttndRecOutSetPK PK = new KfnstAttndRecOutSetPK(domain.getCompanyId(), domain.getCode().v());
 
 		KfnstAttndRecOutSet entity = this.queryProxy().find(PK, KfnstAttndRecOutSet.class)
-				.orElse(new KfnstAttndRecOutSet(PK,null,new BigDecimal(0),new BigDecimal(1)));
+				.orElse(new KfnstAttndRecOutSet(PK, null, new BigDecimal(0), new BigDecimal(1)));
 
-        JpaAttendanceRecordExportSettingSetMemento setMemento = new JpaAttendanceRecordExportSettingSetMemento(entity);
+		JpaAttendanceRecordExportSettingSetMemento setMemento = new JpaAttendanceRecordExportSettingSetMemento(entity);
 		domain.saveToMemento(setMemento);
 
 		return setMemento.getEntity();
@@ -281,8 +291,7 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(criteriaBuilder.equal(root.get(KfnstSealColumn_.cid), companyId));
-		predicates
-				.add(criteriaBuilder.equal(root.get(KfnstSealColumn_.exportCd), exportCode));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstSealColumn_.exportCd), exportCode));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
