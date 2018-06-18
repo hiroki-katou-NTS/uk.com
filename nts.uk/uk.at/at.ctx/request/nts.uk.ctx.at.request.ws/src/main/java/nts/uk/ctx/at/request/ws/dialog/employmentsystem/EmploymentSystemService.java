@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.ws.dialog.employmentsystem;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,6 +22,27 @@ public class EmploymentSystemService extends WebService {
 	@Inject
 	EmploymentSystemFinder employeeFinder;
 	
+	// Code for KDL005
+	
+	@POST
+	@Path("getEmployeeList")
+	public DataParam getEmployeeList(EmployeeParam param)
+	{		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+		LocalDate localDate = LocalDate.now();
+		String baseDate = dtf.format(localDate);
+		
+		// アルゴリズム「代休確認ダイア起動」を実行する
+		List<EmployeeBasicInfoDto> employeeBasicInfo = employeeFinder.getEmployee(param.getEmployeeIds(), param.getBaseDate().isEmpty() ? baseDate : param.getBaseDate());
+				
+		DataParam result = new DataParam(employeeBasicInfo, param.getBaseDate().isEmpty() ? baseDate : param.getBaseDate());
+		
+		return result;
+	}
+	
+	
+	// Code for KDL009
+	
 	@POST
 	@Path("getEmployee")
 	public DataParam getEmployee(EmployeeParam param)
@@ -32,6 +55,13 @@ public class EmploymentSystemService extends WebService {
 		return result;
 	}
 	
+	/**
+	 * アルゴリズム「振休残数情報の取得」を実行する
+	 * 
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
 	@POST
 	@Path("getAbsRecGenDigesHis/{employeeId}/{baseDate}")
 	public AbsRecGenerationDigestionHis getAbsRecGenDigesHis(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
