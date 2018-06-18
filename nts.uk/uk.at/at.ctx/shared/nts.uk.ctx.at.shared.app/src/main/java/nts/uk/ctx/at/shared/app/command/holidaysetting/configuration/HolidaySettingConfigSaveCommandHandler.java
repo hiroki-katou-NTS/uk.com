@@ -41,8 +41,6 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 	@Inject
 	private PublicHolidaySettingRepository pubHdSetRepo;
 	
-	private boolean storeStatusManageComPublicHd;
-	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
@@ -63,7 +61,6 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 		if (pubHdSetDomain.isManageComPublicHd() == true) {
 			//save PublicHolidaySetting
 			if(optionalPubHdSet.isPresent()){
-				setStoreStatusManageComPublicHd(optionalPubHdSet.get().isManageComPublicHd());
 				this.pubHdSetRepo.update(pubHdSetDomain);
 			}else {
 				this.pubHdSetRepo.add(pubHdSetDomain);
@@ -98,9 +95,6 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 			//save PublicHolidaySetting
 			if(optionalPubHdSet.isPresent()){
 				PublicHolidaySetting publicHolidaySetting = optionalPubHdSet.get();
-				setStoreStatusManageComPublicHd(optionalPubHdSet.get().isManageComPublicHd());
-				// 会社の公休管理をする was set 管理しない, all element on UI will be set disable and set default value 
-				// so I use domain get from service and onlye set "isManageComPublicHd" to false  
 				publicHolidaySetting.setManageComPublicHd(false);
 				this.pubHdSetRepo.update(publicHolidaySetting);
 			}else {
@@ -111,15 +105,11 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 		//check managementCategory change
 		// ドメインモデル「特別休暇」を新規登録した場合
 		// Event： 特別休暇情報が変更された を発行する
-		if (!optionalPubHdSet.isPresent() || storeStatusManageComPublicHd != command
+		if (!optionalPubHdSet.isPresent() || optionalPubHdSet.get().isManageComPublicHd() != command
 				.getPubHdSet().getIsManageComPublicHd()) {
 			val publicHolidaySettingDomainEvent = new PublicHolidaySettingDomainEvent(
 					command.getPubHdSet().getIsManageComPublicHd());
 			publicHolidaySettingDomainEvent.toBePublished();
 		}
-	}
-	
-	private void setStoreStatusManageComPublicHd(boolean args) {
-		storeStatusManageComPublicHd = args;
 	}
 }

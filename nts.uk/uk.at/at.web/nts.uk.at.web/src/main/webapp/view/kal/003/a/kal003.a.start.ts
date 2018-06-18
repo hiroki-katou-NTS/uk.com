@@ -5,7 +5,7 @@ module nts.uk.at.view.kal003.a {
             __viewContext.bind(screenModel);
             _.defer(() => {
                 if (screenModel.screenMode() == nts.uk.at.view.kal003.share.model.SCREEN_MODE.UPDATE) {
-                    setTimeout(function() { $("#A3_4").focus(); }, 500);
+                    $("#A3_4").focus();
                 } else {
                     $("#A3_2").focus();
                 }

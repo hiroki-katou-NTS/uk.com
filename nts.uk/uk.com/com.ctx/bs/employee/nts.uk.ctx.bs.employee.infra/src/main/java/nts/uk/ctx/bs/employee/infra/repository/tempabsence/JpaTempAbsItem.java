@@ -29,15 +29,15 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	/** The Constant MAX_ELEMENTS. */
 	private static final Integer MAX_ELEMENTS = 1000;
 	
-	private static final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
+	private final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
 			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
 			+ " WHERE h.sid = :sid AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
 	
-	private static final String GET_BY_SIDS_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
+	private final String GET_BY_SIDS_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
 			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
 			+ " WHERE h.sid IN :sids AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
 	
-	private static final String GET_BY_HISTORYID_LIST = "SELECT hi FROM BsymtTempAbsHisItem hi"
+	private final String GET_BY_HISTORYID_LIST = "SELECT hi FROM BsymtTempAbsHisItem hi"
 			+ " WHERE hi.histId IN :histIds";
 	
 	@Override

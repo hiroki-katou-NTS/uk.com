@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.infra.repository.monthlycorrection.fixedformatmonthly;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -12,16 +11,11 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWid
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthlyRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidthOfDisplayItem;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonGridColWidth;
-import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaMonGridColWidthRepository extends JpaRepository implements ColumnWidtgByMonthlyRepository{
 
 	private static final String Get_COL_WIDTH_BY_CID = "SELECT c FROM KrcmtMonGridColWidth c "
 			+ " WHERE c.monGridColWidthPk.cid = :companyID";
-	
-	private static final String Get_COL_WIDTH_BY_CID_AND_ATTDID = "SELECT c FROM KrcmtMonGridColWidth c "
-			+ " WHERE c.monGridColWidthPk.cid = :companyID "
-			+ " AND c.monGridColWidthPk.attendanceItemId IN :attendanceItemIds"; 
 	@Override
 	public Optional<ColumnWidtgByMonthly> getColumnWidtgByMonthly(String companyID) {
 		List<KrcmtMonGridColWidth> lstData = this.queryProxy().query(Get_COL_WIDTH_BY_CID,KrcmtMonGridColWidth.class)
@@ -41,16 +35,14 @@ public class JpaMonGridColWidthRepository extends JpaRepository implements Colum
 
 	@Override
 	public void addColumnWidtgByMonthly(ColumnWidtgByMonthly columnWidtgByMonthly) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void updateColumnWidtgByMonthly(Map<Integer, Integer> lstHeader) {
-		List<KrcmtMonGridColWidth> entity = this.queryProxy().query(Get_COL_WIDTH_BY_CID_AND_ATTDID, KrcmtMonGridColWidth.class)
-				.setParameter("companyID", AppContexts.user().companyId()).setParameter("attendanceItemIds", lstHeader.keySet()).getList();
-		for(KrcmtMonGridColWidth item :entity){
-			item.columnWidth = lstHeader.get(item.monGridColWidthPk.attendanceItemId);
-		}
-		this.commandProxy().updateAll(entity);
+	public void updateColumnWidtgByMonthly(ColumnWidtgByMonthly columnWidtgByMonthly) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

@@ -18,7 +18,6 @@ module nts.uk.at.view.kdl034.a {
                 var self = this;
                 let param = getShared("KDL034_PARAM");
                 self.appID = param.appID;
-                self.version = param.version;
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -30,6 +29,7 @@ module nts.uk.at.view.kdl034.a {
                             let applicant = result.applicant;
                             let approvalFrame = result.approvalFrameDtoForRemand;
                             let listApprover: Array<Approver> = [];
+                            self.version = result.version;
                             self.errorFlag = result.errorFlag;
                             applicant = new Approver(applicant.pid, applicant.pname, null, null, result.applicantPosition, false);
                             listApprover.push(applicant);
@@ -95,7 +95,7 @@ module nts.uk.at.view.kdl034.a {
                             }).fail(function(res){
                                 nts.uk.ui.block.clear();
                                 //エラーメッセージ(Msg_197) - sai version
-                                dialog.alertError ({messageId: res.messageId}).then(()=>{
+                                dialog.alertError ({messageId: res.errorMessageId}).then(()=>{
                                     nts.uk.ui.windows.close();
                                 });
                             });
@@ -109,7 +109,8 @@ module nts.uk.at.view.kdl034.a {
                 let sucessListAsStr = "";
                 if (numOfSuccess ==0 && numOfFailed == 0){
                     nts.uk.ui.windows.close();
-                }else if (numOfSuccess !=0 && numOfFailed == 0){
+                }
+                if (numOfSuccess !=0 && numOfFailed == 0){
                     let msg = getMessage('Msg_392');
                     dialog.info({message: msg.replace("{0}", successList.join('\n')), messageId: "Msg_392"}).then(()=>{
                         nts.uk.ui.windows.close();

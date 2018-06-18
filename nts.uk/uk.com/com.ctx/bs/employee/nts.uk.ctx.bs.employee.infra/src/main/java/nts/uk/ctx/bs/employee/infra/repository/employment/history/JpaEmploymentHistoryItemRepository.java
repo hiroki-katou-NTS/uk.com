@@ -33,7 +33,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
 
-	private static final String SEL_HIS_ITEM = " SELECT a.bsymtEmploymentPK.code ,a.name FROM BsymtEmployment a"
+	private static String SEL_HIS_ITEM = " SELECT a.bsymtEmploymentPK.code ,a.name FROM BsymtEmployment a"
 			+ " INNER JOIN BsymtEmploymentHist h" 
 			+ " ON a.bsymtEmploymentPK.cid = h.companyId"
 			+ " INNER JOIN BsymtEmploymentHistItem i"

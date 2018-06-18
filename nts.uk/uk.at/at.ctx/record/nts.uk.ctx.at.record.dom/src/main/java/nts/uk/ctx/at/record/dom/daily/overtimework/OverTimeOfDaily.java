@@ -316,7 +316,7 @@ public class OverTimeOfDaily {
 		if(workTimeDailyAtr.isFlex() && withinWorkTimeSheetList != null) {
 			
 			val changeVariant = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetList);
-			flexTime =  changeVariant.createWithinWorkTimeSheetAsFlex(calcMethod,holidayCalcMethodSet,autoCalcAtr.getFlexExcessTime().getFlexOtTime().getCalAtr(),workType,
+			flexTime =  changeVariant.createWithinWorkTimeSheetAsFlex(calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,
 					//flexCalcMethod.get(),
 					new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
 																	   new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),

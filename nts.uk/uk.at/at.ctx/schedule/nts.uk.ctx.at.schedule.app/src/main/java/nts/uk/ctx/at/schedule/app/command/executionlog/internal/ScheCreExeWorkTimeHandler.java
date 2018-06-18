@@ -76,6 +76,14 @@ public class ScheCreExeWorkTimeHandler {
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
+	/** The working condition item repository. */
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+
+	/** The working condition repository. */
+	@Inject
+	private WorkingConditionRepository workingConditionRepository;
+
 	/** The Constant INCUMBENT. */
 	// 在職
 	public static final int INCUMBENT = 1;
@@ -169,6 +177,28 @@ public class ScheCreExeWorkTimeHandler {
 	 */
 	public boolean checkNullOrDefaulCode(String workingCode) {
 		return StringUtil.isNullOrEmpty(workingCode, false) || workingCode.equals(DEFAULT_CODE);
+	}
+
+	/**
+	 * Gets the labor condition item.
+	 * 
+	 * 労働条件項目を取得する
+	 * 
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	public Optional<WorkingConditionItem> getLaborConditionItem(String companyId, String employeeId,
+			GeneralDate baseDate) {
+		Optional<WorkingCondition> optionalWorkingCondition = this.workingConditionRepository.getBySid(companyId,
+				employeeId);
+		if (!optionalWorkingCondition.isPresent()) {
+			return Optional.empty();
+		}
+
+		// return data by call repository
+		return this.workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
 	}
 
 	/**

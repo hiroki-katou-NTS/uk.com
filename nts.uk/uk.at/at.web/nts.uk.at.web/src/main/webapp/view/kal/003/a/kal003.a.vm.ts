@@ -43,7 +43,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         constructor() {
             var self = this;
 
@@ -153,12 +153,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 service.getAllFixedExtraItemMon().done((data: Array<any>) => {
                     if (data && data.length) {
                         let _list: Array<model.FixedExtraMonFun> = _.map(data, acc => {
-                            return new model.FixedExtraMonFun({ monAlarmCheckID: "", monAlarmCheckName: acc.fixedExtraItemMonName, fixedExtraItemMonNo: acc.fixedExtraItemMonNo, message: acc.message, useAtr: false });
+                            return new model.FixedExtraMonFun({ monAlarmCheckID: "", monAlarmCheckName: acc.monAlarmCheckName, fixedExtraItemMonNo: acc.fixedExtraItemMonNo, message: acc.message, useAtr: false });
                         });
                         self.tabAlarmcheck.listFixedExtraMonFun(_list);
                     }
                 });
-                self.tabCheckAlarm.listExtraResultMonthly([]);
 
             }
 
@@ -182,7 +181,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         let conError = new model.AgreeConditionErrorDto(temp);
                         listName.push(conError);
                     });
-                    self.tabAgreementError.listAgreementError(_.orderBy(listName, ['errorAlarm', 'period'], ['asc', 'asc']));
+                    self.tabAgreementError.listAgreementError(_.orderBy(listName, ['period'], ['asc']));
                     i = 0;
                 });
             }
@@ -418,7 +417,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             });
 
 //                            self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
-                            self.tabAgreementError.listAgreementError(_.orderBy(listAgreementErrorKnockout, ['errorAlarm', 'period'], ['asc', 'asc']));
+                            self.tabAgreementError.listAgreementError(_.orderBy(listAgreementErrorKnockout, ['period'], ['asc']));
                             self.tabAgreementHour.listAgreementHour(_.sortBy(listAgreementHourKnockout, ['no']));
                         }
 
@@ -432,16 +431,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         }
 
                         self.screenMode(model.SCREEN_MODE.UPDATE);
-//                        $("#A3_4").focus();
-                        setTimeout(function() { $("#A3_4").focus(); }, 500);
+                        $("#A3_4").focus();
                     }
                 }).fail(function(error) {
                     alertError(error);
                 }).always(() => {
                     block.clear();
                 });
-            }else{
-                
             }
         }
 

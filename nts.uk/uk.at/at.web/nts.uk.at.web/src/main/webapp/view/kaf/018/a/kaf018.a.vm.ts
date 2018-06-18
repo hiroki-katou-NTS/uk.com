@@ -126,10 +126,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                     dfd.resolve();
                 }).then(() => {
                     let params: Array<any> = nts.uk.ui.windows.getShared('KAF018AInput');
-                    if (params) {
-                        self.multiSelectedWorkplaceId(params.inputContent.multiSelectedWorkplaceId);
-                        self.selectedValue(params.inputContent.selectedValue);
-                        self.isDailyComfirm(params.inputContent.isConfirmData);
+                    if (params && params.multiSelectedWorkplaceId.length > 0) {
+                        self.multiSelectedWorkplaceId(params.multiSelectedWorkplaceId);
                     }
                 });
             });
@@ -183,12 +181,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 listWorkplace: lstWorkplaces,
                 isConfirmData: self.isDailyComfirm(),
                 listEmployeeCode: self.listEmployeeCode(),
-                
-                inputContent: {
-                    multiSelectedWorkplaceId: self.multiSelectedWorkplaceId(),
-                    selectedValue: self.selectedValue(),
-                    isConfirmData: self.isDailyComfirm()
-                }
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId()
             };
             if (self.multiSelectedWorkplaceId().length == 0) {
                 error({ messageId: 'Msg_786' });

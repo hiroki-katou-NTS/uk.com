@@ -31,6 +31,7 @@ public class MonAlarmCheckCon extends ExtractionCondition {
 		if (extractionCondition instanceof MonAlarmCheckCon) {
 			MonAlarmCheckCon value = (MonAlarmCheckCon) extractionCondition;
 			this.monAlarmCheckConID = value.monAlarmCheckConID;
+			this.listFixExtraMon = value.listFixExtraMon;
 			this.arbExtraCon = value.arbExtraCon;
 		}
 		

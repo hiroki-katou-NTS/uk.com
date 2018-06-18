@@ -35,6 +35,15 @@ public class LeaveManaFinder {
 		leaveMana = leaveManaDataRepository.getByComDayOffId(companyId, employeeId, comDayOffID);
 		resultLeaveFreeMana = leaveManaFree.stream().map(p -> new LeaveManaDto(p.getComDayOffDate().getDayoffDate().orElse(null),p.getUnUsedDays().v().toString(), false,p.getID())).collect(Collectors.toList());
 		resultLeaveMana = leaveMana.stream().map(p -> new LeaveManaDto(p.getComDayOffDate().getDayoffDate().orElse(null),p.getUnUsedDays().v().toString(), true,p.getID())).collect(Collectors.toList());
+		List<LeaveManaDto> leaveDataRemove = new ArrayList<>();
+		for (LeaveManaDto leaveManagementData : resultLeaveMana) {
+			for (LeaveManaDto leaveManaDataFree : resultLeaveFreeMana) {
+				if(leaveManagementData.getLeaveManaID().equals(leaveManaDataFree.getLeaveManaID())) {
+					leaveDataRemove.add(leaveManaDataFree);
+				}
+			}
+		}
+		resultLeaveFreeMana.removeAll(leaveDataRemove);
 		allLeaveMana.addAll(resultLeaveMana);
 		allLeaveMana.addAll(resultLeaveFreeMana);
 		Collections.sort(allLeaveMana, new Comparator<LeaveManaDto>() {

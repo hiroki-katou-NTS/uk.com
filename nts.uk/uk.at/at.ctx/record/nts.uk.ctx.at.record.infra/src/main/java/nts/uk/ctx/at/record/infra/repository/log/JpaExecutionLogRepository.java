@@ -14,10 +14,10 @@ import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecutionLog;
 @Stateless
 public class JpaExecutionLogRepository extends JpaRepository implements ExecutionLogRepository {
 
-	private static final String SELECT_BY_CAL_AND_SUM_EXE_ID = "SELECT el FROM KrcdtExecutionLog el "
+	private final String SELECT_BY_CAL_AND_SUM_EXE_ID = "SELECT el FROM KrcdtExecutionLog el "
 			+ " WHERE el.krcdtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID";
 
-	private static final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtExecutionLog el "
+	private final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtExecutionLog el "
 			+ " WHERE el.krcdtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID AND el.krcdtExecutionLogPK.executionContent = :executionContent";
 
 	@Override

@@ -258,48 +258,6 @@ module nts.uk.ui.validation {
             return result;
         }
     }
-    
-    export class EmployeeCodeValidator implements IValidator {
-        name: string;
-        constraint: any;
-        charType: text.CharType;
-        options: any;
-        
-        constructor(name: string, options?: any) {
-            let self = this;
-            this.name = name;
-            this.constraint = getConstraint("EmployeeCode"); 
-            this.charType = text.getCharTypeByType("AlphaNumeric");
-            this.options = options;
-        }
-        
-        validate(inputText: string) : ValidationResult {
-            let self = this;
-            let result = new ValidationResult();
-            if (util.isNullOrEmpty(inputText)) {
-                if (self.options.required) { 
-                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT')
-                    return result;
-                }
-                
-                result.success(inputText);
-                return result;
-            }
-            
-            result = checkCharType.call(self, inputText.trim(), self.charType);
-            if (!result.isValid) return result;
-            
-            if (self.constraint && !util.isNullOrUndefined(self.constraint.maxLength)
-                && self.constraint.maxLength < text.countHalf(inputText)) {
-                result.fail(nts.uk.resource.getMessage(result.errorMessage, 
-                    [ self.name, self.constraint.maxLength ]), result.errorCode);
-                return result;
-            }
-            
-            result.success(text.toUpperCase(inputText));
-            return result;
-        }
-    }
         
     export class StringValidator implements IValidator {
         name: string;
@@ -352,7 +310,7 @@ module nts.uk.ui.validation {
             // Check Constraint
             if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
             	let maxLength = this.constraint.maxLength;
-            	if (this.constraint.charType == "Any" || this.constraint.charType === "Kana")
+            	if (this.constraint.charType == "Any")
             		maxLength = nts.uk.text.getCharTypeByType("Any").getViewLength(maxLength);
                 result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
                             [ this.name, maxLength ]), validateResult.errorCode);
@@ -499,12 +457,7 @@ module nts.uk.ui.validation {
             let maxStr, minStr;
             // Time duration
             if(this.mode === "time"){
-                var timeParse;
-                if(this.outputFormat.indexOf("s") >= 0){
-                    timeParse = time.secondsBased.duration.parseString(inputText);    
-                } else {
-                    timeParse = time.minutesBased.duration.parseString(inputText);
-                }
+                var timeParse = time.minutesBased.duration.parseString(inputText);
                 if (timeParse.success) {
                     result.success(timeParse.toValue());
                 } else {

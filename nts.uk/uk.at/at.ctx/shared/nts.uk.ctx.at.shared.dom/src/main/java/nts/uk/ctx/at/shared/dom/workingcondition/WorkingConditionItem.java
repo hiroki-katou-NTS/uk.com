@@ -59,7 +59,7 @@ public class WorkingConditionItem extends AggregateRoot {
 
 	/** The labor system. */
 	// 労働制
-	private WorkingSystem laborSystem = WorkingSystem.REGULAR_WORK;
+	private WorkingSystem laborSystem;
 
 	/** The holiday add time set. */
 	// 休暇加算時間設定

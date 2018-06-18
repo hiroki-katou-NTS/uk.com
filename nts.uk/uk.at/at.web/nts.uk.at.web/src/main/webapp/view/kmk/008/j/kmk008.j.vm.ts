@@ -41,7 +41,7 @@ module nts.uk.at.view.kmk008.j {
                             workPlaceUseAtr: self.useWorkPlace() ? 1 : 0,
                             classificationUseAtr: self.useClasss() ? 1 : 0
                         }).done(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });    
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });    
                         });
                     } else {
                         service.insertData({
@@ -49,7 +49,7 @@ module nts.uk.at.view.kmk008.j {
                             workPlaceUseAtr: self.useWorkPlace() ? 1 : 0,
                             classificationUseAtr: self.useClasss() ? 1 : 0
                         }).done(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });    
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });    
                         });
                     }
                 })

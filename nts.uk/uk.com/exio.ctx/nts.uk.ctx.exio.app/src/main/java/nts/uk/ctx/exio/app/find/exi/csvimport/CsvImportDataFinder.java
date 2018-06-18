@@ -20,7 +20,7 @@ public class CsvImportDataFinder {
 	@Inject
 	private StoredFileStreamService fileStreamService;
 
-	private static final int MAX_LENGTH_COLNAME = 40;
+	private final int MAX_LENGTH_COLNAME = 40;
 
 	public int getNumberOfLine(String fileId, int endcoding) {
 		int totalRecord = 0;

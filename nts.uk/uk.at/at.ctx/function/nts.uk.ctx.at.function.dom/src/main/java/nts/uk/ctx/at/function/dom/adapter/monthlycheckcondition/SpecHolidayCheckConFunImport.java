@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,10 +13,10 @@ public class SpecHolidayCheckConFunImport {
 	/**比較演算子*/
 	private int compareOperator; 
 	/**所定公休日数との差分の日数1*/
-	private BigDecimal numberDayDiffHoliday1;
+	private int numberDayDiffHoliday1;
 	/**所定公休日数との差分の日数2*/
-	private BigDecimal numberDayDiffHoliday2;
-	public SpecHolidayCheckConFunImport(String errorAlarmCheckID, int compareOperator, BigDecimal numberDayDiffHoliday1, BigDecimal numberDayDiffHoliday2) {
+	private Integer numberDayDiffHoliday2;
+	public SpecHolidayCheckConFunImport(String errorAlarmCheckID, int compareOperator, int numberDayDiffHoliday1, Integer numberDayDiffHoliday2) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.compareOperator = compareOperator;

@@ -78,8 +78,8 @@ public class WorkchangeService extends WebService {
 	 */
 	@POST
 	@Path("updateworkchange")
-	public ProcessResult updateWorkChange(AddAppWorkChangeCommand command){
-		return updateHandler.handle(command);
+	public void updateWorkChange(AddAppWorkChangeCommand command){
+		updateHandler.handle(command);
 	}
 	
 	@POST

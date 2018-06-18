@@ -346,7 +346,7 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		}
 		String scheduleId = this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
 		taskSetting.setScheduleId(scheduleId);
-		Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
+		Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
 		taskSetting.setNextExecDateTime(nextFireTime);
 		/*
 		String endScheduleId=null;

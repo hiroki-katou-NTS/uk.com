@@ -21,43 +21,50 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DayOffManagementService {
-	
+
 	@Inject
 	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
-	
+
 	@Inject
 	private ComDayOffManaDataRepository comDayOffManaDataRepository;
-	
+
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepository;
-	
-	
+
 	public static final String ONE_DAY = "1.0";
 	public static final String HALF_DAY = "0.5";
-	
+
 	public List<String> updateDayOff(DayOffManagementData dayOffManagementData) {
 		List<String> response = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		
+		for (int i = 0; i < dayOffManagementData.getDaysOffMana().size(); i++) {
+			Optional<CompensatoryDayOffManaData> dayOffManaData = comDayOffManaDataRepository
+					.getBycomdayOffId(dayOffManagementData.getDaysOffMana().get(i).getComDayOffID());
+			if (String.valueOf(dayOffManaData.get().getRemainDays()).equals("0.0")) {
+				dayOffManagementData.getDaysOffMana().get(i)
+						.setRemainDays(dayOffManaData.get().getRequireDays().v().toString());
+			}
+		}
 		if (dayOffManagementData.getDaysOffMana().size() == 0) {
 			response.add("Msg_738");
 		} else if (dayOffManagementData.getDaysOffMana().size() == 1
-				&& Integer.parseInt(dayOffManagementData.getDaysOffMana().get(0).getRemainDays()) > Integer.parseInt((dayOffManagementData.getNumberDayParam()))) {
+				&& Double.parseDouble(dayOffManagementData.getDaysOffMana().get(0).getRemainDays()) > Double
+						.parseDouble((dayOffManagementData.getNumberDayParam()))) {
 			response.add("Msg_733");
 		} else if (dayOffManagementData.getDaysOffMana().size() == 2) {
-			
-			if(dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
-				if(!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
+			if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
+				if (!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
 					response.add("Msg_733");
 				} else {
-					if(!dayOffManagementData.getNumberDayParam().equals(ONE_DAY)) {
+					if (!dayOffManagementData.getNumberDayParam().equals(ONE_DAY)) {
 						response.add("Msg_733");
 					}
 				}
-			} else if(dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)) {
+			} else if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)) {
 				response.add("Msg_739");
 			}
-			
+
 		} else if (dayOffManagementData.getDaysOffMana().size() >= 3) {
 			response.add("Msg_739");
 		}
@@ -67,29 +74,25 @@ public class DayOffManagementService {
 			List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository
 					.getByLeaveID(dayOffManagementData.getLeaveId());
 
-			
-			List<CompensatoryDayOffManaData> daysOffMana = this.comDayOffManaDataRepository.getBySidComDayOffIdWithReDay(companyId,
-					dayOffManagementData.getEmployeeId(), dayOffManagementData.getLeaveId());
+			List<CompensatoryDayOffManaData> daysOffMana = this.comDayOffManaDataRepository
+					.getBySidComDayOffIdWithReDay(companyId, dayOffManagementData.getEmployeeId(),
+							dayOffManagementData.getLeaveId());
 			List<String> currentComDaySelect = daysOffMana.stream().map(CompensatoryDayOffManaData::getComDayOffID)
 					.collect(Collectors.toList());
-			
+
 			// update remainDays by current selected
-			
-			Double currentRemainDay = 0.0;
 			Boolean check = false;
-			
-			for (int i = 0; i < daysOffMana.size(); i++) {
-				currentRemainDay = currentRemainDay + daysOffMana.get(i).getRemainDays().v();
-			}
-			
-			if(currentRemainDay == Double.parseDouble(dayOffManagementData.getNumberDayParam())) {
-				check = true;
-			}
-			
 			if (!currentComDaySelect.isEmpty()) {
-				comDayOffManaDataRepository.updateReDayReqByComDayId(currentComDaySelect,check);
+				for (String item : currentComDaySelect) {
+					List<LeaveComDayOffManagement> leaveCom =  leaveComDayOffManaRepository.getBycomDayOffID(item);
+					if(leaveCom.isEmpty()) {
+						check = true;
+					}
+					comDayOffManaDataRepository.updateReDayReqByComDayId(item,check);
+				}
+				
 			}
-			
+
 			// delete List LeaveComDayOff
 			if (leavesComDay.size() >= 1) {
 				leaveComDayOffManaRepository.deleteByLeaveId(dayOffManagementData.getLeaveId());
@@ -103,13 +106,12 @@ public class DayOffManagementService {
 					.collect(Collectors.toList());
 			leaveComDayOffManaRepository.insertAll(entitiesLeave);
 
-			List<String> comDayIds = daysOff.stream().map(DaysOffMana::getComDayOffID)
-					.collect(Collectors.toList());
+			List<String> comDayIds = daysOff.stream().map(DaysOffMana::getComDayOffID).collect(Collectors.toList());
 			// update remainDays by new ComDayOff
 			if (!comDayIds.isEmpty()) {
 				comDayOffManaDataRepository.updateReDayByComDayId(comDayIds);
 			}
-			
+
 			// update 未使用日数
 			Double unUsedDay = 0.0;
 			Double unUsedDayNew = 0.0;
@@ -124,15 +126,14 @@ public class DayOffManagementService {
 			if (leaveUpdate.isPresent()) {
 				unUsedDay = leaveUpdate.get().getOccurredDays().v();
 				leaveManaDataRepository.updateUnUseDayLeaveId(dayOffManagementData.getLeaveId(),
-						unUsedDayNew - unUsedDay);
+						unUsedDay - unUsedDayNew);
 			}
-			
+
 			response.add("Msg_15");
 		}
 
 		return response;
-		
+
 	}
-	
-	
+
 }

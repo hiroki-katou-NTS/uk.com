@@ -24,48 +24,49 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class ScEmployeeGeneralInfoImpl implements ScEmployeeGeneralInfoAdapter {
 
 	@Inject
-	private EmployeeGeneralInfoPub employeeGeneralInfoPub;
+	public EmployeeGeneralInfoPub employeeGeneralInfoPub;
 
 	@Override
 	public EmployeeGeneralInfoImported getPerEmpInfo(List<String> employeeIds, DatePeriod period) {
-		EmployeeGeneralInfoDto employeeGeneralInfoDto = this.employeeGeneralInfoPub.getPerEmpInfo(employeeIds, period);
-
-		List<ExEmploymentHistoryImported> employmentImported = employeeGeneralInfoDto.getEmploymentDto().stream()
-				.map(employmentHistory -> new ExEmploymentHistoryImported(employmentHistory.getEmployeeId(),
-						employmentHistory.getEmploymentItems().stream().map(exEmpHistItem -> {
-							return new ExEmploymentHistItemImported(exEmpHistItem.getHistoryId(),
-									exEmpHistItem.getPeriod(), exEmpHistItem.getEmploymentCode());
-						}).collect(Collectors.toList())))
-				.collect(Collectors.toList());
-
-		List<ExClassificationHistoryImported> exClassificationHistoryImported = employeeGeneralInfoDto
-				.getClassificationDto().stream()
-				.map(classificationHistory -> new ExClassificationHistoryImported(classificationHistory.getEmployeeId(),
-						classificationHistory.getClassificationItems().stream().map(classificationHistItem -> {
-							return new ExClassificationHistItemImported(classificationHistItem.getHistoryId(),
-									classificationHistItem.getPeriod(), classificationHistItem.getClassificationCode());
-						}).collect(Collectors.toList())))
-				.collect(Collectors.toList());
-
-		List<ExJobTitleHistoryImported> exJobTitleHistoryImported = employeeGeneralInfoDto.getJobTitleDto().stream()
-				.map(jobTitle -> new ExJobTitleHistoryImported(jobTitle.getEmployeeId(),
-						jobTitle.getJobTitleItems().stream().map(jobTitleItem -> {
-							return new ExJobTitleHistItemImported(jobTitleItem.getHistoryId(), jobTitleItem.getPeriod(),
-									jobTitleItem.getJobTitleId());
-						}).collect(Collectors.toList())))
-				.collect(Collectors.toList());
-
-		List<ExWorkPlaceHistoryImported> exWorkPlaceHistoryImported = employeeGeneralInfoDto.getWorkplaceDto().stream()
-				.map(workPlaceHistory -> new ExWorkPlaceHistoryImported(workPlaceHistory.getEmployeeId(),
-						workPlaceHistory.getWorkplaceItems().stream().map(workPlaceHistoryItem -> {
-							return new ExWorkplaceHistItemImported(workPlaceHistoryItem.getHistoryId(),
-									workPlaceHistoryItem.getPeriod(), workPlaceHistoryItem.getWorkplaceId());
-						}).collect(Collectors.toList())))
-				.collect(Collectors.toList());
-
-		return new EmployeeGeneralInfoImported(employmentImported, exClassificationHistoryImported,
-				exJobTitleHistoryImported, exWorkPlaceHistoryImported);
-
+//		EmployeeGeneralInfoDto employeeGeneralInfoDto = this.employeeGeneralInfoPub.getPerEmpInfo(employeeIds, period);
+//
+//		List<ExEmploymentHistoryImported> employmentImported = employeeGeneralInfoDto.getEmploymentDto().stream()
+//				.map(employmentHistory -> new ExEmploymentHistoryImported(employmentHistory.getEmployeeId(),
+//						employmentHistory.getEmploymentItems().stream().map(exEmpHistItem -> {
+//							return new ExEmploymentHistItemImported(exEmpHistItem.getHistoryId(),
+//									exEmpHistItem.getPeriod(), exEmpHistItem.getEmploymentCode());
+//						}).collect(Collectors.toList())))
+//				.collect(Collectors.toList());
+//
+//		List<ExClassificationHistoryImported> exClassificationHistoryImported = employeeGeneralInfoDto
+//				.getClassificationDto().stream()
+//				.map(classificationHistory -> new ExClassificationHistoryImported(classificationHistory.getEmployeeId(),
+//						classificationHistory.getClassificationItems().stream().map(classificationHistItem -> {
+//							return new ExClassificationHistItemImported(classificationHistItem.getHistoryId(),
+//									classificationHistItem.getPeriod(), classificationHistItem.getClassificationCode());
+//						}).collect(Collectors.toList())))
+//				.collect(Collectors.toList());
+//
+//		List<ExJobTitleHistoryImported> exJobTitleHistoryImported = employeeGeneralInfoDto.getJobTitleDto().stream()
+//				.map(jobTitle -> new ExJobTitleHistoryImported(jobTitle.getEmployeeId(),
+//						jobTitle.getJobTitleItems().stream().map(jobTitleItem -> {
+//							return new ExJobTitleHistItemImported(jobTitleItem.getHistoryId(), jobTitleItem.getPeriod(),
+//									jobTitleItem.getJobTitleId());
+//						}).collect(Collectors.toList())))
+//				.collect(Collectors.toList());
+//
+//		List<ExWorkPlaceHistoryImported> exWorkPlaceHistoryImported = employeeGeneralInfoDto.getWorkplaceDto().stream()
+//				.map(workPlaceHistory -> new ExWorkPlaceHistoryImported(workPlaceHistory.getEmployeeId(),
+//						workPlaceHistory.getWorkplaceItems().stream().map(workPlaceHistoryItem -> {
+//							return new ExWorkplaceHistItemImported(workPlaceHistoryItem.getHistoryId(),
+//									workPlaceHistoryItem.getPeriod(), workPlaceHistoryItem.getWorkplaceId());
+//						}).collect(Collectors.toList())))
+//				.collect(Collectors.toList());
+//
+//		return new EmployeeGeneralInfoImported(employmentImported, exClassificationHistoryImported,
+//				exJobTitleHistoryImported, exWorkPlaceHistoryImported);
+		
+		return null;
 	}
 
 }

@@ -13,6 +13,6 @@ public interface AnnualLeaveTimeRemainHistRepository {
 
 	public void add(AnnualLeaveTimeRemainingHistory domain);
 	
-	public List<AnnualLeaveTimeRemainingHistory> findByCalcDateClosureDate(String employeeId, GeneralDate calculationStartDate, GeneralDate closureStartDate);
+	public List<AnnualLeaveTimeRemainingHistory> findByCalcDateClosureDate(GeneralDate calculationStartDate, GeneralDate closureStartDate);
 
 }
