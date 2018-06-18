@@ -8,6 +8,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -47,7 +50,7 @@ public interface BreakDayOffManagementQuery {
 	 */
 	public InterimRemainAggregateOutputData aggregatedDayoffCurrentMonth(String employeeId, DatePeriod dateData, InterimRemainAggregateOutputData dataOut);
 	/**
-	 * 休出代休発生消化履歴の取得
+	 * RequestList449 休出代休発生消化履歴の取得
 	 */
 	public BreakDayOffOutputHisData getBreakDayOffData(String cid, String sid, GeneralDate baseDate);
 	/**
@@ -56,7 +59,7 @@ public interface BreakDayOffManagementQuery {
 	 * @param baseDate
 	 * @return
 	 */
-	public BreakDayOffInterimMngData getMngData(String sid, GeneralDate baseDate);
+	public BreakDayOffInterimMngData getMngData(String sid, GeneralDate baseDate, List<LeaveManagementData> breakMngConfirmData);
 	/**
 	 * 指定期間内に発生した暫定休出と紐付いた確定代休・暫定代休を取得する
 	 * @param sid
@@ -65,31 +68,24 @@ public interface BreakDayOffManagementQuery {
 	 */
 	public BreakDayOffInterimMngData getMngDataToInterimData(String sid, DatePeriod dateData);
 	/**
-	 * 未消化の確定休出に紐付いた暫定代休を取得する
-	 * @param sid
-	 * @param dateData
-	 * @param mngData
-	 * @return
-	 */
-	public BreakDayOffInterimMngData getNotInterimDayOffMng(String sid, DatePeriod dateData, BreakDayOffInterimMngData mngData);
-	/**
 	 * 休出履歴を作成する
 	 * @param lstInterimBreakMng: 暫定休出管理データ
 	 * @return
 	 */
-	public List<BreakHistoryData> breakHisData(List<InterimBreakMng> lstInterimBreakMng);
+	public List<BreakHistoryData> breakHisData(List<InterimBreakMng> lstInterimBreakMng, List<LeaveManagementData> lstConfirmBreakMngData);
 	/**
 	 * 代休履歴を作成する
 	 * @param lstInterimDayOffMng: 暫定代休管理
 	 * @return
 	 */
-	public List<DayOffHistoryData> dayOffHisData(List<InterimDayOffMng> lstInterimDayOffMng);
+	public List<DayOffHistoryData> dayOffHisData(List<InterimDayOffMng> lstInterimDayOffMng, List<CompensatoryDayOffManaData> lstConfrimDayOffMng);
 	/**
 	 * 休出代休履歴対照情報を作成する
 	 * @param lstInterimBreakDayOff 暫定休出代休紐付け管理
 	 * @return
 	 */
-	public List<BreakDayOffHistory> lstBreakDayOffHis(List<InterimBreakDayOffMng> lstInterimBreakDayOff, List<BreakHistoryData> lstBreakHis, List<DayOffHistoryData> lstDayOffHis);
+	public List<BreakDayOffHistory> lstBreakDayOffHis(List<InterimBreakDayOffMng> lstInterimBreakDayOff, List<BreakHistoryData> lstBreakHis, 
+			List<DayOffHistoryData> lstDayOffHis, List<LeaveComDayOffManagement> lstTypingConfrimMng);
 	/**
 	 * 残数集計情報を作成する
 	 * @param lstBreakHis
@@ -111,4 +107,11 @@ public interface BreakDayOffManagementQuery {
 	 * @return
 	 */
 	public Double totalExtinctionRemainOfInPeriod(String sid, DatePeriod dateData);
+	/**
+	 * 確定管理データを取得する
+	 * @param sid
+	 * @param baseDate
+	 * @return
+	 */
+	public BreakDayOffConfirmMngData getConfirMngData(String sid, GeneralDate baseDate);
 }

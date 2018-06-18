@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreaterAtr;
 /**
  * 振出履歴
@@ -25,7 +26,7 @@ public class RecruitmentHistoryOutPara {
 	/**	振出データID */
 	private String recId;
 	/**	振出日 */
-	private GeneralDate recDate;
+	private CompensatoryDayoffDate recDate;
 	/**発生日数	 */
 	private Double occurrenceDays;
 	/**法定内外区分	 */

@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataMana
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface InterimRecAbasMngRepository {
+	
 	/**
 	 * 暫定振出管理データ
 	 * @param recId
@@ -20,13 +21,15 @@ public interface InterimRecAbasMngRepository {
 	 * @return
 	 */
 	Optional<InterimAbsMng> getAbsById(String absId);
+	
 	/**
 	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
 	 * @param interimId
 	 * @param isRec: True: 振出管理データ, false: 振休管理データ
 	 * @return
 	 */
-	Optional<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr);
+	List<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr);
+	
 	/**
 	 * ドメインモデル「暫定振出管理データ」を取得する
 	 * @param recId
@@ -38,4 +41,83 @@ public interface InterimRecAbasMngRepository {
 	 */
 	List<InterimRecMng> getRecByIdPeriod(List<String> recId, Double unUseDays, DatePeriod dateData);
 	
+	/**
+	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
+	 * @param sid
+	 * @param recAtr: 振出管理データ区分
+	 * @param absAtr: 振休管理データ区分 
+	 * @param absId 振休ID
+	 * @return
+	 */
+	List<InterimRecAbsMng> getBySidMng(DataManagementAtr recAtr, DataManagementAtr absAtr, String absId);
+	/**
+	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
+	 * @param recAtr 振出管理データ区分
+	 * @param absAtr 振休管理データ区分 
+	 * @param recId 振出ID
+	 * @return
+	 */
+	List<InterimRecAbsMng> getRecBySidMngAtr(DataManagementAtr recAtr, DataManagementAtr absAtr, String recId);
+	
+	/**
+	 * 暫定振出管理データ　を追加および更新
+	 * @param domain
+	 */
+	void persistAndUpdateInterimRecMng(InterimRecMng domain);
+	
+	/**
+	 * 暫定振休管理データ　 を追加および更新
+	 * @param domain
+	 */
+	void persistAndUpdateInterimAbsMng(InterimAbsMng domain);
+	
+	/**
+	 * 暫定振出振休紐付け管理 　を追加および更新
+	 * @param domain
+	 */
+	void persistAndUpdateInterimRecAbsMng(InterimRecAbsMng domain);
+	
+	/**
+	 * 暫定振出管理データ　を削除
+	 * @param sid
+	 * @param dateData
+	 */
+	void deleteInterimRecMng(String recruitmentMngId);
+
+	/**
+	 * 暫定振休管理データ 　を削除
+	 * @param absenceMngId
+	 */
+	void deleteInterimAbsMng(String absenceMngId);
+
+	/**
+	 * 暫定振出振休紐付け管理  を削除
+	 * @param mndId
+	 * @param isRec：　True：　振出、False：　振休
+	 */
+	void deleteInterimRecAbsMng(String mndId, boolean isRec);
+	
+	/**
+	 * 暫定振出振休紐付け管理  を削除
+	 * @param recId: 振出ID
+	 * @param absId 振休ID
+	 * @param recAtr 休出管理データ区分
+	 * @param absAtr
+	 */
+	void deleteRecAbsMngByIdAndAtr(String recId, String absId, DataManagementAtr recAtr, DataManagementAtr absAtr);
+	
+	/**
+	 * 暫定振出振休紐付け管理  を削除
+	 * @param mngId
+	 * @param recAtr
+	 * @param isRec True：　振出、False：　振休
+	 */
+	void deleteRecAbsMngByIDAtr(String mngId, DataManagementAtr mngAtr, boolean isRec);
+	/**
+	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
+	 * @param recIds ・振出管理データ IN (振出管理データ.振出データID)
+	 * @param recMngAtr ・振出管理データ区分
+	 * @return
+	 */
+	List<InterimRecAbsMng> getRecByIdsMngAtr(List<String> recIds, DataManagementAtr recMngAtr);
 }

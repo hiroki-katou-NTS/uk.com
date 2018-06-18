@@ -12,7 +12,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
@@ -43,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
@@ -280,11 +280,10 @@ public class OverTimeOfDaily {
 	 * @return 計算結果
 	 */
 	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,
-												  AutoCalOvertimeSetting overTimeAutoCalcSet,
 												  WithinWorkTimeSheet withinWorkTimeSheetList,
 												  CalcMethodOfNoWorkingDay calcMethod,
 												  HolidayCalcMethodSet holidayCalcMethodSet,
-												  AutoCalOverTimeAttr autoCalcAtr,
+												  CalAttrOfDailyPerformance autoCalcAtr,
 												  WorkType workType,
 												  Optional<SettingOfFlexWork> flexCalcMethod,
 												  PredetermineTimeSetForCalc predetermineTimeSet,
@@ -302,13 +301,13 @@ public class OverTimeOfDaily {
 												  HolidayAddtionSet holidayAddtionSet,WorkTimeDailyAtr workTimeDailyAtr,
 												  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily, 
-												  AttendanceTime flexPreAppTime,AutoCalFlexOvertimeSetting flexOutCalcSetting) {
+												  AttendanceTime flexPreAppTime) {
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		//枠時間計算
-		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet,workType,eachWorkTimeSet,eachCompanyTimeSet,integrationOfDaily);
+		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(autoCalcAtr.getOvertimeSetting(),workType,eachWorkTimeSet,eachCompanyTimeSet,integrationOfDaily);
 		//残業内の深夜時間計算
-		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,overTimeAutoCalcSet));
+		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,autoCalcAtr.getOvertimeSetting()));
 		//変形法定内残業時間計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
@@ -317,7 +316,7 @@ public class OverTimeOfDaily {
 		if(workTimeDailyAtr.isFlex() && withinWorkTimeSheetList != null) {
 			
 			val changeVariant = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetList);
-			flexTime =  changeVariant.createWithinWorkTimeSheetAsFlex(calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,
+			flexTime =  changeVariant.createWithinWorkTimeSheetAsFlex(calcMethod,holidayCalcMethodSet,autoCalcAtr.getFlexExcessTime().getFlexOtTime().getCalAtr(),workType,
 					//flexCalcMethod.get(),
 					new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
 																	   new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
@@ -328,7 +327,7 @@ public class OverTimeOfDaily {
 					late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 					leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 					workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
-					holidayAddtionSet,flexOutCalcSetting.getFlexOtTime().getUpLimitORtSet(),flexPreAppTime);
+					holidayAddtionSet,flexPreAppTime,autoCalcAtr.getFlexExcessTime().getFlexOtTime().getUpLimitORtSet());
 		}
 
 		val overTimeWork = new AttendanceTime(0);

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -14,23 +15,20 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkScheduleTimeDailyPerformDto {
+public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 
 	/** 勤務予定時間: 勤務予定時間 */
 	// TODO: confirm item ID and type for 勤務予定時間
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "予定時間")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PLAN)
 	private WorkScheduleTimeDto workSchedule;
-	// @AttendanceItemLayout(layout = "A", jpPropertyName = "勤務予定時間")
-	// @AttendanceItemValue(itemId = 529, type = ValueType.INTEGER)
-	// private Integer workSchedule;
 
 	/** 実績所定労働時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "実績所定労働時間")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ACTUAL + FIXED_WORK)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer recordPrescribedLaborTime;
 
 	/** 計画所定労働時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "計画所定労働時間")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = SCHEDULE + FIXED_WORK)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer schedulePrescribedLaborTime;
 

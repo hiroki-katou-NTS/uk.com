@@ -3,7 +3,13 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,46 +19,46 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の月の計算 */
-public class MonthlyCalculationDto {
+public class MonthlyCalculationDto implements ItemConst {
 
 	/** 36協定時間: 月別実績の36協定時間 */
-	@AttendanceItemLayout(jpPropertyName = "36協定時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
 	private AgreementTimeOfMonthlyDto agreementTime;
 
 	/** フレックス時間: 月別実績のフレックス時間 */
-	@AttendanceItemLayout(jpPropertyName = "フレックス時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = FLEX, layout = LAYOUT_B)
 	private FlexTimeOfMonthlyDto flexTime;
 
 	/** 実働時間: 月別実績の通常変形時間 */
-	@AttendanceItemLayout(jpPropertyName = "実働時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = ACTUAL, layout = LAYOUT_C)
 	private RegularAndIrregularTimeOfMonthlyDto actualWorkingTime;
 
 	/** 集計時間: 集計総労働時間 */
-	@AttendanceItemLayout(jpPropertyName = "集計時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = AGGREGATE, layout = LAYOUT_D)
 	private AggregateTotalWorkingTimeDto aggregateTime;
 
 	/** 総拘束時間: 期間別の総拘束時間 */
-	@AttendanceItemLayout(jpPropertyName = "総拘束時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = RESTRAINT, layout = LAYOUT_E)
 	private AggregateTotalTimeSpentAtWorkDto totalTimeSpentAtWork;
 
 	/** 総労働時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "総労働時間", layout = "A")
-	private Integer totalWorkingTime;
+	@AttendanceItemLayout(jpPropertyName = TOTAL_LABOR, layout = LAYOUT_F)
+	private int totalWorkingTime;
 
 	/** 法定労働時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定労働時間", layout = "A")
-	private Integer statutoryWorkingTime;
+	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_G)
+	private int statutoryWorkingTime;
 
 	public MonthlyCalculation toDomain() {
-		return MonthlyCalculation.of(actualWorkingTime == null ? null : actualWorkingTime.toDomain(),
-									flexTime == null ? null : flexTime.toDomain(),
-									statutoryWorkingTime == null ? null : new AttendanceTimeMonth(statutoryWorkingTime),
-									aggregateTime == null ? null : aggregateTime.toDomain(),
-									totalWorkingTime == null ? null : new AttendanceTimeMonth(totalWorkingTime),
-									totalTimeSpentAtWork == null ? null : totalTimeSpentAtWork.toDomain(),
-									agreementTime == null ? null : agreementTime.toDomain());
+		return MonthlyCalculation.of(actualWorkingTime == null ? new RegularAndIrregularTimeOfMonthly() : actualWorkingTime.toDomain(),
+									flexTime == null ? new FlexTimeOfMonthly() : flexTime.toDomain(),
+									new AttendanceTimeMonth(statutoryWorkingTime),
+									aggregateTime == null ? new AggregateTotalWorkingTime() : aggregateTime.toDomain(),
+									new AttendanceTimeMonth(totalWorkingTime),
+									totalTimeSpentAtWork == null ? new AggregateTotalTimeSpentAtWork() : totalTimeSpentAtWork.toDomain(),
+									agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain());
 	}
 	
 	public static MonthlyCalculationDto from(MonthlyCalculation domain) {

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -11,11 +10,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class CareHolidayMngServiceImpl implements CareHolidayMngService{
 
 	@Override
-	public List<ChildCareNursingRemainOutputPara> calCareRemainOfInPerior(String cid, String sid, DatePeriod dateData,
+	public ChildCareNursingRemainOutputPara calCareRemainOfInPerior(String cid, String sid, DatePeriod dateData,
 			boolean mode) {
-		List<ChildCareNursingRemainOutputPara> lstOutData = new ArrayList<>();
+		ChildCareNursingRemainOutputPara outData = new ChildCareNursingRemainOutputPara(false,false,0d,0d,Optional.empty(),Optional.empty());
 		// TODO Auto-generated method stub
-		return lstOutData;
+		return outData;
 	}
 
 }

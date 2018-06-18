@@ -37,8 +37,8 @@ public class UpdateAppTypeBfCommandHandler extends CommandHandler<AppTypeBfComma
 		for(BfReqSetCommand item : data.getBeforeAfter()){
 			ReceptionRestrictionSetting bfDomain = ReceptionRestrictionSetting.toDomain(item.getAppType(), 
 					BeforehandRestriction.toDomain(item.getRetrictPreMethodFlg(), 
-													0, 
-													0,
+													item.getRetrictPreUseFlg(), 
+													item.getRetrictPreDay(),
 													item.getRetrictPreTimeDay(),
 													null,
 													null,

@@ -109,7 +109,7 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("initApprovalSttByEmployee")
-	public ApprovalSttByEmpListOutput initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
+	public List<ApprovalSttByEmpListOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
 		return this.finder.initApprovalSttByEmployee(appSttById);
 		
 	}
