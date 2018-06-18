@@ -29,4 +29,11 @@ public class AttendanceTypeWebService extends WebService{
 		return this.attendanceTypeFinder.getItemByScreenUseAtr(0);
 	} 
 	
+	@POST
+	@Path("getAtdId")
+	public List<AttendanceTypeDto> getListAtd(){
+		// 時間外超過 is 2
+		return this.attendanceTypeFinder.getItemByScreenUseAtr(2);
+	} 
+	
 }
