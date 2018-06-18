@@ -43,7 +43,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
-
+        
         constructor() {
             var self = this;
 
@@ -432,7 +432,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         }
 
                         self.screenMode(model.SCREEN_MODE.UPDATE);
-                        $("#A3_4").focus();
+//                        $("#A3_4").focus();
+                        setTimeout(function() { $("#A3_4").focus(); }, 500);
                     }
                 }).fail(function(error) {
                     alertError(error);
