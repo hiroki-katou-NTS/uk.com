@@ -38,6 +38,8 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumHolidayCalcMethod;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeHolidayCalcMethod;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -120,24 +122,21 @@ public class WithinStatutoryTimeOfDaily {
 		workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
-														  calcMethod,autoCalcSet,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime,coreTimeSetting);
+														  calcMethod,AutoCalAtrOvertime.CALCULATEMBOSS//就業時間の中に入ってしまっているフレ時間を引くために必須の区分（ここはこれで固定)
+														  ,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime,coreTimeSetting);
 		//実働時間の計算
 		if(oneDay.getWithinWorkingTimeSheet().isPresent())
-			actualTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
-																						   CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,
-																						   vacationClass,
-																						   oneDay.getTimeVacationAdditionRemainingTime().get(),
-																						   StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
-																						   workTimeCode,
-																						   personalCondition,
-																						   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-																						   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-																						   workingSystem,
-																						   illegularAddSetting,
-																						   flexAddSetting,
-																						   regularAddSetting,
-																						   holidayAddtionSet,
-																						   holidayCalcMethodSet);
+			//上限なしと、加算設定を実働のみに変更する必要有
+			actualTime =  calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
+					  							  late,leaveEarly,workingSystem,illegularAddSetting,
+					  new WorkFlexAdditionSet(AppContexts.user().companyCode(), 
+							  				  new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
+							  						  				   new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))),
+					  regularAddSetting,
+					  holidayAddtionSet,
+					  holidayCalcMethodSet,
+					  calcMethod,AutoCalAtrOvertime.CALCULATEMBOSS//就業時間の中に入ってしまっているフレ時間を引くために必須の区分（ここはこれで固定)
+					  ,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime,coreTimeSetting);
 			
 		//所定内深夜時間の計算
 		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay);
@@ -162,7 +161,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   HolidayAddtionSet holidayAddtionSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet,
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
-			   												   CalAttrOfDailyPerformance autoCalcAtr, 
+			   												   AutoCalAtrOvertime autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
 			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting) {
