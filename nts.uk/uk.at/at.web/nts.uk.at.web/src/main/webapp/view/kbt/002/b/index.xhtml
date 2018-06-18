@@ -159,7 +159,7 @@
 															<label class="ntsRadioBox">
 																<input type="radio" name="targetRadio" data-bind="checkedValue: 0, checked: creationTarget, enable: perScheduleCls()" />
 																<com:ko-if bind="perScheduleCls()">
-																	<span tabindex="17" class="box"></span><span class="label">#{i18n.getText('KBT002_30')}</span>
+																	<span class="box"></span><span class="label">#{i18n.getText('KBT002_30')}</span>
 																</com:ko-if>
 																<com:ko-if bind="!perScheduleCls()">
 																	<span class="box"></span><span class="label">#{i18n.getText('KBT002_30')}</span>
@@ -179,11 +179,19 @@
 														</div>
 													</div>
 													<div id="targetCheckBoxes">
-														<div tabindex="-1" data-bind="ntsCheckBox: { checked: recreateTransfer, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_32')}</div>
-														<div tabindex="-1" data-bind="ntsCheckBox: { checked: createEmployee, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_33')}</div>
-														<div tabindex="-1" data-bind="ntsCheckBox: { checked: recreateWorkType, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_149')}</div>
-														<div tabindex="-1" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; recreateTransfer() &amp;&amp; recreateWorkType() }">#{i18n.getText('KBT002_34')}</div>
+													
+													 <div id="b212224">
+														<!-- B7_22 -->
+														<div tabindex="20" data-bind="ntsCheckBox: { checked: createEmployee, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_33')}</div>
+														<!-- B7_23 -->
+														<div  tabindex="19" style="margin-left: 30px;" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; (recreateTransfer() || recreateWorkType()) }">#{i18n.getText('KBT002_34')}</div>
+														<!-- B7_21 -->
+														<div tabindex="17" data-bind="ntsCheckBox: { checked: recreateTransfer, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_32')}</div>
+														<!-- B7_24 -->
+														<div tabindex="18" data-bind="ntsCheckBox: { checked: recreateWorkType, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_149')}</div>
+														</div>	
 													</div>
+													 
 		                         				</div>
 		                         			</div>
 		                         		</div>
@@ -192,9 +200,9 @@
 		                         		<div class="execSetting">
 		                         			<!-- B8-1 Title 実行設定.日別実績の作成・計算.日別実績の作成・計算区分								
 		                         			-->
-		                         			<div tabindex="18" data-bind="ntsCheckBox: { checked: dailyPerfCls }" style="border-bottom: 1px solid black;">#{i18n.getText('KBT002_35')}</div>
+		                         			<div tabindex="21" data-bind="ntsCheckBox: { checked: dailyPerfCls }" style="border-bottom: 1px solid black;">#{i18n.getText('KBT002_35')}</div>
 		                         			<div class="subExecSetting">
-			                         			<div tabindex="19" style="width: 400px" class="middle"
+			                         			<div tabindex="22" style="width: 400px" class="middle"
 								                                    data-bind="ntsComboBox: {
 								                                    name: '#[KBT002_36]',
 								                                    options: $parent.targetDailyPerfItemList,
@@ -207,33 +215,36 @@
 								                                    { prop: 'localizedName', length: 25 },
 								                                    ]}">
 				                                 </div>
-				                                 <div tabindex="20" data-bind="ntsCheckBox: { checked: midJoinEmployee, enable: dailyPerfCls() }">#{i18n.getText('KBT002_37')}</div>
 		                         			</div>
 		                         		</div>
-		                         		<!-- 更新処理の日別処理対象者区分  -->
-											<div class="execSetting" id="targetGroup"
-												data-bind="ntsRadioBoxGroup: {
-											options: $parent.targetGroupClass,
-											optionsValue: 'targetId',
-											optionsText: 'targetName',
-											value: targetGroupClassification, enable: dailyPerfCls()}"></div>
+		                         		<div class="execSetting">
+		                         		<div id="b858988">
+		                         		<!-- B8_5  途中入社は入社日からにする-->
+		                         		<div tabindex="23" data-bind="ntsCheckBox: { checked: midJoinEmployee, enable: dailyPerfCls() }">#{i18n.getText('KBT002_33')}</div>
+		                         		<!-- B8_9  更新処理の日別処理対象者区分.異動者を再作成する-->
+		                         		<div tabindex="25" data-bind="ntsCheckBox: { checked: recreateTransfers, enable: dailyPerfCls() }">#{i18n.getText('KBT002_166')}</div>
+		                         		<!-- B8_8  更新処理の日別処理対象者区分.勤務種別変更者を再作成-->
+		                         		<div tabindex="24" data-bind="ntsCheckBox: { checked: recreateTypeChangePerson, enable: dailyPerfCls() }">#{i18n.getText('KBT002_167')}</div>
+		                         		</div> 	
+		                         		</div>
+		                         		
 		                         		<div class="execSetting">
 		                         			<!-- 承認結果反映 -->
-		                         			<div tabindex="21" data-bind="ntsCheckBox: { checked: reflectResultCls }" style="width: 250px;margin-right: 65px;border-bottom: 1px solid black;">#{i18n.getText('KBT002_38')}</div>
+		                         			<div tabindex="26" data-bind="ntsCheckBox: { checked: reflectResultCls }" style="width: 250px;margin-right: 65px;border-bottom: 1px solid black;">#{i18n.getText('KBT002_38')}</div>
 		                         			<!-- 月別集計 -->
-		                         			<div tabindex="22" data-bind="ntsCheckBox: { checked: monthlyAggCls }" style="border-bottom: 1px solid black;">#{i18n.getText('KBT002_39')}</div>
+		                         			<div tabindex="27" data-bind="ntsCheckBox: { checked: monthlyAggCls }" style="border-bottom: 1px solid black;">#{i18n.getText('KBT002_39')}</div>
 		                         		</div>
 		                         		<div  class="execSetting" style="display:flex">
 		                         			<!-- アラーム抽出（個人別） -->
 		                         			<div style="width: 250px;margin-right: 80px;">
-		                         				<div tabindex="23" data-bind="ntsCheckBox: { checked: indvAlarmCls }" style="width : 100%; border-bottom: 1px solid black;">#{i18n.getText('KBT002_40')}</div>
-		                         				<div tabindex="24" class="subExecSetting" data-bind="ntsCheckBox: { checked: indvMailPrin, enable: indvAlarmCls() }">#{i18n.getText('KBT002_41')}</div>
-		                         				<div tabindex="25" class="subExecSetting" data-bind="ntsCheckBox: { checked: indvMailMng, enable: indvAlarmCls() }">#{i18n.getText('KBT002_42')}</div>
+		                         				<div tabindex="28" data-bind="ntsCheckBox: { checked: indvAlarmCls }" style="width : 100%; border-bottom: 1px solid black;">#{i18n.getText('KBT002_40')}</div>
+		                         				<div tabindex="29" class="subExecSetting" data-bind="ntsCheckBox: { checked: indvMailPrin, enable: indvAlarmCls() }">#{i18n.getText('KBT002_41')}</div>
+		                         				<div tabindex="30" class="subExecSetting" data-bind="ntsCheckBox: { checked: indvMailMng, enable: indvAlarmCls() }">#{i18n.getText('KBT002_42')}</div>
 		                         			</div>
 		                         			<!-- アラーム抽出（職場別） -->
 		                         			<div style="width: 170px;">
-			                         			<div tabindex="26" data-bind="ntsCheckBox: { checked: wkpAlarmCls }" style="width : 100%; border-bottom: 1px solid black;">#{i18n.getText('KBT002_43')}</div>
-			                         			<div tabindex="27" class="subExecSetting" data-bind="ntsCheckBox: { checked: wkpMailMng, enable: wkpAlarmCls() }">#{i18n.getText('KBT002_44')}</div>
+			                         			<div tabindex="31" data-bind="ntsCheckBox: { checked: wkpAlarmCls }" style="width : 100%; border-bottom: 1px solid black;">#{i18n.getText('KBT002_43')}</div>
+			                         			<div tabindex="32" class="subExecSetting" data-bind="ntsCheckBox: { checked: wkpMailMng, enable: wkpAlarmCls() }">#{i18n.getText('KBT002_44')}</div>
 		                         			</div>
 		                         		</div>
 	                        		</div>

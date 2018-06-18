@@ -49,8 +49,8 @@ public interface RegisterEmbededURL {
 	 * @param taskIncidental
 	 * @return 埋込用URL
 	 */
-	public String embeddedUrlInfoRegis(String programId, String screenId, int periodCls,
-			int numOfPeriod, String employeeId, String loginId, List<UrlTaskIncre> taskIncidental);
+	public String embeddedUrlInfoRegis(String programId, String screenId, int periodCls, int numOfPeriod, 
+			String employeeId, String contractCD, String loginId, String employeeCD, List<UrlTaskIncre> taskIncidental);
 	// アルゴリズム「埋込URL有効期限取得」を実行する
 	/**
 	 * アルゴリズム「埋込URL有効期限取得」を実行する
@@ -66,4 +66,10 @@ public interface RegisterEmbededURL {
 	 * @return
 	 */
 	public UrlExecInfo updateEmbeddedUrl (String cid, String contractCd, String loginID, String sCD, String sID, String programID, String screenID, GeneralDateTime issueDate, GeneralDateTime expiredDate, List<UrlTaskIncre> taskIncre);
+	
+	/**
+	 * パスワード再設定メール有効期限チェック(Check giới hạn active mail tái thiết lập pass)
+	 * @param embeddedURL 埋込URLID
+	 */
+	public void checkPassLimitExpire(String embeddedURLID);
 }

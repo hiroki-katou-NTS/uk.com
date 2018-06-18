@@ -1,6 +1,8 @@
 module nts.uk.at.view.kaf002.m1 {
     import service = nts.uk.at.view.kaf002.shr.service;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    import setShared = nts.uk.ui.windows.setShared;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export module viewmodel {
         export class ScreenModel {
             stampAtr: KnockoutObservable<number> = ko.observable(1);
@@ -101,7 +103,7 @@ module nts.uk.at.view.kaf002.m1 {
                 } 
             }
             
-            register(application : vmbase.Application){
+            register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
                 let command = {
                     appID: "",
@@ -127,8 +129,16 @@ module nts.uk.at.view.kaf002.m1 {
                     nts.uk.ui.block.invisible();
                     service.insert(command)
                     .done((data) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            location.reload();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(data.autoSendMail){
+                                appcommon.CommonProcess.displayMailResult(data);    
+                            } else {
+                                if(checkBoxValue){
+                                    appcommon.CommonProcess.openDialogKDL030(data.appID);   
+                                } else {
+                                    location.reload();
+                                }   
+                            }
                         });    
                     })
                     .fail(function(res) { 
@@ -161,9 +171,13 @@ module nts.uk.at.view.kaf002.m1 {
                 if(!nts.uk.util.isNullOrEmpty(command.appStampGoOutPermitCmds)){
                     nts.uk.ui.block.invisible();
                     service.update(command)
-                    .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            location.reload();
+                    .done((data) => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(data.autoSendMail){
+                                appcommon.CommonProcess.displayMailResult(data);    
+                            } else {
+                                location.reload();
+                            }
                         });     
                     })
                     .fail(function(res) { 

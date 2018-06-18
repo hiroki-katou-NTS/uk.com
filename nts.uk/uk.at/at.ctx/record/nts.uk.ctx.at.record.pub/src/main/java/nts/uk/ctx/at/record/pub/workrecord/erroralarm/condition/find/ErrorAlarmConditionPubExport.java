@@ -210,11 +210,11 @@ public class ErrorAlarmConditionPubExport {
 					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 				PlanActualWorkType wtypeConditionDomain = (PlanActualWorkType) conditionDomain
 						.getWorkTypeCondition();
-				this.workTypeCondition.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().getFilterAtr());
+				this.workTypeCondition.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().isUse());
 				this.workTypeCondition.setActualLstWorkType(wtypeConditionDomain.getWorkTypeActual().getLstWorkType()
 						.stream().map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-				this.workTypeCondition.setUseAtr(wtypeConditionDomain.getUseAtr());
-				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getWorkTypePlan().getFilterAtr());
+				this.workTypeCondition.setUseAtr(wtypeConditionDomain.isUse());
+				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getWorkTypePlan().isUse());
 				this.workTypeCondition.setPlanLstWorkType(wtypeConditionDomain.getWorkTypePlan().getLstWorkType().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 				this.workTypeCondition.setComparePlanAndActual(wtypeConditionDomain.getComparePlanAndActual().value);
@@ -222,8 +222,8 @@ public class ErrorAlarmConditionPubExport {
 			} else {
 				SingleWorkType wtypeConditionDomain = (SingleWorkType) conditionDomain
 						.getWorkTypeCondition();
-				this.workTypeCondition.setUseAtr(wtypeConditionDomain.getUseAtr());
-				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().getFilterAtr());
+				this.workTypeCondition.setUseAtr(wtypeConditionDomain.isUse());
+				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().isUse());
 				this.workTypeCondition.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			}
@@ -234,18 +234,18 @@ public class ErrorAlarmConditionPubExport {
 					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 				PlanActualWorkTime wtimeConditionDomain = (PlanActualWorkTime) conditionDomain
 						.getWorkTimeCondition();
-				this.workTimeCondition.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().getFilterAtr());
+				this.workTimeCondition.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().isUse());
 				this.workTimeCondition.setActualLstWorkTime(wtimeConditionDomain.getWorkTimeActual().getLstWorkTime()
 						.stream().map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-				this.workTimeCondition.setUseAtr(wtimeConditionDomain.getUseAtr());
-				this.workTimeCondition.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().getFilterAtr());
+				this.workTimeCondition.setUseAtr(wtimeConditionDomain.isUse());
+				this.workTimeCondition.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().isUse());
 				this.workTimeCondition.setPlanLstWorkTime(wtimeConditionDomain.getWorkTimePlan().getLstWorkTime().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			} else {
 				SingleWorkTime wtimeConditionDomain = (SingleWorkTime) conditionDomain
 						.getWorkTimeCondition();
-				this.workTimeCondition.setUseAtr(wtimeConditionDomain.getUseAtr());
-				this.workTimeCondition.setPlanFilterAtr(wtimeConditionDomain.getTargetWorkTime().getFilterAtr());
+				this.workTimeCondition.setUseAtr(wtimeConditionDomain.isUse());
+				this.workTimeCondition.setPlanFilterAtr(wtimeConditionDomain.getTargetWorkTime().isUse());
 				this.workTimeCondition.setPlanLstWorkTime(wtimeConditionDomain.getTargetWorkTime().getLstWorkTime().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			}
@@ -268,7 +268,7 @@ public class ErrorAlarmConditionPubExport {
 			
 			this.attendanceItemCondition = new AttendanceItemConditionPubExport(
 					conditionDomain.getAtdItemCondition().getOperatorBetweenGroups().value,
-					group1,	group2, conditionDomain.getAtdItemCondition().getGroup2UseAtr());
+					group1,	group2, conditionDomain.getAtdItemCondition().isUseGroup2());
 		//}
 	}
 	
@@ -294,11 +294,11 @@ public class ErrorAlarmConditionPubExport {
 	 * @param itemDomain
 	 * @return
 	 */
-	private static ErAlAtdItemConditionPubExport convertItemDomainToDto(ErAlAttendanceItemCondition<?> itemDomain) {
+	public static ErAlAtdItemConditionPubExport convertItemDomainToDto(ErAlAttendanceItemCondition<?> itemDomain) {
 		ErAlAtdItemConditionPubExport erAlAtdItemConditionDto = new ErAlAtdItemConditionPubExport();
 		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);
-		erAlAtdItemConditionDto.setUseAtr(itemDomain.getUseAtr());
+		erAlAtdItemConditionDto.setUseAtr(itemDomain.isUse());
 		// Check Target
 		// チェック対象
 		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {

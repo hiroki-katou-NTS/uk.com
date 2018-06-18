@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 
 /**
  * 年休未消化日数

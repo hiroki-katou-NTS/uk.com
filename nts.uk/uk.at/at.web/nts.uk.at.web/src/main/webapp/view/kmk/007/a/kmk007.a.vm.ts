@@ -27,6 +27,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
         checkDisabled: KnockoutObservable<boolean> = ko.observable(false);
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
+        isEnableOneDay: KnockoutObservable<boolean> = ko.observable(false);
         langId: KnockoutObservable<string> = ko.observable('ja');
 
         constructor() {
@@ -198,7 +199,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.checkDisabled(false);
                     $('#input-workTypeName').focus();
                     self.isCreated(false);
-
+                    self.isEnableOneDay(false);
                     self.index(_.findIndex(ko.toJS(lwt), x => x.workTypeCode == newValue));
 
                     service.findWorkType(newValue).done(function(workTypeRes) {
@@ -381,15 +382,15 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            if ((workType.oneDayCls() == 4 && workType.oneDay().sumSpHodidayNo() == "") ||
-                (workType.morningCls() == 4 && workType.morning().sumSpHodidayNo() == "") ||
-                (workType.afternoonCls() == 4 && workType.afternoon().sumSpHodidayNo() == "")) {
+            if ((workType.oneDayCls() == 4 && workType.oneDay().sumSpHodidayNo() == null) ||
+                (workType.morningCls() == 4 && workType.morning().sumSpHodidayNo() == null) ||
+                (workType.afternoonCls() == 4 && workType.afternoon().sumSpHodidayNo() == null)) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_921" });
                 return;
             }
-            if ((workType.oneDayCls() == 5 && workType.oneDay().sumAbsenseNo() == "")
-                || (workType.morningCls() == 5 && workType.morning().sumAbsenseNo() == "") ||
-                (workTypee.afternoonCls() == 5 && workType.afternoon().sumAbsenseNo() == "")) {
+            if ((workType.oneDayCls() == 5 && workType.oneDay().sumAbsenseNo() == null)
+                || (workType.morningCls() == 5 && workType.morning().sumAbsenseNo() == null) ||
+                (workType.afternoonCls() == 5 && workType.afternoon().sumAbsenseNo() == null)) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_922" });
                 return;
             }
@@ -518,7 +519,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 od = cwt.oneDay(),
                 mn = cwt.morning(),
                 af = cwt.afternoon();
-
+            self.isEnableOneDay(true);
             self.checkDisabled(true);
             cwt.workTypeCode('');
             cwt.dispName('');
@@ -527,7 +528,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             cwt.abolishAtr(0);
             cwt.memo('');
             cwt.workAtr(0);
-            cwt.oneDayCls(1);
+            cwt.oneDayCls(0);
             cwt.morningCls(0);
             cwt.afternoonCls(0);
             cwt.calculatorMethod(1);

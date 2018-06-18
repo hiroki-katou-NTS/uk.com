@@ -1,288 +1,448 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
-    
-    module notSelected {
-        let DATA = "not-selected";
-        export function set($element: JQuery, value: boolean) {
-            $element.data(DATA, value);
-        }
-        export function get($element: JQuery) {
-            return $element.data(DATA) === true;
-        }
-    }
-    
-    module required {
-        let DATA = "required";
-        export function set($element: JQuery, value: boolean) {
-            $element.data(DATA, value);
-        }
-        export function get($element: JQuery) {
-            return $element.data(DATA) === true;
-        }
-    }
-    
-    module controlName {
-        let DATA = "control-name";
-        export function set($element: JQuery, value: boolean) {
-            $element.data(DATA, value);
-        }
-        export function get($element: JQuery) {
-            return $element.data(DATA);
-        }
-    }
 
-    /**
-     * ComboBox binding handler
-     */
-    class ComboBoxBindingHandler implements KnockoutBindingHandler {
-        /**
-         * Constructor.
-         */
-        constructor() {
-        }
+    import count = nts.uk.text.countHalf;
 
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var container = $(element);
-            
-//            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
-//                container.attr("tabindex", "0");    
-//            }
-            
-            container.data("tabindex", container.attr("tabindex"));
-            container.removeAttr("tabindex");
-            container.keypress(function (evt, ui){
-                let code = evt.which || evt.keyCode;
-                if (code === 32) {
-                    container.igCombo("openDropDown");
-                    evt.preventDefault();      
-//                    $('html, body').scrollTop(container.first().offset().top - 200);      
-                } 
-            });
-            
-            container.bind("validate", function () {
-                if (required.get(container) && notSelected.get(container)) {
-                    container.ntsError("set", resource.getMessage("FND_E_REQ_SELECT", [controlName.get(container)]), "FND_E_REQ_SELECT");
-                } else {
-                    container.ntsError("clear");
-                }
-            });
-            
-            ui.bindErrorStyle.useDefaultErrorClass(container);
-        }
+    const WoC = 9,
+        MINWIDTH = 'auto',
+        TAB_INDEX = 'tabindex',
+        KEYPRESS = 'keypress',
+        KEYDOWN = 'keydown',
+        FOCUS = 'focus',
+        VALIDATE = 'validate',
+        OPENDDL = 'openDropDown',
+        CLOSEDDL = 'closeDropDown',
+        OPENED = 'dropDownOpened',
+        IGCOMB = 'igCombo',
+        OPTION = 'option',
+        ENABLE = 'enable',
+        EDITABLE = 'editable',
+        DROPDOWN = 'dropdown',
+        COMBOROW = 'nts-combo-item',
+        COMBOCOL = 'nts-column nts-combo-column',
+        DATA = '_nts_data',
+        CHANGED = '_nts_changed',
+        SHOWVALUE = '_nts_show',
+        NAME = '_nts_name',
+        CWIDTH = '_nts_col_width',
+        VALUE = '_nts_value',
+        REQUIRED = '_nts_required';
 
-        /** 
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            // Get data.
-            var data = valueAccessor();
-            var self = this;
 
-            // Get options. 
-            var options: Array<any> = ko.unwrap(data.options);
-
-            // Get options value.
-            var optionValue = data.optionsValue === undefined ? null : ko.unwrap(data.optionsValue);
-            var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
-            var selectedValue = ko.unwrap(data.value);
-            var editable = ko.unwrap(data.editable);
-            var isRequired = ko.unwrap(data.required) === true;
-            var enable: boolean = data.enable !== undefined ? ko.unwrap(data.enable) : true;
-            var selectFirstIfNull = !(ko.unwrap(data.selectFirstIfNull) === false); // default: true
-            var columns: Array<any> = ko.unwrap(data.columns);
-            var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
-            var dropDownAttachedToBody: boolean = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
-            if (dropDownAttachedToBody === null) {
-                if ($(element).closest(".ui-iggrid").length != 0)
-                    dropDownAttachedToBody = true;
-                else
-                    dropDownAttachedToBody = false;
-            }
-            
-            // Container.
-            var container = $(element);
-            var comboMode: string = editable ? 'editable' : 'dropdown';
-            
-            controlName.set(container, ko.unwrap(data.name));
-
-            // Default values.
-            var distanceColumns = '     ';
-            var fillCharacter = ' '; // Character used fill to the columns.
-            var maxWidthCharacter = 15;
-            
-            // Default value
-            var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-            
-            var getValue = function (item) {
-                return optionValue === null ? item : item[optionValue];        
-            };
-            
-            // required
-            required.set(container, isRequired);
-            
-            if(selectFirstIfNull && options.length !== 0 && util.isNullOrEmpty(selectedValue)) {
-                selectedValue = getValue(options[0]);
-                data.value(selectedValue);
-                notSelected.set(container, false);
-                container.ntsError("clear");
-            } else {
-                // Check if selected code exists in list.
-                // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
-                // この仕様は、「未選択」という項目を持つことを許容するためのもの。
-                let isValidValue = !util.isNullOrUndefined(selectedValue) && _.some(options, item => getValue(item) === selectedValue);
-                notSelected.set(container, !isValidValue);
-                if (!isValidValue) {
-                    notSelected.set(container, true);
-                } else {
-                    notSelected.set(container, false);
-                    container.ntsError("clear");
-                }
-            }
-            
-            var haveColumn = columns && columns.length > 0;
-
-            var isChangeOptions = !_.isEqual(container.data("options"), options);
-            if (isChangeOptions) {
-                container.data("options", options.slice());
-                options = options.map((option) => {
-                    var newOptionText: string = '';
-
-                    // Check muti columns.
-                    if (haveColumn) {
-                        _.forEach(columns, function(item, i) {
-                            var prop: string = option[item.prop];
-                            
-                            if (util.isNullOrUndefined(prop)) {
-                                prop = "";
-                            }
-                            
-                            var length: number = item.length;
-
-                            if (i === columns.length - 1) {
-                                newOptionText += prop;
+    export class ComboBoxBindingHandler implements KnockoutBindingHandler {
+        init = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) => {
+            let template = '',
+                $element = $(element),
+                accessor = valueAccessor(),
+                // dataSource of igCombo
+                options: Array<any> = ko.unwrap(accessor.options),
+                // enable or disable
+                enable: boolean = _.has(accessor, 'enable') ? ko.unwrap(accessor.enable) : true,
+                // mode of dropdown
+                editable: boolean = _.has(accessor, 'editable') ? ko.unwrap(accessor.editable) : false,
+                // require or no
+                required: boolean = _.has(accessor, 'required') ? ko.unwrap(accessor.required) : false,
+                // textKey
+                optionsText: string = _.has(accessor, 'optionsText') ? ko.unwrap(accessor.optionsText) : null,
+                // valueKey
+                optionsValue: string = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null,
+                // columns
+                columns: Array<any> = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }],
+                visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5,
+                dropDownAttachedToBody: boolean = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false,
+                $show = $('<div>', {
+                    'class': 'nts-toggle-dropdown',
+                    'style': 'padding-left: 2px; color: #000; height: 29px',
+                    click: (evt) => {
+                        if ($element.data(IGCOMB)) {
+                            if ($element.igCombo(OPENED)) {
+                                $element.igCombo(CLOSEDDL);
+                                evt.stopPropagation();
                             } else {
-                                newOptionText += text.padRight(prop, fillCharacter, length) + distanceColumns;
+                                $element.igCombo(OPENDDL, () => { }, true, true);
+                                evt.stopPropagation();
                             }
-                        });
-
-                    } else {
-                        newOptionText = optionText === null ? option : option[optionText]; 
-                    }
-                    // Add label attr.
-                    option['nts-combo-label'] = newOptionText;
-                    return option;
-                });
-            }
-            let $input = container.find(".ui-igcombo-field");
-            var currentColumnSetting = container.data("columns");
-            var currentComboMode = container.data("comboMode");
-            var isInitCombo = !_.isEqual(currentColumnSetting, columns) || !_.isEqual(currentComboMode, comboMode);
-            if (isInitCombo) {
-                // Delete igCombo.
-                if (container.data("igCombo") != null) {
-                    container.igCombo('destroy');
-                    container.removeClass('ui-state-disabled');
-                }
-
-                // Set attribute for multi column.
-                var itemTemplate: string = undefined;
-                if (haveColumn) {
-                    itemTemplate = '<div class="nts-combo-item">';
-                    _.forEach(columns, function(item, i) {
-                        // Set item template.
-                        itemTemplate += '<div class="nts-column nts-combo-column-' + i + '">${' + item.prop + '}</div>';
-                    });
-                    itemTemplate += '</div>';
-                }
-
-                // Create igCombo.
-                container.igCombo({
-                    dataSource: options,
-                    valueKey: data.optionsValue,
-                    visibleItemsCount: visibleItemsCount,
-                    dropDownAttachedToBody : dropDownAttachedToBody,
-                    textKey: 'nts-combo-label',
-                    mode: comboMode,
-                    disabled: !enable,
-                    placeHolder: '',
-                    tabIndex : nts.uk.util.isNullOrEmpty(container.data("tabindex")) ? 0 : parseInt(container.data("tabindex")), 
-                    enableClearButton: false,
-                    initialSelectedItems: [
-                        { value: selectedValue }
-                    ],
-                    itemTemplate: itemTemplate,
-                    selectionChanged: function(evt: any, ui: any) {
-                        if (ui.items.length > 0) {
-                            data.value(getValue(ui.items[0].data));
                         }
                     }
                 });
-                
-                $input = container.find(".ui-igcombo-field");
-                $input.focus(function(evt, ui){
-                    $input[0].selectionStart = 0;
-                    $input[0].selectionEnd = 0;
-//                    container.focus();
-                });
-            } else {
-                container.igCombo("option", "disabled", !enable);
-            }
-            
-            if (!enable) { 
-                defVal.applyReset(container, data.value);
-                $input.attr("disabled", "disabled");
-//                container.attr("tabindex", "-1");
-            } else {
-                $input.removeAttr("disabled");
-//                container.attr("tabindex", container.data("tabindex"));    
-            }
-            if (isChangeOptions && !isInitCombo) {
-                container.igCombo("option", "dataSource", options);
-                container.igCombo("dataBind");
-            }
-            
-            if (notSelected.get(container) || util.isNullOrUndefined(selectedValue)) {
-                container.igCombo("value", "");
-            } else {
-                container.igCombo("value", selectedValue);
-            }
-            
-            container.data("columns", _.cloneDeep(columns));
-            container.data("comboMode", comboMode);
-            var isDropDownWidthSpecified = false;
 
-            // Set width for multi columns.
-            if (haveColumn && (isChangeOptions || isInitCombo)) {
-                var componentWidth = 0;
-                var $dropDownOptions = $(container.igCombo("dropDown"));
-                _.forEach(columns, function(item, i) {
-                    isDropDownWidthSpecified = (isDropDownWidthSpecified || item.lengthDropDown !== undefined);
-                    if (item.lengthDropDown === undefined) {
-                        item.lengthDropDown = item.length;
+            // filter valid options
+            options = _(options)
+                .filter(x => _.isObject(x))
+                .value();
+
+            // fix show dropdown in igGrid
+            if (!!$element.closest(".ui-iggrid").length) {
+                dropDownAttachedToBody = true;
+            }
+
+            // generate template if has columns
+            if (_.isArray(columns)) {
+                template = `<div class='${COMBOROW}'>${_.map(columns, (c, i) => `<div data-ntsclass='${c.toggle || ''}' class='${COMBOCOL}-${i} ${c.prop.toLowerCase()} ${c.toggle || ''}'>\$\{${c.prop}\}&nbsp;</div>`).join('')}</div>`;
+            }
+
+            if (!$element.attr('tabindex')) {
+                $element.attr('tabindex', 0);
+            }
+
+            $element
+                // delegate event for change template (on old filter box)
+                .on(SHOWVALUE, (evt) => {
+                    let data = $element.data(DATA),
+                        cws = data[CWIDTH],
+                        ks = _.keys(cws);
+
+                    let option = _.find(data[DATA], t => t[optionsValue] == data[VALUE]),
+                        _template = template;
+
+                    if (option) {
+                        _.each(_.keys(option), k => {
+                            _template = _template.replace(`\$\{${k}\}`, option[k]);
+                        });
+
+                        $show.html(_template);
+
+                        _.each(ks, k => {
+                            $show.find(`.${k.toLowerCase()}:not(:last-child)`)
+                                .css('width', `${cws[k] * WoC}px`);
+
+                            $show.find(`.${k.toLowerCase()}`)
+                                .css('height', '31px')
+                                .css('line-height', '27px')
+                                .find('.nts-column:last-child').css('margin-right', 0);;
+                        });
+                    } else {
+                        $show.empty();
                     }
-                    
-                    var componentColumnWidth = item.length * maxWidthCharacter + 10;
-                    var dropDownColumnWidth = item.lengthDropDown * maxWidthCharacter + 10;
-                    $dropDownOptions.find('.nts-combo-column-' + i).css("width", dropDownColumnWidth);
-                    componentWidth += componentColumnWidth + 10;
+                })
+                // define event changed for save default data
+                .on(CHANGED, (evt, key, value = undefined) => {
+                    let data = $element.data(DATA) || {};
+                    {
+                        data[key] = value;
+                        $element.data(DATA, data);
+                    }
+                })
+                // define event validate for check require
+                .on(VALIDATE, (evt, ui) => {
+                    let data = $element.data(DATA),
+                        value = data[VALUE];
+
+                    if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
+                        $element
+                            .addClass('error')
+                            .ntsError("set", resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
+                    } else {
+                        $element
+                            .removeClass('error')
+                            .ntsError("clear");
+                    }
+                })
+                // delegate open or close event on enter key
+                .on(KEYDOWN, (evt, ui) => {
+                    if ($element.data(IGCOMB)) {
+                        if ([13].indexOf(evt.which || evt.keyCode) > -1) {
+                            // fire click of igcombo-button
+                            $element
+                                .find('.ui-igcombo-button')
+                                .trigger('click');
+                        } else if ([32, 38, 40].indexOf(evt.which || evt.keyCode) > -1) {
+                            if (!$element.igCombo(OPENED)) {
+                                // fire click of igcombo-button
+                                $element
+                                    .find('.ui-igcombo-button')
+                                    .trigger('click');
+                            }
+                        }
+                    }
+                })
+                .igCombo({
+                    loadOnDemandSettings: {
+                        enabled: true,
+                        pageSize: 15
+                    },
+                    dataSource: options,
+                    placeHolder: '',
+                    textKey: 'nts_' + optionsText,
+                    valueKey: optionsValue,
+                    mode: editable ? EDITABLE : DROPDOWN,
+                    disabled: !ko.toJS(enable),
+                    enableClearButton: false,
+                    itemTemplate: template,
+                    dropDownWidth: "auto",
+                    tabIndex: $element.attr('tabindex') || 0,
+                    visibleItemsCount: visibleItemsCount,
+                    dropDownAttachedToBody: dropDownAttachedToBody,
+                    rendered: function(evt, ui) {
+                        $element
+                            .find('.ui-igcombo')
+                            .css('background', '#f6f6f6')
+                            .find('.ui-igcombo-fieldholder').hide();
+
+                        $element
+                            .find('.ui-igcombo-hidden-field')
+                            .parent()
+                            .append($show)
+                            .css('overflow', 'hidden');
+                    },
+                    itemsRendered: (evt, ui) => {
+                        let data = $element.data(DATA) || {},
+                            cws = data[CWIDTH] || [],
+                            ks = _.keys(cws);
+
+                        // calc new size of template columns
+                        _.each(ks, k => {
+                            $("[class*=ui-igcombo-orientation]")
+                                .find(`.${k.toLowerCase()}:not(:last-child)`)
+                                .css('width', `${cws[k] * WoC}px`);
+                        });
+                    },
+                    selectionChanged: (evt, ui) => {
+                        if (!_.size(ui.items)) {
+                            $element.trigger(CHANGED, [VALUE, null]);
+                        } else {
+                            let value = ui.items[0]["data"][optionsValue];
+
+                            $element.trigger(CHANGED, [VALUE, value]);
+                        }
+                    },
+                    dropDownClosed: (evt, ui) => {
+                        // check flag changed for validate
+                        $element.trigger(CHANGED, [CHANGED, true]);
+
+                        setTimeout(() => {
+                            let data = $element.data(DATA);
+
+                            // select first if !select and !editable
+                            if (!data[EDITABLE] && !data[VALUE]) {
+                                $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
+                                //reload data
+                                data = $element.data(DATA);
+                            }
+
+                            // set value on select
+                            accessor.value(data[VALUE]);
+
+                            // validate if required
+                            $element
+                                .trigger(VALIDATE, [true])
+                                .trigger(SHOWVALUE)
+                                .focus();
+                        }, 10);
+                    },
+                    dropDownOpening: (evt, ui) => {
+                        let data = $element.data(DATA),
+                            cws = data[CWIDTH],
+                            ks = _.keys(cws);
+
+                        // move searchbox to list
+                        $element
+                            .find('.ui-igcombo-fieldholder')
+                            .prependTo(ui.list);
+
+                        // show searchbox if editable
+                        let $input = ui.list
+                            .find('.ui-igcombo-fieldholder')
+                            .css('height', !!data[EDITABLE] ? '' : '0px')
+                            .css('padding', !!data[EDITABLE] ? '3px' : '')
+                            .css('background-color', !!data[EDITABLE] ? '#f6f6f6' : '')
+                            .show()
+                            .find('input')
+                            .css('width', '0px')
+                            .css('height', !!data[EDITABLE] ? '29px' : '0px')
+                            .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
+
+                        if (!$input.data('_nts_bind')) {
+                            $input
+                                .on(KEYDOWN, (evt, ui) => {
+                                    if ([13].indexOf(evt.which || evt.keyCode) > -1) {
+                                        if ($element.data(IGCOMB)) {
+                                            // fire click of igcombo-button
+                                            $element
+                                                .find('.ui-igcombo-button')
+                                                .trigger('click');
+                                        }
+                                    }
+                                })
+                                .data('_nts_bind', true)
+                                .attr('tabindex', -1);
+                        }
+
+                        // calc new size of template columns
+                        _.each(ks, k => {
+                            $(ui.list).find(`.${k.toLowerCase()}${_.size(ks) == 1 ? '' : ':not(:last-child)'}`)
+                                .css('width', `${cws[k] * WoC}px`);
+                        });
+
+                        // fix min width of dropdown = $element.width();
+                        $(ui.list)
+                            .css('min-width', $element.width() + 'px')
+                            .find('.nts-column:last-child')
+                            .css('margin-right', 0);
+
+                        setTimeout(() => {
+                            $input.css('width', ($(ui.list).width() - 6) + 'px')
+                        }, 25);
+                    }
+                })
+                .trigger(CHANGED, [DATA, options])
+                .addClass('ntsControl')
+                .on('blur', () => { $element.css('box-shadow', ''); })
+                .on('focus', () => {
+                    $element
+                        .css('outline', 'none')
+                        .css('box-shadow', '0 0 1px 1px #0096f2');
                 });
-                
-                container.css({ 'min-width': componentWidth });
-                
-                if (isDropDownWidthSpecified) {
-                    container.find(".ui-igcombo-dropdown").css("width", "auto");
+        }
+
+        update = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) => {
+            let ss = new Date().getTime(),
+                $element = $(element),
+                accessor = valueAccessor(),
+                width = _.has(accessor, 'width') ? ko.unwrap(accessor.width) : undefined,
+                name: string = ko.unwrap(accessor.name),
+                value: any = ko.unwrap(accessor.value),
+                // dataSource of igCombo
+                options: Array<any> = ko.unwrap(accessor.options),
+                // init default selection
+                selectFirstIfNull = !(ko.unwrap(accessor.selectFirstIfNull) === false), // default: true
+                // enable or disable
+                enable: boolean = _.has(accessor, 'enable') ? ko.unwrap(accessor.enable) : true,
+                // mode of dropdown
+                editable: boolean = _.has(accessor, 'editable') ? ko.unwrap(accessor.editable) : false,
+                // require or no
+                required: boolean = _.has(accessor, 'required') ? ko.unwrap(accessor.required) : false,
+                // textKey
+                optionsText: string = _.has(accessor, 'optionsText') ? ko.unwrap(accessor.optionsText) : null,
+                // valueKey
+                optionsValue: string = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null,
+                // columns
+                columns: Array<any> = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }];
+
+            // filter valid options
+            options = _(options)
+                .filter(x => _.isObject(x))
+                .value();
+
+            let props = columns.map(c => c.prop),
+                // list key value
+                vkl = _(options)
+                    .map(m => {
+                        if (!!m) {
+                            return _(m)
+                                .keys(m)
+                                .map(t => ({
+                                    k: t,
+                                    w: _.max([count(_.trim(m[t])), (_.find(columns, c => c.prop == t) || {}).length || 0])
+                                }))
+                                .filter(m => props.indexOf(m.k) > -1)
+                                .keyBy('k')
+                                .mapValues('w')
+                                .value();
+                        }
+
+                        return undefined;
+                    }).filter(f => !!f).value(),
+                cws = _(props)
+                    .map(p => ({ k: p, v: _.maxBy(vkl, p) }))
+                    .map(m => ({ k: m.k, v: (m.v || {})[m.k] || 0 }))
+                    .keyBy('k')
+                    .mapValues('v')
+                    .value();
+
+            // map new options width nts_[optionsText]
+            // (show new prop on filter box)
+            options = _(options)
+                .map(m => {
+                    let c = {},
+                        k = ko.toJS(m),
+                        t = k[optionsText],
+                        v = k[optionsValue],
+                        n = _.omit(k, [optionsValue]),
+                        nt = _.map(props, p => k[p]).join(' ').trim();
+
+                    c[optionsValue] = !_.isNil(v) ? v : '';
+                    c['nts_' + optionsText] = nt || t || ' ';
+
+                    return _.extend(n, c);
+                })
+                .value();
+
+            // check value has exist in option
+            let vio = _.find(options, f => f[optionsValue] == value);
+
+            if (!vio) {
+                if (selectFirstIfNull) {
+                    vio = _.head(options);
+
+                    if (!vio) {
+                        value = undefined;
+                    } else {
+                        value = vio[optionsValue];
+                    }
+                } else {
+                    value = undefined;
+                }
+                accessor.value(value);
+            }
+
+            // check flag changed for validate
+            if (_.has($element.data(DATA), VALUE)) {
+                $element.trigger(CHANGED, [CHANGED, true]);
+            }
+
+            // save change value
+            $element
+                .trigger(CHANGED, [CWIDTH, cws])
+                .trigger(CHANGED, [NAME, name])
+                .trigger(CHANGED, [VALUE, value])
+                .trigger(CHANGED, [ENABLE, enable])
+                .trigger(CHANGED, [EDITABLE, editable])
+                .trigger(CHANGED, [REQUIRED, required]);
+
+            // if igCombo has init
+            if ($element.data("igCombo")) {
+                let data = $element.data(DATA),
+                    olds = data[DATA];
+
+                // change dataSource if changed
+                if (!_.isEqual(olds, options)) {
+                    $element.igCombo(OPTION, "dataSource", options);
+                }
+
+                $element
+                    // enable or disable 
+                    .igCombo(OPTION, "disabled", !enable)
+                    // set new value
+                    .igCombo("value", value);
+
+                // validate if has dataOptions
+                $element
+                    .trigger(VALIDATE, [true]);
+
+                if (!value) {
+                    $element
+                        .igCombo("deselectAll");
+                }
+
+                // set width of container
+                if (width) {
+                    if (width != MINWIDTH) {
+                        $element.igCombo("option", "width", width);
+                    } else { // auto width
+                        $element
+                            .igCombo("option", "width", (_.sum(_.map(cws, c => c)) * WoC + 60) + 'px');
+                    }
                 }
             }
-            
-            if (notSelected.get(container)) {
-                //container.find("input").val("");
-            }
+
+            // set new dataSource to data;
+            $element
+                .trigger(CHANGED, [DATA, options])
+                .trigger(SHOWVALUE);
         }
     }
-    
+
     ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
 }

@@ -5,10 +5,13 @@
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
@@ -59,11 +62,11 @@ public class Formula extends AggregateRoot {
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
 	// 月別端数処理
-	private Rounding monthlyRounding;
+	private Optional<Rounding> monthlyRounding = Optional.empty();
 
 	/** The daily rounding. */
 	// 日別端数処理
-	private Rounding dailyRounding;
+	private Optional<Rounding> dailyRounding = Optional.empty();
 
 	/**
 	 * Instantiates a new optional item formula.
@@ -166,18 +169,33 @@ public class Formula extends AggregateRoot {
 	 * @param resultCalcFormula 計算結果(List)
 	 * @return 計算式の結果クラス
 	 */
-	public ResultOfCalcFormula dicisionCalc(OptionalItem optionalItem ,PerformanceAtr performanceAtr,List<ResultOfCalcFormula> resultCalcFormula) {
+	public ResultOfCalcFormula dicisionCalc(OptionalItem optionalItem,
+											PerformanceAtr performanceAtr,
+											List<ResultOfCalcFormula> resultCalcFormula,
+											Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
+											Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
 		int calcValue = 0;
-		if(this.getCalcAtr().isItemSelection()) {
-			//計算式による計算
+		if(this.getCalcAtr().isFormulaSetting()) {
+			if(this.calcFormulaSetting.getFormulaSetting().isPresent()) {
+				//計算式による計算
+				calcValue = this.calcFormulaSetting.getFormulaSetting().get().calculationBycalculationFormula(resultCalcFormula, optionalItem.getOptionalItemAtr());
+			}else {
+				//計算式設定が取得できない場合は0 ← これで良い？
+				calcValue = 0;
+			}
 		}
-		else if(this.getCalcAtr().isFormulaSetting()) {
-			//項目選択による計算
+		else if(this.getCalcAtr().isItemSelection()) {
+			if(this.calcFormulaSetting.getItemSelection().isPresent()) {
+				//項目選択による計算
+				calcValue = this.calcFormulaSetting.getItemSelection().get().calculationByItemSelection(performanceAtr, dailyRecordDto, monthlyRecordDto);
+			}else {
+				//計算項目選択が取得できない場合は0 ← これで良い？
+				calcValue = 0;
+			}
 		}
 		else {
 			throw new RuntimeException("unknown FormulaSetting"+ this.getCalcAtr());
 		}
-		
 		return ResultOfCalcFormula.of(formulaId,this.formulaAtr, calcValue);
 	}
 }

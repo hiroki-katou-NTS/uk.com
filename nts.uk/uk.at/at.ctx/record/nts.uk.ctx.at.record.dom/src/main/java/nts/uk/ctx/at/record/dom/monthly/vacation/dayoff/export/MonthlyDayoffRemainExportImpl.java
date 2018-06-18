@@ -19,13 +19,13 @@ public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 			YearMonth endMonth) {
 		List<DayoffCurrentMonthOfEmployee> lstOutput = new ArrayList<DayoffCurrentMonthOfEmployee>();
 		//年月期間．開始年月から終了年月まで1か月ずつループ
-		for (YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); ym.addMonths(1)) {			
+		for (YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); ym = ym.addMonths(1)) {			
 			//ドメインモデル「代休月別残数データ」を取得
 			List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus = remainDataRepos.getDayOffDataBySidYmStatus(employeeId, ym, ClosureStatus.PROCESSED);
 			if(getDayOffDataBySidYmStatus.isEmpty()) {
 				continue;
 			}
-			DayoffCurrentMonthOfEmployee dataOutput = new DayoffCurrentMonthOfEmployee(employeeId, ym, null, null, null, null, null, null, null, null, null, null);
+			DayoffCurrentMonthOfEmployee dataOutput = new DayoffCurrentMonthOfEmployee(employeeId, ym, (double)0, 0, (double)0, 0, (double)0, 0, (double)0, 0, (double)0, 0);
 			GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			GeneralDate endDatecarryMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			for (MonthlyDayoffRemainData data : getDayOffDataBySidYmStatus) {

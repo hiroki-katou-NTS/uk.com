@@ -5,26 +5,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -46,6 +44,9 @@ public class IntegrationOfDaily {
 	private AffiliationInforOfDailyPerfor affiliationInfor;
 	
 	/**-------------Optional--------------**/
+	/**日別実績の勤務種別*/
+	private Optional<WorkTypeOfDailyPerformance> businessType;
+	
 	//日別実績のPCログオン情報
 	private Optional<PCLogOnInfoOfDaily> pcLogOnInfo;
 	//社員の日別実績エラー一覧
@@ -72,6 +73,7 @@ public class IntegrationOfDaily {
 	private Optional<SpecificDateAttrOfDailyPerfor> specDateAttr;
 	//日別実績の入退門
 	private Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate;
+	@Setter
 	//日別実績の任意項目
 	private Optional<AnyItemValueOfDaily> anyItemValue;
 	//日別実績の編集状態
@@ -85,6 +87,7 @@ public class IntegrationOfDaily {
 	 * @param workInformation 日別実績の勤務情報
 	 * @param calAttr 日別実績の計算区分
 	 * @param affiliationInfor 日別実績の所属情報
+	 * @param businessType 日別実績の勤務種別
 	 * @param pcLogOnInfo 日別実績のPCログオン情報
 	 * @param employeeError 社員の日別実績エラー一覧
 	 * @param outingTime 日別実績の外出時間帯
@@ -100,7 +103,8 @@ public class IntegrationOfDaily {
 	 * @param tempTime 日別実績の臨時出退勤
 	 */
 	public IntegrationOfDaily(WorkInfoOfDailyPerformance workInformation, CalAttrOfDailyPerformance calAttr,
-			AffiliationInforOfDailyPerfor affiliationInfor, Optional<PCLogOnInfoOfDaily> pcLogOnInfo,
+			AffiliationInforOfDailyPerfor affiliationInfor, Optional<WorkTypeOfDailyPerformance> businessType,
+			Optional<PCLogOnInfoOfDaily> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError, Optional<OutingTimeOfDailyPerformance> outingTime,
 			List<BreakTimeOfDailyPerformance> breakTime,
 			Optional<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance,
@@ -110,6 +114,7 @@ public class IntegrationOfDaily {
 			Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate, Optional<AnyItemValueOfDaily> anyItemValue,
 			List<EditStateOfDailyPerformance> editState, Optional<TemporaryTimeOfDailyPerformance> tempTime) {
 		super();
+		this.businessType = businessType;
 		this.workInformation = workInformation;
 		this.calAttr = calAttr;
 		this.affiliationInfor = affiliationInfor;

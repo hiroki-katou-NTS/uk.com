@@ -18,7 +18,7 @@
                     nts.uk.shr.com.primitive.sample.PersonalWageCode
                     nts.uk.shr.com.primitive.sample.CommonAmount
                     nts.uk.shr.com.primitive.sample.SampleKana
-					nts.uk.shr.com.primitive.testee.SampleCode
+					nts.uk.shr.com.primitive.sample.SampleCode
    				</com:ValidatorScript>
 				<com:stylefile path="../../catalog/catalog.css" />
 				<com:scriptfile path="text-editor.js" />
@@ -65,6 +65,12 @@
 						<div class="control-group valign-center">
 							<div data-bind="ntsFormLabel: { constraint: 'PersonalWageCode' }">PersonalWageCode</div>
 							<input id="an-txt" data-bind="ntsTextEditor: { name: 'Uppercase', value: valueUan, constraint: 'PersonalWageCode' }"/>
+						</div>
+						
+						<h3>Employee Code</h3>
+						<div class="control-group valign-center">
+							<div data-bind="ntsFormLabel: { constraint: 'EmployeeCode', required: true }">EmployeeCode</div>
+							<input id="ec-txt" data-bind="ntsTextEditor: { name: 'Employee code', value: valueEc, constraint: 'EmployeeCode', required: true }"/>
 						</div>
 						
 						<h3>Handle enter key</h3>

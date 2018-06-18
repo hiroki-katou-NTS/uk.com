@@ -20,26 +20,17 @@ module nts.uk.ui.jqueryExtentions {
             let top=0, left=0;
             let dialog = $dialog.closest("div[role='dialog']");
             dialog.addClass("disappear");
-            if(winContainer.isRoot){
-                //top = (window.innerHeight - dialog.innerHeight()) / 2;
-                //left = (window.innerWidth - dialog.innerWidth()) / 2;
-            } else {
-//                while(!nts.uk.util.isNullOrUndefined(currentInfo)){
-//                    if(currentInfo.isRoot){
-//                        currentInfo = null;
-//                    } else {
-                        var offset = winContainer.$dialog.closest("div[role='dialog']").offset(); 
-//                        var offset = fullDialog.offset();
-                        console.log(dialog.offset());
-                        top += offset.top;
-                        left += offset.left;
-//                        currentInfo = currentInfo.parent;
-//                    }
-//                }
+            if(!winContainer.isRoot){
+                var offset = winContainer.$dialog.closest("div[role='dialog']").offset(); 
+                console.log(dialog.offset());
+                top += offset.top;
+                left += offset.left;
             }
             
             setTimeout(function(){
-                let dialogM = winContainer.isRoot ? $("body") : winContainer.$dialog.closest("div[role='dialog']");
+                let isFrame = nts.uk.util.isInFrame();
+                let dialogM = winContainer.isRoot ? isFrame ? window.parent.window.parent.$("body") : $("body") 
+                                            : winContainer.$dialog.closest("div[role='dialog']");
                 let topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
                 let leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
                 if(topDiff > 0){

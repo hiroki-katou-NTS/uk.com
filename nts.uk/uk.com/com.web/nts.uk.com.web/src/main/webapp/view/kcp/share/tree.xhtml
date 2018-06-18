@@ -67,7 +67,6 @@
 			<table id="single-tree-grid" class="cf"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
 					width: treeStyle.width,
-					height: treeStyle.height,
 					dataSource: itemList,
 					value: selectedWorkplaceIds,
 					primaryKey: 'workplaceId',
@@ -75,6 +74,7 @@
 					primaryText: 'nodeText',
 					multiple: isMultiSelect,
 					enable: true,
+					rows: maxRows,
 					virtualization: true,
 					virtualizationMode: 'continuous',
 					extColumns: treeComponentColumn,
@@ -85,7 +85,6 @@
 			<table id="multiple-tree-grid" class="cf"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
 					width: treeStyle.width,
-					height: treeStyle.height,
 					options: itemList,
 					selectedValues: selectedWorkplaceIds,
 					optionsValue: 'workplaceId',
@@ -93,6 +92,7 @@
 					optionsText: 'nodeText',
 					multiple: isMultiSelect,
 					virtualization: true,
+					rows: maxRows,
 					virtualizationMode: 'continuous',
 					extColumns: treeComponentColumn,
 					enable: true,

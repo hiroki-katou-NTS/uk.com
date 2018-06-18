@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkSchedu
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
@@ -43,6 +42,8 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -154,22 +155,18 @@ public class ActualWorkingTimeOfDaily {
 	 * @param workScheduleTime 
 	 * @param flexSetting 
 	 */
-	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
+	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
 			   WorkType workType,
-			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
 			   WorkDeformedLaborAdditionSet illegularAddSetting,
 			   WorkFlexAdditionSet flexAddSetting,
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
-			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
 		       Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
-			   AutoCalRaisingSalarySetting raisingAutoCalcSet,
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
@@ -180,36 +177,31 @@ public class ActualWorkingTimeOfDaily {
 			   Optional<FixRestTimezoneSet> fixRestTimeSetting, 
 			   IntegrationOfDaily integrationOfDaily,
 			   Optional<WorkType> scheWorkType,
-			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   DailyUnit dailyUnit, WorkScheduleTimeOfDaily workScheduleTime,Optional<CoreTimeSetting> coreTimeSetting
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
 		
 		/* 総労働時間の計算 */
-		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
+		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(oneDay,
 				    personalCondition,
 				    vacationClass,
 				    workType,
-				    late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-				    leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				    workingSystem,
 				    illegularAddSetting,
 				    flexAddSetting,
 				    regularAddSetting,
 				    holidayAddtionSet,
-				    overTimeAutoCalcAtr,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    holidayCalcMethodSet,
-					raisingAutoCalcSet,
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily,
 					eachWorkTimeSet,
 					eachCompanyTimeSet,
 					breakTimeCount,
 					integrationOfDaily,
-					flexAutoCalSet,coreTimeSetting
+					coreTimeSetting
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		
@@ -220,7 +212,7 @@ public class ActualWorkingTimeOfDaily {
 											fixRestTimeSetting,
 											oneDay.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(),
 											ootsukaFixedCalcSet,
-											overTimeAutoCalcSet,
+											calcAtrOfDaily.getOvertimeSetting(),
 											dailyUnit,
 											oneDay.getAttendanceLeavingWork());
 		
@@ -244,7 +236,8 @@ public class ActualWorkingTimeOfDaily {
 													   premiumTime,
 													   forCalcDivergenceDto,
 													   divergenceTimeList,
-													   workScheduleTime
+													   workScheduleTime,
+													   calcAtrOfDaily
 													   );
 		
 		/*返値*/
@@ -266,7 +259,7 @@ public class ActualWorkingTimeOfDaily {
 			AttendanceTime constraintDifferenceTime, ConstraintTime constraintTime,
 			AttendanceTime timeDifferenceWorkingHours, PremiumTimeOfDailyPerformance premiumTime,
 			DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			List<DivergenceTime> divergenceTimeList, WorkScheduleTimeOfDaily workScheduleTime
+			List<DivergenceTime> divergenceTimeList, WorkScheduleTimeOfDaily workScheduleTime, CalAttrOfDailyPerformance calcAtrOfDaily
 			/*計画所定時間*/
 			/*実績所定労働時間*/) {
 		
@@ -280,7 +273,7 @@ public class ActualWorkingTimeOfDaily {
 //				   								timeDifferenceWorkingHours,
 //				   								premiumTime,
 //				   								workScheduleTime); 	
-		val returnList = calcDivergenceTime(forCalcDivergenceDto, divergenceTimeList);
+		val returnList = calcDivergenceTime(forCalcDivergenceDto, divergenceTimeList,calcAtrOfDaily);
 		//returnする
 		return new DivergenceTimeOfDaily(returnList);
 	}
@@ -328,9 +321,9 @@ public class ActualWorkingTimeOfDaily {
 																					   				  new AttendanceTime(0)),
 																			   
 																				/*不就労時間*/
-																				new AttendanceTime(0),
+																				new AttendanceTimeOfExistMinus(0),
 																				/*予定差異時間の計算*/
-																				new AttendanceTime(0),
+																				new AttendanceTimeOfExistMinus(0),
 																				/*医療時間*/
 																				new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT,
 																																 new AttendanceTime(0),
@@ -347,9 +340,11 @@ public class ActualWorkingTimeOfDaily {
 
 	/**
 	 * 乖離時間の計算 
+	 * @param calcAtrOfDaily 
 	 * @return
 	 */
-	private static List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>   calcDivergenceTime(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,List<DivergenceTime> divergenceTimeList) {
+	private static List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>   calcDivergenceTime(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,List<DivergenceTime> divergenceTimeList,
+			 																								CalAttrOfDailyPerformance calcAtrOfDaily) {
 		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
 		if(integrationOfDailyInDto == null
 			|| integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance() == null
@@ -386,7 +381,9 @@ public class ActualWorkingTimeOfDaily {
 			
 			divergenceTime.add(obj);
 		}
-		
+		//自動計算設定で使用しないであれば空を戻す
+		if(!calcAtrOfDaily.getDivergenceTime().getDivergenceTime().isUse())
+			return divergenceTime;
 		
 		//val divergenceTimeInIntegrationOfDaily = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
 		val divergenceTimeInIntegrationOfDaily = new DivergenceTimeOfDaily(divergenceTime);

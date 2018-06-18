@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.pub.user;
 
 import java.util.List;
 import java.util.Optional;
+import nts.uk.ctx.sys.auth.pub.user.UserInforEx;
 
 public interface UserPublisher {
 
@@ -21,4 +22,8 @@ public interface UserPublisher {
 	List<UserExport> getListUserByListAsId(List<String> listAssociatePersonId);
 	
 	Optional<UserExport> getByUserId(String userId);
+	/** Requestlist 313
+	 * [No.313]社員IDからユーザを取得する
+	 */
+	Optional<UserInforEx> getByEmpID(String empID);
 }

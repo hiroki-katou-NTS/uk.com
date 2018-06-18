@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,29 +14,29 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の勤務時間 */
-public class HolidayTimeOfMonthlyDto {
+public class HolidayTimeOfMonthlyDto implements ItemConst {
 
 	/** 法定内休日時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定内休日時間", layout = "A")
-	private Integer legalHolTime;
+	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_A)
+	private int legalHolTime;
 	
 	/** 法定外休日時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定外休日時間", layout = "B")
-	private Integer illegalHolTime;
+	@AttendanceItemLayout(jpPropertyName = ILLEGAL, layout = LAYOUT_B)
+	private int illegalHolTime;
 	
 	/** 法定外祝日休日時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定外祝日休日時間", layout = "C")
-	private Integer illegalSpeHolTime;
+	@AttendanceItemLayout(jpPropertyName = ILLEGAL + PUBLIC_HOLIDAY, layout = LAYOUT_C)
+	private int illegalSpeHolTime;
 	
 	public static HolidayTimeOfMonthlyDto from(HolidayTimeOfMonthly domain) {
 		HolidayTimeOfMonthlyDto dto = new HolidayTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setIllegalHolTime(domain.getIllegalHolidayTime() == null ? null : domain.getIllegalHolidayTime().valueAsMinutes());
-			dto.setIllegalSpeHolTime(domain.getIllegalSpecialHolidayTime() == null ? null : domain.getIllegalSpecialHolidayTime().valueAsMinutes());
-			dto.setLegalHolTime(domain.getLegalHolidayTime() == null ? null : domain.getLegalHolidayTime().valueAsMinutes());
+			dto.setIllegalHolTime(domain.getIllegalHolidayTime() == null ? 0 : domain.getIllegalHolidayTime().valueAsMinutes());
+			dto.setIllegalSpeHolTime(domain.getIllegalSpecialHolidayTime() == null ? 0 : domain.getIllegalSpecialHolidayTime().valueAsMinutes());
+			dto.setLegalHolTime(domain.getLegalHolidayTime() == null ? 0 : domain.getLegalHolidayTime().valueAsMinutes());
 		}
 		return dto;
 	}
@@ -46,6 +47,6 @@ public class HolidayTimeOfMonthlyDto {
 	}
 	
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 }

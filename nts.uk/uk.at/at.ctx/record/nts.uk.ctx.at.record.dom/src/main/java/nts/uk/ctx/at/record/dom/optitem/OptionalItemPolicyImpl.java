@@ -67,21 +67,23 @@ public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 	 * @return true, if is formula setting valid
 	 */
 	private boolean isFormulaSettingValid(Formula formula, List<Formula> formulas) {
-		FormulaSetting formulaSetting = formula.getCalcFormulaSetting().getFormulaSetting();
-
-		if (formula.getCalcAtr().equals(CalculationAtr.FORMULA_SETTING) && formulaSetting.isBothItemSelect()
-				&& formulaSetting.isOperatorAddOrSub()) {
-
-			// get formula by id
-			Formula leftItem = formulas.stream()
-					.filter(item -> item.getFormulaId().equals(formulaSetting.getLeftItem().getFormulaItemId()))
-					.findFirst().get();
-			Formula rightItem = formulas.stream()
-					.filter(item -> item.getFormulaId().equals(formulaSetting.getRightItem().getFormulaItemId()))
-					.findFirst().get();
-
-			// compare left item's attribute vs right item's attribute
-			return leftItem.getFormulaAtr().equals(rightItem.getFormulaAtr());
+		if(formula.getCalcFormulaSetting().getFormulaSetting().isPresent()) {
+			FormulaSetting formulaSetting = formula.getCalcFormulaSetting().getFormulaSetting().get();
+	
+			if (formula.getCalcAtr().equals(CalculationAtr.FORMULA_SETTING) && formulaSetting.isBothItemSelect()
+					&& formulaSetting.isOperatorAddOrSub()) {
+	
+				// get formula by id
+				Formula leftItem = formulas.stream()
+						.filter(item -> item.getFormulaId().equals(formulaSetting.getLeftItem().getFormulaItemId().get()))
+						.findFirst().get();
+				Formula rightItem = formulas.stream()
+						.filter(item -> item.getFormulaId().equals(formulaSetting.getRightItem().getFormulaItemId().get()))
+						.findFirst().get();
+	
+				// compare left item's attribute vs right item's attribute
+				return leftItem.getFormulaAtr().equals(rightItem.getFormulaAtr());
+			}
 		}
 		return true;
 	}
