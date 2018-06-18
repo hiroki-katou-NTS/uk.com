@@ -15,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaAppDispNameRepository extends JpaRepository implements AppDispNameRepository{
-	public final String SELECT_BY_CID = "SELECT c FROM KrqmtAppDispName c WHERE c.krqmtAppDispNamePK.companyId = :companyId";
+	public static final String SELECT_BY_CID = "SELECT c FROM KrqmtAppDispName c WHERE c.krqmtAppDispNamePK.companyId = :companyId";
 	/**
 	 * convert from entity to domain
 	 * @param entity

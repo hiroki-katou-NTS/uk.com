@@ -36,7 +36,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 
         listApprovalEmployee: Array<ApprovalStatusEmployee> = [];
         listDailyStatus: Array<DailyStatusOut> = [];
-        multiSelectedWorkplaceId: Array<any>;
+        inputContent: any;
         dateFormat = "yyyy/MM/dd";
         constructor() {
             var self = this;
@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 self.listWorkplace = params.listWorkplace;
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
-                self.multiSelectedWorkplaceId = params.multiSelectedWorkplaceId;
+                self.inputContent = params.inputContent;
             }
             self.dtPrev(new Date(self.startDateFormat));
             self.dtAft(new Date(self.endDateFormat));
@@ -207,7 +207,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let initExTable = self.setFormatData(detailHeaderDeco, self.listDailyStatus);
 
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "42px", bodyRowHeight: "23px", bodyHeight: "330px",
+                        headerHeight: "42px", bodyRowHeight: "23px", bodyHeight: "322px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         remainSizes: false,
@@ -444,7 +444,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         goBackA() {
             var self = this;
             let params = {
-                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
+                inputContent: self.inputContent
             };
             nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);
         }
@@ -459,6 +459,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 closureName: self.closureName,
                 listWorkplace: self.listWorkplace,
                 listEmployeeCode: self.listEmpCd,
+                inputContent: self.inputContent
             }
             nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
         }
@@ -474,7 +475,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             let params = {
                 empName: rData.empName,
                 selectedEmpId: rData.empId,
-                listStatusEmp: listStatusEmp
+                listStatusEmp: listStatusEmp,
+                inputContent: self.inputContent
             }
             nts.uk.ui.windows.setShared("KAF018D_VALUE", params);
             nts.uk.ui.windows.sub.modal('/view/kaf/018/d/index.xhtml');
