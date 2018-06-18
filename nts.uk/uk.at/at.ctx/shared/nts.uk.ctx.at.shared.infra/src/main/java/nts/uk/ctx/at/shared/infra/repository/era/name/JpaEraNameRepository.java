@@ -13,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDom;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDomGetMemento;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDomRepository;
@@ -24,6 +25,9 @@ import nts.uk.ctx.at.shared.infra.entity.era.name.CisdtEraName;
  */
 @Stateless
 public class JpaEraNameRepository extends JpaRepository implements EraNameDomRepository{
+	
+	private final String GET_BY_STR_DATE = "select c from CisdtEraName c where c.startDate = :startDate";
+	private final String GET_BY_END_DATE = "select c from CisdtEraName c where c.endDate = :endDate";
 	
 	@Override
 	public List<EraNameDom> getAllEraName(){
@@ -46,6 +50,20 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 		}
 		return new ArrayList<EraNameDom>();
 	};
+	
+	@Override
+	public EraNameDom getEraNameById(String eraNameId) {
+		
+		Optional<CisdtEraName> entity = this.queryProxy().find(eraNameId, CisdtEraName.class);
+		
+		if(!entity.isPresent()) {
+			return null;
+		}
+		
+		EraNameDomGetMemento memento = new JpaEraNameGetMemento(entity.get());
+		
+		return new EraNameDom(memento);
+	}
 	
 	@Override
 	public void deleteEraName(String eraNameId){
@@ -102,5 +120,27 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 	private EraNameDom toDomain(CisdtEraName entity) {
 		EraNameDomGetMemento memento = new JpaEraNameGetMemento(entity);
 		return new EraNameDom(memento);
+	}
+
+	@Override
+	public EraNameDom getEraNameByStartDate(GeneralDate strDate) {
+		Optional<CisdtEraName> entity = this.queryProxy()
+				.query(GET_BY_STR_DATE, CisdtEraName.class)
+				.setParameter("startDate", strDate).getSingle();
+		if (entity.isPresent()) {
+			return this.toDomain(entity.get());
+		}
+		return null;
+	}
+
+	@Override
+	public EraNameDom getEraNameByEndDate(GeneralDate endDate) {
+		Optional<CisdtEraName> entity = this.queryProxy()
+				.query(GET_BY_END_DATE, CisdtEraName.class)
+				.setParameter("endDate", endDate).getSingle();
+		if (entity.isPresent()) {
+			return this.toDomain(entity.get());
+		}
+		return null;
 	}
 }

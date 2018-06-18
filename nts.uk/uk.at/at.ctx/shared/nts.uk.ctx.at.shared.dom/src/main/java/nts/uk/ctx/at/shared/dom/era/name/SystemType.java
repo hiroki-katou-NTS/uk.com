@@ -12,7 +12,7 @@ public enum SystemType {
 	NOT_SYSTEM(0, "Enum_SystemType_NOT_SYSTEM");
 	
 	/** The value. */
-	public final int value;
+	public final Integer value;
 	
 	/** The name id. */
 	public final String nameId;

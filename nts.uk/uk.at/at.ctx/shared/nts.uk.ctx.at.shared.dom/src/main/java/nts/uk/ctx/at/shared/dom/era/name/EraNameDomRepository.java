@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.era.name;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface EraNameDomRepository.
  */
@@ -13,6 +15,30 @@ public interface EraNameDomRepository {
 	 * @return the all era name
 	 */
 	List<EraNameDom> getAllEraName();
+	
+	/**
+	 * Gets the era name.
+	 *
+	 * @param eraNameId the era name id
+	 * @return the era name
+	 */
+	EraNameDom getEraNameById(String eraNameId);
+	
+	/**
+	 * Gets the era name by start date.
+	 *
+	 * @param strDate the str date
+	 * @return the era name by start date
+	 */
+	EraNameDom getEraNameByStartDate(GeneralDate strDate);
+	
+	/**
+	 * Gets the era name by end date.
+	 *
+	 * @param endDate the end date
+	 * @return the era name by end date
+	 */
+	EraNameDom getEraNameByEndDate(GeneralDate endDate);
 	
 	/**
 	 * Delete era name.
