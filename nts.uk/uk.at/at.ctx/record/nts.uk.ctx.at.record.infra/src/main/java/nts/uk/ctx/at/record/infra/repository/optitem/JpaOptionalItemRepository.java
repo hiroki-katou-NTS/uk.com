@@ -21,6 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK_;
@@ -214,6 +215,49 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.optionalItemAtr), atr.value));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Get results
+		List<KrcstOptionalItem> results = em.createQuery(cq).getResultList();
+
+		// Check empty
+		if (CollectionUtil.isEmpty(results)) {
+			return Collections.emptyList();
+		}
+
+		// Return
+		return results.stream().map(item -> new OptionalItem(new JpaOptionalItemGetMemento(item)))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#
+	 * findByPerformanceAtr(java.lang.String,
+	 * nts.uk.ctx.at.record.dom.optitem.PerformanceAtr)
+	 */
+	@Override
+	public List<OptionalItem> findByPerformanceAtr(String companyId, PerformanceAtr atr) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<KrcstOptionalItem> cq = builder.createQuery(KrcstOptionalItem.class);
+
+		// From table
+		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Add where condition
+		predicateList.add(builder.equal(
+				root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+				companyId));
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get results

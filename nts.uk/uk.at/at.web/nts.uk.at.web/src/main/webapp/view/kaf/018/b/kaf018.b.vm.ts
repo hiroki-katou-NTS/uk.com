@@ -20,7 +20,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         isDailyComfirm: boolean;
         listEmployeeCode: Array<any>;
         listWorkplace: Array<model.WorkplaceInfor>;
-        multiSelectedWorkplaceId: Array<any> = [];
+        inputContent: any;
+        
         constructor() {
             var self = this;
             $("#fixed-table").ntsFixedTable({ width: 1000, height: 163 });
@@ -39,7 +40,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             self.listEmployeeCode = params.listEmployeeCode;
             self.isDailyComfirm = params.isConfirmData;
             self.listWorkplace = params.listWorkplace;
-            self.multiSelectedWorkplaceId = params.multiSelectedWorkplaceId;
+            self.inputContent = params.inputContent;
+            
             let obj = {
                 startDate: self.startDate,
                 endDate: self.endDate,
@@ -124,7 +126,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         goBackA() {
             var self = this;
             let params = {
-                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
+                inputContent: self.inputContent
             };
              nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);    
         }
@@ -144,7 +146,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 listWorkplace: listWorkplace,
                 selectedWplIndex: index(),
                 listEmployeeCode: self.listEmployeeCode,
-                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
+                inputContent: self.inputContent
             };
             nts.uk.request.jump('/view/kaf/018/c/index.xhtml', params);
         }

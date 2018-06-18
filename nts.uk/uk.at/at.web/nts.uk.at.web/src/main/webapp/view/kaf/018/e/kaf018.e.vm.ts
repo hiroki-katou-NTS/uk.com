@@ -22,7 +22,9 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         listWkpActive: any;
         listWorkplaceId: Array<string>;
         listEmpCd: Array<string>;
-
+        multiSelectedWorkplaceId: Array<any>;
+        inputContent: any;
+        
         person: number;
         daily: number;
         monthly: number;
@@ -56,7 +58,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 self.isConfirmData = params.isConfirmData;
                 let listWorkplace = params.listWorkplace;
                 self.listEmpCd = params.listEmployeeCode;
-
+                self.inputContent = params.inputContent;
+                
                 let listWorkplaceId = [];
                 _.each(listWorkplace, function(item) {
                     listWorkplaceId.push(item.code)
@@ -181,8 +184,17 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 listWkp: self.listWkpActive,
                 selectedWplIndex: index(),
                 listEmployeeCode: self.listEmpCd,
+                inputContent: self.inputContent
             };
             nts.uk.request.jump('/view/kaf/018/f/index.xhtml', params);
+        }
+
+        goBackA() {
+            var self = this;
+            let params = {
+                inputContent: self.inputContent
+            };
+            nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);
         }
     }
 
