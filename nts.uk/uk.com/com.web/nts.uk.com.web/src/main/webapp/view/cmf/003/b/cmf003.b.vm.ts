@@ -494,6 +494,8 @@ module nts.uk.com.view.cmf003.b {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
+                
+                $("#nts-component-list button:nth-child(3)").trigger( "click" );
             }
 
             /**
@@ -541,6 +543,7 @@ module nts.uk.com.view.cmf003.b {
                         if (self.password() == self.confirmPassword()) {
                             if (self.categorys().length > 0) {
                                 self.next();
+                                $(".selectEmpType").focus();
                             } else {
                                 alertError({ messageId: 'Msg_463' });
                             }
@@ -550,6 +553,7 @@ module nts.uk.com.view.cmf003.b {
                     } else {
                         if (self.categorys().length > 0) {
                             self.next();
+                            $(".selectEmpType").focus();
                         } else {
                             alertError({ messageId: 'Msg_463' });
                         }
@@ -623,6 +627,7 @@ module nts.uk.com.view.cmf003.b {
             private previousB(): void {
                 var self = this;
                 self.previous();
+                $(".selectEmpType").focus();
             }
             private backToA() {
                 let self = this;
@@ -683,6 +688,7 @@ module nts.uk.com.view.cmf003.b {
                         setShared("CMF001_E_PARAMS", params);
                         nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml").onClosed(() => {
                             self.buton_E_enable(false);
+                            $(".goback").focus();
                         });
                     }
                 }).fail((err) => {

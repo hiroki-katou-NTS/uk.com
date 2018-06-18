@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 
 @Data
@@ -25,5 +26,9 @@ public class MPItemParent {
 	 * data has been changed
 	 */
 	private List<MPItemDetail> mPItemDetails;
+	
+	private GeneralDate startDate;
+	
+	private GeneralDate endDate;
 
 }

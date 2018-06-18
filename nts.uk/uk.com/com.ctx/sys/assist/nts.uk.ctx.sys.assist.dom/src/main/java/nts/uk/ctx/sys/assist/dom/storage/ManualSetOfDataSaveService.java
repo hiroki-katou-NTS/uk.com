@@ -20,8 +20,11 @@ import javax.persistence.EmbeddedId;
 
 import com.google.common.base.Strings;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.layer.app.file.storage.FileStorage;
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
@@ -118,7 +121,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		String saveFileName = null;
 		GeneralDateTime saveEndDatetime = null;
 		int deletedFiles = 0;
-		String compressedPassword = null;
+		String compressedPassword = manualSetting.getCompressedPassword().v();
 		int targetNumberPeople = 0;
 		int saveStatus = 0;
 		String fileId = null;
@@ -132,10 +135,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		repoDataSto.update(storeProcessingId, OperatingCondition.INPREPARATION);
 
 		// アルゴリズム「対象テーブルの選定と条件設定」を実行
-		ResultState resultState = selectTargetTable(storeProcessingId, manualSetting);
+		StringBuffer outCompressedFileName = new StringBuffer();
+		ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
 
 		if (resultState != ResultState.NORMAL_END) {
-			evaluateAbnormalEnd(storeProcessingId, 0);
+			evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
 			return;
 		}
 
@@ -148,7 +152,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		// 処理結果を判定
 		switch (resultState) {
 		case NORMAL_END:
-			evaluateNormalEnd(storeProcessingId, generatorContext, manualSetting, targetEmployees.size());
+			evaluateNormalEnd(storeProcessingId, generatorContext, manualSetting, targetEmployees.size(), outCompressedFileName.toString());
 			break;
 
 		case ABNORMAL_END:
@@ -162,7 +166,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	}
 
-	private ResultState selectTargetTable(String storeProcessingId, ManualSetOfDataSave optManualSetting) {
+	private ResultState selectTargetTable(String storeProcessingId, ManualSetOfDataSave optManualSetting, StringBuffer outCompressedFileName) {
 		// Get list category from
 		List<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
 		List<String> categoryIds = targetCategories.stream().map(x -> {
@@ -181,6 +185,13 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}
 
 		String cId = optManualSetting.getCid();
+		
+		// B42
+		String datetimenow = GeneralDateTime.now().toString();
+		SaveSetName savename = optManualSetting.getSaveSetName();
+		String compressedFileName = cId + savename.toString() + datetimenow;
+		outCompressedFileName.setLength(0);
+		outCompressedFileName = outCompressedFileName.append(compressedFileName);
 		for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
 
 			String categoryName = "";
@@ -191,7 +202,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			GeneralDate saveDateFrom = null;
 			GeneralDate saveDateTo = null;
 			int surveyPreservation = optManualSetting.getIdentOfSurveyPre().value;
-			String compressedFileName = "";
 			Optional<Category> category = categorys.stream()
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
 			if (category.isPresent()) {
@@ -225,10 +235,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 			String internalFileName = cId + categoryName + categoryFieldMt.getTableJapanName();
 
-			// B42
-			String datetimenow = LocalDateTime.now().toString();
-			SaveSetName savename = optManualSetting.getSaveSetName();
-			compressedFileName = cId + savename.toString() + datetimenow;
+			
 
 			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId, "",
 					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(),
@@ -283,6 +290,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 			repoTableList.add(listtable);
 		}
+		
 
 		return ResultState.NORMAL_END;
 	}
@@ -510,10 +518,18 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		try {
 			// ドメインモデル「データ保存動作管理」を取得し「中断終了」を判別
 			Optional<DataStorageMng> dataStorageMng = repoDataSto.getDataStorageMngById(storeProcessingId);
-			if (dataStorageMng.isPresent()
-					&& dataStorageMng.get().operatingCondition == OperatingCondition.INTERRUPTION_END) {
+
+			// TrungBV: Fix check interrupt
+			if (dataStorageMng.isPresent() && dataStorageMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
+				dataStorageMng.get().operatingCondition = EnumAdaptor.valueOf(OperatingCondition.INTERRUPTION_END.value, OperatingCondition.class);
+				repoDataSto.update(dataStorageMng.get());
 				return ResultState.INTERRUPTION;
 			}
+			
+//			if (dataStorageMng.isPresent()
+//					&& dataStorageMng.get().operatingCondition == OperatingCondition.INTERRUPTION_END) {
+//				return ResultState.INTERRUPTION;
+//			}
 
 			Class<?> tableExport = repoTableList.getTypeForTableName(tableList.getTableEnglishName());
 			List<?> listObject = repoTableList.getDataDynamic(tableList, tableExport);
@@ -572,7 +588,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private ResultState evaluateNormalEnd(String storeProcessingId, FileGeneratorContext generatorContext,
-			ManualSetOfDataSave optManualSetting, int totalTargetEmployees) {
+			ManualSetOfDataSave optManualSetting, int totalTargetEmployees, String outCompressedFileName) {
 		// ドメインモデル「データ保存動作管理」を更新する
 		repoDataSto.update(storeProcessingId, OperatingCondition.INPROGRESS);
 
@@ -602,8 +618,17 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 		// ドメインモデル「データ保存の保存結果」を書き出し
 		String fileId = generatorContext.getTaskId();
-		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.SUCCESS, fileId, NotUseAtr.NOT_USE);
-
+//		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.SUCCESS, fileId, NotUseAtr.NOT_USE);
+		Optional<ResultOfSaving> resultOfSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
+		if (resultOfSaving.isPresent()){
+			ResultOfSaving itemToBeUpdated = resultOfSaving.get();
+			itemToBeUpdated.setFileId(fileId);
+			itemToBeUpdated.setSaveStatus(SaveStatus.SUCCESS);
+			itemToBeUpdated.setTargetNumberPeople(totalTargetEmployees);
+			itemToBeUpdated.setSaveFileName(outCompressedFileName);
+			itemToBeUpdated.setDeletedFiles(NotUseAtr.NOT_USE);
+			repoResultSaving.update(itemToBeUpdated);
+		}
 		return ResultState.NORMAL_END;
 	}
 

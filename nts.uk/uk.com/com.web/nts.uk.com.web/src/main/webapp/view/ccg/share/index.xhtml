@@ -20,20 +20,24 @@
 					</com:ko>
 					<com:ko tag="if" bind="showClosure">
 						<div class="control-group ccg001-control-group">
-							<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
-							<div id="cbb-closure" tabindex="2" style="display: inline-table"
-								data-bind="ntsComboBox: {
-									name: '#[CCG001_28]',
-									options: closureList,
-									optionsValue: 'closureId',
-									value: selectedClosure,
-									optionsText: 'closureName',
-									editable: false,
-									enable: true,
-									columns: [
-										{ prop: 'closureId', length: 1 },
-										{ prop: 'closureName', length: 5 },
-									]}"></div>
+							<div class="ccg001-cell">
+								<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
+							</div>
+							<div class="ccg001-cell">
+								<div id="cbb-closure" tabindex="2" style="vertical-align: middle; margin-left: 4px;"
+									data-bind="ntsComboBox: {
+										name: '#[CCG001_28]',
+										options: closureList,
+										optionsValue: 'closureId',
+										value: selectedClosure,
+										optionsText: 'closureName',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'closureId', length: 1 },
+											{ prop: 'closureName', length: 5 },
+										]}"></div>
+							</div>
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showPeriod">

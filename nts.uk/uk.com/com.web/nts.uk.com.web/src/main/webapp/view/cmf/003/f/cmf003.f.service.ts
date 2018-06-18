@@ -9,7 +9,8 @@ module nts.uk.com.view.cmf003.f {
             findDataStorageMng: "ctx/sys/assist/app/findDataStorageMng/{0}",
             findResultOfSaving: "ctx/sys/assist/app/findResultOfSaving/{0}",
             setInterruptSaving: "ctx/sys/assist/app/setInterruptSaving",
-            deleteDataStorageMng: "ctx/sys/assist/app/deleteDataStorageMng"
+            deleteDataStorageMng: "ctx/sys/assist/app/deleteDataStorageMng",
+            updateResultOfSaving: "ctx/sys/assist/app/updateFileSize/{0}/{1}"
         }   
     
         /**
@@ -40,6 +41,14 @@ module nts.uk.com.view.cmf003.f {
          */
         export function setInterruptSaving(command: any): JQueryPromise<any> {
             return ajax("com", paths.setInterruptSaving, command);
+        }
+        
+        /**
+         * update filesize process
+         */
+        export function updateFileSize(storeProcessingId: string, fileId): JQueryPromise<any> {
+            let _path = format(paths.updateResultOfSaving, storeProcessingId, fileId);
+            return ajax('com', _path);
         }
     }
 }
