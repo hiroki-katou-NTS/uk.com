@@ -1213,18 +1213,18 @@ module nts.layout {
                 CS00017_IS00085: IFindData = finder.find('CS00017', 'IS00085'),
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
                 CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
-                initCDL008Data = (required: boolean = false) => {
+                initCDL008Data = (data: IItemData) => {
                     if (!!CS00017_IS00082) {
                         let v = CS00017_IS00082.data.value();
 
                         if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
                             setShared('inputCDL008', {
-                                selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
+                                selectedCodes: [data.value],
                                 baseDate: ko.toJS(moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate()),
                                 isMultiple: false,
                                 selectedSystemType: 5,
                                 isrestrictionOfReferenceRange: false,
-                                isRequire: required
+                                isRequire: data.required
                             }, true);
                         } else {
                             setShared('inputCDL008', null);
@@ -1297,7 +1297,7 @@ module nts.layout {
 
             if (CS00017_IS00084) {
                 CS00017_IS00084.ctrl.on('click', () => {
-                    initCDL008Data(ko.toJS(CS00017_IS00084.data.required));
+                    initCDL008Data(ko.toJS(CS00017_IS00084.data));
 
                     if (!!getShared('inputCDL008')) {
                         modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
@@ -1318,7 +1318,7 @@ module nts.layout {
 
             if (CS00017_IS00085) {
                 CS00017_IS00085.ctrl.on('click', () => {
-                    initCDL008Data(ko.toJS(CS00017_IS00085.data.required));
+                    initCDL008Data(ko.toJS(CS00017_IS00085.data));
 
                     if (!!getShared('inputCDL008')) {
                         modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {

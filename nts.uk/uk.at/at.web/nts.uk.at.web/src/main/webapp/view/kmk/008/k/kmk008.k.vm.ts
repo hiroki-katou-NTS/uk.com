@@ -155,7 +155,7 @@ module nts.uk.at.view.kmk008.k {
                                 nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
                                 return;
                             }
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.reloadData(yearOrYearMonth);
 
                         });
@@ -173,7 +173,7 @@ module nts.uk.at.view.kmk008.k {
                                 nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
                                 return;
                             }
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.reloadData(yearOrYearMonth);
 
                         });
@@ -199,7 +199,7 @@ module nts.uk.at.view.kmk008.k {
                                 nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
                                 return;
                             }
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.reloadData(self.currentCodeSelect());
 
                         });
@@ -217,7 +217,7 @@ module nts.uk.at.view.kmk008.k {
                                 nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
                                 return;
                             }
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.reloadData(self.currentCodeSelect());
 
                         });
@@ -231,14 +231,14 @@ module nts.uk.at.view.kmk008.k {
                         if (self.isYearMonth) {
                             new service.Service().removeAgreementMonthSetting(new DeleteMonthSettingModel(self.employeeId, self.currentSelectItem().yearOrYearMonthValue()))
                                 .done(function() {
-                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", [])).then(() => {
+                                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", [])).then(() => {
                                          self.reloadData(Number(self.currentSelectItem().yearOrYearMonthValue().toString().replace("/", "")), true);
                                     });
                                 });
                         } else {
                             new service.Service().removeAgreementYearSetting(new DeleteYearSettingModel(self.employeeId, self.currentSelectItem().yearOrYearMonthValue()))
                                 .done(function() {
-                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", [])).then(() => {
+                                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", [])).then(() => {
                                         self.reloadData(self.currentSelectItem().yearOrYearMonthValue(), true);
                                     });
                                 });
