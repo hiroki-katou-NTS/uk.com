@@ -398,7 +398,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         insertUpdate() {
             var self = this;
             let errorGrid: any = $("#dpGrid").ntsGrid("errors");
-            let dataUpdate = {
+            let dataUpdate = { 
                 /** 年月: 年月 */
                yearMonth : self.yearMonth(),
                 /** 締めID: 締めID */

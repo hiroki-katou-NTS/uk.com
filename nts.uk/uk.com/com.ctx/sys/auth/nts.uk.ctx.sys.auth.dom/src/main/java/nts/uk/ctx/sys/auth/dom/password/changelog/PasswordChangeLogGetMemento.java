@@ -13,7 +13,7 @@ public interface PasswordChangeLogGetMemento {
 	 *
 	 * @return the login id
 	 */
-	public LoginId getLoginId();
+	public String getLogId();
 	
 	/**
 	 * Gets the user id.
