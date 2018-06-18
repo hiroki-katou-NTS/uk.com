@@ -52,13 +52,13 @@
 					<!--A1_4 抽出条件の設定ボタン--> 
 					<button data-bind="{visible: showButton().available_A1_4, click: extractCondition}">#{i18n.getText('KMW003_5')}</button>
 					<!--A1_5 表示項目の選択ボタン--> 
-					<button data-bind="{click: displayItem, enable:showButton().enable_A1_5}">#{i18n.getText('KMW003_6')}</button>
+					<button data-bind="{click: displayItem, visible:showButton().enable_A1_5'">#{i18n.getText('KMW003_6')}</button>
 					<!--  対象外 --> 
 					<!--A1_6 修正履歴ボタン-->					
 					<!--A1_7 印刷ボタン--> 
 					<!--A1_8 ロック解除ボタン--> 
 					<com:ko-if bind="showButton().available_A1_8">
-						<button data-bind="{click:unlockProcess}">#{i18n.getText('KMW003_31')}</button>
+						<button data-bind="{click:unlockProcess}" class = "visibility: hidden">#{i18n.getText('KMW003_31')}</button>
 					</com:ko-if>
 					<!--A1_9 再ロックボタン--> 
 					<com:ko-if bind="showButton().available_A1_9">
@@ -86,7 +86,7 @@
 									value: yearMonth,
 									dateFormat: 'yearmonth',
 									valueFormat: 'YYYYMM',
-									showJumpButtons: true}" />
+									showJumpButtons: true}" id="yearMonthPicker"/>
 						<!--A4_3 実績期間--> 
 						<div id="dislayFormatLbl" class="label" style="width: 80px">#{i18n.getText('KMW003_11')}</div>
 						<!--A4_4 実績期間選択--> 
@@ -118,7 +118,7 @@
 						<!--A5_3 凡例ボタン--> 
 						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>
 						<!--A5_4 列幅保存ボタン--> 							
-						<button id="btn-saveColumnWidth" data-bind="{visible:showButton().available_A5_4, enable:showButton().enable_A5_4}">#{i18n.getText('KMW003_15')}</button>
+						<button id="btn-saveColumnWidth" data-bind="{visible:showButton().available_A5_4, enable:showButton().enable_A5_4, click : btnSaveColumnWidth_Click}">#{i18n.getText('KMW003_15')}</button>
 						<div class="setting-container">
 							<!--A5_5 画面固有情報の設定ボタン--> 
 							<button id="btn-setting" data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
