@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class HolidayWorkFrameTimeDto implements ItemConst {
 
 	/** 休出時間: 計算付き時間 */
-	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = HOLIDAY_WORK)
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME)
 	private CalcAttachTimeDto holidayWorkTime;
 
 	/** 振替時間: 計算付き時間 */
@@ -24,7 +24,7 @@ public class HolidayWorkFrameTimeDto implements ItemConst {
 
 	/** 事前申請時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = BEFOR_APPLICATION)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer beforeApplicationTime;
 
 	/** 休出枠NO: 休出枠NO */

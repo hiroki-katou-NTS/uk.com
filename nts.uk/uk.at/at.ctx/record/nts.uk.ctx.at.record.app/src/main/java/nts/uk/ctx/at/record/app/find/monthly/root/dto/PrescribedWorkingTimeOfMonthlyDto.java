@@ -17,12 +17,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class PrescribedWorkingTimeOfMonthlyDto implements ItemConst {
 
 	/** 計画所定労働時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = PLAN, layout = LAYOUT_A)
 	private int scheduleTime;
 
 	/** 実績所定労働時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ACTUAL, layout = LAYOUT_B)
 	private int recordTime;
 	
