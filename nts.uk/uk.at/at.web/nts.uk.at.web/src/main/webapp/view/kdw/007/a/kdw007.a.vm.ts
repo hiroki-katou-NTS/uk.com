@@ -914,6 +914,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                             }
                         }
+                        $("#displayLstWorkTypePlan").ntsError("clear");
                     });
                 } else {
                     this.displayLstWorkTypePlan("");
@@ -942,6 +943,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                             }
                         }
+                        $("#displayLstWorkTypeActual").ntsError("clear");
                     });
                 } else {
                     this.displayLstWorkTypeActual("");
@@ -1018,6 +1020,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                             }
                         }
+                        $("#displayLstWorkTimePlan").ntsError("clear");
                     });
                 } else {
                     this.displayLstWorkTimePlan("");
@@ -1046,6 +1049,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                             }
                         }
+                        $("#displayLstWorkTimeActual").ntsError("clear");
                     });
                 } else {
                     this.displayLstWorkTimeActual("");
