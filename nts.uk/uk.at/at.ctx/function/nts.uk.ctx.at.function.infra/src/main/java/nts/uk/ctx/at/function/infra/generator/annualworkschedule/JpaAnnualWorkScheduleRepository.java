@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -30,13 +31,12 @@ import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeOfManag
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
-import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
-import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYearAdapter;
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeData;
@@ -78,21 +78,20 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	@Inject
 	private GetAgreementPeriodFromYearAdapter getAgreementPeriodFromYearPub;
 	@Inject
-	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
-	@Inject
 	private AgreementTimeByPeriodAdapter agreementTimeByPeriodAdapter;
 
 	public static final String YM_FORMATER = "uuuu/MM";
 
 	@Override
 	public ExportData outputProcess(String cid, String setItemsOutputCd, Year fiscalYear, YearMonth startYm,
-			YearMonth endYm, List<Employee> employees, int printFormat) {
+			YearMonth endYm, List<Employee> employees, int printFormat, int breakPage) {
 		// 帳表出力前チェックをする
 		this.checkBeforOutput(startYm, endYm, employees);
 		// ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する -> client
 
 		final int numMonth = (int) startYm.until(endYm, ChronoUnit.MONTHS) + 1;
 		ExportData exportData = new ExportData();
+		exportData.setPageBreak(EnumAdaptor.valueOf(breakPage, PageBreakIndicator.class));
 		LocalDate endYmd = LocalDate.of(endYm.getYear(), endYm.getMonthValue(), 1).plus(1, ChronoUnit.MONTHS).minus(1,
 				ChronoUnit.DAYS);
 		List<String> employeeIds = employees.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
@@ -145,7 +144,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		header.setMonths(this.createMonthLabels(startYmClone, endYmClone));
 		exportData.setHeader(header);
 		// 社員を並び替える
-		exportData.setEmployeeIds(this.sortEmployees(employeeIds, endYmd));
+		// exportData.setEmployeeIds(this.sortEmployees(employeeIds, endYmd));
+		this.sortEmployees(exportData, endYmd);
 		// 「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		if (printFormat == 1) {
 			// アルゴリズム「年間勤務表の作成」を実行する
@@ -186,10 +186,38 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	private List<String> sortEmployees(List<String> employeeIds, LocalDate endYmd) {
 		List<String> listEmp = employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, 1, null, null,
 				GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0))));
-		if (listEmp == null || listEmp.isEmpty()) {
+		return listEmp;
+	}
+
+	private void sortEmployees(ExportData exportData, LocalDate endYmd) {
+		List<String> listEmpSorted = new ArrayList<>();
+		if (exportData.getPageBreak().equals(PageBreakIndicator.WORK_PLACE)) {
+			// Get all workplace
+			List<String> listWorkPlace = new ArrayList<>();
+			for (Map.Entry<String, EmployeeData> empData : exportData.getEmployees().entrySet()) {
+				listWorkPlace.add(empData.getValue().getEmployeeInfo().getWorkplaceCode());
+			}
+			// Distinct, sort work place
+			listWorkPlace = listWorkPlace.stream().distinct().sorted().collect(Collectors.toList());
+			// Sort employee foreach workplace
+			for (String wkp : listWorkPlace) {
+				List<String> listEmpIdOrgin = exportData.getEmployees().entrySet().stream()
+						.filter(x -> x.getValue().getEmployeeInfo().getWorkplaceCode().equals(wkp)).map(x -> x.getKey())
+						.collect(Collectors.toList());
+				List<String> listEmp =  this.sortEmployees(listEmpIdOrgin, endYmd);
+				listEmpSorted.addAll(listEmp);
+			}
+		} else {
+			List<String> listEmpIdOrgin = exportData.getEmployees().entrySet().stream().map(x -> x.getKey())
+					.collect(Collectors.toList());
+			List<String> listEmp = this.sortEmployees(listEmpIdOrgin, endYmd);
+			listEmpSorted.addAll(listEmp);
+		}	
+
+		if (listEmpSorted.isEmpty()) {
 			throw new BusinessException("Msg_885");
 		}
-		return listEmp;
+		exportData.setEmployeeIds(listEmpSorted);
 	}
 
 	/**
