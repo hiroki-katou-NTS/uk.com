@@ -236,7 +236,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			breakData.setOccurrenceDays(x.getOccurrenceDays().v());
 			remainRepo.getById(x.getBreakMngId()).ifPresent(y -> {
 				breakData.setMngAtr(EnumAdaptor.valueOf(y.getCreatorAtr().value, MngDataAtr.class));
-				breakData.setBreakDate(new CompensatoryDayoffDate(true, Optional.of(y.getYmd())));
+				breakData.setBreakDate(new CompensatoryDayoffDate(false, Optional.of(y.getYmd())));
 			});
 			outputData.add(breakData);
 		});
@@ -270,7 +270,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			Optional<InterimRemain> remainData = remainRepo.getById(x.getDayOffManaId());
 			remainData.ifPresent(y -> {
 				dayOffData.setCreateAtr(EnumAdaptor.valueOf(y.getCreatorAtr().value, MngDataAtr.class));
-				dayOffData.setDayOffDate(new CompensatoryDayoffDate(true, Optional.of(y.getYmd())));
+				dayOffData.setDayOffDate(new CompensatoryDayoffDate(false, Optional.of(y.getYmd())));
 			});
 			dayOffData.setDayOffId(x.getDayOffManaId());
 			dayOffData.setRequeiredDays(x.getRequiredDay().v());

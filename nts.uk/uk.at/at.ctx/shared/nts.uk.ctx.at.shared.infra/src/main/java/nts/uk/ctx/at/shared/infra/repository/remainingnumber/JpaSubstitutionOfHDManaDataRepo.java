@@ -159,7 +159,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	}
 
 	@Override
-	public List<SubstitutionOfHDManagementData> getByRemainDays(String sid, Double remainDays) {
+	public List<SubstitutionOfHDManagementData> getByRemainDays(String sid, double remainDays) {
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BY_SID_REMAINDAYS, KrcmtSubOfHDManaData.class)
 				.setParameter("sid", sid)
 				.setParameter("remainDays", remainDays)

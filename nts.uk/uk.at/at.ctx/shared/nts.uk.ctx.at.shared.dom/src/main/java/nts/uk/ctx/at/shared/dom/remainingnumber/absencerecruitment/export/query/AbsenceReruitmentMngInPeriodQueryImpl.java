@@ -265,7 +265,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		} else if (remainData.getCreatorAtr() == CreaterAtr.RECORD){
 			dataAtr = MngDataStatus.RECORD;
 		}
-		CompensatoryDayoffDate date = new CompensatoryDayoffDate(true, Optional.of(remainData.getYmd()));
+		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 		AbsRecDetailPara outData = new AbsRecDetailPara(remainData.getSID(), 
 				dataAtr,
 				date,
@@ -344,7 +344,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				unUseDays,
 				DigestionAtr.USED,
 				Optional.empty());
-		CompensatoryDayoffDate date = new CompensatoryDayoffDate(true, Optional.of(remainData.getYmd()));
+		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
 		if(remainData.getCreatorAtr() == CreaterAtr.SCHEDULE) {
 			dataAtr = MngDataStatus.SCHEDULE;
