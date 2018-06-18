@@ -90,4 +90,11 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @return
 	 */
 	AbsDaysRemain getOccurrenceUseDays(List<AbsRecDetailPara> lstDetailData, DatePeriod dateData);
+	/**
+	 * 消化区分と消滅日を計算する
+	 * @param lstDetailData
+	 * @param baseDate
+	 * @return
+	 */
+	List<AbsRecDetailPara> calDigestionAtr(List<AbsRecDetailPara> lstDetailData, GeneralDate baseDate);
 }

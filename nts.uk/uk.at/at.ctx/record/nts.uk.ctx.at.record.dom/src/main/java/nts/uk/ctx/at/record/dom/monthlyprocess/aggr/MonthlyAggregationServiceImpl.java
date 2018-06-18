@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
@@ -96,9 +97,15 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		int aggregatedCount = 0;
 		for (val employeeId : procEmployeeIds) {
 		
+			Stopwatches.reset("10000:社員ごと：" + employeeId);
+			Stopwatches.start("10000:社員ごと：" + employeeId);
+			
 			// 社員1人分の処理　（社員の月別実績を集計する）
 			status = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
 					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr);
+
+			Stopwatches.stop("10000:社員ごと：" + employeeId);
+			Stopwatches.printAll();
 
 			if (status == ProcessState.SUCCESS){
 				
