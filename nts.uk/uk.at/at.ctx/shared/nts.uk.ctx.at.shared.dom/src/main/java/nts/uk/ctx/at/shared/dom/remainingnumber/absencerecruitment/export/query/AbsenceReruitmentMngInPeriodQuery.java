@@ -3,20 +3,18 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AbsenceReruitmentMngInPeriodQuery {
 	/**
-	 * 期間内の振出振休残数を取得する
-	 * @param cid
-	 * @param sid
-	 * @param dateData
-	 * @param baseDate
-	 * @param mode: True: 月次か, false: その他か
+	 * Requestlist204 期間内の振出振休残数を取得する
 	 * @return
 	 */
-	AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, boolean mode);
+	AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput);
 	/**
 	 * 1.未相殺の振休(確定)を取得する
 	 * @param sid
@@ -48,4 +46,55 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @return
 	 */
 	double calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail);
+	/**
+	 * 6.残数と未消化を集計する
+	 * @param lstDataDetail 「振出振休明細」
+	 * @param baseDate 基準日
+	 * @return
+	 */
+	AbsDaysRemain getRemainUnDigestedDays(List<AbsRecDetailPara> lstDataDetail, GeneralDate baseDate);
+	/**
+	 * 3.未相殺の振休(暫定)を取得する
+	 * @return
+	 */
+	List<AbsRecDetailPara> getUnOffsetDaysAbsInterim(AbsRecMngInPeriodParamInput paramInput);
+	/**
+	 * 3-1.振出と紐付けをしない振休を取得する
+	 * @param lstAbsMng
+	 * @return
+	 */
+	AbsRecDetailPara getNotTypeRec(InterimAbsMng lstAbsMng, InterimRemain remainData);
+	/**
+	 * 4.未使用の振出(暫定)を取得する
+	 * @param paramInput
+	 * @return
+	 */
+	List<AbsRecDetailPara> getUnUseDayInterimRec(AbsRecMngInPeriodParamInput paramInput);
+	/**
+	 * 4-1.振休と紐付けをしない振出を取得する
+	 * @param interimRecMng
+	 * @param remainData
+	 * @return
+	 */
+	AbsRecDetailPara getUnUseDayOfRecInterim(InterimRecMng interimRecMng, InterimRemain remainData);
+	/**
+	 * 5.時系列順で相殺する
+	 * @param lstDetailData
+	 * @return
+	 */
+	List<AbsRecDetailPara> offsetSortTimes(List<AbsRecDetailPara> lstDetailData);
+	/**
+	 * 7.発生数・使用数を計算する
+	 * @param lstDetailData
+	 * @param dateData
+	 * @return
+	 */
+	AbsDaysRemain getOccurrenceUseDays(List<AbsRecDetailPara> lstDetailData, DatePeriod dateData);
+	/**
+	 * 消化区分と消滅日を計算する
+	 * @param lstDetailData
+	 * @param baseDate
+	 * @return
+	 */
+	List<AbsRecDetailPara> calDigestionAtr(List<AbsRecDetailPara> lstDetailData, GeneralDate baseDate);
 }

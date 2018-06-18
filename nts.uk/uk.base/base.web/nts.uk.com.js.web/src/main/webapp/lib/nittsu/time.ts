@@ -12,6 +12,7 @@ module nts.uk.time {
         "YYYY-M",
         "YYYYMM",
         "H:mm",
+        "H:mm:ss",
         "Hmm",
         "YYYY"];
     
@@ -318,6 +319,86 @@ module nts.uk.time {
         }
 
         return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
+    }
+    
+    export class ResultParseTimeWithSecond extends ResultParseTime {
+        second: number;
+        constructor(success, minus?, hours?, minutes?, second?, msg?) {
+            super(success, minus, hours, minutes, msg);
+            this.second = second;
+        }
+
+        static succeeded(minus, hours, minutes, second) {
+            return new ResultParseTimeWithSecond(true, minus, hours, minutes, second);
+        }
+
+        static failed() {
+            return new ResultParseTimeWithSecond(false);
+        }
+
+        format() {
+            if (!this.success)
+                return "";
+            return (this.minus ? '-' : '') + this.hours + ':' + text.padLeft(String(this.minutes), '0', 2)
+                        + ':' + text.padLeft(String(this.second), '0', 2);
+        }
+
+        toValue() {
+            if (!this.success)
+                return 0;
+            return (this.minus ? -1 : 1) * (this.hours * 60 * 60 + this.minutes * 60 + this.second);
+        }
+
+        getMsg() { return this.msg; }
+    }
+    
+    export function parseTimeWithSecond(time: any, isMinutes?: boolean): ResultParseTimeWithSecond {
+        if (time === undefined || time === null) {
+            return ResultParseTimeWithSecond.failed();
+        }
+        if (isMinutes) {
+            var totalMinuteX = ntsNumber.trunc(time / 60);
+            var secondX = ntsNumber.trunc(time % 60);
+            var minuteX = ntsNumber.trunc(totalMinuteX % 60);
+            var hoursX = ntsNumber.trunc(totalMinuteX / 60);
+            time = (time < 0 ? "-" : "") + hoursX + ":" + text.padLeft(minuteX.toString(), '0', 2)
+                                        + ":" + text.padLeft(secondX.toString(), '0', 2);
+        }
+        if (!(time instanceof String)) {
+            time = time.toString();
+        }
+        if (time.length < 1 || time.split(':').length > 3 || time.split('-').length > 2
+            || time.lastIndexOf('-') > 0 || (time.length == 1 && !ntsNumber.isNumber(time.charAt(0)))) {
+            return ResultParseTimeWithSecond.failed();
+        }
+
+        var minusNumber = time.charAt(0) === '-';
+        if (minusNumber) {
+            time = time.split('-')[1];
+        }
+        var minutes;
+        var hours;
+        var seconds;
+        if (time.indexOf(':') > -1) {
+            var times = time.split(':');
+            seconds = times[2];
+            minutes = times[1];
+            hours = times[0];
+        } else {
+            time = ntsNumber.trunc(time);
+            time = text.padLeft(time, "0", time.length > 6 ? time.length : 6);
+            var mAS = time.substr(-2, 4);
+            seconds = mAS.substr(-2, 2);
+            minutes = mAS.substr(0, 2);
+            hours = time.substr(0, time.length - 4);
+        }
+
+        if (!ntsNumber.isNumber(minutes, false) || parseInt(minutes) > 59 || !ntsNumber.isNumber(hours, false)
+             || !ntsNumber.isNumber(seconds, false) || parseInt(seconds) > 59) {
+            return ResultParseTimeWithSecond.failed();
+        }
+
+        return ResultParseTimeWithSecond.succeeded(minusNumber, parseInt(hours), parseInt(minutes), parseInt(seconds));
     }
 
     export class ResultParseYearMonth extends ParseResult {

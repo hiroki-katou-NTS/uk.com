@@ -170,7 +170,6 @@ public class TotalTimesFromDailyRecord {
 			
 			for (val totalTimes : totalTimesList){
 				if (totalTimes.getUseAtr() == UseAtr.NotUse) continue;
-				if (totalTimes.getTotalCondition().getAtdItemId() == null) continue;
 				val totalCountNo = totalTimes.getTotalCountNo();
 				val totalCondition = totalTimes.getTotalCondition();
 				val result = results.get(totalCountNo);
@@ -231,46 +230,42 @@ public class TotalTimesFromDailyRecord {
 				}
 				if (!isTargetAttendance) continue;
 				
-				// 日別実績を回数集計用のクラスに変換
-				val dailyConverter = attendanceItemConverter.createDailyConverter();
-				val dailyItems = dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
-				
-				// 勤務時間の判断
-				val itemValOpt = dailyItems.convert(totalCondition.getAtdItemId());
-				if (!itemValOpt.isPresent()) continue;
-				if (!itemValOpt.get().getValueType().isInteger()) continue;
-				Integer itemVal = itemValOpt.get().value();
-				boolean isTargetValue = true;
-				if (totalCondition.getLowerLimitSettingAtr() == UseAtr.Use){
-					// 下限未満なら、集計しない
-					if (totalCondition.getThresoldLowerLimit() != null){
-						if (itemVal < totalCondition.getThresoldLowerLimit().v()) isTargetValue = false;
+				if (totalTimes.getTotalCondition().getAtdItemId() != null){
+					
+					// 日別実績を回数集計用のクラスに変換
+					val dailyConverter = attendanceItemConverter.createDailyConverter();
+					val dailyItems = dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
+					
+					// 勤務時間の判断
+					val itemValOpt = dailyItems.convert(totalCondition.getAtdItemId());
+					if (!itemValOpt.isPresent()) continue;
+					if (!itemValOpt.get().getValueType().isInteger()) continue;
+					Integer itemVal = itemValOpt.get().value();
+					boolean isTargetValue = true;
+					if (totalCondition.getLowerLimitSettingAtr() == UseAtr.Use){
+						// 下限未満なら、集計しない
+						if (totalCondition.getThresoldLowerLimit() != null){
+							if (itemVal < totalCondition.getThresoldLowerLimit().v()) isTargetValue = false;
+						}
 					}
-				}
-				if (totalCondition.getUpperLimitSettingAtr() == UseAtr.Use){
-					// 上限以上なら、集計しない
-					if (totalCondition.getThresoldUpperLimit() != null){
-						if (itemVal >= totalCondition.getThresoldUpperLimit().v()) isTargetValue = false;
+					if (totalCondition.getUpperLimitSettingAtr() == UseAtr.Use){
+						// 上限以上なら、集計しない
+						if (totalCondition.getThresoldUpperLimit() != null){
+							if (itemVal >= totalCondition.getThresoldUpperLimit().v()) isTargetValue = false;
+						}
 					}
+					if (!isTargetValue) continue;
 				}
-				if (!isTargetValue) continue;
 
 				// 回数を取得
-				double count = 0.0;
-				if (workType.isOneDay()){
-					// 1日出勤系なら、1.0日を加算
-					if (workType.isAttendanceOrShootingOrHolidayWork(workType.getDailyWork().getOneDay())){
-						count += 1.0;
-					}
-				}
-				else {
-					// 午前出勤系・午後出勤系なら、それぞれ0.5日を加算
-					if (workType.isAttendanceOrShootingOrHolidayWork(workType.getDailyWork().getMorning())){
-						count += 0.5;
-					}
-					if (workType.isAttendanceOrShootingOrHolidayWork(workType.getDailyWork().getAfternoon())){
-						count += 0.5;
-					}
+				double count = 1.0;
+				switch (workType.getAttendanceHolidayAttr()){
+				case MORNING:
+				case AFTERNOON:
+					count += 0.5;
+					break;
+				default:
+					break;
 				}
 				switch (totalTimes.getCountAtr()){
 				case ONEDAY:
