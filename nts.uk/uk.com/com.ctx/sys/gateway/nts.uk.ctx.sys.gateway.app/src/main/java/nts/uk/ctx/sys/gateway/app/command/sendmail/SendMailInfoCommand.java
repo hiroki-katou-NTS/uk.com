@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.find.sendmail;
+package nts.uk.ctx.sys.gateway.app.command.sendmail;
 
 import lombok.Getter;
 
@@ -6,7 +6,7 @@ import lombok.Getter;
  * The Class LoginInfo.
  */
 @Getter
-public class LoginInfo {
+public class SendMailInfoCommand {
 	
 	/** The login id. */
 	private String loginId;
