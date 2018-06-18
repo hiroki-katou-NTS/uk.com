@@ -24,7 +24,9 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workinfo.WorkInformationOfD
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommand;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
@@ -105,64 +107,45 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	@Getter
 	private final RemarkOfDailyCommand remarks = new RemarkOfDailyCommand();
 
-	public DailyWorkCommonCommand getCommand(String group) {
-		DailyWorkCommonCommand command = null;
-		switch (group) {
-		case "A":
-			command = this.workInfo;
-			break;
-		case "B":
-			command = this.calcAttr;
-			break;
-		case "C":
-			command = this.affiliationInfo;
-			break;
-		case "D":
-			command = this.businessType;
-			break;
-		case "E":
-			command = this.outingTime;
-			break;
-		case "F":
-			command = this.breakTime;
-			break;
-		case "G":
-			command = this.attendanceTime;
-			break;
-		case "H":
-			command = this.attendanceTimeByWork;
-			break;
-		case "I":
-			command = this.timeLeaving;
-			break;
-		case "J":
-			command = this.shortWorkTime;
-			break;
-		case "K":
-			command = this.specificDateAttr;
-			break;
-		case "L":
-			command = this.attendanceLeavingGate;
-			break;
-		case "M":
-			command = this.optionalItem;
-			break;
-		case "N":
-			command = this.editState;
-			break;
-		case "O":
-			command = this.temporaryTime;
-			break;
-		case "P":
-			command = this.pcLogInfo;
-			break;
-		case "Q":
-			command = this.remarks;
-			break;
+	public DailyWorkCommonCommand getCommand(String layout) {
+		switch (layout) {
+		case DAILY_WORK_INFO_CODE:
+			return this.workInfo;
+		case DAILY_CALCULATION_ATTR_CODE:
+			return this.calcAttr;
+		case DAILY_AFFILIATION_INFO_CODE:
+			return this.affiliationInfo;
+		case DAILY_BUSINESS_TYPE_CODE:
+			return this.businessType;
+		case DAILY_OUTING_TIME_CODE:
+			return this.outingTime;
+		case DAILY_BREAK_TIME_CODE:
+			return this.breakTime;
+		case DAILY_ATTENDANCE_TIME_CODE:
+			return this.attendanceTime;
+		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+			return this.attendanceTimeByWork;
+		case DAILY_ATTENDACE_LEAVE_CODE:
+			return this.timeLeaving;
+		case DAILY_SHORT_TIME_CODE:
+			return this.shortWorkTime;
+		case DAILY_SPECIFIC_DATE_ATTR_CODE:
+			return this.specificDateAttr;
+		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+			return this.attendanceLeavingGate;
+		case DAILY_OPTIONAL_ITEM_CODE:
+			return this.optionalItem;
+		case DAILY_EDIT_STATE_CODE:
+			return this.editState;
+		case DAILY_TEMPORARY_TIME_CODE:
+			return this.temporaryTime;
+		case DAILY_PC_LOG_INFO_CODE:
+			return this.pcLogInfo;
+		case DAILY_REMARKS_CODE:
+			return this.remarks;
 		default:
-			break;
+			return null;
 		}
-		return command;
 	}
 
 	@Override
@@ -236,24 +219,26 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 
 	public DailyRecordDto toDto() {
 		return DailyRecordDto.builder()
-				.breakTime(breakTime.getData())
-				.editStates(editState.getData())
-				.attendanceLeavingGate(attendanceLeavingGate.getData().orElse(null))
-				.attendanceTime(attendanceTime.getData().orElse(null))
-				.attendanceTimeByWork(attendanceTimeByWork.getData().orElse(null))
+				.breakTime(breakTime.toDto())
+				.editStates(editState.toDto())
+				.attendanceLeavingGateO(attendanceLeavingGate.toDto())
+				.attendanceTimeO(attendanceTime.toDto())
+				.attendanceTimeByWorkO(attendanceTimeByWork.toDto())
 				.employeeId(getEmployeeId())
-				.optionalItems(optionalItem.getData().orElse(null))
-				.outingTime(outingTime.getData().orElse(null))
-				.pcLogInfo(pcLogInfo.getData().orElse(null))
-				.shortWorkTime(shortWorkTime.getData().orElse(null))
-				.specificDateAttr(specificDateAttr.getData().orElse(null))
-				.temporaryTime(temporaryTime.getData().orElse(null))
-				.timeLeaving(timeLeaving.getData().orElse(null))
-				.withAffiliationInfo(affiliationInfo.getData())
-				.withCalcAttr(calcAttr.getData())
-				.withErrors(errors.getData())
-				.withWorkInfo(workInfo.getData())
+				.optionalItemsO(optionalItem.toDto())
+				.outingTimeO(outingTime.toDto())
+				.pcLogInfoO(pcLogInfo.toDto())
+				.shortWorkTimeO(shortWorkTime.toDto())
+				.remarks(remarks.toDto())
+				.specificDateAttrO(specificDateAttr.toDto())
+				.temporaryTimeO(temporaryTime.toDto())
+				.timeLeavingO(timeLeaving.toDto())
+				.withAffiliationInfo(affiliationInfo.toDto())
+				.withCalcAttr(calcAttr.toDto())
+//				.withErrors(errors.getData())
+				.withWorkInfo(workInfo.toDto())
 				.workingDate(getWorkDate())
+				.withBusinessTypeO(businessType.toDto())
 				.complete();
 	}
 
@@ -279,6 +264,26 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	public DailyRecordWorkCommand withData(DailyRecordDto data) {
 		this.setRecords(data);
 		return this;
+	}
+	
+	public IntegrationOfDaily toDomain() {
+		return new IntegrationOfDaily(this.getWorkInfo().toDomain(), 
+										this.getCalcAttr().toDomain(), 
+										this.getAffiliationInfo().toDomain(),
+										this.getBusinessType().toDomain(), 
+										this.getPcLogInfo().toDomain(), 
+										new ArrayList<>(), 
+										this.getOutingTime().toDomain(), 
+										this.getBreakTime().toDomain(), 
+										this.getAttendanceTime().toDomain(), 
+										this.getAttendanceTimeByWork().toDomain(), 
+										this.getTimeLeaving().toDomain(), 
+										this.getShortWorkTime().toDomain(), 
+										this.getSpecificDateAttr().toDomain(), 
+										this.getAttendanceLeavingGate().toDomain(), 
+										this.getOptionalItem().toDomain(), 
+										this.getEditState().toDomain(), 
+										this.getTemporaryTime().toDomain());
 	}
 
 	public List<ItemValue> itemValues() {

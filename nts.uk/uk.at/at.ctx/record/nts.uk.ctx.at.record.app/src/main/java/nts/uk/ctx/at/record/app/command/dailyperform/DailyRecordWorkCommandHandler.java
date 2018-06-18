@@ -2,18 +2,19 @@ package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandAddHandler;
@@ -26,8 +27,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAt
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.erroralarm.EmployeeDailyPerErrorCommandAddHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.erroralarm.EmployeeDailyPerErrorCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandAddHandler;
@@ -53,146 +52,190 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
+import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 @Stateless
-public class DailyRecordWorkCommandHandler {
+public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	/** 勤務情報： 日別実績の勤務情報 */
 	@Inject
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "", index = 1)
+	@AttendanceItemLayout(layout = DAILY_WORK_INFO_CODE, 
+			jpPropertyName = DAILY_WORK_INFO_NAME, index = 1)
 	private WorkInformationOfDailyPerformCommandAddHandler workInfoAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "", index = 1)
+	@AttendanceItemLayout(layout = DAILY_WORK_INFO_CODE, 
+			jpPropertyName = DAILY_WORK_INFO_NAME, index = 1)
 	private WorkInformationOfDailyPerformCommandUpdateHandler workInfoUpdateHandler;
 
 	/** 計算区分： 日別実績の計算区分 */
 	@Inject
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "", index = 2)
+	@AttendanceItemLayout(layout = DAILY_CALCULATION_ATTR_CODE, 
+			jpPropertyName = DAILY_CALCULATION_ATTR_NAME, index = 2)
 	private CalcAttrOfDailyPerformanceCommandAddHandler calcAttrAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "", index = 2)
+	@AttendanceItemLayout(layout = DAILY_CALCULATION_ATTR_CODE,
+			jpPropertyName = DAILY_CALCULATION_ATTR_NAME, index = 2)
 	private CalcAttrOfDailyPerformanceCommandUpdateHandler calcAttrUpdateHandler;
 
 	/** 所属情報： 日別実績の所属情報 */
 	@Inject
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "", index = 3)
+	@AttendanceItemLayout(layout = DAILY_AFFILIATION_INFO_CODE, 
+			jpPropertyName = DAILY_AFFILIATION_INFO_NAME, index = 3)
 	private AffiliationInforOfDailyPerformCommandAddHandler affiliationInfoAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "", index = 3)
+	@AttendanceItemLayout(layout = DAILY_AFFILIATION_INFO_CODE, 
+			jpPropertyName = DAILY_AFFILIATION_INFO_NAME, index = 3)
 	private AffiliationInforOfDailyPerformCommandUpdateHandler affiliationInfoUpdateHandler;
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
+//	@Inject
+//	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
+//	private EmployeeDailyPerErrorCommandAddHandler errorAddHandler;
+//	@Inject
+//	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
+//	private EmployeeDailyPerErrorCommandUpdateHandler errorUpdateHandler;
+	
+	/** エラー一覧： 社員の日別実績エラー一覧 */
 	@Inject
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	private EmployeeDailyPerErrorCommandAddHandler errorAddHandler;
+	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE,
+			jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
+	private BusinessTypeOfDailyPerformCommandAddHandler businessTypeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	private EmployeeDailyPerErrorCommandUpdateHandler errorUpdateHandler;
+	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, 
+			jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
+	private BusinessTypeOfDailyPerformCommandUpdateHandler businessTypeUpdateHandler;
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
 	@Inject
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "", index = 5)
+	@AttendanceItemLayout(layout = DAILY_OUTING_TIME_CODE, 
+			jpPropertyName = DAILY_OUTING_TIME_NAME, index = 5)
 	private OutingTimeOfDailyPerformanceCommandAddHandler outingTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "", index = 5)
+	@AttendanceItemLayout(layout = DAILY_OUTING_TIME_CODE, 
+			jpPropertyName = DAILY_OUTING_TIME_NAME, index = 5)
 	private OutingTimeOfDailyPerformanceCommandUpdateHandler outingTimeUpdateHandler;
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
 	@Inject
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "", index = 6)
+	@AttendanceItemLayout(layout = DAILY_BREAK_TIME_CODE, 
+			jpPropertyName = DAILY_BREAK_TIME_NAME, index = 6)
 	private BreakTimeOfDailyPerformanceCommandAddHandler breakTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "", index = 6)
+	@AttendanceItemLayout(layout = DAILY_BREAK_TIME_CODE, 
+			jpPropertyName = DAILY_BREAK_TIME_NAME, index = 6)
 	private BreakTimeOfDailyPerformanceCommandUpdateHandler breakTimeUpdateHandler;
 
 	/** 勤怠時間: 日別実績の勤怠時間 */
 	@Inject
-	@AttendanceItemLayout(layout = "G", jpPropertyName = "", index = 7)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_CODE, 
+			jpPropertyName = DAILY_ATTENDANCE_TIME_NAME, index = 7)
 	private AttendanceTimeOfDailyPerformCommandAddHandler attendanceTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "G", jpPropertyName = "", index = 7)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_CODE, 
+			jpPropertyName = DAILY_ATTENDANCE_TIME_NAME, index = 7)
 	private AttendanceTimeOfDailyPerformCommandUpdateHandler attendanceTimeUpdateHandler;
 
 	/** 作業別勤怠時間: 日別実績の作業別勤怠時間 */
 	@Inject
-	@AttendanceItemLayout(layout = "H", jpPropertyName = "", index = 8)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_BY_WORK_CODE, 
+			jpPropertyName = DAILY_ATTENDANCE_TIME_BY_WORK_NAME, index = 8)
 	private AttendanceTimeByWorkOfDailyCommandAddHandler attendanceTimeByWorkAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "H", jpPropertyName = "", index = 8)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_BY_WORK_CODE, 
+			jpPropertyName = DAILY_ATTENDANCE_TIME_BY_WORK_NAME, index = 8)
 	private AttendanceTimeByWorkOfDailyCommandUpdateHandler attendanceTimeByWorkUpdateHandler;
 
 	/** 出退勤: 日別実績の出退勤 */
 	@Inject
-	@AttendanceItemLayout(layout = "I", jpPropertyName = "", index = 9)
+	@AttendanceItemLayout(layout = DAILY_ATTENDACE_LEAVE_CODE, 
+			jpPropertyName = DAILY_ATTENDACE_LEAVE_NAME, index = 9)
 	private TimeLeavingOfDailyPerformanceCommandAddHandler timeLeavingAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "I", jpPropertyName = "", index = 9)
+	@AttendanceItemLayout(layout = DAILY_ATTENDACE_LEAVE_CODE, 
+			jpPropertyName = DAILY_ATTENDACE_LEAVE_NAME, index = 9)
 	private TimeLeavingOfDailyPerformanceCommandUpdateHandler timeLeavingUpdatedHandler;
 
 	/** 短時間勤務時間帯: 日別実績の短時間勤務時間帯 */
 	@Inject
-	@AttendanceItemLayout(layout = "J", jpPropertyName = "", index = 10)
+	@AttendanceItemLayout(layout = DAILY_SHORT_TIME_CODE,  
+			jpPropertyName = DAILY_SHORT_TIME_NAME, index = 10)
 	private ShortTimeOfDailyCommandAddHandler shortWorkTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "J", jpPropertyName = "", index = 10)
+	@AttendanceItemLayout(layout = DAILY_SHORT_TIME_CODE,  
+			jpPropertyName = DAILY_SHORT_TIME_NAME, index = 10)
 	private ShortTimeOfDailyCommandUpdateHandler shortWorkTimeUpdateHandler;
 
 	/** 特定日区分: 日別実績の特定日区分 */
 	@Inject
-	@AttendanceItemLayout(layout = "K", jpPropertyName = "", index = 11)
+	@AttendanceItemLayout(layout = DAILY_SPECIFIC_DATE_ATTR_CODE,  
+			jpPropertyName = DAILY_SPECIFIC_DATE_ATTR_NAME,  index = 11)
 	private SpecificDateAttrOfDailyCommandAddHandler specificDateAttrAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "K", jpPropertyName = "", index = 11)
+	@AttendanceItemLayout(layout = DAILY_SPECIFIC_DATE_ATTR_CODE,  
+			jpPropertyName = DAILY_SPECIFIC_DATE_ATTR_NAME,  index = 11)
 	private SpecificDateAttrOfDailyCommandUpdateHandler specificDateAttrUpdateHandler;
 
 	/** 入退門: 日別実績の入退門 */
 	@Inject
-	@AttendanceItemLayout(layout = "L", jpPropertyName = "", index = 12)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_LEAVE_GATE_CODE,  
+			jpPropertyName = DAILY_ATTENDANCE_LEAVE_GATE_NAME,  index = 12)
 	private AttendanceLeavingGateOfDailyCommandAddHandler attendanceLeavingGateAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "L", jpPropertyName = "", index = 12)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_LEAVE_GATE_CODE,  
+			jpPropertyName = DAILY_ATTENDANCE_LEAVE_GATE_NAME,  index = 12)
 	private AttendanceLeavingGateOfDailyCommandUpdateHandler attendanceLeavingGateUpdateHandler;
 
 	/** 任意項目: 日別実績の任意項目 */
 	@Inject
-	@AttendanceItemLayout(layout = "M", jpPropertyName = "", index = 13)
+	@AttendanceItemLayout(layout = DAILY_OPTIONAL_ITEM_CODE,  
+			jpPropertyName = DAILY_ATTENDACE_LEAVE_NAME,  index = 13)
 	private OptionalItemOfDailyPerformCommandAddHandler optionalItemAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "M", jpPropertyName = "", index = 13)
+	@AttendanceItemLayout(layout = DAILY_OPTIONAL_ITEM_CODE,  
+			jpPropertyName = DAILY_OPTIONAL_ITEM_NAME,  index = 13)
 	private OptionalItemOfDailyPerformCommandUpdateHandler optionalItemUpdateHandler;
 
 	/** 編集状態: 日別実績の編集状態 */
 	@Inject
-	@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
+	@AttendanceItemLayout(layout = DAILY_EDIT_STATE_CODE,  
+			jpPropertyName = DAILY_EDIT_STATE_NAME,  index = 14)
 	private EditStateOfDailyPerformCommandAddHandler editStateAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
+	@AttendanceItemLayout(layout = DAILY_EDIT_STATE_CODE,  
+			jpPropertyName = DAILY_EDIT_STATE_NAME,  index = 14)
 	private EditStateOfDailyPerformCommandUpdateHandler editStateUpdateHandler;
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
 	@Inject
-	@AttendanceItemLayout(layout = "O", jpPropertyName = "", index = 15)
+	@AttendanceItemLayout(layout = DAILY_TEMPORARY_TIME_CODE,  
+			jpPropertyName = DAILY_TEMPORARY_TIME_NAME,  index = 15)
 	private TemporaryTimeOfDailyPerformanceCommandAddHandler temporaryTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "O", jpPropertyName = "", index = 15)
+	@AttendanceItemLayout(layout = DAILY_TEMPORARY_TIME_CODE,  
+			jpPropertyName = DAILY_TEMPORARY_TIME_NAME,  index = 15)
 	private TemporaryTimeOfDailyPerformanceCommandUpdateHandler temporaryTimeUpdateHandler;
 	
 	@Inject
-	@AttendanceItemLayout(layout = "P", jpPropertyName = "", index = 16)
+	@AttendanceItemLayout(layout = DAILY_PC_LOG_INFO_CODE,  
+			jpPropertyName = DAILY_PC_LOG_INFO_NAME,  index = 16)
 	private PCLogInfoOfDailyCommandAddHandler pcLogInfoAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "P", jpPropertyName = "", index = 16)
+	@AttendanceItemLayout(layout = DAILY_PC_LOG_INFO_CODE,  
+			jpPropertyName = DAILY_PC_LOG_INFO_NAME,  index = 16)
 	private PCLogInfoOfDailyCommandUpdateHandler pcLogInfoUpdateHandler;
 
 	@Inject
-	@AttendanceItemLayout(layout = "Q", jpPropertyName = "", index = 17)
+	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE,  
+			jpPropertyName = DAILY_REMARKS_NAME,  index = 17)
 	private RemarkOfDailyCommandAddHandler remarksAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "Q", jpPropertyName = "", index = 17)
+	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE,  
+			jpPropertyName = DAILY_REMARKS_NAME,  index = 17)
 	private RemarkOfDailyCommandUpdateHandler remarksUpdateHandler;
 	
 	@Inject
@@ -207,14 +250,19 @@ public class DailyRecordWorkCommandHandler {
 	@Inject
 	private DailyRecordWorkFinder finder;
 	
-	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList("G");
+	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE);
 	
-	private final List<String> DOMAIN_CHANGE_EVENT = Arrays.asList("A", "I");
-	
-	private final Map<String, List<String>> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
+	private final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
-		DOMAIN_CHANGED_BY_EVENT.put("A", Arrays.asList("I", "F"));
-		DOMAIN_CHANGED_BY_EVENT.put("I", Arrays.asList("F"));
+		DOMAIN_CHANGED_BY_EVENT.put(DAILY_WORK_INFO_CODE, 
+									getArray(DAILY_ATTENDACE_LEAVE_CODE, 
+											DAILY_BREAK_TIME_CODE));
+		DOMAIN_CHANGED_BY_EVENT.put(DAILY_ATTENDACE_LEAVE_CODE, 
+									getArray(DAILY_BREAK_TIME_CODE));
+	}
+	
+	private String[] getArray(String... arrays){
+		return arrays;
 	}
 
 	public void handleAdd(DailyRecordWorkCommand command) {
@@ -237,148 +285,186 @@ public class DailyRecordWorkCommandHandler {
 		handler(Arrays.asList(command), isUpdate);
 	}
 	
-	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void handler(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
 		registerNotCalcDomain(commands, isUpdate);
 		
-		Set<String> mapped = new HashSet<>();
-		List<EmployeeDailyPerError> errors = calcIfNeed(mapped, commands);
-		commands.stream().forEach(command -> {
-			mapped.stream().forEach(c -> {
-				CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
-				if(handler != null){
-					handler.handle((T) command.getCommand(c));
-				}
+		List<IntegrationOfDaily> calced = calcIfNeed(commands);
+		
+		updateDomainAfterCalc(commands, isUpdate, calced);
+		
+		registerErrorWhenCalc(toMapParam(commands), 
+				calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<DailyRecordWorkCommand> commands,
+			boolean isUpdate, List<IntegrationOfDaily> calced) {
+		commands.stream().forEach(c -> {
+			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
+					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
+			.findFirst().ifPresent(d -> {
+				DOMAIN_CHANGED_BY_CALCULATE.stream().forEach(layout -> {
+					T command = (T) c.getCommand(layout);
+					Object updatedD = getDomain(layout, d);
+					if(updatedD != null){
+						updateCommandData(command, updatedD);
+						CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
+						if(handler != null){
+							handler.handle(command);
+						}
+					}
+				});
+				
 			});
 		});
-		
-		//check and insert error;
-//		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
+	}
+
+	private void registerErrorWhenCalc(Map<String, List<GeneralDate>> param, List<EmployeeDailyPerError> errors) {
+		//remove data error
+		employeeDailyPerErrorRepository.removeParam(param);
+		//insert error;
 		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void registerNotCalcDomain(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
 		commands.stream().forEach(command -> {
-			Set<String> mapped = new LinkedHashSet<>();
-			mapped.add("N");
-			mapped.addAll(command.itemValues().stream().map(c -> getGroup(c)).distinct().collect(Collectors.toSet()));
+			handleEditStates(isUpdate, command);
+			
+			List<String> mapped = command.itemValues().stream().map(c -> getGroup(c)).distinct().collect(Collectors.toList());
+			
 			mapped.stream().filter(c -> !DOMAIN_CHANGED_BY_CALCULATE.contains(c)).forEach(c -> {
 				CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
 				if(handler != null){
 					handler.handle((T) command.getCommand(c));
 				}
 			});
-			//remove data error
-			employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
-			Set<String> updating = new HashSet<>();
-			DOMAIN_CHANGE_EVENT.stream().filter(l -> mapped.contains(l)).forEach(l -> {
-				updating.addAll(DOMAIN_CHANGED_BY_EVENT.get(l));
-			});
-			updating.stream().forEach(layout -> {
-				ConvertibleAttendanceItem updatedD = finder.getFinder(layout).find(command.getEmployeeId(), command.getWorkDate());
-				command.getCommand(layout).setRecords(updatedD);
-			});
-		});
-	}
-	
-	private List<EmployeeDailyPerError> calcIfNeed(Set<String> group, List<DailyRecordWorkCommand> commands){
-		List<IntegrationOfDaily> mapped = commands.stream().map(c -> toDomain(c)).collect(Collectors.toList());
-		List<IntegrationOfDaily> calced = calcService.calculate(mapped);
-		commands.stream().forEach(c -> {
-			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
-					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
-			.findFirst().ifPresent(d -> {
-				c.getAttendanceTime().updateData(d.getAttendanceTimeOfDailyPerformance().orElse(null));
+			
+			DOMAIN_CHANGED_BY_EVENT.values().stream().flatMap(x -> Arrays.stream(x)).distinct().forEach(layout -> {
+				if(mapped.contains(layout)){
+					FinderFacade cFinder = finder.getFinder(layout);
+					if(cFinder != null){
+						Object updatedD = cFinder.getDomain(command.getEmployeeId(), command.getWorkDate());
+						updateCommandData(command.getCommand(layout), updatedD);
+					}
+				}
 			});
 		});
-		group.addAll(DOMAIN_CHANGED_BY_CALCULATE);
-		return calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList());
-//		}
 	}
 
-	private IntegrationOfDaily toDomain(DailyRecordWorkCommand c) {
-		return new IntegrationOfDaily(c.getWorkInfo().toDomain(), 
-										c.getCalcAttr().toDomain(), 
-										c.getAffiliationInfo().toDomain(),
-										c.getBusinessType().toDomain(), 
-										c.getPcLogInfo().toDomain(), 
-										Arrays.asList(c.getErrors().toDomain()), 
-										c.getOutingTime().toDomain(), 
-										c.getBreakTime().toDomain(), 
-										c.getAttendanceTime().toDomain(), 
-										c.getAttendanceTimeByWork().toDomain(), 
-										c.getTimeLeaving().toDomain(), 
-										c.getShortWorkTime().toDomain(), 
-										c.getSpecificDateAttr().toDomain(), 
-										c.getAttendanceLeavingGate().toDomain(), 
-										c.getOptionalItem().toDomain(), 
-										c.getEditState().toDomain(), 
-										c.getTemporaryTime().toDomain());
+	@SuppressWarnings({ "unchecked" })
+	private <T extends DailyWorkCommonCommand> void handleEditStates(boolean isUpdate, DailyRecordWorkCommand command) {
+		CommandFacade<T> handler = (CommandFacade<T>) getHandler(DAILY_EDIT_STATE_CODE, isUpdate);
+		if(handler != null){
+			handler.handle((T) command.getCommand(DAILY_EDIT_STATE_CODE));
+		}
 	}
 	
-	private CommandFacade<?> getHandler(String group, boolean isUpdate) {
-		CommandFacade<?> handler = null;
-		switch (group) {
-		case "A":
-			handler = isUpdate ? this.workInfoUpdateHandler : this.workInfoAddHandler;
-			break;
-		case "B":
-			handler = isUpdate ? this.calcAttrUpdateHandler : this.calcAttrAddHandler;
-			break;
-		case "C":
-			handler = isUpdate ? this.affiliationInfoUpdateHandler : this.affiliationInfoAddHandler;
-			break;
-		case "D":
-			handler = isUpdate ? this.errorUpdateHandler : this.errorAddHandler;
-			break;
-		case "E":
-			handler = isUpdate ? this.outingTimeUpdateHandler : this.outingTimeAddHandler;
-			break;
-		case "F":
-			handler = isUpdate ? this.breakTimeUpdateHandler : this.breakTimeAddHandler;
-			break;
-		case "G":
-			handler = isUpdate ? this.attendanceTimeUpdateHandler : this.attendanceTimeAddHandler;
-			break;
-		case "H":
-			handler = isUpdate ? this.attendanceTimeByWorkUpdateHandler : this.attendanceTimeByWorkAddHandler;
-			break;
-		case "I":
-			handler = isUpdate ? this.timeLeavingUpdatedHandler : this.timeLeavingAddHandler;
-			break;
-		case "J":
-			handler = isUpdate ? this.shortWorkTimeUpdateHandler : this.shortWorkTimeAddHandler;
-			break;
-		case "K":
-			handler = isUpdate ? this.specificDateAttrUpdateHandler : this.specificDateAttrAddHandler;
-			break;
-		case "L":
-			handler = isUpdate ? this.attendanceLeavingGateUpdateHandler : this.attendanceLeavingGateAddHandler;
-			break;
-		case "M":
-			handler = isUpdate ? this.optionalItemUpdateHandler : this.optionalItemAddHandler;
-			break;
-		case "N":
-			handler = isUpdate ? this.editStateUpdateHandler : this.editStateAddHandler;
-			break;
-		case "O":
-			handler = isUpdate ? this.temporaryTimeUpdateHandler : this.temporaryTimeAddHandler;
-			break;
-		case "P":
-			handler = isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
-			break;
-		case "Q":
-			handler = isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
-			break;
-		default:
-			break;
+	private List<IntegrationOfDaily> calcIfNeed(List<DailyRecordWorkCommand> commands){
+		return calcService.calculate(commands.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	}
+
+	private <T extends DailyWorkCommonCommand> void updateCommandData(T command, Object updatedD) {
+		if(ConvertHelper.isCollection(updatedD)){
+			command.updateDatas((List<?>) updatedD);
+		} else if (ConvertHelper.isOptional(updatedD)) {
+			command.updateDataO((Optional<?>) updatedD);
+		} else {
+			command.updateData(updatedD);
 		}
-		return handler;
+	}
+	
+	private CommandFacade<?> getHandler(String layout, boolean isUpdate) {
+		switch (layout) {
+		case DAILY_WORK_INFO_CODE:
+			return isUpdate ? this.workInfoUpdateHandler : this.workInfoAddHandler;
+		case DAILY_CALCULATION_ATTR_CODE:
+			return isUpdate ? this.calcAttrUpdateHandler : this.calcAttrAddHandler;
+		case DAILY_AFFILIATION_INFO_CODE:
+			return isUpdate ? this.affiliationInfoUpdateHandler : this.affiliationInfoAddHandler;
+		case DAILY_BUSINESS_TYPE_CODE:
+			return isUpdate ? this.businessTypeUpdateHandler : this.businessTypeAddHandler;
+		case DAILY_OUTING_TIME_CODE:
+			return isUpdate ? this.outingTimeUpdateHandler : this.outingTimeAddHandler;
+		case DAILY_BREAK_TIME_CODE:
+			return isUpdate ? this.breakTimeUpdateHandler : this.breakTimeAddHandler;
+		case DAILY_ATTENDANCE_TIME_CODE:
+			return isUpdate ? this.attendanceTimeUpdateHandler : this.attendanceTimeAddHandler;
+		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+			return isUpdate ? this.attendanceTimeByWorkUpdateHandler : this.attendanceTimeByWorkAddHandler;
+		case DAILY_ATTENDACE_LEAVE_CODE:
+			return isUpdate ? this.timeLeavingUpdatedHandler : this.timeLeavingAddHandler;
+		case DAILY_SHORT_TIME_CODE:
+			return isUpdate ? this.shortWorkTimeUpdateHandler : this.shortWorkTimeAddHandler;
+		case DAILY_SPECIFIC_DATE_ATTR_CODE:
+			return isUpdate ? this.specificDateAttrUpdateHandler : this.specificDateAttrAddHandler;
+		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+			return isUpdate ? this.attendanceLeavingGateUpdateHandler : this.attendanceLeavingGateAddHandler;
+		case DAILY_OPTIONAL_ITEM_CODE:
+			return isUpdate ? this.optionalItemUpdateHandler : this.optionalItemAddHandler;
+		case DAILY_EDIT_STATE_CODE:
+			return isUpdate ? this.editStateUpdateHandler : this.editStateAddHandler;
+		case DAILY_TEMPORARY_TIME_CODE:
+			return isUpdate ? this.temporaryTimeUpdateHandler : this.temporaryTimeAddHandler;
+		case DAILY_PC_LOG_INFO_CODE:
+			return isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
+		case DAILY_REMARKS_CODE:
+			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
+		default:
+			return null;
+		}
+	}
+
+	private Object getDomain(String layout, IntegrationOfDaily d) {
+		switch (layout) {
+		case DAILY_WORK_INFO_CODE:
+			return d.getWorkInformation();
+		case DAILY_CALCULATION_ATTR_CODE:
+			return d.getCalAttr();
+		case DAILY_AFFILIATION_INFO_CODE:
+			return d.getAffiliationInfor();
+		case DAILY_BUSINESS_TYPE_CODE:
+			return d.getBusinessType();
+		case DAILY_OUTING_TIME_CODE:
+			return d.getOutingTime();
+		case DAILY_BREAK_TIME_CODE:
+			return d.getBreakTime();
+		case DAILY_ATTENDANCE_TIME_CODE:
+			return d.getAttendanceTimeOfDailyPerformance();
+		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+			return d.getAttendancetimeByWork();
+		case DAILY_ATTENDACE_LEAVE_CODE:
+			return d.getAttendanceLeave();
+		case DAILY_SHORT_TIME_CODE:
+			return d.getShortTime();
+		case DAILY_SPECIFIC_DATE_ATTR_CODE:
+			return d.getSpecDateAttr();
+		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+			return d.getAttendanceLeavingGate();
+		case DAILY_OPTIONAL_ITEM_CODE:
+			return d.getAnyItemValue();
+		case DAILY_EDIT_STATE_CODE:
+			return d.getEditState();
+		case DAILY_TEMPORARY_TIME_CODE:
+			return d.getTempTime();
+		case DAILY_PC_LOG_INFO_CODE:
+			return d.getPcLogOnInfo();
+		case DAILY_REMARKS_CODE:
+			return null;
+		default:
+			return null;
+		}
 	}
 
 	private String getGroup(ItemValue c) {
 		return String.valueOf(c.layoutCode().charAt(0));
+	}
+
+	private Map<String, List<GeneralDate>> toMapParam(List<DailyRecordWorkCommand> commands) {
+		return commands.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
+														Collectors.collectingAndThen(Collectors.toList(), 
+																c -> c.stream().map(q -> q.getWorkDate())
+																				.collect(Collectors.toList()))));
 	}
 
 }

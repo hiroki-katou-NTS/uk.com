@@ -187,6 +187,9 @@ public class FlexTimeOfMonthly {
 		GeneralDate procDate = datePeriod.start();
 		int procWeekNo = startWeekNo;
 		
+		// 「処理中の週開始日」を期間．開始日にする
+		GeneralDate procWeekStartDate = datePeriod.start();
+		
 		// 処理をする期間の日数分ループ
 		while (procDate.beforeOrEquals(datePeriod.end())){
 			
@@ -225,10 +228,10 @@ public class FlexTimeOfMonthly {
 			if (MonthlyCalculation.isAggregateWeek(procDate, WeekStart.TighteningStartDate, datePeriod, closureOpt)){
 			
 				// 週の期間を計算
-				DatePeriod weekAggrPeriod = new DatePeriod(procDate.addDays(-6), procDate);
-				if (weekAggrPeriod.start().before(datePeriod.start())) {
-					weekAggrPeriod = new DatePeriod(datePeriod.start(), procDate);
-				}
+				DatePeriod weekAggrPeriod = new DatePeriod(procWeekStartDate, procDate);
+				
+				// 翌週の開始日を設定しておく
+				procWeekStartDate = procDate.addDays(1);
 				
 				// 対象の「週別実績の勤怠時間」を作成する
 				val newWeek = new AttendanceTimeOfWeekly(employeeId, yearMonth, closureId, closureDate,
@@ -239,9 +242,10 @@ public class FlexTimeOfMonthly {
 				{
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
-					weekCalc.aggregate(companyId, employeeId, yearMonth, datePeriod, weekAggrPeriod,
-							workingSystem, aggregateAtr, procDate,
-							null, null, aggregateTotalWorkingTime, WeekStart.TighteningStartDate,
+					weekCalc.aggregate(companyId, employeeId, yearMonth, weekAggrPeriod,
+							workingSystem, aggregateAtr,
+							null, null, aggregateTotalWorkingTime,
+							WeekStart.TighteningStartDate, new AttendanceTimeMonth(0),
 							attendanceTimeOfDailyMap, repositories);
 					resultWeeks.add(newWeek);
 					

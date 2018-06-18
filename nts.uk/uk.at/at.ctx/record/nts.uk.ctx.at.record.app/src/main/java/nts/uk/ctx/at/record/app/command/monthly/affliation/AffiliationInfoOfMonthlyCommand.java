@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.monthly.affliation;
 import lombok.Getter;
 import nts.uk.ctx.at.record.app.command.monthly.MonthlyWorkCommonCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.AffiliationInfoOfMonthlyDto;
+import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 public class AffiliationInfoOfMonthlyCommand extends MonthlyWorkCommonCommand{
@@ -20,5 +21,12 @@ public class AffiliationInfoOfMonthlyCommand extends MonthlyWorkCommonCommand{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public AffiliationInfoOfMonthly toDomain() {
+		return data.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate());
+	}
+	
+	
 
 }

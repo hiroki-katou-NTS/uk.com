@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.specialholiday;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface SpecialHolidayRepository {
@@ -38,6 +39,11 @@ public interface SpecialHolidayRepository {
 	 * @return
 	 */
 	boolean checkExists(String companyCode, int specialHolidayCode);
-	
-	
+	/**
+	 * ドメインモデル「特別休暇」を取得する
+	 * @param cid
+	 * @param specialCode
+	 * @return
+	 */
+	Optional<SpecialHoliday> findByCidHolidayCd(String cid, int specialCode);
 }

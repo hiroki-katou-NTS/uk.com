@@ -203,6 +203,7 @@ project (':com.file:nts.uk.file.com.app') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project(':query:nts.uk.query.pub')
 	}
 }
 
@@ -218,6 +219,7 @@ project (':com.file:nts.uk.file.com.infra') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
+		compile project(':query:nts.uk.query.pub')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')		
 	}
 }
@@ -322,6 +324,7 @@ project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ws') {
 project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 

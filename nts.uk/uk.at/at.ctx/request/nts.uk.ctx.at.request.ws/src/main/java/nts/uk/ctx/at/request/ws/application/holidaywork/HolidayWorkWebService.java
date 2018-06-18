@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
@@ -22,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculati
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @Path("at/request/application/holidaywork")
@@ -63,9 +63,8 @@ public class HolidayWorkWebService extends WebService{
 	}
 	@POST
 	@Path("create")
-	public JavaTypeResult<String> createHolidayWork(CreateHolidayWorkCommand command){
-		JavaTypeResult<String>  test = new JavaTypeResult<String>(createHolidayWorkCommandHandler.handle(command)); 
-		return test;
+	public ProcessResult createHolidayWork(CreateHolidayWorkCommand command){
+		return createHolidayWorkCommandHandler.handle(command); 
 	}
 	@POST
 	@Path("checkBeforeRegister")
@@ -84,9 +83,8 @@ public class HolidayWorkWebService extends WebService{
 	}
 	@POST
 	@Path("update")
-	public List<String> updateHolidayWork(UpdateHolidayWorkCommand command){
-		List<String>  test = updateHolidayWorkCommandHandle.handle(command); 
-		return test;
+	public ProcessResult updateHolidayWork(UpdateHolidayWorkCommand command){
+		return updateHolidayWorkCommandHandle.handle(command); 
 	}
 	@POST
 	@Path("getRecordWork")

@@ -70,6 +70,7 @@ module nts.uk.ui.exTable {
         pasteOverWrite: boolean = true;
         stickOverWrite: boolean = true;
         viewMode: string;
+        overflowTooltipOn: boolean = false;
         determination: any;
         modifications: any;
         
@@ -97,6 +98,8 @@ module nts.uk.ui.exTable {
             this.pasteOverWrite = options.pasteOverWrite;
             this.stickOverWrite = options.stickOverWrite;
             this.viewMode = options.viewMode;
+            this.overflowTooltipOn = !util.isNullOrUndefined(options.showTooltipIfOverflow)
+                                            ? options.showTooltipIfOverflow : false;
             this.determination = options.determination;
             this.features = options.features;
             $.data(this.$container, internal.X_OCCUPY, this.windowXOccupation);
@@ -182,10 +185,16 @@ module nts.uk.ui.exTable {
         setHeaderClass(options: any, part: string) {
             options.tableClass = HEADER_TBL_PRF + part;
             options.containerClass = HEADER_PRF + part;
+            if (util.isNullOrUndefined(options.showTooltipIfOverflow)) {
+                options.overflowTooltipOn = this.overflowTooltipOn;
+            }
         }
         setBodyClass(options: any, part: string) {
             options.tableClass = BODY_TBL_PRF + part;
             options.containerClass = BODY_PRF + part;
+            if (util.isNullOrUndefined(options.showTooltipIfOverflow)) {
+                options.overflowTooltipOn = this.overflowTooltipOn;
+            }
         }
         
         /**
@@ -700,7 +709,7 @@ module nts.uk.ui.exTable {
             if (rowCount > 1) {
                 _.forEach(Object.keys(level), function(key: any) {
                     _.forEach(level[key], function(col: any) {
-                        if (util.isNullOrUndefined(col.colspan) || col.colspan === 1) {
+                        if (util.isNullOrUndefined(col.colspan)) {
                             col.rowspan = rowCount - parseInt(key);
                         }
                     });
@@ -815,6 +824,8 @@ module nts.uk.ui.exTable {
                    style.detCell(self.$container, td, rowIdx, key);
                    tdStyle += "; padding: 0px;";
                    td.style.cssText += tdStyle;
+                    
+                   if (self.options.overflowTooltipOn) widget.textOverflow(td);
                    return td;
                 }
                 
@@ -850,6 +861,7 @@ module nts.uk.ui.exTable {
                         tdStyle += "; padding-left: " + column.icon.width + ";";
                         td.appendChild(icon);
                     } else if (!column.control) {
+                        tdStyle += " text-overflow: ellipsis; -ms-text-overflow: ellipsis;";
                         td.innerText = data;
                     }
                     controls.check(td, column, data, helper.call(column.handler, rData, rowIdx, key));
@@ -858,6 +870,8 @@ module nts.uk.ui.exTable {
 //                spread.bindSticker(td, rowIdx , key, self.options);
                 style.detCell(self.$container, td, rowIdx, key);
                 td.style.cssText += tdStyle;
+                
+                if (self.options.overflowTooltipOn) widget.textOverflow(td);
                 return td;
             }
             
@@ -1072,7 +1086,7 @@ module nts.uk.ui.exTable {
                 let tdStyle = "; border-width: 1px; overflow: hidden; white-space: nowrap; border-collapse: collapse;";
                 if (!util.isNullOrUndefined(cell.rowspan) && cell.rowspan > 1) $td.setAttribute("rowspan", cell.rowspan);
                 if (!util.isNullOrUndefined(cell.colspan) && cell.colspan > 1) $td.setAttribute("colspan", cell.colspan);
-                else if (!self.visibleColumnsMap[cell.key]) tdStyle += "; display: none;";
+                else if (util.isNullOrUndefined(cell.colspan) && !self.visibleColumnsMap[cell.key]) tdStyle += "; display: none;";
                 let column = self.columnsMap[cell.key];
                 
                 if (!util.isNullOrUndefined(cell.icon) && cell.icon.for === "header") {
@@ -1120,7 +1134,7 @@ module nts.uk.ui.exTable {
                     let oneLevel = self.levelStruct[rowIdx];
                     _.forEach(oneLevel, function(cell: any) {
                         if (!self.visibleColumnsMap[cell.key] && !self.hiddenColumnsMap[cell.key]
-                            && (util.isNullOrUndefined(cell.colspan) || cell.colspan == 1)) return;
+                            && util.isNullOrUndefined(cell.colspan)) return;
                         let $cell = self.cell(cell.headerText, rowIdx, cell);
                         $tr.appendChild($cell);
                         if (!util.isNullOrUndefined(headerCellStyleFt)) {
@@ -4804,10 +4818,10 @@ module nts.uk.ui.exTable {
             let $_container = $($container);
             $container.addXEventListener(events.MOUSE_WHEEL, function(event: any) {
                 let delta = event.deltaY;
-                let direction = delta > 0 ? -1 : 1;
-                let value = $_container.scrollTop() + Math.round(event.deltaY);
+                let direction = delta < 0 ? -1 : 1;
+                let value = $_container.scrollTop();
 //                $container.stop().animate({ scrollTop: value }, 10);
-                let os = helper.isIE() ? 110 : 50;
+                let os = helper.isIE() ? 25 : 50;
                 $_container.scrollTop(value + direction * os);
                 event.preventDefault();
                 event.stopImmediatePropagation();
@@ -5058,6 +5072,7 @@ module nts.uk.ui.exTable {
         export let MOUSE_OVER = "mouseover";
         export let MOUSE_ENTER = "mouseenter";
         export let MOUSE_OUT = "mouseout";
+        export let MOUSE_LEAVE = "mouseleave";
         export let FOCUS_IN = "focusin";
         export let PASTE = "paste";
         export let MOUSE_WHEEL = "wheel";
@@ -7694,6 +7709,53 @@ module nts.uk.ui.exTable {
                 });
             }
             return wType;
+        }
+        
+        /**
+         * Text overflow.
+         */
+        export function textOverflow($cell: HTMLElement) {
+            
+            $cell.addXEventListener(events.MOUSE_ENTER + ".celloverflow", function(evt: any) {
+                let $target = $(evt.target);
+                
+                if (!displayFullText($target)) {
+                    let $link = $target.find("a"); 
+                    if ($link.length > 0) {
+                        displayFullText($link, $target);
+                    }
+                }
+            });
+        }
+        
+        /**
+         * Display full text.
+         */
+        function displayFullText($target: JQuery, $s?: JQuery) {
+            
+            if ($target.outerWidth() < $target[0].scrollWidth) {
+                let $container = $s ? $s : $target;
+                let $view = $("<div />").addClass("x-cell-overflow")
+                            .text($target.text() || $target.val())
+                            .appendTo("body")
+                            .position({
+                                my: "left top",
+                                at: "left bottom",
+                                of: $container,
+                                collision: "flip"
+                            }).on(events.MOUSE_OVER, function(evt: any) {
+                                $view.remove();
+                            });
+                
+                $container[0].addXEventListener(events.MOUSE_LEAVE + ".celloverflow", function(evt: any) {
+                    $view.remove();
+                    setTimeout(() => {
+                        $container[0].removeXEventListener(events.MOUSE_LEAVE + ".celloverflow");
+                    }, 0);
+                });
+                
+                return true;
+            }
         }
         
         /**

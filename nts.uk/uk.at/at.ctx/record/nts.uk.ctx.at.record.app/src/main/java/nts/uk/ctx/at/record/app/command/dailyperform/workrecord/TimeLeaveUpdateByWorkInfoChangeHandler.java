@@ -32,8 +32,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeLeaveUpdateByWorkInfoChangeCommand> {
 
-	private final List<Integer> leaveItems = Arrays.asList(31, 41);
-	private final List<Integer> attendanceItems = Arrays.asList(34, 44);
+	private final static List<Integer> LEAVE_ITEMS = Arrays.asList(31, 41);
+	private final static List<Integer> ATTENDANCE_ITEMS = Arrays.asList(34, 44);
 
 	@Inject
 	private WorkInformationRepository workInfoRepo;
@@ -91,11 +91,11 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 				.collect(Collectors.toList());
 		if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK) {
 			/** 「所定勤務の設定．打刻の扱い方．出勤時刻を直行とする」＝ TRUE */
-			inputByReflect.removeIf(id -> attendanceItems.contains(id));
+			inputByReflect.removeIf(id -> ATTENDANCE_ITEMS.contains(id));
 		}
 		if (wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 			/** 「所定勤務の設定．打刻の扱い方．退勤時刻を直行とする」＝ TRUE */
-			inputByReflect.removeIf(id -> leaveItems.contains(id));
+			inputByReflect.removeIf(id -> LEAVE_ITEMS.contains(id));
 		}
 		if (!inputByReflect.isEmpty()) {
 			removeAttendanceLeave(timeLeave, inputByReflect, 0);
@@ -107,16 +107,16 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 	/** 「日別実績の出退勤．出退勤の打刻」を削除する */
 	private void removeAttendanceLeave(TimeLeavingOfDailyPerformance timeLeave, List<Integer> inputByReflect,
 			int index) {
-		if (inputByReflect.contains(leaveItems.get(index)) || inputByReflect.contains(attendanceItems.get(index))) {
+		if (inputByReflect.contains(LEAVE_ITEMS.get(index)) || inputByReflect.contains(ATTENDANCE_ITEMS.get(index))) {
 			timeLeave.getAttendanceLeavingWork(index + 1).ifPresent(alw -> {
 				alw.getAttendanceStamp().ifPresent(as -> {
-					if (inputByReflect.contains(attendanceItems.get(index)) && as.getStamp().isPresent() 
+					if (inputByReflect.contains(ATTENDANCE_ITEMS.get(index)) && as.getStamp().isPresent() 
 							&& !as.getStamp().get().isFromSPR()) {
 						as.removeStamp();
 					}
 				});
 				alw.getLeaveStamp().ifPresent(ls -> {
-					if (inputByReflect.contains(leaveItems.get(index)) && ls.getStamp().isPresent() 
+					if (inputByReflect.contains(LEAVE_ITEMS.get(index)) && ls.getStamp().isPresent() 
 							&& !ls.getStamp().get().isFromSPR()) {
 						ls.removeStamp();
 					}
@@ -126,7 +126,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 	}
 
 	private List<Integer> mergeItems() {
-		return Stream.of(leaveItems, attendanceItems).flatMap(List::stream).collect(Collectors.toList());
+		return Stream.of(LEAVE_ITEMS, ATTENDANCE_ITEMS, Arrays.asList(157)).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	/** 申請反映の勤怠項目を判断する */
