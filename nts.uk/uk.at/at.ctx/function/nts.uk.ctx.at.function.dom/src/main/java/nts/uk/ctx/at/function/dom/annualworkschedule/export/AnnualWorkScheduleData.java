@@ -103,25 +103,25 @@ public class AnnualWorkScheduleData {
 
 	public void setPeriodMonthData(ItemData item, int index) {
 		switch (index) {
-		case 0:
+		case 1:
 			this.period1st = item;
 			break;
-		case 1:
+		case 2:
 			this.period2nd = item;
 			break;
-		case 2:
+		case 3:
 			this.period3rd = item;
 			break;
-		case 3:
+		case 4:
 			this.period4th = item;
 			break;
-		case 4:
+		case 5:
 			this.period5th = item;
 			break;
-		case 5:
+		case 6:
 			this.period6th = item;
 			break;
-		case 6:
+		case 7:
 			this.period7th = item;
 			break;
 		}
@@ -445,14 +445,14 @@ public class AnnualWorkScheduleData {
 		listExcesMonths = listExcesMonths.stream().sorted((excesMonth1, excesMonth2) -> Integer
 				.compare(excesMonth1.getStartMonth().v(), excesMonth2.getStartMonth().v()))
 				.collect(Collectors.toList());
-		int periodIndex = 0;
-		listExcesMonths.forEach(m -> {
+		int periodIndex = 1;
+		for (AgreementTimeByPeriodImport m : listExcesMonths) {
 			BigDecimal value = new BigDecimal(m.getAgreementTime().v());
 			AgreementTimeStatusOfMonthly status = m.getStatus();
 			ItemData item = new ItemData(value, status);
-			int index = periodIndex + 1;
-			annualWorkScheduleData.setPeriodMonthData(item, index);
-		});
+			annualWorkScheduleData.setPeriodMonthData(item, periodIndex);
+			periodIndex = periodIndex + 1;
+		}
 		return annualWorkScheduleData;
 	}
 }
