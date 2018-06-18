@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //current Data
         //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //manualSendMailAtr
-        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         //申請者
@@ -70,7 +70,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //加給時間
         bonusTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
         //menu-bar 
-        enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti: KnockoutObservable<boolean> = ko.observable(true);
@@ -230,7 +229,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
         initData(data: any) {
             var self = this;
-            self.manualSendMailAtr(!data.manualSendMailAtr);
+            self.checkBoxValue(data.manualSendMailAtr);
+            self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.prePostSelected(data.application.prePostAtr);
             self.displayCaculationTime(data.displayCaculationTime);
@@ -386,7 +386,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
                 flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
-                sendMail: self.manualSendMailAtr(),
+                sendMail: self.checkBoxValue(),
                 calculateFlag: self.calculateFlag()
             };
             //登録前エラーチェック
@@ -442,16 +442,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             service.createOvertime(overtime).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                            location.reload();
-                        });    
+                        appcommon.CommonProcess.displayMailResult(data);   
                     } else {
                         if(self.checkBoxValue()){
-                            let command = {appID: data.appID};
-                            setShared("KDL030_PARAM", command);
-                            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                                location.reload();
-                            });    
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);   
                         } else {
                             location.reload();
                         }   

@@ -44,5 +44,10 @@ module nts.uk.pr.view.ccg007.c {
             startDate: string;
             endDate: string;
         }
+        
+        export interface CheckChangePassDto{
+            showChangePass: boolean;
+            msgErrorId: string;
+        }
     }
 }
