@@ -139,14 +139,17 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		
+		GeneralDate start = GeneralDate.fromString(String.valueOf(baseDate.year()) + "/12/31", "yyyy/MM/dd");
+		GeneralDate end = GeneralDate.fromString(String.valueOf(baseDate.year()) + "/1/1", "yyyy/MM/dd");
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.cid), companyId));
 		
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KrqmtVacationHistory_.startDate), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KrqmtVacationHistory_.startDate), start));
 		
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KrqmtVacationHistory_.endDate), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KrqmtVacationHistory_.endDate), end));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
