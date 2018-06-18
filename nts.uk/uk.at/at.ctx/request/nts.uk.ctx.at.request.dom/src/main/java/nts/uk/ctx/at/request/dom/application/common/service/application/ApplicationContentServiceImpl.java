@@ -572,7 +572,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			appWork.setApplication(appRepo.findByID(companyID, appID).orElse(null));
 			if (!Objects.isNull(appWork.getApplication())) {
 				switch (appWork.getApplication().getPrePostAtr()) {
-				case PREDICT: {
+				case PREDICT: {//don xin truoc
 					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode().v());
 					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode().v());
 					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
@@ -648,6 +648,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					}
 					break;
 				}
+				//TH don xin sau
 				case POSTERIOR: {
 					List<Application_New> listPreApp = repoApp.getApp(app.getEmployeeID(), app.getAppDate(),
 							PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
@@ -671,7 +672,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							if (!Objects.isNull(preAppWork.getWorkClock2().getStartTime())
 									&& !Objects.isNull(preAppWork.getWorkClock2().getEndTime())) {
 								content += clockShorHm(preAppWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
-										+ clockShorHm(preAppWork.getWorkClock2().getStartTime().v());
+										+ clockShorHm(preAppWork.getWorkClock2().getEndTime().v());
 							}
 							String moreInf = "";
 							int count = 0;
@@ -740,12 +741,12 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
 							content += clockShorHm(appWork.getWorkClock1().getStartTime().v()) + I18NText.getText("CMM045_100")
-									+ clockShorHm(appWork.getWorkClock1().getStartTime().v());
+									+ clockShorHm(appWork.getWorkClock1().getEndTime().v());
 						}
 						if (!Objects.isNull(appWork.getWorkClock2().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock2().getEndTime())) {
 							content += clockShorHm(appWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
-									+ clockShorHm(appWork.getWorkClock2().getStartTime().v());
+									+ clockShorHm(appWork.getWorkClock2().getEndTime().v());
 						}
 						String moreInf = "";
 						int count = 0;
