@@ -26,10 +26,10 @@
 			<div id="functions-area">
 				<!-- A1_1 -->
 				<button style="margin-left: 90px; width: 85px" id="print" tabindex="1"
-					class="proceed group-button-1" data-bind="click: print">#{i18n.getText('KWR002_9')}</button>
+					class="proceed group-button-1" data-bind="click: print, enable: enableSave">#{i18n.getText('KWR002_9')}</button>
 				<!-- A1_2 -->
 				<button id="exportExcel" tabindex="2" class="group-button-1"
-					data-bind="click: exportExcel">#{i18n.getText('KWR002_10')}</button>
+					data-bind="click: exportExcel, enable: enableSave">#{i18n.getText('KWR002_10')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<!--The component container-->

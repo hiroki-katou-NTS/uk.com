@@ -158,9 +158,11 @@ module nts.uk.com.view.kwr002.a {
                 service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
                     if (listAttendance === undefined || listAttendance.length == 0) {
                         self.attendanceRecordList();
-                        $('#print').attr("disabled", "disabled")
-                        $('#exportExcel').attr("disabled", "disabled")
+                        self.enableSave(false);
+                        // $('#print').attr("disabled", "disabled")
+                        // $('#exportExcel').attr("disabled", "disabled")
                     } else {
+                        self.enableSave(true);
                         var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
                         self.attendanceRecordList(sortArray);
                         self.selectedCode(sortArray[0].code);
@@ -336,19 +338,20 @@ module nts.uk.com.view.kwr002.a {
                         if (listAttendance === undefined || listAttendance.length == 0) {
                             self.attendanceRecordList(null);
                             self.selectedCode(null);
-                            $('#print').attr("disabled", "disabled")
-                            $('#exportExcel').attr("disabled", "disabled")
+                            self.enableSave(false)
+                            // $('#print').attr("disabled", "disabled")
+                            // $('#exportExcel').attr("disabled", "disabled")
                         } else {
                             var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
                             self.attendanceRecordList(sortArray);
                             self.selectedCode(sortArray[0].code);
+                            self.enableSave(true)
                         }
                         console.log(self.attendanceRecordList());
 
                         dfd.resolve();
 
                     });
-
                 });
                 nts.uk.ui.block.clear();
 
