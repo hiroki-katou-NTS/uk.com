@@ -54,7 +54,10 @@ public class PerInfoCategoryFinder {
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
 		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
 		String contractCode = AppContexts.user().contractCode();
-		List<PersonInfoCategory> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(zeroCompanyId, contractCode);
+		 int salary = AppContexts.user().roles().forPayroll() != null? 1: 0;
+		 int personnel = AppContexts.user().roles().forPersonnel() != null? 1: 0;
+		 int employee = AppContexts.user().roles().forAttendance() != null? 1: 0;
+		List<PersonInfoCategory> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(zeroCompanyId, contractCode, salary, personnel, employee);
 		return categoryList.stream()
 				.map(p -> new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 						p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
@@ -163,14 +166,20 @@ public class PerInfoCategoryFinder {
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompany() {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
+		 int salary = AppContexts.user().roles().forPayroll() != null? 1: 0;
+		 int personnel = AppContexts.user().roles().forPersonnel() != null? 1: 0;
+		 int employee = AppContexts.user().roles().forAttendance() != null? 1: 0;
+		
+		
 
-		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCode)
+		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCode, salary, personnel, employee)
 				.stream().map(p -> {
-
 					if ((pernfoItemDefRep.countPerInfoItemDefInCategory(p.getPersonInfoCategoryId(), companyId) > 0)) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 								p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value, p.getCategoryParentCode().v(),
-								p.getInitValMasterCls().value, p.getAddItemCls().value);
+								p.getInitValMasterCls().value, p.getAddItemCls().value,
+								p.isCanAbolition(), p.getSalaryUseAtr().value, 
+								p.getPersonnelUseAtr().value, p.getEmploymentUseAtr().value);
 					}
 					return null;
 				}).filter(m -> m != null).collect(Collectors.toList());
@@ -184,7 +193,11 @@ public class PerInfoCategoryFinder {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 		
-		List<PersonInfoCategory> lstCtg = perInfoCtgRepositoty.getAllCategoryForCPS007(companyId, contractCode);
+		int forAttendance =  AppContexts.user().roles().forAttendance() == null ? 0 : 1 ;
+		int forPayroll =  AppContexts.user().roles().forPayroll() == null ? 0 : 1 ;
+		int forPersonnel =  AppContexts.user().roles().forPersonnel() == null ? 0 : 1 ;
+		
+		List<PersonInfoCategory> lstCtg = perInfoCtgRepositoty.getAllCategoryForCPS007(companyId, contractCode, forAttendance , forPayroll , forPersonnel);
 		
 		List<String> lstCtgId = lstCtg.stream().map(c -> c.getPersonInfoCategoryId()).collect(Collectors.toList());
 		
@@ -199,11 +212,18 @@ public class PerInfoCategoryFinder {
 			if (lstItemDfGroupByCtgId == null || CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
 				return null;
 			}
-			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,
-					p.getCategoryParentCode().v(),
-					p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
-					p.getAddItemCls() == null ? 1 : p.getAddItemCls().value);
+			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), 
+										 p.getCategoryName().v(),
+										 p.getCategoryType().value, 
+										 p.getCategoryCode().v(), 
+										 p.getIsAbolition().value,
+										 p.getCategoryParentCode().v(),
+										 p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
+										 p.getAddItemCls() == null ? 1 : p.getAddItemCls().value,
+										 p.isCanAbolition(), 
+										 p.getSalaryUseAtr().value, 
+										 p.getPersonnelUseAtr().value, 
+										 p.getEmploymentUseAtr().value);
 			
 		}).filter(m -> m != null).collect(Collectors.toList());
 		
@@ -217,6 +237,9 @@ public class PerInfoCategoryFinder {
 
 		// ログイン者がグループ会社管理者かどうか判定する - Kiểm tra quyền
 		 String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+		 int salary = AppContexts.user().roles().forPayroll() != null? 1: 0;
+		 int personnel = AppContexts.user().roles().forPersonnel() != null? 1: 0;
+		 int employee = AppContexts.user().roles().forAttendance() != null? 1: 0;
 		 if (roleId == null) {
 			 // false Msg_1103
 			 throw new BusinessException("Msg_1103");
@@ -224,18 +247,20 @@ public class PerInfoCategoryFinder {
 		 else
 		 {
 			List<PersonInfoCategory> categoryList = perInfoCtgRepositoty
-					.getAllPerInfoCategory(AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode());
+					.getAllPerInfoCategory(AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode(), salary, personnel, employee);
 	
-			List<PerInfoCtgShowDto> x = categoryList.stream().map(p -> {
+			List<PerInfoCtgShowDto> ctgDtoLst = categoryList.stream().map(p -> {
 				return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 						p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value, p.getCategoryParentCode().v(),
 						p.getInitValMasterCls() == null ? InitValMasterObjCls.INIT.value : p.getInitValMasterCls().value,
-						p.getAddItemCls() == null ? AddItemObjCls.ENABLE.value : p.getAddItemCls().value);
+						p.getAddItemCls() == null ? AddItemObjCls.ENABLE.value : p.getAddItemCls().value,
+						p.isCanAbolition(), p.getSalaryUseAtr().value, 
+						p.getPersonnelUseAtr().value, p.getEmploymentUseAtr().value);
 			}).collect(Collectors.toList());
 	
 			List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
 	
-			return new PerInfoCtgDataEnumDto(historyTypes, x);
+			return new PerInfoCtgDataEnumDto(historyTypes, ctgDtoLst);
 
 		 }
 	};

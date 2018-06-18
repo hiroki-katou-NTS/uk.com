@@ -62,8 +62,15 @@ public class EmpCopySettingFinder {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 		List<PersonInfoCategory> lstPerInfoCtg = null;
+		
+		// EA修正履歴1219 - check Role lần giao hang 17.
+		int forAttendance =  AppContexts.user().roles().forAttendance() == null ? 0 : 1 ;
+		int forPayroll =  AppContexts.user().roles().forPayroll() == null ? 0 : 1 ;
+		int forPersonnel =  AppContexts.user().roles().forPersonnel() == null ? 0 : 1 ;
+		
+		
 		if (ctgName.equals(""))
-			lstPerInfoCtg = perInfoCtgRepositoty.getAllPerInfoCategoryNoMulAndDupHist(companyId, contractCode);
+			lstPerInfoCtg = perInfoCtgRepositoty.getAllPerInfoCategoryNoMulAndDupHist(companyId, contractCode ,forAttendance,forPayroll,forPersonnel);
 		else {
 			lstPerInfoCtg = perInfoCtgRepositoty.getPerInfoCategoryByName(companyId, contractCode, ctgName);
 		}

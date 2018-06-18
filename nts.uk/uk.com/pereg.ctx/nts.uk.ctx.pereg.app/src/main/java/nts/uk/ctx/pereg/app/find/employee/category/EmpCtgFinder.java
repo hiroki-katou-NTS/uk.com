@@ -90,9 +90,13 @@ public class EmpCtgFinder {
 		boolean isSelf = selectedEmployeeIdId.equals(empIdCurrentLogin);
 		String curEmCompanyId = empRepo.findByEmpId(selectedEmployeeIdId).get().getCompanyId();
 		
+		int forAttendance =  AppContexts.user().roles().forAttendance() == null ? 0 : 1 ;
+		int forPayroll =  AppContexts.user().roles().forPayroll() == null ? 0 : 1 ;
+		int forPersonnel =  AppContexts.user().roles().forPersonnel() == null ? 0 : 1 ;
+		
 		// get list Category
-		List<PersonInfoCategory> listCategory = isSelf ? perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 1, 0, !curEmCompanyId.equals(loginCompanyId)) : 
-			perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 0, 1, !curEmCompanyId.equals(loginCompanyId));
+		List<PersonInfoCategory> listCategory = isSelf ? perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 1, 0, !curEmCompanyId.equals(loginCompanyId) ,forAttendance,forPayroll,forPersonnel) : 
+			perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 0, 1, !curEmCompanyId.equals(loginCompanyId),forAttendance,forPayroll,forPersonnel);
 
 		List<PerInfoCtgFullDto> returnDtoList = listCategory.stream()
 				.map(x -> new PerInfoCtgFullDto(x.getPersonInfoCategoryId(), x.getCategoryCode().v(),

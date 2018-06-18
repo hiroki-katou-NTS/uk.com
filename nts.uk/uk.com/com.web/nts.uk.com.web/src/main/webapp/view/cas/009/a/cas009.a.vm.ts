@@ -1,274 +1,334 @@
 module cas009.a.viewmodel {
     import EnumConstantDto = cas009.a.service.model.EnumConstantDto;
     import service = cas009.a.service;
-    import ccg = nts.uk.com.view.ccg025.a;
     import windows = nts.uk.ui.windows;
     import block = nts.uk.ui.block;
-    import alertError = nts.uk.ui.dialog.alertError;    
+    import alertError = nts.uk.ui.dialog.alertError;
+
+    import modal = windows.sub.modal;
+    import text = nts.uk.resource.getText;
+    import info = nts.uk.ui.dialog.info;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import errors = nts.uk.ui.errors;
+
+    import ComponentModelCCG025 = nts.uk.com.view.ccg025.a.component.viewmodel.ComponentModel;
+    import ComponentModelCCG026 = nts.uk.com.view.ccg026.component.viewmodel.ComponentModel;
+
     export class ScreenModel {
-        listRole : KnockoutObservableArray<viewmodel.model.Role>; 
-        roleCode: KnockoutObservable<string>;
-        roleId: KnockoutObservable<string>;
-        name : KnockoutObservable<string>;
-        assignAtr : KnockoutObservable<number>;
-        employeeReferenceRange: KnockoutObservable<number>;
-        referFutureDate : KnockoutObservable<boolean>;
-        createMode : KnockoutObservable<boolean>;
-        enumAuthen: KnockoutObservableArray<any>; 
-        enumAllow: KnockoutObservableArray<any>;
-        enumRange:  KnockoutObservableArray<EnumConstantDto>;
-        enumRangeChange:  KnockoutObservableArray<EnumConstantDto>;
-        component: ccg.component.viewmodel.ComponentModel;
-        enableDetail: KnockoutObservable<boolean>;
+        selectedRole: Role = new Role();
+
+        listRole: KnockoutObservableArray<IRole> = ko.observableArray([]);
+
+        enumAuthen: KnockoutObservableArray<any> = ko.observableArray([
+            { code: '0', name: text("CAS009_14") },
+            { code: '1', name: text("CAS009_15") },
+        ]);
+
+        enumAllow: KnockoutObservableArray<any> = ko.observableArray([
+            { code: true, name: text("CAS009_18") },
+            { code: false, name: text("CAS009_19") },
+        ]);
+
+        enumRange: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
+
+        component025: ComponentModelCCG025 = new ComponentModelCCG025({
+            roleType: 8,
+            multiple: false
+        });
+
+        component026: ComponentModelCCG026 = new ComponentModelCCG026({
+            classification: 8,
+            maxRow: 6
+        });
+
+        enableDetail: KnockoutObservable<boolean> = ko.observable(true);
+
         constructor() {
-            var self = this;
-                self.listRole = ko.observableArray([]);
-                self.roleCode = ko.observable(null);
-                self.roleId = ko.observable(null);
-                self.employeeReferenceRange = ko.observable(0);
-                self.name = ko.observable("");
-                self.assignAtr = ko.observable(1);
-                self.referFutureDate = ko.observable(true);
-                self.createMode = ko.observable(true);
-                self.enableDetail =  ko.observable(true);
-                self.enumAuthen = ko.observableArray([
-                         { code: '0', name: nts.uk.resource.getText("CAS009_14") }, 
-                         { code: '1', name: nts.uk.resource.getText("CAS009_15") },
-                    ]);
-                self.enumAllow = ko.observableArray([
-                         { code: true, name: nts.uk.resource.getText("CAS009_18") }, 
-                         { code: false, name: nts.uk.resource.getText("CAS009_19") },
-                    ]);
-                self.enumRange = ko.observableArray([]);
-                self.enumRangeChange = ko.observableArray([]);
-                self.assignAtr.subscribe(function(newValue){
-                   if(self.enumRange().length>0){
-                        if(newValue ==0)     self.enumRangeChange(self.enumRange().slice(0,1));
-                        else  self.enumRangeChange(self.enumRange().slice(1,4));
-                   } 
-                });        
-                self.component = new ccg.component.viewmodel.ComponentModel({ 
-                    roleType: 8,
-                    multiple: false  
-                });                     
+            let self = this,
+                role = self.selectedRole;
+
+            _.extend(self, {
+                roleId: self.component025.currentCode,
+                listRole: self.component025.listRole
+            });
+
+            // subscribe and change data
+            role.roleId.subscribe(rid => {
+                let roles = ko.toJS(self.listRole),
+                    exist: IRole = _.find(roles, (r: IRole) => r.roleId == rid);
+                debugger;
+                if (exist) {
+                    role.createMode(false);
+
+                    role.roleName(exist.name);
+                    role.roleCode(exist.roleCode)
+
+                    role.assignAtr(exist.assignAtr);
+                    role.referFutureDate(exist.referFutureDate);
+                    role.employeeReferenceRange(exist.employeeReferenceRange || 0);
+                } else {
+                    role.createMode(true);
+
+                    role.roleName('');
+                    role.roleCode('');
+
+                    role.assignAtr(0);
+                    role.referFutureDate(false);
+                    role.employeeReferenceRange(0);
+                }
+
+                //self.component026.roleId(rid);
+            });
+
+            // call reload data
+            self.start();
         }
-        
-        public initSubscribe(): void{
-                 let self = this;
-                 self.component.currentCode.subscribe((newValue) => {                 
-                        if(newValue !=null){                            
-                            let current = _.find(self.listRole(), function(o){return o.roleId == newValue});
-                            if(current != undefined){
-                                self.roleCode(current.roleCode)
-                                self.roleId(newValue);
-                                self.createMode(false);
-                                self.name(current.name);
-                                self.assignAtr(current.assignAtr);
-                                self.employeeReferenceRange(current.employeeReferenceRange);
-                                self.referFutureDate(current.referFutureDate );                                                                                                                                     
-                            }
-                 
-                        }else{
-                            self.roleCode(null);
-                            self.roleId(null);
-                            self.employeeReferenceRange(0);
-                            self.name("");
-                            self.assignAtr(0);
-                            self.referFutureDate(false);
-                            self.createMode(true);
-                             
-                        }
-                     self.setFocus();                     
-   
-                });                
-        }
-       
 
         /** Start Page */
-       public  startPage(): any {           
-            let self = this;
-            block.invisible();       
-            $.when(self.getOpItemEnum(), self.userHasRole()).done(()=>{
-                self.getListRole().done(()=>{
-                    self.initSubscribe(); 
-                    if(self.listRole().length==0) 
-                    {
+        start = () => {
+            let self = this,
+                role = self.selectedRole;
+
+            block.invisible();
+
+            // wait get options and permision
+            $.when.apply($, [service.getOptItemEnum(), service.userHasRole()]).then(function() {
+                let enumRange = arguments[0],
+                    enableDetail = arguments[1];
+
+                self.enumRange(enumRange || []);
+                self.enableDetail(enableDetail);
+
+                // get list role
+                self.getListRole().done(() => {
+                    let roles = ko.toJS(self.listRole);
+
+                    if (!_.size(roles)) {
                         self.createNew();
-                    }else{
-                        self.component.currentCode(self.component.listRole()[0].roleId)   
+                    } else {
+                        role.roleId.valueHasMutated();
                     }
-                    
-                }).always(()=>{
-                          block.clear();
-                          nts.uk.ui.errors.clearAll();  
-                });                
-            });
 
-
-        }
-        
-        public getOpItemEnum(): JQueryPromise<any>{
-            let self = this;    
-            let dfd = $.Deferred();
-            
-            service.getOptItemEnum().done(function(res){
-                
-                self.enumRange(res);
-                
-                if (self.assignAtr() == 0) 
-                    self.enumRangeChange(self.enumRange().slice(0, 1));
-                else
-                    self.enumRangeChange(self.enumRange().slice(1, 4));
-                
-                dfd.resolve();
-            }).fail((error) => {
-                alertError(error);
-            });
-            return dfd.promise();            
-        }
-        
-        
-        public getListRole():JQueryPromise<any>{
-            let  self = this;
-            let dfd = $.Deferred();
-            self.component.startPage().done(function(){
-                let roleIds : Array<string> = _.map(self.component.listRole(), function(x){
-                    return x.roleId;
+                }).always(() => {
+                    block.clear();
+                    errors.clearAll();
                 });
-                if(roleIds.length>0){
-                    service.getPersonInfoRole(roleIds).done((res) => {
-                        
-                        self.listRole(_.map(self.component.listRole(), function(x){
-                            let personInfo : any = _.find(res, function(o){ return o.roleId == x.roleId  });
-                            
-                            return new model.Role(true, x.roleId, x.roleCode, x.employeeReferenceRange, x.name, x.assignAtr, personInfo.referFutureDate );                            
-                        }));                                                                                                                              
-                        dfd.resolve();                                                                                                
+            }, function() {
+                let enumRange = arguments[0],
+                    enableDetail = arguments[1];
+
+                if (enumRange) {
+                    alertError(enumRange);
+                }
+
+                if (enableDetail) {
+                    alertError(enableDetail);
+                }
+
+                // clear all block
+                block.clear();
+                errors.clearAll();
+            });
+        }
+
+        // Kinh dị:
+        // Tạo 2 danh sách để lưu 1 giá trị.
+        getListRole(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+
+            self.component025.startPage().done(() => {
+                let roles = ko.toJS(self.component025.listRole),
+                    roleIds: Array<string> = _.map(roles, (x: IRole) => x.roleId);
+
+                if (_.size(roleIds)) {
+                    service.getPersonInfoRole(roleIds).done(resp => {
+                        _.each(self.component025.listRole(), (r: IRole) => {
+                            let pinfo: IRole = _.find(resp, (o: IRole) => o.roleId == r.roleId);
+                            if (pinfo) {
+                                r.referFutureDate = pinfo.referFutureDate;
+                            }
+                        });
+                        dfd.resolve();
                     });
-                    self.component.currentCode(null);
-                }else{
-                    self.listRole([]);
+                } else {
                     self.createNew();
-                    dfd.resolve();                        
+                    dfd.resolve();
                 }
             });
+
             return dfd.promise();
-                
-        } 
-        public userHasRole():JQueryPromise<any>{
-            let  self = this;
-            let dfd = $.Deferred();
-            service.userHasRole().done(function(res){
-                   self.enableDetail(res);
-                   dfd.resolve();
+        }
+
+        // create new mode
+        createNew = () => {
+            let self = this,
+                role = self.selectedRole;
+
+            role.roleId(undefined);
+        }
+
+        // open dialog
+        openDialog = () => { modal("../b/index.xhtml").onClosed(() => { }); }
+
+        // save change of role
+        save = () => {
+            let self = this,
+                role = self.selectedRole,
+                command = ko.toJS(role);
+
+            $(".nts-input").trigger("validate");
+            if ($(".nts-input").ntsError("hasError")) {
+                return;
+            }
+
+            block.invisible();
+
+            // fix name
+            _.extend(command, {
+                name: command.roleName
+            });
+
+            service.saveRole(command).done(function() {
+                info({ messageId: "Msg_15" });
+
+                self.getListRole().done(() => {
+                    let exist = _.find(self.listRole(), o => o.roleCode == command.roleCode);
+
+                    if (!exist) {
+                        role.roleId(undefined);
+                    } else {
+                        role.roleId(exist.roleId);
+                    }
+                }).always(() => {
+                    block.clear();
+                    errors.clearAll();
+                });
             }).fail((error) => {
                 alertError(error);
-            });
-            return dfd.promise();
-                
-        }        
-        public setFocus(): void{
-            let self = this;
-            
-            if(self.component.currentCode()==null) 
-                $('#roleCode').focus();
-            else
-                $('#roleName').focus();  
-            _.defer(()=>{   nts.uk.ui.errors.clearAll();  });
-        }  
-        
-        
-
-        public createNew(): any{
-            let self = this;
-                self.component.currentCode(null);
-                self.setFocus();                               
-        }
-        
-        public save(): any{
-            let self = this;
-            $(".nts-input").trigger("validate");
-            if($(".nts-input").ntsError("hasError")) return ;            
-            block.invisible();
-            let role = new model.Role(self.createMode(), self.roleId(), self.roleCode(), self.employeeReferenceRange(), self.name(), self.assignAtr(), self.referFutureDate());
-            service.saveRole(role).done(function(){
-                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });                  
-                 
-                    self.getListRole().done(()=>{
-                           self.component.currentCode(_.find(self.listRole(), function(o){ return o.roleCode == role.roleCode  }).roleId);
-                 }).always(()=>{
-                           block.clear();
-                           nts.uk.ui.errors.clearAll();    
-                 });
-          
-            }).fail((error) => {
-                 alertError(error);
-                 block.clear();
-                 nts.uk.ui.errors.clearAll();
-            });    
-        }
-        public remove(): any{
-            let self = this;
-
-               if(self.component.currentCode() !=null){
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
-                        block.invisible();                        
-                        service.deleteRole({roleId: self.roleId(), assignAtr: self.assignAtr()}).done(function(){
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                           
-                            let index = _.findIndex(self.listRole(), ['roleId', self.roleId()]);
-                            index = _.min([self.listRole().length - 2, index]);
-                            self.getListRole().done(function(){
-                                 self.selectRoleByIndex(index);                               
-                            }).always(() =>{
-                                 block.clear();
-                                 nts.uk.ui.errors.clearAll();    
-                            });
-                            
-                        }).fail((error) => {
-                                alertError(error);
-                                block.clear();
-                                nts.uk.ui.errors.clearAll();
-                        });   
-                   }); 
-               }   
-        }
-        private selectRoleByIndex(index: number) {
-            var self = this;
-            var selectRoleByIndex = _.nth(self.listRole(), index);
-            if (selectRoleByIndex !== undefined)
-                self.component.currentCode(selectRoleByIndex.roleId);
-            else
-                self.createNew();
-        }
-        public open_Dialog(): any {
-            windows.sub.modal("/view/cas/009/b/index.xhtml").onClosed(() => {
-                
+                block.clear();
+                errors.clearAll();
             });
         }
-        
-    }
 
-    export module model {
-        export class Role {
-            createMode: boolean;
-            roleId: string;
-            roleCode: string;
-            employeeReferenceRange: number;
-            name : string;
-            assignAtr : number;
-            referFutureDate : boolean;
-            
-            constructor(createMode: boolean, roleId: string, roleCode: string, employeeReferenceRange: number, 
-                            name: string, assignAtr: number, referFutureDate: boolean) {
-                this.createMode = createMode;
-                this.roleId = roleId;
-                this.roleCode = roleCode;
-                this.employeeReferenceRange = employeeReferenceRange;
-                this.name = name;
-                this.assignAtr = assignAtr;
-                this.referFutureDate = referFutureDate;
+        // remove selected role
+        remove = () => {
+            let self = this,
+                roles: Array<IRole> = ko.toJS(self.listRole),
+                role: IRole = ko.toJS(self.selectedRole),
+                index: number = _.findIndex(roles, ["roleId", role.roleId]);
+
+            index = _.min([_.size(roles) - 2, index]);
+
+            if (!_.isNil(role.roleCode)) {
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    block.invisible();
+
+                    service.deleteRole(_.pick(role, ["roleId", "assignAtr"])).done(() => {
+                        info({ messageId: "Msg_16" });
+
+                        self.getListRole().done(() => {
+                            let roles: Array<IRole> = ko.toJS(self.listRole),
+                                selected: IRole = roles[index];
+
+                            if (selected) {
+                                self.selectedRole.roleId(selected.roleId);
+                            } else {
+                                self.selectedRole.roleId(roles[0].roleId);
+                            }
+                        }).always(() => {
+                            block.clear();
+                            errors.clearAll();
+                        });
+
+                    }).fail((error) => {
+                        alertError(error);
+                        block.clear();
+                        nts.uk.ui.errors.clearAll();
+                    });
+                });
             }
         }
     }
+
+    export interface IRole {
+        name: string;
+        roleId: string;
+        roleCode: string;
+        assignAtr: number;
+        referFutureDate?: boolean;
+        employeeReferenceRange: number;
+
+        createMode: boolean;
+    }
+
+    export class Role {
+        roleId: KnockoutObservable<string> = ko.observable('');
+        roleCode: KnockoutObservable<string> = ko.observable('');
+        roleName: KnockoutObservable<string> = ko.observable('');
+
+        assignAtr: KnockoutObservable<number> = ko.observable(1);
+        referFutureDate: KnockoutObservable<boolean> = ko.observable(false);
+        employeeReferenceRange: KnockoutObservable<number> = ko.observable(1);
+
+        createMode: KnockoutObservable<boolean> = ko.observable(false);
+        roleCodeFocus: KnockoutObservable<boolean> = ko.observable(true);
+        roleNameFocus: KnockoutObservable<boolean> = ko.observable(false);
+
+        constructor() {
+            let self = this;
+
+            // subscribe for focus and clear errors
+            self.roleId.subscribe(m => {
+                _.defer(() => {
+                    if (ko.toJS(self.createMode)) {
+                        self.roleCodeFocus(true);
+                    } else {
+                        self.roleNameFocus(true);
+                    }
+
+                    // clear all error
+                    errors.clearAll();
+                });
+            });
+        }
+    }
+}
+
+enum ROLE_TYPE {
+    /** The system manager. */
+    // システム管理者
+    SYSTEM_MANAGER = 0,
+
+    /** The company manager. */
+    // 会社管理者
+    COMPANY_MANAGER = 1,
+
+    /** The group comapny manager. */
+    // グループ会社管理者
+    GROUP_COMAPNY_MANAGER = 2,
+
+    /** The employment. */
+    // 就業
+    EMPLOYMENT = 3,
+
+    /** The salary. */
+    // 給与
+    SALARY = 4,
+
+    /** The human resource. */
+    // 人事
+    HUMAN_RESOURCE = 5,
+
+    /** The office helper. */
+    // オフィスヘルパー
+    OFFICE_HELPER = 6,
+
+    /** The my number. */
+    // マイナンバー
+    MY_NUMBER = 7,
+
+    /** The personal info. */
+    // 個人情報
+    PERSONAL_INFO = 8
 }

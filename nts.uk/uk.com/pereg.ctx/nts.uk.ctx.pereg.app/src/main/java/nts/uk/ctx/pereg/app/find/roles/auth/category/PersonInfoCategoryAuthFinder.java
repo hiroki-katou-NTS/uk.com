@@ -25,30 +25,37 @@ import nts.uk.shr.com.context.AppContexts;
 public class PersonInfoCategoryAuthFinder {
 	@Inject
 	private PersonInfoCategoryAuthRepository personCategoryAuthRepository;
-	
+
 	@Inject
 	private PerInfoItemDefRepositoty itemInfoRepo;
 
 	public List<PersonInfoCategoryDetailDto> getAllCategory(String roleId) {
 		String contractCd = AppContexts.user().contractCode();
-		 List<PersonInfoCategoryDetail> ctgSourceLst = this.personCategoryAuthRepository
-					.getAllCategory(roleId, AppContexts.user().contractCode(), AppContexts.user().companyId());
-		 List<String> ctgLstId = ctgSourceLst.stream().map(c -> { return c.getCategoryId();}).collect(Collectors.toList());
-		 
-		Map<String, List<Object[]>> itemByCtgId  = this.itemInfoRepo.getAllPerInfoItemDefByListCategoryId(ctgLstId,contractCd);
-		 
+		int salary = AppContexts.user().roles().forPayroll() != null ? 1 : 0;
+		int personnel = AppContexts.user().roles().forPersonnel() != null ? 1 : 0;
+		int employee = AppContexts.user().roles().forAttendance() != null ? 1 : 0;
+		List<PersonInfoCategoryDetail> ctgSourceLst = this.personCategoryAuthRepository.getAllCategory(roleId,
+				AppContexts.user().contractCode(), AppContexts.user().companyId(), salary, personnel, employee);
+		List<String> ctgLstId = ctgSourceLst.stream().map(c -> {
+			return c.getCategoryId();
+		}).collect(Collectors.toList());
+
+		Map<String, List<Object[]>> itemByCtgId = this.itemInfoRepo.getAllPerInfoItemDefByListCategoryId(ctgLstId,
+				contractCd);
+
 		List<PersonInfoCategoryDetailDto> ctgResultLst = new ArrayList<>();
-		for(PersonInfoCategoryDetail i : ctgSourceLst) {
-			List<Object[]>  item = itemByCtgId.get(i.getCategoryId());
-			if(item == null)  continue;
-			if(item.size() > 0)  ctgResultLst.add(PersonInfoCategoryDetailDto.fromDomain(i));
+		for (PersonInfoCategoryDetail i : ctgSourceLst) {
+			List<Object[]> item = itemByCtgId.get(i.getCategoryId());
+			if (item == null)
+				continue;
+			if (item.size() > 0)
+				ctgResultLst.add(PersonInfoCategoryDetailDto.fromDomain(i));
 		}
 		return ctgResultLst;
 	}
-	
+
 	public List<PersonInfoCategoryAuthDto> getAllCategoryAuth(String roleId) {
-		return this.personCategoryAuthRepository
-				.getAllCategoryAuthByRoleId(roleId).stream()
+		return this.personCategoryAuthRepository.getAllCategoryAuthByRoleId(roleId).stream()
 				.map(x -> PersonInfoCategoryAuthDto.fromDomain(x)).collect(Collectors.toList());
 
 	}

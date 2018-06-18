@@ -33,7 +33,10 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId"
-			+ " AND c.abolitionAtr = 0" + "	ORDER BY co.disporder";
+			+ " AND c.abolitionAtr = 0"
+			//  them dieu kien luong, nhan su, viec lam
+			+ " AND cm.salaryUseAtr =:salaryUseAtr AND cm.personnelUseAtr =:personnelUseAtr AND cm.employmentUseAtr =:employmentUseAtr" 
+			+ "	ORDER BY co.disporder";
 
 	private final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName "
 			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
@@ -78,6 +81,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		return domain;
 	}
 
+
 	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
 		val domain = new PersonInfoCategoryDetail();
 		domain.setCategoryId(entity[0].toString());
@@ -108,7 +112,6 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		PpemtPersonCategoryAuth entity = new PpemtPersonCategoryAuth();
 		entity.ppemtPersonCategoryAuthPk = new PpemtPersonCategoryAuthPk(domain.getRoleId(),
 				domain.getPersonInfoCategoryAuthId());
-		entity.allowOtherCompanyRef = domain.getAllowOtherCompanyRef().value;
 		entity.allowOtherRef = domain.getAllowOtherRef().value;
 		entity.allowPersonRef = domain.getAllowPersonRef().value;
 		entity.otherAllowAddHis = domain.getOtherAllowAddHis() == null? null: domain.getOtherAllowAddHis().value;
@@ -186,10 +189,14 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 
 	@Override
-	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId) {
+	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr ) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, Object[].class)
 				.setParameter("roleId", roleId).setParameter("contractCd", contractCd)
-				.setParameter("companyId", companyId).getList(c -> toDomain(c));
+				.setParameter("companyId", companyId)
+				.setParameter("salaryUseAtr", salaryUseAtr)
+				.setParameter("personnelUseAtr", personnelUseAtr)
+				.setParameter("employmentUseAtr", employmentUseAtr)
+				.getList(c -> toDomain(c));
 
 	}
 

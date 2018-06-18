@@ -11,7 +11,6 @@ module cps002.a.service {
             getStamCardEditing: 'record/stamp/stampcardedit/find',
             getLayout: 'person/newlayout/check-new-layout',
             getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
-            getSelfRoleAuth: 'roles/auth/get-self-auth',
             getUserSetting: 'usersetting/getUserSetting',
             getLastRegHistory: 'empreghistory/getLastRegHistory',
             getGenerateEmplCodeAndComId: 'addemployee/getGenerateEmplCodeAndComId',
@@ -23,6 +22,7 @@ module cps002.a.service {
             getLayoutByCreateType: 'layout/getByCreateType',
             addNewEmployee: 'addemployee/addNewEmployee',
             getEmployeeInfo: 'basic/organization/employee/getoffselect',
+            permision: 'ctx/pereg/functions/auth/find-all',
         };
 
     export function getLayout() {
@@ -210,21 +210,6 @@ module cps002.a.service {
         return dfd.promise();
     }
 
-    export function getSelfRoleAuth() {
-        let dfd = $.Deferred<any>();
-        let self = this;
-        _.defer(() => block.invisible());
-        nts.uk.request.ajax(regpath + paths.getSelfRoleAuth)
-            .done(function(res) {
-                dfd.resolve(res);
-            }).fail(function(res) {
-                dfd.reject(res);
-            }).always(() => {
-                _.defer(() => block.clear());
-            });
-        return dfd.promise();
-    }
-
     export function getLayoutByCreateType(command) {
         let dfd = $.Deferred<any>();
         let self = this;
@@ -267,6 +252,10 @@ module cps002.a.service {
                 _.defer(() => block.clear());
             });
         return dfd.promise();
+    }
+
+    export function getCurrentEmpPermision() {
+        return ajax(paths.permision);
     }
 
 }
