@@ -19,7 +19,7 @@ module nts.uk.com.view.cmm020.a {
             activeUpdate: KnockoutObservable<boolean>;
             activeDelete: KnockoutObservable<boolean>;
             indexOfDelete: KnockoutObservable<number>;
-            isFocus : KnockoutObservable<boolean>;
+            isFocus: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
@@ -84,26 +84,49 @@ module nts.uk.com.view.cmm020.a {
             public start_page(): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred();
-
                 //call ws get all era
                 var listEraName: model.EraItem[] = [];
-                for (let i = 0; i <= 3; i++) {
-                    listEraName.push(new model.EraItem("code" + i, "Nam" + i, "Sb" + i, "2016/06/1" + (5 - i)));
+                var listEraNameSystem: model.EraItem[] = [];
+
+                //                for (let i = 0; i <= 3; i++) {
+                //                    listEraName.push(new model.EraItem("code" + i, "Nam" + i, "Sb" + i, "2016/06/1" + (5 - i)));
+                //                }
+                //                listEraName.push(new model.EraItem("code5", "T", "CusSb", "2018/06/25"));
+                //        ame.push(new model.EraItem("code6", "D", "222", "2018/3/28"));
+
+                service.getAllEraNameItem().done(function(listEraNameTest: Array<model.EraItem>) {
+                    self.dataSource(listEraNameTest);
+                    for (let item of listEraNameTest) {
+                        console.log(typeof item.systemType);
+                        if (item.systemType == true) {
+                            console.log(item.systemType + " 1");
+                            listEraNameSystem.push(item);
+                        }
+                    }
+                    console.log(listEraNameSystem.length);
+                    listEraNameSystem = _.orderBy(listEraNameSystem, [function(item) { return new Date(item.startDate); }], ['asc']);
+                    for (let i = 0; i < listEraNameSystem.length; i++) {
+                    console.log(listEraNameSystem[i]);
                 }
-                listEraName.push(new model.EraItem("code5", "T", "CusSb", "2018/06/25"));
-                listEraName.push(new model.EraItem("code6", "D", "222", "2018/3/28"));
-                if (listEraName === undefined || listEraName.length == 0) {
-                    self.dataSource();
-                } else {
-                    //                   var list1 = _.sortBy(listEraName, [function(o) {
-                    //                        return new Date(o.startDate);
-                    //                    }]);
-                    var listEraName = _.orderBy(listEraName, [function(item) { return new Date(item.startDate); }], ['asc']);
-                    self.dataSource(listEraName);
-                    let eraNameLast = _.last(listEraName);
-                    self.currentCode(eraNameLast.eraId);
-                    self.setValueCurrentEraShow(eraNameLast);
-                }
+                });
+
+
+                //                var listEraNameSystem = _.orderBy(listEraNameSystem, [function(item) { return new Date(item.startDate); }], ['asc']);
+                //                
+                //                 for (let i = 0; i < listEraNameSystem.length; i++) {
+                //                    console.log(listEraNameSystem[i]);
+                //                }
+
+
+                //                if (listEraName === undefined || listEraName.length == 0) {
+                //                    self.dataSource();
+                //                } else {
+                //                    var listEraName = _.orderBy(listEraName, [function(item) { return new Date(item.startDate); }], ['asc']);
+                //                    self.dataSource(listEraName);
+                //                    let eraNameLast = _.last(listEraName);
+                //                    self.currentCode(eraNameLast.eraId);
+                //                    self.setValueCurrentEraShow(eraNameLast);
+                //                }
                 console.log(!self.activeUpdate());
                 dfd.resolve();
                 return dfd.promise();
@@ -111,7 +134,7 @@ module nts.uk.com.view.cmm020.a {
 
             public newItem() {
                 var self = this;
-                self.refreshEraShow();    
+                self.refreshEraShow();
                 self.currentCode(null);
                 self.activeUpdate(true);
                 self.isFocus(true);
@@ -184,7 +207,7 @@ module nts.uk.com.view.cmm020.a {
             }
             private getEraNameAfterDelete() {
                 var self = this;
-                service.getAllEraNameItem().done(function(listEraName:Array<model.EraItem>) {
+                service.getAllEraNameItem().done(function(listEraName: Array<model.EraItem>) {
                     self.dataSource(listEraName);
                     let lastEraName = _.last(listEraName);
                     self.currentCode(lastEraName.eraId);
