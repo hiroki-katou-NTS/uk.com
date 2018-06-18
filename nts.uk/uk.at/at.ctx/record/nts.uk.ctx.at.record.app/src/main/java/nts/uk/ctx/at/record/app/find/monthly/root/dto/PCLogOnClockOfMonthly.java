@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonDivergence;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonClockOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonDivergenceOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
@@ -14,28 +12,20 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績のPCログオン時刻 + 月別実績のPCログオン乖離 */
-public class PCLogOnTimeOfMonthly implements ItemConst{
+public class PCLogOnClockOfMonthly implements ItemConst{
 
 	/** PCログオフ時刻: 集計PCログオン時刻 + PCログオフ乖離: 集計PCログオン乖離 */
 	@AttendanceItemLayout(jpPropertyName = LOGOFF, layout = LAYOUT_A)
-	private TotalPcLogon logOff;
+	private TotalPcLogonClock logOff;
 
 	/** PCログオン時刻: 集計PCログオン時刻 + PCログオン乖離: 集計PCログオン乖離 */
 	@AttendanceItemLayout(jpPropertyName = LOGON, layout = LAYOUT_B)
-	private TotalPcLogon logOn;
+	private TotalPcLogonClock logOn;
 	
-	public static PCLogOnTimeOfMonthly from(PCLogonClockOfMonthly domain){
+	public static PCLogOnClockOfMonthly from(PCLogonClockOfMonthly domain){
 		if(domain != null){
-			return new PCLogOnTimeOfMonthly(TotalPcLogon.from(domain.getLogoffClock()), 
-											TotalPcLogon.from(domain.getLogonClock()));
-		}
-		return null;
-	}
-	
-	public static PCLogOnTimeOfMonthly from(PCLogonDivergenceOfMonthly domain){
-		if(domain != null){
-			return new PCLogOnTimeOfMonthly(TotalPcLogon.from(domain.getLogoffDivergence()), 
-											TotalPcLogon.from(domain.getLogonDivergence()));
+			return new PCLogOnClockOfMonthly(TotalPcLogonClock.from(domain.getLogoffClock()), 
+											TotalPcLogonClock.from(domain.getLogonClock()));
 		}
 		return null;
 	}
@@ -43,10 +33,5 @@ public class PCLogOnTimeOfMonthly implements ItemConst{
 	public PCLogonClockOfMonthly toDomain(){
 		return PCLogonClockOfMonthly.of(logOn == null ? new AggrPCLogonClock() : logOn.toDomain(), 
 										logOff == null ? new AggrPCLogonClock() : logOff.toDomain());
-	}
-	
-	public PCLogonDivergenceOfMonthly toDivergenceDomain(){
-		return PCLogonDivergenceOfMonthly.of(logOn == null ? new AggrPCLogonDivergence() : logOn.toDivergenceDomain(), 
-										logOff == null ? new AggrPCLogonDivergence() : logOff.toDivergenceDomain());
 	}
 }
