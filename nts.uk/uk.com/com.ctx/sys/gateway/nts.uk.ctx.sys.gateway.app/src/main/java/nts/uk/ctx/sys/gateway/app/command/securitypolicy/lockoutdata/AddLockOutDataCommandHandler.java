@@ -8,7 +8,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
@@ -34,7 +34,7 @@ public class AddLockOutDataCommandHandler extends CommandHandler<AddLockOutDataC
 		// UserId
 		String userId = context.getCommand().getUserID();
 
-		Optional<UserImport> user = userAdapter.findByUserId(userId);
+		Optional<UserImportNew> user = userAdapter.findByUserId(userId);
 
 		if (!user.isPresent())
 			throw new BusinessException("Msg_218");
