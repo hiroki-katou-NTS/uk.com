@@ -231,7 +231,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             selectedErrorAlarm.code(param && param.code ? param.code : '');
             selectedErrorAlarm.name(param && param.name ? param.name : '');
             selectedErrorAlarm.fixedAtr(param && param.fixedAtr ? param.fixedAtr : 0);
-            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 0);
+            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 1);
             selectedErrorAlarm.remarkCancelErrorInput(param && param.remarkCancelErrorInput ? param.remarkCancelErrorInput : 0);
             selectedErrorAlarm.remarkColumnNo(param && param.remarkColumnNo ? param.remarkColumnNo : 833);
             selectedErrorAlarm.typeAtr(param && param.typeAtr ? param.typeAtr : 0);
@@ -607,7 +607,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.code = param && param.code ? ko.observable(param.code()) : ko.observable('');
             this.name = param && param.name ? ko.observable(param.name()) : ko.observable('');
             this.fixedAtr = param && param.fixedAtr ? ko.observable(param.fixedAtr()) : ko.observable(0);
-            this.useAtr = param && param.useAtr ? ko.observable(param.useAtr()) : ko.observable(0);
+            this.useAtr = param && param.useAtr ? ko.observable(param.useAtr()) : ko.observable(1);
             this.remarkCancelErrorInput = param && param.remarkCancelErrorInput ? ko.observable(param.remarkCancelErrorInput()) : ko.observable(0);
             this.remarkColumnNo = param && param.remarkColumnNo ? ko.observable(param.remarkColumnNo()) : ko.observable(833);
             this.typeAtr = param && param.typeAtr ? ko.observable(param.typeAtr()) : ko.observable(0);
