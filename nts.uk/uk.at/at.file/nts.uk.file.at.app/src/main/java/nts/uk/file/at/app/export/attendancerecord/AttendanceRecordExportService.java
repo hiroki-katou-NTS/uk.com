@@ -6,11 +6,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -443,7 +441,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						attendanceRecRepEmpData.setTitle(result.getPosition().getPositionName().toString());
 						attendanceRecRepEmpData.setWorkplace(result.getWorkplace().getWorkplaceName().toString());
 						attendanceRecRepEmpData.setWorkType(result.getEmployment().getEmploymentName().toString());
-						attendanceRecRepEmpData.setYearMonth(yearMonth.toString());
+						attendanceRecRepEmpData.setYearMonth(yearMonth.year() + "/" + yearMonth.month());
 						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 
 						yearMonth = yearMonth.addMonths(1);
@@ -462,44 +460,20 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 
 		});
-		if (request.getMode() == PDF_MODE) {
 
-			for (Employee employee : request.getEmployeeList()) {
-				List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
-				for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
+		for (Employee employee : request.getEmployeeList()) {
+			List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
+			for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
 
-					if (this.getNameFromInvidual(item.getInvidual()).equals(employee.getEmployeeName())) {
-						attendanceRecRepEmpDataByMonthList.add(item);
-					}
-
+				if (this.getNameFromInvidual(item.getInvidual()).equals(employee.getEmployeeName())) {
+					attendanceRecRepEmpDataByMonthList.add(item);
 				}
-				reportData.put(employee.getEmployeeCode(), attendanceRecRepEmpDataByMonthList);
 
 			}
-
-		} else {
-			// Map Data by month
-			YearMonth startYearMonth = request.getStartDate().yearMonth();
-			YearMonth endYearMonth = request.getEndDate().yearMonth();
-			YearMonth yearMonth = startYearMonth;
-
-			while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
-				List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
-				for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
-
-					if (item.getYearMonth().equals(yearMonth.toString()) && item != null) {
-						attendanceRecRepEmpDataByMonthList.add(item);
-					}
-
-				}
-				reportData.put(yearMonth.toString(), attendanceRecRepEmpDataByMonthList);
-
-				yearMonth = yearMonth.addMonths(1);
-			}
-			reportData = reportData.entrySet().stream().sorted((x, y) -> x.getKey().compareTo(y.getKey()))
-					.collect(LinkedHashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), Map::putAll);
+			reportData.put(employee.getEmployeeCode(), attendanceRecRepEmpDataByMonthList);
 
 		}
+
 		// get seal stamp
 		List<String> sealStamp = attendanceRecExpSetRepo.getSealStamp(companyId, request.getLayout());
 
@@ -771,16 +745,16 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		return null;
 	}
-	
-	private String convertMinutesToHours(String minutes){
-		if(minutes.equals("0")||minutes.equals("")){
+
+	private String convertMinutesToHours(String minutes) {
+		if (minutes.equals("0") || minutes.equals("")) {
 			return "0:00";
 		}
 		String FORMAT = "%02d:%02d";
-		Integer minuteInt = Integer.parseInt(minutes);		
-		Integer hourInt = minuteInt/60;
-		minuteInt = minuteInt%60;
-		
-		return String.format(FORMAT, hourInt,minuteInt);
+		Integer minuteInt = Integer.parseInt(minutes);
+		Integer hourInt = minuteInt / 60;
+		minuteInt = minuteInt % 60;
+
+		return String.format(FORMAT, hourInt, minuteInt);
 	}
 }
