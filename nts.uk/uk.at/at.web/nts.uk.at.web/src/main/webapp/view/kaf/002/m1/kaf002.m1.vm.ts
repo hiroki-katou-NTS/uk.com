@@ -58,7 +58,7 @@ module nts.uk.at.view.kaf002.m1 {
                 self.stampAtr.subscribe((value)=>{ 
                     nts.uk.ui.errors.clearAll();
                     if(value == 1){
-                        self.displayItemNo = self.extendsMode() ? 10 : self.supFrameNo;   
+                        self.displayItemNo = self.extendsMode() ? 10 : 3;   
                         self.extendsModeDisplay(!self.extendsMode() && (self.stampAtr() == 1));      
                     } else {
                         self.displayItemNo = 2;
@@ -105,6 +105,7 @@ module nts.uk.at.view.kaf002.m1 {
             
             register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
+                if (nts.uk.ui.errors.hasError()){return;} 
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),

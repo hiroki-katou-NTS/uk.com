@@ -20,7 +20,10 @@ import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetti
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 
 /**
  * 
@@ -48,6 +51,9 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	@Inject
 	private ApplicationRepository_New applicationRepository;
 	
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
 	@Override
 	public void appReasonCheck(String applicationReason, AppStamp appStamp) {
 		appStamp.getApplication_New().setAppReason(new AppReason(applicationReason));
@@ -66,9 +72,15 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 		 ※詳細はアルゴリズム参照*/
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(appStamp.getApplication_New().getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&
-				Strings.isEmpty(appStamp.getApplication_New().getAppReason().v())){
-					throw new BusinessException("Msg_115");
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+				appStamp.getApplication_New().getCompanyID(), 
+				ApplicationType.STAMP_APPLICATION.value).get();
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
+				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+			if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&
+					Strings.isEmpty(appStamp.getApplication_New().getAppReason().v())){
+						throw new BusinessException("Msg_115");
+			}
 		}
 		appStamp.customValidate();
 	}
