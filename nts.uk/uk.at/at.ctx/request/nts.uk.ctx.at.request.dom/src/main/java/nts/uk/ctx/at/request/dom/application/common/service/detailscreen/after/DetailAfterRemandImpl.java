@@ -92,7 +92,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			// 差し戻し先が承認者の場合
 			List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
 			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
-				mailSenderResult = this.getMailSenderResult(application, employeeList);
+				mailSenderResult = this.getMailSenderResult(application, employeeList, returnReason);
 			} else {
 				mailSenderResult = new MailSenderResult(null, null);
 			}
@@ -102,7 +102,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
 			application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
 			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
-				mailSenderResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()));
+				mailSenderResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()), returnReason);
 			} else {
 				mailSenderResult = new MailSenderResult(null, null);
 			}
@@ -112,7 +112,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	}
 
 	@Override
-	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList) {
+	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList, String returnReason) {
 		String mailTitle = "";
 		String mailBody = "";
 		String cid = AppContexts.user().companyId();
@@ -177,7 +177,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					//｛7｝氏名 - ログイン者
 					nameLogin,
 					//｛8｝メールアドレス - ログイン者
-					loginMail);
+					loginMail,
+					//{9}差し戻し理由 //ver2
+					returnReason);
 			if (Strings.isBlank(employeeMail)) {
 				errorList.add(I18NText.getText("Msg_768", employeeName));
 				continue;
