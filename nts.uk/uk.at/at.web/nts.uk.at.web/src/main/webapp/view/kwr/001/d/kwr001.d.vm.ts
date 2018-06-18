@@ -28,7 +28,6 @@ module nts.uk.at.view.kwr001.d {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                var data = nts.uk.ui.windows.getShared('KWR001_D');
                 
                 service.getDataStartPage().done(function(data: any) {
                     let arr: ItemModel[] = [];
@@ -57,14 +56,13 @@ module nts.uk.at.view.kwr001.d {
                     return;    
                 }
                 service.executeCopy(self.D1_6_value(), self.selectedCode(), nts.uk.ui.windows.getShared('KWR001_D')).done(function(data: any) {
-                    console.log(data);
                     dataReturnScrC.lstAtdChoose = data;
                     dataReturnScrC.codeCopy = self.D1_6_value();
                     dataReturnScrC.nameCopy = self.D1_7_value();
                     nts.uk.ui.windows.setShared('KWR001_D', dataReturnScrC);
                     nts.uk.ui.windows.close();
                 }).fail(function(err) {
-                    nts.uk.ui.dialog.error(err);
+                    nts.uk.ui.dialog.alertError(err);
                 })
             }
         };

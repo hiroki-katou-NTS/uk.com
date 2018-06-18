@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
@@ -105,13 +106,25 @@ public class WorkScheduleOutputConditionFinder {
 		}
 		
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")
-		Closure closure = getDomClosure(employeeId, systemDate).get();
+		Optional<Closure> optClosure = getDomClosure(employeeId, systemDate);
 		
-		// アルゴリズム「当月の期間を算出する」を実行する(Execute the algorithm "Calculate the period of the current month")
-		DatePeriod datePeriod = closureService.getClosurePeriodNws(closure.getClosureId().value, closure.getClosureMonth().getProcessingYm());
-		dto.setStartDate(datePeriod.start());
-		dto.setEndDate(datePeriod.end());
-		
+		// 「締め」がある
+		if (optClosure.isPresent()) {
+			Closure closure = optClosure.get();
+			dto.setMsgErrClosingPeriod(null);
+			
+			// アルゴリズム「当月の期間を算出する」を実行する(Execute the algorithm "Calculate the period of the current month")
+			DatePeriod datePeriod = closureService.getClosurePeriodNws(closure.getClosureId().value, closure.getClosureMonth().getProcessingYm());
+			dto.setStartDate(datePeriod.start());
+			dto.setEndDate(datePeriod.end());
+		} else {
+			// 「締め」がない
+			dto.setMsgErrClosingPeriod("Msg_1134");
+			
+			dto.setStartDate(null);
+			dto.setEndDate(null);
+		}
+
 		// ドメインモデル「日別勤務表の出力項目」をすべて取得する(Acquire all domain model "Output items of daily work schedule")
 		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = outputItemDailyWorkScheduleRepository.findByCid(companyId);
 		if (!lstOutputItemDailyWorkSchedule.isEmpty()) {
@@ -158,8 +171,9 @@ public class WorkScheduleOutputConditionFinder {
 		if (optClosureEmployment.isPresent()) {
 			// Get domain 対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
 			return closureRepository.findById(companyId, optClosureEmployment.get().getClosureId());
-		} 
-		return Optional.empty();
+		} else { // 締め1の対応するドメインモデル「締め」を取得する ((get domain model đối ứng của closing day 1)
+			return closureRepository.findById(companyId, 1);
+		}
 	}
 	
 	/**

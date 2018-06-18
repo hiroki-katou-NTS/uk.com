@@ -1,5 +1,7 @@
 package nts.uk.file.at.app.export.dailyschedule.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,10 +32,10 @@ public class WorkplaceReportData {
 	public WorkplaceReportData parent;
 	
 	/** The lst employee report data. */
-	public List<EmployeeReportData> lstEmployeeReportData;
+	public List<EmployeeReportData> lstEmployeeReportData = new ArrayList<>();
 	
 	/** The lst child workplace report data. */
-	public Map<String, WorkplaceReportData> lstChildWorkplaceReportData;
+	public Map<String, WorkplaceReportData> lstChildWorkplaceReportData = new HashMap<>();
 	
 	/** The workplace total. */
 	public WorkplaceTotal workplaceTotal;

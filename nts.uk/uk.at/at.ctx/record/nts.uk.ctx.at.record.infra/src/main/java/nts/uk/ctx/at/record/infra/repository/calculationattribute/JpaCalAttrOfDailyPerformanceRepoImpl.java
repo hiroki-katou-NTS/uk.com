@@ -16,7 +16,6 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
@@ -32,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -89,8 +89,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 				calc.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
 			}
 			if (domain.getLeaveEarlySetting() != null) {
-				calc.leaveEarlySet = domain.getLeaveEarlySetting().getLeaveEarly().value;
-				calc.leaveLateSet = domain.getLeaveEarlySetting().getLeaveLate().value;
+				calc.leaveEarlySet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
+				calc.leaveLateSet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
 			}
 			setFlexCalcSetting(domain.getFlexExcessTime().getFlexOtTime(), flexCalc);
 			setHolidayCalcSetting(domain.getHolidayTimeSetting(), holidayCalc);
@@ -124,8 +124,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 			calcSet.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
 		}
 		if (domain.getLeaveEarlySetting() != null) {
-			calcSet.leaveEarlySet = domain.getLeaveEarlySetting().getLeaveEarly().value;
-			calcSet.leaveLateSet = domain.getLeaveEarlySetting().getLeaveLate().value;
+			calcSet.leaveEarlySet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
+			calcSet.leaveLateSet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
 		}
 		calcSet.overTimeWorkId = overtimeCalc.overTimeWorkId;
 		calcSet.flexExcessTimeId = flexCalc.flexExcessTimeId;
@@ -203,8 +203,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 				new AutoCalRaisingSalarySetting(calc.bonusPayNormalCalSet == 1 ? true : false,
 						calc.bonusPaySpeCalSet == 1 ? true : false),
 				holiday, overtime,
-				new AutoCalOfLeaveEarlySetting(getEnum(calc.leaveEarlySet, LeaveAttr.class),
-						getEnum(calc.leaveLateSet, LeaveAttr.class)),
+				new AutoCalcOfLeaveEarlySetting(calc.leaveEarlySet == 1 ? true : false,
+						calc.leaveLateSet  == 1 ? true : false),
 				new AutoCalcSetOfDivergenceTime(getEnum(calc.divergenceTime, DivergenceTimeAttr.class)));
 	}
 

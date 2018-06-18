@@ -5,11 +5,14 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query
  *
  */
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 @Getter
@@ -37,5 +40,8 @@ public class UnUseOfRec {
 	 * 未使用日数
 	 */
 	private double unUseDays;
-	
+	/**	代休消化区分 */
+	private DigestionAtr digestionAtr;
+	/**	消滅日 */
+	private Optional<GeneralDate> disappearanceDate;
 }

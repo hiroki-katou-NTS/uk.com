@@ -112,7 +112,7 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 		return new AttendanceItemConAdapterDto(
 				export.getOperatorBetweenGroups(),
 				convertToErAlConAttendanceItem(export.getGroup1()),
-				convertToErAlConAttendanceItem(export.getGroup2()),
+				export.getGroup2()==null?null:convertToErAlConAttendanceItem(export.getGroup2()),
 				export.isGroup2UseAtr()
 				);
 	}

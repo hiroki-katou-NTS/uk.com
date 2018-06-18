@@ -70,6 +70,7 @@ public class CheckShortageFlex {
 		CheckShortage resultCheck = CheckShortage.defaultShortage(false);
 		// TODO 社員に対応する処理締めを取得する
 		DatePeriod datePeriod = findClosurePeriod(employeeId, date);
+		if(datePeriod == null) return resultCheck;
 		// パラメータ「基準日」がパラメータ「当月の期間」に含まれているかチェックする
 		if (date.before(datePeriod.start()) || date.after(datePeriod.end()))
 			return resultCheck;
@@ -110,6 +111,9 @@ public class CheckShortageFlex {
 	public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
 		// 社員に対応する処理締めを取得する.
 		Optional<Closure> closure = this.findClosureByEmployee(employeeId, baseDate);
+		if(!closure.isPresent()) {
+			return null;
+		}
 		CurrentMonth currentMonth = closure.get().getClosureMonth();
 		
 		// 当月の期間を算出する.
@@ -138,7 +142,7 @@ public class CheckShortageFlex {
 		// Find closure employment by emp code.
 		Optional<ClosureEmployment> closureEmpOpt = this.closureEmploymentRepository
 				.findByEmploymentCD(companyId, empHistOpt.get().getEmploymentCode());
-		
+		if(!closureEmpOpt.isPresent()) return Optional.empty();
 		// Find closure.
 		return this.closureRepository.findById(companyId, closureEmpOpt.get().getClosureId());
 	}

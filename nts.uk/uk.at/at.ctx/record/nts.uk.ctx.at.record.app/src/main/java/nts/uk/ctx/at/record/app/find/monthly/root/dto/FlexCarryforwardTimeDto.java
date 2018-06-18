@@ -17,17 +17,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class FlexCarryforwardTimeDto implements ItemConst {
 
 	/** フレックス繰越勤務時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = WORKING_TIME, layout = LAYOUT_A)
 	private int flexCarryforwardWorkTime;
 
 	/** フレックス繰越時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private int flexCarryforwardTime;
 
 	/** フレックス繰越不足時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = SHORTAGE, layout = LAYOUT_C)
 	private int flexCarryforwardShortageTime;
 

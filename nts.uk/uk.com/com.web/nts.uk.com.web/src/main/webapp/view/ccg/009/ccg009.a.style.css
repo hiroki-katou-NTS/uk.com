@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+
+#left-content {
+	padding-left: 10px;
+	width: 500px;
+	float: left;
+}
+
+#right-content {
+	width: 700px;
+	float: left;
+}
+
+#searchbox{
+	margin-top: 20px;
+	margin-left: 12px;
+}
+
+#listalarm{
+	margin-left: 12px;
+}
+
+.ntsSearchBox{
+	width: 280px !important;
+}
+
+#single-list>tbody>tr>td:last-child {
+    text-align: center;
+}
+
+#labelNotRequired{
+	margin-top: 12px;
+}
+
+#labelRequired{
+	margin-top: 15px;
+}
+
+#name{
+	margin-left: 83px;
+}

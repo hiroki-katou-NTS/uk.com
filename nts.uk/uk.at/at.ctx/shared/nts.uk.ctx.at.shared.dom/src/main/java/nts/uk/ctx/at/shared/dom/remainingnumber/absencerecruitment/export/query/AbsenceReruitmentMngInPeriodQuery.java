@@ -11,7 +11,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AbsenceReruitmentMngInPeriodQuery {
 	/**
-	 * 期間内の振出振休残数を取得する
+	 * Requestlist204 期間内の振出振休残数を取得する
 	 * @return
 	 */
 	AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput);
@@ -90,4 +90,11 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @return
 	 */
 	AbsDaysRemain getOccurrenceUseDays(List<AbsRecDetailPara> lstDetailData, DatePeriod dateData);
+	/**
+	 * 消化区分と消滅日を計算する
+	 * @param lstDetailData
+	 * @param baseDate
+	 * @return
+	 */
+	List<AbsRecDetailPara> calDigestionAtr(List<AbsRecDetailPara> lstDetailData, GeneralDate baseDate);
 }
