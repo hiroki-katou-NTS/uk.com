@@ -42,12 +42,12 @@ public class MonthlyCalculationDto implements ItemConst {
 	private AggregateTotalTimeSpentAtWorkDto totalTimeSpentAtWork;
 
 	/** 総労働時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TOTAL_LABOR, layout = LAYOUT_F)
 	private int totalWorkingTime;
 
 	/** 法定労働時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_G)
 	private int statutoryWorkingTime;
 

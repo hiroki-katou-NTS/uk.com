@@ -12,9 +12,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ReleaseHolidayShipmentCommandHandler extends CommandHandler<HolidayShipmentCommand> {
 
-	String companyID, employeeID;
-	Long version;
-
 	@Inject
 	private BeforeProcessReleasing beforeReleaseProc;
 	@Inject
@@ -23,29 +20,29 @@ public class ReleaseHolidayShipmentCommandHandler extends CommandHandler<Holiday
 	@Override
 	protected void handle(CommandHandlerContext<HolidayShipmentCommand> context) {
 		HolidayShipmentCommand command = context.getCommand();
-		companyID = AppContexts.user().companyId();
-		employeeID = AppContexts.user().employeeId();
-		version = command.getAppVersion();
+		Long version = command.getAppVersion();
 		// アルゴリズム「振休振出申請の承認解除」を実行する
-		cancellationApproval(command);
+		cancellationApproval(command,version);
 	}
 
-	private void cancellationApproval(HolidayShipmentCommand command) {
+	private void cancellationApproval(HolidayShipmentCommand command,Long version) {
+		String companyID = AppContexts.user().companyId();
 		boolean isReleaseRec = command.getRecAppID() != null;
 		boolean isReleaseAbs = command.getAbsAppID() != null;
 		if (isReleaseAbs) {
 			// アルゴリズム「承認解除処理」を実行する
-			releaseProcessing(companyID, command.getAbsAppID());
+			releaseProcessing(companyID, command.getAbsAppID(),version);
 		}
 
 		if (isReleaseRec) {
 			// アルゴリズム「承認解除処理」を実行する
-			releaseProcessing(companyID, command.getRecAppID());
+			releaseProcessing(companyID, command.getRecAppID(),version);
 		}
 
 	}
 
-	private void releaseProcessing(String companyID, String appID) {
+	private void releaseProcessing(String companyID, String appID,Long version) {
+		String employeeID = AppContexts.user().employeeId();
 		// アルゴリズム「詳細画面解除前の処理」を実行する
 		this.beforeReleaseProc.detailScreenProcessBeforeReleasing(companyID, appID, version);
 		// アルゴリズム「詳細画面解除後の処理」を実行する

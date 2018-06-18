@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 
 	/** 月割増合計時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_PREMIUM, layout = LAYOUT_A)
 	private int monthlyTotalPremiumTime;
 	
@@ -30,12 +30,12 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 	private List<ExcessOutsideWorkDto> time;
 	
 	/** 週割増合計時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = WEEKLY_PREMIUM, layout = LAYOUT_C)
 	private int weeklyTotalPremiumTime;
 	
 	/** 変形繰越時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = IRREGULAR + CARRY_FORWARD, layout = LAYOUT_D)
 	private int deformationCarryforwardTime;
 	

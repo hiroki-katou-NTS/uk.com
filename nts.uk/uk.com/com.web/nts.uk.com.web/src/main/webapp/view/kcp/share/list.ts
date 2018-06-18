@@ -808,7 +808,7 @@ module kcp.share.list {
         public reload() {
             var self = this;
             // Check if is has base date.
-            if (self.hasBaseDate && (!self.baseDate() || self.baseDate().toString() == '')) {
+            if ((self.hasBaseDate && (!self.baseDate() || self.baseDate().toString() == ''))||nts.uk.ui.errors.hasError()) {
                 return;
             }
             self.findDataList(self.listType).done((data: UnitModel[]) => {

@@ -24,6 +24,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         selectedWplId: KnockoutObservable<string>;
         selectedWplName: KnockoutObservable<string>;
         listEmpCd: Array<string>;
+        inputContent: any;
 
         enableNext: KnockoutObservable<boolean>;
         enablePre: KnockoutObservable<boolean>;
@@ -85,6 +86,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.isConfirmData = params.isConfirmData;
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
+                self.inputContent = params.inputContent;
             }
 
             self.dtPrev(new Date(self.startDateFormat));
@@ -116,6 +118,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 listWorkplace: self.listWkp,
                 isConfirmData: self.isConfirmData,
                 listEmployeeCode: self.listEmpCd,
+                inputContent: self.inputContent
             };
             nts.uk.request.jump('/view/kaf/018/e/index.xhtml', params);
         }
@@ -584,6 +587,14 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 leftmostDeco.push(new shareModel.CellColor("sName", item.index, "emp-name" + item.index));
             })
             return leftmostDeco;
+        }
+        
+        goBackA() {
+            var self = this;
+            let params = {
+                inputContent: self.inputContent
+            };
+            nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);
         }
     }
 
