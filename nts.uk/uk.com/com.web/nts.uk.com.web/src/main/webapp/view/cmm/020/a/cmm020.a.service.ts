@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm020.a {
          * define path to service
          */
         var paths: any = {
-            getAllEraNameItem: "",
+            getAllEraNameItem: "at/shared/ws/era/name/find",
             saveEraName: "",
             deleteEraName: ""
         };

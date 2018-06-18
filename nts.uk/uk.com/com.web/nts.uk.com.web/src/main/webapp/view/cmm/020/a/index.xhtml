@@ -7,10 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.era.name.EraName
-				nts.uk.ctx.at.shared.dom.era.name.SymbolName
-			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm020.a.style.css" />
 			<com:scriptfile path="cmm020.a.start.js" />
@@ -65,15 +61,14 @@
 								<tr class="row">
 									<td>
 										<!-- A3_1 -->
-										<div
-											data-bind="ntsFormLabel: {constraint: 'EraName',required: true}">#{i18n.getText('CMM020_6')}</div>
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM020_6')}</div>
 									</td>
 									<td colspan="2" class="th-col2">
 										<div>
 											<input
 												data-bind="ntsTextEditor: {
 													value:currentName,
-													constraint: 'EraName',
+												
 													required: true,
 													enable: activeUpdate(),
 													option: {width: '55px'}},
@@ -81,26 +76,25 @@
 										</div>
 									</td>
 								</tr>
-
+								<!-- 	constraint: 'EraName', -->
 								<tr class="row">
 									<td>
 										<!-- A3_1 -->
-										<div
-											data-bind="ntsFormLabel: {constraint: 'SymbolName',required: true}">#{i18n.getText('CMM020_7')}</div>
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM020_7')}</div>
 									</td>
 									<td>
 										<div>
 											<input
 												data-bind="ntsTextEditor: {
 													value:currentSymbol,
-													constraint: 'SymbolName',
+											
 													required: true,
 													enable: activeUpdate(),
 													option: {width: '55px'}}" />
 										</div>
 									</td>
 								</tr>
-
+								<!-- 	constraint: 'SymbolName', -->
 								<tr class="row">
 									<td>
 										<!-- A3_1 -->
