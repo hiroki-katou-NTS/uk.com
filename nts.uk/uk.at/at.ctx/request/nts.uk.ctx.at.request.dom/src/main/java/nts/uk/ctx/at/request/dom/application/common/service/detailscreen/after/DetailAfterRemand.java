@@ -28,8 +28,9 @@ public interface DetailAfterRemand {
 	 * 送信先リスト(output)にメール送信する
 	 * @param application
 	 * @param employeeList
+	 * @param returnReason
 	 * @return
 	 */
-	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList);
+	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList, String returnReason);
 	
 }
