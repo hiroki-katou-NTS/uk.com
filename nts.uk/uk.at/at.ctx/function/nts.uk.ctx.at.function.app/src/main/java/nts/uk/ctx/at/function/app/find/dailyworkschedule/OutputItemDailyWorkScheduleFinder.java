@@ -166,16 +166,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		lstAttendanceID.addAll(lstAttendanceID2);
 		
 		// ドメインモデル「日次の勤怠項目」をすべて取得する(Acquire all domain model "daily attendance items")
-//		List<DailyAttendanceItem> lstDailyAttendanceItem = new ArrayList<>();
 		if (!lstAttendanceID.isEmpty()) {
-/*			lstDailyAttendanceItem = dailyAttendanceItemRepository.getListById(companyID, lstAttendanceID);
-			mapDtoReturn.put("dailyAttendanceItem", lstDailyAttendanceItem.stream().map(domain -> {
-			DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
-			dto.setCode(String.valueOf(domain.getAttendanceItemId()));
-			dto.setName(domain.getAttendanceName().v());
-			return dto;
-		}).collect(Collectors.toList()));*/
-			
 			mapDtoReturn.put("dailyAttendanceItem", dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(lstAttendanceID).stream()
 					.map(domain -> {
 						DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
