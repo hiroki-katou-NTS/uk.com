@@ -12,11 +12,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.gateway.app.command.securitypolicy.lockoutdata.AddLockOutDataCommand;
+import nts.uk.ctx.sys.gateway.app.command.securitypolicy.lockoutdata.AddLockOutDataCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.securitypolicy.lockoutdata.LockOutDataDeleteCommand;
 import nts.uk.ctx.sys.gateway.app.command.securitypolicy.lockoutdata.LockOutDataDeleteCommandHandler;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.LockOutDataUserFinder;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
-import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.SearchInput;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.SearchUser;
 
 /**
@@ -56,10 +57,20 @@ public class LockOutDataWebService extends WebService {
 	/*
 	 * Author: Nguyen Van Hanh
 	 */
+	@Inject
+	AddLockOutDataCommandHandler addUserToLockCommandHandler;
+
+	/**
+	 * Lockout User Data
+	 * 
+	 * @param command
+	 * @return Integer the userId locked
+	 */
 	@POST
-	@Path("findUserBySearchInput")
-	public List<SearchUser> findByFormSearch(SearchInput inputSearch) {
-		return lockOutDataUserFinder.findUserByUserIDName(inputSearch.getValue());
+	@Path("lockUserByID")
+	public SearchUser addLockOutData(AddLockOutDataCommand command){
+		addUserToLockCommandHandler.handle(command);
+		return lockOutDataUserFinder.findByUserId(command.getUserID());
 	}
 	
 }

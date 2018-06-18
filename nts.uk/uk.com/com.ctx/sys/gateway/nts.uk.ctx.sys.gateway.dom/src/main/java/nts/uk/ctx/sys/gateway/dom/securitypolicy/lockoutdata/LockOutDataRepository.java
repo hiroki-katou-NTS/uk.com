@@ -41,13 +41,4 @@ public interface LockOutDataRepository {
 	 * @param usersID the users ID
 	 */
 	void remove(List<String> usersID);
-	
-	/**
-	 * Find all user found by keyword
-	 * Keyword are compared to loginID or userName
-	 * 
-	 * @param userIDName
-	 * @return List<SearchUser>
-	 */
-	List<SearchUser> findUserByUserIDName(String userIDName);
 }
