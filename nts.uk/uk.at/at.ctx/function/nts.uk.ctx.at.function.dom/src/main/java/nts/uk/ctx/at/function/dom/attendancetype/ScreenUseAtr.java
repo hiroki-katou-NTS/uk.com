@@ -83,7 +83,11 @@ public enum ScreenUseAtr {
 
 	/** The daily work schedule. */
 	// 日別勤務表
-	DAILY_WORK_SCHEDULE(19, "日別勤務表");
+	DAILY_WORK_SCHEDULE(19, "日別勤務表"),
+		
+	/** The monthly work schedule. */
+	// 月別勤務表
+	MONTHLY_WORK_SCHEDULE(20, "月別勤務表");
 
 	/** The value. */
 	public final int value;
