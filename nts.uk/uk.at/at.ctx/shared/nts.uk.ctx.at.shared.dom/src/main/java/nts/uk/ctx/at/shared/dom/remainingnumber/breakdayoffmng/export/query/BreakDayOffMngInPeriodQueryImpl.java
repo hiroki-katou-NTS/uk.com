@@ -335,7 +335,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		} else if (remainData.getCreatorAtr() == CreaterAtr.RECORD){
 			dataAtr = MngDataStatus.RECORD;
 		}
-		CompensatoryDayoffDate date = new CompensatoryDayoffDate(true, Optional.of(remainData.getYmd()));
+		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 		BreakDayOffDetail dataOutput = new BreakDayOffDetail(remainData.getSID(), 
 				dataAtr, 
 				date, OccurrenceDigClass.DIGESTION, Optional.empty(), Optional.of(dayOffData));
@@ -418,7 +418,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		} else if (remainData.getCreatorAtr() == CreaterAtr.RECORD){
 			dataAtr = MngDataStatus.RECORD;
 		}
-		CompensatoryDayoffDate date = new CompensatoryDayoffDate(true, Optional.of(remainData.getYmd()));
+		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 		UnUserOfBreak unUseBreak = new UnUserOfBreak(breakMng.getBreakMngId(),
 				breakMng.getOnedayTime().v(),
 				breakMng.getExpirationDate(),
