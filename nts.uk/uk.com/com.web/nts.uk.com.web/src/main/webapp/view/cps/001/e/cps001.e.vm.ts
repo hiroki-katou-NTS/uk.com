@@ -56,8 +56,8 @@ module cps001.e.vm {
                         return;
                     }
                     self.isInit = false;
-                    $('.upload-btn').focus();
                     unblock();
+                    $('.upload-btn').focus();
                 });
 
             }).fail((mes) => {
@@ -71,14 +71,12 @@ module cps001.e.vm {
                             if (data[i].available == false) {
                                 self.enaBtnSave(false);
                                 $(".upload-btn").attr('disabled', 'disabled');
-                                $('.upload-btn').focus();
                             }
                         }
                     }
                 }
+                $('.upload-btn').focus();
             });            
-
-            $('.upload-btn').focus();
 
         }
 
@@ -147,12 +145,13 @@ module cps001.e.vm {
             let self = this;
             let id = self.empFileMn().fileId;
             try {
-                $("#test").ntsImageEditor("selectByFileId", {fileId: id, actionOnClose: function(){
-                     unblock();
-+                    self.isChange(true);
-+                    $(".checkbox-holder").hide();
-+                    $('.upload-btn').focus(); 
-                }});
+                $("#test").ntsImageEditor("selectByFileId", {
+                    fileId: id, actionOnClose: function() {
+                        unblock();
+                        self.isChange(true);
+                        $(".checkbox-holder").hide();
+                    }
+                });
             } catch (Error) {
                 self.isChange(true);
             }

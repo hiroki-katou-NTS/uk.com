@@ -390,16 +390,10 @@ module nts.custom.component {
 
                 fetch.employee(id).done((emp: IData) => {
                     if (emp) {
-                        if (params.auth.allowAvatarRef()) {
-                            debugger;
-                            fetch.avartar(id).done(avatar => {
-                                person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
-                            }).fail(msg => person.avatar(DEF_AVATAR));
-                        } else {
-                            debugger;
-                            person.avatar(DEF_AVATAR);
-                        }
-
+                        
+                        fetch.avartar(id).done(avatar => {
+                            person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
+                        }).fail(msg => person.avatar(DEF_AVATAR));
 
                         person.id(emp.pid);
 

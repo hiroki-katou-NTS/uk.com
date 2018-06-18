@@ -64,10 +64,10 @@ module cps001.d.vm {
                         return;
                     }
                     self.isInit = false;
-                    $('.upload-btn').focus();
                     unblock();
+                    $('.upload-btn').focus();
                 });
-
+                $('.upload-btn').focus();
             }).fail((mes) => {
                 unblock();
             });
@@ -85,6 +85,7 @@ module cps001.d.vm {
                         }
                     }
                 }
+                $('.upload-btn').focus();
             });
 
             $('.upload-btn').focus();
@@ -178,6 +179,7 @@ module cps001.d.vm {
                 }});
             } catch (Error) {
                 self.isChange(true);
+                $('.upload-btn').focus();
             }
         }
 

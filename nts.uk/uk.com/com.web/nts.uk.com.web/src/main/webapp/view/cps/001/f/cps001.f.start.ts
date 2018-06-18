@@ -72,13 +72,10 @@ function LinkButtonClick() {
         __viewContext['viewModel'].fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
         $('.filenamelabel').show();
         __viewContext['viewModel'].filename(res.originalName);
-        if(__viewContext['viewModel'].allowDowloadFile()){
-           nts.uk.request.specials.donwloadFile(rowItem.fileId); 
-        }else{
-            $(".browser-button").attr('disabled', 'disabled');
-            $(".delete-button").attr('disabled', 'disabled');
-        }
-        
+        nts.uk.request.specials.donwloadFile(rowItem.fileId);
+        $(".browser-button").attr('disabled', 'disabled');
+        $(".delete-button").attr('disabled', 'disabled');
+
 
     });
 }
