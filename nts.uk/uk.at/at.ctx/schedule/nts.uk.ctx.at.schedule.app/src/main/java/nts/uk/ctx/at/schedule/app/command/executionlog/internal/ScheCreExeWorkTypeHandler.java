@@ -18,8 +18,10 @@ import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImporte
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
+import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -71,7 +73,8 @@ public class ScheCreExeWorkTypeHandler {
 	 */
 	public void createWorkSchedule(ScheduleCreatorExecutionCommand command, WorkCondItemDto workingConditionItem,
 			EmployeeGeneralInfoImported empGeneralInfo, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
-			List<WorkCondItemDto> listWorkingConItem) {
+			List<WorkCondItemDto> listWorkingConItem, List<WorkType> listWorkType,
+			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
 
 		// 登録前削除区分をTrue（削除する）とする
 		// command.setIsDeleteBeforInsert(true); FIX BUG #87113
@@ -95,20 +98,21 @@ public class ScheCreExeWorkTypeHandler {
 
 		// 勤務種類を取得する(lấy dữ liệu worktype)
 		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter, empGeneralInfo, mapEmploymentStatus,
-				listWorkingConItem);
+				listWorkingConItem, listWorkType);
 
 		if (optWorktype.isPresent()) {
 			WorkTimeGetterCommand commandWorkTimeGetter = commandWorktypeGetter.toWorkTime();
 			commandWorkTimeGetter.setWorkTypeCode(optWorktype.get().getWorktypeCode());
 			// 就業時間帯を取得する(lấy dữ liệu worktime)
 			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter,
-					empGeneralInfo, mapEmploymentStatus, listWorkingConItem);
+					empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkTimeSetting);
 
 			if (optionalWorkTime == null || optionalWorkTime.isPresent()) {
 				// update all basic schedule
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
-						optionalWorkTime == null ? null : optionalWorkTime.get(), empGeneralInfo);
+						optionalWorkTime == null ? null : optionalWorkTime.get(), empGeneralInfo, listWorkType,
+						listWorkTimeSetting, listBusTypeOfEmpHis);
 			}
 
 		}
@@ -266,6 +270,11 @@ public class ScheCreExeWorkTypeHandler {
 					employmentInfo -> employmentInfo.getStandardDate().equals(command.getBaseGetter().getToDate()))
 					.findFirst();
 		}
+		// Khong co truong hop k lay duoc thong tin nhan vien
+		// van check isPresent cho dung luong tam!
+		if (!optEmploymentInfo.isPresent()) {
+			return null;
+		}
 
 		// employment status is INCUMBENT
 		if (optEmploymentInfo.get().getEmploymentState() == ScheCreExeWorkTimeHandler.INCUMBENT) {
@@ -277,6 +286,7 @@ public class ScheCreExeWorkTypeHandler {
 				|| optEmploymentInfo.get().getEmploymentState() == ScheCreExeWorkTimeHandler.LEAVE_OF_ABSENCE) {
 			return this.getWorktypeCodeLeaveHolidayType(command, optEmploymentInfo, listWorkingConItem);
 		}
+
 		return ScheCreExeWorkTimeHandler.DEFAULT_CODE;
 	}
 
@@ -327,10 +337,12 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param empGeneralInfo
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
+	 * @param listWorkType
 	 * @return
 	 */
 	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command, EmployeeGeneralInfoImported empGeneralInfo,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
+			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
+			List<WorkType> listWorkType) {
 
 		// setup command getter
 		BasicWorkSettingGetterCommand commandBasicGetter = command.toBasicWorkSetting();
@@ -353,7 +365,7 @@ public class ScheCreExeWorkTypeHandler {
 			// set work type code to command
 			commandWorkTypeEmploymentStatus.setWorkTypeCode(basicWorkSetting.getWorktypeCode().v());
 			return this.getWorkTypeByEmploymentStatus(commandWorkTypeEmploymentStatus, mapEmploymentStatus,
-					listWorkingConItem);
+					listWorkingConItem, listWorkType);
 		}
 
 		return Optional.empty();
@@ -370,24 +382,30 @@ public class ScheCreExeWorkTypeHandler {
 	 * @return
 	 */
 	public Optional<WorktypeDto> getWorkTypeByEmploymentStatus(WorkTypeByEmpStatusGetterCommand command,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
-		String worktypeCode = null;
+			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
+			List<WorkType> listWorkType) {
+		String workTypeCd = null;
 		// check 就業時間帯の参照先 == 個人曜日別
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
-			worktypeCode = this.convertWorktypeCodeByDayOfWeekPersonal(command, mapEmploymentStatus,
-					listWorkingConItem);
+			workTypeCd = this.convertWorktypeCodeByDayOfWeekPersonal(command, mapEmploymentStatus, listWorkingConItem);
 		} else {
 			// マスタ参照区分に従う、個人勤務日別
-			worktypeCode = this.convertWorktypeCodeByWorkingStatus(command, mapEmploymentStatus, listWorkingConItem);
+			workTypeCd = this.convertWorktypeCodeByWorkingStatus(command, mapEmploymentStatus, listWorkingConItem);
 		}
 
 		// get work type by code
-		Optional<WorkType> optionalWorktype = this.workTypeRepository.findByPK(command.getBaseGetter().getCompanyId(),
-				worktypeCode);
+		// EA No2019
+		// EA No2021
+		// 勤務種類一覧から変換した勤務種類コードと一致する情報を取得する
+		final String workTypeCode = workTypeCd;
+		Optional<WorkType> optionalWorktype = listWorkType.stream()
+				.filter(x -> (x.getCompanyId().equals(command.getBaseGetter().getCompanyId())
+						&& x.getWorkTypeCode().toString().equals(workTypeCode)))
+				.findFirst();
 
 		if (optionalWorktype.isPresent()
 				&& optionalWorktype.get().getDeprecate() == DeprecateClassification.NotDeprecated) {
-			return Optional.of(new WorktypeDto(worktypeCode, optionalWorktype.get().getWorkTypeSet()));
+			return Optional.of(new WorktypeDto(workTypeCd, optionalWorktype.get().getWorkTypeSet()));
 		} else {
 			// add error log message 590
 			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_590");

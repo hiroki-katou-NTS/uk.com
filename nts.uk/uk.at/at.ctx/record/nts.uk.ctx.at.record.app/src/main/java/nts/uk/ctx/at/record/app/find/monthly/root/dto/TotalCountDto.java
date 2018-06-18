@@ -24,12 +24,12 @@ public class TotalCountDto implements ItemConst {
 	private int no;
 	
 	/** 回数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
 	private double count;
 
 	/** 時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private int time;
 	

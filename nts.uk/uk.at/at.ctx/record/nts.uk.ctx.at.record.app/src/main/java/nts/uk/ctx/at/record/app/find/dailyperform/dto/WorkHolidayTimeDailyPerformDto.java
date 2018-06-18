@@ -36,7 +36,7 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 
 	/** 休出拘束時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = RESTRAINT)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer holidayTimeSpentAtWork;
 
 	/** 休出枠時間: 休出枠時間 */

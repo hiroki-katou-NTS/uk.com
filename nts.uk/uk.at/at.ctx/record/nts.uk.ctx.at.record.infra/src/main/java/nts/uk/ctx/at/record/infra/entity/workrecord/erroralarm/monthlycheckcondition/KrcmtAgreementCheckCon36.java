@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -33,14 +34,14 @@ public class KrcmtAgreementCheckCon36 extends UkJpaEntity implements Serializabl
 	@Column(name = "COMPARE_OPERATOR")
 	public int compareOperator;
 	
-	@Column(name = "FIX_EXTRA_ITEM_MON_NAME")
+	@Column(name = "ERAL_BEFORE_TIME")
 	public BigDecimal eralBeforeTime;
 	
 	@Override
 	protected Object getKey() {
 		return errorAlarmCheckID;
 	}
-
+	
 	public KrcmtAgreementCheckCon36(String errorAlarmCheckID, int classification, int compareOperator, BigDecimal eralBeforeTime) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
@@ -66,6 +67,14 @@ public class KrcmtAgreementCheckCon36 extends UkJpaEntity implements Serializabl
 				this.eralBeforeTime
 				);
 	}
+
+
+
+	
+
+
+
+
 	
 
 }

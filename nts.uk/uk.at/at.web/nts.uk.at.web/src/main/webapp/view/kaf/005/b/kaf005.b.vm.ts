@@ -499,9 +499,7 @@ module nts.uk.at.view.kaf005.b {
                 .done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         if(data.autoSendMail){
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                location.reload();
-                            });    
+                            appcommon.CommonProcess.displayMailResult(data);  
                         } else {
                             location.reload();
                         }

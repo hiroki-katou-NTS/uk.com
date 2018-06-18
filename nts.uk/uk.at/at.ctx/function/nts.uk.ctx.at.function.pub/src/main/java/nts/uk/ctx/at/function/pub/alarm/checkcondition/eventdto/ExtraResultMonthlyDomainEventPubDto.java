@@ -27,8 +27,14 @@ public class ExtraResultMonthlyDomainEventPubDto {
 	/**月次のチェック条件*/
 	private AttendanceItemConAdapterPubDto checkConMonthly;
 	
+	private SpecHolidayCheckConAdapterPubDto specHolidayCheckCon ;
+	
+	private CheckRemainNumberMonAdapterPubDto checkRemainNumberMon;
+	
+	private AgreementCheckCon36AdapterPubDto agreementCheckCon36;
+
 	public ExtraResultMonthlyDomainEventPubDto(String errorAlarmCheckID, int sortBy, String nameAlarmExtraCon, boolean useAtr, int typeCheckItem, boolean messageBold, String messageColor, String displayMessage,
-			AttendanceItemConAdapterPubDto checkConMonthly) {
+			AttendanceItemConAdapterPubDto checkConMonthly, SpecHolidayCheckConAdapterPubDto specHolidayCheckCon, CheckRemainNumberMonAdapterPubDto checkRemainNumberMon, AgreementCheckCon36AdapterPubDto agreementCheckCon36) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.sortBy = sortBy;
@@ -39,7 +45,13 @@ public class ExtraResultMonthlyDomainEventPubDto {
 		this.messageColor = messageColor;
 		this.displayMessage = displayMessage;
 		this.checkConMonthly = checkConMonthly;
+		this.specHolidayCheckCon = specHolidayCheckCon;
+		this.checkRemainNumberMon = checkRemainNumberMon;
+		this.agreementCheckCon36 = agreementCheckCon36;
 	}
+
+	
+	
 	
 	
 }
