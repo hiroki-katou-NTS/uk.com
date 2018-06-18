@@ -22,5 +22,6 @@ public interface MonthlyPerformanceScreenRepo {
 	
 	List<EditStateOfMonthlyPerformanceDto> findEditStateOfMonthlyPer(YearMonth processingDate, List<String> employeeIds, List<Integer> attendanceItemIds);
 	
-	void insertEditStateOfMonthlyPer(EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto);
+	void insertOrUpdateEditStateOfMonthlyPer(EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto);
+	
 }
