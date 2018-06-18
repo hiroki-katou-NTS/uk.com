@@ -21,12 +21,12 @@ public class TemporaryTimeFrameDto implements ItemConst {
 
 	/** 臨時深夜時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LATE_NIGHT)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer temporaryNightTime;
 
 	/** 臨時時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = TIME)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer temporaryTime;
 
 }

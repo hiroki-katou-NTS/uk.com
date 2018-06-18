@@ -16,11 +16,11 @@ public class AutoCalculationSettingDto implements ItemConst {
 
 	/** 計算区分: 時間外の自動計算区分 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = CALC_ATTR)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int calculationAttr;
 
 	/** 上限の設定: 時間外の上限設定 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = UPPER_LIMIT)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int upperLimitSetting;
 }

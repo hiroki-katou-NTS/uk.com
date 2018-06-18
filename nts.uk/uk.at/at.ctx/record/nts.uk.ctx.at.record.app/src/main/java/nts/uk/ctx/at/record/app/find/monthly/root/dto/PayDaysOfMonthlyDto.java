@@ -16,12 +16,12 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class PayDaysOfMonthlyDto implements ItemConst {
 
 	/** 給与出勤日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = ATTENDANCE, layout = LAYOUT_A)
 	private double payAttendanceDays;
 
 	/** 給与欠勤日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = ABSENCE, layout = LAYOUT_B)
 	private double payAbsenceDays;
 	
