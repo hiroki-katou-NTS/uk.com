@@ -1949,6 +1949,10 @@ public class ProgramsManager {
 	/** CCG009 */
 	public static final Program CCG009A = new Program(WebAppId.COM, ProgramIdConsts.CCG009A, "CCG009_1",
 			"/view/ccg/009/index.xhtml");
+	
+	/** CLI001 */
+	public static final Program CLI001A = new Program(WebAppId.COM, ProgramIdConsts.CLI001A, "CLI001_1",
+			"/view/cli/001/a/index.xhtml");
 
 	/**
 	 * All programs map.
