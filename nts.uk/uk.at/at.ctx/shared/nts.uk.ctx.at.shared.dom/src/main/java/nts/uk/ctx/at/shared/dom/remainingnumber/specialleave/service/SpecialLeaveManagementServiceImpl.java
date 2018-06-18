@@ -50,7 +50,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//使用数を求める
 		Double useDays = this.askUseDays(lstInterimSpeHoliday);*/
 		//残数情報をまとめる
-		InPeriodOfSpecialLeave outputData = this.sumRemainData(new ArrayList<>(), (double) 0, baseDate); //TODO
+		InPeriodOfSpecialLeave outputData = this.sumRemainData(new SpecialLeaveGrantDetails(), (double) 0, baseDate); //TODO
 		if(mngAtr) {
 			//社員の特別休暇情報を取得する
 		}
@@ -221,7 +221,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	}
 
 	@Override
-	public InPeriodOfSpecialLeave sumRemainData(List<SpecialLeaveGrantDetails> lstSpecialLeaverData,
+	public InPeriodOfSpecialLeave sumRemainData(SpecialLeaveGrantDetails lstSpecialLeaverData,
 			Double useDays, GeneralDate baseDate) {
 		//付与前明細．残数と付与数=0（初期化）
 		Double beforeRemainDays = (double) 0;
@@ -229,7 +229,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//付与後明細．残数と付与数=0（初期化）
 		Double afterRemainDays = (double) 0;
 		Double afterGrantDays = (double) 0;
-		for (SpecialLeaveGrantDetails leaveData : lstSpecialLeaverData) {
+		/*for (SpecialLeaveGrantDetails leaveData : lstSpecialLeaverData) {
 			//期限切れかチェックする
 			if(leaveData.getDeadlineDate().afterOrEquals(baseDate)) {
 				//ループ中のパラメータ．特別休暇の付与明細．期限切れ区分=使用可能
@@ -251,7 +251,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				//ループ中のパラメータ．特別休暇の付与明細．期限切れ区分=期限切れ
 				leaveData.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
 			}
-		}
+		}*/
 		//付与前明細．残数と付与数を特別休暇の残数に入れる
 		RemainDaysOfSpecialHoliday outDataRemainDays = new RemainDaysOfSpecialHoliday(useDays, beforeRemainDays, beforeGrantDays, Optional.empty(), Optional.empty());
 		if(beforeGrantDays > 0) {

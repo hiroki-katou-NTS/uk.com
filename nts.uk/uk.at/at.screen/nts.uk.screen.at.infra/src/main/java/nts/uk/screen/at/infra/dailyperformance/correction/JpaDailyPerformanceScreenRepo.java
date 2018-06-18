@@ -198,36 +198,36 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	
 	private final static String FIND_WORK_CONDITION;
 
-	private final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
+	private final static String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
 
-	private final String GET_DAI_PER_AUTH_WITH_ROLE_AND_AVAILABILITY = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId AND da.availability = :availability";
+	private final static String GET_DAI_PER_AUTH_WITH_ROLE_AND_AVAILABILITY = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId AND da.availability = :availability";
 
-	private final String SELECT_WORKTIME_WORKPLACE_BYID = "SELECT a FROM KshmtWorkTimeWorkplace a "
+	private final static String SELECT_WORKTIME_WORKPLACE_BYID = "SELECT a FROM KshmtWorkTimeWorkplace a "
 			+ " WHERE a.kshmtWorkTimeWorkplacePK.companyID = :companyID "
 			+ " AND a.kshmtWorkTimeWorkplacePK.workplaceID = :workplaceID ";
 
-	private final String FIND_WORK_TIME_ZONE = "SELECT a FROM KshmtWorkTimeSet a "
+	private final static String FIND_WORK_TIME_ZONE = "SELECT a FROM KshmtWorkTimeSet a "
 			+ "WHERE a.kshmtWorkTimeSetPK.cid = :companyID";
 
-	private final String GET_ALL_WORK_TYPE_CHANGED = "SELECT wtc FROM KrcmtWorktypeChangeable wtc"
+	private final static String GET_ALL_WORK_TYPE_CHANGED = "SELECT wtc FROM KrcmtWorktypeChangeable wtc"
 			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCode = :employeeCode";
 
-	private final String SELECT_WORKTYPE = " SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId";
+	private final static String SELECT_WORKTYPE = " SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId";
 
-	private final String SELECT_ALL_DIVREASON = "SELECT c FROM KrcstDvgcReason c" + " WHERE c.id.cid = :companyId";
+	private final static String SELECT_ALL_DIVREASON = "SELECT c FROM KrcstDvgcReason c" + " WHERE c.id.cid = :companyId";
 
-	private final String SELECT_CONFIRM_DAY = "SELECT c FROM KrcdtIdentificationStatus c"
+	private final static String SELECT_CONFIRM_DAY = "SELECT c FROM KrcdtIdentificationStatus c"
 			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID"
 			+ " AND c.krcdtIdentificationStatusPK.employeeId IN :sids"
 			+ " AND c.krcdtIdentificationStatusPK.processingYmd IN :processingYmds";
 
-	public final String SELECT_BY_LIST_EMPID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
+	public final static String SELECT_BY_LIST_EMPID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
 
 	private static final String SELECT_BY_EMPLOYEE_ID_AFF_COM = "SELECT c FROM BsymtAffCompanyHist c WHERE c.bsymtAffCompanyHistPk.sId IN :sIds and c.companyId = :cid ORDER BY c.startDate ";
 
 	private static final String SELECT_BY_LISTSID_WPH;
 
-	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId";
+	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId ORDER BY a.kfnmtApplicationCallPK.applicationType";
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -235,7 +235,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
 		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
 		builderString
-				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.KrcmtBusinessTypeOfHistoryPK.historyId");
+				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
 		builderString.append(" WHERE b.sId IN :lstSID");
 		builderString.append(" AND h.startDate <= :endYmd");
 		builderString.append(" AND h.endDate >= :startYmd");
@@ -1252,7 +1252,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<AffComHistItemAtScreen> resultList = new ArrayList<>();
 		CollectionUtil.split(employeeIds, 1000, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_EMPLOYEE_ID_AFF_COM, BsymtAffCompanyHist.class)
-					.setParameter("sIds", employeeIds).setParameter("cid", cid)
+					.setParameter("sIds", subList).setParameter("cid", cid)
 					.getList(x -> new AffComHistItemAtScreen(x.bsymtAffCompanyHistPk.sId,
 							new DatePeriod(x.startDate, x.endDate))));
 		});

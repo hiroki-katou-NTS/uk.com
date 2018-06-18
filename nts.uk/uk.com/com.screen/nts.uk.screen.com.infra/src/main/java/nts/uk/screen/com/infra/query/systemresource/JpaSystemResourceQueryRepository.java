@@ -27,7 +27,7 @@ public class JpaSystemResourceQueryRepository extends JpaRepository implements S
 	
 	/** The Constant QUERY_STRING. */
 	private static final String QUERY_STRING_CUS = "SELECT rs From CismtI18NResourceCus rs "
-			                                   + "WHERE rs.pk.companyId = :companyid AND rs.pk.resourceId IN :resourceIdList";
+			                                   + "WHERE rs.pk.companyId = :companyid AND rs.pk.languageId = :languageId AND rs.pk.resourceId IN :resourceIdList";
 	
 	/** The Constant QUERY_STRING. */
 	private static final String QUERY_STRING = "SELECT rs From CisctI18NResource rs "
@@ -37,7 +37,7 @@ public class JpaSystemResourceQueryRepository extends JpaRepository implements S
 	 * @see nts.uk.screen.com.app.repository.systemresource.SystemResourceQueryRepository#findListResource()
 	 */
 	@Override
-	public List<SystemResourceData> findListResourceCus(String companyId) {
+	public List<SystemResourceData> findListResourceCus(String companyId, String languageId) {
 		
 		List<String> list = Arrays.asList("Com_Person", "Com_Employment", "Com_Class", "Com_Jobtitle",
 										  "Com_Department", "Com_Workplace", "Com_Office", "Com_Company",
@@ -47,6 +47,7 @@ public class JpaSystemResourceQueryRepository extends JpaRepository implements S
 										  "Com_PlanedPaidHoliday","Com_SubstituteHoliday");
 		
 		List<CismtI18NResourceCus> listResource = this.queryProxy().query(QUERY_STRING_CUS, CismtI18NResourceCus.class)
+										.setParameter("languageId", languageId)
 										.setParameter("companyid", companyId)
 										.setParameter("resourceIdList", list).getList();
 		

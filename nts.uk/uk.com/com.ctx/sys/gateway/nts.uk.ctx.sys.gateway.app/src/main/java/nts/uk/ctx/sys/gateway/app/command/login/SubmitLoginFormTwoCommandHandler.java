@@ -15,8 +15,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
@@ -45,7 +46,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected String internalHanler(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
+	protected CheckChangePassDto internalHanler(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
 
 		SubmitLoginFormTwoCommand command = context.getCommand();
 		if (command.isSignOn()) {
@@ -74,12 +75,12 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			this.checkEmployeeDelStatus(em.getEmployeeId());
 			
 			// Get User by PersonalId
-			UserImport user = this.getUser(em.getPersonalId());
+			UserImportNew user = this.getUser(em.getPersonalId());
 			
 			// check password
 			String msgErrorId = this.compareHashPassword(user, password);
 			if (msgErrorId != null){
-				return msgErrorId;
+				return new CheckChangePassDto(false, msgErrorId);
 			} 
 			
 			// check time limit
@@ -91,8 +92,13 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			
 			//set role Id for LoginUserContextManager
 			this.setRoleId(user.getUserId());
+			
+			//アルゴリズム「ログイン記録」を実行する
+			if (!this.checkAfterLogin(user, password)){
+				return new CheckChangePassDto(true, null);
+			}
 		}
-		return null;
+		return new CheckChangePassDto(false, null);
 	}
 
 	/**
@@ -177,8 +183,8 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 * @param personalId the personal id
 	 * @return the user
 	 */
-	private UserImport getUser(String personalId) {
-		Optional<UserImport> user = userAdapter.findUserByAssociateId(personalId);
+	private UserImportNew getUser(String personalId) {
+		Optional<UserImportNew> user = userAdapter.findUserByAssociateId(personalId);
 		if (user.isPresent()) {
 			return user.get();
 		} else {
@@ -191,7 +197,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(UserImport user) {
+	private void checkLimitTime(UserImportNew user) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}
