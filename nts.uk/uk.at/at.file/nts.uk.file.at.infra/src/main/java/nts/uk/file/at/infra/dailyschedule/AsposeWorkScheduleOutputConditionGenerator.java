@@ -1833,7 +1833,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			if (findWorkplaceHigherEnabledLevel(workplaceReportData, totalHierarchyOption) <= level) {
 				String tagStr;
-				if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace()) {
+				if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace() && totalHierarchyOption.checkLevelEnabled(level)) {
 					// Condition: not root workplace (lvl = 0), level within picked hierarchy zone, enable cumulative workplace.
 					tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
 				} else if (totalOutput.isGrossTotal() && level == 0)
