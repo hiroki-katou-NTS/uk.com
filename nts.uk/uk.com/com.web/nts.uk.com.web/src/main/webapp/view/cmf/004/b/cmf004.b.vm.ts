@@ -157,25 +157,28 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 endDate  : moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD HH:MM:SS").toISOString()
             }
             service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
-
+                if (data && data.length) {
+                    for (let i = 0; i < data.length; i++) {
+                        let itemTarget =
+                            {
+                                saveSetCode: data[i].code,
+                                saveSetName: data[i].name,
+                                supplementaryExplanation: data[i].suppleExplanation,
+                                storageStartDate: data[i].saveStartDatetime,
+                                executeCategory: data[i].saveForm,
+                                targetNumber: data[i].targetNumberPeople,
+                                saveFileName: data[i].saveFileName
+                            }
+                        self.dataRecoverySelection().recoveryFileList.push(itemTarget);
+                    }
+                }
             }).fail(function(error) {
 
             }).always(() => {
 
             });
-
-            for (let i = 1; i < 100; i++) {
-                let item = {
-                    saveSetCode: i < 10 ? '00' + i : '0' + i,
-                    saveSetName: '保存セット' + i,
-                    supplementaryExplanation: '補足説明' + i,
-                    storageStartDate: '2018/08/08 08:08:08',
-                    executeCategory: i % 2 == 0 ? '手動実行' : '自動実行',
-                    targetNumber: i + '人',
-                    saveFileName: 'File ' + i + '.zip'
-                }
-                self.dataRecoverySelection().recoveryFileList().push(item);
-            }
+            
+            
         }
 
         /**
