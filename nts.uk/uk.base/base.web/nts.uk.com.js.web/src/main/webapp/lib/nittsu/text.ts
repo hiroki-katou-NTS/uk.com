@@ -639,19 +639,24 @@
                 }
                 
                 var result;
-                if (this.option.inputFormat === "yearmonth") {
-                    result = time.parseYearMonth(source);
-                }
-                else if (this.option.inputFormat === "time") {
-                    result = time.parseTime(source, true);
-                }
-                else {
-                    result = moment(source, "YYYYMMDD");
-                    if (result.isValid()) {
-                        var format = getISOFormat(this.option.inputFormat);
-                        return result.format(format);
+                if (this.option.mode === "time") {
+                    if(this.option.inputFormat.indexOf("s") >= 0){
+                        result = time.parseTimeWithSecond(source, true);   
+                    } else {
+                        result = time.parseTime(source, true);
                     }
-                    return source;
+                } else {
+                    if (this.option.inputFormat === "yearmonth") {
+                        result = time.parseYearMonth(source);
+                    }
+                    else {
+                        result = moment(source, "YYYYMMDD");
+                        if (result.isValid()) {
+                            var format = getISOFormat(this.option.inputFormat);
+                            return result.format(format);
+                        }
+                        return source;
+                    }
                 }
                 
                 if (result.success) 

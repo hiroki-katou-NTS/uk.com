@@ -95,7 +95,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param preAppTime 
 	 * @return
 	 */
-	public FlexTime createWithinWorkTimeSheetAsFlex(CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,CalAttrOfDailyPerformance autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
+	public FlexTime createWithinWorkTimeSheetAsFlex(CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalAtrOvertime autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 			   										VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 			   										StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 			   										Optional<PersonalLaborCondition> personalCondition,
@@ -167,7 +167,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	/**
 	 * フレックス時間の計算
 	 */
-	public AttendanceTimeOfExistMinus calcFlexTime(HolidayCalcMethodSet holidayCalcMethodSet,CalAttrOfDailyPerformance autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
+	public AttendanceTimeOfExistMinus calcFlexTime(HolidayCalcMethodSet holidayCalcMethodSet,AutoCalAtrOvertime autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 												   VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 												   StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 												   Optional<PersonalLaborCondition> personalCondition,
@@ -245,7 +245,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			throw new RuntimeException("A combination that can not be selected is selected");
 		}
 		
-		if((!autoCalcAtr.getFlexExcessTime().getFlexOtTime().getCalAtr().isCalculateEmbossing()) && flexTime.greaterThan(0)) {
+		if((!autoCalcAtr.isCalculateEmbossing()) && flexTime.greaterThan(0)) {
 			flexTime = new AttendanceTimeOfExistMinus(0);
 		}
 		return flexTime;
@@ -301,7 +301,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 									   HolidayAddtionSet holidayAddtionSet,
 									   HolidayCalcMethodSet holidayCalcMethodSet,
 									   CalcMethodOfNoWorkingDay calcMethod, 
-									   CalAttrOfDailyPerformance autoCalcAtr, 
+									   AutoCalAtrOvertime flexAutoCalcAtr, //フレの上限時間設定
 									   SettingOfFlexWork flexCalcMethod,
 									   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
 									   TimeLimitUpperLimitSetting flexUpper//こいつは残さないといけない
@@ -325,7 +325,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 													   holidayCalcMethodSet);
 		FlexTime flexTime = this.createWithinWorkTimeSheetAsFlex(calcMethod, 
 																 holidayCalcMethodSet, 
-																 autoCalcAtr, 
+																 flexAutoCalcAtr, 
 																 workType, 
 																 flexCalcMethod, 
 																 predetermineTimeSet, 
