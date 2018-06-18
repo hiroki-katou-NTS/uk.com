@@ -325,9 +325,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 			unOffsetDays -= interimMng.getUseDays().v();
 			unOffsetTimes -= interimMng.getUseTimes().v();
 		}
-		if(unOffsetDays <= 0 && unOffsetTimes <= 0) {
-			return null;
-		}
+
 		//「代休の未相殺」．未相殺日数=未相殺日数,  「代休の未相殺」．未相殺時間=未相殺時間 
 		UnOffSetOfDayOff dayOffData = new UnOffSetOfDayOff(detailData.getDayOffManaId(), 
 				detailData.getRequiredTime().v(), detailData.getRequiredDay().v(), unOffsetTimes, unOffsetDays);
@@ -413,9 +411,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 			unUseTimes -= interimData.getUseTimes().v();
 			unUseDays -= interimData.getUseDays().v();
 		}
-		if(unUseDays <= 0 && unUseTimes <= 0) {
-			return null;
-		}
+
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
 		if(remainData.getCreatorAtr() == CreaterAtr.SCHEDULE) {
 			dataAtr = MngDataStatus.SCHEDULE;

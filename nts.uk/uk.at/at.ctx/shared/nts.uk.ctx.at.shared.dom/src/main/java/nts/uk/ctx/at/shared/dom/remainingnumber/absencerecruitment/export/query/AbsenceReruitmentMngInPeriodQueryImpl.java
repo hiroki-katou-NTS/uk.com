@@ -105,22 +105,16 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		AbsRecDetailPara outData = new AbsRecDetailPara();
 		//ドメインモデル「暫定振出振休紐付け管理」を取得する
 		List<InterimRecAbsMng> lstInterim = recAbsRepo.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM, confirmAbsData.getSubOfHDID());
-		double unUseDays = 0;
+		double unUseDays = confirmAbsData.getRemainDays().v();
 		for (InterimRecAbsMng interimRecAbsMng : lstInterim) {
-			unUseDays += interimRecAbsMng.getUseDays().v();
+			unUseDays -= interimRecAbsMng.getUseDays().v();
 		}
-		if(lstInterim.isEmpty()) {
-			unUseDays = confirmAbsData.getRemainDays().v();
-		} else {
-			unUseDays =  confirmAbsData.getRemainDays().v() - unUseDays;
-		}
-		if(unUseDays < 0) {
+		if(unUseDays <= 0) {
 			return null;
 		}
 		//未相殺日数：INPUT.未相殺日数－合計(暫定振出振休紐付け管理.使用日数)
 		UnOffsetOfAbs unOffsetData = new UnOffsetOfAbs(confirmAbsData.getSubOfHDID(), confirmAbsData.getRequiredDays().v(), unUseDays);
 		//INPUT．振休管理データを「振出振休明細」に追加する
-		
 		outData = new AbsRecDetailPara(sid, 
 				MngDataStatus.CONFIRMED,
 				confirmAbsData.getHolidayDate(), 
@@ -139,17 +133,13 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				.stream().filter(x -> x.getUnUsedDays().v() > 0)
 				.collect(Collectors.toList());
 		for (PayoutManagementData confirmRecData : lstConfirmRec) {
-			double unUseDays = 0;
+			
 			//アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
 			List<InterimRecAbsMng> lstInterim = recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
+			double unUseDays = confirmRecData.getUnUsedDays().v();
 			for (InterimRecAbsMng interimData : lstInterim) {
-				unUseDays += interimData.getUseDays().v();
+				unUseDays -= interimData.getUseDays().v();
 			}
-			if(lstInterim.isEmpty()) {
-				unUseDays = confirmRecData.getUnUsedDays().v();
-			} else {
-				unUseDays = confirmRecData.getUnUsedDays().v() - unUseDays;
-			}	
 			if(unUseDays > 0) {
 				UnUseOfRec unUseDayOfRec = new UnUseOfRec(confirmRecData.getExpiredDate(), 
 						confirmRecData.getPayoutId(), 
@@ -239,10 +229,11 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 					if(!lstAbsMngTmp.isEmpty()) {
 						InterimAbsMng absMngTmp = lstAbsMngTmp.get(0);
 						lstAbsMng.remove(absMngTmp);
+						lstAbsMng.add(paramInput.getUseAbsMng().get());
 					}
 				}
 				lstInterimMng.add(inputData);
-				lstAbsMng.add(paramInput.getUseAbsMng().get());
+				
 			}
 		}
 		for (InterimAbsMng interimAbsMng : lstAbsMng) {
@@ -320,9 +311,10 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 					if(!lstRecMngTmp.isEmpty()) {
 						InterimRecMng recMngTmp = lstRecMngTmp.get(0);
 						lstRecMng.remove(recMngTmp);
+						lstRecMng.add(paramInput.getUseRecMng().get());
 					}
 				}
-				lstRecMng.add(paramInput.getUseRecMng().get());
+				
 				lstInterimMng.add(inputRemainData);
 			}
 		}
