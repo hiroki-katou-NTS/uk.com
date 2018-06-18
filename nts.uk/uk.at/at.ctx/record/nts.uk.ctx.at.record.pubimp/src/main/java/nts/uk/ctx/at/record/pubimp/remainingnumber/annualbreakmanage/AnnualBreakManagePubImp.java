@@ -89,6 +89,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 		// ログインしている会社ID　取得
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
+	
 		// 期間中の年休残数を取得
 		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = 		
 				getAnnLeaRemNumWithinPeriod.
@@ -104,7 +105,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 						Optional.empty());
 		if (aggrResultOfAnnualLeave.isPresent()){
 			//締め開始日以前に付与された年休残数を取得する
-			yearlyHolidaysTimeRemainingExport = getNumberOfAnnualHolidayGrantedBeforeCloseDate(companyId, startDate.get(), designatedStartDate);
+			yearlyHolidaysTimeRemainingExport = getNumberOfAnnualHolidayGrantedBeforeCloseDate(employeeId, companyId, startDate.get(), designatedStartDate);
 			// 取得した年休の集計結果．年休情報(付与時点)でループ
 			Optional<List<AnnualLeaveInfo>> optListAnnus = aggrResultOfAnnualLeave.get().getAsOfGrant();
 			if (optListAnnus.isPresent() && !optListAnnus.get().isEmpty()) {
@@ -174,20 +175,21 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	}
 
 	@Override
-	public List<YearlyHolidaysTimeRemainingExport> getNumberOfAnnualHolidayGrantedBeforeCloseDate(String companyId,
+	public List<YearlyHolidaysTimeRemainingExport> getNumberOfAnnualHolidayGrantedBeforeCloseDate(String employeeId, String companyId,
 			GeneralDate startDate, GeneralDate designatedStartDate) {
 		List<YearlyHolidaysTimeRemainingExport> yearlyHolidaysTimeRemainingExport = new ArrayList<>();
 		//締め開始日 ＞＝ 計算開始日
-		if(startDate.afterOrEquals(designatedStartDate)){
-			//ドメインモデル「年休付与時点残数履歴データ」を取得 
-			List<AnnualLeaveTimeRemainingHistory> annualLeaveTimeRemainingHistory = annualLeaveTimeRemainHistRepository.findByCalcDateClosureDate(designatedStartDate, startDate);
-			for(AnnualLeaveTimeRemainingHistory altrh : annualLeaveTimeRemainingHistory){
-			//年休付与時点残数履歴データを集計する 
-			YearlyHolidaysTimeRemainingExport yhtre = new YearlyHolidaysTimeRemainingExport(altrh.getGrantProcessDate(), null, altrh.getDetails().getRemainingNumber().getDays().v());
-			yearlyHolidaysTimeRemainingExport.add(yhtre);
+		if (startDate.afterOrEquals(designatedStartDate)) {
+			// ドメインモデル「年休付与時点残数履歴データ」を取得
+			List<AnnualLeaveTimeRemainingHistory> annualLeaveTimeRemainingHistory = annualLeaveTimeRemainHistRepository
+					.findByCalcDateClosureDate(employeeId, designatedStartDate, startDate );
+			for (AnnualLeaveTimeRemainingHistory altrh : annualLeaveTimeRemainingHistory) {
+				// 年休付与時点残数履歴データを集計する
+				YearlyHolidaysTimeRemainingExport yhtre = new YearlyHolidaysTimeRemainingExport(
+						altrh.getGrantProcessDate(), null, altrh.getDetails().getRemainingNumber().getDays().v());
+				yearlyHolidaysTimeRemainingExport.add(yhtre);
+			}
 		}
-		}
-		// TODO Auto-generated method stub
 		return yearlyHolidaysTimeRemainingExport;
 	}
 	
