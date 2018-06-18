@@ -412,7 +412,7 @@ public class ApprovalStatusFinder {
 			detail.setReflectState(reflectState);
 			listApplicationDetail.add(detail);
 		}
-		return new ApplicationListDto(listApplicationDetail, lstCompltLeaveSync);
+		return new ApplicationListDto(listApplicationDetail, lstCompltLeaveSync, appList.isDisplayPrePostFlg());
 	}
 
 	private String getBreakTimeApp(ApplicationDto_New applicaton_N, String companyID, String appId) {
