@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanAct
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
@@ -128,7 +129,7 @@ public class ErrorAlarmConditionPubExport {
 				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr(),
 				atdItemCon.getConditionType());
 		// Set Target
-		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
+		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value || atdItemCon.getConditionType() == ErrorAlarmConditionType.INPUT_CHECK.value) {
 			atdItemConDomain.setUncountableTarget(atdItemCon.getUncountableAtdItem());
 		} else {
 			atdItemConDomain.setCountableTarget(atdItemCon.getCountableAddAtdItems(),
@@ -306,7 +307,7 @@ public class ErrorAlarmConditionPubExport {
 		erAlAtdItemConditionDto.setUseAtr(itemDomain.isUse());
 		// Check Target
 		// チェック対象
-		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
+		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY || itemDomain.getType() == ErrorAlarmConditionType.INPUT_CHECK) {
 			erAlAtdItemConditionDto.setUncountableAtdItem(itemDomain.getUncountableTarget().getAttendanceItem());
 		} else {
 			erAlAtdItemConditionDto.setCountableAddAtdItems(
@@ -369,6 +370,8 @@ public class ErrorAlarmConditionPubExport {
 			}
 			erAlAtdItemConditionDto.setConditionType(itemDomain.getCompareSingleValue().getConditionType().value);
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);
+		} else if (itemDomain.getInputCheck() != null) {
+			erAlAtdItemConditionDto.setInputCheckCondition(itemDomain.getInputCheck().getInputCheckCondition().value);
 		}
 		if (erAlAtdItemConditionDto.getCompareStartValue() == null) erAlAtdItemConditionDto.setCompareStartValue(new BigDecimal(0));
 		if (erAlAtdItemConditionDto.getCompareEndValue() == null) erAlAtdItemConditionDto.setCompareEndValue(new BigDecimal(0));
