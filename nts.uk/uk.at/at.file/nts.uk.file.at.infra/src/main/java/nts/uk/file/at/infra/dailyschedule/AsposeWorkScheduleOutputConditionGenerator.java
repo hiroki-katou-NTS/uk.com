@@ -2016,7 +2016,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Iterator<DailyPersonalPerformanceData> dataIterator = employeeReportData.iterator();
 			
 			// Employee data
-			while (dataIterator.hasNext()){
+			while (dataIterator.hasNext() && condition.getSettingDetailTotalOutput().isDetails()){
 				DailyPersonalPerformanceData employee = dataIterator.next();
 				
 				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
@@ -2170,7 +2170,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		// Workplace hierarchy total
 		int level = rootWorkplace.getLevel();
-		if (level != 0 && level >= condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal().getHighestLevelEnabled() && condition.getSettingDetailTotalOutput().isCumulativeWorkplace()) {
+		TotalWorkplaceHierachy settingTotalHierarchy = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
+		if (level != 0 && level >= settingTotalHierarchy.getHighestLevelEnabled() 
+				&& condition.getSettingDetailTotalOutput().isCumulativeWorkplace() && settingTotalHierarchy.checkLevelEnabled(level)) {
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
 				sheet.getHorizontalPageBreaks().add(currentRow);
 				rowPageTracker.resetRemainingRow();
