@@ -34,7 +34,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'コード', dataType: 'string', key: 'subOfHDID', width: 100, hidden: true },
                 { headerText: getText("KDM001_95"), key: 'dayoffDate', width: 110 },
-                { headerText: getText("KDM001_96"), key: 'requiredDays', formatter:model.formatterDay, width: 100 },
+                { headerText: getText("KDM001_96"), key: 'remainDays', formatter:model.formatterDay, width: 100 },
             ]);
             
             self.currentCodeList.subscribe(()=> {
@@ -61,7 +61,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                 if (self.dateHoliday() === x.dayoffDate) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_729" });
                 } else {                
-                    sumNum = sumNum + x.requiredDays;
+                    sumNum = sumNum + x.remainDays;
                     let residualValue = (day - sumNum);
                     self.residualDay(residualValue);
                     self.residualDayDisplay(model.formatterDay(residualValue));
@@ -82,7 +82,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel> )=>{
                 if (data && data.length > 0) {
                     _.forEach(data, function(item) {
-                        self.items.push(new ItemModel(item.subOfHDID, item.dayoffDate,item.requiredDays));
+                        self.items.push(new ItemModel(item.subOfHDID, item.dayoffDate,item.remainDays));
                         if (item.linked){
                             self.currentCodeList.push(item.subOfHDID);
                         }
@@ -90,7 +90,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                     let sortData = _.sortBy(self.items(), o => o.dayoffDate,'asc');
                     self.items(sortData);
                     _.forEach(self.items(), function(item: ItemModel) {
-                        if(parseFloat(item.requiredDays) > parseFloat(self.info.rowValue.occurredDays)) {
+                        if(parseFloat(item.remainDays) > parseFloat(self.info.rowValue.occurredDays)) {
                             self.disables.push(item.subOfHDID);    
                         }    
                     })
@@ -135,15 +135,15 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             } else if (self.currentCodeList().length >= 3){
                 $('#multi-list').ntsError('set', { messageId: "Msg_739" });
                 return false;
-            } else if (self.currentCodeList().length == 1 && self.currentList()[0].requiredDays !== parseFloat(self.numberDay())){
+            } else if (self.currentCodeList().length == 1 && self.currentList()[0].remainDays > parseFloat(self.numberDay())){
                 $('#multi-list').ntsError('set', { messageId: "Msg_731" });
                 return false;
             } else if (self.currentCodeList().length == 2){
-                if (self.currentList()[0].requiredDays === 1){
+                if (self.currentList()[0].remainDays === 1){
                     $('#multi-list').ntsError('set', { messageId: "Msg_739" });
                     return false;
                 }
-                if (parseFloat(self.numberDay()) !== (self.currentList()[0].requiredDays + self.currentList()[1].requiredDays)){
+                if (parseFloat(self.numberDay()) !== (self.currentList()[0].remainDays + self.currentList()[1].remainDays)){
                     $('#multi-list').ntsError('set', { messageId: "Msg_731" });
                     return false;
                 }
@@ -162,11 +162,11 @@ module nts.uk.at.view.kdm001.e.viewmodel {
     class ItemModel {
         subOfHDID: string;
         dayoffDate: string;
-        requiredDays: string;
-        constructor(subOfHDID: string, dayoffDate: string, requiredDays: string) {
+        remainDays: string;
+        constructor(subOfHDID: string, dayoffDate: string, remainDays: string) {
             this.subOfHDID = subOfHDID;
             this.dayoffDate = dayoffDate;
-            this.requiredDays = requiredDays;
+            this.remainDays = remainDays;
         }
     }
 
