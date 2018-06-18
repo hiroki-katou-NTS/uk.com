@@ -36,7 +36,7 @@ public interface PerformDataRecoveryRepository {
 
 	List<TableList> getAllTableList();
 	
-	void deleteEmployeeHis(String tableName,Boolean whereCid , Boolean whereEmId, String cid, String employeeId);
+	void deleteEmployeeHis(String tableName, String whereCid, String whereSid ,String cid, String employeeId);
 	
 	void addTargetEmployee(Target domain);
 }
