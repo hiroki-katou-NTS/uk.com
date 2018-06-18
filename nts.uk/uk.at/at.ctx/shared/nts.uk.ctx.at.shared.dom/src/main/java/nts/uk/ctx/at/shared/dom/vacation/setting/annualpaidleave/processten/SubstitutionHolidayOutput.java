@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.appabsence.service.ten;
+package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten;
 
 import lombok.Data;
 
