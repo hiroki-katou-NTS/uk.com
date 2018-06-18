@@ -153,16 +153,17 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 				companyId, employeeId, weekPeriod, addSet, aggregateTotalWorkingTime, premiumTimeOfPrevMonLast);
 		val targetPremiumTimeWeek = targetPremiumTimeWeekOfReg.getPremiumTimeWeek();
 		
-		// 按分するか確認する　（期間が7日未満　の時、按分する）
-		boolean isDistribute = false;
-		val periodDays = weekPeriod.start().daysTo(weekPeriod.end()) + 1;
-		if (periodDays < 7) isDistribute = true;
 		AttendanceTimeMonth targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingTimeWeek.v());
-		if (isDistribute){
-			
-			// 法定労働時間を按分する
-			int statutoryWorkingMinutesDay = statutoryWorkingTimeWeek.v() / 7;
-			targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingMinutesDay * periodDays);
+		
+		// 法定労働時間を按分するか確認する　（期間が7日未満　の時、按分する）
+		if (weekStart == WeekStart.TighteningStartDate){
+			boolean isDistribute = false;
+			val periodDays = weekPeriod.start().daysTo(weekPeriod.end()) + 1;
+			if (periodDays < 7) isDistribute = true;
+			if (isDistribute){
+				int statutoryWorkingMinutesDay = statutoryWorkingTimeWeek.v() / 7;
+				targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingMinutesDay * periodDays);
+			}
 		}
 		
 		// 週割増対象時間と法定労働時間を比較する
@@ -213,16 +214,17 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 		val prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
 		val recordPresctibedWorkingTime = prescribedWorkingTime.getTotalRecordPrescribedWorkingTime(weekPeriod);
 		
-		// 按分するか確認する　（期間が7日未満　の時、按分する）
-		boolean isDistribute = false;
-		val periodDays = weekPeriod.start().daysTo(weekPeriod.end()) + 1;
-		if (periodDays < 7) isDistribute = true;
 		AttendanceTimeMonth targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingTimeWeek.v());
-		if (isDistribute){
-			
-			// 法定労働時間を按分する
-			int statutoryWorkingMinutesDay = statutoryWorkingTimeWeek.v() / 7;
-			targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingMinutesDay * periodDays);
+		
+		// 法定労働時間を按分するか確認する　（期間が7日未満　の時、按分する）
+		if (weekStart == WeekStart.TighteningStartDate){
+			boolean isDistribute = false;
+			val periodDays = weekPeriod.start().daysTo(weekPeriod.end()) + 1;
+			if (periodDays < 7) isDistribute = true;
+			if (isDistribute){
+				int statutoryWorkingMinutesDay = statutoryWorkingTimeWeek.v() / 7;
+				targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingMinutesDay * periodDays);
+			}
 		}
 		
 		// 法定労働時間と所定労働時間を比較する

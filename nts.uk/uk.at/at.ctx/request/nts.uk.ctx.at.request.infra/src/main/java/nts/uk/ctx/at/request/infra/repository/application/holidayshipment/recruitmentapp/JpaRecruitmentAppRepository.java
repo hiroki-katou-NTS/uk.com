@@ -26,7 +26,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaRecruitmentAppRepository extends JpaRepository implements RecruitmentAppRepository {
 
-	String FIND_SUB_TAG_DIG_BY_REC_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.appID=:appID";
+	private static final String FIND_SUB_TAG_DIG_BY_REC_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.appID=:appID";
 
 	@Override
 	public void insert(RecruitmentApp recApp) {

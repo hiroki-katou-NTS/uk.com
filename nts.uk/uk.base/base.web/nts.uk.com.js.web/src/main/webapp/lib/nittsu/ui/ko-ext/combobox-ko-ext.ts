@@ -362,7 +362,7 @@ module nts.uk.ui.koExtentions {
                         n = _.omit(k, [optionsValue]),
                         nt = _.map(props, p => k[p]).join(' ').trim();
 
-                    c[optionsValue] = v || '';
+                    c[optionsValue] = !_.isNil(v) ? v : '';
                     c['nts_' + optionsText] = nt || t || ' ';
 
                     return _.extend(n, c);

@@ -799,14 +799,15 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			listAppContents.addAll(listAppContent);
 		}
 		List<Application_New> listCompltLeaveSync = new ArrayList<>();
-		for(ApplicationApprContent appContent : listAppContents) {
+		List<ApplicationApprContent> listAppContentsSorted = this.sortById(listAppContents);
+		for(ApplicationApprContent appContent : listAppContentsSorted) {
 			if(appContent.getApplication().isAppCompltLeave()) 
 				listCompltLeaveSync.add(appContent.getApplication());
 		}
 		// アルゴリズム「承認状況申請内容取得振休振出」を実行する
 		List<AppCompltLeaveSync> listSync = this.getCompltLeaveSyncOutput(companyId, listCompltLeaveSync);
 		// アルゴリズム「承認状況申請内容追加」を実行する
-		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContents);
+		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContentsSorted);
 		// ドメインモデル「休暇申請設定」を取得する
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 
@@ -953,7 +954,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			String sID = approver.getApproverID();
 			// ドメインモデル「代行者管理」を取得する
 			List<AgentDataRequestPubImport> lstAgentData = agentApdater.lstAgentBySidData(cId, sID, appDate, appDate);
-			Optional<AgentDataRequestPubImport> agent = lstAgentData.stream().findFirst();
+			Optional<AgentDataRequestPubImport> agent = Optional.empty();
+			if(lstAgentData != null && !lstAgentData.isEmpty()){
+				agent = lstAgentData.stream().findFirst();
+			}
 			// 対象が存在する場合
 			if (agent.isPresent()) {
 				switch (agent.get().getAgentAppType1()) {
@@ -1045,5 +1049,18 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		relaName = relaCode.equals("") ? ""
 				: repoRelationship.findByCode(app.getCompanyID(), relaCode).get().getRelationshipName().v();
 		return relaName;
+	}
+	
+	private List<ApplicationApprContent> sortById(List<ApplicationApprContent> lstApp){
+		
+		return lstApp.stream().sorted((a,b) ->{
+			Integer rs = a.getApplication().getAppDate().compareTo(b.getApplication().getAppDate());
+			if (rs == 0) {
+			 return  a.getApplication().getAppType().compareTo(b.getApplication().getAppType());
+			} else {
+			 return rs;
+			}
+		}).collect(Collectors.toList());
+		
 	}
 }
