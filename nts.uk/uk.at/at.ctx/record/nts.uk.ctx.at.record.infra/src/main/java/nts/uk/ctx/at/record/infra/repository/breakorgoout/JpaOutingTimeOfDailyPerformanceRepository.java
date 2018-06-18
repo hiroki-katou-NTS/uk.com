@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -372,7 +371,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
-	public List<OutingTimeOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+	public List<OutingTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<OutingTimeOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiOutingTime a ");
@@ -381,9 +380,9 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery=  queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-								.setParameter("date", new HashSet<>(p.values()))
+								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 								.getList().stream()
-								.filter(c -> c.krcdtDaiOutingTimePK.ymd.equals(p.get(c.krcdtDaiOutingTimePK.employeeId)))
+								.filter(c -> p.get(c.krcdtDaiOutingTimePK.employeeId).contains(c.krcdtDaiOutingTimePK.ymd))
 								.collect(Collectors.groupingBy(
 										c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
 								.entrySet().stream().map(c -> new OutingTimeOfDailyPerformance(

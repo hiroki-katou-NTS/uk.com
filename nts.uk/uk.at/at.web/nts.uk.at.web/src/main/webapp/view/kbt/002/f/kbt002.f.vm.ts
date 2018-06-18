@@ -19,6 +19,7 @@ module nts.uk.at.view.kbt002.f {
             isOnceCurrentStatus: KnockoutObservable<boolean> = ko.observable(true);
             isOnceInterupt: KnockoutObservable<boolean> = ko.observable(true);
             isCreateSchedule: KnockoutObservable<boolean> = ko.observable(true);
+            taskTerminate: KnockoutObservable<any> = ko.observable("");
             constructor() {
                 var self = this;
                 self.execLogList([]);
@@ -33,7 +34,7 @@ module nts.uk.at.view.kbt002.f {
                     { headerText: getText("KBT002_143"), key: 'overallStatus', width: 100, formatter: _.escape },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) || (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
+                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
                     },
                     { headerText: getText("KBT002_131"), key: 'nextExecDateTime', width: 180, formatter: _.escape },
                     {
@@ -218,7 +219,10 @@ module nts.uk.at.view.kbt002.f {
                              ko.applyBindings(self,igrid);
                         });
                      }
-                     
+                     var task = self.getAsyncData(info.taskDatas, "taskId").valueAsString;
+                     if(!nts.uk.text.isNullOrEmpty(task)){
+                         self.taskTerminate(task);
+                     }
                  });   
                 }) .while(info => info.pending || info.running)
                 .pause(1000)
@@ -272,7 +276,7 @@ module nts.uk.at.view.kbt002.f {
                 command.dailyCalcStart = self.currentExecLog().dailyCalcStart();
                 command.dailyCalcEnd = self.currentExecLog().dailyCalcEnd();
                 command.execId = self.currentExecLog().execId();
-
+                command.taskTerminate = self.taskTerminate();
                 return command;
             }
         }
@@ -311,6 +315,8 @@ module nts.uk.at.view.kbt002.f {
             execId:              string;
             prevExecDateTimeEx:  string;
             taskLogList:         Array<TaskLog>;
+            taskLogExecId:        string;   
+            
             
         }
         
@@ -333,6 +339,7 @@ module nts.uk.at.view.kbt002.f {
             execId:              KnockoutObservable<string> = ko.observable('');
             prevExecDateTimeEx:  KnockoutObservable<string> = ko.observable('');
             taskLogList:         KnockoutObservableArray<TaskLog> = ko.observableArray([]);
+            taskLogExecId:  string;
             constructor(param: IExecutionLog) {
                 let self = this;
                 self.execItemCd(param.execItemCd || '');
@@ -353,6 +360,7 @@ module nts.uk.at.view.kbt002.f {
                 self.execId(param.execId || '');
                 self.prevExecDateTimeEx(param.prevExecDateTimeEx || '');
                 self.taskLogList(param.taskLogList || []);
+                self.taskLogExecId = param.taskLogExecId||'';
             }
         }
         

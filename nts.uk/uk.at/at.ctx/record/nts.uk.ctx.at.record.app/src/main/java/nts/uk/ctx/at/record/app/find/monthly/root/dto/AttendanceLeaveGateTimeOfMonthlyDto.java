@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime.AttendanceLeaveGateTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,35 +14,35 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の入退門時間 */
-public class AttendanceLeaveGateTimeOfMonthlyDto {
+public class AttendanceLeaveGateTimeOfMonthlyDto implements ItemConst {
 
 	/** 出勤前時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "出勤前時間", layout = "A")
-	private Integer timeBeforeAttendance;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = ATTENDANCE, layout = LAYOUT_A)
+	private int timeBeforeAttendance;
 
 	/** 滞在時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "滞在時間", layout = "B")
-	private Integer stayingTime;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = STAYING, layout = LAYOUT_B)
+	private int stayingTime;
 
 	/** 退勤後時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "退勤後時間", layout = "C")
-	private Integer timeAfterLeaveWork;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = LEAVE, layout = LAYOUT_C)
+	private int timeAfterLeaveWork;
 
 	/** 不就労時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "不就労時間", layout = "D")
-	private Integer unemployedTime;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = UNEMPLOYED, layout = LAYOUT_D)
+	private int unemployedTime;
 	
 	public static AttendanceLeaveGateTimeOfMonthlyDto from(AttendanceLeaveGateTimeOfMonthly domain) {
 		AttendanceLeaveGateTimeOfMonthlyDto dto = new AttendanceLeaveGateTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setStayingTime(domain.getStayingTime() == null ? null : domain.getStayingTime().valueAsMinutes());
-			dto.setTimeAfterLeaveWork(domain.getTimeAfterLeaveWork() == null ? null : domain.getTimeAfterLeaveWork().valueAsMinutes());
-			dto.setTimeBeforeAttendance(domain.getTimeBeforeAttendance() == null ? null : domain.getTimeBeforeAttendance().valueAsMinutes());
-			dto.setUnemployedTime(domain.getUnemployedTime() == null ? null : domain.getUnemployedTime().valueAsMinutes());
+			dto.setStayingTime(domain.getStayingTime() == null ? 0 : domain.getStayingTime().valueAsMinutes());
+			dto.setTimeAfterLeaveWork(domain.getTimeAfterLeaveWork() == null ? 0 : domain.getTimeAfterLeaveWork().valueAsMinutes());
+			dto.setTimeBeforeAttendance(domain.getTimeBeforeAttendance() == null ? 0 : domain.getTimeBeforeAttendance().valueAsMinutes());
+			dto.setUnemployedTime(domain.getUnemployedTime() == null ? 0 : domain.getUnemployedTime().valueAsMinutes());
 		}
 		return dto;
 	}
@@ -54,7 +55,7 @@ public class AttendanceLeaveGateTimeOfMonthlyDto {
 	}
 	
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 }
 

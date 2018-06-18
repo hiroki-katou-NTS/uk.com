@@ -59,7 +59,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	private PersonAdapter psInfor;
 	@Inject
 	private SyJobTitleAdapter jobTitle;
-	private final String rootCommon = "共通ルート";
+	private static final String ROOT_COMMON = "共通ルート";
 	@Override
 	public MasterApproverRootOutput masterInfors(String companyID,
 			GeneralDate baseDate, 
@@ -184,7 +184,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		String appName = "";
 		int appId = 0;
 		if(root.getEmploymentRootAtr() == EmploymentRootAtr.COMMON.value) {
-			appName = rootCommon;
+			appName = ROOT_COMMON;
 		}else if(root.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION.value) {
 			appId = root.getApplicationType();
 			appName = EnumAdaptor.valueOf(root.getApplicationType(), ApplicationType.class).nameId;
@@ -270,7 +270,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 				.findAny();
 		if(opComCommon.isPresent()) {	
-			ApprovalForApplication approvalForApplication = getApproval(0, rootCommon, opComCommon.get(), companyID);			
+			ApprovalForApplication approvalForApplication = getApproval(0, ROOT_COMMON, opComCommon.get(), companyID);			
 			comApproverRoot.add(approvalForApplication);
 		}	
 		//ApprovalForApplication approvalForApplication = new ApprovalForApplication(0, rootCommon, null, null, null);

@@ -20,7 +20,7 @@ public interface TemporaryTimeOfDailyPerformanceRepository {
 
 	List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 
-	List<TemporaryTimeOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	List<TemporaryTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 
 	void add(TemporaryTimeOfDailyPerformance temporaryTime);
 

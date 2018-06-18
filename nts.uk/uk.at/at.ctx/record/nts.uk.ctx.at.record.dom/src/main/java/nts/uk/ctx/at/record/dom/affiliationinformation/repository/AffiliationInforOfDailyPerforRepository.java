@@ -18,7 +18,7 @@ public interface AffiliationInforOfDailyPerforRepository {
 	
 	List<AffiliationInforOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd);
 	
-	List<AffiliationInforOfDailyPerfor> finds(Map<String, GeneralDate> param);
+	List<AffiliationInforOfDailyPerfor> finds(Map<String, List<GeneralDate>> param);
 	
 	void updateByKey(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
 }

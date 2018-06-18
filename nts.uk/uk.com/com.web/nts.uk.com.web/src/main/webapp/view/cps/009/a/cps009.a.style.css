@@ -126,16 +126,16 @@ input.ntsSearchBox {
 }
 
 #sub-right>table>tbody {
-	max-height: 510px; 
+	max-height: 510px;
 	overflow-y: scroll;
-	overflow-x: hidden; 
+	overflow-x: hidden;
 	width: 634px;
 }
 
 #search_his {
 	margin-top: 38px;
 	margin-bottom: 5px;
-}	
+}
 
 #history {
 	float: left;
@@ -323,6 +323,10 @@ abbr[title] {
 	text-decoration: none;
 }
 
-#combox1{
+#combox1 {
 	width: 225px !important;
+}
+
+.selectionName {
+	width: 180px;
 }

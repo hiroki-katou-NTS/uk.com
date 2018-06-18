@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -11,18 +12,18 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OutingTimeZoneDto {
+public class OutingTimeZoneDto implements ItemConst{
 
-	private Integer workNo;
+	private Integer no;
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "外出")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = GO_OUT)
 	private WithActualTimeStampDto outing;
 
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "戻り")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = BACK)
 	private WithActualTimeStampDto comeBack;
 
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "外出理由")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = REASON)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int reason;
 	
 	private int outTimeCalc;

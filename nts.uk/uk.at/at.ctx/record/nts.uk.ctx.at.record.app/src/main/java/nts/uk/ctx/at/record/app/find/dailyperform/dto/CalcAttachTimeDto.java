@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -17,21 +18,21 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CalcAttachTimeDto {
+public class CalcAttachTimeDto implements ItemConst {
 
 	/** 計算時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName="計算時間")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = CALC)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer calcTime;
 
 	/** 時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName="時間")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer time;
 	
 	/** 乖離時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName="乖離時間")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = DIVERGENCE)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer divergenceTime;
 
 	public CalcAttachTimeDto(Integer calcTime, Integer time) {

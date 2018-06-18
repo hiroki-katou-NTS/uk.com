@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.ExternalCD;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.MemoSelection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.SelectionCD;
@@ -50,6 +51,11 @@ public class Selection extends AggregateRoot{
 
 	}
 	
+	public Selection cloneNewSelection(String histId) {
+		return new Selection(IdentifierUtil.randomUniqueId(), histId, this.selectionCD, this.selectionName,
+				this.externalCD, this.memoSelection);
+	}
+	
 	public Selection(String selectionID, String histId, SelectionCD selectionCD, SelectionName selectionName,
 			ExternalCD externalCD, MemoSelection memoSelection) {
 		super();
@@ -73,7 +79,5 @@ public class Selection extends AggregateRoot{
 		this.memoSelection = memoSelection;
 		this.selectionItemName = selectionItemName;
 	}
-	
-
 	
 }
