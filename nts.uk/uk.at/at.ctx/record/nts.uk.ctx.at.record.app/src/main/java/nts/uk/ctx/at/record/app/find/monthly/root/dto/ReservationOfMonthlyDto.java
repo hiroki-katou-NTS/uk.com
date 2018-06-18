@@ -15,12 +15,12 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class ReservationOfMonthlyDto implements ItemConst {
 
 	@AttendanceItemLayout(jpPropertyName = AMOUNT, layout = LAYOUT_A)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.AMOUNT)
 	/** 注文金額: 注文金額 */
 	private int reservationAmount;
 
 	@AttendanceItemLayout(jpPropertyName = NUMBER, layout = LAYOUT_B)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.NUMBER)
 	/** 注文数: 注文数 */
 	private int reservationNumber;
 }
