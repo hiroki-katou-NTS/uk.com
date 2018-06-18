@@ -20,14 +20,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaTempAbsHist extends JpaRepository implements TempAbsHistRepository {
 
-	private final String QUERY_GET_TEMPORARYABSENCE_BYSID = "SELECT ta FROM BsymtTempAbsHistory ta"
+	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID = "SELECT ta FROM BsymtTempAbsHistory ta"
 			+ " WHERE ta.sid = :sid and ta.cid = :cid ORDER BY ta.startDate";
 	
-	private final String QUERY_GET_TEMPORARYABSENCE_BYSID_DESC = QUERY_GET_TEMPORARYABSENCE_BYSID + " DESC";
+	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID_DESC = QUERY_GET_TEMPORARYABSENCE_BYSID + " DESC";
 	
-	private final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
+	private static final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
 			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
-	private final String SELECT_BY_LIST_SID_DATEPERIOD =  "SELECT th FROM BsymtTempAbsHistory th"
+	private static final String SELECT_BY_LIST_SID_DATEPERIOD =  "SELECT th FROM BsymtTempAbsHistory th"
 			+ " WHERE th.sid IN :employeeIds AND th.startDate <= :endDate AND :startDate <= th.endDate"
 			+ " ORDER BY th.sid, th.startDate";
 	/**
