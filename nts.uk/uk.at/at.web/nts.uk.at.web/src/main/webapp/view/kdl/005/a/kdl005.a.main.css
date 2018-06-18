@@ -19,7 +19,7 @@ table#date-fixed-table td {
 }
 
 table.summary-table {
-	margin-top: 25px;	
+	margin-top: 10px;	
 }
 
 table.summary-table tr:first-child {
@@ -45,4 +45,16 @@ table.summary-table td:first-child {
 
 table.summary-table td:last-child { 
     text-align: center;
+}
+
+.nts-fixed-table.cf {
+    padding-bottom: 10px;
+}
+
+table.header-content tr {
+	height: 40px;
+}
+
+table.header-content td {
+	padding: 5px;
 }

@@ -27,7 +27,7 @@ module nts.uk.at.view.kdl005.a {
                 
                 this.legendOptions = {
                     items: [
-                        { labelText: nts.uk.resource.getText("KDL009_18") + " : " + nts.uk.resource.getText("KDL009_19") }
+                        { labelText: nts.uk.resource.getText("KDL009_20") + " : " + nts.uk.resource.getText("KDL009_22") }
                     ]
                 };
                 

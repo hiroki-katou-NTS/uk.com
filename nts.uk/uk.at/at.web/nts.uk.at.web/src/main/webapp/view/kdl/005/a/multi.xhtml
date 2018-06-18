@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 980, height: 720 };</script>
+				<script>var dialogSize = { width: 980, height: 740 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="kdl005.a.start.js" />
 				<com:scriptfile path="kdl005.a.vm.js" />
@@ -23,18 +23,16 @@
 					</div>
 					
 					<div class="fixed-flex-layout-right">
-						<table>
+						<table class="header-content">
 							<tr>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL009_3')}</div></td>
-								<td>
-									<label><span data-bind="text: employeeInfo"></span></label>
-								</td>
+								<td><label><span data-bind="text: employeeInfo"></span></label></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><label>#{i18n.getText('KDL005_6')}<span data-bind="text: employeeInfo"></span></label></td>
+								<td><label>#{i18n.getText('KDL005_7')}<span data-bind="text: employeeInfo"></span></label></td>
 							</tr>
 						</table>
-						
-						<hr />
-						
-						<button tabindex="2" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL009_16')}</button>
 						
 						<div class="date-fixed-table">
 							<table id="date-fixed-table">
@@ -45,9 +43,9 @@
 								</colgroup>
 								<thead>
 									<tr>
-										<th class="ui-widget-header">#{i18n.getText('KDL009_4')}</th>
-										<th class="ui-widget-header">#{i18n.getText('KDL009_5')}</th>
-										<th class="ui-widget-header">#{i18n.getText('KDL009_6')}</th>
+										<th class="ui-widget-header">#{i18n.getText('KDL005_9')}</th>
+										<th class="ui-widget-header">#{i18n.getText('KDL005_10')}</th>
+										<th class="ui-widget-header">#{i18n.getText('KDL005_11')}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -89,21 +87,23 @@
 								</tbody>
 							</table>
 							
+							<button tabindex="2" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL009_18')}</button>
+							
 							<table class="summary-table">
 								<tr>
-									<td width="100px">#{i18n.getText('KDL009_7')}</td>
+									<td width="100px">#{i18n.getText('KDL005_13')}</td>
 									<td width="140px">0.5 日</td>
 								</tr>
 								<tr>
-									<td>#{i18n.getText('KDL009_8')}</td>
+									<td>#{i18n.getText('KDL005_14')}</td>
 									<td>0.5 日         (0.7 日)</td>
 								</tr>
 								<tr>
-									<td>#{i18n.getText('KDL009_9')}</td>
+									<td>#{i18n.getText('KDL005_15')}</td>
 									<td>0.5 日</td>
 								</tr>
 								<tr>
-									<td>#{i18n.getText('KDL009_10')}</td>
+									<td>#{i18n.getText('KDL005_16')}</td>
 									<td>0.5 日</td>
 								</tr>
 							</table>
@@ -112,7 +112,7 @@
 				</div>
 				
 				<div id="functions-area-bottom">
-					<button tabindex="4" id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KDL009_2')}</button>
+					<button tabindex="4" id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KDL005_17')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>
