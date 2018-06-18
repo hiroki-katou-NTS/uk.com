@@ -281,8 +281,8 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 				kfnstAttndRecItemsTotal.add(this.findIndexInList(i, kfnstAttndRecItems));
 			}
 		}
-		return kfnstAttndRecItems.isEmpty() ? new ArrayList<CalculateAttendanceRecord>()
-				: kfnstAttndRecItems.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		return kfnstAttndRecItemsTotal.isEmpty() ? new ArrayList<CalculateAttendanceRecord>()
+				: kfnstAttndRecItemsTotal.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	private KfnstAttndRec findIndexInList(int i, List<KfnstAttndRec> list) {
