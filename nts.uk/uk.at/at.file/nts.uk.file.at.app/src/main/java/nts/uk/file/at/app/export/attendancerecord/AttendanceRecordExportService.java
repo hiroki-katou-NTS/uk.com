@@ -13,6 +13,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValue
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -159,6 +161,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						GeneralDate endDateByClosure = GeneralDate.ymd(yearMonth.addMonths(1).year(),
 								yearMonth.addMonths(1).month(), closureDate.getClosureDay().v());
 
+						endDateByClosure = GeneralDate.localDate(endDateByClosure.localDate().minusDays(1));
+
 						// amount day in month
 						int flag = 0;
 
@@ -221,7 +225,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								}
 								// get result upper calculate
 								String result = "";
- 								if (!addValueCalUpper.getAttendanceItems().isEmpty() || !subValueCalUpper.getAttendanceItems().isEmpty()) {
+								if (!addValueCalUpper.getAttendanceItems().isEmpty()
+										|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
 									result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
 											subValueCalUpper.getAttendanceItems());
 								}
@@ -274,7 +279,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								}
 								// get result lower calculate
 								String result = "";
-								if (!addValueCalUpper.getAttendanceItems().isEmpty() || !subValueCalUpper.getAttendanceItems().isEmpty()) {
+								if (!addValueCalUpper.getAttendanceItems().isEmpty()
+										|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
 									result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
 											subValueCalUpper.getAttendanceItems());
 								}
@@ -428,6 +434,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 						attendanceRecRepEmpData.setEmployeeMonthlyData(employeeMonthlyData);
 						attendanceRecRepEmpData.setWeeklyDatas(weeklyDataList);
+						attendanceRecRepEmpData.setReportYearMonth(yearMonth.toString());
 
 						/**
 						 * Need information
@@ -454,7 +461,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
 						attendanceRecRepEmpData.setTitle(result.getPosition().getPositionName().toString());
 						attendanceRecRepEmpData.setWorkplace(result.getWorkplace().getWorkplaceName().toString());
-						attendanceRecRepEmpData.setWorkType(result.getEmployment().getEmploymentName().toString());
+						attendanceRecRepEmpData.setWorkType(
+								EnumAdaptor.valueOf(result.getEmploymentCls(), WorkingSystem.class).nameId);
 						attendanceRecRepEmpData.setYearMonth(yearMonth.year() + "/" + yearMonth.month());
 						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 
