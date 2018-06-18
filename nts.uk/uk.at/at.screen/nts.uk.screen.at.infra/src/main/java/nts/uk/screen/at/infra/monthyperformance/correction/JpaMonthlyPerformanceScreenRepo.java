@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,10 +12,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
@@ -26,7 +23,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -191,5 +187,10 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 			});
 		});
 		return list;
+	}
+
+	@Override
+	public void insertEditStateOfMonthlyPer(EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto) {
+		
 	}
 }
