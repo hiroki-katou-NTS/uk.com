@@ -838,7 +838,8 @@ module nts.custombinding {
                                     ALPHANUMERIC: 3,
                                     NUMERIC: 4,
                                     KANA: 5,
-                                    CARDNO: 6
+                                    CARDNO: 6,
+                                    EMPLOYEE_CODE: 7
                                 },
                                 CAT_TYPE: {  
                                     SINGLE : 1,
@@ -864,7 +865,7 @@ module nts.custombinding {
                                 }
                             } -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                            <!-- ko if: [STRING_TYPE.NUMERIC, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                            <!-- ko if: [STRING_TYPE.NUMERIC, STRING_TYPE.CARDNO, STRING_TYPE.EMPLOYEE_CODE].indexOf(item.stringItemType) > -1 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
                             <input data-bind=" ntsTextEditor: {
                                     name: itemName,
                                     value: value,
@@ -1550,6 +1551,12 @@ module nts.custombinding {
                                     case ITEM_STRING_TYPE.CARDNO:
                                         constraint.itemCode = 'StampNumber';
                                         constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
+                                        constraint.charType = 'AnyHalfWidth';
+                                        break;
+                                    case ITEM_STRING_TYPE.EMPLOYEE_CODE:
+                                        constraint.itemCode = 'EmployeeCode';
+                                        constraint.charType = 'AnyHalfWidth';
+                                        break;
                                     case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                         constraint.charType = 'AnyHalfWidth';
                                         break;
@@ -2105,6 +2112,11 @@ module nts.custombinding {
                                     constraint = 'StampNumber';
                                 }
 
+                                //EmployeeCode
+                                if ([ITEM_STRING_TYPE.EMPLOYEE_CODE].indexOf((x.item || {}).stringItemType) > -1) {
+                                    constraint = 'EmployeeCode';
+                                }
+
                                 return _.extend(x, {
                                     nameid: nameid,
                                     parent: parent,
@@ -2245,6 +2257,11 @@ module nts.custombinding {
                         // fix stampcard validate
                         if ([ITEM_STRING_TYPE.CARDNO].indexOf((col.item || {}).stringItemType) > -1) {
                             constraint = 'StampNumber';
+                        }
+
+                        //EmployeeCode
+                        if ([ITEM_STRING_TYPE.EMPLOYEE_CODE].indexOf((col.item || {}).stringItemType) > -1) {
+                            constraint = 'EmployeeCode';
                         }
 
                         return _.extend(col, {
@@ -3022,7 +3039,9 @@ module nts.custombinding {
         // 5:全角カタカナ(Kana)
         KANA = 5,
         // 6: カードNO
-        CARDNO = 6
+        CARDNO = 6,
+        // 7: 社員コード
+        EMPLOYEE_CODE = 7
     }
 
     // define ITEM_SELECT_TYPE
