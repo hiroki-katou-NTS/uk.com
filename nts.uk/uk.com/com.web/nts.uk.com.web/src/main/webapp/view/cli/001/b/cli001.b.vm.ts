@@ -23,14 +23,10 @@ module cli001.b.viewmodel {
         }
 
         search(): void {
-            $('#searchInput').ntsError('check');
-            if (errors.hasError())
-                return;
-
             let self = this;
-            let input = self.searchInput().trim();
+            self.searchInput(self.searchInput().trim());
             block.invisible();
-            service.findByFormSearch(input).done(function(data) {
+            service.findUserByUserIDName(self.searchInput()).done(function(data) {
                 console.log(data);
                 self.items(data);
             }).fail(error => {
@@ -40,10 +36,22 @@ module cli001.b.viewmodel {
             });
         }
 
-        lockdata(): void {
+        lockData(): void {
             let self = this;
-            nts.uk.ui.windows.setShared("dataCd001.a", new ItemModel('0000 0000 000 1', '00001', 'name'));
-            nts.uk.ui.windows.close();
+            if (_.isEmpty(self.currentId())) {
+                nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: "CLI001_26" });
+                return;
+            }
+
+            block.invisible();
+            service.lockUserByID(self.currentId()).done(function(data) {
+                nts.uk.ui.windows.setShared("dataCd001.a", data);
+                nts.uk.ui.windows.close();
+            }).fail(error => {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
         }
 
         cancel() {

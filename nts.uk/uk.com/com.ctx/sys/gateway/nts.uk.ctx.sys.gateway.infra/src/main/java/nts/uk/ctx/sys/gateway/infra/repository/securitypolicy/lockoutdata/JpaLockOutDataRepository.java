@@ -21,9 +21,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.SearchUser;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK_;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData_;
 
@@ -129,23 +127,5 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	 */
 	private LockOutData toDomain(SgwmtLockoutData entity) {
 		return new LockOutData(new JpaLockOutDataGetMemento(entity));
-	}
-
-	/*
-	 * Author: Nguyen Van Hanh
-	 */
-	private final String SELECT_BY_ID_OR_USERNAME = "SELECT u.userId, u.loginId, u.userName From SgwmtUser u"
-			+ " WHERE (LOWER(u.loginId) LIKE LOWER(CONCAT('%', :loginID, '%'))"
-			+ " OR LOWER(u.userName) LIKE LOWER(CONCAT('%', :userName, '%')))";
-	@Override
-	public List<SearchUser> findUserByUserIDName(String userIDName) {
-		List<Object[]> data = this.queryProxy().query(SELECT_BY_ID_OR_USERNAME, Object[].class)
-				.setParameter("loginID", userIDName)
-				.setParameter("userName", userIDName)
-				.getList();
-		List<SearchUser> result = data.stream().map(o -> {
-			return new SearchUser(o[0].toString(), o[1].toString(), o[2].toString());
-		}).collect(Collectors.toList());
-		return result;
 	}
 }

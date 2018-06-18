@@ -67,8 +67,12 @@ public class LockOutDataUserFinder {
 	/*
 	 * Author: Nguyen Van Hanh
 	 */
-	public List<SearchUser> findUserByUserIDName(String searchInput) {
-		return lockOutDataRepository.findUserByUserIDName(searchInput);
+	public SearchUser findByUserId(String userId) {
+		Optional<UserImport> user = userAdapter.findByUserId(userId);
+		if(user.isPresent())
+			return new SearchUser(user.get().getUserId(), user.get().getLoginId(), user.get().getUserName());
+
+		return null;
 	}
 	
 	/**

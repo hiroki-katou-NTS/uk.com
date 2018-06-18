@@ -20,7 +20,7 @@ module nts.uk.com.view.cli001.a {
                     { headerText: nts.uk.resource.getText("CLI001_14"), key: "lockOutDateTime", dataType: "string", width: 200, columnCssClass: "col-align-right" },
                     {
                         headerText: nts.uk.resource.getText("CLI001_15"), key: "logType", dataType: "string", width: 300,
-                        formatter: v => v == 1 ? '強制ロック' : ''
+                        formatter: v => v == 1 ? '強制ロック' : '自動ロック'
                     },
                 ]);
                 this.currentCodeList = ko.observableArray([]);
@@ -54,9 +54,8 @@ module nts.uk.com.view.cli001.a {
                     let userId = { userId: data.userID };
                     if (!nts.uk.util.isNullOrUndefined(userId))
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
-                             _self.items().push({ logType: dto.logType == 1? '強制ロック' : '', loginId: data.loginID,userId:dto.userId,userName:data.userName,lockOutDateTime:dto.lockOutDateTime});
+                             _self.items().push({ logType: dto.logType == 1? '強制ロック' : '自動ロック', loginId: data.loginID,userId:dto.userId,userName:data.userName,lockOutDateTime:dto.lockOutDateTime});
                         });
-                    console.log(data);
                     nts.uk.ui.block.clear();
                 });
             }
