@@ -110,18 +110,22 @@ module nts.uk.com.view.cmf003.f {
                         // end: update dialog to complete mode
                         if(storageMng.operatingCondition == 4) {
                             self.dialogMode("done");
-                            
+                            let fileId = null;
+                            service.findResultOfSaving(storeProcessingId).done(function(res: any) {
+                                fileId = res.fileId;
+                                service.updateFileSize(storeProcessingId,fileId).done(function(data: any){
+                                });
+                            }).fail(function(res: any) {
+                                console.log("Get fileId fail");
+                            });
                             // confirm down load when done
                             nts.uk.ui.dialog.confirm({ messageId: "Msg_334" })
                             .ifYes(() => {
-                                service.findResultOfSaving(storeProcessingId).done(function(res: any) {
-                                    let fileId = res.fileId;
+                                if (fileId){
                                     nts.uk.request.specials.donwloadFile(fileId);
                                     self.isDownloaded(true);
                                     $('#F3_3').focus();
-                                }).fail(function(res: any) {
-                                    console.log("Get fileId fail");
-                                });                            
+                                }                           
                             })
                             .ifNo(() => {
                                 $('#F3_3').focus();

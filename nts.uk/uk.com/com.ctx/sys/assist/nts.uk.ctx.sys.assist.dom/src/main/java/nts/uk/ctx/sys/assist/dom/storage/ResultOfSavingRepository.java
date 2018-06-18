@@ -20,4 +20,6 @@ public interface ResultOfSavingRepository {
 			NotUseAtr deletedFiles);
 
 	void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus);
+	
+	void update(ResultOfSaving data);
 }

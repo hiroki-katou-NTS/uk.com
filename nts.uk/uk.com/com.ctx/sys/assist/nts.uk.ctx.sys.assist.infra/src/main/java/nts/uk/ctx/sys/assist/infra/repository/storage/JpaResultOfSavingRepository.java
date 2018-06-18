@@ -59,4 +59,9 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 			this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
 		});
 	}
+
+	@Override
+	public void update(ResultOfSaving data) {
+		this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
+	}
 }

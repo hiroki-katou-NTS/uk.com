@@ -35,7 +35,7 @@ public class ResultOfSaving extends AggregateRoot
     /**
     * ファイル容量
     */
-    private int fileSize;
+    private long fileSize;
     
     /**
     * 保存セットコード
@@ -102,7 +102,7 @@ public class ResultOfSaving extends AggregateRoot
     */
     private String fileId;
 
-	public ResultOfSaving(String storeProcessingId, String cid, int systemType, int fileSize,
+	public ResultOfSaving(String storeProcessingId, String cid, int systemType, long fileSize,
 			String saveSetCode, String saveFileName, String saveName, int saveForm,
 			GeneralDateTime saveEndDatetime, GeneralDateTime saveStartDatetime, int deletedFiles,
 			String compressedPassword, String practitioner, int targetNumberPeople,
@@ -125,5 +125,9 @@ public class ResultOfSaving extends AggregateRoot
 		this.saveStatus = EnumAdaptor.valueOf(saveStatus, SaveStatus.class);;
 		this.saveForInvest = EnumAdaptor.valueOf(saveForInvest, NotUseAtr.class);;
 		this.fileId = fileId;
+	}
+	
+	public void setSaveFileName(String saveFileName){
+		this.saveFileName = new SaveFileName(saveFileName);
 	}
 }
