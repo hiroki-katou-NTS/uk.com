@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.Mont
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthlyDto;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthly;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthlyRepository;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidthOfDisplayItem;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthly;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthlyRepository;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
@@ -91,27 +93,31 @@ public class MonthlyPerformanceDisplay {
 
 	/**
 	 * 表示フォーマットの取得
-	 * @param lstEmployees: 社員一覧：List＜社員ID＞
-	 * @param formatCodes: 使用するフォーマットコード：月別実績フォーマットコード
-	 * 表示する項目一覧
+	 * 
+	 * @param lstEmployees:
+	 *            社員一覧：List＜社員ID＞
+	 * @param formatCodes:
+	 *            使用するフォーマットコード：月別実績フォーマットコード 表示する項目一覧
 	 */
-	public void getDisplayFormat(List<String> lstEmployeeIds, SettingUnitType unitType, MonthlyPerformanceCorrectionDto screenDto){
-		//会社ID：ログイン会社に一致する
+	public void getDisplayFormat(List<String> lstEmployeeIds, SettingUnitType unitType,
+			MonthlyPerformanceCorrectionDto screenDto) {
+		// 会社ID：ログイン会社に一致する
 		String cId = AppContexts.user().companyId();
-		//ロールID：ログイン社員の就業ロールに一致する
+		// ロールID：ログイン社員の就業ロールに一致する
 		String employmentRoleID = AppContexts.user().roles().forAttendance();
-		//パラメータ
-		MonthlyPerformanceParam param = screenDto.getParam();		
-		DateRange dateRange = new DateRange(screenDto.getSelectedActualTime().getStartDate(), screenDto.getSelectedActualTime().getEndDate());
-		//権限の場合 
-		if(unitType == SettingUnitType.AUTHORITY){
-			//アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
+		// パラメータ
+		MonthlyPerformanceParam param = screenDto.getParam();
+		DateRange dateRange = new DateRange(screenDto.getSelectedActualTime().getStartDate(),
+				screenDto.getSelectedActualTime().getEndDate());
+		// 権限の場合
+		if (unitType == SettingUnitType.AUTHORITY) {
+			// アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
 			getDisplayItemAuthority(cId, param, param.getCorrectionOfMonthly());
 		}
-		//勤務種別の場合
-		else{
-			//社員の勤務種別に対応する表示項目を取得する
-			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange,  param);
+		// 勤務種別の場合
+		else {
+			// 社員の勤務種別に対応する表示項目を取得する
+			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param);
 		}
 		Set<Integer> kintaiIDList = new HashSet<>();
 		param.getSheets().forEach(item -> {
@@ -119,35 +125,41 @@ public class MonthlyPerformanceDisplay {
 				return kintai.getId();
 			}).collect(Collectors.toList()));
 		});
-		List<Integer> newkintaiIDList =  kintaiIDList.stream().collect(Collectors.toList());
-		//対応するドメインモデル「権限別月次項目制御」を取得する
-		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder.getMonthlyItemControlByToUse(cId, employmentRoleID, newkintaiIDList, 1);
-		//取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
-		//Filter param 「表示する項目一覧」  by domain 「権限別月次項目制御」
-        Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();
-        if (monthlyItemAuthDto != null) {
-        	for (PSheet sheet : param.getSheets()) {
-    			sheet.getDisplayItems().retainAll(monthlyItemAuthDto.getListDisplayAndInputMonthly());
-    			if(sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0)
-    				lstAtdItemUnique.putAll(sheet.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x)));
-    		}
+		List<Integer> newkintaiIDList = kintaiIDList.stream().collect(Collectors.toList());
+		// 対応するドメインモデル「権限別月次項目制御」を取得する
+		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder
+				.getMonthlyItemControlByToUse(cId, employmentRoleID, newkintaiIDList, 1);
+		// 取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
+		// Filter param 「表示する項目一覧」 by domain 「権限別月次項目制御」
+		screenDto.setAuthDto(monthlyItemAuthDto);
+		Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();
+		if (monthlyItemAuthDto != null) {
+			for (PSheet sheet : param.getSheets()) {
+				sheet.getDisplayItems().retainAll(monthlyItemAuthDto.getListDisplayAndInputMonthly());
+				if (sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0)
+					lstAtdItemUnique.putAll(sheet.getDisplayItems().stream()
+							.collect(Collectors.toMap(PAttendanceItem::getId, x -> x, (x, y) -> x)));
+			}
 		} else {
 			for (PSheet sheet2 : param.getSheets()) {
-    			if(sheet2.getDisplayItems() != null && sheet2.getDisplayItems().size() > 0)
-    				lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x)));
-    		}
+				if (sheet2.getDisplayItems() != null && sheet2.getDisplayItems().size() > 0)
+					lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream()
+							.collect(Collectors.toMap(PAttendanceItem::getId, x -> x, (x, y) -> x)));
+			}
 		}
-		
+
 		// 絞り込んだ勤怠項目の件数をチェックする
 		if (lstAtdItemUnique.size() > 0) {
 			// ドメインモデル「月次の勤怠項目」を取得する
 			List<Integer> attdanceIds = lstAtdItemUnique.keySet().stream().collect(Collectors.toList());
 			List<MonthlyAttendanceItemDto> lstAttendanceData = repo.findByAttendanceItemId(cId, attdanceIds);
+			lstAttendanceData.sort((t1, t2) -> t1.getDisplayNumber() - t2.getDisplayNumber());
 
 			// 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する - attendanceItemLinkingRepository
 			// 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む
 			// Update Attendance Name
-			Map<Integer, String> attdanceNames = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(attdanceIds, 2);
+			Map<Integer, String> attdanceNames = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(attdanceIds,
+					2);
 			lstAttendanceData.forEach(c -> {
 				PAttendanceItem item = lstAtdItemUnique.get(c.getAttendanceItemId());
 				item.setDisplayNumber(c.getDisplayNumber());
@@ -158,8 +170,10 @@ public class MonthlyPerformanceDisplay {
 			});
 			param.setLstAtdItemUnique(lstAtdItemUnique);
 		}
-		//アルゴリズム「ロック状態をチェックする」を実行する
-		List<MonthlyPerformaceLockStatus> lstLockStatus = checkLockStatus(cId, lstEmployeeIds, screenDto.getProcessDate(), screenDto.getClosureId(), new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), param.getInitScreenMode());
+		// アルゴリズム「ロック状態をチェックする」を実行する
+		List<MonthlyPerformaceLockStatus> lstLockStatus = checkLockStatus(cId, lstEmployeeIds,
+				screenDto.getProcessDate(), screenDto.getClosureId(),
+				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), param.getInitScreenMode());
 		param.setLstLockStatus(lstLockStatus);
 	}
 
@@ -203,10 +217,34 @@ public class MonthlyPerformanceDisplay {
 		// sheet (表示する項目)
 		List<MonPfmCorrectionFormatDto> lstMPformats = monPfmCorrectionFormatFinder.getMonPfmCorrectionFormat(cId,
 				formatCodes);
-		if (lstMPformats.isEmpty()) {
-			// 対応するドメインモデル「月別実績のグリッドの列幅」を取得する
-			lstMPformats = getColumnWidtgByMonthly(cId);
+		for(MonPfmCorrectionFormatDto monPfmCorrectionFormatDto : lstMPformats){
+			List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = monPfmCorrectionFormatDto.getDisplayItem().getListSheetCorrectedMonthly();
+			for(SheetCorrectedMonthlyDto sheetCorrectedMonthlyDto : listSheetCorrectedMonthly){
+				List<DisplayTimeItemDto> listDisplayTimeItem = sheetCorrectedMonthlyDto.getListDisplayTimeItem();
+				for(DisplayTimeItemDto displayTimeItemDto :listDisplayTimeItem){
+					if (displayTimeItemDto.getColumnWidthTable() == null) {
+						Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository
+								.getColumnWidtgByMonthly(cId);
+						if (columnWidtgByMonthly.isPresent()) {
+							Optional<ColumnWidthOfDisplayItem> optinal = columnWidtgByMonthly.get()
+									.getListColumnWidthOfDisplayItem().stream()
+									.filter(item -> item.getAttdanceItemID() == displayTimeItemDto.getItemDaily())
+									.findFirst();
+							if (optinal.isPresent()) {
+								displayTimeItemDto.setColumnWidthTable(optinal.get().getColumnWidthTable());
+							} else {
+								displayTimeItemDto.setColumnWidthTable(100);
+							}							
+						}
+					}
+				}				
+			}
 		}
+		
+//		if (lstMPformats.isEmpty()) {
+//			// 対応するドメインモデル「月別実績のグリッドの列幅」を取得する
+//			lstMPformats = getColumnWidtgByMonthly(cId);
+//		}
 		// アルゴリズム「複数フォーマットの場合のフォーマットを生成する」を実行する
 		// 補足資料A_7参照
 		// Merge sheet
@@ -218,15 +256,16 @@ public class MonthlyPerformanceDisplay {
 		// Merge Attendance Item in sheet
 		for (Integer sheet : sheetNos) {
 			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
-			Set<PAttendanceItem> displayItems = new HashSet<>();
+			List<PAttendanceItem> displayItems = new ArrayList<>();
 			lstMPformats.forEach(format -> {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
 				if (sheetDto != null) {
 					pSheet.setSheetName(sheetDto.getSheetName());
+					sheetDto.getListDisplayTimeItem().sort((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder());
 					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
-							.collect(Collectors.toSet()));
+							.collect(Collectors.toList()));
 				}
 			});
 			pSheet.setDisplayItems(displayItems);
@@ -261,16 +300,44 @@ public class MonthlyPerformanceDisplay {
 			// TODO missing message ID
 			throw new BusinessException("エラーメッセージ（#）を表示する");
 		}
+		param.setFormatCodes(lstBusinessTypeCode);
 		// 対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
 		List<MonthlyRecordWorkTypeDto> monthlyRecordWorkTypeDtos = monthlyRecordWorkTypeFinder
 				.getMonthlyRecordWorkTypeByListCode(cId, lstBusinessTypeCode);
+
 		// 取得した「勤務種別の月別実績の修正のフォーマット」に表示するすべての項目の列幅があるかチェックする
-		if (monthlyRecordWorkTypeDtos.isEmpty()) {
-			// 対応するドメインモデル「月別実績のグリッドの列幅」を取得する
-			monthlyRecordWorkTypeDtos = getColumnWidtgByMonthly(cId).stream()
-					.map(x -> new MonthlyRecordWorkTypeDto(x.getCompanyID(), Strings.EMPTY, x.getDisplayItem()))
-					.collect(Collectors.toList());
+		for (MonthlyRecordWorkTypeDto monthlyRecordWorkTypeDto : monthlyRecordWorkTypeDtos) {
+			List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = monthlyRecordWorkTypeDto.getDisplayItem()
+					.getListSheetCorrectedMonthly();
+			for (SheetCorrectedMonthlyDto sheetCorrectedMonthlyDto : listSheetCorrectedMonthly) {
+				List<DisplayTimeItemDto> listDisplayTimeItem = sheetCorrectedMonthlyDto.getListDisplayTimeItem();
+				for (DisplayTimeItemDto displayTimeItemDto : listDisplayTimeItem) {
+					if (displayTimeItemDto.getColumnWidthTable() == null) {
+						Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository
+								.getColumnWidtgByMonthly(cId);
+						if (columnWidtgByMonthly.isPresent()) {
+							Optional<ColumnWidthOfDisplayItem> optinal = columnWidtgByMonthly.get()
+									.getListColumnWidthOfDisplayItem().stream()
+									.filter(item -> item.getAttdanceItemID() == displayTimeItemDto.getItemDaily())
+									.findFirst();
+							if (optinal.isPresent()) {
+								displayTimeItemDto.setColumnWidthTable(optinal.get().getColumnWidthTable());
+							} else {
+								displayTimeItemDto.setColumnWidthTable(100);
+							}							
+						}
+					}
+				}
+			}
 		}
+
+		// if (monthlyRecordWorkTypeDtos.isEmpty()) {
+		// // 対応するドメインモデル「月別実績のグリッドの列幅」を取得する
+		// monthlyRecordWorkTypeDtos = getColumnWidtgByMonthly(cId).stream()
+		// .map(x -> new MonthlyRecordWorkTypeDto(x.getCompanyID(),
+		// Strings.EMPTY, x.getDisplayItem()))
+		// .collect(Collectors.toList());
+		// }
 		// アルゴリズム「複数フォーマットの場合のフォーマットを生成する」を実行する
 		// 補足資料A_7参照
 		// Merge sheet
@@ -282,15 +349,18 @@ public class MonthlyPerformanceDisplay {
 		// Merge Attendance Item in sheet
 		for (Integer sheet : sheetNos) {
 			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
-			Set<PAttendanceItem> displayItems = new HashSet<>();
+			List<PAttendanceItem> displayItems = new ArrayList<>();
 			monthlyRecordWorkTypeDtos.forEach(format -> {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
 				if (sheetDto != null) {
 					pSheet.setSheetName(sheetDto.getSheetName());
+					sheetDto.getListDisplayTimeItem().sort((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder());
+
 					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
-							.collect(Collectors.toSet()));
+							.collect(Collectors.toList()));
+					// displayItems.stream().sorted(Comparator.comparing(PAttendanceItem::getDisplayOrder).reversed());
 				}
 			});
 			pSheet.setDisplayItems(displayItems);
@@ -315,7 +385,7 @@ public class MonthlyPerformanceDisplay {
 					.map(item -> {
 						return new DisplayTimeItemDto(0, item.getAttdanceItemID(), item.getColumnWidthTable());
 					}).collect(Collectors.toList());
-			SheetCorrectedMonthlyDto sheet = new SheetCorrectedMonthlyDto(0, Strings.EMPTY, dispItems);
+			SheetCorrectedMonthlyDto sheet = new SheetCorrectedMonthlyDto(1, Strings.EMPTY, dispItems);
 			MonthlyActualResultsDto resultDto = new MonthlyActualResultsDto(Arrays.asList(sheet));
 			MonPfmCorrectionFormatDto formatDto = new MonPfmCorrectionFormatDto(
 					columnWidtgByMonthly.get().getCompanyID(), Strings.EMPTY, Strings.EMPTY, resultDto);
@@ -379,8 +449,9 @@ public class MonthlyPerformanceDisplay {
 					// 日の実績が存在する
 					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist()
 							? LockStatus.UNLOCK : LockStatus.LOCK,
-					// TODO
-					LockStatus.UNLOCK);
+					// エラーが0件である
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyRecordError() ? LockStatus.LOCK
+							: LockStatus.UNLOCK);
 			monthlyLockStatusLst.add(monthlyLockStatus);
 		}
 		// 過去実績の修正ロック

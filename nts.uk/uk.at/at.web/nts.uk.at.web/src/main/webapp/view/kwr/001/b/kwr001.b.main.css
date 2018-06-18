@@ -1,0 +1,25 @@
+.confirm {
+	width: fit-content;
+	display: block;
+	margin: auto;
+	text-align: center;
+}
+
+#multi-list_container {
+	margin: auto !important;
+}
+
+.label {
+	margin: 15px;
+}
+
+hr {
+	margin: 15px -10px;
+}
+
+button {
+	width: 100px;
+}
+/* #multi-list_headers_v {
+	width: unset !important;
+} */

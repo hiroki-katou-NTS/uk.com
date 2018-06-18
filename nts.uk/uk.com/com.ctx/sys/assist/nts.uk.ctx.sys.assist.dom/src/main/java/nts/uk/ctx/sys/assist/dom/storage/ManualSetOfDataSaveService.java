@@ -20,6 +20,7 @@ import javax.persistence.EmbeddedId;
 
 import com.google.common.base.Strings;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.app.file.storage.FileStorage;
@@ -138,7 +139,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
 
 		if (resultState != ResultState.NORMAL_END) {
-			evaluateAbnormalEnd(storeProcessingId, 0);
+			evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
 			return;
 		}
 
@@ -517,10 +518,18 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		try {
 			// ドメインモデル「データ保存動作管理」を取得し「中断終了」を判別
 			Optional<DataStorageMng> dataStorageMng = repoDataSto.getDataStorageMngById(storeProcessingId);
-			if (dataStorageMng.isPresent()
-					&& dataStorageMng.get().operatingCondition == OperatingCondition.INTERRUPTION_END) {
+
+			// TrungBV: Fix check interrupt
+			if (dataStorageMng.isPresent() && dataStorageMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
+				dataStorageMng.get().operatingCondition = EnumAdaptor.valueOf(OperatingCondition.INTERRUPTION_END.value, OperatingCondition.class);
+				repoDataSto.update(dataStorageMng.get());
 				return ResultState.INTERRUPTION;
 			}
+			
+//			if (dataStorageMng.isPresent()
+//					&& dataStorageMng.get().operatingCondition == OperatingCondition.INTERRUPTION_END) {
+//				return ResultState.INTERRUPTION;
+//			}
 
 			Class<?> tableExport = repoTableList.getTypeForTableName(tableList.getTableEnglishName());
 			List<?> listObject = repoTableList.getDataDynamic(tableList, tableExport);
