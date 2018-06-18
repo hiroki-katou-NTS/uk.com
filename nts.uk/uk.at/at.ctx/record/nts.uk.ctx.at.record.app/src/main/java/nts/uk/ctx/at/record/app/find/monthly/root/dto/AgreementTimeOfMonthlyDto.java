@@ -22,33 +22,33 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 public class AgreementTimeOfMonthlyDto implements ItemConst {
 
 	/** 36協定時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
 	private int agreementTime;
 
 	/** 限度アラーム時間: ３６協定１ヶ月時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LIMIT_ALARM, layout = LAYOUT_B)
 	private int limitAlarmTime;
 
 	/** 限度エラー時間: ３６協定１ヶ月時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LIMIT_ERROR, layout = LAYOUT_C)
 	private int limitErrorTime;
 
 	/** AgreementTimeStatusOfMonthly */
 	/** 状態: 月別実績の36協定時間状態 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	@AttendanceItemLayout(jpPropertyName = STATE, layout = LAYOUT_D)
 	private int status;
 
 	/** 特例限度アラーム時間: ３６協定１ヶ月時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = EXCEPTION +  LIMIT_ALARM, layout = LAYOUT_E)
 	private Integer exceptionLimitAlarmTime;
 
 	/** 特例限度エラー時間: ３６協定１ヶ月時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = EXCEPTION + LIMIT_ERROR, layout = LAYOUT_F)
 	private Integer exceptionLimitErrorTime;
 
