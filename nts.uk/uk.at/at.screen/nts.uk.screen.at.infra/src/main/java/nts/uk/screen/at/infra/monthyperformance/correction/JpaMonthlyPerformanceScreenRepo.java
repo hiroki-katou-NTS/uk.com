@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMot
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
@@ -73,8 +72,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
 		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
 		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
-		builderString
-				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.KrcmtBusinessTypeOfHistoryPK.historyId");
+		builderString.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
 		builderString.append(" WHERE b.sId IN :lstSID");
 		builderString.append(" AND h.startDate <= :endYmd");
 		builderString.append(" AND h.endDate >= :startYmd");
