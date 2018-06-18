@@ -1,12 +1,14 @@
-package nts.uk.ctx.at.request.dom.application.appabsence.service.ten;
+package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten;
+
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
@@ -21,7 +23,7 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 	@Inject
 	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
 	@Inject
-	private EmployeeRequestAdapter employeeAdaptor;
+	private ShareEmploymentAdapter employeeAdaptor;
 	@Inject
 	private CompensLeaveEmSetRepository compensLeaveEmSetRepository;
 	@Inject
@@ -89,14 +91,14 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 			GeneralDate baseDate) {
 		SubstitutionHolidayOutput result = new SubstitutionHolidayOutput();
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
-		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
-		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+		Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyID, employeeID, baseDate);
+		if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
 			throw new BusinessException("khong co employeeCode");
 		}
 		int isManageByTime = 0;
 		int digestiveUnit = 0;
 		// ドメインモデル「雇用の代休管理設定」を取得する(lấy domain 「雇用の代休管理設定」)
-		CompensatoryLeaveEmSetting compensatoryLeaveEmSet = this.compensLeaveEmSetRepository.find(companyID, empHistImport.getEmploymentCode());
+		CompensatoryLeaveEmSetting compensatoryLeaveEmSet = this.compensLeaveEmSetRepository.find(companyID, empHistImport.get().getEmploymentCode());
 		if(compensatoryLeaveEmSet.getIsManaged() != null){
 			
 			// １件以上取得できた(lấy được 1 data trở lên)

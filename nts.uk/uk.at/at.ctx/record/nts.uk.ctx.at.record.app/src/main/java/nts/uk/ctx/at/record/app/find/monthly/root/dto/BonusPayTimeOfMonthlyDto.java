@@ -20,22 +20,22 @@ public class BonusPayTimeOfMonthlyDto implements ItemConst {
 	private int no;
 
 	/** 加給時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	private int bonus;
 	
 	/** 休出加給時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK, layout = LAYOUT_B)
 	private int holWorkBonus;
 	
 	/** 休出特定加給時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK + SPECIFIC, layout = LAYOUT_C)
 	private int holWorkSpecBonus;
 	
 	/** 特定加給時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = SPECIFIC, layout = LAYOUT_D)
 	private int specBonus;
 	

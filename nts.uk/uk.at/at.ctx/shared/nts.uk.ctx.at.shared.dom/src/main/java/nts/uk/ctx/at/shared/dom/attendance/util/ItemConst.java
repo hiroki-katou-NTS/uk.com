@@ -16,6 +16,7 @@ public interface ItemConst {
 	public final String DEFAULT_MARK_DATA_FIELD = "exsistData";
 	public final String DEFAULT_LAYOUT_SEPERATOR = "_";
 	public final String DEFAULT_NUMBER_REGEX = "[0-9]+$";
+	public final String DEFAULT_GET_TYPE = "getValueType";
 	
 	public final String E_WORK_REF = "就業時間帯から参照";
 	public final String E_SCHEDULE_REF = "スケジュールから参照";
