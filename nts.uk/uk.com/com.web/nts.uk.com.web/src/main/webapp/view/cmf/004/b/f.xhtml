@@ -11,21 +11,21 @@
             <!--F3_1 復旧元ファイルラベル-->
             <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_110')}</div>
             <!--F3_2 復旧ファイル-->
-            <label data-bind="text: $parent.recoverySourceFile"/>
+            <label data-bind="text: $vm.recoverySourceFile"/>
         </div>
         <div class="div-line">
             <!--F3_3 コード名称ラベル-->
             <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_111')}</div>
             <!--F3_4 コード-->
-            <label style="margin-right: 15px;" data-bind="text: $parent.recoverySourceCode"/>
+            <label style="margin-right: 15px;" data-bind="text: $vm.recoverySourceCode"/>
             <!--F3_5 保存名称-->
-            <label data-bind="text: $parent.recoverySourceName"/>
+            <label data-bind="text: $vm.recoverySourceName"/>
         </div>
         <div class="div-line">
             <!--F3_6 補足説明ラベル-->
             <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_112')}</div>
             <!--F3_7 補足説明-->
-            <label data-bind="text: $parent.supplementaryExplanation"/>
+            <label data-bind="text: $vm.supplementaryExplanation"/>
         </div>
         <div class="div-line flex">
             <!--F4_1 カテゴリ一覧-->
@@ -40,63 +40,59 @@
                     <col width="96px"/>
                 </colgroup>
                 <thead>
-                <tr>
-                    <th class="ui-widget-header"/>
-                    <th class="ui-widget-header">#{i18n.getText('CMF004_113')}</th>
-                    <th class="ui-widget-header">#{i18n.getText('CMF004_114')}</th>
-                    <th class="ui-widget-header">#{i18n.getText('CMF004_115')}</th>
-                    <th class="ui-widget-header">#{i18n.getText('CMF004_116')}</th>
-                    <th class="ui-widget-header">#{i18n.getText('CMF004_117')}</th>
-                    <th class="ui-widget-header">#{i18n.getText('CMF004_118')}</th>
-                </tr>
+                    <tr>
+                        <th class="ui-widget-header"/>
+                        <th class="ui-widget-header">#{i18n.getText('CMF004_113')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('CMF004_114')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('CMF004_115')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('CMF004_116')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('CMF004_117')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('CMF004_118')}</th>
+                    </tr>
                 </thead>
                 <tbody data-bind="foreach: changeDataCategoryList">
-                <tr>
-                    <td class="halign-right row-number"><label data-bind="text: rowNumber"/></td>
-                    <td class="halign-center">
-                        <div data-bind="ntsCheckBox: { checked: isRecover }"/>
-                    </td>
-                    <td><label data-bind="text: categoryName"/></td>
-                    <td><label data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td>
-                    <com:ko-if
-                            bind="$parents[1].periodInputType(recoveryPeriod) == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.FULLTIME">
-                    </com:ko-if>
-                    <com:ko-if
-                            bind="$parents[1].periodInputType(recoveryPeriod) == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.DAY">
-                        <td class="halign-center date-period">
-                            <div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'YYYY/MM/DD'}"
-                                 tabindex="2"/>
+                    <tr>
+                        <td class="halign-right row-number"><label data-bind="text: rowNumber"/></td>
+                        <td class="halign-center">
+                            <div data-bind="ntsCheckBox: { checked: isRecover }"/>
                         </td>
-                        <td class="halign-center date-period">
-                            <div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod, dateFormat: 'YYYY/MM/DD'}"
-                                 tabindex="3"/>
-                        </td>
-                    </com:ko-if>
-                    <com:ko-if
-                            bind="$parents[1].periodInputType(recoveryPeriod) == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.MONTH">
-                        <td class="halign-center date-period">
-                            <div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}"
-                                 tabindex="2"/>
-                        </td>
-                        <td class="halign-center date-period">
-                            <div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}"
-                                 tabindex="3"/>
-                        </td>
-                    </com:ko-if>
-                    <com:ko-if
-                            bind="$parents[1].periodInputType(recoveryPeriod) == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.YEAR">
-                        <td class="halign-center date-period">
-                            <div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'YYYY', valueFormat: 'YYYY'}"
-                                 tabindex="2"/>
-                        </td>
-                        <td class="halign-center date-period">
-                            <div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod,  dateFormat: 'YYYY', valueFormat: 'YYYY'}"
-                                 tabindex="3"/>
-                        </td>
-                    </com:ko-if>
+                        <td><label data-bind="text: categoryName"/></td>
+                        <td><label data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td>
+                        <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.FULLTIME">
+                        </com:ko-if>
+                        <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.DAY">
+                            <td class="halign-center date-period">
+                                <div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'YYYY/MM/DD'}"
+                                     tabindex="2"/>
+                            </td>
+                            <td class="halign-center date-period">
+                                <div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod, dateFormat: 'YYYY/MM/DD'}"
+                                     tabindex="3"/>
+                            </td>
+                        </com:ko-if>
+                        <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.MONTH">
+                            <td class="halign-center date-period">
+                                <div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}"
+                                     tabindex="2"/>
+                            </td>
+                            <td class="halign-center date-period">
+                                <div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}"
+                                     tabindex="3"/>
+                            </td>
+                        </com:ko-if>
+                        <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.YEAR">
+                            <td class="halign-center date-period">
+                                <div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'YYYY', valueFormat: 'YYYY'}"
+                                     tabindex="2"/>
+                            </td>
+                            <td class="halign-center date-period">
+                                <div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod,  dateFormat: 'YYYY', valueFormat: 'YYYY'}"
+                                     tabindex="3"/>
+                            </td>
+                        </com:ko-if>
 
-                    <td><label data-bind="text: recoveryMethod"/></td>
-                </tr>
+                        <td><label data-bind="text: recoveryMethod"/></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
