@@ -118,7 +118,15 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 					taskLogList.add(this.taskLogList.get(i).toNewDomain());
 				}
 			}
+			//asc
+			Collections.sort(taskLogList, new Comparator<ExecutionTaskLog>() {
+			    @Override
+			    public int compare(ExecutionTaskLog e1, ExecutionTaskLog e2) {
+			        return e1.getProcExecTask().value < e2.getProcExecTask().value ?-1 : 1;
+			    }
+			});
 		}
+		
 		
 		DatePeriod scheduleCreationPeriod = (this.schCreateStart == null || this.schCreateEnd == null) ? null
 				: new DatePeriod(this.schCreateStart, this.schCreateEnd);
@@ -149,6 +157,13 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 					taskLogList.add(stTaskList.get(i).toNewDomain());
 				}
 			}
+			//asc
+			Collections.sort(taskLogList, new Comparator<ExecutionTaskLog>() {
+			    @Override
+			    public int compare(ExecutionTaskLog e1, ExecutionTaskLog e2) {
+			        return e1.getProcExecTask().value < e2.getProcExecTask().value ?-1 : 1;
+			    }
+			});
 		}
 		
 		DatePeriod scheduleCreationPeriod = (this.schCreateStart == null || this.schCreateEnd == null) ? null
