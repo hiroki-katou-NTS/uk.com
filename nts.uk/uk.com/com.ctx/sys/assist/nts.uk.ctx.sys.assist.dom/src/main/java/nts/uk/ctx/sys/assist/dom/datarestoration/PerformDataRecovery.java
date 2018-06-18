@@ -33,6 +33,7 @@ public class PerformDataRecovery extends AggregateRoot {
 	/**
 	 * 保存処理ID
 	 */
+	@Setter
 	private Optional<String> saveProcessId;
 
 	/**
@@ -94,5 +95,6 @@ public class PerformDataRecovery extends AggregateRoot {
 		this.cid                   = cid;
 		this.uploadfileId          = uploadfileId;
 		this.recoveryFileName      = recoveryFileName;
+		this.saveProcessId         = Optional.empty();
 	}
 }

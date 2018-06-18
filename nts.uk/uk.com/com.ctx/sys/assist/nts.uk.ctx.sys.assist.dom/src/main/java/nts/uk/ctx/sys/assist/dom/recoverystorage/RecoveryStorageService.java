@@ -520,7 +520,7 @@ public class RecoveryStorageService {
 				Set<String> hashId = new HashSet<>();
 				for (int j = 0; j < currentTableByCategory.getTables().size(); j++) {
 					List<List<String>> dataRecovery = CsvFileUtil
-							.getAllRecord(currentTableByCategory.getTables().get(j).getInternalFileName(), uploadId, 3);
+							.getAllRecord(currentTableByCategory.getTables().get(j).getInternalFileName(), uploadId);
 
 					// -- Tổng hợp ID Nhân viên duy nhất từ List Data
 					for (List<String> dataRow : dataRecovery) {

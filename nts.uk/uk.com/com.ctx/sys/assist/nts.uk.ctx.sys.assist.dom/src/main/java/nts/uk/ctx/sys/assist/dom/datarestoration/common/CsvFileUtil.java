@@ -1,34 +1,33 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
 import org.apache.commons.csv.CSVFormat;
-import nts.arc.enums.EnumAdaptor;
+
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
-import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
+import nts.gul.file.FileUtil;
 
 public class CsvFileUtil {
 
 	private static final String NEW_LINE_CHAR = "\r\n";
 	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
+	private static final Charset CHARSET = StandardCharsets.UTF_8;
 
 	public static int getNumberOfLine(InputStream inputStream, Integer endcoding) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
+				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 
 		int count = 0;
 		try {
@@ -40,11 +39,10 @@ public class CsvFileUtil {
 		return count;
 	}
 
-	public static List<List<String>> getRecordByIndex(InputStream inputStream, int dataLineNum, int startLine,
-			Integer endcoding) {
+	public static List<List<String>> getRecordByIndex(InputStream inputStream, int dataLineNum, int startLine) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
+				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<List<String>> result = new ArrayList<>();
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
@@ -62,10 +60,10 @@ public class CsvFileUtil {
 		return result;
 	}
 	
-	public static List<List<String>> getAllRecord(InputStream inputStream, Integer endcoding) {
+	public static List<List<String>> getAllRecord(InputStream inputStream) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
+				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<List<String>> result = new ArrayList<>();
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
@@ -84,11 +82,14 @@ public class CsvFileUtil {
 		return result;
 	}
 
-	public static List<List<String>> getAllRecord(String fileId, String fileName, Integer endcoding) {
+
+	public static List<List<String>> getAllRecord(String fileId, String fileName) {
 		// get csv reader
+		fileId = "a6527a44-d355-45e7-bf58-7b9fc0f7efdd";
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
+				.withChartSet(StandardCharsets.UTF_8).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<List<String>> result = new ArrayList<>();
+		Optional.empty().orElse(null);
 		try {
 			InputStream inputStream = createInputStreamFromFile(fileId, fileName);
 			if (!Objects.isNull(inputStream)){
@@ -108,10 +109,10 @@ public class CsvFileUtil {
 		return result;
 	}
 	
-	public static List<String> getCsvHeader(String fileName, String fileId, Integer endcoding) {
+	public static List<String> getCsvHeader(String fileName, String fileId) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
+				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<String> data = new ArrayList<>();
 		try {
 			InputStream inputStream = createInputStreamFromFile(fileId, fileName);
@@ -130,10 +131,10 @@ public class CsvFileUtil {
 		return data;
 	}
 	
-	public static List<String> getRecord(InputStream inputStream, int[] columns, int index, Integer endcoding) {
+	public static List<String> getRecord(InputStream inputStream, int[] columns, int index) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
+				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<String> result = new ArrayList<>();
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
@@ -146,24 +147,10 @@ public class CsvFileUtil {
 		}
 		return result;
 	}
-
-	private static Charset getCharset(Integer valueEncoding) {
-		RecoveryCharset encoding = EnumAdaptor.valueOf(valueEncoding, RecoveryCharset.class);
-		switch (encoding) {
-		case Shift_JIS:
-			return Charset.forName("Shift_JIS");
-		default:
-			return StandardCharsets.UTF_8;
-		}
-	}
-
+	
 	public static InputStream createInputStreamFromFile(String fileId, String fileName) {
 		String filePath = DATA_STORE_PATH + "//packs//" + fileId + "//temp//" + fileName + ".csv";
-		try {
-			return new FileInputStream(new File(filePath));
-		} catch (FileNotFoundException e) {
-			return null;
-		}
+		return FileUtil.NoCheck.newInputStream(Paths.get(filePath));
 	}
 
 	public static String getStoragePath() {

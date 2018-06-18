@@ -32,16 +32,17 @@ public class EmployeeRestoration {
 		if(Objects.isNull(inputStream)){
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
 		} else {
-			List<List<String>> targetEmployee = CsvFileUtil.getAllRecord(inputStream, 3);
+			List<List<String>> targetEmployee = CsvFileUtil.getAllRecord(inputStream);
 			if (targetEmployee.size() > 0) {
 				for(List<String> employeeInfo : targetEmployee.subList(1, targetEmployee.size())){
 					performDataRecoveryRepository.addTargetEmployee(new Target(serverPrepareMng.getDataRecoveryProcessId(), employeeInfo.get(0), employeeInfo.get(1), CommonKeyCrypt.decrypt(employeeInfo.get(2))));
 				}
 				int numOfPeopleRestore = 0;
 				int numPeopleSave = targetEmployee.size();
-				if (tableList.size() > 1){
-					Optional<ResultOfSaving> savingInfo = resultOfSavingRepository.getResultOfSavingById(tableList.get(1).getDataStorageProcessingId());
+				if (!tableList.isEmpty()){
+					Optional<ResultOfSaving> savingInfo = resultOfSavingRepository.getResultOfSavingById(tableList.get(0).getDataStorageProcessingId());
 					numOfPeopleRestore = savingInfo.isPresent() ? savingInfo.get().getTargetNumberPeople() : 0;
+					performDataRecovery.setSaveProcessId(Optional.of(savingInfo.isPresent() ? savingInfo.get().getStoreProcessingId() : null));
 				}
 				performDataRecovery.setNumPeopleBeRestore(numOfPeopleRestore);
 				performDataRecovery.setNumPeopleSave(numPeopleSave);

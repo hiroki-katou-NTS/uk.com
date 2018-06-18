@@ -31,7 +31,7 @@ public class TableItemValidation {
 		return false;
 	}
 	private List<String> getActualCsvHeader(String fileId, String fileName){
-		List<String> csvHeader = CsvFileUtil.getCsvHeader(fileName, fileId, 3);
+		List<String> csvHeader = CsvFileUtil.getCsvHeader(fileName, fileId);
 		return csvHeader.subList(5, csvHeader.size());
 	}
 }

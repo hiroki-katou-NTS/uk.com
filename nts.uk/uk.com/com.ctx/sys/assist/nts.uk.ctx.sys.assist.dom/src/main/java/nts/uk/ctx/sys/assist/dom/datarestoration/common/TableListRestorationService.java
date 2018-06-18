@@ -35,7 +35,7 @@ public class TableListRestorationService {
 	public List<Object> restoreTableList(ServerPrepareMng serverPrepareMng) {
 		List<TableList> tableList = new ArrayList<>();
 		List<List<String>> tableListContent = CsvFileUtil.getAllRecord(serverPrepareMng.getFileId().get(),
-				TABLELIST_CSV, 3);
+				TABLELIST_CSV);
 		if (tableListContent.size() > 1) {
 			try {
 				for (List<String> tableListSetting : tableListContent.subList(1, tableListContent.size())) {
