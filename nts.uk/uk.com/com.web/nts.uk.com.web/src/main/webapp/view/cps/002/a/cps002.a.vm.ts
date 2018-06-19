@@ -686,7 +686,13 @@ module cps002.a.vm {
                     currentEmp = self.currentEmployee();
                 if (result) {
                     $("#employeeCode").ntsError("clear");
-                    param === isCardNoMode ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
+                    if (param === isCardNoMode) {
+                        currentEmp.cardNo(result);
+                        currentEmp.cardNo.valueHasMutated();
+                    } else {
+                        currentEmp.employeeCode(result);
+                        currentEmp.employeeCode.valueHasMutated();
+                    }
                 }
             });
         }
