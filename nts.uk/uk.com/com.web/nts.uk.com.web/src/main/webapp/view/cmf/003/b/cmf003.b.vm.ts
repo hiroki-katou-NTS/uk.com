@@ -872,11 +872,12 @@ module nts.uk.com.view.cmf003.b {
             if (value && value === '0') {
                 return getText('Enum_TimeStore_FULL_TIME');
             } else if (value && value === '1') {
-                return getText('Enum_TimeStore_DAILY');
+                return getText('Enum_TimeStore_ANNUAL');
             } else if (value && value === '2') {
                 return getText('Enum_TimeStore_MONTHLY');
             } else if (value && value === '3') {
-                return getText('Enum_TimeStore_ANNUAL');
+                return getText('Enum_TimeStore_DAILY');
+                
             }
         }
 
