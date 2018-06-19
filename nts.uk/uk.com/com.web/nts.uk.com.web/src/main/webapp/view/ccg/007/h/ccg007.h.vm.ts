@@ -9,8 +9,6 @@ module nts.uk.pr.view.ccg007.h {
             passwordNew: KnockoutObservable<string>;
             passwordNewConfirm: KnockoutObservable<string>;
             
-            // Parameter from caller screen.
-            
             constructor() {
                 var self = this;
                 
@@ -62,7 +60,6 @@ module nts.uk.pr.view.ccg007.h {
                 
                 service.submitForgotPass(command).done(function () {
                     localStorage.removeItem('url');
-                    self.closeDialog();
                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                     blockUI.clear();
                 }).fail(function(res) {
@@ -99,13 +96,6 @@ module nts.uk.pr.view.ccg007.h {
                     width : 520,
                     height : 300
                 }).onClosed(function(): any {})
-            }
-            
-            /**
-             * close dialog
-             */
-            public closeDialog(): void {
-                nts.uk.ui.windows.close();
             }
         }
     }

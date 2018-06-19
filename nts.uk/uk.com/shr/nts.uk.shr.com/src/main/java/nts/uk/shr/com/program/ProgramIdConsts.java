@@ -273,7 +273,7 @@ public class ProgramIdConsts {
 	
 	public static final String CCG007H = "CCG007H";
 	
-	public static final String CCG007I = "CCG007G";
+	public static final String CCG007I = "CCG007I";
 
 	public static final String CCG001 = "CCG001";
 
