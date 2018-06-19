@@ -618,7 +618,11 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	String getSumCalculateAttendanceItem(List<ItemValue> addValueCalUpper, List<ItemValue> subValueCalUpper) {
 
 		Double sum = new Double(0);
-		if (addValueCalUpper.get(0).getValueType().isInteger() || addValueCalUpper.get(0).getValueType().isDouble()) {
+		if (!addValueCalUpper.isEmpty()
+				&& (addValueCalUpper.get(0).getValueType().isInteger()
+						|| addValueCalUpper.get(0).getValueType().isDouble())
+				|| !subValueCalUpper.isEmpty() && (subValueCalUpper.get(0).getValueType().isInteger()
+						|| subValueCalUpper.get(0).getValueType().isDouble())) {
 
 			// calculate add
 			if (!addValueCalUpper.isEmpty()) {
@@ -636,7 +640,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 
 			Integer sumInt;
-			switch (addValueCalUpper.get(0).getValueType().value) {
+			List<ItemValue> list = new ArrayList<>();
+			if (!addValueCalUpper.isEmpty()) {
+				list.addAll(addValueCalUpper);
+			} else {
+				list.addAll(subValueCalUpper);
+			}
+			switch (list.get(0).getValueType().value) {
 
 			case 1:
 			case 2:
