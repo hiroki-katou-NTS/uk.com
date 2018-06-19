@@ -50,9 +50,11 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 							break;
 					}
 				}
-				if(originCopyList.size()>beforeCorrectSize)
+				if(originCopyList.size()>beforeCorrectSize) {
 					/*追加された*/
+					
 					break;
+				}
 			}
 		}
 		timeSpanList = originCopyList;

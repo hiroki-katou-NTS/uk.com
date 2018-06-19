@@ -252,7 +252,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 					map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
 				}
 				else {
-					map.add(compareTimeSheet.replaceTimeSpan(new TimeSpanForCalc(this.timeSheet.getEnd(),this.timeSheet.getEnd())));
+					map.add(compareTimeSheet.replaceTimeSpan(new TimeSpanForCalc(this.timeSheet.getStart(),this.timeSheet.getStart())));
 				}
 				
 				return map;

@@ -209,14 +209,29 @@ public class KrcdtDayOvertimeworkTs extends UkJpaEntity implements Serializable{
 	}
 
 	private Optional<TimeSpanForCalc> getTimeSpan(List<OverTimeFrameTimeSheet> overTimeSheet, int sheetNo) {
-		return overTimeSheet.stream()
-							.filter(tc -> tc.getFrameNo().v().intValue() == sheetNo)
-							.map(tc -> tc.getTimeSpan())
-							.findFirst();
-							
+		 return decisionConnectSpan(overTimeSheet.stream()
+								 				 .filter(tc -> tc.getFrameNo().v().intValue() == sheetNo)
+								 				 .map(tc -> tc.getTimeSpan())
+								 				 .collect(Collectors.toList()));
 	}
 	
 	
+	private Optional<TimeSpanForCalc> decisionConnectSpan(List<TimeSpanForCalc> collect) {
+		if(collect.isEmpty()) return Optional.empty();
+		if(collect.size() == 1) return Optional.of(collect.get(0));
+		return Optional.of(createConnectSpan(collect));
+	}
+	
+	public TimeSpanForCalc createConnectSpan(List<TimeSpanForCalc> collect) {
+		TimeSpanForCalc connectSpan = collect.get(0);
+		for(TimeSpanForCalc nowTimeSpan : collect) {
+			if(!connectSpan.equals(nowTimeSpan) && connectSpan.endValue().intValue() == nowTimeSpan.getStart().valueAsMinutes()) {
+				connectSpan = new TimeSpanForCalc(connectSpan.getStart(), nowTimeSpan.getEnd());
+			}
+		}
+		return connectSpan;
+	}
+
 	public OverTimeOfDaily toDomain() {
 		List<OverTimeFrameTimeSheet> timeSheet = new ArrayList<>();
 		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime1StrClc),new TimeWithDayAttr(this.overTime1EndClc)),new OverTimeFrameNo(1)));
