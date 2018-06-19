@@ -19,22 +19,22 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class DivergenceTimeOfMonthlyDto implements ItemConst {
 
 	/** 控除後乖離時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION + AFTER, layout = LAYOUT_A)
 	private int divergenceTimeAfterDeduction;
 
 	/** 控除時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION, layout = LAYOUT_B)
 	private int deductionTime;
 
 	/** 乖離フラグ: 月別実績の乖離フラグ */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	@AttendanceItemLayout(jpPropertyName = ATTRIBUTE, layout = LAYOUT_C)
 	private int divergenceAtr;
 
 	/** 乖離時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = DIVERGENCE, layout = LAYOUT_D)
 	private int divergenceTime;
 
