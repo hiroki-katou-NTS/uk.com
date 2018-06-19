@@ -1,0 +1,175 @@
+module nts.uk.at.view.ktg031.a.viewmodel {
+    import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
+    export class ScreenModel {
+        roundingRules: KnockoutObservableArray<any>;
+        selectedRuleCode: any;
+        listToppage: KnockoutObservableArray<TopPageAlarmDto>;
+        period: KnockoutObservable<number> = ko.observable(3);
+        constructor() {
+            var self = this;
+            self.roundingRules = ko.observableArray([
+                { code: '1', name: nts.uk.resource.getText("KTG031_1") },
+                { code: '0', name: nts.uk.resource.getText("KTG031_2") }
+            ]);
+            self.selectedRuleCode = ko.observable(0);
+            self.listToppage = ko.observableArray([]);
+            // subscribe switch button (rogerFlag)            
+            self.selectedRuleCode.subscribe((value) => {
+                let temp = self.period();
+                if (value == 0) {
+                    service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
+                        self.listToppage(_.map(listData, acc => {
+                            acc.finishDateTime = self.convertTime(acc.finishDateTime);
+                            return new TopPageAlarmDto(acc);
+                        }));
+                        self.period(temp);
+                    }).fail(function(error) {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                } else {
+                    service.getAllToppage(temp).done((data) => {
+                        self.listToppage(_.map(data, acc => {
+                            acc.finishDateTime = self.convertTime(acc.finishDateTime);
+                            return new TopPageAlarmDto(acc);
+                        }));
+                        self.period(temp);
+                    }).fail(function(error) {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
+            });
+            // subscribe month
+            self.period.subscribe((obj) => {
+                self.listToppage([]);
+                service.getToppage(self.selectedRuleCode(), self.period()).done((listData) => {
+                    self.listToppage(_.map(listData, acc => {
+                        acc.finishDateTime = self.convertTime(acc.finishDateTime);
+                        return new TopPageAlarmDto(acc);
+                    }));
+                });
+            });
+        }
+
+        startPage(): JQueryPromise<any> {
+            let self = this;
+            block.grayout();
+            var dfd = $.Deferred();
+            // get toppage with roger = 0
+            service.getToppage(self.selectedRuleCode(), self.period()).done((listData: Array<ITopPageAlarmDto>) => {
+                self.listToppage(_.map(listData, acc => {
+                    acc.finishDateTime = self.convertTime(acc.finishDateTime);
+                    return new TopPageAlarmDto(acc);
+                }));
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
+            return dfd.promise();
+        }
+
+        //convert time follow the format
+        convertTime(time: string): string {
+            let self = this;
+            let now = moment(new Date()).format('YYYY-MM-DD');
+            let data = moment(new Date(time)).format('YYYY-MM-DD');
+            if (now == data) {
+                return moment(new Date(time)).format('hh:mm');
+            } else {
+                return moment(new Date(time)).format('MM/DD hh:mm');
+            }
+        }
+
+
+        // click open dialog 詳細ボタン
+        openDialog(index: number) {
+            let self = this;
+            let data = {
+                executionLogId: self.listToppage()[index].executionLogId,
+                processingName: self.listToppage()[index].processingName
+            }
+            nts.uk.ui.windows.setShared('ktg031A', data);
+            nts.uk.ui.windows.sub.modal("/view/ktg/031/b/index.xhtml");
+        }
+        // click update 了解ボタン
+        updateRoger(index: number) {
+            let self = this;
+            block.grayout;
+            if (self.selectedRuleCode() == 0) {
+                let cmd = {
+                    executionLogId: self.listToppage()[index].executionLogId,
+                    rogerFlag: 1
+                }
+                service.update(cmd).done(function() {
+                    self.startPage();
+                }).always(() => {
+                    block.clear();
+                });
+            } else {
+                self.listToppage()[index].hidden(false);
+                block.clear();
+            }
+        }
+
+        changeTime(period: number) {
+            let self = this;
+            console.log(period);
+            self.period(period);
+        }
+    }
+
+    export interface ITopPageAlarmDto {
+        /** 実行ログID */
+        executionLogId: string;
+        /** 実行完了日時 */
+        finishDateTime: string;
+        /** 実行内容 AlarmCategory */
+        executionContent: number;
+        /** エラーの有無 */
+        existenceError: boolean;
+        /** 了解フラグ */
+        rogerFlag: boolean;
+        /** 処理名 */
+        processingName: string;
+        /** 処理結果 */
+        processingResult: string;
+    }
+
+    export class TopPageAlarmDto {
+        /** 実行ログID */
+        executionLogId: string;
+        /** 実行完了日時 */
+        finishDateTime: string;
+        /** 実行内容 AlarmCategory */
+        executionContent: number;
+        /** エラーの有無 */
+        existenceError: boolean;
+        /** 了解フラグ */
+        rogerFlag: boolean;
+        /** 処理名 */
+        processingName: string;
+        /** 処理結果 */
+        processingResult: string;
+        /** hide button */
+        hidden: KnockoutObservable<boolean>;
+        constructor(param: ITopPageAlarmDto) {
+            let self = this;
+            self.executionLogId = param.executionLogId;
+            self.finishDateTime = param.finishDateTime;
+            self.executionContent = param.executionContent;
+            self.existenceError = param.existenceError;
+            self.rogerFlag = param.rogerFlag;
+            self.processingName = param.processingName;
+            self.processingResult = param.processingResult;
+            self.hidden = ko.observable(true);
+        }
+    }
+
+}
