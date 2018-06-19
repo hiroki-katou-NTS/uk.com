@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.login;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,6 +39,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.LockInterval;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
@@ -460,7 +460,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	private boolean checkLoginLog(String userId, AccountLockPolicy accountLockPolicy) {
 		GeneralDateTime startTime = GeneralDateTime.now();
 		// Check the domain model [Account lock policy. Error interval]
-		if (accountLockPolicy.getErrorCount().lessThanOrEqualTo(BigDecimal.ZERO)) {
+		if (accountLockPolicy.getLockInterval().lessThanOrEqualTo(new LockInterval(0))) {
 			startTime = GeneralDateTime.fromString("1901/01/01 00:00:00", "yyyy/MM/dd HH:mm:ss");
 		} else {
 			startTime = startTime.addMinutes(-1 * accountLockPolicy.getLockInterval().minute());
@@ -485,7 +485,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// Windowsログイン時のアカウントを取得する
 		// get UserName and HostName
 		String username = AppContexts.windowsAccount().getUserName();
-		String hostname = AppContexts.windowsAccount().getDomain();
+		String domain = AppContexts.windowsAccount().getDomain();
+		
+		//cut hostname
+		String hostname = domain.substring(0, domain.lastIndexOf(";"));
 
 		// ドメインモデル「Windowsアカウント情報」を取得する
 		// ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from

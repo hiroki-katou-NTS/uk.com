@@ -95,6 +95,7 @@ module nts.custom.component {
                                     optionsText: 'categoryName',
                                     optionsValue: 'id',
                                     visibleItemsCount: 10,
+                                    dropDownAttachedToBody: true,
                                     columns: [
                                         /*{ prop: 'categoryCode', toggle: 'hidden', length: 20 },*/
                                         { prop: 'categoryName', length: 14}
