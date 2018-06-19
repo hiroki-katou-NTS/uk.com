@@ -439,8 +439,6 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 */
 	private List<String> createMonthPeriodLabels(YearMonth startYm, YearMonth endYm,
 			OutputAgreementTime outputAgreementTime) {
-		int start = startYm.getMonthValue();
-		int end = endYm.getMonthValue();
 		int distances = 0;
 		if (OutputAgreementTime.TWO_MONTH.equals(outputAgreementTime))
 			distances = 2;
@@ -449,13 +447,11 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		if (distances == 0)
 			return null;
 		List<String> monthPeriodLabels = new ArrayList<>();
-		for (int periodStart = start; periodStart <= end;) {
-			int periodEnd = periodStart + distances - 1;
-			if (periodEnd >= end) {
-				periodEnd = end;
-			}
-			monthPeriodLabels.add(periodStart + "～" + periodEnd);
-			periodStart = periodStart + distances;
+		YearMonth periodStart = startYm;
+		while (periodStart.isBefore(endYm)) {
+			YearMonth periodEnd = periodStart.plusMonths(distances - 1);
+			monthPeriodLabels.add(periodStart.getMonthValue() + "～" + periodEnd.getMonthValue());
+			periodStart = periodStart.plusMonths(distances);
 		}
 		return monthPeriodLabels;
 	}
