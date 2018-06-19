@@ -13,7 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPerPK;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
@@ -25,7 +25,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -190,4 +189,26 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		});
 		return list;
 	}
+
+	@Override
+	public void insertOrUpdateEditStateOfMonthlyPer(EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto) {
+		Optional<KrcdtEditStateOfMothlyPer> optKrcdtEditStateOfMothlyPer  = this.queryProxy().find(new KrcdtEditStateOfMothlyPerPK(editStateOfMonthlyPerformanceDto.getEmployeeId(), editStateOfMonthlyPerformanceDto.getAttendanceItemId(), editStateOfMonthlyPerformanceDto.getDatePeriod().start(), editStateOfMonthlyPerformanceDto.getDatePeriod().end()), KrcdtEditStateOfMothlyPer.class);
+		KrcdtEditStateOfMothlyPer newkrcdtEditStateOfMothlyPer = this.toEntity(editStateOfMonthlyPerformanceDto);
+		if(optKrcdtEditStateOfMothlyPer.isPresent()){
+			KrcdtEditStateOfMothlyPer oldkrcdtEditStateOfMothlyPer = optKrcdtEditStateOfMothlyPer.get();
+			oldkrcdtEditStateOfMothlyPer.processDate = newkrcdtEditStateOfMothlyPer.processDate;
+			oldkrcdtEditStateOfMothlyPer.closureID = newkrcdtEditStateOfMothlyPer.closureID;
+			oldkrcdtEditStateOfMothlyPer.closeDay = newkrcdtEditStateOfMothlyPer.closeDay;
+			oldkrcdtEditStateOfMothlyPer.isLastDay = newkrcdtEditStateOfMothlyPer.isLastDay;
+			oldkrcdtEditStateOfMothlyPer.stateOfEdit = newkrcdtEditStateOfMothlyPer.stateOfEdit;
+			this.commandProxy().update(oldkrcdtEditStateOfMothlyPer);
+		}else{
+			this.commandProxy().insert(newkrcdtEditStateOfMothlyPer);
+		}
+	}
+	
+	private KrcdtEditStateOfMothlyPer toEntity(EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto){
+		return new KrcdtEditStateOfMothlyPer(new KrcdtEditStateOfMothlyPerPK(editStateOfMonthlyPerformanceDto.getEmployeeId(), editStateOfMonthlyPerformanceDto.getAttendanceItemId(), editStateOfMonthlyPerformanceDto.getDatePeriod().start(), editStateOfMonthlyPerformanceDto.getDatePeriod().end()), editStateOfMonthlyPerformanceDto.getProcessDate(), editStateOfMonthlyPerformanceDto.getClosureID(), editStateOfMonthlyPerformanceDto.getClosureDate().getCloseDay(), editStateOfMonthlyPerformanceDto.getClosureDate().getLastDayOfMonth(), editStateOfMonthlyPerformanceDto.getStateOfEdit());
+	}
+	
 }
