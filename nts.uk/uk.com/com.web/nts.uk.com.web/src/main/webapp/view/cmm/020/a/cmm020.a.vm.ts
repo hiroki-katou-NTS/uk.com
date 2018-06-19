@@ -85,51 +85,34 @@ module nts.uk.com.view.cmm020.a {
                 let self = this;
                 var dfd = $.Deferred();
                 //call ws get all era
-                var listEraName: model.EraItem[] = [];
-                var listEraNameSystem: model.EraItem[] = [];
+                //var listEraName: model.EraItem[] = [];
 
-                for (let i = 0; i <= 3; i++) {
-                    listEraName.push(new model.EraItem("code" + i, "Nam" + i, "Sb" + i, "2016/06/1" + (5 - i), true));
-                }
-                listEraName.push(new model.EraItem("code5", "T", "CusSb", "2018/06/25", false));
-                listEraName.push(new model.EraItem("code6", "D", "222", "2018/3/28", false));
-
-                //                service.getAllEraNameItem().done(function(listEraNameTest: Array<model.EraItem>) {
-                //                    self.dataSource(listEraNameTest);
-                //                    for (let item of listEraNameTest) {
-                //                        console.log(typeof item.systemType);
-                //                        if (item.systemType == true) {
-                //                            console.log(item.systemType + " 1");
-                //                            listEraNameSystem.push(item);
-                //                        }
-                //                    }
-                //                    console.log(listEraNameSystem.length);
-                //                    listEraNameSystem = _.orderBy(listEraNameSystem, [function(item) { return new Date(item.startDate); }], ['asc']);
-                //                    for (let i = 0; i < listEraNameSystem.length; i++) {
-                //                        console.log(listEraNameSystem[i]);
-                //                    }
-                //                });
-
-
-                //                var listEraNameSystem = _.orderBy(listEraNameSystem, [function(item) { return new Date(item.startDate); }], ['asc']);
-                //                
-                //                 for (let i = 0; i < listEraNameSystem.length; i++) {
-                //                    console.log(listEraNameSystem[i]);
+                //                for (let i = 0; i <= 3; i++) {
+                //                    listEraName.push(new model.EraItem("code" + i, "Nam" + i, "Sb" + i, "2016/06/1" + (5 - i), true));
                 //                }
+                //                listEraName.push(new model.EraItem("code5", "T", "CusSb", "2018/06/25", false));
+                //                listEraName.push(new model.EraItem("code6", "D", "222", "2018/3/28", false));
 
-
-                if (listEraName === undefined || listEraName.length == 0) {
-                    self.dataSource();
-                } else {
-                    var listEraName = _.orderBy(listEraName, [function(item) { return new Date(item.startDate); }], ['asc']);
-                    self.dataSource(listEraName);
-                    let eraNameLast = _.last(listEraName);
-                    self.currentCode(eraNameLast.eraId);
-                    self.setValueCurrentEraShow(eraNameLast);
-                }
-                console.log(!self.activeUpdate());
+                self.loadEraNameList();
                 dfd.resolve();
+
                 return dfd.promise();
+            }
+
+            public loadEraNameList() {
+                let self = this;
+                service.getAllEraNameItem().done(function(listEraName: Array<model.EraItem>) {
+                    if (listEraName === undefined || listEraName.length == 0) {
+                        self.dataSource();
+                    } else {
+                        var listEraName = _.orderBy(listEraName, [function(item) { return new Date(item.startDate); }], ['asc']);
+                        self.dataSource(listEraName);
+                        let eraNameLast = _.last(listEraName);
+                        self.currentCode(eraNameLast.eraId);
+                        self.setValueCurrentEraShow(eraNameLast);
+                    }
+
+                });
             }
 
             public newItem() {
@@ -156,15 +139,24 @@ module nts.uk.com.view.cmm020.a {
                             console.log(last);
                             if (self.currentStartDate() > last.startDate) {
                                 console.log(true);
-                                //print msg 15
-                                //select last era name 
+                                var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), 0);
+                                service.saveEraName(eraNameCreate).done(function() {
+                                    blockUI.clear();
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                        blockUI.clear();
+                                    });
+                                });
                             } else {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_142" });
                                 return false;
                             }
                         } else {
-                            let currentEraName = self.dataSource().indexOf(self.eraSelected());
-                            console.log(currentEraName);
+                            let currentEraNameIndex = self.dataSource().indexOf(self.eraSelected());
+                            let preEraName = self.dataSource()[currentEraNameIndex - 1];
+                            //                            if (preEraName.){
+                            //                            
+                            //                            }
+
                         }
                     }
                 });
@@ -182,7 +174,7 @@ module nts.uk.com.view.cmm020.a {
                         self.indexOfDelete(_.findIndex(self.dataSource(), function(e) {
                             return e.eraId == self.currentCode();
                         }));
-                        var eraNameDelete = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), false);
+                        var eraNameDelete = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), 0);
                         console.log(eraNameDelete);
 
                         service.deleteEraName(eraNameDelete).done(function() {
@@ -241,9 +233,9 @@ module nts.uk.com.view.cmm020.a {
                 eraSymbol: string;
                 startDate: string;
                 endDate: string;
-                systemType: boolean;
+                systemType: number;
 
-                constructor(eraId: string, eraName: string, eraSysbol: string, startDate: string, systemType: boolean) {
+                constructor(eraId: string, eraName: string, eraSysbol: string, startDate: string, systemType: number) {
                     this.eraId = eraId;
                     this.eraName = eraName;
                     this.eraSymbol = eraSysbol;
