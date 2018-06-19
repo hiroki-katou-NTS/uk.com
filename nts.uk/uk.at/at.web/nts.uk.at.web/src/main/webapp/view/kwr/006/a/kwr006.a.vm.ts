@@ -178,7 +178,19 @@ module nts.uk.at.view.kwr006.a {
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let self = this;
-                self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
+                self.loadListOutputItemMonthlyWorkSchedule().done(res => {
+                    if (_.isEmpty(self.itemListCodeTemplate())) {
+                        self.loadAuthorityOfEmploymentForm().done(hasAuthority => {
+                            if (hasAuthority) {
+                                self.openScreenC();
+                            } else {
+                                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' });
+                            }
+                        });
+                    } else {
+                        self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
+                    }
+                });
                 return dfd.promise();
             }
 
@@ -239,6 +251,22 @@ module nts.uk.at.view.kwr006.a {
                     }
                     dfd.resolve();
                 });
+                return dfd.promise();
+            }
+
+            private loadListOutputItemMonthlyWorkSchedule(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                //TODO
+                dfd.resolve();
+                return dfd.promise();
+            }
+
+            private loadAuthorityOfEmploymentForm(): JQueryPromise<boolean> {
+                let self = this;
+                let dfd = $.Deferred<boolean>();
+                //TODO: load co ra thi return true, load dialog C. Khong ra thi return false, ban msg_1141
+                dfd.resolve(true);
                 return dfd.promise();
             }
 
