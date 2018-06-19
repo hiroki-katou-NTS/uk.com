@@ -21,8 +21,13 @@ public class DailyPerformErrorReferFinder {
 	@Inject
 	private DailyPerformanceScreenRepo repo;
 
-	public Map<String, List<EnumConstant>> findByCidAndListErrCd(List<String> listErrorCode) {
+	public DailyPerformErrorReferDto findByCidAndListErrCd(List<String> listErrorCode) {
 		String companyId = AppContexts.user().companyId();
-		return this.repo.findErAlApplicationByCidAndListErrCd(companyId, listErrorCode);
+		String employeeIdLogin = AppContexts.user().employeeId();
+		DailyPerformErrorReferDto dto = new DailyPerformErrorReferDto();
+		Map<String, List<EnumConstant>> map = this.repo.findErAlApplicationByCidAndListErrCd(companyId, listErrorCode);
+		dto.setEmployeeIdLogin(employeeIdLogin);
+		dto.setMapErrCdAppTypeCd(map);
+		return dto;
 	}
 }

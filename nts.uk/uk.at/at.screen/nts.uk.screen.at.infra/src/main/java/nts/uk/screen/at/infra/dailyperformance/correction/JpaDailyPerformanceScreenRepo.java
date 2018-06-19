@@ -1210,8 +1210,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.setParameter("cid", companyId).setParameter("errorCd", errorCode).getList();
 		Map<String, List<EnumConstant>> result = new HashMap<>();
 		if (!entity.isEmpty()) {
-			result = entity.stream().collect(Collectors.groupingBy(x -> x.krcstErAlApplicationPK.errorCd, Collectors
-					.mapping(x -> new EnumConstant(x.krcstErAlApplicationPK.appTypeCd, "", ""), Collectors.toList())));
+			result = entity.stream()
+					.collect(
+							Collectors
+									.groupingBy(x -> x.krcstErAlApplicationPK.errorCd,
+											Collectors.mapping(
+													x -> new EnumConstant(x.krcstErAlApplicationPK.appTypeCd,
+															EnumAdaptor.valueOf(x.krcstErAlApplicationPK.appTypeCd,
+																	ApplicationType.class).nameId,
+															""),
+													Collectors.toList())));
 		}
 
 		return result;
