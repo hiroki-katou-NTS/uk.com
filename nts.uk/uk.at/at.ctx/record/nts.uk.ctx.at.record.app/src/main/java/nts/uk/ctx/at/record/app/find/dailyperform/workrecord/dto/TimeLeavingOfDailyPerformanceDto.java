@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -18,19 +19,20 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
-@AttendanceItemRoot(rootName = "日別実績の出退勤")
 @Data
+@AttendanceItemRoot(rootName = ItemConst.DAILY_ATTENDACE_LEAVE_NAME)
 public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
 	private GeneralDate ymd;
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "出退勤", listMaxLength = 2, indexField = "workNo")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, 
+			listMaxLength = 2, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<WorkLeaveTimeDto> workAndLeave;
 
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "勤務回数")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = COUNT)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer workTimes;
 
 	public static TimeLeavingOfDailyPerformanceDto getDto(TimeLeavingOfDailyPerformance domain) {
@@ -79,7 +81,7 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
 		return c == null ? null
-				: new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()).isPresent() ? toTimeActualStamp(c.getWorking()).get() : null,
+				: new TimeLeavingWork(new WorkNo(c.getNo()), toTimeActualStamp(c.getWorking()).isPresent() ? toTimeActualStamp(c.getWorking()).get() : null,
 						toTimeActualStamp(c.getLeave()).isPresent() ? toTimeActualStamp(c.getLeave()).get() : null);
 	}
 

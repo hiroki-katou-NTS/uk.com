@@ -13,56 +13,74 @@
 		</com:EnumScript>
 
 		<div class="contentC">
-			<div tabindex="-1">
-				<label tabindex="-1">#{i18n.getText('KSC001_2')}</label>
+			<div style="height: 60px">
+				<div class="top-left" style="float: left; width: 50%;">
+					<div tabindex="-1">
+						<label tabindex="-1">#{i18n.getText('KSC001_2')}</label>
+					</div>
+					<div tabindex="-1" class="labelSchedule">
+						<label tabindex="-1">#{i18n.getText('KSC001_3')}</label>
+						<div id="inputSelectImplementAtr" tabindex="1"
+							class="selectImplementAtr"
+							data-bind="ntsSwitchButton: {
+								options: selectImplementAtr,
+								optionsValue: 'id',
+								optionsText: 'name',
+								name: '#[KSC001_81]',
+								value: selectedImplementAtrCode,
+								required: true,
+								enable: true }">
+						</div>
+						<button class="helpButton" tabindex="2"
+							data-bind="ntsHelpButton: {image: '../image/IMG_KSC001_3.png', position: 'right top', enable: true }">?</button>
+					</div>
+				</div>
+
+				<div class="top-right" style="float: left; width: 50%;">
+					<div class="checkboxSettingEnd" tabindex="-1">
+						<div tabindex="15" data-bind="ntsCheckBox: { checked: confirm }">#{i18n.getText('KSC001_17')}</div>
+					</div>
+					<div class="labelSettingEnd" tabindex="-1">
+						<label tabindex="-1">#{i18n.getText('KSC001_18')}</label>
+					</div>
+				</div>
 			</div>
 
-			<div tabindex="-1" class="labelSchedule">
-				<label tabindex="-1">#{i18n.getText('KSC001_3')}</label>
-				<div id="inputSelectImplementAtr" tabindex="1"
-					class="selectImplementAtr"
-					data-bind="ntsSwitchButton: {
-					options: selectImplementAtr,
-					optionsValue: 'id',
-					optionsText: 'name',
-					name: '#[KSC001_81]',
-					value: selectedImplementAtrCode,
-					required: true,
-					enable: true }">
-				</div>
-				<button class="helpButton" tabindex="2"
-					data-bind="ntsHelpButton: {image: '../image/IMG_KSC001_3.png', position: 'right top', enable: true }">?</button>
-			</div>
 			<div class="selectionCase" tabindex="-1">
 				<div>
+					<label tabindex="-1">#{i18n.getText('KSC001_100')}</label>
+					<!-- <label tabindex="-1">＜対象データ＞</label> -->
+				</div>
+				<div
+					style="margin-left: 20px; margin-top: 10px; float: left; width: 100%">
 					<div tabindex="3" id="inputCheckReCreateBox"
 						data-bind="ntsRadioButton: { checked: checkReCreateAtrAllCase, enable: isReCreate, option: lstReCreate()[0], 
 													name: '#[KSC001_82]', optionValue: 'value', optionText: 'name', group: 'KSC001_82'}" />
-				</div>
-				<div class="radioboxCase">
-					<div tabindex="3"
+					<div style="margin-left: 20px;" tabindex="3"
 						data-bind="ntsRadioButton: { checked: checkReCreateAtrAllCase, enable: isReCreate, option: lstReCreate()[1], 
 													name: '#[KSC001_82]', optionValue: 'value', optionText: 'name', group: 'KSC001_82'}" />
 				</div>
-				<div class="radioboxCase" tabindex="-1">
-					<label>#{i18n.getText('KSC001_6')}</label>
+
+				<div tabindex="-1">
+					<label style="display: inline-block; margin-top: 10px;">#{i18n.getText('KSC001_6')}</label>
 				</div>
-				<div class="radioboxProcessExecutionAtr">
+				<div style="float: left" class="radioboxProcessExecutionAtr">
 					<div tabindex="4"
 						data-bind="ntsRadioButton: { checked: checkProcessExecutionAtrRebuild, enable: isReCreate, option: lstProcessExecution()[0], 
 													name: '#[KSC001_83]', optionValue: 'value', optionText: 'name', group: 'KSC001_83'}" />
 				</div>
 
-				<div class="radioboxRebuildAtr">
-					<div tabindex="5"
-						data-bind="ntsRadioButton: { checked: checkRebuild, enable: isEnableRadioboxRebuildAtr, option: lstRebuild()[0], name: '#[KSC001_88]', 
-													optionValue: 'value', optionText: 'name', group: 'KSC001_88'}" />
+				<div id="inputRebuildAtr" tabindex="5" class="radioboxRebuildAtr"
+					data-bind="ntsSwitchButton: {
+					options: selectRebuildAtr,
+					optionsValue: 'id',
+					optionsText: 'name',
+					name: '#[KSC001_88]',
+					value: selectRebuildAtrCode,
+					required: true,
+					enable: isEnableRadioboxRebuildAtr }">
 				</div>
-				<div class="radioboxRebuildAtr">
-					<div tabindex="5"
-						data-bind="ntsRadioButton: { checked: checkRebuild, enable: isEnableRadioboxRebuildAtr, option: lstRebuild()[1], name: '#[KSC001_88]', 
-													optionValue: 'value', optionText: 'name', group: 'KSC001_88'}" />
-				</div>
+
 				<div class="checkboxSetting" tabindex="-1">
 					<div class="checkboxOne" tabindex="6"
 						data-bind="ntsCheckBox: { checked: recreateConverter, 
@@ -105,18 +123,16 @@
 						enable: isReSetting }">#{i18n.getText('KSC001_99')}</div>
 				</div>
 			</div>
-			<div class="checkboxSettingEnd" tabindex="-1">
-				<div tabindex="15" data-bind="ntsCheckBox: { checked: confirm }">#{i18n.getText('KSC001_17')}</div>
-			</div>
-			<div class="labelSettingEnd" tabindex="-1">
-				<label tabindex="-1">#{i18n.getText('KSC001_18')}</label>
-			</div>
-			<div class="buttonBeginPrevious" tabindex="-1">
-				<button class="large" tabindex="16" data-bind="click: previousPageC">#{i18n.getText('KSC001_19')}</button>
-			</div>
-			<div class="buttonBeginNext" tabindex="-1">
-				<button tabindex="17" class="proceed x-large"
-					data-bind="click: nextPageC">#{i18n.getText('KSC001_20')}</button>
+
+			<div>
+				<div class="buttonBeginPrevious" tabindex="-1">
+					<button class="large" tabindex="16"
+						data-bind="click: previousPageC">#{i18n.getText('KSC001_102')}</button>
+				</div>
+				<div class="buttonBeginNext" tabindex="-1">
+					<button tabindex="17" class="proceed x-large"
+						data-bind="click: nextPageC">#{i18n.getText('KSC001_20')}</button>
+				</div>
 			</div>
 		</div>
 

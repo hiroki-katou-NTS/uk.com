@@ -15,39 +15,39 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBonusPayTimeItemPK;
 
 @Stateless
 public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItemRepository {
-	private final String CHECK_INIT = "SELECT count(c) " + " FROM KbpstBonusPayTimeItem c "
+	private static final String CHECK_INIT = "SELECT count(c) " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId " + " AND  c.useAtr = 1 ";
-	private final String SELECT_BPTIMEITEM_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+	private static final String SELECT_BPTIMEITEM_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 0 "
 			+ " ORDER BY c.kbpstBonusPayTimeItemPK.timeItemNo  ASC ";
-	private final String SELECT_BPTIMEITEM_INUSE_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+	private static final String SELECT_BPTIMEITEM_INUSE_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 0 " + " AND c.useAtr = 1 "
 			+ " ORDER BY c.kbpstBonusPayTimeItemPK.timeItemNo  ASC ";
-	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+	private static final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 "
 			+ " ORDER BY c.kbpstBonusPayTimeItemPK.timeItemNo  ASC ";
-	private final String SELECT_SPEC_BPTIMEITEM_INUSE_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+	private static final String SELECT_SPEC_BPTIMEITEM_INUSE_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 " + " AND c.useAtr = 1 "
 			+ " ORDER BY c.kbpstBonusPayTimeItemPK.timeItemNo ASC ";
-	private final String SELECT_BPTIMEITEM_BY_KEY = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+	private static final String SELECT_BPTIMEITEM_BY_KEY = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemNo = :timeItemNo "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 0 "
 			+ " ORDER BY c.kbpstBonusPayTimeItemPK.timeItemNo ASC ";
-	private final String SELECT_SPEC_BPTIMEITEM_BY_KEY = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+	private static final String SELECT_SPEC_BPTIMEITEM_BY_KEY = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemNo = :timeItemNo "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 "
 			+ " ORDER BY c.kbpstBonusPayTimeItemPK.timeItemNo ASC ";
-	private final String SELECT_BP_TIME_ITEM_NAME = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+	private static final String SELECT_BP_TIME_ITEM_NAME = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId"
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemNo IN :timeItemNos "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 0 ";
-	private final String SELECT_SPEC_BP_TIME_ITEM_NAME = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+	private static final String SELECT_SPEC_BP_TIME_ITEM_NAME = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId"
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemNo IN :timeItemNos "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 ";

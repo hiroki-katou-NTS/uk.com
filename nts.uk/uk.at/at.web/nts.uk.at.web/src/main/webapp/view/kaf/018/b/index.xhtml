@@ -19,9 +19,9 @@
 			<div id="functions-area">
 				<!-- B1_1条件選択に戻る-->
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">#{i18n.getText('KAF018_17')}</a>
+					data-bind="ntsLinkButton: {action: goBackA }">#{i18n.getText('KAF018_17')}</a>
 				<!-- B1_2未承認者にメールを送信 -->
-				<button tabindex="1" class="proceed" data-bind="click: sendMails">#{i18n.getText('KAF018_18')}</button>
+				<!-- <button tabindex="1" class="proceed" data-bind="click: sendMails">#{i18n.getText('KAF018_18')}</button> -->
 			</div>
 			<div id="contents-area">
 				<table id="tbl-control">
@@ -60,7 +60,7 @@
 						<col width="100px" />
 						<col width="100px" />
 						<col width="100px" />
-						<col width="100px" />
+						<!-- <col width="100px" /> -->
 					</colgroup>
 					<thead>
 						<tr>
@@ -69,7 +69,7 @@
 							<th class="ui-widget-header">#{i18n.getText('KAF018_22')}</th>
 							<th class="ui-widget-header">#{i18n.getText('KAF018_23')}</th>
 							<th class="ui-widget-header">#{i18n.getText('KAF018_24')}</th>
-							<th class="ui-widget-header">#{i18n.getText('KAF018_25')}</th>
+							<!-- <th class="ui-widget-header">#{i18n.getText('KAF018_25')}</th> -->
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: tempData">
@@ -80,7 +80,7 @@
 							<td data-bind="text: $parent.getRecord(approvedNumOfCase)"></td>
 							<td data-bind="text: $parent.getRecord(numOfDenials)"></td>
 							
-							<td><div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked, enable: isEnabled }" /></td>
+							<!-- <td><div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked, enable: isEnabled }, visible: isEnabled" /></td> -->
 						</tr>
 					</tbody>
 				</table>

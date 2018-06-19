@@ -106,7 +106,7 @@ module nts.uk.com.view.ccg.model {
                 }else if(placementPartDto.topPageCode === "0002"){
                     this.url = this.origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
                 }else if(placementPartDto.topPageCode === "0003"){
-                    this.url = this.origin + ""; 
+                    this.url = this.origin + "/nts.uk.at.web/view/ktg/027/a/index.xhtml"; 
                 }
             }else if(this.type == ENUM_OPTIONAL_WIDGET) {
                 this.topPagePart = new OptionalWidget(placementPartDto);

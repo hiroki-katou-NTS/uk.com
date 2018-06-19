@@ -41,8 +41,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
         employeeID: KnockoutObservable<string> = ko.observable('');
 
         employeeName: KnockoutObservable<string> = ko.observable('');
-
-        manualSendMailAtr: KnockoutObservable<number> = ko.observable(1);
+        
+        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
 
         drawalReqSet: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
 
@@ -76,13 +77,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
 
             self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
-                if (newWkTimeCD) {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
                     $('#recTimeBtn').ntsError("clear");
                 }
             });
 
             self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
-                if (newWkTimeCD) {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
                     $('#absTimeBtn').ntsError("clear");
                 }
             });
@@ -141,7 +142,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.absWk().setWkTypes(data.absWkTypes || []);
                 self.appReasons(data.appReasonComboItems || []);
                 self.employeeID(data.employeeID);
-                self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
+                self.checkBoxValue(data.applicationSetting.manualSendMailAtr == 1 ? true : false);
+                self.enableSendMail(!data.sendMailWhenRegisterFlg);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);

@@ -1,27 +1,25 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.gul.collection.CollectionUtil;
-import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManager;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.shr.com.mail.MailSender;
-import nts.uk.shr.com.mail.SendMailFailedException;
 
 /**
  * 
@@ -36,12 +34,6 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository discreteRepo;
-
-	@Inject
-	private MailSender mailsender;
-	
-	@Inject
-	private EmployeeRequestAdapter employeeAdapter;
 	
 	@Inject
 	private ApplicationRepository_New applicationRepository;
@@ -49,9 +41,15 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 	@Inject
 	private AppReflectManager appReflectManager;
 	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
 	@Override
-	public String doApproval(String companyID, String appID, String employeeID, String memo) {
-		String strMail = "";
+	public ProcessResult doApproval(String companyID, String appID, String employeeID, String memo) {
+		boolean isProcessDone = true;
+		boolean isAutoSendMail = false;
+		List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
 		approvalRootStateAdapter.doApprove(
 				companyID, 
@@ -90,21 +88,16 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 		AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 		// 承認処理時に自動でメールを送信するが trueの場合
 		if (discreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
+			isAutoSendMail = true;
 			if(allApprovalFlg.equals(Boolean.TRUE)){
-				String email = employeeAdapter.empEmail(application.getEmployeeID());
-				if(Strings.isNotBlank(email)) {
-					try {
-						mailsender.send("nts", email, new MailContents("nts mail", "approval mail from NTS"));
-					} catch (SendMailFailedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					strMail += email + System.lineSeparator();
-				}
+				MailResult applicantResult = otherCommonAlgorithm.sendMailApplicantApprove(application);
+				autoSuccessMail.addAll(applicantResult.getSuccessList());
+				autoFailMail.addAll(applicantResult.getFailList());
 			}
 		}
 		
 		if (discreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+			isAutoSendMail = true;
 			if(allApprovalFlg.equals(Boolean.FALSE)){
 				List<String> destination = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
 						companyID, 
@@ -114,22 +107,12 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 						employeeID, 
 						application.getAppType().value, 
 						application.getAppDate());
-				if(!CollectionUtil.isEmpty(destination)){
-					String email = employeeAdapter.empEmail(employeeID);
-					if(Strings.isNotBlank(email)) {
-						try {
-							mailsender.send("nts", email, new MailContents("nts mail", "approval mail from NTS"));
-						} catch (SendMailFailedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						strMail += email + System.lineSeparator();
-					}
-				}
+				MailResult applicantResult = otherCommonAlgorithm.sendMailApproverApprove(destination, application);
+				autoSuccessMail.addAll(applicantResult.getSuccessList());
+				autoFailMail.addAll(applicantResult.getFailList());
 			}
 		}
-		return strMail;
-		
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID);
 	}
 
 }

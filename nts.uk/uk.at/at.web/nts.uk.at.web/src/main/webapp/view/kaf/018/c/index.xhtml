@@ -19,7 +19,7 @@
 			<div id="functions-area">
 				<!-- C1_1条件選択に戻る -->
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">#{i18n.getText('KAF018_17')}</a>
+					data-bind="ntsLinkButton: { action: goBackA }">#{i18n.getText('KAF018_17')}</a>
 				<!-- C1_2一覧へ戻る-->
 				<button id="buttonC" tabindex="1" data-bind="click: backToB">#{i18n.getText('KAF018_26')}</button>
 			</div>
@@ -51,7 +51,7 @@
 					<colgroup>
 						<col width="100px" />
 						<col width="300px" />
-						<col width="400px" />
+						<col width="410px" />
 						<col width="400px" />
 					</colgroup>
 					<tr>
@@ -72,14 +72,14 @@
 									data-bind="text: endDateFormat"></span>)
 							</div>
 						</td>
-						<td>
+						<td class="align-right">
 							<!-- C6説明ラベル -->
 							<lable>#{i18n.getText('KAF018_30')}</lable>
 						</td>
 					</tr>
 				</table>
 				<!--C5社員一覧 -->
-				<div id="extable"  tabindex="4" style="width: 600px;"></div>
+				<div id="extable"  tabindex="4"></div>
 				
 			</div>
 		</ui:define>

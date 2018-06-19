@@ -641,8 +641,14 @@ public class HolidayShipmentScreenAFinder {
 
 		result.setManualSendMailAtr(
 				appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value == 1 ? true : false);
+<<<<<<< HEAD
 
 		startupErrorCheck(employeeID, baseDate, companyID);
+=======
+		result.setSendMailWhenApprovalFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true : false);
+		result.setSendMailWhenRegisterFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true : false);
+		startupErrorCheck(employeeID, baseDate);
+>>>>>>> delivery/release_user
 
 		return result;
 	}

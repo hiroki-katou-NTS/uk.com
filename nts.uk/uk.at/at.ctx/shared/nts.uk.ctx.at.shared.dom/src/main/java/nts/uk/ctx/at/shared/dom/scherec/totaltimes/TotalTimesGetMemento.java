@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
 
-import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -74,6 +74,6 @@ public interface TotalTimesGetMemento {
 	 *
 	 * @return the total subjects
 	 */
-	List<TotalSubjects> getTotalSubjects();
+	Optional<SummaryList> getSummaryList();
 
 }

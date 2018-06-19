@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectDet
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectSettingDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyFinder;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/gobackdirectly")
@@ -73,8 +74,8 @@ public class GoBackDirectlyService extends WebService {
 	 */
 	@POST
 	@Path("insertGoBackDirectly")
-	public void insertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
-		this.insertGoBackHandler.handle(command);
+	public ProcessResult insertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
+		return insertGoBackHandler.handle(command);
 	}
 	
 	/**
@@ -100,8 +101,8 @@ public class GoBackDirectlyService extends WebService {
 	 */
 	@POST
 	@Path("updateGoBackDirectly")
-	public void updateGoBackData (UpdateApplicationGoBackDirectlyCommand command) {
-		this.updateGoBackHandler.handle(command);
+	public ProcessResult updateGoBackData (UpdateApplicationGoBackDirectlyCommand command) {
+		return this.updateGoBackHandler.handle(command);
 	}
 		
 }

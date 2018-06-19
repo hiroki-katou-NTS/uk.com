@@ -53,6 +53,8 @@ public interface PerInfoCategoryRepositoty {
 	List<PersonInfoCategory> getPerCtgByListCtgCd(List<String> ctgCd, String companyId);
 	
 	void updateAbolition(List<PersonInfoCategory> ctg, String companyId);
+	
+	void updateAbolition(List<PersonInfoCategory> ctg);
 	// vinhpx: end
 	
 	//laitv
@@ -72,4 +74,6 @@ public interface PerInfoCategoryRepositoty {
 	int getDispOrder(String perInfoCtgId);
 	
 	String getCatId(String cId, String categoryCode);
+	
+	List<String> getAllCtgId(List<String> ctgCd, String companyId);
 }

@@ -82,8 +82,8 @@ public class ApprovalStatusWebservice extends WebService {
 	 */
 	@POST
 	@Path("getApprovalStatusPerior/{closureId}/{closureDate}")
-	public ApprovalStatusPeriorDto getApprovalStatusPerior(@PathParam("closureId") int closureId, @PathParam("closureDate") int closureDate) {
-		return this.finder.getApprovalStatusPerior(closureId, closureDate);
+	public ApprovalStatusPeriorDto getApprovalStatusPerior(@PathParam("closureId") int closureId) {
+		return this.finder.getApprovalStatusPerior(closureId);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("initApprovalSttByEmployee")
-	public ApprovalSttByEmpListOutput initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
+	public List<ApprovalSttByEmpListOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
 		return this.finder.initApprovalSttByEmployee(appSttById);
 		
 	}

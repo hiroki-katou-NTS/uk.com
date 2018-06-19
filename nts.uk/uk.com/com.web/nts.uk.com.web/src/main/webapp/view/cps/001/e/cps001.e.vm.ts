@@ -56,6 +56,7 @@ module cps001.e.vm {
                         return;
                     }
                     self.isInit = false;
+                    $('.upload-btn').focus();
                     unblock();
                 });
 
@@ -68,6 +69,7 @@ module cps001.e.vm {
                     if (data.allowMapUpload != 1) {
                         self.enaBtnSave(false);
                         $(".upload-btn").attr('disabled', 'disabled');
+                        $('.upload-btn').focus();
                     }
                 }
             });
@@ -142,7 +144,10 @@ module cps001.e.vm {
             let id = self.empFileMn().fileId;
             try {
                 $("#test").ntsImageEditor("selectByFileId", {fileId: id, actionOnClose: function(){
-                     close();   
+                     unblock();
++                    self.isChange(true);
++                    $(".checkbox-holder").hide();
++                    $('.upload-btn').focus(); 
                 }});
             } catch (Error) {
                 self.isChange(true);

@@ -19,10 +19,11 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.SpecialLeaveInfo
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<CreatAppAbsenceCommand, String>{
+public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<CreatAppAbsenceCommand, ProcessResult>{
 	
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
@@ -40,7 +41,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	private RegisterAtApproveReflectionInfoService_New registerService;
 	
 	@Override
-	protected String handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
 		CreatAppAbsenceCommand command = context.getCommand();
 		// 会社ID
 		String companyID = AppContexts.user().companyId();

@@ -179,17 +179,19 @@
 														</div>
 													</div>
 													<div id="targetCheckBoxes">
-														<div id="b212224">
+													
+													 <div id="b212224">
 														<!-- B7_22 -->
 														<div tabindex="20" data-bind="ntsCheckBox: { checked: createEmployee, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_33')}</div>
+														<!-- B7_23 -->
+														<div  tabindex="19" style="margin-left: 30px;" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; (recreateTransfer() || recreateWorkType()) }">#{i18n.getText('KBT002_34')}</div>
 														<!-- B7_21 -->
 														<div tabindex="17" data-bind="ntsCheckBox: { checked: recreateTransfer, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_32')}</div>
 														<!-- B7_24 -->
 														<div tabindex="18" data-bind="ntsCheckBox: { checked: recreateWorkType, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_149')}</div>
 														</div>	
-														<!-- B7_23 -->
-														<div id="b23" tabindex="19" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; recreateTransfer() &amp;&amp; recreateWorkType() }">#{i18n.getText('KBT002_34')}</div>
 													</div>
+													 
 		                         				</div>
 		                         			</div>
 		                         		</div>
@@ -220,9 +222,9 @@
 		                         		<!-- B8_5  途中入社は入社日からにする-->
 		                         		<div tabindex="23" data-bind="ntsCheckBox: { checked: midJoinEmployee, enable: dailyPerfCls() }">#{i18n.getText('KBT002_33')}</div>
 		                         		<!-- B8_9  更新処理の日別処理対象者区分.異動者を再作成する-->
-		                         		<div tabindex="25" data-bind="ntsCheckBox: { checked: recreateTransfers, enable: dailyPerfCls() }">#{i18n.getText('KBT002_149')}</div>
+		                         		<div tabindex="25" data-bind="ntsCheckBox: { checked: recreateTransfers, enable: dailyPerfCls() }">#{i18n.getText('KBT002_166')}</div>
 		                         		<!-- B8_8  更新処理の日別処理対象者区分.勤務種別変更者を再作成-->
-		                         		<div tabindex="24" data-bind="ntsCheckBox: { checked: recreateTypeChangePerson, enable: dailyPerfCls() }">#{i18n.getText('KBT002_32')}</div>
+		                         		<div tabindex="24" data-bind="ntsCheckBox: { checked: recreateTypeChangePerson, enable: dailyPerfCls() }">#{i18n.getText('KBT002_167')}</div>
 		                         		</div> 	
 		                         		</div>
 		                         		

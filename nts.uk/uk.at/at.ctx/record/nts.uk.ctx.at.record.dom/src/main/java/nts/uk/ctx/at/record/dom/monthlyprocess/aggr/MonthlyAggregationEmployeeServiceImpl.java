@@ -10,18 +10,25 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import lombok.val;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainDataRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainDataRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
@@ -29,6 +36,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：月別集計　（社員の月別実績を集計する）
@@ -46,6 +54,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** 集計期間を取得する */
 	@Inject
 	private GetClosurePeriod getClosurePeriod;
+	/** 月別集計が必要とするリポジトリ */
+	@Inject
+	private RepositoriesRequiredByMonthlyAggr repositories;
 	
 	/** リポジトリ：月別実績の勤怠時間 */
 	@Inject
@@ -65,28 +76,55 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** 積立年休月別残数データ */
 	@Inject
 	private RsvLeaRemNumEachMonthRepository rsvLeaRemNumEachMonthRepo;
+	/** 振休月別残数データ */
+	@Inject
+	private AbsenceLeaveRemainDataRepository absLeaRemRepo;
+	/** 代休月別残数データ */
+	@Inject
+	private MonthlyDayoffRemainDataRepository monDayoffRemRepo;
 	/** エラーメッセージ情報 */
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	
-	/**
-	 * 社員の月別実績を集計する
-	 * @param asyncContext 同期コマンドコンテキスト
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param criteriaDate 基準日
-	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
-	 * @param executionType 実行種別　（通常、再実行）
-	 */
+	/** 社員の月別実績を集計する */
 	@Override
 	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType) {
+
+		ProcessState status = ProcessState.SUCCESS;
+		val dataSetter = asyncContext.getDataSetter();
+		
+		// 月別集計で必要な会社別設定を取得する
+		val companySets = MonAggrCompanySettings.loadSettings(companyId, this.repositories);
+		if (companySets.getErrorInfos().size() > 0){
+			
+			// エラー処理
+			List<MonthlyAggregationErrorInfo> errorInfoList = new ArrayList<>();
+			for (val errorInfo : companySets.getErrorInfos().entrySet()){
+				errorInfoList.add(new MonthlyAggregationErrorInfo(errorInfo.getKey(), errorInfo.getValue()));
+			}
+			this.errorProc(dataSetter, employeeId, empCalAndSumExecLogID, criteriaDate, errorInfoList);
+			return status;
+		}
+		
+		return this.aggregate(asyncContext, companyId, employeeId, criteriaDate,
+				empCalAndSumExecLogID, executionType, companySets);
+	}
+	
+	/** 社員の月別実績を集計する */
+	@Override
+	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
+			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType,
+			MonAggrCompanySettings companySets) {
 		
 		ProcessState status = ProcessState.SUCCESS;
 		val dataSetter = asyncContext.getDataSetter();
 		
 		// 前回集計結果　（年休積立年休の集計結果）
 		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
+
+		Stopwatches.reset("11000:集計期間の判断：" + employeeId);
+		Stopwatches.start("11000:集計期間の判断：" + employeeId);
 		
 		// 集計期間の判断　（実締め毎集計期間だけをすべて取り出す）
 		List<AggrPeriodEachActualClosure> aggrPeriods = new ArrayList<>();
@@ -94,11 +132,44 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				Optional.empty(), Optional.empty(), Optional.empty());
 		for (val closurePeriod : closurePeriods) aggrPeriods.addAll(closurePeriod.getAggrPeriods());
 		
+		// 全体の期間を求める
+		DatePeriod allPeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		if (aggrPeriods.size() > 0){
+			val headPeriod = aggrPeriods.get(0).getPeriod();
+			allPeriod = new DatePeriod(headPeriod.start(), headPeriod.end());
+			for (val aggrPeriod : aggrPeriods){
+				GeneralDate startYmd = allPeriod.start();
+				GeneralDate endYmd = allPeriod.end();
+				if (startYmd.after(aggrPeriod.getPeriod().start())) startYmd = aggrPeriod.getPeriod().start();
+				if (endYmd.before(aggrPeriod.getPeriod().end())) endYmd = aggrPeriod.getPeriod().end();
+				allPeriod = new DatePeriod(startYmd, endYmd);
+			}
+		}
+		
+		// 月別集計で必要な社員別設定を取得
+		val employeeSets = MonAggrEmployeeSettings.loadSettings(
+				companyId, employeeId, allPeriod, this.repositories);
+		if (employeeSets.getErrorInfos().size() > 0){
+			
+			// エラー処理
+			List<MonthlyAggregationErrorInfo> errorInfoList = new ArrayList<>();
+			for (val errorInfo : employeeSets.getErrorInfos().entrySet()){
+				errorInfoList.add(new MonthlyAggregationErrorInfo(errorInfo.getKey(), errorInfo.getValue()));
+			}
+			this.errorProc(dataSetter, employeeId, empCalAndSumExecLogID, criteriaDate, errorInfoList);
+			return status;
+		}
+		
+		Stopwatches.start("11000:集計期間の判断：" + employeeId);
+		
 		for (val aggrPeriod : aggrPeriods){
 			val yearMonth = aggrPeriod.getYearMonth();
 			val closureId = aggrPeriod.getClosureId();
 			val closureDate = aggrPeriod.getClosureDate();
 			val datePeriod = aggrPeriod.getPeriod();
+			
+			Stopwatches.reset("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
+			Stopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 			
 			// 中断依頼が出されているかチェックする
 			if (asyncContext.hasBeenRequestedToCancel()) {
@@ -112,25 +183,13 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			
 			// 月別実績を集計する　（アルゴリズム）
 			val value = this.aggregateMonthlyRecordService.aggregate(companyId, employeeId,
-					yearMonth, closureId, closureDate, datePeriod, prevAggrResult);
+					yearMonth, closureId, closureDate, datePeriod, prevAggrResult, companySets, employeeSets);
 			if (value.getErrorInfos().size() > 0) {
 
-				// 「エラーあり」に更新
-				dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.HAS_ERROR.nameId);
-				
-				// エラー出力
+				// エラー処理
 				List<MonthlyAggregationErrorInfo> errorInfoList = new ArrayList<>();
 				errorInfoList.addAll(value.getErrorInfos().values());
-				errorInfoList.sort((a, b) -> a.getResourceId().compareTo(b.getResourceId()));
-				for (val errorInfo : errorInfoList){
-					this.errMessageInfoRepository.add(new ErrMessageInfo(
-							employeeId,
-							empCalAndSumExecLogID,
-							new ErrMessageResource(errorInfo.getResourceId()),
-							ExecutionContent.MONTHLY_AGGREGATION,
-							datePeriod.end(),
-							errorInfo.getMessage()));
-				}
+				this.errorProc(dataSetter, employeeId, empCalAndSumExecLogID, datePeriod.end(), errorInfoList);
 				
 				// 中断するエラーがある時、中断処理をする
 				if (value.isInterruption()){
@@ -155,17 +214,17 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			
 			// 登録する
-			for (val attendanceTime : value.getAttendanceTimeList()){
-				this.attendanceTimeRepository.persistAndUpdate(attendanceTime);
+			if (value.getAttendanceTime().isPresent()){
+				this.attendanceTimeRepository.persistAndUpdate(value.getAttendanceTime().get());
 			}
-			for (val affiliationInfo : value.getAffiliationInfoList()){
-				this.affiliationInfoRepository.persistAndUpdate(affiliationInfo);
+			if (value.getAffiliationInfo().isPresent()){
+				this.affiliationInfoRepository.persistAndUpdate(value.getAffiliationInfo().get());
 			}
 			for (val anyItem : value.getAnyItemList()){
 				this.anyItemRepository.persistAndUpdate(anyItem);
 			}
-			for (val agreementTime : value.getAgreementTimeList()){
-				this.agreementTimeRepository.persistAndUpdate(agreementTime);
+			if (value.getAgreementTime().isPresent()){
+				this.agreementTimeRepository.persistAndUpdate(value.getAgreementTime().get());
 			}
 			for (val annLeaRemNum : value.getAnnLeaRemNumEachMonthList()){
 				this.annLeaRemNumEachMonthRepo.persistAndUpdate(annLeaRemNum);
@@ -173,7 +232,46 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			for (val rsvLeaRemNum : value.getRsvLeaRemNumEachMonthList()){
 				this.rsvLeaRemNumEachMonthRepo.persistAndUpdate(rsvLeaRemNum);
 			}
+			for (val absLeaRemNum : value.getAbsenceLeaveRemainList()){
+				this.absLeaRemRepo.persistAndUpdate(absLeaRemNum);
+			}
+			for (val monDayoffRemNum : value.getMonthlyDayoffRemainList()){
+				this.monDayoffRemRepo.persistAndUpdate(monDayoffRemNum);
+			}
+			
+			Stopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 		}
 		return status;
+	}
+	
+	/**
+	 * エラー処理
+	 * @param dataSetter データセッター
+	 * @param employeeId 社員ID
+	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
+	 * @param outYmd 出力年月日
+	 * @param errorInfoList エラー情報リスト
+	 */
+	private void errorProc(
+			TaskDataSetter dataSetter,
+			String employeeId,
+			String empCalAndSumExecLogID,
+			GeneralDate outYmd,
+			List<MonthlyAggregationErrorInfo> errorInfoList){
+		
+		// 「エラーあり」に更新
+		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.HAS_ERROR.nameId);
+		
+		// エラー出力
+		errorInfoList.sort((a, b) -> a.getResourceId().compareTo(b.getResourceId()));
+		for (val errorInfo : errorInfoList){
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					employeeId,
+					empCalAndSumExecLogID,
+					new ErrMessageResource(errorInfo.getResourceId()),
+					ExecutionContent.MONTHLY_AGGREGATION,
+					outYmd,
+					errorInfo.getMessage()));
+		}
 	}
 }

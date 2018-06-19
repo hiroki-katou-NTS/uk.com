@@ -13,21 +13,22 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
-@AttendanceItemRoot(rootName = "日別実績の外出時間帯")
 @Data
+@AttendanceItemRoot(rootName = ItemConst.DAILY_OUTING_TIME_NAME)
 public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", listMaxLength = 10, indexField = "workNo")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, 
+			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<OutingTimeZoneDto> timeZone;
 	
 	public static OutingTimeOfDailyPerformanceDto getDto(OutingTimeOfDailyPerformance domain) {
@@ -72,7 +73,7 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		}
 		return new OutingTimeOfDailyPerformance(emp, date, 
 					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
-						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), createTimeActual(c.getOuting()),
+						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getNo()), createTimeActual(c.getOuting()),
 								new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 								ConvertHelper.getEnum(c.getReason(), GoingOutReason.class),
 								createTimeActual(c.getComeBack()))));

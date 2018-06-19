@@ -259,9 +259,13 @@ module nts.uk.at.view.kaf009.b {
                 var promiseResult = self.checkUse();
                 promiseResult.done((result) => {
                     if (result) {
-                        service.updateGoBackDirect(self.getCommand()).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                                location.reload();
+                        service.updateGoBackDirect(self.getCommand()).done(function(data) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                if(data.autoSendMail){
+                                    appcommon.CommonProcess.displayMailResult(data);    
+                                } else {
+                                    location.reload();
+                                }
                             });
                         })
                         .fail(function(res) { 

@@ -11,7 +11,7 @@ import nts.uk.ctx.basic.infra.entity.system.bank.CbkmtBankPK;
 
 @Stateless
 public class JpaBankRepository extends JpaRepository implements BankRepository {
-	private final String SEL_1 = "SELECT b FROM CbkmtBank b WHERE b.cbkmtBankPK.companyCode = :companyCode ";
+	private static final String SEL_1 = "SELECT b FROM CbkmtBank b WHERE b.cbkmtBankPK.companyCode = :companyCode ";
 	
 	@Override
 	public List<Bank> findAll(String companyCode) {

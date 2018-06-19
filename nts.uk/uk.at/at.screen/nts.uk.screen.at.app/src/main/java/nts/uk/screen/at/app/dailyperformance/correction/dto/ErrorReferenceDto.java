@@ -18,4 +18,5 @@ public class ErrorReferenceDto {
 	private String itemName;
 	private boolean boldAtr;
 	private String messageColor;
+	private String submitedName;
 }

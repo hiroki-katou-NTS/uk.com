@@ -24,8 +24,8 @@ import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.WorkScheduleTimeZoneExp
  * The Class ScBasicSchedulePubImpl.
  */
 @Stateless
-public class ScBasicSchedulePubImpl implements ScBasicSchedulePub{
-	
+public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
+
 	/** The repository. */
 	@Inject
 	private BasicScheduleRepository repository;
@@ -44,21 +44,20 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub{
 
 	@Override
 	public List<ScWorkBreakTimeExport> findWorkBreakTime(String employeeId, GeneralDate baseDate) {
-		return this.repository.findWorkBreakTime(employeeId, baseDate)
-				.stream().map(x -> new ScWorkBreakTimeExport(
-						x.getScheduleBreakCnt().v(), 
-						x.getScheduledStartClock(), 
+		return this.repository.findWorkBreakTime(employeeId, baseDate).stream()
+				.map(x -> new ScWorkBreakTimeExport(x.getScheduleBreakCnt().v(), x.getScheduledStartClock(),
 						x.getScheduledEndClock()))
 				.collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Convert export.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the sc basic schedule export
 	 */
-	private ScBasicScheduleExport convertExport(BasicSchedule domain){
+	private ScBasicScheduleExport convertExport(BasicSchedule domain) {
 		ScBasicScheduleExport export = new ScBasicScheduleExport();
 		export.setDate(domain.getDate());
 		export.setEmployeeId(domain.getEmployeeId());
@@ -68,20 +67,26 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub{
 		export.setWorkTypeCode(domain.getWorkTypeCode());
 		return export;
 	}
-	
+
 	/**
 	 * Convert time zone export.
 	 *
-	 * @param timezone the timezone
+	 * @param timezone
+	 *            the timezone
 	 * @return the work schedule time zone export
 	 */
-	private WorkScheduleTimeZoneExport convertTimeZoneExport(WorkScheduleTimeZone timezone){
+	private WorkScheduleTimeZoneExport convertTimeZoneExport(WorkScheduleTimeZone timezone) {
 		WorkScheduleTimeZoneExport export = new WorkScheduleTimeZoneExport();
 		export.setBounceAtr(timezone.getBounceAtr().value);
 		export.setScheduleCnt(timezone.getScheduleCnt());
 		export.setScheduleStartClock(timezone.getScheduleStartClock().valueAsMinutes());
 		export.setScheduleEndClock(timezone.getScheduleEndClock().valueAsMinutes());
 		return export;
+	}
+
+	@Override
+	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds) {
+		return this.repository.findMaxDateByListSid(sIds);
 	}
 
 }
