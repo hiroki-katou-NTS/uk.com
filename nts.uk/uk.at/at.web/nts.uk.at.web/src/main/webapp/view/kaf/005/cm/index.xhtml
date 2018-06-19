@@ -48,11 +48,35 @@
 	</div>
 	<!--LEFT CONTENTS -->
 	<div class="left-contents">
-		<div class="valign-center control-group">
+		<div class="cf valign-center control-group" data-bind = "visible: !employeeFlag()">
 			<!--A3_1 申請者-->
 			<div class="lblTitle cm-column" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_29')}</div>
 			<!--A3_2 申請者表示氏名-->
 			<label class="lblEmployeeName fix-margin-left" data-bind="text : employeeName"></label>
+			
+		</div>
+		<div class="cf valign-top control-group" data-bind = "visible: employeeFlag()">
+			<!--A3_1 申請者-->
+			<div class="lblTitle cm-column" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_29')}</div>
+			<!--A3_2 申請者表示氏名-->
+			<div id="list-box" class="fix-margin-left"
+				data-bind="ntsListBox: {
+							options: employeeList,
+							optionsValue: 'id',
+							optionsText: 'name',
+							multiple:false,
+							value: selectedEmplCodes,
+							enable: true,
+							rows: 3,
+							columns: [
+								{ key: 'name'}
+							]}">
+			</div>
+		</div>
+		<div class="cf valign-center control-group" data-bind = "visible: employeeFlag()">
+			<div class="cm-column"></div>
+			<!--A3_9 申請者表示氏名-->
+			<label style ="margin-left: 139px;" data-bind="text : totalEmployee"></label>
 		</div>
 		<div class="valign-center control-group"
 			data-bind="if: displayPrePostFlg">
