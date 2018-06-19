@@ -46,6 +46,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferDto;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportDto;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportService;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferFinder;
@@ -283,7 +284,7 @@ public class DailyPerformanceCorrectionWebService {
 
 	@POST
 	@Path("getErrAndAppTypeCd")
-	public Map<String, List<EnumConstant>> findByCidAndListErrCd(List<String> listErrorCode) {
+	public DailyPerformErrorReferDto findByCidAndListErrCd(List<String> listErrorCode) {
 		return this.dailyPerforErrorReferFinder.findByCidAndListErrCd(listErrorCode);
 	}
 
