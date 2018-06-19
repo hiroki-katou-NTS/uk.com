@@ -63,7 +63,7 @@ public class OptionalWidgetInfoDto {
 	private TimeOT remainAlternationNo = new TimeOT(0, 0);
 	
 	/** 19 RemainsLeft 振休残数 */
-	private int remainsLeft = 0;
+	private double remainsLeft = 0.0;
 	
 	/** Public Holiday Number 公休残数 */
 	private int publicHDNo = 0;
