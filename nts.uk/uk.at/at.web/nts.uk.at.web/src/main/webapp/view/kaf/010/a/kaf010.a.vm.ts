@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
     import service = nts.uk.at.view.kaf010.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -13,10 +14,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //current Data
         //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //manualSendMailAtr
-        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
+        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
+        employeeList :KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+        selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+        employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+        totalEmployee: KnockoutObservable<string> = ko.observable(null);
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
         backSelected1: KnockoutObservable<number> = ko.observable(0);
@@ -69,7 +75,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //加給時間
         bonusTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
         //menu-bar 
-        enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti: KnockoutObservable<boolean> = ko.observable(true);
@@ -138,10 +143,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             let self = this;  
             if(transferData != null){
                 self.uiType(transferData.uiType);
-                self.ltsEmployee(transferData.applicant);
+                self.ltsEmployee(transferData.employeeIDs);
                 self.payoutType(transferData.payoutType);
                 self.leaverAppID(transferData.appID);
                 self.appDate(transferData.appDate);
+                self.employeeID(transferData.employeeID);
             }
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
@@ -170,7 +176,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                 lstEmployee: self.ltsEmployee(),
                 payoutType: self.payoutType(),
-                uiType: self.uiType()
+                uiType: self.uiType(),
+                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID()
             }).done((data) => {
                 self.initData(data);
                 $("#inputdate").focus();
@@ -242,7 +249,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
         initData(data: any) {
             var self = this;
-            self.manualSendMailAtr(data.manualSendMailAtr);
+            self.checkBoxValue(data.manualSendMailAtr);
+            self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.prePostSelected(data.application.prePostAtr);
             self.displayCaculationTime(data.displayCaculationTime);
@@ -292,6 +300,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+            // list employeeID
+            if(!nts.uk.util.isNullOrEmpty(data.employees)){
+                self.employeeFlag(true);
+                for(let i= 0; i < data.employees.length; i++){
+                    self.employeeList.push(new common.EmployeeOT(data.employees[i].employeeIDs,data.employees[i].employeeName));
+                }
+                let total = data.employees.length;
+                self.totalEmployee(nts.uk.resource.getText("KAF010_184",total.toString()));
+            }
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
             // 休憩時間
@@ -400,7 +417,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
                 flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
-                sendMail: self.manualSendMailAtr(),
+                sendMail: self.checkBoxValue(),
                 leaveAppID: self.leaverAppID(),
                 uiType: self.uiType(),
                 calculateFlag: self.calculateFlag()
@@ -454,16 +471,18 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         }
         //登録処理を実行
         registerData(overtime) {
+            let self = this;
             service.createOvertime(overtime).done((data) => {
-                dialog.info({ messageId: "Msg_15" }).then(function() {
-//                    if (!nts.uk.util.isNullOrUndefined(data)) {
-//                            nts.uk.ui.dialog.info({ messageId: 'Msg_392',messageParams: [data]  }).then(()=>{
-//                                location.reload();    
-//                            });
-//                        } else {
-//                            location.reload();        
-//                        }
-                        location.reload();   
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    if(data.autoSendMail){
+                        appcommon.CommonProcess.displayMailResult(data);   
+                    } else {
+                        if(self.checkBoxValue()){
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);   
+                        } else {
+                            location.reload();
+                        }   
+                    }
                 });
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })

@@ -16,6 +16,10 @@ module nts.uk.at.view.kaf010.b {
             displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(false);
             //申請者
             employeeName: KnockoutObservable<string> = ko.observable("");
+            employeeList: KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+            selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+            employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+            totalEmployee: KnockoutObservable<string> = ko.observable(null);
             //Pre-POST
             prePostSelected: KnockoutObservable<number> = ko.observable(0);
             backSelected1: KnockoutObservable<number> = ko.observable(0);
