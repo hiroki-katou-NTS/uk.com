@@ -47,6 +47,7 @@ import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class AttendanceRecordExportService extends ExportService<AttendanceRecordRequest> {
@@ -461,8 +462,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
 						attendanceRecRepEmpData.setTitle(result.getPosition().getPositionName().toString());
 						attendanceRecRepEmpData.setWorkplace(result.getWorkplace().getWorkplaceName().toString());
-						attendanceRecRepEmpData.setWorkType(
-								EnumAdaptor.valueOf(result.getEmploymentCls(), WorkingSystem.class).nameId);
+						attendanceRecRepEmpData.setWorkType(TextResource
+								.localize(EnumAdaptor.valueOf(result.getEmploymentCls(), WorkingSystem.class).nameId));
 						attendanceRecRepEmpData.setYearMonth(yearMonth.year() + "/" + yearMonth.month());
 						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 
