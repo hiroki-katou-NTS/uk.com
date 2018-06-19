@@ -164,9 +164,13 @@ module nts.uk.com.view.kwr002.a {
                     } else {
                         self.enableSave(true);
                         var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
+                        _.map(sortArray, (item) => {
+                            item.code = _.padStart(item.code, 2, '0');
+                        });
                         self.attendanceRecordList(sortArray);
                         self.selectedCode(sortArray[0].code);
                     }
+                    
                     dfd.resolve();
                 })
                 blockUI.clear();
@@ -343,11 +347,14 @@ module nts.uk.com.view.kwr002.a {
                             // $('#exportExcel').attr("disabled", "disabled")
                         } else {
                             var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
+                            _.map(sortArray, (item) => {
+                                item.code = _.padStart(item.code, 2, '0');
+                            });
                             self.attendanceRecordList(sortArray);
                             self.selectedCode(sortArray[0].code);
                             self.enableSave(true)
                         }
-                        console.log(self.attendanceRecordList());
+                        // console.log(self.attendanceRecordList());
 
                         dfd.resolve();
 
