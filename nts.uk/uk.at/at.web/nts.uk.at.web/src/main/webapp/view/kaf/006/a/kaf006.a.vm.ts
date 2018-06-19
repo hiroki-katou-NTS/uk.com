@@ -18,6 +18,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
+        employeeList :KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+        selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+        employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+        totalEmployee: KnockoutObservable<string> = ko.observable(null);
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(3);
         workState: KnockoutObservable<boolean> = ko.observable(true);
@@ -80,9 +84,15 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         enbbtnWorkTime: KnockoutObservable<boolean> = ko.observable(true);
         enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
         enbContentReason: KnockoutObservable<boolean> = ko.observable(true);
-        constructor() {
+        employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
+        constructor(transferData :any) {
 
             let self = this;
+            if(transferData != null){
+                self.appDate(transferData.appDate);
+                self.employeeIDs(transferData.employeeIDs);
+                self.employeeID(transferData.employeeID); 
+            }
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 006a AFTER start 000_A
@@ -103,7 +113,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             nts.uk.ui.block.invisible();
             service.getAppForLeaveStart({
                 appDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                employeeID: null
+                employeeID: null,
+                employeeIDs: nts.uk.util.isNullOrEmpty(self.employeeIDs()) ? null : self.employeeIDs()
             }).done((data) => {
                 $("#inputdate").focus();
                 self.initData(data);
@@ -387,6 +398,14 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.selectedReason(reasonID);
 
                 self.multilContent(data.application.applicationReason);
+            }
+            if(!nts.uk.util.isNullOrEmpty(data.employees)){
+                self.employeeFlag(true);
+                for(let i= 0; i < data.employees.length; i++){
+                    self.employeeList.push(new common.EmployeeOT(data.employees[i].employeeIDs,data.employees[i].employeeName));
+                }
+                let total = data.employees.length;
+                self.totalEmployee(nts.uk.resource.getText("KAF006_65",total.toString()));
             }
         }
         registerClick() {
