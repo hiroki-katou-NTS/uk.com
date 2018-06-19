@@ -10,11 +10,13 @@ public class DayOffManagement {
 	private String subOfHDID;
 	private String dayoffDate;
 	private Double requiredDays;
+	private Double remainDays;
 
-	public DayOffManagement(String subOfHDID, String dayoffDate, Double requiredDays) {
+	public DayOffManagement(String subOfHDID, String dayoffDate, Double requiredDays, Double remainDays) {
 		super();
 		this.subOfHDID = subOfHDID;
 		this.dayoffDate = dayoffDate;
 		this.requiredDays = requiredDays;
+		this.remainDays = remainDays;
 	}
 }

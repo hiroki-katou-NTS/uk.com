@@ -10,7 +10,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless

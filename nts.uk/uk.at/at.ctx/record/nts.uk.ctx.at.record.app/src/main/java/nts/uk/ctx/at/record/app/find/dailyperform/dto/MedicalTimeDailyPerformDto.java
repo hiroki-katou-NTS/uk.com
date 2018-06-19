@@ -27,17 +27,17 @@ public class MedicalTimeDailyPerformDto implements ItemConst {
 
 	/** 申送時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TAKE_OVER, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer takeOverTime;
 
 	/** 控除時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = DEDUCTION, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer deductionTime;
 
 	/** 勤務時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = WORKING_TIME, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer workTime;
 
 	/** @see nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift */
