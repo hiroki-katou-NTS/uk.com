@@ -187,6 +187,7 @@ module nts.uk.at.view.kwr006.a {
                                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' });
                             }
                         });
+                        dfd.resolve();
                     } else {
                         self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
                     }
@@ -236,7 +237,10 @@ module nts.uk.at.view.kwr006.a {
             }
 
             public openScreenC(): void {
-                nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml');
+                let self = this;
+                nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml').onClosed(() => {
+                    self.loadListOutputItemMonthlyWorkSchedule();    
+                });
             }
 
             /**
