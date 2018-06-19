@@ -41,7 +41,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			 " OR  ((cm.employmentUseAtr = :employmentUseAtr AND :employmentUseAtr = 1) OR (1 = 1)))",
 			 "	ORDER BY co.disporder");
 
-	private final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName "
+	private final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, cm.categoryType "
 			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
 			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " INNER JOIN PpemtPerInfoCtgOrder co"
 			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -108,6 +108,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		domain.setCategoryId(entity[0].toString());
 		domain.setCategoryCode(entity[1].toString());
 		domain.setCategoryName(entity[2].toString());
+		domain.setCategoryType((int) entity[3]);
 		return domain;
 	}
 
