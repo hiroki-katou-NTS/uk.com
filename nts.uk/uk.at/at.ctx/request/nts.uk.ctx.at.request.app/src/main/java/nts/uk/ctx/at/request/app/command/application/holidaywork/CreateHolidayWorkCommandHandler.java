@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -21,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayServ
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
-public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<CreateHolidayWorkCommand, String> {
+public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<CreateHolidayWorkCommand, ProcessResult> {
 	@Inject
 	private IFactoryHolidayWork factoryHolidayWork;
 	@Inject
@@ -37,7 +38,7 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 	@Inject
 	private CancelHolidayShipmentCommandHandler cancelHolidayShipmentCommandHandler;
 	@Override
-	protected String handle(CommandHandlerContext<CreateHolidayWorkCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<CreateHolidayWorkCommand> context) {
 		
 		CreateHolidayWorkCommand command = context.getCommand();
 		// 会社ID
