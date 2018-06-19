@@ -192,9 +192,9 @@ module nts.uk.com.view.cmf003.b {
 
                 this.columnCategorys = ko.observableArray([
                     { headerText: '', key: 'categoryId', width: 100, hidden: true },
-                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 280 },
-                    { headerText: getText('CMF003_31'), formatter: timeStore, key: 'timeStore', width: 80 },
-                    { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storageRangeSaved', width: 130 }
+                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 260 },
+                    { headerText: getText('CMF003_31'), formatter: timeStore, key: 'timeStore', width: 70 },
+                    { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storageRangeSaved', width: 120 }
                 ]);
 
                 this.columnEmployees = ko.observableArray([
