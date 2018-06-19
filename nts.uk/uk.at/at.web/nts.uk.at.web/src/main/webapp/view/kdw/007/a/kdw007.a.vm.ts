@@ -53,20 +53,24 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         // Tab 5
         lstApplicationType = ko.observableArray([
-            { code: 0, name: "残業申請" },
-            { code: 1, name: "休暇申請" },
-            { code: 2, name: "勤務変更申請" },
-            { code: 3, name: "出張申請" },
-            { code: 4, name: "直行直帰申請" },
-            { code: 6, name: "休出時間申請" },
-            { code: 7, name: "打刻申請" },
-            { code: 8, name: "時間年休申請" },
-            { code: 9, name: "遅刻早退取消申請" },
-            { code: 10, name: "振休振出申請" },
-            { code: 11, name: "打刻申請（NR形式）" },
-            { code: 12, name: "連続出張申請" },
-            { code: 13, name: "出張申請オフィスヘルパー" },
-            { code: 14, name: "３６協定時間申請" }
+            { code: 0, name: "残業申請（早出）" },
+            { code: 1, name: "残業申請（通常）" },
+            { code: 2, name: "残業申請（早出・通常）" },
+            { code: 3, name: "休暇申請" },
+            { code: 4, name: "勤務変更申請" },
+            { code: 5, name: "出張申請" },
+            { code: 6, name: "直行直帰申請" },
+            { code: 7, name: "休出時間申請" },
+            { code: 8, name: "打刻申請（外出許可）" },
+            { code: 9, name: "打刻申請（出退勤漏れ）" },
+            { code: 10, name: "打刻申請（打刻取消）" },
+            { code: 11, name: "打刻申請（レコーダイメージ）" },
+            { code: 12, name: "打刻申請（その他）" },
+            { code: 13, name: "時間年休申請" },
+            { code: 14, name: "遅刻早退取消申請" },
+            { code: 15, name: "振休振出申請" },
+            { code: 16, name: "連続出張申請" },
+            { code: 17, name: "３６協定時間申請" }
         ]);
         appTypeGridlistColumns = ko.observableArray([
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
