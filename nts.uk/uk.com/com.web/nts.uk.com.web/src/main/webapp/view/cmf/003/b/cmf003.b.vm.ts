@@ -566,13 +566,13 @@ module nts.uk.com.view.cmf003.b {
                 self.monthRequired(false);
                 self.yearRequired(false);
                 for (var i = 0; i < self.categorys().length; i++) {
-                    if (self.categorys()[i].timeStore == 1) {
+                    if (self.categorys()[i].timeStore == 3) {
                         self.dayRequired(true);
                     }
                     else if (self.categorys()[i].timeStore == 2) {
                         self.monthRequired(true);
                     }
-                    else if (self.categorys()[i].timeStore == 3) {
+                    else if (self.categorys()[i].timeStore == 1) {
                         self.yearRequired(true);
                     }
                 }
