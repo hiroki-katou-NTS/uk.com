@@ -33,7 +33,11 @@
 				<!-- List employee -->
 				<div class="valign-center control-group bot-right-panel">
 					<div id="D4_6" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_100')}</div>
-					<span id="D4_7"></span>
+					<div id="D4_7">
+						<com:ko-if bind="selectedTitleAtr() == 1">
+	 						<label data-bind="text : referenceDate"></label>
+	 					</com:ko-if>
+	 				</div>
 					<button id="D4_8"
 								data-bind="ntsHelpButton: {image: '../resource/実行間隔説明画像.jpg', position: 'top right'}">?</button>
 				</div>

@@ -30,7 +30,7 @@ module nts.uk.com.view.cmf003.b {
             isSymbol: KnockoutObservable<boolean>;
 
             // reference date
-            referenceDate: string;
+            referenceDate: KnockoutObservable<string> = ko.observable('');
 
             //input
             password: KnockoutObservable<string> = ko.observable('');
@@ -188,8 +188,7 @@ module nts.uk.com.view.cmf003.b {
                 this.categorys = ko.observableArray([]);
 
                 //referenceDate init toDay
-                self.referenceDate = moment.utc().format("YYYY/MM/DD");
-                $("#D4_7").html(self.referenceDate);
+                self.referenceDate(moment.utc().format("YYYY/MM/DD"));
 
                 this.columnCategorys = ko.observableArray([
                     { headerText: '', key: 'categoryId', width: 100, hidden: true },
@@ -459,8 +458,7 @@ module nts.uk.com.view.cmf003.b {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
-                        self.referenceDate = moment.utc(data.baseDate).format("YYYY/MM/DD");
-                        $("#D4_7").html(self.referenceDate);
+                        self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
                     }
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -599,7 +597,7 @@ module nts.uk.com.view.cmf003.b {
                 self.setTargetEmployee();
                 $("#E3_3").html(self.dataSaveSetName());
                 $("#E3_5").html(self.explanation());
-                $("#E3_37").html(self.referenceDate);
+                $("#E3_37").html(self.selectedTitleAtr() == 1 ? self.referenceDate() : "");
             }
 
             private setTargetEmployee(): void {
@@ -670,7 +668,7 @@ module nts.uk.com.view.cmf003.b {
             private saveManualSetting(): void {
                 let self = this;
                 let manualSetting = new ManualSettingModal(self.systemtypeFromC.code, Number(self.isCompressPass()), self.dataSaveSetName(),
-                    moment.utc(self.referenceDate, 'YYYY/MM/DD'), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD'),
+                    moment.utc(self.referenceDate(), 'YYYY/MM/DD'), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD'),
                     moment.utc(self.dayValue().startDate, 'YYYY/MM/DD'), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD'),
                     moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
                     self.selectedTitleAtr(), Number(self.isSymbol()), self.targetEmployee(), self.categorys());
