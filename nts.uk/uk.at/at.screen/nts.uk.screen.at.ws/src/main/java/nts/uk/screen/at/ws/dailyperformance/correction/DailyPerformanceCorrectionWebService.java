@@ -220,7 +220,7 @@ public class DailyPerformanceCorrectionWebService {
 				});
 				dailyModifyCommandFacade.handleUpdate(querys);
 				// insert cell edit
-				dailyModifyCommandFacade.handleEditCell(itemValueChild);
+				//dailyModifyCommandFacade.handleEditCell(itemValueChild);
 				//resultError.put(1, itemInputErors);
 				//return resultError;
 		}else{
