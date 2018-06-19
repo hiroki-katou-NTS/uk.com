@@ -9,4 +9,5 @@ public class DescriptionOfAvailabilityPermission {
 	private final String name;
 	private final String explanation;
 	private final int displayOrder;
+	private final boolean defaultValue;
 }
