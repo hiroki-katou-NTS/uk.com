@@ -120,7 +120,7 @@ module nts.uk.com.view.kwr002.a {
                     showWorkplace: true, // 職場条件
                     showClassification: true, // 分類条件
                     showJobTitle: true, // 職位条件
-                    showWorktype: true, // 勤種条件
+                    showWorktype: false, // 勤種条件
                     isMutipleCheck: true, // 選択モード                   
 
                     /** Return data */
