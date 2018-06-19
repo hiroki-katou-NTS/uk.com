@@ -32,14 +32,14 @@
 							<td>
 								<div id="item">
 									<label id="finishDateTime" data-bind="text: finishDateTime"></label>
-									<br></br> <label id="processingName"
-										data-bind="text: processingName"></label>
+									<br></br> <span  class="label" id="processingName"
+										data-bind="text: processingName"></span>
 									<button id="button1"
 										data-bind="click: function(){ $parent.openDialog($index()); } ">#{i18n.getText('KTG031_3')}</button>
-									<br /> <label id="processingResult"
-										data-bind="text: processingResult"></label> <br />
+									<br /> <span class="label" id="processingResult"
+										data-bind="text: processingResult"></span> <br />
 									<button id="button2"
-										data-bind="click: function(){ $parent.updateRoger($index());}">#{i18n.getText('KTG031_4')}</button>
+										data-bind="click: function(){ $parent.updateRoger($index());}, visible: hidden">#{i18n.getText('KTG031_4')}</button>
 								</div>
 							</td>
 						</tbody>

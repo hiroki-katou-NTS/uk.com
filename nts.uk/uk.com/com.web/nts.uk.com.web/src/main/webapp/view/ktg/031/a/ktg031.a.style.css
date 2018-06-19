@@ -17,7 +17,7 @@ tbody {
 	display: block;
 	height: 222px;
     overflow: auto;
-    width: 540px;
+    width: 465px;
 }
 
 #finishDateTime {
@@ -27,6 +27,7 @@ tbody {
 
 #processingName {
 	margin-left: 100px;
+	width: 100px;
 }
 
 #button1 {
@@ -42,7 +43,3 @@ tbody {
 	margin-right: 10px;
 	margin-bottom: 10px;
 }
-
-/* #item{
-	border-b
-} */

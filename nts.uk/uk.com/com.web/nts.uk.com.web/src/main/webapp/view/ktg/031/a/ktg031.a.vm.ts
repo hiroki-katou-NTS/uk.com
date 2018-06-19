@@ -17,19 +17,29 @@ module nts.uk.at.view.ktg031.a.viewmodel {
             // subscribe switch button (rogerFlag)            
             self.selectedRuleCode.subscribe((value) => {
                 let temp = self.period();
-                if(value == 1){
-                    service.getToppage(self.selectedRuleCode(), self.period()).done((listData) => {
+                if (value == 0) {
+                    service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
                         self.listToppage(_.map(listData, acc => {
+                            acc.finishDateTime = self.convertTime(acc.finishDateTime);
                             return new TopPageAlarmDto(acc);
                         }));
                         self.period(temp);
+                    }).fail(function(error) {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
                     });
-                }else{
-                    service.getAllToppage(self.period()).done((data) => {
+                } else {
+                    service.getAllToppage(temp).done((data) => {
                         self.listToppage(_.map(data, acc => {
+                            acc.finishDateTime = self.convertTime(acc.finishDateTime);
                             return new TopPageAlarmDto(acc);
                         }));
                         self.period(temp);
+                    }).fail(function(error) {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
                     });
                 }
             });
@@ -38,22 +48,21 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 self.listToppage([]);
                 service.getToppage(self.selectedRuleCode(), self.period()).done((listData) => {
                     self.listToppage(_.map(listData, acc => {
+                        acc.finishDateTime = self.convertTime(acc.finishDateTime);
                         return new TopPageAlarmDto(acc);
                     }));
                 });
             });
         }
-        
+
         startPage(): JQueryPromise<any> {
-            var self = this;
+            let self = this;
             block.grayout();
             var dfd = $.Deferred();
-            let ParamKtg031 = {
-                executionLogId: '000000000000-000000000000-0000000001',
-                processingName: 'aaa'
-            }
+            // get toppage with roger = 0
             service.getToppage(self.selectedRuleCode(), self.period()).done((listData: Array<ITopPageAlarmDto>) => {
                 self.listToppage(_.map(listData, acc => {
+                    acc.finishDateTime = self.convertTime(acc.finishDateTime);
                     return new TopPageAlarmDto(acc);
                 }));
                 dfd.resolve();
@@ -65,8 +74,22 @@ module nts.uk.at.view.ktg031.a.viewmodel {
             });
             return dfd.promise();
         }
+
+        //convert time follow the format
+        convertTime(time: string): string {
+            let self = this;
+            let now = moment(new Date()).format('YYYY-MM-DD');
+            let data = moment(new Date(time)).format('YYYY-MM-DD');
+            if (now == data) {
+                return moment(new Date(time)).format('hh:mm');
+            } else {
+                return moment(new Date(time)).format('MM/DD hh:mm');
+            }
+        }
+
+
         // click open dialog 詳細ボタン
-        openDialog(index: number){
+        openDialog(index: number) {
             let self = this;
             let data = {
                 executionLogId: self.listToppage()[index].executionLogId,
@@ -76,10 +99,10 @@ module nts.uk.at.view.ktg031.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/ktg/031/b/index.xhtml");
         }
         // click update 了解ボタン
-        updateRoger(index: number){
+        updateRoger(index: number) {
             let self = this;
             block.grayout;
-            if(self.selectedRuleCode() == 0){
+            if (self.selectedRuleCode() == 0) {
                 let cmd = {
                     executionLogId: self.listToppage()[index].executionLogId,
                     rogerFlag: 1
@@ -89,16 +112,16 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 }).always(() => {
                     block.clear();
                 });
-            }else{
-                self.listToppage()[index].hidden = false;
+            } else {
+                self.listToppage()[index].hidden(false);
                 block.clear();
             }
         }
-        
-        changeTime(period: number){
+
+        changeTime(period: number) {
             let self = this;
             console.log(period);
-            self.period(period);    
+            self.period(period);
         }
     }
 
@@ -135,7 +158,7 @@ module nts.uk.at.view.ktg031.a.viewmodel {
         /** 処理結果 */
         processingResult: string;
         /** hide button */
-        hidden: boolean;
+        hidden: KnockoutObservable<boolean>;
         constructor(param: ITopPageAlarmDto) {
             let self = this;
             self.executionLogId = param.executionLogId;
@@ -145,7 +168,7 @@ module nts.uk.at.view.ktg031.a.viewmodel {
             self.rogerFlag = param.rogerFlag;
             self.processingName = param.processingName;
             self.processingResult = param.processingResult;
-            self.hidden = true;
+            self.hidden = ko.observable(true);
         }
     }
 
