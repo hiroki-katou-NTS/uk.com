@@ -69,7 +69,6 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -98,8 +97,6 @@ public class AppHolidayWorkFinder {
 	private IOvertimePreProcess iOvertimePreProcess;
 	@Inject
 	private HolidayService holidayService;
-	@Inject
-	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	@Inject
@@ -130,11 +127,16 @@ public class AppHolidayWorkFinder {
 	 * @param uiType
 	 * @return
 	 */
-	public AppHolidayWorkDto getAppHolidayWork(String appDateInput,int uiType){
+	public AppHolidayWorkDto getAppHolidayWork(String appDateInput,int uiType,List<String> lstEmployee,Integer payoutType){
 		
 		AppHolidayWorkDto result = new AppHolidayWorkDto();
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
+		String employeeID = null;
+		if(CollectionUtil.isEmpty(lstEmployee)){
+			 employeeID = AppContexts.user().employeeId();
+		}else{
+			employeeID = lstEmployee.get(0);
+		}
 		int rootAtr = 1;
 		
 		//1-1.新規画面起動前申請共通設定を取得する
@@ -149,15 +151,13 @@ public class AppHolidayWorkFinder {
 		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する 
 		 startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate, ApplicationType.BREAK_TIME_APPLICATION.value, approvalRootPattern.getApprovalRootContentImport());
 		 // 申請対象日のパラメータがあるかチェックする
-		 
-
 		 if(appDateInput != null){
 			 //13.実績の取得
 			 AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID,  GeneralDate.fromString(appDateInput, DATE_FORMAT));
 			
 		 }
 		 // アルゴリズム「初期データの取得」を実行する
-		 getData(companyID,employeeID,appDateInput,appCommonSettingOutput,result,uiType);
+		 getData(companyID,employeeID,appDateInput,appCommonSettingOutput,result,uiType,payoutType);
 		 String employeeName = "";
 			if(Strings.isNotBlank(result.getApplication().getApplicantSID())){
 				employeeName = employeeAdapter.getEmployeeName(result.getApplication().getApplicantSID());
@@ -215,7 +215,7 @@ public class AppHolidayWorkFinder {
 			if(approvalFunctionSetting != null){
 				// 時刻計算利用チェック
 				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
-						getWorkTypeAndWorkTime(companyID,employeeID,appCommonSettingOutput,result);
+						getWorkTypeAndWorkTime(companyID,employeeID,appCommonSettingOutput,result,0,0);
 							siftCD = result.getWorkTime().getSiftCode();
 					}
 				}
@@ -496,7 +496,7 @@ public class AppHolidayWorkFinder {
 	 * @param appCommonSettingOutput
 	 * @param result
 	 */
-	private void getData(String companyID,String employeeID,String appDate,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result,int uiType){
+	private void getData(String companyID,String employeeID,String appDate,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result,int uiType,Integer payoutType){
 		ApplicationDto_New applicationDto = new ApplicationDto_New();
 		List<HolidayWorkInputDto> holidayWorkInputDtos = new ArrayList<>();
 		//01-12_申請日付取得
@@ -513,7 +513,7 @@ public class AppHolidayWorkFinder {
 		result.setApplication(applicationDto);
 		result.setPrePostCanChangeFlg(displayPrePost.isPrePostCanChangeFlg());
 		//4.勤務種類を取得する, 5.就業時間帯を取得する, 01-17_休憩時間取得
-		getWorkTypeAndWorkTime(companyID,employeeID,appCommonSettingOutput,result);
+		getWorkTypeAndWorkTime(companyID,employeeID,appCommonSettingOutput,result,uiType,payoutType);
 		//01-14_勤務時間取得
 		getWorkingHour(companyID,employeeID,appDate,appCommonSettingOutput,result,"");
 		// 01-03_休出時間を取得
@@ -606,19 +606,26 @@ public class AppHolidayWorkFinder {
 	 * @param appCommonSettingOutput
 	 * @param result
 	 */
-	private void getWorkTypeAndWorkTime(String companyID,String employeeID,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result){
+	private void getWorkTypeAndWorkTime(String companyID,String employeeID,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result,int uiType,Integer payoutType){
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		result.setDisplayCaculationTime(false);
 		if(approvalFunctionSetting != null){
 			// 時刻計算利用チェック
 			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				result.setDisplayCaculationTime(true);
-				// 4.勤務種類を取得する : TODO
+				// 4.勤務種類を取得する :
 				GeneralDate baseDate = appCommonSettingOutput.generalDate;
 				//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
 				List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
-				WorkTypeHolidayWork WorkTypes =  holidayService.getWorkTypes(companyID, employeeID, appEmploymentWorkType, baseDate, personalLablorCodition);
+				WorkTypeHolidayWork WorkTypes = new WorkTypeHolidayWork();
+				if(uiType != 1){
+					// 4.勤務種類を取得する
+					 WorkTypes =  holidayService.getWorkTypes(companyID, employeeID, appEmploymentWorkType, baseDate, personalLablorCodition);
+				}else{
+					// 4_a.勤務種類を取得する（法定内外休日） 
+					WorkTypes = holidayService.getWorkTypeForLeaverApp(companyID, employeeID, appEmploymentWorkType, baseDate, personalLablorCodition, payoutType);
+				}
 				result.setWorkTypes(WorkTypes.getWorkTypeCodes());
 				WorkTypeOvertime workType = new WorkTypeOvertime();
 				workType.setWorkTypeCode(WorkTypes.getWorkTypeCode());

@@ -28,6 +28,7 @@ module nts.uk.at.view.kaf010.b {
             typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
             // 申請日付
             appDate: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
+            enbAppDate: KnockoutObservable<boolean> = ko.observable(true);
             //TIME LINE 1
             timeStart1: KnockoutObservable<number> = ko.observable(null);
             timeEnd1: KnockoutObservable<number> = ko.observable(null);
@@ -689,6 +690,7 @@ module nts.uk.at.view.kaf010.b {
                             workClockTo2: self.timeEnd2(),
                             breakTimes:  ko.toJS(self.breakTimes())
                         }
+                    nts.uk.ui.block.invisible();
                     service.getCaculationResult(param).done(function(data){
                            
                        self.breakTimes.removeAll();
@@ -770,8 +772,10 @@ module nts.uk.at.view.kaf010.b {
                         }
                         //Check work content Changed
                          self.checkWorkContentChanged();
+                         nts.uk.ui.block.clear();
                          dfd.resolve(data);
                     }).fail(function(res){
+                        nts.uk.ui.block.invisible();
                         dfd.reject(res);
                     });
                     return dfd.promise();
