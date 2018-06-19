@@ -42,7 +42,7 @@ public class EmployeeRestoration {
 				if (!tableList.isEmpty()){
 					Optional<ResultOfSaving> savingInfo = resultOfSavingRepository.getResultOfSavingById(tableList.get(0).getDataStorageProcessingId());
 					numOfPeopleRestore = savingInfo.isPresent() ? savingInfo.get().getTargetNumberPeople() : 0;
-					performDataRecovery.setSaveProcessId(Optional.of(savingInfo.isPresent() ? savingInfo.get().getStoreProcessingId() : null));
+					performDataRecovery.setSaveProcessId(Optional.of(savingInfo.isPresent() ? savingInfo.get().getStoreProcessingId() : Optional.empty()));
 				}
 				performDataRecovery.setNumPeopleBeRestore(numOfPeopleRestore);
 				performDataRecovery.setNumPeopleSave(numPeopleSave);

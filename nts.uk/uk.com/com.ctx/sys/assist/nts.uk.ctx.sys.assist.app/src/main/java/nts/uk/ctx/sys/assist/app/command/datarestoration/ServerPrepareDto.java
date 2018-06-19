@@ -7,5 +7,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class ServerPrepareDto {
 	public int processingType;
-	public String processingStatus;
+	public int processingStatus;
+	public int conditionValue;
+	public String conditionName;
+	public String messageId;
 }

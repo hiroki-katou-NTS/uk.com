@@ -85,7 +85,6 @@ public class CsvFileUtil {
 
 	public static List<List<String>> getAllRecord(String fileId, String fileName) {
 		// get csv reader
-		fileId = "a6527a44-d355-45e7-bf58-7b9fc0f7efdd";
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
 				.withChartSet(StandardCharsets.UTF_8).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<List<String>> result = new ArrayList<>();

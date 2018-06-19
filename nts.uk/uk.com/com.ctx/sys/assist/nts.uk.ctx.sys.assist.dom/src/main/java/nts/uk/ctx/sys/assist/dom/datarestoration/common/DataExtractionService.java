@@ -29,7 +29,8 @@ public class DataExtractionService {
 		serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTING);
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
-		String password = serverPrepareMng.getPassword().isPresent() ? serverPrepareMng.getPassword().get().v(): null;
+		String password = serverPrepareMng.getPassword().isPresent() ? serverPrepareMng.getPassword().get().v(): "";
+		
 		FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, password, destinationDirectory);
 		//処理結果ログを追加する
 		//(Bổ sung log kết quả xử ly)

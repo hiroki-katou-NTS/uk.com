@@ -106,9 +106,9 @@
 				</div>
 
 			</div>
-			<div id="functions-area-bottom">
+			<div id="functions-area-bottom">isSuccess
 				<button id="D3_1" class ="large" data-bind="click : closeUp">#{i18n.getText('CMF004_66')}</button>
-				<button id="D3_2" class="large proceed">#{i18n.getText('CMF004_67')}</button>
+				<button id="D3_2" class="large proceed" data-bind="click : continueProcessing, enable: isSuccess()">#{i18n.getText('CMF004_67')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

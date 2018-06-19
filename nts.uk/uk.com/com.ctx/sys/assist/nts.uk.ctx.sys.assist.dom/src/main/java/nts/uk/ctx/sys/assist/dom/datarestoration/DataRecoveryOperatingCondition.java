@@ -11,7 +11,7 @@ public enum DataRecoveryOperatingCondition {
 	/**
 	 * ファイル読取中
 	 */
-	FILE_READING_IN_PROGRESS (0 , "Enum_OperatingCondition_FILE_READING_IN_PROGRESS"),
+	FILE_READING_IN_PROGRESS (0 , "Enum_OperatingCondition_INPROGRESS"),
 
 	/**
 	 * 中断終了
@@ -31,7 +31,7 @@ public enum DataRecoveryOperatingCondition {
 	/**
 	 * 準備中
 	 */
-	IN_PREPARATION           (4 , "Enum_OperatingCondition_IN_PREPARATION"),
+	IN_PREPARATION           (4 , "Enum_OperatingCondition_INPREPARATION"),
 
 	/**
 	 * 異常終了
