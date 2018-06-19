@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
@@ -249,6 +250,12 @@ public class ActualWorkingTimeOfDaily {
 				premiumTime
 				);
 		
+	}
+	
+	
+	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(List<PersonnelCostSettingImport> personnelCostSettingImport,
+	 																				Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
+		return PremiumTimeOfDailyPerformance.calcPremiumTime(personnelCostSettingImport, dailyRecordDto);
 	}
 	
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(

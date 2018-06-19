@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
@@ -61,6 +62,7 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
+import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
@@ -208,8 +210,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	@Inject
 	private EmpConditionRepository empConditionRepository;
-	
-	
 	
 	/**
 	 * 勤務情報を取得して計算
@@ -868,7 +868,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 		   
 		   //手修正後の再計算
-		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting, converter,overTotalTime,holidayWorkTotalTime,attendanceItemIdList);
+		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting, converter,overTotalTime,holidayWorkTotalTime,attendanceItemIdList,targetDate);
 		   //手修正された項目の値を計算値に戻す(手修正再計算の後Ver)
 		   DailyRecordToAttendanceItemConverter afterReCalcDto = converter.setData(calcResultIntegrationOfDaily); 
 		   afterReCalcDto.merge(itemValueList);
@@ -895,7 +895,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 									  String companyId,
 									  ManagePerCompanySet companyCommonSetting,
 									  DailyRecordToAttendanceItemConverter converter
-									  , int overTotalTime, int holidayWorkTotalTime, List<Integer> attendanceItemIdList) {
+									  , int overTotalTime, int holidayWorkTotalTime, List<Integer> attendanceItemIdList,GeneralDate targetDate) {
 		//乖離時間(AggregateRoot)取得
 		List<DivergenceTime> divergenceTimeList = companyCommonSetting.getDivergenceTime();
 		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
@@ -958,6 +958,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = converter.setData(calcResultIntegrationOfDaily);
 		
 		if(calcResultIntegrationOfDaily != null && calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			
+			//割増時間の計算
+//			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformance(personnelCostSettingAdapter.find(companyId, targetDate), Optional.of(forCalcDivergenceDto));
+			
 			val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(calcResultIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),
 																												 calcResultIntegrationOfDaily.getAffiliationInfor().getYmd(),
 																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
@@ -976,6 +980,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
 												 			 reCalcDivergence,
 												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+//												 			premiumTimeOfDailyPerformance);
+			
 			val reCreateAttendanceTime = new AttendanceTimeOfDailyPerformance(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(),
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getYmd(),
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
