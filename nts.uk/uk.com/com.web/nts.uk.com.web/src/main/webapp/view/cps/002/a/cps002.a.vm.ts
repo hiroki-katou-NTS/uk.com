@@ -235,8 +235,9 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
                 let self = this,
                     employee = self.currentEmployee();
-                employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
-
+                if (employee.cardNo() == "") {
+                    employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
+                }
             });
 
             self.currentEmployee().cardNo.subscribe((cardNo) => {
