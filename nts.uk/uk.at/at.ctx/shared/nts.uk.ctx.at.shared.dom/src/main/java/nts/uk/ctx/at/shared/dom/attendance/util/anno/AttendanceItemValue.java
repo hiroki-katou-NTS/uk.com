@@ -11,5 +11,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @Target({ ElementType.FIELD })
 public @interface AttendanceItemValue {
 	
-	ValueType type() default ValueType.STRING;
+	ValueType type() default ValueType.CODE;
+	
+	String getTypeWith() default "";
 }

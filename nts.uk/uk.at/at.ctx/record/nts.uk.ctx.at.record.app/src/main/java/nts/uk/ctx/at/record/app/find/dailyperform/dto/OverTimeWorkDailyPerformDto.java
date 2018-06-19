@@ -43,12 +43,12 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 
 	/** 残業拘束時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = RESTRAINT)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer overTimeSpentAtWork;
 
 	/** 変形法定内残業: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = IRREGULAR + LEGAL)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer irregularWithinPrescribedOverTimeWork;
 
 	/** フレックス時間: フレックス時間 */

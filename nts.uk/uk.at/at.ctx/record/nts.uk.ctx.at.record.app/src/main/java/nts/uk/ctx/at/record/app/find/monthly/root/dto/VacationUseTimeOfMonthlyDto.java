@@ -21,22 +21,22 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class VacationUseTimeOfMonthlyDto implements ItemConst {
 
 	/** 年休 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ANNUNAL_LEAVE, layout = LAYOUT_A)
 	private int annualLeave;
 
 	/** 積立年休 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = RETENTION, layout = LAYOUT_B)
 	private int retentionYearly;
 
 	/** 特別休暇 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = SPECIAL, layout = LAYOUT_C)
 	private int specialHoliday;
 
 	/** 代休 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = COMPENSATORY, layout = LAYOUT_D)
 	private int compensatoryLeave;
 

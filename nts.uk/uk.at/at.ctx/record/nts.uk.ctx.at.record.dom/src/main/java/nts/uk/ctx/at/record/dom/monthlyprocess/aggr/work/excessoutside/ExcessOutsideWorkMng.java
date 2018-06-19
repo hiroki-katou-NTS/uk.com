@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
@@ -21,9 +20,11 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
@@ -34,23 +35,19 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetSettlementPeriodOfDefor;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -102,11 +99,15 @@ public class ExcessOutsideWorkMng {
 	private SettingRequiredByDefo settingsByDefo;
 	/** フレックス勤務が必要とする設定 */
 	private SettingRequiredByFlex settingsByFlex;
+	/** 月別集計で必要な会社別設定 */
+	private MonAggrCompanySettings companySets;
+	/** 月別集計で必要な社員別設定 */
+	private MonAggrEmployeeSettings employeeSets;
 
-	/** 日別実績の勤怠時間リスト */
-	private Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap;
-	/** 日別実績の勤務情報リスト */
-	private Map<GeneralDate, WorkInformation> workInformationOfDailyMap;
+	/** 月の計算中の日別実績データ */
+	private MonthlyCalculatingDailys monthlyCalculatingDailys;
+	/** 実績の勤務情報リスト */
+	private Map<GeneralDate, WorkInformation> workInfoOfRecordMap;
 	
 	/** 開始週NO */
 	private int startWeekNo;
@@ -114,11 +115,6 @@ public class ExcessOutsideWorkMng {
 	private Year year;
 	/** 管理期間の36協定時間 */
 	private AgreementTimeOfManagePeriod agreementTimeOfManagePeriod;
-	
-	/** 時間外超過設定 */
-	private Optional<OutsideOTSetting> outsideOTSetOpt;
-	/** 月別実績の丸め設定 */
-	private RoundingSetOfMonthly roundingSet;
 	
 	/** 時間外超過累積時間 */
 	private AttendanceTimeMonth totalExcessOutside;
@@ -160,16 +156,15 @@ public class ExcessOutsideWorkMng {
 		this.settingsByReg = monthlyCalculation.getSettingsByReg();
 		this.settingsByDefo = monthlyCalculation.getSettingsByDefo();
 		this.settingsByFlex = monthlyCalculation.getSettingsByFlex();
+		this.companySets = monthlyCalculation.getCompanySets();
+		this.employeeSets = monthlyCalculation.getEmployeeSets();
 		
-		this.attendanceTimeOfDailyMap = monthlyCalculation.getAttendanceTimeOfDailyMap();
-		this.workInformationOfDailyMap = monthlyCalculation.getWorkInformationOfDailyMap();
+		this.monthlyCalculatingDailys = monthlyCalculation.getMonthlyCalculatingDailys();
+		this.workInfoOfRecordMap = monthlyCalculation.getWorkInfoOfRecordMap();
 		
 		this.startWeekNo = monthlyCalculation.getStartWeekNo();
 		this.year = monthlyCalculation.getYear();
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
-		
-		this.outsideOTSetOpt = Optional.empty();
-		this.roundingSet = new RoundingSetOfMonthly(this.companyId);
 		
 		this.totalExcessOutside = new AttendanceTimeMonth(0);
 		this.errorInfos = new ArrayList<>();
@@ -181,18 +176,6 @@ public class ExcessOutsideWorkMng {
 	 */
 	public void aggregate(RepositoriesRequiredByMonthlyAggr repositories){
 
-		// 時間外超過設定　取得
-		this.outsideOTSetOpt = repositories.getOutsideOTSet().findById(this.companyId);
-		if (!this.outsideOTSetOpt.isPresent()){
-			this.errorInfos.add(new MonthlyAggregationErrorInfo(
-					"014", new ErrMessageContent(TextResource.localize("Msg_1236"))));
-			return;
-		}
-		
-		// 丸め設定取得
-		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(this.companyId);
-		if (roundingSetOpt.isPresent()) this.roundingSet = roundingSetOpt.get();
-		
 		// 労働制を確認する
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK || this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
@@ -234,8 +217,7 @@ public class ExcessOutsideWorkMng {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 時間外超過設定を確認する
-		OutsideOTCalMed calcMethod = OutsideOTCalMed.DECISION_AFTER;
-		if (this.outsideOTSetOpt.isPresent()) calcMethod = outsideOTSetOpt.get().getCalculationMethod();
+		OutsideOTCalMed calcMethod = this.companySets.getOutsideOverTimeSet().getCalculationMethod();
 		if (calcMethod == OutsideOTCalMed.DECISION_AFTER){
 			
 			// 集計後に求める
@@ -273,8 +255,8 @@ public class ExcessOutsideWorkMng {
 					this.procPeriod, this.workingSystem, this.closureOpt,
 					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.employmentCd, this.settingsByReg, this.settingsByDefo,
-					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap,
-					aggregateTotalWorkingTime, this, this.startWeekNo, this.employee, repositories);
+					aggregateTotalWorkingTime, this, this.startWeekNo,
+					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
 			
 			// 通常・変形労働時間勤務の月単位の時間を集計する
 			regAndIrgTime.aggregateMonthlyHours(
@@ -291,8 +273,8 @@ public class ExcessOutsideWorkMng {
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.closureOpt, flexAggregateMethod, this.settingsByFlex,
-					this.attendanceTimeOfDailyMap,
-					aggregateTotalWorkingTime, this, this.startWeekNo, repositories);
+					aggregateTotalWorkingTime, this, this.startWeekNo,
+					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
 			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.procPeriod,
@@ -309,7 +291,7 @@ public class ExcessOutsideWorkMng {
 			// 時間外超過明細．丸め後合計時間に移送する
 			this.excessOutsideWorkDetail.setTotalTimeAfterRound(
 					aggrValue.getAggregateTotalWorkingTime(), regAndIrgTime, flexTime,
-					this.settingsByFlex.getFlexAggrSet(), this.roundingSet);
+					this.settingsByFlex.getFlexAggrSet(), this.companySets.getRoundingSet());
 			
 			// 月別実績の時間外超過に移送する
 			this.excessOutsideWork.setFromAggregateTime(
@@ -346,8 +328,8 @@ public class ExcessOutsideWorkMng {
 					this.procPeriod, this.workingSystem, this.closureOpt,
 					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.employmentCd, this.settingsByReg, this.settingsByDefo,
-					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap,
-					aggregateTotalWorkingTime, this, this.startWeekNo, this.employee, repositories);
+					aggregateTotalWorkingTime, this, this.startWeekNo,
+					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
 			
 			// 通常・変形労働時間勤務の月単位の時間を集計する
 			regAndIrgTime.aggregateMonthlyHours(
@@ -368,8 +350,8 @@ public class ExcessOutsideWorkMng {
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.closureOpt, flexAggregateMethod, this.settingsByFlex,
-					this.attendanceTimeOfDailyMap,
-					aggregateTotalWorkingTime, this, this.startWeekNo, repositories);
+					aggregateTotalWorkingTime, this, this.startWeekNo,
+					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
 			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.procPeriod,
@@ -390,7 +372,8 @@ public class ExcessOutsideWorkMng {
 		if (aggrValue != null){
 		
 			// 丸め時間を割り当てる
-			this.excessOutsideWorkDetail.assignRoundTime(this.monthlyDetail, this.procPeriod, this.roundingSet);
+			this.excessOutsideWorkDetail.assignRoundTime(
+					this.monthlyDetail, this.procPeriod, this.companySets.getRoundingSet());
 			
 			// 時間外超過内訳に割り当てる
 			this.assignExcessOutsideWorkBreakdownForTimeSeries();
@@ -421,8 +404,7 @@ public class ExcessOutsideWorkMng {
 		if (!isAskPremium) return;
 		
 		// 「時間外超過設定」を確認する　（計算方法が「時系列」以外なら割り当てない）
-		if (!this.outsideOTSetOpt.isPresent()) return;
-		if (this.outsideOTSetOpt.get().getCalculationMethod() != OutsideOTCalMed.TIME_SERIES) return;
+		if (this.companySets.getOutsideOverTimeSet().getCalculationMethod() != OutsideOTCalMed.TIME_SERIES) return;
 		
 		// 「週単位の週割増時間」を「逆時系列割り当て用の週割増時間」にコピーする
 		AttendanceTimeMonthWithMinus weeklyPTForAssign = new AttendanceTimeMonthWithMinus(weekPremiumTime.v());
@@ -436,7 +418,7 @@ public class ExcessOutsideWorkMng {
 			
 			// 週割増時間を日単位で割り当てる
 			weeklyPTForAssign = this.monthlyDetail.assignWeeklyPremiumTimeByDayUnit(procDate, weeklyPTForAssign,
-					aggregateTotalWorkingTime, this.workInformationOfDailyMap, this, repositories);
+					aggregateTotalWorkingTime, this.workInfoOfRecordMap, this, repositories);
 			
 			// 時間外超過明細の更新
 			this.excessOutsideWorkDetail = this.monthlyDetail.getExcessOutsideWorkMng().getExcessOutsideWorkDetail();
@@ -616,8 +598,7 @@ public class ExcessOutsideWorkMng {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 内訳項目一覧に週割増合計時間が設定されているか確認する
-		if (!this.outsideOTSetOpt.isPresent()) return;
-		val outsideOTSet = this.outsideOTSetOpt.get();
+		val outsideOTSet = this.companySets.getOutsideOverTimeSet();
 		boolean isExistWeekTotalPT = false;
 		for (val outsideOTBDItem : outsideOTSet.getBreakdownItems()){
 			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
@@ -687,7 +668,7 @@ public class ExcessOutsideWorkMng {
 			
 			// 月割増時間を日単位で割り当てる
 			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(procDate, monthlyPTForAssign,
-					addSet, aggregateTotalWorkingTime, this.workInformationOfDailyMap, this, repositories);
+					addSet, aggregateTotalWorkingTime, this.workInfoOfRecordMap, this, repositories);
 			
 			// 時間外超過明細の更新
 			this.excessOutsideWorkDetail = this.monthlyDetail.getExcessOutsideWorkMng().getExcessOutsideWorkDetail();
@@ -839,7 +820,7 @@ public class ExcessOutsideWorkMng {
 			
 			// 月割増時間を日単位で割り当てる
 			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(procDate, monthlyPTForAssign,
-					addSet, aggregateTotalWorkingTime, this.workInformationOfDailyMap, this, repositories);
+					addSet, aggregateTotalWorkingTime, this.workInfoOfRecordMap, this, repositories);
 			
 			// 時間外超過明細の更新
 			this.excessOutsideWorkDetail = this.monthlyDetail.getExcessOutsideWorkMng().getExcessOutsideWorkDetail();
@@ -887,10 +868,7 @@ public class ExcessOutsideWorkMng {
 		this.totalExcessOutside = new AttendanceTimeMonth(0);
 		
 		// 「時間外超過の内訳項目」を取得する
-		List<OutsideOTBRDItem> outsideOTBDItems = new ArrayList<>();
-		if (this.outsideOTSetOpt.isPresent()){
-			outsideOTBDItems = this.outsideOTSetOpt.get().getBreakdownItems();
-		}
+		val outsideOTBDItems = this.companySets.getOutsideOverTimeSet().getBreakdownItems();
 		outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
 		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
 		for (val outsideOTBDItem : outsideOTBDItems){
@@ -933,10 +911,7 @@ public class ExcessOutsideWorkMng {
 		// 丸め差分時間を時間外超過の値に割り当てる
 		{
 			// 「時間外超過の内訳項目」を取得する
-			List<OutsideOTBRDItem> outsideOTBDItems = new ArrayList<>();
-			if (this.outsideOTSetOpt.isPresent()){
-				outsideOTBDItems = this.outsideOTSetOpt.get().getBreakdownItems();
-			}
+			val outsideOTBDItems = this.companySets.getOutsideOverTimeSet().getBreakdownItems();
 			outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
 			outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
 			for (val outsideOTBDItem : outsideOTBDItems){
@@ -965,10 +940,7 @@ public class ExcessOutsideWorkMng {
 	private void askExcessOutsideWorkEachDay(GeneralDate procDate){
 		
 		// 「時間外超過の内訳項目」を取得する
-		List<OutsideOTBRDItem> outsideOTBDItems = new ArrayList<>();
-		if (this.outsideOTSetOpt.isPresent()){
-			outsideOTBDItems = this.outsideOTSetOpt.get().getBreakdownItems();
-		}
+		val outsideOTBDItems = this.companySets.getOutsideOverTimeSet().getBreakdownItems();
 		outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
 		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
 		for (val outsideOTBDItem : outsideOTBDItems){
@@ -996,10 +968,7 @@ public class ExcessOutsideWorkMng {
 	private void askExcessOutsideWorkEachBreakdown(AttendanceTimeMonth breakdownItemTime, int breakdownItemNo){
 		
 		// 「超過時間一覧」を取得する
-		List<Overtime> overTimes = new ArrayList<>();
-		if (this.outsideOTSetOpt.isPresent()){
-			overTimes = this.outsideOTSetOpt.get().getOvertimes();
-		}
+		val overTimes = this.companySets.getOutsideOverTimeSet().getOvertimes();
 		overTimes.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
 		overTimes.sort((a, b) -> a.getOvertime().v() - b.getOvertime().v());
 		
