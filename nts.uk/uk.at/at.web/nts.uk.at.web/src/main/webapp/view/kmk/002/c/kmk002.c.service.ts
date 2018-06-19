@@ -33,7 +33,7 @@ module nts.uk.at.view.kmk002.c {
                 attendanceItemDisplayNumber?: number;
             }
             export interface AttdItemLinkRequest {
-                anyItemNos: string[];
+                anyItemNos: number[];
                 formulaAtr: number;
                 performanceAtr: number;
             }

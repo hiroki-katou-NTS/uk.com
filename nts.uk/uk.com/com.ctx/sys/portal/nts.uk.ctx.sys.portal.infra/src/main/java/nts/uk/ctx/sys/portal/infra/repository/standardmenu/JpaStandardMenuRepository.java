@@ -1,14 +1,15 @@
 package nts.uk.ctx.sys.portal.infra.repository.standardmenu;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuKey;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenu;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
@@ -18,49 +19,51 @@ import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
  */
 @Stateless
 public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository {
-	private final String SEL = "SELECT s FROM CcgstStandardMenu s ";
-	private final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId and s.queryString NOT LIKE CONCAT('%',:toppagecode,'%')";
-	private final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+	private static final String SEL = "SELECT s FROM CcgstStandardMenu s ";
+	private static final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId and s.queryString NOT LIKE CONCAT('%',:toppagecode,'%')";
+	private static final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1";
-	private final String GET_ALL_STANDARD_MENU_DISPLAY = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+	private static final String GET_ALL_STANDARD_MENU_DISPLAY = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.webMenuSetting = 1 ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
-	private final String FIND_BY_AFTER_LOGIN_DISPLAY = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+	private static final String FIND_BY_AFTER_LOGIN_DISPLAY = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.afterLoginDisplay = :afterLoginDisplay ";
-	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+	private static final String FIND_BY_SYSTEM_MENUCLASSIFICATION = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.ccgmtStandardMenuPK.system = :system "
 			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification ORDER BY s.ccgmtStandardMenuPK.code ASC";
-	private final String FIND_BY_MENUCLASSIFICATION_OR_AFTER_LOGIN_DIS = SEL
+	private static final String FIND_BY_MENUCLASSIFICATION_OR_AFTER_LOGIN_DIS = SEL
 			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND (s.ccgmtStandardMenuPK.classification = :menu_classification OR s.afterLoginDisplay = :afterLoginDisplay) "
 			+ "ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
 
-	private final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+	private static final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.webMenuSetting = :webMenuSetting " + "AND s.menuAtr = :menuAtr";
 	// hoatt
-	private final String SELECT_STANDARD_MENU_BY_CODE = "SELECT c FROM CcgstStandardMenu c WHERE c.ccgmtStandardMenuPK.companyId = :companyId "
+	private static final String SELECT_STANDARD_MENU_BY_CODE = "SELECT c FROM CcgstStandardMenu c WHERE c.ccgmtStandardMenuPK.companyId = :companyId "
 			+ " AND c.ccgmtStandardMenuPK.code = :code" + " AND c.ccgmtStandardMenuPK.system = :system"
 			+ " AND c.ccgmtStandardMenuPK.classification = :classification";
-	private final String GET_PG = "SELECT a FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId"
+	
+	private static final String GET_PG = "SELECT a FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId"
 			+ " AND a.programId = :programId AND a.screenID = :screenId";
 
-	private CcgstStandardMenu toEntity(StandardMenu domain) {
-		val entity = new CcgstStandardMenu();
-
-		entity.ccgmtStandardMenuPK = new CcgstStandardMenuPK();
-		entity.ccgmtStandardMenuPK.companyId = domain.getCompanyId();
-		entity.ccgmtStandardMenuPK.code = domain.getCode().v();
-		entity.ccgmtStandardMenuPK.system = domain.getSystem().value;
-		entity.ccgmtStandardMenuPK.classification = domain.getClassification().value;
-		entity.afterLoginDisplay = domain.getAfterLoginDisplay();
-		entity.displayName = domain.getDisplayName().v();
-		entity.displayOrder = domain.getDisplayOrder();
-		entity.logSettingDisplay = domain.getLogSettingDisplay();
-		entity.menuAtr = domain.getMenuAtr().value;
-		entity.targetItems = domain.getTargetItems();
-		entity.url = domain.getUrl();
-		entity.webMenuSetting = domain.getWebMenuSetting().value;
-		return entity;
-	}
+	// private CcgstStandardMenu toEntity(StandardMenu domain) {
+	// val entity = new CcgstStandardMenu();
+	//
+	// entity.ccgmtStandardMenuPK = new CcgstStandardMenuPK();
+	// entity.ccgmtStandardMenuPK.companyId = domain.getCompanyId();
+	// entity.ccgmtStandardMenuPK.code = domain.getCode().v();
+	// entity.ccgmtStandardMenuPK.system = domain.getSystem().value;
+	// entity.ccgmtStandardMenuPK.classification =
+	// domain.getClassification().value;
+	// entity.afterLoginDisplay = domain.getAfterLoginDisplay();
+	// entity.displayName = domain.getDisplayName().v();
+	// entity.displayOrder = domain.getDisplayOrder();
+	// entity.logSettingDisplay = domain.getLogSettingDisplay();
+	// entity.menuAtr = domain.getMenuAtr().value;
+	// entity.targetItems = domain.getTargetItems();
+	// entity.url = domain.getUrl();
+	// entity.webMenuSetting = domain.getWebMenuSetting().value;
+	// return entity;
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -142,6 +145,25 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		return this.queryProxy().query(SELECT_STANDARD_MENU_BY_CODE, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId).setParameter("code", code).setParameter("system", system)
 				.setParameter("classification", classification).getSingle(c -> toDomain(c));
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository#find(java.util.List)
+	 */
+	@Override
+	public List<StandardMenu> find(List<StandardMenuKey> keys) {
+		if (keys == null || keys.isEmpty()) return Collections.emptyList();
+		
+		StringBuilder queryStr = new StringBuilder(SEL);
+		queryStr.append("WHERE");
+		keys.stream().map(k -> " (s.ccgmtStandardMenuPK.companyId = '" + k.getCompanyId() + "' AND "
+					+ "s.ccgmtStandardMenuPK.code = '" + k.getCode() + "' AND "
+					+ "s.ccgmtStandardMenuPK.system = " + k.getSystem() + " AND "
+					+ "s.ccgmtStandardMenuPK.classification = " + k.getClassification() + ") "
+		).reduce((a, b) -> a + "OR" + b).ifPresent(queryStr::append);
+		
+		return this.queryProxy().query(queryStr.toString(), CcgstStandardMenu.class).getList(m -> toDomain(m));
 	}
 
 	/**

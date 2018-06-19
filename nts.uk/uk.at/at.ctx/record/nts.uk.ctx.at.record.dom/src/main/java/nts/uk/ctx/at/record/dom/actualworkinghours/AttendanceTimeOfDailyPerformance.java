@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkSchedu
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
@@ -35,6 +34,8 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -77,10 +78,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	private StayingTimeOfDaily stayingTime;
 	
 	//不就労時間 - 勤怠時間
-	private AttendanceTime unEmployedTime;
+	private AttendanceTimeOfExistMinus unEmployedTime;
 	
 	//予実差異時間 - 勤怠時間
-	private AttendanceTime budgetTimeVariance;
+	private AttendanceTimeOfExistMinus budgetTimeVariance;
 	
 	//医療時間 - 日別実績の医療時間
 	private MedicalCareTimeOfDaily medicalCareTime;
@@ -91,8 +92,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 											 WorkScheduleTimeOfDaily schedule,
 											 ActualWorkingTimeOfDaily actual,
 											 StayingTimeOfDaily stay,
-											 AttendanceTime budget,
-											 AttendanceTime unEmploy) {
+											 AttendanceTimeOfExistMinus budget,
+											 AttendanceTimeOfExistMinus unEmploy) {
 		this.employeeId = employeeId;
 		this.ymd = ymd;
 		this.workScheduleTimeOfDaily = schedule;
@@ -104,7 +105,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	
 	public AttendanceTimeOfDailyPerformance(String employeeId, GeneralDate ymd,
 			WorkScheduleTimeOfDaily workScheduleTimeOfDaily, ActualWorkingTimeOfDaily actualWorkingTimeOfDaily,
-			StayingTimeOfDaily stayingTime, AttendanceTime unEmployedTime, AttendanceTime budgetTimeVariance,
+			StayingTimeOfDaily stayingTime, AttendanceTimeOfExistMinus unEmployedTime, AttendanceTimeOfExistMinus budgetTimeVariance,
 			MedicalCareTimeOfDaily medicalCareTime) {
 		super();
 		this.employeeId = employeeId;
@@ -132,22 +133,20 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param integrationOfDaily2 
 	 * @return 日別実績(Work)クラス
 	 */
-	public static IntegrationOfDaily calcTimeResult(CalculationRangeOfOneDay oneDay,IntegrationOfDaily integrationOfDaily,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
+	public static IntegrationOfDaily calcTimeResult(CalculationRangeOfOneDay recordOneDay,
+			   CalculationRangeOfOneDay scheOneDay,
+			   IntegrationOfDaily integrationOfDaily,
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
 			   WorkType recordWorkType,
-			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
 			   WorkDeformedLaborAdditionSet illegularAddSetting,
 			   WorkFlexAdditionSet flexAddSetting,
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
-			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
 			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
-			   AutoCalRaisingSalarySetting raisingAutoCalcSet,
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
@@ -165,22 +164,18 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   DailyUnit dailyUnit,
 			   int breakCount,Optional<CoreTimeSetting> coreTimeSetting) {
-		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
+		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(recordOneDay,scheOneDay,
 				   																		personalCondition,
 				   																		 vacationClass,
 				   																		 recordWorkType,
-				   																		 late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-				   																		 leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   																		 workingSystem,
 				   																		 illegularAddSetting,
 				   																		 flexAddSetting,
 				   																		 regularAddSetting,
 				   																		 holidayAddtionSet,
-				   																		 overTimeAutoCalcAtr,
 				   																		 workTimeDailyAtr,
 				   																		 flexCalcMethod,
 				   																		 holidayCalcMethodSet,
-				   																	     raisingAutoCalcSet,
 				   																	     bonusPayAutoCalcSet,
 				   																	     calcAtrOfDaily,
 				   																	     eachWorkTimeSet,
@@ -214,23 +209,17 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param 1日の範囲クラス
 	 */
 	private static AttendanceTimeOfDailyPerformance collectCalculationResult(CalculationRangeOfOneDay recordOneDay,CalculationRangeOfOneDay scheduleOneDay,
-			   AutoCalOvertimeSetting overTimeAutoCalcSet,
-			   AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
 			   WorkType recordWorkType,
-			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
 			   WorkDeformedLaborAdditionSet illegularAddSetting,
 			   WorkFlexAdditionSet flexAddSetting,
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
-			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
 			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
-			   AutoCalRaisingSalarySetting raisingAutoCalcSet,
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
@@ -250,28 +239,24 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		
 		/*日別実績の勤務予定時間の計算*/
 		//実績,予定で渡す予定(今は実績のみ渡してる)　****要修正***
-		val workScheduleTime = calcWorkSheduleTime(recordOneDay,scheduleOneDay,schePreTimeSet, recordWorkType,scheWorkType, overTimeAutoCalcSet, 
-												   holidayAutoCalcSetting, personalCondition, vacationClass, leaveEarly, leaveEarly, workingSystem, 
-												   illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet, overTimeAutoCalcAtr, 
-												   workTimeDailyAtr, flexCalcMethod, holidayCalcMethodSet, raisingAutoCalcSet, bonusPayAutoCalcSet, 
+		val workScheduleTime = calcWorkSheduleTime(recordOneDay,scheduleOneDay,schePreTimeSet, recordWorkType,scheWorkType, 
+												   personalCondition, vacationClass, workingSystem, 
+												   illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,
+												   workTimeDailyAtr, flexCalcMethod, holidayCalcMethodSet, bonusPayAutoCalcSet, 
 												   calcAtrOfDaily, eachWorkTimeSet, eachCompanyTimeSet, breakTimeCount, integrationOfDaily, 
-												   flexSetting, coreTimeSetting);
+												   coreTimeSetting);
 		/*日別実績の実績時間の計算*/
-		val actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(recordOneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,personalCondition,
+		val actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(recordOneDay,personalCondition,
 				    vacationClass,
 				    recordWorkType,
-				    late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-				    leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				    workingSystem,
 				    illegularAddSetting,
 				    flexAddSetting,
 				    regularAddSetting,
 				    holidayAddtionSet,
-				    overTimeAutoCalcAtr,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    holidayCalcMethodSet,
-					raisingAutoCalcSet,
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily,
 					eachWorkTimeSet,
@@ -284,7 +269,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					fixRestTimeSetting,
 					integrationOfDaily,
 					scheWorkType, 
-					flexSetting, 
 					dailyUnit,
 					workScheduleTime,coreTimeSetting);
 		
@@ -297,9 +281,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 																attendanceLeavingGateOfDaily.isPresent()?attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK):new AttendanceTime(0));
 			
 		/*不就労時間*/
-		val unEmployedTime = new AttendanceTime(0);
+		val unEmployedTime = new AttendanceTimeOfExistMinus(0);
 		/*予定差異時間の計算*/
-		val budgetTimeVariance = new AttendanceTime(0);
+		val budgetTimeVariance = new AttendanceTimeOfExistMinus(0);
 		/*医療時間*/
 		val medicalCareTime = new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT,
 														 new AttendanceTime(0),
@@ -352,46 +336,36 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 */
 	private static WorkScheduleTimeOfDaily calcWorkSheduleTime(CalculationRangeOfOneDay recordOneDay, CalculationRangeOfOneDay scheduleOneDay,
 															   Optional<PredetermineTimeSetForCalc> schePreTime,WorkType workType, Optional<WorkType> scheWorkType, 
-															   AutoCalOvertimeSetting overTimeAutoCalcSet, AutoCalSetting holidayAutoCalcSetting, 
 															   Optional<PersonalLaborCondition> personalCondition, VacationClass vacationClass, 
-															   boolean late, boolean leaveEarly, WorkingSystem workingSystem, 
+															   WorkingSystem workingSystem, 
 															   WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
 															   WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet, 
-															   AutoCalOverTimeAttr overTimeAutoCalcAtr, Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
+															   Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
 															   Optional<SettingOfFlexWork> flexCalcMethod, HolidayCalcMethodSet holidayCalcMethodSet, 
-															   AutoCalRaisingSalarySetting raisingAutoCalcSet, BonusPayAutoCalcSet bonusPayAutoCalcSet, 
+															   BonusPayAutoCalcSet bonusPayAutoCalcSet, 
 															   CalAttrOfDailyPerformance calcAtrOfDaily, List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, 
 															   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, int breakTimeCount, 
-															   IntegrationOfDaily integrationOfDaily, AutoCalFlexOvertimeSetting flexAutoCalSet, 
+															   IntegrationOfDaily integrationOfDaily, 
 															   Optional<CoreTimeSetting> coreTimeSetting) {
 		//勤務予定時間を計算
-		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformastionOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
-		//val shedulePreWorkTime = (schePreTime.isPresent())? schePreTime.get().getpredetermineTime(workType.getDailyWork()):new AttendanceTime(0);
 		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheduleOneDay,
-																   overTimeAutoCalcSet, 
-																   holidayAutoCalcSetting, 
 																   personalCondition, 
 																   vacationClass, 
 																   workType, 
-																   late, 
-																   leaveEarly, 
 																   workingSystem, 
 																   illegularAddSetting, 
 																   flexAddSetting, 
 																   regularAddSetting, 
 																   holidayAddtionSet, 
-																   overTimeAutoCalcAtr, 
 																   workTimeDailyAtr, 
 																   flexCalcMethod, 
 																   holidayCalcMethodSet, 
-																   raisingAutoCalcSet, 
 																   bonusPayAutoCalcSet, 
 																   calcAtrOfDaily, 
 																   eachWorkTimeSet, 
 																   eachCompanyTimeSet, 
 																   breakTimeCount, 
 																   integrationOfDaily, 
-																   flexAutoCalSet, 
 																   coreTimeSetting);
 		int overWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime():0;

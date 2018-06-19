@@ -17,7 +17,7 @@ public class CheckChangePassOutput {
 	private boolean error;
 
 	/** The message. */
-	private List<String> message;
+	private List<PasswordMessageImport> message;
 
 	/**
 	 * Instantiates a new check before change pass output.
@@ -27,7 +27,7 @@ public class CheckChangePassOutput {
 	 * @param message
 	 *            the message
 	 */
-	public CheckChangePassOutput(boolean error, List<String> message) {
+	public CheckChangePassOutput(boolean error, List<PasswordMessageImport> message) {
 		super();
 		this.error = error;
 		this.message = message;

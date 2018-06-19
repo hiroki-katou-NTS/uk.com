@@ -1,3 +1,7 @@
+#contents-area {
+	overflow: hidden;
+}
+
 .navigation-label {
 	margin-left: 20px;
 	vertical-align: 12px;
@@ -23,29 +27,23 @@
 
 .contentB {
 	margin-left: 85px;
-	height: 700px;
 }
 
 .contentC {
 	margin-left: 45px;
-	height: 700px;
 	margin-left: 45px;
 }
 
 .contentD {
 	margin-top: 10px;
 	margin-left: 45px;
-	height: 700px;
 	margin-left: 45px;
-	width: 400px;
 }
 
 .contentE {
 	margin-top: 10px;
 	margin-left: 45px;
-	height: 700px;
 	margin-left: 45px;
-	width: 530px;
 }
 
 .periodCovered {
@@ -66,8 +64,9 @@
 }
 
 .buttonNext {
-	margin-top: 18px;
-	margin-left: 485px;
+	position: fixed;
+	top: 565px;
+	left: 880px;
 }
 
 .selectionCase {
@@ -104,19 +103,15 @@ button.nts-switch-button {
 
 .radioboxCase {
 	margin-top: 10px;
+	margin-left: 20px;
 }
 
 .radioboxCaseAll {
+	margin-top: 10px;
 	margin-left: 30px;
 }
 
-.lableCase {
-	margin-left: 60px;
-	margin-top: 20px;
-}
-
 .lableCaseAll {
-	margin-top: 20px;
 	display: inline-flex;
 	width: 100%;
 }
@@ -135,8 +130,8 @@ button.nts-switch-button {
 }
 
 .radioboxRebuildAtr {
-	margin-top: 10px;
-	margin-left: 45px;
+	margin-top: 5px;
+	margin-left: 10px;
 }
 
 .checkboxSetting {
@@ -150,8 +145,9 @@ button.nts-switch-button {
 }
 
 .checkboxSettingEnd {
-	margin-top: 25px;
-	margin-left: 25px;
+	margin-top: 5px;
+	margin-left: 70px;
+	float: left;
 }
 
 .checkboxOne {
@@ -163,15 +159,16 @@ button.nts-switch-button {
 }
 
 .labelSettingEnd {
-	margin-left: 55px;
+	margin-left: 105px;
+	float: left;
 }
 
 .nts-wizard.vertical>.steps {
-	height: 600px;
+	height: 75vh;
+	width: 300px;
 }
 
 .nts-wizard.vertical>.content {
-	height: 600px;
 	margin: 0 0 0 0;
 	background: none;
 }
@@ -181,13 +178,15 @@ button.nts-switch-button {
 }
 
 .buttonBeginNext {
-	float: right;
-	margin-top: 20px;
+	position: fixed;
+	top: 565px;
+	left: 880px;
 }
 
 .buttonBeginPrevious {
-	float: left;
-	margin-top: 30px;
+	position: fixed;
+	top: 575px;
+	left: 695px;
 }
 
 .labelSelection {
@@ -199,7 +198,7 @@ button.nts-switch-button {
 	width: 350px;
 	white-space: pre-line;
 	padding: 5px;
-	max-height: 300px;
+	max-height: 195px;
 	overflow-y: scroll;
 	position: relative;
 }
@@ -217,14 +216,19 @@ button.nts-switch-button {
 	padding-top: 4px;
 }
 
-#employeeSearch {
-	height: 460px;
-}
-
 .ccg_tab_content_1 {
 	height: 460px !important;
 }
 
 .ccg_tab_content_2 {
 	height: 460px !important;
+}
+
+#employeeSearch #nts-component-list {
+	padding: 10px 10px 10px 20px !important;
+}
+
+.labelContents label {
+	display: block;
+	margin: -15px 0px;
 }

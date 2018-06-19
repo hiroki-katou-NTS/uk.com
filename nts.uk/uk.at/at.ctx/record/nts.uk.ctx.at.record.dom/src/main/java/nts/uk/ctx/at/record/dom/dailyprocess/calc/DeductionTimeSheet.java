@@ -145,8 +145,7 @@ public class DeductionTimeSheet {
 			Optional<FlowWorkRestTimezone> fluRestTime, List<BreakTimeOfDailyPerformance> breakTimeOfDailyList) {
 		List<TimeSheetOfDeductionItem> sheetList = new ArrayList<TimeSheetOfDeductionItem>();
 		/* 休憩時間帯取得 */
-		sheetList.addAll(
-				getBreakTimeSheet(workTimeDivision, fixedCalc, flowDetail, breakTimeOfDailyList, dailyGoOutSheet));
+		sheetList.addAll(getBreakTimeSheet(workTimeDivision, fixedCalc, flowDetail, breakTimeOfDailyList, dailyGoOutSheet));
 		/* 外出時間帯取得 */
 		sheetList.addAll(dailyGoOutSheet.removeUnuseItemBaseOnAtr(dedAtr, workTimeMethodSet, fluRestTime, flowDetail));
 		/* 育児時間帯を取得 */

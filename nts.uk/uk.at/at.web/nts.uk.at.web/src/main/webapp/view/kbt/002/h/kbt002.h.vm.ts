@@ -143,18 +143,16 @@ module nts.uk.at.view.kbt002.h {
                     var dd = today.getDate();
                     var mm = today.getMonth() + 1;
                     var yyyy = today.getFullYear();
-                    var startDateSplit = self.dateValue().endDate.split("/");
+                    var startDateSplit = self.dateValue().startDate.split("/");
                     var endDateSplit = self.dateValue().endDate.split("/");
-                    var yearEndDate = new Number(startDateSplit[0]);
-                    var monthEndDate = new Number(startDateSplit[1]);
-                    var dayEndDate = new Number(startDateSplit[2]);
-                    if (yearEndDate > yyyy || monthEndDate > mm || dayEndDate > dd) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1077" });
-                    } else {
+                    var yearEndDate = new Number(endDateSplit[0]);
+                    var monthEndDate = new Number(endDateSplit[1]);
+                    var dayEndDate = new Number(endDateSplit[2]);
+                    var endDate = new Date(endDateSplit[0],endDateSplit[1]-1,endDateSplit[2]);
+                    if (moment.utc(endDate,"YYYY/MM/DD").isBefore(moment.utc(today,"YYYY/MM/DD"))) {
                         var sharedData = nts.uk.ui.windows.getShared('inputDialogH');
                         if (sharedData) {
                             var startDate = new Date(startDateSplit[0],startDateSplit[1]-1,startDateSplit[2]);
-                            var endDate = new Date(endDateSplit[0],endDateSplit[1]-1,endDateSplit[2]);
                             //ProcessExecutionDateParam
                             var param = new ProcessExecutionDateParam(sharedData.execItemCd,moment.utc(startDate,"YYYY/MM/DD"),moment.utc(endDate,"YYYY/MM/DD"));
                             service.findListDateRange(param).done(data => {
@@ -165,7 +163,10 @@ module nts.uk.at.view.kbt002.h {
                                 $("#grid").igGrid("option", "dataSource",execLogs);
                             });
                         }
+                    } else {
+                       nts.uk.ui.dialog.alertError({ messageId: "Msg_1077" });
                     }
+                    
                 }
             }
 
@@ -228,7 +229,7 @@ module nts.uk.at.view.kbt002.h {
 function openDialogG(element, execItemCd, execId) {
     nts.uk.ui.block.grayout();
     nts.uk.at.view.kbt002.h.service.getLogHistory(execItemCd, execId).done(function(x) {
-        nts.uk.ui.windows.setShared('inputDialogG', { execLog: x });
+        nts.uk.ui.windows.setShared('inputDialogG', { execLog: _.assign(x,{taskLogExecId: execId}) });
         nts.uk.ui.windows.sub.modal("/view/kbt/002/g/index.xhtml").onClosed(function() {
             nts.uk.ui.block.clear();
         });

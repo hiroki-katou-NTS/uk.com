@@ -9,10 +9,11 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pereg.app.find.person.info.item.ItemOrder;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,67 +26,72 @@ public class UpdateOrderItemChangeCommandHandler extends CommandHandler<UpdateOr
 	@Inject
 	private PerInfoCategoryRepositoty perCtgRep;
 
+	@Inject
+	private PerInfoItemDefFinder itemFinder;
+
 	@Override
 	protected void handle(CommandHandlerContext<UpdateOrderItemChangeCommand> context) {
 
 		UpdateOrderItemChangeCommand command = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
-		List<PerInfoItemDefOrder> itemLst = new ArrayList<>();
-		
-		PersonInfoCategory ctg = this.perCtgRep.getPerInfoCategory(command.getCategoryId(), contractCd)
-				.get();
-		List<PersonInfoItemDefinition> itemFullLst = this.getData(command, ctg);
-		itemLst = this.convertData(command, ctg, itemFullLst);
-		this.itemRepo.updateOrderItem(itemLst);
-
-	}
-	
-	private List<PersonInfoItemDefinition> getData(UpdateOrderItemChangeCommand command, PersonInfoCategory perInfoCategory) {
-		String contractCd = AppContexts.user().contractCode();
+		PersonInfoCategory ctg = this.perCtgRep.getPerInfoCategory(command.getCategoryId(), contractCd).get();
 		List<String> itemId = command.getOrderItemList().stream().map(c -> {
 			return c.getId();
 		}).collect(Collectors.toList());
-		return this.itemRepo.getItemLstByListId(itemId, command.getCategoryId(),
-				perInfoCategory.getCategoryCode().v(), contractCd);
-		
+		List<ItemOrder> itemOrderLst = this.itemFinder.getAllItemOrderByCtgId(command.getCategoryId(), itemId,
+				ctg.getCategoryCode().v());
+		List<PerInfoItemDefOrder> itemLst = this.convertData(command, ctg, itemOrderLst);
+		this.itemRepo.updateOrderItem(itemLst);
+
 	}
-	
-	private List<PerInfoItemDefOrder> convertData(UpdateOrderItemChangeCommand command, PersonInfoCategory ctg, List<PersonInfoItemDefinition> itemFullLst){
+
+	private List<PerInfoItemDefOrder> convertData(UpdateOrderItemChangeCommand command, PersonInfoCategory ctg,
+			List<ItemOrder> itemFullLst) {
 		List<OrderItemChange> itemOrderLst = new ArrayList<>();
 		List<PerInfoItemDefOrder> itemLst = new ArrayList<>();
 		PerInfoItemDefOrder itemDefOrderDomain = new PerInfoItemDefOrder();
-		
+
 		command.getOrderItemList().stream().forEach(c -> {
-			itemOrderLst.add(c);
-			PersonInfoItemDefinition itemChild = itemFullLst.stream().filter(item -> item.getPerInfoItemDefId().equals(c.getId()))
-					.findFirst().get();
-			List<PersonInfoItemDefinition> itemChilds = itemFullLst.stream()
-					.filter(item -> (item.getItemParentCode().v().equals(itemChild.getItemCode().v())))
-					.collect(Collectors.toList());
+			ItemOrder itemChild = itemFullLst.stream().filter(item -> item.getItemId().equals(c.getId())).findFirst()
+					.get();
+			itemOrderLst.add(new OrderItemChange(itemChild.getItemId(), "", itemChild.getDisplayOrder()));
+			List<ItemOrder> itemChilds = itemFullLst.stream()
+					.filter(item -> item.getParentCode().equals(itemChild.getItemCode())).collect(Collectors.toList());
 			if (itemChilds.size() > 0) {
-				for (PersonInfoItemDefinition it : itemChilds) {
-					itemOrderLst.add(new OrderItemChange(it.getPerInfoItemDefId(), ""));
+				for (ItemOrder child : itemChilds) {
+					itemOrderLst.add(new OrderItemChange(child.getItemId(), "", child.getDisplayOrder()));
+					List<ItemOrder> itemChildChild = itemFullLst.stream()
+							.filter(item -> item.getParentCode().equals(child.getItemCode()))
+							.collect(Collectors.toList());
+					if (itemChilds.size() > 0) {
+						for (ItemOrder sub : itemChildChild) {
+							itemOrderLst.add(new OrderItemChange(sub.getItemId(), "", sub.getDisplayOrder()));
+						}
+					}
 				}
 			}
 
 		});
-		for (OrderItemChange i : itemOrderLst) {
-
-			int itemIndex = itemOrderLst.indexOf(i) + 1;
-			switch (ctg.getIsFixed()) {
-			case FIXED:
+		switch (ctg.getIsFixed()) {
+		case FIXED:
+			for (OrderItemChange i : itemOrderLst) {
+				int itemIndex = itemOrderLst.indexOf(i) + 1;
 				itemDefOrderDomain = PerInfoItemDefOrder.createFromJavaType(i.getId(), command.getCategoryId(),
-						itemIndex);
-				break;
-			case NOT_FIXED:
-
+						itemIndex, i.getDisplayOder());
+				itemLst.add(itemDefOrderDomain);
+			}
+			
+			break;
+		case NOT_FIXED:
+			for (OrderItemChange i : itemOrderLst) {
+				int itemIndex = itemOrderLst.indexOf(i) + 1;
 				itemDefOrderDomain = PerInfoItemDefOrder.createFromJavaType(i.getId(), command.getCategoryId(),
 						itemIndex, itemIndex);
-				break;
+				itemLst.add(itemDefOrderDomain);
 			}
-			itemLst.add(itemDefOrderDomain);
+			
+			break;
 		}
 		return itemLst;
 	}
-
 }

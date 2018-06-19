@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,8 +25,9 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
-public class AttendanceItemUtil {
+public class AttendanceItemUtil implements ItemConst {
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems) {
 		return toItemValues(attendanceItems, AttendanceItemType.DAILY_ITEM);
@@ -62,8 +64,10 @@ public class AttendanceItemUtil {
 		if(root == null){
 			return new ArrayList<>();
 		}
-		int layout = root.isContainer() ? 0 : 1;
-		return getItemValues(attendanceItems, layout, "", root.isContainer() ? "" : root.rootName(), "", 0, getItemMap(type, itemIds, null, layout));
+		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
+		return getItemValues(attendanceItems, layout, EMPTY_STRING, 
+							root.isContainer() ? EMPTY_STRING : root.rootName(), EMPTY_STRING, 
+									DEFAULT_IDX, getItemMap(type, itemIds, null, layout));
 	}
 
 	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
@@ -72,10 +76,11 @@ public class AttendanceItemUtil {
 		if(root == null){
 			return attendanceItems;
 		}
-		int layout = root.isContainer() ? 0 : 1;
+		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
 		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
-		return fromItemValues(attendanceItems, layout, "", root.isContainer() ? "" : root.rootName(), 0, false,
-				getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
+		return fromItemValues(attendanceItems, layout, EMPTY_STRING, 
+							root.isContainer() ? EMPTY_STRING : root.rootName(), DEFAULT_IDX, false,
+							getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -88,7 +93,7 @@ public class AttendanceItemUtil {
 				return new ArrayList<ItemValue>();
 			}
 			AttendanceItemLayout layout = getLayoutAnnotation(field);
-			boolean isList = layout.listMaxLength() > 0;
+			boolean isList = layout.listMaxLength() > DEFAULT_IDX;
 			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
 			String pathName = getPath(path, layout, getRootAnnotation(field)),
 					currentLayout = mergeLayout(layoutCode, layout.layout()),
@@ -99,35 +104,38 @@ public class AttendanceItemUtil {
 								x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
 							).entrySet().stream().map(idx -> {
 									boolean isNotHaveData = list.isEmpty() || list.size() < idx.getKey();
-         								T idxValue = isNotHaveData ? null : list.get(idx.getKey() - 1);
+         								T idxValue = isNotHaveData ? null : list.get(idx.getKey() - DEFAULT_NEXT_IDX);
 									return getItemValues(
-												fieldValue(className, idxValue),  layoutIdx + 1,
+												fieldValue(className, idxValue),  layoutIdx + DEFAULT_NEXT_IDX,
 												layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), 
 												pathName, exCon,  idx.getKey(),
-												mapByPath(idx.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
+												mapByPath(idx.getValue(), 
+														id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
 								}).flatMap(List::stream).collect(Collectors.toList());
 			} 
 			T value = getOptionalFieldValue(attendanceItems, field, layout.isOptional());
 			AttendanceItemValue valueAnno = getItemValueAnnotation(field);
 			if (valueAnno == null) {
 				return getItemValues(
-						fieldValue(className, value),  layoutIdx + 1, currentLayout, pathName, exCon, index,
-						mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
+						fieldValue(className, value),  layoutIdx + DEFAULT_NEXT_IDX, currentLayout, pathName, exCon, index,
+						mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
 				
 			} 
-			String currentPath = getKey(pathName, "", false, index);
-			String currentFullPath = getKey(pathName, exCon, index > 0, index);
+			String currentPath = getKey(pathName, EMPTY_STRING, false, index);
+			String currentFullPath = getKey(pathName, exCon, index > DEFAULT_IDX, index);
 			return filterAndMap(
 						c.getValue(), 
 						id -> getTextWithNoCondition(id.path()).equals(currentPath),
 						item -> {
 							if(item.path().equals(currentFullPath)){
-								return item.value(value).valueType(valueAnno.type())
+								return item.value(value)
+											.valueType(getItemValueType(attendanceItems, valueAnno))
 											.layout(currentLayout + getTextWithCondition(item.path()))
 											.completed();
 							} else {
 								return item.layout(currentLayout + getTextWithCondition(item.path()))
-											.valueType(valueAnno.type()).completed();
+											.valueType(getItemValueType(attendanceItems, valueAnno))
+											.completed();
 							}
 						});
 			
@@ -138,7 +146,7 @@ public class AttendanceItemUtil {
 	private static <T> T fromItemValues(T attendanceItems, int layoutIdx, String layoutCode, String path, int index,
 			boolean needCheckWithIdx, Map<String, List<ItemValue>> groups) {
 		if(attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class) != null){
-			ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, "exsistData");
+			ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, DEFAULT_MARK_DATA_FIELD);
 		}
 		Map<String, Field> fields = getFieldMap(attendanceItems, groups);
 		groups.entrySet().stream().forEach(c -> {
@@ -147,7 +155,7 @@ public class AttendanceItemUtil {
 				return;
 			}
 			AttendanceItemLayout layout = getLayoutAnnotation(field);
-			boolean isList = layout.listMaxLength() > 0;
+			boolean isList = layout.listMaxLength() > DEFAULT_IDX;
 			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
 			String pathName = getPath(path, layout, getRootAnnotation(field)),
 					currentLayout = mergeLayout(layoutCode, layout.layout());
@@ -159,23 +167,23 @@ public class AttendanceItemUtil {
 									ReflectionUtil.getFieldValue(field, attendanceItems),
 									layout, 
 									className, 
-									c.getValue().isEmpty() ? "" : c.getValue().get(0).path(),
+									c.getValue().isEmpty() ? EMPTY_STRING : c.getValue().get(DEFAULT_IDX).path(),
 									itemsForIdx.keySet());
 				String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
 				Field idxField = idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
 				
 				list.stream().forEach(eVal -> {
 					Integer idx = idxField == null ? null : ReflectionUtil.getFieldValue(idxField, eVal);
-					List<ItemValue> subList = idx == null ? null : itemsForIdx.get(listNoIdx ? idx + 1 : idx);
+					List<ItemValue> subList = idx == null ? null : itemsForIdx.get(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx);
 					if (subList != null) {
 						fromItemValues(
 								eVal, 
-								layoutIdx + 1,
-								listNoIdx ? currentLayout : currentLayout + (idx == null ? "" : idx), 
+								layoutIdx + DEFAULT_NEXT_IDX,
+								listNoIdx ? currentLayout : currentLayout + (idx == null ? EMPTY_STRING : idx), 
 								pathName,
 								idx, 
 								needCheckWithIdx || (isList && !listNoIdx),
-								mapByPath(subList, id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
+								mapByPath(subList, id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
 
 						setValueEnumField(layout, className, eVal, subList);
 					}
@@ -187,7 +195,7 @@ public class AttendanceItemUtil {
 			AttendanceItemValue valueAnno = getItemValueAnnotation(field);
 			if (valueAnno != null) {
 				String enumText = getEnumTextFromList(c.getValue()), 
-						currentPath = getKey(pathName, enumText == null ? "" : enumText, needCheckWithIdx, index);
+						currentPath = getKey(pathName, enumText == null ? EMPTY_STRING : enumText, needCheckWithIdx, index);
 				ItemValue itemValue = c.getValue().stream()
 												.filter(id -> id.path().equals(currentPath))
 												.findFirst().orElse(null);
@@ -198,12 +206,12 @@ public class AttendanceItemUtil {
 			} 
 			T nVal = fromItemValues(
 							value == null ? ReflectionUtil.newInstance(className) : value,
-							layoutIdx + 1, 
+							layoutIdx + DEFAULT_NEXT_IDX, 
 							currentLayout, 
 							pathName, 
 							index, 
 							needCheckWithIdx,
-							mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
+							mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
 			setValueEnumField(layout, className, nVal, c.getValue());
 			ReflectionUtil.setFieldValue(field, attendanceItems, layout.isOptional() ? Optional.of(nVal) : nVal);
 		});
@@ -230,12 +238,13 @@ public class AttendanceItemUtil {
 
 	private static Integer getEValAsIdxPlus(String path) {
 		Integer enumValue = AttendanceItemIdContainer.getEnumValue(getExConditionFromString(path));
-		return enumValue == null ? 1 : enumValue + 1;
+		return enumValue == null ? DEFAULT_NEXT_IDX : enumValue + DEFAULT_NEXT_IDX;
 	}
 
 	private static String getEnumTextFromList(List<ItemValue> c) {
-		return c.stream().filter(em -> em.path().indexOf("-") > 0).map(em -> getExConditionFromString(em.path()))
-				.findFirst().orElse(null);
+		return c.stream().filter(em -> em.path().indexOf(DEFAULT_ENUM_SEPERATOR) > DEFAULT_IDX)
+							.map(em -> getExConditionFromString(em.path()))
+							.findFirst().orElse(null);
 	}
 
 	private static <T> void setValueEnumField(AttendanceItemLayout layout, Class<T> className, T value,
@@ -243,17 +252,25 @@ public class AttendanceItemUtil {
 		if (layout.enumField().isEmpty()) {
 			return;
 		}
-		String enumText = items.stream().filter(em -> em.path().indexOf("-") > 0)
+		String enumText = items.stream().filter(em -> em.path().indexOf(DEFAULT_ENUM_SEPERATOR) > DEFAULT_IDX)
 				.map(em -> getExConditionFromString(em.path())).findFirst().orElse(null);
 		ReflectionUtil.setFieldValue(getField(layout.enumField(), className), value,
 				AttendanceItemIdContainer.getEnumValue(enumText));
+	}
+
+	private static <T> ValueType getItemValueType(T attendanceItems, AttendanceItemValue valueAnno) {
+		ValueType valueType = valueAnno.type();
+		if(!valueAnno.getTypeWith().isEmpty()){
+			valueType = ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, valueAnno.getTypeWith());
+		}
+		return valueType;
 	}
 
 	private static String getPath(String path, AttendanceItemLayout layout, AttendanceItemRoot root) {
 		if (root != null && !root.rootName().isEmpty()) {
 			return root.rootName();
 		}
-		return path.isEmpty() ? layout.jpPropertyName() : StringUtils.join(path, ".", layout.jpPropertyName());
+		return path.isEmpty() ? layout.jpPropertyName() : StringUtils.join(path, DEFAULT_SEPERATOR, layout.jpPropertyName());
 	}
 
 	private static <T> List<T> filterAndMap(List<T> ids, Predicate<T> filter, Function<T, T> mapper) {
@@ -302,8 +319,9 @@ public class AttendanceItemUtil {
 	}
 
 	private static String getKey(String pathName, String extraCondition, boolean needCheckWithIdx, int idx) {
-		return StringUtils.join(pathName, extraCondition.isEmpty() ? "" : StringUtils.join("-", extraCondition),
-				(needCheckWithIdx ? String.valueOf(idx) : ""));
+		return StringUtils.join(pathName, 
+								extraCondition.isEmpty() ? EMPTY_STRING : StringUtils.join(DEFAULT_ENUM_SEPERATOR, extraCondition),
+								(needCheckWithIdx ? String.valueOf(idx) : EMPTY_STRING));
 	}
 
 	private static <T> List<T> getListAndSort(T attendanceItems, Field field, Class<T> className, AttendanceItemLayout layout) {
@@ -317,15 +335,16 @@ public class AttendanceItemUtil {
 		return list;
 	}
 
-	private static <T> List<T> processListToMax(List<T> list, AttendanceItemLayout layout, Class<T> targetClass, String path, Set<Integer> keySet) {
+	private static <T> List<T> processListToMax(List<T> list, AttendanceItemLayout layout, 
+			Class<T> targetClass, String path, Set<Integer> keySet) {
 		list = list == null ? new ArrayList<>() : new ArrayList<>(list);
 		if(layout.listNoIndex()){
 			Field enumField = getField(layout.enumField(), targetClass);
 			if(enumField != null) {
 				Set<Integer> notExistEnums = notExistEnum(list, keySet, enumField);
 				for(Integer e : notExistEnums) {
-					T nIns = ReflectionUtil.newInstance(targetClass);
-					ReflectionUtil.setFieldValue(enumField, nIns, e);
+					T nIns = ReflectionUtil.newInstance(targetClass); 
+					ReflectionUtil.setFieldValue(enumField, nIns, e - DEFAULT_NEXT_IDX);
 					list.add(nIns);
 				}
 			}
@@ -344,21 +363,22 @@ public class AttendanceItemUtil {
 
 	private static <T> Set<Integer> notExistEnum(List<T> list, Set<Integer> keySet, Field enumField) {
 		return keySet.stream().filter(c -> {
-			return !list.stream().filter(l -> ((Integer) ReflectionUtil.getFieldValue(enumField, l)) == (c - 1)).findFirst().isPresent();
+			return !list.stream().filter(l -> ((Integer) ReflectionUtil.getFieldValue(enumField, l)) == (c - DEFAULT_NEXT_IDX))
+					.findFirst().isPresent();
 		}).collect(Collectors.toSet());
 	}
 
 	private static <T> void processAndSort(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
 		Field idxField = getField(idxFieldName, targetClass);
 		if(list.size() < max){
-			for (int x = 0; x < max; x++) {
+			for (int x = DEFAULT_IDX; x < max; x++) {
 				int index = x;
 				Optional<T> idxValue = list.stream().filter(c -> {
 					Integer idx = ReflectionUtil.getFieldValue(idxField, c);
-					return idx == null ? false : idx == (index + 1);
+					return idx == null ? false : idx == (index + DEFAULT_NEXT_IDX);
 				}).findFirst();
 				if (!idxValue.isPresent()) {
-					list.add(createIdxFieldValue(targetClass, idxField, index + 1));
+					list.add(createIdxFieldValue(targetClass, idxField, index + DEFAULT_NEXT_IDX));
 				}
 			}
 		}
@@ -368,13 +388,13 @@ public class AttendanceItemUtil {
 				Integer idx1 = ReflectionUtil.getFieldValue(idxField, c1);
 				Integer idx2 = ReflectionUtil.getFieldValue(idxField, c2);
 				if (idx1 == null && idx2 == null) {
-					return 0;
+					return DEFAULT_IDX;
 				}
 				if (idx1 == null) {
-					return 1;
+					return DEFAULT_NEXT_IDX;
 				}
 				if (idx2 == null) {
-					return -1;
+					return DEFAULT_MINUS;
 				}
 				return idx1.compareTo(idx2);
 			}
@@ -388,9 +408,9 @@ public class AttendanceItemUtil {
 	}
 
 	private static String getCurrentPath(int layoutIdx, String text, boolean isList) {
-		String[] layouts = text.split("\\.");
+		String[] layouts = text.split(Pattern.quote(DEFAULT_SEPERATOR));
 		if (layouts.length <= layoutIdx) {
-			return "";
+			return EMPTY_STRING;
 		}
 		String path = layouts[layoutIdx];
 		if (isList) {
@@ -401,13 +421,13 @@ public class AttendanceItemUtil {
 
 	private static String getIdx(String path) {
 		String notIdx = getTextWithNoIdx(path);
-		return path.replaceAll(notIdx, "");
+		return path.replaceAll(notIdx, EMPTY_STRING);
 	}
 
 	@SuppressWarnings("unchecked")
 	private static <T> Class<T> getGenericType(Field field) {
 		ParameterizedType type = (ParameterizedType) field.getGenericType();
-		return (Class<T>) type.getActualTypeArguments()[0];
+		return (Class<T>) type.getActualTypeArguments()[DEFAULT_IDX];
 	}
 
 	private static AttendanceItemLayout getLayoutAnnotation(Field field) {
@@ -425,43 +445,43 @@ public class AttendanceItemUtil {
 	private static int getIdxInText(String text) {
 		String index = getIdx(text);
 		if (index.isEmpty()) {
-			return 0;
+			return DEFAULT_IDX;
 		}
 		return Integer.valueOf(index);
 	}
 
 	private static String getTextWithNoIdx(String text) {
-		return text.replaceAll("[0-9]+$", "");
+		return text.replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING);
 	}
 
 	private static String getTextWithNoCondition(String text) {
-		return getTextWithNoIdx(text).split("-")[0];
+		return getTextWithNoIdx(text).split(DEFAULT_ENUM_SEPERATOR)[DEFAULT_IDX];
 	}
 
 	private static String getTextWithCondition(String text) {
-		String[] cons = text.split("-");
-		return cons.length >= 2 ? "-" + getTextWithNoIdx(cons[1]) : "";
+		String[] cons = text.split(DEFAULT_ENUM_SEPERATOR);
+		return cons.length > DEFAULT_NEXT_IDX ? DEFAULT_ENUM_SEPERATOR + getTextWithNoIdx(cons[DEFAULT_NEXT_IDX]) : EMPTY_STRING;
 	}
 
 	private static String getExConditionFromString(String text) {
-		String[] notIdxText = text.replaceAll("[0-9]+$", "").split("-");
-		if (notIdxText.length < 2) {
-			return "";
+		String[] notIdxText = text.replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING).split(DEFAULT_ENUM_SEPERATOR);
+		if (notIdxText.length <= DEFAULT_NEXT_IDX) {
+			return EMPTY_STRING;
 		}
-		return notIdxText[1];
+		return notIdxText[DEFAULT_NEXT_IDX];
 	}
 
 	private static String mergeLayout(String currentLayout, String fieldLayout) {
 		if (currentLayout.isEmpty()) {
 			return fieldLayout;
 		}
-		return StringUtils.join(currentLayout, "_", fieldLayout);
+		return StringUtils.join(currentLayout, DEFAULT_LAYOUT_SEPERATOR, fieldLayout);
 	}
 
 	private static <T> String getExCondition(String exCondition, T object, AttendanceItemLayout layout) {
 		String fieldExCondition = getExConditionField(object, layout);
 		if (!exCondition.isEmpty() && !fieldExCondition.isEmpty()) {
-			return StringUtils.join(exCondition, "-", fieldExCondition);
+			return StringUtils.join(exCondition, DEFAULT_ENUM_SEPERATOR, fieldExCondition);
 		}
 		if (fieldExCondition.isEmpty()) {
 			return exCondition;
@@ -474,12 +494,12 @@ public class AttendanceItemUtil {
 			return ReflectionUtil.invoke(object.getClass(), object, layout.needCheckIDWithMethod());
 		}
 
-		return "";
+		return EMPTY_STRING;
 	}
 	
 	public enum AttendanceItemType{
-		DAILY_ITEM(0, "日次項目"),
-		MONTHLY_ITEM(1, "月次項目");
+		DAILY_ITEM(DEFAULT_IDX, DAILY),
+		MONTHLY_ITEM(DEFAULT_NEXT_IDX, MONTHLY);
 		
 		public final int value;
 		public final String descript;

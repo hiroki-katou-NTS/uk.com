@@ -11,6 +11,7 @@ import javax.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.Select;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
@@ -68,6 +69,7 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 	
 	public LateOrLeaveEarly toDomain() {
 		LateOrLeaveEarly lateOrLeaveEarly = LateOrLeaveEarly.builder()
+				.application(Application_New.builder().appID(this.krqdtAppLateOrLeavePK.appID).companyID(this.krqdtAppLateOrLeavePK.companyID).build())
 				.actualCancelAtr(this.actualCancelAtr)
 				.early1(EnumAdaptor.valueOf(this.early1, Select.class))
 				.earlyTime1(new TimeDay(this.earlyTime1))

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.BusinessDayCal;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.CreScheWithBusinessDayCalService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
@@ -36,9 +37,11 @@ import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInforma
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationService;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PrescribedTimezoneSettingDto;
+import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -96,7 +99,8 @@ public class ScheCreExeBasicScheduleHandler {
 	 *            the work time code
 	 */
 	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, String employeeId,
-			WorktypeDto worktypeDto, String workTimeCode) {
+			WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo,
+			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
 
 		// get short work time
 		Optional<ShortWorkTimeDto> optionalShortTime = this.getShortWorkTime(employeeId, command.getToDate());
@@ -120,9 +124,9 @@ public class ScheCreExeBasicScheduleHandler {
 		// 勤務予定時間
 		this.saveScheduleTime(commandSave);
 		// 休憩予定時間帯を取得する
-		this.saveBreakTime(command.getCompanyId(), commandSave);
+		this.saveBreakTime(command.getCompanyId(), commandSave, listWorkType, listWorkTimeSetting);
 		// 勤務予定マスタ情報を取得する
-		if (!this.saveScheduleMaster(commandSave, command.getExecutionId()))
+		if (!this.saveScheduleMaster(commandSave, command.getExecutionId(), empGeneralInfo, listBusTypeOfEmpHis))
 			return;
 
 		// check not exist error
@@ -381,9 +385,10 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param employeeId
 	 * @param toDate
 	 */
-	private BasicScheduleSaveCommand saveBreakTime(String companyId, BasicScheduleSaveCommand commandSave) {
+	private BasicScheduleSaveCommand saveBreakTime(String companyId, BasicScheduleSaveCommand commandSave,
+			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting) {
 		BusinessDayCal businessDayCal = this.scheWithBusinessDayCalService.getScheduleBreakTime(companyId,
-				commandSave.getWorktypeCode(), commandSave.getWorktimeCode());
+				commandSave.getWorktypeCode(), commandSave.getWorktimeCode(), listWorkType, listWorkTimeSetting);
 		if (businessDayCal == null) {
 			return commandSave;
 		}
@@ -406,10 +411,12 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param employeeId
 	 * @param toDate
 	 */
-	private boolean saveScheduleMaster(BasicScheduleSaveCommand commandSave, String executionId) {
+	private boolean saveScheduleMaster(BasicScheduleSaveCommand commandSave, String executionId,
+			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
 		// 勤務予定マスタ情報を取得する
 		Optional<ScheduleMasterInformationDto> scheduleMasterInforOpt = this.scheduleMasterInformationService
-				.getScheduleMasterInformationDto(commandSave.getEmployeeId(), commandSave.getYmd(), executionId);
+				.getScheduleMasterInformationDto(commandSave.getEmployeeId(), commandSave.getYmd(), executionId,
+						empGeneralInfo, listBusTypeOfEmpHis);
 		if (!scheduleMasterInforOpt.isPresent())
 			return false;
 		ScheduleMasterInformationDto scheduleMasterInfor = scheduleMasterInforOpt.get();
