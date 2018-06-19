@@ -59,6 +59,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -114,6 +118,10 @@ public class HolidayShipmentScreenAFinder {
 	@Inject
 	private RequestSettingRepository reqSetRepo;
 	@Inject
+	private WorkingConditionRepository wkingCondRepo;
+	@Inject
+	private WorkingConditionItemRepository wkingCondItemRepo;
+	@Inject
 	private WorkTimeSettingRepository wkTimeSetRepo;
 	private final ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -141,10 +149,10 @@ public class HolidayShipmentScreenAFinder {
 		result.setPreOrPostType(
 				otherCommonAlgorithm.judgmentPrePostAtr(appType, refDate, uiType == 0 ? true : false).value);
 
-		// アルゴリズム「平日時就業時間帯の取得」を実行する
-		SingleDaySchedule wkOnWeekDays = getWorkingHourOnWeekDays(employeeID, refDate);
+		// アルゴリズム「社員の労働条件を取得する」を実行する
+		Optional<WorkingConditionItem> wkingItem = getWorkingCondition(companyID, employeeID, refDate);
 
-		String wkTimeCD = getWkTimeCD(wkOnWeekDays);
+		String wkTimeCD = getWkTimeCD(wkingItem);
 
 		result.setWkTimeCD(wkTimeCD);
 
@@ -166,8 +174,21 @@ public class HolidayShipmentScreenAFinder {
 		return result;
 	}
 
-	public AppCommonSettingOutput getAppCommonSet(String companyID, String employeeID,
-			GeneralDate initDate) {
+	private Optional<WorkingConditionItem> getWorkingCondition(String companyID, String employeeID,
+			GeneralDate refDate) {
+		List<WorkingConditionItem> wkingItems = new ArrayList<WorkingConditionItem>();
+		wkingCondRepo.getBySidAndStandardDate(companyID, employeeID, refDate).ifPresent(wkCond -> {
+			wkCond.getDateHistoryItem().forEach(hisItem -> {
+				wkingCondItemRepo.getByHistoryId(hisItem.identifier()).ifPresent(wkItem -> {
+					wkingItems.add(wkItem);
+				});
+				;
+			});
+		});
+		return CollectionUtil.isEmpty(wkingItems) ? Optional.empty() : Optional.of(wkingItems.get(0));
+	}
+
+	public AppCommonSettingOutput getAppCommonSet(String companyID, String employeeID, GeneralDate initDate) {
 		int rootAtr = 1;
 		// 1-1.新規画面起動前申請共通設定を取得する
 		return beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, rootAtr, appType,
@@ -211,22 +232,15 @@ public class HolidayShipmentScreenAFinder {
 		return getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD);
 	}
 
-	private String getWkTimeCD(SingleDaySchedule wkOnWeekDays) {
-		if (wkOnWeekDays != null) {
-			Optional<WorkTimeCode> wkTimeCodeOpt = wkOnWeekDays.getWorkTimeCode();
+	private String getWkTimeCD(Optional<WorkingConditionItem> wkingItem) {
+		String resultWkTimeCD = "";
+		wkingItem.ifPresent(item -> {
+			item.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(wkIimeCd -> {
+				resultWkTimeCD.concat(wkIimeCd.v());
+			});
+		});
 
-			if (wkTimeCodeOpt.isPresent()) {
-
-				return wkTimeCodeOpt.get().v();
-
-			} else {
-
-				return "";
-			}
-
-		} else {
-			return "";
-		}
+		return resultWkTimeCD;
 	}
 
 	private void setChangeAppDateData(GeneralDate recDate, GeneralDate absDate, String companyID, String employeeID,
@@ -607,17 +621,6 @@ public class HolidayShipmentScreenAFinder {
 			}
 		} else {
 			return wkTypes;
-		}
-
-	}
-
-	private SingleDaySchedule getWorkingHourOnWeekDays(String employeeID, GeneralDate baseDate) {
-		// ドメインモデル「個人労働条件」を取得する
-		Optional<PersonalLaborCondition> perLaborConOpt = perLaborConRepo.findById(employeeID, baseDate);
-		if (!perLaborConOpt.isPresent()) {
-			return null;
-		} else {
-			return perLaborConOpt.get().getWorkCategory().getWeekdayTime();
 		}
 
 	}
