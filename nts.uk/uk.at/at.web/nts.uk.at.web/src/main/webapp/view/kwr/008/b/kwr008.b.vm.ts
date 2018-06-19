@@ -424,7 +424,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let self = this;
             block.invisible();
             let itemOutByName: any = _.filter(self.outputItem(), v => { return v.headingName().trim(); });
-            let itemOutUseClass: any = _.filter(itemOutByName, v => { return v.useClass(); });
+            let itemOutUseClass: any = _.filter(itemOutByName, v => { return v.useClass() && v.cd() != "01"; });
 
             if (!itemOutUseClass || itemOutUseClass.length == 0) {
                 alertError({ messageId: "Msg_880" });
