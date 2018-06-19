@@ -59,6 +59,8 @@ module nts.uk.com.view.cmf003.c {
                     if (value) {
                     self.currentItem = _.find(self.systemTypes(), a => a.code === value);
                         service.getConditionList(parseInt(self.selectedCode())).done(function(data: Array<any>) {
+                            
+                            data = _.sortBy(data, ["categoryId"]);
                             if (systemtypeFB != undefined) {
                                 _.forOwn(categoriesFB, function(index) {
                                      _.remove(data, function (e) {
