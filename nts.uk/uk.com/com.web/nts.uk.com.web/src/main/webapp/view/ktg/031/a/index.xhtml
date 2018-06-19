@@ -35,7 +35,7 @@
 									<br></br> <span  class="label" id="processingName"
 										data-bind="text: processingName"></span>
 									<button id="button1"
-										data-bind="click: function(){ $parent.openDialog($index()); } ">#{i18n.getText('KTG031_3')}</button>
+										data-bind="click: function(){ $parent.openDialog($index());}, visible: existenceError">#{i18n.getText('KTG031_3')}</button>
 									<br /> <span class="label" id="processingResult"
 										data-bind="text: processingResult"></span> <br />
 									<button id="button2"

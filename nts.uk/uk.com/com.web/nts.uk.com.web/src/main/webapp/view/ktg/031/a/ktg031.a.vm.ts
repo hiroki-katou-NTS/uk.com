@@ -150,7 +150,7 @@ module nts.uk.at.view.ktg031.a.viewmodel {
         /** 実行内容 AlarmCategory */
         executionContent: number;
         /** エラーの有無 */
-        existenceError: boolean;
+        existenceError: KnockoutObservable<boolean>;
         /** 了解フラグ */
         rogerFlag: boolean;
         /** 処理名 */
@@ -164,7 +164,7 @@ module nts.uk.at.view.ktg031.a.viewmodel {
             self.executionLogId = param.executionLogId;
             self.finishDateTime = param.finishDateTime;
             self.executionContent = param.executionContent;
-            self.existenceError = param.existenceError;
+            self.existenceError = ko.observable(param.existenceError);
             self.rogerFlag = param.rogerFlag;
             self.processingName = param.processingName;
             self.processingResult = param.processingResult;
