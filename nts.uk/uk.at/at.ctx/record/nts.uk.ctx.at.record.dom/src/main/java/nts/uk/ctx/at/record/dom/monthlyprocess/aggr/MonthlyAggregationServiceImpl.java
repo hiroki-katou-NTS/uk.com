@@ -10,10 +10,16 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
@@ -35,9 +41,15 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 	//@Inject
 	//private TargetPersonRepository targetPersonRepository;
 	
+	/** 月別集計が必要とするリポジトリ */
+	@Inject
+	private RepositoriesRequiredByMonthlyAggr repositories;
 	/** ドメインサービス：月別集計　（社員の月別実績を集計する） */
 	@Inject
 	private MonthlyAggregationEmployeeService monthlyAggregationEmployeeService;
+	/** エラーメッセージ情報 */
+	@Inject
+	private ErrMessageInfoRepository errMessageInfoRepository;
 	
 	/**
 	 * Managerクラス
@@ -93,6 +105,33 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			procEmployeeIds = employeeIds;
 		}
 		
+		Stopwatches.reset("08000:会社別データ読み込み");
+		Stopwatches.start("08000:会社別データ読み込み");
+		
+		MonAggrCompanySettings companySets = null;
+		if (procEmployeeIds.size() > 0){
+			
+			// 月別集計で必要な会社別設定を取得する
+			companySets = MonAggrCompanySettings.loadSettings(companyId, this.repositories);
+			if (companySets.getErrorInfos().size() > 0){
+				
+				// エラー処理
+				List<MonthlyAggregationErrorInfo> errorInfoList = new ArrayList<>();
+				for (val errorInfo : companySets.getErrorInfos().entrySet()){
+					errorInfoList.add(new MonthlyAggregationErrorInfo(errorInfo.getKey(), errorInfo.getValue()));
+				}
+				this.errorProc(dataSetter, procEmployeeIds.get(0), empCalAndSumExecLogID, criteriaDate, errorInfoList);
+				
+				// 処理を完了する
+				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
+				this.empCalAndSumExeLogRepository.updateLogInfo(
+						empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
+				return status;
+			}
+		}
+		
+		Stopwatches.stop("08000:会社別データ読み込み");
+		
 		// 社員の数だけループ
 		int aggregatedCount = 0;
 		for (val employeeId : procEmployeeIds) {
@@ -102,7 +141,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			
 			// 社員1人分の処理　（社員の月別実績を集計する）
 			status = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
-					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr);
+					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr, companySets);
 
 			Stopwatches.stop("10000:社員ごと：" + employeeId);
 			Stopwatches.printAll();
@@ -128,11 +167,41 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		if (status == ProcessState.INTERRUPTION) return status;
 		
 		// 処理を完了する
-		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
-				ExecutionStatus.DONE.value);
 		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
-		
+		this.empCalAndSumExeLogRepository.updateLogInfo(
+				empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
 		return status;
+	}
+	
+	/**
+	 * エラー処理
+	 * @param dataSetter データセッター
+	 * @param employeeId 社員ID
+	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
+	 * @param outYmd 出力年月日
+	 * @param errorInfoList エラー情報リスト
+	 */
+	private void errorProc(
+			TaskDataSetter dataSetter,
+			String employeeId,
+			String empCalAndSumExecLogID,
+			GeneralDate outYmd,
+			List<MonthlyAggregationErrorInfo> errorInfoList){
+		
+		// 「エラーあり」に更新
+		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.HAS_ERROR.nameId);
+		
+		// エラー出力
+		errorInfoList.sort((a, b) -> a.getResourceId().compareTo(b.getResourceId()));
+		for (val errorInfo : errorInfoList){
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					employeeId,
+					empCalAndSumExecLogID,
+					new ErrMessageResource(errorInfo.getResourceId()),
+					ExecutionContent.MONTHLY_AGGREGATION,
+					outYmd,
+					errorInfo.getMessage()));
+		}
 	}
 }

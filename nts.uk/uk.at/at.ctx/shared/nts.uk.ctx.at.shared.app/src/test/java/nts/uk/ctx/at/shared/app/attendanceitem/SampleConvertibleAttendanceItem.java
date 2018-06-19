@@ -9,7 +9,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Getter
 @Setter
@@ -22,7 +21,7 @@ public class SampleConvertibleAttendanceItem implements ConvertibleAttendanceIte
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "B", listMaxLength = 2)
 	private List<SampleConvertibleAttendanceItem> attendanceItems;
 
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "C")
 	private String attendanceItemB;
 
