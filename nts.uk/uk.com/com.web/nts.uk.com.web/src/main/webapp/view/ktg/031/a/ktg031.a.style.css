@@ -1,0 +1,48 @@
+.cf {
+	margin-left: 420px;
+}
+
+.table1 {
+	margin-top: 7px;
+	margin-left: 5px;
+}
+
+.table1 td {
+	border: 1px solid #CCC;
+	height: 100px !important;
+}
+
+
+tbody {
+	display: block;
+	height: 222px;
+    overflow: auto;
+    width: 540px;
+}
+
+#finishDateTime {
+	margin-left: 350px;
+	margin-right: 5px;
+}
+
+#processingName {
+	margin-left: 100px;
+}
+
+#button1 {
+	margin-left: 50px;
+}
+
+#processingResult {
+	margin-left: 80px;
+}
+
+#button2 {
+	margin-left: 380px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+/* #item{
+	border-b
+} */
