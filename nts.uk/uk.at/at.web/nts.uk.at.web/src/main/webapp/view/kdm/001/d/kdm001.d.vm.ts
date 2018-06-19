@@ -80,10 +80,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 self.remainDays(self.remainDays().toFixed(1));
             }
         }
-        public isNaN(x) {
-            x = Number(x);
-            return x != x;
-        }
+
         public setSplit(){
             let self = this;
             if (self.pause()) {

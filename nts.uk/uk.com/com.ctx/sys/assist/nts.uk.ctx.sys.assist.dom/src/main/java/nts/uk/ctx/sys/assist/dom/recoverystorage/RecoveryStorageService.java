@@ -44,6 +44,8 @@ public class RecoveryStorageService {
 
 	public static final String STORAGE_RANGE_SAVED = "0";
 
+	public static final String NOT_STORAGE_RANGE_SAVED = "1";
+
 	public static final String COLUMN_NAME_CID = "CID";
 
 	public void RecoveryStorage(String dataRecoveryProcessId) throws ParseException {
@@ -61,17 +63,20 @@ public class RecoveryStorageService {
 
 		for (int i = 0; i < listCategory.size(); i++) {
 
-			List<TableListByCategory> tableListByCategory = new ArrayList<>();
 			List<TableList> tables = performDataRecoveryRepository
 					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), STORAGE_RANGE_SAVED);
+			List<TableList> tableNotUse = performDataRecoveryRepository
+					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), NOT_STORAGE_RANGE_SAVED);
 
-			TableListByCategory tableCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
+			TableListByCategory tableListByCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
 					tables);
-			tableListByCategory.add(tableCategory);
+			TableListByCategory tableNotUseCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
+					tableNotUse);
+
 			int index = 0;
 
 			// カテゴリ単位の復旧
-			exCurrentCategory(tableListByCategory, uploadId, dataRecoveryProcessId);
+			exCurrentCategory(tableListByCategory, tableNotUseCategory, uploadId, dataRecoveryProcessId);
 
 			// のカテゴリカウントをカウントアップ
 			if (check) {
@@ -124,15 +129,17 @@ public class RecoveryStorageService {
 				// 履歴区分の判別する - check phân loại lịch sử
 				String tableName = tableList.get().getTableEnglishName();
 				if (tableList.get().getHistoryCls().value == 1) {
-					deleteEmployeeHistory(tableList, employeeId, tableName);
+					deleteEmployeeHistory(tableList, employeeId, tableName, true);
 				}
 			}
 
 			// sort target data by date - TO DO
 
 			// 対象社員の日付順の処理
-			this.crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode, dataRecoveryProcessId,
-					dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery, resultsSetting);
+			if(!crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode, dataRecoveryProcessId,
+					dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery, resultsSetting)) {
+				return false;
+			}
 
 			// phân biệt DELETE/INSERT error và Setting error
 
@@ -168,7 +175,6 @@ public class RecoveryStorageService {
 		String cidTable = null;
 		List<String> targetDataHeader = targetDataTable.get(0);
 		cidTable = targetDataHeader.get(0);
-		
 
 		String FILED_KEY_UPDATE_1 = null;
 		String FILED_KEY_UPDATE_2 = null;
@@ -319,18 +325,18 @@ public class RecoveryStorageService {
 				// 復旧方法 - Phương pháp phục hồi
 				if (performDataRecovery.isPresent() && performDataRecovery.get().getRecoveryMethod().value == 1) {
 
-					// 保存期間区分を判別
+					// 保存期間区分を判別 - Phân loại khoảng thời gian save
 					if (tableList.get().getRetentionPeriodCls().value != 0) {
-						if(!checkSettingDate(resultsSetting, tableList, dataRow))
+						if (!checkSettingDate(resultsSetting, tableList, dataRow))
 							return false;
 					}
 				}
 
 			}
-			
-			// update Domain - To do
-			
-			if (dataRow.get(1).equals(employeeId)) {
+
+			// update date phục hồi Domain - To do
+
+			if (employeeId != null && dataRow.get(1).equals(employeeId)) {
 				if (indexUpdate1 != null) {
 					V_FILED_KEY_UPDATE_1 = dataRow.get(indexUpdate1);
 					filedWhere.put(FILED_KEY_UPDATE_1, V_FILED_KEY_UPDATE_1);
@@ -430,13 +436,13 @@ public class RecoveryStorageService {
 					V_FILED_KEY_UPDATE_20 = dataRow.get(indexUpdate20);
 					filedWhere.put(FILED_KEY_UPDATE_20, V_FILED_KEY_UPDATE_20);
 				}
-				
+
 				// 対象データの会社IDをパラメータの会社IDに入れ替える - Thay thế CID
 				String cidCurrent = AppContexts.user().companyId();
 				if (!cidTable.equals(cidCurrent)) {
 					cidCurrent = cidTable;
 				}
-				
+
 				// 既存データの検索
 				int count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME);
 
@@ -444,12 +450,17 @@ public class RecoveryStorageService {
 					return false;
 				} else if (count == 1) {
 					// delete data
-					performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME);
+					try {
+						performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME);
+					} catch (Exception e) {
+						
+					}
+
 				}
 
 				Map<String, String> dataInsertDB = new HashMap<>();
 
-				for (int j = 0; j < targetDataHeader.size(); j++) {
+				for (int j = 5; j < targetDataHeader.size(); j++) {
 					if (targetDataHeader.get(j).equals(COLUMN_NAME_CID)) {
 						dataInsertDB.put(targetDataHeader.get(j), cidCurrent);
 					} else {
@@ -457,74 +468,80 @@ public class RecoveryStorageService {
 					}
 				}
 				// insert data
-				performDataRecoveryRepository.insertDataTable(dataInsertDB, TABLE_NAME);
+				try {
+					performDataRecoveryRepository.insertDataTable(dataInsertDB, TABLE_NAME);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+
 			}
 		}
 
 		return true;
 	}
 
-	public void deleteEmployeeHistory(Optional<TableList> tableList, String employeeId, String tableName) {
+	public void deleteEmployeeHistory(Optional<TableList> tableList, String employeeId, String tableName,
+			Boolean tableNotUse) {
 		// Delete history
 
 		String whereCid = null;
 		String whereSid = null;
 		if (tableList.get().getClsKeyQuery1().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery1();
-		} else if (tableList.get().getClsKeyQuery1().equals("5")) {
+		} else if (tableList.get().getClsKeyQuery1().equals("5") && tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery1();
 		}
 
 		if (tableList.get().getClsKeyQuery2().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery2();
-		} else if (tableList.get().getClsKeyQuery2().equals("5")) {
+		} else if (tableList.get().getClsKeyQuery2().equals("5") && tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery2();
 		}
 
 		if (tableList.get().getClsKeyQuery3().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery3();
-		} else if (tableList.get().getClsKeyQuery3().equals("0")) {
+		} else if (tableList.get().getClsKeyQuery3().equals("5") && tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery3();
 		}
 
 		if (tableList.get().getClsKeyQuery4().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery4();
-		} else if (tableList.get().getClsKeyQuery4().equals("0")) {
+		} else if (tableList.get().getClsKeyQuery4().equals("5") && tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery4();
 		}
 
 		if (tableList.get().getClsKeyQuery5().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery5();
-		} else if (tableList.get().getClsKeyQuery5().equals("0")) {
+		} else if (tableList.get().getClsKeyQuery5().equals("5") && tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery5();
 		}
 
 		if (tableList.get().getClsKeyQuery6().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery6();
-		} else if (tableList.get().getClsKeyQuery6().equals("0")) {
+		} else if (tableList.get().getClsKeyQuery6().equals("5") && tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery6();
 		}
 
 		if (tableList.get().getClsKeyQuery7().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery7();
-		} else if (tableList.get().getClsKeyQuery7().equals("0")) {
+		} else if (tableList.get().getClsKeyQuery7().equals("5") && !tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery7();
 		}
 		if (tableList.get().getClsKeyQuery8().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery8();
-		} else if (tableList.get().getClsKeyQuery8().equals("0")) {
+		} else if (tableList.get().getClsKeyQuery8().equals("5") && tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery8();
 		}
 
 		if (tableList.get().getClsKeyQuery9().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery9();
-		} else if (tableList.get().getClsKeyQuery9().equals("0")) {
+		} else if (tableList.get().getClsKeyQuery9().equals("5") && tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery9();
 		}
 
 		if (tableList.get().getClsKeyQuery10().equals("0")) {
 			whereCid = tableList.get().getClsKeyQuery10();
-		} else if (tableList.get().getClsKeyQuery10().equals("0")) {
+		} else if (tableList.get().getClsKeyQuery10().equals("5") && tableNotUse) {
 			whereSid = tableList.get().getClsKeyQuery10();
 		}
 
@@ -532,8 +549,8 @@ public class RecoveryStorageService {
 		performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereSid, cidCurrent, employeeId);
 	}
 
-	public void exCurrentCategory(List<TableListByCategory> tableListByCategory, String uploadId,
-			String dataRecoveryProcessId) throws ParseException {
+	public void exCurrentCategory(TableListByCategory tableListByCategory, TableListByCategory tableNotUseByCategory,
+			String uploadId, String dataRecoveryProcessId) throws ParseException {
 
 		Boolean check = false;
 
@@ -544,7 +561,28 @@ public class RecoveryStorageService {
 			// の処理対象社員コードをクリアする
 			dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId, null);
 
-			// カテゴリの中の日付単位の処理 - TO DO
+			// カテゴリの中の日付単位の処理
+			if (tableNotUseByCategory.getTables().size() != 0) {
+
+				// Get trạng thái domain データ復旧動作管理 - TO DO
+
+				// テーブル一覧のカレントの1行分の項目を取得する
+
+				for (int i = 0; i < tableNotUseByCategory.getTables().size(); i++) {
+					List<List<String>> targetDataRecovery = CsvFileUtil
+							.getAllRecord(tableNotUseByCategory.getTables().get(i).getInternalFileName(), uploadId);
+
+					// 期間別データ処理
+					Optional<TableList> tableList = performDataRecoveryRepository.getByInternal(
+							tableNotUseByCategory.getTables().get(i).getInternalFileName(), dataRecoveryProcessId);
+					exDataTabeRangeDate(tableNotUseByCategory.getTables().get(i).getInternalFileName(),
+							targetDataRecovery, tableList, dataRecoveryProcessId);
+
+					// Xác định trạng thái error TO-DO
+
+				}
+
+			}
 
 		} else {
 
@@ -553,68 +591,66 @@ public class RecoveryStorageService {
 
 	}
 
-	public void exCurrentTable(List<TableListByCategory> tableListByCategory, String dataRecoveryProcessId,
-			String uploadId) throws ParseException {
+	public void exCurrentTable(TableListByCategory tableListByCategory, String dataRecoveryProcessId, String uploadId)
+			throws ParseException {
 
 		Boolean check = false;
 		List<DataRecoveryTable> targetDataByCate = new ArrayList<>();
-		for (TableListByCategory currentTableByCategory : tableListByCategory) {
 
-			// カテゴリ単位の復旧
-			if (currentTableByCategory.getTables().size() > 0) {
+		// カテゴリ単位の復旧
+		if (tableListByCategory.getTables().size() > 0) {
 
-				// -- Get List data từ file CSV
-				// Create [対象データ] TargetData
-				Set<String> hashId = new HashSet<>();
-				for (int j = 0; j < currentTableByCategory.getTables().size(); j++) {
-					List<List<String>> dataRecovery = CsvFileUtil
-							.getAllRecord(currentTableByCategory.getTables().get(j).getInternalFileName(), uploadId);
+			// -- Get List data từ file CSV
+			// Create [対象データ] TargetData
+			Set<String> hashId = new HashSet<>();
+			for (int j = 0; j < tableListByCategory.getTables().size(); j++) {
+				List<List<String>> dataRecovery = CsvFileUtil
+						.getAllRecord(tableListByCategory.getTables().get(j).getInternalFileName(), uploadId);
 
-					// -- Tổng hợp ID Nhân viên duy nhất từ List Data
-					for (List<String> dataRow : dataRecovery) {
-						hashId.add(dataRow.get(1));
-					}
-
-					DataRecoveryTable targetData = new DataRecoveryTable(dataRecovery,
-							currentTableByCategory.getTables().get(j).getInternalFileName());
-					targetDataByCate.add(targetData);
+				// -- Tổng hợp ID Nhân viên duy nhất từ List Data
+				for (List<String> dataRow : dataRecovery) {
+					hashId.add(dataRow.get(1));
 				}
 
-				// 対象社員コード＿ID
-				List<EmployeeDataReInfoImport> employeeInfos = new ArrayList<>();
-				Iterator<String> it = hashId.iterator();
-				while (it.hasNext()) {
-					Optional<EmployeeDataReInfoImport> employeeInfo = empDataMngRepo.getSdataMngInfo(it.next());
-					employeeInfo.ifPresent(x -> {
-						employeeInfos.add(x);
-					});
-				}
+				DataRecoveryTable targetData = new DataRecoveryTable(dataRecovery,
+						tableListByCategory.getTables().get(j).getInternalFileName());
+				targetDataByCate.add(targetData);
+			}
 
-				// Foreach 対象社員コード＿ID
-				for (EmployeeDataReInfoImport employeeDataMngInfoImport : employeeInfos) {
+			// 対象社員コード＿ID
+			List<EmployeeDataReInfoImport> employeeInfos = new ArrayList<>();
+			Iterator<String> it = hashId.iterator();
+			while (it.hasNext()) {
+				Optional<EmployeeDataReInfoImport> employeeInfo = empDataMngRepo.getSdataMngInfo(it.next());
+				employeeInfo.ifPresent(x -> {
+					employeeInfos.add(x);
+				});
+			}
 
-					// Update current employeeCode
-					dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId,
-							employeeDataMngInfoImport.getEmployeeCode());
+			// Foreach 対象社員コード＿ID
+			for (EmployeeDataReInfoImport employeeDataMngInfoImport : employeeInfos) {
 
-					// 対象社員データ処理
-					this.recoveryDataByEmployee(dataRecoveryProcessId, employeeDataMngInfoImport.getEmployeeCode(),
-							employeeDataMngInfoImport.getEmployeeId(), targetDataByCate);
+				// Update current employeeCode
+				dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId,
+						employeeDataMngInfoImport.getEmployeeCode());
 
-					// phan biet error - TO DO
+				// 対象社員データ処理
+				this.recoveryDataByEmployee(dataRecoveryProcessId, employeeDataMngInfoImport.getEmployeeCode(),
+						employeeDataMngInfoImport.getEmployeeId(), targetDataByCate);
 
-					if (check) {
-						// update trạng thái dataRecoveryMngRepository - TO
-						// DO
-					} else {
-						// error - TO DO
-					}
+				// phan biet error - TO DO
 
+				if (check) {
+					// update trạng thái dataRecoveryMngRepository - TO
+					// DO
+				} else {
+					// error - TO DO
 				}
 
 			}
 
 		}
+
 	}
 
 	public List<String> settingDate(Optional<TableList> tableList) {
@@ -696,9 +732,9 @@ public class RecoveryStorageService {
 			} else if (resultsSetting.size() == 2) {
 				H_Date_Csv = dataRow.get(3);
 			}
-			Date H_Date = new SimpleDateFormat("yyyy-MM-dd").parse(H_Date_Csv);
-			Integer Y_Date_Csv = H_Date.getYear();
-			Integer M_Date_Csv = H_Date.getMonth();
+			Date Date_Csv = new SimpleDateFormat("yyyy-MM-dd").parse(H_Date_Csv);
+			Integer Y_Date_Csv = Date_Csv.getYear();
+			Integer M_Date_Csv = Date_Csv.getMonth();
 			if (resultsSetting.get(0).equals("6")) {
 				if (Y_Date_Csv < year_Form_Table || Y_Date_Csv > year_To_Table) {
 					return false;
@@ -711,8 +747,8 @@ public class RecoveryStorageService {
 				}
 
 			} else if (resultsSetting.get(0).equals("8")) {
-				if (H_Date.after(tableList.get().getSaveDateFrom().date())
-						|| H_Date.before(tableList.get().getSaveDateFrom().date())) {
+				if (Date_Csv.after(tableList.get().getSaveDateFrom().date())
+						|| Date_Csv.before(tableList.get().getSaveDateFrom().date())) {
 					return false;
 				}
 			}
@@ -720,6 +756,39 @@ public class RecoveryStorageService {
 		} else {
 			return false;
 		}
+
+	}
+
+	public Boolean exDataTabeRangeDate(String fileNameCsv, List<List<String>> targetDataRecovery,
+			Optional<TableList> tableList, String dataRecoveryProcessId) throws ParseException {
+
+		// アルゴリズム「日付処理の設定」を実行し日付設定を取得する
+		List<String> resultsSetting = new ArrayList<>();
+		resultsSetting = this.settingDate(tableList);
+
+		if (!resultsSetting.isEmpty()) {
+
+			if (tableList.isPresent()) {
+
+				// 履歴区分の判別する - check phân loại lịch sử
+				String tableName = tableList.get().getTableEnglishName();
+				if (tableList.get().getHistoryCls().value == 1) {
+					deleteEmployeeHistory(tableList, null, tableName, false);
+				}
+
+				Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
+						.getPerformDatRecoverById(dataRecoveryProcessId);
+
+				//
+				
+				this.crudDataByTable(targetDataRecovery, null, null, dataRecoveryProcessId, fileNameCsv, tableList,
+						performDataRecovery, resultsSetting);
+
+			}
+		} else {
+			return false;
+		}
+		return true;
 
 	}
 

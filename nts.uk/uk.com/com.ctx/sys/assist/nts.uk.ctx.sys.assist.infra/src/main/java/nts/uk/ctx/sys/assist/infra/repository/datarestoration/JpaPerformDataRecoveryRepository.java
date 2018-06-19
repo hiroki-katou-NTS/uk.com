@@ -183,7 +183,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 			DELETE_BY_TABLE_SQL.append(whereCid).append(" = ").append(cid);
 			count ++;
 		}
-		if (whereSid != null) {
+		if (whereSid != null && employeeId != null) {
 			if(count !=0) {
 				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = ").append(employeeId);
 			} else {
