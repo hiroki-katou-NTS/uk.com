@@ -25,6 +25,10 @@ module cli001.b.viewmodel {
         search(): void {
             let self = this;
             self.searchInput(self.searchInput().trim());
+            if (_.isEmpty(self.searchInput())) {
+                nts.uk.ui.dialog.error({ messageId: "Msg_438", messageParams: [getText('CLI001_16')] });
+                return;
+            }
             block.invisible();
             service.findUserByUserIDName(self.searchInput()).done(function(data) {
                 console.log(data);
@@ -39,7 +43,7 @@ module cli001.b.viewmodel {
         lockData(): void {
             let self = this;
             if (_.isEmpty(self.currentId())) {
-                nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: "CLI001_26" });
+                nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: [getText('CLI001_26')] });
                 return;
             }
 
