@@ -15,4 +15,5 @@ public class DPMonthResult {
    private FlexShortageDto flexShortage;
    private List<MonthlyModifyResult> results;
    private boolean error;
+   private boolean hasItem;
 }

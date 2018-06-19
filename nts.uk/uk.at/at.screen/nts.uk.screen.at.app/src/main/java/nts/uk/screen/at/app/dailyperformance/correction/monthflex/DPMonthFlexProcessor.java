@@ -54,7 +54,9 @@ public class DPMonthFlexProcessor {
 	public DPMonthResult getDPMonthFlex(DPMonthFlexParam param) {
 		String companyId = AppContexts.user().companyId();
 		List<Integer> itemIds = new ArrayList<>();
-		List<MonthlyModifyResult> results = new ArrayList<>();
+		boolean hasItem = false;
+		List<MonthlyModifyResult> itemMonthResults = new ArrayList<>();
+		List<MonthlyModifyResult> itemMonthFlexResults = new ArrayList<>();
 		// 社員に対応する処理締めを取得する
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 				.findByEmploymentCD(companyId, param.getEmploymentCode());
@@ -71,14 +73,19 @@ public class DPMonthFlexProcessor {
 		} else {
 			itemIds = repo.getItemIdsMonthByBussiness(companyId, param.getFormatCode());
 		}
-		itemIds.addAll(DAFAULT_ITEM);
+		if (!itemIds.isEmpty()) {
+			hasItem = true;
+			// itemIds.addAll(DAFAULT_ITEM);
 
-		// 対応する「月別実績」をすべて取得する
-		results = monthlyModifyQueryProcessor.initScreen(new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())),
-				DAFAULT_ITEM, closingPeriod.get().getProcessingYm(),
-				ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
-				new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
-						closingPeriod.get().getClosureDate().getLastDayOfMonth()));
+			// 対応する「月別実績」をすべて取得する
+
+			itemMonthResults = monthlyModifyQueryProcessor.initScreen(
+					new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), itemIds,
+					closingPeriod.get().getProcessingYm(),
+					ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
+					new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
+							closingPeriod.get().getClosureDate().getLastDayOfMonth()));
+		}
 		// ドメインモデル「月の本人確認」を取得する
 		Optional<ConfirmationMonth> confirmMonth = confirmationMonthRepository.findByKey(companyId,
 				param.getEmployeeId(), ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
@@ -87,12 +94,18 @@ public class DPMonthFlexProcessor {
 		// TODO ドメインモデル「社員の月別実績エラー一覧」を取得する
 		
 		//フレックス情報を表示する
-		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(param.getEmployeeId(), param.getDate(), null, closingPeriod, results);
+		itemMonthFlexResults = monthlyModifyQueryProcessor.initScreen(
+				new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), DAFAULT_ITEM,
+				closingPeriod.get().getProcessingYm(),
+				ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
+				new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
+						closingPeriod.get().getClosureDate().getLastDayOfMonth()));
+		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(param.getEmployeeId(), param.getDate(), null, closingPeriod, itemMonthFlexResults);
 		flexShortageDto.createMonthParent(new DPMonthParent(param.getEmployeeId(), closingPeriod.get().getProcessingYm().v(),
 				closureEmploymentOptional.get().getClosureId(),
 				new ClosureDateDto(closingPeriod.get().getClosureDate().getClosureDay(),
 						closingPeriod.get().getClosureDate().getLastDayOfMonth())));
-		return new DPMonthResult(flexShortageDto, results, false);
+		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem);
 	}
 
 }
