@@ -44,9 +44,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd " 
 			+ " AND ca.cid = :cid AND ca.abolitionAtr = 0 "
-			+ " AND ((co.salaryUseAtr = :forPayroll AND :forPayroll = 1) OR (1 = 1)) "
+			+ " AND (((co.salaryUseAtr = :forPayroll AND :forPayroll = 1) OR (1 = 1)) "
 			+ " OR  ((co.personnelUseAtr = :forPersonnel AND :forPersonnel = 1) OR (1 = 1)) "
-			+ " OR  ((co.employmentUseAtr = :forAttendance AND :forAttendance = 1) OR (1 = 1)) "
+			+ " OR  ((co.employmentUseAtr = :forAttendance AND :forAttendance = 1) OR (1 = 1))) "
 			+ " ORDER BY po.disporder";
 
 	private final static String SELECT_CATEGORY_NO_MUL_DUP_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
@@ -62,9 +62,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " AND co.categoryType != 2 " 
 			+ " AND co.categoryType !=5"
 			+ " AND co.initValMasterObjCls = 1 " 
-			+ " AND ((co.salaryUseAtr = :forPayroll AND :forPayroll = 1) OR (1 = 1)) "
+			+ " AND (((co.salaryUseAtr = :forPayroll AND :forPayroll = 1) OR (1 = 1)) "
 			+ " OR  ((co.personnelUseAtr = :forPersonnel AND :forPersonnel = 1) OR (1 = 1)) "
-			+ " OR  ((co.employmentUseAtr = :forAttendance AND :forAttendance = 1) OR (1 = 1)) "
+			+ " OR  ((co.employmentUseAtr = :forAttendance AND :forAttendance = 1) OR (1 = 1))) "
 			+ " ORDER BY po.disporder";
 
 	private final static String SELECT_CATEGORY_BY_CATEGORY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -143,9 +143,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId"
 			+ " WHERE ca.cid = :cid " 
 			+ " AND co.categoryParentCd IS NULL " 
-			+ " AND ((co.salaryUseAtr = :forPayroll AND :forPayroll = 1) OR (1 = 1)) "
+			+ " AND (((co.salaryUseAtr = :forPayroll AND :forPayroll = 1) OR (1 = 1)) "
 			+ " OR  ((co.personnelUseAtr = :forPersonnel AND :forPersonnel = 1) OR (1 = 1)) "
-			+ " OR  ((co.employmentUseAtr = :forAttendance AND :forAttendance = 1) OR (1 = 1)) "
+			+ " OR  ((co.employmentUseAtr = :forAttendance AND :forAttendance = 1) OR (1 = 1))) "
 			+ " AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)"
 			+ " AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId"
 			+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i"
