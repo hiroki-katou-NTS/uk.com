@@ -148,11 +148,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         initScreenB(): void {
             let self = this;
 
-            self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD HH:MM:SS"));
-            self.endDateString(moment.utc().add(1, "d").subtract(1, 'seconds').format("YYYY/MM/DD HH:MM:SS"));
+            self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
+            self.endDateString(moment.utc().format("YYYY/MM/DD"));
             let paramSearch = {
-                startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD HH:MM:SS").toISOString(),
-                endDate  : moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD HH:MM:SS").toISOString()
+                startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
+                endDate  : moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD hh:mm:ss").add(1, "d").add(-1, "s").toISOString()
             };
             service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
                 if (data && data.length) {
