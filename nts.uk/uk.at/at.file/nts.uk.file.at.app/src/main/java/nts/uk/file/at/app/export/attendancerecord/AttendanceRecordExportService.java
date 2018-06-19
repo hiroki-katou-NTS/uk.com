@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.attendancerecord;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -200,8 +201,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							if (valueSingleUpper != null) {
 
 								valueSingleUpper.getAttendanceItems().forEach(item -> {
-									upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-											employee.getEmployeeName(), closureDateTemp, "", item.getValue()));
+									if (item != null)
+										upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
+												employee.getEmployeeName(), closureDateTemp, "",
+												this.convertString(item)));
 
 								});
 							}
@@ -257,8 +260,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 							if (valueSingleLower != null && !valueSingleLower.getAttendanceItems().isEmpty())
 								valueSingleLower.getAttendanceItems().forEach(item -> {
-									lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-											employee.getEmployeeName(), closureDateTemp, "", item.getValue()));
+									if (item != null)
+										lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
+												employee.getEmployeeName(), closureDateTemp, "",
+												this.convertString(item)));
 
 								});
 
@@ -612,80 +617,47 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 	String getSumCalculateAttendanceItem(List<ItemValue> addValueCalUpper, List<ItemValue> subValueCalUpper) {
 
-		Object sum;
-		switch (addValueCalUpper.get(0).getValueType().value) {
-		case (0):
-			sum = new Integer(0);
+		Double sum = new Double(0);
+		if (addValueCalUpper.get(0).getValueType().isInteger() || addValueCalUpper.get(0).getValueType().isDouble()) {
+
 			// calculate add
 			if (!addValueCalUpper.isEmpty()) {
 				for (ItemValue i : addValueCalUpper) {
 					if (i.getValue() != null)
-						sum = Integer.parseInt(sum.toString()) + (int) i.value();
+						sum = Double.parseDouble(sum.toString()) + Double.parseDouble(i.value().toString());
 				}
 			}
 			// calculate sub
 			if (!subValueCalUpper.isEmpty()) {
 				for (ItemValue i : subValueCalUpper) {
 					if (i.getValue() != null)
-						sum = Integer.parseInt(sum.toString()) - (int) i.value();
+						sum = Double.parseDouble(sum.toString()) - Double.parseDouble(i.value().toString());
 				}
 			}
-			break;
-		case (1):
-			sum = new String("");
-			Integer tmp = 0;
-			String period;
-			if (!addValueCalUpper.isEmpty()) {
-				for (ItemValue i : addValueCalUpper) {
 
-					if (i.value() != null) {
-						tmp = tmp + (int) this.getNumberFromString(i.value().toString());
-					}
+			Integer sumInt;
+			switch (addValueCalUpper.get(0).getValueType().value) {
 
-				}
-			}
-			// calculate sub
-			if (!subValueCalUpper.isEmpty()) {
-				for (ItemValue i : subValueCalUpper) {
-					if (i.value() != null) {
-						tmp = Integer.parseInt(sum.toString()) - (int) this.getNumberFromString(i.value().toString());
-					}
-				}
-			}
-			period = this.getPeriodFromString(subValueCalUpper);
+			case 1:
+			case 2:
 
-			sum = tmp + period;
-			break;
-		case (2):
-			sum = new Double(0);
-			// calculate add
-			for (ItemValue i : addValueCalUpper) {
-				if (i.getValue() != null)
-					sum = Double.parseDouble(sum.toString()) + (Double) i.value();
+				if (sum.equals(0))
+					return "0:00";
+				sumInt = sum.intValue();
+				return this.convertMinutesToHours(sumInt.toString());
+			case 7:
+			case 8:
+				sumInt = sum.intValue();
+				return sumInt.toString() + " 回";
+			case 13:
+				sumInt = sum.intValue();
+				DecimalFormat format = new DecimalFormat("###,###,###");
+				return format.format(sum.intValue());
+			default:
+				break;
+
 			}
-			// calculate sub
-			for (ItemValue i : subValueCalUpper) {
-				if (i.getValue() != null)
-					sum = Double.parseDouble(sum.toString()) - (Double) i.value();
-			}
-			break;
-		case (3):
-			sum = new BigDecimal(0);
-			BigDecimal sum1 = new BigDecimal(0);
-			// calculate add
-			for (ItemValue i : addValueCalUpper) {
-				if (i.getValue() != null)
-					sum1 = sum1.add(new BigDecimal(i.value().toString()));
-			}
-			// calculate sub
-			for (ItemValue i : subValueCalUpper) {
-				if (i.getValue() != null)
-					sum1 = sum1.subtract(new BigDecimal(i.value().toString()));
-			}
-			sum = sum1;
-			break;
-		default:
-			sum = new String("");
+
 		}
 		return sum.toString();
 	}
@@ -703,15 +675,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		for (AttendanceRecordReportDailyData item : list) {
 			if (item.getColumnDatas().get(6) != null) {
 				upperValue7th = this.add(upperValue7th, item.getColumnDatas().get(6).getUper());
-				lowerValue7th = this.add(upperValue7th, item.getColumnDatas().get(6).getLower());
+				lowerValue7th = this.add(lowerValue7th, item.getColumnDatas().get(6).getLower());
 			}
 			if (item.getColumnDatas().get(7) != null) {
 				upperValue8th = this.add(upperValue8th, item.getColumnDatas().get(7).getUper());
-				lowerValue8th = this.add(upperValue8th, item.getColumnDatas().get(7).getLower());
+				lowerValue8th = this.add(lowerValue8th, item.getColumnDatas().get(7).getLower());
 			}
 			if (item.getColumnDatas().get(8) != null) {
 				upperValue9th = this.add(upperValue9th, item.getColumnDatas().get(8).getUper());
-				lowerValue9th = this.add(upperValue9th, item.getColumnDatas().get(8).getLower());
+				lowerValue9th = this.add(lowerValue9th, item.getColumnDatas().get(8).getLower());
 			}
 
 		}
@@ -739,24 +711,66 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			return b;
 		if (b.equals(""))
 			return a;
+		int indexA = a.indexOf(":");
+		int indexB = b.indexOf(":");
+		if (indexA >= 0 && indexB >= 0) {
+			Integer hourA = Integer.parseInt(a.substring(0, indexA));
+			Integer hourB = Integer.parseInt(b.substring(0, indexB));
+			Integer minuteA = Integer.parseInt(a.substring(indexA + 1));
+			Integer minuteB = Integer.parseInt(b.substring(indexB + 1));
 
-		// case a!= "" and b!= ""
-		try {
-			// In case Double or Integer
-			Double sum = Double.parseDouble(a) + Double.parseDouble(b);
-			return sum.toString();
-		} catch (NumberFormatException nfe) {
+			Integer totalMinute = hourA * 60 + minuteA + hourB * 60 + minuteB;
 
-			try {
-				// In case BigDecimal
-				BigDecimal sum = new BigDecimal(a).add(new BigDecimal(b));
-				return sum.toString();
-			} catch (Exception ex) {
+			return this.convertMinutesToHours(totalMinute.toString());
+		} else {
+			indexA = a.indexOf("回");
+			indexB = b.indexOf("回");
 
-				// In case String
-				Integer sum = this.getNumberFromString(a) + this.getNumberFromString(b);
-				return sum.toString();
+			if (indexA >= 0 && indexB >= 0) {
+				Integer countA = Integer.parseInt(a.substring(0, indexA - 1));
+				Integer countB = Integer.parseInt(b.substring(0, indexB - 1));
+
+				Integer totalCount = countA + countB;
+
+				return totalCount + "回";
+			} else {
+				String stringAmountA = a.replaceAll(",", "");
+				String stringAmountB = b.replaceAll(",", "");
+
+				Integer amountA = Integer.parseInt(stringAmountA);
+				Integer amountB = Integer.parseInt(stringAmountB);
+
+				Integer totalAmount = amountA + amountB;
+				DecimalFormat format = new DecimalFormat("###,###,###");
+				return format.format(totalAmount);
+
 			}
+
+		}
+
+	}
+
+	private String convertString(ItemValue item) {
+		String value = item.getValue();
+		if (item.getValueType() == null || item.getValue() == null)
+			return "";
+		switch (item.getValueType().value) {
+
+		case 1:
+		case 2:
+
+			if (value.equals(0))
+				return "0:00";
+			return this.convertMinutesToHours(value.toString());
+		case 7:
+		case 8:
+			return value.toString() + " 回";
+		case 13:
+			DecimalFormat format = new DecimalFormat("###,###,###");
+			return format.format(Integer.parseInt(value));
+		default:
+			return value;
+
 		}
 	}
 
