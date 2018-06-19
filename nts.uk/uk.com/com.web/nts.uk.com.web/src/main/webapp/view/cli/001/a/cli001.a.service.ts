@@ -33,7 +33,7 @@ module nts.uk.com.view.cli001.a {
             contractCode: string;
             userId: string;
             loginMethod: number;
-            lockOutDateTime: string;
+            lockoutDateTime: string;
         }
             
         }

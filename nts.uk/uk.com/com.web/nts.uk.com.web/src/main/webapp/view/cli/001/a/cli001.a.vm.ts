@@ -51,10 +51,11 @@ module nts.uk.com.view.cli001.a {
                 let _self = this;
                 nts.uk.ui.windows.sub.modal("/view/cli/001/b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("dataCd001.a");
+                    console.log(data);
                     let userId = { userId: data.userID };
                     if (!nts.uk.util.isNullOrUndefined(userId))
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
-                             _self.items().push({ logType: dto.logType == 1? '強制ロック' : '自動ロック', loginId: data.loginID,userId:dto.userId,userName:data.userName,lockOutDateTime:dto.lockOutDateTime});
+                             _self.items.push({ logType: dto.logType == 1? '強制ロック' : '自動ロック', loginId: data.loginID,userId:dto.userId,userName:data.userName,lockOutDateTime:dto.logoutDateTime});
                         });
                     nts.uk.ui.block.clear();
                 });
