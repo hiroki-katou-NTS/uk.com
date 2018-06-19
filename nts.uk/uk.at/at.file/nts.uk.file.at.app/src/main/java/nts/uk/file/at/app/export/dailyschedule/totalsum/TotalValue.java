@@ -23,10 +23,17 @@ public class TotalValue {
 	public static final int STRING = 1;
 	
 	/** The Constant BIG_DECIMAL. */
-	public static final int BIG_DECIMAL = 2;
+	public static final int DECIMAL = 2;
 	
 	/** The Constant DATE. */
 	public static final int DATE = 3;
+	
+	/** The Constant STRING. */
+	public static final int BOOLEAN = 4;
+	
+	/** The Constant BIG_DECIMAL. */
+	public static final int DOUBLE = 5;
+	
 	
 	// 勤怠項目ID
 	private int attendanceId;
@@ -42,18 +49,22 @@ public class TotalValue {
 	 * @return the t
 	 */
 	public <T> T value() {
+		if(value == null){
+			return null;
+		}
 		switch (this.valueType) {
 		case INTEGER:
-			return this.value == null || this.value.isEmpty() ? (T) new Integer(0) : (T) new Integer(this.value);
+			return this.value.isEmpty() ? null : (T) new Integer(this.value);
 		case STRING:
 			return (T) this.value;
-		case BIG_DECIMAL:
-			return this.value == null || this.value.isEmpty() ? (T) new BigDecimal(0) : (T) new BigDecimal(this.value);
+		case DOUBLE:
+			return this.value.isEmpty() ? null : (T) new Double(this.value);
+		case DECIMAL:
+			return this.value.isEmpty() ? null : (T) new BigDecimal(this.value);
 		case DATE:
-			return this.value == null || this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
+			return this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
 		default:
 			throw new RuntimeException("invalid type: " + this.valueType);
 		}
 	}
-
 }
