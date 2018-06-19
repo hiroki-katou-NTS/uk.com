@@ -7,6 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
@@ -63,5 +65,28 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt);
+	}
+
+	/** 期間中の年休残数を取得　（月別集計用） */
+	@Override
+	public Optional<AggrResultOfAnnualLeave> algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
+			TempAnnualLeaveMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			boolean isCalcAttendanceRate, Optional<Boolean> isOverWriteOpt,
+			Optional<List<TempAnnualLeaveManagement>> forOverWriteListOpt,
+			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
+			Optional<MonAggrCompanySettings> companySets,
+			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
+
+		GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
+				this.annualPaidLeaveSet,
+				this.annLeaGrantRemDataRepo,
+				this.annLeaMaxDataRepo,
+				this.getClosureStartForEmployee,
+				this.calcNextAnnualLeaveGrantDate,
+				this.createTempAnnualLeaveMng,
+				this.getAnnLeaRemNumWithinPeriod);
+		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
+				isGetNextMonthData, isCalcAttendanceRate,
+				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt, companySets, monthlyCalcDailys);
 	}
 }
