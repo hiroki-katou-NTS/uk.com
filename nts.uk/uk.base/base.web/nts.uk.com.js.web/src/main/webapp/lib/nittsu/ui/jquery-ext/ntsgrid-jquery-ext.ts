@@ -2735,7 +2735,15 @@ module nts.uk.ui.jqueryExtentions {
                 let nextColumn = utils.nextColumnByKey(visibleColumnsMap, columnKey, isFixedColumn);
                 if (util.isNullOrUndefined(nextColumn) || nextColumn.index === 0) return;
                 
-                specialColumn.onChange(columnKey, cell.id, pastedText).done(function(res: any) {
+                let origDs = $grid.data(internal.ORIG_DS);
+                let setting = $grid.data(internal.SETTINGS);
+                let idx = setting.descriptor.keyIdxes[cell.id];
+                let prevData;
+                if (origDs && !util.isNullOrUndefined(idx) && (prevData = origDs[idx])) {
+                    prevData = prevData[columnKey];
+                }
+                
+                specialColumn.onChange(columnKey, cell.id, pastedText, prevData).done(function(res: any) {
                     let updatedRow = {};
                     let $gridRow = utils.rowAt(cell);
                     if (specialColumn.type === COMBO_CODE) {

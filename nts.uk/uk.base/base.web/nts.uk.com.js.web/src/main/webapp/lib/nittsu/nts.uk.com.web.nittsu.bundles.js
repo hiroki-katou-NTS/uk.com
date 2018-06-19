@@ -25199,7 +25199,14 @@ var nts;
                             var nextColumn = utils.nextColumnByKey(visibleColumnsMap, columnKey, isFixedColumn);
                             if (uk.util.isNullOrUndefined(nextColumn) || nextColumn.index === 0)
                                 return;
-                            specialColumn.onChange(columnKey, cell.id, pastedText).done(function (res) {
+                            var origDs = $grid.data(internal.ORIG_DS);
+                            var setting = $grid.data(internal.SETTINGS);
+                            var idx = setting.descriptor.keyIdxes[cell.id];
+                            var prevData;
+                            if (origDs && !uk.util.isNullOrUndefined(idx) && (prevData = origDs[idx])) {
+                                prevData = prevData[columnKey];
+                            }
+                            specialColumn.onChange(columnKey, cell.id, pastedText, prevData).done(function (res) {
                                 var updatedRow = {};
                                 var $gridRow = utils.rowAt(cell);
                                 if (specialColumn.type === specialColumn_1.COMBO_CODE) {
