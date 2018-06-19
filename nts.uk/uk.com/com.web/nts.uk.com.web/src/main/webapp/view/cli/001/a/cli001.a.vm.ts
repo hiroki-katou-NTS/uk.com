@@ -54,7 +54,8 @@ module nts.uk.com.view.cli001.a {
                          $('#tableGrid').focus();
                         let userId = { userId: data.userID };
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
-                             _self.items.push({ logType: dto.logType == 1? '強制ロック' : '自動ロック', loginId: data.loginID,userId:dto.userId,userName:data.userName,lockOutDateTime:dto.logoutDateTime});
+                             _self.items.push({ logType: dto.lockType, loginId: data.loginID,userId:dto.userId,userName:data.userName,lockOutDateTime:dto.logoutDateTime});
+                            console.log(_self.items());
                         });
                         }
                     nts.uk.ui.block.clear();

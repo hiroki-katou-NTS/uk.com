@@ -29,7 +29,7 @@ module nts.uk.com.view.cli001.a {
                 lockOutDateTime: string;
             }
         export interface LockOutDataDto {
-            logType: number;
+            lockType: number;
             contractCode: string;
             userId: string;
             loginMethod: number;
