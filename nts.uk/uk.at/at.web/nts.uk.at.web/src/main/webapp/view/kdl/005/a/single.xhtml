@@ -19,21 +19,21 @@
 				<div id="contents-area">
 					<table class="header-content">
 						<tr>
-							<td><label><span data-bind="text: employeeInfo"></span></label></td>
+							<td width="200px"><label><span data-bind="text: employeeInfo"></span></label></td>
 							<td></td>
 						</tr>
 						<tr>
-							<td><label>#{i18n.getText('KDL005_6')}<span data-bind="text: employeeInfo"></span></label></td>
-							<td><label>#{i18n.getText('KDL005_7')}<span data-bind="text: employeeInfo"></span></label></td>
+							<td><label>#{i18n.getText('KDL005_6')}<span data-bind="text: baseDate"></span></label></td>
+							<td><label>#{i18n.getText('KDL005_7')}<span data-bind="text: expirationDate"></span></label></td>
 						</tr>
 					</table>
 					
 					<div class="date-fixed-table">
 						<table id="date-fixed-table">
 							<colgroup>
-								<col width="170px"/>
-								<col width="170px"/>
-								<col width="130px"/>
+								<col width="220px"/>
+								<col width="220px"/>
+								<col width="150px"/>
 							</colgroup>
 							<thead>
 								<tr>
@@ -81,7 +81,8 @@
 							</tbody>
 						</table>
 						
-						<button tabindex="2" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL009_18')}</button>
+						<button tabindex="2" class="inline" data-bind="ntsLegendButton: firstLegendOptions">#{i18n.getText('KDL005_18')}</button>
+						<button tabindex="3" class="inline" data-bind="ntsLegendButton: secondLegendOptions">#{i18n.getText('KDL005_23')}</button>
 						
 						<table class="summary-table">
 							<tr>
@@ -105,7 +106,7 @@
 				</div>
 				
 				<div id="functions-area-bottom">
-					<button tabindex="3" id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KDL009_2')}</button>
+					<button tabindex="3" id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KDL005_17')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>

@@ -15,7 +15,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.DetailConfirmDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmployeeBasicInfoDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmploymentSystemFinder;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
+import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.NumberRestDaysDto;
 
 @Path("at/request/dialog/employmentsystem")
 @Produces("application/json")
@@ -72,11 +72,11 @@ public class EmploymentSystemService extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getAbsRecGenDigesHis/{employeeId}/{baseDate}")
-	public AbsRecGenerationDigestionHis getAbsRecGenDigesHis(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
+	@Path("getAcquisitionNumberRestDays/{employeeId}/{baseDate}")
+	public NumberRestDaysDto getAcquisitionNumberRestDays(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
 	{		
 		// 振休残数情報の取得
-		return employeeFinder.getAbsRecGenDigesHis(employeeId, baseDate);
+		return employeeFinder.getAcquisitionNumberRestDays(employeeId, baseDate);
 	}
 }
 

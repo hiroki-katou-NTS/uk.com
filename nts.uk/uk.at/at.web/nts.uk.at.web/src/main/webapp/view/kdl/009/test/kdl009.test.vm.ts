@@ -1,31 +1,53 @@
 module kdl009.test {
     export module viewmodel {
         export class ScreenModel {
+            employeeId: KnockoutObservableArray<string> = ko.observableArray([]);
             employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
             baseDate: string;
 
             constructor(){
                 var self = this;
 
-                self.employeeIds.push("0455c7a6-e939-4ac1-a73d-38a944adf42d");
-                self.employeeIds.push("05196408-e2b4-442b-927f-926ee4b7370c");
-                self.employeeIds.push("09ccb197-07ad-4d90-88f0-5774636214b2");
-                self.employeeIds.push("09eb10c7-0cea-4fc0-980e-5629ad57b5c0");
-                self.employeeIds.push("0addaac4-7741-4f00-aab0-290d575a7e46");
-                self.employeeIds.push("0cf97165-6f43-49af-a0ae-f0dc7c7590e0");
-                self.employeeIds.push("118388db-23b6-486f-a65b-679831046b40");
-                self.employeeIds.push("1611da7c-9219-4845-bb09-f918ceb19b02");
-                self.employeeIds.push("18a38ad1-5a83-4fa0-84af-032885d965b9");
-                self.employeeIds.push("1b554e21-72ca-4b98-88e8-ecc5bc6fcb1a");
+                self.employeeId.push("e4123168-0760-44e6-bebd-f68428825615");
                 
-                self.baseDate = "20180505";
+                self.employeeIds.push("11ade2f5-8eda-4f31-bb68-0b14245b9f2c");
+                self.employeeIds.push("a97641de-f09c-4bb7-9749-3d9e89c6b441");
+                self.employeeIds.push("0314af45-4d46-457f-8b08-7ad96663e340");
+                self.employeeIds.push("0455c7a6-e939-4ac1-a73d-38a944adf42d");
+                self.employeeIds.push("e8eb1bdc-2397-4346-8346-812fbff139d4");
+                self.employeeIds.push("64074868-9de1-4cf1-a220-68029816e651");
+                self.employeeIds.push("43fbef63-0528-456f-912d-f7cfcb9aeb7c");
+                self.employeeIds.push("cef59bb8-3aa2-4e1c-a4b3-0e8f25ea3269");
+                self.employeeIds.push("26e81903-a2c6-4551-8b42-4fae8f01d67c");
+                self.employeeIds.push("c3b8b9fe-f761-46e9-b469-1da745836d39");
+                
+                self.baseDate = "20160505";
             }
             
-            openDialog() {
+            openListDialog() {
                 var self = this;
                 
                 var param: IEmployeeParam = {
                     employeeIds: self.employeeIds(),
+                    baseDate: self.baseDate
+                };
+                
+                service.getEmployee(param).done(function(data: DataParam) {
+                    nts.uk.ui.windows.setShared('KDL009_DATA', data);
+                    
+                    if(data.employeeBasicInfo.length > 1) {
+                        nts.uk.ui.windows.sub.modal("/view/kdl/009/a/multi.xhtml");
+                    } else {
+                        nts.uk.ui.windows.sub.modal("/view/kdl/009/a/single.xhtml");
+                    }
+                });
+            }
+            
+            openSingleDialog() {
+                var self = this;
+                
+                var param: IEmployeeParam = {
+                    employeeIds: self.employeeId(),
                     baseDate: self.baseDate
                 };
                 

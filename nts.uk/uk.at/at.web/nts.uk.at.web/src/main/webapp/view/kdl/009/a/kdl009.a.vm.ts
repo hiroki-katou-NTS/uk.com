@@ -36,7 +36,7 @@ module nts.uk.at.view.kdl009.a {
                         let itemName = _.find(self.kdl009Data.employeeBasicInfo, ['employeeCode', value]);
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemName.businessName]));
                         
-                        service.getAbsRecGenDigesHis(value, self.kdl009Data.baseDate).done(function(data) {
+                        service.getAcquisitionNumberRestDays(value, self.kdl009Data.baseDate).done(function(data) {
                             let name = '';
                         }).fail(function(res) {
                               
@@ -75,7 +75,13 @@ module nts.uk.at.view.kdl009.a {
                     
                     $("#date-fixed-table").ntsFixedTable({ height: 320, width: 650 });
                 } else {
-                    self.employeeInfo(nts.uk.resource.getText("KDL009_25", [self.kdl009Data.employeeBasicInfo[0].employeeCode, self.kdl009Data.employeeBasicInfo[0].employeeCode.businessName]));
+                    self.employeeInfo(nts.uk.resource.getText("KDL009_25", [self.kdl009Data.employeeBasicInfo[0].employeeCode, self.kdl009Data.employeeBasicInfo[0].businessName]));
+                    
+                    service.getAcquisitionNumberRestDays(self.kdl009Data.employeeBasicInfo[0].employeeCode, self.kdl009Data.baseDate).done(function(data) {
+                        let name = '';
+                    }).fail(function(res) {
+                          
+                    });
                     
                     $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
                 }

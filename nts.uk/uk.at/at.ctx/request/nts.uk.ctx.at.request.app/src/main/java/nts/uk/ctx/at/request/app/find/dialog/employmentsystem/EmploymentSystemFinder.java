@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.dialog.employmentsystem;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +14,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecAbsHistoryOutputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffOutputHisData;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -66,13 +67,23 @@ public class EmploymentSystemFinder {
 	public DetailConfirmDto getDetailsConfirm(String employeeId, String baseDate) {
 		String companyId = AppContexts.user().companyId();
 		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+		LocalDate localDate = LocalDate.now();
+		
+		// 基準日（指定がない場合はシステム日付）
+		if(baseDate.isEmpty()) {
+			baseDate = dtf.format(localDate);
+		} else {
+			baseDate = GeneralDate.fromString(baseDate, "yyyyMMdd").toString();
+		}
+		
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
-		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
+		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
 		
 		// アルゴリズム「休出代休発生消化履歴の取得」を実行する
-		BreakDayOffOutputHisData data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
+		BreakDayOffOutputHisData data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
 		
-		DetailConfirmDto result = new DetailConfirmDto(closingPeriod, data);
+		DetailConfirmDto result = new DetailConfirmDto(closingPeriod, data, baseDate);
 		
 		return result;
 	}
@@ -113,17 +124,18 @@ public class EmploymentSystemFinder {
 	 * @param baseDate
 	 * @return
 	 */
-	public AbsRecGenerationDigestionHis getAbsRecGenDigesHis(String employeeId, String baseDate) {
+	public NumberRestDaysDto getAcquisitionNumberRestDays(String employeeId, String baseDate) {
 		String companyId = AppContexts.user().companyId();
 		
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
 		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
 		
 		// アルゴリズム「振出振休発生消化履歴の取得」を実行する
-		List<RecAbsHistoryOutputPara> greneraGigesHis = absenceReruitmentManaQuery
-				.generationDigestionHis(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"))
-				.getGreneraGigesHis();
+		AbsRecGenerationDigestionHis data = absenceReruitmentManaQuery
+				.generationDigestionHis(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
 		
-		return null;
+		NumberRestDaysDto result = new NumberRestDaysDto(closingPeriod, data);
+		
+		return result;
 	}
 }
