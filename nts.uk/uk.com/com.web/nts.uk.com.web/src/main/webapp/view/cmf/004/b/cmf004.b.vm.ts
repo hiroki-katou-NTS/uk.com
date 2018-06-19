@@ -162,9 +162,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 saveSetCode: data[i].code,
                                 saveSetName: data[i].name,
                                 supplementaryExplanation: data[i].suppleExplanation,
-                                storageStartDate: data[i].saveStartDatetime,
-                                executeCategory: data[i].saveForm,
-                                targetNumber: data[i].targetNumberPeople,
+                                storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD hh:mm:ss'),
+                                executeCategory: (data[i].saveForm) % 2 == 0 ? getText('CMF004_460') : getText('CMF004_461'),
+                                targetNumber: data[i].targetNumberPeople + "人",
                                 saveFileName: data[i].saveFileName,
                                 fileId: data[i].fileId
                             };
@@ -173,6 +173,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 }
             });
         }
+        
+         
 
         /**
          * E:データ内容確認
