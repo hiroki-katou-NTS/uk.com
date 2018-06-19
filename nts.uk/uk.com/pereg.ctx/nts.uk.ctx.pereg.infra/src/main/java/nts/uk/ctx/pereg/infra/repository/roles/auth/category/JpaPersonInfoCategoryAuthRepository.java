@@ -20,23 +20,26 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
 
-	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
-			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,"
-			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,"
-			+ "(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,"
-			+ "(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia"
-			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
-			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd" + " INNER JOIN PpemtPerInfoCtgOrder co"
-			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
-			+ " LEFT JOIN PpemtPersonCategoryAuth p "
-			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId"
-			+ " AND c.abolitionAtr = 0"
+	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = String.join(" ","SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, ",
+			" cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,",
+			" CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,",
+			"(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,",
+			"(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia",
+			" FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm",
+			" ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd",
+			 " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd" ,
+			 " INNER JOIN PpemtPerInfoCtgOrder co",
+			 "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId",
+			 " INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId",
+			 " LEFT JOIN PpemtPersonCategoryAuth p ",
+			 " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId",
+			 " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId",
+			 " AND c.abolitionAtr = 0",
 			//  them dieu kien luong, nhan su, viec lam
-			+ " AND cm.salaryUseAtr =:salaryUseAtr AND cm.personnelUseAtr =:personnelUseAtr AND cm.employmentUseAtr =:employmentUseAtr" 
-			+ "	ORDER BY co.disporder";
+			 " AND (((cm.salaryUseAtr = :salaryUseAtr AND :salaryUseAtr = 1) OR (1 = 1))",
+			 " OR  ((cm.personnelUseAtr = :personnelUseAtr AND :personnelUseAtr = 1) OR (1 = 1))",
+			 " OR  ((cm.employmentUseAtr = :employmentUseAtr AND :employmentUseAtr = 1) OR (1 = 1)))",
+			 "	ORDER BY co.disporder");
 
 	private final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName "
 			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"

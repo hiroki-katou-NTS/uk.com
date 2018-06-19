@@ -1,5 +1,4 @@
 module cas009.a.viewmodel {
-    import EnumConstantDto = cas009.a.service.model.EnumConstantDto;
     import service = cas009.a.service;
     import windows = nts.uk.ui.windows;
     import block = nts.uk.ui.block;
@@ -48,15 +47,22 @@ module cas009.a.viewmodel {
                 role = self.selectedRole;
 
             _.extend(self, {
-                roleId: self.component025.currentCode,
                 listRole: self.component025.listRole
+            });
+
+            _.extend(role, {
+                roleId: self.component025.currentCode
+            });
+
+            _.extend(role, {
+                permisions: self.component026.listPermissions
             });
 
             // subscribe and change data
             role.roleId.subscribe(rid => {
                 let roles = ko.toJS(self.listRole),
                     exist: IRole = _.find(roles, (r: IRole) => r.roleId == rid);
-                debugger;
+
                 if (exist) {
                     role.createMode(false);
 
@@ -66,6 +72,11 @@ module cas009.a.viewmodel {
                     role.assignAtr(exist.assignAtr);
                     role.referFutureDate(exist.referFutureDate);
                     role.employeeReferenceRange(exist.employeeReferenceRange || 0);
+
+                    /*fetch.permision(rid).done(permision => {
+                        debugger;
+                        role.permisions([]);
+                    });*/
                 } else {
                     role.createMode(true);
 
@@ -75,6 +86,11 @@ module cas009.a.viewmodel {
                     role.assignAtr(0);
                     role.referFutureDate(false);
                     role.employeeReferenceRange(0);
+
+                    /*fetch.permision(rid).done(permision => {
+                        debugger;
+                        role.permisions([]);
+                    });*/
                 }
 
                 //self.component026.roleId(rid);
@@ -138,12 +154,12 @@ module cas009.a.viewmodel {
                 dfd = $.Deferred();
 
             self.component025.startPage().done(() => {
-                let roles = ko.toJS(self.component025.listRole),
+                let roles: Array<IRole> = ko.toJS(self.listRole),
                     roleIds: Array<string> = _.map(roles, (x: IRole) => x.roleId);
 
                 if (_.size(roleIds)) {
                     service.getPersonInfoRole(roleIds).done(resp => {
-                        _.each(self.component025.listRole(), (r: IRole) => {
+                        _.each(self.listRole(), (r: IRole) => {
                             let pinfo: IRole = _.find(resp, (o: IRole) => o.roleId == r.roleId);
                             if (pinfo) {
                                 r.referFutureDate = pinfo.referFutureDate;
@@ -174,7 +190,7 @@ module cas009.a.viewmodel {
         // save change of role
         save = () => {
             let self = this,
-                role = self.selectedRole,
+                role: Role = self.selectedRole,
                 command = ko.toJS(role);
 
             $(".nts-input").trigger("validate");
@@ -193,7 +209,7 @@ module cas009.a.viewmodel {
                 info({ messageId: "Msg_15" });
 
                 self.getListRole().done(() => {
-                    let exist = _.find(self.listRole(), o => o.roleCode == command.roleCode);
+                    let exist: IRole = _.find(self.listRole(), o => o.roleCode == command.roleCode);
 
                     if (!exist) {
                         role.roleId(undefined);
@@ -251,6 +267,12 @@ module cas009.a.viewmodel {
         }
     }
 
+    export interface EnumConstantDto {
+        value: number;
+        fieldName: string;
+        localizedName: string;
+    }
+
     export interface IRole {
         name: string;
         roleId: string;
@@ -258,6 +280,7 @@ module cas009.a.viewmodel {
         assignAtr: number;
         referFutureDate?: boolean;
         employeeReferenceRange: number;
+        permisions: KnockoutObservableArray<IFunctionPermission>;
 
         createMode: boolean;
     }
@@ -274,6 +297,8 @@ module cas009.a.viewmodel {
         createMode: KnockoutObservable<boolean> = ko.observable(false);
         roleCodeFocus: KnockoutObservable<boolean> = ko.observable(true);
         roleNameFocus: KnockoutObservable<boolean> = ko.observable(false);
+
+        permisions: KnockoutObservableArray<IFunctionPermission> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -293,42 +318,13 @@ module cas009.a.viewmodel {
             });
         }
     }
-}
 
-enum ROLE_TYPE {
-    /** The system manager. */
-    // システム管理者
-    SYSTEM_MANAGER = 0,
-
-    /** The company manager. */
-    // 会社管理者
-    COMPANY_MANAGER = 1,
-
-    /** The group comapny manager. */
-    // グループ会社管理者
-    GROUP_COMAPNY_MANAGER = 2,
-
-    /** The employment. */
-    // 就業
-    EMPLOYMENT = 3,
-
-    /** The salary. */
-    // 給与
-    SALARY = 4,
-
-    /** The human resource. */
-    // 人事
-    HUMAN_RESOURCE = 5,
-
-    /** The office helper. */
-    // オフィスヘルパー
-    OFFICE_HELPER = 6,
-
-    /** The my number. */
-    // マイナンバー
-    MY_NUMBER = 7,
-
-    /** The personal info. */
-    // 個人情報
-    PERSONAL_INFO = 8
+    export interface IFunctionPermission {
+        functionNo: number;
+        initialValue: boolean;
+        displayName: string;
+        displayOrder: number;
+        description: string;
+        availability: KnockoutObservable<boolean>;
+    }
 }

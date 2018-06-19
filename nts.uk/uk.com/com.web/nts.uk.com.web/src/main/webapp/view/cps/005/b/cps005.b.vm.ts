@@ -311,11 +311,11 @@ module nts.uk.com.view.cps005.b {
                 self.personInfoItemList(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                 self.dataTypeEnum = params.dataTypeEnum || new Array();
                 self.dataTypeEnumFilter = _.filter(params.dataTypeEnum, function(c) {
-                    return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5 || c.value == 6);
+                    return [1,2,3,4,5,6].indexOf(c.value) > -1 ;
                 });
                 self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
                 self.stringItemTypeEnumFilter = _.filter(params.stringItemTypeEnum, function(c) {
-                    return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5);
+                    return [1,2,3,4,5].indexOf(c.value) > -1;
                 });
                 self.stringItemDataTypeEnum = params.stringItemDataTypeEnum || new Array();
                 self.stringItemDataTypeEnum.reverse();

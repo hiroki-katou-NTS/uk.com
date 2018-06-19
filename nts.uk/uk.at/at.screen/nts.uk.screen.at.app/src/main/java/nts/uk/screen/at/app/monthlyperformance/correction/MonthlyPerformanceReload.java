@@ -212,9 +212,7 @@ public class MonthlyPerformanceReload {
 						String attendanceAtrAsString = String.valueOf(item.getValueType());
 						String attendanceKey = mergeString(ADD_CHARACTER, "" + item.getItemId());
 						List<String> cellStatus = new ArrayList<>();
-						int attendanceAtr = item.getValueType().value;
-
-						if (attendanceAtr == ValueType.INTEGER.value) {
+						if (item.getValueType().isInteger()) {
 							int minute = 0;
 							if (item.getValue() != null) {
 								if (Integer.parseInt(item.getValue()) >= 0) {

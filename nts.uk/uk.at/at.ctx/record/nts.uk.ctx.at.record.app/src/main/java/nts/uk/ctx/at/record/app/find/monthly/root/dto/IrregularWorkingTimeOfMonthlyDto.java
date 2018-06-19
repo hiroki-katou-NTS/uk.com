@@ -19,17 +19,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 public class IrregularWorkingTimeOfMonthlyDto implements ItemConst {
 
 	/** 複数月変形途中時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = MULTI_MONTH + MIDDLE, layout = LAYOUT_A)
 	private int multiMonthIrregularMiddleTime;
 
 	/** 変形期間繰越時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = CARRY_FORWARD, layout = LAYOUT_B)
 	private int irregularPeriodCarryforwardTime;
 
 	/** 変形労働不足時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = SHORTAGE, layout = LAYOUT_C)
 	private int irregularWorkingShortageTime;
 

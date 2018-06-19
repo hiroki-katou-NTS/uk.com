@@ -1,6 +1,8 @@
 package nts.uk.ctx.pereg.app.command.roles.auth.functionauth;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,19 +24,20 @@ public class RegisterFuncAuthCommandHandler extends CommandHandler<RegisterFuncA
 		RegisterFuncAuthCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		String roleId = command.getRoleId();
-		
+
 		Map<Integer, PersonInfoAuthority> authMap = authRepo.getListOfRole(companyId, roleId);
-		command.getFunctionAuthList().forEach(auth -> {
-			
-			PersonInfoAuthority authDomain = PersonInfoAuthority.createFromJavaType(companyId, roleId,
-					auth.getFunctionNo(), auth.isAvailable());
-			
-			if (authMap.containsKey(auth.getFunctionNo())) {
+
+		List<RegisterFuncAuthCommandParam> params = command.getFunctionAuthList().stream().map(
+				auth -> new RegisterFuncAuthCommandParam(companyId, roleId, auth.getFunctionNo(), auth.isAvailable()))
+				.collect(Collectors.toList());
+
+		params.forEach(param -> {
+			PersonInfoAuthority authDomain = new PersonInfoAuthority(param);
+			if (authMap.containsKey(param.functionNo())) {
 				authRepo.add(authDomain);
 			} else {
 				authRepo.update(authDomain);
 			}
-			
 		});
 
 	}
