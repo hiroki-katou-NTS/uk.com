@@ -13,6 +13,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockType;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 
 /*
  * @author: Nguyen Van Hanh
@@ -37,11 +38,11 @@ public class AddLockOutDataCommandHandler extends CommandHandler<AddLockOutDataC
 		Optional<UserImportNew> user = userAdapter.findByUserId(userId);
 
 		if (!user.isPresent())
-			throw new BusinessException("Msg_218");
+			return;
 
 		// ドメインモデル「ロックアウトデータ」の重複チェックを行う
 		if (checkDuplicateLocking(user.get().getUserId()))
-			throw new BusinessException("Msg_3");
+			throw new BusinessException("Msg_868");
 
 		// Add to domain model LockOutData
 		LockOutDataDto dto = LockOutDataDto.builder()
@@ -49,6 +50,7 @@ public class AddLockOutDataCommandHandler extends CommandHandler<AddLockOutDataC
 				.contractCode(user.get().getContractCode())
 				.logoutDateTime(GeneralDateTime.now())
 				.lockType(LockType.ENFORCEMENT_LOCK.value)
+				.loginMethod(LoginMethod.NORMAL_LOGIN.value)
 				.build();
 		LockOutData lockOutData = new LockOutData(dto);
 		this.lockOutDataRepository.add(lockOutData);
