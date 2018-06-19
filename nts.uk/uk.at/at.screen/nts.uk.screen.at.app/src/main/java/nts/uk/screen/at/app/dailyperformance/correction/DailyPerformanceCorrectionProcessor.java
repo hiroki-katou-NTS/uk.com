@@ -109,7 +109,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
-import nts.uk.screen.at.app.dailyperformance.correction.flex.FlexInfoDisplay;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -164,7 +165,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private NarrowEmployeeAdapter narrowEmployeeAdapter;
 	
 	@Inject
-	private FlexInfoDisplay flexInfoDisplay;
+	private DPMonthFlexProcessor monthFlexProcessor;
 	
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
@@ -359,24 +360,30 @@ public class DailyPerformanceCorrectionProcessor {
 
 		Map<String, DatePeriod> employeeAndDateRange = extractEmpAndRange(dateRange, companyId, listEmployeeId);
 		System.out.println("time before get item" + (System.currentTimeMillis() - timeStart4));
-		long start = System.currentTimeMillis();
-		// No 19, 20 show/hide button
 		boolean showButton = true;
 		if (displayFormat == 0) {
 			if (!listEmployeeId.isEmpty() && !sId.equals(listEmployeeId.get(0))) {
 				showButton = false;
 			}
+		}
+		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+		//get itemId
+		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton, dailyPerformanceDto);
+		//get item Name
+		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
+		
+		long start = System.currentTimeMillis();
+		// No 19, 20 show/hide button
+		if (displayFormat == 0) {
 			// フレックス情報を表示する
-			if(!listEmployeeId.isEmpty())
-			screenDto.setFlexShortage(flexInfoDisplay.flexInfo(listEmployeeId.get(0), dateRange.getEndDate(),  AppContexts.user().roles().forAttendance()));
-			//screenDto.setFlexShortage(null);
+			if (!listEmployeeId.isEmpty())
+				screenDto.setMonthResult(monthFlexProcessor
+						.getDPMonthFlex(new DPMonthFlexParam(listEmployeeId.get(0), dateRange.getEndDate(),
+								screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
+			// screenDto.setFlexShortage(null);
 		}
 		System.out.println("time flex : " + (System.currentTimeMillis() - start));
 		
-		//get itemId
-		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton);
-		//get item Name
-		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getLstAttendanceItem() != null
 				? dPControlDisplayItem.getLstAttendanceItem().stream()
@@ -825,8 +832,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 	public DisplayItem getDisplayItems(CorrectionOfDailyPerformance correct, List<String> formatCodes,
 			String companyId, DailyPerformanceCorrectionDto screenDto, List<String> listEmployeeId,
-			boolean showButton) {
-		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+			boolean showButton, OperationOfDailyPerformanceDto dailyPerformanceDto) {
 		screenDto.setComment(dailyPerformanceDto != null ? dailyPerformanceDto.getComment() : null);
 		screenDto.setTypeBussiness(dailyPerformanceDto != null ? dailyPerformanceDto.getSettingUnit().value : 1);
 		DisplayItem disItem = this.getItemIds(listEmployeeId, screenDto.getDateRange(), correct, formatCodes,
@@ -1085,6 +1091,7 @@ public class DailyPerformanceCorrectionProcessor {
 							List<String> formatCodes = initialDisplayDtos.stream()
 									.map(x -> x.getDailyPerformanceFormatCode()).collect(Collectors.toList());
 							result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
+							result.setAutBussCode(result.getFormatCode());
 							// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
 							authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
 							List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
@@ -1100,6 +1107,7 @@ public class DailyPerformanceCorrectionProcessor {
 						}
 					} else {
 						result.setFormatCode(formatCodeSelects.stream().collect(Collectors.toSet()));
+						result.setAutBussCode(result.getFormatCode());
 						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodeSelects);
 						List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 								.collect(Collectors.toList());
@@ -1140,6 +1148,7 @@ public class DailyPerformanceCorrectionProcessor {
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
 				/// アルゴリズム「社員の勤務種別をすべて取得する」を実行する
 				List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
+				result.setAutBussCode(new HashSet<>(lstBusinessTypeCode));
 				// Create header & sheet
 				if (lstBusinessTypeCode.size() > 0) {
                     // List item hide 
@@ -1472,25 +1481,29 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	public DateRange changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId, DailyPerformanceCorrectionDto screenDto){
 		
-		if (dateRange != null)
+		if (dateRange != null){
+			screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
 			return dateRange;
+		}
 
 		boolean isObjectShare = objectShare != null && objectShare.getStartDate() != null
 				&& objectShare.getEndDate() != null;
 
 		if (isObjectShare && objectShare.getInitClock() == null) {
 			// get employmentCode
-			//screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
-			return new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
+			dateRange = new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
+			screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
+			return dateRange;
 		} else {
 
 			GeneralDate dateRefer = GeneralDate.today();
 			if (isObjectShare && objectShare.getInitClock() != null) {
 				dateRefer = objectShare.getEndDate();
 			}
-
+            
+			screenDto.setEmploymentCode( getEmploymentCode(new DateRange(null, dateRefer), sId));
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-					.findByEmploymentCD(companyId, getEmploymentCode(new DateRange(null, dateRefer), sId));
+					.findByEmploymentCD(companyId, screenDto.getEmploymentCode());
 
 			if (closureEmploymentOptional.isPresent()) {
 				Optional<PresentClosingPeriodExport> closingPeriod = (isObjectShare

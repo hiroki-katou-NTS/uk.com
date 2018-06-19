@@ -153,6 +153,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         initScreenSPR: any = 0;
         showDateRange: KnockoutObservable<any> = ko.observable(true);
+        
         flexShortage: KnockoutObservable<FlexShortage> = ko.observable(new FlexShortage(null, null, null));
         optionNoOfHolidays: any = {
             width: "70",
@@ -163,6 +164,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         showFlex: KnockoutObservable<any> = ko.observable(false);
         breakTimeDay: KnockoutObservable<BreakTimeDay> = ko.observable(null);
         canFlex: KnockoutObservable<any> = ko.observable(false);
+        
         sprStampSourceInfo: KnockoutObservable<any> = ko.observable(null);
 
         itemMonth: any = [];
@@ -564,23 +566,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         processFlex(data): JQueryPromise<any> {
             let dfd = $.Deferred();
             let self = this;
-            if (data.flexShortage != null && data.flexShortage.showFlex && self.displayFormat() == 0) {
+            if (data.monthResult != null &&  data.monthResult.flexShortage != null && data.monthResult.flexShortage.showFlex && self.displayFormat() == 0) {
                 self.showFlex(true);
-                self.canFlex(data.flexShortage.canflex);
-                self.breakTimeDay(data.flexShortage.breakTimeDay);
-                self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
+                self.canFlex(data.monthResult.flexShortage.canflex);
+                self.breakTimeDay(data.monthResult.flexShortage.breakTimeDay);
+                self.calcFlex(new CalcFlex(data.monthResult.flexShortage.value18, data.monthResult.flexShortage.value21, data.monthResult.flexShortage.value189, data.monthResult.flexShortage.value190, data.monthResult.flexShortage.value191));
                 self.itemMonth = [];
-                self.valueFlexCheck = data.flexShortage.calc;
+                self.valueFlexCheck = data.monthResult.flexShortage.calc;
                 let fst: FlexShortage = self.flexShortage();
 
                 //fst.parent = ko.observable(self);
-                $.when(fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay), data.flexShortage.redConditionMessage, data.flexShortage.messageNotForward)).done(() => {
-                    self.itemMonthLayout(data);
-                    self.itemValueMonthParent = data.flexShortage.monthParent;
-                    nts.uk.ui.block.clear();
-                    dfd.resolve();
-                });
-
+                fst.bindDataChange(ko.toJS(self.calcFlex), data.monthResult.flexShortage.redConditionMessage, data.monthResult.flexShortage.messageNotForward, data.monthResult.error)
+                self.itemMonthLayout(data);
+                self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
+                 dfd.resolve();
+                nts.uk.ui.block.clear();
                 //self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
                 // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
             } else {
@@ -595,8 +595,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let self = this;
             self.itemMonth = [];
             //self.itemMonth.push(data.flexShortage.value18);
-            self.itemMonth.push(data.flexShortage.value189);
-            self.itemMonth.push(data.flexShortage.value190);
+            self.itemMonth.push(data.monthResult.flexShortage.value189);
+            self.itemMonth.push(data.monthResult.flexShortage.value190);
         }
         receiveData(data) {
             var self = this;
@@ -3033,10 +3033,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     class FlexShortage {
         shortageTime: KnockoutObservable<any> = ko.observable();
         nextMonthTransferredMoneyTime: KnockoutObservable<string> = ko.observable("");
+        
         noOfHolidays: KnockoutObservable<any> = ko.observable("");
         nameNoOfHolidays: any;
+        noOfHolidaysOld:  KnockoutObservable<any> = ko.observable("");
+        
         absentDeductionTime: KnockoutObservable<any> = ko.observable();
         nameAbsentDeductionTime: any;
+        absentDeductionTimeOld: KnockoutObservable<any> = ko.observable();
+        
         initLoad = 0;
         messageRed: KnockoutObservable<any> = ko.observable();
         messageNoForward: KnockoutObservable<any> = ko.observable();
@@ -3045,101 +3050,94 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let self = this;
             this.nameNoOfHolidays = nts.uk.resource.getText('Com_PaidHoliday');
             this.nameAbsentDeductionTime = nts.uk.resource.getText('KDW003_79');
-            //this.messageRed(nts.uk.resource.getText('KDW003_80', ["15:00"]));
-            self.bindData(dataCalc, breakTimeDay, "", "");
+            self.bindDataChange(dataCalc, "", "");
             self.noOfHolidays.subscribe(val => {
                 let parent = ko.toJS(__viewContext.vm);
                 if (self.initLoad > 0) {
-                    self.calc(parent.calcFlex, parent.breakTimeDay);
+                    if (val != self.noOfHolidaysOld()){
+                        self.calc();
+                    }
                 }
             });
 
             self.absentDeductionTime.subscribe(val => {
                 let parent = ko.toJS(__viewContext.vm);
                 if (self.initLoad > 0) {
-                    self.calc(parent.calcFlex, parent.breakTimeDay);
+                    if (val != self.absentDeductionTimeOld()){
+                        self.calc();
+                    }
                 }
             });
         };
 
-        bindData(dataCalc: CalcFlex, breakTimeDay: BreakTimeDay, redConditionMessage: any, messageNotForward: any): JQueryPromise<any> {
-            let dfd = $.Deferred();
-            if (!dataCalc || !breakTimeDay) {
+        bindDataChange(dataCalc: CalcFlex, redConditionMessage: any, messageNotForward: any, error: boolean) {
+            if (!dataCalc) {
                 return;
             }
+
             let self = this,
-                val18 = dataCalc.value18,
+                val18 = dataCalc.value18, 
+                val19 = dataCalc.value19,
                 val21 = dataCalc.value21,
                 val189 = dataCalc.value189,
                 val190 = dataCalc.value190,
                 val191 = dataCalc.value191;
+            //set old value 
+            self.noOfHolidaysOld(val189);
+            self.absentDeductionTimeOld(val190);
+            
             self.messageRed(nts.uk.resource.getText('KDW003_80', [redConditionMessage]));
             self.messageNoForward(messageNotForward);
-            self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val21)) * (-1)), self.convertToHours(Number(val21) * (-1))]));
-            //self.nextMonthTransferredMoneyTime(self.convertToHours(Number(val18) * (-1)));
+            
+            self.shortageTime("-"+nts.uk.resource.getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), "-"+self.convertToHours(Number(val19))]));
+            self.nextMonthTransferredMoneyTime("-"+nts.uk.resource.getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
             self.noOfHolidays(Number(val189));
             self.absentDeductionTime(Number(val190));
+            if (error) {
+                $("#next-month").attr('style', 'background-color: red !important');
+            } else {
+                $("#next-month").attr('style', 'background-color: white !important');
+            }
             self.initLoad = 1;
-            self.calc(dataCalc, breakTimeDay).done(() => {
-                dfd.resolve();
-            });
-            //self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay);
-            return dfd.promise();
         }
 
-        calc(dataCalc: CalcFlex, breakTimeDay: BreakTimeDay): JQueryPromise<any> {
+        calc(): JQueryPromise<any> {
             let dfd = $.Deferred();
-            let self = this,
-                number189 = Number(self.noOfHolidays()),
-                val189 = self.natural(number189) * Number(self.natural(breakTimeDay.day)) + (number189 - self.natural(number189)) / 0.5 * self.natural(breakTimeDay.am),
-                minuNextMonth;
-            if (self.absentDeductionTime() != undefined) {
-                minuNextMonth = ((dataCalc.value191 + dataCalc.value21) - (val189 + self.absentDeductionTime())) * (-1)
-            }
-            else {
-                return;
-            }
-
-            // minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth * (-1);
-            self.nextMonthTransferredMoneyTime(self.convertToHours(minuNextMonth));
-
+            let self = this;
+            
             if ((__viewContext.vm.canFlex())) {
-                self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay).done(() => {
-                    __viewContext.vm.valueUpdateMonth = {};
+                __viewContext.vm.valueUpdateMonth = {};
+                if (__viewContext.vm.itemMonth.length > 0) {
+                    let dataFlexUpdate = __viewContext.vm.itemValueMonthParent,
+                        items = _.map(ko.toJS(__viewContext.vm).itemMonth, value => {
+                            if (value.itemId == 189) {
+                                value.value = self.noOfHolidays();
+                            }
+                            if (value.itemId == 190) {
+                                value.value = self.absentDeductionTime();
+                            }
+                            return value;
+                        });
 
-                    if (__viewContext.vm.itemMonth.length > 0) {
-                        let dataFlexUpdate = __viewContext.vm.itemValueMonthParent,
-                            items = _.map(ko.toJS(__viewContext.vm).itemMonth, value => {
-                                if (value.itemId == 18) {
-                                    value.value = String(minuNextMonth * (-1));
-                                }
-                                if (value.itemId == 189) {
-                                    value.value = self.noOfHolidays();
-                                }
-                                if (value.itemId == 190) {
-                                    value.value = self.absentDeductionTime();
-                                }
-                                return value;
-                            });
-
-                        if (dataFlexUpdate) {
-                            dataFlexUpdate["items"] = items;
-                            __viewContext.vm.valueUpdateMonth = dataFlexUpdate;
-                        }
-                    } else {
-                        __viewContext.vm.valueUpdateMonth = null;
+                    if (dataFlexUpdate) {
+                        dataFlexUpdate["items"] = items;
+                        __viewContext.vm.valueUpdateMonth = dataFlexUpdate;
                     }
-                    dfd.resolve();
-                });
+                } else {
+                    __viewContext.vm.valueUpdateMonth = null;
+                }
+                dfd.resolve();
             } else {
                 dfd.resolve();
             }
             return dfd.promise();
         }
+        
         natural(value: any): number {
             let temp = Number(value);
             return temp < 0 ? 0 - Math.floor(Math.abs(temp)) : Math.floor(temp);
         }
+        
         convertToHours(value: any): string {
             let self = this;
             let hours = value < 0 ? String(0 - Math.floor(Math.abs(value / 60))) : String(Math.floor(value / 60));
@@ -3148,42 +3146,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return hours + ":" + minutes;
         }
 
-        checkColor(value: any, breakTimeDay: BreakTimeDay): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            if (__viewContext.vm.valueFlexCheck == undefined) dfd.resolve();
-            let param = __viewContext.vm.valueFlexCheck;
-            param.date = moment(param.date).utc().toISOString()
-            service.findFlexCheck(param).done((data) => {
-                self.messageRed(nts.uk.resource.getText('KDW003_80', [data]));
-                self.checkColorDetail(data, value, breakTimeDay);
-                dfd.resolve();
-            }).fail(() => {
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
         checkColorDetail(timeCheck: any, value: any, breakTimeDay: BreakTimeDay) {
             let self = this;
             let check1174 = false,
                 check1175 = false;
-            let valueToMinutes = moment.duration(value).asMinutes(),
-                valueTimeCheck = moment.duration(timeCheck).asMinutes();
-            //            if (value.indexOf("-") != -1) {
-            //                let hours = value.split("-")[1].split(":");
-            //                if (Number(hours[0]) > 15 || (Number(hours[0]) == 15 && hours[1] != "00")) {
-            //                    check1174 = true;
-            //                }
-            //            }
-            if (valueToMinutes < valueTimeCheck) {
-                check1174 = true;
-            }
-            // check
-            let numberMonth = moment.duration(self.nextMonthTransferredMoneyTime()).asMinutes();
-            if (breakTimeDay.am <= numberMonth) {
-                check1175 = true;
-            }
             if (check1174 || check1175) {
                 $("#next-month").attr('style', 'background-color: red !important');
             } else {

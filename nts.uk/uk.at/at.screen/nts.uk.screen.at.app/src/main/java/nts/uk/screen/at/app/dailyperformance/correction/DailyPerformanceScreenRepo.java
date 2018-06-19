@@ -48,6 +48,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.Re
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -212,4 +213,12 @@ public interface DailyPerformanceScreenRepo {
 	Map<String, List<AffComHistItemAtScreen>>getAffCompanyHistoryOfEmployee(String cid, List<String> employeeIds);
 	
 	String findWorkConditionLastest(List<String> hists, String employeeId);
+	
+    List<Integer> getItemIdsMonthByAuthority(String companyId, Set<String> formats);
+	
+	List<Integer> getItemIdsMonthByBussiness(String companyId, Set<String> formats);
+	
+	List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 
+	
+	Integer getLimitFexMonth();
  }

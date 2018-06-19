@@ -196,8 +196,8 @@
 								</thead>
 								<tbody>
 									<tr data-bind="let: { fst: flexShortage() }">
-										<td class="ui-widget-body"><span class="text-holiday"
-											data-bind="text: fst.shortageTime"></span></td>
+										<td class="ui-widget-body" id = "short-time"><span class="text-holiday"
+											data-bind="text: fst.shortageTime()"></span></td>
 										<td class="text-holiday ui-widget-body" id="next-month"><span
 											data-bind="text: ko.computed(function() { return fst.nextMonthTransferredMoneyTime() })"></span>
 										</td>
