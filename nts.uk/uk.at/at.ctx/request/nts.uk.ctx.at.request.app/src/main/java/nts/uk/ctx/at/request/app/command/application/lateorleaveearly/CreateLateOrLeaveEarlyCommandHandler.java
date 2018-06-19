@@ -6,11 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
-<<<<<<< HEAD
-import nts.arc.time.GeneralDate;
-=======
 import nts.arc.layer.app.command.CommandHandlerWithResult;
->>>>>>> pj/at/dev/Team_D/Release_20180621
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;

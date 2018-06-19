@@ -156,15 +156,11 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 nts.uk.ui.block.invisible();
                 service.updateLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-<<<<<<< HEAD
-                        location.reload();
-=======
                         if(data.autoSendMail){
                             appcommon.CommonProcess.displayMailResult(data);  
                         } else {
                             location.reload();
                         }
->>>>>>> pj/at/dev/Team_D/Release_20180621
                     });
                 }).fail((res) => {
                     if (res.optimisticLock == true) {

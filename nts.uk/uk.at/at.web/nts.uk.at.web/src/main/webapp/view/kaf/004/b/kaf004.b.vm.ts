@@ -2,11 +2,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
     import kaf002 = nts.uk.at.view.kaf002;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
-<<<<<<< HEAD
-
-=======
     import setShared = nts.uk.ui.windows.setShared;
->>>>>>> pj/at/dev/Team_D/Release_20180621
     const employmentRootAtr: number = 1; // EmploymentRootAtr: Application
     const applicationType: number = 9; // Application Type: Stamp Application
 
@@ -156,15 +152,9 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         return;
                     }
                     let lateOrLeaveEarly: LateOrLeaveEarly = {
-<<<<<<< HEAD
-                        prePostAtr: prePostAtr,
-                        applicationDate: self.appCommonSetting().generalDate(),
-                        sendMail: self.sendMail(),
-=======
                         prePostAtr: prePostAtr, 
-                        applicationDate: self.date(),
+                        applicationDate: self.appCommonSetting().generalDate(),
                         sendMail: self.checkBoxValue(),
->>>>>>> pj/at/dev/Team_D/Release_20180621
                         late1: self.late1() ? 1 : 0,
                         lateTime1: self.lateTime1(),
                         early1: self.early1() ? 1 : 0,
@@ -179,9 +169,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     nts.uk.ui.block.invisible();
                     service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-<<<<<<< HEAD
-                            location.reload();
-=======
                             if(data.autoSendMail){
                                 appcommon.CommonProcess.displayMailResult(data);    
                             } else {
@@ -191,7 +178,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                                     location.reload();
                                 }   
                             }
->>>>>>> pj/at/dev/Team_D/Release_20180621
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });

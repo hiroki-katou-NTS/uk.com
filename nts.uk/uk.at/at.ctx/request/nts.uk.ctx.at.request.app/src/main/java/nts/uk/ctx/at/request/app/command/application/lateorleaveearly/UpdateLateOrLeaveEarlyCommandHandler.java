@@ -24,13 +24,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @Transactional
-<<<<<<< HEAD
-public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateLateOrLeaveEarlyCommand> {
-
-=======
 public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResult<UpdateLateOrLeaveEarlyCommand, ProcessResult> {
 	
->>>>>>> pj/at/dev/Team_D/Release_20180621
 	@Inject
 	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
 
@@ -77,19 +72,10 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResu
 		// ドメインモデル「遅刻早退取消申請」の更新する
 		// Update the domain model 'Cancellation for late arrival cancellation'
 		lateOrLeaveEarlyService.updateLateOrLeaveEarly(domainLateOrLeaveEarly);
-<<<<<<< HEAD
-
-		// 「4-2.詳細画面登録後の処理」を実行する
-		// TODO: Waiting for common change
-		afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly.getApplication());
-
-=======
 		
 		//「4-2.詳細画面登録後の処理」を実行する
 		//TODO: Waiting for common change
 		return afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly.getApplication());
-		
->>>>>>> pj/at/dev/Team_D/Release_20180621
 	}
 
 }
