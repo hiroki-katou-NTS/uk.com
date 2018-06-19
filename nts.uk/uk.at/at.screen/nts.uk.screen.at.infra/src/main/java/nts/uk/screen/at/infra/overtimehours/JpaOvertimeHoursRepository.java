@@ -26,7 +26,9 @@ public class JpaOvertimeHoursRepository extends JpaRepository implements Overtim
 	public List<String> getAffWkpHistItemByListWkpIdAndDatePeriod(DatePeriod dateperiod, List<String> workplaceId) {
 		List<String> listHistItem = new ArrayList<>();
 		CollectionUtil.split(workplaceId, 1000, subList -> {
-			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPID_DATEPERIOD, String.class).setParameter("workplaceIds", subList).setParameter("startDate", dateperiod.start())
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPID_DATEPERIOD, String.class)
+					.setParameter("workplaceIds", subList)
+					.setParameter("startDate", dateperiod.start())
 					.setParameter("endDate", dateperiod.end()).getList());
 		});
 		if (listHistItem.isEmpty()) {

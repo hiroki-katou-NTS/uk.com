@@ -142,7 +142,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		
 		GeneralDate start = GeneralDate.fromString(String.valueOf(baseDate.year()) + "/12/31", "yyyy/MM/dd");
-		GeneralDate end = GeneralDate.fromString(String.valueOf(baseDate.year()) + "/1/1", "yyyy/MM/dd");
+		GeneralDate end = GeneralDate.fromString(String.valueOf(baseDate.year()) + "/01/01", "yyyy/MM/dd");
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
