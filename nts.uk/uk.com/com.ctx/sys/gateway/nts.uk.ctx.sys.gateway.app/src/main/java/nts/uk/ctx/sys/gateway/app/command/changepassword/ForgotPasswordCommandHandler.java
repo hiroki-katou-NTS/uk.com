@@ -27,9 +27,10 @@ public class ForgotPasswordCommandHandler extends CommandHandler<ForgotPasswordC
 	@Override
 	protected void handle(CommandHandlerContext<ForgotPasswordCommand> context) {
 
-		String userId = AppContexts.user().userId();
+		
 		ForgotPasswordCommand command = context.getCommand();
-
+		
+		String userId = command.getUserId();
 		String newPassword = command.getNewPassword();
 		String confirmNewPassword = command.getConfirmNewPassword();
 		
