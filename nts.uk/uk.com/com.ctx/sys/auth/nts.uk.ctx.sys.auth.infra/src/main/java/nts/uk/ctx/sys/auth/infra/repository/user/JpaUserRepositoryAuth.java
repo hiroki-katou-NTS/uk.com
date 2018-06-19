@@ -145,6 +145,55 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	    this.commandProxy().update(entity);
 	}
 
+	private final String SELECT_ALL_USER_LIKE_NAME = SELECT_BY_KEY + " AND c.userName LIKE :key";
+	@Override
+	public List<User> searchByKey(GeneralDate systemDate, int special, int multi, String key) {
+		return this.queryProxy()
+				.query(SELECT_ALL_USER_LIKE_NAME,SacmtUser.class)
+				.setParameter("systemDate", systemDate)
+				.setParameter("specialUser", special)
+				.setParameter("multiCompanyConcurrent", multi)
+				.setParameter("key", '%' +key+ '%')
+				.getList(c -> c.toDomain());
+	}
+
+	private final String SELECT_MULTI_CONDITION = "SELECT c From SacmtUser c "
+			+ "WHERE c.expirationDate >= :systemDate "
+			+ "AND c.specialUser = :specialUser "
+			+ "AND c.multiCompanyConcurrent = :multiCompanyConcurrent "
+			+ "AND c.associatedPersonID IN :employeePersonId ";
+	private final String SELECT_MULTI_AND_PERSON_ID = SELECT_MULTI_CONDITION 
+			+ "AND (c.userName LIKE :key OR c.associatedPersonID IN :employeePersonIdFindName)";
+	private final String SELECT_MULTI_NO_PERSON_ID = SELECT_MULTI_CONDITION 
+			+ "AND c.userName LIKE :key ";
+	@Override
+	public List<User> searchUserMultiCondition(GeneralDate systemDate, int special, int multi, String key,
+			List<String> employeePersonIdFindName, List<String> employeePersonId) {
+		if(employeePersonId.isEmpty()) {
+			return new ArrayList<>();
+		}
+		if(employeePersonIdFindName.isEmpty()) {
+			return this.queryProxy()
+					.query(SELECT_MULTI_NO_PERSON_ID,SacmtUser.class)
+					.setParameter("systemDate", systemDate)
+					.setParameter("specialUser", special)
+					.setParameter("multiCompanyConcurrent", multi)
+					.setParameter("employeePersonId", employeePersonId)
+					.setParameter("key", '%' +key+ '%')
+					.getList(c -> c.toDomain());
+		}else {
+			return this.queryProxy()
+					.query(SELECT_MULTI_AND_PERSON_ID,SacmtUser.class)
+					.setParameter("systemDate", systemDate)
+					.setParameter("specialUser", special)
+					.setParameter("multiCompanyConcurrent", multi)
+					.setParameter("employeePersonId", employeePersonId)
+					.setParameter("key", '%' +key+ '%')
+					.setParameter("employeePersonIdFindName", employeePersonIdFindName)
+					.getList(c -> c.toDomain());
+		}
+	}
+
 	
 
 

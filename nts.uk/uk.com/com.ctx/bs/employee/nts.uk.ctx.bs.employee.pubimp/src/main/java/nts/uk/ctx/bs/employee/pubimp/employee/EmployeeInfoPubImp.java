@@ -126,7 +126,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			if (affComHistByEmp.items() != null) {
 
 				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-					return m.end().afterOrEquals(standardDate) && m.start().beforeOrEquals(standardDate);
+					return m.end().beforeOrEquals(standardDate) && m.start().afterOrEquals(standardDate);
 				}).collect(Collectors.toList());
 
 				if (!filter.isEmpty()) {

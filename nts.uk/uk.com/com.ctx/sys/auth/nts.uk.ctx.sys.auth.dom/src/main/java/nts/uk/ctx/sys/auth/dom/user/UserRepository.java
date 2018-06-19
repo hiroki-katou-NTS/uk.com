@@ -30,5 +30,10 @@ public interface UserRepository {
 	void addNewUser(User newUser);
 	
 	void update (User user);
+	
+	// add function 15.06.2018 thanhpv
+	List<User> searchByKey(GeneralDate systemDate, int special, int multi, String key);	
+	// add function 19.06.2018 thanhpv for CAS013
+	List<User> searchUserMultiCondition(GeneralDate systemDate, int special, int multi, String key, List<String> employeePersonIdFindName, List<String> employeePersonId);
 
 }
