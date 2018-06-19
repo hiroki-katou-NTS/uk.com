@@ -19,6 +19,9 @@
 /// <reference path="time/minutesbased/minutesbased_duration.ts"/>
 /// <reference path="time/minutesbased/minutesbased_clock.ts"/>
 /// <reference path="time/minutesbased/minutesbased_withdayattr.ts"/>
+/// <reference path="time/secondsbased/secondsbased.ts"/>
+/// <reference path="time/secondsbased/secondsbased_duration.ts"/>
+/// <reference path="time/secondsbased/secondsbased_clock.ts"/>
 
 /// <reference path="request.ts"/>
 /// <reference path="ui/init.ts"/>

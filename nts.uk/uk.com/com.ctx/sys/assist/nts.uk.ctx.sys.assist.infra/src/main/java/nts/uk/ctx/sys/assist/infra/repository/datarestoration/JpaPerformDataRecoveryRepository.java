@@ -175,15 +175,21 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public void deleteEmployeeHis(String tableName, Boolean whereCid, Boolean whereEmId, String cid,
+	public void deleteEmployeeHis(String tableName,String whereCid, String whereSid, String cid,
 			String employeeId) {
 		EntityManager em = this.getEntityManager();
 		DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-		if (whereCid) {
-			DELETE_BY_TABLE_SQL.append("CID = ").append(cid);
+		int count = 0;
+		if (whereCid != null) {
+			DELETE_BY_TABLE_SQL.append(whereCid).append(" = ").append(cid);
+			count ++;
 		}
-		if (whereEmId) {
-			DELETE_BY_TABLE_SQL.append("SID = ").append(employeeId);
+		if (whereSid != null) {
+			if(count !=0) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = ").append(employeeId);
+			} else {
+				DELETE_BY_TABLE_SQL.append(whereSid).append(" = ").append(employeeId);
+			}
 		}
 		Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 		query.executeUpdate();

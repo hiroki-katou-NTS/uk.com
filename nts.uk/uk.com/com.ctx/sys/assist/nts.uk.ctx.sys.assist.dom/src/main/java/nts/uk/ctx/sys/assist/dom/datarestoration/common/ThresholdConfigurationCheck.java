@@ -25,7 +25,6 @@ public class ThresholdConfigurationCheck {
 			if (f.exists()){
 				List<String> listFileName = Arrays.asList(f.list());
 				if (tableList.size() == listFileName.size() -2){
-					if(survey == NotUseAtr.NOT_USE) serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY);
 					for(int i = 0; i < tableList.size(); i++){
 						//TODO
 						// Chua xac dinh su dung thuoc tinh nao

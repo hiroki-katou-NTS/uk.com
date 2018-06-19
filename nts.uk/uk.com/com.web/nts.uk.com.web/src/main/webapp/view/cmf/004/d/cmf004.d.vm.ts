@@ -5,9 +5,9 @@ module nts.uk.com.view.cmf004.d {
         import getText = nts.uk.resource.getText;
         import setShared = nts.uk.ui.windows.setShared;
         import getShared = nts.uk.ui.windows.getShared;
+        import dialog = nts.uk.ui.dialog;
         export class ScreenModel {
-            // interval 1000ms request to server
-            interval: any;
+            isSuccess: KnockoutObservable<boolean> = ko.observable(true);
 
             fileName: KnockoutObservable<string> = ko.observable('');
             fileId: KnockoutObservable<string> = ko.observable('');
@@ -18,14 +18,15 @@ module nts.uk.com.view.cmf004.d {
             statusUpload: KnockoutObservable<string>;
             statusDecom: KnockoutObservable<string>;
             statusCheck: KnockoutObservable<string>;
+            timeStart: any;
             constructor() {
                 let self = this;
-                self.fileNameUpload = ko.observable("File Name Upload");
+                self.timeStart = new Date();
                 self.timeLabel = ko.observable("00:00:00");
-                self.statusLabel = ko.observable("Status Label");
-                self.statusUpload = ko.observable("Status Upload");
-                self.statusDecom = ko.observable("Status Upload");
-                self.statusCheck = ko.observable("Status Check");
+                self.statusLabel = ko.observable("");
+                self.statusUpload = ko.observable("");
+                self.statusDecom = ko.observable("");
+                self.statusCheck = ko.observable("");
                 let fileInfo = getShared("CMF004_D_PARAMS");
                 if (fileInfo) {
                     self.fileId(fileInfo.fileId);
@@ -35,8 +36,9 @@ module nts.uk.com.view.cmf004.d {
             }
 
             startPage(): JQueryPromise<any> {
-                
-                let self = this, dfd = $.Deferred();
+
+                var self = this;
+                let dfd = $.Deferred();
                 let fileInfo = {
                     processingId: self.processingId,
                     fileId: self.fileId(),
@@ -44,7 +46,6 @@ module nts.uk.com.view.cmf004.d {
                     password: self.password()
                 };
                 service.extractData(fileInfo).done(function(result) {
-                    let self = this;
                     dfd.resolve();
                     block.invisible();
                     self.taskId = result.id;
@@ -53,23 +54,29 @@ module nts.uk.com.view.cmf004.d {
                         .task(() => {
                             return nts.uk.request.asyncTask.getInfo(self.taskId).done(function(res: any) {
                                 // update state on screen
-                                if (res.running || res.succeeded || res.cancelled) {
-                                    //Update status
-                                    let status = res.taskDatas[0].valueAsString;
-                                    
-                                    if (res.running) {
-                                        // 経過時間＝現在時刻－開始時刻
-//                                        self.timeNow = new Date();
-//                                        let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStartt.getSeconds() + self.timeStartt.getMinutes() * 60 + self.timeStartt.getHours() * 60);
-//                                        let time = new Date(null);
-//                                        time.setSeconds(over); // specify value for SECONDS here
-//                                        let result = time.toISOString().substr(11, 8);
-//
-//                                        self.timeLabel(result);
+                                let status = JSON.parse(res.taskDatas[0].valueAsString);
+                                self.statusLabel(getText(status.conditionName));
+                                if (res.succeeded || res.failed) {
+                                    self.convertToDisplayStatus(status);
+                                    if (status.processingType == 3 && status.processingStatus == 2) {
+                                        self.isSuccess(true);
+                                    } else {
+                                        self.isSuccess(false);
+                                        if (status.processingStatus == 1) {
+                                            dialog.alertError({ messageId: status.messageId });
+                                        }
                                     }
-                                    if (res.succeeded) {
-                                        block.clear();
-                                    }
+                                    block.clear();
+                                }
+                                if (res.running) {
+                                    // 経過時間＝現在時刻－開始時刻
+                                    self.timeNow = new Date();
+                                    let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
+                                    let time = new Date(null);
+                                    time.setSeconds(over); // specify value for SECONDS here
+                                    let result = time.toISOString().substr(11, 8);
+                                    self.timeLabel(result);
+                                    self.convertToDisplayStatus(status);
                                 }
                             });
                         }).while(infor => {
@@ -82,10 +89,37 @@ module nts.uk.com.view.cmf004.d {
             }
 
             closeUp() {
-
+                close();
             }
             continueProcessing() {
-
+                $('#data-recovery-wizard').ntsWizard("next");
+            }
+            convertToDisplayStatus(status){
+                let self = this;
+                if (status.processingType == 1){
+                    self.statusUpload(self.convertToName(status.processingStatus));
+                }
+                if (status.processingType == 2){
+                    // If status is 2, upload is compelete
+                    self.statusUpload(self.convertToName(2));
+                    self.statusDecom(self.convertToName(status.processingStatus));
+                }
+                if (status.processingType == 3){
+                    // If status is 3, upload and extract is compelete
+                    self.statusUpload(self.convertToName(2));
+                    self.statusDecom(self.convertToName(2));
+                    self.statusCheck(self.convertToName(status.processingStatus));
+                }
+            }
+            convertToName(processingType){
+                switch (processingType) {
+                    //処理中
+                    case 0: return getText("CMF004_302");
+                    // 失敗
+                    case 1: return getText("CMF004_303");
+                    // 完了
+                    case 2: return getText("CMF004_304");
+                }
             }
         }
     }

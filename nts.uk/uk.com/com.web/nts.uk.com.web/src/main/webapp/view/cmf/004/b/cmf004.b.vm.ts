@@ -272,11 +272,10 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
 
         formatDate(recoveryPeriod, dateFormat): string {
-            let self = this;
-            if (self.periodInputType(recoveryPeriod) == PeriodEnum.DAY) {
+            if (recoveryPeriod() == PeriodEnum.DAY) {
                 return moment.utc(dateFormat).format("YYYY/MM/DD");
             }
-            if (self.periodInputType(recoveryPeriod) == PeriodEnum.MONTH) {
+            if (recoveryPeriod() == PeriodEnum.MONTH) {
                 return nts.uk.time.formatYearMonth(parseInt(dateFormat));
             }
             return dateFormat;
@@ -339,13 +338,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         backToPreviousScreen(): void {
             $('#data-recovery-wizard').ntsWizard("prev");
             nts.uk.ui.errors.clearAll();
-        }
-
-        periodInputType(inputType): number {
-            if (inputType() === 0) return PeriodEnum.FULLTIME;
-            if (inputType() === 1) return PeriodEnum.DAY;
-            if (inputType() === 2) return PeriodEnum.MONTH;
-            if (inputType() === 3) return PeriodEnum.YEAR;
         }
 
         start(): JQueryPromise<any> {

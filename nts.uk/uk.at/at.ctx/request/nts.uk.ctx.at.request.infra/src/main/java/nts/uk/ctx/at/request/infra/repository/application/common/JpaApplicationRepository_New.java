@@ -22,47 +22,52 @@ import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_Ne
  */
 @Stateless
 public class JpaApplicationRepository_New extends JpaRepository implements ApplicationRepository_New {
-	private final String SELECT_FROM_APPLICATION = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_FROM_APPLICATION = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.companyID = :companyID";
-	private final String UPDATE = "UPDATE KrqdtApplication_New a "
+	private static final String UPDATE = "UPDATE KrqdtApplication_New a "
 			+ "SET a.reversionReason = :reversionReason"
 			+ ", a.appReason = :appReason"
 			+ ", a.stateReflectionReal = :stateReflectionReal"
 			+ ", a.version = :version"
 			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
-	private final String SELECT_APP = "SELECT c FROM KrqdtApplication_New c "
+	private static final String SELECT_APP = "SELECT c FROM KrqdtApplication_New c "
 			+ "WHERE c.employeeID = :applicantSID "
 			+ "AND c.appDate = :appDate "
 			+ "AND c.prePostAtr = :prePostAtr "
 			+ "AND c.appType = :applicationType "
 			+ "ORDER BY c.inputDate DESC";
-	private final String SELECT_BY_DATE = SELECT_FROM_APPLICATION + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
-	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
+	private static final String SELECT_BY_DATE = SELECT_FROM_APPLICATION + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
+	private static  final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
 			+ " AND a.appDate = :appDate "
 			+ " AND a.appType = :applicationType "
 			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
 	//hoatt
-//	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
+//	private static final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
 //			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
-	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
+	private static final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
 			+ " AND ((a.startDate >= :startDate and a.endDate <= :endDate)"
 			+ " OR (a.endDate IS null and a.startDate >= :startDate AND a.startDate <= :endDate))" 
 			+ " AND a.appType IN (0,1,2,4,6,10)";
 	//hoatt
-	private final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
+	private static final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
 			+ " AND ((a.startDate >= :startDate and a.endDate <= :endDate)"
 			+ " OR (a.endDate IS null and a.startDate >= :startDate AND a.startDate <= :endDate))" 
 			+ " AND a.appType IN (0,1,2,4,6,10)";
-	private final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
-	private final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
+	private static final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
 	
-	private final String SELECT_APP_BY_LIST_ID = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_APP_BY_LIST_ID = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.appID IN :listAppID AND a.krqdpApplicationPK.companyID = :companyID"
 			+ " ORDER BY a.appDate";
 	
-	private final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
+	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
+	private static final String SELECT_LATE_LEAVE = SELECT_BY_DATE + " O"
+			+ "AND a.employeeID = :employeeID "
+			+ "AND a.stateReflectionReal = 0 "
+			+ "AND a.appType = 9 ORDER BY a.appDate ASC";
+	
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -200,7 +205,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	 * RequestList 234 param 反映状態   ＝  「否認」
 	 * RequestList 235 param 反映状態   ＝  「差戻し」
 	 */
-	private final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.employeeID = :employeeID "
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.stateReflectionReal IN :listReflecInfor"	
@@ -228,6 +233,16 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
 				.setParameter("listAppID", listAppID)
 				.setParameter("companyID", companyID)
+				.getList(x -> x.toDomain());
+	}
+	@Override
+	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate,
+			GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_LATE_LEAVE, KrqdtApplication_New.class)
+				.setParameter("companyID", companyID)
+				.setParameter("employeeID", employeeID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList(x -> x.toDomain());
 	}
 }

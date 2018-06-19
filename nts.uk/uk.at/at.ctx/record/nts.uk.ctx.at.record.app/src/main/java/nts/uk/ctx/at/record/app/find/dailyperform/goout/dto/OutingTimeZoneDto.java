@@ -23,7 +23,7 @@ public class OutingTimeZoneDto implements ItemConst{
 	private WithActualTimeStampDto comeBack;
 
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = REASON)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int reason;
 	
 	private int outTimeCalc;
