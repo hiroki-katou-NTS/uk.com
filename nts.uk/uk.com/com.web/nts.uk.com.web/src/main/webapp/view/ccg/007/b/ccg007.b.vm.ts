@@ -198,6 +198,12 @@ module nts.uk.pr.view.ccg007.b {
                     height : 350
                 }).onClosed(function(): any {})
             }
+            
+            private account(){
+                service.account().done(data => {
+                    alert('domain: ' + data.domain + '\n' + 'user name: ' + data.userName)
+                });
+            }
         }
     }
 }

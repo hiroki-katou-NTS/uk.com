@@ -163,7 +163,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 							//取得した年休残数　≧　パラメータ.年休残数
 							//パラメータ.処理人数に＋１加算する
 							setter.updateData(NUMBER_OF_SUCCESS, i + 1);
-							continue;
+							return;
 						}
 					}
 				}
