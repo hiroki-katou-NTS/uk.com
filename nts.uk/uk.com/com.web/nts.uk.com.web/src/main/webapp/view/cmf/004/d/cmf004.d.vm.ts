@@ -54,16 +54,22 @@ module nts.uk.com.view.cmf004.d {
                         .task(() => {
                             return nts.uk.request.asyncTask.getInfo(self.taskId).done(function(res: any) {
                                 // update state on screen
-                                let status = JSON.parse(res.taskDatas[0].valueAsString);
-                                self.statusLabel(getText(status.conditionName));
+                                let status;
+                                if (res.taskDatas.length >0){
+                                    status = JSON.parse(res.taskDatas[0].valueAsString);
+                                    self.statusLabel(getText(status.conditionName));
+                                }
+                                
                                 if (res.succeeded || res.failed) {
-                                    self.convertToDisplayStatus(status);
-                                    if (status.processingType == 3 && status.processingStatus == 2) {
-                                        self.isSuccess(true);
-                                    } else {
-                                        self.isSuccess(false);
-                                        if (status.processingStatus == 1) {
-                                            dialog.alertError({ messageId: status.messageId });
+                                    if(status){
+                                        self.convertToDisplayStatus(status);
+                                        if (status.processingType == 3 && status.processingStatus == 2) {
+                                            self.isSuccess(true);
+                                        } else {
+                                            self.isSuccess(false);
+                                            if (status.processingStatus == 1) {
+                                                dialog.alertError({ messageId: status.messageId });
+                                            }
                                         }
                                     }
                                     block.clear();
@@ -76,7 +82,9 @@ module nts.uk.com.view.cmf004.d {
                                     time.setSeconds(over); // specify value for SECONDS here
                                     let result = time.toISOString().substr(11, 8);
                                     self.timeLabel(result);
-                                    self.convertToDisplayStatus(status);
+                                    if (status){ 
+                                        self.convertToDisplayStatus(status);
+                                    }
                                 }
                             });
                         }).while(infor => {
