@@ -20,12 +20,15 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWork
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
@@ -119,6 +122,8 @@ public class AppHolidayWorkFinder {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	@Inject
+	private AtEmployeeAdapter atEmployeeAdapter;
 	
 	
 	/**
@@ -127,15 +132,23 @@ public class AppHolidayWorkFinder {
 	 * @param uiType
 	 * @return
 	 */
-	public AppHolidayWorkDto getAppHolidayWork(String appDateInput,int uiType,List<String> lstEmployee,Integer payoutType){
+	public AppHolidayWorkDto getAppHolidayWork(String appDateInput,int uiType,List<String> lstEmployee,Integer payoutType,String employeeID){
 		
 		AppHolidayWorkDto result = new AppHolidayWorkDto();
 		String companyID = AppContexts.user().companyId();
-		String employeeID = null;
-		if(CollectionUtil.isEmpty(lstEmployee)){
+		if(CollectionUtil.isEmpty(lstEmployee) && employeeID == null){
 			 employeeID = AppContexts.user().employeeId();
-		}else{
+		}else if(!CollectionUtil.isEmpty(lstEmployee)){
 			employeeID = lstEmployee.get(0);
+			List<EmployeeInfoImport> employees = this.atEmployeeAdapter.getByListSID(lstEmployee);
+			if(!CollectionUtil.isEmpty(employees)){
+				List<EmployeeOvertimeDto> employeeOTs = new ArrayList<>();
+				for(EmployeeInfoImport emp : employees){
+					EmployeeOvertimeDto employeeOT = new EmployeeOvertimeDto(emp.getSid(), emp.getBussinessName());
+					employeeOTs.add(employeeOT);
+				}
+				result.setEmployees(employeeOTs);
+			}
 		}
 		int rootAtr = 1;
 		

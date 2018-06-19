@@ -39,7 +39,7 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getHolidayWorkByUI")
 	public AppHolidayWorkDto getOvertimeByUIType(Param param) {
-		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType());
+		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID());
 	}
 	@POST
 	@Path("findChangeAppDate")
@@ -99,6 +99,7 @@ class Param{
 	private int uiType;
 	private List<String> lstEmployee;
 	private Integer payoutType;
+	private String employeeID;
 }
 @Data
 class RecordWorkParam {
