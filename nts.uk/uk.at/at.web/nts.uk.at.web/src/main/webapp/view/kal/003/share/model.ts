@@ -879,7 +879,7 @@ module nts.uk.at.view.kal003.share.model {
             if(!nts.uk.util.isNullOrUndefined(data)){
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
                 this.extractType=ko.observable(data.compareOperator || 0);
-                this.textLabel=ko.observable(data.classification == 0 ? nts.uk.resource.getText("KAL003_158"): nts.uk.resource.getText("KAL003_159"));
+                this.textLabel=ko.observable(data.classification == 0 ? nts.uk.resource.getText("KAL003_159"): nts.uk.resource.getText("KAL003_158"));
                 this.operator=ko.observable(data.compareOperator || 0);
                 this.haveInput=ko.observable(data.classification == 0 ? 1 : 2);
                 this.typeCheckItem =ko.observable(data.classification == 0 ? 1 : 2 );
@@ -1022,7 +1022,7 @@ module nts.uk.at.view.kal003.share.model {
                 } else {
                     self.inputs()[1].enable(false);
                     self.inputs()[1].required(false);
-                    self.inputs()[1].value('');
+                    self.inputs()[1].value(0);
                 }
             });  
         }
