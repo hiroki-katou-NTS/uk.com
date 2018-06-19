@@ -65,7 +65,7 @@ public class User extends AggregateRoot {
 			String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent,
 			String mailAddress, String userName, String associatedPersonID , int passStatus) {
 
-		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID),
+		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID.trim()),
 				new ContractCode(contractCode), expirationDate, EnumAdaptor.valueOf(specialUser, DisabledSegment.class),
 				EnumAdaptor.valueOf(multiCompanyConcurrent, DisabledSegment.class), new MailAddress(mailAddress),
 				new UserName(userName), associatedPersonID,
