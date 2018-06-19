@@ -55,10 +55,10 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             let self = this;
             //Fixed table
             if (/Chrome/.test(navigator.userAgent)) {
-                $("#E4_1").ntsFixedTable({height: 164});
+                $("#E4_1").ntsFixedTable({height: 164, width: 700});
                 $("#F4_1").ntsFixedTable({height: 184, width: 700});
             } else {
-                $("#E4_1").ntsFixedTable({height: 162});
+                $("#E4_1").ntsFixedTable({height: 162, width: 700});
                 $("#F4_1").ntsFixedTable({height: 182, width: 700});
             }
             $("#H4_1").ntsFixedTable({ height: 164});
