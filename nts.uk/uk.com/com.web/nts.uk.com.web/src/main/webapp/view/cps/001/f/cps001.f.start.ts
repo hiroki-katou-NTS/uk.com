@@ -73,10 +73,6 @@ function LinkButtonClick() {
         $('.filenamelabel').show();
         __viewContext['viewModel'].filename(res.originalName);
         nts.uk.request.specials.donwloadFile(rowItem.fileId);
-        $(".browser-button").attr('disabled', 'disabled');
-        $(".delete-button").attr('disabled', 'disabled');
-
-
     });
 }
 
