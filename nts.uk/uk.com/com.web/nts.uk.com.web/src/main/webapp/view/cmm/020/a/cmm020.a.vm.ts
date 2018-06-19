@@ -88,27 +88,27 @@ module nts.uk.com.view.cmm020.a {
                 var listEraName: model.EraItem[] = [];
                 var listEraNameSystem: model.EraItem[] = [];
 
-                //                for (let i = 0; i <= 3; i++) {
-                //                    listEraName.push(new model.EraItem("code" + i, "Nam" + i, "Sb" + i, "2016/06/1" + (5 - i)));
-                //                }
-                //                listEraName.push(new model.EraItem("code5", "T", "CusSb", "2018/06/25"));
-                //        ame.push(new model.EraItem("code6", "D", "222", "2018/3/28"));
-
-                service.getAllEraNameItem().done(function(listEraNameTest: Array<model.EraItem>) {
-                    self.dataSource(listEraNameTest);
-                    for (let item of listEraNameTest) {
-                        console.log(typeof item.systemType);
-                        if (item.systemType == true) {
-                            console.log(item.systemType + " 1");
-                            listEraNameSystem.push(item);
-                        }
-                    }
-                    console.log(listEraNameSystem.length);
-                    listEraNameSystem = _.orderBy(listEraNameSystem, [function(item) { return new Date(item.startDate); }], ['asc']);
-                    for (let i = 0; i < listEraNameSystem.length; i++) {
-                    console.log(listEraNameSystem[i]);
+                for (let i = 0; i <= 3; i++) {
+                    listEraName.push(new model.EraItem("code" + i, "Nam" + i, "Sb" + i, "2016/06/1" + (5 - i), true));
                 }
-                });
+                listEraName.push(new model.EraItem("code5", "T", "CusSb", "2018/06/25", false));
+                listEraName.push(new model.EraItem("code6", "D", "222", "2018/3/28", false));
+
+                //                service.getAllEraNameItem().done(function(listEraNameTest: Array<model.EraItem>) {
+                //                    self.dataSource(listEraNameTest);
+                //                    for (let item of listEraNameTest) {
+                //                        console.log(typeof item.systemType);
+                //                        if (item.systemType == true) {
+                //                            console.log(item.systemType + " 1");
+                //                            listEraNameSystem.push(item);
+                //                        }
+                //                    }
+                //                    console.log(listEraNameSystem.length);
+                //                    listEraNameSystem = _.orderBy(listEraNameSystem, [function(item) { return new Date(item.startDate); }], ['asc']);
+                //                    for (let i = 0; i < listEraNameSystem.length; i++) {
+                //                        console.log(listEraNameSystem[i]);
+                //                    }
+                //                });
 
 
                 //                var listEraNameSystem = _.orderBy(listEraNameSystem, [function(item) { return new Date(item.startDate); }], ['asc']);
@@ -118,15 +118,15 @@ module nts.uk.com.view.cmm020.a {
                 //                }
 
 
-                //                if (listEraName === undefined || listEraName.length == 0) {
-                //                    self.dataSource();
-                //                } else {
-                //                    var listEraName = _.orderBy(listEraName, [function(item) { return new Date(item.startDate); }], ['asc']);
-                //                    self.dataSource(listEraName);
-                //                    let eraNameLast = _.last(listEraName);
-                //                    self.currentCode(eraNameLast.eraId);
-                //                    self.setValueCurrentEraShow(eraNameLast);
-                //                }
+                if (listEraName === undefined || listEraName.length == 0) {
+                    self.dataSource();
+                } else {
+                    var listEraName = _.orderBy(listEraName, [function(item) { return new Date(item.startDate); }], ['asc']);
+                    self.dataSource(listEraName);
+                    let eraNameLast = _.last(listEraName);
+                    self.currentCode(eraNameLast.eraId);
+                    self.setValueCurrentEraShow(eraNameLast);
+                }
                 console.log(!self.activeUpdate());
                 dfd.resolve();
                 return dfd.promise();
@@ -145,19 +145,27 @@ module nts.uk.com.view.cmm020.a {
              */
             public createEra(): void {
                 var self = this;
+
+                self.dataSource
                 $('.nts-input').trigger("validate");
                 _.defer(() => {
                     if (!$('.nts-editor').ntsError("hasError")) {
-                        //                        if (!nts.uk.text.isNullOrEmpty(self.divReasonCode()) && !nts.uk.text.isNullOrEmpty(self.divReasonContent())) {
-                        //                            if (self.enableCode() == false) {
-                        //                                self.convertCode(self.divReasonCode());
-                        //                                self.updateDivReason();
-                        //                            } else {
-                        //                                if (self.enableCode() == true) {//add divergence
-                        //                                    self.addDivReason();
-                        //                                }
-                        //                            }
-                        //                        }
+                        if (self.currentCode() == null) {
+                            let list = self.dataSource();
+                            let last = list[list.length - 1];
+                            console.log(last);
+                            if (self.currentStartDate() > last.startDate) {
+                                console.log(true);
+                                //print msg 15
+                                //select last era name 
+                            } else {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_142" });
+                                return false;
+                            }
+                        } else {
+                            let currentEraName = self.dataSource().indexOf(self.eraSelected());
+                            console.log(currentEraName);
+                        }
                     }
                 });
             }
@@ -169,24 +177,31 @@ module nts.uk.com.view.cmm020.a {
                 var self = this;
                 blockUI.invisible();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    var eraNameDelete = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate());
-                    self.indexOfDelete(_.findIndex(self.dataSource(), function(e) {
-                        return e.eraId == self.currentCode();
-                    }));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(function() {
 
-                    service.deleteEraName(eraNameDelete).done(function() {
-                        blockUI.clear();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                        self.indexOfDelete(_.findIndex(self.dataSource(), function(e) {
+                            return e.eraId == self.currentCode();
+                        }));
+                        var eraNameDelete = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), false);
+                        console.log(eraNameDelete);
+
+                        service.deleteEraName(eraNameDelete).done(function() {
                             blockUI.clear();
-                            //self.getDivReasonList_afterDelete();
-                            $("#inpReason").focus();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                                blockUI.clear();
+
+                                //                            $("#inpReason").focus();
+                            });
                         });
                     });
                 }).ifNo(function() {
-                    blockUI.clear();
-                    return;
+                    nts.uk.ui.dialog.info({ messageId: "Msg_36" }).then(function() {
+                        blockUI.clear();
+                        return;
+                    });
                 })
             }
+
             private setValueCurrentEraShow(currentEra: model.EraItem) {
                 var self = this;
                 self.isFocus(true);
@@ -194,17 +209,20 @@ module nts.uk.com.view.cmm020.a {
                 self.currentSymbol(currentEra.eraSymbol);
                 self.currentStartDate(currentEra.startDate);
             }
+
             private refreshEraShow() {
                 var self = this;
                 self.currentName('');
                 self.currentSymbol('');
                 self.currentStartDate('');
             }
+
             clearError(): void {
                 if ($('.nts-editor').ntsError("hasError")) {
                     $('.nts-input').ntsError('clear');
                 }
             }
+
             private getEraNameAfterDelete() {
                 var self = this;
                 service.getAllEraNameItem().done(function(listEraName: Array<model.EraItem>) {
@@ -213,9 +231,8 @@ module nts.uk.com.view.cmm020.a {
                     self.currentCode(lastEraName.eraId);
                 });
             }
-
-
         }
+
         export module model {
 
             export class EraItem {
@@ -226,11 +243,12 @@ module nts.uk.com.view.cmm020.a {
                 endDate: string;
                 systemType: boolean;
 
-                constructor(eraId: string, eraName: string, eraSysbol: string, startDate: string) {
+                constructor(eraId: string, eraName: string, eraSysbol: string, startDate: string, systemType: boolean) {
                     this.eraId = eraId;
                     this.eraName = eraName;
                     this.eraSymbol = eraSysbol;
                     this.startDate = startDate;
+                    this.systemType = systemType;
                 }
             }
         }
