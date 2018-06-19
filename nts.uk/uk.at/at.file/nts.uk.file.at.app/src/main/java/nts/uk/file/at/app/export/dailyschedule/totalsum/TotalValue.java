@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 /**
  * 合算値
@@ -16,24 +18,9 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TotalValue {
-	/** The Constant INTEGER. */
-	public static final int INTEGER = 0;
 	
 	/** The Constant STRING. */
-	public static final int STRING = 1;
-	
-	/** The Constant BIG_DECIMAL. */
-	public static final int DECIMAL = 2;
-	
-	/** The Constant DATE. */
-	public static final int DATE = 3;
-	
-	/** The Constant STRING. */
-	public static final int BOOLEAN = 4;
-	
-	/** The Constant BIG_DECIMAL. */
-	public static final int DOUBLE = 5;
-	
+	public static final int STRING = 4;
 	
 	// 勤怠項目ID
 	private int attendanceId;
@@ -52,19 +39,22 @@ public class TotalValue {
 		if(value == null){
 			return null;
 		}
-		switch (this.valueType) {
-		case INTEGER:
-			return this.value.isEmpty() ? null : (T) new Integer(this.value);
-		case STRING:
-			return (T) this.value;
-		case DOUBLE:
-			return this.value.isEmpty() ? null : (T) new Double(this.value);
-		case DECIMAL:
-			return this.value.isEmpty() ? null : (T) new BigDecimal(this.value);
-		case DATE:
-			return this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
-		default:
-			throw new RuntimeException("invalid type: " + this.valueType);
+		ValueType valueType = EnumAdaptor.valueOf(this.valueType, ValueType.class);
+		if (valueType.isInteger()) {
+			return (T) new Integer(this.value);
 		}
+		if (valueType.isBoolean()) {
+			return (T) new Boolean(this.value);
+		}
+		if (valueType.isDate()) {
+			return (T) GeneralDate.fromString(this.value, "yyyyMMdd");
+		}
+		if (valueType.isDouble()) {
+			return (T) new Double(this.value);
+		}
+		if (valueType.isString()) {
+			return (T) this.value;
+		}
+		throw new RuntimeException("invalid type: " + this.valueType);
 	}
 }

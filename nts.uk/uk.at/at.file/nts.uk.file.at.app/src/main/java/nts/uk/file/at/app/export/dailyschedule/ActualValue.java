@@ -8,7 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 /**
  * 実績値.
@@ -18,22 +20,8 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 public class ActualValue {
-	
-	/** The Constant INTEGER. */
-	public static final int INTEGER = 0;
-	
 	/** The Constant STRING. */
-	public static final int STRING = 1;
-	
-	/** The Constant BIG_DECIMAL. */
-	public static final int DECIMAL = 2;
-	
-	/** The Constant DATE. */
-	public static final int DATE = 3;
-	
-	public static final int BOOLEAN = 4;
-	
-	public static final int DOUBLE = 5;
+	public static final int STRING = 4;
 	
 	// 勤怠項目ID
 	private int attendanceId;
@@ -54,20 +42,23 @@ public class ActualValue {
 		if(value == null){
 			return null;
 		}
-		switch (this.valueType) {
-		case INTEGER:
-			return this.value.isEmpty() ? null : (T) new Integer(this.value);
-		case STRING:
-			return (T) this.value;
-		case DOUBLE:
-			return this.value.isEmpty() ? null : (T) new Double(this.value);
-		case DECIMAL:
-			return this.value.isEmpty() ? null : (T) new BigDecimal(this.value);
-		case DATE:
-			return this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
-		default:
-			throw new RuntimeException("invalid type: " + this.valueType);
+		ValueType valueType = EnumAdaptor.valueOf(this.valueType, ValueType.class);
+		if (valueType.isInteger()) {
+			return (T) new Integer(this.value);
 		}
+		if (valueType.isBoolean()) {
+			return (T) new Boolean(this.value);
+		}
+		if (valueType.isDate()) {
+			return (T) GeneralDate.fromString(this.value, "yyyyMMdd");
+		}
+		if (valueType.isDouble()) {
+			return (T) new Double(this.value);
+		}
+		if (valueType.isString()) {
+			return (T) this.value;
+		}
+		throw new RuntimeException("invalid type: " + this.valueType);
 	}
 
 	public ActualValue() {

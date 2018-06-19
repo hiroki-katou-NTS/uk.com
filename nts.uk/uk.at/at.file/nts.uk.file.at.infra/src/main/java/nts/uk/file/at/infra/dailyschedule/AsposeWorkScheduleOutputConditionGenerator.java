@@ -34,6 +34,7 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -63,6 +64,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -824,27 +826,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (val.value() == null) return;
 				int attendanceId = val.getAttendanceId();
 				TotalValue totalVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attendanceId).findFirst().get();
-				
-				switch (val.getValueType()) {
-				case ActualValue.INTEGER:
+				ValueType valueTypeEnum = EnumAdaptor.valueOf(val.getValueType(), ValueType.class);
+				if (valueTypeEnum.isInteger()) {
 					int currentValue = (int) val.value();
 					totalVal.setValue(String.valueOf(Integer.parseInt(totalVal.getValue()) + currentValue));
 					totalVal.setValueType(val.getValueType());
-					break;
-				case ActualValue.DECIMAL:
-					BigDecimal currentValueBigDecimal = (BigDecimal) val.value();
-					BigDecimal personalTotalBigDecimal = new BigDecimal(totalVal.getValue());
-					totalVal.setValue(String.valueOf(personalTotalBigDecimal.add(currentValueBigDecimal)));
-					totalVal.setValueType(val.getValueType());
-					break;
-				case ActualValue.DOUBLE:
+				}
+				if (valueTypeEnum.isDouble()) {
 					double currentValueDouble = (double) val.value();
 					totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
 					totalVal.setValueType(val.getValueType());
-				case ActualValue.DATE: // Do nothing
-					break;
-				case ActualValue.STRING: // Not calculated
-					break;
 				}
 			});
 		});
@@ -875,11 +866,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						int attdId = aVal.getAttendanceId();
 						int valueType = aVal.getValueType();
 						if (aVal.value() == null) return;
+						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 						TotalValue personalTotal = employeeData.mapPersonalTotal.get(attdId);
 						TotalValue totalVal = lstTotalValue.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
 						TotalValue totalGrossVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
-						switch (valueType) {
-						case ActualValue.INTEGER:
+						if (valueTypeEnum.isInteger()) {
 							int currentValue = (int) aVal.value();
 							personalTotal.setValue(String.valueOf(Integer.parseInt(personalTotal.getValue()) + currentValue));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
@@ -890,23 +881,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							personalTotal.setValueType(valueType);
 							totalVal.setValueType(valueType);
 							totalGrossVal.setValueType(valueType);
-							break;
-						case ActualValue.DECIMAL:
-							BigDecimal currentValueBigDecimal = (BigDecimal) aVal.value();
-							BigDecimal personalTotalBigDecimal = new BigDecimal(personalTotal.getValue());
-							BigDecimal workplaceTotalBigDecimal = new BigDecimal(totalVal.getValue());
-							BigDecimal totalGrossValBigDecimal = new BigDecimal(totalGrossVal.getValue());
-							personalTotal.setValue(String.valueOf(personalTotalBigDecimal.add(currentValueBigDecimal)));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							totalVal.setValue(String.valueOf(workplaceTotalBigDecimal.add(currentValueBigDecimal)));
-							totalGrossVal.setValue(String.valueOf(totalGrossValBigDecimal.add(currentValueBigDecimal)));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							// Change value type
-							personalTotal.setValueType(valueType);
-							totalVal.setValueType(valueType);
-							totalGrossVal.setValueType(valueType);
-							break;
-						case ActualValue.DOUBLE:
+						}
+						if (valueTypeEnum.isDouble()) {
 							double currentValueDouble = (double) aVal.value();
 							personalTotal.setValue(String.valueOf(Double.parseDouble(personalTotal.getValue()) + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
@@ -917,11 +893,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							personalTotal.setValueType(valueType);
 							totalVal.setValueType(valueType);
 							totalGrossVal.setValueType(valueType);
-							break;
-						case ActualValue.DATE: // Do nothing
-							break;
-						case ActualValue.STRING: // Not calculated
-							break;
 						}
 					});
 				});
@@ -941,21 +912,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					if (optTotalVal.isPresent()) {
 						TotalValue totalVal = optTotalVal.get();
 						int valueType = totalVal.getValueType();
-						switch (valueType) {
-						case ActualValue.INTEGER:
+						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
+						if (valueTypeEnum.isInteger()) {
 							totalVal.setValue(String.valueOf((int) totalVal.value() + (int) item.value()));
-							break;
-						case ActualValue.DECIMAL:
-							BigDecimal currentValBigDecimal = (BigDecimal) totalVal.value();
-							totalVal.setValue(String.valueOf(currentValBigDecimal.add((BigDecimal) item.value())));
-							break;
-						case ActualValue.DOUBLE:
+						}
+						if (valueTypeEnum.isDouble()) {
 							totalVal.setValue(String.valueOf((double) totalVal.value() + (double) item.value()));
-							break;
-						case ActualValue.DATE: // Unknown calculate method
-							break;
-						case ActualValue.STRING: // Not calculated
-							break;
 						}
 					}
 					else {
@@ -1005,27 +967,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					if (optTotalVal.isPresent()) {
 						totalValue = optTotalVal.get();
 						int totalValueType = totalValue.getValueType();
-						switch (totalValueType) {
-						case ActualValue.INTEGER:
+						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
+						if (valueTypeEnum.isInteger()) {
 							totalValue.setValue(String.valueOf((int) totalValue.value() + (int) actualValue.value()));
-							break;
-						case ActualValue.DECIMAL:
-							BigDecimal currentValBigDecimal = (BigDecimal) totalValue.value();
-							totalValue.setValue(String.valueOf(currentValBigDecimal.add((BigDecimal) actualValue.value())));
-							break;
-						case ActualValue.DOUBLE:
+						}
+						if (valueTypeEnum.isDouble()) {
 							totalValue.setValue(String.valueOf((double) totalValue.value() + (double) actualValue.value()));
-							break;
-						case ActualValue.DATE: // Unknown calculate method
-							break;
-						case ActualValue.STRING: // Not calculated
-							break;
 						}
 					}
 					else {
 						totalValue = new TotalValue();
 						totalValue.setAttendanceId(actualValue.getAttendanceId());
-						if (valueType == TotalValue.INTEGER || valueType == TotalValue.DECIMAL || valueType == TotalValue.DOUBLE) {
+						ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+						if (valueTypeEnum.isInteger() || valueTypeEnum.isDouble()) {
 							if (actualValue.getValue() != null) {
 								totalValue.setValue(actualValue.getValue());
 							} else {
@@ -1041,27 +995,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					if (optTotalWorkplaceVal.isPresent()) {
 						totalWorkplaceValue = optTotalWorkplaceVal.get();
 						int totalValueType = totalValue.getValueType();
-						switch (totalValueType) {
-						case ActualValue.INTEGER:
+						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
+						if (valueTypeEnum.isInteger()) {
 							totalValue.setValue(String.valueOf((int) totalWorkplaceValue.value() + (int) actualValue.value()));
-							break;
-						case ActualValue.DECIMAL:
-							BigDecimal currentValBigDecimal = (BigDecimal) totalWorkplaceValue.value();
-							totalValue.setValue(String.valueOf(currentValBigDecimal.add((BigDecimal) actualValue.value())));
-							break;
-						case ActualValue.DOUBLE:
+						}
+						if (valueTypeEnum.isDouble()) {
 							totalValue.setValue(String.valueOf((double) totalWorkplaceValue.value() + (double) actualValue.value()));
-							break;
-						case ActualValue.DATE: // Unknown calculate method
-							break;
-						case ActualValue.STRING: // Not calculated
-							break;
 						}
 					}
 					else {
 						totalWorkplaceValue = new TotalValue();
 						totalWorkplaceValue.setAttendanceId(actualValue.getAttendanceId());
-						if (valueType == TotalValue.INTEGER || valueType == TotalValue.DECIMAL || valueType == TotalValue.DOUBLE) {
+						ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+						if (valueTypeEnum.isInteger() || valueTypeEnum.isDouble()) {
 							if (actualValue.getValue() != null) {
 								totalWorkplaceValue.setValue(actualValue.getValue());
 							} else {
@@ -1087,27 +1033,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (optTotalVal.isPresent()) {
 					totalValue = optTotalVal.get();
 					int totalValueType = totalValue.getValueType();
-					switch (totalValueType) {
-					case ActualValue.INTEGER:
+					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
+					if (valueTypeEnum.isInteger()) {
 						totalValue.setValue(String.valueOf((int) totalValue.value() + (int) actualValue.value()));
-						break;
-					case ActualValue.DECIMAL:
-						BigDecimal currentValBigDecimal = (BigDecimal) totalValue.value();
-						totalValue.setValue(String.valueOf(currentValBigDecimal.add((BigDecimal) actualValue.value())));
-						break;
-					case ActualValue.DOUBLE:
+					}
+					if (valueTypeEnum.isDouble()) {
 						totalValue.setValue(String.valueOf((double) totalValue.value() + (double) actualValue.value()));
-						break;
-					case ActualValue.DATE: // Unknown calculate method
-						break;
-					case ActualValue.STRING: // Not calculated
-						break;
 					}
 				}
 				else {
 					totalValue = new TotalValue();
 					totalValue.setAttendanceId(actualValue.getAttendanceId());
-					if (valueType == ActualValue.INTEGER || valueType == ActualValue.DECIMAL || valueType == TotalValue.DOUBLE) {
+					ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+					if (valueTypeEnum.isInteger() || valueTypeEnum.isDouble()) {
 						if (actualValue.getValue() != null) {
 							totalValue.setValue(actualValue.getValue());
 						} else {
@@ -1142,27 +1080,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (optGrossTotal.isPresent()) {
 					totalValue = optGrossTotal.get();
 					int totalValueType = totalValue.getValueType();
-					switch (totalValueType) {
-					case ActualValue.INTEGER:
+					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
+					if (valueTypeEnum.isInteger()) {
 						totalValue.setValue(String.valueOf((int) totalValue.value() + (int) totalVal.value()));
-						break;
-					case ActualValue.DECIMAL:
-						BigDecimal currentValBigDecimal = (BigDecimal) totalValue.value();
-						totalValue.setValue(String.valueOf(currentValBigDecimal.add((BigDecimal) totalVal.value())));
-						break;
-					case ActualValue.DOUBLE:
+					}
+					if (valueTypeEnum.isDouble()) {
 						totalValue.setValue(String.valueOf((double) totalValue.value() + (double) totalVal.value()));
-						break;
-					case ActualValue.DATE: // Unknown calculate method
-						break;
-					case ActualValue.STRING: // Not calculated
-						break;
 					}
 				}
 				else {
 					totalValue = new TotalValue();
 					totalValue.setAttendanceId(totalVal.getAttendanceId());
-					if (totalVal.getValueType() == ActualValue.INTEGER || totalVal.getValueType() == ActualValue.DECIMAL || totalVal.getValueType() == TotalValue.DOUBLE) {
+					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalVal.getValueType(), ValueType.class);
+					if (valueTypeEnum.isInteger() || valueTypeEnum.isDouble()) {
 						totalValue.setValue(totalVal.getValue());
 					}
 					totalValue.setValueType(totalVal.getValueType());
@@ -1698,18 +1628,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            	ActualValue actualValue = lstItemRow.get(j);
 				            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
 				            	Style style = cell.getStyle();
-				            	switch (actualValue.getValueType()) {
-								case ActualValue.INTEGER:
+				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+				            	if (valueTypeEnum.isInteger()) {
 									String value = actualValue.getValue();
 									if (value != null)
 										cell.setValue(getTimeAttr(value));
 									else
 										cell.setValue(getTimeAttr("0"));
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-									break;
-								case ActualValue.DECIMAL:
-								case ActualValue.DATE:
-								case ActualValue.STRING:
+				            	}
+				            	else {
 									cell.setValue(actualValue.getValue());
 									style.setHorizontalAlignment(TextAlignmentType.LEFT);
 								}
@@ -1772,17 +1700,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 			            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 			            	Style style = cell.getStyle();
-			            	switch (valueType) {
-							case ActualValue.INTEGER:
-							case ActualValue.DECIMAL:
+			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
+			            	if (valueTypeEnum.isInteger()) {
 								if (value != null)
 									cell.setValue(getTimeAttr(value));
 								else
 									cell.setValue(getTimeAttr("0"));
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-								break;
-							case ActualValue.DATE:
-							case ActualValue.STRING:
 							}
 			            	setFontStyle(style);
 			            	cell.setStyle(style);
@@ -1884,17 +1808,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	            	String value = totalValue.getValue();
 	            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 	            	Style style = cell.getStyle();
-	            	switch (totalValue.getValueType()) {
-					case ActualValue.INTEGER:
+	            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+	            	if (valueTypeEnum.isInteger()) {
 						if (value != null)
 							cell.setValue(getTimeAttr(value));
 						else
 							cell.setValue(getTimeAttr("0"));
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-						break;
-					case ActualValue.DECIMAL:
-					case ActualValue.DATE:
-					case ActualValue.STRING:
 					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
@@ -1982,17 +1902,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	String value = totalValue.getValue();
 			            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
 			            	Style style = cell.getStyle();
-			            	switch (totalValue.getValueType()) {
-							case ActualValue.INTEGER:
+			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+			            	if (valueTypeEnum.isInteger()) {
 								if (value != null)
 									cell.setValue(getTimeAttr(value));
 								else
 									cell.setValue(getTimeAttr("0"));
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-								break;
-							case ActualValue.DECIMAL:
-							case ActualValue.DATE:
-							case ActualValue.STRING:
 							}
 			            	setFontStyle(style);
 			            	cell.setStyle(style);
@@ -2174,18 +2090,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	ActualValue actualValue = lstItemRow.get(j);
 			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
 			            	Style style = cell.getStyle();
-			            	switch (actualValue.getValueType()) {
-							case ActualValue.INTEGER:
+			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+			            	if (valueTypeEnum.isInteger()) {
 								String value = actualValue.getValue();
 								if (value != null)
 									cell.setValue(getTimeAttr(value));
 								else
 									cell.setValue(getTimeAttr("0"));
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-								break;
-							case ActualValue.DECIMAL:
-							case ActualValue.DATE:
-							case ActualValue.STRING:
+			            	}
+			            	else {
 								cell.setValue(actualValue.getValue());
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
 							}
@@ -2340,17 +2254,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    	String value = totalValue.getValue();
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 		        	Style style = cell.getStyle();
-	            	switch (totalValue.getValueType()) {
-					case ActualValue.INTEGER:
+		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+	            	if (valueTypeEnum.isInteger()) {
 						if (value != null)
 							cell.setValue(getTimeAttr(value));
 						else
 							cell.setValue(getTimeAttr("0"));
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-						break;
-					case ActualValue.DECIMAL:
-					case ActualValue.DATE:
-					case ActualValue.STRING:
 					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
@@ -2397,17 +2307,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    	String value = totalValue.getValue();
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 		        	Style style = cell.getStyle();
-	            	switch (totalValue.getValueType()) {
-					case ActualValue.INTEGER:
+		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+	            	if (valueTypeEnum.isInteger()) {
 						if (value != null)
 							cell.setValue(getTimeAttr(value));
 						else
 							cell.setValue(getTimeAttr("0"));
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-						break;
-					case ActualValue.DECIMAL:
-					case ActualValue.DATE:
-					case ActualValue.STRING:
+	            	}
+	            	else {
 						cell.setValue(value);
 						style.setHorizontalAlignment(TextAlignmentType.LEFT);
 					}
