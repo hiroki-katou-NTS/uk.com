@@ -16,11 +16,9 @@
 
 			<com:stylefile path="/view/ccg/025/component/component.css" />
 			<com:scriptfile path="/view/ccg/025/component/component.vm.js" />
-			<com:scriptfile path="/view/ccg/025/component/component.service.js" />		
+			<com:scriptfile path="/view/ccg/025/component/component.service.js" />
 
-			<com:stylefile path="/view/ccg/026/component/component.css" />
-			<com:scriptfile path="/view/ccg/026/component/component.service.js" />
-			<com:scriptfile path="/view/ccg/026/component/component.vm.js" />
+			<com:scriptfile path="/view/ccg/026/component.js" />
 
 			<com:stylefile path="cas009.a.style.css" />
 			<com:scriptfile path="cas009.a.service.js" />
@@ -53,8 +51,9 @@
 						</div>
 					</div>
 
-					<div id="right-content" class="fixed-flex-layout-right">
-						<table class="control-group" data-bind="with: $vm.selectedRole">
+					<div id="right-content" class="fixed-flex-layout-right"
+						data-bind="with: $vm.selectedRole">
+						<table class="control-group">
 							<tr>
 								<td><div
 										data-bind="ntsFormLabel: {
@@ -72,7 +71,7 @@
 			                                 constraint: 'RoleCode',
 			                                 value: roleCode,
 			                                 required: true,
-			                                 enable: createMode,
+			                                 enable: !!_.isEmpty(ko.toJS(roleId)),
 			                                 immediate: true
 		                                 },
 		                                 hasFocus: roleCodeFocus" />
@@ -104,7 +103,7 @@
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: assignAtr,
-												enable: createMode
+												enable: !!_.isEmpty(ko.toJS(roleId))
 											}"></div>
 								</td>
 							</tr>
@@ -157,14 +156,17 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2" data-bind="with: $vm.component026">
-							        <div data-bind="ntsFormLabel: {
-							                required: true
-							            },
-							            style: {
-							                'margin-bottom': '10px'
-							            }">#{i18n.getText('CAS009_22')}</div>
-									<ui:include src="/view/ccg/026/component/index.xhtml" />
+								<td colspan="2"><ccg026-component
+										params="{
+													label: {
+														require: true,
+														text: 'CAS009_22'
+													},
+													tabindex: 12,
+													roleId: roleId,
+													roleType: 8,
+													changeData: $vm.changeData
+												}"></ccg026-component>
 								</td>
 							</tr>
 						</table>
