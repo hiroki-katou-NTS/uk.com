@@ -444,7 +444,7 @@ public class DivTimeSysFixedCheckService {
 		return res;
 	}
 
-	private Map<String, Object> getComHistory(GeneralDate tarD, String comId, MasterShareContainer shareContainer) {
+	private Map<String, Object> getComHistory(GeneralDate tarD, String comId, MasterShareContainer shrContainer) {
 		Map<String, Object> res = new HashMap<>();
 		CompanyDivergenceReferenceTimeHistory hisM = shrContainer.getShared(join(COM_DIV_REF_TIME_HIS_KEY, SEPERATOR, comId), 
 																() -> comDivHisRepo.findAll(comId));
@@ -469,7 +469,7 @@ public class DivTimeSysFixedCheckService {
 	}
 
 	private BusinessTypeCode getBusinessType(GeneralDate tarD, BusinessTypeOfEmployeeHistory bteHis,
-			DivCheckMasterShareContainer shareContainer) {
+			MasterShareContainer shareContainer) {
 		DateHistoryItem hisItem = bteHis.getHistory().stream().filter(c -> c.contains(tarD)).findFirst().orElse(null);
 		if(hisItem == null){
 			return null;
@@ -532,7 +532,7 @@ public class DivTimeSysFixedCheckService {
 	}
 	
 	private void shareDivMesTime(boolean isBussiness, String comId, List<Integer> divNos, BusinessTypeCode bsCode, 
-			DivCheckMasterShareContainer shareContainer){
+			MasterShareContainer shareContainer){
 		if(!isBussiness){
 			String key = join(DIVERGENCE_MESSAGE_KEY, SEPERATOR, comId);
 			if(!shareContainer.isShared(key)){
