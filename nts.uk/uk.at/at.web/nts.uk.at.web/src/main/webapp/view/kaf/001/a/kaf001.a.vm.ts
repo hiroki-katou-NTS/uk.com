@@ -254,6 +254,10 @@ module nts.uk.com.view.kaf001.a.viewmodel {
                     applicationType: applicationType
                 }
                 service.selectApplicationByType(paramFind).done(() => {
+                    let transfer = {
+                       uiType: 0,
+                       employeeIDs: employeeIds
+                    };
                     switch (applicationType) {
                         case ApplicationType.OVER_TIME_APPLICATION: {
                             //open dialog B
@@ -261,7 +265,7 @@ module nts.uk.com.view.kaf001.a.viewmodel {
                             break;
                         }
                         case ApplicationType.ABSENCE_APPLICATION: {
-                            jump("at", "/view/kaf/006/a/index.xhtml", { employeeIds: employeeIds });
+                            jump("at", "/view/kaf/006/a/index.xhtml", transfer);
                             break;
                         }
                         case ApplicationType.WORK_CHANGE_APPLICATION: {
@@ -277,7 +281,7 @@ module nts.uk.com.view.kaf001.a.viewmodel {
                             break;
                         }
                         case ApplicationType.BREAK_TIME_APPLICATION: {
-                            jump("at", "/view/kaf/010/a/index.xhtml", { employeeIds: employeeIds });
+                            jump("at", "/view/kaf/010/a/index.xhtml", transfer);
                             break;
                         }
                         case ApplicationType.ANNUAL_HOLIDAY_APPLICATION: {
