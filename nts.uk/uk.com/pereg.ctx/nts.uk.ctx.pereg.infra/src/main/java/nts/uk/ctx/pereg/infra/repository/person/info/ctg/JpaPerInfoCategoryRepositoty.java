@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -192,24 +193,146 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd, int forAttendance,
 			int forPayroll, int forPersonnel) {
-		return this.queryProxy().query(GET_ALL_CATEGORY_FOR_CPS007_CPS008, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("cid", companyId)
-				.setParameter("forAttendance", forAttendance).setParameter("forPayroll", forPayroll)
-				.setParameter("forPersonnel", forPersonnel).getList(c -> {
-					return createDomainVer3FromEntity(c);
-				});
+		String GET_ALL_CATEGORY_FOR_CPS007_CPS008_V2;
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+				+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+				+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, "
+				+ " co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls,"
+				+ " ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr"
+				+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
+				+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+				+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
+				+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+				+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd "
+				+ " AND ca.cid = :cid AND ca.abolitionAtr = 0 ");
+		
+		if (forAttendance == 1 && forPayroll == 1 && forPersonnel == 1) {
+			stringBuilder.append(" AND ( co.employmentUseAtr = 1 OR co.salaryUseAtr = 1 OR co.personnelUseAtr = 1 )");
+		} else if (forAttendance == 1 && forPayroll == 1) {
+			stringBuilder.append(" AND ( co.employmentUseAtr = 1 OR co.salaryUseAtr = 1 )");
+		} else if (forAttendance == 1 && forPersonnel == 1) {
+			stringBuilder.append(" AND ( co.employmentUseAtr = 1 OR co.personnelUseAtr = 1 )");
+		} else if (forPayroll == 1 && forPersonnel == 1) {
+			stringBuilder.append(" AND ( co.salaryUseAtr = 1 OR co.personnelUseAtr = 1 )");
+		} else if (forAttendance == 1) {
+			stringBuilder.append(" AND ( co.employmentUseAtr = 1 )");
+		} else if (forPayroll == 1) {
+			stringBuilder.append(" AND ( co.salaryUseAtr = 1 )");
+		} else if (forPersonnel == 1) {
+			stringBuilder.append(" AND ( co.personnelUseAtr = 1 )");
+		}
+		stringBuilder.append(" ORDER BY po.disporder");
+		GET_ALL_CATEGORY_FOR_CPS007_CPS008_V2 = stringBuilder.toString();
+		
+		TypedQueryWrapper<Object[]> query = this.queryProxy().query(GET_ALL_CATEGORY_FOR_CPS007_CPS008_V2);
+		query.setParameter("contractCd", contractCd);
+		query.setParameter("cid", companyId);
+		return query.getList(c -> {
+			return createDomainVer3FromEntity(c);
+		});
 	}
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategoryNoMulAndDupHist(String companyId, String contractCd,
 			int forAttendance, int forPayroll, int forPersonnel) {
-		return this.queryProxy().query(SELECT_CATEGORY_NO_MUL_DUP_BY_COMPANY_ID_QUERY, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("cid", companyId)
-				.setParameter("forAttendance", forAttendance).setParameter("forPayroll", forPayroll)
-				.setParameter("forPersonnel", forPersonnel).getList(c -> {
-					return createDomainFromEntity(c);
-				});
+	String GET_ALL_CATEGORY_FOR_CPS002_DIALOG_COPPY_SETTING;
+	StringBuilder stringBuilder = new StringBuilder();
+	stringBuilder.append("SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
+			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
+			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
+			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid"
+			+ " AND ca.abolitionAtr = 0 "
+			+ " AND co.personEmployeeType = 2" 
+			+ " AND co.categoryType != 2 " 
+			+ " AND co.categoryType !=5"
+			+ " AND co.initValMasterObjCls = 1 ");
+
+	if (forAttendance == 1 && forPayroll == 1 && forPersonnel == 1) {
+		stringBuilder.append(" AND ( co.employmentUseAtr = 1 OR co.salaryUseAtr = 1 OR co.personnelUseAtr = 1 )");
+	} else if (forAttendance == 1 && forPayroll == 1) {
+		stringBuilder.append(" AND ( co.employmentUseAtr = 1 OR co.salaryUseAtr = 1 )");
+	} else if (forAttendance == 1 && forPersonnel == 1) {
+		stringBuilder.append(" AND ( co.employmentUseAtr = 1 OR co.personnelUseAtr = 1 )");
+	} else if (forPayroll == 1 && forPersonnel == 1) {
+		stringBuilder.append(" AND ( co.salaryUseAtr = 1 OR co.personnelUseAtr = 1 )");
+	} else if (forAttendance == 1) {
+		stringBuilder.append(" AND ( co.employmentUseAtr = 1 )");
+	} else if (forPayroll == 1) {
+		stringBuilder.append(" AND ( co.salaryUseAtr = 1 )");
+	} else if (forPersonnel == 1) {
+		stringBuilder.append(" AND ( co.personnelUseAtr = 1 )");
 	}
+	stringBuilder.append(" ORDER BY po.disporder");
+	GET_ALL_CATEGORY_FOR_CPS002_DIALOG_COPPY_SETTING = stringBuilder.toString();
+	
+	TypedQueryWrapper<Object[]> query = this.queryProxy().query(GET_ALL_CATEGORY_FOR_CPS002_DIALOG_COPPY_SETTING);
+	query.setParameter("contractCd", contractCd);
+	query.setParameter("cid", companyId);
+		return query.getList(c -> {
+			return createDomainFromEntity(c);
+		});
+	}
+
+	@Override
+	public List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth,
+			boolean isOtherComapany, int forAttendance, int forPayroll, int forPersonnel) {
+		String fullQuery = "";
+		String GET_ALL_CATEGORY_FOR_CPS001;
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(SELECT_NO_WHERE + " INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId"
+				+ " WHERE ca.cid = :cid " 
+				+ " AND co.categoryParentCd IS NULL ");
+		if (forAttendance == 1 && forPayroll == 1 && forPersonnel == 1) {
+			stringBuilder.append(" AND ( co.employmentUseAtr = 1 OR co.salaryUseAtr = 1 OR co.personnelUseAtr = 1 )");
+		} else if (forAttendance == 1 && forPayroll == 1) {
+			stringBuilder.append(" AND ( co.employmentUseAtr = 1 OR co.salaryUseAtr = 1 )");
+		} else if (forAttendance == 1 && forPersonnel == 1) {
+			stringBuilder.append(" AND ( co.employmentUseAtr = 1 OR co.personnelUseAtr = 1 )");
+		} else if (forPayroll == 1 && forPersonnel == 1) {
+			stringBuilder.append(" AND ( co.salaryUseAtr = 1 OR co.personnelUseAtr = 1 )");
+		} else if (forAttendance == 1) {
+			stringBuilder.append(" AND ( co.employmentUseAtr = 1 )");
+		} else if (forPayroll == 1) {
+			stringBuilder.append(" AND ( co.salaryUseAtr = 1 )");
+		} else if (forPersonnel == 1) {
+			stringBuilder.append(" AND ( co.personnelUseAtr = 1 )");
+		}
+		
+		stringBuilder.append(" AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)"
+				+ " AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId"
+				+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i"
+				+ "	JOIN PpemtPersonItemAuth iau ON i.ppemtPerInfoItemPK.perInfoItemDefId = iau.ppemtPersonItemAuthPk.personItemDefId "
+				+ " AND i.perInfoCtgId = iau.ppemtPersonItemAuthPk.personInfoCategoryAuthId WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId"
+				+ " AND iau.ppemtPersonItemAuthPk.roleId = :roleId AND (0 = :otherAuth or (1 = :otherAuth and iau.otherPersonAuthType != 1)) "
+				+ " AND (0 = :selfAuth or (1 = :selfAuth and iau.selfAuthType != 1)))"
+				+ " AND 0 != (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId "
+				+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType != 1)) "
+				+ " AND (0 = :selfAuth or (1 = :selfAuth and c.selfAuthType != 1)))");
+		GET_ALL_CATEGORY_FOR_CPS001 = stringBuilder.toString();
+		
+		if (isOtherComapany) {
+			fullQuery = GET_ALL_CATEGORY_FOR_CPS001
+					+ " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) ORDER BY po.disporder";
+		} else {
+			fullQuery = GET_ALL_CATEGORY_FOR_CPS001
+					+ " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) ORDER BY po.disporder";
+		}
+		
+		TypedQueryWrapper<Object[]> query = this.queryProxy().query(fullQuery);
+		query.setParameter("cid", companyId);
+		query.setParameter("roleId", roleId);
+		query.setParameter("selfAuth", selfAuth);
+		query.setParameter("otherAuth", otherAuth);
+			return query.getList(c -> {
+				return createDomainPerInfoCtgFromEntity(c);
+			});
+	}
+	
 
 	@Override
 	public Optional<PersonInfoCategory> getPerInfoCategory(String perInfoCategoryId, String contractCd) {
@@ -533,24 +656,6 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				Integer.class).setParameter("perInfoCtgId", perInfoCtgId).getSingle(m -> m.intValue()).orElse(0);
 	}
 
-	@Override
-	public List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth,
-			boolean isOtherComapany, int forAttendance, int forPayroll, int forPersonnel) {
-		String fullQuery = "";
-		if (isOtherComapany) {
-			fullQuery = SELECT_CTG_WITH_AUTH
-					+ " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) ORDER BY po.disporder";
-		} else {
-			fullQuery = SELECT_CTG_WITH_AUTH
-					+ " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) ORDER BY po.disporder";
-		}
-		return this.queryProxy().query(fullQuery, Object[].class).setParameter("cid", companyId)
-				.setParameter("roleId", roleId).setParameter("selfAuth", selfAuth).setParameter("otherAuth", otherAuth)
-				.setParameter("forAttendance", forAttendance).setParameter("forPayroll", forPayroll)
-				.setParameter("forPersonnel", forPersonnel).getList(c -> {
-					return createDomainPerInfoCtgFromEntity(c);
-				});
-	}
 
 	@Override
 	public String getCatId(String cId, String categoryCode) {
