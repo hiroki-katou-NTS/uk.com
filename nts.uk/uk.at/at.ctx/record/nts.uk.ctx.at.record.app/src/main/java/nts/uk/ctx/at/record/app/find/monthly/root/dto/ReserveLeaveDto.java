@@ -13,6 +13,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUndige
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 @Data
@@ -38,6 +40,7 @@ public class ReserveLeaveDto implements ItemConst {
 	private CommonLeaveRemainingNumberDto remainingNumberAfterGrant;
 
 	/** 未消化数 */
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_E)
 	private double undigestedNumber;
 

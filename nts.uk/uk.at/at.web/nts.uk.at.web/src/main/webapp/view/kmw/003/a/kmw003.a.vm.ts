@@ -388,7 +388,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 ]
             };
         }
-        
+       
         /**********************************
          * Button Event 
          **********************************/
@@ -405,7 +405,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 closureId : self.closureId(),
                 /** 締め日: 日付 */
                 closureDate : self.closureDateDto(),
-                mPItemDetails: []
+                mPItemDetails: [],
+                startDate : moment.utc(self.actualTimeSelectedDat().startDate, "YYYY/MM/DD"),
+                endDate : moment.utc(self.actualTimeSelectedDat().endDate, "YYYY/MM/DD")
             }
             if (errorGrid == undefined || errorGrid.length == 0) {
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");

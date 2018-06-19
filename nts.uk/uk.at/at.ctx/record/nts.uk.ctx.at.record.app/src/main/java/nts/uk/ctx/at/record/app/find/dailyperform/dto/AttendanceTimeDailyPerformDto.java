@@ -43,12 +43,12 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 
 	/** 予実差異時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = PLAN_ACTUAL_DIFF)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer budgetTimeVariance;
 
 	/** 不就労時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = UNEMPLOYED)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer unemployedTime;
 	
 	public static AttendanceTimeDailyPerformDto getDto(AttendanceTimeOfDailyPerformance domain) {
