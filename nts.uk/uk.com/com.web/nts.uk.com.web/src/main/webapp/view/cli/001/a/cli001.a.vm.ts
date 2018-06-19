@@ -1,4 +1,3 @@
-var multiple = true;
 module nts.uk.com.view.cli001.a {
     import LockOutDataUserDto = nts.uk.com.view.cli001.a.service.model.LockOutDataUserDto;
     import LockOutDataDto = nts.uk.com.view.cli001.a.service.model.LockOutDataDto;
@@ -51,12 +50,13 @@ module nts.uk.com.view.cli001.a {
                 let _self = this;
                 nts.uk.ui.windows.sub.modal("/view/cli/001/b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("dataCd001.a");
-                    console.log(data);
-                    let userId = { userId: data.userID };
-                    if (!nts.uk.util.isNullOrUndefined(userId))
+                    if (!_.isNil(data)){
+                         $('#tableGrid').focus();
+                        let userId = { userId: data.userID };
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
                              _self.items.push({ logType: dto.logType == 1? '強制ロック' : '自動ロック', loginId: data.loginID,userId:dto.userId,userName:data.userName,lockOutDateTime:dto.logoutDateTime});
                         });
+                        }
                     nts.uk.ui.block.clear();
                 });
             }
@@ -83,7 +83,7 @@ module nts.uk.com.view.cli001.a {
                 var self = this;
                 if (_.isEmpty(self.currentCodeList())) {
                     $('#add-Lock').focus();
-                    nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: "CLI001_25" });
+                    nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText('CLI001_25')] });
                 }
                 else {
                     $('#tableGrid').focus();
