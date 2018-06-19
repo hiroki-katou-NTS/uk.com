@@ -29,8 +29,8 @@ public class PremiumTimeOfDailyPerformance {
 	 * @param personnelCostSettingImport
 	 * @return
 	 */
-	public PremiumTimeOfDailyPerformance calcPremiumTime(List<PersonnelCostSettingImport> personnelCostSettingImport,
-														 Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
+	public static PremiumTimeOfDailyPerformance calcPremiumTime(List<PersonnelCostSettingImport> personnelCostSettingImport,
+														 		Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
 		
 		List<PremiumTime> list = new ArrayList<>();
 		

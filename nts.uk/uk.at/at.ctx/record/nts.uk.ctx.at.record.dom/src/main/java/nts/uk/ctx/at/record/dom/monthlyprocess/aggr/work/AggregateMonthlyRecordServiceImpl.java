@@ -37,7 +37,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	public AggregateMonthlyRecordValue aggregate(
 			String companyId, String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
-			AggrResultOfAnnAndRsvLeave prevAggrResult) {
+			AggrResultOfAnnAndRsvLeave prevAggrResult,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
 		
 		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc(
 				this.repositories,
@@ -46,6 +47,6 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				this.tempDayoffService);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
-				datePeriod, prevAggrResult);
+				datePeriod, prevAggrResult, companySets, employeeSets);
 	}	
 }

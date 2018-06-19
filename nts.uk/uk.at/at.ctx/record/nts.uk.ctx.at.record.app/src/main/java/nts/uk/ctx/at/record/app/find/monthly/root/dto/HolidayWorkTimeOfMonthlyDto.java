@@ -24,7 +24,7 @@ public class HolidayWorkTimeOfMonthlyDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_A)
 	private TimeMonthWithCalculationDto totalHolidayWorkTime;
 	/** 事前休出時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeHolidayWorkTime;
 	/** 振替合計時間 */

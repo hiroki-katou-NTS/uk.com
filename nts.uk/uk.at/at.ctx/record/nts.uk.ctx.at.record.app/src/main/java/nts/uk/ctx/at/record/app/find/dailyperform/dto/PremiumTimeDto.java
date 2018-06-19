@@ -16,7 +16,7 @@ public class PremiumTimeDto implements ItemConst {
 
 	/** 割増時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = PREMIUM)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer premitumTime;
 
 	/** 割増時間NO: 割増時間NO */

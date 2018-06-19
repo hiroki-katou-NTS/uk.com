@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 
 /**
  * 休出の未使用
@@ -32,5 +35,8 @@ public class UnUserOfBreak {
 	private Integer unUsedTimes;
 	/**	未使用日数 */
 	private double unUsedDays;
-	
+	/**	代休消化区分 */
+	private DigestionAtr digestionAtr;
+	/**	消滅日 */
+	private Optional<GeneralDate> disappearanceDate;
 }

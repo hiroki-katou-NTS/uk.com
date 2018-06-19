@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 public class AttendanceItemUtil implements ItemConst {
 
@@ -127,12 +128,14 @@ public class AttendanceItemUtil implements ItemConst {
 						id -> getTextWithNoCondition(id.path()).equals(currentPath),
 						item -> {
 							if(item.path().equals(currentFullPath)){
-								return item.value(value).valueType(valueAnno.type())
+								return item.value(value)
+											.valueType(getItemValueType(attendanceItems, valueAnno))
 											.layout(currentLayout + getTextWithCondition(item.path()))
 											.completed();
 							} else {
 								return item.layout(currentLayout + getTextWithCondition(item.path()))
-											.valueType(valueAnno.type()).completed();
+											.valueType(getItemValueType(attendanceItems, valueAnno))
+											.completed();
 							}
 						});
 			
@@ -253,6 +256,14 @@ public class AttendanceItemUtil implements ItemConst {
 				.map(em -> getExConditionFromString(em.path())).findFirst().orElse(null);
 		ReflectionUtil.setFieldValue(getField(layout.enumField(), className), value,
 				AttendanceItemIdContainer.getEnumValue(enumText));
+	}
+
+	private static <T> ValueType getItemValueType(T attendanceItems, AttendanceItemValue valueAnno) {
+		ValueType valueType = valueAnno.type();
+		if(!valueAnno.getTypeWith().isEmpty()){
+			valueType = ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, valueAnno.getTypeWith());
+		}
+		return valueType;
 	}
 
 	private static String getPath(String path, AttendanceItemLayout layout, AttendanceItemRoot root) {
