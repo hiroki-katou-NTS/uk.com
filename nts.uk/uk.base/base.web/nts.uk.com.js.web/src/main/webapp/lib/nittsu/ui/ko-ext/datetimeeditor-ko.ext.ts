@@ -156,7 +156,7 @@ module nts.uk.ui.koExtentions {
                      mode: self.timeMode, 
                      enable: allBindData.enable, 
                      disabled: allBindData.disabled,
-                     option: { width: "60" } };    
+                     option: { width: "70" } };    
         }
     }
 
