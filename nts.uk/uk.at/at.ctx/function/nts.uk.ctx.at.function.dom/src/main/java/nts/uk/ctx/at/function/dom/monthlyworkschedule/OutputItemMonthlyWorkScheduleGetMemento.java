@@ -2,10 +2,6 @@ package nts.uk.ctx.at.function.dom.monthlyworkschedule;
 
 import java.util.List;
 
-import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
-
 /**
  * The Interface OutputItemMonthlyWorkScheduleGetMemento.
  */
@@ -23,21 +19,21 @@ public interface OutputItemMonthlyWorkScheduleGetMemento {
 	 *
 	 * @return the item code
 	 */
-	OutputItemSettingCode getItemCode();
+	MonthlyOutputItemSettingCode getItemCode();
 	
 	/**
 	 * Gets the item name.
 	 *
 	 * @return the item name
 	 */
-	OutputItemSettingName getItemName();
+	MonthlyOutputItemSettingName getItemName();
 	
 	/**
 	 * Gets the lst displayed attendance.
 	 *
 	 * @return the lst displayed attendance
 	 */
-	List<AttendanceItemsDisplay> getLstDisplayedAttendance();
+	List<MonthlyAttendanceItemsDisplay> getLstDisplayedAttendance();
 	
 	/**
 	 * Gets the prints the setting remarks column.

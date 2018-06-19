@@ -5,9 +5,6 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,15 +20,15 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 
 	/** The item code. */
 	// コード
-	private OutputItemSettingCode itemCode;
+	private MonthlyOutputItemSettingCode itemCode;
 
 	/** The item name. */
 	// 名称
-	private OutputItemSettingName itemName;
+	private MonthlyOutputItemSettingName itemName;
 
 	/** The lst displayed attendance. */
 	// 表示する勤怠項目
-	private List<AttendanceItemsDisplay> lstDisplayedAttendance;
+	private List<MonthlyAttendanceItemsDisplay> lstDisplayedAttendance;
 
 	/** The is print. */
 	// 備考欄の印字設定
