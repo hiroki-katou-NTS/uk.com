@@ -148,8 +148,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         initScreenB(): void {
             let self = this;
 
-            self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
-            self.endDateString(moment.utc().format("YYYY/MM/DD"));
+            self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD HH:MM:SS"));
+            self.endDateString(moment.utc().add(1, "d").subtract(1, 'seconds').format("YYYY/MM/DD HH:MM:SS"));
             let paramSearch = {
                 startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD HH:MM:SS").toISOString(),
                 endDate  : moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD HH:MM:SS").toISOString()

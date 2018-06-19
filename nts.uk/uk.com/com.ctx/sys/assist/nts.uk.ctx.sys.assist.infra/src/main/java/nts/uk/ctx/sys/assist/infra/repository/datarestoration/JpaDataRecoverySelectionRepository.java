@@ -28,6 +28,7 @@ public class JpaDataRecoverySelectionRepository extends JpaRepository implements
 	@Override
 	public List<DataRecoverySelection> getDataRecoverySelection(String companyId, List<Integer> systemType,
 			GeneralDateTime startDate, GeneralDateTime endDate) {
+		
 		List<Object[]> dataSave = this.queryProxy().query(SELECT_FILE_RECOVERY_SELECTION_SAVE, Object[].class)
 				.setParameter("companyId", companyId).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).setParameter("systemType", systemType).getList();
