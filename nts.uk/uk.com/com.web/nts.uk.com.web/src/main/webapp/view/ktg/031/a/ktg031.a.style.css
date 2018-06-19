@@ -1,5 +1,5 @@
 .cf {
-	margin-left: 420px;
+	margin-left: 340px;
 }
 
 .table1 {
@@ -17,17 +17,18 @@ tbody {
 	display: block;
 	height: 222px;
     overflow: auto;
-    width: 465px;
+    width: 457px;
 }
 
 #finishDateTime {
-	margin-left: 350px;
-	margin-right: 5px;
+    float: right;
+    margin-right: 60px;
 }
 
 #processingName {
 	margin-left: 100px;
 	width: 100px;
+	font-weight: bold;
 }
 
 #button1 {
