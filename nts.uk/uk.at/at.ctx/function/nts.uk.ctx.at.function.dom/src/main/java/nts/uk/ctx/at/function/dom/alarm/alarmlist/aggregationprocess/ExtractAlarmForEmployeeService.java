@@ -37,7 +37,7 @@ public class ExtractAlarmForEmployeeService {
 		
 		List<ValueExtractAlarm> result = new ArrayList<>();
 		List<Integer> listCategory = listPeriodByCategory.stream().map( x->x.getCategory()).collect(Collectors.toList());
-		checkConList.removeIf( e->!listCategory.contains(e.getAlarmCategory().value) || e.isMonthly());
+		checkConList.removeIf( e->!listCategory.contains(e.getAlarmCategory().value));
 		List<String> employeeIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
 		// 次のチェック条件コードで集計する(loop list by category)
 		for (CheckCondition checkCondition : checkConList) {
