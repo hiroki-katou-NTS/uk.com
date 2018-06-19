@@ -49,17 +49,12 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -89,8 +84,6 @@ public class HolidayShipmentScreenAFinder {
 	private EmpSubstVacationRepository empSubrepo;
 	@Inject
 	private ComSubstVacationRepository comSubrepo;
-	@Inject
-	private PersonalLaborConditionRepository perLaborConRepo;
 	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
 	@Inject
@@ -233,14 +226,16 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	private String getWkTimeCD(Optional<WorkingConditionItem> wkingItem) {
-		String resultWkTimeCD = "";
+		StringBuilder builder = new StringBuilder();
+		builder.append("");
+
 		wkingItem.ifPresent(item -> {
 			item.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(wkIimeCd -> {
-				resultWkTimeCD.concat(wkIimeCd.v());
+				builder.append(wkIimeCd);
 			});
 		});
 
-		return resultWkTimeCD;
+		return builder.toString();
 	}
 
 	private void setChangeAppDateData(GeneralDate recDate, GeneralDate absDate, String companyID, String employeeID,
@@ -641,14 +636,13 @@ public class HolidayShipmentScreenAFinder {
 
 		result.setManualSendMailAtr(
 				appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value == 1 ? true : false);
-<<<<<<< HEAD
-
+		result.setSendMailWhenApprovalFlg(
+				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true
+						: false);
+		result.setSendMailWhenRegisterFlg(
+				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true
+						: false);
 		startupErrorCheck(employeeID, baseDate, companyID);
-=======
-		result.setSendMailWhenApprovalFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true : false);
-		result.setSendMailWhenRegisterFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true : false);
-		startupErrorCheck(employeeID, baseDate);
->>>>>>> delivery/release_user
 
 		return result;
 	}
