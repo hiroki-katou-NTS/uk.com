@@ -23,7 +23,7 @@ public class IllegalMidnightTimeDto implements ItemConst {
 
 	/** 事前時間 */
 	@AttendanceItemLayout(jpPropertyName = BEFOR_APPLICATION, layout = LAYOUT_B)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private int beforeTime;
 	
 	public static IllegalMidnightTimeDto from(IllegalMidnightTime domain) {

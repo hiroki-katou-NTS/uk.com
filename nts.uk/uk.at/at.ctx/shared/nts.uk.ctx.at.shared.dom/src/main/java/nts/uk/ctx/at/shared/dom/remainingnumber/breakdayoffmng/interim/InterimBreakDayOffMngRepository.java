@@ -94,4 +94,20 @@ public interface InterimBreakDayOffMngRepository {
 	 * @param isBreak
 	 */
 	void deleteBreakDayOfById(String mngId, DataManagementAtr mngAtr, boolean isBreak);
+	/**
+	 * ドメインモデル「暫定休出代休紐付け管理」を取得する
+	 * @param breakAtr 休出状態
+	 * @param dayOffAtr 代休状態
+	 * @param dayOffId 代休＝INPUT.代休管理データ.代休データID
+	 * @return
+	 */
+	List<InterimBreakDayOffMng> getDayOffByIdAndDataAtr(DataManagementAtr breakAtr, DataManagementAtr dayOffAtr, String dayOffId);
+	/**
+	 * ドメインモデル「暫定休出代休紐付け管理」を取得する
+	 * @param breakAtr 休出状態
+	 * @param dayOffAtr 代休状態
+	 * @param breakId 休出ID
+	 * @return
+	 */
+	List<InterimBreakDayOffMng> getBreakByIdAndDataAtr(DataManagementAtr breakAtr, DataManagementAtr dayOffAtr, String breakId);
 }

@@ -3,8 +3,10 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class DayOffManagementData {
 	
 	private List<DaysOffMana> daysOffMana;
