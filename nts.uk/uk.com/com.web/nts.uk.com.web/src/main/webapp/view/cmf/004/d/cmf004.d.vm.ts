@@ -92,7 +92,8 @@ module nts.uk.com.view.cmf004.d {
                 close();
             }
             continueProcessing() {
-                $('#data-recovery-wizard').ntsWizard("next");
+                $('#data-recovery-wizard').ntsWizard("goto", 1);
+                close();
             }
             convertToDisplayStatus(status){
                 let self = this;
