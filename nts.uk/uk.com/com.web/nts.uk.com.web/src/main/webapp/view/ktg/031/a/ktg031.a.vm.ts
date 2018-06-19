@@ -19,7 +19,8 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 let temp = self.period();
                 if (value == 0) {
                     service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
-                        self.listToppage(_.map(listData, acc => {
+                        let listOrder = _.orderBy(listData, ["code"], ['desc']);
+                        self.listToppage(_.map(listOrder, acc => {
                             acc.finishDateTime = self.convertTime(acc.finishDateTime);
                             return new TopPageAlarmDto(acc);
                         }));
@@ -31,7 +32,8 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                     });
                 } else {
                     service.getAllToppage(temp).done((data) => {
-                        self.listToppage(_.map(data, acc => {
+                        let listOrder = _.orderBy(data, ["code"], ['desc']);
+                        self.listToppage(_.map(listOrder, acc => {
                             acc.finishDateTime = self.convertTime(acc.finishDateTime);
                             return new TopPageAlarmDto(acc);
                         }));
@@ -45,13 +47,28 @@ module nts.uk.at.view.ktg031.a.viewmodel {
             });
             // subscribe month
             self.period.subscribe((obj) => {
+                let temp = self.period();
                 self.listToppage([]);
-                service.getToppage(self.selectedRuleCode(), self.period()).done((listData) => {
-                    self.listToppage(_.map(listData, acc => {
-                        acc.finishDateTime = self.convertTime(acc.finishDateTime);
-                        return new TopPageAlarmDto(acc);
-                    }));
-                });
+                if (self.selectedRuleCode() == 0) {
+                    service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
+                        self.listToppage(_.map(listData, acc => {
+                            acc.finishDateTime = self.convertTime(acc.finishDateTime);
+                            return new TopPageAlarmDto(acc);
+                        }));
+                    });
+                }else{
+                    service.getAllToppage(temp).done((data) => {
+                        self.listToppage(_.map(data, acc => {
+                            acc.finishDateTime = self.convertTime(acc.finishDateTime);
+                            return new TopPageAlarmDto(acc);
+                        }));
+                        self.period(temp);
+                    }).fail(function(error) {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
             });
         }
 
@@ -61,10 +78,12 @@ module nts.uk.at.view.ktg031.a.viewmodel {
             var dfd = $.Deferred();
             // get toppage with roger = 0
             service.getToppage(self.selectedRuleCode(), self.period()).done((listData: Array<ITopPageAlarmDto>) => {
-                self.listToppage(_.map(listData, acc => {
+                let listOrder = _.orderBy(listData, ["code"], ['desc']);
+                self.listToppage(_.map(listOrder, acc => {
                     acc.finishDateTime = self.convertTime(acc.finishDateTime);
                     return new TopPageAlarmDto(acc);
                 }));
+                
                 dfd.resolve();
             }).fail(function(error) {
                 alertError(error);

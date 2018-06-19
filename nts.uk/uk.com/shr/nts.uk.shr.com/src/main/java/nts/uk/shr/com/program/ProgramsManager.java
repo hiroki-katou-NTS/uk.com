@@ -1954,6 +1954,12 @@ public class ProgramsManager {
 	public static final Program CCG009A = new Program(WebAppId.COM, ProgramIdConsts.CCG009A, "CCG009_1",
 			"/view/ccg/009/index.xhtml");
 
+	/** KTG031 */
+	public static final Program KTG031A = new Program(WebAppId.COM, ProgramIdConsts.KTG031A, "KTG031_1",
+			"/view/ktg/031/a/index.xhtml");
+	public static final Program KTG031B = new Program(WebAppId.COM, ProgramIdConsts.KTG031B, "KTG031_2",
+			"/view/ktg/031/b/index.xhtml");
+	
 	/**
 	 * All programs map.
 	 */
