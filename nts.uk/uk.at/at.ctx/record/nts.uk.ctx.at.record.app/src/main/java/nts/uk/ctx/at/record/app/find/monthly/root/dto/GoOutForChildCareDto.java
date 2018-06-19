@@ -25,12 +25,12 @@ public class GoOutForChildCareDto implements ItemConst {
 	private int attr;
 	
 	/** 回数: 勤怠月間回数 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_B, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int times;
 	
 	/** 時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_C, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int time;
 	

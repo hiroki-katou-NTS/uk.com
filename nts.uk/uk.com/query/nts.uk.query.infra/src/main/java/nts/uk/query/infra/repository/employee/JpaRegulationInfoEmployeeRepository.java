@@ -212,7 +212,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		resultList.addAll(em.createQuery(cq).getResultList());
 
 		// Filter result list by status of employee
-		resultList = resultList.stream().filter(item -> item.isFiltered(paramQuery)).collect(Collectors.toList());
+		resultList = resultList.stream().filter(item -> item.isIncluded(paramQuery)).collect(Collectors.toList());
 
 		// Distinct employee in result list.
 		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid))
