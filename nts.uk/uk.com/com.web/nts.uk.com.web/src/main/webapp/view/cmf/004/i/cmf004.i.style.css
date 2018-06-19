@@ -1,41 +1,35 @@
 #master-wrapper {
-	overflow: hidden;
+    overflow: hidden;
 }
 
-.dialog-contents{
-  padding: 20px;
+.content-container {
+    margin: 20px;
 }
 
 .bg-yellow {
-	text-align: center;
-	background-color: #BFEA60;
-}
-
-.button {
-	text-align: center;
-	margin-top: 30px;
+    background-color: #BFEA60;
 }
 
 table {
-	box-sizing: border-box;
+    box-sizing: border-box;
     margin-left: 20px;
     margin-bottom: 20px;
 }
 
 td {
-	padding: 5px;
-	border: 1px solid black;
+    padding: 5px;
+    border: 1px solid black;
 }
 
 #I1_1 {
-	font-size: 24px;
+    font-size: 24px;
 }
 
 #I1_2 {
-	margin-top: 5px;
+    margin-top: 5px;
 }
 
 #I3_1 {
-	margin-left: 20px;
+    margin-left: 20px;
 }
 

@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -62,11 +59,11 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 	
 	// attditemcondition
 	@Column(name = "OPERATOR_BETWEEN_GROUPS")
-	public BigDecimal operatorBetweenGroups;
+	public Integer operatorBetweenGroups;
 
 	@Column(name = "GROUP2_USE_ATR")
 	@Basic(optional = true)
-	public BigDecimal group2UseAtr;
+	public Integer	 group2UseAtr;
 
 	@Column(name = "ATD_ITEM_CONDITION_GROUP1")
 	@Basic(optional = true)
@@ -91,8 +88,8 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 	
 	public KrcmtExtraResultMonthly(
 			String errorAlarmCheckID, int sortBy, String extraResultMonName, int useAtr, int typeCheckItem, int messageBold, String messageColor, String messageDisplay, 
-			BigDecimal operatorBetweenGroups,
-			BigDecimal group2UseAtr, String atdItemConditionGroup1, KrcstErAlConGroup krcstErAlConGroup1, String atdItemConditionGroup2, KrcstErAlConGroup krcstErAlConGroup2) {
+			Integer operatorBetweenGroups,
+			Integer group2UseAtr, String atdItemConditionGroup1, KrcstErAlConGroup krcstErAlConGroup1, String atdItemConditionGroup2, KrcstErAlConGroup krcstErAlConGroup2) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.sortBy = sortBy;
@@ -121,24 +118,26 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 				domain.getHowDisplayMessage().isMessageBold()?1:0,
 				!domain.getHowDisplayMessage().getMessageColor().isPresent()?null:domain.getHowDisplayMessage().getMessageColor().get(),
 				!domain.getDisplayMessage().isPresent()?null:domain.getDisplayMessage().get().v(),
-				!isCheckConMonthly?null:new BigDecimal(domain.getCheckConMonthly().get().getOperatorBetweenGroups().value),
-				null,
+				!isCheckConMonthly?null:domain.getCheckConMonthly().get().getOperatorBetweenGroups().value,
+				!isCheckConMonthly?null:domain.getCheckConMonthly().get().isUseGroup2()?1:0,
 				!isCheckConMonthly?null:domain.getCheckConMonthly().get().getGroup1().getAtdItemConGroupId(),
-				null,
-				!isCheckConMonthly?null:domain.getCheckConMonthly().get().getGroup2().getAtdItemConGroupId(),
-				null
+				!isCheckConMonthly?null:KrcstErAlConGroup.toEntity(domain.getCheckConMonthly().get().getGroup1()),
+				!isCheckConMonthly?null:(domain.getCheckConMonthly().get().getGroup2()==null?null:domain.getCheckConMonthly().get().getGroup2().getAtdItemConGroupId()),
+				!isCheckConMonthly?null:(domain.getCheckConMonthly().get().getGroup2() == null?null:KrcstErAlConGroup.toEntity(domain.getCheckConMonthly().get().getGroup2()))
 				);
 	}
 	
 	public ExtraResultMonthly toDomain() {
-		AttendanceItemCondition attdItemCon = AttendanceItemCondition.init(
+		AttendanceItemCondition attdItemCon = null;
+		if(this.operatorBetweenGroups != null) {
+		 attdItemCon = AttendanceItemCondition.init(
 				//LogicalOperator operatorBetweenGroups, Boolean group2UseAtr
-				EnumAdaptor.valueOf(this.operatorBetweenGroups.intValue(), LogicalOperator.class),	
-				new Boolean(this.group2UseAtr.intValue()==1?true:false)
+				EnumAdaptor.valueOf(this.operatorBetweenGroups, LogicalOperator.class),	
+				this.group2UseAtr ==null?null:new Boolean(this.group2UseAtr.intValue()==1?true:false)
 				);
-//			attdItemCon.setGroup1(krcstErAlConGroup1.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
-//			attdItemCon.setGroup2(krcstErAlConGroup2.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
-		
+			attdItemCon.setGroup1(krcstErAlConGroup1.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
+			attdItemCon.setGroup2(krcstErAlConGroup2 ==null?null :krcstErAlConGroup2.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
+		}
 		
 		return new ExtraResultMonthly(
 			this.errorAlarmCheckID,

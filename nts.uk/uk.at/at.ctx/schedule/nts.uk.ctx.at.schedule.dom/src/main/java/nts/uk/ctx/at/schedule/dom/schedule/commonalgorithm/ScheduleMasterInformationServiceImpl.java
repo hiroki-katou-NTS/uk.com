@@ -20,10 +20,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkPlaceHisto
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmp;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpAdaptor;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHis;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -43,15 +40,9 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	@Inject
 	private I18NResourcesForUK internationalization;
 
-	@Inject
-	private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
-
-	@Inject
-	private BusinessTypeOfEmpAdaptor businessTypeOfEmpAdaptor;
-
 	@Override
 	public Optional<ScheduleMasterInformationDto> getScheduleMasterInformationDto(String employeeId,
-			GeneralDate baseDate, String exeId, EmployeeGeneralInfoImported empGeneralInfo) {
+			GeneralDate baseDate, String exeId, EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
 
 		Optional<ScheduleMasterInformationDto> result = Optional.of(new ScheduleMasterInformationDto());
 
@@ -94,7 +85,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 		}
 
 		// 勤務種別コードを取得する
-		this.acquireWorkTypeCode(employeeId, baseDate, result);
+		this.acquireWorkTypeCode(employeeId, baseDate, result, listBusTypeOfEmpHis);
 
 		return result;
 	}
@@ -224,23 +215,20 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	 */
 
 	private void acquireWorkTypeCode(String employeeId, GeneralDate baseDate,
-			Optional<ScheduleMasterInformationDto> result) {
+			Optional<ScheduleMasterInformationDto> result, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
-		Optional<BusinessTypeOfEmpHis> businessTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
-				.findByBaseDateAndSid(baseDate, employeeId);
+		// EA No2022
+		Optional<BusinessTypeOfEmpDto> businessTypeOfEmpHis = listBusTypeOfEmpHis.stream()
+				.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getStartDate().beforeOrEquals(baseDate)
+						&& x.getEndDate().afterOrEquals(baseDate)))
+				.findFirst();
+
 		if (!businessTypeOfEmpHis.isPresent()) {
 			result.get().setBusinessTypeCode(null);
 			return;
 		}
-		// ドメインモデル「社員の勤務種別」を取得する
-		Optional<BusinessTypeOfEmp> businessTypeOfEmp = this.businessTypeOfEmpAdaptor.getBySidAndHistId(employeeId,
-				businessTypeOfEmpHis.get().getHistoryId());
-		if (!businessTypeOfEmp.isPresent()) {
-			result.get().setBusinessTypeCode(null);
-			return;
-		}
 
-		result.get().setBusinessTypeCode(businessTypeOfEmp.get().getBusinessTypeCode());
+		result.get().setBusinessTypeCode(businessTypeOfEmpHis.get().getBusinessTypeCd());
 	}
 
 	/**

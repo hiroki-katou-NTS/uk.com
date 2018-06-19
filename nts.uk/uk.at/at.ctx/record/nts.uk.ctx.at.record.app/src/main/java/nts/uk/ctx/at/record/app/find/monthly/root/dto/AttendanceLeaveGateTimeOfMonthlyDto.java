@@ -17,22 +17,22 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class AttendanceLeaveGateTimeOfMonthlyDto implements ItemConst {
 
 	/** 出勤前時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ATTENDANCE, layout = LAYOUT_A)
 	private int timeBeforeAttendance;
 
 	/** 滞在時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = STAYING, layout = LAYOUT_B)
 	private int stayingTime;
 
 	/** 退勤後時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LEAVE, layout = LAYOUT_C)
 	private int timeAfterLeaveWork;
 
 	/** 不就労時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = UNEMPLOYED, layout = LAYOUT_D)
 	private int unemployedTime;
 	

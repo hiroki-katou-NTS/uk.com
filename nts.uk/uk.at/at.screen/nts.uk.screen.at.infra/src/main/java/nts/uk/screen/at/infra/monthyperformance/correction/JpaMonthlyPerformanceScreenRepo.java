@@ -4,24 +4,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.MonthlyPerformanceScreenRepo;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 @Stateless
 public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements MonthlyPerformanceScreenRepo {
 
@@ -29,7 +35,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 	private final static String SEL_PERSON = "SELECT p FROM BpsmtPerson p WHERE p.bpsmtPersonPk.pId IN :lstPersonId";
 	private final static String SEL_WORKPLACE;
 	private final static String SEL_BUSINESS_TYPE;
-	static{
+	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT s FROM BsymtEmployeeDataMngInfo s ");
 		// builderString.append("JOIN KmnmtAffiliClassificationHist c ");
@@ -50,7 +56,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		// builderString.append("OR s.bsymtEmployeePk.sId =
 		// c.kmnmtClassificationHistPK.empId ");
 		SEL_EMPLOYEE = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT w FROM BsymtAffiWorkplaceHistItem w JOIN ");
 		builderString.append("BsymtAffiWorkplaceHist a ");
@@ -61,19 +67,19 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		// builderString.append("AND w.bsymtWorkplaceHist.strD <= :baseDate ");
 		// builderString.append("AND w.bsymtWorkplaceHist.endD >= :baseDate");
 		SEL_WORKPLACE = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
 		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
 		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
-		builderString.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.KrcmtBusinessTypeOfHistoryPK.historyId");
+		builderString.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
 		builderString.append(" WHERE b.sId IN :lstSID");
 		builderString.append(" AND h.startDate <= :endYmd");
 		builderString.append(" AND h.endDate >= :startYmd");
 		builderString.append(" ORDER BY b.businessTypeCode ASC");
 		SEL_BUSINESS_TYPE = builderString.toString();
-	}	
-	
+	}
+
 	@Override
 	public Map<String, String> getListWorkplace(String employeeId, DateRange dateRange) {
 		Map<String, String> lstWkp = new HashMap<>();
@@ -90,7 +96,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 				});
 		return lstWkp;
 	}
-	
+
 	@Override
 	public List<MonthlyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
@@ -100,13 +106,13 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		List<String> ids = lstEmployee.stream().map((employee) -> {
 			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
 		}).collect(Collectors.toList());
-		
-		List<BpsmtPerson> lstPerson = new ArrayList<>(); 
+
+		List<BpsmtPerson> lstPerson = new ArrayList<>();
 		CollectionUtil.split(ids, 1000, (subList) -> {
-			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
-				.setParameter("lstPersonId",subList).getList());
+			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class).setParameter("lstPersonId", subList)
+					.getList());
 		});
-		
+
 		return lstEmployee.stream().map((employee) -> {
 			for (BpsmtPerson person : lstPerson) {
 				if (person.bpsmtPersonPk.pId.equals(employee.bsymtEmployeeDataMngInfoPk.pId)) {
@@ -120,33 +126,68 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 					"", false);
 		}).collect(Collectors.toList());
 	}
+
 	@Override
 	public List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange) {
-//		return this.queryProxy().query(SEL_BUSINESS_TYPE, String.class).setParameter("lstSID", lstEmployee)
-//				.setParameter("startYmd", dateRange.getStartDate()).setParameter("endYmd", dateRange.getEndDate())
-//				.getList();
+		// return this.queryProxy().query(SEL_BUSINESS_TYPE,
+		// String.class).setParameter("lstSID", lstEmployee)
+		// .setParameter("startYmd",
+		// dateRange.getStartDate()).setParameter("endYmd",
+		// dateRange.getEndDate())
+		// .getList();
 		List<String> result = new ArrayList<>();
 		CollectionUtil.split(lstEmployee, 1000, (subList) -> {
 			result.addAll(this.queryProxy().query(SEL_BUSINESS_TYPE, String.class).setParameter("lstSID", subList)
-			.setParameter("startYmd", dateRange.getStartDate()).setParameter("endYmd", dateRange.getEndDate())
-			.getList());
+					.setParameter("startYmd", dateRange.getStartDate()).setParameter("endYmd", dateRange.getEndDate())
+					.getList());
 		});
 		return result;
 	}
 
 	@Override
 	public List<MonthlyAttendanceItemDto> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
-		StringBuilder builderString = new StringBuilder();		
+		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT b");
 		builderString.append(" FROM KrcmtMonAttendanceItem b");
 		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
 		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
-		
+
 		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class)
-				.setParameter("attendanceItemIds", attendanceItemIds)
-				.setParameter("companyId", companyId)
-				.getList().stream().map(c->new MonthlyAttendanceItemDto(c.getKrcmtMonAttendanceItemPK().getCid(), c.getKrcmtMonAttendanceItemPK().getMAtdItemId(), c.getMAtdItemName(),
-						c.getDispNo(), c.getIsAllowChange(), c.getMAtdItemAtr(), c.getLineBreakPosName()))
+				.setParameter("attendanceItemIds", attendanceItemIds).setParameter("companyId", companyId).getList()
+				.stream()
+				.map(c -> new MonthlyAttendanceItemDto(c.getKrcmtMonAttendanceItemPK().getCid(),
+						c.getKrcmtMonAttendanceItemPK().getMAtdItemId(), c.getMAtdItemName(), c.getDispNo(),
+						c.getIsAllowChange(), c.getMAtdItemAtr(), c.getLineBreakPosName()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EditStateOfMonthlyPerformanceDto> findEditStateOfMonthlyPer(YearMonth processingDate,
+			List<String> employeeIds, List<Integer> attendanceItemIds) {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcdtEditStateOfMothlyPer b");
+		builderString.append(" WHERE b.krcdtEditStateOfMothlyPerPK.employeeID IN :employeeIds");
+		builderString.append(" AND b.krcdtEditStateOfMothlyPerPK.attendanceItemID IN :attendanceItemIds");
+		builderString.append(" AND b.processDate = :processingDate");
+
+		List<EditStateOfMonthlyPerformanceDto> list = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, (subList) -> {
+			CollectionUtil.split(attendanceItemIds, 1000, (attdItemIds) -> {
+				list.addAll(this.queryProxy().query(builderString.toString(), KrcdtEditStateOfMothlyPer.class)
+						.setParameter("employeeIds", subList).setParameter("attendanceItemIds", attdItemIds)
+						.setParameter("processingDate", processingDate.v()).getList().stream()
+						.map(item -> new EditStateOfMonthlyPerformanceDto(
+								item.getKrcdtEditStateOfMothlyPerPK().employeeID,
+								item.krcdtEditStateOfMothlyPerPK.attendanceItemID,
+								new DatePeriod(item.krcdtEditStateOfMothlyPerPK.startYmd,
+										item.krcdtEditStateOfMothlyPerPK.endYmd),
+								item.processDate, item.closureID,
+								new ClosureDateDto(item.getCloseDay(), item.getIsLastDay()), item.getStateOfEdit()))
+						.collect(Collectors.toList()));
+
+			});
+		});
+		return list;
 	}
 }

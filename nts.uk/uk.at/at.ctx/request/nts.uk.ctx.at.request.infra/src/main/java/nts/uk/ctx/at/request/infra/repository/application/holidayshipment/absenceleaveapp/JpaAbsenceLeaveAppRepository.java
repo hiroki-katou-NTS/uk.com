@@ -29,8 +29,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaAbsenceLeaveAppRepository extends JpaRepository implements AbsenceLeaveAppRepository {
 
-	String FIND_SUB_DIG = "SELECT d FROM KrqdtSubDigestion d WHERE d.absenceLeaveAppID=:absenceLeaveAppID";
-	String FIND_SUB_TAG_DIG_BY_ABS_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.appID=:appID";
+	private static final String FIND_SUB_DIG = "SELECT d FROM KrqdtSubDigestion d WHERE d.absenceLeaveAppID=:absenceLeaveAppID";
+	private static final String FIND_SUB_TAG_DIG_BY_ABS_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.appID=:appID";
 
 	@Override
 	public void insert(AbsenceLeaveApp absApp) {

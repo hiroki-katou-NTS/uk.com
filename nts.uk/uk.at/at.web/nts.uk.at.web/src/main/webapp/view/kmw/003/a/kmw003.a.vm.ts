@@ -136,7 +136,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             self.yearMonth.subscribe(value => {
                 //期間を変更する
-                self.updateDate(value);
+                if(nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined) self.updateDate(value);
             });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -285,7 +285,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
-            localStorage.removeItem(window.location.href + '/dpGrid');
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             self.initScreen().done(() => {
@@ -311,6 +310,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let dfd = $.Deferred();
             nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
+            localStorage.removeItem(window.location.href + '/dpGrid');
+            nts.uk.ui.errors.clearAllGridErrors();
             service.startScreen(self.monthlyParam()).done((data) => {
                 self.dataAll(data);
                 self.itemValueAll(data.itemValues);
@@ -397,7 +398,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         insertUpdate() {
             var self = this;
             let errorGrid: any = $("#dpGrid").ntsGrid("errors");
-            let dataUpdate = {
+            let dataUpdate = { 
                 /** 年月: 年月 */
                yearMonth : self.yearMonth(),
                 /** 締めID: 締めID */
@@ -407,8 +408,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 mPItemDetails: []
             }
             if (errorGrid == undefined || errorGrid.length == 0) {
-                nts.uk.ui.block.invisible();
-                nts.uk.ui.block.grayout();
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
                 var dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 let dataChangeProcess: any = [];
@@ -435,10 +434,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                  });
                 dataUpdate.mPItemDetails = dataChangeProcess;
                 let checkDailyChange = (dataChangeProcess.length > 0);
-                if (checkDailyChange) {
+                if (checkDailyChange) {   
+                    nts.uk.ui.block.invisible();
+                    nts.uk.ui.block.grayout();
                     service.addAndUpdate(dataUpdate).done((data) => {
                         nts.uk.ui.block.clear();
-                self.updateDate(self.yearMonth());
+                        self.updateDate(self.yearMonth());
                     })
                 }
             }
@@ -447,6 +448,25 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         insertUpdate2(){
             var self = this;
            self.insertUpdate();
+        }
+        
+        btnSaveColumnWidth_Click() {
+            var self = this;
+            let command = {
+                lstHeader: {},
+                formatCode: self.dataAll().param.formatCodes
+//                sheetNo : $("#dpGrid").ntsGrid("selectedSheet")
+            };
+            let jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
+            let valueTemp = 0;
+            _.forEach($.parseJSON(jsonColumnWith), (value, key) => {
+                if (key.indexOf('A') != -1) {
+                    if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
+                        command.lstHeader[key.substring(1, key.length)] = value;
+                    }
+                }
+            });
+            service.saveColumnWidth(command);
         }
         
         getPrimitiveValue(value: any, atr: any): string {
@@ -616,7 +636,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     nts.uk.ui.block.invisible();
                     nts.uk.ui.block.grayout();
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
-                    //Reload screen
+                    //Reload screen                    
+                    nts.uk.ui.errors.clearAllGridErrors();
                     if($("#dpGrid").data('igGrid')) {
                         $("#dpGrid").ntsGrid("destroy");
                     }
@@ -668,7 +689,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 userId: "4",
                 getUserId: function(k) { return String(k); },
                 errorColumns: ["ruleCode"],
-
+                showErrorsOnPage: true,
                 columns: self.headersGrid(),
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
@@ -1021,15 +1042,19 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
                                 header["columnCssClass"] = "currency-symbol";
                                 header.constraint["min"] = "0";
-                                header.constraint["max"] = "9999999999"
+                                header.constraint["max"] = "99999999"
                             } else if (header.constraint.cDisplayType == "Clock") {
                                 header["columnCssClass"] = "right-align";
-                                header.constraint["min"] = "-10:00";
-                                header.constraint["max"] = "200:30"
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "999:59"
                             } else if (header.constraint.cDisplayType == "Integer") {
                                 header["columnCssClass"] = "right-align";
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "99"
                             } else if (header.constraint.cDisplayType == "HalfInt") {
                                 header["columnCssClass"] = "right-align";
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "99.5"
                             }
                             delete header.constraint.primitiveValue;
                         } else {
