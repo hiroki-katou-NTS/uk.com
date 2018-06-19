@@ -18,7 +18,7 @@ public class SurfaceItemWebService {
 	private SurfaceItemFinder surfaceItemFinder;
 	@POST
 	@Path("findTableList/{dataRecoveryProcessId}")
-	public List<SurfaceItemDto> SurfaceItem(@PathParam("dataRecoveryProcessId") String dataRecoveryProcessId) {
+	public List<SurfaceItemDto> surfaceItem(@PathParam("dataRecoveryProcessId") String dataRecoveryProcessId) {
 		return surfaceItemFinder.getSurfaceItemById(dataRecoveryProcessId);
 	}
 }

@@ -1,13 +1,9 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
-@Data
-@AllArgsConstructor
 @Value
 public class SurfaceItemDto {
 
@@ -31,6 +27,10 @@ public class SurfaceItemDto {
 	 * 別会社区分
 	 */
 	private int anotherComCls;
+	/**
+	 * カテゴリID
+	 */
+	private String categoryId;
 	/**
 	 * カテゴリ名
 	 */
@@ -58,7 +58,7 @@ public class SurfaceItemDto {
 
 	public static SurfaceItemDto fromDomain(TableList domain) {
 		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode(), domain.getSaveSetName(),
-				domain.getSupplementaryExplanation(), domain.getAnotherComCls().value, domain.getCategoryName(),
+				domain.getSupplementaryExplanation(), domain.getAnotherComCls().value, domain.getCategoryId(),domain.getCategoryName(),
 				domain.getRetentionPeriodCls().value, domain.getSaveDateFrom(), domain.getSaveDateTo(),
 				domain.getCanNotBeOld(), domain.getStorageRangeSaved().value);
 	}

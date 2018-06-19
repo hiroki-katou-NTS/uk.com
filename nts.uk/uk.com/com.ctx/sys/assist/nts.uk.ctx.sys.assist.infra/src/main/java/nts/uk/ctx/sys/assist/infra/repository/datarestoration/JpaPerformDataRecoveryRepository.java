@@ -1,9 +1,9 @@
 package nts.uk.ctx.sys.assist.infra.repository.datarestoration;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
@@ -23,7 +24,6 @@ import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
 
 @Stateless
 public class JpaPerformDataRecoveryRepository extends JpaRepository implements PerformDataRecoveryRepository {
-
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.tableListPk.categoryId =:categoryId AND storageRangeSaved =:storageRangeSaved ORDER BY DESC tableNo";
 
@@ -38,17 +38,24 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	private static final StringBuilder INSERT_BY_TABLE = new StringBuilder("INSERT INTO ");
 
 	private static final String SELECT_ALL_TABLE_LIST_QUERY_STRING = "SELECT f FROM SspmtTableList f";
-	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId";
-	private static final String SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID  = "SELECT t FROM SspmtTarget t WHERE t.targetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
-    private static final String SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID  = "SELECT st FROM SspmtRestorationTarget st WHERE st.restorationTargetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
+
+	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT DISTINCT t.tableListPk.categoryId, t.categoryName, t.saveSetCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId GROUP BY t.tableListPk.categoryId, t.categoryName, t.saveSetCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation";
+
+	private static final String SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID = "SELECT t FROM SspmtTarget t WHERE t.targetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
+
+	private static final String SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID = "SELECT st FROM SspmtRestorationTarget st WHERE st.restorationTargetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
 
 	@Override
-    public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
-        List<SspmtTarget> targetData = this.queryProxy().query(SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtTarget.class).setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList();
-        List<SspmtRestorationTarget> restorationTarget = this.queryProxy().query(SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtRestorationTarget.class).setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList();
-        return Optional.ofNullable(
-                this.getEntityManager().find(SspmtPerformDataRecovery.class, dataRecoveryProcessId).toDomain(targetData, restorationTarget));
-    }
+	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
+		List<SspmtTarget> targetData = this.queryProxy()
+				.query(SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtTarget.class)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList();
+		List<SspmtRestorationTarget> restorationTarget = this.queryProxy()
+				.query(SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtRestorationTarget.class)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList();
+		return Optional.ofNullable(this.getEntityManager().find(SspmtPerformDataRecovery.class, dataRecoveryProcessId)
+				.toDomain(targetData, restorationTarget));
+	}
 
 	@Override
 	public void add(PerformDataRecovery domain) {
@@ -93,40 +100,39 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	public int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName) {
 		if (tableName != null) {
 			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-            COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere));
-            return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString())
-                    .getSingleResult();
+			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere));
+			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
 		}
 		return 0;
 	}
 
-    private StringBuilder makeWhereClause(Map<String, String> filedWhere) {
-	    StringBuilder whereClause = new StringBuilder();
-        int i = 0;
-        for (Map.Entry<String, String> filed : filedWhere.entrySet()) {
-            if (!filed.getValue().isEmpty()) {
-                i++;
-                if (i != 0) {
-                    whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(filed.getValue());
-                } else {
-                    whereClause.append(filed.getKey()).append(" = ").append(filed.getValue());
-                }
-            }
-        }
-        return whereClause;
-    }
+	private StringBuilder makeWhereClause(Map<String, String> filedWhere) {
+		StringBuilder whereClause = new StringBuilder();
+		int i = 0;
+		for (Map.Entry<String, String> filed : filedWhere.entrySet()) {
+			if (!filed.getValue().isEmpty()) {
+				i++;
+				if (i != 0) {
+					whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(filed.getValue());
+				} else {
+					whereClause.append(filed.getKey()).append(" = ").append(filed.getValue());
+				}
+			}
+		}
+		return whereClause;
+	}
 
-    @Override
+	@Override
 	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName) {
 
 		EntityManager em = this.getEntityManager();
 
 		if (tableName != null) {
 			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-            DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere));
+			DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere));
 
-            Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
-            query.executeUpdate();
+			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
+			query.executeUpdate();
 		}
 	}
 
@@ -149,7 +155,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		query.executeUpdate();
 
 	}
-	
+
 	@Override
 	public List<TableList> getAllTableList() {
 		return this.queryProxy().query(SELECT_ALL_TABLE_LIST_QUERY_STRING, SspmtTableList.class)
@@ -158,8 +164,14 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	@Override
 	public List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId) {
-		return this.queryProxy().query(SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING, SspmtTableList.class)
-				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList(SspmtTableList::toDomain);
+		List<TableList> tableList = new ArrayList<>();
+		List<Object[]> listItems = this.queryProxy()
+				.query(SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING, Object[].class)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList();
+		for (int i = 0; i < listItems.size(); i++) {
+			tableList.add(fromDomain(listItems.get(i)));
+		}
+		return tableList;
 	}
 
 	@Override
@@ -176,9 +188,19 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 		query.executeUpdate();
 	}
-	
-	public void addTargetEmployee(Target domain){
+
+	public void addTargetEmployee(Target domain) {
 		this.commandProxy().insert(SspmtTarget.toEntity(domain));
 	}
-	
+
+	private static TableList fromDomain(Object[] objectSurfaceItem) {
+
+		return new TableList(objectSurfaceItem[0].toString(), objectSurfaceItem[1].toString(),
+				objectSurfaceItem[2].toString(), objectSurfaceItem[3].toString(),
+				GeneralDate.fromString(objectSurfaceItem[4].toString(), "yyyy/MM/dd"),
+				GeneralDate.fromString(objectSurfaceItem[5].toString(), "yyyy/MM/dd"),
+				Integer.parseInt(objectSurfaceItem[6].toString()), Integer.parseInt(objectSurfaceItem[7].toString()),
+				Integer.parseInt(objectSurfaceItem[8].toString()), objectSurfaceItem[9].toString(),
+				Integer.parseInt(objectSurfaceItem[10].toString()), objectSurfaceItem[11].toString());
+	}
 }

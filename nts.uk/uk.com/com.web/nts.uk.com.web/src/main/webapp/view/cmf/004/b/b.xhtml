@@ -73,8 +73,8 @@
 													comId: 'B5_1',
 													items: recoveryFileList,
 													selected: selectedRecoveryFile,
-													selectedKey: 'saveSetCode',
-													fields: ['saveSetCode', 'saveSetName'],
+													selectedKey: 'fileId',
+													fields: ['saveSetName'],
 													mode: 'igGrid'}"
 							tabindex="5" />
 					</div>
@@ -86,9 +86,10 @@
 					data-bind="ntsGridList: {
 										options: recoveryFileList,
 										optionsValue: selectedRecoveryFile,
-										primaryKey: 'saveSetCode',
+										primaryKey: 'fileId',
 										columns: [
-													{headerText: '', key: 'saveSetCode', width: 40, ntsControl:'Button'},
+													{headerText: '', key: 'fileId', width: 40, hidden: true},
+													{headerText: '', key: 'saveSetCode', width: 40},
 													{headerText: '#{i18n.getText('CMF004_37')}', key: 'saveSetName', width: 120},
 													{headerText: '#{i18n.getText('CMF004_38')}', key: 'supplementaryExplanation', width: 150},
 													{headerText: '#{i18n.getText('CMF004_39')}', key: 'storageStartDate', width: 180},

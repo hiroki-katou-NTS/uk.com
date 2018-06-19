@@ -165,7 +165,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 storageStartDate: data[i].saveStartDatetime,
                                 executeCategory: data[i].saveForm,
                                 targetNumber: data[i].targetNumberPeople,
-                                saveFileName: data[i].saveFileName
+                                saveFileName: data[i].saveFileName,
+                                fileId: data[i].fileId
                             };
                         self.dataRecoverySelection().recoveryFileList.push(itemTarget);
                     }

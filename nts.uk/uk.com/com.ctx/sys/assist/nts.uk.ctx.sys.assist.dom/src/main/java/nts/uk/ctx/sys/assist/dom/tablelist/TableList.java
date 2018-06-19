@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.tablelist;
 
+import javax.persistence.EnumType;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -87,10 +89,10 @@ public class TableList extends DomainObject {
 	 */
 	private String saveSetName;
 
-//	/**
-//	 * 保存ファイル名
-//	 */
-//	private String saveFileName;
+	// /**
+	// * 保存ファイル名
+	// */
+	// private String saveFileName;
 
 	/**
 	 * 保存形態
@@ -595,30 +597,30 @@ public class TableList extends DomainObject {
 	public TableList(String categoryId, String categoryName, String dataStorageProcessingId,
 			String dataRecoveryProcessId, int tableNo, String tableJapaneseName, String tableEnglishName,
 			String fieldAcqCid, String fieldAcqDateTime, String fieldAcqEmployeeId, String fieldAcqEndDate,
-			String fieldAcqStartDate, String saveSetCode, String saveSetName, String saveForm,
-			GeneralDate saveDateFrom, GeneralDate saveDateTo, int storageRangeSaved, int retentionPeriodCls,
-			String internalFileName, int anotherComCls, String referenceYear, String referenceMonth,
-			String compressedFileName, String fieldChild1, String fieldChild2, String fieldChild3, String fieldChild4,
-			String fieldChild5, String fieldChild6, String fieldChild7, String fieldChild8, String fieldChild9,
-			String fieldChild10, int historyCls, int canNotBeOld, int selectionTargetForRes,
-			String clsKeyQuery1, String clsKeyQuery2, String clsKeyQuery3, String clsKeyQuery4, String clsKeyQuery5,
-			String clsKeyQuery6, String clsKeyQuery7, String clsKeyQuery8, String clsKeyQuery9, String clsKeyQuery10,
-			String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3, String fieldKeyQuery4,
-			String fieldKeyQuery5, String fieldKeyQuery6, String fieldKeyQuery7, String fieldKeyQuery8,
-			String fieldKeyQuery9, String fieldKeyQuery10, String defaultCondKeyQuery, String fieldDate1,
-			String fieldDate2, String fieldDate3, String fieldDate4, String fieldDate5, String fieldDate6,
-			String fieldDate7, String fieldDate8, String fieldDate9, String fieldDate10, String fieldDate11,
-			String fieldDate12, String fieldDate13, String fieldDate14, String fieldDate15, String fieldDate16,
-			String fieldDate17, String fieldDate18, String fieldDate19, String fieldDate20, String filedKeyUpdate1,
-			String filedKeyUpdate2, String filedKeyUpdate3, String filedKeyUpdate4, String filedKeyUpdate5,
-			String filedKeyUpdate6, String filedKeyUpdate7, String filedKeyUpdate8, String filedKeyUpdate9,
-			String filedKeyUpdate10, String filedKeyUpdate11, String filedKeyUpdate12, String filedKeyUpdate13,
-			String filedKeyUpdate14, String filedKeyUpdate15, String filedKeyUpdate16, String filedKeyUpdate17,
-			String filedKeyUpdate18, String filedKeyUpdate19, String filedKeyUpdate20, String screenRetentionPeriod,
-			String supplementaryExplanation, String parentTblJpName, int hasParentTblFlg,
-			String parentTblName, String fieldParent1, String fieldParent2, String fieldParent3, String fieldParent4,
-			String fieldParent5, String fieldParent6, String fieldParent7, String fieldParent8, String fieldParent9,
-			String fieldParent10, int surveyPreservation) {
+			String fieldAcqStartDate, String saveSetCode, String saveSetName, String saveForm, GeneralDate saveDateFrom,
+			GeneralDate saveDateTo, int storageRangeSaved, int retentionPeriodCls, String internalFileName,
+			int anotherComCls, String referenceYear, String referenceMonth, String compressedFileName,
+			String fieldChild1, String fieldChild2, String fieldChild3, String fieldChild4, String fieldChild5,
+			String fieldChild6, String fieldChild7, String fieldChild8, String fieldChild9, String fieldChild10,
+			int historyCls, int canNotBeOld, int selectionTargetForRes, String clsKeyQuery1, String clsKeyQuery2,
+			String clsKeyQuery3, String clsKeyQuery4, String clsKeyQuery5, String clsKeyQuery6, String clsKeyQuery7,
+			String clsKeyQuery8, String clsKeyQuery9, String clsKeyQuery10, String fieldKeyQuery1,
+			String fieldKeyQuery2, String fieldKeyQuery3, String fieldKeyQuery4, String fieldKeyQuery5,
+			String fieldKeyQuery6, String fieldKeyQuery7, String fieldKeyQuery8, String fieldKeyQuery9,
+			String fieldKeyQuery10, String defaultCondKeyQuery, String fieldDate1, String fieldDate2, String fieldDate3,
+			String fieldDate4, String fieldDate5, String fieldDate6, String fieldDate7, String fieldDate8,
+			String fieldDate9, String fieldDate10, String fieldDate11, String fieldDate12, String fieldDate13,
+			String fieldDate14, String fieldDate15, String fieldDate16, String fieldDate17, String fieldDate18,
+			String fieldDate19, String fieldDate20, String filedKeyUpdate1, String filedKeyUpdate2,
+			String filedKeyUpdate3, String filedKeyUpdate4, String filedKeyUpdate5, String filedKeyUpdate6,
+			String filedKeyUpdate7, String filedKeyUpdate8, String filedKeyUpdate9, String filedKeyUpdate10,
+			String filedKeyUpdate11, String filedKeyUpdate12, String filedKeyUpdate13, String filedKeyUpdate14,
+			String filedKeyUpdate15, String filedKeyUpdate16, String filedKeyUpdate17, String filedKeyUpdate18,
+			String filedKeyUpdate19, String filedKeyUpdate20, String screenRetentionPeriod,
+			String supplementaryExplanation, String parentTblJpName, int hasParentTblFlg, String parentTblName,
+			String fieldParent1, String fieldParent2, String fieldParent3, String fieldParent4, String fieldParent5,
+			String fieldParent6, String fieldParent7, String fieldParent8, String fieldParent9, String fieldParent10,
+			int surveyPreservation) {
 		super();
 		this.categoryId = categoryId;
 		this.categoryName = categoryName;
@@ -735,9 +737,10 @@ public class TableList extends DomainObject {
 		this.fieldParent10 = fieldParent10;
 		this.surveyPreservation = EnumAdaptor.valueOf(surveyPreservation, NotUseAtr.class);
 	}
-	public TableList(String dataStorageProcessingId, String saveForm, String saveSetCode,
-			String saveSetName, String supplementaryExplanation, String categoryId, String categoryName,
-			TimeStore retentionPeriodCls, StorageRangeSaved storageRangeSaved, String screenRetentionPeriod, String referenceYear,
+
+	public TableList(String dataStorageProcessingId, String saveForm, String saveSetCode, String saveSetName,
+			String supplementaryExplanation, String categoryId, String categoryName, TimeStore retentionPeriodCls,
+			StorageRangeSaved storageRangeSaved, String screenRetentionPeriod, String referenceYear,
 			String referenceMonth, NotUseAtr surveyPreservation, RecoverFormCompanyOther anotherComCls, int tableNo,
 			String tableJapaneseName, String tableEnglishName, HistoryDiviSion historyCls, NotUseAtr hasParentTblFlg,
 			String parentTblJpName, String parentTblName, String fieldParent1, String fieldParent2, String fieldParent3,
@@ -875,11 +878,26 @@ public class TableList extends DomainObject {
 		this.fieldParent8 = fieldParent8;
 		this.fieldParent9 = fieldParent9;
 		this.fieldParent10 = fieldParent10;
-		this.surveyPreservation = surveyPreservation;	
+		this.surveyPreservation = surveyPreservation;
 	}
-	
 
-	
-	
+	public TableList(String categoryId, String categoryName, String saveSetCode, String saveSetName,
+			GeneralDate saveDateFrom, GeneralDate saveDateTo, int storageRangeSaved,
+			int retentionPeriodCls, int anotherComCls, String compressedFileName,
+			int canNotBeOld, String supplementaryExplanation) {
+		super();
+		this.categoryId = categoryId;
+		this.categoryName = categoryName;
+		this.saveSetCode = saveSetCode;
+		this.saveSetName = saveSetName;
+		this.saveDateFrom = saveDateFrom;
+		this.saveDateTo = saveDateTo;
+		this.storageRangeSaved = EnumAdaptor.valueOf(storageRangeSaved, StorageRangeSaved.class);
+		this.retentionPeriodCls = EnumAdaptor.valueOf(retentionPeriodCls, TimeStore.class);
+		this.anotherComCls = EnumAdaptor.valueOf(anotherComCls, RecoverFormCompanyOther.class);;
+		this.compressedFileName = compressedFileName;
+		this.canNotBeOld = canNotBeOld;
+		this.supplementaryExplanation = supplementaryExplanation;
+	}
 
 }
