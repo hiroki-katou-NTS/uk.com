@@ -31,7 +31,6 @@ module cli001.b.viewmodel {
             }
             block.invisible();
             service.findUserByUserIDName(self.searchInput()).done(function(data) {
-                console.log(data);
                 self.items(data);
             }).fail(error => {
                 alertError(error);
