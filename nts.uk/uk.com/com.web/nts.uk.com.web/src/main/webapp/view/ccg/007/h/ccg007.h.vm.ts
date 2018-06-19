@@ -67,9 +67,28 @@ module nts.uk.pr.view.ccg007.h {
                     blockUI.clear();
                 }).fail(function(res) {
                     //Return Dialog Error
-                    nts.uk.ui.dialog.alertError(res.message);
+                    self.showMessageError(res);
                     blockUI.clear();
                 });
+            }
+            
+            /**
+             * showMessageError
+             */
+            public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
             }
             
             //open dialog I 
