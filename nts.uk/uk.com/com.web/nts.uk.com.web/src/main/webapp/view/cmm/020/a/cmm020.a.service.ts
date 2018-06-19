@@ -4,16 +4,16 @@ module nts.uk.com.view.cmm020.a {
          * define path to service
          */
         var paths: any = {
-            getAllEraNameItem: "at/shared/ws/era/name/find",
-            saveEraName: "",
-            deleteEraName: ""
+            getAllEraNameItem: "at/shared/eraname/getAllEraName",
+            saveEraName: "at/shared/eraname/save",
+            deleteEraName: "at/shared/eraname/delete"
         };
 
         export function getAllEraNameItem(): JQueryPromise<Array<viewmodel.model.EraItem>> {
             return nts.uk.request.ajax("at", paths.getAllEraNameItem);
         }
 
-        export function createEraName(eraNameItem: viewmodel.model.EraItem): JQueryPromise<void> {
+        export function saveEraName(eraNameItem: viewmodel.model.EraItem): JQueryPromise<void> {
             return nts.uk.request.ajax("at", paths.saveEraName,eraNameItem);
         }
 
