@@ -24,9 +24,8 @@ module nts.uk.com.view.cmf004.c {
                     fileName: self.fileName(), 
                     password: self.password()
                 };
-                setShared("CMF004_D_PARAMS", fileInfo);
-                nts.uk.ui.windows.sub.modal('../d/index.xhtml');
-                //nts.uk.ui.windows.close();
+                setShared("CMF004_D_PARAMS", fileInfo, true);
+                nts.uk.ui.windows.close();
             }
         }
     }
