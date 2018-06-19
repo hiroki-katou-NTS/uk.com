@@ -101,6 +101,9 @@ public class MappingFactory {
 	public static void matchDataToValueItems(String recordId, List<LayoutPersonInfoValueDto> valueItems,
 			List<OptionalItemDataDto> dataItems) {
 		for (LayoutPersonInfoValueDto valueItem : valueItems) {
+			
+			// recordId
+			valueItem.setRecordId(recordId);
 
 			// update 2018/02/22 bug 87560
 			valueItem.setShowColor(false);
@@ -108,8 +111,7 @@ public class MappingFactory {
 			// data
 			for (OptionalItemDataDto dataItem : dataItems) {
 				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
-					// recordId
-					valueItem.setRecordId(recordId);
+					
 					valueItem.setValue(dataItem.getValue());
 				}
 			}
