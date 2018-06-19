@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.stamp;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +18,7 @@ import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampGoOutPermitCmd;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampWorkCmd;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
@@ -39,18 +38,15 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Stateless
-public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, String> {
+public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, ProcessResult> {
 	
-	private final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Inject
 	private AppStampNewDomainService applicationStampNewDomainService;
-	
-	@Inject
-	private ApplicationApprovalService_New applicationApprovalService;
 
 	@Override
-	protected String handle(CommandHandlerContext<AppStampCmd> context) {
+	protected ProcessResult handle(CommandHandlerContext<AppStampCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		AppStampCmd appStampCmd = context.getCommand();
@@ -106,7 +102,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 										x.getStampFrameNo(), 
 										EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
 										Optional.ofNullable(x.getSupportCard()), 
-										Optional.ofNullable(x.getSupportLocationCD()), 
+										Optional.ofNullable(x.getSupportLocation()), 
 										Optional.ofNullable(x.getStartTime()).map(p -> new TimeWithDayAttr(p)), 
 										Optional.ofNullable(x.getStartLocation()), 
 										Optional.ofNullable(x.getEndTime()).map(p -> new TimeWithDayAttr(p)), 
@@ -155,7 +151,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 										x.getStampFrameNo(), 
 										EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
 										Optional.ofNullable(x.getSupportCard()), 
-										Optional.ofNullable(x.getSupportLocationCD()), 
+										Optional.ofNullable(x.getSupportLocation()), 
 										Optional.ofNullable(x.getStartTime()).map(p -> new TimeWithDayAttr(p)), 
 										Optional.ofNullable(x.getStartLocation()), 
 										Optional.ofNullable(x.getEndTime()).map(p -> new TimeWithDayAttr(p)), 

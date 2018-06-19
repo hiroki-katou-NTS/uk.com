@@ -18,6 +18,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkS
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 
 /**
  * The Class BasicSchedule. 勤務予定基本情報
@@ -67,6 +68,8 @@ public class BasicSchedule extends AggregateRoot {
 	
 	/** 勤務予定マスタ情報 **/
 	private ScheMasterInfo workScheduleMaster;
+	
+	private List<WorkScheduleState> workScheduleStates;
 
 	/**
 	 * Instantiates a new basic schedule.
@@ -104,6 +107,8 @@ public class BasicSchedule extends AggregateRoot {
 		this.workTimeCode = workTimeCode;
 		this.confirmedAtr = confirmedAtr;
 	}
+	
+	
 
 	/**
 	 * Creates the from java type.
@@ -229,5 +234,11 @@ public class BasicSchedule extends AggregateRoot {
 	
 	public void setWorkScheduleMaster(ScheMasterInfo scheduleMaster) {
 		this.workScheduleMaster = scheduleMaster;
+	}
+
+	public BasicSchedule(String workTypeCode, ScheMasterInfo workScheduleMaster) {
+		super();
+		this.workTypeCode = workTypeCode;
+		this.workScheduleMaster = workScheduleMaster;
 	}
 }

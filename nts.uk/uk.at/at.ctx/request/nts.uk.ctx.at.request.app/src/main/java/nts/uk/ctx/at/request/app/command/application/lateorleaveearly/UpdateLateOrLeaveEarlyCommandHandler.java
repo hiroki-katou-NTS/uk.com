@@ -4,13 +4,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
@@ -23,8 +24,13 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @Transactional
+<<<<<<< HEAD
 public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateLateOrLeaveEarlyCommand> {
 
+=======
+public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResult<UpdateLateOrLeaveEarlyCommand, ProcessResult> {
+	
+>>>>>>> pj/at/dev/Team_D/Release_20180621
 	@Inject
 	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
 
@@ -41,7 +47,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 	private ApplicationRepository_New applicationRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateLateOrLeaveEarlyCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<UpdateLateOrLeaveEarlyCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		UpdateLateOrLeaveEarlyCommand command = context.getCommand();
 		String appReason = "";
@@ -71,11 +77,19 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 		// ドメインモデル「遅刻早退取消申請」の更新する
 		// Update the domain model 'Cancellation for late arrival cancellation'
 		lateOrLeaveEarlyService.updateLateOrLeaveEarly(domainLateOrLeaveEarly);
+<<<<<<< HEAD
 
 		// 「4-2.詳細画面登録後の処理」を実行する
 		// TODO: Waiting for common change
 		afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly.getApplication());
 
+=======
+		
+		//「4-2.詳細画面登録後の処理」を実行する
+		//TODO: Waiting for common change
+		return afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly.getApplication());
+		
+>>>>>>> pj/at/dev/Team_D/Release_20180621
 	}
 
 }

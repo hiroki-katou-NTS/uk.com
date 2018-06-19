@@ -86,8 +86,9 @@ module nts.uk.at.view.kaf002.cm {
                 }
             }
             
-            register(errorFlag: any, errorMsg: any){
+            register(errorFlag: any, errorMsg: any, checkBoxValue: boolean){
                 var self = this;
+                if (nts.uk.ui.errors.hasError()){return;}
                 if(errorFlag!=0){
                     nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
                 } else {
@@ -101,11 +102,11 @@ module nts.uk.at.view.kaf002.cm {
                         return;
                     }
                     switch(self.stampRequestMode()){
-                        case 0: self.m1.register(self.application());break;    
-                        case 1: self.m2.register(self.application());break;  
-                        case 2: self.m3.register(self.application());break; 
-                        case 3: self.m4.register(self.application());break; 
-                        case 4: self.m5.register(self.application());break; 
+                        case 0: self.m1.register(self.application(), checkBoxValue);break;    
+                        case 1: self.m2.register(self.application(), checkBoxValue);break;  
+                        case 2: self.m3.register(self.application(), checkBoxValue);break; 
+                        case 3: self.m4.register(self.application(), checkBoxValue);break; 
+                        case 4: self.m5.register(self.application(), checkBoxValue);break; 
                         default: break;
                     }    
                 }

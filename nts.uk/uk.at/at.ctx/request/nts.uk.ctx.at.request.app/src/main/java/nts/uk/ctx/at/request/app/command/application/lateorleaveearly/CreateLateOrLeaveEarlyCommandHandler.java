@@ -5,9 +5,12 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+<<<<<<< HEAD
 import nts.arc.time.GeneralDate;
+=======
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+>>>>>>> pj/at/dev/Team_D/Release_20180621
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -15,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
@@ -23,7 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 
-public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateLateOrLeaveEarlyCommand> {
+public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResult<CreateLateOrLeaveEarlyCommand, ProcessResult> {
 
 	@Inject
 	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
@@ -39,11 +43,9 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 
 	@Inject
 	private NewBeforeRegister_New newBeforeRegister;	
-		
-	private final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
-	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		String appReason = "";
@@ -73,7 +75,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 		registerService.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.getApplication().getEmployeeID(),
 				domainLateOrLeaveEarly.getApplication());
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
-		newAfterRegister.processAfterRegister(domainLateOrLeaveEarly.getApplication());
+		return newAfterRegister.processAfterRegister(domainLateOrLeaveEarly.getApplication());
 
 	}
 }

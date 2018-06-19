@@ -209,8 +209,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 coreTimeSetting,breakTimeList,workType,predetermineTimeForSet));
 		}
 		/*所定内割増時間の時間帯作成*/
-		return predetermineWithinPremiumTime(dailyUnit.getDailyTime(),predetermineTimeForSet.getAdditionSet().getPredTime().getPredetermineWorkTime(),timeFrames);
-		//return timeFrames;
+		//return predetermineWithinPremiumTime(dailyUnit.getDailyTime(),predetermineTimeForSet.getAdditionSet().getPredTime().getPredetermineWorkTime(),timeFrames);
+		return timeFrames;
 	}
 	
 	/**
@@ -835,7 +835,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 法定内深夜時間の計算
 	 * @return　法定内深夜時間
 	 */
-	public AttendanceTime calcMidNightTime(AutoCalAtrOvertime autoCalcSet) {
+	public AttendanceTime calcMidNightTime() {
 		int totalMidNightTime = 0;
 		int totalDedTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()

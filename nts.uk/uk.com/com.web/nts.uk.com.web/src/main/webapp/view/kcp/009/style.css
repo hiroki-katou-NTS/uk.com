@@ -1,4 +1,4 @@
-#btn_show_list {
+.btn_show_list {
 	width: 70px;
 	height: 30px;
 	border-radius: 5px;
@@ -15,12 +15,12 @@
 	width: 120px;
 }
 
-#wkp_title_text {
+.wkp_title_text {
 	width: 50px;
 	text-align: center;
 }
 
-#wkp_text {
+.wkp_text {
 	width: 150px;
 }
 
@@ -72,10 +72,6 @@ td.employment-tdpad {
 	width: 120px;
 }
 
-#search-input {
+.search-input {
 	width: 100px;
-}
-
-#items-list {
-	z-index: 998 !important;
 }

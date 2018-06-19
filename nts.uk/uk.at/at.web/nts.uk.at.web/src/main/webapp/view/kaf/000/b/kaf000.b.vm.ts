@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
     import Approver = nts.uk.at.view.kdl034.a.viewmodel.Approver;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export abstract class ScreenModel {
         // Metadata
         appID: KnockoutObservable<string>;
@@ -283,17 +284,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
             let approveCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
             service.approveApp(approveCmd, self.appType()).done(function(data) {
-                nts.uk.ui.dialog.info({ messageId: 'Msg_220' }).then(function() {
-                    if (!nts.uk.util.isNullOrUndefined(data)) {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        location.reload();
-                    }
-                });
+                self.sendMail('Msg_220', data);
             }).fail(function(res: any) {
-               self.showError(res);
+                self.showError(res);
             });
         }
         /**
@@ -305,25 +298,40 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
             let denyCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
             service.denyApp(denyCmd, self.appType()).done(function(data) {
-                nts.uk.ui.dialog.info({ messageId: 'Msg_222' }).then(function() {
-                    if (!nts.uk.util.isNullOrUndefined(data)) {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        location.reload();
-                    }
-                });
+                self.sendMail('Msg_222', data);
             }).fail(function(res: any) {
-               self.showError(res);
+                self.showError(res);
             });
         }
 
+        sendMail(msg, data) {
+            let self = this;
+            if (self.appType() != 10) {
+                if (data.processDone) {
+                    nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
+                        if (data.autoSendMail) {
+                            appcommon.CommonProcess.displayMailResult(data);
+                        } else {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    nts.uk.ui.block.clear();
+                }
+            } else {
+                nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
+                    location.reload();
+                });
+            }
+        }
+
         btnRemand() {
-            var self = this;
-            let command = self.convertToApproverList();
+            let self = this;
+            let command = { appID: self.appID(), version: self.dataApplication().version };
             setShared("KDL034_PARAM", command);
-            nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml").onClosed(() => {
+                location.reload();
+            });
         }
 
         /**
@@ -335,12 +343,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
             let releaseCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_248' }).ifYes(function() {
-                service.releaseApp(releaseCmd, self.appType()).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
-                        location.reload();
-                    });
+                service.releaseApp(releaseCmd, self.appType()).done(function(data) {
+                    self.sendMail('Msg_221', data);
                 }).fail(function(res: any) {
-                  self.showError(res);
+                    self.showError(res);
                 });
             }).ifNo(() => {
                 nts.uk.ui.block.clear();
@@ -366,8 +372,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnSendEmail() {
             let self = this;
-            // send (Cid, appId , content, Eid, date) in screen KDL030
-            //nts.uk.request.jump("/view/kdl/030/a/index.xhtml");
+            let command = { appID: self.appID() };
+            setShared("KDL030_PARAM", command);
+            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                location.reload();
+            });
         }
         /**
          *  btn Delete 削除
@@ -380,25 +389,25 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 service.deleteApp(deleteCmd, self.appType()).done(function(data) {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
-                        //kiểm tra list người xác nhận, nếu khác null thì show info 392
-                        if (!nts.uk.util.isNullOrEmpty(data)) {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(function() {
-                                //self.setScreenAfterDelete();    
-                            });
+                        if (self.appType() != 10) {
+                            //kiểm tra list người xác nhận, nếu khác null thì show info 392
+                            if (data.autoSendMail) {
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                                });
+                            } else {
+                                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                            }
+                        } else {
+                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                         }
-                        //                        else{
-                        //                            //self.setScreenAfterDelete();
-                        //                        }
-                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                     });
                 }).fail(function(res: any) {
-                   self.showError(res);
+                    self.showError(res);
                 });
             }).ifNo(function() {
                 nts.uk.ui.block.clear();
             });
-
-
         }
 
         getHolidayShipmentCmd(memo) {
@@ -475,10 +484,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     location.reload();
                 });
             } else {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { 
-                nts.uk.ui.block.clear(); 
-                    if(res.messageId==="Msg_198" ){
-                         nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    nts.uk.ui.block.clear();
+                    if (res.messageId === "Msg_198") {
+                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                     }
                 });
             }

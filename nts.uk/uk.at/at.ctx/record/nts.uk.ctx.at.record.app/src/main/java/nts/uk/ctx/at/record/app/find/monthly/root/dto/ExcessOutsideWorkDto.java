@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWork;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -14,38 +16,39 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 @Data
 /** 時間外超過 */
-public class ExcessOutsideWorkDto {
+@NoArgsConstructor
+public class ExcessOutsideWorkDto implements ItemConst {
 
 	/** 超過NO: int */
 	private int excessNo;
 
 	/** 超過時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "時間", layout = "A")
-	private Integer breakdown;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
+	private int breakdown;
 
 	/** 内訳NO: int */
 	private int breakdownNo;
 
-	private int fakeNo;
+	/** FAKE NO */
+	private int no;
 
 	public ExcessOutsideWorkDto(int excessNo, int breakdownNo, Integer breakdown) {
 		super();
 		this.excessNo = excessNo;
 		this.breakdown = breakdown;
 		this.breakdownNo = breakdownNo;
-		this.fakeNo = (breakdownNo-1) * 10 + excessNo;
+		this.no = (breakdownNo-1) * 10 + excessNo;
 	}
 
 	public ExcessOutsideWork toDomain() {
 		//TODO: need check
-		return ExcessOutsideWork.of((fakeNo / 10) + 1, (fakeNo % 10) + 1,
-				breakdown == null ? null : new AttendanceTimeMonth(breakdown));
+		return ExcessOutsideWork.of((no / 10) + 1, (no % 10) + 1, new AttendanceTimeMonth(breakdown));
 	}
 
 	public static ExcessOutsideWorkDto from(ExcessOutsideWork domain) {
 		return new ExcessOutsideWorkDto(domain.getExcessNo(), domain.getBreakdownNo(),
-				domain.getExcessTime() == null ? null : domain.getExcessTime().valueAsMinutes());
+				domain.getExcessTime() == null ? 0 : domain.getExcessTime().valueAsMinutes());
 	}
 
 	public static List<ExcessOutsideWorkDto> from(Map<Integer, ExcessOutSideWorkEachBreakdown> domain) {

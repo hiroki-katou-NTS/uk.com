@@ -4,7 +4,9 @@ module nts.uk.at.view.ksm011.b.service {
      */
     var servicePath = {
         getScheDispControl: "ctx/at/schedule/setting/displaycontrol/getScheDispControl",
-        saveScheDispControl: "ctx/at/schedule/setting/displaycontrol/saveScheDispControl"
+        saveScheDispControl: "ctx/at/schedule/setting/displaycontrol/saveScheDispControl",
+        findAllPublicHD: "at/shared/holidaysetting/config/find",
+        findScheFuncControl: "ctx/at/schedule/setting/functioncontrol/findScheFuncControl"
     }  
     
     /**
@@ -12,6 +14,19 @@ module nts.uk.at.view.ksm011.b.service {
      */
     export function getScheDispControl(): JQueryPromise<ScheDispControlDto> {
         return nts.uk.request.ajax("at", servicePath.getScheDispControl);
+    }
+    
+    /**
+     *  Get Schedule Display Control
+     */
+    export function findAllPublicHD(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", servicePath.findAllPublicHD);
+    }
+     /**
+     *  Get Schedule Display Control
+     */
+    export function findScheFuncControl(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", servicePath.findScheFuncControl);
     }
     
     /**

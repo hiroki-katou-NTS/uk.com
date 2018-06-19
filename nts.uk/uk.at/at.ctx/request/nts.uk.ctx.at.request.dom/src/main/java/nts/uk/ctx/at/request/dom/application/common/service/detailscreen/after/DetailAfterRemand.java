@@ -24,10 +24,13 @@ public interface DetailAfterRemand {
 	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason);
 	
 	/**
-	 * 差し戻しメール送信
+	 * 申請者本人にメール送信する
+	 * 送信先リスト(output)にメール送信する
+	 * @param application
 	 * @param employeeList
+	 * @param returnReason
 	 * @return
 	 */
-	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList);
+	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList, String returnReason);
 	
 }

@@ -16,23 +16,12 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ExtractAlarmListService {
 
-//	@Inject
-//	private AlarmListExtraProcessStatusRepository alListExtraProcessStatusRepo;
-	
 	@Inject
 	private AggregationProcessService aggregationProcessService;
 
 	public ExtractedAlarmDto extractAlarm(List<EmployeeSearchDto> listEmployee, String checkPatternCode,
 			List<PeriodByAlarmCategory> periodByCategory) {		
 		String companyID = AppContexts.user().companyId();
-//		String employeeId = AppContexts.user().employeeId();
-		
-		// ドメインモデル「アラームリスト抽出処理状況」をチェックする
-		// チェック条件に当てはまる場合 (When the check conditions apply)
-//		if (this.alListExtraProcessStatusRepo.isAlListExtaProcessing(companyID, employeeId)) {
-//			// 情報メッセージ(#Msg_993)を表示する
-//			return new ExtractedAlarmDto(new ArrayList<>(), true, false);
-//		}
 		
 		// チェック条件に当てはまらない場合(When it does not fit the check condition)
 		// 条件を満たしていない
@@ -44,22 +33,11 @@ public class ExtractAlarmListService {
 		// ドメインモデル「アラームリスト抽出処理状況」を作成する
 //		GeneralDateTime now1 = GeneralDateTime.now();
 		GeneralDate today = GeneralDate.today();
-//		AlarmListExtraProcessStatus alarmExtraProcessStatus = new AlarmListExtraProcessStatus(
-//				IdentifierUtil.randomUniqueId(),
-//				companyID, GeneralDate.today(), 
-//				now1.hours()*60 +now1.minutes(),
-//				employeeId, null, null);
-//		AlarmListExtraProcessStatusEvent.builder().isUpdate(false).status(alarmExtraProcessStatus).build().toBePublished();
-//		this.alListExtraProcessStatusRepo.addAlListExtaProcess(alarmExtraProcessStatus);
+
 		
 		// 勤務実績のアラームリストの集計処理を行う
 		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = aggregationProcessService.processAlarmListWorkRecord(today, companyID, listEmployee,
 				checkPatternCode, periodByCategory);
-		// ドメインモデル「アラームリスト抽出処理状況」を更新する
-//		GeneralDateTime now2 = GeneralDateTime.now();
-//		alarmExtraProcessStatus.setEndDateAndEndTime(GeneralDate.today(), now2.hours()*60 + now2.minutes());
-//		this.alListExtraProcessStatusRepo.updateAlListExtaProcess(alarmExtraProcessStatus);
-//		AlarmListExtraProcessStatusEvent.builder().isUpdate(true).status(alarmExtraProcessStatus).build().toBePublished();
 
 		// 集計結果を確認する sort list
 		Comparator<AlarmExtraValueWkReDto> comparator = Comparator.comparing(AlarmExtraValueWkReDto::getHierarchyCd)

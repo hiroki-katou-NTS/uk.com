@@ -212,7 +212,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		resultList.addAll(em.createQuery(cq).getResultList());
 
 		// Filter result list by status of employee
-		resultList = resultList.stream().filter(item -> item.isFiltered(paramQuery)).collect(Collectors.toList());
+		resultList = resultList.stream().filter(item -> item.isIncluded(paramQuery)).collect(Collectors.toList());
 
 		// Distinct employee in result list.
 		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid))
@@ -298,11 +298,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				orders.add(cb.asc(root.get(EmployeeDataView_.comStrDate)));
 				break;
 			case 6: // NAME
-				if (nameType == 1) {
-					orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
-				} else {
-					orders.add(cb.asc(root.get(EmployeeDataView_.businessNameKana)));
-				}
+				// 現在は、氏名の種類を選択する機能がないので、「ビジネスネーム日本語」固定で
+				// => 「氏名カナ」 ＝ 「ビジネスネームカナ」
+				orders.add(cb.asc(root.get(EmployeeDataView_.businessNameKana)));
+				// TODO: orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
 				break;
 			}
 		});

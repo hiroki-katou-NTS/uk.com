@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<com:ValidatorScript>
+        nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp
+        nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime
+        nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Number
+    </com:ValidatorScript>
+
+	<ui:define name="htmlHead">
+		<com:scriptfile set="IGNITE" />
+	</ui:define>
+
+	<div id="div-fixed-table">
+		<div class="mg-bot-10">
+			<span>#{i18n.getText('KAL003_209')}</span>
+		</div>
+		<div class="mg-bot-10">
+			<button data-bind="click: createNewLine">#{i18n.getText('KAL003_203')}</button>
+			<button data-bind="click: deleteLine">#{i18n.getText('KAL003_204')}</button>
+		</div>
+		<table id="fixed-table-agreement-hour">
+			<colgroup>
+				<col width="50px" />
+				<col width="100px" />
+				<col width="100px" />
+				<col width="250px" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_205')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_206')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_207')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_208')}</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: listAgreementHour()">
+				<tr data-bind="attr: {'data-id': no}">
+					<td class="text-center"><span data-bind="text: no"></span></td>
+					<td><input
+						data-bind="ntsTimeEditor: {
+									value: ot36, 
+									constraint: 'OverTime', 
+									required: true, 
+									enable: true, 
+									readonly: false, 
+									immediate: false, 
+					                mode: 'time',
+									name: '#[KAL003_206]', 
+									option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                						inputFormat: 'time',
+                						placeholder: '',
+						                width: '73px',
+						                textalign: 'center',
+            						}))}" />
+					</td>
+					<td><input
+						data-bind="ntsNumberEditor: {
+								value: excessNum, 
+								constraint: 'Number', 
+								required: true, 
+								name: '#[KAL003_207]', 
+								readonly: false,
+								option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+									grouplength: 5,
+									decimallength: 0,
+									placeholder: '',
+									width: '73px',
+									textalign: 'center',
+									unitID: 'TIMES'}))}" />
+					</td>
+					<td><input
+						data-bind="ntsTextEditor: {value: messageDisp, 
+													required: false, 
+													constraint: 'MessageDisp', 
+													name: '#[KAL003_208]', 
+		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+				                textmode: 'text',
+				                placeholder: '',
+				                width: '223px',
+				                textalign: 'left'
+				            }))}" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</ui:composition>

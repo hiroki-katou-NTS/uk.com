@@ -15,6 +15,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         dispEmpName: string = "";
         lstAppCompltLeaveSync: Array<AppCompltLeaveSync> = [];
         lstContent: Array<Content> = [];
+        displayPrePostFlg: boolean;
         constructor() {
             var self = this;
         }
@@ -30,7 +31,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             if (params) {
                 self.dispEmpName = params.empName;
                 _.each(params.listStatusEmp, function(item) {
-                    self.listStatusEmp.push(new ApprovalStatusEmployee(item.sId, new Date(item.startDate), new Date(item.endDate)));
+                    self.listStatusEmp.push(new ApprovalStatusEmployee(item.sid, new Date(item.startDate), new Date(item.endDate)));
                 });
             }
             let paramsTranfer = {
@@ -40,7 +41,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             service.initApprovalSttRequestContentDis(paramsTranfer).done(function(data: ApplicationList) {
                 self.lstContent = data.listAppDetail;
                 self.lstAppCompltLeaveSync = data.lstAppCompltLeaveSync;
-                self.initExTable(self.lstContent, self.lstAppCompltLeaveSync);
+                self.displayPrePostFlg = data.displayPrePostFlg;
+                self.initExTable(self.lstContent, self.lstAppCompltLeaveSync, self.displayPrePostFlg);
                 block.clear();
                 dfd.resolve();
             }).fail(function(data: any) {
@@ -53,7 +55,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         /**
          * Create exTable
          */
-        initExTable(listData: Array<Content>, lstAppComplt: Array<AppCompltLeaveSync>): void {
+        initExTable(listData: Array<Content>, lstAppComplt: Array<AppCompltLeaveSync>, displayPrePostFlg: boolean): void {
             var self = this;
             let index = 0;
             _.each(listData, function(data: Content) {
@@ -83,7 +85,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             });
             console.log(self.listDataDisp());
             let colorBackGr = self.fillColorbackGr();
-            self.reloadGridApplicaion(colorBackGr);
+            self.reloadGridApplicaion(colorBackGr, displayPrePostFlg);
         }
 
         /**
@@ -94,7 +96,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                 return complt.appMain.appID == appId;
             });
         }
-        reloadGridApplicaion(colorBackGr: any) {
+        reloadGridApplicaion(colorBackGr: any, displayPrePostFlg: boolean) {
             var self = this;
             $("#grid1").ntsGrid({
                 width: '1120px',
@@ -109,7 +111,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                 columns: [
                     { headerText: "", key: 'appId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: text("KAF018_36"), key: 'appName', dataType: 'string', width: 160 },
-                    { headerText: text("KAF018_37"), key: 'prePostAtr', dataType: 'string', width: 120 },
+                    { headerText: text("KAF018_37"), key: 'prePostAtr', dataType: 'string',hidden: displayPrePostFlg== true ? true: false, width: 120 },
                     { headerText: text("KAF018_38"), key: 'appDate', dataType: 'string', width: 150 },
                     { headerText: text("KAF018_39"), key: 'appContent', dataType: 'string', width: 450 },
                     { headerText: text("KAF018_40"), key: 'reflectStateContent', dataType: 'string', width: 100 },
@@ -393,11 +395,11 @@ module nts.uk.at.view.kaf018.d.viewmodel {
     }
 
     class ApprovalStatusEmployee {
-        sId: string;
+        sid: string;
         startDate: Date;
         endDate: Date;
-        constructor(sId: string, startDate: Date, endDate: Date) {
-            this.sId = sId;
+        constructor(sid: string, startDate: Date, endDate: Date) {
+            this.sid = sid;
             this.startDate = startDate;
             this.endDate = endDate;
         }

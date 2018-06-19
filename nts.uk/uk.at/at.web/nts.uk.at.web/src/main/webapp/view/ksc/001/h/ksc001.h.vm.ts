@@ -148,12 +148,7 @@ module nts.uk.at.view.ksc001.h {
                     str.push(getText("KSC001_35"));
                 } else {//実施区分= 再作成
                     str.push(getText("KSC001_36"));
-                    //再作成区分 = 全件
-                    if (data.reCreateAtr == ReCreateAtr.ALLCASE) {
-                        str.push(getText("KSC001_37") + getText("KSC001_4"));
-                    } else {//再作成区分 = 未確定データのみ
-                        str.push(getText("KSC001_37") + getText("KSC001_5"));
-                    }
+                    
                     //処理実行区分 = もう一度作り直す
                     if (data.processExecutionAtr == ProcessExecutionAtr.REBUILD) {
                         str.push(getText("KSC001_37") + getText("KSC001_7"));
@@ -212,6 +207,13 @@ module nts.uk.at.view.ksc001.h {
                             str.push("　" + getText("KSC001_38")
                                 + getText("KSC001_99"));
                         }
+                    }
+                    
+                    //再作成区分 = 全件
+                    if (data.reCreateAtr == ReCreateAtr.ALLCASE) {
+                        str.push(getText("KSC001_37") + getText("KSC001_4"));
+                    } else {//再作成区分 = 未確定データのみ
+                        str.push(getText("KSC001_37") + getText("KSC001_5"));
                     }
                 }
                 //作成時に確定済みにする true

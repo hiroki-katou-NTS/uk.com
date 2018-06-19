@@ -2,6 +2,22 @@
 	margin: 25px;
 }
 
+.ntsControl .nts-input {
+	padding: 2px 10px !important;
+}
+
+#div-fixed-table .nts-fixed-table .nts-fixed-body-container {
+	overflow-x: hidden;
+}
+
+.mg-bot-10 {
+	margin-bottom: 10px
+}
+
+.text-center {
+	text-align: center;
+}
+
 .left-content {
 	display: inline-block;
 	vertical-align: top;
@@ -42,5 +58,12 @@ div[class="tab-content-1"] {
 #div_table_check_conditions .nts-fixed-table .nts-fixed-body-container {
 	overflow-x: hidden;
 }
-div .tab-content-3 .ntsControl.radio-wrapper.reset-element {margin-top: 20px;}
-label.label4w4d {margin-left: 30px; display: block;}
+
+div .tab-content-3 .ntsControl.radio-wrapper.reset-element {
+	margin-top: 20px;
+}
+
+label.label4w4d {
+	margin-left: 30px;
+	display: block;
+}

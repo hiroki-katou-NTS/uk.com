@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.AfterChildbirth;
@@ -25,11 +26,18 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
 @Transactional
 public class JpaTempAbsItem extends JpaRepository implements TempAbsItemRepository {
 	
-	private final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
+	/** The Constant MAX_ELEMENTS. */
+	private static final Integer MAX_ELEMENTS = 1000;
+	
+	private static final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
 			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
 			+ " WHERE h.sid = :sid AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
 	
-	private final String GET_BY_HISTORYID_LIST = "SELECT hi FROM BsymtTempAbsHisItem hi"
+	private static final String GET_BY_SIDS_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
+			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
+			+ " WHERE h.sid IN :sids AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
+	
+	private static final String GET_BY_HISTORYID_LIST = "SELECT hi FROM BsymtTempAbsHisItem hi"
 			+ " WHERE hi.histId IN :histIds";
 	
 	@Override
@@ -49,6 +57,25 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			return Optional.of(toDomain(optionData.get()));
 		}
 		return Optional.empty();
+	}
+	
+	@Override
+	public List<TempAbsenceHisItem> getByEmpIdsAndStandardDate(List<String> employeeIds,
+			GeneralDate standardDate) {
+		
+		List<BsymtTempAbsHisItem> resultList = new ArrayList<>();
+		
+		// Split employeeId List if size of employeeId List is greater than 1000
+		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+			List<BsymtTempAbsHisItem> optionDatas = this.queryProxy()
+					.query(GET_BY_SIDS_DATE, BsymtTempAbsHisItem.class)
+					.setParameter("sids", subList).setParameter("standardDate", standardDate)
+					.getList();
+			resultList.addAll(optionDatas);
+		});
+
+		return resultList.parallelStream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
 	}
 	
 	private TempAbsenceHisItem toDomain(BsymtTempAbsHisItem ent) {

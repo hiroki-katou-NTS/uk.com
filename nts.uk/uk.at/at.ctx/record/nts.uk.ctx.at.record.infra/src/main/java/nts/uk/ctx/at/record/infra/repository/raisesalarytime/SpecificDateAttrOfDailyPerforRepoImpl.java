@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.raisesalarytime;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -127,7 +126,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	}
 
 	@Override
-	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, GeneralDate> param) {
+	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, List<GeneralDate>> param) {
 		List<SpecificDateAttrOfDailyPerfor> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiSpeDayCla a ");
 		query.append("WHERE a.krcdtDaiSpeDayClaPK.sid IN :employeeId ");
@@ -135,9 +134,9 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 		TypedQueryWrapper<KrcdtDaiSpeDayCla> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-								.setParameter("date", new HashSet<>(p.values()))
+								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 								.getList().stream()
-								.filter(c -> c.krcdtDaiSpeDayClaPK.ymd.equals(p.get(c.krcdtDaiSpeDayClaPK.sid)))
+								.filter(c -> p.get(c.krcdtDaiSpeDayClaPK.sid).contains(c.krcdtDaiSpeDayClaPK.ymd))
 								.collect(Collectors.groupingBy(
 										c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))
 								.entrySet().stream()
