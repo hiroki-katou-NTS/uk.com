@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
@@ -33,20 +34,23 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 
 	@Override
 	public void add(ResultOfSaving data) {
-		this.commandProxy().insert(SspmtResultOfSaving.toEntity(data));
+		SspmtResultOfSaving entity = SspmtResultOfSaving.toEntity(data);
+		entity.compressedPassword = data.getCompressedPassword() != null ? CommonKeyCrypt.encrypt(data.getCompressedPassword().v()) : null;
+		this.commandProxy().insert(entity);
 
 	}
 
 	@Override
 	public void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus, String fileId,
-			NotUseAtr deletedFiles) {
-		Optional<ResultOfSaving> resultOfSavingOpt = this.getResultOfSavingById(storeProcessingId);
+			NotUseAtr deletedFiles, String compressedFileName) {
+		Optional<SspmtResultOfSaving> resultOfSavingOpt = this.queryProxy().find(storeProcessingId, SspmtResultOfSaving.class);
 		resultOfSavingOpt.ifPresent(data -> {
-			data.setTargetNumberPeople(targetNumberPeople);
-			data.setSaveStatus(saveStatus);
-			data.setFileId(fileId);
-			data.setDeletedFiles(deletedFiles);
-			this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
+			data.targetNumberPeople = targetNumberPeople;
+			data.saveStatus = saveStatus.value;
+			data.fileId = fileId;
+			data.deletedFiles = deletedFiles.value;
+			data.saveFileName = compressedFileName;
+			this.commandProxy().update(data);
 		});
 	}
 
@@ -63,5 +67,15 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	@Override
 	public void update(ResultOfSaving data) {
 		this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
+	}
+
+	@Override
+	public void update(String storeProcessingId, long fileSize) {
+		Optional<SspmtResultOfSaving> resultOfSavingOpt = this.queryProxy().find(storeProcessingId, SspmtResultOfSaving.class);
+		resultOfSavingOpt.ifPresent(data -> {
+			data.fileSize = fileSize;
+			this.commandProxy().update(data);
+		});
+		
 	}
 }

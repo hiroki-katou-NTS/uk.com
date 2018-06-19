@@ -23,8 +23,6 @@ import com.google.common.base.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.arc.layer.app.file.storage.FileStorage;
-import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
@@ -618,17 +616,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 		// ドメインモデル「データ保存の保存結果」を書き出し
 		String fileId = generatorContext.getTaskId();
-//		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.SUCCESS, fileId, NotUseAtr.NOT_USE);
-		Optional<ResultOfSaving> resultOfSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
-		if (resultOfSaving.isPresent()){
-			ResultOfSaving itemToBeUpdated = resultOfSaving.get();
-			itemToBeUpdated.setFileId(fileId);
-			itemToBeUpdated.setSaveStatus(SaveStatus.SUCCESS);
-			itemToBeUpdated.setTargetNumberPeople(totalTargetEmployees);
-			itemToBeUpdated.setSaveFileName(outCompressedFileName);
-			itemToBeUpdated.setDeletedFiles(NotUseAtr.NOT_USE);
-			repoResultSaving.update(itemToBeUpdated);
-		}
+		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.SUCCESS, fileId, NotUseAtr.NOT_USE,outCompressedFileName);
 		return ResultState.NORMAL_END;
 	}
 
