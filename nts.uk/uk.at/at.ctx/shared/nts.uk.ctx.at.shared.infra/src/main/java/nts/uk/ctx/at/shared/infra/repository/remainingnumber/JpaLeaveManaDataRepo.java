@@ -28,7 +28,9 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	
 	private static final String QUERY_BYSIDANDHOLIDAYDATECONDITION = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId AND l.dayOff = :dateHoliday";
 
-	private static final String QUERY_BYSID_AND_NOT_UNUSED = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
+	private static final String QUERY_BYSID_AND_NOT_UNUSED = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr OR "
+			+ " l.leaveID IN  (SELECT c.krcmtLeaveDayOffManaPK.leaveID FROM KrcmtLeaveDayOffMana c "
+			+ "INNER JOIN KrcmtComDayoffMaData b ON c.krcmtLeaveDayOffManaPK.comDayOffID = b.comDayOffID WHERE b.cID = :cid AND b.sID =:employeeId AND b.remainDays > 0)");
 
 	private static final String QUERY_BYID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIDs";
 	
