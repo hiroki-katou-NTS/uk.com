@@ -37,6 +37,8 @@ public class LockOutDataWebService extends WebService {
 	/** The lock out data delete command handler. */
 	@Inject
 	private LockOutDataDeleteCommandHandler lockOutDataDeleteCommandHandler;
+	@Inject
+	private AddLockOutDataCommandHandler addUserToLockCommandHandler;
 
 	/**
 	 * Removes the lock out data.
@@ -76,15 +78,9 @@ public class LockOutDataWebService extends WebService {
 		 return this.lockOutDataUserFinder.findLockOutDataByUserId(userId);
 	}
 
-	/*
-	 * Author: Nguyen Van Hanh
-	 */
-	@Inject
-	AddLockOutDataCommandHandler addUserToLockCommandHandler;
-
 	/**
 	 * Lockout User Data
-	 * 
+	 * @author Nguyen Van Hanh
 	 * @param command
 	 * @return Integer the userId locked
 	 */

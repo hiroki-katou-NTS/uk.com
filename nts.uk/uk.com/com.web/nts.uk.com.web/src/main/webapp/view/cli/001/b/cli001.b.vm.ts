@@ -2,7 +2,6 @@ module cli001.b.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
-    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
         searchInput: KnockoutObservable<any>;

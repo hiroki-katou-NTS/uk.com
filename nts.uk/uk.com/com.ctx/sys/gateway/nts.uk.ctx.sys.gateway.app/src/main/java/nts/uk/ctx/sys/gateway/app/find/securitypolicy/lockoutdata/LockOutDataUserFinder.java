@@ -64,13 +64,16 @@ public class LockOutDataUserFinder {
 		return lstLockOutDataUserDto;
 	}
 
-	/*
-	 * Author: Nguyen Van Hanh
+	/**
+	 * Find and return users by userId
+	 * @author Nguyen Van Hanh
+	 * @param userId
+	 * @return SearchUser
 	 */
 	public SearchUser findByUserId(String userId) {
 		Optional<UserImportNew> user = userAdapter.findByUserId(userId);
 		if(user.isPresent())
-			return new SearchUser(user.get().getUserId(), user.get().getLoginId(), user.get().getUserName());
+			return SearchUser.convertToDto(user.get());
 
 		return null;
 	}

@@ -35,19 +35,22 @@ public class AddLockOutDataCommandHandler extends CommandHandler<AddLockOutDataC
 		// UserId
 		String userId = context.getCommand().getUserID();
 
-		Optional<UserImportNew> user = userAdapter.findByUserId(userId);
+		Optional<UserImportNew> userOpt = userAdapter.findByUserId(userId);
 
-		if (!user.isPresent())
+		if (!userOpt.isPresent())
 			return;
 
+		// UserImportNew
+		UserImportNew user = userOpt.get();
+		
 		// ドメインモデル「ロックアウトデータ」の重複チェックを行う
-		if (checkDuplicateLocking(user.get().getUserId()))
+		if (checkDuplicateLocking(user.getUserId()))
 			throw new BusinessException("Msg_868");
 
 		// Add to domain model LockOutData
 		LockOutDataDto dto = LockOutDataDto.builder()
-				.userId(user.get().getUserId())
-				.contractCode(user.get().getContractCode())
+				.userId(user.getUserId())
+				.contractCode(user.getContractCode())
 				.logoutDateTime(GeneralDateTime.now())
 				.lockType(LockType.ENFORCEMENT_LOCK.value)
 				.loginMethod(LoginMethod.NORMAL_LOGIN.value)
@@ -56,6 +59,11 @@ public class AddLockOutDataCommandHandler extends CommandHandler<AddLockOutDataC
 		this.lockOutDataRepository.add(lockOutData);
 	}
 	
+	/**
+	 * Check if the key is registered
+	 * @param userId
+	 * @return boolean
+	 */
 	private boolean checkDuplicateLocking(String userId) {
 		Optional<LockOutData> otp = lockOutDataRepository.findByUserId(userId);
 		return otp.isPresent();

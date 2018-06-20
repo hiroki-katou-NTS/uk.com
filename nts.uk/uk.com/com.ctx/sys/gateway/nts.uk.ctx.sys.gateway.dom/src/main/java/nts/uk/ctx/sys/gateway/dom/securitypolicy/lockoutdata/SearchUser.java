@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
 import lombok.Value;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 
 /*
  * @author: Nguyen Van Hanh
@@ -15,5 +16,9 @@ public class SearchUser {
 		this.userID = userID;
 		this.loginID = loginID;
 		this.userName = userName;
+	}
+
+	public static SearchUser convertToDto(UserImportNew user) {
+		return new SearchUser(user.getUserId(), user.getLoginId(), user.getUserName());
 	}
 }
