@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.dom.attendance.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -200,7 +202,11 @@ public class AttendanceItemUtil implements ItemConst {
 												.filter(id -> id.path().equals(currentPath))
 												.findFirst().orElse(null);
 				if (itemValue != null) {
-					ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
+					if(!valueAnno.setValueWith().isEmpty()) {
+						callSetMethod(attendanceItems, valueAnno, itemValue);
+					} else {
+						ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
+					}
 				}
 				return;
 			} 
@@ -217,6 +223,17 @@ public class AttendanceItemUtil implements ItemConst {
 		});
 
 		return attendanceItems;
+	}
+
+	private static <T> void callSetMethod(T attendanceItems, AttendanceItemValue valueAnno, ItemValue itemValue) {
+		try {
+			Method setMethod = attendanceItems.getClass().getMethod(valueAnno.setValueWith(), Object.class);
+			setMethod.invoke(attendanceItems, itemValue.valueAsObjet());
+		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException 
+				| SecurityException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private static <T> void clearConflictEnumsInList(AttendanceItemLayout layout, Class<T> className, List<T> value,
