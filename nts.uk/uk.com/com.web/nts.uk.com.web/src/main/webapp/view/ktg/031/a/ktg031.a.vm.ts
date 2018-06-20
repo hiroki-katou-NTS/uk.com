@@ -102,7 +102,9 @@ module nts.uk.at.view.ktg031.a.viewmodel {
         //convert time follow the format
         convertTime(time: string): string {
             let self = this;
+            // get and format time at the moment
             let now = moment(new Date()).format('YYYY-MM-DD');
+            // format time in DB
             let data = moment(new Date(time)).format('YYYY-MM-DD');
             if (now == data) {
                 return moment(time).utcOffset(0).format('HH:mm');
