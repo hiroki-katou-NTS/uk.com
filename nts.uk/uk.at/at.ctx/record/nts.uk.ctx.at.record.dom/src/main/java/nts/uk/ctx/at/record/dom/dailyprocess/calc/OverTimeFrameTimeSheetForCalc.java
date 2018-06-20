@@ -381,7 +381,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 			}
 			
 			if(transTime.lessThanOrEqualTo(0))
-				break;
+				continue;
 			
 			//振替時間を調整時間に入れる
 			if(overTimeWorkFrameTimeSheetList.get(number).adjustTime.isPresent()) {
@@ -407,7 +407,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static TimeWithDayAttr reCreateSiteiTimeFromStartTime(AttendanceTime transTime,OverTimeFrameTimeSheetForCalc overTimeWork) {
-		return overTimeWork.reCreateTreatAsSiteiTimeEnd(transTime,overTimeWork).getEnd();
+		return overTimeWork.reCreateTreatAsSiteiTimeEnd(transTime,overTimeWork).orElse(overTimeWork.timeSheet.getTimeSpan()).getEnd();
 	}
 	
 	/**

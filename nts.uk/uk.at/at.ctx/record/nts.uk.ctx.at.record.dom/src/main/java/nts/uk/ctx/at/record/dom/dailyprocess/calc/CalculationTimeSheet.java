@@ -97,9 +97,10 @@ public abstract class CalculationTimeSheet {
 	 * 指定時間を終了とする時間帯作成
 	 * @return
 	 */
-	public TimeSpanForCalc reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheetForCalc overTimeWork) {
+	public Optional<TimeSpanForCalc> reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheetForCalc overTimeWork) {
 		TimeSpanForCalc copySpan = calcrange;
-		return overTimeWork.reduceUntilSpecifiedTime(new AttendanceTime(copySpan.lengthAsMinutes() - transTime.valueAsMinutes()));
+		//return overTimeWork.reduceUntilSpecifiedTime(new AttendanceTime(this.calcTotalTime().valueAsMinutes() - transTime.valueAsMinutes()));
+		return overTimeWork.contractTimeSheet(new TimeWithDayAttr(this.calcTotalTime().valueAsMinutes() - transTime.valueAsMinutes()));
 	}
 	
 	/**
@@ -108,16 +109,20 @@ public abstract class CalculationTimeSheet {
 	 * @return 縮小後の時間帯
 	 */
 	public TimeSpanForCalc reduceUntilSpecifiedTime(AttendanceTime assignTime) {
+		//開始時間からの経過時間を求める
 		AttendanceTime shortened = calcTotalTime().minusMinutes(assignTime.valueAsMinutes());
-		
+		//開始時間と経過時間から新しいEnd時刻を求める
 		AttendanceTime newEnd = new AttendanceTime(timeSheet.getStart().forwardByMinutes(shortened.valueAsMinutes()).valueAsMinutes());
-		
 		TimeZoneRounding newTimeSpan = new TimeZoneRounding(new TimeWithDayAttr(shortened.valueAsMinutes()),new TimeWithDayAttr(newEnd.valueAsMinutes()),this.timeSheet.getRounding());
-		List<TimeSheetOfDeductionItem> refineList = duplicateNewTimeSpan(newTimeSpan.timeSpan());
+		//自身の計算範囲と被っている場所にある控除時間帯を求める
+		List<TimeSheetOfDeductionItem> refineList = getNewSpanIncludeCalcrange(this.deductionTimeSheet,newTimeSpan.timeSpan());
 		
 		while(true) {
+			//控除時間
 			AttendanceTime deductionTime = new AttendanceTime(0);
+			//算出した計算範囲(初期化)
 			newTimeSpan = new TimeZoneRounding(timeSheet.getStart(),new TimeWithDayAttr(newEnd.valueAsMinutes()), this.timeSheet.getRounding());
+			//含んでいる控除時間経過した分だけ終了を未来へずらす
 			for(TimeSheetOfDeductionItem deductionItem : refineList) {
 				deductionTime = deductionItem.calcTotalTime();
 				newTimeSpan = new TimeZoneRounding(timeSheet.getStart(),newTimeSpan.getEnd().forwardByMinutes(deductionTime.valueAsMinutes()), this.timeSheet.getRounding());
@@ -148,22 +153,25 @@ public abstract class CalculationTimeSheet {
 		for(int listn = 0 ; listn < copyList.size() ; listn++){
 				/*ここのcalcTotalTimeは残業時間帯が持ってる控除時間帯の時間*/
 				int differTime = copyList.get(listn).calcTotalTime().valueAsMinutes();
-				newSpan = newSpan.shiftEndAhead(differTime);
 				/*ずらす前に範囲内に入っている時間帯の数を保持*/
-				int beforeincludeSpan = getNewSpanIncludeCalcrange(copyList,newSpan).size();
-				val moveAfterNewSpan = newSpan.shiftEndAhead(copyList.stream().map(ts -> ts.calcrange.lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
-				int afterincludeSpan = getNewSpanIncludeCalcrange(copyList,moveAfterNewSpan).size();
+				int beforeincludeSpan = copyList.size();//getNewSpanIncludeCalcrange(copyList,newSpan).size();
+				//含んでいる控除時間帯分未来へずらす
+				newSpan = newSpan.shiftEndAhead(differTime);
+//				//
+//				val moveAfterNewSpan = newSpan.shiftEndAhead(copyList.stream().map(ts -> ts.calcrange.lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+				//増やしたことで、含む控除時間が増えるかどうかをチェック(含んでいる控除時間帯の数を数えなおす)
+				int afterincludeSpan = getNewSpanIncludeCalcrange(deductionTimeSheet,newSpan).size();
 				/*ずらした後の範囲に入っている時間帯の数とずらす前のかずを比較し増えていた場合、控除時間帯を保持してる変数に追加する*/
 				if(afterincludeSpan > beforeincludeSpan) {
 					copyList = Collections.emptyList();
-					copyList = getNewSpanIncludeCalcrange(deductionTimeSheet,moveAfterNewSpan);
+					copyList = getNewSpanIncludeCalcrange(deductionTimeSheet,newSpan);
 				}
 		}
 		return Optional.of(newSpan);
 	}
 	
 	/**
-	 *　時間帯と重複している控除時間帯のみを抽出する
+	 *受け取った時間帯に含まれている控除項目の時間帯をリストにする
 	 * @param newTimeSpan 時間帯
 	 * @return　控除時間帯リスト
 	 */
@@ -171,6 +179,14 @@ public abstract class CalculationTimeSheet {
 		return deductionTimeSheet.stream().filter(tc -> newTimeSpan.contains(tc.timeSheet.getTimeSpan())).collect(Collectors.toList());
 	}
 	
+	/**
+	 * 
+	 * 　時間帯と重複している控除時間帯のみを抽出する
+	 * @param　控除項目の時間帯(List)
+	 */
+	private List<TimeSheetOfDeductionItem> getNewSpanIncludeCalcrange(List<TimeSheetOfDeductionItem> copyList , TimeSpanForCalc newSpan){
+		return copyList.stream().filter(tc -> newSpan.checkDuplication(tc.timeSheet.getTimeSpan()).isDuplicated()).collect(Collectors.toList());
+	}
 	
 	/**
 	 * 控除時間の合計を算出する
@@ -292,14 +308,6 @@ public abstract class CalculationTimeSheet {
 	}
 
 	
-	
-	/**
-	 * 受け取った時間帯に含まれている控除項目の時間帯をリストにする
-	 * @param　控除項目の時間帯(List)
-	 */
-	private List<TimeSheetOfDeductionItem> getNewSpanIncludeCalcrange(List<TimeSheetOfDeductionItem> copyList , TimeSpanForCalc newSpan){
-		return copyList.stream().filter(tc -> newSpan.contains(tc.timeSheet.getTimeSpan())).collect(Collectors.toList());
-	}
 	
 	/**
 	 * 

@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerform
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -139,6 +140,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
 	
+	//ドメインサービス：計算用ストアド実行用
+	@Inject
+	private AdTimeAndAnyItemAdUpService adTimeAndAnyItemAdUpService; 
 	
 	/**
 	 * 社員の日別実績を計算
@@ -229,9 +233,12 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
 				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
 						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get());
+				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
 				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 			}
+			
+			
+			
 		}
 		return status;
 	}
@@ -241,25 +248,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	private void registAttendanceTime(AttendanceTimeOfDailyPerformance attendanceTime){
-
-		//*****（未）　この中で、必要なデータ更新処理を書く。下は、仮実装なので、正確な内容は別途確認する事。
-
-		// キー値確認
-		val employeeId = attendanceTime.getEmployeeId();
-		val ymd = attendanceTime.getYmd();
-		//if (this.attendanceTimeRepository.find(employeeId, ymd).isPresent()){
-//		if(attendanceTime != null)
-			
-			// 更新
-			this.attendanceTimeRepository.update(attendanceTime);
-//		}
-//		else {
-//			//log.info("更新なんてされずにスルーされます");
-//			// 追加
-//			//*****（未）　親のフローにより、読み込めないデータは計算しないはずなので、この処理は不要かもしれない。find確認自体不要かも。
-//			//this.attendanceTimeRepository.add(attendanceTime);
-//		}
+	private void registAttendanceTime(AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
+		adTimeAndAnyItemAdUpService.addAndUpdate(attendanceTime, anyItem);	
 	}
 	
 	/**

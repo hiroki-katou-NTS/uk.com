@@ -58,11 +58,12 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			if(errorItem.getFixedAtr()) {
 				addItems = systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter, master);
 			}
+			
 			//ユーザ設定
 			else {
 				addItems = erAlCheckService.checkErrorFor(companyID, integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 						integrationOfDaily.getAffiliationInfor().getYmd(), errorItem, integrationOfDaily);
-				addItemList.addAll(addItems);
+				//addItemList.addAll(addItems);
 			}
 			addItemList.addAll(addItems);
 		}
@@ -206,7 +207,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 												CheckExcessAtr.LEAVE_EARLY);
 			//出勤打刻漏れ
 			case TIME_LEAVING_STAMP_LEAKAGE:
-			//入退門	
+			//入退門漏れ
 			case ENTRANCE_STAMP_LACKING:
 			//PCログ打刻漏れ
 			case PCLOG_STAMP_LEAKAGE:

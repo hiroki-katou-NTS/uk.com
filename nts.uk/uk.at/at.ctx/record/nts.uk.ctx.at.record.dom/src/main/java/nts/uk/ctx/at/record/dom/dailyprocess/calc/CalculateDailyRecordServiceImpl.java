@@ -935,6 +935,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//総労働時間が編集している項目リストに含まれていなければ再計算
 		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent() ) {
 			AttendanceTimeOfExistMinus scheTime = new AttendanceTimeOfExistMinus(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily().getWorkScheduleTime().getTotal().valueAsMinutes());
+			scheActDiffTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getBudgetTimeVariance();
 			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()!= null
 					&&calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
 					&& !attendanceItemIdList.contains(new Integer(559))) {

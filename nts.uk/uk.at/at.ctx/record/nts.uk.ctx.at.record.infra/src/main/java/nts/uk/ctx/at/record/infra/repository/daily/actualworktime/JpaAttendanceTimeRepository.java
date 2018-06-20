@@ -46,6 +46,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacation;
 import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacationPK;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -402,10 +403,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 					}
 				}
 			}
-			
-		} else {
-			add(attendanceTime);
 		}
+		
 	}
 
 	@Override
@@ -442,6 +441,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 							.setParameter("end", ymd.end())
 							.getList().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		});
+		
 		return result;
 	}
 
