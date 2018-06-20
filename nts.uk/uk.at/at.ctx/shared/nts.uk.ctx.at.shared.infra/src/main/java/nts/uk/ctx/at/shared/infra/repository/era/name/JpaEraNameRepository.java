@@ -87,6 +87,11 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 		if(!entity.isPresent()) {
 			throw new RuntimeException("Invalid CisdtEraName");
 		}
+		// update details
+		entity.get().setEraName(domain.getEraName().toString());
+		entity.get().setSymbol(domain.getSymbol().toString());
+		entity.get().setStartDate(domain.getStartDate());
+		entity.get().setEndDate(domain.getEndDate());
 		this.commandProxy().update(entity.get());
 		
 	};

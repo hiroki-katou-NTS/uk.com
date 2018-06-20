@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDom;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDomRepository;
+import nts.uk.ctx.at.shared.dom.era.name.SystemType;
 
 @Stateless
 public class EraNameDeleteCommandHandler extends CommandHandler<EraNameDeleteCommand>{
@@ -27,10 +28,17 @@ public class EraNameDeleteCommandHandler extends CommandHandler<EraNameDeleteCom
 		// get by Id
 		EraNameDom domain = this.repo.getEraNameById(command.getEraId());
 		if(domain != null) {
-			// check if the last item
-			if(domain.getEndDate().equals(LAST_END_DATE))
+			// check if the last item or not system => can delete
+			if(domain.getEndDate().equals(LAST_END_DATE) || SystemType.NOT_SYSTEM.equals(domain.getSystemType())) {
+				// get start date of deleted item
+				GeneralDate strDate = domain.getStartDate();
 				// delete item
 				this.repo.deleteEraName(command.getEraId());
+				// update end date of pre item
+				EraNameDom preItem = this.repo.getEraNameByEndDate(GeneralDate.localDate(strDate.localDate().minusDays(1)));
+				preItem.setEndDate(LAST_END_DATE);
+				this.repo.updateEraName(preItem);
+			}
 			else throw new RuntimeException("Invalid EraName");
 		}
 		else throw new RuntimeException("Invalid EraNameId");

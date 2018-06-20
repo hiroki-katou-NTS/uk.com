@@ -71,6 +71,8 @@ public class EraNameSaveCommandHandler extends CommandHandler<EraNameSaveCommand
 		else {
 			// get previous era name item
 			EraNameDom preItem = this.repo.getEraNameByEndDate(LAST_END_DATE);
+			if(preItem == null)
+				throw new RuntimeException("Not found the last EraName item");
 
 			// add new era name item
 			EraNameDom domain = command.toDomain();
