@@ -52,7 +52,7 @@ module cas009.a.viewmodel {
             // subscribe and change data
             role.roleId.subscribe(rid => {
                 let roles = ko.toJS(self.listRole),
-                    exist: IRole = _.find(roles, (r: IRole) => r.roleId == rid);
+                    exist: IRole = _.find(roles, (r: IRole) => _.isEqual(r.roleId, rid));
 
                 if (exist) {
                     role.roleName(exist.name);
@@ -82,8 +82,6 @@ module cas009.a.viewmodel {
                     errors.clearAll();
                 });
             });
-
-            role.roleId.subscribe(c => console.log(c));
 
             // call reload data
             self.start();
@@ -236,20 +234,22 @@ module cas009.a.viewmodel {
                     block.invisible();
 
                     fetch.role.remove(_.pick(role, ["roleId", "assignAtr"])).done(() => {
-                        info({ messageId: "Msg_16" });
+                        fetch.permision.remove(_.pick(role, ["roleId"])).done(() => {
+                            info({ messageId: "Msg_16" });
 
-                        self.getListRole().done(() => {
-                            let roles: Array<IRole> = ko.toJS(self.listRole),
-                                selected: IRole = roles[index];
+                            self.getListRole().done(() => {
+                                let roles: Array<IRole> = ko.toJS(self.listRole),
+                                    selected: IRole = roles[index];
 
-                            if (selected) {
-                                self.selectedRole.roleId(selected.roleId);
-                            } else {
-                                self.selectedRole.roleId(roles[0].roleId);
-                            }
-                        }).always(() => {
-                            block.clear();
-                            errors.clearAll();
+                                if (selected) {
+                                    self.selectedRole.roleId(selected.roleId);
+                                } else {
+                                    self.selectedRole.roleId(roles[0].roleId);
+                                }
+                            }).always(() => {
+                                block.clear();
+                                errors.clearAll();
+                            });
                         });
 
                     }).fail((error) => {
