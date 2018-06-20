@@ -334,7 +334,8 @@ public class OptionalWidgetKtgFinder {
 					BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyId, employeeId, datePeriod, false, startDate, false, new ArrayList<>(), Optional.empty(), Optional.empty());
 					BreakDayOffRemainMngOfInPeriod time = breakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(param);
 					//to do some thinks
-					dto.setRemainAlternationNo(new TimeOT(0, 0));
+					dto.setRemainAlternationNoDay(time.getRemainDays());
+					dto.setRemainAlternationNo(new TimeOT(time.getRemainTimes()/60, time.getRemainTimes()%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					//sử lý 19
 					//requestList 204 team B

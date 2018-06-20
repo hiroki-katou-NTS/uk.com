@@ -60,6 +60,8 @@ public class OptionalWidgetInfoDto {
 	private int reservedYearsRemainNo = 0;
 	
 	/** 18 Remain Alternation Number 代休残数 */
+	private double remainAlternationNoDay = 0.0;
+	
 	private TimeOT remainAlternationNo = new TimeOT(0, 0);
 	
 	/** 19 RemainsLeft 振休残数 */
