@@ -967,6 +967,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 					TotalValue totalValue;
 					if (optTotalVal.isPresent()) {
+						if (actualValue.value() == null) return;
 						totalValue = optTotalVal.get();
 						int totalValueType = totalValue.getValueType();
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
@@ -1038,6 +1039,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 				TotalValue totalValue;
 				if (optTotalVal.isPresent()) {
+					if (actualValue.value() == null) return;
 					totalValue = optTotalVal.get();
 					int totalValueType = totalValue.getValueType();
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
@@ -1083,11 +1085,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			WorkplaceTotal workplaceTotal = workplaceDaily.getLstWorkplaceData().getWorkplaceTotal();
 			List<TotalValue> lstTotalVal = workplaceTotal.getTotalWorkplaceValue();
 			lstTotalVal.stream().forEach(totalVal -> {
-				if (totalVal.value() == null) return;
 				// Literally 0-1 result in list
 				Optional<TotalValue> optGrossTotal = lstGrossTotal.stream().filter(x -> x.getAttendanceId() == totalVal.getAttendanceId()).findFirst();
 				TotalValue totalValue;
 				if (optGrossTotal.isPresent()) {
+					if (totalVal.value() == null) return;
 					totalValue = optGrossTotal.get();
 					int totalValueType = totalValue.getValueType();
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
