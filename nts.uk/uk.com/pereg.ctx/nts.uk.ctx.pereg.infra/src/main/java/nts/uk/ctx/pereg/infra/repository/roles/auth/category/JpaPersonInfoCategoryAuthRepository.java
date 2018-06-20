@@ -20,22 +20,24 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
-
-
-	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
-			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,"
-			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,"
-			+ "(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,"
-			+ "(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia"
-			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
-			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd" + " INNER JOIN PpemtPerInfoCtgOrder co"
-			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
-			+ " LEFT JOIN PpemtPersonCategoryAuth p "
-			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId"
-			+ " AND c.abolitionAtr = 0" + "	ORDER BY co.disporder";
+	
+	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = String.join(" ",
+	"SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, ",
+	"cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,",
+	"CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,",
+	"(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,",
+	"(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia",
+	"FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm",
+	"ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd",
+	"AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd", "INNER JOIN PpemtPerInfoCtgOrder co",
+	"ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId",
+	"INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId",
+	"LEFT JOIN PpemtPersonCategoryAuth p ",
+	"ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId",
+	"AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId", "AND c.abolitionAtr = 0",
+	// them dieu kien luong, nhan su, viec lam
+	"AND ((cm.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR (cm.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR (cm.employmentUseAtr = 1 AND :employmentUseAtr = 1)) OR (:salaryUseAtr =  0 AND  :personnelUseAtr = 0 AND :employmentUseAtr = 0)",
+	"ORDER BY co.disporder");
 
 	private static final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, cm.categoryType "
 			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
@@ -191,61 +193,12 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	@Override
 	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr ) {
 		
-		String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY =String.join(" ","SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, ",
-				" cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,",
-				" CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,",
-				"(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,",
-				"(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia",
-				" FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm",
-				" ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd",
-				 " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd" ,
-				 " INNER JOIN PpemtPerInfoCtgOrder co",
-				 "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId",
-				 " INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId",
-				 " LEFT JOIN PpemtPersonCategoryAuth p ",
-				 " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId",
-				 " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId",
-				 " AND c.abolitionAtr = 0");
-		String CONDITION = null,
-			   salaryString ="",
-			   personnelString = "",
-			   employmentString ="";
-
-		if (salaryUseAtr == NotUseAtr.USE.value) {
-			
-			CONDITION = CONDITION == null ? "AND (cm.salaryUseAtr = 1" : "OR cm.salaryUseAtr = 1";
-			salaryString = CONDITION;
-
-		}
-
-		if (personnelUseAtr == NotUseAtr.USE.value) {
-			
-			CONDITION = CONDITION == null ? " AND (cm.personnelUseAtr = 1" : "OR cm.personnelUseAtr = 1";
-			personnelString = CONDITION;
-
-		} 
-		
-		if (employmentUseAtr == NotUseAtr.USE.value) {
-			
-			CONDITION = CONDITION == null ? "AND (cm.employmentUseAtr = 1" : "OR cm.employmentUseAtr = 1";
-			employmentString = CONDITION;
-			
-		}
-		
-		if( !salaryString.equals("") || !personnelString.equals("") || !employmentString.equals("")){
-			
-			CONDITION =  String.join(" ", salaryString, personnelString, employmentString, ")");
-			
-		}else{
-			
-			CONDITION =  String.join(" ", salaryString, personnelString, employmentString);
-		}
-		
-		SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY  = String.join(" ", SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, CONDITION ,"ORDER BY co.disporder");
-		
 		return this.queryProxy().query(SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, Object[].class)
 				.setParameter("roleId", roleId).setParameter("contractCd", contractCd)
 				.setParameter("companyId", companyId)
+				.setParameter("salaryUseAtr", salaryUseAtr)
+				.setParameter("personnelUseAtr", personnelUseAtr)
+				.setParameter("employmentUseAtr", employmentUseAtr)
 				.getList(c -> toDomain(c));
 	}
 
