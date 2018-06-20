@@ -19,7 +19,7 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 let temp = self.period();
                 if (value == 0) {
                     service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
-                        let listOrder = _.orderBy(listData, ["code"], ['desc']);
+                        let listOrder = _.orderBy(listData, ["finishDateTime"], ['asc']);
                         self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert
@@ -33,7 +33,7 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                     });
                 } else {
                     service.getAllToppage(temp).done((data) => {
-                        let listOrder = _.orderBy(data, ["code"], ['desc']);
+                        let listOrder = _.orderBy(data, ["finishDateTime"], ['asc']);
                         self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert;
@@ -82,7 +82,7 @@ module nts.uk.at.view.ktg031.a.viewmodel {
             var dfd = $.Deferred();
             // get toppage with roger = 0
             service.getToppage(self.selectedRuleCode(), self.period()).done((listData: Array<ITopPageAlarmDto>) => {
-                let listOrder = _.orderBy(listData, ["code"], ['desc']);
+                let listOrder = _.orderBy(listData, ["finishDateTime"], ['asc']);
                 self.listToppage(_.map(listOrder, acc => {
                     let afterConvert = self.convertTime(acc.finishDateTime);
                     acc.finishDateTime = afterConvert;
@@ -103,13 +103,13 @@ module nts.uk.at.view.ktg031.a.viewmodel {
         convertTime(time: string): string {
             let self = this;
             // get and format time at the moment
-            let now = moment(new Date()).format('YYYY-MM-DD');
+            let now = moment(new Date()).utcOffset(0).format('YYYY-MM-DD');
             // format time in DB
-            let data = moment(new Date(time)).format('YYYY-MM-DD');
+            let data = moment(time).utcOffset(0).format('YYYY-MM-DD');
             if (now == data) {
-                return moment(time).utcOffset(0).format('HH:mm');
+                return moment(time).utcOffset(0).format('HH:mm'); 
             } else {
-                return moment(time).utcOffset(0).format('DD/MM HH:mm');
+                return moment(time).utcOffset(0).format('MM/DD HH:mm');
             }
         }
 
