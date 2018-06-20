@@ -98,7 +98,6 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	 */
 	@Override
 	public List<LockOutData> findByContractCode(String contractCode) {
-		List<LockOutData> lstLockOutData = new ArrayList<LockOutData>();
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();

@@ -54,10 +54,10 @@ public class LockOutDataUserFinder {
 					lockOutDataUserDto.setUserId(item.getUserId());
 				}
 				Optional<UserImportNew> findByUserId = userAdapter.findByUserId(item.getUserId());
-				if (findByUserId.isPresent()) {
-					lockOutDataUserDto.setLoginId(findByUserId.get().getLoginId().trim());
-					lockOutDataUserDto.setUserName(findByUserId.get().getUserName());
-				}
+				findByUserId.ifPresent(value -> {
+					lockOutDataUserDto.setLoginId(value.getLoginId().trim());
+					lockOutDataUserDto.setUserName(value.getUserName());
+				});
 				lstLockOutDataUserDto.add(lockOutDataUserDto);
 
 			});
@@ -85,7 +85,11 @@ public class LockOutDataUserFinder {
 	 * @return the lock out data dto
 	 */
 	public LockOutDataDto findLockOutDataByUserId(String UserId) {
-		LockOutData lockOutData = lockOutDataRepository.findByUserId(UserId).get();
+		Optional<LockOutData> optLockOutData = lockOutDataRepository.findByUserId(UserId);
+		if (!optLockOutData.isPresent()) {
+			return null;
+		}
+		LockOutData lockOutData = optLockOutData.get();
 		return new LockOutDataDto(lockOutData.getUserId(), lockOutData.getLockOutDateTime(),
 				lockOutData.getLogType().value, lockOutData.getContractCode().v(), lockOutData.getLoginMethod().value);
 	}

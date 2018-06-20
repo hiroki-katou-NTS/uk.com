@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 
+/**
+ * 
+ * @author phund
+ * The Class LockOutDataDto 
+ */
 @Setter
 @Getter
 @AllArgsConstructor

@@ -50,14 +50,14 @@ module nts.uk.com.view.cli001.a {
                 let _self = this;
                 nts.uk.ui.windows.sub.modal("/view/cli/001/b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("dataCd001.a");
-                    if (!_.isNil(data)){
-                         $('#tableGrid').focus();
+                    if (!_.isNil(data)) {
+                        $('#tableGrid').focus();
                         let userId = { userId: data.userID };
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
-                             _self.items.push({ logType: dto.lockType, loginId: data.loginID,userId:dto.userId,userName:data.userName,lockOutDateTime:dto.logoutDateTime});
+                            _self.items.push({ logType: dto.lockType, loginId: data.loginID, userId: dto.userId, userName: data.userName, lockOutDateTime: dto.logoutDateTime });
                             console.log(_self.items());
                         });
-                        }
+                    }
                     nts.uk.ui.block.clear();
                 });
             }
@@ -90,19 +90,21 @@ module nts.uk.com.view.cli001.a {
                     $('#tableGrid').focus();
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                         .ifYes(() => {
-                                let command = { lstUserId: self.currentCodeList() };
-                                service.removeLockOutData(command).done(() => {
-                                    nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
-                                        //Search again and display the screen
-                                        service.findAll().done((data: Array<LockOutDataUserDto>) => {
-                                            self.items(data);
-                                            self.currentCodeList([]);
-                                        });
+                            let command = { lstUserId: self.currentCodeList() };
+                            service.removeLockOutData(command).done(() => {
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
+                                    //Search again and display the screen
+                                    service.findAll().done((data: Array<LockOutDataUserDto>) => {
+                                        self.items(data);
+                                        self.currentCodeList([]);
                                     });
-                                }).fail((res: any) => {
-                                    return;
                                 });
-                        }).ifNo();
+                            }).fail((res: any) => {
+                                return;
+                            });
+                        }).ifNo(function () {
+                            return;
+                    });
                 }
             }
 
