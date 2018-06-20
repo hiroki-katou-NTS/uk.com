@@ -94,7 +94,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 }
             });
             self.employeeList.subscribe((datas) => {
-                if (datas) {
+                if (datas.length) {
                     self.totalEmployeeText(text('KAF011_79', [datas.length]));
                     self.selectedEmployee(datas[0]);
                 }
@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             block.invisible();
             var self = this,
                 dfd = $.Deferred(),
-                employeeIDs;
+                employeeIDs = [];
 
             __viewContext.transferred.ifPresent(data => {
                 employeeIDs = data.employeeIds;
@@ -221,7 +221,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         appReasonText: '',
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
-                        employeeID: self.employeeList()[0]? self.employeeList()[0].sid : null,
+                        employeeID: self.employeeList()[0] ? self.employeeList()[0].sid : null,
                         appVersion: 0
                         ,
                     }

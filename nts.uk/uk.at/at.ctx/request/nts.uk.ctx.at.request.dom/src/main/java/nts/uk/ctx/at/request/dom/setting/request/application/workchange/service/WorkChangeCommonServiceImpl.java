@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
@@ -42,8 +43,10 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	WorkManagementMultipleRepository workManagerRepo;	
 	@Inject
 	IDataWorkService dataWorkService;
+	@Inject
+	private AtEmployeeAdapter atEmpAdaptor;
 	@Override
-	public WorkChangeBasicData getSettingData(String companyId, String sId) {		
+	public WorkChangeBasicData getSettingData(String companyId, String sId,List<String> sIds) {		
 		// 1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyId,
 				sId, 1, ApplicationType.WORK_CHANGE_APPLICATION, null);
@@ -79,6 +82,8 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		GeneralDate appDate = GeneralDate.today();//基準日
 		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting);
 		wcBasicData.setWorkingData(workingData);
+		
+		wcBasicData.setEmployees(atEmpAdaptor.getByListSID(sIds));
 		
 		// 勤務変更申請基本データ
 		return wcBasicData;
