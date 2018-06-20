@@ -20,27 +20,24 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class AggregateGoOutDto implements ItemConst {
 
 	/** 回数: 勤怠月間回数 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int times;
 
 	/** 外出理由: 外出理由 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	@AttendanceItemLayout(jpPropertyName = REASON, layout = LAYOUT_B, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int attr;
 
 	/** 合計時間: 計算付き月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_C, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TimeMonthWithCalculationDto totalTime;
 
 	/** 法定外時間: 計算付き月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = ILLEGAL, layout = LAYOUT_D, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TimeMonthWithCalculationDto illegalTime;
 
 	/** 法定内時間: 計算付き月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_E, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TimeMonthWithCalculationDto legalTime;
 

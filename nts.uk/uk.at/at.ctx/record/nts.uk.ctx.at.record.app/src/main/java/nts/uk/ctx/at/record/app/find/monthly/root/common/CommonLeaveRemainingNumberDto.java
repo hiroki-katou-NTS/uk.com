@@ -26,12 +26,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 public class CommonLeaveRemainingNumberDto implements ItemConst {
 
 	/** 合計残日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double totalRemainingDays;
 
 	/** 合計残時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private int totalRemainingTime;
 
 	/** 明細 */

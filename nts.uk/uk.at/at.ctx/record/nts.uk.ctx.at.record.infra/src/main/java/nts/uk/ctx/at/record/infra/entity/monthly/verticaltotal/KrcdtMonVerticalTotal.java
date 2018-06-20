@@ -275,7 +275,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		if (krcdtMonAggrAbsnDays == null) krcdtMonAggrAbsnDays = new ArrayList<>();
 		if (krcdtMonAggrSpecDays == null) krcdtMonAggrSpecDays = new ArrayList<>();
 		if (krcdtMonAggrBnspyTime == null) krcdtMonAggrBnspyTime = new ArrayList<>();
-		if (krcdtMonAggrGoout == null) krcdtMonAggrAbsnDays = new ArrayList<>();
+		if (krcdtMonAggrGoout == null) krcdtMonAggrGoout = new ArrayList<>();
 		if (krcdtMonAggrPremTime == null) krcdtMonAggrPremTime = new ArrayList<>();
 		if (krcdtMonAggrDivgTime == null) krcdtMonAggrDivgTime = new ArrayList<>();
 		if (krcdtMonMedicalTime == null) krcdtMonMedicalTime = new ArrayList<>();

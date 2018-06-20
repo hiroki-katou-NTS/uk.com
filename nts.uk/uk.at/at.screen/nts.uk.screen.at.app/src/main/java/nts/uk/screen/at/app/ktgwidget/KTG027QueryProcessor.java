@@ -34,6 +34,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeList36;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeOfMonthlyDto;
@@ -66,16 +68,19 @@ public class KTG027QueryProcessor {
 
 	@Inject
 	private OvertimeHoursRepository overtimeHoursRepo;
+	
+	@Inject
+	private TempAbsHistRepository  tempAbsHistRepository;
 
 	public GeneralDate checkSysDateOrCloseEndDate() {
-		// EA luôn trả về Systemdate
+		// EA luôn trả v�Systemdate
 		return GeneralDate.today();
 	}
 
 	public int getLoginClosure(GeneralDate referenceDate) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		// ログイン者の雇用を取得する
+		// ログイン�雔�を取得す�
 		// (Lấy employeement của login) request list 31
 		Optional<BsEmploymentHistoryImport> employmentHistoryImport = shareEmploymentAdapter.findEmploymentHistory(companyID, employeeID, referenceDate);
 		if (!employmentHistoryImport.isPresent()) {
@@ -105,7 +110,7 @@ public class KTG027QueryProcessor {
 
 		String employeeID = AppContexts.user().employeeId();
 		String companyID = AppContexts.user().companyId();
-		// 締め期間を取得する
+		// �め期間を取得す�
 		// (Lấy closing period) tu domain Closure
 		/*
 		 * ouput: Closing period start date End date
@@ -114,25 +119,25 @@ public class KTG027QueryProcessor {
 		if (!datePeriod.isPresent()) {
 			return new OvertimeHours("Msg_1134", null);
 		}
-		// ログイン者の権限範囲内の職場を取得する
+		// ログイン�権限篛��職場を取得す�
 		// (Lấy workplace trong phạm vi quyền login) = Request List 334
-		// referenceDate lấy theo baseDate ở xử lý 1
+		// referenceDate lấy theo baseDate �xử lý 1
 		GeneralDate referenceDate = checkSysDateOrCloseEndDate();
 		List<String> listWorkPlaceID = authWorkPlaceAdapter.getListWorkPlaceID(employeeID, referenceDate);
 		if (listWorkPlaceID.isEmpty()) {
 			return new OvertimeHours("Msg_1135", null);
 		}
-		// 締めに紐づく雇用を取得する
+		// �めに紐づく雇用を取得す�
 		// (lấy employeement ứng với closing)
-		// Chỗ này lấy dữ liệu lâu vcl
+		// Ch�n�y lấy dữ liệu lâu vcl
 		List<ClosureEmployment> listClosureEmployment = closureEmploymentRepo.findByClosureId(companyID, closureID);
 		if (listClosureEmployment.isEmpty()) {
 			return new OvertimeHours("Msg_1136", null);
 		}
-		// 対象者を取得する
+		// 対象耂�取得す�
 		List<String> listEmploymentCD = listClosureEmployment.stream().map(c -> c.getEmploymentCD()).collect(Collectors.toList());
 		// (Lấy target) Lấy request list 335
-		// imported（権限管理）「所属職場履歴」を取得する
+		// imported�権限管琼�「所属�場履歴」を取得す�
 		List<AgreementTimeList36> data = new ArrayList<>();
 		// for (DatePeriod datePeriod : listDatePeriod) {
 		long startTime = System.nanoTime();
@@ -145,8 +150,8 @@ public class KTG027QueryProcessor {
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime) / 1000000; // ms;
 		System.out.println("RequestList335:" + duration);
-		// 対象者の時間外労働時間を取得する
-		// (Lấy worktime ngoài period) lấy RequestList 333
+		// 対象�時間外労働時間を取得す�
+		// (Lấy worktime ngo�i period) lấy RequestList 333
 		startTime = System.nanoTime();
 		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, listEmpID, YearMonth.of(targetMonth), ClosureId.valueOf(closureID));
 		endTime = System.nanoTime();
@@ -155,11 +160,11 @@ public class KTG027QueryProcessor {
 		if (listAgreementTimeDetail.isEmpty()) {
 			return new OvertimeHours("Msg_1138", null);
 		}
-		// 取得した時間外労働情報をセット
-		// (Set thông tin công việc ngoài giờ đã lấy)
+		// 取得した時間外労働情報をセッ�
+		// (Set thông tin công việc ngo�i gi�đã lấy)
 		List<String> lstEmpID = listAgreementTimeDetail.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-		// Imported（就業）「社員」を取得する
-		// (Lấy Imported（就業）「employee」) Lay Request61
+		// Imported�就業�「社員」を取得す�
+		// (Lấy Imported�就業�「employee� Lay Request61
 		List<PersonEmpBasicInfoImport> listEmpBasicInfoImport = empEmployeeAdapter.getPerEmpBasicInfo(lstEmpID);
 		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail) {
 			Optional<PersonEmpBasicInfoImport> personInfor = listEmpBasicInfoImport.stream().filter(c -> c.getEmployeeId().equals(agreementTimeDetail.getEmployeeId())).findFirst();
@@ -196,11 +201,11 @@ public class KTG027QueryProcessor {
 	}
 
 	public boolean displayItem(List<AgreementTimeDetail> listAgreementTimeDetail, GeneralDate targetMonth) {
-		// ３６協定申請を使用するかどうかチェック(Check có sủ dụng đơn xin hiệp ddinh36 ko)
-		// 一旦常に「使用する」(mặc định la 「sử dungj - 使用する」 )
-		// ３６協定申請を使用する権限があるかどうかチェック(check xem có quyển sử dụng đơn hiệp định 36
-		// ko) 一旦常に「使用する」(mặc định la 「sử dungj - 使用する」 )
-		// 対象月が過去月かどうかチェック(Check targetMonth có phải là tháng quá khứ ko)
+		// �６協定申請を使用するかどぁ�チェヂ�(Check có sủ dụng đơn xin hiệp ddinh36 ko)
+		// 一旦常に「使用する�mặc định la 「sử dungj - 使用する�)
+		// �６協定申請を使用する権限があるかどぁ�チェヂ�(check xem có quyển sử dụng đơn hiệp định 36
+		// ko) 一旦常に「使用する�mặc định la 「sử dungj - 使用する�)
+		// 対象月が過去月かどぁ�チェヂ�(Check targetMonth có phải l� tháng quá khứ ko)
 		for (AgreementTimeDetail agreeTime : listAgreementTimeDetail) {
 			if (!GeneralDate.today().after(targetMonth) == true) {
 				if (agreeTime.getAfterAppReflect().get().getStatus().value == 1 || agreeTime.getAfterAppReflect().get().getStatus().value == 2) {
@@ -239,7 +244,7 @@ public class KTG027QueryProcessor {
 		if (lstId.isEmpty()) {
 			return Collections.emptyList();
 		}
-		// lây list Employee từ list sid và dateperiod
+		// lây list Employee từ list sid v� dateperiod
 		long startTime2 = System.nanoTime();
 		List<AffCompanyHist> lstAffComHist = overtimeHoursRepo.getAffComHisEmpByLstSidAndPeriod(lstId, dateperiod);
 		long endTime2 = System.nanoTime();	
@@ -249,16 +254,26 @@ public class KTG027QueryProcessor {
 			return Collections.emptyList();
 		}
 		List<AffCompanyHistByEmployee> lstAffComHistByEmp = getAffCompanyHistByEmployee(lstAffComHist);
-		
-		// List sid sau khi lọc qua điều kiện datePeriod
-		List<String> lstSidAfterFilter = lstAffComHistByEmp.stream().map(m -> m.getSId()).collect(Collectors.toList());
-		
+
+		// List sid from List<AffCompanyHistByEmployee>
+		List<String> lstSidFromAffComHist = lstAffComHistByEmp.stream().map(m -> m.getSId())
+				.collect(Collectors.toList());
+
+		// lây list TempAbsenceHistory từ list sid và dateperiod
+		List<TempAbsenceHistory> lstTempAbsenceHistory = tempAbsHistRepository.getByListSid(lstSidFromAffComHist,
+				dateperiod);
+
+		// List sid from List<TempAbsenceHistory>
+		List<String> lstSidFromTempAbsHis = lstTempAbsenceHistory.stream().map(m -> m.getEmployeeId())
+				.collect(Collectors.toList());
+
 		// List sid tồn tại ở lstId nhưng không tồn tại ở list sid
-				List<String> result = lstId.stream().filter(i -> !lstSidAfterFilter.contains(i)).collect(Collectors.toList());
-				if (result.isEmpty()) {
-					return Collections.emptyList();
-				}
-			
+		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstSidFromTempAbsHis.contains(i))
+				.collect(Collectors.toList());
+		if (result.isEmpty()) {
+			return Collections.emptyList();
+		}
+
 		return result;
 	}
 	public List<AffCompanyHistByEmployee> getAffCompanyHistByEmployee(List<AffCompanyHist> lstAffComHist) {
@@ -276,16 +291,16 @@ public class KTG027QueryProcessor {
 
 
 	public OvertimeHoursDto initialActivationArocess(int targetMonth) {
-		// 基準日を取得する
+		// 基準日を取得す�
 		// (Lấy base date)
 		GeneralDate referenceDate = checkSysDateOrCloseEndDate();
-		// ログイン者の締めを取得する
+		// ログイン��めを取得す�
 		// (Lấy closing của login)
 		int closureIDInit = getLoginClosure(referenceDate);
-		// 締めの一覧を取得する
+		// �め�一覧を取得す�
 		// (Lấy list closing) Request 142
 		List<ClosureResultModel> listClosureResultModel = workClosureQueryProcessor.findClosureByReferenceDate(referenceDate);
-		// 時間外労働時間を取得する
+		// 時間外労働時間を取得す�
 		// (Lấy work time )
 		OvertimeHours overtimeHours = buttonPressingProcess(targetMonth, 1);
 		OvertimeHoursDto reusult = new OvertimeHoursDto(listClosureResultModel, overtimeHours);
