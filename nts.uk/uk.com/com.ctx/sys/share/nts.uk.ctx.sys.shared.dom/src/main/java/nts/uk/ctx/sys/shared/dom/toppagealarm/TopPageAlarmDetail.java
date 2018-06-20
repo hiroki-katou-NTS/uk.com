@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * 
+ * トップページアラーム詳細
  * @author yennth
  *
  */

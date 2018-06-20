@@ -7,7 +7,7 @@ module nts.uk.at.view.ktg031.b.viewmodel {
         constructor() {
             var self = this;
             self.columns = ko.observableArray([
-                { headerText: '', key: 'serialNo', width: 30 },
+                { headerText: '', key: 'serialNo', width: 70 },
                 { headerText: getText('KTG031_10'), key: 'employeeCode', width: 100 },
                 { headerText: getText('KTG031_11'), key: 'employeeName', width: 110 },
                 { headerText: getText('KTG031_12'), key: 'processingName', width: 150 },
@@ -73,7 +73,7 @@ module nts.uk.at.view.ktg031.b.viewmodel {
             self.serialNo = param.serialNo;
             self.employeeName = param.employeeName;
             self.errorMessage = param.errorMessage;
-            self.processingName = param.errorMessage;
+            self.processingName = param.processingName;
         }
     }
 
