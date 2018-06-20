@@ -72,13 +72,13 @@ public class UrlWebService {
 		
 		// URLパラメータの存在チェック
 		if(Strings.isBlank(urlID)){
-			throw new RuntimeException();
+			throw new BusinessException("");
 		}
 		
 		// ドメインモデル「埋込URL実行情報」を取得する
 		Optional<UrlExecInfo> opUrlExecInfo = urlExecInfoRepository.getUrlExecInfoByUrlID(urlID);
 		if(!opUrlExecInfo.isPresent()){
-			throw new RuntimeException();
+			throw new BusinessException("");
 		}
 		
 		// システム日時が「埋込URL実行情報.有効期限」を超えていないことを確認する
@@ -193,7 +193,7 @@ public class UrlWebService {
 		
 		// 社員コードの存在を確認
 		if(Strings.isBlank(employeeCD)){
-			throw new RuntimeException();
+			throw new BusinessException("");
 		}
 		
 		// アルゴリズム「アカウントロックチェック」を実行する

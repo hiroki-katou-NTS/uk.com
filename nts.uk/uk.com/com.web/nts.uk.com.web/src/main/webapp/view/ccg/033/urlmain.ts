@@ -9,8 +9,12 @@ __viewContext.ready(function() {
         nts.uk.request.jump("at", "/view/cmm/045/a/index.xhtml?a=0");        
     })
     .fail((failure) => {
-        nts.uk.ui.dialog.alertError({ messageId: failure.messageId }).then(function() {
+        if(!nts.uk.util.isNullOrEmpty(failure.messageId)){
+            nts.uk.ui.dialog.alertError({ messageId: failure.messageId, messageParams: failure.parameterIds }).then(function() {
+                nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml"); 
+            });
+        } else {
             nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml"); 
-        });
+        }
     });
 })
