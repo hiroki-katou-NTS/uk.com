@@ -102,15 +102,16 @@ public class LeaveEarlyTimeOfDaily {
 		LateLeaveEarlyTimeSheet forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
 																				 new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 		if(!leaveEarlyTimeSheetList.isEmpty()) {
-			//早退時間帯を１つの時間帯にする。
-			forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
-																									  leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd(),
-																									  leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getRounding()),
-																				 new TimeSpanForCalc(leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
-																						 			 leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd()));
-		
-			forRecordTimeSheet.setDeductionTimeSheet(leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
-		
+			if(leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().isPresent()) {
+				//早退時間帯を１つの時間帯にする。
+				forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
+																										  leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd(),
+																										  leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getRounding()),
+																					 new TimeSpanForCalc(leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
+																							 			 leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd()));
+			
+				forRecordTimeSheet.setDeductionTimeSheet(leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+			}
 			forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(leaveEarlyTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getStart(),
 																									  leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd(),
 																									  leaveEarlyTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getRounding()),
