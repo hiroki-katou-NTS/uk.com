@@ -555,7 +555,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }
             }
             let overtime: common.AppOverTime = {
-                applicationDate: self.appDate(),
+                applicationDate: new Date(self.appDate()),
                 prePostAtr: self.prePostSelected(),
                 applicantSID: self.employeeID(),
                 applicationReason: appReason,
