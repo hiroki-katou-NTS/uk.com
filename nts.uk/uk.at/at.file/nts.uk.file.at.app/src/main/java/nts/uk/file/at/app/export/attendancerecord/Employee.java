@@ -22,5 +22,11 @@ public class Employee {
 	
 	/** The employee code. */
 	String employeeCode;
+	
+	/** The workplace code. */
+	String workplaceCode;
+	
+	/** The workplace id. */
+	String workplaceId;
 
 }

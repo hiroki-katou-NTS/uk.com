@@ -3,13 +3,16 @@ package nts.uk.file.at.app.export.attendancerecord;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,6 +41,11 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportColumnData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDailyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportData;
@@ -84,8 +92,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	@Inject
 	private EmployeeInformationPub employeePub;
 
-	// @Inject
-	// private EmployeeInformationPub employeeInfo;
+	@Inject
+	private WorkplaceConfigInfoRepository wplConfigInfoRepo;
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
@@ -97,7 +105,45 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<AttendanceRecordReportEmployeeData>();
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
-		request.getEmployeeList().forEach(employee -> {
+		List<String> wplIds = request.getEmployeeList().stream().map(item -> item.getWorkplaceId())
+				.collect(Collectors.toList());
+
+		List<WorkplaceConfigInfo> wplConfigInfoList = wplConfigInfoRepo
+				.findByWkpIdsAtTime(AppContexts.user().companyId(), GeneralDate.localDate(LocalDate.now()), wplIds);
+
+		List<WorkplaceHierarchy> hierarchyList = new ArrayList<>();
+
+		wplIds.forEach(item -> {
+
+			for (WorkplaceConfigInfo info : wplConfigInfoList) {
+				for (WorkplaceHierarchy hiearachy : info.getLstWkpHierarchy()) {
+					if (item.equals(hiearachy.getWorkplaceId()))
+						hierarchyList.add(hiearachy);
+				}
+			}
+		});
+
+		hierarchyList.sort(Comparator.comparing(WorkplaceHierarchy::getHierarchyCode));
+
+		wplIds = hierarchyList.stream().map(item -> item.getWorkplaceId()).distinct().collect(Collectors.toList());
+		List<Employee> employeeListAfterSort = new ArrayList<>();
+		wplIds.forEach(id -> {
+			for (Employee employee : request.getEmployeeList()) {
+				if (id.equals(employee.getWorkplaceId()))
+					employeeListAfterSort.add(employee);
+			}
+
+		});
+
+		// wplConfigInfoList =
+		// wplConfigInfoList.sort(Comparator.comparing(WorkplaceConfigInfo::get));
+
+		// List<WorkplaceInfo> workplaceInfos =
+		// wplInfoRepo.findByWkpIds(AppContexts.user().companyId(), wplIds);
+
+		// workplaceInfos.sort(Comparator.comparing(WorkplaceInfo::get));
+
+		employeeListAfterSort.forEach(employee -> {
 
 			// get Closure
 			Optional<Closure> optionalClosure = closureEmploymentService.findClosureByEmployee(employee.getEmployeeId(),
@@ -152,18 +198,26 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(),
 									LOWER_POSITION);
 
-					YearMonth startYearMonth = request.getStartDate().yearMonth();
+					YearMonth startYearMonth = closureDate.getLastDayOfMonth() ? request.getStartDate().yearMonth()
+							: request.getStartDate().yearMonth().previousMonth();
 					YearMonth endYearMonth = request.getEndDate().yearMonth();
 					YearMonth yearMonth = startYearMonth;
 
 					while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
 
-						GeneralDate startDateByClosure = GeneralDate.ymd(yearMonth.year(), yearMonth.month(),
-								closureDate.getClosureDay().v());
-						GeneralDate endDateByClosure = GeneralDate.ymd(yearMonth.addMonths(1).year(),
-								yearMonth.addMonths(1).month(), closureDate.getClosureDay().v());
+						GeneralDate startDateByClosure;
+						GeneralDate endDateByClosure;
 
-						endDateByClosure = GeneralDate.localDate(endDateByClosure.localDate().minusDays(1));
+						if (closureDate.getLastDayOfMonth()) {
+							startDateByClosure = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
+							endDateByClosure = GeneralDate.ymd(yearMonth.year(), yearMonth.month(),
+									yearMonth.lastDateInMonth());
+						} else {
+							startDateByClosure = GeneralDate.ymd(yearMonth.year(), yearMonth.month(),
+									closureDate.getClosureDay().v() + 1);
+							endDateByClosure = GeneralDate.ymd(yearMonth.addMonths(1).year(),
+									yearMonth.addMonths(1).month(), closureDate.getClosureDay().v());
+						}
 
 						// amount day in month
 						int flag = 0;
@@ -465,10 +519,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentName().toString());
 						attendanceRecRepEmpData
 								.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
-						attendanceRecRepEmpData.setTitle(result.getPosition().getPositionName().toString());
-						attendanceRecRepEmpData.setWorkplace(result.getWorkplace().getWorkplaceName().toString());
-						attendanceRecRepEmpData.setWorkType(TextResource
-								.localize(EnumAdaptor.valueOf(result.getEmploymentCls(), WorkingSystem.class).nameId));
+						attendanceRecRepEmpData.setTitle(
+								result.getPosition() == null ? "" : result.getPosition().getPositionName().toString());
+						attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
+								: result.getWorkplace().getWorkplaceName().toString());
+						attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
+								: TextResource.localize(
+										EnumAdaptor.valueOf(result.getEmploymentCls(), WorkingSystem.class).nameId));
 						attendanceRecRepEmpData.setYearMonth(yearMonth.year() + "/" + yearMonth.month());
 						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 
@@ -489,7 +546,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		});
 
-		for (Employee employee : request.getEmployeeList()) {
+		for (Employee employee : employeeListAfterSort) {
 			List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
 			for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
 
