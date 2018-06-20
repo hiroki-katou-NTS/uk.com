@@ -23,6 +23,6 @@ public class WorkTimeOfDailyDto implements ItemConst {
 
 	/** 時間: 作業実績の時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer workTime;
 }

@@ -108,11 +108,13 @@ public class OutputItemDailyWorkScheduleFinder {
 	// SettingUnitType.BUSINESS_TYPE.value
 	private static final int BUSINESS_TYPE = 1;
 	
+	/** The Constant SHEET_NO_1. */
+	private static final int SHEET_NO_1 = 1;
+	
 	/**
 	 * Find by cid.
 	 *
-	 * @param code the code
-	 * @return the output item daily work schedule dto
+	 * @return the map
 	 */
 	public Map<String, Object> findByCid() {
 		String companyID = AppContexts.user().companyId();
@@ -166,16 +168,8 @@ public class OutputItemDailyWorkScheduleFinder {
 		lstAttendanceID.addAll(lstAttendanceID2);
 		
 		// ドメインモデル「日次の勤怠項目」をすべて取得する(Acquire all domain model "daily attendance items")
-//		List<DailyAttendanceItem> lstDailyAttendanceItem = new ArrayList<>();
+		// アルゴリズム「勤怠項目に対応する名称を生成する」
 		if (!lstAttendanceID.isEmpty()) {
-/*			lstDailyAttendanceItem = dailyAttendanceItemRepository.getListById(companyID, lstAttendanceID);
-			mapDtoReturn.put("dailyAttendanceItem", lstDailyAttendanceItem.stream().map(domain -> {
-			DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
-			dto.setCode(String.valueOf(domain.getAttendanceItemId()));
-			dto.setName(domain.getAttendanceName().v());
-			return dto;
-		}).collect(Collectors.toList()));*/
-			
 			mapDtoReturn.put("dailyAttendanceItem", dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(lstAttendanceID).stream()
 					.map(domain -> {
 						DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
@@ -282,7 +276,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				case AUTHORITY: // In case of authority
 					// ドメインモデル「会社の日別実績の修正のフォーマット」を取得する (Acquire the domain model "format of company's daily performance correction")
 					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
-					List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(code), new BigDecimal(1));
+					List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(code), new BigDecimal(SHEET_NO_1));
 					lstAuthorityFomatDaily.sort(Comparator.comparing(AuthorityFomatDaily::getDisplayOrder));
 					lstDataReturn = lstAuthorityFomatDaily.stream()
 															.map(domain -> new DataInforReturnDto(domain.getAttendanceItemId()+"", ""))
@@ -291,7 +285,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				case BUSINESS_TYPE:
 					// ドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する (Acquire the domain model "Format of working type daily performance correction)
 					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
-					List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormat(companyId, new BusinessTypeCode(code).v());
+					List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormatDailyDetail(companyId, new BusinessTypeCode(code).v(), new BigDecimal(SHEET_NO_1));
 					lstBusinessTypeFormatDaily.sort(Comparator.comparing(BusinessTypeFormatDaily::getOrder));
 					lstDataReturn = lstBusinessTypeFormatDaily.stream()
 															.map(domain -> new DataInforReturnDto(domain.getAttendanceItemId()+"", ""))
@@ -312,9 +306,11 @@ public class OutputItemDailyWorkScheduleFinder {
 					return domain;
 				}).collect(Collectors.toList());
 		
+		// 1Sheet目の表示項目を返り値とする (Coi hạng mục hiển thj của sheet đầu tiên là giá trị trả về)
 		if (lstDataReturn.size() <= 48) {
 			return lstDataReturn;
-		} else {
+		}
+		else { // 1Sheet目の表示項目の先頭48項目までを返り値とする(Lấy 48 hạng mục đầu trong sheet đầu tiên làm giá trị trả về)
 			return lstDataReturn.stream().limit(48).collect(Collectors.toList());
 		}
 	}

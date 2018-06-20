@@ -58,7 +58,7 @@ module nts.uk.pr.view.ccg007.f {
                     }
                 }).fail(function(res) {
                     //Return Dialog Error
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                     blockUI.clear();
                 });
                 
