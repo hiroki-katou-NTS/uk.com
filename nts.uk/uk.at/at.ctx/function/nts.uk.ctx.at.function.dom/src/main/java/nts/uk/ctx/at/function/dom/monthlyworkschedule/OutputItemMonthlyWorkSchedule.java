@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.function.dom.monthlyworkschedule;
 
 import java.util.List;
@@ -82,5 +86,12 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		if (this.lstDisplayedAttendance.isEmpty() || this.lstDisplayedAttendance == null) {
 			throw new BusinessException("Msg_880");
 		}
+	}
+
+	/**
+	 * Instantiates a new output item monthly work schedule.
+	 */
+	public OutputItemMonthlyWorkSchedule() {
+		super();
 	}
 }
