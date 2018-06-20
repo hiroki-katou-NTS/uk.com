@@ -166,13 +166,6 @@ module cas009.a.viewmodel {
             return dfd.promise();
         }
 
-        changeData = (data: Array<IPermision>) => {
-            let self = this,
-                role = self.selectedRole;
-
-            role.permisions(data);
-        }
-
         // create new mode
         createNew = () => {
             let self = this,
