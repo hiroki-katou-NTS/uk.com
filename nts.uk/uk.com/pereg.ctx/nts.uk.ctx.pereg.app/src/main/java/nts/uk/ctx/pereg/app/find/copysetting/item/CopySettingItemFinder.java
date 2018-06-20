@@ -138,7 +138,7 @@ public class CopySettingItemFinder {
 				Collectors.toMap(category -> category.getCategoryCode(), category -> category.getCategoryType()));
 		copyItemList.forEach(copyItem -> {
 			int categoryType = mapCategoryType.get(copyItem.getCategoryCode());
-			if (categoryType == 3 && copyItem.getItemName().equals(END_DATE_NAME)) {
+			if (categoryType == CategoryType.CONTINUOUSHISTORY.value && copyItem.getItemName().equals(END_DATE_NAME)) {
 				copyItem.setData(GeneralDate.max());
 			}
 		});
