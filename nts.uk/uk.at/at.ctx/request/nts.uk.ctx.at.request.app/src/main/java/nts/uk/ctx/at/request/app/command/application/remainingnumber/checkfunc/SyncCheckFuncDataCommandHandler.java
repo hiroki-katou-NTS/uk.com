@@ -116,7 +116,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				
 				if (asyncTask.hasBeenRequestedToCancel()) {
 					asyncTask.finishedAsCancelled();
-					break;
+					return;
 				}
 			}
 		} else {
@@ -159,7 +159,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				//(Check số phép còn lại trong param -パラメータ.年休残数)
 				if (command.getMaxDay() != null) {
 					for (YearlyHolidaysTimeRemainingImport yearlyHolidaysTimeRemaining : yearlyHolidaysTimeRemainingImport) {
-						if (yearlyHolidaysTimeRemaining.getAnnualRemaining().compareTo(command.getMaxDay()) > 0) {
+						if (yearlyHolidaysTimeRemaining.getAnnualRemaining().compareTo(command.getMaxDay()) >= 0) {
 							//取得した年休残数　≧　パラメータ.年休残数
 							//パラメータ.処理人数に＋１加算する
 							setter.updateData(NUMBER_OF_SUCCESS, i + 1);

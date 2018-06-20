@@ -23,7 +23,7 @@ public class RowPageTracker {
 	
 	private static final int MAX_ROW_PER_PAGE_EMPLOYEE_1 = 24;
 	private static final int MAX_ROW_PER_PAGE_EMPLOYEE_2 = 22;
-	private static final int MAX_ROW_PER_PAGE_EMPLOYEE_3 = 23;
+	private static final int MAX_ROW_PER_PAGE_EMPLOYEE_3 = 20;
 	
 	private static final int MAX_ROW_PER_PAGE_DATE_1 = 24;
 	private static final int MAX_ROW_PER_PAGE_DATE_2 = 22;

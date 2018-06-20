@@ -82,6 +82,7 @@ module nts.uk.pr.view.ccg007.g {
                 //set LoginId and contractCode to LocalStorage
                 localStorage.setItem('loginId', self.callerParameter.employeeCode);
                 localStorage.setItem('contractCode', self.callerParameter.contractCode);
+                localStorage.setItem('contractPassword', self.callerParameter.contractPassword);
                 localStorage.setItem('url', url);
                 
                 //jump CCG007H
