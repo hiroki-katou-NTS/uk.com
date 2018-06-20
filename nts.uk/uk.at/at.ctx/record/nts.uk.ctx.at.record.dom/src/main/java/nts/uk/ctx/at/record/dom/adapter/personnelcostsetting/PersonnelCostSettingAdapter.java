@@ -6,6 +6,6 @@ import nts.arc.time.GeneralDate;
 
 public interface PersonnelCostSettingAdapter {
 	
-	List<PersonnelCostSettingImport> find(String companyId, GeneralDate baseDate);
+	List<PersonnelCostSettingImport> findAll(String companyId, GeneralDate baseDate);
 
 }

@@ -43,4 +43,9 @@ public class PremiumTimeOfDailyPerformance {
 		return result;
 	}
 	
+	//指定されたNoに一致する割増時間を取得する
+	public Optional<PremiumTime> getPremiumTime(int number){
+		return this.premiumTimes.stream().filter(tc -> tc.getPremiumTimeNo() == number).findFirst();
+	}
+	
 }
