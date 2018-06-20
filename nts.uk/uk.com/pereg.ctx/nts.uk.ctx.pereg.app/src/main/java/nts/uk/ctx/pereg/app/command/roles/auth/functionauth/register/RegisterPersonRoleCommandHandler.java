@@ -33,42 +33,27 @@ public class RegisterPersonRoleCommandHandler extends CommandHandler<RegisterPer
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterPersonRoleCommand> context) {
-		final RegisterPersonRoleCommand command = context.getCommand();
+		RegisterPersonRoleCommand command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
+		String contractCode = AppContexts.user().contractCode();
+
+		Role role = command.toDomain(companyId, contractCode);
+		PersonRole personRole = new PersonRole(role.getRoleId(), command.getReferFutureDate());
 
 		if (command.getCreateMode()) {
-			insertPersonInfoRole(command);
+			roleService.insertRole(role);
+			personRoleRepo.insert(personRole);
 		} else {
-			updatePersonInfoRole(command);
+			roleService.updateRole(role);
+			personRoleRepo.update(personRole);
 		}
 
 		// 個人情報の権限
-		saveFunctionAuth(command);
+		saveFunctionAuth(command, role.getRoleId(), companyId);
 
 	}
 
-	private void insertPersonInfoRole(RegisterPersonRoleCommand command) {
-		Role role = command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode());
-		roleService.insertRole(role);
-
-		PersonRole personRole = new PersonRole();
-		personRole.setRoleId(role.getRoleId());
-		personRole.setReferFutureDate(command.getReferFutureDate());
-		personRoleRepo.insert(personRole);
-	}
-
-	private void updatePersonInfoRole(RegisterPersonRoleCommand command) {
-		Role role = command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode());
-		roleService.updateRole(role);
-
-		PersonRole personRole = new PersonRole();
-		personRole.setRoleId(role.getRoleId());
-		personRole.setReferFutureDate(command.getReferFutureDate());
-		personRoleRepo.update(personRole);
-	}
-
-	private void saveFunctionAuth(RegisterPersonRoleCommand command) {
-		String companyId = AppContexts.user().companyId();
-		String roleId = command.getRoleId();
+	private void saveFunctionAuth(RegisterPersonRoleCommand command, String roleId, String companyId) {
 
 		Map<Integer, PersonInfoAuthority> authMap = authRepo.getListOfRole(companyId, roleId);
 
