@@ -592,7 +592,8 @@ module nts.uk.ui.exTable {
          */
         function groupHeader($container: HTMLElement, options: any, isUpdate: boolean) {
             let $table = selector.create("table").html("<tbody></tbody>").addClass(options.tableClass)
-                        .css({ position: "relative", "table-layout": "fixed", width: "100%", "border-collapse": "separate" }).getSingle();
+                        .css({ position: "relative", "table-layout": "fixed", width: "100%", 
+                                "border-collapse": "separate", "user-select": "none" }).getSingle();
             $container.appendChild($table);
             let $tbody = $table.getElementsByTagName("tbody")[0];
             if (!isUpdate) {
@@ -638,6 +639,7 @@ module nts.uk.ui.exTable {
             $table.style.tableLayout = "fixed";
             $table.style.width = "100%";
             $table.style.borderCollapse = "separate";
+            $table.style.userSelect = "none";
             $container.appendChild($table);
             let $tbody = $table.getElementsByTagName("tbody")[0];
             if (!isUpdate) {
