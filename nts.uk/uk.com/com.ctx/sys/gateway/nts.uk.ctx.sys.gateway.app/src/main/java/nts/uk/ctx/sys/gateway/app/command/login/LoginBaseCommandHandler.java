@@ -336,7 +336,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the new role id
 	 */
 	// set roll id into login user context
-	protected CheckChangePassDto setRoleId(String userId) {
+	public CheckChangePassDto setRoleId(String userId) {
 		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
 		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
 		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
