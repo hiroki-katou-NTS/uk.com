@@ -30,7 +30,7 @@ public class OptionalItemValueDto implements ItemConst {
 
 	/** 任意項目: 回数, 時間, 金額 */
 	/** TODO: set */
-	@AttendanceItemValue(type = ValueType.UNKNOWN, getTypeWith = DEFAULT_GET_TYPE)
+	@AttendanceItemValue(type = ValueType.UNKNOWN, getTypeWith = DEFAULT_GET_TYPE, setValueWith = DEFAULT_SET_VALUE)
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = VALUE)
 	private String value;
 
@@ -81,6 +81,10 @@ public class OptionalItemValueDto implements ItemConst {
 				Optional.of(new AnyItemTime(getDailyTimeOrDefault())));
 	}
 
+	public void value(Object val) {
+		this.value = val.toString();
+	}
+	
 	public boolean isHaveData() {
 		return !StringUtil.isNullOrEmpty(this.value, true);
 	}

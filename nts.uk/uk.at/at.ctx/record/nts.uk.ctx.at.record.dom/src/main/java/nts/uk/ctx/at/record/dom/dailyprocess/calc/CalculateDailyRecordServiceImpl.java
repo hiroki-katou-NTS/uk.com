@@ -198,7 +198,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 
 	//↓以下任意項目の計算の為に追加
-	
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
 	
@@ -210,6 +209,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	@Inject
 	private EmpConditionRepository empConditionRepository;
+	
+	//割増計算用に追加
+	@Inject
+	private PersonnelCostSettingAdapter personnelCostSettingAdapter;
 	
 	/**
 	 * 勤務情報を取得して計算
@@ -961,7 +964,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(calcResultIntegrationOfDaily != null && calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			
 			//割増時間の計算
-//			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformance(personnelCostSettingAdapter.find(companyId, targetDate), Optional.of(forCalcDivergenceDto));
+			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformance(personnelCostSettingAdapter.findAll(companyId, targetDate), Optional.of(forCalcDivergenceDto));
 			
 			val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(calcResultIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),
 																												 calcResultIntegrationOfDaily.getAffiliationInfor().getYmd(),
@@ -980,8 +983,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
 												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
 												 			 reCalcDivergence,
-												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
-//												 			premiumTimeOfDailyPerformance);
+//												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+												 			 premiumTimeOfDailyPerformance);
 			
 			val reCreateAttendanceTime = new AttendanceTimeOfDailyPerformance(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(),
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getYmd(),

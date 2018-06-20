@@ -40,6 +40,8 @@ import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimework
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkPK;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTs;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTsPK;
+import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTime;
+import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacation;
@@ -79,6 +81,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				//乖離
 				this.commandProxy().insert(KrcdtDayDivergenceTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
 																			  attendanceTime.getActualWorkingTimeOfDaily().getDivTime()));
+			}
+			if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
+				//割増
+				this.commandProxy().insert(KrcdtDayPremiumTime.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
+																		  attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance()));
 			}
 			if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 				if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
@@ -378,6 +385,21 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 					else {
 						this.commandProxy().insert(KrcdtDayDivergenceTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
 																				   attendanceTime.getActualWorkingTimeOfDaily().getDivTime()));
+					}
+				}
+				if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
+					/* 割増時間  */
+					Optional<KrcdtDayPremiumTime> krcdtDayPremiumTime = this.queryProxy()
+							.find(new KrcdtDayPremiumTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
+									KrcdtDayPremiumTime.class);
+					if(krcdtDayPremiumTime.isPresent()) {
+						//更新
+						krcdtDayPremiumTime.get().setData(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+						this.commandProxy().update(krcdtDayPremiumTime.get());
+					}else {
+						//追加
+						this.commandProxy().insert(KrcdtDayPremiumTime.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), 
+																				  attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance()));
 					}
 				}
 			}
