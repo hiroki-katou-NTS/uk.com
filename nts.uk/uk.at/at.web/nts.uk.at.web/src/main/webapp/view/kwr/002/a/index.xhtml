@@ -40,15 +40,19 @@
 						<label>#{i18n.getText('KWR002_11')}</label>
 					</div>
 
-					<table tabindex="4" id="multi-list"
-						data-bind="ntsGridList: {								
-							height: 312, 
-							options: employeeList,
-							optionsValue: 'id',
-							columns: columns,
-							multiple: true,
-							value: currentCodeList}">
-					</table>
+					<div class="selectionEmployee" tabindex="-1">
+						<div id="employeeSearch" tabindex="-1"></div>
+					</div>
+
+					<!--<table tabindex="4" id="multi-list"-->
+						<!--data-bind="ntsGridList: {								-->
+							<!--height: 312, -->
+							<!--options: employeeList,-->
+							<!--optionsValue: 'id',-->
+							<!--columns: columns,-->
+							<!--multiple: true,-->
+							<!--value: currentCodeList}">-->
+					<!--</table>-->
 
 				</div>
 				<div class="drag-panel" style="margin-left: 30px; margin-top: 30px">

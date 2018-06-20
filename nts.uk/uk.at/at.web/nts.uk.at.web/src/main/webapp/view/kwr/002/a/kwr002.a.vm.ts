@@ -39,6 +39,11 @@ module nts.uk.com.view.kwr002.a {
 
             permission: KnockoutObservable<boolean>;
 
+            lstPersonComponentOption: any;
+
+            selectedEmployeeCode: KnockoutObservableArray<string>;
+            alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
+
             constructor() {
                 let self = this;
                 let currentDate = self.getCurrentDay(new Date());
@@ -46,15 +51,15 @@ module nts.uk.com.view.kwr002.a {
                 self.permission = ko.observable(true);
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
-                self.dateValue = ko.observable({ startDate: currentDate, endDate: currentDate });
+                self.dateValue = ko.observable({startDate: currentDate, endDate: currentDate});
                 self.exportDto = ko.observable<ExportDto>();
                 self.listEmployee = ko.observableArray<Employee>([]);
-                self.startDateString.subscribe(function(value) {
+                self.startDateString.subscribe(function (value) {
                     self.dateValue().startDate = value;
                     self.dateValue.valueHasMutated();
                 });
 
-                self.endDateString.subscribe(function(value) {
+                self.endDateString.subscribe(function (value) {
                     self.dateValue().endDate = value;
                     self.dateValue.valueHasMutated();
                 });
@@ -64,10 +69,10 @@ module nts.uk.com.view.kwr002.a {
                 self.selectedCode = ko.observable(null);
 
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KWR002_13"), key: 'id', width: 140, hidden: true },
-                    { headerText: nts.uk.resource.getText("KWR002_13"), key: 'code', width: 140 },
-                    { headerText: nts.uk.resource.getText("KWR002_14"), key: 'name', width: 200 },
-                    { headerText: nts.uk.resource.getText("KWR002_15"), key: 'workplaceName', width: 150 }
+                    {headerText: nts.uk.resource.getText("KWR002_13"), key: 'id', width: 140, hidden: true},
+                    {headerText: nts.uk.resource.getText("KWR002_13"), key: 'code', width: 140},
+                    {headerText: nts.uk.resource.getText("KWR002_14"), key: 'name', width: 200},
+                    {headerText: nts.uk.resource.getText("KWR002_15"), key: 'workplaceName', width: 150}
                 ]);
 
                 self.currentCode = ko.observable();
@@ -86,6 +91,9 @@ module nts.uk.com.view.kwr002.a {
                 self.enableSave = ko.observable(true);
 
                 self.employeeName = ko.observable('');
+
+                self.selectedEmployeeCode = ko.observableArray([]);
+                self.alreadySettingPersonal = ko.observableArray([]);
 
                 self.ccgcomponent = {
 
@@ -124,38 +132,47 @@ module nts.uk.com.view.kwr002.a {
                     isMutipleCheck: true, // 選択モード                   
 
                     /** Return data */
-                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                         //                        self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
                         self.listEmployee(data.listEmployee);
                     }
                 }
 
-                self.currentCodeList.subscribe(function(employeeId: any) {
-                    let employee : any;
-                    self.selectedEmployee.removeAll();
-                    for (let i of employeeId) {
-                        employee = self.findByIdEmployee(i);
-                        self.selectedEmployee.push(employee);
-                    }
-                });
-            
+                // self.currentCodeList.subscribe(function (employeeId: any) {
+                //     let employee: any;
+                //     self.selectedEmployee.removeAll();
+                //     for (let i of employeeId) {
+                //         employee = self.findByIdEmployee(i);
+                //         self.selectedEmployee.push(employee);
+                //     }
+                // });
+
             }
 
-            public start_page() : JQueryPromise<any> {
+            public start_page(): JQueryPromise<any> {
 
                 blockUI.invisible();
                 let self = this;
                 let dfd = $.Deferred();
 
                 // Start component
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
+                    self.employeeList = ko.observableArray<UnitModel>([]);
+                    self.applyKCP005ContentSearch([]);
+                    // Load employee list component
+                    $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function () {
+                        $(".icon.icon-searchbox").remove();
+                        $(".caret-right.caret-background.bg-green").removeClass();
+                        $(".nts-searchbbox-wrapper").remove();
+                    });
+                });
                 service.getPermission().done((result) => {
                     if (result == true) {
                         self.permission(false);
                     }
                 });
-                service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
+                service.getAllAttendanceRecExpSet().done(function (listAttendance: Array<AttendanceRecordExportSettingDto>) {
                     if (listAttendance === undefined || listAttendance.length == 0) {
                         self.attendanceRecordList();
                         self.enableSave(false);
@@ -170,7 +187,7 @@ module nts.uk.com.view.kwr002.a {
                         self.attendanceRecordList(sortArray);
                         self.selectedCode(sortArray[0].code);
                     }
-                    
+
                     dfd.resolve();
                 })
                 blockUI.clear();
@@ -200,6 +217,21 @@ module nts.uk.com.view.kwr002.a {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
+                self.lstPersonComponentOption = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: true,
+                    listType: ListType.EMPLOYEE,
+                    employeeInputList: self.employeeList,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.selectedEmployeeCode,
+                    isDialog: false,
+                    isShowNoSelectRow: false,
+                    alreadySettingList: self.alreadySettingPersonal,
+                    isShowWorkPlaceName: true,
+                    isShowSelectAllButton: false,
+                    maxWidth: 480,
+                    maxRows: 12
+                };
             }
 
 
@@ -218,29 +250,27 @@ module nts.uk.com.view.kwr002.a {
             }
 
             /**
-             * get all employee id by search data CCG out put 
+             * get all employee id by search data CCG out put
              */
-            public getAllEmployeeIdBySearch(): string[] {
-                let self = this;
-                let employeeIds: string[] = [];
-                for (let employeeSelect of self.employeeList()) {
-                    employeeIds.push(self.findEmployeeIdByCode(employeeSelect.code));
-                }
-                return employeeIds;
-            }
+            // public getAllEmployeeIdBySearch(): string[] {
+            //     let self = this;
+            //     let employeeIds: string[] = [];
+            //     for (let employeeSelect of self.employeeList()) {
+            //         employeeIds.push(self.findEmployeeIdByCode(employeeSelect.code));
+            //     }
+            //     return employeeIds;
+            // }
 
             /**
              * find employee id in selected
              */
-            public findEmployeeIdByCode(employeeCode: string): string {
+            public findEmployeeByCode(employeeCode: string): Employee {
                 let self = this;
-                let employeeId = '';
-                for (let employee of self.selectedEmployee()) {
+                for (let employee of self.listEmployee()) {
                     if (employee.employeeCode === employeeCode) {
-                        employeeId = employee.employeeId;
+                        return employee;
                     }
                 }
-                return employeeId;
             }
 
             /**
@@ -284,11 +314,11 @@ module nts.uk.com.view.kwr002.a {
                 // mode = 1 for export file excel
                 let self = this;
                 console.log(self.currentCodeList());
-                if (self.selectedEmployee().length <= 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
+                if (self.selectedEmployeeCode().length <= 0) {
+                    nts.uk.ui.dialog.alertError({messageId: "Msg_1310"});
                     return;
                 }
-                self.exportDto(new ExportDto(self.selectedEmployee(), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));
+                self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));
                 service.exportService(self.exportDto()).done(() => {
 
                 }).fail((res: any) => {
@@ -299,18 +329,30 @@ module nts.uk.com.view.kwr002.a {
             public exportExcel() {
                 // mode = 2 for export file excel
                 let self = this;
-                if (self.selectedEmployee().length <= 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
+                
+                if (self.selectedEmployeeCode().length <= 0) {
+                    nts.uk.ui.dialog.alertError({messageId: "Msg_1310"});
                     return;
                 }
 
-                self.exportDto(new ExportDto(self.selectedEmployee(), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2));
+                self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2));
                 service.exportService(self.exportDto()).done(() => {
 
                 }).fail((res: any) => {
                     self.showMessageError(res);
 
                 });
+            }
+                       
+            
+            private findEmployeeIdsByCodes(employeeCodes: string[]): Employee[] {
+                let self = this;
+                let employeeIds: string[] = [];
+                let employee: Employee[] = [];
+                for (let employeeCode of employeeCodes) {
+                    employee.push(self.findEmployeeByCode(employeeCode));
+                }
+                return employee;
             }
 
             /**
@@ -328,7 +370,7 @@ module nts.uk.com.view.kwr002.a {
                 if (Array.isArray(res.errors)) {
                     nts.uk.ui.dialog.bundledErrors(res);
                 } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
                 }
             }
 
@@ -336,9 +378,9 @@ module nts.uk.com.view.kwr002.a {
                 var self = this;
                 var dfd = $.Deferred();
                 blockUI.invisible();
-                nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
+                nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function () {
 
-                    service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
+                    service.getAllAttendanceRecExpSet().done(function (listAttendance: Array<AttendanceRecordExportSettingDto>) {
                         if (listAttendance === undefined || listAttendance.length == 0) {
                             self.attendanceRecordList(null);
                             self.selectedCode(null);
@@ -364,14 +406,30 @@ module nts.uk.com.view.kwr002.a {
 
                 return dfd.promise();
             }
-}
+        }
+
+        export class ListType {
+            static EMPLOYMENT = 1;
+            static Classification = 2;
+            static JOB_TITLE = 3;
+            static EMPLOYEE = 4;
+        }
+
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
+        }
+
         export class AttendanceRecordExportSettingDto {
             code: string;
             name: string;
+
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
-                    }
+            }
         }
 
         export interface GroupOption {
@@ -428,6 +486,7 @@ module nts.uk.com.view.kwr002.a {
             employeeCode: string;
             employeeName: string;
             workplaceName: string;
+
             constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceName: string) {
                 this.employeeId = employeeId;
                 this.employeeCode = employeeCode;
