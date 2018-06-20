@@ -48,7 +48,7 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 
 		// Create Application
 				Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-						command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason().replaceFirst(":", System.lineSeparator()));
+						command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason().replaceFirst(":", System.lineSeparator()),command.getApplicantSID());
 
 				Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
 				Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
