@@ -264,7 +264,7 @@ public class OutputItemDailyWorkScheduleFinder {
 	}
 	
 	// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
-	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String code, List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy) {
+	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String codeSourceSerivce, List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy) {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 		
@@ -276,7 +276,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				case AUTHORITY: // In case of authority
 					// ドメインモデル「会社の日別実績の修正のフォーマット」を取得する (Acquire the domain model "format of company's daily performance correction")
 					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
-					List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(code), new BigDecimal(SHEET_NO_1));
+					List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(codeSourceSerivce), new BigDecimal(SHEET_NO_1));
 					lstAuthorityFomatDaily.sort(Comparator.comparing(AuthorityFomatDaily::getDisplayOrder));
 					lstDataReturn = lstAuthorityFomatDaily.stream()
 															.map(domain -> new DataInforReturnDto(domain.getAttendanceItemId()+"", ""))
@@ -285,7 +285,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				case BUSINESS_TYPE:
 					// ドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する (Acquire the domain model "Format of working type daily performance correction)
 					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
-					List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormatDailyDetail(companyId, new BusinessTypeCode(code).v(), new BigDecimal(SHEET_NO_1));
+					List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormatDailyDetail(companyId, new BusinessTypeCode(codeSourceSerivce).v(), new BigDecimal(SHEET_NO_1));
 					lstBusinessTypeFormatDaily.sort(Comparator.comparing(BusinessTypeFormatDaily::getOrder));
 					lstDataReturn = lstBusinessTypeFormatDaily.stream()
 															.map(domain -> new DataInforReturnDto(domain.getAttendanceItemId()+"", ""))
