@@ -79,13 +79,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(TEMPLATE));
 
 			workbook = reportContext.getWorkbook();
-			Worksheet sheet = workbook.getWorksheets().get(2);
 			WorksheetCollection sheetCollection = workbook.getWorksheets();
+			Worksheet sheet = sheetCollection.get(0);
 
-			this.setPageHeader(sheet, GeneralDate.today(), GeneralDate.today(), "LOL");
-			this.setItemHeader(sheet.getCells(), sheetCollection);
+			//this.setPageHeader(sheet, GeneralDate.today(), GeneralDate.today(), "LOL");
+			//this.setItemHeader(sheet.getCells(), sheetCollection);
 
-			this.printData(sheet.getCells(), sheetCollection);
+			//this.printData(sheet.getCells(), sheetCollection);
 
 			// Rename sheet
 			sheet.setName(WorkScheOutputConstants.SHEET_FILE_NAME);
@@ -108,14 +108,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			// Get current date and format it
 			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
 			String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
+			String fileName = WorkScheOutputConstants.SHEET_FILE_NAME + "_" + currentFormattedDate;
 
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
-				reportContext.saveAsExcel(this.createNewFile(generatorContext,
-						WorkScheOutputConstants.SHEET_FILE_NAME + "_" + currentFormattedDate + ".xlsx"));
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + ".xlsx"));
 			else {
-				reportContext.saveAsPdf(this.createNewFile(generatorContext,
-						WorkScheOutputConstants.SHEET_FILE_NAME + "_" + currentFormattedDate + ".pdf"));
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, fileName + ".pdf"));
 			}
 
 		} catch (Exception e) {
