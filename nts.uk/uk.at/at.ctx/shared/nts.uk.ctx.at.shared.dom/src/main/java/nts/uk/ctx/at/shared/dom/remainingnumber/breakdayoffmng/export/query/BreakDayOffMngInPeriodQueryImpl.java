@@ -445,8 +445,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				.collect(Collectors.toList());
 		List<BreakDayOffDetail> lstDayoff = lstDataDetail.stream().filter(y -> y.getOccurrentClass() == OccurrenceDigClass.DIGESTION)
 				.collect(Collectors.toList());
-		List<BreakDayOffDetail> lstBreackTmp = lstBreak;
-		List<BreakDayOffDetail> lstDayoffTmp = lstDayoff;
+		List<BreakDayOffDetail> lstBreackTmp = new ArrayList<>(lstBreak);
+		List<BreakDayOffDetail> lstDayoffTmp = new ArrayList<>(lstDayoff);
 		//「休出代休明細」(代休)をループする
 		for (BreakDayOffDetail dayOffData : lstDayoff) {
 			UnOffSetOfDayOff dayOffMng = dayOffData.getUnOffsetOfDayoff().get();
