@@ -67,7 +67,7 @@ public class UrlWebService {
 	@POST
 	@Path("execution/{urlID}")
 	@Produces("application/json")
-	public JavaTypeResult<String> loginFromSpr(@PathParam("urlID") String urlID) {
+	public JavaTypeResult<String> executionURL(@PathParam("urlID") String urlID) {
 		GeneralDateTime systemDateTime = GeneralDateTime.now();
 		
 		// URLパラメータの存在チェック
