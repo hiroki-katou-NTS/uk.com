@@ -1,10 +1,10 @@
-module nts.uk.at.view.ktg001.a.service {
+module nts.uk.at.view.ktg030.a.service {
     import ajax = nts.uk.request.ajax;
     
     var paths: any = {
-        getData: "screen/at/ktg001/checkDisplay"
+        getData: "screen/at/ktg030/checkDisplay"
     }
     export function getData(): JQueryPromise<any> {
-        return ajax("at", paths.getData);
+        return ajax("at", paths.getData); 
     }
 }  

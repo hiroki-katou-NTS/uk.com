@@ -24,11 +24,11 @@ module nts.uk.at.view.ktg030.a.viewmodel {
                     self.visible = ko.observable(true);
                 } else {
                     self.text = ko.observable(getText('KTG030_5'));
-                    self.visible = ko.observable(false);
+                    self.visible = ko.observable(false); 
                 }
                 dfd.resolve();
             }).always(function () {
-                nts.uk.ui.block.clear();
+                nts.uk.ui.block.clear();   
             });
             return dfd.promise();
         }

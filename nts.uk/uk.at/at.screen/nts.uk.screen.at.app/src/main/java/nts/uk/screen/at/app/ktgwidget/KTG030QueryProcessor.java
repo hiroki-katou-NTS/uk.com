@@ -64,8 +64,8 @@ public class KTG030QueryProcessor {
 		 * Route type <= Employment application
 		 */
 
-		// RootType(就業日別確認) = 1
-		boolean checkMonthApproved = dailyPerformanceAdapter.checkDataApproveed(closureStartDate, closureEndDate.addMonths(1), employeeID, 1, cid);
+		// RootType(就業日別確認) = 2
+		boolean checkMonthApproved = dailyPerformanceAdapter.checkDataApproveed(closureStartDate, closureEndDate.addMonths(1), employeeID, 2, cid);
 
 		return checkMonthApproved;
 	}
