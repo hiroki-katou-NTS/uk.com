@@ -196,6 +196,7 @@ public class DailyPerformanceCorrectionWebService {
 			
 		});
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
+			List<DailyModifyQuery> querys = new ArrayList<>();
 				mapSidDate.entrySet().forEach(x -> {
 					List<ItemValue> itemCovert = x.getValue().stream()
 							.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()),
@@ -203,9 +204,11 @@ public class DailyPerformanceCorrectionWebService {
 							.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
 							.collect(Collectors.toList());
 					if (!itemCovert.isEmpty())
-						dailyModifyCommandFacade.handleUpdate(new DailyModifyQuery(x.getKey().getKey(),
+						querys.add(new DailyModifyQuery(x.getKey().getKey(),
 								x.getKey().getValue(), itemCovert));
+						//dailyModifyCommandFacade.handleUpdate();
 				});
+				dailyModifyCommandFacade.handleUpdate(querys);
 				// insert cell edit
 				dailyModifyCommandFacade.handleEditCell(itemValueChild);
 				//resultError.put(1, itemInputErors);
