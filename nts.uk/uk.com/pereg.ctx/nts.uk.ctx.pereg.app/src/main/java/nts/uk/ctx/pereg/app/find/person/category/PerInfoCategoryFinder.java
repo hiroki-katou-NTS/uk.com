@@ -226,9 +226,25 @@ public class PerInfoCategoryFinder {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 
-		int forAttendance = AppContexts.user().roles().forAttendance() == null ? 0 : 1;
-		int forPayroll = AppContexts.user().roles().forPayroll() == null ? 0 : 1;
-		int forPersonnel = AppContexts.user().roles().forPersonnel() == null ? 0 : 1;
+		int forAttendance = NotUseAtr.NOT_USE.value;
+		int forPayroll = NotUseAtr.NOT_USE.value;
+		int forPersonnel = NotUseAtr.NOT_USE.value;
+		List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
+		for (InstalledProduct productType : installProduct) {
+			switch (productType.getProductType()) {
+			case ATTENDANCE:
+				forAttendance = NotUseAtr.USE.value;
+				break;
+			case PAYROLL:
+				forPayroll = NotUseAtr.USE.value;
+				break;
+			case PERSONNEL:
+				forPersonnel = NotUseAtr.USE.value;
+				break;
+			default:
+				break;
+			}
+		}
 
 		List<PersonInfoCategory> lstCtg = perInfoCtgRepositoty.getAllCategoryForCPS007(companyId, contractCode,
 				forAttendance, forPayroll, forPersonnel);
