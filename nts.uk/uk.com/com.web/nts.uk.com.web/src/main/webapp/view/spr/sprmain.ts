@@ -1,4 +1,5 @@
 __viewContext.ready(function() {
+    nts.uk.request.login.keepUsedLoginPage("com", "/view/ccg/007/d/index.xhtml");
 	var paramSPR = JSON.parse(window.sessionStorage.getItem("paramSPR"));
 	window.sessionStorage.removeItem("paramSPR");
     var menuCD = parseInt(paramSPR.menu);
@@ -18,29 +19,29 @@ __viewContext.ready(function() {
     var personID = paramSPR.personID;
     var loginEmployeeID = paramSPR.loginEmployeeID;
     var roleID = paramSPR.roleID;
-    var employeeID = paramSPR.employeeID;
+    var employeeID = nts.uk.util.isNullOrEmpty(paramSPR.employeeID) ? null : paramSPR.employeeID;
 	switch(menuCD) {
 	case 1:
         nts.uk.request.jump("at", "/view/kaf/005/a/index.xhtml?a=0", 
             {
-                uiType: 0,
+                uiType: 2,
                 appDate: date,
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
-                employeeIDs: [employeeID]
+                employeeIDs: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID]
             }
         );
 		break;
 	case 2:
         nts.uk.request.jump("at", "/view/kaf/005/a/index.xhtml?a=1", 
             {
-                uiType: 1,
+                uiType: 2,
                 appDate: date,
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
-                employeeIDs: [employeeID]
+                employeeIDs: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID]
             }
         );
 		break;
@@ -49,7 +50,7 @@ __viewContext.ready(function() {
 			//画面モード
 			screenMode: 0,
 			//社員一覧
-			lstEmployee: [employeeID],
+			lstEmployee: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID],
 			//エラー参照を起動する
 			errorRefStartAtr: true,
 			//期間を変更する
@@ -61,7 +62,7 @@ __viewContext.ready(function() {
 			initClock: {
 				dateSpr: date,
 				canEdit: stampProtection == 0 ? false : true,
-				employeeId: employeeID, 
+				employeeId: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID, 
 				liveTime: endtime,	//退勤打刻
 				goOut: starttime,  //出勤打刻
 			},
@@ -76,11 +77,11 @@ __viewContext.ready(function() {
 			startDate: date,
 			endDate: date,
 			//抽出した社員一覧
-			lstExtractedEmployee: employeeID,
+			lstExtractedEmployee: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID],
 			//Optional
 			//日付別で起動
 			dateTarget: date,
-			individualTarget: employeeID,
+			individualTarget: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID,
 		}
 		nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;
@@ -102,7 +103,7 @@ __viewContext.ready(function() {
             //画面モード
             screenMode: 1,
             //社員一覧
-            lstEmployee: [employeeID],
+            lstEmployee: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID],
             //エラー参照を起動する
             errorRefStartAtr: true,
             //期間を変更する
@@ -114,7 +115,7 @@ __viewContext.ready(function() {
             initClock: {
                 dateSpr: date,
                 canEdit: stampProtection == 0 ? false : true,
-                employeeId: employeeID, 
+                employeeId: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID, 
                 liveTime: endtime,  //退勤打刻
                 goOut: starttime,  //出勤打刻
             },
@@ -124,16 +125,16 @@ __viewContext.ready(function() {
 
         var extractionParam = {
             //表示形式
-            displayFormat: 0, // DPCorrectionDisplayFormat.INDIVIDUAl(個人別)
+            displayFormat: 1, // DPCorrectionDisplayFormat.DATE(日付別)
             //期間
             startDate: date,
             endDate: date,
             //抽出した社員一覧
-            lstExtractedEmployee: employeeID,
+            lstExtractedEmployee: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID],
             //Optional
             //日付別で起動
             dateTarget: date,
-            individualTarget: employeeID,
+            individualTarget: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID,
         }
         nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;

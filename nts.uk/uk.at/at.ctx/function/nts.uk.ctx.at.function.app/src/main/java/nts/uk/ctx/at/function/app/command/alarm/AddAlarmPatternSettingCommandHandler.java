@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.alarm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingService;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -59,13 +61,36 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 	}
 	
 	public CheckCondition convertToCheckCondition (CheckConditionCommand command) {
-		ExtractionRangeBase extraction = null;
-		if(command.getExtractionPeriodDaily()!=null) {
-			extraction = command.getExtractionPeriodDaily().toDomain();
-		}else if(command.getExtractionPeriodUnit()  !=null){
-			extraction = command.getExtractionPeriodUnit().toDomain();
+		List<ExtractionRangeBase> extractionList = new ArrayList<>();
+		if (command.getAlarmCategory() == AlarmCategory.DAILY.value
+				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value) {
+
+			extractionList.add(command.getExtractionPeriodDaily().toDomain());
+
+		} else if (command.getAlarmCategory() == AlarmCategory.SCHEDULE_4WEEK.value) {
+
+			extractionList.add(command.getExtractionPeriodUnit().toDomain());
+
+		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value) {
+
+			command.getListExtractionMonthly().forEach(e -> {
+				extractionList.add(e.toDomain());
+			});
+		} else if(command.getAlarmCategory() == AlarmCategory.AGREEMENT.value) {
+			
+			extractionList.add(command.getExtractionPeriodDaily().toDomain());
+			command.getListExtractionMonthly().forEach(e -> {
+				extractionList.add(e.toDomain());
+			});
+			AYear extractYear = command.getExtractionYear().toDomain();
+			extractionList.add(extractYear);
+			
+			extractionList.forEach( e-> {
+				e.setExtractionId(extractYear.getExtractionId());
+				e.setExtractionRange(extractYear.getExtractionRange());
+			});
 		}
-		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extraction);
+		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);
 	}
 	
 }

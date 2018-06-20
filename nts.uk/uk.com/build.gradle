@@ -203,6 +203,7 @@ project (':com.file:nts.uk.file.com.app') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project(':query:nts.uk.query.pub')
 	}
 }
 
@@ -218,6 +219,7 @@ project (':com.file:nts.uk.file.com.infra') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
+		compile project(':query:nts.uk.query.pub')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')		
 	}
 }
@@ -234,6 +236,10 @@ project (':shr:nts.uk.shr.com') {
 		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-multipart-provider', version: '3.1.2.Final'
 		// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs
 		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.2.Final'
+		
+		// for JMS
+		compileOnly group: 'javax.jms', name: 'javax.jms-api', version: '2.0.1'
+		compile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2.2'
 		
 		// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
 		testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.4.0'
@@ -318,6 +324,7 @@ project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ws') {
 project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 
@@ -380,6 +387,8 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
+		
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pub')
 	}
 }
 
@@ -396,6 +405,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 //========================sys:auth �====================================
@@ -793,6 +803,11 @@ project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.app')
+		
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pub')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.pub')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 	}
 }
 
@@ -848,6 +863,8 @@ project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 
@@ -864,6 +881,62 @@ project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pubimp') {
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.infra')
+	}
+}
+
+
+//========================sys:log=====================================
+project (':com.ctx:sys:log:nts.uk.ctx.sys.log.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.app')
+	}
+}
+
+project (':com.ctx:sys:log:nts.uk.ctx.sys.log.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':com.ctx:sys:log:nts.uk.ctx.sys.log.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
+	}
+}
+
+project (':com.ctx:sys:log:nts.uk.ctx.sys.log.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
+	}
+}
+
+project (':com.ctx:sys:log:nts.uk.ctx.sys.log.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.app')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+	}
+}
+
+project (':com.ctx:sys:log:nts.uk.ctx.sys.log.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':com.ctx:sys:log:nts.uk.ctx.sys.log.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.pub')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.app')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.infra')
 	}
 }
 
@@ -981,6 +1054,14 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub')
 		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pubimp')
 		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ws')
+		
+		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.ac')
+		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.app')
+		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
+		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.infra')
+		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.pub')
+		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.pubimp')
+		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.ws')
 		
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac')
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
@@ -1324,6 +1405,25 @@ project (':query:nts.uk.query.app') {
 		compile project(':shr:nts.uk.shr.com')
 				
 		compile project (':query:nts.uk.query.model')
+		compile project (':com.ctx:basic:nts.uk.ctx.basic.dom')
+		compile project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+		compile project (':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
+		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project (':com.ctx:bs:company:nts.uk.ctx.bs.company.dom')
+		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
+		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
+		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
+		
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
+		compile group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: version
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: version
+		compile group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: version
+		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
 	}
 }
 

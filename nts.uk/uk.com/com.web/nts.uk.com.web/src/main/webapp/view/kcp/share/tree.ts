@@ -98,6 +98,9 @@ module kcp.share.tree {
          * system type
          */
         systemType: SystemType;
+
+        // 参照範囲の絞
+        restrictionOfReferenceRange?: boolean;
     }
 
     /**
@@ -163,6 +166,7 @@ module kcp.share.tree {
         tabindex: number;
         
         treeStyle: TreeStyle;
+        restrictionOfReferenceRange: boolean;
 
         constructor() {
             let self = this;
@@ -213,7 +217,7 @@ module kcp.share.tree {
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
-            
+            self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;            
             if (data.systemType) {
                 self.systemType =  data.systemType;
             } else {
@@ -252,7 +256,11 @@ module kcp.share.tree {
             });
 
             // Find data.
-            service.findWorkplaceTree(self.baseDate(), self.systemType).done(function(res: Array<UnitModel>) {
+            const param = <service.WorkplaceParam>{};
+            param.baseDate = self.baseDate();
+            param.systemType = self.systemType;
+            param.restrictionOfReferenceRange = self.restrictionOfReferenceRange;
+            service.findWorkplaceTree(param).done(function(res: Array<UnitModel>) {
                 if (res && res.length > 0) {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
@@ -279,8 +287,13 @@ module kcp.share.tree {
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
-
+                    
                     dfd.resolve();
+                    if (self.isMultiSelect) {
+                        $('#multiple-tree-grid').igTreeGrid('dataBind');
+                    } else {
+                        $('#single-tree-grid').igTreeGrid('dataBind');
+                    }
                 })
 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt: any) {
@@ -313,15 +326,15 @@ module kcp.share.tree {
         private addColToGrid(data: TreeComponentOption, dataList: Array<UnitModel>) {
             let self = this;
             // Convert tree to array.
-            let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
+            //let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
             
             // calculate height tree
-            self.calHeightTree(maxSizeNameCol, data);
+            self.calHeightTree(300, data);
             
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                 {
-                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string",
+                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250, dataType: "string",
                     template: "<td class='tree-component-node-text-col'>${nodeText}</td>"
                 }
             ];
@@ -583,7 +596,11 @@ module kcp.share.tree {
             if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
                 return;
             }
-            service.findWorkplaceTree(self.baseDate(), self.systemType ).done(function(res: Array<UnitModel>) {
+            const param = <service.WorkplaceParam>{};
+            param.baseDate = self.baseDate();
+            param.systemType = self.systemType;
+            param.restrictionOfReferenceRange = self.restrictionOfReferenceRange;
+            service.findWorkplaceTree(param).done(function(res: Array<UnitModel>) {
                 if (!res || res.length <= 0) {
                     self.itemList([]);
                     self.backupItemList([]);
@@ -752,8 +769,14 @@ module kcp.share.tree {
         /**
          * Find workplace list.
          */
-        export function findWorkplaceTree(baseDate: Date, systemType: SystemType): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, { baseDate: baseDate, systemType: systemType });
+        export function findWorkplaceTree(param: WorkplaceParam): JQueryPromise<Array<UnitModel>> {
+            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, param);
+        }
+
+        export interface WorkplaceParam {
+            baseDate: Date;
+            systemType: SystemType;
+            restrictionOfReferenceRange: boolean;
         }
     }
 }

@@ -16,5 +16,11 @@ public abstract class MonthlyItemCommon extends AttendanceItemCommon {
 		return null;
 	}
 	
+	public abstract Object toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate);
+	
 	public abstract YearMonth yearMonth();
+	
+	public abstract int getClosureID();
+	
+	public abstract ClosureDateDto getClosureDate();
 }

@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import text = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         isNewScreen: KnockoutObservable<boolean> = ko.observable(true);
         dateType: string = 'YYYY/MM/DD';
@@ -94,6 +95,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         checkboxEnable: KnockoutObservable<boolean> = ko.observable(false);
         workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
         workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
+        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             //KAF000_A
@@ -146,6 +148,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: any) {
                 if (!nts.uk.util.isNullOrEmpty(settingData)) {
+                    self.checkBoxValue(settingData.appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true : false);
                     self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
@@ -285,9 +288,17 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         registry() {
             let self = this;
             nts.uk.ui.block.invisible();
-            service.insertGoBackDirect(self.getCommand()).done(function() {
+            service.insertGoBackDirect(self.getCommand()).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    location.reload();
+                    if(data.autoSendMail){
+                        appcommon.CommonProcess.displayMailResult(data);     
+                    } else {
+                        if(self.checkBoxValue()){
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);    
+                        } else {
+                            location.reload();
+                        }   
+                    }
                 });
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });

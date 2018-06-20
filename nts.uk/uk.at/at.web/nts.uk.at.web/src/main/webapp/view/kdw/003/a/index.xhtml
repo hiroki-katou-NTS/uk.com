@@ -36,6 +36,8 @@
 					nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode
 					nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
 					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+					nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -45,7 +47,7 @@
 					<button class="proceed"
 						data-bind="enable: $root.errors.isEmpty , visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
 					<button
-						data-bind="visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
+						data-bind="enable: $root.errors.isEmpty, visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
 					<button data-bind="visible: showButton().available2">#{i18n.getText('KDW003_6')}</button>
 					<button data-bind="visible: showButton().available3">#{i18n.getText('KDW003_12')}</button>
 					<button data-bind="click: employmentOk, visible:false">#{i18n.getText('KDW003_65')}</button>
@@ -201,9 +203,9 @@
 									<td class="ui-widget-body"><span class="text-holiday">
 											<input style="width: 55px"
 											data-bind="ntsNumberEditor: { 
-														name:'Deci', 
+														name: fst.nameNoOfHolidays, 
 														value: fst.noOfHolidays, 
-														constraint: 'CommonAmount', 
+														constraint: 'AnnualLeaveGrantDay', 
 														option:  optionNoOfHolidays, 
 														required: true, 
 														enable: canFlex, 
@@ -214,7 +216,7 @@
 									<td class="ui-widget-body"><span class="text-holiday">
 											<input style="width: 55px"
 											data-bind="ntsTimeEditor: {
-														name: 'Duration', 
+														name: fst.nameAbsentDeductionTime, 
 														constraint: 'SampleTimeDuration', 
 														value: fst.absentDeductionTime, 
 														inputFormat: 'time', 
@@ -228,7 +230,7 @@
 							</tbody>
 						</table>
 						<div id="text-flex">
-							<span style="color: red">#{i18n.getText('KDW003_80')}</span>
+							<span style="color: red" data-bind="text: flexShortage().messageRed"></span> 
 						</div>
 					</div>
 				</div>

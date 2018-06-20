@@ -366,4 +366,8 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		return dataTypeState;
 	}
 	
+	public boolean haveNotParentCode() {
+		return this.itemParentCode == null || this.itemParentCode.v().equals("");
+	}
+	
 }

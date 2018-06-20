@@ -24,14 +24,26 @@ import nts.uk.shr.pereg.app.PeregRecordId;
 @Setter
 public class ItemsByCategory {
 
+
 	/** category code */
 	private String categoryCd;
 
 	/** Record Id, but this is null when new record */
 	private String recordId;
+	
+	/** if category will be deleted when register */
+	private boolean delete;
 
 	/** input items */
 	private List<ItemValue> items;
+	
+	public ItemsByCategory(String categoryCd, String recordId, List<ItemValue> items) {
+		super();
+		this.categoryCd = categoryCd;
+		this.recordId = recordId;
+		this.items = items;
+		this.delete = false;
+	}
 
 	public Object createCommandForSystemDomain(String personId, String employeeId, Class<?> commandClass) {
 
@@ -80,6 +92,10 @@ public class ItemsByCategory {
 	public List<ItemValue> collectItemsDefinedByUser() {
 		return this.items.stream().filter(item -> isDefinedByUser(item.itemCode())).collect(Collectors.toList());
 	}
+	
+	public boolean isHaveSomeSystemItems() {
+		return this.getItems().stream().anyMatch(i -> i.itemCode().charAt(1) == 'S');
+	}
 
 	private static boolean isDefinedBySystem(String itemCode) {
 		return !isDefinedByUser(itemCode);
@@ -102,4 +118,5 @@ public class ItemsByCategory {
 	public List<String> getItemIdList() {
 		return this.items.stream().map(x -> x.definitionId()).collect(Collectors.toList());
 	}
+
 }

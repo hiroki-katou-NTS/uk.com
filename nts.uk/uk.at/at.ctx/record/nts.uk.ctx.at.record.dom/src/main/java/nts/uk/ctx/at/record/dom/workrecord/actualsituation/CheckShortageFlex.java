@@ -65,36 +65,40 @@ public class CheckShortageFlex {
 	@Inject
 	private ClosureService closureService;
 	
-	public boolean checkShortageFlex(String employeeId, GeneralDate date){
+	public CheckShortage checkShortageFlex(String employeeId, GeneralDate date){
 
+		CheckShortage resultCheck = CheckShortage.defaultShortage(false);
 		// TODO 社員に対応する処理締めを取得する
 		DatePeriod datePeriod = findClosurePeriod(employeeId, date);
+		if(datePeriod == null) return resultCheck;
 		// パラメータ「基準日」がパラメータ「当月の期間」に含まれているかチェックする
 		if (date.before(datePeriod.start()) || date.after(datePeriod.end()))
-			return false;
+			return resultCheck;
 		List<AffCompanyHistImport> affCompanyHis = syCompanyRecordAdapter
 				.getAffCompanyHistByEmployee(Arrays.asList(employeeId), datePeriod);
 		if (!affCompanyHis.isEmpty()) {
 			for (AffComHistItemImport his : affCompanyHis.get(0).getLstAffComHistItem()) {
 				DatePeriod datePeriodHis = his.getDatePeriod();
 				GeneralDate endDate = datePeriodHis.end();
+				//「所属会社履歴項目．退職日」がパラメータ「当月の期間」に含まれているかチェックする
 				if (endDate != null
 						&& (endDate.afterOrEquals(datePeriod.start()) && endDate.beforeOrEquals(datePeriod.end()))) {
 					datePeriod = new DatePeriod(datePeriod.start(), endDate);
+					resultCheck.createRetiredFlag(true);
 				}
 			}
 		}
 		// TODO 対象期間の日の承認が済んでいるかチェックする
-		Optional<ApprovalDayComplete> approvalOpt = checkApprovalDayComplete.checkApprovalDayComplete(employeeId, date);
+		Optional<ApprovalDayComplete> approvalOpt = checkApprovalDayComplete.checkApprovalDayComplete(employeeId, datePeriod);
 		if (approvalOpt.isPresent() && !approvalOpt.get().isApproved()) {
 			/// TODO 対象日の本人確認が済んでいるかチェックする
-			return checkIndentityDayConfirm.checkIndentityDay(employeeId, approvalOpt.get().getDate());
+			return resultCheck.createCheckShortage(checkIndentityDayConfirm.checkIndentityDay(employeeId, approvalOpt.get().getDate()));
 		}
 		// TODO 対象月の承認が済んでいるかチェックする
 		boolean checkMonth = checkApprovalTargetMonth.checkApprovalTargetMonth(employeeId, date);
 		if (checkMonth)
-			return true;
-		return checkIndentityMonthConfirm.checkIndentityMonth(employeeId, date);
+			return resultCheck.createCheckShortage(true);
+		return resultCheck.createCheckShortage(checkIndentityMonthConfirm.checkIndentityMonth(employeeId, date));
 	}
 	
 	/**
@@ -107,6 +111,9 @@ public class CheckShortageFlex {
 	public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
 		// 社員に対応する処理締めを取得する.
 		Optional<Closure> closure = this.findClosureByEmployee(employeeId, baseDate);
+		if(!closure.isPresent()) {
+			return null;
+		}
 		CurrentMonth currentMonth = closure.get().getClosureMonth();
 		
 		// 当月の期間を算出する.
@@ -135,7 +142,7 @@ public class CheckShortageFlex {
 		// Find closure employment by emp code.
 		Optional<ClosureEmployment> closureEmpOpt = this.closureEmploymentRepository
 				.findByEmploymentCD(companyId, empHistOpt.get().getEmploymentCode());
-		
+		if(!closureEmpOpt.isPresent()) return Optional.empty();
 		// Find closure.
 		return this.closureRepository.findById(companyId, closureEmpOpt.get().getClosureId());
 	}

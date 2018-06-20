@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.dom.mail;
 
 import java.util.List;
 
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+
 /**
  * @author hiep.ld
  *
@@ -18,7 +20,9 @@ public interface CheckTransmission {
 	 * @param mailTitle
 	 * @param mailBody
 	 * @param fileId
+	 * @param appDate
 	 * @return sendMailResult
 	 */
-	public List<Integer> doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList, String mailTitle, String mailBody, List<String> fileId);
+	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList, 
+			String mailTitle, String mailBody, List<String> fileId, String appDate);
 }

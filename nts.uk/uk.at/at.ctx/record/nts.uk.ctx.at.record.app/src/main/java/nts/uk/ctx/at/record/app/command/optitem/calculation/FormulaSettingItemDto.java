@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.app.command.optitem.calculation;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -61,8 +62,8 @@ public class FormulaSettingItemDto implements FormulaSettingItemGetMemento {
 	 * @return the input value
 	 */
 	@Override
-	public InputValue getInputValue() {
-		return new InputValue(this.inputValue);
+	public Optional<InputValue> getInputValue() {
+		return Optional.of(new InputValue(this.inputValue));
 	}
 
 	/**
@@ -71,8 +72,8 @@ public class FormulaSettingItemDto implements FormulaSettingItemGetMemento {
 	 * @return the formula id
 	 */
 	@Override
-	public FormulaId getFormulaId() {
-		return new FormulaId(this.formulaItemId);
+	public Optional<FormulaId> getFormulaId() {
+		return Optional.of(new FormulaId(this.formulaItemId));
 	}
 
 }

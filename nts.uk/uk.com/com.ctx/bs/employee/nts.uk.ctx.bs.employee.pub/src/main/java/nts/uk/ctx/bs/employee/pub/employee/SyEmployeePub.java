@@ -108,5 +108,13 @@ public interface SyEmployeePub {
 	// RequestList52
 	List<EmpOfLoginCompanyExport> getListEmpOfLoginCompany(String cid);
 	
+	/**
+	 * Find by emp id.
+	 *
+	 * @param sId the emp id
+	 * @return the employee export
+	 */
+	// RequestList377
+	EmployeeBasicExport getEmpBasicBySId(String sId);
 	
 }

@@ -1,5 +1,10 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.temporaryabsence;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -15,6 +20,14 @@ public interface TempAbsItemRepository {
 	 */
 	Optional<TempAbsenceHisItem> getItemByHitoryID(String historyId);
 	
+	
+	/**
+	 * get by a list of history id
+	 * @param historyIds
+	 * @return
+	 */
+	List<TempAbsenceHisItem> getItemByHitoryIdList(List<String> historyIds);
+	
 	/**
 	 * get with employeeId and standardDate
 	 * @param employeeId
@@ -22,6 +35,15 @@ public interface TempAbsItemRepository {
 	 * @return
 	 */
 	Optional<TempAbsenceHisItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
+	
+	/**
+	 * Gets the by emp ids and standard date.
+	 *
+	 * @param employeeIds the employee ids
+	 * @param standardDate the standard date
+	 * @return the by emp ids and standard date
+	 */
+	List<TempAbsenceHisItem> getByEmpIdsAndStandardDate(List<String> employeeIds, GeneralDate standardDate);
 
 	// ------------------------------ COMMAND HISTORY ITEM
 	/**

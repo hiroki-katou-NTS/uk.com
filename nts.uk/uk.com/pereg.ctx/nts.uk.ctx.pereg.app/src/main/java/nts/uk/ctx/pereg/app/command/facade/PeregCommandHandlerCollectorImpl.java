@@ -17,76 +17,79 @@ import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.DeleteBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.annualeave.DeleteAnnuaLeaveCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.annualeave.UpdateAnnuaLeaveCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave10informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave11informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave12informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave13informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave14informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave15informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave16informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave17informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave18informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave19informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave1informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave20informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave2informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave3informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave4informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave5informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave6informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave7informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave8informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave9informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave10informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave11informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave12informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave13informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave14informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave15informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave16informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave17informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave18informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave19informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave1informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave20informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave2informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave3informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave4informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave5informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave6informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave7informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave8informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave9informationCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave.AddCareLeaveCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave.UpdateCareLeaveCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.AddOtherHolidayInfoCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.DeleteOtherHolidayInfoCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.UpdateOtherHolidayInfoCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant10Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant11Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant12Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant13Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant14Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant15Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant16Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant17Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant18Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant19Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant1Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant20Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant2Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant3Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant4Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant5Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant6Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant7Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant8Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant9Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainPeregCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.DeleteAnnuaLeaveCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.UpdateAnnuaLeaveCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave10informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave11informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave12informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave13informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave14informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave15informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave16informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave17informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave18informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave19informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave1informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave20informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave2informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave3informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave4informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave5informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave6informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave7informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave8informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.add.AddSpecialleave9informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave10informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave11informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave12informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave13informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave14informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave15informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave16informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave17informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave18informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave19informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave1informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave20informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave2informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave3informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave4informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave5informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave6informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave7informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave8informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave9informationCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.nursingcareleave.AddCareLeaveCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.nursingcareleave.UpdateCareLeaveCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.otherhdinfo.AddOtherHolidayInfoCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.otherhdinfo.DeleteOtherHolidayInfoCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.otherhdinfo.UpdateOtherHolidayInfoCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainPeregCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant10Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant11Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant12Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant13Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant14Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant15Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant16Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant17Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant18Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant19Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant1Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant20Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant2Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant3Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant4Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant5Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant6Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant7Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant8Command;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant9Command;
+import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCommand;
+import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.delete.DeleteStampCardCommand;
+import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.DeleteShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
@@ -127,6 +130,7 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 @Stateless
 @SuppressWarnings("serial")
 public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerCollector {
+
 	/** Add handlers */
 	private static final List<TypeLiteral<?>> ADD_HANDLER_CLASSES = Arrays.asList(
 			//CS00001	社員データ管理
@@ -246,7 +250,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00067	特別休暇１９付与残数
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant19Command>>(){},
 			//CS00068	特別休暇２０付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant20Command>>(){}
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant20Command>>(){},
+			//CS00069 打刻カード番号
+			new TypeLiteral<PeregAddCommandHandler<AddStampCardCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -323,7 +329,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00057	特別休暇１９情報
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave19informationCommand>>(){},
 			//CS00058	特別休暇２０情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave20informationCommand>>(){}
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave20informationCommand>>(){},
+			//CS00069 打刻カード番号
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateStampCardCommand>>(){}
 			);
 	
 	
@@ -356,7 +364,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00024	年休情報
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAnnuaLeaveCommand>>(){},
 			//CS00035	その他休暇情報
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>(){}
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>(){},
+			//CS00069 打刻カード番号
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteStampCardCommand>>(){}
 			);
 	
 	@Override

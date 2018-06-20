@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
 
-import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -72,8 +72,8 @@ public interface TotalTimesSetMemento {
 	/**
 	 * Sets the summary list.
 	 *
-	 * @param setSummaryList the new summary list
+	 * @param summaryList the new summary list
 	 */
-	void  setTotalSubjects(List<TotalSubjects> summaryList);
+	void  setSummaryList(Optional<SummaryList> summaryList);
 
 }

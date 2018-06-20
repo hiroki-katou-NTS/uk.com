@@ -87,7 +87,7 @@ module cps008.b.vm {
                 return;
             }
 
-            setShared("CPS008B_VALUE", layout.itemsClassification);
+            setShared("CPS008B_VALUE", _.map(layout.itemsClassification, m => _.omit(m, ["items", "renders"])));
 
             close();
 

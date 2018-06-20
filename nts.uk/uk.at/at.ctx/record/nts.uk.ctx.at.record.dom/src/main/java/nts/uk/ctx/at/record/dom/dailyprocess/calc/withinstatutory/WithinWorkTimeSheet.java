@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
+import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -208,9 +209,62 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 coreTimeSetting,breakTimeList,workType,predetermineTimeForSet));
 		}
 		/*所定内割増時間の時間帯作成*/
-		//この処理にある「法定労働時間を取得」＝dailyUnitです
-		
+		//return predetermineWithinPremiumTime(dailyUnit.getDailyTime(),predetermineTimeForSet.getAdditionSet().getPredTime().getPredetermineWorkTime(),timeFrames);
 		return timeFrames;
+	}
+	
+	/**
+	 * 所定内割増時間の分割
+	 * @param timeFrames 
+	 * @param statutoryTime　法定労働時間
+	 * @param predTime　所定時間
+	 */
+	private static List<WithinWorkTimeFrame> predetermineWithinPremiumTime(TimeOfDay statutoryTime, int predTime, List<WithinWorkTimeFrame> timeFrames) {
+		AttendanceTime restPredeterminePremiumTime = calcPredeterminePremiumTime(predTime, statutoryTime);
+		List<WithinWorkTimeFrame> copyWithinWorkTime = timeFrames.stream().sorted((first,second) -> second.getTimeSheet().getStart().compareTo(first.getTimeSheet().getStart())).collect(Collectors.toList());
+		for(WithinWorkTimeFrame workTimeFrame : copyWithinWorkTime) {
+			if(restPredeterminePremiumTime.greaterThan(0)) {
+				AttendanceTime redeterminePremiumTime = (restPredeterminePremiumTime.greaterThan(new AttendanceTime(workTimeFrame.getTimeSheet().getTimeSpan().lengthAsMinutes())))
+														?new AttendanceTime(workTimeFrame.getTimeSheet().timeSpan().lengthAsMinutes())
+														:restPredeterminePremiumTime;
+				Optional<TimeSpanForCalc> timeSpan = workTimeFrame.createTimeSpan(workTimeFrame.getCalcrange(),new TimeWithDayAttr(redeterminePremiumTime.valueAsMinutes()));
+				if(!timeSpan.isPresent())
+					continue;
+				workTimeFrame.setPremiumTimeSheetInPredetermined(Optional.of(new WithinPremiumTimeSheetForCalc(timeSpan.get())));
+				
+				//ここ注意　minusMinutes(XXXX) XXXは作成した所定内割増時間分？それともredeterminePremiumTime？
+				restPredeterminePremiumTime = restPredeterminePremiumTime.minusMinutes(timeSpan.get().lengthAsMinutes());
+				
+			}
+			else {
+				break;
+			}
+		}
+		return copyWithinWorkTime;
+	}
+
+	/**
+	 * 所定内割増時間の計算
+	 * @param predetermineTimeSet 計算用所定時 
+	 * @param statutoryTime 法定労働時間
+	 */
+	public static AttendanceTime calcPredeterminePremiumTime(int predTime,TimeOfDay statutoryTime) {
+		if(predTime > statutoryTime.valueAsMinutes()) {
+			return decisionPredeterminePremiumTime(predTime,statutoryTime);
+		}
+		else {
+			return new AttendanceTime(0);
+		}
+	}
+	
+	/**
+	 * 所定内割増時間を計算
+	 * @param predetermineTime　計算用所定時間
+	 * @param statutoryTime 法定労働時間
+	 * @return 所定内割増時間
+	 */
+	public static AttendanceTime decisionPredeterminePremiumTime(int predTime,TimeOfDay statutoryTime) {
+		return new AttendanceTime(predTime - statutoryTime.valueAsMinutes());
 	}
 	
 	/***
@@ -781,7 +835,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 法定内深夜時間の計算
 	 * @return　法定内深夜時間
 	 */
-	public AttendanceTime calcMidNightTime(AutoCalAtrOvertime autoCalcSet) {
+	public AttendanceTime calcMidNightTime() {
 		int totalMidNightTime = 0;
 		int totalDedTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()

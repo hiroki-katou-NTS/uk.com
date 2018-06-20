@@ -15,10 +15,10 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

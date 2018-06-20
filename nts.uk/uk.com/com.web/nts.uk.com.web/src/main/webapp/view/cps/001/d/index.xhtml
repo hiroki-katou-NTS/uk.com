@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 620,
-					height : 800
+					height : 840
 				};
 			</script>
 			<com:scriptfile path="/lib/generic/cropper/cropper.js"
@@ -31,7 +31,8 @@
 					data-bind="ntsImageEditor: { editable: true, 
 												 width:600, 
 												 height: 600, 
-												 freeResize: false, 
+												 freeResize: false,
+												 resizeRatio: 0.75, 
 												 accept: ['.png','.jpg','.jpeg', '.bmp','.gif'] }"></div>
 			</div>
 			<div id="functions-area-bottom">

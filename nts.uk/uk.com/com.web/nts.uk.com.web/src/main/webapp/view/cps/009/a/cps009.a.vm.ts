@@ -106,6 +106,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
             if (currentCtg === undefined) { return; }
             self.currentCategory().itemList.removeAll();
+            block.invisible()
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
@@ -151,16 +152,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         });
 
                     });
-
-                    self.currentCategory().itemList.removeAll();
-                    self.currentCategory().itemList(itemConvert);
-                    self.lstItemFilter = itemConvert;
+                    _.defer(() => {
+                        self.currentCategory().itemList.removeAll();
+                        self.currentCategory().itemList(itemConvert);
+                        self.lstItemFilter = itemConvert;
+                        _.defer(() => {
+                            $('#ctgName').focus();
+                        });
+                    });
                 } else {
-                    self.currentCategory().itemList.removeAll();
-                    self.currentCategory().itemList([]);
-
+                    _.defer(() => {
+                        self.currentCategory().itemList.removeAll();
+                        self.currentCategory().itemList([]);
+                        _.defer(() => {
+                            $('#ctgName').focus();
+                        });
+                    });
                 }
-            })
+            }).always(() => { block.clear() });
         }
 
         start(id: string): JQueryPromise<any> {
@@ -402,16 +411,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         };
                     })
                 },
-                dateInputList = $(".table-container").find('tbody').find('tr').find('#date'),
-                dateInputListOfYear = $(".table-container").find('tbody').find('tr').find('#datey'),
+                dateInputList = $('tr').find('#date'),
+                dateInputListOfYear = $('tr').find('#datey'),
                 itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item: PerInfoInitValueSettingItemDto) {
                     return item.dataType === 3 && item.selectedRuleCode === 2;
                 });
             if (dateInputList.length > 0 || dateInputListOfYear.length > 0) {
                 let i: number = 0;
                 _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
-                    let $input1 = $(".table-container").find('tbody').find('tr').find('#date')[i],
-                        $input2 = $(".table-container").find('tbody').find('tr').find('#datey')[i];
+                    let $input1 = dateInputList[i],
+                        $input2 = dateInputListOfYear[i];
                     if ($input1 != undefined) {
                         $input1.setAttribute("nameid", item.itemName);
                     }
@@ -547,6 +556,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if ((Browser.indexOf('MSIE ') > 0) || !!Browser.match(/Trident.*rv\:11\./)) {
                 $("#sub-right>table>tbody").css("height", "495px");
             }
+        }
+
+        checkError(itemList: Array<any>) {
+
         }
 
     }
@@ -853,7 +866,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.saveDataType = ko.observable(params.saveDataType || 0);
             self.stringValue = ko.observable(params.stringValue || null);
-           
+
             self.intValue = ko.observable(params.intValue);
             self.dateWithDay = ko.observable(params.dateWithDay);
             self.timePoint = ko.observable(params.timePoint || "");
@@ -915,22 +928,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable((params.stringValue == null?  params.selectionItemId: params.stringValue)|| undefined);
+
+
+                self.selectedCode = ko.observable((params.stringValue == null ? (params.selection.length > 0 ? params.selection[0].optionValue : undefined) : params.stringValue) || undefined);
 
             }
 
             if (params.dataType === 8) {
-                if (params.stringValue !== undefined) {
-                    let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.stringValue) { return c } });
-                    self.selectionName = ko.observable((objSel == undefined ? (params.stringValue == null ? params.selectionItemId: params.stringValue) + " " + text("CPS001_107") : objSel.optionText) || (params.stringValue == null ? params.selectionItemId: params.stringValue) + " " + text("CPS001_107"));
-                    console.log(self.selectionName());
-                } else {
-                    let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.selectionItemId) { return c } });
-                    self.selectionName = ko.observable((objSel == undefined ? params.selectionItemId + " " + text("CPS001_107") : objSel.optionText) || params.selectionItemId + " " + text("CPS001_107"));
-                    console.log(self.selectionName());
-                }
+                let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
+                self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
             }
-
 
             self.dateType = params.dateType || undefined;
 
@@ -953,7 +960,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || "1");
+                self.selectedCode = ko.observable(params.stringValue || "0");
             }
 
 
@@ -1240,43 +1247,49 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 isSelfWorkTime: boolean = isSelfItemWorkTime !== undefined ? true : false,
                 itemWorkTime: any = _.find(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(obj) { if (isSelfWorkType) { if (obj.itemCode === isSelfItemWorkType.workTime) { return obj; } } }),
                 itemWorkType: any = _.find(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(obj) { if (isSelfWorkTime) { if (obj.itemCode === isSelfItemWorkTime.workType) { return obj; } } });
-            if (isKdl002) {
-                setShared("KDL002_Multiple", false, true);
-                setShared("KDL002_SelectedItemId", self.selectedCode(), true);
-                setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
+            if (self.ctgCode() == "CS00020") {
 
-                modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
-                    let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+                if (isKdl002) {
+                    setShared("KDL002_Multiple", false, true);
+                    setShared("KDL002_SelectedItemId", self.selectedCode(), true);
+                    setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
 
-                    if (childData[0]) {
-                        self.selectionName(childData[0].code + " " + childData[0].name);
-                        self.selectedCode(childData[0].code);
-                    }
-                });
-            } else {
-                let objShare: any = {};
-                if (isSelfWorkType) {
-                    objShare = {
-                        workTypeCodes: isSelfItemWorkType && _.map(self.selection(), x => x.optionValue),
-                        selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
-                        workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
-                        selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
-                    };
+                    modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                        let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                        if (childData[0]) {
+                            self.selectionName(childData[0].code + " " + childData[0].name);
+                            self.selectedCode(childData[0].code);
+                        }
+                    });
                 } else {
-                    objShare = {
-                        workTypeCodes: _.map(itemWorkType != undefined ? itemWorkType.selection : [], x => x.optionValue),
-                        selectedWorkTypeCode: ko.toJS(itemWorkType.selectedCode),
-                        workTimeCodes: isSelfItemWorkTime && _.map(self.selection(), x => x.optionValue),
-                        selectedWorkTimeCode: self.selectedCode() && ko.toJS(self.selectedCode)
-                    };
+                    let objShare: any = {};
+                    if (isSelfWorkType) {
+                        objShare = {
+                            workTypeCodes: isSelfItemWorkType && _.map(self.selection(), x => x.optionValue),
+                            selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
+                            workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
+                            selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
+                        };
+                    } else {
+                        objShare = {
+                            workTypeCodes: _.map(itemWorkType != undefined ? itemWorkType.selection : [], x => x.optionValue),
+                            selectedWorkTypeCode: ko.toJS(itemWorkType.selectedCode),
+                            workTimeCodes: isSelfItemWorkTime && _.map(self.selection(), x => x.optionValue),
+                            selectedWorkTimeCode: self.selectedCode() && ko.toJS(self.selectedCode)
+                        };
+                    }
+
+                    setShared('parentCodes', objShare, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        let childData: IChildData = getShared('childData');
+                        self.setValueOfCS00020(childData, isSelfWorkType, isSelfWorkTime, isSelfItemWorkType, isSelfItemWorkTime, itemWorkTime, itemWorkType);
+                    });
                 }
-
-                setShared('parentCodes', objShare, true);
-
-                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                    let childData: IChildData = getShared('childData');
-                    self.setValueOfCS00020(childData, isSelfWorkType, isSelfWorkTime, isSelfItemWorkType, isSelfItemWorkTime, itemWorkTime, itemWorkType);
-                });
+            }
+            if (self.ctgCode() == "CS00017") {
+                self.clickButtonCS0017();
             }
         }
 
@@ -1326,6 +1339,32 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 i = i + 3;
             }
 
+        }
+
+        clickButtonCS0017() {
+            let self = this;
+            setShared('inputCDL008', {
+                selectedCodes: [self.selectedCode()],
+                baseDate: moment.utc(new Date()).toDate(),
+                isMultiple: false,
+                selectedSystemType: 5,
+                isrestrictionOfReferenceRange: false
+            }, true);
+
+            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                // Check is cancel.
+                if (getShared('CDL008Cancel')) {
+                    return;
+                }
+
+                //view all code of selected item 
+                let output = getShared('outputCDL008');
+                if (output) {
+                    let objSel: any = _.find(self.selection(), function(c) { if (c.optionValue == output) { return c; } });
+                    self.selectionName(objSel == undefined ? " " : objSel.optionText);
+                    self.selectedCode(output);
+                }
+            });
         }
 
     }

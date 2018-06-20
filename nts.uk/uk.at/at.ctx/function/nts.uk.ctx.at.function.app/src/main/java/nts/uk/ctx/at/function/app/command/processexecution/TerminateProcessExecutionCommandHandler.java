@@ -5,12 +5,16 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.AsyncTaskService;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
@@ -24,29 +28,36 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalSumRepo;
 	
-	/**
-	 * 終了処理を実行する
-	 * 
-	 * @param execType
-	 * @param execItemCd
-	 * @param companyId
-	 */
+	@Inject
+	private ProcessExecutionLogManageRepository processExecLogManRepo;
+	@Inject
+	private AsyncTaskService service;
+
+	//終了ボタン押下時処理
 	@Override
-	protected void handle(CommandHandlerContext<TerminateProcessExecutionCommand> context) {
+	public void handle(CommandHandlerContext<TerminateProcessExecutionCommand> context) {
+		val asyncContext = context.asAsync();
+		val dataSetter = asyncContext.getDataSetter();
 		TerminateProcessExecutionCommand command = context.getCommand();
 		String execItemCd = command.getExecItemCd();
 		String companyId = command.getCompanyId();
-		String execId = command.getExecId();
-		// ドメインモデル「更新処理自動実行ログ」を取得する
-		ProcessExecutionLog procExecLog = null;
-		Optional<ProcessExecutionLog> procExecLogOpt =
-							this.procExecLogRepo.getLogByCIdAndExecCd(companyId, execItemCd, execId);
-		if (!procExecLogOpt.isPresent()) {
+		String taskTerminate = command.getTaskTerminate();
+		//ドメインモデル「更新処理自動実行管理」を取得する
+		Optional<ProcessExecutionLogManage> processExecLogManOpt = this.processExecLogManRepo.getLogByCIdAndExecCd(companyId, execItemCd);
+		if(!processExecLogManOpt.isPresent()){
 			return;
 		}
-		procExecLog = procExecLogOpt.get();
+		ProcessExecutionLogManage processExecLogMan =processExecLogManOpt.get();
+		
+		//「待機中」 or 「無効」の場合
+		if(processExecLogMan.getCurrentStatus().value==1 || processExecLogMan.getCurrentStatus().value==2){
+			dataSetter.setData("currentStatusIsOneOrTwo", "Msg_1102");
+			return;
+		}
+		
+		
 		/*
-		 * ドメインモデル「更新処理自動実行ログ」を取得する
+		 * ドメインモデル「更新処理自動実行管理」を更新する
 		 * 
 		 * 【終了タイプ　＝　1（F画面終了ボタン）の場合】
 		 * 全体の終了状態　＝　強制終了
@@ -57,30 +68,83 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		 */	
 		int execType = command.getExecType();
 		if (execType == 1) {
-			procExecLog.setOverallStatus(EndStatus.FORCE_END);
+			processExecLogMan.setOverallStatus(EndStatus.FORCE_END);
 		} else if (execType == 0) {
-			procExecLog.setOverallStatus(EndStatus.ABNORMAL_END);
-			procExecLog.setOverallError(OverallErrorDetail.EXCEED_TIME);
+			processExecLogMan.setOverallStatus(EndStatus.ABNORMAL_END);
+			processExecLogMan.setOverallError(OverallErrorDetail.EXCEED_TIME);
 		}
-		this.procExecLogRepo.update(procExecLog);
+		this.processExecLogManRepo.update(processExecLogMan);
 		
-		/*
-		 * 日別作成の処理が完了しているか確認する
-		 */
-		procExecLog.getTaskLogList().forEach(task ->{
-			if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CREATION.value) {
-				if (task.getStatus() == null) {
-					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
+		// ドメインモデル「更新処理自動実行ログ」を取得する
+				ProcessExecutionLog procExecLog = null;
+				Optional<ProcessExecutionLog> procExecLogOpt =
+									this.procExecLogRepo.getLog(companyId, execItemCd);
+				if (!procExecLogOpt.isPresent()) {
 					return;
 				}
-			} else if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CALCULATION.value) {
-				if (task.getStatus() == null) {
+				procExecLog = procExecLogOpt.get();
+				String execId = procExecLog.getExecId();
+		
+		
+		//スケジュールの作成の処理が完了しているか確認する
+		//TODO NO3  fixed da tao schedule
+		/*
+		if(execType == 1){ // dung cho NO3 o tren
+			dataSetter.setData("interupt", "true");
+		}
+		*/
+		procExecLog.getTaskLogList().forEach(task ->{
+			if (task.getProcExecTask().value == ProcessExecutionTask.SCH_CREATION.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null&& !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);	
+					}
 					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
 					return;
 				}
 			}
+			 //日別作成の処理が完了しているか確認する
+				else if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CREATION.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null&& !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);	
+					}
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
+					return;
+				}
+			//日別計算の処理が完了しているか確認する	
+			} else if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CALCULATION.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null&& !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);
+						}
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
+					return;
+				}
+			//承認結果反映の処理が完了しているか確認する	
+			} else if (task.getProcExecTask().value == ProcessExecutionTask.RFL_APR_RESULT.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null&& !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);
+						}
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
+					return;
+				}
+			//月別集計の処理が完了しているか確認する	
+			} else if (task.getProcExecTask().value == ProcessExecutionTask.MONTHLY_AGGR.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null && !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);
+					}
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
+					return;
+				}
+			} else{
+				if(execType == 1){ 
+					dataSetter.setData("interupt", "true");
+				}
+			} 
 		});
-		
 		/*
 		 * ドメインモデル「就業計算と集計実行ログ」を更新する
 		 * 
@@ -99,6 +163,7 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 	 * @param execId
 	 * @param status
 	 */
+	//日別作成を中断する
 	private void interupt(String execId, int status) {
 		/* ドメインモデル「就業計算と集計実行ログ」を更新する
 		 * 

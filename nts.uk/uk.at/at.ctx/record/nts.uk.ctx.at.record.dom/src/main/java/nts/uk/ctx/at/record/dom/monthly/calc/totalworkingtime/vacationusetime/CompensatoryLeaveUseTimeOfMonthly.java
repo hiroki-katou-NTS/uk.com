@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class CompensatoryLeaveUseTimeOfMonthly {
+public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable {
 	
 	/** 使用時間 */
 	private AttendanceTimeMonth useTime;
@@ -45,20 +45,18 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 		return domain;
 	}
 	
-	/**
-	 * 複写
-	 * @param useTime 使用時間
-	 * @param timeSeriesWorks 時系列ワーク
-	 * @return 月別実績の代休使用時間
-	 */
-	public static CompensatoryLeaveUseTimeOfMonthly copyFrom(
-			AttendanceTimeMonth useTime,
-			Map<GeneralDate, CompensatoryLeaveUseTimeOfTimeSeries> timeSeriesWorks){
-		
-		val domain = new CompensatoryLeaveUseTimeOfMonthly();
-		domain.useTime = new AttendanceTimeMonth(useTime.valueAsMinutes());
-		domain.timeSeriesWorks = timeSeriesWorks;
-		return domain;
+	@Override
+	public CompensatoryLeaveUseTimeOfMonthly clone() {
+		CompensatoryLeaveUseTimeOfMonthly cloned = new CompensatoryLeaveUseTimeOfMonthly();
+		try {
+			cloned.useTime = new AttendanceTimeMonth(this.useTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("CompensatoryLeaveUseTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
@@ -99,7 +97,7 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			this.useTime.addMinutes(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
+			this.addMinuteToUseTime(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
 		}
 	}
 	
@@ -114,7 +112,7 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			returnTime.addMinutes(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
+			returnTime = returnTime.addMinutes(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
 		}
 		return returnTime;
 	}

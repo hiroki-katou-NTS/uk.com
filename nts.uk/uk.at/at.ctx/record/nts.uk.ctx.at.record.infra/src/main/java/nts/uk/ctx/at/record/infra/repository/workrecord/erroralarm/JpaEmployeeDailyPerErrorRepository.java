@@ -2,12 +2,17 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
@@ -27,6 +32,8 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	private static final String REMOVE_DATA_ATTENDANCE_ITEM;
 	
 	private static final String CHECK_EXIST_CODE_BY_LIST_DATE;
+	
+	private static final String CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -75,6 +82,13 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("AND a.companyID = :companyID ");
 		builderString.append("AND a.processingDate IN :processingDates ");
 		CHECK_EXIST_CODE_BY_LIST_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.processingDate = :processingDate ");
+		CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE = builderString.toString();
 
 	}
 
@@ -157,6 +171,24 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			commandProxy().removeAll(result);
 		}
 	}
+	
+	@Override
+	public void removeParam(Map<String, List<GeneralDate>> param) {
+		List<KrcdtSyainDpErList> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtSyainDpErList a");
+		query.append(" WHERE a.employeeId IN :employeeId");
+		query.append(" AND a.processingDate IN :date");
+		TypedQueryWrapper<KrcdtSyainDpErList> tQuery=  this.queryProxy().query(query.toString(), KrcdtSyainDpErList.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream().filter(c -> p.get(c.employeeId).contains(c.processingDate))
+					.collect(Collectors.toList()));
+		});
+		if(!result.isEmpty()){
+			commandProxy().removeAll(result);
+		}
+	}
 
 	@Override
 	public List<EmployeeDailyPerError> findList(String companyID, String employeeID) {
@@ -175,6 +207,30 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		return this.queryProxy().query(CHECK_EXIST_CODE_BY_LIST_DATE, long.class).setParameter("employeeId", employeeID)
 				.setParameter("companyID", companyID)
 				.setParameter("processingDates", lstDate).getSingle().get() > 0;
+	}
+
+	@Override
+	public boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate) {
+		return this.queryProxy().query(CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE, long.class).setParameter("employeeId", employeeID)
+				.setParameter("processingDate", processingDate).getSingle().get() > 0;
+	}
+
+	@Override
+	public boolean checkExistErrorByDate(String companyId, String employeeId, GeneralDate date) {
+		/*StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.companyID = :companyId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :date ");
+		Optional<KrcdtSyainDpErList> entyti = this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("date", date).getSingle();
+		
+		return entyti.isPresent()?true:false;
+		*/
+		return false;
 	}
 	
 

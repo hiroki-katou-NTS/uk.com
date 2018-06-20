@@ -81,14 +81,14 @@ module cps002.g.vm {
         recentRegistrationType: KnockoutObservable<number> = ko.observable(1);
         employeeCodeType: KnockoutObservable<number> = ko.observable(2);
         employeeCodeLetter: KnockoutObservable<string> = ko.observable("");
-        cardNumberType: KnockoutObservable<number> = ko.observable(3);
+        cardNumberType: KnockoutObservable<number> = ko.observable(5);
         cardNumberLetter: KnockoutObservable<string> = ko.observable("");
         constructor(param?: IUserSetting) {
             if (param) {
                 this.recentRegistrationType(param.recentRegistrationType);
                 this.employeeCodeType(param.employeeCodeType);
                 this.employeeCodeLetter(param.employeeCodeLetter);
-                this.cardNumberType(param.cardNumberType);
+                this.cardNumberType(5);
                 this.cardNumberLetter(param.cardNumberLetter);
             }
         }

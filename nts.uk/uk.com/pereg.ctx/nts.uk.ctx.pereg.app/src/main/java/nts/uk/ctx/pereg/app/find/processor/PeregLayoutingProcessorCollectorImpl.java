@@ -12,49 +12,50 @@ import javax.enterprise.util.TypeLiteral;
 import find.person.contact.PersonContactDto;
 import find.person.info.PersonDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annualleave.AnnualLeaveDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave10informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave11informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave12informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave13informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave14informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave15informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave16informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave17informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave18informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave19informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave1InformationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave20informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave2informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave3informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave4informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave5informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave6informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave7informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave8informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave9informationDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.nursingcareleave.info.CareLeaveInfoDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto1;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto10;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto11;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto12;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto13;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto14;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto15;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto16;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto17;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto18;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto19;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto2;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto20;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto3;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto4;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto5;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto6;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto7;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto8;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto9;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.AnnualLeaveDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave10informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave11informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave12informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave13informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave14informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave15informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave16informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave17informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave18informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave19informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave1InformationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave20informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave2informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave3informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave4informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave5informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave6informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave7informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave8informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave9informationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.nursingcareleave.info.CareLeaveInfoDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto1;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto10;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto11;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto12;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto13;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto14;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto15;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto16;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto17;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto18;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto19;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto2;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto20;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto3;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto4;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto5;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto6;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto7;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto8;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto9;
+import nts.uk.ctx.at.record.app.find.stamp.card.stampcard.PeregStampCardDto;
 import nts.uk.ctx.at.shared.app.find.shortworktime.ShortWorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
@@ -71,6 +72,7 @@ import nts.uk.shr.pereg.app.find.PeregFinder;
 @Stateless
 @SuppressWarnings("serial")
 public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcessorCollector {
+
 
 	/** ctg single finder */
 	private static final List<TypeLiteral<?>> FINDER_CTG_SINGLE_HANDLER_CLASSES = Arrays.asList(
@@ -187,8 +189,9 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00067  特別休暇19付与残数
 			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto19>>(){},
 			// CS00068  特別休暇20付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto20>>(){}
-			
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto20>>(){},
+			// CS00069 打刻カード番号
+			new TypeLiteral<PeregFinder<PeregStampCardDto>>(){}
 			);
 
 	@Override

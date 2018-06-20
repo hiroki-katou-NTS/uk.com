@@ -20,13 +20,10 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
@@ -48,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -66,7 +64,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class PrevisionalCalculationServiceImpl implements ProvisionalCalculationService {
 
 	@Inject
-	private CalculateDailyRecordService calculateDailyRecordService;
+	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
 
 	@Inject
 	private WorkInformationRepository workInformationRepository;
@@ -104,9 +102,11 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// 控除置き換え
 		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord.get(), breakTimeSheets,
 				outingTimeSheets, shortWorkingTimeSheets, employeeId, targetDate);
+		List<IntegrationOfDaily> integraionList = new ArrayList<>();
+		integraionList.add(provisionalDailyRecord);
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		val test = calculateDailyRecordService.calculate(provisionalDailyRecord);
-		return Optional.of(test);
+		val test = calculateDailyRecordServiceCenter.calculate(integraionList);
+		return test.stream().findFirst();
 
 	}
 
@@ -165,7 +165,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 						new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS),
 						new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS),
 						new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS)),
-				new AutoCalOfLeaveEarlySetting(LeaveAttr.USE, LeaveAttr.USE),
+				new AutoCalcOfLeaveEarlySetting(true, true),
 				new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
 		// 日別実績の所属情報作成
 		// 日別作成側にある日別実績の所属情報を作成している所を呼び出す
@@ -191,10 +191,10 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// return new IntegrationOfDaily(workInformation, timeAttendance,
 		// attendanceTime.get());
 		return Optional.of(new IntegrationOfDaily(workInformation, calAttrOfDailyPerformance,
-				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Collections.emptyList(),
-				goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), Optional.of(timeAttendance),
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList(),
-				Optional.empty()));
+				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Optional.empty(), 
+				Collections.emptyList(), goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), 
+				Optional.of(timeAttendance), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
+				Collections.emptyList(), Optional.empty()));
 	}
 
 	private IntegrationOfDaily replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord,

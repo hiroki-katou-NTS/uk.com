@@ -21,6 +21,7 @@ module nts.uk.at.view.kbt002.c {
 //            repeatContentItemList : KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
 //            
             settingChoice: KnockoutObservableArray<any>;
+            lstOneDayRepInterval: KnockoutObservableArray<ItemModel>;
             
             // Screen mode
             isNewMode: KnockoutObservable<boolean> = ko.observable(false);
@@ -35,6 +36,17 @@ module nts.uk.at.view.kbt002.c {
                     { id: 1, name: nts.uk.resource.getText('KBT002_138') },
                     { id: 0, name: nts.uk.resource.getText('KBT002_139') }
                 ]);
+                
+                self.lstOneDayRepInterval = ko.observableArray([
+                new ItemModel(0, "1分"),
+                new ItemModel(1,"5分"),
+                new ItemModel(2, "10分"),
+                new ItemModel(3,"15分"),
+                new ItemModel(4,"20分"),
+                new ItemModel(5,"30分"),
+                new ItemModel(6,"60分")
+             ]);
+
                 
                 
             }
@@ -110,6 +122,10 @@ module nts.uk.at.view.kbt002.c {
                 if (self.validate()) {
                     return;
                 }
+                if(self.curExecSetting().repeatContent()==2 &&( self.monthDays() == '' || nts.uk.util.isNullOrUndefined(self.monthDays()))){
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_846" });
+                    return;
+                }
                 nts.uk.ui.block.grayout();
                 
                 if (!self.isNewMode()) {
@@ -163,8 +179,8 @@ module nts.uk.at.view.kbt002.c {
                           { repeatMonthDateList: self.curExecSetting().repeatMonthDateList()
                           });
                 modal("/view/kbt/002/d/index.xhtml").onClosed(function(){
-                    var sharedData = getShared('outputDialogD');
-                    self.curExecSetting().repeatMonthDateList(sharedData.selectedDays);
+                    var sharedDataD = getShared('outputDialogD');
+                    self.curExecSetting().repeatMonthDateList(sharedDataD.selectedDays);
                     
                     self.monthDays(self.buildMonthDaysStr());
                     block.clear();
@@ -181,7 +197,7 @@ module nts.uk.at.view.kbt002.c {
                     } else {
                         monthDaysText += value;
                     }
-                    monthDaysText += '目';
+                    monthDaysText += '日';
                     if (index < listSize - 1) {
                         monthDaysText += " + "
                     }
@@ -212,8 +228,6 @@ module nts.uk.at.view.kbt002.c {
                 command.endDateCls = self.curExecSetting().endDateCls();
                 command.endDate = self.curExecSetting().endDateCls() == 1 ? self.curExecSetting().endDate() : null;
                 command.enabledSetting = self.curExecSetting().enabledSetting();
-                command.repIntervalDay = self.curExecSetting().repIntervalDay();
-                command.repIntervalWeek = self.curExecSetting().repIntervalWeek();
                 command.monday = self.curExecSetting().monday();
                 command.tuesday = self.curExecSetting().tuesday();
                 command.wednesday = self.curExecSetting().wednesday();
@@ -254,13 +268,7 @@ module nts.uk.at.view.kbt002.c {
                     $("#oneDayTime").ntsEditor('validate');
                 }
                 
-                if (self.curExecSetting().repeatCls() == true && self.curExecSetting().repeatContent() == 0) {
-                    $("#repIntervalDay").ntsEditor('validate');
-                }
-                
-                if (self.curExecSetting().repeatCls() == true && self.curExecSetting().repeatContent() == 1) {
-                    $("#repIntervalWeek").ntsEditor('validate');
-                }
+               
                 return $('.nts-input').ntsError('hasError');
             }
             /**
@@ -288,8 +296,6 @@ module nts.uk.at.view.kbt002.c {
             endDate:             string;
             enabledSetting:      boolean;
 //            nextExecDateTime:    string;
-            repIntervalDay:      number;
-            repIntervalWeek:     number;
             monday:              boolean;
             tuesday:             boolean;
             wednesday:           boolean;
@@ -322,12 +328,10 @@ module nts.uk.at.view.kbt002.c {
             oneDayRepCls:        KnockoutObservable<number> = ko.observable(null);
             oneDayRepInterval:   KnockoutObservable<number> = ko.observable(null);
             repeatCls:           KnockoutObservable<boolean> = ko.observable(false);
-            repeatContent:       KnockoutObservable<number> = ko.observable(null);
+            repeatContent:       KnockoutObservable<number> = ko.observable(0);
             endDateCls:          KnockoutObservable<number> = ko.observable(null);
             endDate:             KnockoutObservable<string> = ko.observable('');
             enabledSetting:      KnockoutObservable<boolean> = ko.observable(false);
-            repIntervalDay:      KnockoutObservable<number> = ko.observable(null);;
-            repIntervalWeek:     KnockoutObservable<number> = ko.observable(null);;
             monday:              KnockoutObservable<boolean> = ko.observable(false);
             tuesday:             KnockoutObservable<boolean> = ko.observable(false);
             wednesday:           KnockoutObservable<boolean> = ko.observable(false);
@@ -368,14 +372,12 @@ module nts.uk.at.view.kbt002.c {
                             || curTime);
                     } 
                     self.oneDayRepCls(param.oneDayRepCls);
-                    self.oneDayRepInterval(param.oneDayRepInterval || 60);
+                    self.oneDayRepInterval(param.oneDayRepInterval || 0);
                     self.repeatCls(param.repeatCls || false);
-                    self.repeatContent(param.repeatContent);
+                    self.repeatContent(param.repeatContent || 0);
                     self.endDateCls(param.endDateCls);
                     self.endDate(param.endDate || curDate);
                     self.enabledSetting(param.enabledSetting || false);
-                    self.repIntervalDay(param.repIntervalDay);
-                    self.repIntervalWeek(param.repIntervalWeek);
                     self.monday(param.monday || false);
                     self.tuesday(param.tuesday || false);
                     self.wednesday(param.wednesday || false);
@@ -404,14 +406,12 @@ module nts.uk.at.view.kbt002.c {
                     self.endTimeCls(0);
                     self.endTime(curTime);
                     self.oneDayRepCls(0);
-                    self.oneDayRepInterval(60);
+                    self.oneDayRepInterval(0);
                     self.repeatCls(false);
                     self.repeatContent(0);
                     self.endDateCls(0);
                     self.endDate(curDate);
                     self.enabledSetting(false);
-                    self.repIntervalDay(null);
-                    self.repIntervalWeek(null);
                     self.monday(false);
                     self.tuesday(false);
                     self.wednesday(false);
@@ -433,7 +433,22 @@ module nts.uk.at.view.kbt002.c {
                     self.december(false);
                     self.repeatMonthDateList([]);
                 }
+            //fixed release 14/6
+            self.endTimeCls(0);
+            self.endDateCls(0);
+            self.oneDayRepInterval(0);
+            self.oneDayRepCls(0);
             }
         }
+        export class ItemModel {
+        code: number;
+        name: string;
+    
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+        }
+        
     }
 }

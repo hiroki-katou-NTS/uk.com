@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,37 +14,37 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の就業時間 */
-public class WorkingTimeOfMonthlyDto {
+public class WorkingTimeOfMonthlyDto implements ItemConst {
 
 	/** 就業時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "就業時間", layout = "A")
-	private Integer workTime;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = WORK_TIME, layout = LAYOUT_A)
+	private int workTime;
 
 	/** 所定内割増時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "所定内割増時間", layout = "B")
-	private Integer withinPrescribedPremiumTime;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = PREMIUM, layout = LAYOUT_B)
+	private int withinPrescribedPremiumTime;
 	
 	/** 実働就業時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "実働就業時間", layout = "C")
-	private Integer actualWorkTime;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = ACTUAL, layout = LAYOUT_C)
+	private int actualWorkTime;
 	
 	public static WorkingTimeOfMonthlyDto from(WorkTimeOfMonthly domain) {
 		WorkingTimeOfMonthlyDto dto = new WorkingTimeOfMonthlyDto();
 		if(domain != null) {
 			dto.setWithinPrescribedPremiumTime(domain.getWithinPrescribedPremiumTime() == null 
-					? null : domain.getWithinPrescribedPremiumTime().valueAsMinutes());
-			dto.setWorkTime(domain.getWorkTime() == null ? null : domain.getWorkTime().valueAsMinutes());
-			dto.setActualWorkTime(domain.getActualWorkTime() == null ? null : domain.getActualWorkTime().valueAsMinutes());
+					? 0 : domain.getWithinPrescribedPremiumTime().valueAsMinutes());
+			dto.setWorkTime(domain.getWorkTime() == null ? 0 : domain.getWorkTime().valueAsMinutes());
+			dto.setActualWorkTime(domain.getActualWorkTime() == null ? 0 : domain.getActualWorkTime().valueAsMinutes());
 		}
 		return dto;
 	}
 	
 	public WorkTimeOfMonthly toDomain() {
-		return WorkTimeOfMonthly.of(workTime == null ? null : new AttendanceTimeMonth(workTime),
-									withinPrescribedPremiumTime == null ? null : new AttendanceTimeMonth(withinPrescribedPremiumTime),
-									actualWorkTime == null ? null : new AttendanceTimeMonth(actualWorkTime));
+		return WorkTimeOfMonthly.of(new AttendanceTimeMonth(workTime),
+									new AttendanceTimeMonth(withinPrescribedPremiumTime),
+									new AttendanceTimeMonth(actualWorkTime));
 	}
 }

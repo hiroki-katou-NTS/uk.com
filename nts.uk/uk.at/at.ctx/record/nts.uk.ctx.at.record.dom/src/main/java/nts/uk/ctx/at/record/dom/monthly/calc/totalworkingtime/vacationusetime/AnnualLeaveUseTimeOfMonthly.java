@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AnnualLeaveUseTimeOfMonthly {
+public class AnnualLeaveUseTimeOfMonthly implements Cloneable {
 	
 	/** 使用時間 */
 	private AttendanceTimeMonth useTime;
@@ -45,20 +45,18 @@ public class AnnualLeaveUseTimeOfMonthly {
 		return domain;
 	}
 
-	/**
-	 * 複写
-	 * @param useTime 使用時間
-	 * @param timeSeriesWorks 時系列ワーク
-	 * @return 月別実績の年休使用時間
-	 */
-	public static AnnualLeaveUseTimeOfMonthly copyFrom(
-			AttendanceTimeMonth useTime,
-			Map<GeneralDate, AnnualLeaveUseTimeOfTimeSeries> timeSeriesWorks){
-		
-		val domain = new AnnualLeaveUseTimeOfMonthly();
-		domain.useTime = new AttendanceTimeMonth(useTime.valueAsMinutes());
-		domain.timeSeriesWorks = timeSeriesWorks;
-		return domain;
+	@Override
+	public AnnualLeaveUseTimeOfMonthly clone() {
+		AnnualLeaveUseTimeOfMonthly cloned = new AnnualLeaveUseTimeOfMonthly();
+		try {
+			cloned.useTime = new AttendanceTimeMonth(this.useTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("AnnualLeaveUseTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
@@ -99,8 +97,24 @@ public class AnnualLeaveUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			this.useTime.addMinutes(timeSeriesWork.getAnnualLeaveUseTime().getUseTime().v());
+			this.addMinuteToUseTime(timeSeriesWork.getAnnualLeaveUseTime().getUseTime().v());
 		}
+	}
+	
+	/**
+	 * 年休使用時間を求める
+	 * @param datePeriod 期間
+	 * @return 年休使用時間
+	 */
+	public AttendanceTimeMonth getTotalUseTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			returnTime = returnTime.addMinutes(timeSeriesWork.getAnnualLeaveUseTime().getUseTime().v());
+		}
+		return returnTime;
 	}
 	
 	/**

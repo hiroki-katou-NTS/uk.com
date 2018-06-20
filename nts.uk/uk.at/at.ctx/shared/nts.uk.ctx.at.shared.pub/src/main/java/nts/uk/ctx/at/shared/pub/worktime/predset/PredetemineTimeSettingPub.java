@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.pub.worktime.predset;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -20,6 +22,14 @@ public interface PredetemineTimeSettingPub {
 	 */
 	// 2回勤務かどうかの判断処理
 	boolean IsWorkingTwice(String companyId, String workTimeCode);
+	
+	/**
+	 * Checks if is working twice with list
+	 * @param companyId
+	 * @param workTimeCodes
+	 * @return
+	 */
+	Map<String, Boolean> checkWorkingTwice(String companyId, List<String> workTimeCodes);
 
 	/**
 	 * Acquire predetermined time.

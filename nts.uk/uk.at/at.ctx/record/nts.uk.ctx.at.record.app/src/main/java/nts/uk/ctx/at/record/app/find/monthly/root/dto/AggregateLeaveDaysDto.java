@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -11,31 +12,30 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 /** 集計休業日数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AggregateLeaveDaysDto {
+public class AggregateLeaveDaysDto implements ItemConst {
 
 	/** 休業区分: 休業区分 */
 //	@AttendanceItemValue(type = ValueType.INTEGER)
 //	@AttendanceItemLayout(jpPropertyName = "休業区分", layout = "A", needCheckIDWithMethod = "leaveAtr")
-	private int leaveAtr;
+	private int attr;
 
 	/** 日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "日数", layout = "B", needCheckIDWithMethod = "leaveAtr")
-	private Double days;
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_B, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
+	private double days;
 
-	public String leaveAtr() {
-		switch (this.leaveAtr) {
+	public String enumText() {
+		switch (this.attr) {
 		case 0:
-			return "産前休業";
+			return E_OFF_BEFORE_BIRTH;
 		case 1:
-			return "産後休業";
+			return E_OFF_AFTER_BIRTH;
 		case 2:
-			return "育児休業";
+			return E_OFF_CHILD_CARE;
 		case 3:
-			return "介護休業";
-		case 4:
+			return E_OFF_CARE;
 		default:
-			return "傷病休業";
+			return E_OFF_INJURY;
 		}
 	}
 }

@@ -345,40 +345,7 @@ module nts.uk.ui {
                             then();
                         });
                         
-                        let currentInfo = dialogInfo;
-                        let top=0, left=0;
-                        let dialog = container.closest("div[role='dialog']");
-                        dialog.addClass("disappear");
-                        if(dialogInfo.isRoot){
-                            top = (window.innerHeight - dialog.innerHeight()) / 2;
-                            left = (window.innerWidth - dialog.innerWidth()) / 2;
-                        } else {
-                            while(!nts.uk.util.isNullOrUndefined(currentInfo)){
-                                if(currentInfo.isRoot){
-                                    currentInfo = null;
-                                } else {
-                                    var fullDialog = currentInfo.$dialog.closest("div[role='dialog']"); 
-                                    var offset = fullDialog.offset();
-                                    top += offset.top;
-                                    left += offset.left;
-                                    currentInfo = currentInfo.parent;
-                                }
-                            }
-                        }
-                        
-                        setTimeout(function(){
-                            let dialogM = dialogInfo.isRoot ? $("body") : dialogInfo.$dialog.closest("div[role='dialog']");
-                            let topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
-                            let leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
-                            if(topDiff > 0){
-                                top += topDiff;
-                            }
-                            if(leftDiff > 0){
-                                left += leftDiff;
-                            }
-                            dialog.css({top: top, left: left});
-                            dialog.removeClass("disappear");
-                        }, 33);
+                        container.ntsDialogEx("centerUp", dialogInfo);
                     },
                     close: function(event) {
                     }

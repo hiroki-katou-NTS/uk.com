@@ -7,18 +7,25 @@ module nts.uk.at.view.kdw003.a {
             dataShare = data;
         });
         var screenModel = __viewContext.vm = new nts.uk.at.view.kdw003.a.viewmodel.ScreenModel(dataShare);
-        screenModel.startPage().done(() => {
+        screenModel.startPage().done((data) => {
             //this.bind(screenModel, dialogOptions);
             //cursor move direction 
             screenModel.selectedDirection.subscribe((value) => {
                 if (value == 0) {
-                    $("#dpGrid").ntsGrid("directEnter", "below", "");
+                    $("#dpGrid").ntsGrid("directEnter", "below");
                 } else {
-                    $("#dpGrid").ntsGrid("directEnter", "right", "");
+                    $("#dpGrid").ntsGrid("directEnter", "right");
                 }
             });
-            screenModel.loadKcp009();
+            if (data.bindDataMap) {
+                screenModel.processMapData(data.data);
+            }
+             screenModel.loadKcp009();
             __viewContext.bind(screenModel);
+            if (data.bindDataMap) {
+                screenModel.processFlex(data.data);
+            }
+            
         });
     });
 }

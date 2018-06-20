@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -10,7 +8,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -44,15 +47,12 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	/** 縦計 */
 	@Setter
 	private VerticalTotalOfMonthly verticalTotal;
+	/** 回数集計 */
+	@Setter
+	private TotalCountByPeriod totalCount;
 	/** 集計日数 */
 	@Setter
 	private AttendanceDaysMonth aggregateDays;
-	/** 回数集計 */
-	//aggregateTimes
-	/** 休暇 */
-	//holiday
-	/** 任意項目 */
-	//anyItem
 
 	/**
 	 * コンストラクタ
@@ -74,7 +74,8 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		this.monthlyCalculation = new MonthlyCalculation();
 		this.excessOutsideWork = new ExcessOutsideWorkOfMonthly();
 		this.verticalTotal = new VerticalTotalOfMonthly();
-		this.aggregateDays = new AttendanceDaysMonth(0.0);
+		this.totalCount = new TotalCountByPeriod();
+		this.aggregateDays = new AttendanceDaysMonth((double)(datePeriod.start().daysTo(datePeriod.end()) + 1));
 	}
 	
 	/**
@@ -87,6 +88,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * @param monthlyCalculation 月の計算
 	 * @param excessOutsideWork 時間外超過
 	 * @param verticalTotal 縦計
+	 * @param totalCount 回数集計
 	 * @param aggregateDays 集計日数
 	 * @return 月別実績の勤怠時間
 	 */
@@ -99,12 +101,14 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 			MonthlyCalculation monthlyCalculation,
 			ExcessOutsideWorkOfMonthly excessOutsideWork,
 			VerticalTotalOfMonthly verticalTotal,
+			TotalCountByPeriod totalCount,
 			AttendanceDaysMonth aggregateDays){
 		
 		val domain = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, datePeriod);
 		domain.monthlyCalculation = monthlyCalculation;
 		domain.excessOutsideWork = excessOutsideWork;
 		domain.verticalTotal = verticalTotal;
+		domain.totalCount = totalCount;
 		domain.aggregateDays = aggregateDays;
 		return domain;
 	}
@@ -114,13 +118,27 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * @param companyId 会社ID
 	 * @param datePeriod 期間
 	 * @param workingConditionItem 労働制
+	 * @param startWeekNo 開始週NO
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
+	 * @param monthlyCalcDailys 月の計算中の日別実績データ
+	 * @param monthlyOldDatas 集計前の月別実績データ
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void prepareAggregation(String companyId, DatePeriod datePeriod, WorkingConditionItem workingConditionItem,
+	public void prepareAggregation(
+			String companyId,
+			DatePeriod datePeriod,
+			WorkingConditionItem workingConditionItem,
+			int startWeekNo,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
+			MonthlyCalculatingDailys monthlyCalcDailys,
+			MonthlyOldDatas monthlyOldDatas,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		this.monthlyCalculation.prepareAggregation(companyId, this.employeeId, this.yearMonth,
-				this.closureId, this.closureDate, datePeriod, workingConditionItem, Optional.empty(), repositories);
+				this.closureId, this.closureDate, datePeriod, workingConditionItem,
+				startWeekNo, companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas, repositories);
 	}
 
 	/**
@@ -152,6 +170,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		this.monthlyCalculation.sum(target.monthlyCalculation);
 		this.excessOutsideWork.sum(target.excessOutsideWork);
 		this.verticalTotal.sum(target.verticalTotal);
+		this.totalCount.sum(target.totalCount);
 		
 		this.aggregateDays = this.aggregateDays.addDays(target.aggregateDays.v());
 	}

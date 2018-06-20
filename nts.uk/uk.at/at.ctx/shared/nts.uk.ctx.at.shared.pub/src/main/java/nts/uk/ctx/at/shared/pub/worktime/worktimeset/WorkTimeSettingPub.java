@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.pub.worktime.worktimeset;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * The Interface WorkTimeSettingPub.
  */
@@ -18,6 +21,14 @@ public interface WorkTimeSettingPub {
 	 */
 	//流動勤務かどうかの判断処理
 	boolean isFlowWork(String companyId, String worktimeCode);
+	
+	/**
+	 * check if is flow work with list
+	 * @param companyId
+	 * @param worktimeCode
+	 * @return
+	 */
+	Map<String, Boolean> checkFlowWork(String companyId, List<String> worktimeCodes);
 	
 	/**
 	 * Gets the work time setting name.

@@ -41,7 +41,7 @@
 					]}"></div>
 		</div>
 
-		<div>
+		<div style="width: 420px">
 			<div style="width: 264px; display: inline-block;"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 4}, ntsSearchBox: {
 					targetKey: 'workplaceId',
@@ -67,7 +67,6 @@
 			<table id="single-tree-grid" class="cf"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
 					width: treeStyle.width,
-					height: treeStyle.height,
 					dataSource: itemList,
 					value: selectedWorkplaceIds,
 					primaryKey: 'workplaceId',
@@ -75,6 +74,9 @@
 					primaryText: 'nodeText',
 					multiple: isMultiSelect,
 					enable: true,
+					rows: maxRows,
+					virtualization: true,
+					virtualizationMode: 'continuous',
 					extColumns: treeComponentColumn,
 					showCheckBox: isMultiSelect}">
 			</table>
@@ -83,13 +85,15 @@
 			<table id="multiple-tree-grid" class="cf"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
 					width: treeStyle.width,
-					height: treeStyle.height,
 					options: itemList,
 					selectedValues: selectedWorkplaceIds,
 					optionsValue: 'workplaceId',
 					optionsChild: 'childs',
 					optionsText: 'nodeText',
 					multiple: isMultiSelect,
+					virtualization: true,
+					rows: maxRows,
+					virtualizationMode: 'continuous',
 					extColumns: treeComponentColumn,
 					enable: true,
 					showCheckBox: isMultiSelect}">

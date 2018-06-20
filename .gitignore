@@ -2,12 +2,14 @@
 **/build*
 **/bin*
 
+#ignore node_modules
+**/node_modules*
+
 #ignore gradle cache folder
 **/.gradle*
 **/.nb-gradle*
 **/.settings*
 **/.ide*
-**/out*
 
 #ignore sass-cache folder
 **/.sass-cache*

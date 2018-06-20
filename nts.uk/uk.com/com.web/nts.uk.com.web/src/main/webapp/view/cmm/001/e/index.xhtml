@@ -4,45 +4,87 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
-
 		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="cmm001.e.start.js" />
+			<script>
+				var dialogSize = {
+					width : 815,
+					height : 710
+				};
+			</script>
+			<!-- <com:scriptfile set="IGNITE" /> -->
+			<com:stylefile path="cmm001.e.style.css" />
 			<com:scriptfile path="cmm001.e.service.js" />
 			<com:scriptfile path="cmm001.e.vm.js" />
-			<com:stylefile path="cmm001.e.style.css" />
+			<com:scriptfile path="cmm001.e.start.js" />
 		</ui:define>
-
 		<ui:define name="content">
-			<div style="margin-top: 15px;">
-				<label class="labelfirst">郵便番号に該当する住所が複数存在します。</label> <br /> <label
-					class="labelfirst"> 対象の住所を選択してください。</label>
-			</div>
-
-			<div id="contents-area">
-				<div>
-					<table id='dataAddress'
-						data-bind="ntsGridList: {
-					width: 500,
-					height: 200,
-					options: postCodeList,
-					primaryKey: 'postcode',
-					columns: columns,
-					multiple: false,
-					value: zipCode,
-					enable: true
-					}">
+			<div id="content-area" class="contents-area fixed-flex-layout"
+				style="display: block;">
+				<div style="padding-top: 20px; padding-left: 20px;">
+					<label>#{i18n.getText('CMM001_41')}</label>
+				</div>
+				<div class="div-table">
+					<table width="775px" heigh="512px"
+						data-bind="name : #{i18n.getText('CMM001_42')};">
+						<thead>
+							<tr class="bg-green">
+								<th width="20px"><div
+										data-bind="ntsCheckBox: {checked: isCheckedAll};"></div></th>
+								<th width="150px"><div style="width: 140px;"><label>#{i18n.getText('CMM001_43')}</label></div></th>
+								<th width="260px"><label>#{i18n.getText('CMM001_44')}</label></th>
+								<th width="*" style="border-right: none;">
+									<div style="padding-bottom: 5px">
+										<label>#{i18n.getText('CMM001_45')}</label>
+									</div>
+									<div id="copy-method-header"
+										data-bind="ntsSwitchButton: {
+												options: switchOptions,
+												optionsValue: 'copyMethod',
+												optionsText: 'text',
+												value: switchHeader,
+												enable: true,
+												name: '#{i18n.getText('CMM001_45')}'}"
+										tabindex="2" style="display: inline-flex;"></div>
+									<div style="padding-top: 3px">
+										<span class="caret-bottom outline"></span>
+									</div>
+								</th>
+								<th width="18px" style="padding: 0px; border-left: none;"></th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: dataSource">
+						
+							<tr data-bind="css: { selected: flag }">
+								<td width="20px"><div
+										data-bind="ntsCheckBox: {checked: flag}" class="checkbox-item"></div></td>
+								<td width="150px"
+									data-bind="ifnot: isBorder, css: { 'border-custom' : isBorder }"><div style="width: 140px;"><label
+									data-bind="text: systemType;"></label></div></td>
+								<td width="260px"><label
+									data-bind="text: masterCopyCategory"></label></td>
+								<td width="*"><div
+										data-bind="ntsSwitchButton: {
+												options: $parent.switchOptions,
+												optionsValue: 'copyMethod',
+												optionsText: 'text',
+												value: copyMethod,
+												required: true,
+												enable: true,
+												name: '#{i18n.getText('CMM001_45')}'}"
+										tabindex="4" style="display: inline-flex;"
+										class="switch-method"></div></td>
+							</tr>
+						</tbody>
 					</table>
 				</div>
 			</div>
-			<hr />
-			<div id="this-functions-area" class="control-group halign-center">
-				<button class="btn-default proceed x-large" id="btn_chooseZipCode"
-					data-bind="click: chooseZipCode">決定</button>
-				<button id="btn_close" onclick="nts.uk.ui.windows.close()">キャンセル</button>
+			<div id="functions-area-bottom">
+				<button tabindex="5" id="openFDialog" class="button x-large proceed"
+					data-bind="click: openFDialog">#{i18n.getText('CMM001_50')}</button>
+				<button tabindex="6" id="closeDialog"
+					class="button fix-button large" data-bind="click: closeDialog">#{i18n.getText('CMM001_51')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

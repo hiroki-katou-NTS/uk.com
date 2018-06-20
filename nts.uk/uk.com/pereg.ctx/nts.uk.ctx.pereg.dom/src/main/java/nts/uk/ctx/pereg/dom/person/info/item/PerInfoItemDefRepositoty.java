@@ -1,13 +1,33 @@
 package nts.uk.ctx.pereg.dom.person.info.item;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 
 public interface PerInfoItemDefRepositoty {
 
+	/**
+	 * only parent items
+	 * 
+	 * @param perInfoCategoryId
+	 * @param contractCd
+	 * @return
+	 */
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
+
+	Map<String, List<Object[]>> getAllPerInfoItemDefByListCategoryId(List<String> lstPerInfoCategoryId,
+			String contractCd);
+
+	/**
+	 * all items Warning: set and table item have not ItemIdList
+	 * 
+	 * @param perInfoCategoryId
+	 * @param contractCd
+	 * @return
+	 */
+	List<PersonInfoItemDefinition> getAllItemDefByCategoryId(String perInfoCategoryId, String contractCd);
 
 	List<PersonInfoItemDefinition> getAllItemByCtgWithAuth(String perInfoCategoryId, String contractCd, String roleId,
 			boolean isSelfRef);
@@ -50,6 +70,8 @@ public interface PerInfoItemDefRepositoty {
 	Optional<PerInfoItemDefOrder> getPerInfoItemDefOrdersByItemId(String perInfoItemDefId);
 
 	void UpdateOrderItem(PerInfoItemDefOrder itemOrder);
+	
+	void updateOrderItem(List<PerInfoItemDefOrder> itemOrder);
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId,
 			String contractCd);
@@ -60,7 +82,7 @@ public interface PerInfoItemDefRepositoty {
 	// Sonnlb Code
 
 	int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId);
-	
+
 	int countPerInfoItemDefInCategoryNo812(String perInfoCategoryId, String companyId);
 
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
@@ -103,18 +125,25 @@ public interface PerInfoItemDefRepositoty {
 	 * @return
 	 */
 	List<String> getAllRequiredIdsByCtgId(String contract, String ctgId);
-	
+
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgCd(String ctgCd, String companyId);
-	
+
 	List<String> getAllItemIdsByCtgCode(String cid, String ctgCode);
-	
+
 	List<PersonInfoItemDefinition> getItemDefByCtgCdAndComId(String perInfoCtgCd, String CompanyId);
-	
+
 	void updateItemDefNameAndAbolition(List<PersonInfoItemDefinition> lst, String companyId);
-	
-	List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd);
-	
+
+	List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd, String companyId);
+
+	List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String ctgId, String categoryCd,
+			String contractCd);
+
+	List<PerInfoItemDefOrder> getItemOrderByCtgId(String ctgId);
 	String getItemName(String contractCode, String companyId, String categoryCode, String itemCode);
 	
-	
+	List<PersonInfoItemDefinition> getAllItemId(List<String> ctgIdLst, List<String> itemCodeLst);
+
+	void updateAbolitionItem(List<PersonInfoItemDefinition> itemLst);
+
 }

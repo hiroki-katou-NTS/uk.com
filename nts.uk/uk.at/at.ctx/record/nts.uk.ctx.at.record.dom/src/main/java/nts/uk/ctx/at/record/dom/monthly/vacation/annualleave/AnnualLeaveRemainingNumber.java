@@ -7,10 +7,10 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 
 /**
  * 年休残数
@@ -76,7 +76,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	 * 年休付与残数データから年休残数を作成
 	 * @param remainingDataList 年休付与残数データリスト
 	 */
-	public void createRemainingNumberFromGrantRemaining(List<AnnualLeaveGrantRemainingData> remainingDataList){
+	public void createRemainingNumberFromGrantRemaining(List<AnnualLeaveGrantRemaining> remainingDataList){
 
 		// 明細、合計残日数をクリア
 		this.details = new ArrayList<>();
@@ -86,17 +86,21 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		remainingDataList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 		
 		for (val remainingData : remainingDataList){
-			
-			// 明細に年休付与残数データ．明細．残数を追加
 			val remainingNumber = remainingData.getDetails().getRemainingNumber();
-			AnnualLeaveRemainingTime remainingTime = null;
-			if (remainingNumber.getMinutes().isPresent()){
-				remainingTime = new AnnualLeaveRemainingTime(remainingNumber.getMinutes().get().v());
+			
+			// 「年休不足ダミーフラグ」をチェック
+			if (remainingData.isDummyAtr() != true){
+				
+				// 明細に年休付与残数データ．明細．残数を追加
+				AnnualLeaveRemainingTime remainingTime = null;
+				if (remainingNumber.getMinutes().isPresent()){
+					remainingTime = new AnnualLeaveRemainingTime(remainingNumber.getMinutes().get().v());
+				}
+				this.details.add(AnnualLeaveRemainingDetail.of(
+						remainingData.getGrantDate(),
+						new AnnualLeaveRemainingDayNumber(remainingNumber.getDays().v()),
+						Optional.ofNullable(remainingTime)));
 			}
-			this.details.add(AnnualLeaveRemainingDetail.of(
-					remainingData.getGrantDate(),
-					new AnnualLeaveRemainingDayNumber(remainingNumber.getDays().v()),
-					Optional.ofNullable(remainingTime)));
 			
 			// 合計残日数　←　「明細．日数」の合計
 			this.totalRemainingDays = new AnnualLeaveRemainingDayNumber(

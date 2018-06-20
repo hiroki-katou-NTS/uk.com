@@ -29,10 +29,10 @@ public enum SystemFixedErrorAlarm {
 	DOUBLE_STAMP("S006"),
 	
 	// 遅刻
-	LATE("007"),
+	LATE("S007"),
 	
 	// 早退
-	LEAVE_EARLY("008"),
+	LEAVE_EARLY("S008"),
 	
 	// 事前残業申請超過
 	PRE_OVERTIME_APP_EXCESS("S009"),
@@ -94,7 +94,7 @@ public enum SystemFixedErrorAlarm {
 	DIVERGENCE_ERROR_2("D003"),
 	
 	//乖離時間2アラーム
-	DIVERGENCE_ALARM_2("D002"),
+	DIVERGENCE_ALARM_2("D004"),
 	
 	//乖離時間3エラー
 	DIVERGENCE_ERROR_3("D005"),

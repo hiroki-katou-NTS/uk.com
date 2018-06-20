@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 import java.util.List;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 
 /**
  * 
@@ -11,9 +13,9 @@ import lombok.Value;
  */
 @Value
 public class ApprovalStatusActivityData {
-	private String startDate;
-	private String endDate;
+	private GeneralDate startDate;
+	private GeneralDate endDate;
 	private boolean isConfirmData;
-	private List<String> listWorkplaceId;
+	private List<WorkplaceInfor> listWorkplace;
 	private List<String> listEmpCd;
 }

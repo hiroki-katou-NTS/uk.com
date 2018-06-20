@@ -22,14 +22,18 @@ module nts.uk.ui.koExtentions {
             var optionsValue: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
             var deleteOptions = ko.unwrap(data.deleteOptions);
-            var observableColumns = ko.unwrap(data.columns);
+            var observableColumns = _.cloneDeep(ko.unwrap(data.columns));
+            let selectionDisables = ko.unwrap(data.selectionDisables);
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
+            var columnResize: boolean = ko.unwrap(data.columnResize);
             var enable: boolean = ko.unwrap(data.enable);
             var value = ko.unwrap(data.value);
             var virtualization = true;
             
             let rows = ko.unwrap(data.rows);
             $grid.data("init", true);
+            $grid.data("selectionDisables", selectionDisables);
+            $grid.data("initValue", value); 
             
             if (data.multiple){
                 ROW_HEIGHT = 24;
@@ -55,6 +59,11 @@ module nts.uk.ui.koExtentions {
                     rowSelectorColumnWidth: 25
                 });    
             }
+            if(columnResize){
+                features.push({
+                    name: "Resizing"
+                });
+            }
             let tabIndex = $grid.attr("tabindex");
             $grid.data("tabindex", nts.uk.util.isNullOrEmpty(tabIndex) ? "0" : tabIndex);
             $grid.attr("tabindex", "-1");
@@ -62,6 +71,7 @@ module nts.uk.ui.koExtentions {
             var iggridColumns = _.map(observableColumns, c => {
                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                 c["dataType"] = 'string';
+                let formatter = c["formatter"];
                 if(c["controlType"] === "switch"){
                     let switchF = _.find(gridFeatures, function(s){ 
                         return s["name"] === "Switch"
@@ -73,7 +83,8 @@ module nts.uk.ui.koExtentions {
                         let switchText = switchF['optionsText'];
                         c["formatter"] = function createButton(val, row) {
                             let result: JQuery = $('<div class="ntsControl"/>');
-                            result.attr("data-value", val);
+                            let rVal = nts.uk.util.isNullOrUndefined(formatter) ? val : formatter(val, row);
+                            result.attr("data-value", rVal);
                             _.forEach(switchOptions, function(opt) {
                                 let value = opt[switchValue];
                                 let text = opt[switchText]; 
@@ -82,7 +93,7 @@ module nts.uk.ui.koExtentions {
                                     btn.attr("disabled", "disabled");      
                                 }
                                 btn.attr('data-value', value);
-                                if (val == value) {
+                                if (rVal == value) {
                                     btn.addClass('selected');
                                 }
                                 btn.appendTo(result);
@@ -98,6 +109,25 @@ module nts.uk.ui.koExtentions {
                         
                         ROW_HEIGHT = 30;
                     }       
+                } else {
+                    let formatter = c.formatter;
+                    c.formatter = function(val, row) {
+                        if (row) {
+                            setTimeout(() => {
+                                let id = row[optionsValue];
+                                let disables = $grid.data("selectionDisables");
+                                if (!disables) return;
+                                _.forEach(disables, d => {
+                                    if (id === d) {
+                                        let $row = $grid.igGrid("rowById", id, false);
+                                        if (!$row.hasClass("row-disable")) $row.addClass("row-disable");
+                                        return false;
+                                    }
+                                });
+                            }, 0);
+                        }
+                        return nts.uk.util.isNullOrUndefined(formatter) ? val : formatter(val, row);
+                    };
                 }
                 return c; 
             });
@@ -162,20 +192,78 @@ module nts.uk.ui.koExtentions {
             $grid.ntsGridList('setupSelecting');
             
             if (data.multiple){
-                $grid.bind('iggridrowselectorscheckboxstatechanging', (eventObject: JQueryEventObject) => {
-                    return (String($grid.data("enable")) === "false") ? false : true;
+                $grid.bind('iggridrowselectorscheckboxstatechanging', (eventObject: JQueryEventObject, data: any) => {
+                    if (String($grid.data("enable")) === "false") return false;
+                    let disables = $grid.data("selectionDisables");
+                    if (disables && !util.isNullOrUndefined(_.find(disables, d => data.rowKey === d))) {
+                        return false;
+                    }
+                    return true;
                 });
             }
-            $grid.bind('iggridselectionrowselectionchanging', (eventObject: JQueryEventObject) => {
-                return (String($grid.data("enable")) === "false") ? false : true;
+            
+            $grid.bind('iggridselectionrowselectionchanging', (eventObject: JQueryEventObject, ui: any) => {
+                if (String($grid.data("enable")) === "false") return false;
+                let disables = $grid.data("selectionDisables");
+                if (disables && util.isNullOrUndefined(ui.startIndex)
+                    && !util.isNullOrUndefined(_.find(disables, d => ui.row.id === d))) {
+                    return false;
+                }
+                
+                if (disables && util.isNullOrUndefined(ui.startIndex) 
+                    && util.isNullOrUndefined(ui.row.id)) {
+                    setTimeout(() => {
+                        _.forEach(_.intersection(disables, value), iv => {
+                            $grid.igGridSelection("selectRowById", iv);
+                        });
+                        
+                        $grid.trigger("selectionchanged");
+                    }, 0);
+                }
+                return true;
             });
 
+            let $oselect, $iselect;
+            let checkAll = function() {
+                if ($oselect && $iselect && $oselect.attr("data-chk") === "off") {
+                    $oselect.attr("data-chk", "on");
+                    $iselect.removeClass("ui-igcheckbox-normal-off");
+                    $iselect.addClass("ui-igcheckbox-normal-on");
+                }
+            };
+            
             $grid.bind('selectionchanged', () => {
                 $grid.data("ui-changed", true);
                 if (data.multiple) {
                     let selected: Array<any> = $grid.ntsGridList('getSelected');
+                    
+                    let disables = $grid.data("selectionDisables");
+                    let disableIds = [];
+                    if (disables) {
+                        _.forEach(selected, (s, i) => {
+                            _.forEach(disables, (d) => {
+                                if (d === s.id && util.isNullOrUndefined(_.find(value, iv => iv === d))) {
+                                    $grid.igGridSelection("deselectRowById", d);
+                                    disableIds.push(i);
+                                    return false;
+                                }
+                            });
+                        });
+                        
+                        disableIds.sort((i1, i2) => i2 - i1).forEach(d => {
+                            selected.splice(d, 1);
+                        });
+                        
+                        let valueCount = _.intersection(disables, value).length; 
+                        let ds = $grid.igGrid("option", "dataSource");
+                        if (selected.length === ds.length - disables.length + valueCount) {
+                            checkAll();
+                        }
+                    }
                     if (!nts.uk.util.isNullOrEmpty(selected)) {
-                        data.value(_.map(selected, s => s.id));
+                        let newValue = _.map(selected, s => s.id);
+                        newValue = _.union(_.intersection(disables, value), newValue);
+                        data.value(newValue);
                     } else {
                         data.value([]);
                     }
@@ -186,6 +274,25 @@ module nts.uk.ui.koExtentions {
                     } else {
                         data.value('');
                     }
+                }
+            });
+            
+            $grid.on("iggridvirtualrecordsrender", function(evt, ui) {
+                let disables = $grid.data("selectionDisables");
+                let $header = ui.owner._headerParent;
+                if (!disables || disables.length === 0 || !$header) return;
+                let data = ui.owner.dataSource._data;
+                let selected = $grid.ntsGridList('getSelected');
+                let valueCount = _.intersection(disables, value).length;
+                let selector = $header.find(".ui-iggrid-rowselector-header span");
+                
+                if (selector.length > 1) {
+                    $oselect = $(selector[0]); 
+                    $iselect = $(selector[1]);
+                }
+                
+                if (selected && (data.length - disables.length + valueCount) === selected.length) {
+                    checkAll();
                 }
             });
             
@@ -223,6 +330,7 @@ module nts.uk.ui.koExtentions {
             var optionsValue: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var gridSource = $grid.igGrid('option', 'dataSource');
             var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+            let disables = ko.unwrap(data.selectionDisables);
             
             if($grid.data("enable") !== enable){
                 if(!enable){
@@ -235,6 +343,34 @@ module nts.uk.ui.koExtentions {
             }
             
             $grid.data("enable", enable);
+            
+            let currentDisables = $grid.data("selectionDisables");
+            if (currentDisables && disables 
+                && !_.isEqual(disables.sort((d1, d2) => d2 - d1), 
+                    currentDisables.sort((d1, d2) => d2 - d1))) {
+                $grid.data("selectionDisables", disables);
+                
+                let disableRows = function(arr) {
+                    _.forEach(arr, d => {
+                        let $row = $grid.igGrid("rowById", d, false);
+                        if ($row && !$row.hasClass("row-disable")) {
+                            $row.addClass("row-disable");
+                        }
+                    });
+                };
+                
+                if (disables.length > currentDisables.length) {
+                    disableRows(_.difference(disables, currentDisables));    
+                } else {
+                    _.forEach(currentDisables, d => {
+                        let $row = $grid.igGrid("rowById", d, false);
+                        if ($row && $row.hasClass("row-disable")) {
+                            $row.removeClass("row-disable");
+                        }
+                    });
+                    disableRows(disables);
+                }
+            }
             
             if(String($grid.attr("filtered")) === "true"){
                 let filteredSource = [];
@@ -278,8 +414,25 @@ module nts.uk.ui.koExtentions {
                 }
             })
             if (!isEqual) {
-                _.defer(() => {$grid.trigger("selectChange");});  
-                $grid.ntsGridList('setSelected', data.value());
+                let clickCheckBox = false;
+                if(!nts.uk.util.isNullOrEmpty(data.value()) && data.value().length == sources.length) {
+                    if($grid.igGridSelection('option', 'multipleSelection')) {
+                        let features = _.find($grid.igGrid("option", "features"), function (f){
+                            return f.name === "RowSelectors";     
+                        });
+                        clickCheckBox = !nts.uk.util.isNullOrUndefined(features.enableCheckBoxes) && features.enableCheckBoxes;
+                    }
+                }
+                if(clickCheckBox){
+                    $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']").click();
+                } else {
+                    $grid.ntsGridList('setSelected', data.value());    
+                }
+                
+                let initVal = $grid.data("initValue");
+                if (!disables || !initVal || _.intersection(disables, initVal).length === 0) { 
+                    _.defer(() => {$grid.trigger("selectChange");});
+                }
             }
             $grid.data("ui-changed", false);
             $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));

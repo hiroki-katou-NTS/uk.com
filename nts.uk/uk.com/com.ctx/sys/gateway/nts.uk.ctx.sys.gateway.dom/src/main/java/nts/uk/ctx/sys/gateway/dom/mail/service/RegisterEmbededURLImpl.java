@@ -2,12 +2,21 @@ package nts.uk.ctx.sys.gateway.dom.mail.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserInforExImport;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.url.EmbeddedUrlScreenID;
@@ -23,43 +32,54 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 
 	@Inject
 	private UrlExecInfoRepository urlExcecInfoRepo;
+	
+	@Inject
+	private UserAdapter userAdapter;
 
 	@Override
-	public UrlExecInfo obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
-		String loginId = AppContexts.user().employeeId();
-		String uuID = UUID.randomUUID().toString();
-		String a = "1";
+	public String obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
+		String loginId = AppContexts.user().employeeCode();
 		return this.registerEmbeddedForApp(appId, appType, prePostAtr, loginId, employeeId);
 	}
 
 	@Override
-	public UrlExecInfo registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, String employeeId) {
+	public String registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, String employeeId) {
 		EmbeddedUrlScreenID embeddedUrlScreenID = this.getEmbeddedUrlRequestScreenID(appType, prePostAtr);
 		List<UrlTaskIncre> taskInce = new ArrayList<>();
 		taskInce.add(UrlTaskIncre.createFromJavaType(null, null, null, appId, appId));
-		return this.embeddedUrlInfoRegis(embeddedUrlScreenID.getProgramId(), embeddedUrlScreenID.getDestinationId(), 1, 1, employeeId, loginId, taskInce);
+		return this.embeddedUrlInfoRegis(embeddedUrlScreenID.getProgramId(), embeddedUrlScreenID.getDestinationId(), 1, 1, 
+				employeeId, "000000000000", loginId, "", taskInce);
 	}
 
 	@Override
-	public UrlExecInfo embeddedUrlInfoRegis(String programId, String screenId, int periodCls, int numOfPeriod,
-			String employeeId, String loginId, List<UrlTaskIncre> taskIncidental) {
+	public String embeddedUrlInfoRegis(String programId, String screenId, int periodCls, int numOfPeriod, 
+			String employeeId, String contractCD, String loginId, String employeeCD, List<UrlTaskIncre> taskIncidental) {
 		if (loginId.isEmpty() && employeeId.isEmpty()) {
-			return null;
-		} else {
-			String cid = AppContexts.user().companyId();
-			// Request list 313
-			String scd = "nothinghere";
-			String contractCd = AppContexts.user().contractCode();
-			GeneralDateTime issueDate = GeneralDateTime.now();
-			GeneralDateTime startDate = GeneralDateTime.now();
-			GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodCls, numOfPeriod);
-			return this.updateEmbeddedUrl(cid, contractCd, loginId, scd, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
+			return Strings.EMPTY;
+		} 
+		String cid = AppContexts.user().companyId();
+		// Request list 313
+		if(Strings.isNotBlank(employeeId)){
+			Optional<UserInforExImport> opUserInforEx = userAdapter.getByEmpID(employeeId);
+			if(opUserInforEx.isPresent()){
+				loginId = opUserInforEx.get().getLoginID();
+				employeeCD = opUserInforEx.get().getEmpCD();
+			};
+		}	
+		GeneralDateTime issueDate = GeneralDateTime.now();
+		GeneralDateTime startDate = GeneralDateTime.now();
+		GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodCls, numOfPeriod);
+		UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCD, loginId, employeeCD, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
+		if (!Objects.isNull(urlInfo)){
+			return (programId + "" + screenId+"/"+ urlInfo.getEmbeddedId());
 		}
+		return Strings.EMPTY;
+		
 	}
 
 	@Override
 	public EmbeddedUrlScreenID getEmbeddedUrlRequestScreenID(int appType, int prePostAtr) {
-		ApplicationType appTypeEnum = ApplicationType.values()[appType];
+		ApplicationType appTypeEnum = EnumAdaptor.valueOf(appType, ApplicationType.class);
 		switch (appTypeEnum) {
 			case STAMP_APPLICATION: {
 				return new EmbeddedUrlScreenID("KAF002", "C");
@@ -77,19 +97,24 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 				return new EmbeddedUrlScreenID("KAF009", "B");
 			}
 			case EARLY_LEAVE_CANCEL_APPLICATION: {
-				return new EmbeddedUrlScreenID("KAF004", "E");
-			}
-			case COMPLEMENT_LEAVE_APPLICATION: {
-				PrePostInitialAtr prePostAtrEnum = PrePostInitialAtr.values()[prePostAtr];
+				PrePostInitialAtr prePostAtrEnum = EnumAdaptor.valueOf(prePostAtr, PrePostInitialAtr.class);
 				switch (prePostAtrEnum) {
 					case PRE: {
 						return new EmbeddedUrlScreenID("KAF004", "E");
 					}
+					case POST: {
+						return new EmbeddedUrlScreenID("KAF004", "F");
+					}
+					case NO_CHOISE: {
+						return new EmbeddedUrlScreenID("", "");
+					}
 				}
-				return new EmbeddedUrlScreenID("KAF004", "F");
 			}
 			case BREAK_TIME_APPLICATION: {
 				return new EmbeddedUrlScreenID("KAF010", "B");
+			}
+			case COMPLEMENT_LEAVE_APPLICATION: {
+				return new EmbeddedUrlScreenID("KAF011", "B");
 			}
 			case ANNUAL_HOLIDAY_APPLICATION: {
 				return new EmbeddedUrlScreenID("KAF012", "B");
@@ -101,7 +126,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 				return new EmbeddedUrlScreenID("KAF008", "E");
 			}
 		}
-		return null;
+		return new EmbeddedUrlScreenID("", "");
 	}
 
 	@Override
@@ -109,24 +134,38 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		PeriodClassification periodClsEnum = PeriodClassification.values()[periodCls];
 		switch (periodClsEnum) {
 			case YEAR: {
-				// TO DO
+				GeneralDateTime expiredDate = startDate.addYears(numOfPeriod);
+				expiredDate = expiredDate.addHours(- expiredDate.hours());
+				expiredDate = expiredDate.addMinutes(- expiredDate.minutes());
+				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
+				return expiredDate;
 			}
 			case MONTH: {
 				GeneralDateTime expiredDate = startDate.addMonths(numOfPeriod);
+				expiredDate = expiredDate.addHours(- expiredDate.hours());
+				expiredDate = expiredDate.addMinutes(- expiredDate.minutes());
 				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
 				return expiredDate;
 			}
 			case DAY: {
-				// TO DO
+				GeneralDateTime expiredDate = startDate.addDays(numOfPeriod);
+				expiredDate = expiredDate.addHours(- expiredDate.hours());
+				expiredDate = expiredDate.addMinutes(- expiredDate.minutes());
+				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
+				return expiredDate;
 			}
 			case HOUR: {
-				// TO DO
+				GeneralDateTime expiredDate = startDate.addHours(numOfPeriod);
+				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
+				return expiredDate;
 			}
 			case MINUTE: {
-				// TO DO
+				GeneralDateTime expiredDate = startDate.addMinutes(numOfPeriod);
+				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
+				return expiredDate;
 			}
 		}
-		return null;
+		return GeneralDateTime.now();
 	}
 
 	@Override
@@ -136,6 +175,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		String embeddedId = UUID.randomUUID().toString();
 		try{
 			taskIncre.forEach(x -> {
+				x.setVersion(0);
 				x.setCid(cid);
 				x.setEmbeddedId(embeddedId);
 				x.setTaskIncreId(UUID.randomUUID().toString());
@@ -147,6 +187,19 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 			return null;
 		}
 	}
-	
 
+	@Override
+	public void checkPassLimitExpire(String embeddedURLID) {
+		String companyID = AppContexts.user().companyId();
+		// ドメインモデル「埋込URL実行情報」を取得する(Get domain model 「埋込URL実行情報」)
+		Optional<UrlExecInfo> opUrlExecInfo = urlExcecInfoRepo.getUrlExecInfoById(embeddedURLID, companyID);
+		if(!opUrlExecInfo.isPresent()){
+			throw new BusinessException("Msg_1095");
+		}
+		UrlExecInfo urlExecInfo = opUrlExecInfo.get();
+		// システム日時が「埋込URL実行情報.有効期限」を超えていないことを確認する
+		if(urlExecInfo.getExpiredDate().before(GeneralDateTime.now())){
+			throw new BusinessException("Msg_1095");
+		}
+	}
 }

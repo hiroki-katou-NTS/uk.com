@@ -15,40 +15,40 @@ public class PersonInfoCategoryAuthDto {
 
 	private int allowOtherCompanyRef;
 
-	private int selfPastHisAuth;
+	private Integer selfPastHisAuth;
 
-	private int selfFutureHisAuth;
+	private Integer selfFutureHisAuth;
 
-	private int selfAllowAddHis;
+	private Integer selfAllowAddHis;
 
-	private int selfAllowDelHis;
+	private Integer selfAllowDelHis;
 
-	private int otherPastHisAuth;
+	private Integer otherPastHisAuth;
 
-	private int otherFutureHisAuth;
+	private Integer otherFutureHisAuth;
 
-	private int otherAllowAddHis;
+	private Integer otherAllowAddHis;
 
-	private int otherAllowDelHis;
+	private Integer otherAllowDelHis;
 
-	private int selfAllowAddMulti;
+	private Integer selfAllowAddMulti;
 
-	private int selfAllowDelMulti;
+	private Integer selfAllowDelMulti;
 
-	private int otherAllowAddMulti;
+	private Integer otherAllowAddMulti;
 
-	private int otherAllowDelMulti;
+	private Integer otherAllowDelMulti;
 
 	public static PersonInfoCategoryAuthDto fromDomain(PersonInfoCategoryAuth domain) {
 		return new PersonInfoCategoryAuthDto(domain.getRoleId(), domain.getPersonInfoCategoryAuthId(),
 				domain.getAllowPersonRef().value, domain.getAllowOtherRef().value,
-				domain.getAllowOtherCompanyRef().value, domain.getSelfPastHisAuth().value,
-				domain.getSelfFutureHisAuth().value, domain.getSelfAllowAddHis().value,
-				domain.getSelfAllowDelHis().value, domain.getOtherPastHisAuth().value,
-				domain.getOtherFutureHisAuth().value, domain.getOtherAllowAddHis().value,
-				domain.getOtherAllowDelHis().value, domain.getSelfAllowAddMulti().value,
-				domain.getSelfAllowDelMulti().value, domain.getOtherAllowAddMulti().value,
-				domain.getOtherAllowDelMulti().value);
+				domain.getAllowOtherCompanyRef().value, domain.getSelfPastHisAuth() == null? null : domain.getSelfPastHisAuth().value,
+				domain.getSelfFutureHisAuth() == null? null : domain.getSelfFutureHisAuth().value, domain.getSelfAllowAddHis() == null? null: domain.getSelfAllowAddHis().value,
+				domain.getSelfAllowDelHis() == null? null: domain.getSelfAllowDelHis().value, domain.getOtherPastHisAuth() == null? null: domain.getOtherPastHisAuth().value,
+				domain.getOtherFutureHisAuth() == null? null:domain.getOtherFutureHisAuth().value,  domain.getOtherAllowAddHis() == null? null:domain.getOtherAllowAddHis().value,
+				domain.getOtherAllowDelHis() == null? null: domain.getOtherAllowDelHis().value, domain.getSelfAllowAddMulti() == null? null: domain.getSelfAllowAddMulti().value,
+				domain.getSelfAllowDelMulti() == null? null: domain.getSelfAllowDelMulti().value, domain.getOtherAllowAddMulti() == null? null: domain.getOtherAllowAddMulti().value,
+				domain.getOtherAllowDelMulti() == null? null: domain.getOtherAllowDelMulti().value);
 
 	}
 

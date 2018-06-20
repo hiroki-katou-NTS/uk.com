@@ -41,7 +41,7 @@ public class KrcstMonsetCmpIrgExot extends UkJpaEntity implements Serializable {
 	/** マッチング：会社月別実績集計設定 */
 	@OneToOne
 	@JoinColumns({
-    	@JoinColumn(name = "CID", referencedColumnName = "KRCST_MONSET_CMP_REG_AGGR.CID", insertable = false, updatable = false)
+    	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
 	})
 	public KrcstMonsetCmpRegAggr krcstMonsetCmpRegAggr;
 	

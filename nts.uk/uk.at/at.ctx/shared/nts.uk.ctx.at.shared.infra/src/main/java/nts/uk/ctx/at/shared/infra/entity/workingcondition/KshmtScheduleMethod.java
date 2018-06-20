@@ -40,10 +40,6 @@ public class KshmtScheduleMethod extends UkJpaEntity implements Serializable {
 	@Column(name = "BASIC_CREATE_METHOD")
 	private int basicCreateMethod;
 
-	/** The m pattern work sche create. */
-	@Column(name = "M_PATTERN_WORK_SCHE_CREATE")
-	private Integer mPatternWorkScheCreate;
-
 	/** The ref business day calendar. */
 	@Column(name = "REF_BUSINESS_DAY_CALENDAR")
 	private Integer refBusinessDayCalendar;

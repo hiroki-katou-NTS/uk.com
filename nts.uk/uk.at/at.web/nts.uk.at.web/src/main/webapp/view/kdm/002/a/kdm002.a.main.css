@@ -1,30 +1,16 @@
-.employeeInfoSearch {
-	
-	margin-top: 10px;
+.fixed-flex-layout{
+	width: 1254px;
 }
-
-.ccg001searchkcp005{
-	float:left;
-}
-
-.employeeAction {
-	border: 1px solid #ccc !important;
-	border-radius: 5px;
-	float: right;
-	width: 550px;
+.fixed-flex-layout-right {
 	padding: 5px;
 	margin-top: 37px;
-	height: 511px;
-}
-
-.infoKDL003 {
-	width: 250px;
+	padding-right: 100px;
 }
 
 .periodCovered {
 	display: inline-flex;
 	margin-bottom: 10px;
-	padding-left: 40px;
+	padding-left: 10px;
 }
 
 .lableInfo {
@@ -39,7 +25,6 @@
 }
 
 .infoButtonSetting {
-	width: 300px;
 	display: inline-flex;
 }
 
@@ -49,37 +34,39 @@
 }
 
 .selectionEmployee {
-	border: 1px solid #ccc !important;
-	border-radius: 5px;
-	margin: 0px 30px 0px 90px;
-	padding: 20px;
-	width: 600px;
+	margin-left: 90px;
+	padding-top: 10px;
 }
 
 .labelRangeDate {
+	/*margin-top: 30px;*/
 	margin-left: 15px;
-	margin-right: 5px;
+	width: 120px;
+}
+.labelRangeDate1 {
+	/*padding-top: 30px;*/
+	margin-left: 15px;
 	width: 120px;
 }
 
 .labelWork {
-	margin-top: 30px;
+	margin-top: 10px;
 	margin-left: 15px;
-	width: 120px;
+	width: 115px;
 }
 .employeeWorkSetting{
-	padding-left: 40px;
+	padding-left: 10px;
 }
 
 #contents-area { 
 	overflow-x: hidden;
 }
 #A3_2 {
-	margin-bottom: 40px;
+	margin-bottom: 20px;
 }
 
 #A3_10 {
-	margin-top: 40px;
+	margin-top: 20px;
 	
 }
 #A2_2{

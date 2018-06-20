@@ -8,14 +8,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.StateAttr;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
@@ -31,26 +30,17 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class TemporaryStampOrderChecking {
 
 	@Inject
-	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
-
-	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
 
 	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	public void temporaryStampOrderChecking(String employeeID, String companyID, GeneralDate processingDate,
+	public EmployeeDailyPerError temporaryStampOrderChecking(String employeeID, String companyID, GeneralDate processingDate,
 			TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
+		
+		EmployeeDailyPerError employeeDailyPerError = null;
 
 		List<Integer> attendanceItemIDList = new ArrayList<>();
-
-		// Optional<TemporaryTimeOfDailyPerformance>
-		// temporaryTimeOfDailyPerformance =
-		// this.temporaryTimeOfDailyPerformanceRepository
-		// .findByKey(employeeID, processingDate);
 
 		if (temporaryTimeOfDailyPerformance != null
 				&& !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
@@ -99,16 +89,21 @@ public class TemporaryStampOrderChecking {
 						duplicationStateAttr = confirmDuplication(employeeID, processingDate, timeLeavingWork,
 								temporaryTimeOfDailyPerformance);
 						if (duplicationStateAttr == StateAttr.DUPLICATION) {
-							if(!attendanceItemIDList.isEmpty()){
-								this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID,
-										processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+							if (!attendanceItemIDList.isEmpty()){
+								employeeDailyPerError = new EmployeeDailyPerError(companyID,
+										employeeID, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+										attendanceItemIDList);
 							}
+//							if(!attendanceItemIDList.isEmpty()){
+//								this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID,
+//										processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+//							}
 						}
 					}
 				}
 			}
 		}
-
+		return employeeDailyPerError;
 	}
 
 	private StateAttr confirmDuplication(String employeeID, GeneralDate processingDate, TimeLeavingWork timeLeavingWork,

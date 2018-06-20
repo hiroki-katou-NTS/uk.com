@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -23,6 +24,12 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	void removeParam(String sid, GeneralDate date);
 	
+	void removeParam(Map<String, List<GeneralDate>> param);
+	
 	boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate);
+	
+	boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate);
+	
+	boolean checkExistErrorByDate(String companyID, String employeeID, GeneralDate date);
 	
 }

@@ -14,6 +14,7 @@ import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.SaveDataType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -38,6 +39,12 @@ public class AddEmployeeCommandFacade {
 	
 	public List<ItemsByCategory> createData(AddEmployeeCommand command) {
 		
+		// add new category cardNo to input
+		if(!command.getCardNo().equals("")) {
+			command.getInputs().add(createCardNoCategory(command.getCardNo()));
+		}
+		
+		
 		if (command.getCreateType() == 3) {
 			return command.getInputs();
 		}
@@ -52,11 +59,25 @@ public class AddEmployeeCommandFacade {
 			}
 		});
 
-		return categoryCodeList.stream()
+		List<ItemsByCategory> composedData =  categoryCodeList.stream()
 				.map(categoryCode -> createItemsByCategory(categoryCode, dataServer,
-						command.getCategory(categoryCode)))
+						command.getCategoryData(categoryCode)))
 				.filter(itemsByCategory -> itemsByCategory != null).collect(Collectors.toList());
+		
+		
+		
+		return composedData;
+		
 	}
+	
+	public ItemsByCategory createCardNoCategory(String cardNo) {
+		if (!cardNo.equals("")) {
+			ItemValue itemValue = new ItemValue(null, "IS00779", cardNo, SaveDataType.STRING.value);
+			return new ItemsByCategory("CS00069", null, Arrays.asList(itemValue));
+		}
+		return null;
+	}
+		
 
 	private void updateBasicCategories(String personId, String employeeId, String comHistId,  List<ItemsByCategory> inputs) {
 

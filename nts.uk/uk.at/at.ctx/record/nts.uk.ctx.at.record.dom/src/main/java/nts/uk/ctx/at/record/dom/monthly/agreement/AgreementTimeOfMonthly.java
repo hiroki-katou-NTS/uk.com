@@ -10,6 +10,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
@@ -112,36 +113,74 @@ public class AgreementTimeOfMonthly {
 		}
 	}
 	
+	
+	/**
+	 * エラーアラーム値の取得　（週用）
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteriaDate 基準日
+	 * @param workingSystem 労働制
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void getErrorAlarmValueForWeek(
+			String companyId,
+			String employeeId,
+			GeneralDate criteriaDate,
+			WorkingSystem workingSystem,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 初期設定
+		this.limitErrorTime = new LimitOneMonth(0);
+		this.limitAlarmTime = new LimitOneMonth(0);
+		this.exceptionLimitErrorTime = Optional.empty();
+		this.exceptionLimitAlarmTime = Optional.empty();
+		
+		// 「36協定基本設定」を取得する
+		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
+				companyId, employeeId, criteriaDate, workingSystem);
+		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorWeek().v());
+		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmWeek().v());
+	}
+	
 	/**
 	 * エラーチェック
 	 */
 	public void errorCheck(){
 		
+		// 特例限度アラーム時間に値が入っているか確認する
+		if (!this.exceptionLimitAlarmTime.isPresent()){
+			
+			// 限度アラーム時間以下
+			if (this.agreementTime.lessThanOrEqualTo(this.limitAlarmTime.v())){
+				this.status = AgreementTimeStatusOfMonthly.NORMAL;
+				return;
+			}
+			
+			// 限度エラー時間以下
+			if (this.agreementTime.lessThanOrEqualTo(this.limitErrorTime.v())){
+				this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
+				return;
+			}
+			
+			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
+			return;
+		}
+		
 		// 限度アラーム時間以下
 		if (this.agreementTime.lessThanOrEqualTo(this.limitAlarmTime.v())){
-			this.status = AgreementTimeStatusOfMonthly.NORMAL;
+			this.status = AgreementTimeStatusOfMonthly.NORMAL_SPECIAL;
 			return;
 		}
 		
 		// 限度エラー時間以下
 		if (this.agreementTime.lessThanOrEqualTo(this.limitErrorTime.v())){
-			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
+			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP;
 			return;
 		}
 		
 		// 特例限度アラーム時間以下
-		if (this.exceptionLimitAlarmTime.isPresent()){
-			if (this.exceptionLimitAlarmTime.get().lessThanOrEqualTo(0)){
-				this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
-				return;
-			}
-			if (this.agreementTime.lessThanOrEqualTo(this.exceptionLimitAlarmTime.get().v())){
-				this.status = AgreementTimeStatusOfMonthly.IN_EXCEPTION_LIMIT;
-				return;
-			}
-		}
-		else {
-			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
+		if (this.agreementTime.lessThanOrEqualTo(this.exceptionLimitAlarmTime.get().v())){
+			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP;
 			return;
 		}
 		
@@ -151,6 +190,10 @@ public class AgreementTimeOfMonthly {
 				this.status = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM;
 				return;
 			}
+		}
+		else {
+			this.status = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM;
+			return;
 		}
 		
 		// 特例限度エラー時間を超える

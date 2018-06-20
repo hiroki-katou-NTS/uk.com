@@ -18,7 +18,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 
 /**
  * @author hungnm
@@ -74,6 +74,8 @@ public class DailyPerformanceCorrectionDto {
 	private Integer showQuestionSPR;
 	
 	private ChangeSPR changeSPR;
+	
+	private List<TextStyle> textStyles;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -84,6 +86,7 @@ public class DailyPerformanceCorrectionDto {
 		this.data = new HashMap<>();
 		this.dPErrorDto = new ArrayList<>();
 		this.changeSPR = new ChangeSPR(false, false);
+		this.textStyles = new ArrayList<>();
 	}
 
 	/** Check if employeeId is login user */
@@ -116,7 +119,7 @@ public class DailyPerformanceCorrectionDto {
 //		if (existedCellState.isPresent()) {
 //			existedCellState.get().addState("ntsgrid-disable");
 //		} else {
-		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted")){
+		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted") && !header.getKey().equals("ApplicationList")){
 			int attendanceAtr = mapDP.get(Integer.parseInt(getID(header.getKey()))).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
@@ -166,6 +169,25 @@ public class DailyPerformanceCorrectionDto {
 		});
 	}
 
+	public void createModifierCellStateCaseRow(Map<Integer, DPAttendanceItem> mapDP, List<DPHeaderDto> lstHeader) {
+		this.getLstData().forEach(data -> {
+			boolean isLoginUser = isLoginUser(data.getEmployeeId());
+			lstHeader.forEach(header -> {
+				if (header.getChangedByOther() && !header.getChangedByYou()) {
+					if (isLoginUser) {
+						setDisableCell(header, data, mapDP);
+					}
+				} else if (!header.getChangedByOther() && header.getChangedByYou()) {
+					if (!isLoginUser) {
+						setDisableCell(header, data, mapDP);
+					}
+				} else if (!header.getChangedByOther() && !header.getChangedByYou()) {
+					setDisableCell(header, data, mapDP);
+				}
+			});
+		});
+	}
+	
 	/** Set Error/Alarm text and state for cell */
 	public void addErrorToResponseData(List<DPErrorDto> lstError, List<DPErrorSettingDto> lstErrorSetting, Map<Integer, DPAttendanceItem> mapDP) {
 		lstError.forEach(error -> {
@@ -201,10 +223,14 @@ public class DailyPerformanceCorrectionDto {
 	}
 
 	/** Set AlarmCell state for Fixed cell */
-	public void setAlarmCellForFixedColumn(String dataId) {
-		Stream.of("date", "employeeCode", "employeeName").forEach(columnKey -> {
-			setCellStateFixed(dataId, columnKey, "ntsgrid-alarm");
-		});
+	public void setAlarmCellForFixedColumn(String dataId, Integer mode) {
+		if (mode == 0) {
+			setCellStateFixed(dataId, "date", "ntsgrid-alarm");
+		} else {
+			Stream.of("date", "employeeCode", "employeeName").forEach(columnKey -> {
+				setCellStateFixed(dataId, columnKey, "ntsgrid-alarm");
+			});
+		}
 	}
 
 	private void setCellStateFixed(String dataId, String columnKey, String state) {
@@ -233,7 +259,7 @@ public class DailyPerformanceCorrectionDto {
 				}
 				nameKey = "Name" + columnKey;
 			} else {
-				columnKey = "A" + columnKey;
+				colKey = "A" + columnKey;
 			}
 			
 			Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, colKey);

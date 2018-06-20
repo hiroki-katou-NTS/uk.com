@@ -222,6 +222,7 @@ module nts.uk.at.view.ksm005.c {
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
+                        id: employeeSearch.employeeId,
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName
@@ -234,8 +235,8 @@ module nts.uk.at.view.ksm005.c {
                 }
                 
                 self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data){
-                    if (data != null){
-                        self.alreadySettingList(data);
+                    if (data.length > 0){
+                        self.alreadySettingList(data); 
                     }
                     self.listComponentOption = {
                         isShowAlreadySet: false,
@@ -423,6 +424,7 @@ module nts.uk.at.view.ksm005.c {
                             dataRes.push(setting);    
                         });
                         self.optionalColumnDatasource(dataSource);
+                        self.alreadySettingList(dataRes);
                     }
                     
                     dfd.resolve(dataRes);
@@ -485,7 +487,13 @@ module nts.uk.at.view.ksm005.c {
                 }
                 
                 let dataSource = self.employeeList();
-                let itemListSetting = dataSource.filter(e => e.isAlreadySetting == true).map(e => self.findEmployeeIdByCode(e.code));
+                let itemListSetting = [];
+                self.alreadySettingList().forEach(function (item: any){
+                    if(dataSource.filter(e => e.code == item.code).length > 0){
+                        dataSource.filter(e => e.code == item.code)[0].isAlreadySetting = true;
+                        itemListSetting.push(dataSource.filter(e => e.code == item.code)[0]);
+                    } 
+                });
                 
                 let object: IObjectDuplication = {
                     code: self.selectedCode(),
@@ -669,6 +677,7 @@ module nts.uk.at.view.ksm005.c {
     }
 
     export interface UnitModel {
+        id: string;
         code: string;
         name?: string;
         workplaceName?: string;

@@ -14,26 +14,30 @@
 								data-bind="ntsDatePicker: {
 								name: '#[CCG001_27]',
 								dateFormat: 'YYYY/MM/DD',
-								value: baseDate,
+								value: inputBaseDate,
 								required: true }"></div>
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showClosure">
 						<div class="control-group ccg001-control-group">
-							<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
-							<div id="cbb-closure" tabindex="2" style="display: inline-table"
-								data-bind="ntsComboBox: {
-									name: '#[CCG001_28]',
-									options: closureList,
-									optionsValue: 'closureId',
-									value: selectedClosure,
-									optionsText: 'closureName',
-									editable: false,
-									enable: true,
-									columns: [
-										{ prop: 'closureId', length: 1 },
-										{ prop: 'closureName', length: 5 },
-									]}"></div>
+							<div class="ccg001-cell">
+								<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
+							</div>
+							<div class="ccg001-cell">
+								<div id="cbb-closure" tabindex="2" style="vertical-align: middle; margin-left: 4px;"
+									data-bind="ntsComboBox: {
+										name: '#[CCG001_28]',
+										options: closureList,
+										optionsValue: 'closureId',
+										value: selectedClosure,
+										optionsText: 'closureName',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'closureId', length: 1 },
+											{ prop: 'closureName', length: 5 },
+										]}"></div>
+							</div>
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showPeriod">
@@ -44,14 +48,14 @@
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_30]',
 										dateFormat: 'YYYY/MM/DD',
-										value: periodStart,
+										value: inputPeriodStart,
 										required: true }"></div>
 								<label>～</label>
 								<div id="inp-period-endYMD" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',
 										dateFormat: 'YYYY/MM/DD',
-										value: periodEnd,
+										value: inputPeriodEnd,
 										required: true }"></div>
 							</com:ko>
 							<com:ko tag="if" bind="showPeriodYM">
@@ -59,14 +63,14 @@
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_30]',
 										dateFormat: 'YYYY/MM',
-										value: periodStart,
+										value: inputPeriodStart,
 										required: true }"></div>
 								<label>～</label>
 								<div id="inp-period-endYM" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',
 										dateFormat: 'YYYY/MM',
-										value: periodEnd,
+										value: inputPeriodEnd,
 										required: true }"></div>
 							</com:ko>
 						</div>
@@ -149,7 +153,7 @@
 										</div>
 										<div style="padding-bottom: 20px;">
 											<label>#{i18n.getText('CCG001_47')}</label>
-											<div tabindex="14" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+											<div tabindex="13" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
 												name: '#[CCG001_48]',
 												options: closedDatasource,
 												optionsValue: 'code',
@@ -160,7 +164,7 @@
 										</div>
 										<div style="padding-bottom: 20px;">
 											<label>#{i18n.getText('CCG001_45')}</label>
-											<div tabindex="13" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+											<div tabindex="14" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
 												name: '#[CCG001_46]',
 												options: leaveOfAbsenceDatasource,
 												optionsValue: 'code',
@@ -184,14 +188,14 @@
 											<div id="ccg001-partg-start" tabindex="16" data-bind="ntsDatePicker: {
 												name: '#[CCG001_93]',
 												dateFormat: 'YYYY/MM/DD',
-												value: statusPeriodStart,
+												value: inputStatusPeriodStart,
 												required: true }">
 											</div> 
 											<span> ~ </span>
 											<div id="ccg001-partg-end" tabindex="17" data-bind="ntsDatePicker: {
 												name: '#[CCG001_94]',
 												dateFormat: 'YYYY/MM/DD',
-												value: statusPeriodEnd,
+												value: inputStatusPeriodEnd,
 												required: true }">
 											</div> 
 										</div>
@@ -310,6 +314,71 @@
 						<div class="cf"></div>
 					</div>
 			</com:ko>
+			<div id="ccg001-tab-content-3" class="height-maximum">
+				<div id="ccg001-part-g" class="pull-left height-maximum">
+					<div class="control-group ccg001-control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_104')}</div>
+						<input class="ccg001-inp" tabindex="35" id="ccg001-input-code"
+									data-bind="ntsTextEditor: {
+									name: '#[CCG001_106]',
+									value: inputCodeTab3,
+									required: false
+									}" />
+						<button tabindex="36" class="proceed caret-bottom pull-right"
+							data-bind="click: searchByCode">#{i18n.getText('CCG001_108')}</button>
+					</div>
+					<div class="control-group ccg001-control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_105')}</div>
+						<input class="ccg001-inp" tabindex="37" id="ccg001-inp-name"
+									data-bind="ntsTextEditor: {
+									name: '#[CCG001_107]',
+									value: inputNameTab3,
+									required: false
+									}" />
+						<button tabindex="38" class="proceed caret-bottom pull-right"
+							data-bind="click: searchByName">#{i18n.getText('CCG001_108')}</button>
+					</div>
+					<div class="cf control-group ccg001-control-group">
+						<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_98')}</div>
+						<div tabindex="39" id="ccg001-date-entry" class="ccg001-date-range pull-left"
+							data-bind="ntsDateRangePicker: {
+								name: '#[CCG001_100]',
+								required: false,
+								enable: true,
+								showNextPrevious: false,
+								value: entryDateTab3 }"/>
+						<button tabindex="40" class="proceed caret-bottom pull-right"
+							data-bind="click: searchByEntryDate">#{i18n.getText('CCG001_108')}</button>
+					</div>
+					<div class="cf control-group ccg001-control-group">
+						<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_99')}</div>
+						<div tabindex="41" id="ccg001-date-retirement" class="ccg001-date-range pull-left"
+							data-bind="ntsDateRangePicker: {
+								name: '#[CCG001_100]',
+								required: false,
+								enable: true,
+								showNextPrevious: false,
+								value: retirementDateTab3 }"/>
+						<button tabindex="42" class="proceed caret-bottom pull-right"
+							data-bind="click: searchByRetirementDate">#{i18n.getText('CCG001_108')}</button>
+					</div>
+					<div tabindex="43" id="tab3kcp005"></div>
+				</div>
+				<div class="pull-right height-maximum ccg001-table">
+					<div class="ccg001-cell mid">
+						<div tabindex="44" id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
+							data-bind="click: extractSelectedEmployeesInTab3">
+							<div class="ccg001-cell mid">
+								<i class="icon icon-47-white-check-mark"></i>
+								<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>
+							</div>
+						</div>
+					</div>
+					<div class="ccg001-cell mid">
+						<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
+					</div>
+				</div>
+			</div>
 		</div>
 		</div>
 	</div>

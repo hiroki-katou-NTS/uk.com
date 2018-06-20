@@ -23,6 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.enums.EnumConstant;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -42,6 +43,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorr
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
+import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.selectitem.DailyPerformanceSelectItemProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
@@ -84,6 +89,12 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private MonthModifyCommandFacade monthModifyCommandFacade;
+	
+	@Inject
+	private CheckBeforeCalcFlex checkBeforeCalcFlex;
+	
+	@Inject
+	private DPLoadRowProcessor loadRowProcessor;
 	
 	@POST
 	@Path("startScreen")
@@ -134,11 +145,19 @@ public class DailyPerformanceCorrectionWebService {
 		// insert flex 
 		if (dataParent.getMonthValue() != null) {
 			val month = dataParent.getMonthValue();
-			monthModifyCommandFacade.handleUpdate(new MonthlyModifyQuery(month.getItems().stream().map(x -> {
-				return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue()).valueType(ValueType.valueOf(x.getValueType())).withPath("");
-			}).collect(Collectors.toList()), month.getYearMonth(),
-					month.getEmployeeId(), month.getClosureId(), month.getClosureDate(), Collections.emptyList()));
+			if (month != null && month.getItems() != null) {
+				monthModifyCommandFacade.handleUpdate(new MonthlyModifyQuery(month.getItems().stream().map(x -> {
+					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
+							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
+				}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
+						month.getClosureDate(), Collections.emptyList()));
+			}
 		}
+		
+		if(dataParent.getSpr() != null){
+			processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(), dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
+		}
+		
 		List<DPItemValue> itemValueChild= dataParent.getItemValues().stream().map(x -> {
 			DPItemValue item = x;
 			if (x.getTypeGroup() == TypeLink.POSSITION.value) {
@@ -159,6 +178,7 @@ public class DailyPerformanceCorrectionWebService {
 		// check error care item
 		List<DPItemValue> itemErrors = new ArrayList<>();
 		List<DPItemValue> itemInputErors = new ArrayList<>();
+		List<DPItemValue> itemInputError28 = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {
 			List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
 					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
@@ -171,8 +191,12 @@ public class DailyPerformanceCorrectionWebService {
 				itemInputErors.addAll(itemInputs);
 			}
 			
+			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInputItem28(itemCovert);
+			itemInputError28.addAll(itemInputs28);
+			
 		});
-		if (itemErrors.isEmpty() && itemInputErors.isEmpty()) {
+		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
+			List<DailyModifyQuery> querys = new ArrayList<>();
 				mapSidDate.entrySet().forEach(x -> {
 					List<ItemValue> itemCovert = x.getValue().stream()
 							.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()),
@@ -180,16 +204,19 @@ public class DailyPerformanceCorrectionWebService {
 							.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
 							.collect(Collectors.toList());
 					if (!itemCovert.isEmpty())
-						dailyModifyCommandFacade.handleUpdate(new DailyModifyQuery(x.getValue().get(0).getEmployeeId(),
-								x.getValue().get(0).getDate(), itemCovert));
+						querys.add(new DailyModifyQuery(x.getKey().getKey(),
+								x.getKey().getValue(), itemCovert));
+						//dailyModifyCommandFacade.handleUpdate();
 				});
+				dailyModifyCommandFacade.handleUpdate(querys);
 				// insert cell edit
 				dailyModifyCommandFacade.handleEditCell(itemValueChild);
 				//resultError.put(1, itemInputErors);
 				//return resultError;
 		}else{
-			resultError.put(0, itemErrors);
-			resultError.put(1, itemInputErors);
+			resultError.put(TypeError.DUPLICATE.value, itemErrors);
+			resultError.put(TypeError.COUPLE.value, itemInputErors);
+			resultError.put(TypeError.ITEM28.value, itemInputError28);
 			//return resultError;
 		}
 		
@@ -202,13 +229,10 @@ public class DailyPerformanceCorrectionWebService {
 			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
 					dataParent.getDateRange());
 			if (!dataCheck.isEmpty()) {
-				resultError.put(2, dataCheck);
+				resultError.put(TypeError.CONTINUOUS.value, dataCheck);
 			}
 		}
 		
-		if(dataParent.getSpr() != null){
-			processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(), dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
-		}
 		return resultError;
 	}
 	
@@ -227,5 +251,17 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("getApplication")
 	public List<EnumConstant> getApplicationName() {
 		return dataDialogWithTypeProcessor.getNameAppliction();
+	}
+	
+	@POST
+	@Path("getFlexCheck")
+	public JavaTypeResult<String>  getValueTimeFlex(CalcFlexDto calc) {
+		return new JavaTypeResult<String>(checkBeforeCalcFlex.getConditionCalcFlex(calc));
+	}
+	
+	@POST
+	@Path("loadRow")
+	public DailyPerformanceCorrectionDto reloadRow(DPPramLoadRow param) {
+		return loadRowProcessor.reloadGrid(param);
 	}
 }

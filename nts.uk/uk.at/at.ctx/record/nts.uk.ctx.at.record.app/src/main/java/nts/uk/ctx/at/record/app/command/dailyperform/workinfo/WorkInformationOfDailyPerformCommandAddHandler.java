@@ -21,7 +21,7 @@ public class WorkInformationOfDailyPerformCommandAddHandler extends CommandFacad
 
 	@Override
 	protected void handle(CommandHandlerContext<WorkInformationOfDailyPerformCommand> context) {
-		WorkInfoOfDailyPerformance domain = context.getCommand().getData();
+		WorkInfoOfDailyPerformance domain = context.getCommand().toDomain();
 		
 		/** check worktype*/
 		checkWorkType(domain);
@@ -45,7 +45,7 @@ public class WorkInformationOfDailyPerformCommandAddHandler extends CommandFacad
 	
 	private void checkTogether(WorkInfoOfDailyPerformance domain, String comId) {
 		workTypeRepo.findByPK(comId, domain.getRecordInfo().getWorkTypeCode().v()).ifPresent(wt -> {
-			if(!wt.isNoneWorkTimeType()){
+			if(wt.isNoneWorkTimeType()){
 				domain.getRecordInfo().removeWorkTimeInHolydayWorkType();
 				domain.getScheduleInfo().removeWorkTimeInHolydayWorkType();
 			}
@@ -54,12 +54,12 @@ public class WorkInformationOfDailyPerformCommandAddHandler extends CommandFacad
 
 	private void checkSeperate(WorkInfoOfDailyPerformance domain, String comId) {
 		workTypeRepo.findByPK(comId, domain.getRecordInfo().getWorkTypeCode().v()).ifPresent(wt -> {
-			if(!wt.isNoneWorkTimeType()){
+			if(wt.isNoneWorkTimeType()){
 				domain.getRecordInfo().removeWorkTimeInHolydayWorkType();
 			}
 		});
 		workTypeRepo.findByPK(comId, domain.getScheduleInfo().getWorkTypeCode().v()).ifPresent(wt -> {
-			if(!wt.isNoneWorkTimeType()){
+			if(wt.isNoneWorkTimeType()){
 				domain.getScheduleInfo().removeWorkTimeInHolydayWorkType();
 			}
 		});

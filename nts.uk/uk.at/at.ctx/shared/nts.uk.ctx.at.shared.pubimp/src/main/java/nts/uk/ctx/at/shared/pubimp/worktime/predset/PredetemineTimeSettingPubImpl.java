@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.pubimp.worktime.predset;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,7 +28,7 @@ import nts.uk.ctx.at.shared.pub.worktime.predset.PredeterminedTimeExport;
 public class PredetemineTimeSettingPubImpl implements PredetemineTimeSettingPub{
 	
 	/** The work two. */
-	public static Integer WORK_TWO = 2;
+	public static final Integer WORK_TWO = 2;
 	
 	/** The predetemine time setting repository. */
 	@Inject
@@ -54,7 +57,20 @@ public class PredetemineTimeSettingPubImpl implements PredetemineTimeSettingPub{
 			return false;
 		}
 	}
+	
+	@Override
+	public Map<String, Boolean> checkWorkingTwice(String companyId, List<String> workTimeCodes) {
+		// ドメインモデル「所定時間設定」を取得
+		List<PredetemineTimeSetting> predetemineTimeSettingList = this.predetemineTimeSettingRepository
+				.findByCodeList(companyId, workTimeCodes);
 
+		return predetemineTimeSettingList.stream()
+				.collect(Collectors.toMap(ptSetting -> ptSetting.getWorkTimeCode().v(),
+						ptSetting -> ptSetting.getPrescribedTimezoneSetting().getMatchWorkNoTimeSheet(WORK_TWO)
+								.getUseAtr() == UseSetting.USE));
+
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

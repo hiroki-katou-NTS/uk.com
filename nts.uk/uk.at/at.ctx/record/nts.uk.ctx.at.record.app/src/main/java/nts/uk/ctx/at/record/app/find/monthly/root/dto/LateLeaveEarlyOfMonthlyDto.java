@@ -3,21 +3,25 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonTimeCountDto;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.Late;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LeaveEarly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の遅刻早退 */
-public class LateLeaveEarlyOfMonthlyDto {
+public class LateLeaveEarlyOfMonthlyDto implements ItemConst {
 
 	/** 早退: 早退 */
-	@AttendanceItemLayout(jpPropertyName = "早退", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = LEAVE_EARLY, layout = LAYOUT_A)
 	private CommonTimeCountDto leaveEarly;
 
 	/** 遅刻: 遅刻 */
-	@AttendanceItemLayout(jpPropertyName = "遅刻", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = LATE, layout = LAYOUT_B)
 	private CommonTimeCountDto late;
 
 	public static LateLeaveEarlyOfMonthlyDto from(LateLeaveEarlyOfMonthly domain) {
@@ -29,7 +33,7 @@ public class LateLeaveEarlyOfMonthlyDto {
 		return dto;
 	}
 	public LateLeaveEarlyOfMonthly toDomain() {
-		return LateLeaveEarlyOfMonthly.of(leaveEarly == null ? null : leaveEarly.toLeaveEarly(),
-										late == null ? null : late.toLate());
+		return LateLeaveEarlyOfMonthly.of(leaveEarly == null ? new LeaveEarly() : leaveEarly.toLeaveEarly(),
+										late == null ? new Late() : late.toLate());
 	}
 }

@@ -27,6 +27,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             self.currentHoliday(item);
                             self.isNewMode(false);
                             self.setFocus();
+                            self.setSpecialHolidayStyle();
                         }
                         _.defer(() => { errors.clearAll() });
                     }).fail(function(error) {
@@ -183,6 +184,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.isNewMode(true);
             //focus
             self.setFocus();
+            self.setSpecialHolidayStyle();
             $('.nts-input').ntsError('clear');
             nts.uk.ui.errors.clearAll();
         }
@@ -194,6 +196,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             } else {
                 $('#holidayName').focus();
             }
+        }
+        
+        setSpecialHolidayStyle(){
+            $("#rowSpecialHoliday > td > div > div > label").addClass("limited-label");
+            $("#rowSpecialHoliday > td > div > div > label > span.label").addClass("label-checkbox");
         }
 
         /**
@@ -262,6 +269,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     { return x.cd() == currentHoliday.cd() });
                     service.removeHolidayRemaining(ko.toJS(currentHoliday)).done(function() {
                         self.getAllData(self.currentCode()).done(() => {
+                            self.setSpecialHolidayStyle();
                             dialog.info({ messageId: "Msg_16" }).then(() => {
                                 if (self.lstHolidays().length == 0) {
                                     self.currentCode('');
