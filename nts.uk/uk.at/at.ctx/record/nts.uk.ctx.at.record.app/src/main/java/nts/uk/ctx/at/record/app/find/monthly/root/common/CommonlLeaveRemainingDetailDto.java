@@ -28,12 +28,12 @@ public class CommonlLeaveRemainingDetailDto implements ItemConst {
 	private GeneralDate grantDate;
 
 	/** 日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_B)
 	private double days;
 
 	/** 時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_C)
 	private int time;
 

@@ -17,17 +17,17 @@ import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 public class AnnualLeaveAttdRateDaysDto implements ItemConst {
 
 	/** 労働日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = LABOR, layout = LAYOUT_A)
 	private double workingDays;
 	
 	/** 所定日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_B)
 	private double prescribedDays;
 	
 	/** 控除日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION, layout = LAYOUT_C)
 	private double deductedDays;
 	

@@ -25,12 +25,12 @@ public class ShortWorkTimeDto implements ItemConst {
 
 	/** 勤務回数 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = COUNT, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer times;
 
 	/** 育児介護区分 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = CHILD_CARE_ATTR)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int attr;
 	
 	public String enumText(){

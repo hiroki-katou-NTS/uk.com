@@ -145,7 +145,7 @@ public class MonthlyPerformanceCorrectionDto {
 		};
 	}
 	
-	private void setStateCell(String columnKey, String rowId, String state){
+	public void setStateCell(String columnKey, String rowId, String state){
 		Optional<MPCellStateDto> mp = findExistCellState(rowId, columnKey);
 		if(mp.isPresent()){
 			mp.get().addState(state);

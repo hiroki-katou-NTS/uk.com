@@ -22,8 +22,26 @@
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_11')}</div>
 			</div>
 			<div class="div_line_col_2">
-				<label data-bind="text:employeeName" class="text_line"></label>
+				<label data-bind="text:employeeName,visible:!screenModeNew()==true"
+					class="text_line"></label>
 			</div>
+			<div class="div_line_col_2" data-bind="if:screenModeNew()==true">
+				<label data-bind="text:employeeName,visible:!employeeList().length"
+					class="text_line"></label>
+				<div data-bind="if:employeeList().length">
+					<div id="list-box"
+						data-bind="ntsListBox: {
+											options: employeeList ,
+											optionsValue: 'code',
+											optionsText: 'name',
+											multiple: false,
+											value: selectedEmployeeCD ,
+											enable: true,
+											rows: 5 }"></div>
+					<div class="div_line" data-bind="text:totalEmployeeText"></div>
+				</div>
+			</div>
+
 		</div>
 		<div class="div_line" data-bind="if:displayPrePostFlg()!=0">
 			<div class="div_line_col_1">

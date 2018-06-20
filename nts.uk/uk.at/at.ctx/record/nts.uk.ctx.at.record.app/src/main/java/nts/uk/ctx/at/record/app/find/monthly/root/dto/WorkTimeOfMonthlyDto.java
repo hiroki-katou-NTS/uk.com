@@ -64,7 +64,7 @@ public class WorkTimeOfMonthlyDto implements ItemConst {
 
 	/** 予実差異時間: 月別実績の予実差異時間 */
 	@AttendanceItemLayout(jpPropertyName = PLAN_ACTUAL_DIFF, layout = LAYOUT_I)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private int budgetTimeVarience;
 
 	/** 予約: 月別実績の予約 */
