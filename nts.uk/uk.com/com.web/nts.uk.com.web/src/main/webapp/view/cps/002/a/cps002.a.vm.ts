@@ -241,8 +241,9 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
                 let self = this,
                     employee = self.currentEmployee();
-                employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
-
+                if (employee.cardNo() == "") {
+                    employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
+                }
             });
 
             self.currentEmployee().cardNo.subscribe((cardNo) => {
@@ -713,7 +714,13 @@ module cps002.a.vm {
                     currentEmp = self.currentEmployee();
                 if (result) {
                     $("#employeeCode").ntsError("clear");
-                    param === isCardNoMode ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
+                    if (param === isCardNoMode) {
+                        currentEmp.cardNo(result);
+                        currentEmp.cardNo.valueHasMutated();
+                    } else {
+                        currentEmp.employeeCode(result);
+                        currentEmp.employeeCode.valueHasMutated();
+                    }
                 }
             });
         }
