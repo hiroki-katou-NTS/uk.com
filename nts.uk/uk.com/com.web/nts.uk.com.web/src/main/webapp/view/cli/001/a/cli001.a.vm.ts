@@ -55,7 +55,6 @@ module nts.uk.com.view.cli001.a {
                         let userId = { userId: data.userID };
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
                             _self.items.push({ logType: dto.lockType, loginId: data.loginID, userId: dto.userId, userName: data.userName, lockOutDateTime: dto.logoutDateTime });
-                            console.log(_self.items());
                         });
                     }
                     nts.uk.ui.block.clear();
@@ -99,12 +98,8 @@ module nts.uk.com.view.cli001.a {
                                         self.currentCodeList([]);
                                     });
                                 });
-                            }).fail((res: any) => {
-                                return;
                             });
-                        }).ifNo(function () {
-                            return;
-                    });
+                        });
                 }
             }
 
