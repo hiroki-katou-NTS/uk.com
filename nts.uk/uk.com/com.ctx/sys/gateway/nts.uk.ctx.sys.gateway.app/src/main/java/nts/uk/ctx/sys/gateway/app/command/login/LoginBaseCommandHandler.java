@@ -228,7 +228,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param companyCode
 	 *            the company code
 	 */
-	protected void setLoggedInfo(UserImportNew user, EmployeeImport em, String companyCode) {
+	public void setLoggedInfo(UserImportNew user, EmployeeImport em, String companyCode) {
 		// set info to session
 		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
 				companyCode, em.getEmployeeId(), em.getEmployeeCode());
@@ -241,7 +241,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the user
 	 */
 	// init session
-	protected CheckChangePassDto initSession(UserImportNew user) {
+	public CheckChangePassDto initSession(UserImportNew user) {
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
 		if (lstCompanyId.isEmpty()) {
 			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
