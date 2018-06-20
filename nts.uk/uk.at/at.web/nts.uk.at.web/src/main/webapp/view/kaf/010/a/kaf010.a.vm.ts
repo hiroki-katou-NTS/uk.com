@@ -398,7 +398,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             let overtime: common.AppOverTime = {
                 applicationDate: new Date(self.appDate()),
                 prePostAtr: self.prePostSelected(),
-                applicantSID: self.employeeID,
+                applicantSID: self.employeeID(),
                 applicationReason: appReason,
                 workTypeCode: self.workTypeCd(),
                 siftTypeCode: self.siftCD(),
