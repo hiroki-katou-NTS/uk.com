@@ -68,8 +68,11 @@ module nts.uk.com.view.ccg026.component {
                     requestDone = (data: Array<IPermision>) => {
                         data = _.orderBy(data, ['orderNumber']);
 
-                        $grid = $element.find('#permision_grid');
+                        // fire changeDate for first action
+                        params.changeData(data);
 
+                        // change grid dataSource
+                        $grid = $element.find('#permision_grid');
                         $grid.igGrid("option", "dataSource", data);
                     };
 
@@ -122,6 +125,7 @@ module nts.uk.com.view.ccg026.component {
                                 fetch.person_info(roleId).done(requestDone);
                                 break;
                             default:
+                                requestDone([]);
                                 break;
                         }
 
@@ -133,14 +137,14 @@ module nts.uk.com.view.ccg026.component {
                 $grid
                     .igGrid({
                         width: "100%",
-                        height: "217px",
+                        height: `${(ko.toJS(params.maxRow) || 10) * 36}px`,
                         primaryKey: "functionNo",
                         enableHoverStyles: false,
                         columns: [
                             { headerText: 'コード', key: 'functionNo', hidden: true },
-                            { headerText: text('CCG026_2'), key: 'functionName', width: "200px" },
+                            { headerText: text('CCG026_2'), key: 'functionName', width: "240px" },
                             {
-                                headerText: text('CCG026_3'), key: 'available', width: "80px",
+                                headerText: text('CCG026_3'), key: 'available', width: "70px",
                                 template: '<div class="ntsControl ntsCheckBox">\
                                             <label class="ntsCheckBox-label">\
                                                 <input type="checkbox" value="${functionNo}">\
@@ -148,7 +152,7 @@ module nts.uk.com.view.ccg026.component {
                                             </label>\
                                        </div>'
                             },
-                            { headerText: text('CCG026_4'), key: 'description', width: "200px" }
+                            { headerText: text('CCG026_4'), key: 'description' }
                         ],
                         dataRendered: (evt, ui) => {
                             // remove all tabindex of control
@@ -185,9 +189,6 @@ module nts.uk.com.view.ccg026.component {
                                             params.changeData(data);
                                         });
                                 });
-
-                            //send first data
-                            $container.find('input[type="checkbox"]:first').trigger('change');
                         },
                         dataSource: []
                     });
@@ -216,6 +217,7 @@ module nts.uk.com.view.ccg026.component {
         roleId: KnockoutObservable<string>;
         roleType: KnockoutObservable<ROLE_TYPE>;
         changeData?: (data?: any) => void;
+        maxRow?: KnockoutObservable<number> | number;
     }
 
     export interface ILabel {
