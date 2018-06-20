@@ -55,7 +55,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         employeeList = ko.observableArray([]);
 
-        selectedEmployeeCD = ko.observable('');
+        selectedEmployee = ko.observable(null);
 
         totalEmployeeText = ko.observable('');
         constructor() {
@@ -96,7 +96,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             self.employeeList.subscribe((datas) => {
                 if (datas) {
                     self.totalEmployeeText(text('KAF011_79', [datas.length]));
-                    self.selectedEmployeeCD(datas[0]);
+                    self.selectedEmployee(datas[0]);
                 }
 
             });
@@ -153,7 +153,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
-                self.employeeList(_.map(data.employees, (emp) => { return  { code: emp.scd, name: emp.bussinessName } }));
+                self.employeeList(_.map(data.employees, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
                 self.recWk().setWkTypes(data.recWkTypes || []);
@@ -221,7 +221,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         appReasonText: '',
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
-                        enteredPersonSID: self.employeeID(),
+                        employeeID: self.employeeList()[0]? self.employeeList()[0].sid : null,
                         appVersion: 0
                         ,
                     }
