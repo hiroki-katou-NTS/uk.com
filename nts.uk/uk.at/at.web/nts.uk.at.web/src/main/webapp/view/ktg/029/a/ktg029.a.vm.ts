@@ -346,6 +346,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         yearlyHoliday: YearlyHolidayDto;
         reservedYearsRemainNo: number;
         remainAlternationNo: TimeOTDto;
+        remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
         hdremainNo: number;
@@ -411,6 +412,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         yearlyHoliday: YearlyHoliday;
         reservedYearsRemainNo: number;
         remainAlternationNo: string;
+        remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
         hDRemainNo: number;
@@ -436,6 +438,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.yearlyHoliday = new YearlyHoliday(data.yearlyHoliday);
             this.reservedYearsRemainNo = data.reservedYearsRemainNo;
             this.remainAlternationNo = (data.remainAlternationNo.hours<10?('0'+data.remainAlternationNo.hours):data.remainAlternationNo.hours)+':'+(data.remainAlternationNo.min<10?('0'+data.remainAlternationNo.min):data.remainAlternationNo.min);
+            this.remainAlternationNoDay = data.remainAlternationNoDay;
             this.remainsLeft = data.remainsLeft;
             this.publicHDNo = data.publicHDNo;
             this.hDRemainNo = data.hdremainNo;
