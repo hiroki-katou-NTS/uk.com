@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -74,7 +75,7 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 			throw new RuntimeException("Invalid CisdtEraName");
 		}
 		
-		this.commandProxy().remove(entity);
+		this.commandProxy().remove(entity.get());
 		
 	};
 	
@@ -86,7 +87,7 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 		if(!entity.isPresent()) {
 			throw new RuntimeException("Invalid CisdtEraName");
 		}
-		this.commandProxy().update(entity);
+		this.commandProxy().update(entity.get());
 		
 	};
 	
@@ -102,9 +103,11 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 	 * @return the cisdt era name
 	 */
 	private CisdtEraName toEntity(EraNameDom domain) {
-		CisdtEraName entity = this.queryProxy().find(domain.getEraNameId(), CisdtEraName.class)
-				.orElse(new CisdtEraName());
-		
+		CisdtEraName entity = new CisdtEraName();
+		if(domain.getEraNameId() == null || domain.getEraNameId().isEmpty()) {
+			String uuid = UUID.randomUUID().toString();
+			domain.setEraNameId(uuid);
+		}
 		EraNameDomSetMemento memento = new JpaEraNameSetMemento(entity);
 		domain.saveToMemento(memento);
 		

@@ -31,9 +31,9 @@ public class EraNameDeleteCommandHandler extends CommandHandler<EraNameDeleteCom
 			if(domain.getEndDate().equals(LAST_END_DATE))
 				// delete item
 				this.repo.deleteEraName(command.getEraId());
-			throw new RuntimeException("Invalid EraName");
+			else throw new RuntimeException("Invalid EraName");
 		}
-		else throw new RuntimeException("Invalid EraName");
+		else throw new RuntimeException("Invalid EraNameId");
 	}
 
 }

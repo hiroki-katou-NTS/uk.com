@@ -18,10 +18,10 @@ public class EraNameSaveCommand {
 	private String eraName;
 	
 	/** The start date. */
-	private GeneralDate startDate;
+	private String startDate;
 	
 	/** The end date. */
-	private GeneralDate endDate;
+	private String endDate;
 	
 	/** The era symbol. */
 	private String eraSymbol;
@@ -39,7 +39,7 @@ public class EraNameSaveCommand {
 	 * @param eraSymbol the era symbol
 	 * @param systemType the system type
 	 */
-	public EraNameSaveCommand(String eraId, String eraName, GeneralDate startDate, GeneralDate endDate, String eraSymbol,
+	public EraNameSaveCommand(String eraId, String eraName, String startDate, String endDate, String eraSymbol,
 			Integer systemType) {
 		super();
 		this.eraId = eraId;
@@ -87,7 +87,7 @@ public class EraNameSaveCommand {
 
 		@Override
 		public GeneralDate getStartDate() {
-			return command.getStartDate();
+			return GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd");
 		}
 
 		@Override
