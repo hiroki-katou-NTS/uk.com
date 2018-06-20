@@ -115,6 +115,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         flag: boolean = true;
         isClickChangeDisplayMode: boolean = false;
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
+        arrLockCellInit: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -822,12 +823,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                     }
                 });
+                // get cell is locked
+                self.arrLockCellInit($("#extable").exTable("lockCells"));
 
-                /**
-                 * validate when stick data in cell
-                 */
+                // validate when stick data in cell
                 $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
+                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '据え置き') {
                         let dataS: BasicSchedule =
                             _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
                         let wTimeCode: string = dataS ? dataS.workTimeCode : null;
@@ -847,13 +848,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     let workTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                     // if workTypeCode is not required( state = 2) worktime is needless
-                    if (workTypeCd && workTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
+                    if (workTypeCd && workTypeCd.state == 2 && !_.isEmpty(data.workTimeCode)) {
                         return function() {
                             alertError({ messageId: 'Msg_434' });
                         };
                     }
                     // if workTypeCode is required( state = 0) worktime is need
-                    if (workTypeCd && workTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
+                    if (workTypeCd && workTypeCd.state == 0 && _.isEmpty(data.workTimeCode)) {
                         return function() {
                             alertError({ messageId: 'Msg_435' });
                         };
@@ -968,6 +969,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                         }
                     });
+                    // get cell is locked
+                    self.arrLockCellInit($("#extable").exTable("lockCells"));
 
                     self.stopRequest(true);
                 });
@@ -1045,6 +1048,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                             }
                         });
+                        // get cell is locked
+                        self.arrLockCellInit($("#extable").exTable("lockCells"));
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1122,6 +1127,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                             }
                         });
+                        // get cell is locked
+                        self.arrLockCellInit($("#extable").exTable("lockCells"));
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1223,7 +1230,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         handleSetSymbolForCell(item: any): void {
             let self = this;
             let symbolName: string = null;
-            if (item.workTimeCode === '000' || item.workTimeCode == null || item.workTimeCode == '') {
+            if (_.isEmpty(item.workTimeCode)) {
                 let workTypeItem: any = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': item.workTypeCode });
                 symbolName = workTypeItem ? workTypeItem.symbolicName : null;
             } else {
