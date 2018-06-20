@@ -2,6 +2,7 @@ module nts.uk.pr.view.ccg007.h {
     export module viewmodel {
         import blockUI = nts.uk.ui.block;
         import ForgotPasswordCommand = service.ForgotPasswordCommand;
+        import SubmitData = service.SubmitData;
 
         export class ScreenModel {
 
@@ -34,8 +35,7 @@ module nts.uk.pr.view.ccg007.h {
                     self.userName(data.userName);
                     self.userId(data.userId);
                     //remove loginId and contractCode in LocalStorage
-                    localStorage.removeItem('loginId');
-                    localStorage.removeItem('contractCode');
+                    
                 });
 
                 dfd.resolve();
@@ -69,8 +69,26 @@ module nts.uk.pr.view.ccg007.h {
 
                 service.submitForgotPass(command).done(function() {
                     localStorage.removeItem('url');
-                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
-                    blockUI.clear();
+                    
+                    var submitData = <SubmitData>{};
+                    
+                    //Set SubmitData
+                    submitData.loginId = nts.uk.text.padRight(_.escape(localStorage.getItem('loginId')), " ", 12);
+                    submitData.password = _.escape(self.passwordNew());
+                    submitData.contractCode = _.escape(localStorage.getItem('contractCode'));
+                    submitData.contractPassword = _.escape(localStorage.getItem('contractPassword'));
+                    
+                    localStorage.removeItem('loginId');
+                    localStorage.removeItem('contractCode');
+                    localStorage.removeItem('contractPassword');
+                    
+                    //login
+                    service.submitLogin(submitData).done(function(messError) {
+                        //Remove LoginInfo
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                        blockUI.clear();
+                    });
+                    
                 }).fail(function(res) {
                     //Return Dialog Error
                     self.showMessageError(res);
