@@ -21,6 +21,7 @@ import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.PasswordMessageObject;
+import nts.uk.ctx.sys.auth.pub.user.PasswordSplitObject;
 
 /**
  * The Class CheckBeforePasswordPublisherImpl.
@@ -51,7 +52,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	public CheckBeforeChangePassOutput checkBeforeChangePassword(String userId, String currentPass, String newPass,
 			String reNewPass) {
 		List<PasswordMessageObject> messages = new ArrayList<>();
-		// 変更前チェック
+		// 螟画峩蜑阪メ繧ｧ繝�繧ｯ
 		if (!newPass.equals(reNewPass)) {
 			messages.add( new PasswordMessageObject("Msg_961"));
 		}
@@ -67,11 +68,32 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 			return new CheckBeforeChangePassOutput(true, messages);
 		}
 
-		// ドメインモデル「パスワードポリシー」を取得する
-		PasswordPolicyImport passwordPolicyImport = this.passwordPolicyAdap
-				.getPasswordPolicy(user.getContractCode().v()).get();
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲後ヱ繧ｹ繝ｯ繝ｼ繝峨�昴Μ繧ｷ繝ｼ縲阪ｒ蜿門ｾ励☆繧�
+		return this.passwordPolicyCheck(userId, reNewPass, user.getContractCode().v());
+	}
+	
+	@Override
+	public CheckBeforeChangePassOutput checkBeforeResetPassword(String userId, String newPass, String reNewPass) {
+		
+		List<PasswordMessageObject> messages = new ArrayList<>();
+		// 螟画峩蜑阪メ繧ｧ繝�繧ｯ Check newPass and reNewPass
+		if (!newPass.equals(reNewPass)) {
+			messages.add(new PasswordMessageObject("#Msg_961"));
+		}
+		//get domain User
+		User user = this.userRepo.getByUserID(userId).get();
+		
+		//Check loginId
+		if (user.getLoginID().v().equals(newPass)) {
+			messages.add(new PasswordMessageObject("#Msg_989"));
+		}
+		
+		if (!messages.isEmpty()) {
+			return new CheckBeforeChangePassOutput(true, messages);
+		}
 
-		return this.passwordPolicyCheck(userId, reNewPass, passwordPolicyImport);
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲後ヱ繧ｹ繝ｯ繝ｼ繝峨�昴Μ繧ｷ繝ｼ縲阪ｒ蜿門ｾ励☆繧�
+		return this.passwordPolicyCheck(userId, reNewPass, user.getContractCode().v());
 	}
 
 	/**
@@ -81,47 +103,102 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	 *            the user id
 	 * @param newPass
 	 *            the new pass
-	 * @param passwordPolicyImport
-	 *            the password policy import
+	 * @param contractCode
+	 *            the contract code
 	 * @return the check before change pass output
 	 */
-	// パスワードポリシーチェック
-	private CheckBeforeChangePassOutput passwordPolicyCheck(String userId, String newPass,
-			PasswordPolicyImport passwordPolicyImport) {
+	// 繝代せ繝ｯ繝ｼ繝峨�昴Μ繧ｷ繝ｼ繝√ぉ繝�繧ｯ
+	@Override
+	public CheckBeforeChangePassOutput passwordPolicyCheck(String userId, String newPass, String contractCode) {
+		//get PasswordPolicy
+		PasswordPolicyImport passwordPolicyImport = this.passwordPolicyAdap.getPasswordPolicy(contractCode).get();
 
 		List<PasswordMessageObject> messages = new ArrayList<>();
 		PasswordPolicyCountChar countChar = this.getCountChar(newPass);
-		int lengthPass = newPass.length();
-		int numberOfDigits = countChar.getNumberOfDigits();
-		int alphabetDigit = countChar.getAlphabetDigit();
-		int symbolCharacters = countChar.getSymbolCharacters();
+		
+		PasswordSplitObject passSplit = new PasswordSplitObject();
+		passSplit.setLengthPass(newPass.length());
+		passSplit.setNumberOfDigits(countChar.getNumberOfDigits());
+		passSplit.setAlphabetDigit(countChar.getAlphabetDigit());
+		passSplit.setSymbolCharacters(countChar.getSymbolCharacters());
 
 		if (passwordPolicyImport.isUse) {
-			if (lengthPass < passwordPolicyImport.getLowestDigits()) {
-				messages.add(new PasswordMessageObject("Msg_1186",passwordPolicyImport.getLowestDigits()));
+			//check PassPolicy
+			messages = this.checkPolicyChar(passwordPolicyImport, passSplit);
+			
+			//check historyCount
+			PasswordMessageObject messHist = this.checkHistoyCount(passwordPolicyImport.getHistoryCount(), userId, newPass);
+			
+			if (messHist.getMessage() != null){
+				messages.add(messHist);
 			}
-			if (alphabetDigit < passwordPolicyImport.getAlphabetDigit()) {
-				messages.add(new PasswordMessageObject("Msg_1188", passwordPolicyImport.getAlphabetDigit()));
-			}
-			if (numberOfDigits < passwordPolicyImport.getNumberOfDigits()) {
-				messages.add(new PasswordMessageObject("Msg_1189", passwordPolicyImport.getNumberOfDigits()));
-			}
-			if (symbolCharacters < passwordPolicyImport.getSymbolCharacters()) {
-				messages.add( new PasswordMessageObject("Msg_1190", passwordPolicyImport.getSymbolCharacters()));
-			}
-			if (passwordPolicyImport.getHistoryCount() > 0) {
-				// Check password history
-				String newPassHash = PasswordHash.generate(newPass, userId);
-				if (this.isHistoryPassError(userId, passwordPolicyImport.getHistoryCount(), newPassHash)) {
-					messages.add(new PasswordMessageObject("Msg_1187", passwordPolicyImport.getHistoryCount()));
-				}
-			}
+			
 		}
 		if (messages.isEmpty()) {
 			return new CheckBeforeChangePassOutput(false, messages);
 		} else {
 			return new CheckBeforeChangePassOutput(true, messages);
 		}
+	}
+	
+	@Override
+	public CheckBeforeChangePassOutput passwordPolicyCheckForSubmit(String userId, String newPass, String contractCode) {
+		//get PasswordPolicy
+		PasswordPolicyImport passwordPolicyImport = this.passwordPolicyAdap.getPasswordPolicy(contractCode).get();
+
+		List<PasswordMessageObject> messages = new ArrayList<>();
+		PasswordPolicyCountChar countChar = this.getCountChar(newPass);
+		
+		PasswordSplitObject passSplit = new PasswordSplitObject();
+		passSplit.setLengthPass(newPass.length());
+		passSplit.setNumberOfDigits(countChar.getNumberOfDigits());
+		passSplit.setAlphabetDigit(countChar.getAlphabetDigit());
+		passSplit.setSymbolCharacters(countChar.getSymbolCharacters());
+
+		if (passwordPolicyImport.isUse) {
+			//check PassPolicy
+			messages = this.checkPolicyChar(passwordPolicyImport, passSplit);
+		}
+		if (messages.isEmpty()) {
+			return new CheckBeforeChangePassOutput(false, messages);
+		} else {
+			return new CheckBeforeChangePassOutput(true, messages);
+		}
+	}
+	
+	private List<PasswordMessageObject> checkPolicyChar(PasswordPolicyImport passwordPolicyImport, PasswordSplitObject passSplit){
+		//List message
+		List<PasswordMessageObject> messages = new ArrayList<>();
+		
+		//check passpolicy
+		if (passSplit.getLengthPass() < passwordPolicyImport.getLowestDigits()) {
+			messages.add(new PasswordMessageObject("Msg_1186",passwordPolicyImport.getLowestDigits()));
+		}
+		if (passSplit.getAlphabetDigit() < passwordPolicyImport.getAlphabetDigit()) {
+			messages.add(new PasswordMessageObject("Msg_1188", passwordPolicyImport.getAlphabetDigit()));
+		}
+		if (passSplit.getNumberOfDigits() < passwordPolicyImport.getNumberOfDigits()) {
+			messages.add(new PasswordMessageObject("Msg_1189", passwordPolicyImport.getNumberOfDigits()));
+		}
+		if (passSplit.getSymbolCharacters() < passwordPolicyImport.getSymbolCharacters()) {
+			messages.add( new PasswordMessageObject("Msg_1190", passwordPolicyImport.getSymbolCharacters()));
+		}
+		//return 
+		return messages;
+	}
+	
+	private PasswordMessageObject checkHistoyCount(Integer historyCount, String userId, String newPass){
+		if (historyCount > 0) {
+			// Check password history
+			String newPassHash = PasswordHash.generate(newPass, userId);
+			if (this.isHistoryPassError(userId, historyCount, newPassHash)) {
+				return new PasswordMessageObject("Msg_1187", historyCount);
+			}
+			
+			return new PasswordMessageObject(null);
+		}
+		
+		return new PasswordMessageObject(null);
 	}
 
 	/**
@@ -136,7 +213,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	 * @return true, if is history pass error
 	 */
 	private boolean isHistoryPassError(String userId, int historyCount, String newPassHash) {
-		// domain パスワード変更ログ PasswordChangeLog
+		// domain 繝代せ繝ｯ繝ｼ繝牙､画峩繝ｭ繧ｰ PasswordChangeLog
 		List<PasswordChangeLog> listPasswordChangeLog = this.passwordChangeLogRepository.findByUserId(userId,
 				historyCount + 1);
 		Optional<PasswordChangeLog> duplicatePassword = listPasswordChangeLog.stream()

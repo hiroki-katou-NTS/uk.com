@@ -54,7 +54,7 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	/** 乖離時間: 乖離時間の自動計算設定 */
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = DIVERGENCE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int divergenceTime;
 	
 	public static CalcAttrOfDailyPerformanceDto getDto(CalAttrOfDailyPerformance domain) {
@@ -86,8 +86,9 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private static AutoCalOfLeaveEarlySettingDto newAutoCalcLeaveSetting(AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting) {
 		return autoCalcOfLeaveEarlySetting == null ? null : new AutoCalOfLeaveEarlySettingDto(
-						autoCalcOfLeaveEarlySetting.isLate() ? 1 : 0, 
-						autoCalcOfLeaveEarlySetting.isLeaveEarly() ? 1 : 0);
+						autoCalcOfLeaveEarlySetting.isLeaveEarly() ? 1 : 0,
+						autoCalcOfLeaveEarlySetting.isLate() ? 1 : 0 
+						);
 	}
 
 	private static AutoCalHolidaySettingDto newAutoCalcHolidaySetting(AutoCalRestTimeSetting domain) {
@@ -158,8 +159,8 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private AutoCalcOfLeaveEarlySetting createAutoCalcLeaveSetting() {
 		return this.leaveEarlySetting == null ? null : new AutoCalcOfLeaveEarlySetting(
-				this.leaveEarlySetting.getLeaveEarly() == 1 ? true : false ,
-				this.leaveEarlySetting.getLeaveLate() == 1 ? true : false);
+				this.leaveEarlySetting.getLeaveLate() == 1 ? true : false,
+				this.leaveEarlySetting.getLeaveEarly() == 1 ? true : false);
 	}
 
 	private AutoCalOvertimeSetting createAutoOverTimeSetting() {

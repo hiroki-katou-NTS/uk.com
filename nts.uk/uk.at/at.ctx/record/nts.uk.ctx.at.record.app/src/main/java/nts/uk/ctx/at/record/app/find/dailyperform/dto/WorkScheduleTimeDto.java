@@ -16,7 +16,7 @@ public class WorkScheduleTimeDto implements ItemConst {
 
 	/** 合計時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = PLAN)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer total;
 	
 	/** 所定外時間: 勤怠時間 */

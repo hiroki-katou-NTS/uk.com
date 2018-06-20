@@ -19,17 +19,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class FlexTimeOfExcessOutsideTimeDto implements ItemConst {
 
 	/** 原則時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = PRINCIPLE, layout = LAYOUT_A)
 	private int principleTime;
 
 	/** 超過フレ区分: 超過フレ区分 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	@AttendanceItemLayout(jpPropertyName = EXCESS + ATTRIBUTE, layout = LAYOUT_B)
 	private int excessFlexAtr;
 
 	/** 便宜上時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = CONVENIENCE, layout = LAYOUT_C)
 	private int forConvenienceTime;
 

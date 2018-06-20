@@ -68,7 +68,9 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	private String DELETE_ABS_BY_ID = "DELETE FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	
+	private String QUERY_REC_BY_IDS_ATR = "SELECT c FROM KrcmtInterimRecAbs "
+			+ " WHERE c.recAbsPk.recruitmentMngId IN :recruitmentMngId"
+			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
 		return this.queryProxy().find(recId, KrcmtInterimRecMng.class)
@@ -178,6 +180,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.requiredDays = domain.getRequeiredDays().v();
 			entity.unOffsetDay = domain.getUnOffsetDays().v();
 		}
+		//this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -205,6 +208,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.useDays = domain.getUseDays().v();
 			entity.selectedAtr = domain.getSelectedAtr().value;
 		}
+		//this.getEntityManager().flush();
 	}
 
 	@Override
@@ -249,6 +253,14 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				.setParameter("recruitmentMngId", recId)
 				.setParameter("absenceMngAtr", absAtr.values)
 				.setParameter("recruitmentMngAtr", recAtr.values)
+				.getList(x -> toDomainRecAbs(x));
+	}
+
+	@Override
+	public List<InterimRecAbsMng> getRecByIdsMngAtr(List<String> recIds, DataManagementAtr recMngAtr) {
+		return this.queryProxy().query(QUERY_REC_BY_IDS_ATR, KrcmtInterimRecAbs.class)
+				.setParameter("recruitmentMngId", recIds)
+				.setParameter("recruitmentMngAtr", recMngAtr.values)
 				.getList(x -> toDomainRecAbs(x));
 	}
 }
