@@ -52,7 +52,13 @@ module nts.uk.pr.view.ccg007.h {
             public submit(): void {
                 let self = this;
 
+                //check hasError
                 if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
+                
+                //check userId null
+                if (_.isEmpty(self.userId())) {
                     return;
                 }
 

@@ -596,7 +596,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							Optional<AttendanceItemValueImport> optItemValue = x.getAttendanceItems().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
 							if (optItemValue.isPresent()) {
 								AttendanceItemValueImport itemValue = optItemValue.get();
-								if (itemValue.getValueType() == ActualValue.STRING) {
+								ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
+								if (valueTypeEnum == ValueType.CODE && itemValue.getValue() != null) {
 									int attendanceId = itemValue.getItemId();
 									switch (attendanceId) {
 									case 1:
@@ -758,7 +759,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Optional<AttendanceItemValueImport> optItemValue = x.getAttendanceItems().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
 				if (optItemValue.isPresent()) {
 					AttendanceItemValueImport itemValue = optItemValue.get();
-					if (itemValue.getValueType() == ActualValue.STRING && itemValue.getValue() != null) {
+					ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
+					if (valueTypeEnum == ValueType.CODE && itemValue.getValue() != null) {
 						int attendanceId = itemValue.getItemId();
 						switch (attendanceId) {
 						case 1:
@@ -865,11 +867,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					detail.actualValue.stream().forEach((aVal) -> {
 						int attdId = aVal.getAttendanceId();
 						int valueType = aVal.getValueType();
-						if (aVal.value() == null) return;
+						
+						// Get all total
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 						TotalValue personalTotal = employeeData.mapPersonalTotal.get(attdId);
 						TotalValue totalVal = lstTotalValue.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
 						TotalValue totalGrossVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
+						
+						// Change value type
+						personalTotal.setValueType(valueType);
+						totalVal.setValueType(valueType);
+						totalGrossVal.setValueType(valueType);
+						
+						if (aVal.value() == null) return;
+						
 						if (valueTypeEnum.isInteger()) {
 							int currentValue = (int) aVal.value();
 							personalTotal.setValue(String.valueOf(Integer.parseInt(personalTotal.getValue()) + currentValue));
@@ -877,10 +888,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							totalVal.setValue(String.valueOf(Integer.parseInt(totalVal.getValue()) + currentValue));
 							totalGrossVal.setValue(String.valueOf(Integer.parseInt(totalGrossVal.getValue()) + currentValue));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							// Change value type
-							personalTotal.setValueType(valueType);
-							totalVal.setValueType(valueType);
-							totalGrossVal.setValueType(valueType);
 						}
 						if (valueTypeEnum.isDouble()) {
 							double currentValueDouble = (double) aVal.value();
@@ -889,10 +896,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
 							totalGrossVal.setValue(String.valueOf(Double.parseDouble(personalTotal.getValue()) + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							// Change value type
-							personalTotal.setValueType(valueType);
-							totalVal.setValueType(valueType);
-							totalGrossVal.setValueType(valueType);
 						}
 					});
 				});
@@ -960,7 +963,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				List<ActualValue> lstActualValue = data.getActualValue();
 				if (lstActualValue == null) continue;
 				lstActualValue.forEach(actualValue -> {
-					if (actualValue.value() == null) return;
 					int valueType = actualValue.getValueType();
 					Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 					TotalValue totalValue;
@@ -985,6 +987,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							} else {
 								totalValue.setValue("0");
 							}
+						}
+						else { // This case also deals with null value
+							totalValue.setValue(actualValue.getValue());
 						}
 						totalValue.setValueType(valueType);
 						lstTotalValue.add(totalValue);
@@ -1014,6 +1019,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								totalWorkplaceValue.setValue("0");
 							}
 						}
+						else { // This case also deals with null value
+							totalWorkplaceValue.setValue(actualValue.getValue());
+						}
 						totalWorkplaceValue.setValueType(valueType);
 						lstTotalHierarchyValue.add(totalWorkplaceValue);
 					}
@@ -1026,7 +1034,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		lstReportData.values().forEach((value) -> {
 			List<TotalValue> lstActualValue = value.getWorkplaceTotal().getTotalWorkplaceValue();
 			lstActualValue.forEach(actualValue -> {
-				if (actualValue.value() == null) return;
 				int valueType = actualValue.getValueType();
 				Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 				TotalValue totalValue;
@@ -1051,6 +1058,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						} else {
 							totalValue.setValue("0");
 						}
+					}
+					else { // This case also deals with null value
+						totalValue.setValue(actualValue.getValue());
 					}
 					totalValue.setValueType(valueType);
 					lstTotalValue.add(totalValue);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
@@ -43,6 +45,8 @@ public class MonthlyCalculatingDailys {
 	private List<AnyItemValueOfDaily> anyItemValueOfDailyList;
 	/** 日別実績のPCログオン情報リスト */
 	private Map<GeneralDate, PCLogOnInfoOfDaily> pcLogonInfoMap;
+	/** 年休付与残数データリスト */
+	private List<AnnualLeaveGrantRemaining> grantRemainingDatas;
 	
 	public MonthlyCalculatingDailys(){
 		this.attendanceTimeOfDailyMap = new HashMap<>();
@@ -53,6 +57,7 @@ public class MonthlyCalculatingDailys {
 		this.employeeDailyPerErrorList = new ArrayList<>();
 		this.anyItemValueOfDailyList = new ArrayList<>();
 		this.pcLogonInfoMap = new HashMap<>();
+		this.grantRemainingDatas = new ArrayList<>();
 	}
 	
 	/**
@@ -175,5 +180,10 @@ public class MonthlyCalculatingDailys {
 			val ymd = pcLogonInfo.getYmd();
 			this.pcLogonInfoMap.putIfAbsent(ymd, pcLogonInfo);
 		}
+		
+		// 年休付与残数データリスト
+		this.grantRemainingDatas =
+				repositories.getAnnLeaGrantRemData().findNotExp(employeeId).stream()
+						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
 	}
 }
