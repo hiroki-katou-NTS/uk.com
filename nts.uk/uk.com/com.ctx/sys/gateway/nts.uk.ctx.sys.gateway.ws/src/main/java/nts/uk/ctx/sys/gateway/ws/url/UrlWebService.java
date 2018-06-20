@@ -115,7 +115,7 @@ public class UrlWebService {
 		if(!opContract.isPresent() || 
 			(systemDate.before(opContract.get().getContractPeriod().start())|| systemDate.after(opContract.get().getContractPeriod().end()))){
 			// アルゴリズム「契約認証する_アクティビティ(基本)」を実行する
-			throw new RuntimeException();
+			throw new BusinessException("Msg_1317");
 		}
 		// LocalStorage上に「契約認証情報」を保存する
 		// to do
