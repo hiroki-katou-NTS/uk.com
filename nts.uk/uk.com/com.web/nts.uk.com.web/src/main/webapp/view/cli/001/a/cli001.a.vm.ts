@@ -17,8 +17,7 @@ module nts.uk.com.view.cli001.a {
                     { headerText: nts.uk.resource.getText("CLI001_12"), key: "loginId", dataType: "string", width: 100 },
                     { headerText: nts.uk.resource.getText("CLI001_13"), key: "userName", dataType: "string", width: 170 },
                     { headerText: nts.uk.resource.getText("CLI001_14"), key: "lockOutDateTime", dataType: "string", width: 200, columnCssClass: "col-align-right" },
-                    {
-                        headerText: nts.uk.resource.getText("CLI001_15"), key: "logType", dataType: "string", width: 300,
+                    { headerText: nts.uk.resource.getText("CLI001_15"), key: "logType", dataType: "string", width: 300,
                         formatter: v => v == 1 ? '強制ロック' : '自動ロック'
                     },
                 ]);
@@ -32,6 +31,11 @@ module nts.uk.com.view.cli001.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 service.findAll().done((data: Array<LockOutDataUserDto>) => {
+                    data =_.uniqBy(data, 'userId');
+                  data.forEach(item => {
+                       item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD hh:mm:ss');
+                   });
+                    
                     _self.items(data);
 
                     dfd.resolve();
@@ -54,7 +58,7 @@ module nts.uk.com.view.cli001.a {
                         $('#tableGrid').focus();
                         let userId = { userId: data.userID };
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
-                            _self.items.push({ logType: dto.lockType, loginId: data.loginID, userId: dto.userId, userName: data.userName, lockOutDateTime: dto.logoutDateTime });
+                            _self.items.push({ logType: dto.lockType, loginId: data.loginID, userId: dto.userId, userName: data.userName, lockOutDateTime: moment.utc(dto.logoutDateTime).format('YYYY/MM/DD hh:mm:ss')});
                         });
                     }
                     nts.uk.ui.block.clear();
@@ -94,6 +98,9 @@ module nts.uk.com.view.cli001.a {
                                 nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
                                     //Search again and display the screen
                                     service.findAll().done((data: Array<LockOutDataUserDto>) => {
+                                        data.forEach(item => {
+                                            item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD hh:mm:ss');
+                                        });
                                         self.items(data);
                                         self.currentCodeList([]);
                                     });

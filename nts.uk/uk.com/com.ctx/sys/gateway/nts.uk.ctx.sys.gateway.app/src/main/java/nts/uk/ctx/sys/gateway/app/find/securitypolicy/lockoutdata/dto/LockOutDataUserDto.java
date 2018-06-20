@@ -30,4 +30,5 @@ public class LockOutDataUserDto {
 	
 	/** The user id. */
 	private String userId;
+	
 }
