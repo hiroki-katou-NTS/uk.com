@@ -36,4 +36,12 @@ public class PersonInfoAuthorityRepoImpl
 		return new PpemtPersonInfoAuth();
 	}
 
+	@Override
+	public void delete(String companyId, String roleId) {
+		List<PpemtPersonInfoAuth> entities = this.queryProxy().query(QUERY_COMPANY_ROLEID, PpemtPersonInfoAuth.class)
+				.setParameter("cid", companyId).setParameter("roleId", roleId).getList();
+		this.commandProxy().removeAll(entities);
+
+	}
+
 }

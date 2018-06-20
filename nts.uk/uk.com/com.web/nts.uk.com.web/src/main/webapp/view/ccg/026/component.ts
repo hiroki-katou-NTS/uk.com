@@ -4,7 +4,7 @@ module nts.uk.com.view.ccg026.component {
 
     const fetch = {
         com_mngr: (roleId: string) => ajax('com', 'sys/auth/workplace/get-list', roleId),
-        person_info: (roleId: string) => ajax('com', 'ctx/pereg/functions/auth/find-all', roleId)
+        person_info: (roleId: string) => ajax('com', 'ctx/pereg/functions/auth/find-with-role', roleId)
     };
 
     ko.components.register('ccg026-component', {
