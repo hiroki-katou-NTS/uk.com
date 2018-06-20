@@ -8,6 +8,10 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.era.name.EraName
+				nts.uk.ctx.at.shared.dom.era.name.SymbolName
+			</com:ValidatorScript>
 			<com:stylefile path="cmm020.a.style.css" />
 			<com:scriptfile path="cmm020.a.start.js" />
 			<com:scriptfile path="cmm020.a.service.js" />
@@ -20,8 +24,10 @@
 				<!-- A1_2 -->
 				<button tabindex="2"
 					data-bind="click: createEra,enable: activeUpdate" class="proceed">#{i18n.getText('CMM020_2')}</button>
+				<!-- A1_3 -->
+				<button tabindex="3">#{i18n.getText('CMM020_3')}</button>
 				<!-- A1_4 -->
-				<button tabindex="3"
+				<button tabindex="4"
 					data-bind="click: deleteEra,enable: activeDelete" class="danger"
 					style="margin-left: 170px;">#{i18n.getText('CMM020_4')}</button>
 			</div>
@@ -33,7 +39,7 @@
 						data-bind="ntsPanel:{width: '260px', height: '390px', showIcon: false, visible: true, direction: 'right'}">
 						<!-- A2_2 -->
 						<div>
-							<table id="single-list" tabindex="6"
+							<table id="single-list" tabindex="5"
 								data-bind="ntsGridList: {
 									name: '#[CMM020_5]',
 									width: 260,
@@ -61,14 +67,15 @@
 								<tr class="row">
 									<td>
 										<!-- A3_1 -->
-										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM020_6')}</div>
+										<div
+											data-bind="ntsFormLabel: {required: true, constraint: 'EraName'}">#{i18n.getText('CMM020_6')}</div>
 									</td>
 									<td colspan="2" class="th-col2">
 										<div>
-											<input
+											<input tabindex="6"
 												data-bind="ntsTextEditor: {
 													value:currentName,
-												
+													constraint: 'EraName',
 													required: true,
 													enable: activeUpdate(),
 													option: {width: '55px'}},
@@ -76,25 +83,26 @@
 										</div>
 									</td>
 								</tr>
-								<!-- 	constraint: 'EraName', -->
+
 								<tr class="row">
 									<td>
 										<!-- A3_1 -->
-										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM020_7')}</div>
+										<div
+											data-bind="ntsFormLabel: {required: true, constraint: 'SymbolName' }">#{i18n.getText('CMM020_7')}</div>
 									</td>
 									<td>
 										<div>
-											<input
+											<input tabindex="7"
 												data-bind="ntsTextEditor: {
 													value:currentSymbol,
-											
+													constraint: 'SymbolName',
 													required: true,
 													enable: activeUpdate(),
 													option: {width: '55px'}}" />
 										</div>
 									</td>
 								</tr>
-								<!-- 	constraint: 'SymbolName', -->
+
 								<tr class="row">
 									<td>
 										<!-- A3_1 -->
@@ -102,7 +110,7 @@
 									</td>
 									<td>
 										<div>
-											<input
+											<input tabindex="8"
 												data-bind="ntsTimeEditor: {
 													value: currentStartDate,
 													option: {width: '86px'},
