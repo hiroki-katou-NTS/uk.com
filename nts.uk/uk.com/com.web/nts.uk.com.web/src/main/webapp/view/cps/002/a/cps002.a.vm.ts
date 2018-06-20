@@ -238,7 +238,9 @@ module cps002.a.vm {
                 if (employee.cardNo() == "") {
                     employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
                 }
-            });
+            }); 
+            
+            
 
             self.currentEmployee().cardNo.subscribe((cardNo) => {
                 let ce = ko.toJS(self.stampCardEditing),
@@ -288,7 +290,14 @@ module cps002.a.vm {
                 });
             }
         }
-
+        
+        logMouseOver() {
+            let self = this;
+            if (self.cardNo() == "") {
+                self.cardNo(__viewContext.user.companyCode + self.employeeCode());
+            }
+        }
+        
         start() {
             let self = this;
             self.currentEmployee().clearData();
