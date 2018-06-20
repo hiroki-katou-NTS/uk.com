@@ -99,6 +99,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         
         dailyPerfomanceData: KnockoutObservableArray<any> = ko.observableArray([]);
         
+        employIdLogin : any;
+        
         constructor() {
             let self = this;
             self.yearMonth = ko.observable(Number(moment(new Date()).format("YYYYMM")));
@@ -313,6 +315,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             localStorage.removeItem(window.location.href + '/dpGrid');
             nts.uk.ui.errors.clearAllGridErrors();
             service.startScreen(self.monthlyParam()).done((data) => {
+                self.employIdLogin = __viewContext.user.employeeId;
                 self.dataAll(data);
                 self.itemValueAll(data.itemValues);
                 self.receiveData(data);
@@ -688,7 +691,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 autoFitWindow: true,
                 preventEditInError: false,
                 hidePrimaryKey: true,
-                userId: "4",
+                userId: self.employIdLogin,
                 getUserId: function(k) { return String(k); },
                 errorColumns: ["ruleCode"],
                 showErrorsOnPage: true,

@@ -596,7 +596,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							Optional<AttendanceItemValueImport> optItemValue = x.getAttendanceItems().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
 							if (optItemValue.isPresent()) {
 								AttendanceItemValueImport itemValue = optItemValue.get();
-								if (itemValue.getValueType() == ActualValue.STRING) {
+								ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
+								if (valueTypeEnum == ValueType.CODE && itemValue.getValue() != null) {
 									int attendanceId = itemValue.getItemId();
 									switch (attendanceId) {
 									case 1:
@@ -758,7 +759,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Optional<AttendanceItemValueImport> optItemValue = x.getAttendanceItems().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
 				if (optItemValue.isPresent()) {
 					AttendanceItemValueImport itemValue = optItemValue.get();
-					if (itemValue.getValueType() == ActualValue.STRING && itemValue.getValue() != null) {
+					ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
+					if (valueTypeEnum == ValueType.CODE && itemValue.getValue() != null) {
 						int attendanceId = itemValue.getItemId();
 						switch (attendanceId) {
 						case 1:
