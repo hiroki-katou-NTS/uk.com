@@ -8,4 +8,6 @@ public interface PersonInfoAuthorityRepository extends AvailabilityPermissionRep
 	
 	Map<Integer, PersonInfoAuthority> getListOfRole(String companyId, String roleId);
 	
+	void delete(String companyId, String roleId);
+	
 }

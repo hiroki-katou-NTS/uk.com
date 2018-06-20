@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.roles.auth.functionauth;
+package nts.uk.ctx.pereg.app.command.roles.auth.functionauth.register;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
