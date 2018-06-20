@@ -1232,11 +1232,17 @@ module nts.layout {
                     } else if (location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
                             selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
-                            baseDate: ko.toJS(new Date()),
+                            baseDate: ko.toJS((__viewContext || {
+                                viewModel: {
+                                    currentEmployee: {
+                                        hireDate: new Date()
+                                    }
+                                }
+                            }).viewModel.currentEmployee).hireDate,
                             isMultiple: false,
                             selectedSystemType: 5,
                             isrestrictionOfReferenceRange: false,
-                            isRequire: required
+                            isRequire: data.required
                         }, true);
                     } else {
                         setShared('inputCDL008', null);
