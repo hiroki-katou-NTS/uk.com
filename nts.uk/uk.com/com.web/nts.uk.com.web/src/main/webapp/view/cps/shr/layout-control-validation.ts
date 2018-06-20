@@ -86,7 +86,7 @@ module nts.layout {
                                 .trigger('blur')
                                 .trigger('change');
                         } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
-                            if (nou(x.value) && x.required) {
+                            if (_.isNil(x.value) && (x.required || !_.isEmpty(x.textValue))) {
                                 if (!getError($element).length) {
                                     $element.ntsError('set', {
                                         messageId: "FND_E_REQ_SELECT",
