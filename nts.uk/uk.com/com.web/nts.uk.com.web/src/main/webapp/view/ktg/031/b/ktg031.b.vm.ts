@@ -5,9 +5,10 @@ module nts.uk.at.view.ktg031.b.viewmodel {
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<number> = ko.observable();
         constructor() {
+            console.log("aaaaaaa");
             var self = this;
             self.columns = ko.observableArray([
-                { headerText: '', key: 'serialNo', width: 70 },
+                { headerText: '', key: 'serialNo', width: 80 },
                 { headerText: getText('KTG031_10'), key: 'employeeCode', width: 100 },
                 { headerText: getText('KTG031_11'), key: 'employeeName', width: 110 },
                 { headerText: getText('KTG031_12'), key: 'processingName', width: 150 },

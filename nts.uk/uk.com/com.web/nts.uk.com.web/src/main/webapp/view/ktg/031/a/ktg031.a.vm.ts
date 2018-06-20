@@ -22,13 +22,13 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                         let listOrder = _.orderBy(listData, ["finishDateTime"], ['asc']);
                         self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
-                            acc.finishDateTime = afterConvert
+                            acc.finishDateTime = afterConvert;
                             return new TopPageAlarmDto(acc);
                         }));
                         self.period(temp);
                     }).fail(function(error) {
                         alertError(error);
-                    }).always(() => {
+                    }).always(() => {  
                         block.clear();
                     });
                 } else {
@@ -37,7 +37,11 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                         self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert;
-                            return new TopPageAlarmDto(acc);
+                            let a = new TopPageAlarmDto(acc);
+                            if (acc.rogerFlag == 1) {
+                                a.hidden(false);
+                            }
+                            return a;
                         }));
                         self.period(temp);
                     }).fail(function(error) {
@@ -64,7 +68,11 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                         self.listToppage(_.map(data, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert;
-                            return new TopPageAlarmDto(acc);
+                            let a = new TopPageAlarmDto(acc);
+                            if (acc.rogerFlag == 1) {
+                                a.hidden(false);
+                            }
+                            return a;
                         }));
                         self.period(temp);
                     }).fail(function(error) {
