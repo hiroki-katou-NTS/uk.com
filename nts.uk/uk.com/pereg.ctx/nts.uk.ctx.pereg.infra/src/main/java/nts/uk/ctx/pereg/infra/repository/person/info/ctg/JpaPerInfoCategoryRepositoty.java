@@ -17,23 +17,21 @@ import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCm;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
 
 	private final static String SPECIAL_CTG_CODE = "CO";
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = String.join(" ","SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,",
-			 " ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
-			 " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr",
-			 " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
-			 " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
-			 " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
-			 " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid",
-			 " AND (((co.salaryUseAtr = :salaryUseAtr AND :salaryUseAtr = 1) OR (1 = 1))",
-			 " OR  ((co.personnelUseAtr = :personnelUseAtr AND :personnelUseAtr = 1) OR (1 = 1))",
-			 " OR  ((co.employmentUseAtr = :employmentUseAtr AND :employmentUseAtr = 1) OR (1 = 1)))",
-			 " ORDER BY po.disporder");
+			 "ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
+			 "co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr",
+			 "FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
+			 "ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
+			 "INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
+			 "WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid",
+			 "AND ((co.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR (co.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR (co.employmentUseAtr = 1 AND :employmentUseAtr = 1))",
+			 "OR (:salaryUseAtr =  0 AND :personnelUseAtr = 0 AND :employmentUseAtr = 0)",
+			 "ORDER BY po.disporder");
 
 	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -179,42 +177,13 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd, int salaryUseAtr,
 			int personnelUseAtr, int employmentUseAtr) {
-		String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = String.join(" ", "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,",
-				"ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
-				"co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr",
-				"FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
-				"ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
-				"INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
-				"WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid");
-
-		String CONDITION = null, salaryString = "", personnelString = "", employmentString = "";
-
-		if (salaryUseAtr == NotUseAtr.USE.value) {
-			CONDITION = CONDITION == null ? "AND (co.salaryUseAtr = 1" : "OR co.salaryUseAtr = 1";
-			salaryString = CONDITION;
-		}
-
-		if (personnelUseAtr == NotUseAtr.USE.value) {
-			CONDITION = CONDITION == null ? " AND (co.personnelUseAtr = 1" : "OR co.personnelUseAtr = 1";
-			personnelString = CONDITION;
-		}
-
-		if (employmentUseAtr == NotUseAtr.USE.value) {
-			CONDITION = CONDITION == null ? "AND (co.employmentUseAtr = 1" : "OR co.employmentUseAtr = 1";
-			employmentString = CONDITION;
-		}
-
-		if (!salaryString.equals("") || !personnelString.equals("") || !employmentString.equals("")) {
-			CONDITION = String.join(" ", salaryString, personnelString, employmentString, ")");
-		} else {
-			CONDITION = String.join(" ", salaryString, personnelString, employmentString);
-		}
-
-		SELECT_CATEGORY_BY_COMPANY_ID_QUERY = String.join(" ", SELECT_CATEGORY_BY_COMPANY_ID_QUERY, CONDITION,
-				"ORDER BY po.disporder");
 
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("cid", companyId).getList(c -> {
+				.setParameter("contractCd", contractCd).setParameter("cid", companyId)
+				.setParameter("salaryUseAtr", salaryUseAtr)
+				.setParameter("personnelUseAtr", personnelUseAtr)
+				.setParameter("employmentUseAtr", employmentUseAtr)
+				.getList(c -> {
 					return createDomainVer3FromEntity(c);
 				});
 	}
