@@ -7,10 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
-import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
@@ -40,9 +37,6 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingRep
 public class AutoCalculationSetServiceImpl implements AutoCalculationSetService {
 
 	@Inject
-	private SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter;
-
-	@Inject
 	private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
 
 	@Inject
@@ -61,58 +55,34 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 	private ComAutoCalSettingRepository comAutoCalSettingRepository;
 
 	@Override
-	public BaseAutoCalSetting getAutoCalculationSetting(String companyID, String employeeID,
-			GeneralDate processingDate) {
+	public BaseAutoCalSetting getAutoCalculationSetting(String companyID, String employeeID, GeneralDate processingDate,
+			String workPlaceId, String jobTitleId) {
 
 		BaseAutoCalSetting baseAutoCalSetting = new BaseAutoCalSetting();
+		// ドメインモデル「時間外の自動計算の利用単位設定」を取得する(get data domain 「時間外の自動計算の利用単位設定」)
+		Optional<UseUnitAutoCalSetting> useUnitAutoCalSetting = this.useUnitAutoCalSettingRepository
+				.getAllUseUnitAutoCalSetting(companyID);
 
-		// 必要な個人情報を取得(get required info)
-//		boolean getInfo = this.getRequiredPersonalInfo(employeeID, processingDate);		
-		Optional<SharedAffJobTitleHisImport> jobTitleImport = this.sharedAffJobtitleHisAdapter
-				.findAffJobTitleHis(employeeID, processingDate);
-		Optional<SharedAffWorkPlaceHisImport> workPlaceImport = this.sharedAffWorkPlaceHisAdapter
-				.getAffWorkPlaceHis(employeeID, processingDate);
-		
-		// has data
-		if (jobTitleImport.isPresent() && workPlaceImport.isPresent()) {
-			// ドメインモデル「時間外の自動計算の利用単位設定」を取得する(get data domain 「時間外の自動計算の利用単位設定」)
-			Optional<UseUnitAutoCalSetting> useUnitAutoCalSetting = this.useUnitAutoCalSettingRepository
-					.getAllUseUnitAutoCalSetting(companyID);
+		if (useUnitAutoCalSetting.isPresent()) {
 
-			if (useUnitAutoCalSetting.isPresent()) {				
-				
-				// 職場・職位の自動計算設定をする＝TRUE
-				if (useUnitAutoCalSetting.get().getUseJobwkpSet() == ApplyAtr.USE) {
-					// ドメインモデル「職場・職位別自動計算設定」を取得(get data domain 「職場・職位別自動計算設定」)
-					Optional<WkpJobAutoCalSetting> wkpJobAutoCalSetting = this.wkpJobAutoCalSettingRepository
-							.getWkpJobAutoCalSetting(companyID, workPlaceImport.get().getWorkplaceId(),
-									jobTitleImport.get().getJobTitleId());
+			// 職場・職位の自動計算設定をする＝TRUE
+			if (useUnitAutoCalSetting.get().getUseJobwkpSet() == ApplyAtr.USE) {
+				// ドメインモデル「職場・職位別自動計算設定」を取得(get data domain 「職場・職位別自動計算設定」)
+				Optional<WkpJobAutoCalSetting> wkpJobAutoCalSetting = this.wkpJobAutoCalSettingRepository
+						.getWkpJobAutoCalSetting(companyID, workPlaceId, jobTitleId);
 
-					if (wkpJobAutoCalSetting.isPresent()) {
-							baseAutoCalSetting = new BaseAutoCalSetting(wkpJobAutoCalSetting.get().getNormalOTTime(),
-									wkpJobAutoCalSetting.get().getFlexOTTime(), wkpJobAutoCalSetting.get().getRestTime());
-					} else {
-						baseAutoCalSetting = this.getJobTitleCase(companyID, workPlaceImport.get().getWorkplaceId(),
-								jobTitleImport.get().getJobTitleId(), processingDate, useUnitAutoCalSetting);
-					}
+				if (wkpJobAutoCalSetting.isPresent()) {
+					baseAutoCalSetting = new BaseAutoCalSetting(wkpJobAutoCalSetting.get().getNormalOTTime(),
+							wkpJobAutoCalSetting.get().getFlexOTTime(), wkpJobAutoCalSetting.get().getRestTime());
 				} else {
-					baseAutoCalSetting = this.getJobTitleCase(companyID, workPlaceImport.get().getWorkplaceId(),
-							jobTitleImport.get().getJobTitleId(), processingDate, useUnitAutoCalSetting);
+					baseAutoCalSetting = this.getJobTitleCase(companyID, workPlaceId, jobTitleId, processingDate,
+							useUnitAutoCalSetting);
 				}
-
+			} else {
+				baseAutoCalSetting = this.getJobTitleCase(companyID, workPlaceId, jobTitleId, processingDate,
+						useUnitAutoCalSetting);
 			}
-		} else {
-			// 全ての項目を「計算しない」として返す
-			AutoCalOvertimeSetting normalOTTime = new AutoCalOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER),
-					new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER),
-					new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER),
-					new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER), 
-					new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER),
-					new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER));
-			AutoCalFlexOvertimeSetting flexOTTime = new AutoCalFlexOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER));
-			AutoCalRestTimeSetting restTime = new AutoCalRestTimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER),
-					new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER));
-			baseAutoCalSetting = new BaseAutoCalSetting(normalOTTime, flexOTTime, restTime);
+
 		}
 
 		return baseAutoCalSetting;
@@ -136,8 +106,7 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 						jobAutoCalSetting.get().getFlexOTTime(), jobAutoCalSetting.get().getRestTime());
 			}
 		} else {
-			baseAutoCalSetting = this.getWorkPlaceCase(companyID, workPlaceID, processingDate,
-					useUnitAutoCalSetting);
+			baseAutoCalSetting = this.getWorkPlaceCase(companyID, workPlaceID, processingDate, useUnitAutoCalSetting);
 		}
 
 		return baseAutoCalSetting;
@@ -172,33 +141,6 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 		}
 
 		return baseAutoCalSetting;
-	}
-
-	/**
-	 * 必要な個人情報を取得
-	 * 
-	 * @param employeeID
-	 * @param processingDate
-	 * @return
-	 */
-	private boolean getRequiredPersonalInfo(String employeeID, GeneralDate processingDate) {
-
-		// ドメインモデル「所属職位履歴」を取得
-		Optional<SharedAffJobTitleHisImport> sharedAffJobTitleHisImport = this.sharedAffJobtitleHisAdapter
-				.findAffJobTitleHis(employeeID, processingDate);
-
-		if (!sharedAffJobTitleHisImport.isPresent()) {
-			return false;
-		} else {
-			Optional<SharedAffWorkPlaceHisImport> sharedAffWorkPlaceHisImport = this.sharedAffWorkPlaceHisAdapter
-					.getAffWorkPlaceHis(employeeID, processingDate);
-
-			if (!sharedAffWorkPlaceHisImport.isPresent()) {
-				return false;
-			} else {
-				return true;
-			}
-		}
 	}
 
 	/**
