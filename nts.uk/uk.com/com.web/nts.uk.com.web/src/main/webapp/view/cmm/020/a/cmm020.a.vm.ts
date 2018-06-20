@@ -70,9 +70,13 @@ module nts.uk.com.view.cmm020.a {
                             self.setValueCurrentEraShow(currentEra);
                             //check era is system value, set active btn update and delete
                             var indexOfEraSelected = self.dataSource().indexOf(currentEra);
-                            self.activeUpdate(indexOfEraSelected > LAST_INDEX_ERA_NAME_SYTEM);
-                            self.activeDelete(indexOfEraSelected == self.dataSource().length - 1);
-
+                            if (currentEra.systemType == 1) {
+                                self.activeUpdate(false);
+                                self.activeDelete(false); 
+                            } else {
+                                self.activeUpdate(indexOfEraSelected > LAST_INDEX_ERA_NAME_SYTEM);
+                                self.activeDelete(indexOfEraSelected == self.dataSource().length - 1);
+                            }
                         };
                     }
                 });
@@ -143,6 +147,7 @@ module nts.uk.com.view.cmm020.a {
                                     blockUI.clear();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                         blockUI.clear();
+                                        self.loadEraNameList();
                                     });
                                 });
                             } else {
@@ -157,11 +162,20 @@ module nts.uk.com.view.cmm020.a {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_452" });
                                 return false;
                             } else {
-                                if (currentEraNameIndex != (self.dataSource.length - 1)) {
+                                if (currentEraNameIndex != (self.dataSource().length - 1)) {
                                     let nextEraName = self.dataSource()[currentEraNameIndex + 1];
                                     if (self.currentStartDate() > nextEraName.startDate) {
                                         nts.uk.ui.dialog.info({ messageId: "Msg_453" });
                                         return false;
+                                    } else {
+                                        var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), 0);
+                                        service.saveEraName(eraNameCreate).done(function() {
+                                            blockUI.clear();
+                                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                                blockUI.clear();
+                                                self.loadEraNameList();
+                                            });
+                                        });
                                     }
                                 } else {
                                     var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), 0);
@@ -169,6 +183,7 @@ module nts.uk.com.view.cmm020.a {
                                         blockUI.clear();
                                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                             blockUI.clear();
+                                            self.loadEraNameList();
                                         });
                                     });
                                 }
