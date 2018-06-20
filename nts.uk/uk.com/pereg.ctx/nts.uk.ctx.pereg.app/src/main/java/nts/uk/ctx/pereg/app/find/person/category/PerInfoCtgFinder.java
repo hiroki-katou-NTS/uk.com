@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
 import nts.uk.ctx.pereg.app.find.person.info.item.PersonInfoItemDefDto;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
@@ -13,6 +14,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.system.config.InstalledProduct;
 
 @Stateless
 public class PerInfoCtgFinder {
@@ -27,10 +29,26 @@ public class PerInfoCtgFinder {
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg(String companyId) {
 		String contractCd = companyId.substring(0, 12);
-		 int salary = AppContexts.user().roles().forPayroll() != null? 1: 0;
-		 int personnel = AppContexts.user().roles().forPersonnel() != null? 1: 0;
-		 int employee = AppContexts.user().roles().forAttendance() != null? 1: 0;
-		return perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCd, salary, personnel, employee).stream().map(p -> {
+		int payroll = NotUseAtr.NOT_USE.value;
+		int personnel = NotUseAtr.NOT_USE.value;
+		int atttendance = NotUseAtr.NOT_USE.value;
+		List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
+		for (InstalledProduct productType : installProduct) {
+			switch (productType.getProductType()) {
+			case ATTENDANCE:
+				atttendance = NotUseAtr.USE.value;
+				break;
+			case PAYROLL:
+				payroll = NotUseAtr.USE.value;
+				break;
+			case PERSONNEL:
+				personnel = NotUseAtr.USE.value;
+				break;
+			default:
+				break;
+			}
+		}
+		return perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCd, payroll, personnel, atttendance).stream().map(p -> {
 			return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(), p.getCategoryName().v(),
 					p.getPersonEmployeeType().value, p.getIsAbolition().value, p.getCategoryType().value,
 					p.getIsFixed().value);
