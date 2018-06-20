@@ -25,7 +25,6 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLocko
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK_;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData_;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaLogoutDataRepository.
  */
