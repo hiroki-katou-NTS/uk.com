@@ -55,7 +55,7 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 		lstpredicateWhere.add(criteriaBuilder.equal(root.get(SevmtMailFunction_.sendMailSetAtr),
 				proprietySendMailSettingAtr ? TRUE_VAL : FALSE_VAL));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.desc(root.get(SevmtMailFunction_.sortOrder)));
+		cq.orderBy(criteriaBuilder.asc(root.get(SevmtMailFunction_.sortOrder)));
 
 		List<SevmtMailFunction> listSevstMailFunction = em.createQuery(cq).getResultList();
 
