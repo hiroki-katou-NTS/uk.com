@@ -134,6 +134,7 @@ public class UrlWebService {
 		if(Strings.isBlank(employeeCD)){
 			submitLoginFormOneCommandHandler.initSession(urlAccApprovalOutput.getUserImport());
 		} else {
+			String companyCD = companyBsAdapter.getCompanyByCid(companyID).getCompanyCode();
 			submitLoginFormTwoCommandHandler.setLoggedInfo(
 					urlAccApprovalOutput.getUserImport(), 
 					new EmployeeImport(
@@ -141,7 +142,7 @@ public class UrlWebService {
 							urlAccApprovalOutput.getEmployeeInfoDtoImport().getPersonId(), 
 							urlAccApprovalOutput.getEmployeeInfoDtoImport().getEmployeeId(), 
 							urlAccApprovalOutput.getEmployeeInfoDtoImport().getEmployeeCode()), 
-					companyID.split("-")[1]);
+					companyCD);
 			submitLoginFormTwoCommandHandler.setRoleId(urlAccApprovalOutput.getUserImport().getUserId());
 		}
 	}
