@@ -17,6 +17,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCm;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
@@ -178,13 +179,42 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd, int salaryUseAtr,
 			int personnelUseAtr, int employmentUseAtr) {
+		String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = String.join(" ", "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,",
+				"ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
+				"co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr",
+				"FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
+				"ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
+				"INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
+				"WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid");
+
+		String CONDITION = null, salaryString = "", personnelString = "", employmentString = "";
+
+		if (salaryUseAtr == NotUseAtr.USE.value) {
+			CONDITION = CONDITION == null ? "AND (co.salaryUseAtr = 1" : "OR co.salaryUseAtr = 1";
+			salaryString = CONDITION;
+		}
+
+		if (personnelUseAtr == NotUseAtr.USE.value) {
+			CONDITION = CONDITION == null ? " AND (co.personnelUseAtr = 1" : "OR co.personnelUseAtr = 1";
+			personnelString = CONDITION;
+		}
+
+		if (employmentUseAtr == NotUseAtr.USE.value) {
+			CONDITION = CONDITION == null ? "AND (co.employmentUseAtr = 1" : "OR co.employmentUseAtr = 1";
+			employmentString = CONDITION;
+		}
+
+		if (!salaryString.equals("") || !personnelString.equals("") || !employmentString.equals("")) {
+			CONDITION = String.join(" ", salaryString, personnelString, employmentString, ")");
+		} else {
+			CONDITION = String.join(" ", salaryString, personnelString, employmentString);
+		}
+
+		SELECT_CATEGORY_BY_COMPANY_ID_QUERY = String.join(" ", SELECT_CATEGORY_BY_COMPANY_ID_QUERY, CONDITION,
+				"ORDER BY po.disporder");
+
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
-				.setParameter("contractCd", contractCd)
-				.setParameter("cid", companyId)
-				.setParameter("salaryUseAtr", salaryUseAtr)
-				.setParameter("personnelUseAtr", personnelUseAtr)
-				.setParameter("employmentUseAtr", employmentUseAtr)
-				.getList(c -> {
+				.setParameter("contractCd", contractCd).setParameter("cid", companyId).getList(c -> {
 					return createDomainVer3FromEntity(c);
 				});
 	}

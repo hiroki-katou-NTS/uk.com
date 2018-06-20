@@ -13,41 +13,26 @@ import nts.uk.ctx.pereg.dom.person.setting.init.category.PerInfoInitValSetCtgRep
 import nts.uk.ctx.pereg.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonInitValueSettingCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonInitValueSettingCtgPk;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoInitValSetCtgRepository {
 
 	// sonnlb
-	private final String SEL_CTG_BY_SET_ID = "SELECT b.categoryCd, b.categoryName "
+	private final static String SEL_CTG_BY_SET_ID = "SELECT b.categoryCd, b.categoryName "
 			+ " FROM PpemtPersonInitValueSettingCtg c " + " LEFT JOIN PpemtPerInfoCtg b"
 			+ " ON c.settingCtgPk.perInfoCtgId = b.ppemtPerInfoCtgPK.perInfoCtgId" + " LEFT JOIN PpemtPerInfoCtgCm cm "
 			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " LEFT JOIN PpemtPerInfoCtgOrder e"
 			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
 			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
 
-	private final String SEL_ALL_CTG = "SELECT b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, cm.categoryType, "
-			+ " CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting "
-			+ " FROM PpemtPerInfoCtg b " + " INNER JOIN PpemtPerInfoCtgCm cm "
-			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " INNER JOIN PpemtPerInfoCtgOrder e "
-			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId " + " AND b.cid = e.cid "
-			+ " LEFT JOIN PpemtPersonInitValueSettingCtg c "
-			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId  = c.settingCtgPk.perInfoCtgId "
-			+ " AND c.settingCtgPk.settingId = :settingId " + " WHERE ( b.abolitionAtr = 0 "
-			+ " AND cm.personEmployeeType = 2 " + " AND  cm.categoryType <> 2 " + " AND cm.categoryType <> 5 "
-			+ " AND cm.initValMasterObjCls = 1"
-			+ " AND (((cm.salaryUseAtr = :salaryUseAtr AND :salaryUseAtr = 1) OR (1 = 1))"
-			+ " OR  ((cm.personnelUseAtr = :personnelUseAtr AND :personnelUseAtr = 1) OR (1 = 1))"
-			+ " OR  ((cm.employmentUseAtr = :employmentUseAtr AND :employmentUseAtr = 1) OR (1 = 1)))"
-			+ " AND cm.categoryParentCd IS NULL" + " AND b.cid =:companyId )" + " ORDER BY e.disporder ";
-
-
-	private final String SEL_ALL_CTG_BY_SET_ID_1 = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
+	private final static String SEL_ALL_CTG_BY_SET_ID_1 = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
 			+ " WHERE  c.settingCtgPk.settingId =:settingId";
 
-	private final String SEL_CTG_BY_SETID_CTGID = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
+	private final static String SEL_CTG_BY_SETID_CTGID = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
 			+ " WHERE  c.settingCtgPk.settingId =:settingId AND c.settingCtgPk.perInfoCtgId =:perInfoCtgId";
 
-	private final String DELETE_BY_SETTING_ID = " DELETE FROM PpemtPersonInitValueSettingCtg c"
+	private final static String DELETE_BY_SETTING_ID = " DELETE FROM PpemtPersonInitValueSettingCtg c"
 			+ " WHERE c.settingCtgPk.settingId =:settingId";
 
 	private static PerInfoInitValSetCtg toDomain(PpemtPersonInitValueSettingCtg entity) {
@@ -121,12 +106,49 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 
 	@Override
 	public List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr) {
+		String SEL_ALL_CTG = String.join(" ","SELECT b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, cm.categoryType, ",
+				" CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting ",
+				" FROM PpemtPerInfoCtg b " + " INNER JOIN PpemtPerInfoCtgCm cm ",
+				" ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " INNER JOIN PpemtPerInfoCtgOrder e ",
+				" ON  b.ppemtPerInfoCtgPK.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId " + " AND b.cid = e.cid ",
+				" LEFT JOIN PpemtPersonInitValueSettingCtg c ",
+				" ON  b.ppemtPerInfoCtgPK.perInfoCtgId  = c.settingCtgPk.perInfoCtgId ",
+				" AND c.settingCtgPk.settingId = :settingId " + " WHERE ( b.abolitionAtr = 0 ",
+				" AND cm.personEmployeeType = 2 AND  cm.categoryType <> 2 " + " AND cm.categoryType <> 5 ",
+				" AND cm.initValMasterObjCls = 1",
+				" AND cm.categoryParentCd IS NULL  AND b.cid =:companyId )" + "");
+		String CONDITION = null,
+			   salaryString ="",
+			   personnelString = "",
+			   employmentString ="";
+
+		if (salaryUseAtr == NotUseAtr.USE.value) {
+			CONDITION = CONDITION == null ? "AND (cm.salaryUseAtr = 1" : "OR cm.salaryUseAtr = 1";
+			salaryString = CONDITION;
+		}
+
+		if (personnelUseAtr == NotUseAtr.USE.value) {
+			CONDITION = CONDITION == null ? " AND (cm.personnelUseAtr = 1" : "OR cm.personnelUseAtr = 1";
+			personnelString = CONDITION;
+		} 
+		
+		if (employmentUseAtr == NotUseAtr.USE.value) {
+			CONDITION = CONDITION == null ? "AND (cm.employmentUseAtr = 1" : "OR cm.employmentUseAtr = 1";
+			employmentString = CONDITION;
+		}
+		
+		if( !salaryString.equals("") || !personnelString.equals("") || !employmentString.equals("")){
+			CONDITION =  String.join(" ", salaryString, personnelString, employmentString, ")");
+			
+		}else{
+			CONDITION =  String.join(" ", salaryString, personnelString, employmentString);
+		}
+		
+		SEL_ALL_CTG  = String.join(" ", SEL_ALL_CTG, CONDITION ," ORDER BY e.disporder ");
+		
 		return this.queryProxy().query(SEL_ALL_CTG, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("settingId", settingId)
-				.setParameter("salaryUseAtr", salaryUseAtr)
-				.setParameter("personnelUseAtr", personnelUseAtr)
-				.setParameter("employmentUseAtr", employmentUseAtr)
 				.getList(c -> toDomain(c));
 	}
 

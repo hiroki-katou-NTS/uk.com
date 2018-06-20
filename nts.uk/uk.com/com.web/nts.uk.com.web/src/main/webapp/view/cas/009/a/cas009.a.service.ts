@@ -2,7 +2,8 @@ module cas009.a {
     import ajax = nts.uk.request.ajax;
 
     export const fetch = {
-        permision: (roleId: string) => ajax('com', `ctx/pereg/functions/auth/find-all/${roleId}`)
+        get_permision: (roleId: string) => ajax('com', 'ctx/pereg/functions/auth/find-all', roleId),
+        save_permision: (command: any) => ajax('com', 'ctx/pereg/functions/auth/register', command)
     };
 
     export module service {

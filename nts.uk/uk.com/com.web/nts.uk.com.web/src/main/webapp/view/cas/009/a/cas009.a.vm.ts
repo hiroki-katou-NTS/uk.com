@@ -10,8 +10,9 @@ module cas009.a.viewmodel {
     import confirm = nts.uk.ui.dialog.confirm;
     import errors = nts.uk.ui.errors;
 
+    import ccg026 = nts.uk.com.view.ccg026.component;
+
     import ComponentModelCCG025 = nts.uk.com.view.ccg025.a.component.viewmodel.ComponentModel;
-    import ComponentModelCCG026 = nts.uk.com.view.ccg026.component.viewmodel.ComponentModel;
 
     export class ScreenModel {
         selectedRole: Role = new Role();
@@ -35,11 +36,6 @@ module cas009.a.viewmodel {
             multiple: false
         });
 
-        component026: ComponentModelCCG026 = new ComponentModelCCG026({
-            classification: 8,
-            maxRow: 6
-        });
-
         enableDetail: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
@@ -54,47 +50,41 @@ module cas009.a.viewmodel {
                 roleId: self.component025.currentCode
             });
 
-            _.extend(role, {
-                permisions: self.component026.listPermissions
-            });
-
             // subscribe and change data
             role.roleId.subscribe(rid => {
                 let roles = ko.toJS(self.listRole),
                     exist: IRole = _.find(roles, (r: IRole) => r.roleId == rid);
 
                 if (exist) {
-                    role.createMode(false);
-
                     role.roleName(exist.name);
                     role.roleCode(exist.roleCode)
 
                     role.assignAtr(exist.assignAtr);
                     role.referFutureDate(exist.referFutureDate);
                     role.employeeReferenceRange(exist.employeeReferenceRange || 0);
-
-                    /*fetch.permision(rid).done(permision => {
-                        debugger;
-                        role.permisions([]);
-                    });*/
                 } else {
-                    role.createMode(true);
-
                     role.roleName('');
                     role.roleCode('');
 
                     role.assignAtr(0);
                     role.referFutureDate(false);
                     role.employeeReferenceRange(0);
-
-                    /*fetch.permision(rid).done(permision => {
-                        debugger;
-                        role.permisions([]);
-                    });*/
                 }
 
-                //self.component026.roleId(rid);
+                // subscribe for focus and clear errors
+                _.defer(() => {
+                    if (_.isEmpty(rid)) {
+                        role.roleCodeFocus(true);
+                    } else {
+                        role.roleNameFocus(true);
+                    }
+
+                    // clear all error
+                    errors.clearAll();
+                });
             });
+
+            role.roleId.subscribe(c => console.log(c));
 
             // call reload data
             self.start();
@@ -149,7 +139,7 @@ module cas009.a.viewmodel {
 
         // Kinh dị:
         // Tạo 2 danh sách để lưu 1 giá trị.
-        getListRole(): JQueryPromise<any> {
+        getListRole() {
             let self = this,
                 dfd = $.Deferred();
 
@@ -174,6 +164,13 @@ module cas009.a.viewmodel {
             });
 
             return dfd.promise();
+        }
+
+        changeData = (data: Array<IPermision>) => {
+            let self = this,
+                role = self.selectedRole;
+
+            role.permisions(data);
         }
 
         // create new mode
@@ -202,23 +199,29 @@ module cas009.a.viewmodel {
 
             // fix name
             _.extend(command, {
-                name: command.roleName
+                name: command.roleName,
+                createMode: _.isEmpty(command.roleId)
             });
 
-            service.saveRole(command).done(function() {
-                info({ messageId: "Msg_15" });
+            service.saveRole(command).done((resp) => {
+                fetch.save_permision({
+                    roleId: resp,
+                    functionAuthList: _.map(command.permisions, m => _.pick(m, ['functionNo', 'available']))
+                }).done(() => {
 
-                self.getListRole().done(() => {
-                    let exist: IRole = _.find(self.listRole(), o => o.roleCode == command.roleCode);
+                    info({ messageId: "Msg_15" });
+                    self.getListRole().done(() => {
+                        let exist: IRole = _.find(self.listRole(), o => o.roleCode == command.roleCode);
 
-                    if (!exist) {
-                        role.roleId(undefined);
-                    } else {
-                        role.roleId(exist.roleId);
-                    }
-                }).always(() => {
-                    block.clear();
-                    errors.clearAll();
+                        if (!exist) {
+                            role.roleId(undefined);
+                        } else {
+                            role.roleId(exist.roleId);
+                        }
+                    }).always(() => {
+                        block.clear();
+                        errors.clearAll();
+                    });
                 });
             }).fail((error) => {
                 alertError(error);
@@ -278,11 +281,10 @@ module cas009.a.viewmodel {
         roleId: string;
         roleCode: string;
         assignAtr: number;
+        createMode?: boolean;
         referFutureDate?: boolean;
         employeeReferenceRange: number;
-        permisions: KnockoutObservableArray<IFunctionPermission>;
-
-        createMode: boolean;
+        permisions: Array<IPermision>;
     }
 
     export class Role {
@@ -294,37 +296,11 @@ module cas009.a.viewmodel {
         referFutureDate: KnockoutObservable<boolean> = ko.observable(false);
         employeeReferenceRange: KnockoutObservable<number> = ko.observable(1);
 
-        createMode: KnockoutObservable<boolean> = ko.observable(false);
         roleCodeFocus: KnockoutObservable<boolean> = ko.observable(true);
         roleNameFocus: KnockoutObservable<boolean> = ko.observable(false);
 
-        permisions: KnockoutObservableArray<IFunctionPermission> = ko.observableArray([]);
-
-        constructor() {
-            let self = this;
-
-            // subscribe for focus and clear errors
-            self.roleId.subscribe(m => {
-                _.defer(() => {
-                    if (ko.toJS(self.createMode)) {
-                        self.roleCodeFocus(true);
-                    } else {
-                        self.roleNameFocus(true);
-                    }
-
-                    // clear all error
-                    errors.clearAll();
-                });
-            });
-        }
+        permisions: KnockoutObservableArray<IPermision> = ko.observableArray([]);
     }
 
-    export interface IFunctionPermission {
-        functionNo: number;
-        initialValue: boolean;
-        displayName: string;
-        displayOrder: number;
-        description: string;
-        availability: KnockoutObservable<boolean>;
-    }
+    export interface IPermision extends ccg026.IPermision { }
 }
