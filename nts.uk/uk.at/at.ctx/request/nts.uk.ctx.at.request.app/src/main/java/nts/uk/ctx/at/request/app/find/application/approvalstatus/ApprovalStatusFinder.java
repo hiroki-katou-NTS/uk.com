@@ -321,7 +321,7 @@ public class ApprovalStatusFinder {
 			for (ApproverOutput approver : listApprover) {
 				int phase = approver.getPhase();
 				String numOfPerson = approver.getNumOfPeople() > 0
-						? I18NText.getText("KAF018_47", approver.getNumOfPeople().toString()) : "";
+						? ("確定者" + I18NText.getText("KAF018_47", approver.getNumOfPeople().toString())) : "";
 				String others = approver.getEmpName() + numOfPerson;
 				switch (phase) {
 				case 1:
