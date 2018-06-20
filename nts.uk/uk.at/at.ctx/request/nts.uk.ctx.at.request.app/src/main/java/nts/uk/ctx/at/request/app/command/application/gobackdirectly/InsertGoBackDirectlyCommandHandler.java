@@ -86,7 +86,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 //				new AppReason(appReason));
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, command.appCommand.getApplicationDate(),
 				command.appCommand.getPrePostAtr(), appReason,appReason,
-				ApplicationType.ABSENCE_APPLICATION, command.appCommand.getApplicationDate(), command.appCommand.getApplicationDate(), command.appCommand.getApplicantSID());
+				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, command.appCommand.getApplicationDate(), command.appCommand.getApplicationDate(), command.appCommand.getApplicantSID());
 		// get new GoBack Direct Item
 		GoBackDirectly newGoBack = new GoBackDirectly(
 				companyId, 

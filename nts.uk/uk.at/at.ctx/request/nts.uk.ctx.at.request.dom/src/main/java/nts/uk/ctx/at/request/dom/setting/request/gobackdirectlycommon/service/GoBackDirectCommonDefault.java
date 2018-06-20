@@ -66,9 +66,9 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 		// ドメインモデル「直行直帰申請共通設定」より取得する
 		dataSetting.setGoBackDirectSet(goBackRepo.findByCompanyID(companyID));
 		// アルゴリズム「社員IDから社員を取得する」を実行する
-		String employeeName = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
+		String employeeName = employeeAdapter.getEmployeeName(SID);
 		dataSetting.setEmployeeName(employeeName);
-		dataSetting.setSID(AppContexts.user().employeeId());
+		dataSetting.setSID(SID);
 		// ドメインモデル「申請定型理由」を取得
 		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(companyID, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value, DEFAULT_REASON_RESOURCE);
 		dataSetting.setListAppReason(listReason);
