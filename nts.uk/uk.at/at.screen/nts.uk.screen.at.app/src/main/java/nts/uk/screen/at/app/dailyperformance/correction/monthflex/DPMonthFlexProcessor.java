@@ -105,7 +105,7 @@ public class DPMonthFlexProcessor {
 				closureEmploymentOptional.get().getClosureId(),
 				new ClosureDateDto(closingPeriod.get().getClosureDate().getClosureDay(),
 						closingPeriod.get().getClosureDate().getLastDayOfMonth())));
-		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem);
+		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem, closingPeriod.get().getProcessingYm().v());
 	}
 
 }

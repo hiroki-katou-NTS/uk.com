@@ -16,4 +16,5 @@ public class DPMonthResult {
    private List<MonthlyModifyResult> results;
    private boolean error;
    private boolean hasItem;
+   private Integer month;
 }
