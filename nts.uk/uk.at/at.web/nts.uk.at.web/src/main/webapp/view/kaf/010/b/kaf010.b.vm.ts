@@ -454,7 +454,7 @@ module nts.uk.at.view.kaf010.b {
                     appID: self.appID(),
                     applicationDate: new Date(self.appDate()),
                     prePostAtr: self.prePostSelected(),
-                    applicantSID: self.employeeID,
+                    applicantSID: self.employeeID(),
                     applicationReason: appReason,
                     workTypeCode: self.workTypeCd(),
                     siftTypeCode: self.siftCD(),

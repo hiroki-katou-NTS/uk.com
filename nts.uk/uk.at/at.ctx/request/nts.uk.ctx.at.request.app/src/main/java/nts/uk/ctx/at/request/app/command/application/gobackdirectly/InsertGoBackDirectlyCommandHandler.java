@@ -12,9 +12,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -38,6 +40,8 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	@Inject
+	private IFactoryApplication iFactoryApplication;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
@@ -71,18 +75,22 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 			}
 		}
 		appReason = typicalReason + displayReason;
-		Application_New newApp = Application_New.firstCreate(
-				companyId, 
-				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),  
-				command.appCommand.getApplicationDate(),
-				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType.class), 
-				command.appCommand.getEnteredPersonSID(),
-				new AppReason(appReason));
-		
+		// 申請ID
+		String appID = IdentifierUtil.randomUniqueId();
+//		Application_New newApp = Application_New.firstCreate(
+//				companyId, 
+//				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),  
+//				command.appCommand.getApplicationDate(),
+//				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType.class), 
+//				command.appCommand.getEnteredPersonSID(),
+//				new AppReason(appReason));
+		Application_New appRoot = iFactoryApplication.buildApplication(appID, command.appCommand.getApplicationDate(),
+				command.appCommand.getPrePostAtr(), appReason,appReason,
+				ApplicationType.ABSENCE_APPLICATION, command.appCommand.getApplicationDate(), command.appCommand.getApplicationDate(), command.appCommand.getApplicantSID());
 		// get new GoBack Direct Item
 		GoBackDirectly newGoBack = new GoBackDirectly(
 				companyId, 
-				newApp.getAppID(),
+				appID,
 				command.goBackCommand.workTypeCD, 
 				command.goBackCommand.siftCD, 
 				command.goBackCommand.workChangeAtr,
@@ -99,6 +107,6 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 		//勤務を変更する
 		
 		//直行直帰登録
-		return goBackDirectlyRegisterService.register(newGoBack, newApp);
+		return goBackDirectlyRegisterService.register(newGoBack, appRoot);
 	}
 }

@@ -8,14 +8,12 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
@@ -53,6 +51,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 	
 	@Override	
 	public GoBackDirectBasicData getSettingData(String companyID, String SID) {
+		
 		//1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
 				companyID, 

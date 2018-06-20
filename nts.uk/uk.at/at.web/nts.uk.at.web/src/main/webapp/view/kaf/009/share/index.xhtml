@@ -1,9 +1,32 @@
 <div>
 	<!--LEFT CONTENTS -->
 	<div class="left-contents-009">
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind = "visible: !employeeFlag()">
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_7')}</div>
 			<label class="lblEmployeeName" data-bind="text : employeeName"></label>
+		</div>
+		<div class="cf valign-top control-group" data-bind = "visible: employeeFlag()">
+			<!--A3_1 申請者-->
+			<div class="lblTitle cm-column" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_7')}</div>
+			<!--A3_2 申請者表示氏名-->
+			<div id="list-box" style ="margin-left: 79px;"
+				data-bind="ntsListBox: {
+							options: employeeList,
+							optionsValue: 'id',
+							optionsText: 'name',
+							multiple:false,
+							value: selectedEmplCodes,
+							enable: true,
+							rows: 3,
+							columns: [
+								{ key: 'name'}
+							]}">
+			</div>
+		</div>
+		<div class="cf valign-center control-group" data-bind = "visible: employeeFlag()">
+			<div class="cm-column"></div>
+			<!--A3_9 申請者表示氏名-->
+			<label style ="margin-left: 139px;" data-bind="text : totalEmployee"></label>
 		</div>
 		<!--事前事後区分-->
 		<div class="valign-center control-group "
