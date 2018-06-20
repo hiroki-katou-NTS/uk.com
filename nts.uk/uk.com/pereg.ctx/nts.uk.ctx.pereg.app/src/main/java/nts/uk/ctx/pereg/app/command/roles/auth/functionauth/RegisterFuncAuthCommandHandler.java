@@ -34,9 +34,9 @@ public class RegisterFuncAuthCommandHandler extends CommandHandler<RegisterFuncA
 		params.forEach(param -> {
 			PersonInfoAuthority authDomain = new PersonInfoAuthority(param);
 			if (authMap.containsKey(param.functionNo())) {
-				authRepo.add(authDomain);
-			} else {
 				authRepo.update(authDomain);
+			} else {
+				authRepo.add(authDomain);
 			}
 		});
 
