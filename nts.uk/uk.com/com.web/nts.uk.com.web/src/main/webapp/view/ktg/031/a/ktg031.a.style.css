@@ -9,7 +9,8 @@
 
 .table1 td {
 	border: 1px solid #CCC;
-	height: 100px !important;
+	height: 110px !important;
+	display: block;
 }
 
 
