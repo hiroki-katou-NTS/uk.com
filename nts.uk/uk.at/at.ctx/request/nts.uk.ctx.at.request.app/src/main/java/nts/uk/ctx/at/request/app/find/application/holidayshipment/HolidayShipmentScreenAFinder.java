@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
@@ -116,6 +117,8 @@ public class HolidayShipmentScreenAFinder {
 	private WorkingConditionItemRepository wkingCondItemRepo;
 	@Inject
 	private WorkTimeSettingRepository wkTimeSetRepo;
+	@Inject
+	private AtEmployeeAdapter atEmpAdaptor;
 	private final ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
 	/**
@@ -127,14 +130,16 @@ public class HolidayShipmentScreenAFinder {
 	 * @return HolidayShipmentDto
 	 */
 	// Screen A Start
-	public HolidayShipmentDto startPageA(String employeeID, GeneralDate initDate, int uiType) {
-		employeeID = employeeID == null ? AppContexts.user().employeeId() : employeeID;
+	public HolidayShipmentDto startPageA(List<String> sIDs, GeneralDate initDate, int uiType) {
+		String employeeID = CollectionUtil.isEmpty(sIDs) ? AppContexts.user().employeeId() : sIDs.get(0);
 		String companyID = AppContexts.user().companyId();
 
 		AppCommonSettingOutput appCommonSettingOutput = getAppCommonSet(companyID, employeeID, initDate);
 		// アルゴリズム「起動前共通処理（新規）」を実行する
 		HolidayShipmentDto result = commonProcessBeforeStart(appType, companyID, employeeID, initDate,
 				appCommonSettingOutput);
+		
+		result.setEmployees(atEmpAdaptor.getByListSID(sIDs));
 
 		GeneralDate refDate = result.getRefDate();
 
