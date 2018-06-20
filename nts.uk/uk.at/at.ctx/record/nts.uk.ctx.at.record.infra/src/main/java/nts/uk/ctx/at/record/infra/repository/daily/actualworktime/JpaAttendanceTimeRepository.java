@@ -156,8 +156,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 						KrcdtDayAttendanceTime.class)
 				.orElse(null);
 
-		//delete -> Insert
-		deleteByEmployeeIdAndDate(attendanceTime.getEmployeeId(), attendanceTime.getYmd());
+//		//delete -> Insert
+//		deleteByEmployeeIdAndDate(attendanceTime.getEmployeeId(), attendanceTime.getYmd());
 		
 		if (entity != null) {
 			/* 勤怠時間 */
@@ -381,8 +381,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 					}
 				}
 			}
+			
 		}
-		
+		else {
+			add(attendanceTime);
+		}
 	}
 
 	@Override
