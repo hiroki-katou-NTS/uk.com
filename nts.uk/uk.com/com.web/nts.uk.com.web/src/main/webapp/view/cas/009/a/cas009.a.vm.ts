@@ -190,13 +190,11 @@ module cas009.a.viewmodel {
             // fix name
             _.extend(command, {
                 name: command.roleName,
-                createMode: _.isEmpty(command.roleId)
+                createMode: _.isEmpty(command.roleId),
+                functionAuthList: _.map(command.permisions, m => _.pick(m, ['functionNo', 'available']))
             });
-            
-            command.functionAuthList = _.map(command.permisions, m => _.pick(m, ['functionNo', 'available']));
 
             fetch.permision.save(command).done(() => {
-
                 info({ messageId: "Msg_15" });
                 self.getListRole().done(() => {
                     let exist: IRole = _.find(self.listRole(), o => o.roleCode == command.roleCode);
@@ -226,7 +224,7 @@ module cas009.a.viewmodel {
 
             index = _.min([_.size(roles) - 2, index]);
 
-            if (!_.isNil(role.roleCode)) {
+            if (!_.isNil(role.roleId)) {
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     block.invisible();
                     fetch.permision.remove(_.pick(role, ["roleId", "assignAtr"])).done(() => {
@@ -250,7 +248,6 @@ module cas009.a.viewmodel {
                         block.clear();
                         nts.uk.ui.errors.clearAll();
                     });
-
                 });
             }
         }
