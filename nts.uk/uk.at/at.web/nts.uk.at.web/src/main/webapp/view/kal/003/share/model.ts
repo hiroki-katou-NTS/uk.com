@@ -1273,24 +1273,33 @@ module nts.uk.at.view.kal003.share.model {
                 self.setTextDisplay();    
             }
             self.displayLeft = ko.computed(() => {
-                if(self.compareOperator() === 6 || self.compareOperator() === 7){
-                    return self.displayLeftCompare();
+                let compareOp = self.compareOperator();
+                let case1 = self.displayLeftCompare();
+                let case2 = self.displayTarget();
+                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                    return case1;
                 } else {
-                    return self.displayTarget();
+                    return case2;
                 }  
             });
             self.displayRight = ko.computed(() => {
-                if(self.compareOperator() === 8 || self.compareOperator() === 9){
-                    return self.displayTarget();
+                let compareOp = self.compareOperator();
+                let case1 = self.displayRightCompare();
+                let case2 = self.displayTarget();
+                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                    return case1;
                 } else {
-                    return self.displayRightCompare();
+                    return case2;
                 }
             });
             self.displayCenter = ko.computed(() => {
-                if(self.compareOperator() === 6 || self.compareOperator() === 7){
-                    return self.displayTarget();
+                let compareOp = self.compareOperator();
+                let case1 = self.displayLeftCompare();
+                let case2 = self.displayTarget();
+                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                    return case2;
                 } else {
-                    return self.displayLeftCompare();
+                    return case1;
                 }
             });
             
@@ -1368,12 +1377,12 @@ module nts.uk.at.view.kal003.share.model {
                     self.displayRightOperator("≦");
                     break;
                 case 8:
-                    self.displayLeftOperator("＜");
-                    self.displayRightOperator("＜");
+                    self.displayLeftOperator("＞");
+                    self.displayRightOperator("＞");
                     break;
                 case 9:
-                    self.displayLeftOperator("≦");
-                    self.displayRightOperator("≦");
+                    self.displayLeftOperator("≧");
+                    self.displayRightOperator("≧");
                     break;
                 default: 
                     self.displayLeftOperator("");
