@@ -1,7 +1,8 @@
 module nts.uk.at.view.kwr006.a {
     export module service {
         var paths = {
-           exportSchedule: "screen/at/monthlyschedule/export"
+           exportSchedule: "screen/at/monthlyschedule/export",
+           getPeriod: "at/function/annualworkschedule/get/period"
         }
         export function saveCharacteristic(data: model.MonthlyWorkScheduleConditionDto): JQueryPromise<void> {
             return nts.uk.characteristics.save("MonthlyWorkScheduleCondition" +
@@ -17,6 +18,10 @@ module nts.uk.at.view.kwr006.a {
         
         export function exportSchedule(query: any): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportSchedule, query);
+        }
+
+        export function getPeriod(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getPeriod);
         }
 
         export module model {

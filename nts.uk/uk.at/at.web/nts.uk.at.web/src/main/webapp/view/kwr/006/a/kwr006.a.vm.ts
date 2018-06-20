@@ -178,7 +178,7 @@ module nts.uk.at.view.kwr006.a {
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let self = this;
-                self.loadListOutputItemMonthlyWorkSchedule().done(res => {
+                $.when(self.loadListOutputItemMonthlyWorkSchedule(), self.loadPeriod()).done(() => {
                     if (_.isEmpty(self.itemListCodeTemplate())) {
                         self.loadAuthorityOfEmploymentForm().done(hasAuthority => {
                             if (hasAuthority) {
@@ -271,6 +271,23 @@ module nts.uk.at.view.kwr006.a {
                 let dfd = $.Deferred<boolean>();
                 //TODO: load co ra thi return true, load dialog C. Khong ra thi return false, ban msg_1141
                 dfd.resolve(true);
+                return dfd.promise();
+            }
+
+            private loadPeriod(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.getPeriod().done(period => {
+                    const startYearMonth = period.startYearMonth;
+                    const endYearMonth = period.endYearMonth;
+                    const parsedStart = startYearMonth.slice(0, 4) + '/' + startYearMonth.slice(4);
+                    const parsedEnd = endYearMonth.slice(0, 4) + '/' + endYearMonth.slice(4);
+                    self.datepickerValue({
+                        startDate: parsedStart,
+                        endDate: parsedEnd
+                    });
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 
