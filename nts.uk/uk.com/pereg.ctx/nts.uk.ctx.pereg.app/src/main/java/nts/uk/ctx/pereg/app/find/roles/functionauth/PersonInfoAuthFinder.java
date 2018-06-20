@@ -12,18 +12,23 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class PersonInfoAuthFinder {
-	
+
 	@Inject
 	private PersonInfoAuthService personInfoAuthSerice;
-	
-	public List<PersonInfoAuthDto> getListAuth(String roleId) {
-		
-		if (roleId == null || roleId.equals("")) {
-			roleId = AppContexts.user().roles().forPersonalInfo();
-		}
+
+	public List<PersonInfoAuthDto> getListAuth() {
+
+		String roleId = AppContexts.user().roles().forPersonalInfo();
+		String companyId = AppContexts.user().companyId();
+
+		List<AuthFullInfoObject> authObjectList = personInfoAuthSerice.getFullInfo(companyId, roleId);
+		return authObjectList.stream().map(x -> new PersonInfoAuthDto(x)).collect(Collectors.toList());
+	}
+
+	public List<PersonInfoAuthDto> getListAuthWithRole(String roleId) {
 		String companyId = AppContexts.user().companyId();
 		List<AuthFullInfoObject> authObjectList = personInfoAuthSerice.getFullInfo(companyId, roleId);
-		return authObjectList.stream().map( x-> new PersonInfoAuthDto(x)).collect(Collectors.toList());
+		return authObjectList.stream().map(x -> new PersonInfoAuthDto(x)).collect(Collectors.toList());
 	}
 
 }

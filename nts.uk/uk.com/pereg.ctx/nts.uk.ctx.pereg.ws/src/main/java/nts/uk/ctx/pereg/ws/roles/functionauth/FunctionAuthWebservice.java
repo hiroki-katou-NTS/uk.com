@@ -16,20 +16,26 @@ import nts.uk.ctx.pereg.app.find.roles.functionauth.PersonInfoAuthFinder;
 @Path("ctx/pereg/functions/auth")
 @Produces("application/json")
 public class FunctionAuthWebservice extends WebService {
-	
+
 	@Inject
 	private PersonInfoAuthFinder authFinder;
-	
+
 	@Inject
 	private RegisterFuncAuthCommandHandler commandHandler;
 
 	@POST
 	@Path("find-all")
-	public List<PersonInfoAuthDto> getAllFunctionAuth(String roleId) {
-		return authFinder.getListAuth(roleId);
+	public List<PersonInfoAuthDto> getAllFunctionAuth() {
+		return authFinder.getListAuth();
 
 	}
-	
+ 
+	@POST
+	@Path("find-with-role")
+	public List<PersonInfoAuthDto> getAllFunctionAuth(String roleId) {
+		return authFinder.getListAuthWithRole(roleId);
+	}
+
 	@POST
 	@Path("register")
 	public void registerAuth(RegisterFuncAuthCommand command) {
