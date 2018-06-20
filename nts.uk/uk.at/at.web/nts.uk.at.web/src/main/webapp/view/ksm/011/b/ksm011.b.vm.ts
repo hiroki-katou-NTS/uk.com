@@ -227,17 +227,17 @@ module nts.uk.at.view.ksm011.b.viewmodel {
                                     return newItem.code == 6;
                                 })
                             }
-//                            if (self.rightItems().length > 0) {
-//                                sortedRItems = self.rightItems();
-//                                _.forEach(self.personalInforData, function(item) {
-//                                    sortedLItems = _.remove(rightItems, function(newItem) {
-//                                        return newItem.code == item.code;
-//                                    });
-//                                });
-//                            }
+
                         } else {
                             self.rightItems(rightItems);
-                            self.leftItems(leftItem);
+                            if (teamDivision == 1 && rank == 1) {
+                                _.remove(leftItem, function(newLItem) {
+                                    return newLItem.code == 6 || newLItem.code == 5;
+                                })
+                                self.leftItems(leftItem);
+                            } else {
+                                self.leftItems(leftItem);
+                            }
 
                         }
                         self.rightItems(sortedRItems);
