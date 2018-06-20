@@ -56,15 +56,20 @@ public class User extends AggregateRoot {
 	// 紐付け先個人ID
 	/** The associated employee id. */
 	private String associatedPersonID;
+	
+	// パスワード状態
+	/** PasswordStatus **/
+	private PassStatus passStatus;
 
 	public static User createFromJavatype(String userID, Boolean defaultUser, String password, String loginID,
 			String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent,
-			String mailAddress, String userName, String associatedPersonID) {
+			String mailAddress, String userName, String associatedPersonID , int passStatus) {
 
-		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID),
+		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID.trim()),
 				new ContractCode(contractCode), expirationDate, EnumAdaptor.valueOf(specialUser, DisabledSegment.class),
 				EnumAdaptor.valueOf(multiCompanyConcurrent, DisabledSegment.class), new MailAddress(mailAddress),
-				new UserName(userName), associatedPersonID);
+				new UserName(userName), associatedPersonID,
+				EnumAdaptor.valueOf(passStatus, PassStatus.class));
 	}
 
 	public boolean hasAssociatedPersonID() {

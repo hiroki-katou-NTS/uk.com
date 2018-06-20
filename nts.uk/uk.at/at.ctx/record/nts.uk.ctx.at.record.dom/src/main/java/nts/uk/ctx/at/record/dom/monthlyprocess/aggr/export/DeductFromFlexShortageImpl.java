@@ -11,6 +11,10 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -38,6 +42,19 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 		DeductFromFlexShortageValue returnValue = new DeductFromFlexShortageValue();
 		MonthlyCalculation monthlyCalculation = new MonthlyCalculation();
 		
+		// 月別集計で必要な会社別設定を取得
+		val companySets = MonAggrCompanySettings.loadSettings(companyId, this.repositories);
+		
+		// 月別集計で必要な社員別設定を取得
+		val employeeSets = MonAggrEmployeeSettings.loadSettings(companyId, employeeId, period, this.repositories);
+		if (employeeSets.getErrorInfos().size() > 0){
+			for (val errorInfo : employeeSets.getErrorInfos().entrySet()){
+				returnValue.getErrorInfos().add(new MonthlyAggregationErrorInfo(
+						errorInfo.getKey(), errorInfo.getValue()));
+			}
+			return returnValue;
+		}
+		
 		// 労働条件項目を取得する
 		val workConditionItemOpt =
 				this.repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, period.end());
@@ -47,10 +64,19 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 			return returnValue;
 		}
 		val workConditionItem = workConditionItemOpt.get();
+
+		// 集計に必要な日別実績データを取得する
+		MonthlyCalculatingDailys monthlyCalcDailys = MonthlyCalculatingDailys.loadData(
+				employeeId, period, this.repositories);
+
+		// 集計前の月別実績データを確認する
+		MonthlyOldDatas monthlyOldDatas = MonthlyOldDatas.loadData(
+				employeeId, yearMonth, closureId, closureDate, this.repositories);
 		
 		// 履歴ごとに月別実績を集計する
 		monthlyCalculation.prepareAggregation(companyId, employeeId, yearMonth, closureId, closureDate,
-				period, workConditionItem, Optional.empty(), this.repositories);
+				period, workConditionItem, 1, companySets, employeeSets,
+				monthlyCalcDailys, monthlyOldDatas, this.repositories);
 		for (val errorInfo : monthlyCalculation.getErrorInfos()){
 			if (errorInfo.getResourceId().compareTo("002") == 0) return returnValue;
 		}

@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -8,6 +9,7 @@ import lombok.Data;
  *
  */
 @Data
+@NoArgsConstructor
 public class DPCellDataDto {
 	
 	private String columnKey;

@@ -23,8 +23,12 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobT
 @Transactional
 public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implements RoleSetGrantedJobTitleRepository {
 
-	private final String GET_All_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSetGrantedJobTitle rs WHERE rs.companyId = :companyId ";
+	private static final String GET_All_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSetGrantedJobTitle rs WHERE rs.companyId = :companyId ";
 
+	private static final String SELECT_BY_JOBTITLECD = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
+			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
+			+ " AND c.roleSetGrantedJobTitleDetailPK.jobTitleId = :jobTitleId";
+	
 	@Override
 	public List<RoleSetGrantedJobTitle> getAllByCompanyId(String companyId) {
 		return this.queryProxy().query(GET_All_BY_COMPANY_ID, SacmtRoleSetGrantedJobTitle.class)
@@ -90,21 +94,13 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		}
 	}
 
-	private final String SELECT_BY_JOBTITLECD = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
-			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
-			+ " AND c.roleSetGrantedJobTitleDetailPK.jobTitleId = :jobTitleId";
-			
-
 	@Override
 	public Optional<String> getRoleSetCd(String companyId, String jobTitleId) {
-		
 		return this.queryProxy().query(SELECT_BY_JOBTITLECD ,SacmtRoleSetGrantedJobTitleDetail.class )
 				.setParameter("companyId", companyId)
 				.setParameter("jobTitleId", jobTitleId)
 				.getSingle( c -> c.roleSetCd);
 		
 	}
-
-
 
 }

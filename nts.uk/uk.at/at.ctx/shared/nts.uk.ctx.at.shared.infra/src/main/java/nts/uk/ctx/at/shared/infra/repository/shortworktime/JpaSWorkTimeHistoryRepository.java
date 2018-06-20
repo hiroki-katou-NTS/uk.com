@@ -34,10 +34,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		implements SWorkTimeHistoryRepository {
 	
-	private final String QUERY_GET_BYSID = "SELECT ad FROM BshmtWorktimeHist ad"
+	private static final String QUERY_GET_BYSID = "SELECT ad FROM BshmtWorktimeHist ad"
 			+ " WHERE ad.bshmtWorktimeHistPK.sid = :sid and ad.cId = :cid ORDER BY ad.strYmd";
 	
-	private final String QUERY_GET_BYSID_DESC = QUERY_GET_BYSID + " DESC";
+	private static final String QUERY_GET_BYSID_DESC = QUERY_GET_BYSID + " DESC";
 	/*
 	 * (non-Javadoc)
 	 * 

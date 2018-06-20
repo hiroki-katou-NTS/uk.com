@@ -30,7 +30,7 @@ public class CheckingDataDefault implements CheckingDataService {
 	  String comment = fixedConditionDataRepository.getFixedByNO(5).get().getMessage().v();
 	  //社員に一致する日別実績（ドメインモデル「日別実績の勤怠時間」）を取得する
 	  GeneralDate date = GeneralDate.localDate(startDate.localDate());
-	  while(date.before(endDate)) {
+	  while(date.beforeOrEquals(endDate)) {
 	   Optional<AttendanceTimeOfDailyPerformance> data = attendanceTimeRepository.find(employeeID, date);
 	   //取得出来なかった
 	   if(!data.isPresent()) {

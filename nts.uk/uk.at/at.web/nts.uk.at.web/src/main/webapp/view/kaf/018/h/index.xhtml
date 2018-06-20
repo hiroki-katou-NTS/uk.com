@@ -32,8 +32,8 @@
 				<button tabindex="1" class="proceed"
 					data-bind="click: registerApprovalStatusMail, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_74')}</button>
 				<!-- H1_2 -->
-				<button tabindex="2"
-					data-bind="click: sendTestMail, enable: screenEditMode">#{i18n.getText('KAF018_75')}</button>
+				<!-- <button tabindex="2"
+					data-bind="click: sendTestMail, enable: screenEditMode">#{i18n.getText('KAF018_75')}</button> -->
 				<!-- H1_3 -->
 				<button id="btn-close" tabindex="3" data-bind="click: close">#{i18n.getText('KAF018_48')}</button>
 			</div>
@@ -57,6 +57,7 @@
 									data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
 									name: '#[KAF018_82]', 
+									required: true, 
 									option: {
 										width: '378px'
 									},
@@ -72,10 +73,11 @@
 							</tr>
 							<tr>
 								<!-- H3_2_1 -->
-								<td colspan="2"><textarea tabindex="6"
+								<td colspan="2"><textarea id="H3_2_1" tabindex="6"
 										data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
 										name: '#[KAF018_83]', 
+										required: true, 
 										option: {
 											width: '508px'
 										},
@@ -105,10 +107,11 @@
 										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
 									</td>
 									<!-- H4_1_1 -->
-									<td><input tabindex="8"
+									<td><input id="H4_1_1" tabindex="8"
 										data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
 									name: '#[KAF018_82]', 
+									required: true, 
 									option: {
 										width: '378px'
 									},
@@ -124,10 +127,11 @@
 								</tr>
 								<tr>
 									<!-- H4_2_1 -->
-									<td colspan="2"><textarea tabindex="9"
+									<td colspan="2"><textarea id="H4_2_1" tabindex="9"
 											data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
 										name: '#[KAF018_83]', 
+										required: true, 
 										option: {
 											width: '508px'
 										},
@@ -158,10 +162,11 @@
 										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
 									</td>
 									<!-- H5_1_1 -->
-									<td><input tabindex="11"
+									<td><input id="H5_1_1" tabindex="11"
 										data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
 									name: '#[KAF018_82]', 
+									required: true, 
 									option: {
 										width: '378px'
 									},
@@ -177,10 +182,11 @@
 								</tr>
 								<tr>
 									<!-- H5_2_1 -->
-									<td colspan="2"><textarea tabindex="12"
+									<td colspan="2"><textarea id="H5_2_1" tabindex="12"
 											data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
 										name: '#[KAF018_83]', 
+										required: true, 
 										option: {
 											width: '508px'
 										},
@@ -211,10 +217,11 @@
 										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
 									</td>
 									<!-- H6_1_1 -->
-									<td><input tabindex="14"
+									<td><input id="H6_1_1" tabindex="14"
 										data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
 									name: '#[KAF018_82]', 
+									required: true, 
 									option: {
 										width: '378px'
 									},
@@ -230,10 +237,11 @@
 								</tr>
 								<tr>
 									<!-- H6_2_1 -->
-									<td colspan="2"><textarea tabindex="15"
+									<td colspan="2"><textarea id="H6_2_1" tabindex="15"
 											data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
 										name: '#[KAF018_83]', 
+										required: true, 
 										option: {
 											width: '508px'
 										},
@@ -262,10 +270,11 @@
 									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
 								</td>
 								<!-- H7_1_1 -->
-								<td><input tabindex="17"
+								<td><input id="H7_1_1" tabindex="17"
 									data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
 									name: '#[KAF018_82]', 
+									required: true, 
 									option: {
 										width: '378px'
 									},
@@ -281,10 +290,11 @@
 							</tr>
 							<tr>
 								<!-- H7_2_1 -->
-								<td colspan="2"><textarea tabindex="18"
+								<td colspan="2"><textarea id="H7_2_1" tabindex="18"
 										data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
 										name: '#[KAF018_83]', 
+										required: true, 
 										option: {
 											width: '508px'
 										},

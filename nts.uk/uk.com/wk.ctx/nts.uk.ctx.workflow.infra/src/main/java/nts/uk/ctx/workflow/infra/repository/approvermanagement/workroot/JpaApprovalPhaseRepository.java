@@ -23,19 +23,15 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprova
 @Stateless
 public class JpaApprovalPhaseRepository extends JpaRepository implements ApprovalPhaseRepository{
 	
-	private final String SELECT_FROM_APPHASE = "SELECT c FROM WwfmtApprovalPhase c"
+	private static final String SELECT_FROM_APPHASE = "SELECT c FROM WwfmtApprovalPhase c"
 			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
-	private final String SELECT_APPHASE = SELECT_FROM_APPHASE
+	private static final String SELECT_APPHASE = SELECT_FROM_APPHASE
 			+ " AND c.wwfmtApprovalPhasePK.approvalPhaseId = :approvalPhaseId";
 	private static final String DELETE_APHASE_BY_BRANCHID = "DELETE from WwfmtApprovalPhase c "
 			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
-	private final String SELECT_FIRST_APPHASE = SELECT_FROM_APPHASE
-			+ " AND c.displayOrder = 1";
-	private static final String DELETE_FIRST_APPHASE = "DELETE from WwfmtApprovalPhase c "
-			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
-			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId"
+	private static final String SELECT_FIRST_APPHASE = SELECT_FROM_APPHASE
 			+ " AND c.displayOrder = 1";
 
 	/**
@@ -199,13 +195,5 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 				.setParameter("companyId", companyId)
 				.setParameter("branchId", branchId)
 				.getSingle(c->toDomainApPhase(c));
-	}
-
-	@Override
-	public void deleteApprovalFirstPhase(String companyId, String branchId) {
-		this.getEntityManager().createQuery(DELETE_FIRST_APPHASE)
-		.setParameter("companyId", companyId)
-		.setParameter("branchId", branchId)
-		.executeUpdate();
 	}	
 }

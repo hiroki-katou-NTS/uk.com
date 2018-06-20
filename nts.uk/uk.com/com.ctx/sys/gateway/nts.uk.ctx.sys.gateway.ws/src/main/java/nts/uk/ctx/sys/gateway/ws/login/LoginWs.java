@@ -15,7 +15,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
@@ -27,11 +26,14 @@ import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormThreeCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormThreeCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.application.auth.WindowsAccount;
 
 /**
  * The Class LoginWs.
@@ -121,33 +123,35 @@ public class LoginWs extends WebService {
 	/**
 	 * Submit login form 1.
 	 *
+	 * @param request the request
 	 * @param command the command
+	 * @return the java type result
 	 */
 	@POST
 	@Path("submit/form1")
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public JavaTypeResult<String> submitLoginForm1(@Context HttpServletRequest request,SubmitLoginFormOneCommand command) {
+	public CheckChangePassDto submitLoginForm1(@Context HttpServletRequest request,SubmitLoginFormOneCommand command) {
 		if (request.getParameter("signon") != null){
 			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
 		command.setRequest(request);
-		return new JavaTypeResult(this.submitForm1.handle(command));
+		return this.submitForm1.handle(command);
 	}
 
 	/**
 	 * Submit login form 2.
 	 *
+	 * @param request the request
 	 * @param command the command
+	 * @return the java type result
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@POST
 	@Path("submit/form2")
-	public JavaTypeResult<String> submitLoginForm2(@Context HttpServletRequest request,SubmitLoginFormTwoCommand command) {
+	public CheckChangePassDto submitLoginForm2(@Context HttpServletRequest request,SubmitLoginFormTwoCommand command) {
 		if (request.getParameter("signon") != null){
 			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
 		command.setRequest(request);
-		return new JavaTypeResult(this.submitForm2.handle(command));
+		return this.submitForm2.handle(command);
 	}
 
 	/**
@@ -160,20 +164,43 @@ public class LoginWs extends WebService {
 	public List<CompanyInformationImport> getAllCompany() {
 		return companyInformationFinder.findAll();
 	}
+	
+	/**
+	 * Gets the company infor by code.
+	 *
+	 * @param companyId the company id
+	 * @return the company infor by code
+	 */
+	@POST
+	@Path("getcompanybycode/{companyId}")
+	public CompanyInformationImport getCompanyInforByCode(@PathParam("companyId") String companyId) {
+		return companyInformationFinder.getCompanyInforByCode(companyId);
+	}
 
 	/**
 	 * Submit login form 3.
 	 *
+	 * @param request the request
 	 * @param command the command
+	 * @return the java type result
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@POST
 	@Path("submit/form3")
-	public JavaTypeResult<String> submitLoginForm3(@Context HttpServletRequest request,SubmitLoginFormThreeCommand command) {
+	public CheckChangePassDto submitLoginForm3(@Context HttpServletRequest request,SubmitLoginFormThreeCommand command) {
 		if (request.getParameter("signon") != null){
 			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
 		command.setRequest(request);
-		return new JavaTypeResult(this.submitForm3.handle(command));
+		return this.submitForm3.handle(command);
+	}
+	
+	@Path("account")
+	@POST
+	public WindowsAccountDto getWindowsAccount() {
+		WindowsAccountDto dto = new WindowsAccountDto();
+		WindowsAccount account = AppContexts.windowsAccount();
+		dto.domain = account != null ? account.getDomain() : null;
+		dto.userName = account != null ? account.getUserName() : null;
+		return dto;
 	}
 }

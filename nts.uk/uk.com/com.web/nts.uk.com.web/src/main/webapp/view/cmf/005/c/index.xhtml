@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+							<script>
+				                var dialogSize = {
+				                    width : 800,
+				                    height : 500
+				                };
+            				</script>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="../share/model.js" />
+				<com:scriptfile path="cmf005.c.service.js" />
+				<com:scriptfile path="cmf005.c.vm.js" />
+				<com:scriptfile path="cmf005.c.start.js" />
+				<com:stylefile path="cmf005.c.style.css" />
+				
+			</ui:define>
+
+			<ui:define name="content">
+				<div id="inline" >
+					<!--C2_1-->
+					<div id = "C2_1" tabindex="1" style="margin-left: 20px;margin-top: 10px"  
+						data-bind="ntsComboBox: {
+									options: systemTypes,
+									value: selectedCode,
+									optionsValue: 'code',
+									optionsText: 'name'
+									}"/>
+	
+				</div>
+				<br></br>
+				<table>
+					<tr>
+						<td>
+							<div id= "C3_1">
+								<div  data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_46')}</div>
+								<hr/>
+							</div>
+						</td>
+						<td>
+							<div id= "C3_2">
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF005_47')}</div>
+								<hr/>
+							</div>
+						</td>
+					</tr>
+				</table>
+				
+				<div id="swap-list" tabindex="2" data-bind="ntsSwapList: {
+								showSearchBox: { showLeft : true},
+								height: 450,
+                            	width: 200,
+                            	rows:15,
+								dataSource: listCategory,
+								primaryKey: 'categoryId',
+								columns: columns,
+								value: currentCategorySelected,
+								searchCriterion: ['categoryId','categoryName'],
+								draggable: true,
+								multipleDrag: { left: true, right: false },
+								innerDrag: { left: false, right: true },
+								outerDrag: { left: true, right: true } 
+							}"/>
+				<hr/>
+				<button id = "C20_1" tabindex="16" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CMF005_48')}</button>
+				<button id = "C20_2" tabindex="17" data-bind="click : closePopup" class="large" >#{i18n.getText('CMF005_49')}</button>
+
+			</ui:define>
+	</ui:composition>
+   	</body>
+</html>

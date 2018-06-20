@@ -503,6 +503,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.app')
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
+		compile(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
 	}
 }
 
@@ -585,6 +586,7 @@ project (':at.file:nts.uk.file.at.app') {
 	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.dom')
 	 	compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 
@@ -596,6 +598,7 @@ project (':at.file:nts.uk.file.at.infra') {
 		compile project (':at.ctx:request:nts.uk.ctx.at.request.infra')
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.infra')
+		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 //=============at.file�==========================================

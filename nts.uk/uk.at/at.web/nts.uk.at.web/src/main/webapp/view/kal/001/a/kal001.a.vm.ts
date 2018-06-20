@@ -41,12 +41,12 @@ module nts.uk.at.view.kal001.a.model {
             self.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: true,
+                showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: true,
-                showClosure: true,
-                showAllClosure: true,
+                showBaseDate: false,
+                showClosure: false,
+                showAllClosure: false,
                 showPeriod: true,
                 periodFormatYM: false,
                 
@@ -116,7 +116,7 @@ module nts.uk.at.view.kal001.a.model {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
-            $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
+            $("#fixed-table").ntsFixedTable({ height: 280, width: 600 });
             block.invisible();
             service.getAlarmByUser().done((alarmData)=>{
                 
@@ -134,20 +134,17 @@ module nts.uk.at.view.kal001.a.model {
                     }).fail((errorCheckTime) =>{
                         alertError(errorCheckTime);
                     }).always(()=>{
+                        $('#extract').focus();
                         block.clear();    
                     });
                                         
                 }else{
                      dfd.resolve();  
                 }
-
-                
             }).fail((errorAlarm)=>{
                  alertError(errorAlarm);
                  block.clear();
             });
-            
-
             return dfd.promise();
         }
         
@@ -222,8 +219,8 @@ module nts.uk.at.view.kal001.a.model {
                 return;    
             }    
             
-            $(".nts-input").trigger("validate");
-            if ($(".nts-input").ntsError("hasError")) return;
+            $(".nts-custom").find('.nts-input').trigger("validate");
+            if ($(".nts-custom").find('.nts-input').ntsError("hasError")) return;
                                       
             block.invisible();
             service.isExtracting().done((isExtracting: boolean)=>{
@@ -243,6 +240,7 @@ module nts.uk.at.view.kal001.a.model {
                               nts.uk.ui.dialog.info({ messageId: "Msg_835" });   
                               return;
                         }
+                        
                         
                         nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
                         modal("/view/kal/001/b/index.xhtml").onClosed(() => {
@@ -281,30 +279,57 @@ module nts.uk.at.view.kal001.a.model {
         categoryName: string;
         dateValue: KnockoutObservable<DateValue>;
         checkBox: KnockoutObservable<boolean>;
-        typeInput :  string;
-        required: KnockoutObservable<boolean>; 
+        typeInput :  string = "fullDate";
+        required: KnockoutObservable<boolean>;
+        year:  KnockoutObservable<number> = ko.observable(1999);
+        visible: KnockoutObservable<boolean>;
+        id : number;
         
         constructor(dto:  service.CheckConditionTimeDto){
             let self = this;
             this.category = dto.category;
             this.categoryName = dto.categoryName;
+            
             if(dto.category==2 || dto.category==5){
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
-                this.typeInput = "fullDate";     
-            }else{
+                this.typeInput = "fullDate"; 
+                    
+            }else if(dto.category ==7){
                 this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                 this.typeInput = "yearmonth";   
+                
+            } else if(dto.category ==12){
+                if(dto.categoryName=='36協定　年間'){
+                    this.year = ko.observable(dto.year);
+                    this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth)); 
+                    this.typeInput ="yearmonth"; 
+                                      
+                }else if(dto.categoryName=='36協定　1・2・4週間'){
+                    this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
+                    this.typeInput = "fullDate";                     
+                    
+                } else{
+                    this.dateValue = ko.observable(new DateValue(dto.startMonth, dto.endMonth));
+                     this.typeInput = "yearmonth";
+                }
             }
+            
+            this.id = dto.category + dto.tabOrder +1;
+            
             this.checkBox = ko.observable(false);
             
             this.checkBox.subscribe((v)=>{
                 if(v ==false) 
                 {
-                     $("#fixed-table").find("tr[categorynumber='"+self.category+"']").find(".nts-input").ntsError("clear");    
+                     $("#fixed-table").find("tr[categorynumber='"+self.id+"']").find(".nts-custom").find(".nts-input").ntsError("clear");    
                 }
                 
             })
             this.required = ko.computed(() =>{ return this.checkBox()}); 
+            this.visible = ko.computed(()=>{
+                if(this.category ==12 && this.categoryName =="36協定　年間")    return true;
+                else return false;
+            });
         }
         
         public setClick() : void{

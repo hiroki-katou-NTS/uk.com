@@ -18,9 +18,15 @@ import nts.uk.ctx.at.record.app.find.attdItemLinking.AttendanceItemLinkingFinder
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.MonthlyAttendanceItemNameDto;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,9 +42,15 @@ public class AttendanceItemsFinder {
 
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
+	
+	@Inject
+	private AttendanceItemNameAdapter monthlyAttendanceItemNameAdapter;
 
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
+	
+	@Inject
+	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
 
 	/** The attd item linking finder. */
 	@Inject
@@ -82,7 +94,7 @@ public class AttendanceItemsFinder {
 
 		return attendanceItemDtos;
 	}
-
+	
 	public List<AttdItemDto> findAll() {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -121,6 +133,44 @@ public class AttendanceItemsFinder {
 		return attendanceItemDtos;
 	}
 
+	public List<AttdItemDto> findAllMonthly() {
+		LoginUserContext login = AppContexts.user();
+		String companyId = login.companyId();
+
+		List<AttdItemDto> attendanceItemDtos = new ArrayList<>();
+
+		// 勤怠項目
+		List<MonthlyAttendanceItem> monthlyAttendanceItems = this.monthlyAttendanceItemRepository.findAll(companyId);
+
+		if (monthlyAttendanceItems.isEmpty()) {
+			return attendanceItemDtos;
+		}
+
+		// get list attendanceItemId
+		List<Integer> attendanceItemIds = monthlyAttendanceItems.stream().map(f -> {
+			return f.getAttendanceItemId();
+		}).collect(Collectors.toList());
+
+		List<MonthlyAttendanceItemNameDto> monthlyAttendanceItemNameDtos = this.monthlyAttendanceItemNameAdapter.
+				getMonthlyAttendanceItemName(attendanceItemIds);
+
+		Map<Integer, MonthlyAttendanceItem> monthlyAttendanceItemMap = monthlyAttendanceItems.stream()
+				.collect(Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, c -> c));
+
+		monthlyAttendanceItemNameDtos.forEach(f -> {
+			AttdItemDto attendanceItemDto = new AttdItemDto();
+			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
+			attendanceItemDto.setAttendanceItemName(f.getAttendanceItemName());
+			attendanceItemDto.setAttendanceItemDisplayNumber(f.getAttendanceItemDisplayNumber());
+			MonthlyAttendanceItem monthlyAttendanceItem = monthlyAttendanceItemMap.get(f.getAttendanceItemId());
+			attendanceItemDto.setDailyAttendanceAtr(monthlyAttendanceItem.getMonthlyAttendanceAtr().value);
+			attendanceItemDto.setNameLineFeedPosition(monthlyAttendanceItem.getNameLineFeedPosition());
+			attendanceItemDtos.add(attendanceItemDto);
+		});
+
+		return attendanceItemDtos;
+	}
+	
 	public List<AttdItemDto> findListByAttendanceAtr(int dailyAttendanceAtr) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -133,6 +183,30 @@ public class AttendanceItemsFinder {
 					attdItemDto.setAttendanceItemId(f.getAttendanceItemId());
 					attdItemDto.setAttendanceItemName(f.getAttendanceName().v());
 					attdItemDto.setDailyAttendanceAtr(f.getDailyAttendanceAtr().value);
+					attdItemDto.setNameLineFeedPosition(f.getNameLineFeedPosition());
+					return attdItemDto;
+				}).collect(Collectors.toList());
+
+		return attendanceItemDtos;
+	}
+	
+	/**
+	 * added by HungTT
+	 * @param monthlyAttendanceAtr
+	 * @return List
+	 */
+	public List<AttdItemDto> findListMonthlyByAttendanceAtr(int monthlyAttendanceAtr) {
+		LoginUserContext login = AppContexts.user();
+		String companyId = login.companyId();
+
+		List<AttdItemDto> attendanceItemDtos = this.monthlyAttendanceItemRepository
+				.findByAtr(companyId, EnumAdaptor.valueOf(monthlyAttendanceAtr, MonthlyAttendanceItemAtr.class)).stream()
+				.map(f -> {
+					AttdItemDto attdItemDto = new AttdItemDto();
+					attdItemDto.setAttendanceItemDisplayNumber(f.getDisplayNumber());
+					attdItemDto.setAttendanceItemId(f.getAttendanceItemId());
+					attdItemDto.setAttendanceItemName(f.getAttendanceName().v());
+					attdItemDto.setDailyAttendanceAtr(f.getMonthlyAttendanceAtr().value);
 					attdItemDto.setNameLineFeedPosition(f.getNameLineFeedPosition());
 					return attdItemDto;
 				}).collect(Collectors.toList());
@@ -154,12 +228,12 @@ public class AttendanceItemsFinder {
 
 		if (!CollectionUtil.isEmpty(request.getAnyItemNos())) {
 			// get attendance item linking
-			Map<Integer, Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
-					.collect(Collectors.toMap(item -> item.getAttendanceItemId(), item -> item.getAttendanceItemId()));
+			List<Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream().map(FrameNoAdapterDto::getAttendanceItemId)
+					.collect(Collectors.toList());
 
 			// get list attendance item filtered by attdItemLinks
 			List<AttdItemDto> filtered = this.findAll().stream()
-					.filter(item -> attdItemLinks.containsKey(item.getAttendanceItemId())).collect(Collectors.toList());
+					.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
 
 			// merge two list attendance items
 			attdItems.addAll(filtered);

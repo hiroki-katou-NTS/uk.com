@@ -7,8 +7,13 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSetRepository;
@@ -38,27 +43,71 @@ public class GetDeforAggrSetImpl implements GetDeforAggrSet {
 	/** 社員別 */
 	@Inject
 	private ShaDeforLaborMonthActCalSetRepository shaSetRepo;
+	/** 職場情報の取得 */
+	@Inject
+	private AffWorkplaceAdapter affWorkplaceAdapter;
 	
 	/** 取得 */
 	@Override
-	public Optional<DeforWorkTimeAggrSet> get(String companyId, String workplaceId, String employmentCd,
+	public Optional<DeforWorkTimeAggrSet> get(String companyId, String employmentCd,
 			String employeeId, GeneralDate criteriaDate) {
 
 		// 利用単位　確認
-		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
 		UsageUnitSetting usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
+		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
 		if (usagaUnitSetOpt.isPresent()) usageUnitSet = usagaUnitSetOpt.get();
 		
 		// 社員別設定　確認
+		val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
+		
+		// 会社別設定　確認
+		val comSetOpt = this.comSetRepo.find(companyId);
+		
+		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+				usageUnitSet, shaSetOpt, comSetOpt);
+	}
+
+	/** 取得 */
+	@Override
+	public Optional<DeforWorkTimeAggrSet> get(String companyId, String employmentCd, String employeeId,
+			GeneralDate criteriaDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+
+		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+				companySets.getUsageUnitSet(), employeeSets.getShaIrgSetOpt(), companySets.getComIrgSetOpt());
+	}
+	
+	/**
+	 * 取得共通処理
+	 * @param companyId 会社ID
+	 * @param employmentCd 雇用コード
+	 * @param employeeId 社員ID
+	 * @param criteriaDate 基準日
+	 * @param usageUnitSet 労働時間と日数の設定の利用単位の設定
+	 * @param shaIrgSetOpt 変形労働社員別月別実績集計設定
+	 * @param comIrgSetOpt 変形労働会社別月別実績集計設定
+	 * @return 変形労働の法定内集計設定
+	 */
+	private Optional<DeforWorkTimeAggrSet> getCommon(
+			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
+			UsageUnitSetting usageUnitSet, Optional<ShaDeforLaborMonthActCalSet> shaIrgSetOpt,
+			Optional<ComDeforLaborMonthActCalSet> comIrgSetOpt){
+
+		// 社員別設定　確認
 		if (usageUnitSet.isEmployee()){
-			val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
-			if (shaSetOpt.isPresent()) return Optional.of(shaSetOpt.get().getAggrSetting());
+			if (shaIrgSetOpt.isPresent()) return Optional.of(shaIrgSetOpt.get().getAggrSetting());
 		}
 		
 		// 職場別設定　確認
 		if (usageUnitSet.isWorkPlace()){
-			val wkpSetOpt = this.wkpSetRepo.find(companyId, workplaceId);
-			if (wkpSetOpt.isPresent()) return Optional.of(wkpSetOpt.get().getAggrSetting());
+			
+			// 所属職場を含む上位階層の職場IDを取得
+			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(
+					companyId, employeeId, criteriaDate);
+			
+			for (val workplaceId : workplaceIds){
+				val wkpSetOpt = this.wkpSetRepo.find(companyId, workplaceId);
+				if (wkpSetOpt.isPresent()) return Optional.of(wkpSetOpt.get().getAggrSetting());
+			}
 		}
 		
 		// 雇用別設定　確認
@@ -68,8 +117,7 @@ public class GetDeforAggrSetImpl implements GetDeforAggrSet {
 		}
 		
 		// 会社別設定　確認
-		val comSetOpt = this.comSetRepo.find(companyId);
-		if (comSetOpt.isPresent()) return Optional.of(comSetOpt.get().getAggrSetting());
+		if (comIrgSetOpt.isPresent()) return Optional.of(comIrgSetOpt.get().getAggrSetting());
 		
 		return Optional.empty();
 	}

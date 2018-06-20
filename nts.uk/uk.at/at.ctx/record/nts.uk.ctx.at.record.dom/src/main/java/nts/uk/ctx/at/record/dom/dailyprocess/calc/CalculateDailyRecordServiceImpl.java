@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ConstraintTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
+import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -27,14 +28,12 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.HolidayTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.OvertimeTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.WorkingTimesheetCalculationSetting;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
@@ -43,6 +42,7 @@ import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
@@ -63,6 +63,12 @@ import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
@@ -72,13 +78,17 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.record.dom.workrule.specific.LimitControlOfTotalWorkingSet;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
@@ -92,12 +102,12 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.Calc
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
@@ -166,7 +176,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private WorkTypeRepository workTypeRepository;
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSetRepository;
-
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	@Inject
@@ -181,34 +190,34 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepository;
-
+	
+		
 	@Inject
-	private DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter;
-	@Inject
-	private CompensLeaveComSetRepository compensLeaveComSetRepository;
-	@Inject 
-	private DivergenceTimeRepository divergenceTimeRepository;
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
 
 	@Inject
 	private OotsukaProcessService ootsukaProcessService;
 	
 	@Inject
-	private WorkingConditionItemRepository workingConditionItemRepository;
-	
-	@Inject
 	private CalculationErrorCheckService calculationErrorCheckService;
-	
-	@Inject
-	private HolidayAddtionRepository holidayAddtionRepository;
-	
-	@Inject
-	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
-	
+
 	@Inject
 	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
 	
+
+	//↓以下任意項目の計算の為に追加
+	
 	@Inject
-	private SpecificWorkRuleRepository specificWorkRuleRepository;
+	private ShareEmploymentAdapter shareEmploymentAdapter;
+	
+	@Inject
+	private OptionalItemRepository optionalItemRepository;
+	
+	@Inject
+	private FormulaRepository formulaRepository;
+	
+	@Inject
+	private EmpConditionRepository empConditionRepository;
 	
 	
 	/**
@@ -216,29 +225,35 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return 日別実績(Work)
 	 */
 	@Override
-	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily) {
-		// /*日別実績(Work)の退避*/
-		// val copyIntegrationOfDaily = integrationOfDaily;
-		if (integrationOfDaily.getAffiliationInfor() == null)
+	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting) {
+		
+		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
+		
+		if (integrationOfDaily.getAffiliationInfor() == null || companyCommonSetting == null)
 			return integrationOfDaily;
 		// 実績データの計算
-		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily);
+		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, converter);
+		//任意項目の計算
+//		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter);
 		//エラーチェック
-		return calculationErrorCheckService.errorCheck(afterCalcResult);
-		//return afterCalcResult;
+		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
+//		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
+//		return afterCalcResult;
 	}
 
-	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily) {
+	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily,
+															  ManagePerCompanySet companyCommonSetting, 
+															  DailyRecordToAttendanceItemConverter converter) {
 		val copyCalcAtr = integrationOfDaily.getCalAttr();
 		//予定の時間帯
-		val schedule = createSchedule(integrationOfDaily);
+		val schedule = createSchedule(integrationOfDaily,companyCommonSetting,converter);
 		//実績の時間帯
-		val record = createRecord(integrationOfDaily,TimeSheetAtr.RECORD);
+		val record = createRecord(integrationOfDaily,TimeSheetAtr.RECORD,companyCommonSetting);
 		if (!record.getCalculatable()) {
 			integrationOfDaily.setCalAttr(copyCalcAtr);
 			return integrationOfDaily;
 		}
-		val test = calcRecord(record,schedule);
+		val test = calcRecord(record,schedule, companyCommonSetting, converter);
 		test.setCalAttr(copyCalcAtr);
 		return test;
 	}
@@ -253,8 +268,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @param targetDate
 	 *            対象日
 	 * @param integrationOfDaily
+	 * @param companyCommonSetting 
 	 */
-	private ManageReGetClass createRecord(IntegrationOfDaily integrationOfDaily,TimeSheetAtr timeSheetAtr) {
+	private ManageReGetClass createRecord(IntegrationOfDaily integrationOfDaily,TimeSheetAtr timeSheetAtr, ManagePerCompanySet companyCommonSetting) {
 		String companyId = AppContexts.user().companyId();
 		String placeId = integrationOfDaily.getAffiliationInfor().getWplID();
 		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
@@ -278,7 +294,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordInfo().getWorkTimeCode().toString());
 		if(!workTime.isPresent()) return ManageReGetClass.cantCalc();
 		/* 労働制 */
-		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(integrationOfDaily);
+		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(integrationOfDaily, companyCommonSetting);
+		if(personalInfo==null) return ManageReGetClass.cantCalc(); 
 		/**
 		 * 勤務種類が休日系なら、所定時間の時間を変更する
 		 */
@@ -288,7 +305,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 		
 		/*法定労働時間(日単位)*/
-		val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(companyId, employmentCd, employeeId, targetDate, personalInfo.getWorkingSystem());
+		val dailyUnit = companyCommonSetting.getDailyUnit();
 		
 		/*休憩時間帯（遅刻早退用）*/
 		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
@@ -305,7 +322,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 	
 		/*各加算設定取得用*/
-		Map<String, AggregateRoot> map = holidayAddtionRepository.findByCompanyId(companyId);
+		Map<String, AggregateRoot> map = companyCommonSetting.getHolidayAddition();
 		
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		//休憩時間帯(BreakManagement)
@@ -396,7 +413,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																			   autoCalcSet, 
 																			   autoCalcSet, 
 																			   autoCalcSet),
-													new AutoCalOfLeaveEarlySetting(LeaveAttr.USE, LeaveAttr.USE),
+													new AutoCalcOfLeaveEarlySetting(true, true),
 													new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
 			integrationOfDaily.setCalAttr(calAttr);
 		}	
@@ -429,7 +446,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		HourlyPaymentAdditionSet hourlyPaymentAddSetting = hourlyPaymentAdditionSet!=null?(HourlyPaymentAdditionSet)hourlyPaymentAdditionSet:null;
 		
 		//休暇加算時間設定
-		Optional<HolidayAddtionSet> holidayAddtionSetting = holidayAddtionRepository.findByCId(companyId);
+		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
 		if(!holidayAddtionSetting.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("休暇加算時間設定が存在しません"));
 		}
@@ -449,14 +466,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
-//			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
-			//val flexWork = holidayAddtionRepository.findByCId(employeeId);
 			if(timeSheetAtr.isSchedule()) {
 				flexWorkSetOpt.get().getOffdayWorkTime().getRestTimezone().restoreFixRestTime(true);
 				flexWorkSetOpt.get().getRestSetting().getCommonRestSetting().changeCalcMethodToRecordUntilLeaveWork();
 				flexWorkSetOpt.get().getRestSetting().getFlowRestSetting().getFlowFixedRestSetting().changeCalcMethodToSchedule();
 			}
-			//val flexWork = holidayAddtionRepository.findByCId(employeeId);
 			AggregateRoot aggregateRoot = map.get("flexWork");
 			//フレックス勤務の加算設定
 			WorkFlexAdditionSet WorkRegularAdditionSet = aggregateRoot!=null?(WorkFlexAdditionSet)aggregateRoot:null;
@@ -501,15 +515,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
 												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,
 												holidayCalcMethodSet,
-												//new WorkTimeCalcMethodDetailOfHoliday(1,1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()),
 												dailyUnit,breakTimeList,
 												vacation, 
 						                		oneRange.getTimeVacationAdditionRemainingTime().get(), //oneDay.getTimeVacationAdditionRemainingTime().get()
 						                		Optional.of(workInfo.getRecordInfo().getWorkTimeCode()), 
 						                		Optional.of(personalLabor), 
-						                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().getLeaveLate().isUse(), 
-						                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().getLeaveEarly().isUse(),
+						                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLate(), 
+						                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
 						                		illegularAddSetting, 
 						                		flexAddSetting, 
 						                		regularAddSetting, 
@@ -520,6 +533,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
+				if(!fixedWorkSetting.isPresent()) return ManageReGetClass.cantCalc();
 				List<OverTimeOfTimeZoneSet> fixOtSetting = Collections.emptyList();
 				if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
 					fixOtSetting = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get().getWorkTimezone().getLstOTTimezone();
@@ -537,13 +551,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				WorkRegularAdditionSet WorkRegularAdditionSet = aggregateRoot!=null?(WorkRegularAdditionSet)aggregateRoot:null;
 				//通常勤務の加算設定.休暇の計算方法の設定
 				holidayCalcMethodSet = WorkRegularAdditionSet!=null?WorkRegularAdditionSet.getVacationCalcMethodSet():holidayCalcMethodSet;
-				//パターン１
-//				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_WORKING,new OTFrameNo(1)),
-//														   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_WORKING,new OTFrameNo(2),new OTFrameNo(3))));
-				//パターン2
-//				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME,new OverTimeFrameNo(1)),
-//						   								   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_OVERTIME,new OverTimeFrameNo(2),new OverTimeFrameNo(3))));
-				
+
 				ootsukaFixedWorkSet = fixedWorkSetting.get().getCalculationSetting();
 				
 				List<nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime> a = new ArrayList<>();
@@ -628,11 +636,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						dailyUnit,
 						breakTimeList,
 						vacation, 
-                		oneRange.getTimeVacationAdditionRemainingTime().get(), //oneDay.getTimeVacationAdditionRemainingTime().get()
+                		oneRange.getTimeVacationAdditionRemainingTime().get(), 
                 		Optional.of(workInfo.getRecordInfo().getWorkTimeCode()), 
                 		Optional.of(personalLabor), 
-                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().getLeaveLate().isUse(), 
-                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().getLeaveEarly().isUse(),
+                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLate(), 
+                		integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
                 		illegularAddSetting, 
                 		flexAddSetting, 
                 		regularAddSetting, 
@@ -660,9 +668,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 		
 		Optional<CoreTimeSetting> coreTimeSetting = Optional.empty();
-//		if(flexWorkSetOpt.isPresent()) {
-//			coreTimeSetting = Optional.of(flexWorkSetOpt.get().getCoreTimeSetting());
-//		}
+
+		
 		if(flexWorkSetOpt.isPresent()) {//暫定的にここに処理を記載しているが、本来は別のクラスにあるべき
 			if(beforeWorkType.isPresent()) {
 				if(beforeWorkType.get().isWeekDayAttendance()) {
@@ -675,20 +682,23 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			}
 		}
 		
-		//beforeWorkType,workType
 		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime,beforeWorkType , subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet,holidayCalcMethodSet,breakCount,
 										regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting,holidayAddtionSetting.get(),coreTimeSetting);
 	}
 
 	/**
 	 * 作成した時間帯から時間を計算する
+	 * @param companyCommonSetting 
 	 * @param schedule 
 	 * 
 	 * @param integrationOfDaily
 	 *            日別実績(WORK)
 	 * @return 日別実績(WORK)
 	 */
-	private IntegrationOfDaily calcRecord(ManageReGetClass recordReGetClass, ManageReGetClass scheduleReGetClass) {
+	private IntegrationOfDaily calcRecord(ManageReGetClass recordReGetClass, 
+										  ManageReGetClass scheduleReGetClass,
+										  ManagePerCompanySet companyCommonSetting,
+										  DailyRecordToAttendanceItemConverter converter) {
 		String companyId = AppContexts.user().companyId();
 		String placeId = recordReGetClass.getIntegrationOfDaily().getAffiliationInfor().getWplID();
 		String employmentCd = recordReGetClass.getIntegrationOfDaily().getAffiliationInfor().getEmploymentCode()
@@ -697,55 +707,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		GeneralDate targetDate = recordReGetClass.getIntegrationOfDaily().getAffiliationInfor().getYmd();
 
 		/* 日別実績(Work)の退避 */
-		val copyIntegrationOfDaily = dailyRecordToAttendanceItemConverter
+		val copyIntegrationOfDaily = converter
 				.setData(recordReGetClass.getIntegrationOfDaily()).toDomain();
 
-		// 日別実績の自動計算設定
-		CalAttrOfDailyPerformance calcAtrOfDaily = recordReGetClass.getIntegrationOfDaily().getCalAttr();
-
-		// 残業の自動計算設定
-		AutoCalOvertimeSetting sharedOtSet = calcAtrOfDaily.getOvertimeSetting();
-
-		// 休出の自動計算設定
-		AutoCalRestTimeSetting holidayAutoCalcSetting = calcAtrOfDaily.getHolidayTimeSetting();
-		// 遅刻早退の自動計算設定
-		AutoCalOfLeaveEarlySetting lateLeave = calcAtrOfDaily.getLeaveEarlySetting()/*new AutoCalOfLeaveEarlySetting(LeaveAttr.USE, LeaveAttr.USE)*/;
-		// 加給の自動計算設定
-		AutoCalRaisingSalarySetting autoRaisingSet = calcAtrOfDaily.getRasingSalarySetting();
 		//加給時間計算設定
 		BonusPayAutoCalcSet bonusPayAutoCalcSet = new BonusPayAutoCalcSet(new CompanyId(companyId),
 																		   1,
 																		   WorkingTimesheetCalculationSetting.CalculateAutomatic,
 																		   OvertimeTimesheetCalculationSetting.CalculateAutomatic,
 																		   HolidayTimesheetCalculationSetting.CalculateAutomatical);
-		
-		
 
-//		// 変形労働勤務の加算設定
-//		WorkTimeCalcMethodDetailOfHoliday workDetailSet = new WorkTimeCalcMethodDetailOfHoliday(
-//				nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
-//				new IncludeHolidaysWorkCalcDetailSet(
-//						nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
-//		WorkTimeCalcMethodOfHoliday workTimeClacMethodOfHoliday = new WorkTimeCalcMethodOfHoliday(
-//				CalculationByActualTimeAtr.CalculationByActualTime, workDetailSet);
-//		PremiumCalcMethodDetailOfHoliday preDetailSet = new PremiumCalcMethodDetailOfHoliday(
-//				new IncludeHolidaysPremiumCalcDetailSet(
-//						nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To),
-//				nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To);
-//		PremiumCalcMethodOfHoliday premiumCalcMethodOfHoliday = new PremiumCalcMethodOfHoliday(preDetailSet,
-//				CalculationByActualTimeAtr.CalculationByActualTime);
-//		HolidayCalcMethodSet holidaycalcMethodSet = new HolidayCalcMethodSet(workTimeClacMethodOfHoliday,
-//				premiumCalcMethodOfHoliday);
-//		val illegularAddSetting = new AddSettingOfIrregularWork(new CompanyId(companyId), holidaycalcMethodSet);
-//		// フレックス勤務の加算設定
-//		AddSettingOfFlexWork flexAddSetting = new AddSettingOfFlexWork(new CompanyId(companyId), holidaycalcMethodSet);
-//		// 固定勤務の加算設定
-//		AddSettingOfRegularWork regularAddSetting = new AddSettingOfRegularWork(new CompanyId(companyId),
-//				holidaycalcMethodSet);
-
-		// 個人労働条件
-		PersonalLaborCondition personalLabor = new PersonalLaborCondition(
-				recordReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet());
 		// 休暇クラス
 		VacationClass vacation = new VacationClass(new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
 				new TimeDigestOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
@@ -757,24 +728,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.of(new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
 																													new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay))));
-		
-	    //日別実績の入退門　　　　
-		Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = recordReGetClass.getIntegrationOfDaily().getAttendanceLeavingGate();
-		//日別実績のPCログオン情報　　　
-		Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = recordReGetClass.getIntegrationOfDaily().getPcLogOnInfo();
-		//日別実績の出退勤
-		Optional<TimeLeavingOfDailyPerformance> attendanceLeave = recordReGetClass.getIntegrationOfDaily().getAttendanceLeave();
+
 		//総拘束時間の計算
-//		CalculateOfTotalConstraintTime calculateOfTotalConstraintTime = new CalculateOfTotalConstraintTime(new CompanyId(companyId),CalculationMethodOfConstraintTime.REQUEST_FROM_ENTRANCE_EXIT);
-		Optional<CalculateOfTotalConstraintTime> optionalCalculateOfTotalConstraintTime = specificWorkRuleRepository.findCalcMethodByCid(companyId);
+		Optional<CalculateOfTotalConstraintTime> optionalCalculateOfTotalConstraintTime = companyCommonSetting.getCalculateOfTotalCons();
 		if(!optionalCalculateOfTotalConstraintTime.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("総拘束時間の計算が存在しません"));
 		}
 		CalculateOfTotalConstraintTime calculateOfTotalConstraintTime = optionalCalculateOfTotalConstraintTime.get();
 		
 		//会社別代休設定取得
-
-		val compensLeaveComSet = compensLeaveComSetRepository.find(companyId);
+		val compensLeaveComSet = companyCommonSetting.getCompensatoryLeaveComSet();
 		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = new ArrayList<>();
 		if(compensLeaveComSet != null)
 			eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
@@ -799,47 +762,37 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			 scheWorkType = workTypeRepository.findByPK(companyId, scheWorkTypeCode.toString()); 
 		
 
-		
-//		VacationAddTimeSet vacationAddSetting = new VacationAddTimeSet(new BreakDownTimeDay(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(), 
-//																							manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getMorning(),
-//																							manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getAfternoon()),
-//																	   new AddVacationSet(nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
-//																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
-//																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
 		//乖離時間(AggregateRoot)取得
-		List<DivergenceTime> divergenceTimeList = divergenceTimeRepository.getAllDivTime(companyId);
+		List<DivergenceTime> divergenceTimeList = companyCommonSetting.getDivergenceTime();
 		
 		//乖離時間計算用　勤怠項目ID紐づけDto作成
-		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);
+		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = converter.setData(copyIntegrationOfDaily);
 		
 
 		/*時間の計算*/
-		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyPerformance.calcTimeResult(recordReGetClass.getCalculationRangeOfOneDay(),
-																				 recordReGetClass.getIntegrationOfDaily(),
-																				 sharedOtSet,
-																				 holidayAutoCalcSetting.getRestTime(),
+		recordReGetClass.setIntegrationOfDaily(
+				AttendanceTimeOfDailyPerformance.calcTimeResult(
+					recordReGetClass.getCalculationRangeOfOneDay(),
+					scheduleReGetClass.getCalculationRangeOfOneDay(),
+					recordReGetClass.getIntegrationOfDaily(),
 					Optional.empty(),//Optional.of(personalLabor),
 				    vacation,
 				    workType.get(),
-				    lateLeave.getLeaveLate().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-				    lateLeave.getLeaveEarly().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				    recordReGetClass.getPersonalInfo().getWorkingSystem(),
 				    recordReGetClass.getWorkDeformedLaborAdditionSet(),
 				    recordReGetClass.getWorkFlexAdditionSet(),
 				    recordReGetClass.getWorkRegularAdditionSet(),
 				    recordReGetClass.getHolidayAddtionSet(),
-				    AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    recordReGetClass.getHolidayCalcMethodSet(),
-				    autoRaisingSet,
 					bonusPayAutoCalcSet,
-					calcAtrOfDaily,
+					recordReGetClass.getIntegrationOfDaily().getCalAttr(),
 					recordReGetClass.getSubHolTransferSetList(),
 					eachCompanyTimeSet,
-					attendanceLeavingGateOfDaily,
-					pCLogOnInfoOfDaily,
-					attendanceLeave,
+					recordReGetClass.getIntegrationOfDaily().getAttendanceLeavingGate(),//日別実績の入退門
+					recordReGetClass.getIntegrationOfDaily().getPcLogOnInfo(),//日別実績のPCログオン情報
+					recordReGetClass.getIntegrationOfDaily().getAttendanceLeave(),//日別実績の出退勤
 					forCalcDivergenceDto,
 					divergenceTimeList,
 					calculateOfTotalConstraintTime, 
@@ -852,7 +805,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					recordReGetClass.getBreakCount(),
 					recordReGetClass.coreTimeSetting
 					));
-//					schePreTimeSet));
 	
 	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		  List<Integer> attendanceItemIdList = recordReGetClass.getIntegrationOfDaily().getEditState().stream().filter(editState -> editState.getEmployeeId().equals(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId())
@@ -863,46 +815,86 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		  IntegrationOfDaily calcResultIntegrationOfDaily = recordReGetClass.getIntegrationOfDaily();  
 		  if(!attendanceItemIdList.isEmpty()) {
-		   DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily); 
+		   DailyRecordToAttendanceItemConverter beforDailyRecordDto = converter.setData(copyIntegrationOfDaily); 
 		   List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);  
-		   DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(recordReGetClass.getIntegrationOfDaily()); 
+		   DailyRecordToAttendanceItemConverter afterDailyRecordDto = converter.setData(recordReGetClass.getIntegrationOfDaily()); 
 		   afterDailyRecordDto.merge(itemValueList);
 		   //手修正された項目の値を計算前に戻す   
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 		   
-		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily, companyId);
-		   
+		   //手修正後の再計算
+		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting, converter);
+		   //手修正された項目の値を計算値に戻す(手修正再計算の後Ver)
+		   DailyRecordToAttendanceItemConverter afterReCalcDto = converter.setData(calcResultIntegrationOfDaily); 
+		   afterReCalcDto.merge(itemValueList);
+		   calcResultIntegrationOfDaily = afterReCalcDto.toDomain();
 		  }
-		  
 			
 		/*日別実績への項目移送*/
-		//return integrationOfDaily;
 		return calcResultIntegrationOfDaily;
 	}
 
 
-	private IntegrationOfDaily reCalc(IntegrationOfDaily calcResultIntegrationOfDaily,String companyId) {
+	private IntegrationOfDaily reCalc(IntegrationOfDaily calcResultIntegrationOfDaily,
+									  CalculationRangeOfOneDay calculationRangeOfOneDay,
+									  String companyId,
+									  ManagePerCompanySet companyCommonSetting,
+									  DailyRecordToAttendanceItemConverter converter) {
 		//乖離時間(AggregateRoot)取得
-		List<DivergenceTime> divergenceTimeList = divergenceTimeRepository.getAllDivTime(companyId);
-		
-		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
-			
-			AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get();
-			
-			ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTimeOfDailyPerformance.getActualWorkingTimeOfDaily();
-			
-			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(
-						attendanceTimeOfDailyPerformance.inssertActualWorkingTimeOfDaily(
-								actualWorkingTimeOfDaily.inssertTotalWorkingTime(
-										actualWorkingTimeOfDaily.getTotalWorkingTime().calcDiverGenceTime()))));
-
-		}
-		
-		
-		
+		List<DivergenceTime> divergenceTimeList = companyCommonSetting.getDivergenceTime();
+//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+//			
+//			AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get();
+//			
+//			ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTimeOfDailyPerformance.getActualWorkingTimeOfDaily();
+//			
+//			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(
+//						attendanceTimeOfDailyPerformance.inssertActualWorkingTimeOfDaily(
+//								actualWorkingTimeOfDaily.inssertTotalWorkingTime(
+//										actualWorkingTimeOfDaily.getTotalWorkingTime().calcDiverGenceTime()))));
+//
+//		}
+//		
+//		//予実差異時間
+//		AttendanceTime scheTime = new AttendanceTime(0);
+//		AttendanceTime totalWorkTime = new AttendanceTime(0);
+//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+//			scheTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily().getWorkScheduleTime().getTotal();
+//			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()!= null
+//					&&calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+//				totalWorkTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime();
+//			}
+//		}
+//		AttendanceTime scheActDiffTime = totalWorkTime.minusMinutes(scheTime.valueAsMinutes());
+//		//不就労時間
+//		AttendanceTime alreadlyDedBindTime = new AttendanceTime(0);
+//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+//			alreadlyDedBindTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime().getStayingTime();
+//			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
+//				&& calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()!= null) {
+//				//↓で総控除時間を引く
+//				alreadlyDedBindTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime().getStayingTime()
+//										.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcTotalDedTime(calculationRangeOfOneDay).valueAsMinutes());
+//				alreadlyDedBindTime = alreadlyDedBindTime.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime().valueAsMinutes());
+//			}
+//		}
+//		//総労働時間
+//		AttendanceTime reCalctotalWorkTime = new AttendanceTime(0);
+//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+//			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+//				reCalctotalWorkTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcTotalWorkingTimeForReCalc();
+//			}
+//		}
+//		
+//		AttendanceTime reCalcMidTime = new AttendanceTime(0);
+//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+//			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+//				reCalcMidTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().reCalcMidNightTime();
+//			}
+//		}
 		
 		//乖離時間計算用　勤怠項目ID紐づけDto作成
-		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = this.dailyRecordToAttendanceItemConverter.setData(calcResultIntegrationOfDaily);
+		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = converter.setData(calcResultIntegrationOfDaily);
 		
 		if(calcResultIntegrationOfDaily != null && calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(calcResultIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),
@@ -914,55 +906,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance(),
 																											     forCalcDivergenceDto,
 																											     divergenceTimeList,
-																											     calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily());
-			
-			
-			
-//			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> list = new ArrayList<>();
-//			DivergenceTimeOfDaily div_time = forCalcDivergenceDto.toDomain().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
-//			for(int i=0 ; i<10 ;i++) {
-//				AttendanceTime divTimeAfterDeduction = new AttendanceTime(0);
-//				AttendanceTime deductionTime = new AttendanceTime(0);
-//				AttendanceTime divTime = new AttendanceTime(0);
-//				int	divTimeId = i+1; 
-//				String reasonContent = "";
-//				String reasonCode = "";
-//
-//				if(div_time != null) {
-//					List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> before
-//						= div_time.getDivergenceTime().stream().filter(c->c.getDivTimeId()==divTimeId).collect(Collectors.toList());
-//					if(!before.isEmpty()) {
-//						if(before.get(0).getDivReason() != null) reasonContent = before.get(0).getDivReason().v();
-//						if(before.get(0).getDivResonCode() != null) reasonCode = before.get(0).getDivResonCode().v();
-//					}
-//					
-//					
-//					List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> after
-//						= reCalcDivergence.getDivergenceTime().stream().filter(c->c.getDivTimeId()==divTimeId).collect(Collectors.toList());
-//					if(!after.isEmpty()) {
-//						if(after.get(0).getDivTimeAfterDeduction() != null) divTimeAfterDeduction = after.get(0).getDivTimeAfterDeduction();
-//						if(after.get(0).getDeductionTime() != null) deductionTime = after.get(0).getDeductionTime(); 
-//						if(after.get(0).getDivTime() != null) divTime = after.get(0).getDivTime(); 
-//					}
-//					
-//					list.add(new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(
-//							divTimeAfterDeduction,
-//							deductionTime,
-//							divTime,
-//							divTimeId,
-//							new DivergenceReasonContent(reasonContent),
-//							new DiverdenceReasonCode(reasonCode)));
-//
-//				}
-//			}
-//			
-//			DivergenceTimeOfDaily reCalcDivergence_marge = new DivergenceTimeOfDaily(list);
+																											     calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
+																											     calcResultIntegrationOfDaily.getCalAttr());
 			
 			val reCreateActual = ActualWorkingTimeOfDaily.of(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
 												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
 												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
 												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
-												 			reCalcDivergence,
+												 			 reCalcDivergence,
 												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
 			val reCreateAttendanceTime = new AttendanceTimeOfDailyPerformance(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(),
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getYmd(),
@@ -971,9 +922,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime(),
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getBudgetTimeVariance(),
+																			  //scheActDiffTime,
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
 			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
 		}
+		//Repositoryが作成されたらそちらから取得(今は仮置き)
+		UpperLimitTotalWorkingHour upperControl = new UpperLimitTotalWorkingHour(new CompanyId(AppContexts.user().companyId()),
+																	  LimitControlOfTotalWorkingSet.NO_LIMIT_CONTROL); 
+		upperControl.controlUpperLimit(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime());
+		
 		return calcResultIntegrationOfDaily;
 	}
 
@@ -1049,21 +1006,22 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	/**
 	 * 予定時間帯の作成
+	 * @param companyCommonSetting 
 	 * @return 計画の日別実績(WOOR)
 	 */
-	private ManageReGetClass createSchedule(IntegrationOfDaily integrationOfDaily) {
-		val integrationOfDailyForSchedule = dailyRecordToAttendanceItemConverter.setData(integrationOfDaily).toDomain();
+	private ManageReGetClass createSchedule(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting, DailyRecordToAttendanceItemConverter converter) {
+		val integrationOfDailyForSchedule = converter.setData(integrationOfDaily).toDomain();
 		//予定時間１　ここで、「勤務予定を取得」～「休憩情報を変更」を行い、日別実績(Work)をReturnとして受け取る
 		IntegrationOfDaily afterScheduleIntegration = SchedulePerformance.createScheduleTimeSheet(integrationOfDailyForSchedule);
 		//予定時間2 　ここで、「時間帯を作成」を実施 Returnとして１日の計算範囲を受け取る
-		return this.createRecord(afterScheduleIntegration,TimeSheetAtr.SCHEDULE);
+		return this.createRecord(afterScheduleIntegration,TimeSheetAtr.SCHEDULE, companyCommonSetting);
 	}
 	
 	/**
 	 * 労働制を取得する
 	 * @return 日別計算用の個人情報
 	 */
-	private DailyCalculationPersonalInformation getPersonInfomation(IntegrationOfDaily integrationOfDaily) {
+	private DailyCalculationPersonalInformation getPersonInfomation(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting) {
 		String companyId = AppContexts.user().companyId();
 		String placeId = integrationOfDaily.getAffiliationInfor().getWplID();
 		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
@@ -1071,14 +1029,63 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd();
 		
 		// ドメインモデル「個人労働条件」を取得する
-		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeId,targetDate);
+		Optional<WorkingConditionItem> personalLablorCodition = companyCommonSetting.getPersonInfo();
 		
-		if (!personalLablorCodition.isPresent()) {
-			throw new RuntimeException("Can't get WorkingSystem");
+		if (personalLablorCodition==null || !personalLablorCodition.isPresent()) {
+			return null;
 		}
 		// 労働制
 		return getOfStatutoryWorkTime.getDailyTimeFromStaturoyWorkTime(
 				personalLablorCodition.get().getLaborSystem(), companyId, placeId, employmentCd, employeeId,
 				targetDate);
 	}
+	
+	/**
+	 *　任意項目の計算
+	 * @return
+	 */
+	private IntegrationOfDaily calcOptionalItem(IntegrationOfDaily integrationOfDaily,DailyRecordToAttendanceItemConverter converter) {
+		String companyId = AppContexts.user().companyId();
+		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
+		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
+		// 「所属雇用履歴」を取得する
+		Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt = this.shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, targetDate);
+	    //AggregateRoot「任意項目」取得
+		List<OptionalItem> optionalItems = optionalItemRepository.findAll(companyId);
+		//任意項目NOのlist作成
+		List<Integer> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList());
+		//計算式を取得(任意項目NOで後から絞る必要あり)
+		List<Formula> formulaList = formulaRepository.find(companyId);
+		//適用する雇用条件の取得
+		List<EmpCondition> empCondition = empConditionRepository.findAll(companyId, optionalItemNoList);
+		//項目選択による計算時に必要なので取得
+		converter.setData(integrationOfDaily); 
+		
+		
+		
+		//任意項目の計算
+		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList,
+				empCondition, Optional.of(converter),bsEmploymentHistOpt,integrationOfDaily.getAnyItemValue());
+		
+		
+		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
+		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId().equals(employeeId)
+		       && editState.getYmd().equals(targetDate))
+		        .map(editState -> editState.getAttendanceItemId())
+		        .distinct()
+		        .collect(Collectors.toList());
+
+		IntegrationOfDaily calcResultIntegrationOfDaily = integrationOfDaily;  
+		if(!attendanceItemIdList.isEmpty()) {
+			List<ItemValue> itemValueList = converter.convert(attendanceItemIdList);  
+			converter.withAnyItems(result); 
+			converter.merge(itemValueList);
+			//手修正された項目の値を計算前に戻す   
+			calcResultIntegrationOfDaily.setAnyItemValue(converter.toDomain().getAnyItemValue());
+		  }
+		
+		return calcResultIntegrationOfDaily;
+	}
+	
+	
 }

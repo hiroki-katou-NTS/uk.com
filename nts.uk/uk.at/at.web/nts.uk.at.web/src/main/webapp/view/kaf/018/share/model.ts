@@ -143,4 +143,5 @@ module nts.uk.at.view.kaf018.share.model {
             this.yearMonthDay = this.year + moment(ymd).format('MM') + moment(ymd).format('DD');
         }
     }
+
 }

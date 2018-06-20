@@ -11,11 +11,11 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
@@ -23,6 +23,9 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortage
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.DeductDaysAndTime;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
@@ -31,12 +34,17 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
+import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.ReferencePredTimeOfFlex;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -138,14 +146,20 @@ public class FlexTimeOfMonthly {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月（度）
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
 	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
+	 * @param closureOpt 締め
 	 * @param flexAggregateMethod フレックス集計方法
 	 * @param settingsByFlex フレックス勤務が必要とする設定
-	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param aggregateTotalWorkingTime 集計総労働時間
 	 * @param excessOutsideWorkMng 時間外超過管理
+	 * @param startWeekNo 開始週NO
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
+	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 戻り値：月別実績を集計する
 	 */
@@ -153,24 +167,37 @@ public class FlexTimeOfMonthly {
 			String companyId,
 			String employeeId,
 			YearMonth yearMonth,
+			ClosureId closureId,
+			ClosureDate closureDate,
 			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			MonthlyAggregateAtr aggregateAtr,
+			Optional<Closure> closureOpt,
 			FlexAggregateMethod flexAggregateMethod,
 			SettingRequiredByFlex settingsByFlex,
-			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			ExcessOutsideWorkMng excessOutsideWorkMng,
+			int startWeekNo,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
+			MonthlyCalculatingDailys monthlyCalcDailys,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		this.flexAggrSet = settingsByFlex.getFlexAggrSet();
 		this.monthlyAggrSetOfFlexOpt = settingsByFlex.getMonthlyAggrSetOfFlexOpt();
 		this.getFlexPredWorkTimeOpt = settingsByFlex.getGetFlexPredWorkTimeOpt();
 		
+		List<AttendanceTimeOfWeekly> resultWeeks = new ArrayList<>();
+		
 		// 期間．開始日を処理日にする
 		GeneralDate procDate = datePeriod.start();
+		int procWeekNo = startWeekNo;
+		
+		// 「処理中の週開始日」を期間．開始日にする
+		GeneralDate procWeekStartDate = datePeriod.start();
 		
 		// 処理をする期間の日数分ループ
+		val attendanceTimeOfDailyMap = monthlyCalcDailys.getAttendanceTimeOfDailyMap();
 		while (procDate.beforeOrEquals(datePeriod.end())){
 			
 			if (attendanceTimeOfDailyMap.containsKey(procDate)){
@@ -185,9 +212,9 @@ public class FlexTimeOfMonthly {
 				
 				// 処理日の雇用コードを取得する
 				String employmentCd = "empty";
-				val syEmploymentOpt = repositories.getSyEmployment().findByEmployeeId(companyId, employeeId, procDate);
-				if (syEmploymentOpt.isPresent()){
-					employmentCd = syEmploymentOpt.get().getEmploymentCode();
+				val employmentOpt = employeeSets.getEmployment(procDate);
+				if (employmentOpt.isPresent()){
+					employmentCd = employmentOpt.get().getEmploymentCode();
 				}
 			
 				// 日別実績を集計する　（フレックス時間勤務用）
@@ -203,6 +230,41 @@ public class FlexTimeOfMonthly {
 				// フレックス時間を集計する
 				this.flexTime.aggregate(attendanceTimeOfDaily);
 			}
+
+			// 週の集計をする日か確認する
+			if (MonthlyCalculation.isAggregateWeek(procDate, WeekStart.TighteningStartDate, datePeriod, closureOpt)){
+			
+				// 週の期間を計算
+				DatePeriod weekAggrPeriod = new DatePeriod(procWeekStartDate, procDate);
+				
+				// 翌週の開始日を設定しておく
+				procWeekStartDate = procDate.addDays(1);
+				
+				// 対象の「週別実績の勤怠時間」を作成する
+				val newWeek = new AttendanceTimeOfWeekly(employeeId, yearMonth, closureId, closureDate,
+						procWeekNo, weekAggrPeriod);
+				procWeekNo += 1;
+				
+				// 週別実績を集計する
+				{
+					// 週の計算
+					val weekCalc = newWeek.getWeeklyCalculation();
+					weekCalc.aggregate(companyId, employeeId, yearMonth, weekAggrPeriod,
+							workingSystem, aggregateAtr,
+							null, null, aggregateTotalWorkingTime,
+							WeekStart.TighteningStartDate, new AttendanceTimeMonth(0),
+							attendanceTimeOfDailyMap, repositories);
+					resultWeeks.add(newWeek);
+					
+					// 集計区分を確認する
+					if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
+					
+						// 時間外超過の集計
+						newWeek.getExcessOutside().aggregate(
+								companySets.getOutsideOverTimeSet(), weekCalc, repositories);
+					}
+				}
+			}
 			
 			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
 			
@@ -217,7 +279,7 @@ public class FlexTimeOfMonthly {
 			procDate = procDate.addDays(1);
 		}
 		
-		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng);
+		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, new ArrayList<>());
 	}
 	
 	/**

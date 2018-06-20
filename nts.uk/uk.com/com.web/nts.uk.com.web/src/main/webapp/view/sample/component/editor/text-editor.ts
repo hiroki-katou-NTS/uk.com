@@ -4,6 +4,7 @@ __viewContext.ready(function () {
         value: KnockoutObservable<string>;
         valueKana: KnockoutObservable<string>;
         valueUan: KnockoutObservable<string>;
+        valueEc: KnockoutObservable<string>;
         option: nts.uk.ui.option.ITextEditorOption;
         required: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
@@ -15,6 +16,7 @@ __viewContext.ready(function () {
             self.value = ko.observable("");
             self.valueKana = ko.observable('');
             self.valueUan = ko.observable('');
+            self.valueEc = ko.observable('');
             self.required = ko.observable(false),
             self.enable = ko.observable(true),
             self.readonly = ko.observable(false),

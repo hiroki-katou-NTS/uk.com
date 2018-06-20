@@ -10,8 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
@@ -69,20 +69,9 @@ public class LayoutWebService extends WebService {
 	@Path("find/gettabdetail")
 	@POST
 	public EmpMaintLayoutDto getTabDetail(PeregQuery query){
-		return this.layoutProcessor.getCategoryChild(query);
+		return this.layoutProcessor.getCategoryDetail(query);
 	}
 	
-	/**
-	 * @author xuan vinh
-	 * @param query
-	 * @return
-	 */
-	
-	@Path("find/gettabsubdetail")
-	@POST
-	public EmpMaintLayoutDto getTabSubDetail(PeregQuery query){
-		return this.layoutProcessor.getSubDetailInCtgChild(query);
-	}
 	
 	@Path("calDayTime/{sid}/{specialCD}")
 	@POST

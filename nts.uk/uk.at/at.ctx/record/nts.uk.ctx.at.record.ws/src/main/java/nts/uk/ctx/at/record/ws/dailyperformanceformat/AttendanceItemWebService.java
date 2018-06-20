@@ -38,9 +38,26 @@ public class AttendanceItemWebService extends WebService {
 	}
 	
 	@POST
+	@Path("attendanceItem/getMonthlyAttendanceItems")
+	public List<AttdItemDto> getMonthlyAttendanceItems(){
+		return this.attendanceItemsFinder.findAllMonthly();
+	}
+	
+	@POST
 	@Path("attendanceItem/getListByAttendanceAtr/{dailyAttendanceAtr}")
 	public List<AttdItemDto> getListByAttendanceAtr(@PathParam("dailyAttendanceAtr") int dailyAttendanceAtr){
 		return this.attendanceItemsFinder.findListByAttendanceAtr(dailyAttendanceAtr);
+	}
+	
+	/**
+	 * added by HungTT
+	 * @param monthlyAttendanceAtr
+	 * @return
+	 */
+	@POST
+	@Path("attendanceItem/getListMonthlyByAttendanceAtr/{monthlyAttendanceAtr}")
+	public List<AttdItemDto> getListMonthlyByAttendanceAtr(@PathParam("monthlyAttendanceAtr") int monthlyAttendanceAtr){
+		return this.attendanceItemsFinder.findListMonthlyByAttendanceAtr(monthlyAttendanceAtr);
 	}
 
 	/**

@@ -4,7 +4,9 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordReposi
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecordPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,14 +29,14 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements ErrorAlarmWorkRecordRepository {
 
-	private final String FIND_BY_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId ";
-	private final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.eralCheckId = :eralCheckId ";
-	private final String FIND_LIST_CODE = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
+	private static final String FIND_BY_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId ";
+	private static final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.eralCheckId = :eralCheckId ";
+	private static final String FIND_LIST_CODE = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
 			+ " AND a.kwrmtErAlWorkRecordPK.errorAlarmCode = :errorAlarmCode ";
-	private final String FIND_ALL_ER_AL_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
+	private static final String FIND_ALL_ER_AL_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
 			+ " AND a.useAtr = 1 AND a.typeAtr IN (0,1)";
-	private final String SELECT_ERAL_BY_LIST_CODE_ERROR = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId AND s.typeAtr = 0";
-	private final String FIND_BY_COMPANY_AND_USEATR = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.useAtr = :useAtr ";
+	private static final String SELECT_ERAL_BY_LIST_CODE_ERROR = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId AND s.typeAtr = 0";
+	private static final String FIND_BY_COMPANY_AND_USEATR = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.useAtr = :useAtr ";
 
 	@Override
 	public Optional<ErrorAlarmWorkRecord> findByCode(String code) {
@@ -175,15 +178,33 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public List<ErrorAlarmWorkRecord> getAllErAlCompanyAndUseAtr(String companyId, int useAtr) {
+	public List<ErrorAlarmWorkRecord> getAllErAlCompanyAndUseAtr(String companyId, boolean useAtr) {
 		return this.queryProxy().query(FIND_BY_COMPANY_AND_USEATR, KwrmtErAlWorkRecord.class)
 				.setParameter("companyId", companyId)
-				.setParameter("useAtr", useAtr).getList(c -> {
+				.setParameter("useAtr", useAtr ? 1 : 0).getList(c -> {
 					ErrorAlarmWorkRecord record = KwrmtErAlWorkRecord.toDomain(c);
 					record.setErrorAlarmCondition(KwrmtErAlWorkRecord.toConditionDomain(c));
 					return record;
-				}
-				);
+				});
+	}
+
+	@Override
+	public List<Map<String, Object>> getErAlByComID(String companyId) {
+		StringBuilder builder = new StringBuilder("SELECT a.errorDisplayItem, a.kwrmtErAlWorkRecordPK.errorAlarmCode, a.krcmtErAlCondition");
+		builder.append(" FROM KwrmtErAlWorkRecord a");
+		builder.append(" WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId ");
+		builder.append(" AND a.useAtr = 1 AND a.typeAtr IN (0,1)");
+		builder.append(" AND a.errorDisplayItem IS NOT NULL");
+		builder.append(" AND a.krcmtErAlCondition IS NOT NULL");
+		return this.queryProxy().query(builder.toString(), Object[].class)
+				.setParameter("companyId", companyId).getList(c -> {
+					ErrorAlarmCondition codition = KrcmtErAlCondition.toDomain((KrcmtErAlCondition) c[2], companyId, c[1].toString());
+					Map<String, Object> mapped = new HashMap<>();
+					mapped.put("Code", c[1].toString());
+					mapped.put("ErrorDisplayItem", (int) c[0]);
+					mapped.put("ErrorAlarmCondition", codition);
+					return mapped;
+				});
 	}
 
 }

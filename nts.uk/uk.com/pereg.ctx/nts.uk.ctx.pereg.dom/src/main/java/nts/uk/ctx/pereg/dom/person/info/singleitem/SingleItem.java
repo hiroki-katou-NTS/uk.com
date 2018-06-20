@@ -18,4 +18,14 @@ public class SingleItem extends ItemTypeState {
 	public static SingleItem createFromJavaType(DataTypeState dataTypeState) {
 		return new SingleItem(dataTypeState);
 	}
+	
+	public boolean isComboItem() {
+		DataTypeValue dataType = dataTypeState.getDataTypeValue();
+		return dataType == DataTypeValue.SELECTION || dataType == DataTypeValue.SELECTION_BUTTON
+				|| dataType == DataTypeValue.SELECTION_RADIO;
+	}
+	
+	public boolean isSelectionItem() {
+		return dataTypeState.getDataTypeValue() == DataTypeValue.SELECTION;
+	}
 }
