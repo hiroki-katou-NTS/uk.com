@@ -8,4 +8,4 @@ module nts.uk.at.view.ktg031.b.service {
     export function getDetail(param: any): JQueryPromise<void> {
         return nts.uk.request.ajax(paths.getDetail, param);
     }
-}   
+}      

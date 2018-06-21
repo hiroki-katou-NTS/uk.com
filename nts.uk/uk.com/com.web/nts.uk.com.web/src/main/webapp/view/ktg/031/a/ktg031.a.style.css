@@ -9,13 +9,15 @@
 
 .table1 td {
 	border: 1px solid #CCC;
-	height: 100px !important;
+	height: 110px !important;
+	display: block;
+	width: 438px;
 }
 
 
 tbody {
 	display: block;
-	height: 222px;
+	height: 225px;
     overflow: auto;
     width: 457px;
 }
@@ -27,12 +29,13 @@ tbody {
 
 #processingName {
 	margin-left: 100px;
-	width: 100px;
+	width: 142px;
 	font-weight: bold;
+    font-size: 18px;
 }
 
 #button1 {
-	margin-left: 50px;
+	margin-left: 5px;
 }
 
 #processingResult {

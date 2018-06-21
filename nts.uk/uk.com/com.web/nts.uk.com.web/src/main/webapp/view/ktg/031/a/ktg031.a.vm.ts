@@ -19,25 +19,29 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 let temp = self.period();
                 if (value == 0) {
                     service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
-                        let listOrder = _.orderBy(listData, ["code"], ['desc']);
+                        let listOrder = _.orderBy(listData, ["finishDateTime"], ['asc']);
                         self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
-                            acc.finishDateTime = afterConvert
+                            acc.finishDateTime = afterConvert;
                             return new TopPageAlarmDto(acc);
                         }));
                         self.period(temp);
                     }).fail(function(error) {
                         alertError(error);
-                    }).always(() => {
+                    }).always(() => {  
                         block.clear();
                     });
                 } else {
                     service.getAllToppage(temp).done((data) => {
-                        let listOrder = _.orderBy(data, ["code"], ['desc']);
+                        let listOrder = _.orderBy(data, ["finishDateTime"], ['asc']);
                         self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert;
-                            return new TopPageAlarmDto(acc);
+                            let a = new TopPageAlarmDto(acc);
+                            if (acc.rogerFlag == 1) {
+                                a.hidden(false);
+                            }
+                            return a;
                         }));
                         self.period(temp);
                     }).fail(function(error) {
@@ -64,7 +68,11 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                         self.listToppage(_.map(data, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert;
-                            return new TopPageAlarmDto(acc);
+                            let a = new TopPageAlarmDto(acc);
+                            if (acc.rogerFlag == 1) {
+                                a.hidden(false);
+                            }
+                            return a;
                         }));
                         self.period(temp);
                     }).fail(function(error) {
@@ -82,7 +90,7 @@ module nts.uk.at.view.ktg031.a.viewmodel {
             var dfd = $.Deferred();
             // get toppage with roger = 0
             service.getToppage(self.selectedRuleCode(), self.period()).done((listData: Array<ITopPageAlarmDto>) => {
-                let listOrder = _.orderBy(listData, ["code"], ['desc']);
+                let listOrder = _.orderBy(listData, ["finishDateTime"], ['asc']);
                 self.listToppage(_.map(listOrder, acc => {
                     let afterConvert = self.convertTime(acc.finishDateTime);
                     acc.finishDateTime = afterConvert;
@@ -103,13 +111,13 @@ module nts.uk.at.view.ktg031.a.viewmodel {
         convertTime(time: string): string {
             let self = this;
             // get and format time at the moment
-            let now = moment(new Date()).format('YYYY-MM-DD');
+            let now = moment(new Date()).utcOffset(0).format('YYYY-MM-DD');
             // format time in DB
-            let data = moment(new Date(time)).format('YYYY-MM-DD');
+            let data = moment(time).utcOffset(0).format('YYYY-MM-DD');
             if (now == data) {
-                return moment(time).utcOffset(0).format('HH:mm');
+                return moment(time).utcOffset(0).format('HH:mm'); 
             } else {
-                return moment(time).utcOffset(0).format('DD/MM HH:mm');
+                return moment(time).utcOffset(0).format('MM/DD HH:mm');
             }
         }
 
@@ -120,8 +128,8 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 executionLogId: self.listToppage()[index].executionLogId,
                 processingName: self.listToppage()[index].processingName
             }
-            nts.uk.ui.windows.setShared('ktg031A', data);
-            nts.uk.ui.windows.sub.modal("/view/ktg/031/b/index.xhtml");
+            parent.nts.uk.ui.windows.setShared('ktg031A', data);
+            parent.nts.uk.ui.windows.sub.modal("/view/ktg/031/b/index.xhtml");
         }
         // click update 了解ボタン
         updateRoger(index: number) {
