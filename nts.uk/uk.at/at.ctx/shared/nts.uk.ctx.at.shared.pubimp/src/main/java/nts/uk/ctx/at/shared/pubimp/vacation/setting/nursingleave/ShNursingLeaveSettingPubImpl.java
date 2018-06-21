@@ -78,16 +78,16 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	@Override
 	public ChildNursingRemainExport aggrNursingRemainPeriod(String companyId, String employeeId, GeneralDate startDate,
 			GeneralDate endDate, Boolean monthlyMode) {
-		ChildNursingRemainExport result = ChildNursingRemainExport.builder().build();
+		ChildNursingRemainExport childNursingRemainExport = ChildNursingRemainExport.builder().build();
 		NursingCategory nursingCategory = NursingCategory.valueOf(NURSING_CARE);
-		//get nursingLeaveSetting by companyId,nursingCategory = NURSING_CARE
+		// get nursingLeaveSetting by companyId,nursingCategory = NURSING_CARE
 		NursingLeaveSetting nursingLeaveSetting = this.findNursingLeaveSetting(companyId, nursingCategory);
 		if (nursingLeaveSetting == null || !nursingLeaveSetting.isManaged()) {
-			result.setIsManage(false);
-			return result;
+			childNursingRemainExport.setIsManage(false);
+			return childNursingRemainExport;
 		} else {
 			// algorithm 利用期間の算出
-			result.setGrantPeriodFlag(false);
+			childNursingRemainExport.setGrantPeriodFlag(false);
 			GeneralDate useStartDateBeforeGrant, useEndDateBeforeGrant;
 			Optional<GeneralDate> useStartDateAfterGrant = Optional.empty();
 			Optional<GeneralDate> endDateUseAfterGrant = Optional.empty();
@@ -105,7 +105,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 				useStartDateAfterGrant = Optional.of(useStartDateBeforeGrant.addYears(1));
 				endDateUseAfterGrant = Optional.of(useStartDateAfterGrant.get().addYears(1).addDays(-1));
 			}
-			result.setGrantPeriodFlag(periodGrantFlag);
+			childNursingRemainExport.setGrantPeriodFlag(periodGrantFlag);
 
 			// algorithm 個人情報の上限と使用の取得, once in params: useEndDateBeforeGrant, endDate
 			double grantedNumberThisTime = 0;
@@ -116,72 +116,37 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 					.getChildCareByEmpId(employeeId);
 			NursingCareLeaveRemainingInfo nursingInfo = optionalNursingInfo.get();
 			useClassification = nursingInfo.isUseClassification();
-			result.setIsManage(useClassification); // thang nay phai doi ket thuc thuat toan moi set
 			if (nursingInfo.getUpperlimitSetting().equals(UpperLimitSetting.FAMILY_INFO)) {
-				int targetNumberFamily = 13; // (gọi request 440 và 441 ra, param: useEndDateBeforeGrant)
+				int fakeTargetNumberFamily = 13; // (gọi request 440 và 441 ra, param: useEndDateBeforeGrant)
 				int vacationDays = 0;
 				NursingLeaveSetting nursingCareSetting = this.findNursingLeaveSetting(companyId, nursingCategory);
-				if (nursingCareSetting != null && targetNumberFamily >= nursingCareSetting.getMaxPersonSetting()
+				if (nursingCareSetting != null && fakeTargetNumberFamily >= nursingCareSetting.getMaxPersonSetting()
 						.getNursingNumberPerson().v()) {
 					vacationDays = nursingCareSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
 				}
 				grantedNumberThisTime = vacationDays;
 
-				// List<NursingLeaveSetting> nursingLeaveSettings =
-				// this.nursingLeaveSettingRepository
-				// .findByCompanyId(companyId);
-				// List<NursingLeaveSetting> nursingCareSettings = nursingLeaveSettings.stream()
-				// .filter(e ->
-				// e.getNursingCategory().equals(nursingCategory)).collect(Collectors.toList());
-				//// NursingLeaveSetting nursingCareSetting = null;
-				// if (nursingCareSettings != null && nursingCareSettings.size() != 0) {
-				// nursingCareSetting = nursingCareSettings.get(0);
-				// if (targetNumberFamily >=
-				// nursingCareSetting.getMaxPersonSetting().getNursingNumberPerson().v()) {
-				// vacationDays =
-				// nursingCareSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
-				// }
-				// }
 				if (periodGrantFlag) {
-					int targetNumberFamily2 = 14; // (440,441 - param: endDate)
+					int fakeTargetNumberFamily2 = 14; // (440,441 - param: endDate)
 					NursingLeaveSetting nursingCareSettingFlag = this.findNursingLeaveSetting(companyId,
 							nursingCategory);
-					if (nursingCareSettingFlag != null && targetNumberFamily2 >= nursingCareSettingFlag
+					if (nursingCareSettingFlag != null && fakeTargetNumberFamily2 >= nursingCareSettingFlag
 							.getMaxPersonSetting().getNursingNumberPerson().v()) {
 						vacationDays = nursingCareSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
 					}
 					grantedNumberNextTime = vacationDays;
 				}
-				// gọi request 440 và 441 => trả về targetNumberFamily
-				/*
-				 * tham so: · INPUT. Employee ID · INPUT. Nursing care classification
-				 * 
-				 */
-				/*
-				 * co duoc vacationDay dua tren numberOfChildNursingPeople, sau khi chay thuat
-				 * toan vacationDay = 0 (init) cid + nursingClassification(hien dang la 0) =>
-				 * thu duoc xNursingLeaveSetting boolean condition = targetNumberFamily >=
-				 * xNursingLeaveSetting.maxPersonSetting.nursingNumberPerson if(condition){
-				 * vacationDay = xNursingLeaveSetting.maxPersonSetting.nursingNumberLeaveDay }
-				 * 
-				 * 
-				 * check periodGrantFlag if(periodGrantFlag){ chạy 440,441 => thu được
-				 * numberOfTargerFamilies co duoc vacationDay dua tren
-				 * numberOfChildNursingPeople, sau khi chay thuat toan }
-				 * 
-				 */
 			} else {
 				grantedNumberThisTime = nursingInfo.getMaxDayForThisFiscalYear().get().v();
 				if (periodGrantFlag)
 					grantedNumberNextTime = nursingInfo.getMaxDayForThisFiscalYear().get().v();
 			}
-
+			//setManage 
+			childNursingRemainExport.setIsManage(useClassification); 
+			//calculate overlap time
 			Optional<NursingCareLeaveRemainingData> optionalNursingData = this.nursCareLevRemainDataRepository
 					.getCareByEmpId(employeeId);
 			useNumberPersonInfo = optionalNursingData.get().getNumOfUsedDay().v();
-			// startDateOverlapBeforeGrant,
-			// endDateOverlapBeforeGrant,startDateOverlapAfterGrant,
-			// endDateOverlapAfterGrant
 			GeneralDate startDateOverlapBeforeGrant, endDateOverlapBeforeGrant, startDateOverlapAfterGrant,
 					endDateOverlapAfterGrant;
 			startDateOverlapBeforeGrant = startDate;
@@ -193,7 +158,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 			double numberOfUseThisTime = 0;
 			double preResidual = 0;
 			if (monthlyMode) {
-				// tạo data gì đó (la thang optionalNursingData)
+				// goi den ham cua chi Du
 			}
 			List<TempCareData> listTempCareData = this.tempCareDataRepository.findTempCareDataByEmpId(employeeId);
 			List<TempCareData> listTempCareDataPre = new ArrayList<>();
@@ -206,26 +171,16 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 			for (TempCareData e : listTempCareDataPre) {
 				numberOfUseThisTime += e.getAnnualLeaveUse().v();
 			}
-			result.getPreGrantStatement().setNumberOfUse(numberOfUseThisTime);
+			//set remainning number
+			childNursingRemainExport.getPreGrantStatement().setNumberOfUse(numberOfUseThisTime);
 			preResidual = grantedNumberThisTime - useNumberPersonInfo - numberOfUseThisTime;
-			result.getPreGrantStatement().setResidual(preResidual);
-			// dùng Employee ID = INPUT. Employee ID
-			// INPUT. Start date <= Year Month Day <= INPUT. End date để trả về domain
-			// TempAnnualLeaveMngRepository
-			// trả về 1 list TempAnnualLeaveManagement
-			// chay vòng lặp cho list TempAnnualLeaveManagement => numberOfUseThisTime +=
-			// TempAnnualLeaveManagement.annualLeaveUse
-
-			// result.getpreGrantStatement.setnumberOfUse(numberOfUseThisTime)
-			// preResidual = grantedNumberThisTime - useNumberPersonInfo -
-			// numberOfUseThisTime
-			// result.getPreGrantStatement.setResidual(preResidual)
-
+			childNursingRemainExport.getPreGrantStatement().setResidual(preResidual);
+			//check periodGrantFlag 期中付与フラグ(output)をチェックする
 			if (periodGrantFlag) {
 				double numberOfUseNextTime = 0;
 				double afterResidual = 0;
 				if (monthlyMode) {
-					// tạo data gì đó (la thang optionalNursingData)
+					// goi den ham cua chi Du
 				}
 				List<TempCareData> listTempCareDataAfter = new ArrayList<>();
 				listTempCareData.stream().forEach(e -> {
@@ -242,17 +197,9 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 				afterResidual = grantedNumberNextTime - numberOfUseNextTime;
 				afterGrantStatement.setResidual(afterResidual);
 				Optional<ChildNursingRemainInforExport> optionalAfterResidual = Optional.of(afterGrantStatement);
-				result.setAfterGrantStatement(optionalAfterResidual);
+				childNursingRemainExport.setAfterGrantStatement(optionalAfterResidual);
 			}
-
-			// check periodGrantFlag
-			/*
-			 * if(periodGrantFlag){ co duoc useNumberNursing qua 1 thuật toán => gán vào cho
-			 * result.getafterGrantStatement.usedNumber } afterResidual =
-			 * grantedNumberNextTime - numberOfUseNextTime(thang nay chay trong vong lap co
-			 * duoc)
-			 */
-			return result;
+			return childNursingRemainExport;
 		}
 	}
 
