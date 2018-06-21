@@ -1278,7 +1278,6 @@ module nts.layout {
             if (CS00017_IS00082 && CS00017_IS00084) {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
-                        data = ko.toJS(CS00017_IS00082.data),
                         comboData = ko.toJS(CS00017_IS00084.data);
 
                     if (!empId) {
@@ -1297,6 +1296,7 @@ module nts.layout {
                         workplaceId: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
+                        CS00017_IS00084.data.value.valueHasMutated();
                     });
                 });
             }
