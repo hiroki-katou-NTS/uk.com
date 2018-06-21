@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf002.m3 {
             
             start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<any>){
                 var self = this;    
-                self.supFrameNo = data.supFrameDispNO;
+                //self.supFrameNo = data.supFrameDispNO;
                 for(let i=1;i<=self.supFrameNo;i++) {
                     self.appStampList.push(new vmbase.AppStampCancel(4,i,0));    
                 } 
