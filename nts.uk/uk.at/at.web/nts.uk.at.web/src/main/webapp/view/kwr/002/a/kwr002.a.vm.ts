@@ -287,6 +287,7 @@ module nts.uk.com.view.kwr002.a {
                 }
                 return employee;
             }
+            
 
             /**
              * update selected employee kcp005 => detail
@@ -318,11 +319,13 @@ module nts.uk.com.view.kwr002.a {
                     nts.uk.ui.dialog.alertError({messageId: "Msg_1310"});
                     return;
                 }
+                nts.uk.ui.block.grayout();
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));
                 service.exportService(self.exportDto()).done(() => {
-
+                 nts.uk.ui.block.clear(); 
                 }).fail((res: any) => {
                     self.showMessageError(res);
+                    nts.uk.ui.block.clear(); 
                 });
             }
 
@@ -334,13 +337,13 @@ module nts.uk.com.view.kwr002.a {
                     nts.uk.ui.dialog.alertError({messageId: "Msg_1310"});
                     return;
                 }
-
+                nts.uk.ui.block.grayout();
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2));
                 service.exportService(self.exportDto()).done(() => {
-
+                 nts.uk.ui.block.clear(); 
                 }).fail((res: any) => {
                     self.showMessageError(res);
-
+                     nts.uk.ui.block.clear(); 
                 });
             }
                        

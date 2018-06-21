@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -102,7 +103,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		// get Dto
 		AttendanceRecordRequest request = context.getQuery();
 		String companyId = AppContexts.user().companyId();
-		Map<String, List<AttendanceRecordReportEmployeeData>> reportData = new HashMap<>();
+		Map<String, List<AttendanceRecordReportEmployeeData>> reportData = new LinkedHashMap<>();
 		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<AttendanceRecordReportEmployeeData>();
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
@@ -123,6 +124,11 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				}
 			}
 		});
+
+		if (hierarchyList.isEmpty()) {
+			exceptions.addMessage("Msg_1269");
+			exceptions.throwExceptions();
+		}
 
 		hierarchyList.sort(Comparator.comparing(WorkplaceHierarchy::getHierarchyCode));
 
@@ -201,7 +207,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 					YearMonth startYearMonth = closureDate.getLastDayOfMonth() ? request.getStartDate().yearMonth()
 							: request.getStartDate().yearMonth().previousMonth();
-					YearMonth endYearMonth = request.getEndDate().yearMonth();
+					YearMonth endYearMonth = closureDate.getLastDayOfMonth() ? request.getEndDate().yearMonth()
+							: request.getEndDate().yearMonth().previousMonth();
 					YearMonth yearMonth = startYearMonth;
 
 					while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
@@ -495,7 +502,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 						attendanceRecRepEmpData.setEmployeeMonthlyData(employeeMonthlyData);
 						attendanceRecRepEmpData.setWeeklyDatas(weeklyDataList);
-						attendanceRecRepEmpData.setReportYearMonth(yearMonth.toString());
+						YearMonth yearMonthExport = closureDate.getLastDayOfMonth() ? yearMonth
+								: yearMonth.addMonths(1);
+						attendanceRecRepEmpData.setReportYearMonth(yearMonthExport.toString());
 
 						/**
 						 * Need information
@@ -527,7 +536,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
 								: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
 										WorkTimeMethodSet.class).nameId));
-						attendanceRecRepEmpData.setYearMonth(yearMonth.year() + "/" + yearMonth.month());
+						attendanceRecRepEmpData.setYearMonth(yearMonthExport.year() + "/" + yearMonthExport.month());
 						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 
 						yearMonth = yearMonth.addMonths(1);
@@ -551,12 +560,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
 			for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
 
-				if (this.getNameFromInvidual(item.getInvidual()).equals(employee.getEmployeeName())) {
+				if (this.getCodeFromInvidual(item.getInvidual()).equals(employee.getEmployeeCode().trim())) {
 					attendanceRecRepEmpDataByMonthList.add(item);
 				}
 
 			}
-			reportData.put(employee.getEmployeeCode(), attendanceRecRepEmpDataByMonthList);
+			reportData.put(employee.getEmployeeCode().trim(), attendanceRecRepEmpDataByMonthList);
 
 		}
 
@@ -670,7 +679,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 	String getNameFromInvidual(String invidual) {
 		int index = invidual.indexOf(" ");
-		return invidual.substring(index + 1);
+		return invidual.substring(index + 1).trim();
+	}
+
+	String getCodeFromInvidual(String invidual) {
+		int index = invidual.indexOf(" ");
+		return invidual.substring(0, index + 1).trim();
 	}
 
 	String getSumCalculateAttendanceItem(List<ItemValue> addValueCalUpper, List<ItemValue> subValueCalUpper) {
