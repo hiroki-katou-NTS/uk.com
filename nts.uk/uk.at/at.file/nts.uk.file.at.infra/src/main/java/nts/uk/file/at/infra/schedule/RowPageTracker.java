@@ -1,4 +1,4 @@
-package nts.uk.file.at.infra.dailyschedule;
+package nts.uk.file.at.infra.schedule;
 
 import lombok.Data;
 import nts.uk.file.at.app.export.dailyschedule.FormOutputType;
