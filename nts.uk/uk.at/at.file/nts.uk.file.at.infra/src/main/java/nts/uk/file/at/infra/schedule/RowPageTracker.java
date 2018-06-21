@@ -35,14 +35,14 @@ public class RowPageTracker {
 	 * @param rowUse the row use
 	 * @return the int
 	 */
-	int checkRemainingRowSufficient(int rowUse) {
+	public int checkRemainingRowSufficient(int rowUse) {
 		return remainingRow - rowUse;
 	}
 	
 	/**
 	 * Adds the page count.
 	 */
-	void addPageCount () {
+	public void addPageCount () {
 		pageCount++;
 	}
 	
@@ -51,7 +51,7 @@ public class RowPageTracker {
 	 *
 	 * @param dataRowCount the data row count
 	 */
-	void initMaxRowAllowed(int dataRowCount, FormOutputType outputType) {
+	public void initMaxRowAllowed(int dataRowCount, FormOutputType outputType) {
 		switch(dataRowCount) {
 		case 1:
 			if (outputType == FormOutputType.BY_EMPLOYEE)
@@ -80,14 +80,14 @@ public class RowPageTracker {
 	 *
 	 * @param dataRowCount the data row count
 	 */
-	void useRemainingRow(int dataRowCount) {
+	public void useRemainingRow(int dataRowCount) {
 		remainingRow -= dataRowCount;
 	}
 	
 	/**
 	 * Use one row and check reset remaining row.
 	 */
-	void useOneRowAndCheckResetRemainingRow() {
+	public void useOneRowAndCheckResetRemainingRow() {
 		remainingRow--;
 		if (remainingRow == 0) {
 			resetRemainingRow();
@@ -97,7 +97,7 @@ public class RowPageTracker {
 	/**
 	 * Reset remaining row.
 	 */
-	void resetRemainingRow() {
+	public void resetRemainingRow() {
 		remainingRow = maxRowAllowed;;
 	}
 }
