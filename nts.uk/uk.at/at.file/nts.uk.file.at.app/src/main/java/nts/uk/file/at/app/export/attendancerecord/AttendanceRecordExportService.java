@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
@@ -524,8 +525,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
 								: result.getWorkplace().getWorkplaceName().toString());
 						attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
-								: TextResource.localize(
-										EnumAdaptor.valueOf(result.getEmploymentCls(), WorkingSystem.class).nameId));
+								: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
+										WorkTimeMethodSet.class).nameId));
 						attendanceRecRepEmpData.setYearMonth(yearMonth.year() + "/" + yearMonth.month());
 						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 
