@@ -9,7 +9,8 @@ module cas009.a {
         },
         permision: {
             save: (command: any) => ajax('com', 'ctx/pereg/functions/auth/register', command),
-            remove: (command: any) => ajax('com', 'ctx/pereg/functions/auth/delete', command)
+            remove: (command: any) => ajax('com', 'ctx/pereg/functions/auth/delete', command),
+            person_info: (roleId: string) => ajax('com', 'ctx/pereg/functions/auth/find-with-role', roleId)
         },
     };
 }

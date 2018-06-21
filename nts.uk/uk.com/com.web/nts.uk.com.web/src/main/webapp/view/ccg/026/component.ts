@@ -86,12 +86,13 @@ module nts.uk.com.view.ccg026.component {
                 let $element = $(componentInfo.element),
                     $grid = $element.find('#permision_grid'),
                     $container = $element.find('#container_permision_grid'),
-                    requestDone = (data: Array<IPermision>) => {
+                    requestDone = (data: Array<IPermision>, rechange: boolean = true) => {
                         data = _.orderBy(data, ['orderNumber']);
 
                         // fire changeDate for first action
-                        params.changeData(data);
-
+                        if (rechange) {
+                            params.changeData(data);
+                        }
                         // change grid dataSource
                         $grid = $element.find('#permision_grid');
                         $grid.igGrid("option", "dataSource", data);
@@ -137,7 +138,7 @@ module nts.uk.com.view.ccg026.component {
                             roleType: v
                         };
 
-                    if (!_.isEqual(oldData, compare)) {
+                    if (!_.isEmpty(roleId) && !_.isEqual(oldData, compare)) {
                         switch (v) {
                             case ROLE_TYPE.COMPANY_MANAGER:
                                 fetch.com_mngr(roleId).done(requestDone);
@@ -218,6 +219,12 @@ module nts.uk.com.view.ccg026.component {
                         },
                         dataSource: []
                     });
+
+                if (ko.isObservable(params.changeData)) {
+                    (params.changeData as KnockoutObservableArray<any>).subscribe(data => {
+                        requestDone(data, false);
+                    });
+                }
 
                 return params;
             }

@@ -19,8 +19,8 @@ module cas009.a.viewmodel {
         listRole: KnockoutObservableArray<IRole> = ko.observableArray([]);
 
         enumAuthen: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: text("CAS009_14") },
-            { code: '1', name: text("CAS009_15") },
+            { code: 0, name: text("CAS009_14") },
+            { code: 1, name: text("CAS009_15") },
         ]);
 
         enumAllow: KnockoutObservableArray<any> = ko.observableArray([
@@ -65,7 +65,11 @@ module cas009.a.viewmodel {
                     role.roleName('');
                     role.roleCode('');
 
-                    role.assignAtr(0);
+                    if (!_.isEqual(role.assignAtr(), 0)) {
+                        role.assignAtr(0);
+                    } else {
+                        role.assignAtr.valueHasMutated();
+                    }
                     role.referFutureDate(false);
                     role.employeeReferenceRange(0);
                 }
@@ -283,6 +287,31 @@ module cas009.a.viewmodel {
         roleNameFocus: KnockoutObservable<boolean> = ko.observable(false);
 
         permisions: KnockoutObservableArray<IPermision> = ko.observableArray([]);
+
+        constructor() {
+            let self = this;
+
+            self.assignAtr.subscribe(v => {
+                let rid = ko.toJS(self.roleId);
+                if (_.isEmpty(rid)) {
+                    if (_.isEqual(v, 0)) {
+                        _.each(self.permisions(), (p: IPermision) => {
+                            if (_.isEqual(p.functionNo, 11)) {
+                                p.available = false;
+                            } else {
+                                p.available = true;
+                            }
+                        });
+                        self.permisions.valueHasMutated();
+                    } else {
+                        fetch.permision.person_info(undefined).done(data => {
+                            self.permisions(data);
+                            self.permisions.valueHasMutated();
+                        });
+                    }
+                }
+            });
+        }
     }
 
     export interface IPermision extends ccg026.IPermision { }
