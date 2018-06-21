@@ -31,12 +31,12 @@ module nts.uk.com.view.cli001.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 service.findAll().done((data: Array<LockOutDataUserDto>) => {
-                    data =_.uniqBy(data, 'userId');
-                  data.forEach(item => {
-                       item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD hh:mm:ss');
-                   });
-                    
-                    _self.items(data);
+                    data = _.uniqBy(data, 'userId');
+                    data.forEach(item => {
+                        item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD hh:mm:ss');
+                    });
+
+                    _self.items(_.sortBy(data, item => item.loginId));
 
                     dfd.resolve();
                 }).fail((res: any) => {
@@ -59,6 +59,7 @@ module nts.uk.com.view.cli001.a {
                         let userId = { userId: data.userID };
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
                             _self.items.push({ logType: dto.lockType, loginId: data.loginID, userId: dto.userId, userName: data.userName, lockOutDateTime: moment.utc(dto.logoutDateTime).format('YYYY/MM/DD hh:mm:ss')});
+                            _self.items(_.sortBy(_self.items(), item => item.loginId))
                         });
                     }
                     nts.uk.ui.block.clear();
@@ -101,7 +102,7 @@ module nts.uk.com.view.cli001.a {
                                         data.forEach(item => {
                                             item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD hh:mm:ss');
                                         });
-                                        self.items(data);
+                                        self.items(_.sortBy(data, item => item.loginId));
                                         self.currentCodeList([]);
                                     });
                                 });
