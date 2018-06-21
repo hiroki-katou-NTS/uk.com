@@ -99,6 +99,7 @@ module nts.uk.com.view.cli001.a {
                                 nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
                                     //Search again and display the screen
                                     service.findAll().done((data: Array<LockOutDataUserDto>) => {
+                                        data = _.uniqBy(data, 'userId');
                                         data.forEach(item => {
                                             item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD hh:mm:ss');
                                         });
