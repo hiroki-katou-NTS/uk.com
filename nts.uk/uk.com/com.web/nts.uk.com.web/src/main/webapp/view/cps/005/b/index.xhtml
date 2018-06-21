@@ -123,7 +123,6 @@
 										optionsText: 'localizedName',
 										editable: false,
 										enable: enable,
-										selectFirstIfNull: false,
 										columns: [
 											{ prop: 'localizedName', length: 10 },
 										]}">
@@ -151,7 +150,6 @@
 											editable: false,
 											enable: cItemString.enable,
 											dropDownAttachedToBody:true,
-											selectFirstIfNull: false,
 											columns: [
 												{ prop: 'localizedName', length: 10 },
 											]}">
@@ -631,7 +629,7 @@
 								<span class="label" data-bind="text: itemName"></span>
 							</div>
 
-							<div data-bind="visible: itemType() == 2 &amp; dataType() !== 10 &amp; dataType() !== 11 &amp; dataType() !== 12">
+							<div data-bind="visible: itemType() == 2 &amp; dataTypeFixed() !== 10 &amp; dataTypeFixed() !== 11 &amp; dataTypeFixed() !== 12">
 								<div
 									class="valign-center control-group control-group-margin-custom">
 									<div data-bind="ntsFormLabel: {}"
@@ -643,7 +641,7 @@
 
 								<!-- Start dataTypeEnum is selected value 1 - 文字列(String) -->
 								<div id="data-type-value-string"
-									data-bind="with: stringItem, visible: dataType() == 1">
+									data-bind="with: stringItem, visible: dataTypeFixed() == 1">
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
@@ -676,7 +674,7 @@
 
 								<!-- Start dataType is selected value 2 - 数値(Numeric) -->
 								<div id="data-type-value-numeric"
-									data-bind="with: numericItem, visible: dataType() == 2">
+									data-bind="with: numericItem, visible: dataTypeFixed() == 2">
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
@@ -724,7 +722,7 @@
 
 								<!-- Start dataType is selected value 3 - 日付(Date) -->
 								<div id="data-type-value-date"
-									data-bind="with: dateItem, visible: dataType() == 3">
+									data-bind="with: dateItem, visible: dataTypeFixed() == 3">
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
@@ -738,7 +736,7 @@
 
 								<!-- Start dataType is selected value 4 - 時間(Time) -->
 								<div id="data-type-value-time"
-									data-bind="with: timeItem, visible: dataType() == 4">
+									data-bind="with: timeItem, visible: dataTypeFixed() == 4">
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
@@ -756,7 +754,7 @@
 
 								<!-- Start dataType is selected value 5 - 時刻(TimePoint) -->
 								<div id="data-type-value-timepoint"
-									data-bind="with: timePointItem, visible: dataType() == 5">
+									data-bind="with: timePointItem, visible: dataTypeFixed() == 5">
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
@@ -775,7 +773,7 @@
 								<!-- Start dataType is selected value 6 - 選択(Selection) -->
 
 								<div id="data-type-value-selection"
-									data-bind="with: selectionItem, visible: ((dataType() == 6) &amp; (selectionItem().selectionItemRefType() == 2))">
+									data-bind="with: selectionItem, visible: (dataTypeFixed() == 6 &amp; (selectionItem().selectionItemRefType() == 2))">
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
@@ -810,6 +808,7 @@
 									</section>
 								</div>
 								<!-- End dataType is selected value 6 - 選択(Selection) -->
+								
 							</div>
 						</div>
 						<!-- End perInfoItem selection is fixed -->

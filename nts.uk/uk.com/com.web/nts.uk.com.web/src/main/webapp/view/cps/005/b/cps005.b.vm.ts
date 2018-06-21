@@ -346,8 +346,15 @@ module nts.uk.com.view.cps005.b {
                             self.currentItemSelected().selectionItem().selectionItemId(data.itemTypeState.dataTypeState.typeCode || undefined);
                         }
 
-                        self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
-                        self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
+
+                        if (self.currentItemSelected().fixedAtr() == 1) {
+                            self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemTypeFixed(); }).localizedName);
+                            self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataTypeFixed(); }).localizedName);
+                        } else {
+                            self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
+                            self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
+                        }
+
                         self.currentItemSelected().stringItem().stringItemDataTypeText(_.find(self.stringItemDataTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemDataType(); }).localizedName);
                         self.currentItemSelected().numericItem().numericItemAmountText(_.find(self.numericItemAmountAtrEnum, function(o) { return o.code == self.currentItemSelected().numericItem().numericItemAmount(); }).name);
                         self.currentItemSelected().numericItem().numericItemMinusText(_.find(self.numericItemMinusAtrEnum, function(o) { return o.code == self.currentItemSelected().numericItem().numericItemMinus(); }).name);
@@ -368,7 +375,8 @@ module nts.uk.com.view.cps005.b {
         itemName: KnockoutObservable<string> = ko.observable("");
         fixedAtr: KnockoutObservable<number> = ko.observable(0);
         itemType: KnockoutObservable<number> = ko.observable(2);
-        dataType: KnockoutObservable<number> = ko.observable(1);;
+        dataType: KnockoutObservable<number> = ko.observable(1);
+        dataTypeFixed: KnockoutObservable<number> = ko.observable(1);;
         stringItem: KnockoutObservable<StringItemModel> = ko.observable(new StringItemModel(null));
         numericItem: KnockoutObservable<NumericItemModel> = ko.observable(new NumericItemModel(null));
         dateItem: KnockoutObservable<DateItemModel> = ko.observable(new DateItemModel(null));
@@ -380,7 +388,9 @@ module nts.uk.com.view.cps005.b {
         selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
         enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IPersonInfoItem) {
-            let self = this;
+            let self = this,
+                vm : any = __viewContext['screenModelB'],
+                dataTypeEnum: Array<any> = vm == undefined? []: vm.currentItemData() == null? []:(vm.currentItemData().dataTypeEnum);
             if (data) {
                 self.id = data.id || "";
                 self.itemName(data.itemName || "");
@@ -391,8 +401,9 @@ module nts.uk.com.view.cps005.b {
                 let dataTypeState = data.itemTypeState.dataTypeState;
                 if (!dataTypeState) return;
                 if (self.itemType() == 2) {
-                    self.dataType = ko.observable(dataTypeState.dataTypeValue);
-                    switch (self.dataType()) {
+                    self.dataType(dataTypeState.dataTypeValue);
+                    self.dataTypeFixed(dataTypeState.dataTypeValue);
+                    switch (dataTypeState.dataTypeValue) {
                         case 1:
                             self.stringItem(new StringItemModel(dataTypeState));
                             break;
@@ -411,7 +422,12 @@ module nts.uk.com.view.cps005.b {
                         case 6:
                             self.selectionItem(new SelectionItemModel(dataTypeState));
                             break;
-                        default: break;
+                        case 7:
+                            self.dataTypeText(_.find(dataTypeEnum, function(o) { return o.value == dataTypeState.dataTypeValue; }).localizedName);
+                            break;
+                        case 8:
+                            self.dataTypeText(_.find(dataTypeEnum, function(o) { return o.value == dataTypeState.dataTypeValue; }).localizedName);
+                            break;
 
                     }
                 }
@@ -538,16 +554,19 @@ module nts.uk.com.view.cps005.b {
 
     export class StringItemModel {
         stringItemType: KnockoutObservable<number> = ko.observable(1);
+        stringItemTypeFixed: KnockoutObservable<number> = ko.observable(1);
         stringItemTypeText: KnockoutObservable<string> = ko.observable("");
         stringItemLength: KnockoutObservable<number> = ko.observable(null);
         stringItemDataType: KnockoutObservable<number> = ko.observable(2);
         stringItemDataTypeText: KnockoutObservable<string> = ko.observable("");
         constructor(data: IStringItem) {
             let self = this;
-            if (!data) return;
-            self.stringItemType(data.stringItemType || 1);
-            self.stringItemLength(data.stringItemLength || null);
-            self.stringItemDataType(data.stringItemDataType || 2);
+            if (data) {
+                self.stringItemType(data.stringItemType || 1);
+                self.stringItemTypeFixed(data.stringItemType || 1);
+                self.stringItemLength(data.stringItemLength || null);
+                self.stringItemDataType(data.stringItemDataType || null);
+            }
         }
     }
     export class NumericItemModel {
