@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 700, height: 600 };</script>
+			<script>var dialogSize = { width: 700, height: 400 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ktg031.b.style.css" />
 			<com:scriptfile path="ktg031.b.start.js" />
@@ -19,13 +19,14 @@
 				<label id = "labelTop">#{i18n.getText('KTG031_8')}</label>
 				<div id = "list">
 					<table id="single-list"
-						data-bind="ntsGridList: {								
-								height: 350,
+						data-bind="ntsGridList: {		
+								height: 200,						
 								dataSource: listDetail,
 								primaryKey: 'serialNo',
 								columns: columns,
 								multiple: false,
-								value: currentCode
+								value: currentCode,
+								rows: 8
 							}"></table>
 				</div>
 			</div>
