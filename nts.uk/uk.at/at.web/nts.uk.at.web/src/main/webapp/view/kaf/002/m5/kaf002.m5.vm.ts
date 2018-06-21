@@ -116,7 +116,10 @@ module nts.uk.at.view.kaf002.m5 {
             
             register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
-                if (nts.uk.ui.errors.hasError()){return;}
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),
@@ -161,6 +164,10 @@ module nts.uk.at.view.kaf002.m5 {
             
             update(application : vmbase.Application){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     version: application.version,
                     appID: application.applicationID(),
@@ -228,6 +235,21 @@ module nts.uk.at.view.kaf002.m5 {
             
             openSelectCardDialog(frameNo: number){
                 // alert('KDL018');
+            }
+            
+            validateInput(appStampList: KnockoutObservableArray<vmbase.AppStampWork>){
+                _.forEach(appStampList(), (x,i) =>{
+                    if(!nts.uk.util.isNullOrEmpty(x.startTime().value())){
+                        $(".m5-start-input:eq("+i+")").ntsError('check');            
+                    } else {
+                            
+                    } 
+                    if(!nts.uk.util.isNullOrEmpty(x.endTime().value())){
+                        $(".m5-end-input:eq("+i+")").ntsError('check');    
+                    } else {
+                            
+                    }     
+                });    
             }
         }
     }
