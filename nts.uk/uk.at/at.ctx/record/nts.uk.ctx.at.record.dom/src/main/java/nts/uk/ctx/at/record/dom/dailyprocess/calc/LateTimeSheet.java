@@ -94,9 +94,8 @@ public class LateTimeSheet{
 		}
 		if(attendance != null && lateDesClock.isPresent()) {
 			//出勤時刻と遅刻判断時刻を比較	
-			if(lateDesClock.get().getLateDecisionClock().lessThan(attendance)
-					||!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
-				
+			if(lateDesClock.get().getLateDecisionClock().lessThan(attendance)) {
+
 				//遅刻控除時間帯の作成
 				Optional<LateLeaveEarlyTimeSheet> lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Deduction,
 																									  timeLeavingWork,
@@ -117,7 +116,20 @@ public class LateTimeSheet{
 				LateTimeSheet lateTimeSheet = new LateTimeSheet(lateAppTimeSheet,lateDeductTimeSheet, workNo, Optional.empty());
 				
 				return lateTimeSheet;
-			}	
+			}else {
+				if(!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
+					//遅刻控除時間帯の作成
+					Optional<LateLeaveEarlyTimeSheet> lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Deduction,
+																										  timeLeavingWork,
+																										  coreTimeSetting,
+																										  optional.get(),
+																										  duplicateTimeSheet,
+																										  deductionTimeSheet,
+																										  breakTimeList,workType,predetermineTimeForSet);
+					LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.empty(),lateDeductTimeSheet, workNo, Optional.empty());
+					return lateTimeSheet;
+				}
+			}
 		}
 		return LateTimeSheet.createAsNotLate();//遅刻していない
 	}
