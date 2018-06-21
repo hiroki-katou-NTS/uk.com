@@ -20,7 +20,7 @@ module cps002.a.service {
         getLayoutByCreateType: 'ctx/pereg/layout/getByCreateType',
         addNewEmployee: 'ctx/pereg/addemployee/addNewEmployee',
         getEmployeeInfo: 'basic/organization/employee/getoffselect',
-        permision: 'ctx/pereg/ctx/pereg/functions/auth/find-all',
+        permision: 'ctx/pereg/functions/auth/find-all',
     };
 
     export function getLayout() {
