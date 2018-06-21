@@ -47,14 +47,16 @@
 						</div>
 					</div>
 					<!-- B2-001 -->
-					<table id="grid-table" data-bind="ntsGridList: {								
-						name: '#[CLI001_20]',
-						dataSource: items,
-						primaryKey: 'userID',
-						columns: columns,
-						value: currentId,
-						rows: 20
-					}" tabindex="3"></table>
+					<div id="grid-table" class="listbox-wrapper" tabindex="3">
+						<table id="single-list" data-bind="ntsGridList: {								
+							name: '#[CLI001_20]',
+							dataSource: items,
+							primaryKey: 'userID',
+							columns: columns,
+							value: currentId,
+							rows: 20
+						}"></table>
+					</div>
 				</div>
 			</div>
 			
