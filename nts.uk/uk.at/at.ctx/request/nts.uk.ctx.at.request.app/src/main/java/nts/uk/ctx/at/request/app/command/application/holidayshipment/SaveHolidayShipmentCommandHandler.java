@@ -123,13 +123,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		int comType = command.getComType();
 
 		// アルゴリズム「振休振出申請の新規登録」を実行する
-<<<<<<< HEAD
-		createNewForHolidayBreakge(command,companyID,sID,recDate,absDate,comType,appReason);
 
-	}
-
-	private void createNewForHolidayBreakge(SaveHolidayShipmentCommand command,String companyID,String sID,GeneralDate recDate,GeneralDate absDate,int comType,String appReason) {
-=======
 		createNewForHolidayBreakge(command, companyID, sID, recDate, absDate, comType);
 
 	}
@@ -138,7 +132,6 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 			GeneralDate recDate, GeneralDate absDate, int comType) {
 		// アルゴリズム「事前条件チェック」を実行する
 		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
->>>>>>> 97f0683fce0... fix no reason KAF011
 		// アルゴリズム「登録前エラーチェック（新規）」を実行する
 		errorCheckBeforeRegister(command,companyID,sID,recDate,absDate,comType,appReason);
 
