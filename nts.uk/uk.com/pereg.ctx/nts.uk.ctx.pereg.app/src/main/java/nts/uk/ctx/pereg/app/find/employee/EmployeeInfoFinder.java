@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.find.employee;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -179,9 +180,11 @@ public class EmployeeInfoFinder {
 			return standard;
 		} 
 			
-		int numbericValue = Integer.valueOf(value);
-		numbericValue += 1;
-		String upperValue = String.valueOf(numbericValue);
+		BigDecimal numbericValue = new BigDecimal(value);
+		numbericValue = numbericValue.add(new BigDecimal(1));
+	
+		String upperValue = numbericValue.toString();
+		
 		while (upperValue.length() < value.length()) {
 			upperValue = "0" + upperValue;
 		}
