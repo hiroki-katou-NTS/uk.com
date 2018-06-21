@@ -760,14 +760,9 @@ module cps002.a.vm {
                 let result = getShared("CPS002_PARAM_MODE_CARDNO"),
                     currentEmp = self.currentEmployee();
                 if (result) {
-                    $("#employeeCode").ntsError("clear");
-                    if (param === isCardNoMode) {
+                    $("#cardNumber").ntsError("clear");
                         currentEmp.cardNo(result);
                         currentEmp.cardNo.valueHasMutated();
-                    } else {
-                        currentEmp.employeeCode(result);
-                        currentEmp.employeeCode.valueHasMutated();
-                    }
                 }
             });
         }

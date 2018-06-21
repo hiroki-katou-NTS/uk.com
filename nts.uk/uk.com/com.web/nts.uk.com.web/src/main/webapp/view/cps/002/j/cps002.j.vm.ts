@@ -32,14 +32,14 @@ module cps002.j.vm {
             }
         }
 
-        getCode() {
+        /*getCode() {
             let self = this;
             self.cardNoMode ? self.getCardNo() : self.getEmlCode();
-        }
+        }*/
 
-        getEmlCode() {
+        getCardNo() {
             let self = this;
-            service.getCardNo(self.txtEmployeeCode()).done(function(emCode) {
+            service.getCardNo(self.txtCardNo()).done(function(emCode) {
                 self.generateEmCode(emCode);
                 let displayEmCode = _.map(emCode).map(function(i){ 
                     return i == ' '? "&nbsp" : i;
@@ -51,7 +51,7 @@ module cps002.j.vm {
             });
         }
 
-        getCardNo() {
+        /*getCardNo() {
             let self = this;
             service.getCardNo(self.txtCardNo()).done(function(emCode) {
                 self.generateEmCode(emCode);
@@ -59,7 +59,7 @@ module cps002.j.vm {
             }).fail(function() {
                 alertError({ messageId: "Msg_505" });
             });
-        }
+        }*/
 
         returnEmCode() {
             let self = this;

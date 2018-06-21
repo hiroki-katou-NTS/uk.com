@@ -14,4 +14,5 @@ module cps002.j.service{
     export function getCardNo(startLetters){
         return ajax("com", basePath+paths.getCardNo, startLetters);
     }
+    
 }
