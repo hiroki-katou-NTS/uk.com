@@ -1,4 +1,4 @@
-package nts.uk.file.at.infra.monthlyschedule;
+package nts.uk.file.at.infra.schedule.monthly;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package nts.uk.file.at.infra.monthlyschedule;
+package nts.uk.file.at.infra.schedule.monthly;
 
 import lombok.Data;
 import nts.uk.file.at.app.export.dailyschedule.data.WorkplaceReportData;
