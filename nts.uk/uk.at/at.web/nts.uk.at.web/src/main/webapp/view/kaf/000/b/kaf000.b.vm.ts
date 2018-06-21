@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     export abstract class ScreenModel {
+        displayGoback: KnockoutObservable<boolean> = ko.observable(false);
         // Metadata
         appID: KnockoutObservable<string>;
         appType: KnockoutObservable<number>;
@@ -78,6 +79,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             //reason input event
             // Metadata
+            nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
+                if(nts.uk.util.isNullOrUndefined(obj)){
+                    self.displayGoback(false);        
+                } else {
+                    self.displayGoback(true);                 
+                }
+            }).fail(()=>{
+                self.displayGoback(false);      
+            });
             self.listAppMeta = listAppMetadata;
             self.appType = ko.observable(currentApp.appType);
             self.appID = ko.observable(currentApp.appID);

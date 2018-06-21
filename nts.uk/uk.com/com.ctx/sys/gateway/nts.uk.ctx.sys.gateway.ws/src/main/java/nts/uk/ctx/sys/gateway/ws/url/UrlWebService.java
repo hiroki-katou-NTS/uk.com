@@ -104,7 +104,8 @@ public class UrlWebService {
 		// to do
 		
 		// ドメインモデル「埋込URL実行情報」の「プログラムID」及び「遷移先の画面ID」に該当する画面へ遷移する
-		return new JavaTypeResult<String>("URL success");
+		String appID = urlExecInfoExport.getTaskIncre().get(0).getTaskIncreValue();
+		return new JavaTypeResult<String>(appID);
 	}
 	
 	private Contract executionContractSet(String contractCD){
