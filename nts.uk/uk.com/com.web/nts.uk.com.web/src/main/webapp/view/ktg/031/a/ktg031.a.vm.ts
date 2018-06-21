@@ -128,8 +128,8 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 executionLogId: self.listToppage()[index].executionLogId,
                 processingName: self.listToppage()[index].processingName
             }
-            nts.uk.ui.windows.setShared('ktg031A', data);
-            nts.uk.ui.windows.sub.modal("/view/ktg/031/b/index.xhtml");
+            parent.nts.uk.ui.windows.setShared('ktg031A', data);
+            parent.nts.uk.ui.windows.sub.modal("/view/ktg/031/b/index.xhtml");
         }
         // click update 了解ボタン
         updateRoger(index: number) {
