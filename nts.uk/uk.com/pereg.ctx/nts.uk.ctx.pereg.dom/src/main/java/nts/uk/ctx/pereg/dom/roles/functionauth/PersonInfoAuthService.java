@@ -22,17 +22,17 @@ public class PersonInfoAuthService {
 	private PerInfoAuthDescRepository personInfoAuthDesc;
 
 	public List<AuthFullInfoObject> getFullInfo(String companyId, String roleId) {
-		
+
 		List<PersonInfoAuthDescription> descriptionList = personInfoAuthDesc.getListDesc();
 		if (roleId == null) {
 			// roleId == null. get with default value
 			return descriptionList.stream().map(desc -> new AuthFullInfoObject(desc)).collect(Collectors.toList());
 		}
-		
+
 		// roleId # null. get with value in database
 		Map<Integer, PersonInfoAuthority> authorityList = personInfoAuth.getListOfRole(companyId, roleId);
 		return descriptionList.stream().map(desc -> {
-			PersonInfoAuthority auth = authorityList.get(desc.getFunctionNo().v());
+			PersonInfoAuthority auth = authorityList.get(desc.getFunctionNo());
 			if (auth != null) {
 				return new AuthFullInfoObject(desc, auth);
 			} else {

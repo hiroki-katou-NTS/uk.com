@@ -19,7 +19,7 @@ public abstract class JpaEntityOfDescriptionOfAvailabilityPermissionBase<D exten
 	@Column(name = "FUNCTION_NO")
 	public int functionNo;
 
-	@Column(name = "NAME")
+	@Column(name = "FUNCTION_NAME")
 	public String name;
 
 	@Column(name = "EXPLANATION")
