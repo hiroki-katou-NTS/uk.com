@@ -63,35 +63,33 @@ public class UserFinder {
 
 		DisabledSegment specialUser = EnumAdaptor.valueOf(userKeyDto.isSpecial() ? 1 : 0, DisabledSegment.class);
 		DisabledSegment multiCompanyConcurrent = EnumAdaptor.valueOf(userKeyDto.isMulti() ? 1 : 0, DisabledSegment.class);
-		List<User> listUser = userRepo.searchBySpecialAndMulti(GeneralDate.today(), specialUser.value, multiCompanyConcurrent.value);
-	
-
+		
+		List<User> listUser = new ArrayList<>();
 		if (!userKeyDto.isMulti() && !userKeyDto.isSpecial()) {
+			//get request list 60
 			List<EmployeeInfoImport> listEmployeeInfo = employeeInfoAdapter.getEmployeesAtWorkByBaseDate(companyId,
 					GeneralDate.today());
-
-			List<User> notEmptyAssociatedUser = listUser.stream().filter(c -> c.hasAssociatedPersonID())
-					.collect(Collectors.toList());
-
-			for (User user : notEmptyAssociatedUser) {
-				Optional<EmployeeInfoImport> associatedEmployee = listEmployeeInfo.stream()
-						.filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).findAny();
-				if (associatedEmployee.isPresent()) {
-					if (user.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase())
-							|| associatedEmployee.get().getEmployeeName().toLowerCase()
-									.contains(userKeyDto.getKey().toLowerCase())) {
-						user.setUserName(new UserName(associatedEmployee.get().getEmployeeName()));
-						result.add(UserDto.fromDomain(user));
+			if(listEmployeeInfo.isEmpty()) {
+				return new ArrayList<>();
+			}
+			List<String> listEmployeePersonId = listEmployeeInfo.stream().map(c -> c.getPersonId()).collect(Collectors.toList());
+			//Employee. Employee name like '% screen. Search string input%'
+			List<String> listEmployeePersonIdFindName = listEmployeeInfo.stream().filter(c -> c.getEmployeeName().toLowerCase().contains(userKeyDto.getKey().toLowerCase())).map(c -> c.getPersonId()).collect(Collectors.toList()); 
+			//query user multi condition
+			listUser = userRepo.searchUserMultiCondition(GeneralDate.today(), multiCompanyConcurrent.value, specialUser.value, userKeyDto.getKey(), listEmployeePersonIdFindName, listEmployeePersonId);
+			for (User user : listUser) {
+				Optional<EmployeeInfoImport> em = listEmployeeInfo.stream().filter(c->c.getPersonId().equals(user.getAssociatedPersonID())).findFirst();
+				if(em.isPresent()) {
+					if(!em.get().getEmployeeName().isEmpty()) {
+						user.setUserName(new UserName(em.get().getEmployeeName()));
 					}
 				}
 			}
-			for (String id : userIds) {
-				result.removeIf(c -> c.getUserID().equals(id));
-			}
-			return result;
+		}else {
+			listUser = userRepo.searchByKey(GeneralDate.today(), specialUser.value, multiCompanyConcurrent.value, userKeyDto.getKey());
 		}
-
-		result = listUser.stream().filter(c -> c.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase())).map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
+		
+		result = listUser.stream().map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
 		for (String id : userIds) {
 			result.removeIf(c -> c.getUserID().equals(id));
 		}

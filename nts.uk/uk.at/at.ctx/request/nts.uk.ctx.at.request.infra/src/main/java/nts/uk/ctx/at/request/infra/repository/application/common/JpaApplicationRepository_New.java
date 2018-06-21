@@ -61,9 +61,9 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " WHERE a.krqdpApplicationPK.appID IN :listAppID AND a.krqdpApplicationPK.companyID = :companyID"
 			+ " ORDER BY a.appDate";
 	
-	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
+	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID = :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
-	private static final String SELECT_LATE_LEAVE = SELECT_BY_DATE + " O"
+	private static final String SELECT_LATE_LEAVE = SELECT_BY_DATE + " "
 			+ "AND a.employeeID = :employeeID "
 			+ "AND a.stateReflectionReal = 0 "
 			+ "AND a.appType = 9 ORDER BY a.appDate ASC";

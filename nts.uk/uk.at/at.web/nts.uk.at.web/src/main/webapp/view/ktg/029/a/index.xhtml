@@ -139,7 +139,7 @@
 					</tr>
 					<tr data-bind="with: dataRecord()">
 						<td class="tab" colspan="2" data-bind="visible: ($parent.displayPresenceDailyPer &amp;&amp; presenceDailyPer)">
-							<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KTG029_61')}</div>
+							<div data-bind="ntsCheckBox: { checked: $parent.checked }">#{i18n.getText('KTG029_61')}</div>
 						</td>
 					</tr>
 					<!-- A11 -->
@@ -203,7 +203,7 @@
 					<!-- A17_1 -->
 					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab">#{i18n.getText('KTG029_40')}</td>
-						<td data-bind="with:dataRecord()"><span data-bind="text: yearlyHoliday.nextTime.substr(-8)"></span> <span data-bind="text: yearlyHoliday.grantedDaysNo"></span>#{i18n.getText('KTG029_41')}</td>
+						<td data-bind="with:dataRecord()"><span data-bind="text: yearlyHoliday.nextTime"></span> <span data-bind="text: yearlyHoliday.grantedDaysNo"></span>#{i18n.getText('KTG029_41')}</td>
 					</tr>
 					<!-- A17_2 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
@@ -223,7 +223,7 @@
 					<!-- A17_5 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 						<td data-bind="visible: yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_49')}</td>
-						<td data-bind="visible: yearlyHoliday.calculationMethod"><span data-bind="text: yearlyHoliday.nextGrantDate.substr(-8)"></span></td>
+						<td data-bind="visible: yearlyHoliday.calculationMethod"><span data-bind="text: yearlyHoliday.nextGrantDate"></span></td>
 					</tr>
 					<!-- A17_6 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
@@ -288,7 +288,7 @@
 					<!-- A20 -->
 					<tr data-bind="visible: displayRemainAlternationNo">
 						<td>#{i18n.getText('KTG029_26')}</td>
-						<td data-bind="with:dataRecord()"><span data-bind="text: remainAlternationNo"></span></td>
+						<td data-bind="with:dataRecord()"><span data-bind="text: remainAlternationNoDay"></span>#{i18n.getText('KTG029_60')} <span data-bind="text: remainAlternationNo"></span></td>
 					</tr>
 					<!-- A21 -->
 					<tr data-bind="visible: displayRemainsLeft">

@@ -6,6 +6,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         currentMonth: KnockoutObservable<period>;
         nextMonth: KnockoutObservable<period>;
         switchDate: KnockoutObservable<boolean>;
+        checked: KnockoutObservable<boolean>;
         txtDatePeriod: KnockoutObservable<string>;
         btnSwitch: KnockoutObservable<string>;
         
@@ -50,8 +51,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             self.nextMonth = ko.observable(new period("",""));
             self.txtDatePeriod = ko.observable("");
             self.btnSwitch = ko.observable(getText('KTG029_7'));
+            self.checked = ko.observable(true);
             
-            self.displayOvertime = ko.observable(false);
+            self.displayOvertime = ko.observable(false); 
             self.displayHoliInstruct = ko.observable(false);
             self.displayApproved = ko.observable(false);
             self.displayUnApproved = ko.observable(false);
@@ -257,7 +259,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         openKDW003Dialog() {
             var self = this;
-            if(self.dataRecord().presenceDailyPer){
+            if(self.checked()){
                 window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
             }else{
                nts.uk.ui.windows.sub.modal('/view/kdw/003/b/index.xhtml');
@@ -315,10 +317,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         timeYearLimit: TimeOTDto;
     }
     export interface YearlyHolidayDto {
-        nextTime: Date;
+        nextTime: string;
         grantedDaysNo: number;
         nextTimeInfo: YearlyHolidayInfoDto;
-        nextGrantDate: Date;
+        nextGrantDate: string;
         nextGrantDateInfo: YearlyHolidayInfoDto;
         afterGrantDateInfo: YearlyHolidayInfoDto;
         attendanceRate: number;
@@ -344,6 +346,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         yearlyHoliday: YearlyHolidayDto;
         reservedYearsRemainNo: number;
         remainAlternationNo: TimeOTDto;
+        remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
         hdremainNo: number;
@@ -366,10 +369,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
     }
     export class YearlyHoliday {
-        nextTime: Date;
+        nextTime: string;
         grantedDaysNo: number;
         nextTimeInfo: YearlyHolidayInfo;
-        nextGrantDate: Date;
+        nextGrantDate: string;
         nextGrantDateInfo: YearlyHolidayInfo;
         afterGrantDateInfo: YearlyHolidayInfo;
         attendanceRate: number;
@@ -377,10 +380,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         calculationMethod: boolean;
         useSimultaneousGrant: boolean;
         constructor(dto: YearlyHolidayDto){
-            this.nextTime = dto.nextTime;
+            this.nextTime = dto.nextTime == null ? '': dto.nextTime.substr(-8);
             this.grantedDaysNo = dto.grantedDaysNo;
             this.nextTimeInfo = new YearlyHolidayInfo(dto.nextTimeInfo);
-            this.nextGrantDate = dto.nextGrantDate;
+            this.nextGrantDate = dto.nextGrantDate == null ? '': dto.nextGrantDate.substr(-8);
             this.nextGrantDateInfo = new YearlyHolidayInfo(dto.nextGrantDateInfo);
             this.afterGrantDateInfo = new YearlyHolidayInfo(dto.afterGrantDateInfo);
             this.attendanceRate = dto.attendanceRate;
@@ -409,6 +412,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         yearlyHoliday: YearlyHoliday;
         reservedYearsRemainNo: number;
         remainAlternationNo: string;
+        remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
         hDRemainNo: number;
@@ -434,6 +438,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.yearlyHoliday = new YearlyHoliday(data.yearlyHoliday);
             this.reservedYearsRemainNo = data.reservedYearsRemainNo;
             this.remainAlternationNo = (data.remainAlternationNo.hours<10?('0'+data.remainAlternationNo.hours):data.remainAlternationNo.hours)+':'+(data.remainAlternationNo.min<10?('0'+data.remainAlternationNo.min):data.remainAlternationNo.min);
+            this.remainAlternationNoDay = data.remainAlternationNoDay;
             this.remainsLeft = data.remainsLeft;
             this.publicHDNo = data.publicHDNo;
             this.hDRemainNo = data.hdremainNo;

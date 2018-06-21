@@ -21,7 +21,7 @@ public class OptionalWidgetInfoDto {
 	/** 3 Approved Number 承認された件数 */
 	private int approved;
 	
-	/** 4 Approved Number 承認された件数 */
+	/** 4 Approved Number 未承認件数 */
 	private int unApproved;
 	
 	/** 5 Denied Number 否認された件数 */
@@ -60,10 +60,12 @@ public class OptionalWidgetInfoDto {
 	private int reservedYearsRemainNo = 0;
 	
 	/** 18 Remain Alternation Number 代休残数 */
+	private double remainAlternationNoDay = 0.0;
+	
 	private TimeOT remainAlternationNo = new TimeOT(0, 0);
 	
 	/** 19 RemainsLeft 振休残数 */
-	private int remainsLeft = 0;
+	private double remainsLeft = 0.0;
 	
 	/** Public Holiday Number 公休残数 */
 	private int publicHDNo = 0;
