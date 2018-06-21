@@ -207,9 +207,15 @@ module nts.uk.at.view.kwr006.a {
                     });
             }
 
+            public isInvalidSetting(): boolean {
+                let self = this;
+                return !self.hasSelectedEmployees() ||
+                    self.monthlyWorkScheduleConditionModel.totalOutputSetting.workplaceHierarchyTotal.isInvalidSetting();
+            }
+
             public exportExcel(): void {
                 let self = this;
-                if (!self.hasSelectedEmployees()) {
+                if (self.isInvalidSetting()) {
                     return;
                 }
 
@@ -223,7 +229,7 @@ module nts.uk.at.view.kwr006.a {
 
             public exportPdf(): void {
                 let self = this;
-                if (!self.hasSelectedEmployees()) {
+                if (self.isInvalidSetting()) {
                     return;
                 }
 
@@ -527,6 +533,43 @@ module nts.uk.at.view.kwr006.a {
                 dto.ninthLevel = self.ninthLevel();
                 dto.cumulativeWorkplace = self.cumulativeWorkplace();
                 return dto;
+            }
+
+            public isInvalidSetting(): boolean {
+                let self = this;
+                let levelCount = 0;
+                if(self.firstLevel()){
+                    levelCount++;
+                }
+                if(self.secondLevel()){
+                    levelCount++;
+                }
+                if(self.thirdLevel()){
+                    levelCount++;
+                }
+                if(self.fourthLevel()){
+                    levelCount++;
+                }
+                if(self.fifthLevel()){
+                    levelCount++;
+                }
+                if(self.sixthLevel()){
+                    levelCount++;
+                }
+                if(self.seventhLevel()){
+                    levelCount++;
+                }
+                if(self.eightLevel()){
+                    levelCount++;
+                }
+                if(self.ninthLevel()){
+                    levelCount++;
+                }
+                if (levelCount == 0 || levelCount > 5) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1184' });
+                    return true;
+                };
+                return false;
             }
         }
     }
