@@ -8,19 +8,27 @@
 		<ui:composition>
 			<div id="cm-content">
 				<div class="cm-content-left">
-					<div class="table cm-table">
+					<div class="table cm-table" data-bind="style: { display: screenMode() === 1 ? '' : 'none' }">
 						<div class="cell cm-column1">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_8')}</div>
 						</div>
-						<div class="cell cm-column2">
+						<div class="cell cm-column2-kaf002">
 							<span class="label" data-bind="text: employeeName"></span>
+						</div>
+					</div>
+					<div class="table cm-table" data-bind="style: { display: screenMode() !== 1 ? '' : 'none' }">
+						<div class="cell cm-column1">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_8')}</div>
+						</div>
+						<div class="cell cm-column2-kaf002" style="display: ">
+							<span class="label" data-bind="text: textC3_2"></span>
 						</div>
 					</div>
 					<div class="table cm-table" data-bind="style: { display: screenMode() === 1 ? '' : 'none' }">
 						<div class="cell cm-column1">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF002_9')}</div>
 						</div>
-						<div class="cell cm-column2">
+						<div class="cell cm-column2-kaf002">
 							<div class="cm-time-editor" id= "appDate" data-bind="ntsDatePicker: {
 											name: '#[KAF002_9]',
 											value: application().appDate,
@@ -34,12 +42,7 @@
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF002_9')}</div>
 						</div>
 						<div class="cell cm-middle">
-							<div class="cell" data-bind="if: application().inputDate">
-								<span class="label" data-bind="text: application().appDate() + ' ( 入力日 : ' + application().inputDate() + ' )'"></span>	
-							</div>
-							<div class="cell" data-bind="if: !application().inputDate()">
-								<span class="label" data-bind="text: application().appDate()"></span>	
-							</div>
+							<span class="label" data-bind="text: application().appDate() + ' ( 入力日 : ' + application().inputDate() + ' )'"></span>	
 						</div>
 					</div>
 					<div class="cm-title-div" data-bind="text: topComment().text, 
@@ -83,7 +86,7 @@
 						<div class="cell cm-column1">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_10')}</div>	
 						</div>
-						<div class="cell cm-column2">
+						<div class="cell cm-column2-kaf002">
 							<span class="cm-combo-box" data-bind="ntsComboBox: {
 									name: '#[KAF002_10]',
 									options: inputReasons,
@@ -100,7 +103,7 @@
 						<div class="cell cm-column1">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_11')}</div>	
 						</div>
-						<div class="cell cm-column2">
+						<div class="cell cm-column2-kaf002">
 							<span>
 								<textarea id = "appReason" class="cm-memo" data-bind="ntsMultilineEditor: { 
 									name: '#[KAF002_11]',

@@ -23,6 +23,8 @@ module nts.uk.at.view.kaf002.cm {
             botComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',false));
             employeeName: KnockoutObservable<string> = ko.observable("");
             empEditable: KnockoutObservable<boolean> = ko.observable(true);
+            textC3_2: KnockoutObservable<string> = ko.observable("");
+            textC4_2: KnockoutObservable<string> = ko.observable("");
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
                 self.stampRequestMode(stampRequestMode);
@@ -80,6 +82,13 @@ module nts.uk.at.view.kaf002.cm {
                     }
                     self.stampRequestMode(appStampData.stampRequestMode);
                     self.employeeName(appStampData.employeeName);
+                    self.textC3_2(appStampData.employeeName);
+                    if(appStampData.employeeID == appStampData.inputEmpID){
+                        self.textC3_2(appStampData.employeeName);        
+                    } else {
+                        self.textC3_2(nts.uk.resource.getText("KAF002_38",[appStampData.employeeName,appStampData.inputEmpName]));    
+                    }
+                    self.textC4_2(nts.uk.resource.getText("KAF002_39",[appStampData.appDate,appStampData.inputDate]));
                 } else {//new screen
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
                     self.employeeName(commonSet.employeeName);
