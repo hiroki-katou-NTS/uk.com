@@ -31,7 +31,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNurs
 public class JpaNursingLeaveSettingRepository extends JpaRepository implements NursingLeaveSettingRepository {
 
     /** The select worktype. */
-    private final String FIND_WORKTYPE = "SELECT c.kshmtWorkTypePK.workTypeCode FROM KshmtWorkType c "
+    private static final String FIND_WORKTYPE = "SELECT c.kshmtWorkTypePK.workTypeCode FROM KshmtWorkType c "
             + "WHERE c.kshmtWorkTypePK.companyId = :companyId ";
     
     /*

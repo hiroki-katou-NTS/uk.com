@@ -80,20 +80,22 @@ module nts.uk.com.view.cdl009.a {
              * Search Employee
              */
             private searchEmp(): void {
+                nts.uk.ui.block.grayout(); // block ui
+                
                 let self = this;
                 let treeData = $('#workplace-component').getDataList();
                 let selectedRow = $('#workplace-component').getRowSelected();
-                    if (treeData.length == 0 || selectedRow.length <= 0) {
+                if (treeData.length == 0 || selectedRow.length <= 0) {
                     if (self.target() == TargetClassification.WORKPLACE) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                     } else {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_647" });
                     }
+                    nts.uk.ui.block.clear();
                     return;
                 }
 
                 // Search Employees
-                nts.uk.ui.block.invisible(); // block ui
                 self.findEmployee().done(() => {
                     $('#emp-component').focus();
                 }).always(() => nts.uk.ui.block.clear());

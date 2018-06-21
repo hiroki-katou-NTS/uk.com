@@ -166,7 +166,8 @@
 						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 210}
 						            ],
 									multiple: false,
-									value: selection().selectionID}">
+									value: selection().selectionID,
+									rows: 15}">
 						</table>
 					</div>
 
@@ -176,110 +177,53 @@
 				<div id="content-right" class="pull-left"
 					data-bind="with: selection">
 
-					<com:ko-if bind="$parent.perInfoSelectionItem().characterType() === 0">
-						<div class="form-input">
-							<div class="form-lable"
-								data-bind="ntsFormLabel: {constraint: ['SelectionCdNumeric', 'SelectionName'] , required: true }">
-								<label>#{i18n.getText('CPS017_20')}</label>
-							</div>
-							<div class="input">
-								<div>
-								 	<span><input id="code"
-										data-bind="ntsTextEditor: {
-											name: '#[CPS017_21]', 
-											value: selectionCD,
-											constraint: 'SelectionCdNumeric', 
-											required: true, 
-											enable: $parent.enableSelectionCd, 
-			 								immediate: false}" />
-									</span>
-								</div>
-								<div>
-									<input id="name"
-										data-bind="ntsTextEditor: {
-									name: '#[CPS017_22]',
-									value: selectionName, 
-									constraint: 'SelectionName', 
-									required: true, 
-	 								enable: $parent.enableSelectionName, 
-									immediate: false}" />
-								</div>
-							</div>
-							<div class="form-input">
-								<div class="form-lable"
-									data-bind="ntsFormLabel: {constraint: 'ExternalCdNumeric' , required: false }">
-									<label>#{i18n.getText('CPS017_23')}</label>
-								</div>
-								<div class="input">
-									<input id="exCode"
-										data-bind="ntsTextEditor: {
-										name: '#[CPS017_24]',
-										value: externalCD,
-										constraint: 'ExternalCdNumeric' ,
-										option: '',
-										required: false,
-										enable: $parent.enableSelectionName,
-										readonly: false}" />
-								</div>
-							</div>
-
+					<div class="form-input">
+						<div class="form-lable"
+							data-bind="ntsFormLabel: {constraint: $vm.codeNameLabelConstraint, required: true }">
+							<label>#{i18n.getText('CPS017_20')}</label>
 						</div>
-					</com:ko-if>
-
-					<com:ko-if bind="$parent.perInfoSelectionItem().characterType() === 1">
+						<div class="input">
+							<div>
+							 	<span><input id="code"
+									data-bind="ntsTextEditor: {
+										name: '#[CPS017_21]', 
+										value: selectionCD,
+										constraint: ko.toJS($vm.codeNameLabelConstraint)[0], 
+										required: true, 
+										enable: $parent.enableSelectionCd, 
+		 								immediate: false}, hasFocus: $vm.focus.code" />
+								</span>
+							</div>
+							<div>
+								<input id="name"
+									data-bind="ntsTextEditor: {
+								name: '#[CPS017_22]',
+								value: selectionName, 
+								constraint: ko.toJS($vm.codeNameLabelConstraint)[1], 
+								required: true, 
+ 								enable: $parent.enableSelectionName, 
+								immediate: false}, hasFocus: $vm.focus.name" />
+							</div>
+						</div>
 						<div class="form-input">
 							<div class="form-lable"
-								data-bind="ntsFormLabel: {constraint: ['SelectionCdAlphaNumeric', 'SelectionName'], required: true }">
-								<label>#{i18n.getText('CPS017_20')}</label>
-							</div>
-							<div class="input">
-								<div>
-									<span>
-										<input id="code"
-										data-bind="ntsTextEditor: {
-											name: '#[CPS017_21]', 
-											value: selectionCD,
-											constraint: 'SelectionCdAlphaNumeric', 
-											option: '',
-											required: true, 
-											enable: $parent.enableSelectionCd, 
-			 								immediate: false									
-											}" />
-									</span>
-								</div>
-								<div>
-									<input id="name"
-										data-bind="ntsTextEditor: {
-									name: '#[CPS017_22]',
-									value: selectionName, 
-									constraint: 'SelectionName', 
-									required: true, 
-	 								enable: $parent.enableSelectionName, 
-									immediate: false}" />
-								</div>
-							</div>
-							
-							<div class="form-input">
-							<div class="form-lable"
-								data-bind="ntsFormLabel: {constraint: 'ExternalCdAlphalNumeric' , required: false }">
+								data-bind="ntsFormLabel: {constraint: $vm.extenalLabelConstraint , required: false }">
 								<label>#{i18n.getText('CPS017_23')}</label>
 							</div>
-							
 							<div class="input">
 								<input id="exCode"
 									data-bind="ntsTextEditor: {
 									name: '#[CPS017_24]',
 									value: externalCD,
-									constraint: 'ExternalCdAlphalNumeric' ,
+									constraint: $vm.extenalLabelConstraint ,
 									option: '',
 									required: false,
 									enable: $parent.enableSelectionName,
 									readonly: false}" />
 							</div>
 						</div>
-						</div>
-						
-					</com:ko-if>
+
+					</div>
 					
 					<div class="form-input">
 						<div class="form-lable"

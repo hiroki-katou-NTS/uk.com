@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.pub.worktime.predset.PredeterminedTimeExport;
 public class PredetemineTimeSettingPubImpl implements PredetemineTimeSettingPub{
 	
 	/** The work two. */
-	public static Integer WORK_TWO = 2;
+	public static final Integer WORK_TWO = 2;
 	
 	/** The predetemine time setting repository. */
 	@Inject

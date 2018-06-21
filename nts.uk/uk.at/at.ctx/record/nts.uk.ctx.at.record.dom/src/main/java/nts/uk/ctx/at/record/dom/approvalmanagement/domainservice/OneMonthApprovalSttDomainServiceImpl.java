@@ -46,7 +46,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 @Stateless
-public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalSttDomainService{
+public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalSttDomainService {
 
 	@Inject
 	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepository;
@@ -106,47 +106,44 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			approvalEmployee.setEmployeeName(lstEmployee.get(e).getEmployeeName());
 			List<DateApprovalStatusDto> lstDateApprovalStatusDto = new ArrayList<>();
 			List<ApprovalRootSituation> lstApproval = approvalRootOfEmployeeImport.getApprovalRootSituations();
-			boolean isSameEmpId=false;
+			boolean isSameEmpId = false;
 			for (int a = 0; a < lstApproval.size(); a++) {
 				if (lstEmployee.get(e).getEmployeeId().equals(lstApproval.get(a).getTargetID())) {
 					DateApprovalStatusDto dateApprovalStatusDto = new DateApprovalStatusDto();
 					dateApprovalStatusDto.setDate(lstApproval.get(a).getAppDate());
 					dateApprovalStatusDto.setStatus(3);
-					 if (lstApproval.get(a).getApprovalStatus()
+					if (lstApproval.get(a).getApprovalStatus()
 							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED
 							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
 						dateApprovalStatusDto.setStatus(0);
-					}  else if (lstApproval.get(a).getApprovalStatus()
+					} else if (lstApproval.get(a).getApprovalStatus()
 							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVAL_REQUIRE
 							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
 						dateApprovalStatusDto.setStatus(1);
-					}else if (lstApproval.get(a).getApprovalStatus()
+					} else if (lstApproval.get(a).getApprovalStatus()
 							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
-							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_PASS) {
+							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_LESS) {
 						dateApprovalStatusDto.setStatus(2);
-					}
-					else if (lstApproval.get(a).getApprovalStatus()
+					} else if (lstApproval.get(a).getApprovalStatus()
 							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
 							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
 						dateApprovalStatusDto.setStatus(2);
-					}
-					else if (lstApproval.get(a).getApprovalStatus()
+					} else if (lstApproval.get(a).getApprovalStatus()
 							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
 							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_PASS) {
 						dateApprovalStatusDto.setStatus(0);
-					}
-					else if (lstApproval.get(a).getApprovalStatus()
+					} else if (lstApproval.get(a).getApprovalStatus()
 							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
 							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.COMPLETE) {
 						dateApprovalStatusDto.setStatus(0);
 					}
 					lstDateApprovalStatusDto.add(dateApprovalStatusDto);
-					isSameEmpId=true;
+					isSameEmpId = true;
 				}
 			}
-			if(isSameEmpId){
+			if (isSameEmpId) {
 				approvalEmployee.setLstStatus(lstDateApprovalStatusDto);
-				lstApprovalEmployee.add(approvalEmployee);	
+				lstApprovalEmployee.add(approvalEmployee);
 			}
 		}
 		return lstApprovalEmployee;
@@ -160,7 +157,8 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		result.setEndDate(datePeriod.end());
 		return result;
 	}
-	public OneMonthApprovalStatusDto getDatePeriod(int closureId,int currentYearMonth) {
+
+	public OneMonthApprovalStatusDto getDatePeriod(int closureId, int currentYearMonth) {
 		OneMonthApprovalStatusDto result = new OneMonthApprovalStatusDto();
 		DatePeriod datePeriod = closureService.getClosurePeriod(closureId, YearMonth.of(currentYearMonth));
 		result.setStartDate(datePeriod.start());
@@ -195,7 +193,8 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 					for (int h = 0; h < lstClosureHst.size(); h++) {
 						if (lstClosure.get(c).getClosureId().value == lstClosureHst.get(h).getClosureId().value) {
 							lstClosureDto.add(new ClosureDto(lstClosureHst.get(h).getClosureId().value,
-									lstClosureHst.get(h).getClosureName().v(),lstClosure.get(c).getClosureMonth().getProcessingYm().v().intValue()));
+									lstClosureHst.get(h).getClosureName().v(),
+									lstClosure.get(c).getClosureMonth().getProcessingYm().v().intValue()));
 							lstYearMonth.add(lstClosure.get(c).getClosureMonth().getProcessingYm());
 						}
 					}
@@ -209,7 +208,8 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			DatePeriod datePeriod = null;
 			if (startDateParam == null) {
 				// アルゴリズム「当月の期間を算出する」を実行する
-				datePeriod = closureService.getClosurePeriod(currentClosure, lstYearMonth.isEmpty()? currentYearMonth:lstYearMonth.get(0));
+				datePeriod = closureService.getClosurePeriod(currentClosure,
+						lstYearMonth.isEmpty() ? currentYearMonth : lstYearMonth.get(0));
 			} else {
 				datePeriod = new DatePeriod(startDateParam, endDateParam);
 			}

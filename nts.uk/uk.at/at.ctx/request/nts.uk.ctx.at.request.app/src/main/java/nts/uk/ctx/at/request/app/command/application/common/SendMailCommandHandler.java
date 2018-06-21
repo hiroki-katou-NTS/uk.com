@@ -17,11 +17,8 @@ public class SendMailCommandHandler extends CommandHandlerWithResult<SendMailCom
 	@Inject
 	private CheckTransmission checkTranmission;
 	protected MailSenderResult handle(CommandHandlerContext<SendMailCommand> context)  {
-		List<String> employeeIdList = new ArrayList<String>();
-		context.getCommand().getSendMailOption().forEach(x -> {
-			employeeIdList.add(x.getEmployeeID());
-		});
 		ApplicationCommand_New app = context.getCommand().getApplication();
-		return checkTranmission.doCheckTranmission(app.getApplicationID(), app.getApplicationType(), app.getPrePostAtr(), employeeIdList, null, context.getCommand().getMailContent(), null);
+		return checkTranmission.doCheckTranmission(app.getApplicationID(), app.getApplicationType(), app.getPrePostAtr(), context.getCommand().getSendMailOption(), null,
+				context.getCommand().getMailContent(), null, app.getApplicationDate());
 	}
 }

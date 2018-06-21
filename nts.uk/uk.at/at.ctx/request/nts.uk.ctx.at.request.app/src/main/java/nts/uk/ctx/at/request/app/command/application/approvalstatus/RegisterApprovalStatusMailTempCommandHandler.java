@@ -23,12 +23,10 @@ public class RegisterApprovalStatusMailTempCommandHandler extends CommandHandler
 
 	@Inject
 	private ApprovalStatusMailTempRepository repository;
-
-	String companyID;
-
+	
 	@Override
 	protected void handle(CommandHandlerContext<List<ApprovalStatusMailTempCommand>> context) {
-		companyID = AppContexts.user().companyId();
+		String companyID = AppContexts.user().companyId();
 		List<ApprovalStatusMailTempCommand> listCommand = context.getCommand();
 		for (ApprovalStatusMailTempCommand command : listCommand) {
 			// ドメインモデル「承認状況メールテンプレート」を更新する

@@ -36,7 +36,7 @@ public class InsufficientFlexHolidayMntFinder {
 	
 	private InsufficientFlexHolidayMntDto convertToDbType(InsufficientFlexHolidayMnt insuffFlex) {
 		InsufficientFlexHolidayMntDto dto = new InsufficientFlexHolidayMntDto();
-		dto.attendanceTime = insuffFlex.getAttendanceTime().v();
+		dto.supplementableDays = insuffFlex.getSupplementableDays().v();
 		return dto;
 	}
 }

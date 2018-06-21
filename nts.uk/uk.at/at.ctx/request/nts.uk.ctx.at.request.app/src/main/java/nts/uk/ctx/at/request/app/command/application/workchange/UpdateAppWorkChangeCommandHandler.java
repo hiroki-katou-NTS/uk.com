@@ -9,8 +9,8 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.dom.application.AppReason;
@@ -22,19 +22,20 @@ import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeUpdateService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWorkChangeCommand> {
+public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, ProcessResult> {
 	private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeUpdateService updateService;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
 		AddAppWorkChangeCommand updateCommand = context.getCommand();
 		// Command data
 		CreateApplicationCommand appCommand = updateCommand.getApplication();
@@ -91,7 +92,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 		//updateApp.setVersion(workChangeCommand.getVersion());
 		
 		// アルゴリズム「勤務変更申請登録（更新）」を実行する
-		updateService.UpdateWorkChange(updateApp, workChangeDomain);
+		return updateService.UpdateWorkChange(updateApp, workChangeDomain);
 	}
 
 }

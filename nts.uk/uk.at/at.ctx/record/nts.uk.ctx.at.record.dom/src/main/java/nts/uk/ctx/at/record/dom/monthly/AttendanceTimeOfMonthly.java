@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -12,6 +10,10 @@ import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -117,14 +119,26 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * @param datePeriod 期間
 	 * @param workingConditionItem 労働制
 	 * @param startWeekNo 開始週NO
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
+	 * @param monthlyCalcDailys 月の計算中の日別実績データ
+	 * @param monthlyOldDatas 集計前の月別実績データ
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void prepareAggregation(String companyId, DatePeriod datePeriod, WorkingConditionItem workingConditionItem,
-			int startWeekNo, RepositoriesRequiredByMonthlyAggr repositories){
+	public void prepareAggregation(
+			String companyId,
+			DatePeriod datePeriod,
+			WorkingConditionItem workingConditionItem,
+			int startWeekNo,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
+			MonthlyCalculatingDailys monthlyCalcDailys,
+			MonthlyOldDatas monthlyOldDatas,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		this.monthlyCalculation.prepareAggregation(companyId, this.employeeId, this.yearMonth,
-				this.closureId, this.closureDate, datePeriod, workingConditionItem, Optional.empty(),
-				startWeekNo, repositories);
+				this.closureId, this.closureDate, datePeriod, workingConditionItem,
+				startWeekNo, companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas, repositories);
 	}
 
 	/**

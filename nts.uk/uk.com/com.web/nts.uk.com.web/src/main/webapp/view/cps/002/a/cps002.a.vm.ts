@@ -235,9 +235,12 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
                 let self = this,
                     employee = self.currentEmployee();
-
-                employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
-            });
+                if (employee.cardNo() == "") {
+                    employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
+                }
+            }); 
+            
+            
 
             self.currentEmployee().cardNo.subscribe((cardNo) => {
                 let ce = ko.toJS(self.stampCardEditing),
@@ -287,21 +290,36 @@ module cps002.a.vm {
                 });
             }
         }
-
+        
+        logMouseOver() {
+            let self = this;
+            if (self.cardNo() == "") {
+                self.cardNo(__viewContext.user.companyCode + self.employeeCode());
+            }
+        }
+        
         start() {
             let self = this;
             self.currentEmployee().clearData();
 
+            let dfd = $.Deferred();
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing(data);
                 self.subContraint(false);
                 __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
                 self.subContraint(true);
+                nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
+                    self.employeeBasicInfo(data);
+                });
+                self.getLayout();
+                dfd.resolve(data);
             });
 
-            nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
-                self.employeeBasicInfo(data);
-            });
+            return dfd.promise();
+        }
+
+        getLayout() {
+            let self = this;
             service.getLayout().done((layout) => {
                 if (layout) {
                     service.getUserSetting().done(userSetting => {
@@ -322,7 +340,6 @@ module cps002.a.vm {
                     });
                 }
             });
-
         }
 
         getLastRegHistory(userSetting: IUserSetting) {
@@ -679,7 +696,13 @@ module cps002.a.vm {
                     currentEmp = self.currentEmployee();
                 if (result) {
                     $("#employeeCode").ntsError("clear");
-                    param === isCardNoMode ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
+                    if (param === isCardNoMode) {
+                        currentEmp.cardNo(result);
+                        currentEmp.cardNo.valueHasMutated();
+                    } else {
+                        currentEmp.employeeCode(result);
+                        currentEmp.employeeCode.valueHasMutated();
+                    }
                 }
             });
         }

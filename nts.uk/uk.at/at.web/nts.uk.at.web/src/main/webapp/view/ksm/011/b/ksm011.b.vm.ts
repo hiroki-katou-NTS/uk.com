@@ -162,36 +162,19 @@ module nts.uk.at.view.ksm011.b.viewmodel {
 
             let teamDivision = nts.uk.ui.windows.getShared("KSM011_A_TEAMDIVISION");
             let rank = nts.uk.ui.windows.getShared("KSM011_A_RANK");
-            let leftItem = [];
-            leftItem = _.clone(self.personalInforData);
-            if (teamDivision == 1 && rank == 1 && self.personalInforData.length == 9) {
-                _.pullAt(leftItem, ["code", 5, "code", 6]);
-                self.leftItems(_.clone(leftItem));
-            }
-            if (teamDivision == 0 && rank == 0) {
-                self.leftItems(_.clone(self.personalInforData))
-            }
-            if (teamDivision == 1 && rank == 0) {
-                _.pullAt(leftItem, ["code", 5]);
-                self.leftItems(_.clone(leftItem));
-            }
-            if (teamDivision == 0 && rank == 1) {
-                _.pullAt(leftItem, ["code", 6]);
-                self.leftItems(_.clone(leftItem));
-            }
 
             $.when(service.findAllPublicHD()).done(function(data: any) {
                 self.isManageComPublicHd(data.pubHdSet.isManageComPublicHd);
                 if (data.pubHdSet.isManageComPublicHd == 0) {
-                    self.insufficientEnable(false);
-                    self.obtainEnable(false);
+                    $('#hidden-form').hide();
+                } else {
+                    $('#hidden-form').show();
                 }
             });
             $.when(self.getData()).done(function() {
                 if (self.dataB != null) {
                     if (self.dataB.schePerInfoAtr.length > 0) {
                         var rightItems = [];
-                        var leftItems = self.leftItems();
                         _.forEach(self.dataB.schePerInfoAtr, function(item) {
                             var temp = _.find(self.personalInforData, function(obj) {
                                 return item.personInfoAtr == obj.code;
@@ -202,29 +185,68 @@ module nts.uk.at.view.ksm011.b.viewmodel {
                                 name: temp.name
                             });
 
-                            var evens = _.remove(leftItems, function(item) {
+                            var evens = _.remove(self.leftItems(), function(item) {
                                 return item.code == temp.code;
                             });
                         });
 
-                        self.rightItems([]);
-                        var sortedLItems = _.sortBy(leftItems, [function(o) { return o.code; }]);
-                        var sortedRItems = _.sortBy(rightItems, [function(o) { return o.code; }]);
-                        self.rightItems(sortedRItems);
-                        self.leftItems([]);
+                        let sortedLItems = _.sortBy(self.leftItems(), [function(o) { return o.code; }]);
+                        let sortedRItems = _.sortBy(rightItems, [function(o) { return o.code; }]);
 
-                        if (sortedLItems.length <= 0) {
-                            var newLData = _.clone(self.personalInforData);
-                            _.forEach(sortedRItems, function(item) {
-                                var lEvens = _.remove(newLData, function(newItem) {
-                                    return newItem.code == item.code;
-                                });
-                            });
+                        let leftItem = _.clone(self.personalInforData);
 
-                            self.leftItems(newLData);
+                        self.leftItems(leftItem);
+                        if (rightItems.length >= self.rightItems().length) {
+                            if (teamDivision == 1 && rank == 1) {
+                                _.remove(sortedRItems, function(newRItem) {
+                                    return newRItem.code == 6 || newRItem.code == 5;
+                                })
+                                _.remove(leftItem, function(newItem) {
+                                    return newItem.code == 6 || newItem.code == 5;
+                                })
+                            }
+                            if (teamDivision == 0 && rank == 0) {
+                                sortedRItems = _.sortBy(rightItems, function(o) { return o.code; });
+                                self.leftItems(_.clone(self.personalInforData))
+                            }
+                            if (teamDivision == 1 && rank == 0) {
+                                _.remove(sortedRItems, function(newRItem) {
+                                    return newRItem.code == 5;
+                                })
+
+                                _.remove(leftItem, function(newItem) {
+                                    return newItem.code == 5;
+                                })
+                            }
+                            if (teamDivision == 0 && rank == 1) {
+                                _.remove(sortedRItems, function(newRItem) {
+                                    return newRItem.code == 6;
+                                })
+
+                                _.remove(leftItem, function(newItem) {
+                                    return newItem.code == 6;
+                                })
+                            }
+
                         } else {
-                            self.leftItems(sortedLItems);
+                            self.rightItems(rightItems);
+                            if (teamDivision == 1 && rank == 1) {
+                                _.remove(leftItem, function(newLItem) {
+                                    return newLItem.code == 6 || newLItem.code == 5;
+                                })
+                                self.leftItems(leftItem);
+                            } else {
+                                self.leftItems(leftItem);
+                            }
+
                         }
+                        self.rightItems(sortedRItems);
+                        _.forEach(sortedRItems, function(item) {
+                            var lEvens = _.remove(leftItem, function(newItem) {
+                                return newItem.code == item.code;
+                            });
+                        });
+                        self.leftItems(leftItem);
 
                         self.singleRemoveEnable(false);
                         self.currentRCodeList([]);

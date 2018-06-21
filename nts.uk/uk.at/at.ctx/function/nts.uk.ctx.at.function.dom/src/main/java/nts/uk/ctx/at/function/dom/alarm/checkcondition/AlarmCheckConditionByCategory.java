@@ -7,6 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AlarmChkCondAgree36;
 
 /**
  * 
@@ -37,10 +38,13 @@ public class AlarmCheckConditionByCategory extends AggregateRoot {
 
 	// 抽出条件
 	private ExtractionCondition extractionCondition;
+	
+	// 36協定のアラームチェック条件
+	private AlarmChkCondAgree36 alarmChkCondAgree36;
 
 	public AlarmCheckConditionByCategory(String companyId, int category, String code, String name,
 			AlarmCheckTargetCondition extractTargetCondition, List<String> listRoleId,
-			ExtractionCondition extractionCondition) {
+			ExtractionCondition extractionCondition, AlarmChkCondAgree36 alarmChkCondAgree36) {
 		super();
 		this.companyId = companyId;
 		this.category = EnumAdaptor.valueOf(category, AlarmCategory.class);
@@ -49,6 +53,7 @@ public class AlarmCheckConditionByCategory extends AggregateRoot {
 		this.extractTargetCondition = extractTargetCondition;
 		this.listRoleId = listRoleId;
 		this.extractionCondition = extractionCondition;
+		this.alarmChkCondAgree36 = alarmChkCondAgree36;
 	}
 
 	public void changeState(String name, List<String> lstRoleId, AlarmCheckTargetCondition targetCondition,

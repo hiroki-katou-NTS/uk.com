@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -22,11 +21,12 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 @Stateless
 public class DoubleStampAlgorithm {
 
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	public void doubleStamp(String companyID, String employeeID, GeneralDate processingDate,
+	public EmployeeDailyPerError doubleStamp(String companyID, String employeeID, GeneralDate processingDate,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+		
+		EmployeeDailyPerError dailyPerError = null;
+		
+		List<Integer> attendanceItemIDs = new ArrayList<>();
 
 		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
 
@@ -35,16 +35,22 @@ public class DoubleStampAlgorithm {
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 				// 出勤の二重打刻チェック処理
 				Optional<TimeActualStamp> attendanceTimeActual = timeLeavingWork.getAttendanceStamp();
-				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, attendanceTimeActual, 1);
+				attendanceItemIDs.addAll(this.doubleStampCheckProcessing(companyID, employeeID, processingDate, attendanceTimeActual, 1));
 
 				// 退勤の二重打刻チェック処理
 				Optional<TimeActualStamp> leavingTimeActual = timeLeavingWork.getLeaveStamp();
-				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, leavingTimeActual, 2);
+				attendanceItemIDs.addAll(this.doubleStampCheckProcessing(companyID, employeeID, processingDate, leavingTimeActual, 2));
 			}
 		}
+		if (!attendanceItemIDs.isEmpty()) {
+			dailyPerError = new EmployeeDailyPerError(companyID,
+					employeeID, processingDate, new ErrorAlarmWorkRecordCode("S006"),
+					attendanceItemIDs);
+		}
+		return dailyPerError;
 	}
 
-	private void doubleStampCheckProcessing(String companyID, String employeeID, GeneralDate processingDate,
+	private List<Integer> doubleStampCheckProcessing(String companyID, String employeeID, GeneralDate processingDate,
 			Optional<TimeActualStamp> timeActualStamp, int type) {
 
 		List<Integer> attendanceItemIDs = new ArrayList<>();
@@ -62,12 +68,14 @@ public class DoubleStampAlgorithm {
 			}
 		}
 
-		if (timeActualStamp != null && timeActualStamp.isPresent() && timeActualStamp.get().getNumberOfReflectionStamp() >= 2) {
-			if (!attendanceItemIDs.isEmpty()) {
-				createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-						new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDs);
-			}			
-		}
+//		if (timeActualStamp != null && timeActualStamp.isPresent() && timeActualStamp.get().getNumberOfReflectionStamp() >= 2) {
+//			if (!attendanceItemIDs.isEmpty()) {
+//				createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
+//						new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDs);
+//			}			
+//		}
+		
+		return attendanceItemIDs;
 	}
 
 }

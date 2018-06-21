@@ -13,8 +13,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 
 /**
  * The Class SubmitLoginFormOneCommandHandler.
@@ -22,7 +23,7 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 @Stateless
 public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<SubmitLoginFormOneCommand> {
 
-	/** The user repository. */
+	/** The user adapter. */
 	@Inject
 	private UserAdapter userAdapter;
 	
@@ -30,7 +31,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected String internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
+	protected CheckChangePassDto internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
 		
 		SubmitLoginFormOneCommand command = context.getCommand();
 		if (command.isSignOn()) {
@@ -38,23 +39,23 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			this.compareAccount(context.getCommand().getRequest());
 		} else {
 			String loginId = command.getLoginId();
-			String password = command.getPassword();
+			String oldPassword = command.getPassword();
 			// check validate input
 			this.checkInput(command);
 	
 			this.reCheckContract(command.getContractCode(), command.getContractPassword());
 			
 			// find user by login id
-			Optional<UserImport> user = userAdapter.findUserByContractAndLoginId(command.getContractCode(), loginId);
+			Optional<UserImportNew> user = userAdapter.findUserByContractAndLoginIdNew(command.getContractCode(), loginId);
 			if (!user.isPresent()) {
 				throw new BusinessException("Msg_301");
 			}
 	
 			// check password
-			String msgErrorId = this.compareHashPassword(user.get(), password);
+			String msgErrorId = this.compareHashPassword(user.get(), oldPassword);
 			if (!StringUtil.isNullOrEmpty(msgErrorId, true)){
-				return msgErrorId;
-			} 
+				return new CheckChangePassDto(false, msgErrorId);
+			}
 	
 			// check time limit
 			this.checkLimitTime(user);
@@ -63,10 +64,12 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			context.getCommand().getRequest().changeSessionId();
 			this.initSession(user.get());
 			
-			//アルゴリズム「ログイン記録」を実行する１
-			this.checkAfterLogin(user.get());
+			//アルゴリズム「ログイン記録」を実行する
+			if (!this.checkAfterLogin(user.get(), oldPassword)){
+				return new CheckChangePassDto(true, null);
+			}
 		}
-		return null;
+		return new CheckChangePassDto(false, null);
 	}
 
 	/**
@@ -90,7 +93,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(Optional<UserImport> user) {
+	private void checkLimitTime(Optional<UserImportNew> user) {
 		if (user.get().getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}

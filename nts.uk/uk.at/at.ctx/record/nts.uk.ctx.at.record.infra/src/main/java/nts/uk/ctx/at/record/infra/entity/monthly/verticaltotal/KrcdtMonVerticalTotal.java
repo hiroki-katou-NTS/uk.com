@@ -232,11 +232,11 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 	/** マッチング：月別実績の勤怠時間 */
 	@OneToOne
 	@JoinColumns({
-		@JoinColumn(name = "SID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.SID", insertable = false, updatable = false),
-		@JoinColumn(name = "YM", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.YM", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_ID", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_DAY", insertable = false, updatable = false),
-		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.IS_LAST_DAY", insertable = false, updatable = false)
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YM", referencedColumnName = "YM", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "CLOSURE_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "CLOSURE_DAY", insertable = false, updatable = false),
+		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonAttendanceTime krcdtMonAttendanceTime;
 	
@@ -275,7 +275,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		if (krcdtMonAggrAbsnDays == null) krcdtMonAggrAbsnDays = new ArrayList<>();
 		if (krcdtMonAggrSpecDays == null) krcdtMonAggrSpecDays = new ArrayList<>();
 		if (krcdtMonAggrBnspyTime == null) krcdtMonAggrBnspyTime = new ArrayList<>();
-		if (krcdtMonAggrGoout == null) krcdtMonAggrAbsnDays = new ArrayList<>();
+		if (krcdtMonAggrGoout == null) krcdtMonAggrGoout = new ArrayList<>();
 		if (krcdtMonAggrPremTime == null) krcdtMonAggrPremTime = new ArrayList<>();
 		if (krcdtMonAggrDivgTime == null) krcdtMonAggrDivgTime = new ArrayList<>();
 		if (krcdtMonMedicalTime == null) krcdtMonMedicalTime = new ArrayList<>();
