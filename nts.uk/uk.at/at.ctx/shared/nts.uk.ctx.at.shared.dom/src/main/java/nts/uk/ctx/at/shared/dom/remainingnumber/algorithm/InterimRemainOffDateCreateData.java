@@ -18,7 +18,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param detailData
 	 * @return
 	 */
-	public DailyInterimRemainMngData createData(String sid, GeneralDate baseDate, boolean dayOffTimeIsUse, InterimRemainCreateInfor detailData);
+	public DailyInterimRemainMngData createData(String cid, String sid, GeneralDate baseDate, boolean dayOffTimeIsUse, InterimRemainCreateInfor detailData);
 	/**
 	 * 残数作成元情報を作成する
 	 * @param sid
@@ -26,13 +26,13 @@ public interface InterimRemainOffDateCreateData {
 	 * @param detailData
 	 * @return
 	 */
-	public InforFormerRemainData createInforFormerRemainData(String sid, GeneralDate baseDate, InterimRemainCreateInfor detailData, boolean dayOffTimeIsUse);
+	public InforFormerRemainData createInforFormerRemainData(String cid, String sid, GeneralDate baseDate, InterimRemainCreateInfor detailData, boolean dayOffTimeIsUse);
 	/**
 	 * 実績から残数作成元情報を設定する
 	 * @param recordData
 	 * @return
 	 */
-	public InforFormerRemainData createInterimDataFromecord(RecordRemainCreateInfor recordData, InforFormerRemainData outputData);
+	public InforFormerRemainData createInterimDataFromecord(String cid,RecordRemainCreateInfor recordData, InforFormerRemainData outputData);
 	/**
 	 * 勤務種類別残数情報を作成する
 	 * @param cid
@@ -40,7 +40,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param workTypeCode
 	 * @return
 	 */
-	public WorkTypeRemainInfor createWorkTypeRemainInfor(CreateAtr createAtr, String workTypeCode);
+	public WorkTypeRemainInfor createWorkTypeRemainInfor(String cid, CreateAtr createAtr, String workTypeCode);
 	/**
 	 * 1日勤務時の残数発生使用明細を作成する
 	 * @param workType
@@ -61,7 +61,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param dayOffTimeIsUse
 	 * @return
 	 */
-	public DayoffTranferInfor createDayOffTranferFromRecord(CreateAtr createAtr, RecordRemainCreateInfor recordData, boolean dayOffTimeIsUse);
+	public DayoffTranferInfor createDayOffTranferFromRecord(String cid, CreateAtr createAtr, RecordRemainCreateInfor recordData, boolean dayOffTimeIsUse);
 	/**
 	 * 残数作成元情報から暫定残数管理データを作成する
 	 * @param inforData
@@ -90,16 +90,18 @@ public interface InterimRemainOffDateCreateData {
 	 * @param outputData
 	 * @return
 	 */
-	InforFormerRemainData createInterimDataFromSche(ScheRemainCreateInfor scheData, InforFormerRemainData outputData,
+	InforFormerRemainData createInterimDataFromSche(String cid, ScheRemainCreateInfor scheData, InforFormerRemainData outputData,
 			boolean dayOffTimeIsUse);
 	/**
 	 * 就業時間帯から代休振替情報を作成する
 	 * @param remainInfor
 	 * @param workTimeCode
 	 * @param isTranferTime: True: 設定あり, False: 設定なし
+	 * @param timeSetting: 休出振替可能時間
+	 * @param timeOverSetting: 実績残業振替時間
 	 * @return
 	 */
-	DayoffTranferInfor createDayoffFromWorkTime(WorkTypeRemainInfor remainInfor, String workTimeCode,
+	DayoffTranferInfor createDayoffFromWorkTime(String cid, WorkTypeRemainInfor remainInfor, String workTimeCode,
 			Integer timeSetting, CreateAtr createAtr, Integer timeOverSetting, boolean dayOffTimeIsUse);
 	/**
 	 * 代休振替時間を算出する
@@ -108,5 +110,31 @@ public interface InterimRemainOffDateCreateData {
 	 * @param dayoffChange
 	 * @return
 	 */
-	TranferTimeInfor calDayoffTranferTime(CreateAtr createAtr,String workTimeCode, Integer timeSetting, DayoffChangeAtr dayoffChange);
+	TranferTimeInfor calDayoffTranferTime(String cid, CreateAtr createAtr,String workTimeCode, Integer timeSetting, DayoffChangeAtr dayoffChange);
+	/**
+	 * 最新の勤務種類変更を伴う申請から残数作成元情報を設定する
+	 * @param appInfor
+	 * @param outputData
+	 * @param dayOffTimeIsUse
+	 * @return
+	 */
+	InforFormerRemainData createInterimDataFromApp(String cid, InterimRemainCreateInfor createInfo, AppRemainCreateInfor appInfor, 
+			InforFormerRemainData outputData, boolean dayOffTimeIsUse, CreateAtr createAtr);
+	/**
+	 * 休日出勤申請から代休振替情報を作成する
+	 * @param dayOffTimeIsUse
+	 * @param appInfor
+	 * @return
+	 */
+	DayoffTranferInfor tranferInforFromHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
+			WorkTypeRemainInfor remainInfor, CreateAtr createAtr);
+	/**
+	 * 休日出勤以外の申請から代休振替情報を作成する
+	 * @param dayOffTimeIsUse
+	 * @param appInfor
+	 * @param remainInfor
+	 * @return
+	 */
+	DayoffTranferInfor transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
+			InterimRemainCreateInfor createInfo, WorkTypeRemainInfor remainInfor, CreateAtr createAtr);
 }

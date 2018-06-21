@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 /**
  * 代休振替情報
  * @author do_dt
