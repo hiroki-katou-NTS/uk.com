@@ -14,8 +14,7 @@ module nts.uk.at.view.kdl005.a {
             isShowSelectAllButton: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
             
-            firstLegendOptions: any;
-            secondLegendOptions: any;
+            legendOptions: any;
             kdl005Data: KnockoutObservable<any>;
             employeeInfo: KnockoutObservable<string>;
             baseDate: KnockoutObservable<string>;
@@ -30,17 +29,9 @@ module nts.uk.at.view.kdl005.a {
                 self.baseDate = ko.observable("");
                 self.expirationDate = ko.observable("");
                 
-                this.firstLegendOptions = {
+                this.legendOptions = {
                     items: [
-                        { labelText: nts.uk.resource.getText("KDL009_20") + " : " + nts.uk.resource.getText("KDL009_22") }
-                    ]
-                };
-                
-                this.secondLegendOptions = {
-                    items: [
-                        { labelText: nts.uk.resource.getText("KDL009_24") },
-                        { labelText: nts.uk.resource.getText("KDL009_25") },
-                        { labelText: nts.uk.resource.getText("KDL009_26") }
+                        { labelText: nts.uk.resource.getText("KDL005_20") }
                     ]
                 };
                 

@@ -17,16 +17,18 @@
 			
 			<ui:define name="content">
 				<div id="contents-area">
-					<table class="header-content">
+					<table>
 						<tr>
-							<td width="200px"><label><span data-bind="text: employeeInfo"></span></label></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><label>#{i18n.getText('KDL005_6')}<span data-bind="text: baseDate"></span></label></td>
-							<td><label>#{i18n.getText('KDL005_7')}<span data-bind="text: expirationDate"></span></label></td>
+							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL005_30')}</div></td>
+							<td>
+								<label><span data-bind="text: employeeInfo"></span></label>
+							</td>
 						</tr>
 					</table>
+					
+					<hr />
+					
+					<button tabindex="2" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL005_18')}</button>
 					
 					<div class="date-fixed-table">
 						<table id="date-fixed-table">
@@ -81,9 +83,6 @@
 							</tbody>
 						</table>
 						
-						<button tabindex="2" class="inline" data-bind="ntsLegendButton: firstLegendOptions">#{i18n.getText('KDL005_18')}</button>
-						<button tabindex="3" class="inline" data-bind="ntsLegendButton: secondLegendOptions">#{i18n.getText('KDL005_23')}</button>
-						
 						<table class="summary-table">
 							<tr>
 								<td width="100px">#{i18n.getText('KDL005_13')}</td>
@@ -106,7 +105,7 @@
 				</div>
 				
 				<div id="functions-area-bottom">
-					<button tabindex="3" id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KDL005_17')}</button>
+					<button tabindex="4" id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KDL005_17')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>
