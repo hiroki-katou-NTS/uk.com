@@ -190,28 +190,23 @@ module cas009.a.viewmodel {
             // fix name
             _.extend(command, {
                 name: command.roleName,
-                createMode: _.isEmpty(command.roleId)
+                createMode: _.isEmpty(command.roleId),
+                functionAuthList: _.map(command.permisions, m => _.pick(m, ['functionNo', 'available']))
             });
 
-            fetch.role.save(command).done((resp) => {
-                fetch.permision.save({
-                    roleId: resp,
-                    functionAuthList: _.map(command.permisions, m => _.pick(m, ['functionNo', 'available']))
-                }).done(() => {
+            fetch.permision.save(command).done(() => {
+                info({ messageId: "Msg_15" });
+                self.getListRole().done(() => {
+                    let exist: IRole = _.find(self.listRole(), o => o.roleCode == command.roleCode);
 
-                    info({ messageId: "Msg_15" });
-                    self.getListRole().done(() => {
-                        let exist: IRole = _.find(self.listRole(), o => o.roleCode == command.roleCode);
-
-                        if (!exist) {
-                            role.roleId(undefined);
-                        } else {
-                            role.roleId(exist.roleId);
-                        }
-                    }).always(() => {
-                        block.clear();
-                        errors.clearAll();
-                    });
+                    if (!exist) {
+                        role.roleId(undefined);
+                    } else {
+                        role.roleId(exist.roleId);
+                    }
+                }).always(() => {
+                    block.clear();
+                    errors.clearAll();
                 });
             }).fail((error) => {
                 alertError(error);
@@ -229,29 +224,25 @@ module cas009.a.viewmodel {
 
             index = _.min([_.size(roles) - 2, index]);
 
-            if (!_.isNil(role.roleCode)) {
+            if (!_.isNil(role.roleId)) {
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     block.invisible();
+                    fetch.permision.remove(_.pick(role, ["roleId", "assignAtr"])).done(() => {
+                        info({ messageId: "Msg_16" });
 
-                    fetch.role.remove(_.pick(role, ["roleId", "assignAtr"])).done(() => {
-                        fetch.permision.remove(_.pick(role, ["roleId"])).done(() => {
-                            info({ messageId: "Msg_16" });
+                        self.getListRole().done(() => {
+                            let roles: Array<IRole> = ko.toJS(self.listRole),
+                                selected: IRole = roles[index];
 
-                            self.getListRole().done(() => {
-                                let roles: Array<IRole> = ko.toJS(self.listRole),
-                                    selected: IRole = roles[index];
-
-                                if (selected) {
-                                    self.selectedRole.roleId(selected.roleId);
-                                } else {
-                                    self.selectedRole.roleId(roles[0].roleId);
-                                }
-                            }).always(() => {
-                                block.clear();
-                                errors.clearAll();
-                            });
+                            if (selected) {
+                                self.selectedRole.roleId(selected.roleId);
+                            } else {
+                                self.selectedRole.roleId(roles[0].roleId);
+                            }
+                        }).always(() => {
+                            block.clear();
+                            errors.clearAll();
                         });
-
                     }).fail((error) => {
                         alertError(error);
                         block.clear();

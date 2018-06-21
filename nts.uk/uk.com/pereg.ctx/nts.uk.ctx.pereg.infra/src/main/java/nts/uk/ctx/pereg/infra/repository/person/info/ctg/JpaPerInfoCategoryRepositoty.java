@@ -43,9 +43,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd " 
 			+ " AND ca.cid = :cid AND ca.abolitionAtr = 0 "
-			+ " AND (((co.salaryUseAtr = :forPayroll AND :forPayroll = 1) OR (1 = 1)) "
-			+ " OR  ((co.personnelUseAtr = :forPersonnel AND :forPersonnel = 1) OR (1 = 1)) "
-			+ " OR  ((co.employmentUseAtr = :forAttendance AND :forAttendance = 1) OR (1 = 1))) "
+			+ " AND ((co.salaryUseAtr = 1 AND :forPayroll = 1) OR (co.personnelUseAtr = 1 AND :forPersonnel = 1) OR (co.employmentUseAtr = 1 AND :forAttendance = 1))"
+			+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)"
 			+ " ORDER BY po.disporder";
 
 	private final static String SELECT_CATEGORY_NO_MUL_DUP_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
@@ -61,9 +60,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " AND co.categoryType != 2 " 
 			+ " AND co.categoryType !=5"
 			+ " AND co.initValMasterObjCls = 1 " 
-			+ " AND (((co.salaryUseAtr = :forPayroll AND :forPayroll = 1) OR (1 = 1)) "
-			+ " OR  ((co.personnelUseAtr = :forPersonnel AND :forPersonnel = 1) OR (1 = 1)) "
-			+ " OR  ((co.employmentUseAtr = :forAttendance AND :forAttendance = 1) OR (1 = 1))) "
+			+ " AND ((co.salaryUseAtr = 1 AND :forPayroll = 1) OR (co.personnelUseAtr = 1 AND :forPersonnel = 1) OR (co.employmentUseAtr = 1 AND :forAttendance = 1))"
+			+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)"
 			+ " ORDER BY po.disporder";
 
 	private final static String SELECT_CATEGORY_BY_CATEGORY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -142,9 +140,6 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId"
 			+ " WHERE ca.cid = :cid " 
 			+ " AND co.categoryParentCd IS NULL " 
-			+ " AND (((co.salaryUseAtr = :forPayroll AND :forPayroll = 1) OR (1 = 1)) "
-			+ " OR  ((co.personnelUseAtr = :forPersonnel AND :forPersonnel = 1) OR (1 = 1)) "
-			+ " OR  ((co.employmentUseAtr = :forAttendance AND :forAttendance = 1) OR (1 = 1))) "
 			+ " AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)"
 			+ " AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId"
 			+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i"
@@ -193,7 +188,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			int forPayroll, int forPersonnel) {
 		return this.queryProxy().query(GET_ALL_CATEGORY_FOR_CPS007_CPS008, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("cid", companyId)
-				.setParameter("forAttendance", forAttendance).setParameter("forPayroll", forPayroll)
+				.setParameter("forAttendance", forAttendance)
+				.setParameter("forPayroll", forPayroll)
 				.setParameter("forPersonnel", forPersonnel).getList(c -> {
 					return createDomainVer3FromEntity(c);
 				});
@@ -538,14 +534,21 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		String fullQuery = "";
 		if (isOtherComapany) {
 			fullQuery = SELECT_CTG_WITH_AUTH
-					+ " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) ORDER BY po.disporder";
+					+ " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) "
+					+ " AND ((co.salaryUseAtr = 1 AND :forPayroll = 1) OR (co.personnelUseAtr = 1 AND :forPersonnel = 1) OR (co.employmentUseAtr = 1 AND :forAttendance = 1))"
+					+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)" 
+					+ " ORDER BY po.disporder";
 		} else {
 			fullQuery = SELECT_CTG_WITH_AUTH
-					+ " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) ORDER BY po.disporder";
+					+ " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) "
+					+ " AND ((co.salaryUseAtr = 1 AND :forPayroll = 1) OR (co.personnelUseAtr = 1 AND :forPersonnel = 1) OR (co.employmentUseAtr = 1 AND :forAttendance = 1))"
+					+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)"
+					+ " ORDER BY po.disporder";
 		}
 		return this.queryProxy().query(fullQuery, Object[].class).setParameter("cid", companyId)
 				.setParameter("roleId", roleId).setParameter("selfAuth", selfAuth).setParameter("otherAuth", otherAuth)
-				.setParameter("forAttendance", forAttendance).setParameter("forPayroll", forPayroll)
+				.setParameter("forAttendance", forAttendance)
+				.setParameter("forPayroll", forPayroll)
 				.setParameter("forPersonnel", forPersonnel).getList(c -> {
 					return createDomainPerInfoCtgFromEntity(c);
 				});
