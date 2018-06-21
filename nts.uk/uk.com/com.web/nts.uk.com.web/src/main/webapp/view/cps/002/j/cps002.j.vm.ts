@@ -1,4 +1,4 @@
-module cps002.e.vm {
+module cps002.j.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import close = nts.uk.ui.windows.close;
@@ -7,7 +7,7 @@ module cps002.e.vm {
     import alertError = nts.uk.ui.dialog.alertError;
 
     export class ViewModel {
-        cardNoMode: boolean = false;
+        cardNoMode: boolean = true;
         txtEmployeeCode: KnockoutObservable<string> = ko.observable("");
         txtCardNo: KnockoutObservable<string> = ko.observable("");
         generateEmCode: KnockoutObservable<string> = ko.observable("");
@@ -15,7 +15,7 @@ module cps002.e.vm {
         
         constructor() {
             let self = this, textValue = "";
-            self.cardNoMode = getShared("empCodeMode");
+            self.cardNoMode = getShared("cardNoMode");
 
 
             if (self.cardNoMode) {
@@ -39,7 +39,7 @@ module cps002.e.vm {
 
         getEmlCode() {
             let self = this;
-            service.getEmlCode(self.txtEmployeeCode()).done(function(emCode) {
+            service.getCardNo(self.txtEmployeeCode()).done(function(emCode) {
                 self.generateEmCode(emCode);
                 let displayEmCode = _.map(emCode).map(function(i){ 
                     return i == ' '? "&nbsp" : i;
@@ -63,7 +63,7 @@ module cps002.e.vm {
 
         returnEmCode() {
             let self = this;
-            setShared("CPS002_PARAM_MODE_EMP_CODE", self.generateEmCode());
+            setShared("CPS002_PARAM_MODE_CARDNO", self.generateEmCode());
             close();
         }
 

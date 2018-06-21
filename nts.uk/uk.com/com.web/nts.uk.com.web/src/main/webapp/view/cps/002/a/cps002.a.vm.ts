@@ -694,7 +694,7 @@ module cps002.a.vm {
                 isCardNoMode = param === 'true' ? true : false,
                 useSetting = self.currentUseSetting(),
                 employee = self.currentEmployee();
-            setShared("cardNoMode", isCardNoMode);
+            setShared("empCodeMode", isCardNoMode);
             if (useSetting) {
 
                 if (!isCardNoMode) {
@@ -710,7 +710,45 @@ module cps002.a.vm {
 
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
-                let result = getShared("CPS002_PARAM"),
+                let result = getShared("CPS002_PARAM_MODE_EMP_CODE"),
+                    currentEmp = self.currentEmployee();
+                if (result) {
+                    $("#employeeCode").ntsError("clear");
+                    if (param === isCardNoMode) {
+                        currentEmp.cardNo(result);
+                        currentEmp.cardNo.valueHasMutated();
+                    } else {
+                        currentEmp.employeeCode(result);
+                        currentEmp.employeeCode.valueHasMutated();
+                    }
+                }
+            });
+        }
+        
+
+        openJModal(param, data) {
+
+            let self: ViewModel = __viewContext['viewModel'],
+                isCardNoMode = param === 'true' ? true : false,
+                useSetting = self.currentUseSetting(),
+                employee = self.currentEmployee();
+            setShared("cardNoMode", isCardNoMode);
+            if (useSetting) {
+
+                if (!isCardNoMode) {
+                    self.getEmployeeCode(useSetting).done((employeeCode) => {
+
+                        setShared("textValue", employeeCode);
+                    });
+                } else {
+
+
+                }
+            }
+
+            subModal('/view/cps/002/j/index.xhtml', { title: '' }).onClosed(() => {
+
+                let result = getShared("CPS002_PARAM_MODE_CARDNO"),
                     currentEmp = self.currentEmployee();
                 if (result) {
                     $("#employeeCode").ntsError("clear");

@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 530,
+					height : 375
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cps002.j.style.css" />
+			<com:scriptfile path="cps002.j.service.js" />
+			<com:scriptfile path="cps002.j.vm.js" />
+			<com:scriptfile path="cps002.j.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" class="cf coverBlock">
+				<div>
+					<table class="tblInput">
+						<tr>
+							<td class="firstLine"><label>#{i18n.getText('CPS002_54')}</label>
+								<input id="txtEmployeeCode" type="text" maxlength="12"
+									   data-bind="value: txtEmployeeCode, visible: !cardNoMode" /> 
+								<input id="txtCardNo" type="text" maxlength="20"
+									   data-bind="value: txtCardNo, visible: cardNoMode" /> 
+								<label data-bind="visible: !cardNoMode">#{i18n.getText('CPS002_56')}</label>
+								<label data-bind="visible: cardNoMode">#{i18n.getText('CPS002_62')}</label>
+							</td>
+						</tr>
+						<tr>
+							<td class="secondLine">#{i18n.getText('CPS002_57')}</td>
+						</tr>
+					</table>
+				</div>
+				<div>
+					<button class="btnGetEmlCode" data-bind="click: getCode">
+						<span data-bind="visible: !cardNoMode">#{i18n.getText('CPS002_58')}</span>
+						<span data-bind="visible: cardNoMode">#{i18n.getText('CPS002_63')}</span>
+					</button>
+					<br /> <span class="caret-bottom caretGetEmlCode"></span>
+				</div>
+				<div>
+					<table class="tblObtainedCode">
+						<tr>
+							<td>#{i18n.getText('CPS002_59')}</td>
+							<td data-bind="html: displayGenerateEmCode"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="click: returnEmCode">#{i18n.getText('CPS002_60')}</button>
+				<button data-bind="click: close">#{i18n.getText('CPS002_61')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
