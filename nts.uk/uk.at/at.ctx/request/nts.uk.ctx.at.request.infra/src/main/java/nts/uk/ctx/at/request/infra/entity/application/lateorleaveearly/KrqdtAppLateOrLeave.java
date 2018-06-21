@@ -42,25 +42,25 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 	public int early1;
 	
 	@Column(name = "EARLY_TIME1")
-	public int earlyTime1;
+	public Integer earlyTime1;
 	
 	@Column(name = "LATE1")
 	public int late1;
 	
 	@Column(name = "LATE_TIME1")
-	public int lateTime1;
+	public Integer lateTime1;
 	
 	@Column(name = "EARLY2")
 	public int early2;
 	
 	@Column(name = "EARLY_TIME2")
-	public int earlyTime2;
+	public Integer earlyTime2;
 	
 	@Column(name = "LATE2")
 	public int late2;
 	
 	@Column(name = "LATE_TIME2")
-	public int lateTime2;
+	public Integer lateTime2;
 	
 	@Override
 	protected Object getKey() {
@@ -72,13 +72,13 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 				.application(Application_New.builder().appID(this.krqdtAppLateOrLeavePK.appID).companyID(this.krqdtAppLateOrLeavePK.companyID).build())
 				.actualCancelAtr(this.actualCancelAtr)
 				.early1(EnumAdaptor.valueOf(this.early1, Select.class))
-				.earlyTime1(new TimeDay(this.earlyTime1))
+				.earlyTime1(getEarlyTime1())
 				.late1(EnumAdaptor.valueOf(this.late1, Select.class))
-				.lateTime1(new TimeDay(this.lateTime1))
+				.lateTime1(getLateTime1())
 				.early2(EnumAdaptor.valueOf(this.early2, Select.class))
-				.earlyTime2(new TimeDay(this.earlyTime2))
+				.earlyTime2(getEarlyTime2())
 				.late2(EnumAdaptor.valueOf(this.late2, Select.class))
-				.lateTime2(new TimeDay(this.lateTime2))
+				.lateTime2(getLateTime2())
 				.build();
 		lateOrLeaveEarly.setVersion(this.version);
 		return lateOrLeaveEarly;
@@ -92,13 +92,25 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 					domain.getVersion(),
 					domain.getActualCancelAtr(),
 					domain.getEarly1().value,
-					domain.getEarlyTime1().v(),
+					domain.getEarlyTime1AsMinutes(),
 					domain.getLate1().value,
-					domain.getLateTime1().v(),
+					domain.getLateTime1AsMinutes(),
 					domain.getEarly2().value,
-					domain.getEarlyTime2().v(),
+					domain.getEarlyTime2AsMinutes(),
 					domain.getLate2().value,
-					domain.getLateTime2().v());
+					domain.getLateTime2AsMinutes());
+	}
+	public TimeDay getLateTime1() {
+		return lateTime1 == null ? null : new TimeDay(this.lateTime1);
+	}
+	public TimeDay getLateTime2() {
+		return lateTime2 == null ? null : new TimeDay(this.lateTime2);
+	}
+	public TimeDay getEarlyTime1() {
+		return earlyTime1 == null ? null : new TimeDay(this.earlyTime1);
+	}
+	public TimeDay getEarlyTime2() {
+		return earlyTime2 == null ? null : new TimeDay(this.earlyTime2);
 	}
 
 }

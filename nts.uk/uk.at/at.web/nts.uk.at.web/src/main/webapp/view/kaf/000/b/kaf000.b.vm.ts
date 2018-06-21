@@ -327,11 +327,33 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         btnRemand() {
             let self = this;
-            let command = { appID: self.appID(), version: self.dataApplication().version };
+            let command = { appID: self.getAppId(), version: self.dataApplication().version };
             setShared("KDL034_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml").onClosed(() => {
                 location.reload();
             });
+        }
+
+        getAppId() {
+            let self = this,
+                isHolidayShipmentApp = self.appType() == 10,
+                resultIds = [];
+
+            if (isHolidayShipmentApp) {
+                let vm: nts.uk.at.view.kaf011.b.viewmodel.ScreenModel = __viewContext['viewModel'],
+                    recID = vm.recWk().appID(),
+                    absID = vm.absWk().appID();
+                if (recID) {
+                    resultIds.push(recID);
+                }
+                if (absID) {
+                    resultIds.push(absID);
+                }
+            } else {
+                resultIds.push(self.appID());
+            }
+            return resultIds;
+
         }
 
         /**

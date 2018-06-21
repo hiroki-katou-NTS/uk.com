@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -104,6 +105,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	
 	@Inject
 	private OvertimeWorkFrameRepository repoOverTimeFr;
+	
+	@Inject
+	private AppDetailInfoRepository appDetailInfoRepo;
 	
 	@Override
 	public String getApplicationContent(Application_New app) {
@@ -194,8 +198,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			switch (app.getPrePostAtr()) {
 			case PREDICT: {
 				// OK
-				content += I18NText.getText("CMM045_268") + " " + clockShorHm(overTime.getWorkClockFrom1())
-						+ I18NText.getText("CMM045_100") + clockShorHm(overTime.getWorkClockTo1());
+				String time1 = clockShorHm(overTime.getWorkClockFrom1()) == "" ? "" : 
+					clockShorHm(overTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") + clockShorHm(overTime.getWorkClockTo1());
+				content += I18NText.getText("CMM045_268") + " " + time1;
 				content += (!Objects.isNull(overTime.getWorkClockFrom2())
 						? " " + clockShorHm(overTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
 				content += (!Objects.isNull(overTime.getWorkClockTo2()) ? clockShorHm(overTime.getWorkClockTo2()) : "");
@@ -275,9 +280,10 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				AppOverTime preOverTime = !Objects.isNull(preApp)
 						? overtimeRepo.getAppOvertimeFrame(companyID, preApp.getAppID()).orElse(null) : null;
 				if (!Objects.isNull(preOverTime)) {
+					String time1 = clockShorHm(preOverTime.getWorkClockFrom1()) == "" ? "" : 
+						clockShorHm(preOverTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") + clockShorHm(preOverTime.getWorkClockTo1());
 					content += I18NText.getText("CMM045_272") + " " + I18NText.getText("CMM045_268") + " "
-							+ clockShorHm(preOverTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100")
-							+ clockShorHm(preOverTime.getWorkClockTo1());
+							+ time1;
 					content += (!Objects.isNull(preOverTime.getWorkClockFrom2())
 							? " " + clockShorHm(preOverTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
 					content += (!Objects.isNull(preOverTime.getWorkClockTo2())
@@ -544,6 +550,15 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 		return content + "\n" + appReason;
 	}
 
+	/**
+	 * 直行直帰申請
+	 * KAF009: appType = 4 
+	 * @param app
+	 * @param companyID
+	 * @param appID
+	 * @param appReason
+	 * @return
+	 */
 	private String getGoReturnDirectlyAppContent(Application_New app, String companyID, String appID,
 			String appReason) {
 		// DONE
@@ -551,18 +566,27 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 		String content = I18NText.getText("CMM045_258") + " ";
 		if (op_appGoBack.isPresent()) {
 			GoBackDirectly appGoBack = op_appGoBack.get();
-			content += (appGoBack.getGoWorkAtr1() == UseAtr.USE
-					? I18NText.getText("CMM045_259") + appGoBack.getWorkTimeStart1().get() : "")
-					+ (appGoBack.getBackHomeAtr1() == UseAtr.USE
-							? " " + I18NText.getText("CMM045_260") + appGoBack.getWorkTimeEnd1().get() : "");
-			content += (appGoBack.getGoWorkAtr2().isPresent() ? (appGoBack.getGoWorkAtr2().get() == UseAtr.USE
-					? " " + I18NText.getText("CMM045_259") + appGoBack.getWorkTimeStart2().get() : "") : "");
-			content += (appGoBack.getBackHomeAtr2().isPresent() ? (appGoBack.getBackHomeAtr2().get() == UseAtr.USE
-					? " " + I18NText.getText("CMM045_260") + appGoBack.getWorkTimeEnd2().get() : "") : "");
+			content += (appGoBack.getGoWorkAtr1() == UseAtr.USE ? I18NText.getText("CMM045_259") 
+							+ appDetailInfoRepo.convertTime(appGoBack.getWorkTimeStart1().map(x -> x.v()).orElse(null)) : "")
+					+ (appGoBack.getBackHomeAtr1() == UseAtr.USE ? " " + I18NText.getText("CMM045_260") 
+							+ appDetailInfoRepo.convertTime(appGoBack.getWorkTimeEnd1().map(x -> x.v()).orElse(null)) : "");
+			content += appGoBack.getGoWorkAtr2().isPresent() && appGoBack.getGoWorkAtr2().get() == UseAtr.USE
+					? " " + I18NText.getText("CMM045_259") + appDetailInfoRepo.convertTime(appGoBack.getWorkTimeStart2().map(x -> x.v()).orElse(null)) : "";
+			content += appGoBack.getBackHomeAtr2().isPresent() && appGoBack.getBackHomeAtr2().get() == UseAtr.USE
+					? " " + I18NText.getText("CMM045_260") + appDetailInfoRepo.convertTime(appGoBack.getWorkTimeEnd2().map(x -> x.v()).orElse(null)) : "";
 		}
 		return content + "\n" + appReason;
 	}
 
+	/**
+	 * 休出時間申請
+	 * KAF010: appType = 6
+	 * @param app
+	 * @param companyID
+	 * @param appID
+	 * @param appReason
+	 * @return
+	 */
 	private String getBreakTimeAppContent(Application_New app, String companyID, String appID, String appReason) {
 		// DONE
 		Optional<AppHolidayWork> op_appWork = holidayRepo.getAppHolidayWorkFrame(companyID, appID);
@@ -572,7 +596,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			appWork.setApplication(appRepo.findByID(companyID, appID).orElse(null));
 			if (!Objects.isNull(appWork.getApplication())) {
 				switch (appWork.getApplication().getPrePostAtr()) {
-				case PREDICT: {
+				case PREDICT: {//don xin truoc
 					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode().v());
 					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode().v());
 					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
@@ -648,6 +672,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					}
 					break;
 				}
+				//TH don xin sau
 				case POSTERIOR: {
 					List<Application_New> listPreApp = repoApp.getApp(app.getEmployeeID(), app.getAppDate(),
 							PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
@@ -671,7 +696,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							if (!Objects.isNull(preAppWork.getWorkClock2().getStartTime())
 									&& !Objects.isNull(preAppWork.getWorkClock2().getEndTime())) {
 								content += clockShorHm(preAppWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
-										+ clockShorHm(preAppWork.getWorkClock2().getStartTime().v());
+										+ clockShorHm(preAppWork.getWorkClock2().getEndTime().v());
 							}
 							String moreInf = "";
 							int count = 0;
@@ -740,12 +765,12 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
 							content += clockShorHm(appWork.getWorkClock1().getStartTime().v()) + I18NText.getText("CMM045_100")
-									+ clockShorHm(appWork.getWorkClock1().getStartTime().v());
+									+ clockShorHm(appWork.getWorkClock1().getEndTime().v());
 						}
 						if (!Objects.isNull(appWork.getWorkClock2().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock2().getEndTime())) {
 							content += clockShorHm(appWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
-									+ clockShorHm(appWork.getWorkClock2().getStartTime().v());
+									+ clockShorHm(appWork.getWorkClock2().getEndTime().v());
 						}
 						String moreInf = "";
 						int count = 0;
