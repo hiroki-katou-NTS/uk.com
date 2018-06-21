@@ -143,9 +143,9 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// Addselection:
 	@POST
 	@Path("addSelection")
-	public void AddSelection(AddSelectionCommand command) {
-		this.addSelectionCommandHandler.handle(command);
-
+	public JavaTypeResult<String> AddSelection(AddSelectionCommand command) {
+		String newSelectionId = this.addSelectionCommandHandler.handle(command);
+		return new JavaTypeResult<String>(newSelectionId);
 	}
 
 	// Update Selection:
