@@ -64,10 +64,10 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 				.getApplicationSettingByComID(lateOrLeaveEarly.getApplication().getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		int prePost = lateOrLeaveEarly.getApplication().getPrePostAtr().value;
-		Integer lateTime1 = lateOrLeaveEarly.getLateTime1().valueAsMinutes();
-		Integer earlyTime1 = lateOrLeaveEarly.getEarlyTime1().valueAsMinutes();
-		Integer lateTime2 = lateOrLeaveEarly.getLateTime2().valueAsMinutes();
-		Integer earlyTime2 = lateOrLeaveEarly.getEarlyTime2().valueAsMinutes();
+		Integer lateTime1 = lateOrLeaveEarly.getLateTime1AsMinutes();
+		Integer earlyTime1 = lateOrLeaveEarly.getEarlyTime1AsMinutes();
+		Integer lateTime2 = lateOrLeaveEarly.getLateTime2AsMinutes();
+		Integer earlyTime2 = lateOrLeaveEarly.getEarlyTime2AsMinutes();
 		int late1 = lateOrLeaveEarly.getLate1().value;
 		int late2 = lateOrLeaveEarly.getLate2().value;
 		int early1 = lateOrLeaveEarly.getEarly1().value;
@@ -81,11 +81,12 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		}
 
 		// [画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻≧早退時刻 (#Msg_381#)
-		if (((late1 == 1 && early1 == 1 && lateTime1 >= earlyTime1) || (late2 == 1 && early2 == 1 && lateTime2 >= earlyTime2)) 
-			&& prePost == 0) {
-			throw new BusinessException("Msg_381");
+		if(lateTime1==null && earlyTime1==null && lateTime2!=null && earlyTime2!=null){
+			if (((late1 == 1 && early1 == 1 && lateTime1 >= earlyTime1) || (late2 == 1 && early2 == 1 && lateTime2 >= earlyTime2)) 
+				&& prePost == 0) {
+				throw new BusinessException("Msg_381");
+			}
 		}
-		
 		// 遅刻、早退、遅刻2、早退2のいずれか１つはチェック必須(#Msg_382#))
 		int checkSelect = late1 + late2 + early1 + early2;
 		if (checkSelect == 0) {
@@ -139,7 +140,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		}
 		
 		lateOrLeaveEarlyRepository.update(lateOrLeaveEarly);
-		applicationRepository_New.update(lateOrLeaveEarly.getApplication());
+		applicationRepository_New.updateWithVersion(lateOrLeaveEarly.getApplication());
 	}
 
 	@Override

@@ -82,37 +82,46 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	private AppDispNameRepository repoAppDispName;
 	
 	@Override
-	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
-		Application_New application = applicationRepository.findByID(companyID, appID).get();
-		application.setReversionReason(new AppReason(returnReason));
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
-				.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
-		MailSenderResult mailSenderResult = null;
-		if (order != null) {
-			// 差し戻し先が承認者の場合
-			List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
-			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
-				mailSenderResult = this.getMailSenderResult(application, employeeList);
+	public MailSenderResult doRemand(String companyID, List<String> lstAppID, Long version, Integer order, String returnReason) {
+		List<String> successList = new ArrayList<>();
+		List<String> errorList = new ArrayList<>();
+		boolean isSendMail = true;
+		for (String appID : lstAppID) {
+			Application_New application = applicationRepository.findByID(companyID, appID).get();
+			application.setReversionReason(new AppReason(returnReason));
+			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
+					.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
+			MailSenderResult mailResult = new MailSenderResult(new ArrayList<>(), new ArrayList<>());
+			if (order != null) {
+				// 差し戻し先が承認者の場合
+				List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
+				if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+					mailResult = this.getMailSenderResult(application, employeeList, returnReason, isSendMail);
+				}
 			} else {
-				mailSenderResult = new MailSenderResult(null, null);
+				// 差し戻し先が申請本人の場合
+				approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
+				application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
+				application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
+				if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+					mailResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()), returnReason, isSendMail);
+				}
 			}
-		} else {
-			// 差し戻し先が申請本人の場合
-			approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
-			application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
-			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
-				mailSenderResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()));
-			} else {
-				mailSenderResult = new MailSenderResult(null, null);
-			}
+			successList.addAll(mailResult.getSuccessList());
+			errorList.addAll(mailResult.getErrorList());
+			applicationRepository.updateWithVersion(application);
+			isSendMail = false;
 		}
-		applicationRepository.updateWithVersion(application);
-		return mailSenderResult;
+		
+		return new MailSenderResult(successList, errorList);
 	}
 
 	@Override
-	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList) {
+	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList, String returnReason, boolean isSendMail) {
+		//doi ung kaf011 - tranh spam mail
+		if(!isSendMail){
+			return new MailSenderResult(new ArrayList<>(), new ArrayList<>());
+		}
 		String mailTitle = "";
 		String mailBody = "";
 		String cid = AppContexts.user().companyId();
@@ -177,7 +186,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					//｛7｝氏名 - ログイン者
 					nameLogin,
 					//｛8｝メールアドレス - ログイン者
-					loginMail);
+					loginMail,
+					//{9}差し戻し理由 //ver2
+					returnReason);
 			if (Strings.isBlank(employeeMail)) {
 				errorList.add(I18NText.getText("Msg_768", employeeName));
 				continue;
