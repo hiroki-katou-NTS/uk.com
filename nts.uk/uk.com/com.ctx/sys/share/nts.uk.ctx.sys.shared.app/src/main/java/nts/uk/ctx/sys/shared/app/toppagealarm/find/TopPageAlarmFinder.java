@@ -62,12 +62,14 @@ public class TopPageAlarmFinder {
 						item.getExistenceError().value == 1 ? TextResource.localize("Msg_1252", size.toString()) : TextResource.localize("Msg_1253"));
 				listDto.add(dto);
 				break;
-			default:
+			case ALARM_LIST_PERSONAL:
 				dto = new TopPageAlarmDto(item.getExecutionLogId(), item.getFinishDateTime(),
 						item.getExecutionContent().value, item.getExistenceError().value == 1 ? true : false, item.getRogerFlag().value ==  1 ? true : false,
-						"", 
+						TextResource.localize("Msg_1326"), 
 						item.getExistenceError().value == 1 ? TextResource.localize("Msg_1252", size.toString()) : TextResource.localize("Msg_1253"));
 				listDto.add(dto);
+				break;
+			default:
 				break;
 			}
 		}
@@ -121,12 +123,14 @@ public class TopPageAlarmFinder {
 						item.getExistenceError().value == 1 ? TextResource.localize("Msg_1252", size.toString()) : TextResource.localize("Msg_1253"));
 				listDto.add(dto);
 				break;
-			default:
+			case ALARM_LIST_PERSONAL:
 				dto = new TopPageAlarmDto(item.getExecutionLogId(), item.getFinishDateTime(),
 						item.getExecutionContent().value, item.getExistenceError().value == 1 ? true : false, item.getRogerFlag().value ==  1 ? true : false,
-						"", 
+						TextResource.localize("Msg_1326"), 
 						item.getExistenceError().value == 1 ? TextResource.localize("Msg_1252", size.toString()) : TextResource.localize("Msg_1253"));
 				listDto.add(dto);
+				break;
+			default:
 				break;
 			}
 		}
