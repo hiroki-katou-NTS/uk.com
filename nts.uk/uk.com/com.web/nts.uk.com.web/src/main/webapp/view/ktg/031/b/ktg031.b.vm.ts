@@ -5,7 +5,6 @@ module nts.uk.at.view.ktg031.b.viewmodel {
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<number> = ko.observable();
         constructor() {
-            console.log("aaaaaaa");
             var self = this;
             self.columns = ko.observableArray([
                 { headerText: '', key: 'serialNo', width: 80 },
@@ -15,7 +14,6 @@ module nts.uk.at.view.ktg031.b.viewmodel {
                 { headerText: getText('KTG031_13'), key: 'errorMessage', width: 190 },
             ]);
         }
-        
 
         startPage(): JQueryPromise<any> {
             var self = this;

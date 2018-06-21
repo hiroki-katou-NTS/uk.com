@@ -1957,7 +1957,7 @@ public class ProgramsManager {
 	/** KTG031 */
 	public static final Program KTG031A = new Program(WebAppId.COM, ProgramIdConsts.KTG031A, "KTG031_1",
 			"/view/ktg/031/a/index.xhtml");
-	public static final Program KTG031B = new Program(WebAppId.COM, ProgramIdConsts.KTG031B, "KTG031_2",
+	public static final Program KTG031B = new Program(WebAppId.COM, ProgramIdConsts.KTG031B, "KTG031_5",
 			"/view/ktg/031/b/index.xhtml");
 	
 	/**
