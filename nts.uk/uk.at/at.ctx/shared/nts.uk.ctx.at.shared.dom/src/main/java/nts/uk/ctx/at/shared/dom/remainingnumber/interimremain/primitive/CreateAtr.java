@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum CreaterAtr {
+public enum CreateAtr {
 	/**	予定 */
 	SCHEDULE(0, "予定"),
 	/**	実績 */
