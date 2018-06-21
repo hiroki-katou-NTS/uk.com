@@ -34,7 +34,7 @@ module nts.layout {
                 .map(x => x.items)
                 .flatten()
                 .flatten()
-                .filter((x: IItemData) => x.required && x.type != ITEM_TYPE.SET)
+                .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
                 .each((x: IItemData) => {
                     let v: any = ko.toJS(x),
                         id = v.itemDefId.replace(/[-_]/g, ''),
