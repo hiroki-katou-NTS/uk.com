@@ -54,6 +54,27 @@ module nts.uk.com.view.ccg026.component {
                 border-color: #0096f2;
                 box-shadow: 0 0 1px 1px #0096f2;
             }
+
+            #permision_grid td[role="gridcell"] {
+                white-space: nowrap;
+            }
+
+            #container_permision_grid .ui-tooltip {
+                border: none;
+                background: none;
+                box-shadow: none;
+                width: auto !important;
+                max-width: 800px !important;
+            }
+
+            #container_permision_grid .ui-tooltip .ui-tooltip-content {
+                white-space: nowrap;
+                background: #ffc;
+                border: solid 1px #b85;
+                padding: 5px;
+                width: auto !important;
+                max-width: 800px !important;
+            }
         </style>
         <div id="container_permision_grid">
             <table id='permision_grid'></table>
@@ -137,9 +158,14 @@ module nts.uk.com.view.ccg026.component {
                 $grid
                     .igGrid({
                         width: "100%",
-                        height: `${(ko.toJS(params.maxRow) || 10) * 36}px`,
+                        height: `${(ko.toJS(params.maxRow) || 10) * 36 + 2}px`,
                         primaryKey: "functionNo",
                         enableHoverStyles: false,
+                        features: [
+                            {
+                                name: "Tooltips"
+                            }
+                        ],
                         columns: [
                             { headerText: 'コード', key: 'functionNo', hidden: true },
                             { headerText: text('CCG026_2'), key: 'functionName', width: "240px" },

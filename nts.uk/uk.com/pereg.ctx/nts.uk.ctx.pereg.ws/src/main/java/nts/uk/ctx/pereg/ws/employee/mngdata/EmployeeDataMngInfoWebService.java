@@ -15,7 +15,7 @@ public class EmployeeDataMngInfoWebService {
 
 	@Inject
 	private EmployeeInfoFinder employeeFinder;
-
+	
 	@POST
 	@Path("getGenerateEmplCode")
 	public JavaTypeResult<String> getGenerateEmplCode(String startLetters) {
@@ -25,7 +25,14 @@ public class EmployeeDataMngInfoWebService {
 	@POST
 	@Path("getGenerateCardNo")
 	public JavaTypeResult<String> getGenerateCardNo(String startLetters) {
-		return new JavaTypeResult<String>(this.employeeFinder.generateCardNo(startLetters));
+		return new JavaTypeResult<String>(employeeFinder.generateCardNo(startLetters));
+	}
+	
+	@POST
+	@Path("getInitCardNo")
+	public JavaTypeResult<String> getInitCardNo(String newEmployeeCode) {
+		String newCardNo = employeeFinder.initCardNo(newEmployeeCode);
+		return new JavaTypeResult<String>(newCardNo);
 	}
 
 }
