@@ -624,7 +624,7 @@ public class MonthlyCalculation {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 36協定運用設定を取得
-		val agreementOperationSetOpt = repositories.getAgreementOperationSet().find(companyId);
+		val agreementOperationSetOpt = companySets.getAgreementOperationSet();
 		if (!agreementOperationSetOpt.isPresent()) {
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"017", new ErrMessageContent(TextResource.localize("Msg_1246"))));
