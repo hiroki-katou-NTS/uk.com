@@ -242,7 +242,7 @@ module cps002.a.vm {
                 let self = this,
                     employee = self.currentEmployee();
                 if (employee.cardNo() == "") {
-                    employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
+                    employee.cardNo(self.initStampCard(employeeCode));
                 }
             });
 
@@ -340,8 +340,10 @@ module cps002.a.vm {
                     service.getUserSetting().done(userSetting => {
                         if (userSetting) {
                             self.getEmployeeCode(userSetting).done((empCode) => {
+                                // get employee code
                                 self.currentEmployee().employeeCode(empCode);
-
+                                // get card number
+                                self.initStampCard(empCode);
                             });
                         }
                         self.currentUseSetting(new UserSetting(userSetting));
@@ -389,6 +391,13 @@ module cps002.a.vm {
             }
 
             return dfd.promise();
+        }
+        
+        initStampCard(newEmployeeCode : string) {
+            let self = this;
+            service.getInitCardNumber(newEmployeeCode).done((value) => {
+                self.currentEmployee().cardNo(value);
+            });
         }
 
         isError() {

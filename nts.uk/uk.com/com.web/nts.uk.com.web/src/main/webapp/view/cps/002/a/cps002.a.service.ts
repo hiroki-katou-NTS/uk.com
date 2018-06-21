@@ -6,7 +6,7 @@ module cps002.a.service {
 
     let paths: any = {
         getEmployeeCode: 'ctx/pereg/employee/mngdata/getGenerateEmplCode',
-        getCardNumber: 'ctx/pereg/employee/mngdata/getGenerateCardNo',
+        getCardNumber: 'ctx/pereg/employee/mngdata/getInitCardNo',
         getStamCardEditing: 'record/stamp/stampcardedit/find',
         getLayout: 'ctx/pereg/person/newlayout/check-new-layout',
         getAllInitValueSetting: 'ctx/pereg/person/info/setting/init/findAllHasChild',
@@ -89,19 +89,18 @@ module cps002.a.service {
 
     }
 
-    export function getCardNumber(cardLetter) {
+    export function getInitCardNumber(newEmployeeCode) {
 
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax("com", paths.getCardNumber, cardLetter)
-            .done(function(res) {
-                dfd.resolve(res);
-            }).fail(function(res) {
-                dfd.reject(res);
-            }).always(() => {
-                _.defer(() => block.clear());
-            });
+        nts.uk.request.ajax("com", paths.getCardNumber, newEmployeeCode).done(function(res) {
+            dfd.resolve(res);
+        }).fail(function(res) {
+            dfd.reject(res);
+        }).always(() => {
+            _.defer(() => block.clear());
+        });
         return dfd.promise();
     }
 
