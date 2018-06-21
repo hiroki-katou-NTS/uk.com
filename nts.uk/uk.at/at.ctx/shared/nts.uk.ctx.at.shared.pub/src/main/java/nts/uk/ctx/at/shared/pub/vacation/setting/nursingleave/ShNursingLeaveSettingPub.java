@@ -36,5 +36,5 @@ public interface ShNursingLeaveSettingPub {
 	 */
 	// RequestList207: æœŸé–“å†…ã�®ä»‹è­·æ®‹ã‚’é›†è¨ˆã�™ã‚‹
 	// ï¼œINPUTï¼ž ãƒ»ä¼šç¤¾ID ãƒ»ç¤¾å“¡ID ãƒ»é›†è¨ˆé–‹å§‹æ—¥ ãƒ»é›†è¨ˆçµ‚äº†æ—¥ ãƒ»ãƒ¢ãƒ¼ãƒ‰
-	ChildNursingRemainExport aggrNursingRemainPeriod(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate , Integer mode);
+	ChildNursingRemainExport aggrNursingRemainPeriod(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate , Boolean monthlyMode);
 }

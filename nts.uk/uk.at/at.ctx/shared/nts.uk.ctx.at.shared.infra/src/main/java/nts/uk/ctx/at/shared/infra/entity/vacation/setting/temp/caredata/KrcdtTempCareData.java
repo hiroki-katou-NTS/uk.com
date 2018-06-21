@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.temp.caredata;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -36,15 +35,15 @@ public class KrcdtTempCareData extends UkJpaEntity implements Serializable {
 
 	/** The annlea use. */
 	@Column(name="ANNLEA_USE")
-	private BigDecimal annleaUse;
+	private double annleaUse;
 
 	/** The sche recd atr. */
 	@Column(name="SCHE_RECD_ATR")
-	private BigDecimal scheRecdAtr;
+	private int scheRecdAtr;
 
 	/** The timeeal use priv goout. */
 	@Column(name="TIMEEAL_USE_PRIV_GOOUT")
-	private BigDecimal timeealUsePrivGoout;
+	private int timeealUsePrivGoout;
 
 	/** The work type code. */
 	@Column(name="WORK_TYPE_CODE")

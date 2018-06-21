@@ -12,12 +12,12 @@ import lombok.Data;
  */
 @Data
 @Builder
-//子看護の残数情報
+//å­�çœ‹è­·ã�®æ®‹æ•°æƒ…å ±
 public class ChildNursingRemainInforExport {
 
-//	残数
-	private Integer residual;
+//	æ®‹æ•°
+	private Double residual;
 	
-//	使用数
-	private Integer numberOfUse;
+//	ä½¿ç”¨æ•°
+	private Double numberOfUse;
 }
