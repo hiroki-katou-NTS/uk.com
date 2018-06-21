@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -21,10 +20,16 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
+import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
+import com.aspose.cells.Color;
+import com.aspose.cells.Font;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Range;
+import com.aspose.cells.Style;
+import com.aspose.cells.TextAlignmentType;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
@@ -39,12 +44,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -54,8 +55,6 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -69,10 +68,11 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 import nts.uk.file.at.app.export.dailyschedule.FileOutputType;
 import nts.uk.file.at.app.export.dailyschedule.FormOutputType;
-import nts.uk.file.at.app.export.dailyschedule.OutputConditionSetting;
+import nts.uk.file.at.app.export.dailyschedule.PageBreakIndicator;
 import nts.uk.file.at.app.export.dailyschedule.TotalWorkplaceHierachy;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery;
+import nts.uk.file.at.app.export.dailyschedule.WorkScheduleSettingTotalOutput;
 import nts.uk.file.at.app.export.dailyschedule.data.DailyPerformanceHeaderData;
 import nts.uk.file.at.app.export.dailyschedule.data.DailyPerformanceReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.DailyPersonalPerformanceData;
@@ -83,6 +83,7 @@ import nts.uk.file.at.app.export.dailyschedule.data.EmployeeReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.OutputItemSetting;
 import nts.uk.file.at.app.export.dailyschedule.data.WorkplaceDailyReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.WorkplaceReportData;
+import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
 import nts.uk.file.at.app.export.employee.jobtitle.EmployeeJobHistExport;
@@ -94,7 +95,6 @@ import nts.uk.file.at.infra.dailyschedule.WorkScheduleQueryData;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -175,7 +175,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			WorksheetCollection sheetCollection = workbook.getWorksheets();
 			Worksheet sheet = sheetCollection.get(0);
 
-			//this.setPageHeader(sheet, GeneralDate.today(), GeneralDate.today(), "LOL");
+			this.setPageHeader(sheet, GeneralDate.today(), GeneralDate.today());
 			//this.setItemHeader(sheet.getCells(), sheetCollection);
 
 			//this.printData(sheet.getCells(), sheetCollection);
@@ -224,15 +224,18 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param endDate the end date
 	 * @param companyName the company name
 	 */
-	private void setPageHeader(Worksheet sheet, GeneralDate startDate, GeneralDate endDate, String companyName) {
+	private void setPageHeader(Worksheet sheet, GeneralDate startDate, GeneralDate endDate) {
 		PageSetup pageSetup = sheet.getPageSetup();
 		Cells cells = sheet.getCells();
 
-		// set company name
-		pageSetup.setHeader(0, "&8 " + companyName);
+		Optional<Company> optCompany = companyRepository.find(AppContexts.user().companyId());
+		optCompany.ifPresent(com -> {
+			// set company name
+			pageSetup.setHeader(0, com.getCompanyName().v());
+		});
 
 		// set title header
-		pageSetup.setHeader(1, "&8 " + TextResource.localize("KWR006_1"));
+		pageSetup.setHeader(1, "&\"源ノ角ゴシック Normal,太字\"&16" + TextResource.localize("KWR006_1"));
 
 		// Set header date time + page number
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
@@ -240,8 +243,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 
 		// Set period cell
 		Cell periodCell = cells.get(0, 0);
-		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/M/d (E)", Locale.JAPAN);
-		String periodStr = WorkScheOutputConstants.PERIOD + " " + startDate.toLocalDate().format(jpFormatter) + " ～ "
+		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/M", Locale.JAPAN);
+		String periodStr = TextResource.localize("KWR006_66") + " " + startDate.toLocalDate().format(jpFormatter) + " ～ "
 				+ endDate.toLocalDate().format(jpFormatter);
 		periodCell.setValue(periodStr);
 	}
@@ -294,11 +297,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param condition the condition
 	 */
 	public void collectHeaderData(DailyPerformanceHeaderData headerData, WorkScheduleOutputCondition condition) {
-		Optional<Company> optCompany = companyRepository.find(AppContexts.user().companyId());
-		if (optCompany.isPresent())
-			headerData.companyName = optCompany.get().getCompanyName().v();
-		else
-			headerData.companyName = "";
 		headerData.setFixedHeaderData(new ArrayList<>());
 		headerData.fixedHeaderData.add(WorkScheOutputConstants.ERAL);
 		if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE) {
@@ -1141,6 +1139,881 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				}
 			});
 		});
+	}
+
+	/**
+	 * Write detail work schedule.
+	 *
+	 * @param currentRow the current row
+	 * @param templateSheetCollection the template sheet collection
+	 * @param sheet the sheet
+	 * @param workplaceReportData the workplace report data
+	 * @param dataRowCount the data row count
+	 * @param condition the condition
+	 * @return the int
+	 * @throws Exception the exception
+	 */
+	public int writeDetailedWorkSchedule(int currentRow, WorksheetCollection templateSheetCollection, Worksheet sheet, WorkplaceReportData workplaceReportData, 
+			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker) throws Exception {
+		Cells cells = sheet.getCells();
+		
+		WorkScheduleSettingTotalOutput totalOutput = condition.getSettingDetailTotalOutput();
+		List<EmployeeReportData> lstEmployeeReportData = workplaceReportData.getLstEmployeeReportData();
+		
+		// Root workplace won't have employee
+		if (lstEmployeeReportData != null && lstEmployeeReportData.size() > 0) {
+			Iterator<EmployeeReportData> iteratorEmployee = lstEmployeeReportData.iterator();
+			while (iteratorEmployee.hasNext()) {
+				EmployeeReportData employeeReportData = iteratorEmployee.next();
+				
+				Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
+				Range workplaceRange = cells.createRange(currentRow, 0, 1, 39);
+				workplaceRange.copy(workplaceRangeTemp);
+				rowPageTracker.useOneRowAndCheckResetRemainingRow();
+				
+				// A3_1
+				Cell workplaceTagCell = cells.get(currentRow, 0);
+				workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE);
+				
+				// A3_2
+				Cell workplaceInfo = cells.get(currentRow, DATA_COLUMN_INDEX[0]);
+				workplaceInfo.setValue(workplaceReportData.getWorkplaceCode() + " " + workplaceReportData.getWorkplaceName());
+				
+				currentRow++;
+				
+				Range employeeRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
+				Range employeeRange = cells.createRange(currentRow, 0, 1, 39);
+				employeeRange.copy(employeeRangeTemp);
+				rowPageTracker.useOneRowAndCheckResetRemainingRow();
+				
+				// A4_1
+				Cell employeeTagCell = cells.get(currentRow, 0);
+				employeeTagCell.setValue(WorkScheOutputConstants.EMPLOYEE);
+				
+				// A4_2
+				Cell employeeCell = cells.get(currentRow, 3);
+				employeeCell.setValue(employeeReportData.employeeCode + " " + employeeReportData.employeeName);
+				
+				// A4_3
+				Cell employmentTagCell = cells.get(currentRow, 9);
+				employmentTagCell.setValue(WorkScheOutputConstants.EMPLOYMENT);
+				
+				// A4_5
+				Cell employmentCell = cells.get(currentRow, 11);
+				employmentCell.setValue(employeeReportData.employmentName);
+				
+				// A4_6
+				Cell jobTitleTagCell = cells.get(currentRow, 15);
+				jobTitleTagCell.setValue(WorkScheOutputConstants.POSITION);
+
+				// A4_7
+				Cell jobTitleCell = cells.get(currentRow, 17);
+				jobTitleCell.setValue(employeeReportData.position);
+				
+				currentRow++;
+				boolean colorWhite = true; // true = white, false = light blue, start with white row
+				
+				// Detail personal performance
+				if (totalOutput.isDetails()) {
+					List<DetailedDailyPerformanceReportData> lstDetailedDailyPerformance = employeeReportData.getLstDetailedPerformance();
+					for (DetailedDailyPerformanceReportData detailedDailyPerformanceReportData: lstDetailedDailyPerformance) {
+						Range dateRangeTemp;
+						
+						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+							sheet.getHorizontalPageBreaks().add(currentRow);
+							rowPageTracker.resetRemainingRow();
+						}
+						if (colorWhite) // White row
+							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
+						else // Light blue row
+							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_LIGHTBLUE_ROW + dataRowCount);
+						Range dateRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+						dateRange.copy(dateRangeTemp);
+						dateRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+							rowPageTracker.useRemainingRow(dataRowCount);
+							rowPageTracker.resetRemainingRow();
+						}
+						else {
+							rowPageTracker.useRemainingRow(dataRowCount);
+						}
+						
+						// A5_1
+						Cell erAlMark = cells.get(currentRow, 0);
+						erAlMark.setValue(detailedDailyPerformanceReportData.getErrorAlarmMark());
+						
+						// A5_2
+						Cell dateCell = cells.get(currentRow, 1);
+						dateCell.setValue(detailedDailyPerformanceReportData.getDate().toString("MM/dd"));
+						
+						// A5_3
+						DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("E", Locale.JAPAN);
+						String jp = detailedDailyPerformanceReportData.getDate().toLocalDate().format(jpFormatter);
+						Cell dayOfWeekCell = cells.get(currentRow, 2);
+						dayOfWeekCell.setValue(jp);
+						
+						// A5_4
+						List<ActualValue> lstItem = detailedDailyPerformanceReportData.getActualValue();
+						
+						// Divide list into smaller lists (max 16 items)
+						int numOfChunks = (int)Math.ceil((double)lstItem.size() / CHUNK_SIZE);
+	
+						int curRow = currentRow;
+						int start, length;
+						List<ActualValue> lstItemRow;
+						
+				        for(int i = 0; i < numOfChunks; i++) {
+				            start = i * CHUNK_SIZE;
+				            length = Math.min(lstItem.size() - start, CHUNK_SIZE);
+	
+				            lstItemRow = lstItem.subList(start, start + length);
+				            
+				            for (int j = 0; j < length; j++) {
+				            	// Column 4, 6, 8,...
+				            	ActualValue actualValue = lstItemRow.get(j);
+				            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
+				            	Style style = cell.getStyle();
+				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+				            	if (valueTypeEnum.isInteger()) {
+									String value = actualValue.getValue();
+									if (value != null)
+										cell.setValue(getTimeAttr(value));
+									else
+										cell.setValue(getTimeAttr("0"));
+									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+				            	}
+				            	else {
+									cell.setValue(actualValue.getValue());
+									style.setHorizontalAlignment(TextAlignmentType.LEFT);
+								}
+				            	setFontStyle(style);
+				            	cell.setStyle(style);
+				            }
+				            
+				            curRow++;
+				        }
+				        
+				        // A5_5
+				        Cell remarkCell = cells.get(currentRow,35);
+				        remarkCell.setValue(detailedDailyPerformanceReportData.getErrorDetail());
+				        
+				        currentRow += dataRowCount;
+				        colorWhite = !colorWhite; // Change to other color
+					}
+				}
+				
+				// Personal total
+				if (totalOutput.isPersonalTotal()) {
+					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+						sheet.getHorizontalPageBreaks().add(currentRow);
+						rowPageTracker.resetRemainingRow();
+					}
+					
+					Range personalTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+					personalTotalRange.copy(personalTotalRangeTemp);
+					personalTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+						rowPageTracker.useRemainingRow(dataRowCount);
+						rowPageTracker.resetRemainingRow();
+					}
+					else {
+						rowPageTracker.useRemainingRow(dataRowCount);
+					}
+					
+					// A6_1
+					Cell personalTotalCellTag = cells.get(currentRow, 0);
+					personalTotalCellTag.setValue(WorkScheOutputConstants.PERSONAL_TOTAL);
+					
+					// A6_2
+					Map<Integer, TotalValue> mapPersonalTotal = employeeReportData.getMapPersonalTotal();
+					int numOfChunks = (int) Math.ceil( (double) mapPersonalTotal.size() / CHUNK_SIZE);
+					int start, length;
+					List<TotalValue> lstItemRow;
+					
+			        for(int i = 0; i < numOfChunks; i++) {
+			            start = i * CHUNK_SIZE;
+			            length = Math.min(mapPersonalTotal.size() - start, CHUNK_SIZE);
+			            
+			            lstItemRow = mapPersonalTotal.values().stream().collect(Collectors.toList()).subList(start, start + length);
+			            int valueType;
+			            
+			            for (int j = 0; j < length; j++) {
+			            	TotalValue totalValue = lstItemRow.get(j);
+			            	String value = totalValue.getValue();
+			            	valueType = totalValue.getValueType();
+
+			            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
+			            	Style style = cell.getStyle();
+			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
+			            	if (valueTypeEnum.isInteger()) {
+								if (value != null)
+									cell.setValue(getTimeAttr(value));
+								else
+									cell.setValue(getTimeAttr("0"));
+								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+							}
+			            	setFontStyle(style);
+			            	cell.setStyle(style);
+			            }
+			            currentRow++;
+			        }
+				}
+		        
+				// Total count day
+		        if (condition.getSettingDetailTotalOutput().isTotalNumberDay()) {
+		        	// Use fixed 2 rows
+		        	if (rowPageTracker.checkRemainingRowSufficient(2) < 0) {
+						sheet.getHorizontalPageBreaks().add(currentRow);
+						rowPageTracker.resetRemainingRow();
+					}
+			        
+			        Range dayCountRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DAYCOUNT_ROW);
+					Range dayCountRange = cells.createRange(currentRow, 0, 2, 39);
+					dayCountRange.copy(dayCountRangeTemp);
+					dayCountRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+					if (rowPageTracker.checkRemainingRowSufficient(2) == 0) {
+						rowPageTracker.useRemainingRow(2);
+						rowPageTracker.resetRemainingRow();
+					}
+					else {
+						rowPageTracker.useRemainingRow(2);
+					}
+					
+					// A7_1
+					Cell dayCountTag = cells.get(currentRow, 0);
+					dayCountTag.setValue(WorkScheOutputConstants.DAY_COUNT);
+					
+					// A7_2 -> A7_10
+					for (int i = 0; i < WorkScheOutputConstants.DAY_COUNT_TITLES.length; i++) {
+						Cell dayTypeTag = cells.get(currentRow, i*2 + 3);
+						dayTypeTag.setValue(WorkScheOutputConstants.DAY_COUNT_TITLES[i]);
+					}
+					
+					currentRow++;
+				
+					// A7_11 -> A7_19
+					TotalCountDay totalCountDay = employeeReportData.getTotalCountDay();
+					totalCountDay.initAllDayCount();
+					
+					for (int i = 0; i < WorkScheOutputConstants.DAY_COUNT_TITLES.length; i++) {
+						Cell dayTypeTag = cells.get(currentRow, i*2 + 3);
+						dayTypeTag.setValue(totalCountDay.getAllDayCount().get(i));
+					}
+					
+					currentRow++;
+		        }
+		        
+		        // Page break by employee
+				if (condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE && iteratorEmployee.hasNext()) {
+					rowPageTracker.resetRemainingRow();
+					sheet.getHorizontalPageBreaks().add(currentRow);
+				}
+			}
+		}
+		
+		// Skip writing total for root, use gross total instead
+		if (lstEmployeeReportData != null && lstEmployeeReportData.size() > 0 && totalOutput.isWorkplaceTotal()) {
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+				rowPageTracker.resetRemainingRow();
+				sheet.getHorizontalPageBreaks().add(currentRow);
+			}
+			
+			Range workplaceTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+			Range workplaceTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+				rowPageTracker.useRemainingRow(dataRowCount);
+				rowPageTracker.resetRemainingRow();
+			}
+			else {
+				rowPageTracker.useRemainingRow(dataRowCount);
+			}
+			
+			workplaceTotalRange.copy(workplaceTotalRangeTemp);
+			workplaceTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			
+			// A8_1
+			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_TOTAL);
+			
+			// A8_2
+			WorkplaceTotal workplaceTotal = workplaceReportData.getWorkplaceTotal();
+			int numOfChunks = (int) Math.ceil( (double) workplaceTotal.getTotalWorkplaceValue().size() / CHUNK_SIZE);
+			int start, length;
+			List<TotalValue> lstItemRow;
+			
+	        for(int i = 0; i < numOfChunks; i++) {
+	            start = i * CHUNK_SIZE;
+	            length = Math.min(workplaceTotal.getTotalWorkplaceValue().size() - start, CHUNK_SIZE);
+	
+	            lstItemRow = workplaceTotal.getTotalWorkplaceValue().subList(start, start + length);
+	            
+	            for (int j = 0; j < length; j++) {
+	            	TotalValue totalValue = lstItemRow.get(j);
+	            	String value = totalValue.getValue();
+	            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
+	            	Style style = cell.getStyle();
+	            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+	            	if (valueTypeEnum.isInteger()) {
+						if (value != null)
+							cell.setValue(getTimeAttr(value));
+						else
+							cell.setValue(getTimeAttr("0"));
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
+	            	setFontStyle(style);
+	            	cell.setStyle(style);
+	            }
+	            currentRow++;
+	        }
+		}
+		
+		Map<String, WorkplaceReportData> mapChildWorkplace = workplaceReportData.getLstChildWorkplaceReportData();
+		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
+				condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) &&
+				mapChildWorkplace.size() > 0) && workplaceReportData.level != 0) {
+			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        	rowPageTracker.resetRemainingRow();
+			sheet.getHorizontalPageBreaks().add(currentRow);
+		}
+		// Process to child workplace
+		Iterator<Map.Entry<String, WorkplaceReportData>> it = mapChildWorkplace.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, WorkplaceReportData> entry = it.next();
+			currentRow = writeDetailedWorkSchedule(currentRow, templateSheetCollection, sheet, entry.getValue(), dataRowCount, condition, rowPageTracker);
+			
+			// Page break by workplace
+			if (condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE && it.hasNext()) {
+				rowPageTracker.resetRemainingRow();
+				sheet.getHorizontalPageBreaks().add(currentRow);
+			}
+		}
+		
+		/**
+		 * A9 - A13
+		 */
+		TotalWorkplaceHierachy totalHierarchyOption = totalOutput.getWorkplaceHierarchyTotal();
+		if (totalOutput.isGrossTotal() || totalOutput.isCumulativeWorkplace()) {
+			
+			int level = workplaceReportData.getLevel();
+			
+			if (findWorkplaceHigherEnabledLevel(workplaceReportData, totalHierarchyOption) <= level) {
+				String tagStr;
+				if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace() && totalHierarchyOption.checkLevelEnabled(level)) {
+					// Condition: not root workplace (lvl = 0), level within picked hierarchy zone, enable cumulative workplace.
+					tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
+				} else if (totalOutput.isGrossTotal() && level == 0)
+					// Condition: enable gross total, also implicitly root workplace
+					tagStr = WorkScheOutputConstants.GROSS_TOTAL;
+				else
+					tagStr = null;
+				
+				if (tagStr != null) {
+					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+						sheet.getHorizontalPageBreaks().add(currentRow);
+						rowPageTracker.resetRemainingRow();
+					}
+					
+					Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+					Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+					wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
+					wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+						rowPageTracker.useRemainingRow(dataRowCount);
+						rowPageTracker.resetRemainingRow();
+					}
+					else {
+						rowPageTracker.useRemainingRow(dataRowCount);
+					}
+					
+					// A9_1 - A13_1
+					Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+					workplaceTotalCellTag.setValue(tagStr);
+					
+					// A9_2 - A13_2
+					int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
+					int start, length;
+					List<TotalValue> lstItemRow;
+					
+			        for(int i = 0; i < numOfChunks; i++) {
+			            start = i * CHUNK_SIZE;
+			            length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
+			
+			            lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
+			            
+			            for (int j = 0; j < length; j++) {
+			            	TotalValue totalValue = lstItemRow.get(j);
+			            	String value = totalValue.getValue();
+			            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
+			            	Style style = cell.getStyle();
+			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+			            	if (valueTypeEnum.isInteger()) {
+								if (value != null)
+									cell.setValue(getTimeAttr(value));
+								else
+									cell.setValue(getTimeAttr("0"));
+								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+							}
+			            	setFontStyle(style);
+			            	cell.setStyle(style);
+			            }
+			        }
+			        currentRow += dataRowCount;
+				}
+			}
+		}
+		
+		return currentRow;
+	}
+	
+	/**
+	 * Write detailed daily schedule.
+	 *
+	 * @param currentRow the current row
+	 * @param templateSheetCollection the template sheet collection
+	 * @param sheet the sheet
+	 * @param dailyReport the daily report
+	 * @param dataRowCount the data row count
+	 * @param condition the condition
+	 * @return the int
+	 * @throws Exception the exception
+	 */
+	public int writeDetailedDailySchedule(int currentRow, WorksheetCollection templateSheetCollection, Worksheet sheet, DailyReportData dailyReport,
+			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker) throws Exception {
+		Cells cells = sheet.getCells();
+		List<WorkplaceDailyReportData> lstDailyReportData = dailyReport.getLstDailyReportData();
+		
+		Iterator<WorkplaceDailyReportData> iteratorWorkplaceData  = lstDailyReportData.iterator();
+		
+		while(iteratorWorkplaceData.hasNext()) {
+			WorkplaceDailyReportData dailyReportData = iteratorWorkplaceData.next();
+			Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
+			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
+			dateRange.copy(dateRangeTemp);
+			rowPageTracker.useOneRowAndCheckResetRemainingRow();
+			//dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+			
+			// B3_1
+			Cell dateTagCell = cells.get(currentRow, 0);
+			dateTagCell.setValue(WorkScheOutputConstants.DATE_BRACKET);
+			
+			// B3_2
+			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.JAPAN);
+			String date = dailyReportData.getDate().toLocalDate().format(jpFormatter);
+			Cell dateCell = cells.get(currentRow, 2);
+			dateCell.setValue(date);
+			
+			currentRow++;
+			
+			DailyWorkplaceData rootWorkplace = dailyReportData.getLstWorkplaceData();
+			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker);
+		
+			if (iteratorWorkplaceData.hasNext()) {
+				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
+				rowPageTracker.resetRemainingRow();
+				sheet.getHorizontalPageBreaks().add(currentRow);
+			}
+		}
+		
+		if (condition.getSettingDetailTotalOutput().isGrossTotal()) {
+			// Gross total after all the rest of the data
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+				sheet.getHorizontalPageBreaks().add(currentRow);
+				rowPageTracker.resetRemainingRow();
+			}
+			Range wkpGrossTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+			Range wkpGrossTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+			wkpGrossTotalRange.copy(wkpGrossTotalRangeTemp);
+			wkpGrossTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+				rowPageTracker.useRemainingRow(dataRowCount);
+				rowPageTracker.resetRemainingRow();
+			}
+			else {
+				rowPageTracker.useRemainingRow(dataRowCount);
+			}
+			
+			Cell grossTotalCellTag = cells.get(currentRow, 0);
+			grossTotalCellTag.setValue(WorkScheOutputConstants.GROSS_TOTAL);
+			
+			currentRow = writeGrossTotal(currentRow, dailyReport.getListTotalValue(), sheet, dataRowCount, rowPageTracker);
+		}
+		
+		return currentRow;
+	}
+	
+	/**
+	 * Write daily detailed performance data on workplace.
+	 *
+	 * @param currentRow the current row
+	 * @param sheet the sheet
+	 * @param templateSheetCollection the template sheet collection
+	 * @param rootWorkplace the root workplace
+	 * @param dataRowCount the data row count
+	 * @param condition the condition
+	 * @return the int
+	 * @throws Exception the exception
+	 */
+	private int writeDailyDetailedPerformanceDataOnWorkplace(int currentRow, Worksheet sheet, WorksheetCollection templateSheetCollection, DailyWorkplaceData rootWorkplace, int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker) throws Exception {
+		Cells cells = sheet.getCells();
+		Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
+		Range workplaceRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
+		workplaceRange.copy(workplaceRangeTemp);
+		
+		boolean colorWhite = true; // true = white, false = light blue, start with white row
+		
+		List<DailyPersonalPerformanceData> employeeReportData = rootWorkplace.getLstDailyPersonalData();
+		if (employeeReportData != null && !employeeReportData.isEmpty()) {
+			rowPageTracker.useOneRowAndCheckResetRemainingRow();
+			// B4_1
+			Cell workplaceTagCell = cells.get(currentRow, 0);
+			workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE);
+			
+			// B4_2
+			Cell workplaceCell = cells.get(currentRow, 2);
+			workplaceCell.setValue(rootWorkplace.getWorkplaceCode() + " " + rootWorkplace.getWorkplaceName());
+			
+			currentRow++;
+			
+			Iterator<DailyPersonalPerformanceData> dataIterator = employeeReportData.iterator();
+			
+			// Employee data
+			while (dataIterator.hasNext() && condition.getSettingDetailTotalOutput().isDetails()){
+				DailyPersonalPerformanceData employee = dataIterator.next();
+				
+				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+					sheet.getHorizontalPageBreaks().add(currentRow);
+					rowPageTracker.resetRemainingRow();
+				}
+				
+				Range dateRangeTemp;
+				if (colorWhite) // White row
+					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
+				else // Light blue row
+					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_LIGHTBLUE_ROW + dataRowCount);
+				Range dateRange = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]);
+				dateRange.copy(dateRangeTemp);
+				dateRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+					rowPageTracker.useRemainingRow(dataRowCount);
+					rowPageTracker.resetRemainingRow();
+				}
+				else {
+					rowPageTracker.useRemainingRow(dataRowCount);
+				}
+				
+				// B5_1
+				Cell erAlMark = cells.get(currentRow, 0);
+				erAlMark.setValue(employee.getErrorAlarmCode());
+				
+				// B5_2
+				Cell employeeCell = cells.get(currentRow, 1);
+				employeeCell.setValue(employee.getEmployeeName());
+				
+				Range employeeRange = cells.createRange(currentRow, 1, dataRowCount, 2);
+				employeeRange.merge();
+				
+				List<ActualValue> lstItem = employee.getActualValue();
+				if (lstItem != null) {
+					// B5_3
+					// Divide list into smaller lists (max 16 items)
+					int size = lstItem.size();
+					int numOfChunks = (int)Math.ceil((double)size / CHUNK_SIZE);
+					int start, length;
+					List<ActualValue> lstItemRow;
+					
+					int curRow = currentRow;
+		
+			        for(int i = 0; i < numOfChunks; i++) {
+			            start = i * CHUNK_SIZE;
+			            length = Math.min(size - start, CHUNK_SIZE);
+		
+			            lstItemRow = lstItem.subList(start, start + length);
+			            for (int j = 0; j < length; j++) {
+			            	// Column 4, 6, 8,...
+			            	ActualValue actualValue = lstItemRow.get(j);
+			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
+			            	Style style = cell.getStyle();
+			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+			            	if (valueTypeEnum.isInteger()) {
+								String value = actualValue.getValue();
+								if (value != null)
+									cell.setValue(getTimeAttr(value));
+								else
+									cell.setValue(getTimeAttr("0"));
+								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+			            	}
+			            	else {
+								cell.setValue(actualValue.getValue());
+								style.setHorizontalAlignment(TextAlignmentType.LEFT);
+							}
+			            	setFontStyle(style);
+			            	cell.setStyle(style);
+			            }
+			            
+			            curRow++;
+			        }
+			        
+			        // B5_4
+			        Cell remarkCell = cells.get(currentRow,35);
+			        remarkCell.setValue(employee.getDetailedErrorData());
+				}
+		        currentRow += dataRowCount;
+		        colorWhite = !colorWhite; // Change to other color
+		        
+		        // Only break when has next iterator
+		        if (dataIterator.hasNext() && condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) {
+		        	// Thin border for last row of page
+		        	Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+		        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		        	
+		        	// Page break by employee
+					sheet.getHorizontalPageBreaks().add(currentRow);
+					rowPageTracker.resetRemainingRow();
+		        }
+			}
+		}
+		
+		// Workplace total, root workplace use gross total instead
+		if (condition.getSettingDetailTotalOutput().isWorkplaceTotal() && rootWorkplace.getLevel() != 0) {
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+				sheet.getHorizontalPageBreaks().add(currentRow);
+				rowPageTracker.resetRemainingRow();
+			}
+			Range workplaceTotalTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+			Range workplaceTotal = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]);
+			workplaceTotal.copy(workplaceTotalTemp);
+			workplaceTotal.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+			workplaceTotal.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+				rowPageTracker.useRemainingRow(dataRowCount);
+				rowPageTracker.resetRemainingRow();
+			}
+			else {
+				rowPageTracker.useRemainingRow(dataRowCount);
+			}
+			
+			// B6_1
+			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_TOTAL);
+			
+			// B6_2
+			currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheet, dataRowCount, true);
+		}
+		
+		boolean firstWorkplace = true;
+
+		
+		Map<String, DailyWorkplaceData> mapChildWorkplace = rootWorkplace.getLstChildWorkplaceData();
+		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
+				condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) &&
+				mapChildWorkplace.size() > 0) && rootWorkplace.level != 0) {
+			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        	rowPageTracker.resetRemainingRow();
+			sheet.getHorizontalPageBreaks().add(currentRow);
+		}
+		// Child workplace
+		for (Map.Entry<String, DailyWorkplaceData> entry: mapChildWorkplace.entrySet()) {
+			// Page break by workplace
+			if ((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
+					condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) && !firstWorkplace) {
+				Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+	        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+	        	rowPageTracker.resetRemainingRow();
+				sheet.getHorizontalPageBreaks().add(currentRow);
+			}
+			firstWorkplace = false;
+			
+			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, entry.getValue(), dataRowCount, condition, rowPageTracker);
+		}
+		
+		// Workplace hierarchy total
+		int level = rootWorkplace.getLevel();
+		TotalWorkplaceHierachy settingTotalHierarchy = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
+		if (level != 0 && level >= settingTotalHierarchy.getHighestLevelEnabled() 
+				&& condition.getSettingDetailTotalOutput().isCumulativeWorkplace() && settingTotalHierarchy.checkLevelEnabled(level)) {
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+				sheet.getHorizontalPageBreaks().add(currentRow);
+				rowPageTracker.resetRemainingRow();
+			}
+			Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+			Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+			wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
+			wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+				rowPageTracker.useRemainingRow(dataRowCount);
+				rowPageTracker.resetRemainingRow();
+			}
+			else {
+				rowPageTracker.useRemainingRow(dataRowCount);
+			}
+			
+			// B7_1 - B11_1
+			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + rootWorkplace.getLevel());
+			
+			// B7_2 - B11_2
+			currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheet, dataRowCount, false);
+		}
+		
+		return currentRow;
+	}
+
+	/**
+	 * Write workplace total for export type by date.
+	 *
+	 * @param currentRow the current row
+	 * @param rootWorkplace the root workplace
+	 * @param cells the cells
+	 * @return the int
+	 */
+	private int writeWorkplaceTotal(int currentRow, DailyWorkplaceData rootWorkplace, Worksheet sheet, int dataRowCount, boolean totalType) {
+		List<TotalValue> totalWorkplaceValue;
+		if (!totalType)
+			totalWorkplaceValue = rootWorkplace.getWorkplaceTotal().getTotalWorkplaceValue();
+		else
+			totalWorkplaceValue = rootWorkplace.getWorkplaceHierarchyTotal().getTotalWorkplaceValue();
+		int size = totalWorkplaceValue.size();
+		if (size == 0) {
+			currentRow += dataRowCount;
+		}
+		else {
+			
+			Cells cells = sheet.getCells();
+			
+			int numOfChunks = (int) Math.ceil( (double) size / CHUNK_SIZE);
+			int start, length;
+			List<TotalValue> lstItemRow;
+			
+			for(int i = 0; i < numOfChunks; i++) {
+			    start = i * CHUNK_SIZE;
+			    length = Math.min(size - start, CHUNK_SIZE);
+
+			    lstItemRow = totalWorkplaceValue.stream().collect(Collectors.toList()).subList(start, start + length);
+			    TotalValue totalValue;
+			    
+			    for (int j = 0; j < length; j++) {
+			    	totalValue = lstItemRow.get(j);
+			    	String value = totalValue.getValue();
+		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
+		        	Style style = cell.getStyle();
+		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+	            	if (valueTypeEnum.isInteger()) {
+						if (value != null)
+							cell.setValue(getTimeAttr(value));
+						else
+							cell.setValue(getTimeAttr("0"));
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
+	            	setFontStyle(style);
+	            	cell.setStyle(style);
+			    }
+			    currentRow++;
+			}
+			
+			if (numOfChunks == 0) currentRow++;
+		}
+		
+		return currentRow;
+	}
+	
+	/**
+	 * Write gross total.
+	 *
+	 * @param currentRow the current row
+	 * @param lstGrossTotal the lst gross total
+	 * @param cells the cells
+	 * @return the int
+	 */
+	private int writeGrossTotal(int currentRow, List<TotalValue> lstGrossTotal, Worksheet sheet, int dataRowCount, RowPageTracker rowPageTracker) {
+		int size = lstGrossTotal.size();
+		if (size == 0) {
+			currentRow += dataRowCount;
+		}
+		else {
+			Cells cells = sheet.getCells();
+			
+			int numOfChunks = (int) Math.ceil( (double) size / CHUNK_SIZE);
+			int start, length;
+			List<TotalValue> lstItemRow;
+			
+			for(int i = 0; i < numOfChunks; i++) {
+			    start = i * CHUNK_SIZE;
+			    length = Math.min(lstGrossTotal.size() - start, CHUNK_SIZE);
+
+			    lstItemRow = lstGrossTotal.stream().collect(Collectors.toList()).subList(start, start + length);
+			    
+			    TotalValue totalValue;
+			    
+			    for (int j = 0; j < length; j++) {
+			    	totalValue =lstItemRow.get(j);
+			    	String value = totalValue.getValue();
+		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
+		        	Style style = cell.getStyle();
+		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+	            	if (valueTypeEnum.isInteger()) {
+						if (value != null)
+							cell.setValue(getTimeAttr(value));
+						else
+							cell.setValue(getTimeAttr("0"));
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+	            	}
+	            	else {
+						cell.setValue(value);
+						style.setHorizontalAlignment(TextAlignmentType.LEFT);
+					}
+	            	setFontStyle(style);
+	            	cell.setStyle(style);
+			    }
+			    currentRow++;
+			}
+			
+			if (numOfChunks == 0) currentRow++;
+		}
+		
+		return currentRow;
+	}
+
+	/**
+	 * Find workplace higher enabled level.
+	 *
+	 * @param workplaceReportData the workplace report data
+	 * @param hierarchy the hierarchy
+	 * @return the int
+	 */
+	public int findWorkplaceHigherEnabledLevel(WorkplaceReportData workplaceReportData, TotalWorkplaceHierachy hierarchy) {
+		int currentLevel = workplaceReportData.getLevel();
+		if (currentLevel != 0) {
+			int lowerEnabledLevel = hierarchy.getLowerClosestSelectedHierarchyLevel(currentLevel);
+			if (lowerEnabledLevel == 0) {
+				WorkplaceReportData parentWorkplace = workplaceReportData.getParent();
+				return findWorkplaceHigherEnabledLevel(parentWorkplace, hierarchy);
+			}
+			return lowerEnabledLevel;
+		}
+		else {
+			return 0;
+		}
+	}
+
+	/**
+	 * Gets the time attr.
+	 *
+	 * @param rawValue the raw value
+	 * @return the time attr
+	 */
+	public String getTimeAttr(String rawValue) {
+		int value = Integer.parseInt(rawValue);
+		int minute = value % 60;
+		return String.valueOf(value / 60) + ":" + (minute < 10 ? "0" + minute : String.valueOf(minute));
+	}
+
+	private void setFontStyle(Style style) {
+		Font font = style.getFont();
+		font.setSize(FONT_SIZE);
+		font.setName(FONT_FAMILY);
 	}
 
 	private void printData(Cells cells, WorksheetCollection sheetCollection) throws Exception {
