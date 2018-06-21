@@ -197,18 +197,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
 	
 
-	//↓以下任意項目の計算の為に追加
+	//任意項目の計算の為に追加
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
-	
-	@Inject
-	private OptionalItemRepository optionalItemRepository;
-	
-	@Inject
-	private FormulaRepository formulaRepository;
-	
-	@Inject
-	private EmpConditionRepository empConditionRepository;
 	
 	//割増計算用に追加
 	@Inject
@@ -232,7 +223,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, converter);
 		//任意項目の計算
-		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter);
+		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter,companyCommonSetting);
 		//エラーチェック
 //		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
 		IntegrationOfDaily result = calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
@@ -1123,25 +1114,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 *　任意項目の計算
 	 * @return
 	 */
-	private IntegrationOfDaily calcOptionalItem(IntegrationOfDaily integrationOfDaily,DailyRecordToAttendanceItemConverter converter) {
+	private IntegrationOfDaily calcOptionalItem(IntegrationOfDaily integrationOfDaily,DailyRecordToAttendanceItemConverter converter, ManagePerCompanySet companyCommonSetting) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		// 「所属雇用履歴」を取得する
 		Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt = this.shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, targetDate);
 	    //AggregateRoot「任意項目」取得
-		List<OptionalItem> optionalItems = optionalItemRepository.findAll(companyId);
-		//任意項目NOのlist作成
-		List<Integer> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList());
+		List<OptionalItem> optionalItems = companyCommonSetting.getOptionalItems();
 		//計算式を取得(任意項目NOで後から絞る必要あり)
-		List<Formula> formulaList = formulaRepository.find(companyId);
+		List<Formula> formulaList = companyCommonSetting.getFormulaList();
 		//適用する雇用条件の取得
-		List<EmpCondition> empCondition = empConditionRepository.findAll(companyId, optionalItemNoList);
+		List<EmpCondition> empCondition = companyCommonSetting.getEmpCondition();
 		//項目選択による計算時に必要なので取得
 		converter.setData(integrationOfDaily); 
-		
-		
-		
+			
 		//任意項目の計算
 		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList,
 				empCondition, Optional.of(converter),bsEmploymentHistOpt,integrationOfDaily.getAnyItemValue());
