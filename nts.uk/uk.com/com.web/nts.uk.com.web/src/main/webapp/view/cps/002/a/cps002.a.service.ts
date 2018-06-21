@@ -7,7 +7,7 @@ module cps002.a.service {
     let paths: any = {
         getEmployeeCode: 'ctx/pereg/employee/mngdata/getGenerateEmplCode',
         getCardNumber: 'ctx/pereg/employee/mngdata/getGenerateCardNo',
-        getStamCardEditing: 'ctx/pereg/record/stamp/stampcardedit/find',
+        getStamCardEditing: 'record/stamp/stampcardedit/find',
         getLayout: 'ctx/pereg/person/newlayout/check-new-layout',
         getAllInitValueSetting: 'ctx/pereg/person/info/setting/init/findAllHasChild',
         getUserSetting: 'ctx/pereg/usersetting/getUserSetting',
@@ -19,7 +19,7 @@ module cps002.a.service {
         getAllInitValueItemSetting: 'ctx/pereg/initsetting/item/findInit',
         getLayoutByCreateType: 'ctx/pereg/layout/getByCreateType',
         addNewEmployee: 'ctx/pereg/addemployee/addNewEmployee',
-        getEmployeeInfo: 'ctx/pereg/basic/organization/employee/getoffselect',
+        getEmployeeInfo: 'basic/organization/employee/getoffselect',
         permision: 'ctx/pereg/ctx/pereg/functions/auth/find-all',
     };
 
