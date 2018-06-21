@@ -50,12 +50,12 @@ module nts.uk.at.view.kwr006.d {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-                service.executeCopy(self.D1_6_value(), self.selectedCode(), nts.uk.ui.windows.getShared('KWR001_D')).done(function(data: any) {
+                service.executeCopy(self.D1_6_value(), self.selectedCode(), nts.uk.ui.windows.getShared('KWR006_D')).done(function(data: any) {
                     console.log(data);
                     dataReturnScrC.lstAtdChoose = data;
                     dataReturnScrC.codeCopy = self.D1_6_value();
                     dataReturnScrC.nameCopy = self.D1_7_value();
-                    nts.uk.ui.windows.setShared('KWR001_D', dataReturnScrC);
+                    nts.uk.ui.windows.setShared('KWR006_D', dataReturnScrC);
                     nts.uk.ui.windows.close();
                 }).fail(function(err) {
                     nts.uk.ui.dialog.error(err);
