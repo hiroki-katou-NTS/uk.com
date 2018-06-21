@@ -304,7 +304,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
 
             if (attendanceRecExpDaily != null || attendanceRecExpMonthly != null || attendanceRecItemList != null) {
-                self.useSealValue(useSeal == 1 ? true : false);
+                self.useSealValue(useSeal);
                 attendanceRecExpDaily.forEach((item: any) => {
                     self.attendanceRecExpDaily().push(new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition, item.lowwerPosition));
                 });
@@ -323,7 +323,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 self.sealName6(sealStamp[5]);
             }
             else {
-
+                self.useSealValue(useSeal)
                 var code: number = Number(self.attendanceCode());
                 service.findAllAttendanceRecExportDaily(code).done(function(listattendanceRecExpDailyList: Array<model.AttendanceRecExp>) {
                     if (listattendanceRecExpDailyList.length > 0) {

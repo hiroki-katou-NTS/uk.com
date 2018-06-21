@@ -224,7 +224,7 @@ module nts.uk.com.view.kwr002.b {
             let cmd = {
                 code: Number(currentData.code()),
                 name: currentData.name(),
-                sealUseAtr: currentData.sealUseAtr(),
+                sealUseAtr: rcdExport.useSeal,
                 sealStamp: rcdExport.sealStamp,
                 nameUseAtr: currentData.nameUseAtr(),
             };
