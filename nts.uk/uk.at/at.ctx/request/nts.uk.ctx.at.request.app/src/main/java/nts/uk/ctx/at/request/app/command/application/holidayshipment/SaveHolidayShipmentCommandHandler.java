@@ -121,13 +121,24 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		GeneralDate absDate = command.getAbsCmd().getAppDate();
 		GeneralDate recDate = command.getRecCmd().getAppDate();
 		int comType = command.getComType();
-		String appReason = "";
+
 		// アルゴリズム「振休振出申請の新規登録」を実行する
+<<<<<<< HEAD
 		createNewForHolidayBreakge(command,companyID,sID,recDate,absDate,comType,appReason);
 
 	}
 
 	private void createNewForHolidayBreakge(SaveHolidayShipmentCommand command,String companyID,String sID,GeneralDate recDate,GeneralDate absDate,int comType,String appReason) {
+=======
+		createNewForHolidayBreakge(command, companyID, sID, recDate, absDate, comType);
+
+	}
+
+	private void createNewForHolidayBreakge(SaveHolidayShipmentCommand command, String companyID, String sID,
+			GeneralDate recDate, GeneralDate absDate, int comType) {
+		// アルゴリズム「事前条件チェック」を実行する
+		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
+>>>>>>> 97f0683fce0... fix no reason KAF011
 		// アルゴリズム「登録前エラーチェック（新規）」を実行する
 		errorCheckBeforeRegister(command,companyID,sID,recDate,absDate,comType,appReason);
 
@@ -442,8 +453,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command,String companyID,String sID,GeneralDate recDate,GeneralDate absDate,int comType,String appReason) {
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
-		// アルゴリズム「事前条件チェック」を実行する
-		appReason = preconditionCheck(command, companyID, appType, comType);
+
 		// アルゴリズム「振休振出申請設定の取得」を実行する
 		Optional<WithDrawalReqSet> withDrawReqSet = withDrawRepo.getWithDrawalReqSet();
 		// アルゴリズム「申請前勤務種類の取得」を実行する takingout
