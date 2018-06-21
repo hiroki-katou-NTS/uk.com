@@ -111,7 +111,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                 columns: [
                     { headerText: "", key: 'appId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: text("KAF018_36"), key: 'appName', dataType: 'string', width: 160 },
-                    { headerText: text("KAF018_37"), key: 'prePostAtr', dataType: 'string',hidden: displayPrePostFlg== true ? true: false, width: 120 },
+                    { headerText: text("KAF018_37"), key: 'prePostAtr', dataType: 'string',hidden: displayPrePostFlg== false ? true: false, width: 120 },
                     { headerText: text("KAF018_38"), key: 'appDate', dataType: 'string', width: 150 },
                     { headerText: text("KAF018_39"), key: 'appContent', dataType: 'string', width: 450 },
                     { headerText: text("KAF018_40"), key: 'reflectStateContent', dataType: 'string', width: 100 },

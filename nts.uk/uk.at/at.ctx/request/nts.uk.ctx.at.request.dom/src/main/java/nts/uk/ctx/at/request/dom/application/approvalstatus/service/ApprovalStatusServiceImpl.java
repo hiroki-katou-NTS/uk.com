@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttDetailRecord;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverSpecial;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
@@ -917,21 +919,33 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// クラス：承認フェーズ
 		for (ApprovalPhaseStateImport_New appPhase : listAppPhaseState) {
 			List<ApprovalFrameImport_New> listApprovalFrame = appPhase.getListApprovalFrame();
-			List<String> listEmployee = new ArrayList<>();
+			List<ApproverSpecial> listEmployeeSpecials = new ArrayList<>();
 			String empName = "";
 			int numOfPeople = 0;
 			// クラス：承認枠
 			for (ApprovalFrameImport_New appFrame : listApprovalFrame) {
-				// アルゴリズム「承認状況未承認者取得代行優先」を実行する
-				List<ApproverStateImport_New> listApproverState = appFrame.getListApprover();
-				List<String> listEmp = this.getUnAppSubstitutePriority(listApproverState, appDate);
-				listEmployee.addAll(listEmp);
+					// アルゴリズム「承認状況未承認者取得代行優先」を実行する
+					List<ApproverStateImport_New> listApproverState = appFrame.getListApprover();
+					List<ApproverSpecial> listEmpSpecial = this.getUnAppSubstitutePriority(listApproverState, appDate, appFrame.getConfirmAtr());
+					listEmployeeSpecials.addAll(listEmpSpecial);
 			}
+			
+			listEmployeeSpecials = listEmployeeSpecials.stream().sorted(Comparator.comparing(ApproverSpecial::getConfirmAtr).reversed()).collect(Collectors.toList());
+			List<String> listEmployee = new ArrayList<>();
+			for(ApproverSpecial appSpecial: listEmployeeSpecials) {
+				listEmployee.add(appSpecial.getApproverId());
+			}
+			String epmIdSpecial = listEmployee.stream().findFirst().get();
 			if (!listEmployee.isEmpty()) {
 				// Imported（就業）「個人社員基本情報」を取得する
 				// RequestList126
 				List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmployee);
-				empName = listEmpInfor.stream().findFirst().get().getPName();
+				for(EmployeeBasicInfoImport empBase : listEmpInfor) {
+					if(empBase.getEmployeeId().equals(epmIdSpecial)) {
+						empName = empBase.getPName();
+						break;
+					}
+				}
 				numOfPeople = listEmployee.size()-1;
 				ApproverOutput approver = new ApproverOutput(appPhase.getPhaseOrder(), empName, numOfPeople);
 				listApprover.add(approver);
@@ -947,12 +961,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * 承認状況未承認者取得代行優先
 	 * 
 	 * @param appDate
+	 * @param confirmAtr 
 	 * @param listApprovalFrame
 	 * 
 	 */
-	private List<String> getUnAppSubstitutePriority(List<ApproverStateImport_New> listApproverState,
-			GeneralDate appDate) {
-		List<String> listEmpId = new ArrayList<>();
+	private List<ApproverSpecial> getUnAppSubstitutePriority(List<ApproverStateImport_New> listApproverState,
+			GeneralDate appDate, int confirmAtr) {
+		List<ApproverSpecial> listEmpId = new ArrayList<>();
 		String cId = AppContexts.user().companyId();
 		for (ApproverStateImport_New approver : listApproverState) {
 			String sID = approver.getApproverID();
@@ -968,7 +983,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				// 0:代行者指定
 				case SUBSTITUTE_DESIGNATION:
 					// 代行者管理.承認代行者を社員IDにセットする
-					listEmpId.add(agent.get().getAgentSid1());
+					listEmpId.add(new ApproverSpecial(agent.get().getAgentSid1(), confirmAtr));
 					break;
 				// 1:パス
 				case PATH:
@@ -976,14 +991,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				// 2:設定なし
 				case NO_SETTINGS:
 					// 承認者IDを社員IDにセットする
-					listEmpId.add(approver.getApproverID());
+					listEmpId.add(new ApproverSpecial(approver.getApproverID(), confirmAtr));
 					break;
 				default:
 					break;
 				}
 			} else {
 				// 承認者IDを社員IDにセットする
-				listEmpId.add(approver.getApproverID());
+				listEmpId.add(new ApproverSpecial(approver.getApproverID(), confirmAtr));
 			}
 		}
 		return listEmpId;
