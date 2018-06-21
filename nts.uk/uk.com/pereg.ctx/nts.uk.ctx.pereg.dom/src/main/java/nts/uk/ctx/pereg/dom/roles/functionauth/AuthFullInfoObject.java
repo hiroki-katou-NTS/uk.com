@@ -27,20 +27,20 @@ public class AuthFullInfoObject {
 		this.orderNumber = orderNumber;
 	}
 
-	public AuthFullInfoObject(PersonInfoAuthDescription desc, PersonInfoAuthority auth) {
-		this.functionNo = desc.getFunctionNo().v();
-		this.functionName = desc.getFunctionName().v();
-		this.available = auth.isAvailable();
-		this.description = desc.getDescription().v();
-		this.orderNumber = desc.getOrderNumber();
+	public AuthFullInfoObject(PersonInfoAuthDescription desc) {
+		this.functionNo = desc.getFunctionNo();
+		this.functionName = desc.getName();
+		this.available = desc.getDefaultValue();
+		this.description = desc.getExplanation();
+		this.orderNumber = desc.getDisplayOrder();
 	}
 
-	public AuthFullInfoObject(PersonInfoAuthDescription desc) {
-		this.functionNo = desc.getFunctionNo().v();
-		this.functionName = desc.getFunctionName().v();
-		this.available = desc.isDefaultAvailable();
-		this.description = desc.getDescription().v();
-		this.orderNumber = desc.getOrderNumber();
+	public AuthFullInfoObject(PersonInfoAuthDescription desc, PersonInfoAuthority auth) {
+		this.functionNo = desc.getFunctionNo();
+		this.functionName = desc.getName();
+		this.available = auth.isAvailable();
+		this.description = desc.getExplanation();
+		this.orderNumber = desc.getDisplayOrder();
 	}
 
 }

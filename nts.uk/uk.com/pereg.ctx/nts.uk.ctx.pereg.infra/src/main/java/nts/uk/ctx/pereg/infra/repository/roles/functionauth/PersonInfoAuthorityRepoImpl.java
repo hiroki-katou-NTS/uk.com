@@ -9,11 +9,11 @@ import javax.ejb.Stateless;
 import nts.uk.ctx.pereg.dom.roles.functionauth.authsetting.PersonInfoAuthority;
 import nts.uk.ctx.pereg.dom.roles.functionauth.authsetting.PersonInfoAuthorityRepository;
 import nts.uk.ctx.pereg.infra.entity.roles.functionauth.PpemtPersonInfoAuth;
-import nts.uk.shr.infra.permit.data.AvaiablityPermissionRepositoryBase;
+import nts.uk.shr.infra.permit.data.JpaAvailablityPermissionRepositoryBase;
 
 @Stateless
 public class PersonInfoAuthorityRepoImpl
-		extends AvaiablityPermissionRepositoryBase<PersonInfoAuthority, PpemtPersonInfoAuth>
+		extends JpaAvailablityPermissionRepositoryBase<PersonInfoAuthority, PpemtPersonInfoAuth>
 		implements PersonInfoAuthorityRepository {
 
 	private static final String QUERY_COMPANY_ROLEID = "SELECT a FROM PpemtPersonInfoAuth a"
