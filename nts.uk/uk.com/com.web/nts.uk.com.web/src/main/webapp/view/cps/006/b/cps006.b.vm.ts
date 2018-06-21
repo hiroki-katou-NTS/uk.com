@@ -323,9 +323,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 case 5:
                     return getText('CPS006_70');
                 case 6:
-                    return getText('CPS006_68');
                 case 7:
-                    return getText('Enum_StringItemType_EMPLOYEECODE');
+                    return getText('CPS006_68');
             }
         }
 
