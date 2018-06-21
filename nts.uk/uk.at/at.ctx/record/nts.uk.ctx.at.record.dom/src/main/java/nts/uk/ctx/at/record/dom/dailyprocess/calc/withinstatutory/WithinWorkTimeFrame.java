@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -427,7 +428,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		EmTimeZoneSet dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(),   
 													   new TimeZoneRounding(duplicateTimeSheet.getTimeSheet().getStart(),
 															   				duplicateTimeSheet.getTimeSheet().getEnd(),
-															   				duplicateTimeSheet.getTimeSheet().getRounding()));
+															   				duplicateTimeSheet.getTimeSheet().getRounding()));		
 		//遅刻時間帯の作成
   		LateTimeSheet lateTimeSheet = createLateTimeSheet(timeLeavingWork,
                    workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE),
@@ -448,7 +449,8 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
     		//遅刻時間帯の終了時刻を開始時刻にする
     			dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(), 
              									 new TimeZoneRounding(lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart()
-                                    																						:duplicateTimeSheet.getTimeSheet().getStart(),
+//                                    																						:duplicateTimeSheet.getTimeSheet().getStart(),
+             											 																	:predetermineTimeForSet.getTimeSheets(AttendanceHolidayAttr.FULL_TIME, workNo).get().getStart(),
                       							 duplicateTimeSheet.getTimeSheet().getEnd(),
                       							 duplicateTimeSheet.getTimeSheet().getRounding()));
    			}
@@ -473,7 +475,8 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	     		dupTimeSheet = new EmTimeZoneSet(new EmTimeFrameNo(workNo), 
   	              							 new TimeZoneRounding(dupTimeSheet.getTimezone().getStart(),
   	                       										  LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd()
-  	                                     																				         :dupTimeSheet.getTimezone().getEnd(),
+//  	                                     																				         :dupTimeSheet.getTimezone().getEnd(),
+  	                       												  															 :predetermineTimeForSet.getTimeSheets(AttendanceHolidayAttr.FULL_TIME, workNo).get().getEnd(),
   	                       					 dupTimeSheet.getTimezone().getRounding()));
   	    		}
   		}
