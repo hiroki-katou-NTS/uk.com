@@ -252,7 +252,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val schedule = createSchedule(integrationOfDaily,companyCommonSetting,converter);
 		//実績の時間帯
 		val record = createRecord(integrationOfDaily,TimeSheetAtr.RECORD,companyCommonSetting);
-		if (!record.getCalculatable()) {
+		//実績が入力されていなくてもor実績側が休日でも、予定時間は計算する必要があるため
+		if (!record.getCalculatable() && (!record.getWorkType().isPresent() || !record.getWorkType().get().getDailyWork().isOneDayHoliday())) {
 			integrationOfDaily.setCalAttr(copyCalcAtr);
 			return integrationOfDaily;
 		}
@@ -287,14 +288,18 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val workInfo = integrationOfDaily.getWorkInformation();
 		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordInfo().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 	
-		if(!workType.isPresent()) return ManageReGetClass.cantCalc();
+		if(!workType.isPresent()) return ManageReGetClass.cantCalc(Optional.empty(),integrationOfDaily);
 		val beforeWorkType = workType;
 		
 		/*就業時間帯勤務区分*/
+		//1日休日の場合、就業時間帯コードはnullであるので、
+		//all0を計算させるため(実績が計算できなくても、予定時間を計算する必要がある
 		if(workInfo == null || workInfo.getRecordInfo() == null || workInfo.getRecordInfo().getWorkTimeCode() == null)
-			return ManageReGetClass.cantCalc();
+			return ManageReGetClass.cantCalc(workType,integrationOfDaily);
+
+		
 		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordInfo().getWorkTimeCode().toString());
-		if(!workTime.isPresent()) return ManageReGetClass.cantCalc();
+		if(!workTime.isPresent()) return ManageReGetClass.cantCalc(workType,integrationOfDaily);
 		
 		//就業時間帯の共通設定
 		Optional<WorkTimezoneCommonSet> commonSet = getWorkTimezoneCommonSet(integrationOfDaily,companyId,workTime,shareContainer);
@@ -304,7 +309,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		/* 労働制 */
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(integrationOfDaily, companyCommonSetting);
-		if(personalInfo==null) return ManageReGetClass.cantCalc(); 
+		if(personalInfo==null) return ManageReGetClass.cantCalc(workType,integrationOfDaily); 
 		/**
 		 * 勤務種類が休日系なら、所定時間の時間を変更する
 		 */
@@ -471,7 +476,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		PersonalLaborCondition personalLabor = new PersonalLaborCondition(oneRange.getPredetermineTimeSetForCalc().getAdditionSet());
 		
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
-			if(!flexWorkSetOpt.isPresent())return ManageReGetClass.cantCalc();
+			if(!flexWorkSetOpt.isPresent())return ManageReGetClass.cantCalc(workType,integrationOfDaily);
 			/* フレックス勤務 */
 			if(timeSheetAtr.isSchedule()) {
 				flexWorkSetOpt.get().getOffdayWorkTime().getRestTimezone().restoreFixRestTime(true);
@@ -560,7 +565,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 							() -> fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v()));
 				}
 				
-				if(!fixedWorkSetting.isPresent()) return ManageReGetClass.cantCalc();
+				if(!fixedWorkSetting.isPresent()) return ManageReGetClass.cantCalc(workType,integrationOfDaily);
 				List<OverTimeOfTimeZoneSet> fixOtSetting = Collections.emptyList();
 				if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
 					fixOtSetting = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get().getWorkTimezone().getLstOTTimezone();
@@ -733,15 +738,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 										  ManagePerCompanySet companyCommonSetting,
 										  DailyRecordToAttendanceItemConverter converter) {
 		String companyId = AppContexts.user().companyId();
-		String placeId = recordReGetClass.getIntegrationOfDaily().getAffiliationInfor().getWplID();
-		String employmentCd = recordReGetClass.getIntegrationOfDaily().getAffiliationInfor().getEmploymentCode()
-				.toString();
-		String employeeId = recordReGetClass.getIntegrationOfDaily().getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = recordReGetClass.getIntegrationOfDaily().getAffiliationInfor().getYmd();
 
 		/* 日別実績(Work)の退避 */
-		val copyIntegrationOfDaily = converter
-				.setData(recordReGetClass.getIntegrationOfDaily()).toDomain();
+		val copyIntegrationOfDaily = converter.setData(recordReGetClass.getIntegrationOfDaily()).toDomain();
 
 		//加給時間計算設定
 		BonusPayAutoCalcSet bonusPayAutoCalcSet = new BonusPayAutoCalcSet(new CompanyId(companyId),
@@ -777,18 +777,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
  
 		//-------------------------計算用一時的クラス作成----------------------------
 		
-		/*計画所定算出のため、計画側の所定時間取得*/
-		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
-		if(scheduleReGetClass.getCalculationRangeOfOneDay() != null)
-			schePreTimeSet = Optional.of(scheduleReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
-		//計画側の勤務区分取得
-		Optional<WorkTimeDailyAtr> scheWorkTimeDailyAtr = Optional.empty();
-		if(scheduleReGetClass.getWorkTimeSetting() != null
-			&& scheduleReGetClass.getWorkTimeSetting().isPresent() 
-			&& scheduleReGetClass.getWorkTimeSetting().get().getWorkTimeDivision() != null)
-				scheWorkTimeDailyAtr = Optional.of(scheduleReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr());
+
+		
 		val workType = recordReGetClass.getWorkType();
-		if(!workType.isPresent() || !recordReGetClass.getWorkTimeSetting().isPresent()) return recordReGetClass.getIntegrationOfDaily();
+		//if(!workType.isPresent() || !recordReGetClass.getWorkTimeSetting().isPresent()) return recordReGetClass.getIntegrationOfDaily();
+		if(!workType.isPresent()) return recordReGetClass.getIntegrationOfDaily();
 		
 
 		//乖離時間(AggregateRoot)取得
@@ -801,40 +794,17 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*時間の計算*/
 		recordReGetClass.setIntegrationOfDaily(
 				AttendanceTimeOfDailyPerformance.calcTimeResult(
-					recordReGetClass.getCalculationRangeOfOneDay(),
-					scheduleReGetClass.getCalculationRangeOfOneDay(),
-					recordReGetClass.getIntegrationOfDaily(),
 					Optional.empty(),//Optional.of(personalLabor),
 				    vacation,
 				    workType.get(),
-				    recordReGetClass.getPersonalInfo().getWorkingSystem(),
-				    recordReGetClass.getWorkDeformedLaborAdditionSet(),
-				    recordReGetClass.getWorkFlexAdditionSet(),
-				    recordReGetClass.getWorkRegularAdditionSet(),
-				    recordReGetClass.getHolidayAddtionSet(),
-				    Optional.of(recordReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()),
 				    flexCalcMethod,
-				    recordReGetClass.getHolidayCalcMethodSet(),
 					bonusPayAutoCalcSet,
-					recordReGetClass.getIntegrationOfDaily().getCalAttr(),
-					recordReGetClass.getSubHolTransferSetList(),
 					eachCompanyTimeSet,
-					recordReGetClass.getIntegrationOfDaily().getAttendanceLeavingGate(),//日別実績の入退門
-					recordReGetClass.getIntegrationOfDaily().getPcLogOnInfo(),//日別実績のPCログオン情報
-					recordReGetClass.getIntegrationOfDaily().getAttendanceLeave(),//日別実績の出退勤
 					forCalcDivergenceDto,
 					divergenceTimeList,
 					calculateOfTotalConstraintTime, 
-					schePreTimeSet,
-					recordReGetClass.getOotsukaFixedWorkSet(),
-					recordReGetClass.getFixRestTimeSetting(),
-					scheduleReGetClass.getWorkType(),
-					recordReGetClass.getDailyUnit(),
-					recordReGetClass.getBreakCount(),
-					recordReGetClass.coreTimeSetting,
-					recordReGetClass.getWorkTimezoneCommonSet(),
-					recordReGetClass.statutoryFrameNoList,
-					scheWorkTimeDailyAtr
+					scheduleReGetClass,
+					recordReGetClass
 					));
 	
 	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
@@ -966,17 +936,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			//割増時間の計算
 			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformance(personnelCostSettingAdapter.findAll(companyId, targetDate), Optional.of(forCalcDivergenceDto));
 			
-			val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(calcResultIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),
-																												 calcResultIntegrationOfDaily.getAffiliationInfor().getYmd(),
-																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
-																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
-																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
-																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
-																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance(),
-																											     forCalcDivergenceDto,
-																											     divergenceTimeList,
-																											     calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
-																											     calcResultIntegrationOfDaily.getCalAttr());
+			val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(forCalcDivergenceDto,
+																						divergenceTimeList,
+																						calcResultIntegrationOfDaily.getCalAttr());
 			
 			val reCreateActual = ActualWorkingTimeOfDaily.of(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
 												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),

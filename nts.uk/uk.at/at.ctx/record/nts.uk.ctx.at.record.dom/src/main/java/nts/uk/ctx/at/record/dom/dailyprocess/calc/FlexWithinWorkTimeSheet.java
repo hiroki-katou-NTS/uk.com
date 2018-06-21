@@ -201,6 +201,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 																							   holidayCalcMethodSet,
 																							   dailyUnit,commonSetting
 																							   ).valueAsMinutes());
+		/**/
+		
 		/*実働時間の算出(割増時間含む)*/
 		AttendanceTimeOfExistMinus zitudouIncludePremium = new AttendanceTimeOfExistMinus(super.calcWorkTime(PremiumAtr.Premium,
 																											 flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getCalculateActualOperation(),
@@ -226,23 +228,27 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()!=CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
 				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculateActualOperation()==CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) {
 			/*フレックス時間算出*/
+			
 			flexTime = new AttendanceTimeOfExistMinus(zitudou.valueAsMinutes()).minusMinutes(houtei.getForActualWorkTime().v());
+			
 			if(flexTime.lessThan(0)) {
 				flexTime = new AttendanceTimeOfExistMinus(zitudouIncludePremium.valueAsMinutes()).minusMinutes(houtei.getForWorkTimeIncludePremium().v());
 				flexTime = (flexTime.greaterThan(0))?new AttendanceTimeOfExistMinus(0):flexTime;
 				/*不足しているフレックス時間*/
 				//zitudouIncludとzitudouを入れ替える
-				AttendanceTimeOfExistMinus husokuZiKasanZikan = zitudouIncludePremium.minusMinutes(zitudou.valueAsMinutes());
+				//AttendanceTimeOfExistMinus husokuZiKasanZikan = zitudouIncludePremium.minusMinutes(zitudou.valueAsMinutes());
 			}
 		}
 		else if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()!=CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
 				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculateActualOperation()!=CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) {
+			
 			flexTime = new AttendanceTimeOfExistMinus(zitudou.valueAsMinutes()).minusMinutes(houtei.getForActualWorkTime().v());
 		}
 		else if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()==CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
 				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculateActualOperation()==CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) {
 			/*不足しているフレックス時間*/
 			//flexTime = new AttendanceTimeOfExistMinus(houtei.getForWorkTimeIncludePremium().valueAsMinutes() - predetermineTimeSet.getAdditionSet().getPredTime().getPredetermineWorkTime());
+			
 			flexTime = new AttendanceTimeOfExistMinus(zitudouIncludePremium.v()).minusMinutes(houtei.getForWorkTimeIncludePremium().valueAsMinutes());
 		}
 		else {
@@ -252,6 +258,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		if((!autoCalcAtr.isCalculateEmbossing()) && flexTime.greaterThan(0)) {
 			flexTime = new AttendanceTimeOfExistMinus(0);
 		}
+		
 		return flexTime;
 	}
 	

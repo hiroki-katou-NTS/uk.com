@@ -15,15 +15,26 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
+import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
+import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
@@ -159,6 +170,43 @@ public class TotalWorkingTime {
 		this.temporaryTime = temporaryTime;
 		this.shotrTimeOfDaily = shotrTime;
 		this.holidayOfDaily = holidayOfDaily;
+	}
+	
+	
+	public static TotalWorkingTime createAllZEROInstance() {
+		return new TotalWorkingTime(new AttendanceTime(0),
+									new AttendanceTime(0),
+									new AttendanceTime(0),
+									WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(0), 
+																								new AttendanceTime(0), 
+																								new AttendanceTime(0), 
+																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))), 
+																								new AttendanceTime(0)),
+									new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), new AttendanceTime(0)),
+																	 Optional.empty(),
+																	 Optional.empty()),
+									Collections.emptyList(),
+									Collections.emptyList(),
+									new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
+											DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
+																  new BreakTimeGoOutTimes(0),
+																  new AttendanceTime(0),
+																  Collections.emptyList()),
+									Collections.emptyList(),
+									new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(),Collections.emptyList()),
+									new WorkTimes(0),
+									new TemporaryTimeOfDaily(Collections.emptyList()),
+									new ShortWorkTimeOfDaily(new WorkTimes(0),
+															 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
+															 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
+															 ChildCareAttribute.CARE),
+									new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
+													   new TimeDigestOfDaily(new AttendanceTime(0),new AttendanceTime(0)),
+													   new YearlyReservedOfDaily(new AttendanceTime(0)),
+													   new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+													   new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+													   new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+													   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
 	}
 	
 	/**
@@ -499,8 +547,10 @@ public class TotalWorkingTime {
 	 * @return
 	 */
 	public AttendanceTime calcTotalDedTime(CalculationRangeOfOneDay oneDay) {
+		AttendanceTime totalTime = new AttendanceTime(0);
+		if(oneDay == null) return totalTime;
 		//休憩時間
-		AttendanceTime totalTime = BreakTimeOfDaily.calculationDedBreakTime(DeductionAtr.Deduction, oneDay).getTotalTime().getCalcTime();
+		totalTime = BreakTimeOfDaily.calculationDedBreakTime(DeductionAtr.Deduction, oneDay).getTotalTime().getCalcTime();
 		//外出
 		//短時間
 		
@@ -558,21 +608,26 @@ public class TotalWorkingTime {
 	}
 	
 	public int calcOverTimeRemoveFlex() {
-		int totalOverTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
+		int totalOverTime = 0;
+		int totalTransTime = 0;
+		if(this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+			totalOverTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
 				  				.stream()
 				  				.filter(tc -> tc != null 
 				  						&& tc.getOverTimeWork() != null
 				  						&& tc.getOverTimeWork().getTime() != null)
 				  				.map(tc -> tc.getOverTimeWork().getTime().valueAsMinutes())
 				  				.collect(Collectors.summingInt(tc -> tc));
-		int totaltransTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
+		
+			totalTransTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
 				   				 .stream()
 				   				 .filter(tc -> tc != null 
 				   				 	&& tc.getTransferTime() != null
 				   				 	&& tc.getTransferTime().getTime() != null)
 				   				 .map(tc -> tc.getTransferTime().getTime().valueAsMinutes())
 				   				 .collect(Collectors.summingInt(tc -> tc));
-		return totalOverTime + totaltransTime;
+		}
+		return totalOverTime + totalTransTime;
 	}
 
 	/**

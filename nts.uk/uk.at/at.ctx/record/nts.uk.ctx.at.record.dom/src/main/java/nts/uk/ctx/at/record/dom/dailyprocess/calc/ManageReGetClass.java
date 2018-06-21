@@ -70,7 +70,7 @@ public class ManageReGetClass {
 	int breakCount;
 	
 	//フレックス勤務設定
-	Optional<CoreTimeSetting> coreTimeSetting;
+	private Optional<CoreTimeSetting> coreTimeSetting;
 
 	//各種加算設定
 	private WorkRegularAdditionSet workRegularAdditionSet;
@@ -83,7 +83,8 @@ public class ManageReGetClass {
 	private Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet;
 
 	//法て内残業枠ＮＯリスト
-	List<OverTimeFrameNo> statutoryFrameNoList;	
+	private List<OverTimeFrameNo> statutoryFrameNoList;	
+	
 	/**
 	 * Constructor 
 	 */
@@ -125,11 +126,11 @@ public class ManageReGetClass {
 	/**
 	 * 計算処理に入ることができないと判断できた時Factory Method
 	 */
-	public static ManageReGetClass cantCalc() {
+	public static ManageReGetClass cantCalc(Optional<WorkType> workType,IntegrationOfDaily integration) {
 		return new ManageReGetClass(null, 
+									integration, 
 									null, 
-									null, 
-									null, 
+									workType, 
 									null, 
 									null,
 									null,

@@ -163,12 +163,11 @@ public class ActualWorkingTimeOfDaily {
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, 
+			   List<DivergenceTime> divergenceTimeList, 
 			   int breakTimeCount, Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
 			   Optional<FixRestTimezoneSet> fixRestTimeSetting, 
 			   IntegrationOfDaily integrationOfDaily,
-			   Optional<WorkType> scheWorkType,
-			   DailyUnit dailyUnit, WorkScheduleTimeOfDaily workScheduleTime,Optional<CoreTimeSetting> coreTimeSetting,
+			   DailyUnit dailyUnit, Optional<CoreTimeSetting> coreTimeSetting,
 			   Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet
 			   ,List<OverTimeFrameNo> statutoryFrameNoList) {
 
@@ -227,16 +226,8 @@ public class ActualWorkingTimeOfDaily {
 		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
 		/* 乖離時間の計算 */
 		val divergenceTimeOfDaily = createDivergenceTimeOfDaily(
-													   oneDay.getWorkInformationOfDaily().getEmployeeId(),
-													   oneDay.getWorkInformationOfDaily().getYmd(),
-													   totalWorkingTime,
-													   constraintDifferenceTime,
-													   constraintTime,
-													   timeDifferenceWorkingHours,
-													   premiumTime,
 													   forCalcDivergenceDto,
 													   divergenceTimeList,
-													   workScheduleTime,
 													   calcAtrOfDaily
 													   );
 		
@@ -259,89 +250,12 @@ public class ActualWorkingTimeOfDaily {
 	}
 	
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(
-			String employeeId,
-			GeneralDate ymd,
-			TotalWorkingTime totalWorkingTime,
-			AttendanceTime constraintDifferenceTime, ConstraintTime constraintTime,
-			AttendanceTime timeDifferenceWorkingHours, PremiumTimeOfDailyPerformance premiumTime,
 			DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			List<DivergenceTime> divergenceTimeList, WorkScheduleTimeOfDaily workScheduleTime, CalAttrOfDailyPerformance calcAtrOfDaily
-			/*計画所定時間*/
-			/*実績所定労働時間*/) {
-		
-
-//		val replaceDto =  rePlaceIntegrationDto(forCalcDivergenceDto,
-//				   								employeeId,
-//				   								ymd,
-//				   								totalWorkingTime,
-//				   								constraintDifferenceTime,
-//				   								constraintTime,
-//				   								timeDifferenceWorkingHours,
-//				   								premiumTime,
-//				   								workScheduleTime); 	
+			List<DivergenceTime> divergenceTimeList,CalAttrOfDailyPerformance calcAtrOfDaily) {
+			
 		val returnList = calcDivergenceTime(forCalcDivergenceDto, divergenceTimeList,calcAtrOfDaily);
 		//returnする
 		return new DivergenceTimeOfDaily(returnList);
-	}
-
-	/**
-	 * Dtoの中身(日別実績の勤怠時間)を入れ替える 
-	 * @param workScheduleTime 
-	 * @return
-	 */
-	private static DailyRecordToAttendanceItemConverter rePlaceIntegrationDto(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-																		   String employeeId,
-																		   GeneralDate ymd,
-																		   TotalWorkingTime totalWorkingTime,
-																		   AttendanceTime constraintDifferenceTime,
-																		   ConstraintTime constraintTime,
-																		   AttendanceTime timeDifferenceWorkingHours,
-																		   PremiumTimeOfDailyPerformance premiumTime, WorkScheduleTimeOfDaily workScheduleTime) {
-		//Dtoの中身になっている
-		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
-		//integraionOfDailyを入れ替える
-		DivergenceTimeOfDaily diver = new DivergenceTimeOfDaily(Collections.emptyList());
-		if(integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()) {
-			diver = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
-		}
-		val attendanceTimeForDivergence = new AttendanceTimeOfDailyPerformance(employeeId, 
-																			   ymd,
-																			   /*計画所定時間 引数の計画所定に入れ替える*/
-																			   //integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
-																			   workScheduleTime,
-																			   /*実績所定労働時間 引数の実績所定に入れ替える*/
-																			   new ActualWorkingTimeOfDaily(constraintDifferenceTime,
-																					   						constraintTime, 
-																					   						timeDifferenceWorkingHours, 
-																					   						totalWorkingTime,
-																					   						//integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
-																					   						//new DivergenceTimeOfDaily(Collections.emptyList()),
-//																					   						new DivergenceTimeOfDaily(Collections.emptyList()),
-																					   						diver,
-																					   						premiumTime),
-																			   //滞在時間
-																			   new StayingTimeOfDaily(new AttendanceTime(0),
-																					   				  new AttendanceTime(0),
-																					   				  new AttendanceTime(0),
-																					   				  new AttendanceTime(0),
-																					   				  new AttendanceTime(0)),
-																			   
-																				/*不就労時間*/
-																				new AttendanceTimeOfExistMinus(0),
-																				/*予定差異時間の計算*/
-																				new AttendanceTimeOfExistMinus(0),
-																				/*医療時間*/
-																				new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT,
-																																 new AttendanceTime(0),
-																																 new AttendanceTime(0),
-																																 new AttendanceTime(0)));
-//																			   integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
-//																			   integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime(),
-//																			   integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getBudgetTimeVariance(),
-//																			   integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
-		//DtoのWithを使って入替
-		return forCalcDivergenceDto.withAttendanceTime(attendanceTimeForDivergence);
-		
 	}
 
 	/**
