@@ -577,9 +577,23 @@ public class AggregateMonthlyRecordServiceProc {
 					// 月別実績　計算処理
 					val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
 					val monthlyRecordDto = monthlyConverter.withAttendanceTime(attendanceTime);
-					optionalItem.caluculationFormula(
+					val calcResult = optionalItem.caluculationFormula(
 							this.companyId, optionalItem, this.companySets.getFormulaList(),
 							Optional.empty(), Optional.of(monthlyRecordDto));
+					if (calcResult != null){
+						if (calcResult.getTime().isPresent()){
+							if (anyTime == null) anyTime = new AnyTimeMonth(0);
+							anyTime = anyTime.addMinutes(calcResult.getTime().get());
+						}
+						if (calcResult.getCount().isPresent()){
+							if (anyTimes == null) anyTimes = new AnyTimesMonth(0.0);
+							anyTimes = anyTimes.addTimes(calcResult.getCount().get().doubleValue());
+						}
+						if (calcResult.getMoney().isPresent()){
+							if (anyAmount == null) anyAmount = new AnyAmountMonth(0);
+							anyAmount = anyAmount.addAmount(calcResult.getMoney().get());
+						}
+					}
 				}
 				
 				// 任意項目集計結果を返す

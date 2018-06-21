@@ -202,7 +202,7 @@ module nts.uk.at.view.ksm011 {
                 self.unhookingEnable = ko.observable(false);
                 self.confirmEnable = ko.observable(false);
                 self.retrievalMethodEnable = ko.observable(false);
-                self.optionCompleteEnable = ko.observable(true);
+                self.optionCompleteEnable = ko.observable(false);
 
                 //Block 1
                 self.alarmCheckAtr = ko.observableArray([
@@ -286,7 +286,7 @@ module nts.uk.at.view.ksm011 {
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
-                self.selectedSymbol = ko.observable(0);
+                self.selectedSymbol = ko.observable(1);
 
                 //Block 3
                 self.dispOn28th = ko.observableArray([
@@ -316,7 +316,7 @@ module nts.uk.at.view.ksm011 {
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
 
-                self.selectedDate = ko.observable(1);
+                self.selectedDate = ko.observable(0);
 
                 self.indicationByShift = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
@@ -620,8 +620,17 @@ module nts.uk.at.view.ksm011 {
                         var sortedScheFuncCond = _.sortBy(self.dataA.scheFuncCond, [function(o) { return o.conditionNo; }]);
                         _.forEach(sortedScheFuncCond, function(item) {
                             var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(item.conditionNo) && o.isParent == false; });
-                            self.scheFuncCondList.push(result);
-                            conds += result.conditionName + ", ";
+                            if (result !== undefined) {
+                                self.scheFuncCondList.push(result);
+                            }
+                            else {
+                                self.scheFuncCondList.push(new ConditionModel({
+                                    conditionNo: item.conditionNo,
+                                    conditionName: nts.uk.resource.getText("KSM011_75"),
+                                    isParent: false,
+                                }));
+                            }
+                            conds += result !== undefined ? result.conditionName + ", " : nts.uk.resource.getText("KSM011_75") + ", ";
                         });
                         if (conds == "") {
                             self.conditionList(nts.uk.resource.getText("KSM011_75"));
@@ -640,11 +649,11 @@ module nts.uk.at.view.ksm011 {
                         self.selectedDay(0);
                         self.selectedShortName(0);
                         self.selectedTime(0);
-                        self.selectedSymbol(0);
+                        self.selectedSymbol(1);
                         self.selectedDispOn28th(1);
                         self.selectedIndication(1);
                         self.selectedIndividual(1);
-                        self.selectedDate(1);
+                        self.selectedDate(0);
                         self.selectedIndicationByShift(1);
                         self.selectedRegular(0);
                         self.selectedFluid(0);
@@ -653,7 +662,7 @@ module nts.uk.at.view.ksm011 {
                         self.selectedGeneral(1);
                         self.selectedSimulation(1);
                         self.selectedCapture(1);
-                        self.selectedCompFunc(0);
+                        self.selectedCompFunc(1);
                         self.selectedOptionComp(0);
                         self.selectedAlarmCheck(0);
                         self.selectedAlarmMethod(0);
@@ -680,6 +689,7 @@ module nts.uk.at.view.ksm011 {
                     } else {
                         self.unhookingEnable(false);
                         self.confirmEnable(false);
+                        self.alarmMethodEnable(false);
                     }
                     nts.uk.ui.windows.setShared("KSM011_A_TEAMDIVISION", self.selectedTeamDivision());
                     nts.uk.ui.windows.setShared("KSM011_A_RANK", self.selectedRank());
@@ -835,6 +845,11 @@ module nts.uk.at.view.ksm011 {
                             });
                         });
                     } else {
+                        let result = _.find(self.scheFuncCondList(), function(o) { return o.conditionName == nts.uk.resource.getText("KSM011_75"); });
+                        if (result !== undefined) {
+                            nts.uk.ui.dialog.alertError("khong dang ki duoc");
+                            return;
+                        }
                         _.forEach(self.scheFuncCondList(), function(item) {
                             conditionData.push({
                                 conditionNo: Number(item.conditionNo)
@@ -842,6 +857,11 @@ module nts.uk.at.view.ksm011 {
                         });
                     }
                 } else {
+                    let result = _.find(self.oldScheFuncCondList, function(o) { return o.conditionName == nts.uk.resource.getText("KSM011_75"); });
+                    if (result !== undefined) {
+                        nts.uk.ui.dialog.alertError("khong dang ki duoc");
+                        return;
+                    }
                     if (self.selectedOptionComp() == 0 || self.selectedAlarmCheck() == 1 || self.selectedAlarmMethod() == 0) {
                         _.forEach(self.oldScheFuncCondList, function(item) {
                             conditionData.push({
@@ -906,36 +926,44 @@ module nts.uk.at.view.ksm011 {
             openEDialog() {
                 var self = this;
 
-                if (self.dataE != null) {
-                    nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", self.dataE);
-                } else {
-                    var oldData = [];
+                var oldData = [];
+                _.forEach(self.scheFuncCondList(), function(item) {
+                    oldData.push(item.conditionNo.toString() + "c");
+                });
+                let items = self.dataE != null ? self.dataE : oldData;
+                //check exist items
+                service.checkExistedItems(items).done(function(data) {
+                    if (data.existed) {
+                        if (self.dataE != null) {
+                            nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", self.dataE);
+                        } else {
+                            nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", oldData);
+                        }
 
-                    _.forEach(self.scheFuncCondList(), function(item) {
-                        oldData.push(item.conditionNo.toString() + "c");
-                    });
+                        nts.uk.ui.windows.sub.modal("/view/ksm/011/e/index.xhtml").onClosed(() => {
+                            self.dataE = nts.uk.ui.windows.getShared("KSM011_E_DATA");
 
-                    nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", oldData);
-                }
+                            if (self.conditionData().length > 0 && self.dataE != null) {
+                                var conds = "";
+                                self.scheFuncCondList([]);
 
-                nts.uk.ui.windows.sub.modal("/view/ksm/011/e/index.xhtml").onClosed(() => {
-                    self.dataE = nts.uk.ui.windows.getShared("KSM011_E_DATA");
+                                _.forEach(self.dataE, function(code) {
+                                    var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(code.slice(0, -1)) && o.isParent == false; });
+                                    self.scheFuncCondList.push(result);
+                                    conds += result.conditionName + ", ";
+                                });
 
-                    if (self.conditionData().length > 0 && self.dataE != null) {
-                        var conds = "";
-                        self.scheFuncCondList([]);
-
-                        _.forEach(self.dataE, function(code) {
-                            var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(code.slice(0, -1)) && o.isParent == false; });
-                            self.scheFuncCondList.push(result);
-                            conds += result.conditionName + ", ";
+                                if (conds == "") {
+                                    self.conditionList(nts.uk.resource.getText("KSM011_75"));
+                                } else {
+                                    self.conditionList(conds.trim().slice(0, -1));
+                                }
+                            }
                         });
 
-                        if (conds == "") {
-                            self.conditionList(nts.uk.resource.getText("KSM011_75"));
-                        } else {
-                            self.conditionList(conds.trim().slice(0, -1));
-                        }
+                    }
+                    else {
+                        self.conditionList(data.items);
                     }
                 });
             }

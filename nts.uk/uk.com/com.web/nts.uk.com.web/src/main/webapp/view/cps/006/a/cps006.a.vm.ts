@@ -34,6 +34,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             let self = this;
             self.start(undefined);
             self.id.subscribe(function(value) {
+                $('#ctgName').focus();
                 nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value)) return;
                 self.getDetailCategory(value);

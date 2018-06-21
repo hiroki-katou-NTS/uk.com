@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
@@ -55,7 +56,11 @@ public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppSt
 			applicationReason = !appStampCmd.getTitleReason().isEmpty()? appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason() : appStampCmd.getDetailReason();
 		}
 		StampRequestMode stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class);
-		Application_New application = applicationRepository.findByID(companyID, appStampCmd.getAppID()).get();
+		Optional<Application_New> optApplication = applicationRepository.findByID(companyID, appStampCmd.getAppID());
+		if(!optApplication.isPresent()){
+			throw new BusinessException("Msg_198");
+		}
+		Application_New application = optApplication.get();
 		application.setAppReason(new AppReason(applicationReason));
 		List<AppStampGoOutPermit> appStampGoOutPermits = Collections.emptyList();
 		List<AppStampWork> appStampWorks = Collections.emptyList();
@@ -86,7 +91,7 @@ public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppSt
 							x.getStampFrameNo(), 
 							EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
 							Optional.ofNullable(x.getSupportCard()), 
-							Optional.ofNullable(x.getSupportLocationCD()), 
+							Optional.ofNullable(x.getSupportLocation()), 
 							Optional.ofNullable(x.getStartTime()).map(p -> new TimeWithDayAttr(p)), 
 							Optional.ofNullable(x.getStartLocation()), 
 							Optional.ofNullable(x.getEndTime()).map(p -> new TimeWithDayAttr(p)), 
@@ -116,7 +121,7 @@ public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppSt
 							x.getStampFrameNo(), 
 							EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
 							Optional.ofNullable(x.getSupportCard()), 
-							Optional.ofNullable(x.getSupportLocationCD()), 
+							Optional.ofNullable(x.getSupportLocation()), 
 							Optional.ofNullable(x.getStartTime()).map(p -> new TimeWithDayAttr(p)), 
 							Optional.ofNullable(x.getStartLocation()), 
 							Optional.ofNullable(x.getEndTime()).map(p -> new TimeWithDayAttr(p)), 

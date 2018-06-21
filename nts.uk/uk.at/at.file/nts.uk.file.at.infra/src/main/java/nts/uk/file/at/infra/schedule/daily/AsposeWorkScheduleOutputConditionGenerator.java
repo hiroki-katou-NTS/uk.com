@@ -1,4 +1,4 @@
-package nts.uk.file.at.infra.dailyschedule;
+package nts.uk.file.at.infra.schedule.daily;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -107,6 +107,7 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
 import nts.uk.file.at.app.export.employee.jobtitle.EmployeeJobHistExport;
 import nts.uk.file.at.app.export.employee.jobtitle.JobTitleImportAdapter;
+import nts.uk.file.at.infra.schedule.RowPageTracker;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -216,10 +217,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}
 		
+		OutputItemDailyWorkSchedule outputItemDailyWork = optOutputItemDailyWork.get();
+		
 		Workbook workbook;
 		try {
-			workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(filename));
-			
 			workbook = reportContext.getWorkbook();
 			
 			WorkbookDesigner designer = new WorkbookDesigner();
@@ -279,7 +280,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			WorksheetCollection sheetCollection = workbook.getWorksheets();
 			
 			// Write header data
-			writeHeaderData(query, sheet, reportData, dateRow);
+			writeHeaderData(query, outputItemDailyWork, sheet, reportData, dateRow);
 			
 			// Copy footer
 			//copyFooter(sheet, sheetCollection.get(6));
@@ -967,6 +968,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 					TotalValue totalValue;
 					if (optTotalVal.isPresent()) {
+						if (actualValue.value() == null) return;
 						totalValue = optTotalVal.get();
 						int totalValueType = totalValue.getValueType();
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
@@ -1038,6 +1040,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 				TotalValue totalValue;
 				if (optTotalVal.isPresent()) {
+					if (actualValue.value() == null) return;
 					totalValue = optTotalVal.get();
 					int totalValueType = totalValue.getValueType();
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
@@ -1083,11 +1086,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			WorkplaceTotal workplaceTotal = workplaceDaily.getLstWorkplaceData().getWorkplaceTotal();
 			List<TotalValue> lstTotalVal = workplaceTotal.getTotalWorkplaceValue();
 			lstTotalVal.stream().forEach(totalVal -> {
-				if (totalVal.value() == null) return;
 				// Literally 0-1 result in list
 				Optional<TotalValue> optGrossTotal = lstGrossTotal.stream().filter(x -> x.getAttendanceId() == totalVal.getAttendanceId()).findFirst();
 				TotalValue totalValue;
 				if (optGrossTotal.isPresent()) {
+					if (totalVal.value() == null) return;
 					totalValue = optGrossTotal.get();
 					int totalValueType = totalValue.getValueType();
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
@@ -1389,10 +1392,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param reportData the report data
 	 * @param dateRow the date row
 	 */
-	public void writeHeaderData(WorkScheduleOutputQuery query, Worksheet sheet, DailyPerformanceReportData reportData, int dateRow) {
+	public void writeHeaderData(WorkScheduleOutputQuery query, OutputItemDailyWorkSchedule outputItem, Worksheet sheet, DailyPerformanceReportData reportData, int dateRow) {
+		// Company name
 		PageSetup pageSetup = sheet.getPageSetup();
 		pageSetup.setHeader(0, "&8 " + reportData.getHeaderData().companyName);
-
+		
+		// Output item name
+		pageSetup.setHeader(1, "&16&\"源ノ角ゴシック Normal,Bold\"" + outputItem.getItemName().v());
+		
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
 		pageSetup.setHeader(2, "&8 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
