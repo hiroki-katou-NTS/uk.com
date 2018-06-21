@@ -216,6 +216,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}
 		
+		OutputItemDailyWorkSchedule outputItemDailyWork = optOutputItemDailyWork.get();
+		
 		Workbook workbook;
 		try {
 			workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(filename));
@@ -279,7 +281,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			WorksheetCollection sheetCollection = workbook.getWorksheets();
 			
 			// Write header data
-			writeHeaderData(query, sheet, reportData, dateRow);
+			writeHeaderData(query, outputItemDailyWork, sheet, reportData, dateRow);
 			
 			// Copy footer
 			//copyFooter(sheet, sheetCollection.get(6));
@@ -1391,10 +1393,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param reportData the report data
 	 * @param dateRow the date row
 	 */
-	public void writeHeaderData(WorkScheduleOutputQuery query, Worksheet sheet, DailyPerformanceReportData reportData, int dateRow) {
+	public void writeHeaderData(WorkScheduleOutputQuery query, OutputItemDailyWorkSchedule outputItem, Worksheet sheet, DailyPerformanceReportData reportData, int dateRow) {
+		// Company name
 		PageSetup pageSetup = sheet.getPageSetup();
 		pageSetup.setHeader(0, "&8 " + reportData.getHeaderData().companyName);
-
+		
+		// Output item name
+		pageSetup.setHeader(1, "&16&\"源ノ角ゴシック Normal,Bold\"" + outputItem.getItemName().v());
+		
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
 		pageSetup.setHeader(2, "&8 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
