@@ -194,7 +194,7 @@ public class ApplicationWebservice extends WebService {
 	
 	@POST
 	@Path("getAppInfoForRemandByAppId")
-	public ApplicationRemandDto getAppInfoByAppIdForRemand(String appID){
+	public ApplicationRemandDto getAppInfoByAppIdForRemand(List<String> appID){
 		return this.finderApp.getAppByIdForRemand(appID);
 	}
 	@POST

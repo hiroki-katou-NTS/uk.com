@@ -198,8 +198,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			switch (app.getPrePostAtr()) {
 			case PREDICT: {
 				// OK
-				content += I18NText.getText("CMM045_268") + " " + clockShorHm(overTime.getWorkClockFrom1())
-						+ I18NText.getText("CMM045_100") + clockShorHm(overTime.getWorkClockTo1());
+				String time1 = clockShorHm(overTime.getWorkClockFrom1()) == "" ? "" : 
+					clockShorHm(overTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") + clockShorHm(overTime.getWorkClockTo1());
+				content += I18NText.getText("CMM045_268") + " " + time1;
 				content += (!Objects.isNull(overTime.getWorkClockFrom2())
 						? " " + clockShorHm(overTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
 				content += (!Objects.isNull(overTime.getWorkClockTo2()) ? clockShorHm(overTime.getWorkClockTo2()) : "");
@@ -279,9 +280,10 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				AppOverTime preOverTime = !Objects.isNull(preApp)
 						? overtimeRepo.getAppOvertimeFrame(companyID, preApp.getAppID()).orElse(null) : null;
 				if (!Objects.isNull(preOverTime)) {
+					String time1 = clockShorHm(preOverTime.getWorkClockFrom1()) == "" ? "" : 
+						clockShorHm(preOverTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") + clockShorHm(preOverTime.getWorkClockTo1());
 					content += I18NText.getText("CMM045_272") + " " + I18NText.getText("CMM045_268") + " "
-							+ clockShorHm(preOverTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100")
-							+ clockShorHm(preOverTime.getWorkClockTo1());
+							+ time1;
 					content += (!Objects.isNull(preOverTime.getWorkClockFrom2())
 							? " " + clockShorHm(preOverTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
 					content += (!Objects.isNull(preOverTime.getWorkClockTo2())
