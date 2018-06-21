@@ -85,6 +85,10 @@ module nts.uk.at.view.kaf002.m2 {
             
             register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),
@@ -129,6 +133,10 @@ module nts.uk.at.view.kaf002.m2 {
             
             update(application : vmbase.Application){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     version: application.version,
                     appID: application.applicationID(),
@@ -192,6 +200,21 @@ module nts.uk.at.view.kaf002.m2 {
                         self.appStampList()[frameNo][timeType+'Location']().name(self.findWorkLocationName(workLocation)); 
                     }
                 });      
+            }
+            
+            validateInput(appStampList: KnockoutObservableArray<vmbase.AppStampWork>){
+                _.forEach(appStampList(), (x,i) =>{
+                    if(!nts.uk.util.isNullOrEmpty(x.startTime().value())){
+                        $(".m2-start-input:eq("+i+")").ntsError('check');            
+                    } else {
+                            
+                    } 
+                    if(!nts.uk.util.isNullOrEmpty(x.endTime().value())){
+                        $(".m2-end-input:eq("+i+")").ntsError('check');    
+                    } else {
+                            
+                    }     
+                });    
             }
         }
     }
