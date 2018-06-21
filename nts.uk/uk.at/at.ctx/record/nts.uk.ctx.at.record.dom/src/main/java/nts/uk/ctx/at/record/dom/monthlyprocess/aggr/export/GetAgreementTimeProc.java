@@ -9,6 +9,10 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -23,6 +27,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public class GetAgreementTimeProc {
 
+	/** 月別集計で必要な会社別設定 */
+	private MonAggrCompanySettings companySets;
+	/** 月別集計で必要な社員別設定 */
+	private MonAggrEmployeeSettings employeeSets;
 	/** 月別集計が必要とするリポジトリ */
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	/** 締めの取得 */
@@ -64,11 +72,22 @@ public class GetAgreementTimeProc {
 		this.closureId = closureId;
 		this.errorMessage = null;
 		
+		// 月別集計で必要な会社別設定を取得
+		this.companySets = MonAggrCompanySettings.loadSettings(companyId, this.repositories);
+		
 		// 年月を集計期間に変換
 		val aggrPeriod = this.convertToAggregatePeriod();
 		if (aggrPeriod == null) return returnList;
 		
 		for (val employeeId : employeeIds){
+			
+			// 月別集計で必要な社員別設定を取得
+			this.employeeSets = MonAggrEmployeeSettings.loadSettings(
+					companyId, employeeId, aggrPeriod, this.repositories);
+			if (this.employeeSets.getErrorInfos().size() > 0){
+				this.errorMessage = this.employeeSets.getErrorInfos().values().stream().findFirst().get().v();
+				continue;
+			}
 			
 			// 36協定時間一覧を作成
 			AgreementTimeDetail aggrTimeDetail = new AgreementTimeDetail(employeeId);
@@ -147,10 +166,11 @@ public class GetAgreementTimeProc {
 			Optional<List<AttendanceTimeOfDailyPerformance>> attendanceTimeOfDailysOpt){
 		
 		// 「月別実績の勤怠時間」を取得
+		DatePeriod monthPeriod = null;
 		AttendanceTimeOfMonthly attendanceTimeOfMonthly = null;
 		val attendanceTimeOfMonthlys = this.repositories.getAttendanceTimeOfMonthly()
 				.findByYMAndClosureIdOrderByStartYmd(employeeId, this.yearMonth, this.closureId);
-		if (attendanceTimeOfMonthlys.size() <= 0) {
+		if (attendanceTimeOfMonthlys.size() == 0) {
 			
 			// 「締め」を取得する
 			val closureOpt = this.closureRepository.findById(this.companyId, this.closureId.value);
@@ -164,19 +184,35 @@ public class GetAgreementTimeProc {
 			val closurePeriod = closurePeriodOpt.get();
 
 			// 「月別実績の勤怠時間」を作成する
+			monthPeriod = closurePeriod.getPeriod();
 			attendanceTimeOfMonthly = new AttendanceTimeOfMonthly(
-					employeeId, this.yearMonth, this.closureId, this.closureDate, closurePeriod.getPeriod());
+					employeeId, this.yearMonth, this.closureId, this.closureDate, monthPeriod);
 		}
 		else {
 			attendanceTimeOfMonthly = attendanceTimeOfMonthlys.get(0);
+			monthPeriod = attendanceTimeOfMonthly.getDatePeriod();
 		}
-		if (attendanceTimeOfMonthly == null) return null;
-	
+
+		// 集計に必要な日別実績データを取得する
+		MonthlyCalculatingDailys monthlyCalcDailys = null;
+		if (attendanceTimeOfDailysOpt.isPresent()){
+			monthlyCalcDailys = MonthlyCalculatingDailys.loadData(employeeId, monthPeriod,
+					attendanceTimeOfDailysOpt.get(), this.repositories);
+		}
+		else {
+			monthlyCalcDailys = MonthlyCalculatingDailys.loadData(employeeId, monthPeriod, this.repositories);
+		}
+		
+		// 集計前の月別実績データを確認する
+		MonthlyOldDatas monthlyOldDatas = MonthlyOldDatas.loadData(
+				employeeId, this.yearMonth, this.closureId, this.closureDate, this.repositories);
+		
 		// 36協定時間の集計
 		val monthlyCalculation = attendanceTimeOfMonthly.getMonthlyCalculation();
 		val agreementTimeOpt = monthlyCalculation.aggregateAgreementTime(
 				this.companyId, employeeId, this.yearMonth, this.closureId, this.closureDate, aggrPeriod,
-				attendanceTimeOfDailysOpt, Optional.empty(), Optional.empty(), this.repositories);
+				Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
+				monthlyCalcDailys, monthlyOldDatas, this.repositories);
 		if (agreementTimeOpt.isPresent()){
 			
 			// エラーメッセージがあれば、エラーメッセージを入れる
