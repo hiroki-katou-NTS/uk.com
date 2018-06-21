@@ -4,33 +4,32 @@ module cps002.a.service {
     import format = nts.uk.text.format;
     import block = nts.uk.ui.block;
 
-    let regpath = "ctx/pereg/",
-        paths: any = {
-            getEmployeeCode: 'employee/mngdata/getGenerateEmplCode',
-            getCardNumber: 'employee/mngdata/getGenerateCardNo',
-            getStamCardEditing: 'record/stamp/stampcardedit/find',
-            getLayout: 'person/newlayout/check-new-layout',
-            getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
-            getUserSetting: 'usersetting/getUserSetting',
-            getLastRegHistory: 'empreghistory/getLastRegHistory',
-            getGenerateEmplCodeAndComId: 'addemployee/getGenerateEmplCodeAndComId',
-            validateEmpInfo: 'addemployee/validateEmpInfo',
-            getCopySetting: 'copysetting/setting/getCopySetting',
-            getAllCopySettingItem: 'copysetting/item/getAll/{0}/{1}/{2}',
-            getAllInitValueCtgSetting: 'initsetting/category/findAllBySetId/{0}',
-            getAllInitValueItemSetting: 'initsetting/item/findInit',
-            getLayoutByCreateType: 'layout/getByCreateType',
-            addNewEmployee: 'addemployee/addNewEmployee',
-            getEmployeeInfo: 'basic/organization/employee/getoffselect',
-            permision: 'ctx/pereg/functions/auth/find-all',
-        };
+    let paths: any = {
+        getEmployeeCode: 'ctx/pereg/employee/mngdata/getGenerateEmplCode',
+        getCardNumber: 'ctx/pereg/employee/mngdata/getGenerateCardNo',
+        getStamCardEditing: 'ctx/pereg/record/stamp/stampcardedit/find',
+        getLayout: 'ctx/pereg/person/newlayout/check-new-layout',
+        getAllInitValueSetting: 'ctx/pereg/person/info/setting/init/findAllHasChild',
+        getUserSetting: 'ctx/pereg/usersetting/getUserSetting',
+        getLastRegHistory: 'ctx/pereg/empreghistory/getLastRegHistory',
+        getGenerateEmplCodeAndComId: 'ctx/pereg/addemployee/getGenerateEmplCodeAndComId',
+        validateEmpInfo: 'ctx/pereg/addemployee/validateEmpInfo',
+        getCopySetting: 'ctx/pereg/copysetting/setting/getCopySetting',
+        getAllCopySettingItem: 'ctx/pereg/copysetting/item/getAll/{0}/{1}/{2}',
+        getAllInitValueCtgSetting: 'ctx/pereg/initsetting/category/findAllBySetId/{0}',
+        getAllInitValueItemSetting: 'ctx/pereg/initsetting/item/findInit',
+        getLayoutByCreateType: 'ctx/pereg/layout/getByCreateType',
+        addNewEmployee: 'ctx/pereg/addemployee/addNewEmployee',
+        getEmployeeInfo: 'ctx/pereg/basic/organization/employee/getoffselect',
+        permision: 'ctx/pereg/ctx/pereg/functions/auth/find-all',
+    };
 
     export function getLayout() {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
         
-        ajax(regpath + paths.getLayout)
+        ajax(paths.getLayout)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -46,7 +45,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(regpath + paths.getUserSetting)
+        nts.uk.request.ajax(paths.getUserSetting)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -62,7 +61,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(regpath + paths.getLastRegHistory)
+        nts.uk.request.ajax(paths.getLastRegHistory)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -78,7 +77,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax("com", regpath + paths.getEmployeeCode, employeeLetter)
+        nts.uk.request.ajax("com", paths.getEmployeeCode, employeeLetter)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -96,7 +95,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax("com", regpath + paths.getCardNumber, cardLetter)
+        nts.uk.request.ajax("com", paths.getCardNumber, cardLetter)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -116,7 +115,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax("com", regpath + paths.getCardNumber, employeeLetter)
+        nts.uk.request.ajax("com", paths.getCardNumber, employeeLetter)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -132,7 +131,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax("com", regpath + paths.validateEmpInfo, command)
+        nts.uk.request.ajax("com", paths.validateEmpInfo, command)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -149,7 +148,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(regpath + paths.getCopySetting)
+        nts.uk.request.ajax(paths.getCopySetting)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -164,7 +163,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(format(regpath + paths.getAllCopySettingItem, employeeId, categoryCd, baseDate))
+        nts.uk.request.ajax(format(paths.getAllCopySettingItem, employeeId, categoryCd, baseDate))
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -176,14 +175,14 @@ module cps002.a.service {
     }
 
     export function getAllInitValueSetting() {
-        return ajax(regpath + paths.getAllInitValueSetting);
+        return ajax(paths.getAllInitValueSetting);
     }
 
     export function getAllInitValueCtgSetting(settingId: string) {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(format(regpath + paths.getAllInitValueCtgSetting, settingId))
+        nts.uk.request.ajax(format(paths.getAllInitValueCtgSetting, settingId))
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -199,7 +198,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(regpath + paths.getAllInitValueItemSetting, command)
+        nts.uk.request.ajax(paths.getAllInitValueItemSetting, command)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -214,7 +213,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(regpath + paths.getLayoutByCreateType, command)
+        nts.uk.request.ajax(paths.getLayoutByCreateType, command)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -229,7 +228,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.grayout());
-        nts.uk.request.ajax(regpath + paths.addNewEmployee, command)
+        nts.uk.request.ajax(paths.addNewEmployee, command)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
