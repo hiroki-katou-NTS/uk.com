@@ -17,8 +17,8 @@ module nts.uk.at.view.kdl005.a {
             legendOptions: any;
             kdl005Data: KnockoutObservable<any>;
             employeeInfo: KnockoutObservable<string>;
-            baseDate: KnockoutObservable<string>;
-            expirationDate: KnockoutObservable<string>;
+            
+            dataItems: KnockoutObservableArray<any>;
             
             constructor() {
                 var self = this;
@@ -26,8 +26,8 @@ module nts.uk.at.view.kdl005.a {
                 self.kdl005Data = nts.uk.ui.windows.getShared("KDL005_DATA");
 
                 self.employeeInfo = ko.observable("");
-                self.baseDate = ko.observable("");
-                self.expirationDate = ko.observable("");
+                
+                self.dataItems = ko.observableArray([]);
                 
                 this.legendOptions = {
                     items: [
@@ -41,8 +41,7 @@ module nts.uk.at.view.kdl005.a {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemName.businessName]));
                         
                         service.getDetailsConfirm(value, self.kdl005Data.baseDate).done(function(data) {
-                            self.baseDate(nts.uk.time.applyFormat("Short_YMDW", data.baseDate));
-                            self.expirationDate("123");
+                            self.bindData(data);
                         }).fail(function(res) {
                               
                         });
@@ -79,12 +78,11 @@ module nts.uk.at.view.kdl005.a {
                     $('#component-items-list').ntsListComponent(self.listComponentOption);
                     
                     $("#date-fixed-table").ntsFixedTable({ height: 320, width: 650 });
-                } else {
+                } else if(self.kdl005Data.employeeBasicInfo.length == 1) {
                     self.employeeInfo(nts.uk.resource.getText("KDL009_25", [self.kdl005Data.employeeBasicInfo[0].employeeCode, self.kdl005Data.employeeBasicInfo[0].businessName]));
                     
                     service.getDetailsConfirm(self.kdl005Data.employeeBasicInfo[0].employeeCode, self.kdl005Data.baseDate).done(function(data) {
-                        self.baseDate(nts.uk.time.applyFormat("Short_YMDW", data.baseDate));
-                        self.expirationDate("123");
+                        self.bindData(data);
                     }).fail(function(res) {
                           
                     });
@@ -100,6 +98,11 @@ module nts.uk.at.view.kdl005.a {
                 dfd.resolve();
     
                 return dfd.promise();
+            }
+            
+            bindData(data: any) {
+                var self = this;
+                
             }
             
             cancel() {
