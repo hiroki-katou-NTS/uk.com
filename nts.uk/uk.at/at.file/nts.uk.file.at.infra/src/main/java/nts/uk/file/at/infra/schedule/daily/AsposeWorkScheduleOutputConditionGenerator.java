@@ -1,4 +1,4 @@
-package nts.uk.file.at.infra.dailyschedule;
+package nts.uk.file.at.infra.schedule.daily;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -107,6 +107,7 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
 import nts.uk.file.at.app.export.employee.jobtitle.EmployeeJobHistExport;
 import nts.uk.file.at.app.export.employee.jobtitle.JobTitleImportAdapter;
+import nts.uk.file.at.infra.schedule.RowPageTracker;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -220,8 +221,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		Workbook workbook;
 		try {
-			workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(filename));
-			
 			workbook = reportContext.getWorkbook();
 			
 			WorkbookDesigner designer = new WorkbookDesigner();

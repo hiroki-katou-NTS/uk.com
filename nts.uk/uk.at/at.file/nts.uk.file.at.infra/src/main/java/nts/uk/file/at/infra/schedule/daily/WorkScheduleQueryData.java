@@ -1,4 +1,4 @@
-package nts.uk.file.at.infra.dailyschedule;
+package nts.uk.file.at.infra.schedule.daily;
 
 import java.util.ArrayList;
 import java.util.List;
