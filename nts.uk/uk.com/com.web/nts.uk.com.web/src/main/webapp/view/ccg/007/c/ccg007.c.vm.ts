@@ -213,7 +213,8 @@ module nts.uk.pr.view.ccg007.c {
                             companyCode: self.companyCode(),
                             companyName: self.companyName(),
                             contractCode: self.contractCode(),
-                            employeeCode : self.employeeCode()
+                            employeeCode : self.employeeCode(),
+                            contractPassword: self.contractPassword()
                         }, true);
                         
                         nts.uk.ui.windows.sub.modal('/view/ccg/007/g/index.xhtml',{

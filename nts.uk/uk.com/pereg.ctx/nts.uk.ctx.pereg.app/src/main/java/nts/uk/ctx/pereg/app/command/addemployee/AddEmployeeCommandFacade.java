@@ -40,7 +40,10 @@ public class AddEmployeeCommandFacade {
 	public List<ItemsByCategory> createData(AddEmployeeCommand command) {
 		
 		// add new category cardNo to input
-		command.getInputs().add(createCardNoCategory(command.getCardNo()));
+		if(!command.getCardNo().equals("")) {
+			command.getInputs().add(createCardNoCategory(command.getCardNo()));
+		}
+		
 		
 		if (command.getCreateType() == 3) {
 			return command.getInputs();
@@ -68,9 +71,13 @@ public class AddEmployeeCommandFacade {
 	}
 	
 	public ItemsByCategory createCardNoCategory(String cardNo) {
-		ItemValue itemValue = new ItemValue(null, "IS00779", cardNo, SaveDataType.STRING.value);
-		return new ItemsByCategory("CS00069", null, Arrays.asList(itemValue));
+		if (!cardNo.equals("")) {
+			ItemValue itemValue = new ItemValue(null, "IS00779", cardNo, SaveDataType.STRING.value);
+			return new ItemsByCategory("CS00069", null, Arrays.asList(itemValue));
+		}
+		return null;
 	}
+		
 
 	private void updateBasicCategories(String personId, String employeeId, String comHistId,  List<ItemsByCategory> inputs) {
 

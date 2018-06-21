@@ -46,9 +46,11 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
@@ -116,6 +118,9 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 日別実績の任意項目の取得 */
 	@Inject
 	private AnyItemValueOfDailyRepo anyItemValueOfDaily;
+	/** 年休付与残数データ */
+	@Inject
+	private AnnLeaGrantRemDataRepository annLeaGrantRemData;
 
 	/** 勤怠項目値変換 */
 	@Inject
@@ -219,6 +224,9 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 計算式 */
 	@Inject
 	private FormulaRepository formula;
+	/** 年休設定 */
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
 	
 	/** 週開始の取得 */
 	@Inject

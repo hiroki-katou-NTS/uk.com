@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -38,10 +39,10 @@ import nts.uk.shr.com.i18n.TextResource;
  * 月別集計で必要な会社別設定
  * @author shuichu_ishida
  */
-@Getter
 public class MonAggrCompanySettings {
 
 	/** 会社ID */
+	@Getter
 	private String companyId;
 	/** 勤務種類 */
 	private Map<String, WorkType> workTypeMap;
@@ -50,45 +51,68 @@ public class MonAggrCompanySettings {
 	/** 所定時間設定 */
 	private Map<String, PredetemineTimeSetting> predetermineTimeSetMap;
 	/** 締め */
+	@Getter
 	private Map<Integer, Closure> closureMap;
 	/** 法定内振替順設定 */
+	@Getter
 	private LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet;
 	/** 残業枠の役割 */
+	@Getter
 	private List<RoleOvertimeWork> roleOverTimeFrameList;
 	/** 休出枠の役割 */
+	@Getter
 	private List<RoleOfOpenPeriod> roleHolidayWorkFrameList;
 	/** 休暇時間加算設定 */
+	@Getter
 	private Map<String, AggregateRoot> holidayAdditionMap;
 	/** 労働時間と日数の設定の利用単位の設定 */
+	@Getter
 	private UsageUnitSetting usageUnitSet;
 	/** 通常勤務会社別月別実績集計設定 */
+	@Getter
 	private Optional<ComRegulaMonthActCalSet> comRegSetOpt;
 	/** 変形労働会社別月別実績集計設定 */
+	@Getter
 	private Optional<ComDeforLaborMonthActCalSet> comIrgSetOpt;
 	/** フレックス会社別月別実績集計設定 */
+	@Getter
 	private Optional<ComFlexMonthActCalSet> comFlexSetOpt;
 	/** フレックス勤務の月別集計設定 */
+	@Getter
 	private MonthlyAggrSetOfFlex aggrSetOfFlex;
 	/** フレックス勤務所定労働時間 */
+	@Getter
 	private GetFlexPredWorkTime flexPredWorkTime;
 	/** 休暇加算設定 */
+	@Getter
 	private VacationAddSet vacationAddSet;
 	/** 時間外超過設定 */
+	@Getter
 	private OutsideOTSetting outsideOverTimeSet;
 	/** 丸め設定 */
+	@Getter
 	private RoundingSetOfMonthly roundingSet;
 	/** 月別実績の給与項目カウント */
+	@Getter
 	private PayItemCountOfMonthly payItemCount;
 	/** 月別実績の縦計方法 */
+	@Getter
 	private VerticalTotalMethodOfMonthly verticalTotalMethod;
 	/** 任意項目 */
+	@Getter
 	private Map<Integer, OptionalItem> optionalItemMap;
 	/** 適用する雇用条件 */
+	@Getter
 	private Map<Integer, EmpCondition> empConditionMap;
 	/** 計算式 */
+	@Getter
 	private List<Formula> formulaList;
+	/** 年休設定 */
+	@Getter
+	private AnnualPaidLeaveSetting annualLeaveSet;
 	
 	/** エラー情報 */
+	@Getter
 	private Map<String, ErrMessageContent> errorInfos;
 	
 	private MonAggrCompanySettings(String companyId){
@@ -123,23 +147,6 @@ public class MonAggrCompanySettings {
 		
 		MonAggrCompanySettings domain = new MonAggrCompanySettings(companyId);
 
-		// 勤務種類
-		val workTypes = repositories.getWorkType().findByCompanyId(companyId);
-		for (val workType : workTypes){
-			val workTypeCode = workType.getWorkTypeCode().v();
-			domain.workTypeMap.putIfAbsent(workTypeCode, workType);
-		}
-		
-		// 就業時間帯：共通設定
-		domain.workTimeCommonSetMap = repositories.getCommonSet().getAll(companyId);
-		
-		// 所定時間設定
-		val predetermineTimeSets = repositories.getPredetermineTimeSet().findByCompanyID(companyId);
-		for (val predetermineTimeSet : predetermineTimeSets){
-			val workTimeCode = predetermineTimeSet.getWorkTimeCode().v();
-			domain.predetermineTimeSetMap.putIfAbsent(workTimeCode, predetermineTimeSet);
-		}
-		
 		// 「締め」　取得
 		val closures = repositories.getClosure().findAllUse(companyId);
 		for (val closure : closures){
@@ -161,7 +168,7 @@ public class MonAggrCompanySettings {
 		// 休出枠の役割
 		domain.roleHolidayWorkFrameList = repositories.getRoleHolidayWorkFrame().findByCID(companyId);
 		
-		// 休暇加算時間設定
+		// 休暇時間加算設定
 		domain.holidayAdditionMap = repositories.getHolidayAddition().findByCompanyId(companyId);
 		
 		// 労働時間と日数の設定の利用単位の設定
@@ -236,6 +243,83 @@ public class MonAggrCompanySettings {
 		// 計算式
 		domain.formulaList = repositories.getFormula().find(companyId);
 		
+		// 年休設定
+		domain.annualLeaveSet = repositories.getAnnualPaidLeaveSet().findByCompanyId(companyId);
+		
 		return domain;
+	}
+	
+	/**
+	 * 勤務種類の取得
+	 * @param workTypeCode 勤務種類コード
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 勤務種類　（なければ、null）
+	 */
+	public WorkType getWorkTypeMap(
+			String workTypeCode,
+			RepositoriesRequiredByMonthlyAggr repositories){
+	
+		if (this.workTypeMap.containsKey(workTypeCode)) return this.workTypeMap.get(workTypeCode);
+		
+		val workTypeOpt = repositories.getWorkType().findByPK(this.companyId, workTypeCode);
+		if (workTypeOpt.isPresent()){
+			this.workTypeMap.put(workTypeCode, workTypeOpt.get());
+		}
+		else {
+			this.workTypeMap.put(workTypeCode, null);
+		}
+		return this.workTypeMap.get(workTypeCode);
+	}
+
+	/**
+	 * 現在の全ての勤務種類の取得
+	 * @return 勤務種類マップ
+	 */
+	public Map<String, WorkType> getAllWorkTypeMap(){
+		return this.workTypeMap;
+	}
+	
+	/**
+	 * 就業時間帯：共通設定の取得
+	 * @param workTimeCode 就業時間帯コード
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 就業時間帯：共通設定　（なければ、null）
+	 */
+	public WorkTimezoneCommonSet getWorkTimeCommonSetMap(
+			String workTimeCode,
+			RepositoriesRequiredByMonthlyAggr repositories){
+	
+		if (this.workTimeCommonSetMap.containsKey(workTimeCode)) return this.workTimeCommonSetMap.get(workTimeCode);
+		
+		val workTimeCommonSetOpt = repositories.getCommonSet().get(this.companyId, workTimeCode);
+		if (workTimeCommonSetOpt.isPresent()){
+			this.workTimeCommonSetMap.put(workTimeCode, workTimeCommonSetOpt.get());
+		}
+		else {
+			this.workTimeCommonSetMap.put(workTimeCode, null);
+		}
+		return this.workTimeCommonSetMap.get(workTimeCode);
+	}
+
+	/**
+	 * 所定時間設定の取得
+	 * @param workTimeCode 就業時間帯コード
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 所定時間設定　（なければ、null）
+	 */
+	public PredetemineTimeSetting getPredetemineTimeSetMap(
+			String workTimeCode,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		if (this.predetermineTimeSetMap.containsKey(workTimeCode)) return this.predetermineTimeSetMap.get(workTimeCode);
+		
+		val predetermineTimeSetOpt = repositories.getPredetermineTimeSet().findByWorkTimeCode(this.companyId, workTimeCode);
+		if (predetermineTimeSetOpt.isPresent()){
+			this.predetermineTimeSetMap.put(workTimeCode, predetermineTimeSetOpt.get());
+		}
+		else {
+			this.predetermineTimeSetMap.put(workTimeCode, null);
+		}
+		return this.predetermineTimeSetMap.get(workTimeCode);
 	}
 }

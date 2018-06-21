@@ -72,6 +72,7 @@ module nts.uk.pr.view.ccg007.f {
                 localStorage.setItem('loginId', self.loginId());
                 localStorage.setItem('contractCode', self.callerParameter.contractCode);
                 localStorage.setItem('url', url);
+                localStorage.setItem('contractPassword', self.callerParameter.contractPassword);
                 
                 //jump CCG007H
                 nts.uk.ui.windows.getSelf().parent.globalContext.nts.uk.request.jump("/view/ccg/007/h/index.xhtml");
