@@ -22,8 +22,6 @@ module nts.uk.at.view.kwr006.c {
             itemListConditionSet: KnockoutObservableArray<any>;
             selectedCodeA8_2: KnockoutObservable<number>;
             enableConfigErrCode: KnockoutObservable<boolean>;
-            
-            storeCurrentCodeBeforeCopy: KnockoutObservable<string>;
 
             constructor() {
                 var self = this;
@@ -50,7 +48,7 @@ module nts.uk.at.view.kwr006.c {
                         nts.uk.ui.errors.clearAll();
                         self.C3_2_value(codeChoose.itemCode);
                         self.C3_3_value(codeChoose.itemName);
-                        self.getOutputItemMonthlyWorkSchedule(_.find(self.allMainDom(), function(o: any) {
+                        self.getOutputItemDailyWorkSchedule(_.find(self.allMainDom(), function(o: any) {
                             return codeChoose.itemCode == o.itemCode;
                         }));
                         self.enableBtnDel(true);
@@ -58,7 +56,7 @@ module nts.uk.at.view.kwr006.c {
                     } else {
                         self.C3_3_value('');
                         self.C3_2_value('');
-                        self.getOutputItemMonthlyWorkSchedule([]);
+                        self.getOutputItemDailyWorkSchedule([]);
                         self.enableBtnDel(false);
                         self.enableCodeC3_2(true);
                     }
@@ -68,8 +66,8 @@ module nts.uk.at.view.kwr006.c {
                     { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180 }
                 ]);
                 self.itemListConditionSet = ko.observableArray([
-                    new BoxModel('0', nts.uk.resource.getText("KWR006_56")),
-                    new BoxModel('1', nts.uk.resource.getText("KWR006_57"))
+                    new BoxModel(0, nts.uk.resource.getText("KWR006_56")),
+                    new BoxModel(1, nts.uk.resource.getText("KWR006_57"))
                 ]);
                 self.items = ko.observableArray([]);
                 self.selectedCodeA8_2 = ko.observable(0);
@@ -82,8 +80,6 @@ module nts.uk.at.view.kwr006.c {
                     }
                 })
                 self.selectedCodeA8_2.valueHasMutated();
-                
-                self.storeCurrentCodeBeforeCopy = ko.observable('');
             }
 
             /*
@@ -183,7 +179,7 @@ module nts.uk.at.view.kwr006.c {
                     })
 
                 }).fail(function(err) {
-                    nts.uk.ui.dialog.alertError(err);
+                    nts.uk.ui.dialog.error(err);
                     dfd.reject();
                 })
 
@@ -239,10 +235,10 @@ module nts.uk.at.view.kwr006.c {
                 let self = this;
 
                 $.when(self.getDataService(), self.getEnumSettingPrint()).done(function(data1: any) {
-                    if (_.isUndefined(nts.uk.ui.windows.getShared('KWR001_C'))) {
+                    if (_.isUndefined(nts.uk.ui.windows.getShared('KWR006_C'))) {
                         self.currentCodeList(null);
                     } else {
-                        self.currentCodeList(nts.uk.ui.windows.getShared('KWR001_C'));
+                        self.currentCodeList(nts.uk.ui.windows.getShared('KWR006_C'));
                     }
 
                     dfd.resolve();
@@ -282,7 +278,7 @@ module nts.uk.at.view.kwr006.c {
             /*
                 get Enum Setting Print
             */
-            private getEnumSettingPrint(): JQueryPromise<void> {
+            private getEnumSettingPrint: JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 service.getEnumSettingPrint().done(function(data: any) {
@@ -292,7 +288,6 @@ module nts.uk.at.view.kwr006.c {
                 
                 return dfd.promise();
             }
-        }
 
         class ItemModel {
             code: string;
