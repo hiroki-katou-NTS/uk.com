@@ -12,7 +12,6 @@ module cps002.a.service {
         getAllInitValueSetting: 'ctx/pereg/person/info/setting/init/findAllHasChild',
         getUserSetting: 'ctx/pereg/usersetting/getUserSetting',
         getLastRegHistory: 'ctx/pereg/empreghistory/getLastRegHistory',
-        getGenerateEmplCodeAndComId: 'ctx/pereg/addemployee/getGenerateEmplCodeAndComId',
         validateEmpInfo: 'ctx/pereg/addemployee/validateEmpInfo',
         getCopySetting: 'ctx/pereg/copysetting/setting/getCopySetting',
         getAllCopySettingItem: 'ctx/pereg/copysetting/item/getAll/{0}/{1}/{2}',
