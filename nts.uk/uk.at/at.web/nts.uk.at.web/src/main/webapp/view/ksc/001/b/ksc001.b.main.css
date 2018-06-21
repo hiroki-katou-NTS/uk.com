@@ -164,7 +164,6 @@ button.nts-switch-button {
 }
 
 .nts-wizard.vertical>.steps {
-	height: 75vh;
 	width: 300px;
 }
 
