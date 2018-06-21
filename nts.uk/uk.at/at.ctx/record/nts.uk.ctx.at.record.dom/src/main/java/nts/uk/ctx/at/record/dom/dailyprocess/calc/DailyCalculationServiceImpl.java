@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -79,8 +83,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 			DatePeriod datePeriod, ExecutionAttr executionAttr, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog) {
 		
-//		ProcessState status = ProcessState.SUCCESS;
-		StateHolder stateHolder = new StateHolder();
+		ProcessState status = ProcessState.SUCCESS;
 		// 実行状態　初期設定
 		//*****（未）　setDataのID名を、画面PGでの表示値用セションID名と合わせる必要があるので、画面PGの修正と調整要。
 		//*****（未）　表示させるエラーが出た時は、HasErrorに任意のタイミングでメッセージを入れて返せばいいｊはず。画面側のエラー表示仕様の確認も要。
@@ -91,9 +94,9 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 
 		// 設定情報を取得　（日別計算を実行するかチェックする）
 		//　※　実行しない時、終了状態＝正常終了
-		if (!executionLog.isPresent()) return stateHolder.status;
-		if (executionLog.get().getExecutionContent() != ExecutionContent.DAILY_CALCULATION) return stateHolder.status;
-		if (!executionLog.get().getDailyCalSetInfo().isPresent()) return stateHolder.status;
+		if (!executionLog.isPresent()) return status;
+		if (executionLog.get().getExecutionContent() != ExecutionContent.DAILY_CALCULATION) return status;
+		if (!executionLog.get().getDailyCalSetInfo().isPresent()) return status;
 		val executionContent = executionLog.get().getExecutionContent();
 		
 		// 実行種別　取得　（通常、再実行）
@@ -114,60 +117,30 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		
 		
 		// 社員分ループ
-		Stopwatches.start("start calc");
-		Counter calculatedCount = new Counter(0, employeeIds.size());
-		/** 並列処理、PARALLELSTREAM */
+
+		/** start 並列処理、PARALLELSTREAM */
+		StateHolder stateHolder = new StateHolder(employeeIds.size());
+		
 		employeeIds.parallelStream().forEach(employeeId -> {
 			// 社員の日別実績を計算
-			stateHolder.updateState(this.dailyCalculationEmployeeService.calculate(asyncContext,
-					employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr,companyCommonSetting));
-
-			// 状態確認
-			if (stateHolder.status == ProcessState.SUCCESS){
-				
-				// ログ情報更新（実行内容の完了状態）
-				// ※　成功時、社員別ログ情報（社員別完了状態）を更新する
-				//*****（未）　処理が不完全で、日別作成以外で使えない状態になっている。
-				//*****（未）　ステータスは、何を設定するかが規定されていない。未処理は、1っぽい。
-				//this.targetPersonRepository.update(employeeId, empCalAndSumExecLogID, 0);
-				
-				dataSetter.updateData("dailyCalculateCount", calculatedCount.plusAndGet());
+			if(stateHolder.isInterrupt()){
+				return;
 			}
-			if (stateHolder.isInterrupt()){
-				
-				// 中断処理
+			ProcessState cStatus = this.dailyCalculationEmployeeService.calculate(asyncContext,
+					employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr,companyCommonSetting);
+
+			stateHolder.add(cStatus);
+			// 状態確認
+			if (cStatus == ProcessState.SUCCESS){
+				dataSetter.updateData("dailyCalculateCount", stateHolder.count());
+			}
+			if (cStatus == ProcessState.INTERRUPTION){
 				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
 		});
-//		ProcessState status = ProcessState.SUCCESS;
-//		int calculatedCount = 0;
-//		for (val employeeId : employeeIds) {
-//		
-//			// 社員の日別実績を計算
-//			status = this.dailyCalculationEmployeeService.calculate(asyncContext,
-//					employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr,companyCommonSetting);
-//
-//			// 状態確認
-//			if (status == ProcessState.SUCCESS){
-//				
-//				// ログ情報更新（実行内容の完了状態）
-//				// ※　成功時、社員別ログ情報（社員別完了状態）を更新する
-//				//*****（未）　処理が不完全で、日別作成以外で使えない状態になっている。
-//				//*****（未）　ステータスは、何を設定するかが規定されていない。未処理は、1っぽい。
-//				//this.targetPersonRepository.update(employeeId, empCalAndSumExecLogID, 0);
-//				
-//				calculatedCount++;
-//				dataSetter.updateData("dailyCalculateCount", calculatedCount);
-//			}
-//			if (status == ProcessState.INTERRUPTION){
-//				
-//				// 中断処理
-//				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
-//				break;
-//			}
-//		}
-		Stopwatches.stop("start calc");
-		if (stateHolder.isInterrupt()) return stateHolder.status;
+		/** end 並列処理、PARALLELSTREAM */
+		
+		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
 		
 		// 完了処理
 		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
@@ -175,48 +148,26 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.DONE.nameId);
 		Stopwatches.printAll();
 		Stopwatches.STOPWATCHES.clear();
-		return stateHolder.status;
-	}
-	
-	class Counter {
-		private int count;
-		private final int max;
-		
-		Counter(int init, int max){
-			this.count = init;
-			this.max = max;
-		}
-		
-		void plus(){
-			if(this.count + 1 > this.max){
-				return;
-			}
-			this.count++;
-		}
-		
-		int getCount(){
-			return this.count;
-		}
-		
-		int plusAndGet(){
-			plus();
-			return getCount();
-		}
+		return ProcessState.SUCCESS;
 	}
 	
 	class StateHolder {
-		private ProcessState status;
+		private BlockingQueue<ProcessState> status;
 		
-		StateHolder(){
-			status = ProcessState.SUCCESS;
+		StateHolder(int max){
+			status = new ArrayBlockingQueue<ProcessState>(max);
+		}
+		
+		void add(ProcessState status){
+			this.status.add(status);
+		}
+		
+		int count(){
+			return this.status.size();
 		}
 		
 		boolean isInterrupt(){
-			return status == ProcessState.INTERRUPTION;
-		}
-		
-		void updateState(ProcessState status){
-			this.status = status;
+			return this.status.stream().filter(s -> s == ProcessState.INTERRUPTION).findFirst().isPresent();
 		}
 	}
 }
