@@ -287,7 +287,7 @@ module kcp.share.tree {
                     // Init component.
                     self.itemList(res);
                     self.initNoSelectRow();
-                    self.backupItemList(res);
+                    self.backupItemList(self.itemList());
                 }
                 // Set default value when initial component.
                 self.initSelectedValue(res);
@@ -644,7 +644,7 @@ module kcp.share.tree {
                 }
                 self.itemList(res);
                 self.initNoSelectRow();
-                self.backupItemList(res);
+                self.backupItemList(self.itemList());
 
                 // Filter data
                 self.filterData();
