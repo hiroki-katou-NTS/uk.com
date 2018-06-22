@@ -46,7 +46,7 @@ public class ErAlConditionsAttendanceItemTest {
 	private <V> ErAlAttendanceItemCondition<V> createCondition(ConditionAtr type, boolean isRange, boolean calcAble,
 			Function<Integer, V> toValue) {
 		ErAlAttendanceItemCondition<V> condition = new ErAlAttendanceItemCondition<>("1", "1", 1, type.value,
-				true);
+				true, 0);
 		if (isRange) {
 			condition.setCompareRange(RangeCompareType.BETWEEN_RANGE_CLOSED.value, toValue.apply(1), toValue.apply(10));
 		} else {
@@ -63,7 +63,7 @@ public class ErAlConditionsAttendanceItemTest {
 	private <V> ErAlAttendanceItemCondition<V> createCondition2(ConditionAtr type, boolean isRange, boolean calcAble,
 			Function<Integer, V> toValue) {
 		ErAlAttendanceItemCondition<V> condition = new ErAlAttendanceItemCondition<>("1", "1", 1, type.value,
-				true);
+				true, 0);
 		if (isRange) {
 			condition.setCompareRange(RangeCompareType.BETWEEN_RANGE_CLOSED.value, toValue.apply(1), toValue.apply(10));
 		} else {

@@ -93,7 +93,7 @@
 	height: 380px;
 	outline-style: solid;
 	outline-color: #999999;
-	outline-width: 1px;
+	outline-width: 0px;
 	position: relative;
 }
 #m5-table-b {

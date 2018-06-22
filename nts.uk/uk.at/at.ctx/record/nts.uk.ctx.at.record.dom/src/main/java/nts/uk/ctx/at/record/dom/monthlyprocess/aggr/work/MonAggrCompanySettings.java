@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransf
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
@@ -98,6 +99,9 @@ public class MonAggrCompanySettings {
 	/** 月別実績の縦計方法 */
 	@Getter
 	private VerticalTotalMethodOfMonthly verticalTotalMethod;
+	/** 36協定運用設定 */
+	@Getter
+	private Optional<AgreementOperationSetting> agreementOperationSet;
 	/** 任意項目 */
 	@Getter
 	private Map<Integer, OptionalItem> optionalItemMap;
@@ -127,6 +131,7 @@ public class MonAggrCompanySettings {
 		this.comRegSetOpt = Optional.empty();
 		this.comIrgSetOpt = Optional.empty();
 		this.comFlexSetOpt = Optional.empty();
+		this.agreementOperationSet = Optional.empty();
 		this.optionalItemMap = new HashMap<>();
 		this.empConditionMap = new HashMap<>();
 		this.formulaList = new ArrayList<>();
@@ -146,76 +151,6 @@ public class MonAggrCompanySettings {
 		final String resourceId = "001";
 		
 		MonAggrCompanySettings domain = new MonAggrCompanySettings(companyId);
-
-		// 「締め」　取得
-		val closures = repositories.getClosure().findAllUse(companyId);
-		for (val closure : closures){
-			val closureId = closure.getClosureId().value;
-			domain.closureMap.putIfAbsent(closureId, closure);
-		}
-		
-		// 法定内振替順設定
-		val legalTransferOrderSetOpt = repositories.getLegalTransferOrderSetOfAggrMonthly().find(companyId);
-		if (!legalTransferOrderSetOpt.isPresent()){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1232")));
-			return domain;
-		}
-		domain.legalTransferOrderSet = legalTransferOrderSetOpt.get();
-
-		// 残業枠の役割
-		domain.roleOverTimeFrameList = repositories.getRoleOverTimeFrame().findByCID(companyId);
-
-		// 休出枠の役割
-		domain.roleHolidayWorkFrameList = repositories.getRoleHolidayWorkFrame().findByCID(companyId);
-		
-		// 休暇時間加算設定
-		domain.holidayAdditionMap = repositories.getHolidayAddition().findByCompanyId(companyId);
-		
-		// 労働時間と日数の設定の利用単位の設定
-		domain.usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
-		val usagaUnitSetOpt = repositories.getUsageUnitSetRepo().findByCompany(companyId);
-		if (usagaUnitSetOpt.isPresent()) domain.usageUnitSet = usagaUnitSetOpt.get();
-		
-		// 通常勤務会社別月別実績集計設定
-		domain.comRegSetOpt = repositories.getComRegSetRepo().find(companyId);
-		
-		// 変形労働会社別月別実績集計設定
-		domain.comIrgSetOpt = repositories.getComIrgSetRepo().find(companyId);
-		
-		// フレックス会社別月別実績集計設定
-		domain.comFlexSetOpt = repositories.getComFlexSetRepo().find(companyId);
-
-		// フレックス勤務の月別集計設定
-		val aggrSetOfFlexOpt = repositories.getMonthlyAggrSetOfFlex().find(companyId);
-		if (!aggrSetOfFlexOpt.isPresent()){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1238")));
-			return domain;
-		}
-		domain.aggrSetOfFlex = aggrSetOfFlexOpt.get();
-
-		// フレックス勤務所定労働時間
-		val flexPredWorkTimeOpt = repositories.getFlexPredWorktime().find(companyId);
-		if (!flexPredWorkTimeOpt.isPresent()){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1243")));
-			return domain;
-		}
-		domain.flexPredWorkTime = flexPredWorkTimeOpt.get();
-		
-		// 休暇加算設定
-		domain.vacationAddSet = repositories.getVacationAddSet().get(companyId);
-		
-		// 時間外超過設定
-		val outsideOTSetOpt = repositories.getOutsideOTSet().findById(companyId);
-		if (!outsideOTSetOpt.isPresent()){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1236")));
-			return domain;
-		}
-		domain.outsideOverTimeSet = outsideOTSetOpt.get();
-		
-		// 丸め設定
-		domain.roundingSet = new RoundingSetOfMonthly(companyId);
-		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(companyId);
-		if (roundingSetOpt.isPresent()) domain.roundingSet = roundingSetOpt.get();
 		
 		// 月別実績の給与項目カウント　取得
 		domain.payItemCount = new PayItemCountOfMonthly(companyId);
@@ -245,8 +180,117 @@ public class MonAggrCompanySettings {
 		
 		// 年休設定
 		domain.annualLeaveSet = repositories.getAnnualPaidLeaveSet().findByCompanyId(companyId);
+
+		// 設定読み込み処理　（36協定時間用）
+		domain.loadSettingsForAgreementProc(companyId, resourceId, repositories);
 		
 		return domain;
+	}
+	
+	/**
+	 * 設定読み込み　（36協定時間用）
+	 * @param companyId 会社ID
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 月別集計で必要な会社別設定
+	 */
+	public static MonAggrCompanySettings loadSettingsForAgreement(
+			String companyId,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		final String resourceId = "001";
+		
+		MonAggrCompanySettings domain = new MonAggrCompanySettings(companyId);
+
+		// 設定読み込み処理　（36協定時間用）
+		domain.loadSettingsForAgreementProc(companyId, resourceId, repositories);
+		
+		return domain;
+	}
+	
+	/**
+	 * 設定読み込み処理　（36協定時間用）
+	 * @param companyId 会社ID
+	 * @param resourceId リソースID
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 月別集計で必要な会社別設定
+	 */
+	private void loadSettingsForAgreementProc(
+			String companyId,
+			String resourceId,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 締め
+		val closures = repositories.getClosure().findAllUse(companyId);
+		for (val closure : closures){
+			val closureId = closure.getClosureId().value;
+			this.closureMap.putIfAbsent(closureId, closure);
+		}
+		
+		// 法定内振替順設定
+		val legalTransferOrderSetOpt = repositories.getLegalTransferOrderSetOfAggrMonthly().find(companyId);
+		if (!legalTransferOrderSetOpt.isPresent()){
+			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1232")));
+			return;
+		}
+		this.legalTransferOrderSet = legalTransferOrderSetOpt.get();
+
+		// 残業枠の役割
+		this.roleOverTimeFrameList = repositories.getRoleOverTimeFrame().findByCID(companyId);
+
+		// 休出枠の役割
+		this.roleHolidayWorkFrameList = repositories.getRoleHolidayWorkFrame().findByCID(companyId);
+		
+		// 休暇時間加算設定
+		this.holidayAdditionMap = repositories.getHolidayAddition().findByCompanyId(companyId);
+		
+		// 労働時間と日数の設定の利用単位の設定
+		this.usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
+		val usagaUnitSetOpt = repositories.getUsageUnitSetRepo().findByCompany(companyId);
+		if (usagaUnitSetOpt.isPresent()) this.usageUnitSet = usagaUnitSetOpt.get();
+		
+		// 通常勤務会社別月別実績集計設定
+		this.comRegSetOpt = repositories.getComRegSetRepo().find(companyId);
+		
+		// 変形労働会社別月別実績集計設定
+		this.comIrgSetOpt = repositories.getComIrgSetRepo().find(companyId);
+		
+		// フレックス会社別月別実績集計設定
+		this.comFlexSetOpt = repositories.getComFlexSetRepo().find(companyId);
+
+		// フレックス勤務の月別集計設定
+		val aggrSetOfFlexOpt = repositories.getMonthlyAggrSetOfFlex().find(companyId);
+		if (!aggrSetOfFlexOpt.isPresent()){
+			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1238")));
+			return;
+		}
+		this.aggrSetOfFlex = aggrSetOfFlexOpt.get();
+
+		// フレックス勤務所定労働時間
+		val flexPredWorkTimeOpt = repositories.getFlexPredWorktime().find(companyId);
+		if (!flexPredWorkTimeOpt.isPresent()){
+			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1243")));
+			return;
+		}
+		this.flexPredWorkTime = flexPredWorkTimeOpt.get();
+		
+		// 休暇加算設定
+		this.vacationAddSet = repositories.getVacationAddSet().get(companyId);
+		
+		// 時間外超過設定
+		val outsideOTSetOpt = repositories.getOutsideOTSet().findById(companyId);
+		if (!outsideOTSetOpt.isPresent()){
+			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1236")));
+			return;
+		}
+		this.outsideOverTimeSet = outsideOTSetOpt.get();
+		
+		// 丸め設定
+		this.roundingSet = new RoundingSetOfMonthly(companyId);
+		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(companyId);
+		if (roundingSetOpt.isPresent()) this.roundingSet = roundingSetOpt.get();
+		
+		// 36協定運用設定を取得
+		this.agreementOperationSet = repositories.getAgreementOperationSet().find(companyId);
 	}
 	
 	/**

@@ -119,6 +119,64 @@ public class MonthlyCalculatingDailys {
 	}
 	
 	/**
+	 * データ取得　（36協定時間用）
+	 * @param employeeId 社員ID
+	 * @param period 期間
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 月の計算中の日別実績データ
+	 */
+	public static MonthlyCalculatingDailys loadDataForAgreement(
+			String employeeId,
+			DatePeriod period,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
+		
+		// 取得期間を　開始日-6日～終了日　とする　（前月の最終週の集計のため）
+		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.end());
+		
+		// 日別実績の勤怠時間
+		val attendanceTimeOfDailyList =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){
+			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+		}
+		
+		// データ取得共通処理　（36協定時間用）
+		result.loadDataCommonForAgreement(employeeId, period, repositories);
+		
+		return result;
+	}
+	
+	/**
+	 * データ取得　（36協定時間用）
+	 * @param employeeId 社員ID
+	 * @param period 期間
+	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 月の計算中の日別実績データ
+	 */
+	public static MonthlyCalculatingDailys loadDataForAgreement(
+			String employeeId,
+			DatePeriod period,
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
+		
+		// 日別実績の勤怠時間
+		val attendanceTimeOfDailyList = attendanceTimeOfDailys;
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){
+			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+		}
+		
+		// データ取得共通処理　（36協定時間用）
+		result.loadDataCommonForAgreement(employeeId, period, repositories);
+		
+		return result;
+	}
+	
+	/**
 	 * データ取得共通処理
 	 * @param employeeId 社員ID
 	 * @param period 期間
@@ -132,15 +190,11 @@ public class MonthlyCalculatingDailys {
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);
 		
+		// データ取得共通処理　（36協定時間用）
+		this.loadDataCommonForAgreement(employeeId, period, repositories);
+		
 		// 取得期間を　開始日-6日～終了日　とする　（前月の最終週の集計のため）
 		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.end());
-		
-		// 日別実績の勤務情報
-		val workInfoOfDailyList =
-				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
-		for (val workInfoOfDaily : workInfoOfDailyList){
-			this.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
-		}
 		
 		// 日別実績の出退勤
 		val timeLeaveOfDailyList =
@@ -185,5 +239,27 @@ public class MonthlyCalculatingDailys {
 		this.grantRemainingDatas =
 				repositories.getAnnLeaGrantRemData().findNotExp(employeeId).stream()
 						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
+	}
+	
+	/**
+	 * データ取得共通処理　（36協定時間用）
+	 * @param employeeId 社員ID
+	 * @param period 期間
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 */
+	public void loadDataCommonForAgreement(
+			String employeeId,
+			DatePeriod period,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 取得期間を　開始日-6日～終了日　とする　（前月の最終週の集計のため）
+		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.end());
+		
+		// 日別実績の勤務情報
+		val workInfoOfDailyList =
+				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		for (val workInfoOfDaily : workInfoOfDailyList){
+			this.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
+		}
 	}
 }

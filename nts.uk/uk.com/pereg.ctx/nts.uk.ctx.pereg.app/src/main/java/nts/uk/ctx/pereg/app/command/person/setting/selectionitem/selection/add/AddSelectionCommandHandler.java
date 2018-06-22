@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
@@ -21,7 +21,7 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.Selectio
  *
  */
 @Stateless
-public class AddSelectionCommandHandler extends CommandHandler<AddSelectionCommand> {
+public class AddSelectionCommandHandler extends CommandHandlerWithResult<AddSelectionCommand, String> {
 
 	@Inject
 	private SelectionRepository selectionRepo;
@@ -30,7 +30,7 @@ public class AddSelectionCommandHandler extends CommandHandler<AddSelectionComma
 	private SelectionItemOrderRepository selectionOrderRpo;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddSelectionCommand> context) {
+	protected String handle(CommandHandlerContext<AddSelectionCommand> context) {
 		AddSelectionCommand command = context.getCommand();
 
 		// check ton tai selectionCD:
@@ -64,6 +64,8 @@ public class AddSelectionCommandHandler extends CommandHandler<AddSelectionComma
 			SelectionItemOrder domainOrder = SelectionItemOrder.selectionItemOrder(newId, histId, 1, 1);
 			this.selectionOrderRpo.add(domainOrder);
 		}
+		
+		return newId;
 	}
 
 }

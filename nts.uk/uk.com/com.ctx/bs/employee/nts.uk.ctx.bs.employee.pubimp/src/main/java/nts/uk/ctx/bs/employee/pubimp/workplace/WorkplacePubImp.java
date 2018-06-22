@@ -196,7 +196,12 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 			if (!CollectionUtil.isEmpty(listAffComHisItem)) {
 				listAffComHisItem.forEach(m -> {
-					if (m.start().beforeOrEquals(startDate) && m.end().afterOrEquals(endDate)) {
+					/* EA修正履歴2059 update RequestList120
+					 * 【Codition】
+					 *	param．period．startDate　＜＝　retirementDate AND
+					 *	entrialDate　＜＝　param．period．endDate
+					 */
+					if (startDate.beforeOrEquals(m.end()) && endDate.afterOrEquals(m.start())) {
 						AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
 						result.add(aff);
 					}

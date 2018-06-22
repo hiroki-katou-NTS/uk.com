@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 
 /**
  * 実装：36協定時間の取得
@@ -20,16 +19,13 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 	/** 月別集計が必要とするリポジトリ */
 	@Inject
 	private RepositoriesRequiredByMonthlyAggr repositories;
-	/** 締めの取得 */
-	@Inject
-	private ClosureRepository closureRepository;
 	
 	/** 36協定時間の取得 */
 	@Override
 	public List<AgreementTimeDetail> get(String companyId, List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId) {
 
-		GetAgreementTimeProc proc = new GetAgreementTimeProc(this.repositories, this.closureRepository);
+		GetAgreementTimeProc proc = new GetAgreementTimeProc(this.repositories);
 		return proc.get(companyId, employeeIds, yearMonth, closureId);
 	}
 }

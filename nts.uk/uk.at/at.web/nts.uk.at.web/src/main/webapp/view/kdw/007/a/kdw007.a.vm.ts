@@ -19,6 +19,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
             { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") }
         ]);
+        listRemarkCancelErrorInput: KnockoutObservableArray<any> = ko.observableArray([
+            { code: '0', name: nts.uk.resource.getText("KDW007_110") },
+            { code: '1', name: nts.uk.resource.getText("KDW007_109") }
+        ]);
+        listRemarkColumnNo: KnockoutObservableArray<any> = ko.observableArray([]);
         listTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
             { code: '0', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Error") },
             { code: '1', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Alarm") },
@@ -32,7 +37,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         lstFilteredData: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedErrorAlarm: KnockoutObservable<any>;
         selectedErrorAlarmCode: KnockoutObservable<string> = ko.observable(null);
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([
+        tabs: KnockoutObservableArray<any> = ko.observableArray([
             { id: 'tab-1', title: nts.uk.resource.getText("KDW007_9"), content: '.settingTab', enable: ko.observable(true), visible: ko.observable(true) },
             { id: 'tab-2', title: nts.uk.resource.getText("KDW007_83"), content: '.checkScopeTab', enable: ko.observable(true), visible: ko.observable(true) },
             { id: 'tab-3', title: nts.uk.resource.getText("KDW007_84"), content: '.conditionSettingTab1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -53,20 +58,24 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         // Tab 5
         lstApplicationType = ko.observableArray([
-            { code: 0, name: "残業申請" },
-            { code: 1, name: "休暇申請" },
-            { code: 2, name: "勤務変更申請" },
-            { code: 3, name: "出張申請" },
-            { code: 4, name: "直行直帰申請" },
-            { code: 6, name: "休出時間申請" },
-            { code: 7, name: "打刻申請" },
-            { code: 8, name: "時間年休申請" },
-            { code: 9, name: "遅刻早退取消申請" },
-            { code: 10, name: "振休振出申請" },
-            { code: 11, name: "打刻申請（NR形式）" },
-            { code: 12, name: "連続出張申請" },
-            { code: 13, name: "出張申請オフィスヘルパー" },
-            { code: 14, name: "３６協定時間申請" }
+            { code: 0, name: "残業申請（早出）" },
+            { code: 1, name: "残業申請（通常）" },
+            { code: 2, name: "残業申請（早出・通常）" },
+            { code: 3, name: "休暇申請" },
+            { code: 4, name: "勤務変更申請" },
+            { code: 5, name: "出張申請" },
+            { code: 6, name: "直行直帰申請" },
+            { code: 7, name: "休出時間申請" },
+            { code: 8, name: "打刻申請（外出許可）" },
+            { code: 9, name: "打刻申請（出退勤漏れ）" },
+            { code: 10, name: "打刻申請（打刻取消）" },
+            { code: 11, name: "打刻申請（レコーダイメージ）" },
+            { code: 12, name: "打刻申請（その他）" },
+            { code: 13, name: "時間年休申請" },
+            { code: 14, name: "遅刻早退取消申請" },
+            { code: 15, name: "振休振出申請" },
+            { code: 16, name: "連続出張申請" },
+            { code: 17, name: "３６協定時間申請" }
         ]);
         appTypeGridlistColumns = ko.observableArray([
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
@@ -83,7 +92,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.selectedErrorAlarm = ko.observable(new ErrorAlarmWorkRecord(self.screenMode()));
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
-                    let foundItem = _.find(self.lstErrorAlarm(), (item) => {
+                    let foundItem: ErrorAlarmWorkRecord = _.find(self.lstErrorAlarm(), (item) => {
                         return item.code == code;
                     });
                     if (foundItem) {
@@ -155,9 +164,15 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             
             if (self.screenMode() == ScreenMode.Daily) {
                 self.sideBar(1);
-                service.getAll().done((lstData) => {
+                service.getAttendanceItemByCodes([833, 834, 835, 836, 837], self.screenMode()).done((lstItems) => {
+                    if (lstItems && lstItems.length > 0) {
+                        let lstItemCode = lstItems.map((item) => { return { code: item.attendanceItemId, name: item.attendanceItemName }; });
+                        self.listRemarkColumnNo(lstItemCode);        
+                    }
+                });
+                service.getAll().done((lstData: Array<any>) => {
                     if (lstData && lstData.length > 0) {
-                        let sortedData = _.orderBy(lstData, ['code'], ['asc']);
+                        let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
                         self.lstFilteredData(sortedData);
                         self.lstErrorAlarm(sortedData);
                         self.selectedErrorAlarmCode(code !== null ? code : sortedData[0].code);
@@ -176,9 +191,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 });
             } else if (self.screenMode() == ScreenMode.Monthly) {
                 self.sideBar(2);
-                service.getAllMonthlyCondition().done((lstData) => {
+                service.getAllMonthlyCondition().done((lstData: Array<any>) => {
                     if (lstData && lstData.length > 0) {
-                        let sortedData = _.orderBy(lstData, ['code'], ['asc']);
+                        let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
                         self.lstFilteredData(sortedData);
                         self.lstErrorAlarm(sortedData);
                         self.selectedErrorAlarmCode(code !== null ? code : sortedData[0].code);
@@ -214,13 +229,15 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             $("#errorAlarmWorkRecordCode").focus();
         }
 
-        reSetData(selectedErrorAlarm, param) {
+        reSetData(selectedErrorAlarm: ErrorAlarmWorkRecord, param: any) {
             selectedErrorAlarm.companyId(param && param.companyId ? param.companyId : '');
             selectedErrorAlarm.errorAlarmCheckID(param && param.errorAlarmCheckID ? param.errorAlarmCheckID : '');
             selectedErrorAlarm.code(param && param.code ? param.code : '');
             selectedErrorAlarm.name(param && param.name ? param.name : '');
             selectedErrorAlarm.fixedAtr(param && param.fixedAtr ? param.fixedAtr : 0);
-            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 0);
+            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 1);
+            selectedErrorAlarm.remarkCancelErrorInput(param && param.remarkCancelErrorInput ? param.remarkCancelErrorInput : 0);
+            selectedErrorAlarm.remarkColumnNo(param && param.remarkColumnNo ? param.remarkColumnNo : 833);
             selectedErrorAlarm.typeAtr(param && param.typeAtr ? param.typeAtr : 0);
             selectedErrorAlarm.displayMessage(param && param.displayMessage ? param.displayMessage : '');
             selectedErrorAlarm.boldAtr(param && param.boldAtr ? param.boldAtr : 0);
@@ -532,7 +549,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 param = {
                 };
             nts.uk.ui.windows.setShared("kdw007B", param);
-            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml").onClosed(() => {
                 let output = getShared("kdw007BResult");
                 if (output) {
                     debugger;
@@ -554,6 +571,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         fixedAtr: KnockoutObservable<number>;
         /* 使用する */
         useAtr: KnockoutObservable<number>;
+        
+        remarkCancelErrorInput: KnockoutObservable<number>;
+        
+        remarkColumnNo: KnockoutObservable<number>;
         /* 区分 */
         typeAtr: KnockoutObservable<number>;
         /* 表示メッセージ */
@@ -585,30 +606,32 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         constructor(screenMode: number, param?: ErrorAlarmWorkRecord) {
             this.screenMode = screenMode;
-            this.companyId = param && param.companyId ? ko.observable(param.companyId) : ko.observable('');
-            this.errorAlarmCheckID = param && param.errorAlarmCheckID ? ko.observable(param.errorAlarmCheckID) : ko.observable('');
-            this.code = param && param.code ? ko.observable(param.code) : ko.observable('');
-            this.name = param && param.name ? ko.observable(param.name) : ko.observable('');
-            this.fixedAtr = param && param.fixedAtr ? ko.observable(param.fixedAtr) : ko.observable(0);
-            this.useAtr = param && param.useAtr ? ko.observable(param.useAtr) : ko.observable(0);
-            this.typeAtr = param && param.typeAtr ? ko.observable(param.typeAtr) : ko.observable(0);
-            this.displayMessage = param && param.displayMessage ? ko.observable(param.displayMessage) : ko.observable('');
-            this.boldAtr = param && param.boldAtr ? ko.observable(param.boldAtr) : ko.observable(0);
-            this.messageColor = param && param.messageColor ? ko.observable(param.messageColor) : ko.observable('');
-            this.cancelableAtr = param && param.cancelableAtr ? ko.observable(param.cancelableAtr) : ko.observable(0);
+            this.companyId = param && param.companyId ? ko.observable(param.companyId()) : ko.observable('');
+            this.errorAlarmCheckID = param && param.errorAlarmCheckID ? ko.observable(param.errorAlarmCheckID()) : ko.observable('');
+            this.code = param && param.code ? ko.observable(param.code()) : ko.observable('');
+            this.name = param && param.name ? ko.observable(param.name()) : ko.observable('');
+            this.fixedAtr = param && param.fixedAtr ? ko.observable(param.fixedAtr()) : ko.observable(0);
+            this.useAtr = param && param.useAtr ? ko.observable(param.useAtr()) : ko.observable(1);
+            this.remarkCancelErrorInput = param && param.remarkCancelErrorInput ? ko.observable(param.remarkCancelErrorInput()) : ko.observable(0);
+            this.remarkColumnNo = param && param.remarkColumnNo ? ko.observable(param.remarkColumnNo()) : ko.observable(833);
+            this.typeAtr = param && param.typeAtr ? ko.observable(param.typeAtr()) : ko.observable(0);
+            this.displayMessage = param && param.displayMessage ? ko.observable(param.displayMessage()) : ko.observable('');
+            this.boldAtr = param && param.boldAtr ? ko.observable(param.boldAtr()) : ko.observable(0);
+            this.messageColor = param && param.messageColor ? ko.observable(param.messageColor()) : ko.observable('');
+            this.cancelableAtr = param && param.cancelableAtr ? ko.observable(param.cancelableAtr()) : ko.observable(0);
             this.errorDisplayItem = param && param.errorDisplayItem ? ko.observable(param.errorDisplayItem) : ko.observable(null);
             this.errorDisplayItemName = ko.observable("");
             this.alCheckTargetCondition = param && param.alCheckTargetCondition ? new AlarmCheckTargetCondition(param.alCheckTargetCondition) : new AlarmCheckTargetCondition(null);
             this.workTypeCondition = param && param.workTypeCondition ? new WorkTypeCondition(param.workTypeCondition) : new WorkTypeCondition(null);
             this.workTimeCondition = param && param.workTimeCondition ? new WorkTimeCondition(param.workTimeCondition) : new WorkTimeCondition(null);
-            this.operatorBetweenPlanActual = param && param.operatorBetweenPlanActual ? ko.observable(param.operatorBetweenPlanActual) : ko.observable(0);
-            this.lstApplicationTypeCode = param && param.lstApplicationTypeCode ? ko.observableArray(param.lstApplicationTypeCode) : ko.observableArray([]);
-            this.operatorBetweenGroups = param && param.operatorBetweenGroups ? ko.observable(param.operatorBetweenGroups) : ko.observable(0);
-            this.operatorGroup1 = param && param.operatorGroup1 ? ko.observable(param.operatorGroup1) : ko.observable(0);
-            this.operatorGroup2 = param && param.operatorGroup2 ? ko.observable(param.operatorGroup2) : ko.observable(0);
-            this.group2UseAtr = param && param.group2UseAtr ? ko.observable(param.group2UseAtr) : ko.observable(false);
-            this.erAlAtdItemConditionGroup1 = param && param.erAlAtdItemConditionGroup1 ? param.erAlAtdItemConditionGroup1.map((con) => { return new ErAlAtdItemCondition(con.NO, con, this.screenMode); }) : this.initListAtdItemCondition();
-            this.erAlAtdItemConditionGroup2 = param && param.erAlAtdItemConditionGroup2 ? param.erAlAtdItemConditionGroup2.map((con) => { return new ErAlAtdItemCondition(con.NO, con, this.screenMode); }) : this.initListAtdItemCondition();
+            this.operatorBetweenPlanActual = param && param.operatorBetweenPlanActual ? ko.observable(param.operatorBetweenPlanActual()) : ko.observable(0);
+            this.lstApplicationTypeCode = param && param.lstApplicationTypeCode ? ko.observableArray(param.lstApplicationTypeCode()) : ko.observableArray([]);
+            this.operatorBetweenGroups = param && param.operatorBetweenGroups ? ko.observable(param.operatorBetweenGroups()) : ko.observable(0);
+            this.operatorGroup1 = param && param.operatorGroup1 ? ko.observable(param.operatorGroup1()) : ko.observable(0);
+            this.operatorGroup2 = param && param.operatorGroup2 ? ko.observable(param.operatorGroup2()) : ko.observable(0);
+            this.group2UseAtr = param && param.group2UseAtr ? ko.observable(param.group2UseAtr()) : ko.observable(false);
+            this.erAlAtdItemConditionGroup1 = param && param.erAlAtdItemConditionGroup1 ? param.erAlAtdItemConditionGroup1.map((con) => { return new ErAlAtdItemCondition(con.targetNO, con, this.screenMode); }) : this.initListAtdItemCondition();
+            this.erAlAtdItemConditionGroup2 = param && param.erAlAtdItemConditionGroup2 ? param.erAlAtdItemConditionGroup2.map((con) => { return new ErAlAtdItemCondition(con.targetNO, con, this.screenMode); }) : this.initListAtdItemCondition();
             this.errorDisplayItem.subscribe((itemCode) => {
                 if (itemCode) {
                     service.getAttendanceItemByCodes([itemCode], this.screenMode).done((lstItems) => {
@@ -895,6 +918,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                             }
                         }
+                        $("#displayLstWorkTypePlan").ntsError("clear");
                     });
                 } else {
                     this.displayLstWorkTypePlan("");
@@ -923,6 +947,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                             }
                         }
+                        $("#displayLstWorkTypeActual").ntsError("clear");
                     });
                 } else {
                     this.displayLstWorkTypeActual("");
@@ -940,11 +965,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.actualFilterAtr(param ? param.actualFilterAtr : false);
             this.actualLstWorkType(param && param.actualLstWorkType ? param.actualLstWorkType : []);
         }
-    }
-
-    export class WorkTypeDto {
-        code: string;
-        name: string;
     }
 
     export class WorkTimeCondition {
@@ -1004,6 +1024,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                             }
                         }
+                        $("#displayLstWorkTimePlan").ntsError("clear");
                     });
                 } else {
                     this.displayLstWorkTimePlan("");
@@ -1032,6 +1053,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                             }
                         }
+                        $("#displayLstWorkTimeActual").ntsError("clear");
                     });
                 } else {
                     this.displayLstWorkTimeActual("");
@@ -1056,6 +1078,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         targetNO: KnockoutObservable<number>;
         conditionAtr: KnockoutObservable<number>;
         useAtr: KnockoutObservable<boolean>;
+        inputCheckCondition: KnockoutObservable<number>;
         uncountableAtdItem: KnockoutObservable<number>;
         countableAddAtdItems: KnockoutObservableArray<number>;
         countableSubAtdItems: KnockoutObservableArray<number>;
@@ -1086,6 +1109,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
             self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
             self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.inputCheckCondition = param && param.inputCheckCondition ? ko.observable(param.inputCheckCondition) : ko.observable(0);
             self.displayLeftCompare = ko.observable("");
             self.displayLeftOperator = ko.observable("");
             self.displayTarget = ko.observable("");
@@ -1154,40 +1178,44 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         setDisplayCompare() {
             let self = this;
             let conditionAtr = self.conditionAtr();
-            if (self.compareOperator() > 5) {
-                // Compare with a range
-                let rawStartValue = self.compareStartValue();
-                let rawEndValue = self.compareEndValue();
-                let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue : nts.uk.time.parseTime(parseInt(rawStartValue), true).format();
-                let textDisplayRightCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue : nts.uk.time.parseTime(parseInt(rawEndValue), true).format();
-                self.displayLeftCompare(textDisplayLeftCompare);
-                self.displayRightCompare(textDisplayRightCompare);
-            } else {
-                // Compare with single value
-                if (self.conditionType() === 0) {
-                    // If is compare with a fixed value
-                    let rawValue = self.compareStartValue();
-                    let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawValue : nts.uk.time.parseTime(parseInt(rawValue), true).format();
+            if (self.conditionType() < 2) {
+                if (self.compareOperator() > 5) {
+                    // Compare with a range
+                    let rawStartValue = self.compareStartValue();
+                    let rawEndValue = self.compareEndValue();
+                    let textDisplayLeftCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue.toString() : nts.uk.time.parseTime(parseInt(rawStartValue.toString()), true).format();
+                    let textDisplayRightCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue.toString() : nts.uk.time.parseTime(parseInt(rawEndValue.toString()), true).format();
                     self.displayLeftCompare(textDisplayLeftCompare);
-                    self.displayRightCompare("");
+                    self.displayRightCompare(textDisplayRightCompare);
                 } else {
-                    // If is compare with a attendance item
-                    if (self.singleAtdItem()) {
-                        service.getAttendanceItemByCodes([self.singleAtdItem()], self.screenMode).done((lstItems) => {
-                            if (lstItems && lstItems.length > 0) {
-                                self.displayLeftCompare(lstItems[0].attendanceItemName);
-                                self.displayRightCompare("");
-                            }
-                        });
+                    // Compare with single value
+                    if (self.conditionType() === 0) {
+                        // If is compare with a fixed value
+                        let rawValue = self.compareStartValue();
+                        let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
+                        self.displayLeftCompare(textDisplayLeftCompare);
+                        self.displayRightCompare("");
+                    } else {
+                        // If is compare with a attendance item
+                        if (self.singleAtdItem()) {
+                            service.getAttendanceItemByCodes([self.singleAtdItem()], self.screenMode).done((lstItems) => {
+                                if (lstItems && lstItems.length > 0) {
+                                    self.displayLeftCompare(lstItems[0].attendanceItemName);
+                                    self.displayRightCompare("");
+                                }
+                            });
+                        }
                     }
                 }
+            } else {
+                self.displayLeftCompare(self.inputCheckCondition() == 0 ? nts.uk.resource.getText("KDW007_108") : nts.uk.resource.getText("KDW007_107"));
             }
         }
 
         setDisplayTarget() {
             let self = this;
             self.displayTarget("");
-            if (self.conditionAtr() === 2) {
+            if (self.conditionAtr() === 2 || self.conditionType() === 2) {
                 if (self.uncountableAtdItem()) {
                     service.getAttendanceItemByCodes([self.uncountableAtdItem()], self.screenMode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
@@ -1236,7 +1264,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             let self = this;
             let data = ko.mapping.toJS(this);
             nts.uk.ui.windows.setShared("KDW007BParams", {'mode': mode, 'data': data}, true);
-            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml").onClosed(() => {
                 let output = getShared("KDW007BResult");
                 if (output) {
                     self.targetNO(output.targetNO);
@@ -1250,6 +1278,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     self.compareStartValue(output.compareStartValue);
                     self.compareEndValue(output.compareEndValue);
                     self.compareOperator(output.compareOperator);
+                    self.inputCheckCondition(output.inputCheckCondition);
                 }
                 self.setTextDisplay();
             });

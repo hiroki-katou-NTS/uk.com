@@ -5,11 +5,11 @@ import javax.ejb.Stateless;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtPerEmpForm;
-import nts.uk.shr.infra.permit.data.AvaiablityPermissionRepositoryBase;
+import nts.uk.shr.infra.permit.data.JpaAvailablityPermissionRepositoryBase;
 
 @Stateless
 public class JpaPermissionOfEmploymentFormRepository
-		extends AvaiablityPermissionRepositoryBase<PermissionOfEmploymentForm, KfnmtPerEmpForm>
+		extends JpaAvailablityPermissionRepositoryBase<PermissionOfEmploymentForm, KfnmtPerEmpForm>
 		implements PermissionOfEmploymentFormRepository {
 
 	@Override

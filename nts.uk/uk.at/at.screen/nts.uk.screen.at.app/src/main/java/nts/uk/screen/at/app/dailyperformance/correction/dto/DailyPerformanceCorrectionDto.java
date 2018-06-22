@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 
 /**
  * @author hungnm
@@ -69,7 +70,7 @@ public class DailyPerformanceCorrectionDto {
 	
 	private IdentityProcessUseSetDto identityProcessDto;
 	
-	private FlexShortage flexShortage;
+	private DPMonthResult monthResult;
 	
 	private Integer showQuestionSPR;
 	

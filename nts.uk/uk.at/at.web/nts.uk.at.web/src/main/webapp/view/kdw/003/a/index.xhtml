@@ -184,25 +184,26 @@
 					<span style="margin: 10px 0 0 18px; display: inline-block;"
 						data-bind="text: comment"></span>
 					<div id="flex" data-bind="visible : showFlex">
-						<table id="flex-table">
-							<thead>
-								<tr>
-									<th class="ui-widget-header" style="width: 165px">#{i18n.getText('KDW003_77')}</th>
-									<th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_78')}</th>
-									<th class="ui-widget-header" style="width: 55px">#{i18n.getText('Com_PaidHoliday')}</th>
-									<th class="ui-widget-header" style="width: 55px">#{i18n.getText('KDW003_79')}</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr data-bind="let: { fst: flexShortage() }">
-									<td class="ui-widget-body"><span class="text-holiday"
-										data-bind="text: fst.shortageTime"></span></td>
-									<td class="text-holiday ui-widget-body" id="next-month">
-										<span data-bind="text: ko.computed(function() { return fst.nextMonthTransferredMoneyTime() })"></span>
-									</td>
-									<td class="ui-widget-body"><span class="text-holiday">
-											<input style="width: 55px"
-											data-bind="ntsNumberEditor: { 
+						<div>
+							<table id="flex-table">
+								<thead>
+									<tr>
+										<th class="ui-widget-header" style="width: 165px">#{i18n.getText('KDW003_77')}</th>
+										<th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_78')}</th>
+										<th class="ui-widget-header" style="width: 55px">#{i18n.getText('Com_PaidHoliday')}</th>
+										<th class="ui-widget-header" style="width: 55px">#{i18n.getText('KDW003_79')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr data-bind="let: { fst: flexShortage() }">
+										<td class="ui-widget-body" id = "short-time"><span class="text-holiday"
+											data-bind="text: fst.shortageTime()"></span></td>
+										<td class="text-holiday ui-widget-body" id="next-month"><span
+											data-bind="text: ko.computed(function() { return fst.nextMonthTransferredMoneyTime() })"></span>
+										</td>
+										<td class="ui-widget-body"><span class="text-holiday">
+												<input style="width: 55px"
+												data-bind="ntsNumberEditor: { 
 														name: fst.nameNoOfHolidays, 
 														value: fst.noOfHolidays, 
 														constraint: 'AnnualLeaveGrantDay', 
@@ -211,11 +212,11 @@
 														enable: canFlex, 
 														readonly: false 
 													} ">
-										</input>
-									</span></td>
-									<td class="ui-widget-body"><span class="text-holiday">
-											<input style="width: 55px"
-											data-bind="ntsTimeEditor: {
+											</input>
+										</span></td>
+										<td class="ui-widget-body"><span class="text-holiday">
+												<input style="width: 55px"
+												data-bind="ntsTimeEditor: {
 														name: fst.nameAbsentDeductionTime, 
 														constraint: 'SampleTimeDuration', 
 														value: fst.absentDeductionTime, 
@@ -225,12 +226,19 @@
 														readonly: false, 
 														required: true
 													}"></input>
-									</span></td>
-								</tr>
-							</tbody>
-						</table>
+										</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 						<div id="text-flex">
-							<span style="color: red" data-bind="text: flexShortage().messageRed"></span> 
+							<div>
+								<span style="color: red"
+									data-bind="text: flexShortage().messageRed"></span>
+							</div>
+							<div>
+								<span data-bind="text: flexShortage().messageNoForward"></span>
+							</div>
 						</div>
 					</div>
 				</div>

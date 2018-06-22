@@ -22,6 +22,7 @@
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod
                 <!-- monthly -->
                 nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
+                nts.uk.shr.com.primitive.sample.CommonAmount
             </com:ValidatorScript>
             <com:EnumScript>
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem 
@@ -638,8 +639,8 @@
                                             </td>
                                             <td class="pad_left_5px">
                                             <div id = "checkCondition"> 
-                                                <com:ko bind="haveTypeVacation() === true" tag="if">
-                                                    <div  class="combo-box" data-bind="ntsComboBox: {
+                                                <com:ko bind="haveTypeVacation() === true" tag="if" >
+                                                    <div class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: viewModel.listTypeCheckVacation,
                                                 optionsValue: 'value',
@@ -668,11 +669,12 @@
                                                 ]}">
                                                     </div>
                                                     <br />
+                                                    <br />
                                                 </com:ko>
                                                 <com:ko bind="haveSelect() === true" tag="if">
                                                 	<br />
                                                     <!-- bind select -->
-                                                        <button id="btnSettingBA2_2" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
+                                                        <button  id="btnSettingBA2_2" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
                                                         <input id="display-target-item" class="display-list-label nts-input " data-bind="ntsTextEditor: {
 											   value: selectText,
 											   required: true,
@@ -710,13 +712,12 @@
                                                         required: required,
                                                         enable : enable,
                                                         constraint: 'MonthlyDays'
-                                                        
                                                         }, attr: { id: inputId}" />#{i18n.getText('KAL003_84')}
                                                     </com:ko>
                                                 </com:ko>
                                                 <com:ko bind="haveInput() === 1 || haveInput() === 2" tag="if">
                                                     <!-- bind input -->
-                                                    <span data-bind="text : textLabel"></span>
+                                                    <span  data-bind="text : textLabel"></span>
                                                     <input style="width: 50px;" data-bind="ntsTimeEditor: {value: eralBeforeTime,required: true ,mode:'time', inputFormat: 'time'}" />
                                                 </com:ko>
                                                 <com:ko bind="haveInput() === 3" tag="if">
@@ -742,15 +743,15 @@
                                                             <input style="width: 50px;" data-bind="ntsTimeEditor: {value: value ,required: required,mode : 'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />
                                                         </com:ko>
                                                     </com:ko>
-                                                    <span data-bind="text : textLabel"></span>
+                                                    <span  data-bind="text : textLabel"></span>
                                                 </com:ko>
                                                 <com:ko bind="haveGroup() === true" tag="if">
                                                     <!-- bind group: AttendanceItemCondition -->
-                                                    <table id="group8">
+                                                    <table id="group8" >
                                                         <colgroup>
                                                             <col width="200px" />
                                                             <col width="200px" />
-                                                            <col width="200px" />
+                                                            <col width="*" />
                                                         </colgroup>
                                                         <tbody>
                                                             <com:ko  bind="group1" tag="with">
@@ -775,21 +776,21 @@
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td colspan="3" class="ui-widget-header" style="text-align: center;background-color: #CFF1A5;border : 1px solid #ccc"	>
+                                                                    <td colspan="3" style="text-align: center;background-color: #CFF1A5;border : 1px solid #ccc;width: 630px"	>
                                                                         #{i18n.getText('KAL003_33')}
                                                                     </td>
                                                                 </tr>
                                                                 <com:ko bind="lstErAlAtdItemCon" tag="foreach">
                                                                		<tr>
                                                                     	<td colspan="3" class="group">
-                                                                    		<table style="border : 1px solid black;border-top: 0px;">
+                                                                    		<table style="border : 1px solid black;border-top: 0px; width: 100%">
                                                                     			<tr>
                                                                     				<td style="border : 1px solid #ccc; border-top: 0px;"><span class="limited-label" style="width: 160px" data-bind="text: displayLeft"></span></td>
 		                                                                           	<td style="border : 1px solid #ccc; border-top: 0px;"><span class="limited-label" style="width: 50px" data-bind="text: displayLeftOperator"></span></td>
 		                                                                           	<td style="border : 1px solid #ccc; border-top: 0px;"><span class="limited-label" style="width: 160px; text-align: center;" data-bind="text: displayCenter"></span></td>
 		                                                                           	<td style="border : 1px solid #ccc; border-top: 0px;"><span class="limited-label" style="width: 50px" data-bind="text: displayRightOperator"></span></td>
 		                                                                           	<td style="border : 1px solid #ccc; border-top: 0px;"><span class="limited-label" style="width: 160px" data-bind="text: displayRight"></span></td>
-		                                                                           	<td style="border : 1px solid #ccc; border-top: 0px;"><button id="btnSettingB5_7" data-bind="click: openAtdItemConditionDialog.bind($data, 1)" >#{i18n.getText('KAL003_14')}</button></td>
+		                                                                           	<td style="border : 1px solid #ccc; border-top: 0px;"><button id="btnSettingB5_7" style="width: 50px" data-bind="click: openAtdItemConditionDialog.bind($data, 1)" >#{i18n.getText('KAL003_14')}</button></td>
                                                                     			</tr>
                                                                     		</table>
                                                                     	</td>
@@ -867,7 +868,7 @@
                                     </com:ko>
                                     <tr class="row">
                                         <td class="pad_left_10px">
-                                            <div>#{i18n.getText('KAL003_28')}2222</div>
+                                            <div>#{i18n.getText('KAL003_28')}</div>
                                         </td>
                                         <td class="pad_left_5px">
                                             <div id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, width: 60}" />
@@ -875,7 +876,7 @@
                                     </tr>
                                     <tr class="row">
                                         <td class="pad_left_10px">
-                                            <div>#{i18n.getText('KAL003_25')}333</div>
+                                            <div>#{i18n.getText('KAL003_25')}</div>
                                         </td>
                                         <td class="pad_left_5px">
                                             <textarea style="width: 400px;height: 100px;" id="message" data-bind="ntsMultilineEditor: { value: displayMessage }" />
