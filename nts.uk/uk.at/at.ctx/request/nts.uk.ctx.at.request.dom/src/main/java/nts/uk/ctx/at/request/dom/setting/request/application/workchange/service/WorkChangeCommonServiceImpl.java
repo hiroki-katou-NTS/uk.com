@@ -68,7 +68,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 				approvalRootPattern.getApprovalRootContentImport());*/
 
 		// アルゴリズム「勤務変更申請基本データ（新規）」を実行する
-		WorkChangeBasicData wcBasicData = getWorkChangeBasicData(companyId);
+		WorkChangeBasicData wcBasicData = getWorkChangeBasicData(companyId,sId);
 		// 申請共通設定
 		wcBasicData.setAppCommonSettingOutput(appCommonSetting);
 
@@ -89,7 +89,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		return wcBasicData;
 	}
 
-	private WorkChangeBasicData getWorkChangeBasicData(String cid) {
+	private WorkChangeBasicData getWorkChangeBasicData(String cid,String sid) {
 		// アルゴリズム「勤務変更申請基本データ（新規）」を実行する
 		WorkChangeBasicData wcBasicData = new WorkChangeBasicData();
 
@@ -97,9 +97,9 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		wcBasicData.setWorkChangeCommonSetting(workChangeRepository.findWorkChangeSetByID(cid));
 
 		// アルゴリズム「社員IDから社員を取得する」を実行する
-		String employeeName = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
+		String employeeName = employeeAdapter.getEmployeeName(sid);
 		wcBasicData.setEmployeeName(employeeName);
-		wcBasicData.setSID(AppContexts.user().employeeId());
+		wcBasicData.setSID(sid);
 
 		// ドメインモデル「申請定型理由」を取得
 		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(cid,
