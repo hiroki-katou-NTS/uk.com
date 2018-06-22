@@ -15,7 +15,7 @@ public class MonthlyFormatPerformanceImport {
 	/**
 	 * フォーマット種類 - Format Type
 	 *  権限 - Authority: 0
-	 *  勤務種別 - Business Type: 1
+	 *  勤務種別 - Work Type: 1
 	 */
 	private int settingUnitType;
 
