@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 
 import nts.uk.shr.com.context.AppContextsConfig;
+import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
 
@@ -82,6 +83,9 @@ public class ProgramIdDetector implements Filter {
 			}
 		}
 		ProgramsManager.idOf(appId, partialPath).ifPresent(id -> AppContextsConfig.setProgramId(id));
+		
+		AppContextsConfig.setRequestedWebAPI(new RequestInfo(requestPagePath, entry.getValue()));
+		
 		chain.doFilter(request, response);
 	}
 
