@@ -137,4 +137,22 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	DayoffTranferInfor transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
 			InterimRemainCreateInfor createInfo, WorkTypeRemainInfor remainInfor, CreateAtr createAtr);
+	/**
+	 * 残数作成元情報から暫定年休管理データを作成する
+	 * @param inforData
+	 * @param workTypeClass
+	 * @param mngData
+	 * @return
+	 */
+	DailyInterimRemainMngData createInterimAnnualHoliday(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
+			DailyInterimRemainMngData mngData);
+	/**
+	 * 残数作成元情報から暫定積立年休管理データを作成する
+	 * @param inforData
+	 * @param workTypeClass
+	 * @param mngData
+	 * @return
+	 */
+	DailyInterimRemainMngData createInterimReserveHoliday(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
+			DailyInterimRemainMngData mngData);
 }

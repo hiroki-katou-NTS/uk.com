@@ -7,10 +7,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
-
+@Stateless
 public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPeriodCreateData{
-
+	@Inject
+	private InterimRemainOffDateCreateData createDataService;
 	@Override
 	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainDataMng(
 			InterimRemainCreateDataInputPara inputParam) {
@@ -20,7 +24,8 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 			//対象日のデータを抽出する
 			InterimRemainCreateInfor dataCreate = this.extractDataOfDate(loopDate, inputParam);
 			//アルゴリズム「指定日の暫定残数管理データを作成する」
-			
+			DailyInterimRemainMngData outPutdata = createDataService.createData(inputParam.getCid(), inputParam.getSid(), loopDate, inputParam.isDayOffTimeIsUse(), dataCreate);
+			dataOutput.put(loopDate, outPutdata);
 		}
 		
 		return dataOutput;
