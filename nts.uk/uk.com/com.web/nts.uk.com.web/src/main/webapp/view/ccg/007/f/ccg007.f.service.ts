@@ -17,6 +17,7 @@ module nts.uk.pr.view.ccg007.f {
         export interface CallerParameter {
             loginId: string;
             contractCode: string;
+            contractPassword: string;
         }
         
         export interface SendMailReturnDto {
