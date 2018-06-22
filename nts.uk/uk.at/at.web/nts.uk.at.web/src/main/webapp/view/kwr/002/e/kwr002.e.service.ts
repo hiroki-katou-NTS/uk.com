@@ -4,6 +4,7 @@ module nts.uk.com.view.kwr002.e {
         var path: any = {
             getAttndRecList: "at/function/attendancerecord/item/getAttndRecItem/",
             getCalculateAttndRecInfo: "at/function/attendancerecord/item/getCalculateAttndRecInfo",
+            getAllAttndByAtrAndType: "at/function/attendancerecord/item/getAttndRecByAttndTypeKey"
         }
 
         export function findAttndRecByScreen(screenUseAtr: number): JQueryPromise<Array<model.AttendanceRecordItemDto>> {
@@ -13,9 +14,23 @@ module nts.uk.com.view.kwr002.e {
         export function getCalculateAttndRecInfo(attendanceRecordKey: model.AttendanceRecordKeyDto): JQueryPromise<model.CalculateAttendanceRecordDto> {
             return nts.uk.request.ajax("at", path.getCalculateAttndRecInfo, attendanceRecordKey);
         }
+        /**
+       * get all attendance by srceenUseAtr and attendanceType
+       */
+        export function getAllAttndByAtrAndType(attendanceTypeKey: model.AttendanceTypeKey): JQueryPromise<Array<model.AttendanceRecordItemDto>> {
+            return nts.uk.request.ajax("at", path.getAllAttndByAtrAndType, attendanceTypeKey);
+        }
     }
 
     export module model {
+        export class AttendanceTypeKey {
+            screenUseAtr: number;
+            attendanceType: number;
+            constructor(screenUseAtr: number, attendanceType: number) {
+                this.screenUseAtr = screenUseAtr;
+                this.attendanceType = attendanceType;
+            }
+        }
 
         export interface AttendanceRecordKeyDto {
             code: number;
@@ -72,6 +87,7 @@ module nts.uk.com.view.kwr002.e {
             ADDITION = nts.uk.resource.getText('KWR002_178'),
             SUBTRACTION = nts.uk.resource.getText('KWR002_179')
         }
+
 
     }
 }

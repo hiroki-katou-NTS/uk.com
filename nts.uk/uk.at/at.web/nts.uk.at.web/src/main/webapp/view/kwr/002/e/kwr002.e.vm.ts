@@ -1,5 +1,5 @@
 module nts.uk.com.view.kwr002.e {
-
+    const MONTHLY_ATRRIBUTE: number = 2;
     export module viewmodel {
 
         export class ScreenModel {
@@ -62,14 +62,14 @@ module nts.uk.com.view.kwr002.e {
             start(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                
+
                 self.attendanceItem(nts.uk.ui.windows.getShared('attendanceItem'));
                 var attendanceItem = self.attendanceItem();
-                if(attendanceItem.attendanceId != null || attendanceItem.attendanceId != undefined) {
+                if (attendanceItem.attendanceId != null || attendanceItem.attendanceId != undefined) {
                     self.selectionTypeValue(attendanceItem.attribute);
                     self.selectedGridItems(attendanceItem.attendanceId);
                     dfd.resolve();
-                } 
+                }
                 else {
                     var attendanceRecordKey: model.AttendanceRecordKeyDto = {
                         code: attendanceItem.layoutCode,
@@ -78,8 +78,8 @@ module nts.uk.com.view.kwr002.e {
                         exportAtr: attendanceItem.exportAtr
                     };
                     service.getCalculateAttndRecInfo(attendanceRecordKey).done(function(calculateAttendanceRecordDto: model.CalculateAttendanceRecordDto) {
-                        if(calculateAttendanceRecordDto != null) {
-                            if(calculateAttendanceRecordDto.attribute != null || calculateAttendanceRecordDto.attribute != undefined) {
+                        if (calculateAttendanceRecordDto != null) {
+                            if (calculateAttendanceRecordDto.attribute != null || calculateAttendanceRecordDto.attribute != undefined) {
                                 self.selectionTypeValue(calculateAttendanceRecordDto.attribute);
                             } else {
                                 self.selectionTypeValue(16);
@@ -122,11 +122,12 @@ module nts.uk.com.view.kwr002.e {
 
                 return dfd.promise();
             }
-            
-            private findAttndRecByScreen(value: number) : void {
+
+            private findAttndRecByScreen(value: number): void {
                 var self = this;
                 var itemList: Array<model.GridItem> = [];
-                service.findAttndRecByScreen(value).done(function(attData: Array<model.AttendanceRecordItemDto>) {
+                var attendanceTypeKey:model.AttendanceTypeKey = new model.AttendanceTypeKey(value,self.attendanceItem().exportAtr);
+                service.getAllAttndByAtrAndType(attendanceTypeKey).done(function(attData: Array<model.AttendanceRecordItemDto>) {
                     if (attData.length > 0) {
                         attData.forEach(item => {
                             itemList.push(new model.GridItem(item.attendanceItemId, item.attendanceItemName));
@@ -175,12 +176,12 @@ module nts.uk.com.view.kwr002.e {
                     self.currentCodeList([]);
                 }
             }
-            
+
             deleteItem(data) {
                 var self = this;
                 var seletedItems = self.selectedGridItems();
                 var item: model.SelectedItem;
-                for (var i = 0; i<seletedItems.length; i++) {
+                for (var i = 0; i < seletedItems.length; i++) {
                     item = seletedItems[i];
                     if (item == data) {
                         seletedItems.splice(i, 1);
