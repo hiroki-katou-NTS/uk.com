@@ -210,7 +210,7 @@ module nts.uk.at.view.kwr006.a {
 
             public isInvalidSetting(): boolean {
                 let self = this;
-                return !self.hasSelectedEmployees() ||
+                return !self.hasSelectedEmployees() || self.isInvalidTotalOutputSetting() ||
                     self.monthlyWorkScheduleConditionModel.totalOutputSetting.workplaceHierarchyTotal.isInvalidSetting();
             }
 
@@ -498,6 +498,31 @@ module nts.uk.at.view.kwr006.a {
                 dto.cumulativeWorkplace = self.cumulativeWorkplace();
 
                 return dto;
+            }
+
+            public isInvalidTotalOutputSetting(): boolean {
+                let self = this;
+                let settingCount = 0;
+                if (self.details()) {
+                    settingCount++;
+                }
+                if (self.personalTotal()) {
+                    settingCount++;
+                }
+                if (self.workplaceTotal()) {
+                    settingCount++;
+                }
+                if (self.grossTotal()) {
+                    settingCount++;
+                }
+                if (self.cumulativeWorkplace()) {
+                    settingCount++;
+                }
+                if (settingCount == 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1167' });
+                    return true;
+                }
+                return false;
             }
         }
 
