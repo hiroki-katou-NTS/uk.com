@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.remainingnumber;
+package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,11 +8,11 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveManagement;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngRepository;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTemp;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTempPK;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTemp;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTempPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
