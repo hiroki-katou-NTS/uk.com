@@ -335,7 +335,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								}
 							}
 
-							if (valueSingleLower != null && !valueSingleLower.getAttendanceItems().isEmpty())
+							if (valueSingleLower != null )
 								valueSingleLower.getAttendanceItems().forEach(item -> {
 									if (item != null)
 										lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
