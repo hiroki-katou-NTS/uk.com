@@ -162,7 +162,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.getList(c -> this.joinObjectToDomain(c));
 	}
 
-	private final String SELECT_MULTI_CONDITION = "SELECT c From SacmtUser c "
+	private final String SELECT_MULTI_CONDITION = "SELECT p.businessName, c From SacmtUser c LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId "
 			+ "WHERE c.expirationDate >= :systemDate "
 			+ "AND c.specialUser = :specialUser "
 			+ "AND c.multiCompanyConcurrent = :multiCompanyConcurrent "
@@ -177,26 +177,34 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		if(employeePersonId.isEmpty()) {
 			return new ArrayList<>();
 		}
+		List<User> result = new ArrayList<>();
 		if(employeePersonIdFindName.isEmpty()) {
-			return this.queryProxy()
-					.query(SELECT_MULTI_NO_PERSON_ID,SacmtUser.class)
+			CollectionUtil.split(employeePersonId, 1000, subIdList -> {
+				result.addAll(this.queryProxy()
+					.query(SELECT_MULTI_NO_PERSON_ID, Object[].class)
 					.setParameter("systemDate", systemDate)
 					.setParameter("specialUser", special)
 					.setParameter("multiCompanyConcurrent", multi)
-					.setParameter("employeePersonId", employeePersonId)
+					.setParameter("employeePersonId", subIdList)
 					.setParameter("key", '%' +key+ '%')
-					.getList(c -> c.toDomain());
+					.getList(c -> this.joinObjectToDomain(c)));
+			});
 		}else {
-			return this.queryProxy()
-					.query(SELECT_MULTI_AND_PERSON_ID,SacmtUser.class)
-					.setParameter("systemDate", systemDate)
-					.setParameter("specialUser", special)
-					.setParameter("multiCompanyConcurrent", multi)
-					.setParameter("employeePersonId", employeePersonId)
-					.setParameter("key", '%' +key+ '%')
-					.setParameter("employeePersonIdFindName", employeePersonIdFindName)
-					.getList(c -> c.toDomain());
+			CollectionUtil.split(employeePersonIdFindName, 1000, subIdList -> {
+				CollectionUtil.split(employeePersonId, 1000, subList -> {
+					result.addAll(this.queryProxy()
+						.query(SELECT_MULTI_AND_PERSON_ID, Object[].class)
+						.setParameter("systemDate", systemDate)
+						.setParameter("specialUser", special)
+						.setParameter("multiCompanyConcurrent", multi)
+						.setParameter("employeePersonId", subList)
+						.setParameter("key", '%' +key+ '%')
+						.setParameter("employeePersonIdFindName", subIdList)
+						.getList(c -> this.joinObjectToDomain(c)));
+				});
+			});
 		}
+		return result;
 	}
 	private User joinObjectToDomain(Object[] object) {
 		String businessName =  object[0]==null?"":(String) object[0];
