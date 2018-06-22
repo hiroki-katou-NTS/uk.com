@@ -5,6 +5,7 @@ module nts.uk.at.view.kwr006.a {
     import MonthlyWorkScheduleConditionDto = service.model.MonthlyWorkScheduleConditionDto;
     import WorkScheduleSettingTotalOutputDto = service.model.WorkScheduleSettingTotalOutputDto;
     import TotalWorkplaceHierachyDto = service.model.TotalWorkplaceHierachyDto;
+    import MonthlyWorkScheduleQuery = service.model.MonthlyWorkScheduleQuery;
 
     export module viewmodel {
 
@@ -221,10 +222,10 @@ module nts.uk.at.view.kwr006.a {
 
                 self.saveWorkScheduleOutputCondition();
 
-                const lul = {
-                    fileType: 0
-                }
-                service.exportSchedule(lul);
+                const query = self.getExportQuery();
+                query.fileType = 0;
+
+                service.exportSchedule(query);
             }
 
             public exportPdf(): void {
@@ -235,11 +236,10 @@ module nts.uk.at.view.kwr006.a {
 
                 self.saveWorkScheduleOutputCondition();
 
-                const lul = {
-                    fileType: 1
+                const query = self.getExportQuery();
+                query.fileType = 1;
 
-                }
-                service.exportSchedule(lul);
+                service.exportSchedule(query);
             }
 
             public openScreenC(): void {
@@ -247,6 +247,25 @@ module nts.uk.at.view.kwr006.a {
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml').onClosed(() => {
                     self.loadListOutputItemMonthlyWorkSchedule();    
                 });
+            }
+
+            /**
+             * Get export query.
+             * Need to set file type.
+             */
+            private getExportQuery(): MonthlyWorkScheduleQuery {
+                let self = this;
+                let period = self.datepickerValue();
+                let startYM = parseInt(period.startDate.replace('/', ''));
+                let endYM = parseInt(period.endDate.replace('/', ''));
+                
+                return {
+                    startYearMonth: startYM,
+                    endYearMonth: endYM,
+                    workplaceIds: [],
+                    condition: self.monthlyWorkScheduleConditionModel.toDto(),
+                    fileType: null
+                };
             }
 
             /**
@@ -464,6 +483,7 @@ module nts.uk.at.view.kwr006.a {
                 self.personalTotal(data.personalTotal);
                 self.workplaceTotal(data.workplaceTotal);
                 self.grossTotal(data.grossTotal);
+                self.cumulativeWorkplace(data.cumulativeWorkplace);
                 self.workplaceHierarchyTotal.updateData(data.workplaceHierarchyTotal);
             }
 
@@ -475,6 +495,7 @@ module nts.uk.at.view.kwr006.a {
                 dto.workplaceTotal = self.workplaceTotal();
                 dto.grossTotal = self.grossTotal();
                 dto.workplaceHierarchyTotal = self.workplaceHierarchyTotal.toDto();
+                dto.cumulativeWorkplace = self.cumulativeWorkplace();
 
                 return dto;
             }
@@ -516,7 +537,6 @@ module nts.uk.at.view.kwr006.a {
                 self.seventhLevel(data.seventhLevel);
                 self.eightLevel(data.eightLevel);
                 self.ninthLevel(data.ninthLevel);
-                self.cumulativeWorkplace(data.cumulativeWorkplace);
             }
 
             public toDto(): TotalWorkplaceHierachyDto {
@@ -531,7 +551,6 @@ module nts.uk.at.view.kwr006.a {
                 dto.seventhLevel = self.seventhLevel();
                 dto.eightLevel = self.eightLevel();
                 dto.ninthLevel = self.ninthLevel();
-                dto.cumulativeWorkplace = self.cumulativeWorkplace();
                 return dto;
             }
 

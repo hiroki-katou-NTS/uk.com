@@ -16,7 +16,7 @@ module nts.uk.at.view.kwr006.a {
                 "_userId_" + __viewContext.user.employeeId);
         }
         
-        export function exportSchedule(query: any): JQueryPromise<any> {
+        export function exportSchedule(query: model.MonthlyWorkScheduleQuery): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportSchedule, query);
         }
 
@@ -25,6 +25,14 @@ module nts.uk.at.view.kwr006.a {
         }
 
         export module model {
+
+            export interface MonthlyWorkScheduleQuery {
+                startYearMonth: number;
+                endYearMonth: number;
+                workplaceIds: Array<string>;
+                condition: MonthlyWorkScheduleConditionDto;
+                fileType: number;
+            }
             
             export interface MonthlyWorkScheduleConditionDto {
                 companyId: string;
@@ -37,9 +45,9 @@ module nts.uk.at.view.kwr006.a {
             export interface WorkScheduleSettingTotalOutputDto {
                 details: boolean;
                 personalTotal: boolean;
-                workplaceTotal: boolean; 
+                workplaceTotal: boolean;
                 grossTotal: boolean;
-               
+                cumulativeWorkplace: boolean;
                 workplaceHierarchyTotal: TotalWorkplaceHierachyDto;
             }
     
@@ -53,7 +61,6 @@ module nts.uk.at.view.kwr006.a {
                 seventhLevel: boolean;
                 eightLevel: boolean;
                 ninthLevel: boolean;
-                 cumulativeWorkplace: boolean;
             }
         }
         
