@@ -18,6 +18,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkRepository;
@@ -202,7 +204,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		KscmtClassifyWorkSet entityToUpdate = this.queryProxy()
 				.find(entity.getKscmtClassifyWorkSetPK(), KscmtClassifyWorkSet.class).get();
 		entityToUpdate.setWorktypeCode(entity.getWorktypeCode());
-		entityToUpdate.setWorkingCode(entity.getWorkingCode());
+		entityToUpdate.setWorkingCode(StringUtils.isEmpty(entity.getWorkingCode()) ? null : entity.getWorkingCode());
 		entityToUpdate.getKscmtClassifyWorkSetPK()
 				.setWorkdayDivision(entity.getKscmtClassifyWorkSetPK().getWorkdayDivision());
 		entityToUpdate.getKscmtClassifyWorkSetPK().setCid(entity.getKscmtClassifyWorkSetPK().getCid());

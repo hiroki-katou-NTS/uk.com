@@ -1873,7 +1873,7 @@ module nts.custombinding {
                                     def.textValue(selected.optionText);
                                 } else {
                                     def.value(undefined);
-                                    def.textValue(`${v}&nbsp;&nbsp;&nbsp;${text('CPS001_107')}`);
+                                    def.textValue(text('CPS001_107'));
                                 }
                             } else {
                                 def.textValue('');

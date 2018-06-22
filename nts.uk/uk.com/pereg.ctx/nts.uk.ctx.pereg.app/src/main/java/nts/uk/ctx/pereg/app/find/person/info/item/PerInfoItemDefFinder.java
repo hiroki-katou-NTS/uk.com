@@ -146,7 +146,7 @@ public class PerInfoItemDefFinder {
 				SingleItemDto y = (SingleItemDto) x;
 				if (y.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value) {
 					SelectionItemDto selelection = (SelectionItemDto) y.getDataTypeState();
-					if (selelection.getReferenceType().value == ReferenceTypes.DESIGNATED_MASTER.value) {
+					if (selelection.getReferenceType().value == ReferenceTypes.CODE_NAME.value) {
 						String typeCode = ((CodeNameRefTypeDto) selelection).getTypeCode();
 						GeneralDate baseDateConvert = GeneralDate.today();
 						String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
