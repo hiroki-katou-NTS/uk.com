@@ -1301,6 +1301,32 @@ module nts.layout {
                 });
             }
 
+            if (CS00017_IS00082 && CS00017_IS00085) {
+                CS00017_IS00082.data.value.subscribe(_date => {
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                        comboData = ko.toJS(CS00017_IS00085.data);
+
+                    if (!empId) {
+                        return;
+                    }
+
+                    fetch.get_cb_data({
+                        comboBoxType: comboData.item.referenceType,
+                        categoryId: comboData.categoryId,
+                        required: comboData.required,
+                        standardDate: moment.utc(_date).toDate(),
+                        typeCode: comboData.item.typeCode,
+                        masterType: comboData.item.masterType,
+                        employeeId: empId,
+                        cps002: false,
+                        workplaceId: undefined
+                    }).done((cbx: Array<IComboboxItem>) => {
+                        CS00017_IS00085.data.lstComboBoxValue(cbx);
+                        CS00017_IS00085.data.value.valueHasMutated();
+                    });
+                });
+            }
+
             if (CS00017_IS00084) {
                 CS00017_IS00084.ctrl.on('click', () => {
                     initCDL008Data(ko.toJS(CS00017_IS00084.data));
