@@ -910,14 +910,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                    delete valueUpate.id
 //                    $("#dpGrid").ntsGrid("updateRow", id, valueUpate);
 //                })
+                setTimeout(() => {
                 _.each(rowIds, rowN => {
                     $("#dpGrid").ntsGrid("clearRowStates", "_" + rowN);
-                });
+                }); 
                 _.each(data.lstCellState, (valt) => {
                     console.log("column key:" + valt.columnKey);
                     $("#dpGrid").ntsGrid("setState", valt.rowId, valt.columnKey, valt.state);
                 });
                 nts.uk.ui.block.clear();
+                }, 1);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -3208,8 +3210,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.messageRed(nts.uk.resource.getText('KDW003_80', [redConditionMessage]));
             self.messageNoForward(messageNotForward);
             
-            self.shortageTime("-"+nts.uk.resource.getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), "-"+self.convertToHours(Number(val19))]));
-            self.nextMonthTransferredMoneyTime("-"+nts.uk.resource.getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
+            self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), self.convertToHours(Number(val19))]));
+            self.nextMonthTransferredMoneyTime(nts.uk.resource.getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
             self.noOfHolidays(Number(val189));
             self.absentDeductionTime(Number(val190));
             if (error) {
@@ -3289,12 +3291,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
     class CalcFlex {
         value18: any;
+        value19: any;
         value21: any;
         value189: any;
         value190: any;
         value191: any;
-        constructor(value18: any, value21: any, value189: any, value190: any, value191: any) {
+        constructor(value18: any, value19: any, value21: any, value189: any, value190: any, value191: any) {
             this.value18 = Number(value18.value);
+            this.value19 = Number(value19.value);
             this.value21 = Number(value21.value);
             this.value189 = Number(value189.value);
             this.value190 = Number(value190.value);
