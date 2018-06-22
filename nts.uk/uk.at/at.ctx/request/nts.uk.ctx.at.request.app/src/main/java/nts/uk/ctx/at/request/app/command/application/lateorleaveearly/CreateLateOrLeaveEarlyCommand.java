@@ -17,7 +17,7 @@ public class CreateLateOrLeaveEarlyCommand {
 	private String appID;
 	
     /** 申請日*/
-	private GeneralDate applicationDate;
+	private String applicationDate;
 	
 	private int prePostAtr;
 	
@@ -31,30 +31,34 @@ public class CreateLateOrLeaveEarlyCommand {
 	private int early1;
 	
 	/** 早退時刻1 */
-	private int earlyTime1;
+	private Integer earlyTime1;
 	
 	/** 遅刻1 */
 	private int late1;
 	
 	/** 遅刻時刻1 */
-	private int lateTime1;
+	private Integer lateTime1;
 	
 	/** 早退2 */
 	private int early2;
 	
 	/** 早退時刻2 */
-	private int earlyTime2;
+	private Integer earlyTime2;
 	
 	/** 遅刻2 */
 	private int late2;
 	
 	/** 遅刻時刻2 */
-	private int lateTime2;
+	private Integer lateTime2;
 	
 	/** 定型理由 typicalReason :DB reasonTemp */ 
 	private String reasonTemp;
 	
 	/** 申請理由 appReason */
 	private String appReason;
+	
+	public GeneralDate getApplicationDate() {
+	return GeneralDate.fromString(this.applicationDate, "yyyy/MM/dd");
+	}
 
 }

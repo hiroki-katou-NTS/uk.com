@@ -47,7 +47,8 @@ module nts.uk.at.view.kaf002.b {
                     });   
                 });
                 self.cm.application().appDate.subscribe(value => {
-                    nts.uk.ui.block.invisible();
+                    if ($('.cm-time-editor').ntsError("hasError")){return;}
+                     nts.uk.ui.block.invisible();
                     self.kaf000_a2.getAppDataDate(7, value, false)
                     .done(()=>{
                         nts.uk.ui.block.clear();         

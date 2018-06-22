@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 
 /*
  * 臨時系打刻漏れをチェックする
@@ -19,13 +17,9 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerforma
 @Stateless
 public class MissingOfTemporaryStampChecking {
 	
-	@Inject
-	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
-
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-	
-	public void missingOfTemporaryStampChecking(String companyID, String employeeID, GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
+	public EmployeeDailyPerError missingOfTemporaryStampChecking(String companyID, String employeeID, GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
+		
+		EmployeeDailyPerError employeeDailyPerError = null;
 		
 //		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, processingDate);
 		
@@ -59,10 +53,13 @@ public class MissingOfTemporaryStampChecking {
 						attendanceItemIds.add(69);
 					}
 				}
-				if (!attendanceItemIds.isEmpty()) {
-					createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"), attendanceItemIds);	
-				}
+			}
+			if(!attendanceItemIds.isEmpty()){
+				employeeDailyPerError = new EmployeeDailyPerError(companyID,
+						employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"),
+						attendanceItemIds);
 			}
 		}
+		return employeeDailyPerError;
 	}
 }

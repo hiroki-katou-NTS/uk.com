@@ -5,7 +5,8 @@ module nts.uk.pr.view.ccg007.h {
         // Service paths.
         var servicePath = {
             submitForgotPass: "ctx/sys/gateway/changepassword/submitforgotpass",
-            getUserNameByLoginId: "ctx/sys/gateway/changepassword/getUserNameByLoginId"
+            getUserNameByLoginId: "ctx/sys/gateway/changepassword/getUserNameByLoginId",
+            submitLogin: "ctx/sys/gateway/login/submit/form1"
         }
 
         /**
@@ -19,6 +20,10 @@ module nts.uk.pr.view.ccg007.h {
             return nts.uk.request.ajax(servicePath.getUserNameByLoginId + "/" + contractCode + "/" + loginId);
         }
         
+        export function submitLogin(data: SubmitData): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
+        }
+        
         export interface CallerParameter {
             loginId: string;
             contractCode: string;
@@ -27,14 +32,23 @@ module nts.uk.pr.view.ccg007.h {
         
         export class ForgotPasswordCommand {
             url: string;
+            userId: string;
             newPassword: string;
             confirmNewPassword: string;
             
-            constructor(url: string, newPassword: string, confirmNewPassword: string) {
+            constructor(url: string, userId: string, newPassword: string, confirmNewPassword: string) {
                 this.url = url;
+                this.userId = userId;
                 this.newPassword = newPassword;
                 this.confirmNewPassword = confirmNewPassword;
             }
+        }
+        
+        export interface SubmitData {
+            loginId: string;
+            password: string;
+            contractCode: string;
+            contractPassword: string;
         }
     }
 }

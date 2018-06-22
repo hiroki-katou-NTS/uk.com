@@ -32,35 +32,36 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ExtraHolidayManagementService {
-	
+
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepository;
-	
+
 	@Inject
 	private ComDayOffManaDataRepository comDayOffManaDataRepository;
-	
+
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
-	
+
 	@Inject
 	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
-	
+
 	@Inject
 	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
-	
+
 	@Inject
 	private CompensLeaveEmSetRepository compensLeaveEmSetRepository;
-	
+
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
-	
+
 	@Inject
 	private SysWorkplaceAdapter syWorkplaceAdapter;
-	
+
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
-	
-	public ExtraHolidayManagementOutput dataExtractionProcessing (int searchMode, String employeeId, GeneralDate startDate, GeneralDate endDate){
+
+	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId,
+			GeneralDate startDate, GeneralDate endDate) {
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> listLeaveData = null;
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
@@ -70,40 +71,49 @@ public class ExtraHolidayManagementService {
 		CompensatoryLeaveEmSetting compenLeaveEmpSetting = null;
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = null;
 		GeneralDate baseDate = GeneralDate.today();
-		if (searchMode == 0){
+		if (searchMode == 0) {
 			listLeaveData = leaveManaDataRepository.getBySidNotUnUsed(cid, employeeId);
-			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId); 
+			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId);
 		} else {
 			listLeaveData = leaveManaDataRepository.getByDateCondition(cid, employeeId, startDate, endDate);
 			listCompensatoryData = comDayOffManaDataRepository.getByDateCondition(cid, employeeId, startDate, endDate);
 		}
-		if (!listLeaveData.isEmpty() && !listCompensatoryData.isEmpty()){
-			List<String> listLeaveID = listLeaveData.stream().map(x ->{
+		if (!listLeaveData.isEmpty()) {
+			List<String> listLeaveID = listLeaveData.stream().map(x -> {
 				return x.getID();
 			}).collect(Collectors.toList());
-			listLeaveComDayOffManagement = leaveComDayOffManaRepository.getByListComLeaveID(listLeaveID);
+			listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListComLeaveID(listLeaveID));
 		}
-		Optional<SEmpHistoryImport> sEmpHistoryImport = sysEmploymentHisAdapter.findSEmpHistBySid(cid, employeeId, baseDate);
-		if (sEmpHistoryImport.isPresent()){
+		if (!listCompensatoryData.isEmpty()) {
+			List<String> listComId = listCompensatoryData.stream().map(x -> {
+				return x.getComDayOffID();
+			}).collect(Collectors.toList());
+			listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListComId(listComId));
+		}
+		Optional<SEmpHistoryImport> sEmpHistoryImport = sysEmploymentHisAdapter.findSEmpHistBySid(cid, employeeId,
+				baseDate);
+		if (sEmpHistoryImport.isPresent()) {
 			empHistoryImport = sEmpHistoryImport.get();
 			String sCd = empHistoryImport.getEmploymentCode();
 			Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cid, sCd);
-			if (closureEmployment.isPresent()){
+			if (closureEmployment.isPresent()) {
 				closureEmploy = closureEmployment.get();
 			}
 		}
 		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
-		if (!Objects.isNull(empHistoryImport)){
+		if (!Objects.isNull(empHistoryImport)) {
 			compenLeaveEmpSetting = compensLeaveEmSetRepository.find(cid, empHistoryImport.getEmploymentCode());
 		}
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);
 		List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
 		PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
-		if (!employeeBasicInfo.isEmpty()){
+		if (!employeeBasicInfo.isEmpty()) {
 			personEmpBasicInfoImport = employeeBasicInfo.get(0);
 		}
 		compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
-		return new ExtraHolidayManagementOutput(listLeaveData, listCompensatoryData, listLeaveComDayOffManagement, empHistoryImport, closureEmploy, compenLeaveEmpSetting, compensatoryLeaveComSetting, sWkpHistImport.orElse(null), personEmpBasicInfoImport);
+		return new ExtraHolidayManagementOutput(listLeaveData, listCompensatoryData, listLeaveComDayOffManagement,
+				empHistoryImport, closureEmploy, compenLeaveEmpSetting, compensatoryLeaveComSetting,
+				sWkpHistImport.orElse(null), personEmpBasicInfoImport);
 	}
 }

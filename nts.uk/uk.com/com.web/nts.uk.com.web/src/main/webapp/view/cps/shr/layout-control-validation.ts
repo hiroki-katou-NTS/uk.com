@@ -34,7 +34,7 @@ module nts.layout {
                 .map(x => x.items)
                 .flatten()
                 .flatten()
-                .filter((x: IItemData) => x.required && x.type != ITEM_TYPE.SET)
+                .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
                 .each((x: IItemData) => {
                     let v: any = ko.toJS(x),
                         id = v.itemDefId.replace(/[-_]/g, ''),
@@ -86,7 +86,7 @@ module nts.layout {
                                 .trigger('blur')
                                 .trigger('change');
                         } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
-                            if (nou(x.value) && x.required) {
+                            if (_.isNil(x.value) && (x.required || !_.isEmpty(x.textValue))) {
                                 if (!getError($element).length) {
                                     $element.ntsError('set', {
                                         messageId: "FND_E_REQ_SELECT",
@@ -1232,11 +1232,17 @@ module nts.layout {
                     } else if (location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
                             selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
-                            baseDate: ko.toJS(new Date()),
+                            baseDate: ko.toJS((__viewContext || {
+                                viewModel: {
+                                    currentEmployee: {
+                                        hireDate: new Date()
+                                    }
+                                }
+                            }).viewModel.currentEmployee).hireDate,
                             isMultiple: false,
                             selectedSystemType: 5,
                             isrestrictionOfReferenceRange: false,
-                            isRequire: required
+                            isRequire: data.required
                         }, true);
                     } else {
                         setShared('inputCDL008', null);
@@ -1272,7 +1278,6 @@ module nts.layout {
             if (CS00017_IS00082 && CS00017_IS00084) {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
-                        data = ko.toJS(CS00017_IS00082.data),
                         comboData = ko.toJS(CS00017_IS00084.data);
 
                     if (!empId) {
@@ -1291,6 +1296,7 @@ module nts.layout {
                         workplaceId: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
+                        CS00017_IS00084.data.value.valueHasMutated();
                     });
                 });
             }

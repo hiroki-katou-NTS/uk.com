@@ -101,9 +101,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			// get work time
 			WorkTimeSetting workTimeSetting = workTimeMap.get(bSchedule.getWorkTimeCode());
 
-			if (!StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)
-					&& !("000").equals(bSchedule.getWorkTimeCode())) {
-
+			if (!StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)) {
 				if (!checkWorkTime(errList, workTimeSetting)) {
 					continue;
 				}
