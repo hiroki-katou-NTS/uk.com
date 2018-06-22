@@ -101,6 +101,8 @@ module kcp.share.tree {
 
         // 参照範囲の絞
         restrictionOfReferenceRange?: boolean;
+
+        isShowNoSelectRow?:boolean;
     }
 
     /**
@@ -150,6 +152,7 @@ module kcp.share.tree {
         isMultipleUse: boolean;
         isMultiSelect: boolean;
         isDialog: boolean;
+        isShowNoSelectRow: boolean;
         hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
@@ -215,6 +218,7 @@ module kcp.share.tree {
             self.hasBaseDate(!self.isMultipleUse);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
+            self.isShowNoSelectRow = data.isShowNoSelectRow;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
             self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;            
@@ -280,6 +284,8 @@ module kcp.share.tree {
                     // Init component.
                     self.itemList(res);
                     self.backupItemList(res);
+                    self.initNoSelectRow(data.isShowNoSelectRow);
+
                 }
                 // Set default value when initial component.
                 self.initSelectedValue(res);
@@ -318,6 +324,21 @@ module kcp.share.tree {
             }
 
             return dfd.promise();
+        }
+
+        /**
+         * Add No select row to list
+         */
+        private initNoSelectRow(isShowNoSelectRow: boolean) {
+            var self = this;
+            // Remove No select row.
+            self.backupItemList.remove(self.backupItemList().filter(item => item.code === '')[0]);
+
+            // Check is show no select row.
+            if (isShowNoSelectRow && self.backupItemList().map(item => item.code).indexOf('') == -1 && !self.isMultiSelect) {
+                self.backupItemList.unshift({workplaceId:'', hierarchyCode: '', name: nts.uk.resource.getText('KCP001_5'),
+                    nodeText: nts.uk.resource.getText('KCP001_5'), level: 1});
+            }
         }
 
         /**
