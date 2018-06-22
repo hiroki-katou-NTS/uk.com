@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.shr.com.permit.AvailabilityPermissionBase;
 import nts.uk.shr.com.permit.AvailabilityPermissionRepositoryBase;
 
-public abstract class AvaiablityPermissionRepositoryBase<D extends AvailabilityPermissionBase, E extends JpaEntityOfAvailabilityPermissionBase<D>>
+public abstract class JpaAvailablityPermissionRepositoryBase<D extends AvailabilityPermissionBase, E extends JpaEntityOfAvailabilityPermissionBase<D>>
 		extends JpaRepository
 		implements AvailabilityPermissionRepositoryBase<D> {
 
