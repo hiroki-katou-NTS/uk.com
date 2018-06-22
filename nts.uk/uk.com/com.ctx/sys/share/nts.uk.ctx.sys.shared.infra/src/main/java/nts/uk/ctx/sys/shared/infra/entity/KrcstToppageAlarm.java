@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -43,6 +44,7 @@ public class KrcstToppageAlarm extends UkJpaEntity implements Serializable {
 	@Column(name = "EXISTENCE_ERROR")
 	public int existenceError;
 	/** 了解フラグ */
+	@Setter
 	@Column(name = "ROGER_FLAG")
 	public int rogerFlag;
 	@Override

@@ -859,4 +859,8 @@ public class ProgramIdConsts {
 
 	/** CCG009 */
 	public static final String CCG009A = "CCG009A";
+	
+	/** KTG031 */
+	public static final String KTG031A = "KTG031A";
+	public static final String KTG031B = "KTG031B";
 }
