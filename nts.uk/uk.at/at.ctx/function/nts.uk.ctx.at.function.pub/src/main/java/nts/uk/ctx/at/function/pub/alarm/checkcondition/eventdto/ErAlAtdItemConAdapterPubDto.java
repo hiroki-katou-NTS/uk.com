@@ -22,9 +22,12 @@ public class ErAlAtdItemConAdapterPubDto {
 	private int singleAtdItem;
 	private BigDecimal compareStartValue;
 	private BigDecimal compareEndValue;
+	private Integer inputCheckCondition;
+
 	public ErAlAtdItemConAdapterPubDto(int targetNO, int conditionAtr, boolean useAtr, int uncountableAtdItem,
 			List<Integer> countableAddAtdItems, List<Integer> countableSubAtdItems, int conditionType,
-			int compareOperator, int singleAtdItem, BigDecimal compareStartValue, BigDecimal compareEndValue) {
+			int compareOperator, int singleAtdItem, BigDecimal compareStartValue, BigDecimal compareEndValue,
+			Integer inputCheckCondition) {
 		super();
 		this.targetNO = targetNO;
 		this.conditionAtr = conditionAtr;
@@ -37,5 +40,6 @@ public class ErAlAtdItemConAdapterPubDto {
 		this.singleAtdItem = singleAtdItem;
 		this.compareStartValue = compareStartValue;
 		this.compareEndValue = compareEndValue;
+		this.inputCheckCondition = inputCheckCondition;
 	}
 }

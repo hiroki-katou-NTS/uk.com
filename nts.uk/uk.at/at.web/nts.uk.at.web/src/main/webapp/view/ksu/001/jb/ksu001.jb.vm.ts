@@ -69,9 +69,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = c.workTimeCode == '000' ? null : c.workTimeCode;
-                        //                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
-                        //                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
+                        workTimeCode = _.isEmpty(c.workTimeCode) ? null : c.workTimeCode;
                         startTime = c.startTime ? formatById("Clock_Short_HM", c.startTime) : '';
                         endTime = c.endTime ? formatById("Clock_Short_HM", c.endTime) : '';
                     } else {

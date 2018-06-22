@@ -10,17 +10,16 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 
 /**
  * 
- * @author hieult
- *遅刻早退取消申請
+ * @author hieult 遅刻早退取消申請
  */
 @Getter
 @AllArgsConstructor
 @Builder
 public class LateOrLeaveEarly extends AggregateRoot {
-	
+
 	@Setter
 	private Application_New application;
-	
+
 	/** 実績取消区分 */
 	@Setter
 	private int actualCancelAtr;
@@ -49,9 +48,8 @@ public class LateOrLeaveEarly extends AggregateRoot {
 	@Setter
 	private TimeDay lateTime2;
 
-	public void changeApplication(int actualCancelAtr, int early1,
-			int earlyTime1, int late1, int lateTime1, int early2, int earlyTime2, int late2, int lateTime2)
-	{
+	public void changeApplication(int actualCancelAtr, int early1, int earlyTime1, int late1, int lateTime1, int early2,
+			int earlyTime2, int late2, int lateTime2) {
 		this.actualCancelAtr = actualCancelAtr;
 		this.early1 = EnumAdaptor.valueOf(early1, Select.class);
 		this.earlyTime1 = EnumAdaptor.valueOf(earlyTime1, TimeDay.class);
@@ -62,5 +60,18 @@ public class LateOrLeaveEarly extends AggregateRoot {
 		this.late2 = EnumAdaptor.valueOf(late2, Select.class);
 		this.lateTime2 = EnumAdaptor.valueOf(lateTime2, TimeDay.class);
 	}
-	
+
+	public Integer getLateTime1AsMinutes() {
+		return lateTime1 == null ? null : this.lateTime1.valueAsMinutes();
+	}
+	public Integer getLateTime2AsMinutes() {
+		return lateTime2 == null ? null : this.lateTime2.valueAsMinutes();
+	}
+	public Integer getEarlyTime1AsMinutes() {
+		return earlyTime1 == null ? null : this.earlyTime1.valueAsMinutes();
+	}
+	public Integer getEarlyTime2AsMinutes() {
+		return earlyTime2 == null ? null : this.earlyTime2.valueAsMinutes();
+	}
+
 }

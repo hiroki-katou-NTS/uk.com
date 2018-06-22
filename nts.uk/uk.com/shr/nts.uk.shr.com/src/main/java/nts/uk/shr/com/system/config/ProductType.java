@@ -10,16 +10,17 @@ import nts.arc.enums.EnumAdaptor;
 public enum ProductType {
 
 	/** 就業 */
-	ATTENDANCE(1),
+	ATTENDANCE(1, "VersionAT"),
 	
 	/** 給与 */
-	PAYROLL(2),
+	PAYROLL(2, "VersionPR"),
 	
 	/** 人事 */
-	PERSONNEL(3),
+	PERSONNEL(3, "VersionPN"),
 	
 	;
 	public int value;
+	public String systemConfigVersionKey;
 	
 	public static ProductType valueOf(int value) {
 		return EnumAdaptor.valueOf(value, ProductType.class);

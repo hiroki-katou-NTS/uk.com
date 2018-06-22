@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
 import nts.uk.ctx.pereg.app.command.person.info.item.AddItemCommand;
 import nts.uk.ctx.pereg.app.command.person.info.item.MappingDtoToDomain;
 import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
@@ -45,7 +46,6 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 
 		String contractCd = AppContexts.user().contractCode();
 		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
-		
 		// validate categoryName
 		validateCategoryName(categoryName, zeroCompanyId);
 
@@ -54,7 +54,7 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		
 		// add PersonInfoCategory of zero-company.
 		PersonInfoCategory perInfoCtg = PersonInfoCategory.createFromJavaType(zeroCompanyId, newCategoryCode, categoryName,
-				categoryType);
+				categoryType, NotUseAtr.USE.value , NotUseAtr.USE.value, NotUseAtr.USE.value );
 		this.perInfoCtgRep.addPerInfoCtgRoot(perInfoCtg, contractCd);
 
 		List<String> companyIdList = companyRepo.acquireAllCompany();

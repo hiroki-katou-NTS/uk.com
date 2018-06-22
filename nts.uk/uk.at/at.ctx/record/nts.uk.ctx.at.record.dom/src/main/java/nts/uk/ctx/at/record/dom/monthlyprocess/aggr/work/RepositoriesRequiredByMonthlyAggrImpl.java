@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
@@ -21,6 +20,8 @@ import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlexReposi
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.period.GetWeekPeriod;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
@@ -30,16 +31,26 @@ import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.GetWeekStart;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetDeforAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetFlexAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetRegularAggrSet;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
@@ -62,155 +73,190 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 
 	/** 社員の取得 */
 	@Inject
-	public EmpEmployeeAdapter empEmployee;
+	private EmpEmployeeAdapter empEmployee;
 
 	/** 労働条件項目の取得 */
 	@Inject
-	public WorkingConditionItemRepository workingConditionItem;
+	private WorkingConditionItemRepository workingConditionItem;
 	/** 労働条件の取得 */
 	@Inject
-	public WorkingConditionRepository workingCondition;
+	private WorkingConditionRepository workingCondition;
 	/** 所属職場履歴の取得 */
 	@Inject
-	public AffWorkplaceAdapter affWorkplace;
+	private AffWorkplaceAdapter affWorkplace;
 	/** 所属雇用履歴の取得 */
 	@Inject
-	public SyEmploymentAdapter syEmployment;
+	private ShareEmploymentAdapter employment;
 	
 	/** 日別実績の勤務種別の取得 */
 	@Inject
-	public WorkTypeOfDailyPerforRepository workTypeOfDaily;
+	private WorkTypeOfDailyPerforRepository workTypeOfDaily;
 	/** 日別実績の勤怠時間の取得 */
 	@Inject
-	public AttendanceTimeRepository attendanceTimeOfDaily;
+	private AttendanceTimeRepository attendanceTimeOfDaily;
 	/** 日別実績の勤務情報の取得 */
 	@Inject
-	public WorkInformationRepository workInformationOfDaily;
+	private WorkInformationRepository workInformationOfDaily;
 	/** 日別実績の所属情報の取得 */
 	@Inject
-	public AffiliationInforOfDailyPerforRepository affiliationInfoOfDaily;
+	private AffiliationInforOfDailyPerforRepository affiliationInfoOfDaily;
 	/** 日別実績の出退勤の取得 */
 	@Inject
-	public TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
+	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	/** 日別実績の臨時出退勤の取得 */
 	@Inject
-	public TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDaily;
+	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDaily;
 	/** 日別実績の特定日区分の取得 */
 	@Inject
-	public SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDaily;
+	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDaily;
 	/** 日別実績のPCログオン情報 */
 	@Inject
-	public PCLogOnInfoOfDailyRepo PCLogonInfoOfDaily;
+	private PCLogOnInfoOfDailyRepo PCLogonInfoOfDaily;
 	/** 社員の日別積実績エラー一覧 */
 	@Inject
-	public EmployeeDailyPerErrorRepository employeeDailyError;
+	private EmployeeDailyPerErrorRepository employeeDailyError;
 	/** 日別実績の任意項目の取得 */
 	@Inject
-	public AnyItemValueOfDailyRepo anyItemValueOfDaily;
+	private AnyItemValueOfDailyRepo anyItemValueOfDaily;
+	/** 年休付与残数データ */
+	@Inject
+	private AnnLeaGrantRemDataRepository annLeaGrantRemData;
 
 	/** 勤怠項目値変換 */
 	@Inject
-	public AttendanceItemConvertFactory attendanceItemConverter;
+	private AttendanceItemConvertFactory attendanceItemConverter;
 	
 	/** 勤務情報の取得 */
 	@Inject
-	public WorkTypeRepository workType;
+	private WorkTypeRepository workType;
 	/** 就業時間帯：共通設定の取得 */
 	@Inject
-	public GetCommonSet commonSet;
+	private GetCommonSet commonSet;
 	/** 所定時間設定の取得 */
 	@Inject
-	public PredetemineTimeSettingRepository predetermineTimeSet;
+	private PredetemineTimeSettingRepository predetermineTimeSet;
 	/** 締めの取得 */
 	@Inject
 	private ClosureRepository closure;
 	
 	/** 日の法定労働時間の取得 */
 	@Inject
-	public DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
+	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
 	/** 週・月の法定労働時間の取得*/
 	@Inject
-	public MonthlyStatutoryWorkingHours monthlyStatutoryWorkingHours;
+	private MonthlyStatutoryWorkingHours monthlyStatutoryWorkingHours;
 	
 	/** 月別実績の勤怠時間 */
 	@Inject
-	public AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthly;
+	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthly;
 	/** 月別実績の任意項目 */
 	@Inject
-	public AnyItemOfMonthlyRepository anyItemOfMonthly;
+	private AnyItemOfMonthlyRepository anyItemOfMonthly;
 	
 	/** 集計設定の取得（通常勤務） */
 	@Inject
-	public GetRegularAggrSet regularAggrSet;
+	private GetRegularAggrSet regularAggrSet;
 	/** 集計設定の取得（変形労働） */
 	@Inject
-	public GetDeforAggrSet deforAggrSet;
+	private GetDeforAggrSet deforAggrSet;
 	/** 集計設定の取得（フレックス） */
 	@Inject
-	public GetFlexAggrSet flexAggrSet;
+	private GetFlexAggrSet flexAggrSet;
+	
+	/** 労働時間と日数の設定の利用単位の設定 */
+	@Inject
+	private UsageUnitSettingRepository usageUnitSetRepo;
+	/** 通常勤務会社別月別実績集計設定 */
+	@Inject
+	private ComRegulaMonthActCalSetRepository comRegSetRepo;
+	/** 通常勤務社員別月別実績集計設定 */
+	@Inject
+	private ShaRegulaMonthActCalSetRepository shaRegSetRepo;
+	/** 変形労働会社別月別実績集計設定 */
+	@Inject
+	private ComDeforLaborMonthActCalSetRepository comIrgSetRepo;
+	/** 変形労働社員別月別実績集計設定 */
+	@Inject
+	private ShaDeforLaborMonthActCalSetRepository shaIrgSetRepo;
+	/** フレックス会社別月別実績集計設定 */
+	@Inject
+	private ComFlexMonthActCalSetRepository comFlexSetRepo;
+	/** フレックス社員別月別実績集計設定 */
+	@Inject
+	private ShaFlexMonthActCalSetRepository shaFlexSetRepo;
+	
 	/** フレックス勤務の月別集計設定の取得 */
 	@Inject
-	public MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlex;
+	private MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlex;
 	/** フレックス勤務所定労働時間取得 */
 	@Inject
-	public GetFlexPredWorkTimeRepository flexPredWorktime;
+	private GetFlexPredWorkTimeRepository flexPredWorktime;
 	/** 残業・振替の処理順序を取得する */
 	@Inject
-	public GetOverTimeAndTransferOrder overTimeAndTransferOrder;
+	private GetOverTimeAndTransferOrder overTimeAndTransferOrder;
 	/** 休出・振替の処理順序を取得する */
 	@Inject
-	public GetHolidayWorkAndTransferOrder holidayWorkAndTransferOrder;
+	private GetHolidayWorkAndTransferOrder holidayWorkAndTransferOrder;
 	/** 残業枠の役割 */
 	@Inject
-	public RoleOvertimeWorkRepository roleOverTimeFrame;
+	private RoleOvertimeWorkRepository roleOverTimeFrame;
 	/** 休出枠の役割 */
 	@Inject
-	public RoleOfOpenPeriodRepository roleHolidayWorkFrame;
+	private RoleOfOpenPeriodRepository roleHolidayWorkFrame;
 	/** 月次集計の法定内振替順設定の取得 */
 	@Inject
-	public LegalTransferOrderSetOfAggrMonthlyRepository legalTransferOrderSetOfAggrMonthly;
+	private LegalTransferOrderSetOfAggrMonthlyRepository legalTransferOrderSetOfAggrMonthly;
 	/** 休日加算設定 */
 	@Inject
-	public HolidayAddtionRepository holidayAddition;
+	private HolidayAddtionRepository holidayAddition;
 	/** 休暇加算設定を取得する */
 	@Inject
-	public GetVacationAddSet vacationAddSet;
+	private GetVacationAddSet vacationAddSet;
 	/** 回数集計 */
 	@Inject
-	public TotalTimesRepository totalTimes;
+	private TotalTimesRepository totalTimes;
 	/** 任意項目 */
 	@Inject
-	public OptionalItemRepository optionalItem;
+	private OptionalItemRepository optionalItem;
+	/** 適用する雇用条件 */
+	@Inject
+	private EmpConditionRepository empCondition;
+	/** 計算式 */
+	@Inject
+	private FormulaRepository formula;
+	/** 年休設定 */
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
 	
 	/** 週開始の取得 */
 	@Inject
-	public GetWeekStart weekStart;
+	private GetWeekStart weekStart;
 	/** 週集計期間を取得する */
 	@Inject
-	public GetWeekPeriod weekPeriod;
+	private GetWeekPeriod weekPeriod;
 	
 	/** 時間外超過設定の取得 */
 	@Inject
-	public OutsideOTSettingRepository outsideOTSet;
+	private OutsideOTSettingRepository outsideOTSet;
 	
 	/** ドメインサービス：36協定 */
 	@Inject
-	public AgreementDomainService agreementDomainService;
+	private AgreementDomainService agreementDomainService;
 	/** 36協定運用設定の取得 */
 	@Inject
-	public AgreementOperationSettingRepository agreementOperationSet;
+	private AgreementOperationSettingRepository agreementOperationSet;
 	/** 36協定年月設定の取得 */
 	@Inject
-	public AgreementMonthSettingRepository agreementMonthSet;
+	private AgreementMonthSettingRepository agreementMonthSet;
 	
 	/** 月別実績の給与項目カウントの取得 */
 	@Inject
-	public PayItemCountOfMonthlyRepository payItemCountOfMonthly;
+	private PayItemCountOfMonthlyRepository payItemCountOfMonthly;
 	/** 月別実績の丸め設定の取得 */
 	@Inject
-	public RoundingSetOfMonthlyRepository roundingSetOfMonthly;
+	private RoundingSetOfMonthlyRepository roundingSetOfMonthly;
 
 	/** 日別実績から回数集計結果を取得する */
 	@Inject
-	public GetTotalTimesFromDailyRecord timeAndCountFromDailyRecord;
+	private GetTotalTimesFromDailyRecord timeAndCountFromDailyRecord;
 }

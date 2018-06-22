@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGat
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
@@ -31,4 +32,5 @@ public class ReflectStampOutput {
 	PCLogOnInfoOfDaily pcLogOnInfoOfDaily;
 	ShortTimeOfDailyPerformance shortTimeOfDailyPerformance;
 	BreakTimeOfDailyPerformance breakTimeOfDailyPerformance;
+	List<EmployeeDailyPerError> employeeDailyPerErrorList;
 }
