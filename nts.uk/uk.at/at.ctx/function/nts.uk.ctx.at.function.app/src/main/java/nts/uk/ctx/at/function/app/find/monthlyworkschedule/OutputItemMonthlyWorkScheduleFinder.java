@@ -161,7 +161,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		 */
 
 		Map<String, String> mapCodeManeAttendance = convertListToMapAttendanceItem(
-				(List<MonthlyAttendanceItemDto>) mapDtoReturn.get("dailyAttendanceItem"));
+				(List<MonthlyAttendanceItemDto>) mapDtoReturn.get("monthlyAttendanceItem"));
 
 		// ドメインモデル「月別勤務表の出力項目」をすべて取得する
 		// get all domain OutputItemMonthlyWorkSchedule

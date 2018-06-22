@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.repository.monthlyworkschedule;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ public class JpaOutputItemMonthlyWorkScheduleRepository implements OutputItemMon
 	@Override
 	public List<OutputItemMonthlyWorkSchedule> findByCid(String companyId) {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
