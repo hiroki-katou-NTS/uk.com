@@ -3,9 +3,12 @@ package nts.uk.ctx.at.function.infra.repository.monthlyworkschedule;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 
+@Stateless
 public class JpaOutputItemMonthlyWorkScheduleRepository implements OutputItemMonthlyWorkScheduleRepository{
 
 	@Override
