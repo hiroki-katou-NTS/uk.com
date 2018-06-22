@@ -535,8 +535,12 @@ module nts.uk.at.view.kwr006.a {
                 return dto;
             }
 
+            // when cumulativeWorkplace is checked. level check count must be from 1 ~ 5.
             public isInvalidSetting(): boolean {
                 let self = this;
+                if (!self.cumulativeWorkplace()) {
+                    return false;
+                }
                 let levelCount = 0;
                 if(self.firstLevel()){
                     levelCount++;
