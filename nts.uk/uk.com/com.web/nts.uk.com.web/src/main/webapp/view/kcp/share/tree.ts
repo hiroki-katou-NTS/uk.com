@@ -40,7 +40,7 @@ module kcp.share.tree {
          * is Multi use (複数使用区分). Setting use multiple components?
          */
         isMultipleUse: boolean;
-        
+
         /**
          * is Multi select (選択モード). Setting multiple selection in grid.
          */
@@ -93,7 +93,7 @@ module kcp.share.tree {
          * set tabIndex
          */
         tabindex?: number;
-        
+
         /**
          * system type
          */
@@ -101,8 +101,6 @@ module kcp.share.tree {
 
         // 参照範囲の絞
         restrictionOfReferenceRange?: boolean;
-
-        isShowNoSelectRow?:boolean;
     }
 
     /**
@@ -110,27 +108,27 @@ module kcp.share.tree {
      *
      */
     export class SystemType {
-               
+
         // 個人情報
         static PERSONAL_INFORMATION: number = 1;
-        
-         // 就業
+
+        // 就業
         static EMPLOYMENT: number = 2;
-        
-         // 給与
+
+        // 給与
         static SALARY: number = 3;
-        
+
         // 人事
         static HUMAN_RESOURCES: number = 4;
-                      
+
         // 管理者
         static ADMINISTRATOR: number = 5;
     }
-    
+
     export class TreeType {
         static WORK_PLACE = 1;
     }
-    
+
     interface TreeStyle {
         width: number;
         height: number;
@@ -152,7 +150,6 @@ module kcp.share.tree {
         isMultipleUse: boolean;
         isMultiSelect: boolean;
         isDialog: boolean;
-        isShowNoSelectRow: boolean;
         hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
@@ -167,7 +164,7 @@ module kcp.share.tree {
 
         isSetTabindex: KnockoutObservable<boolean>;
         tabindex: number;
-        
+
         treeStyle: TreeStyle;
         restrictionOfReferenceRange: boolean;
 
@@ -194,7 +191,7 @@ module kcp.share.tree {
             self.isMultipleUse = false;
             self.isMultiSelect = false;
             self.isFullView = ko.observable(false);
-            
+
             self.treeStyle = {
                 width: 412,
                 height: 0
@@ -207,8 +204,8 @@ module kcp.share.tree {
             ko.cleanNode($input[0]);
             self.data = data;
             self.$input = $input;
-            
-            // set parameter 
+
+            // set parameter
             if (data.isMultipleUse) {
                 self.isMultipleUse = data.isMultipleUse;
             }
@@ -218,16 +215,15 @@ module kcp.share.tree {
             self.hasBaseDate(!self.isMultipleUse);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
-            self.isShowNoSelectRow = data.isShowNoSelectRow;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
-            self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;            
+            self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;
             if (data.systemType) {
                 self.systemType =  data.systemType;
             } else {
                 self.systemType = SystemType.ADMINISTRATOR;
             }
-            
+
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
             }
@@ -268,7 +264,7 @@ module kcp.share.tree {
                 if (res && res.length > 0) {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
-                    
+
                     if (data.isShowAlreadySet) {
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
@@ -284,16 +280,14 @@ module kcp.share.tree {
                     // Init component.
                     self.itemList(res);
                     self.backupItemList(res);
-                    self.initNoSelectRow(data.isShowNoSelectRow);
-
                 }
                 // Set default value when initial component.
                 self.initSelectedValue(res);
-                
+
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
-                    
+
                     dfd.resolve();
                     if (self.isMultiSelect) {
                         $('#multiple-tree-grid').igTreeGrid('dataBind');
@@ -327,31 +321,16 @@ module kcp.share.tree {
         }
 
         /**
-         * Add No select row to list
-         */
-        private initNoSelectRow(isShowNoSelectRow: boolean) {
-            var self = this;
-            // Remove No select row.
-            self.backupItemList.remove(self.backupItemList().filter(item => item.code === '')[0]);
-
-            // Check is show no select row.
-            if (isShowNoSelectRow && self.backupItemList().map(item => item.code).indexOf('') == -1 && !self.isMultiSelect) {
-                self.backupItemList.unshift({workplaceId:'', hierarchyCode: '', name: nts.uk.resource.getText('KCP001_5'),
-                    nodeText: nts.uk.resource.getText('KCP001_5'), level: 1});
-            }
-        }
-
-        /**
          * Add columns to tree grid list.
          */
         private addColToGrid(data: TreeComponentOption, dataList: Array<UnitModel>) {
             let self = this;
             // Convert tree to array.
             //let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
-            
+
             // calculate height tree
             self.calHeightTree(300, data);
-            
+
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                 {
@@ -376,19 +355,19 @@ module kcp.share.tree {
                 });
             }
         }
-        
+
         /**
          * calHeightTree
          */
         private calHeightTree(widthColText: number, data) {
             let self = this;
             let heightRow = 24, heightScrollX = 0;
-            
+
             // check has scroll-x
             if (widthColText > self.treeStyle.width) {
                 heightScrollX = 18;
             }
-            
+
             // calculate height tree
             self.treeStyle.height = heightRow * (self.maxRows + 1) + heightScrollX;
             if (self.isFullView()) {
@@ -503,7 +482,7 @@ module kcp.share.tree {
          * Update setting type for dataList
          */
         private updateTreeData(dataList: Array<UnitModel>, mapAlreadySetting: any, isAlreadySettingParent?: boolean,
-            hierarchyCodeParent?: string) {
+                               hierarchyCodeParent?: string) {
             let self = this;
             for (let unitModel of dataList) {
 
@@ -582,13 +561,13 @@ module kcp.share.tree {
                 $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
                     return window['dataList' + this.attr('id').replace(/-/gi, '')];
                 }
-                
+
                 // Create method to full view.
                 $.fn.fullView = function() {
                     self.isFullView(true);
                     self.filterData();
                 }
-                
+
                 $.fn.scrollView = function() {
                     self.isFullView(false);
                     self.filterData();
@@ -597,7 +576,7 @@ module kcp.share.tree {
             });
             return dfd.promise();
         }
-        
+
         private createGlobalVarDataList() {
             var self = this;
             $('#script-for-' + self.$input.attr('id')).remove();
@@ -712,7 +691,7 @@ module kcp.share.tree {
          * Find UnitModel by workplaceId
          */
         private findUnitModelByWorkplaceId(dataList: Array<UnitModel>, workplaceId: string,
-            listModel: Array<UnitModel>): Array<UnitModel> {
+                                           listModel: Array<UnitModel>): Array<UnitModel> {
             let self = this;
             for (let item of dataList) {
                 if (item.workplaceId == workplaceId) {
@@ -818,7 +797,7 @@ interface JQuery {
     getDataList(): Array<kcp.share.tree.UnitModel>;
 
     /**
-     * Get row selected 
+     * Get row selected
      */
     getRowSelected(): Array<any>;
 
@@ -826,12 +805,12 @@ interface JQuery {
      * Focus component.
      */
     focusTreeGridComponent(): void;
-    
+
     /**
      * Go to full view mode.
      */
     fullView(): void;
-    
+
     /**
      * Go to scroll
      */
