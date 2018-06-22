@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
@@ -33,6 +34,7 @@ import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.system.config.InstalledProduct;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
@@ -90,9 +92,29 @@ public class EmpCtgFinder {
 		boolean isSelf = selectedEmployeeIdId.equals(empIdCurrentLogin);
 		String curEmCompanyId = empRepo.findByEmpId(selectedEmployeeIdId).get().getCompanyId();
 		
+		int forAttendance = NotUseAtr.NOT_USE.value;
+		int forPayroll = NotUseAtr.NOT_USE.value;
+		int forPersonnel = NotUseAtr.NOT_USE.value;
+		List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
+		for (InstalledProduct productType : installProduct) {
+			switch (productType.getProductType()) {
+			case ATTENDANCE:
+				forAttendance = NotUseAtr.USE.value;
+				break;
+			case PAYROLL:
+				forPayroll = NotUseAtr.USE.value;
+				break;
+			case PERSONNEL:
+				forPersonnel = NotUseAtr.USE.value;
+				break;
+			default:
+				break;
+			}
+		}
+		
 		// get list Category
-		List<PersonInfoCategory> listCategory = isSelf ? perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 1, 0, !curEmCompanyId.equals(loginCompanyId)) : 
-			perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 0, 1, !curEmCompanyId.equals(loginCompanyId));
+		List<PersonInfoCategory> listCategory = isSelf ? perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 1, 0, !curEmCompanyId.equals(loginCompanyId) ,forAttendance,forPayroll,forPersonnel) : 
+			perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 0, 1, !curEmCompanyId.equals(loginCompanyId),forAttendance,forPayroll,forPersonnel);
 
 		List<PerInfoCtgFullDto> returnDtoList = listCategory.stream()
 				.map(x -> new PerInfoCtgFullDto(x.getPersonInfoCategoryId(), x.getCategoryCode().v(),
