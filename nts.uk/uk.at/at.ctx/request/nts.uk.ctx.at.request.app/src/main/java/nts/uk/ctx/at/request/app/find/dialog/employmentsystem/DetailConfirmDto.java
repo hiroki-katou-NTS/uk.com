@@ -11,6 +11,4 @@ public class DetailConfirmDto {
 	public DatePeriod closingPeriod;
 	
 	public BreakDayOffOutputHisData breakDayOffOutputHisData;
-	
-	public String baseDate;
 }

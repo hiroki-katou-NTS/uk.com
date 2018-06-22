@@ -83,7 +83,7 @@ public class EmploymentSystemFinder {
 		// アルゴリズム「休出代休発生消化履歴の取得」を実行する
 		BreakDayOffOutputHisData data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
 		
-		DetailConfirmDto result = new DetailConfirmDto(closingPeriod, data, baseDate);
+		DetailConfirmDto result = new DetailConfirmDto(closingPeriod, data);
 		
 		return result;
 	}

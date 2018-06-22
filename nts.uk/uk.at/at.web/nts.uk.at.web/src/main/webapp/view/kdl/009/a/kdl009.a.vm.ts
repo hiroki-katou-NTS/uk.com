@@ -20,6 +20,14 @@ module nts.uk.at.view.kdl009.a {
             
             dataItems: KnockoutObservableArray<any>;
             
+            value01: KnockoutObservable<string> = ko.observable("");
+            value02: KnockoutObservable<string> = ko.observable("");
+            hint02: KnockoutObservable<string> = ko.observable("");
+            value03: KnockoutObservable<string> = ko.observable("");
+            hint03: KnockoutObservable<string> = ko.observable("");
+            value04: KnockoutObservable<string> = ko.observable("");
+            hint04: KnockoutObservable<string> = ko.observable("");
+            
             constructor() {
                 var self = this;
                 
@@ -42,7 +50,8 @@ module nts.uk.at.view.kdl009.a {
                             self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemName.businessName]));
                             
                             service.getAcquisitionNumberRestDays(value, data.baseDate).done(function(data) {
-                                self.bindData(data);
+                                self.bindTimeData(data);
+                                self.bindSummaryData(data);
                             }).fail(function(res) {
                                 nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                             });
@@ -51,17 +60,24 @@ module nts.uk.at.view.kdl009.a {
                         self.bindEmpList(data.employeeBasicInfo);
                         
                         $("#date-fixed-table").ntsFixedTable({ height: 320, width: 650 });
-                    } else {
+                    } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
                         service.getAcquisitionNumberRestDays(data.employeeBasicInfo[0].employeeCode, data.baseDate).done(function(data) {
-                            self.bindData(data);
+                            self.bindTimeData(data);
+                            self.bindSummaryData(data);
                         }).fail(function(res) {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                         });
                         
                         $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
-                    } 
+                    } else {
+                        self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
+                        
+                        $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
+                        
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_918" });
+                    }
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 });
@@ -111,9 +127,31 @@ module nts.uk.at.view.kdl009.a {
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
             }
             
-            bindData(data: any) {
+            bindTimeData(data: any) {
                 var self = this;
                 
+            }
+            
+            bindSummaryData(data: any) {
+                var self = this;
+                
+                if(data.absRecGenerationDigestionHis != null) {
+                    self.value01(nts.uk.resource.getText("KDL009_14", [data.absRecGenerationDigestionHis.absRemainInfor.carryForwardDays]));
+                    self.value02(nts.uk.resource.getText("KDL009_14", [data.absRecGenerationDigestionHis.absRemainInfor.recordOccurrenceDays]));
+                    self.hint02(nts.uk.resource.getText("KDL009_15", [data.absRecGenerationDigestionHis.absRemainInfor.scheOccurrenceDays]));
+                    self.value03(nts.uk.resource.getText("KDL009_14", [data.absRecGenerationDigestionHis.absRemainInfor.recordUseDays]));
+                    self.hint03(nts.uk.resource.getText("KDL009_15", [data.absRecGenerationDigestionHis.absRemainInfor.scheUseDays]));
+                    self.value04(nts.uk.resource.getText("KDL009_14", [data.absRecGenerationDigestionHis.absRemainInfor.recordOccurrenceDays - data.absRecGenerationDigestionHis.absRemainInfor.recordUseDays]));
+                    self.hint04(nts.uk.resource.getText("KDL009_15", [data.absRecGenerationDigestionHis.absRemainInfor.scheOccurrenceDays - data.absRecGenerationDigestionHis.absRemainInfor.scheUseDays]));
+                } else {
+                    self.value01(nts.uk.resource.getText("KDL009_14", ["0"]));
+                    self.value02(nts.uk.resource.getText("KDL009_14", ["0"]));
+                    self.hint02(nts.uk.resource.getText("KDL009_15", ["0"]));
+                    self.value03(nts.uk.resource.getText("KDL009_14", ["0"]));
+                    self.hint03(nts.uk.resource.getText("KDL009_15", ["0"]));
+                    self.value04(nts.uk.resource.getText("KDL009_14", ["0"]));
+                    self.hint04(nts.uk.resource.getText("KDL009_15", ["0"]));
+                }
             }
             
             cancel() {

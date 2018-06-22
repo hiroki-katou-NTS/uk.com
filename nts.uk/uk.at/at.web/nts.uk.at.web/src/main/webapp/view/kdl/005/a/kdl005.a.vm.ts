@@ -20,6 +20,14 @@ module nts.uk.at.view.kdl005.a {
             
             dataItems: KnockoutObservableArray<any>;
             
+            value01: KnockoutObservable<string> = ko.observable("");
+            value02: KnockoutObservable<string> = ko.observable("");
+            hint02: KnockoutObservable<string> = ko.observable("");
+            value03: KnockoutObservable<string> = ko.observable("");
+            hint03: KnockoutObservable<string> = ko.observable("");
+            value04: KnockoutObservable<string> = ko.observable("");
+            hint04: KnockoutObservable<string> = ko.observable("");
+            
             constructor() {
                 var self = this;
                 
@@ -41,7 +49,8 @@ module nts.uk.at.view.kdl005.a {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemName.businessName]));
                         
                         service.getDetailsConfirm(value, self.kdl005Data.baseDate).done(function(data) {
-                            self.bindData(data);
+                            self.bindTimeData(data);
+                            self.bindSummaryData(data);
                         }).fail(function(res) {
                               
                         });
@@ -82,7 +91,8 @@ module nts.uk.at.view.kdl005.a {
                     self.employeeInfo(nts.uk.resource.getText("KDL009_25", [self.kdl005Data.employeeBasicInfo[0].employeeCode, self.kdl005Data.employeeBasicInfo[0].businessName]));
                     
                     service.getDetailsConfirm(self.kdl005Data.employeeBasicInfo[0].employeeCode, self.kdl005Data.baseDate).done(function(data) {
-                        self.bindData(data);
+                        self.bindTimeData(data);
+                        self.bindSummaryData(data);
                     }).fail(function(res) {
                           
                     });
@@ -100,9 +110,31 @@ module nts.uk.at.view.kdl005.a {
                 return dfd.promise();
             }
             
-            bindData(data: any) {
+            bindTimeData(data: any) {
                 var self = this;
                 
+            }
+            
+            bindSummaryData(data: any) {
+                var self = this;
+                
+                if(data.absRecGenerationDigestionHis != null) {
+                    self.value01(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.carryForwardDays]));
+                    self.value02(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.recordOccurrenceDays]));
+                    self.hint02(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.scheOccurrenceDays]));
+                    self.value03(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.recordUseDays]));
+                    self.hint03(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.scheUseDays]));
+                    self.value04(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.recordOccurrenceDays - data.absRecGenerationDigestionHis.absRemainInfor.recordUseDays]));
+                    self.hint04(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.scheOccurrenceDays - data.absRecGenerationDigestionHis.absRemainInfor.scheUseDays]));
+                } else {
+                    self.value01(nts.uk.resource.getText("KDL005_27", ["0"]));
+                    self.value02(nts.uk.resource.getText("KDL005_27", ["0"]));
+                    self.hint02(nts.uk.resource.getText("KDL005_27", ["0"]));
+                    self.value03(nts.uk.resource.getText("KDL005_27", ["0"]));
+                    self.hint03(nts.uk.resource.getText("KDL005_27", ["0"]));
+                    self.value04(nts.uk.resource.getText("KDL005_27", ["0"]));
+                    self.hint04(nts.uk.resource.getText("KDL005_27", ["0"]));
+                }
             }
             
             cancel() {
