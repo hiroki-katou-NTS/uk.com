@@ -188,7 +188,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 				// check if closure is found
 
-				if (closureDate.getClosureDay().v() != 0) {
+				if (closureDate.getClosureDay().v() != 0 || closureDate.getLastDayOfMonth()) {
 
 					// get upper-daily-singleItem list
 					List<Integer> singleIdUpper = this.singleAttendanceRepo
@@ -273,6 +273,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 															: new ItemValue());
 
 								}
+							} else {
+								valueSingleUpper = AttendanceItemValueResult.builder()
+										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								for (int i = 1; i <= 6; i++) {
+									valueSingleUpper.getAttendanceItems().add(new ItemValue());
+
+								}
 							}
 
 							if (valueSingleUpper != null) {
@@ -333,9 +341,17 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 															: new ItemValue());
 
 								}
+							} else {
+								valueSingleLower = AttendanceItemValueResult.builder()
+										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								for (int i = 1; i <= 6; i++) {
+									valueSingleLower.getAttendanceItems().add(new ItemValue());
+
+								}
 							}
 
-							if (valueSingleLower != null )
+							if (valueSingleLower != null)
 								valueSingleLower.getAttendanceItems().forEach(item -> {
 									if (item != null)
 										lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
@@ -527,10 +543,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						 * The invidual. The workplace. The employment The
 						 * title. The work type The year month
 						 **/
-						// Fake Data
+
 						List<String> employeeIds = new ArrayList<>();
 						GeneralDate referenceDate = GeneralDate.ymd(closure.getClosureMonth().getProcessingYm().year(),
-								closure.getClosureMonth().getProcessingYm().month(), closureDate.getClosureDay().v());
+								closure.getClosureMonth().getProcessingYm().month(),
+								closureDate.getLastDayOfMonth()
+										? closure.getClosureMonth().getProcessingYm().lastDateInMonth()
+										: closureDate.getClosureDay().v());
 						employeeIds.add(employee.getEmployeeId());
 						// build param
 						EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
@@ -663,8 +682,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		recordReportData.setMonthlyHeader(monthlyHeader);
 		recordReportData.setReportData(reportData);
 		recordReportData.setReportName(optionalAttendanceRecExpSet.get().getName().v());
-		recordReportData
-				.setSealColName(optionalAttendanceRecExpSet.get().getSealUseAtr() ? sealStamp : new ArrayList<String>());
+		recordReportData.setSealColName(
+				optionalAttendanceRecExpSet.get().getSealUseAtr() ? sealStamp : new ArrayList<String>());
 
 		AttendanceRecordReportDatasource recordReportDataSource = new AttendanceRecordReportDatasource(recordReportData,
 				request.getMode());
