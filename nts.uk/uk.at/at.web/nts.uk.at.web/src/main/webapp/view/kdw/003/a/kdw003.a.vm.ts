@@ -2063,7 +2063,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 totalWidthColumn : number = 75,
                 maxWidth: number = window.screen.availWidth - 200;
 
-            _.each(s, (dt) => {
+            _.each(data, (dt) => {
                 let attendanceItemId: any = _.find(self.listAttendanceItemId(), { 'itemId': dt.attendanceItemId });
                 columnsMIGrid.push(
                     {
@@ -2074,7 +2074,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                // attendanceItemId != null ? attendanceItemId.valueType.toLowerCase() : 'string'
                 dataSourceMIGrid[0][dt.attendanceItemId.toString()] = attendanceItemId != null ? attendanceItemId.value : '';
                 totalWidthColumn += attendanceItemId.columnWidth;
             });

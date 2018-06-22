@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
-import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexInfoDisplayChange;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexShortageDto;
@@ -40,9 +39,6 @@ public class DPMonthFlexProcessor {
 
 	@Inject
 	private ShClosurePub shClosurePub;
-
-	@Inject
-	private DailyPerformanceScreenRepo repo;
 
 	@Inject
 	private MonthlyModifyQueryProcessor monthlyModifyQueryProcessor;
@@ -80,7 +76,6 @@ public class DPMonthFlexProcessor {
 			return null;
 
 		if (param.dailyPerformanceDto.getSettingUnit() == SettingUnitType.AUTHORITY) {
-//			itemIds = repo.getItemIdsMonthByAuthority(companyId, param.getFormatCode());
 			List<String> listDailyPerformanceFormatCode = new ArrayList<>(param.getFormatCode());
 			if (listDailyPerformanceFormatCode.size() > 0) {
 				formatDaily = authorityFormatMonthlyRepository
@@ -90,7 +85,6 @@ public class DPMonthFlexProcessor {
 						.collect(Collectors.toList());
 			}
 		} else {
-//			itemIds = repo.getItemIdsMonthByBussiness(companyId, param.getFormatCode());
 			List<String> listBusinessTypeCode = new ArrayList<>(param.getFormatCode());
 			if (listBusinessTypeCode.size() > 0) {
 				formatDaily = businessTypeFormatMonthlyRepository

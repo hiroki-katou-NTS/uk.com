@@ -53,7 +53,9 @@ module nts.uk.at.view.kdw003.b {
 
                     if (arrErrorCode.length != 0) {
                         service.getErrAndAppTypeCd(arrErrorCode).done((data1) => {
-                            self.lstError(arr.map((d) => { return new ErrorReferModel(d, data1.employeeIdLogin, data1.mapErrCdAppTypeCd[d.errorCode]); }));
+                            self.lstError(arr.map((d) => { 
+                                return new ErrorReferModel(d, data1.employeeIdLogin, !!data1.mapErrCdAppTypeCd[d.errorCode] ? data1.mapErrCdAppTypeCd[d.errorCode] : []); 
+                            }));
                             self.listExportDto(arr.map((d) => { return new ExportDto(d); }));
                             if (self.lstError().length == 0) self.isDisableExportCSV(true);
 
