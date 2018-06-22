@@ -879,14 +879,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                    delete valueUpate.id
 //                    $("#dpGrid").ntsGrid("updateRow", id, valueUpate);
 //                })
+                setTimeout(() => {
                 _.each(rowIds, rowN => {
                     $("#dpGrid").ntsGrid("clearRowStates", "_" + rowN);
-                });
+                }); 
                 _.each(data.lstCellState, (valt) => {
                     console.log("column key:" + valt.columnKey);
                     $("#dpGrid").ntsGrid("setState", valt.rowId, valt.columnKey, valt.state);
                 });
                 nts.uk.ui.block.clear();
+                }, 1);
                 dfd.resolve();
             });
             return dfd.promise();
