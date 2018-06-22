@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.function.app.command.monthlyworkschedule;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCommand;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -14,6 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class OutputItemMonthlyWorkScheduleSaveHandler.
  */
+@Stateless
 public class OutputItemMonthlyWorkScheduleSaveHandler extends CommandHandler<OutputItemMonthlyWorkScheduleCommand>{
 
 	/** The repository. */
