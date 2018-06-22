@@ -26,6 +26,8 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
@@ -106,6 +108,9 @@ public class DailyPerformanceCorrectionWebService {
 
 	@Inject
 	private DailyPerformErrorReferFinder dailyPerforErrorReferFinder;
+	
+	@Inject
+	private AttendanceItemNameDomainService attendanceItemNameDomainService;
 	
 	@POST
 	@Path("startScreen")
@@ -286,6 +291,18 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("getErrAndAppTypeCd")
 	public DailyPerformErrorReferDto findByCidAndListErrCd(List<String> listErrorCode) {
 		return this.dailyPerforErrorReferFinder.findByCidAndListErrCd(listErrorCode);
+	}
+	
+	/**
+	 * typeOfAttendanceItem = 0 to case is monthly
+	 * 
+	 * @param dailyAttendanceItemIds
+	 * @return
+	 */
+	@POST
+	@Path("getNameMonthlyAttItem")
+	public List<AttendanceItemName> getNameOfMonthlyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
+		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(dailyAttendanceItemIds, 0);
 	}
 
 }
