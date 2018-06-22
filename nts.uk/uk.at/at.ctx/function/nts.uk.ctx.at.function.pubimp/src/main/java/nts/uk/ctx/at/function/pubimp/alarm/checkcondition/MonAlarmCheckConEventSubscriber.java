@@ -139,19 +139,10 @@ public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<Mo
 				);
 	}
 	private ErAlAtdItemConAdapterPubDto convertToErAlAtdItemCon(ErAlAtdItemConAdapterDto export) {
-		return new ErAlAtdItemConAdapterPubDto(
-				export.getTargetNO(),
-				export.getConditionAtr(),
-				export.isUseAtr(),
-				export.getUncountableAtdItem(),
-				export.getCountableAddAtdItems(),
-				export.getCountableSubAtdItems(),
-				export.getConditionType(),
-				export.getCompareOperator(),
-				export.getSingleAtdItem(),
-				export.getCompareStartValue(),
-				export.getCompareEndValue()
-				);
+		return new ErAlAtdItemConAdapterPubDto(export.getTargetNO(), export.getConditionAtr(), export.isUseAtr(),
+				export.getUncountableAtdItem(), export.getCountableAddAtdItems(), export.getCountableSubAtdItems(),
+				export.getConditionType(), export.getCompareOperator(), export.getSingleAtdItem(),
+				export.getCompareStartValue(), export.getCompareEndValue(), export.getInputCheckCondition());
 	}
 	
 
