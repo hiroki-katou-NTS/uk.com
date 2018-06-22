@@ -459,12 +459,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
-        historyFilter_Lan() {
+        historyFilter() {
             let self = this,
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
                 itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
                     function(item: PerInfoInitValueSettingItemDto) {
-                        return item.selectedRuleCode() == 2 && item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1);
+                        return item.selectedRuleCode() == 2 && ((item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1)) || item.itemCode() == "IS00084" || item.itemCode() == "IS00085");
                     }),
                 itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
                     return {
@@ -1327,7 +1327,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this;
             setShared('inputCDL008', {
                 selectedCodes: [self.selectedCode()],
-                baseDate: moment.utc(new Date()).toDate(),
+                baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
                 isMultiple: false,
                 selectedSystemType: 5,
                 isrestrictionOfReferenceRange: false

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea;
+package nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea;
 
 import java.io.Serializable;
 

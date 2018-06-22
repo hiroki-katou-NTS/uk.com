@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea;
+package nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ScheduleRecordAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimeHoliday;
