@@ -18,6 +18,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ScheduleRecordAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;

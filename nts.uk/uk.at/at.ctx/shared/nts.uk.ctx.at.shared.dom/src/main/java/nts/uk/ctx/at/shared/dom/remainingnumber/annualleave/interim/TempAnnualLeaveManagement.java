@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
+package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim;
 
 import lombok.Getter;
 import lombok.Setter;
