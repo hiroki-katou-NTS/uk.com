@@ -34,6 +34,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRe
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -41,6 +42,10 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
@@ -97,6 +102,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	@Inject
 	private WorkplaceConfigInfoRepository wplConfigInfoRepo;
 
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+
+	@Inject
+	private WorkTimeSettingRepository workTimeRepo;
+
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
 
@@ -106,6 +117,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		Map<String, List<AttendanceRecordReportEmployeeData>> reportData = new LinkedHashMap<>();
 		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<AttendanceRecordReportEmployeeData>();
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
+
+		List<WorkType> workTypeList = workTypeRepo.findByCompanyId(companyId);
+
+		List<WorkTimeSetting> workTimeList = workTimeRepo.findByCompanyId(companyId);
 
 		List<String> wplIds = request.getEmployeeList().stream().map(item -> item.getWorkplaceId())
 				.collect(Collectors.toList());
@@ -266,7 +281,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									if (item != null)
 										upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 												employee.getEmployeeName(), closureDateTemp, "",
-												this.convertString(item)));
+												this.convertString(item, workTypeList, workTimeList)));
 
 								});
 							}
@@ -325,7 +340,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									if (item != null)
 										lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 												employee.getEmployeeName(), closureDateTemp, "",
-												this.convertString(item)));
+												this.convertString(item, workTypeList, workTimeList)));
 
 								});
 
@@ -648,7 +663,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		recordReportData.setMonthlyHeader(monthlyHeader);
 		recordReportData.setReportData(reportData);
 		recordReportData.setReportName(optionalAttendanceRecExpSet.get().getName().v());
-		recordReportData.setSealColName(sealStamp);
+		recordReportData
+				.setSealColName(optionalAttendanceRecExpSet.get().getSealUseAtr() ? sealStamp : new ArrayList<String>());
 
 		AttendanceRecordReportDatasource recordReportDataSource = new AttendanceRecordReportDatasource(recordReportData,
 				request.getMode());
@@ -832,8 +848,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 	}
 
-	private String convertString(ItemValue item) {
-		String value = item.getValue();
+	private String convertString(ItemValue item, List<WorkType> workTypeList,
+			List<WorkTimeSetting> workTimeSettingList) {
+		final String value = item.getValue();
 		if (item.getValueType() == null || item.getValue() == null)
 			return "";
 		switch (item.getValueType().value) {
@@ -851,6 +868,16 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			DecimalFormat format = new DecimalFormat("###,###,###");
 			return format.format(Integer.parseInt(value));
 		default:
+			List<WorkType> worktype = workTypeList.stream().filter(ite -> ite.getWorkTypeCode().v().equals(value))
+					.collect(Collectors.toList());
+			if (!worktype.isEmpty())
+				return worktype.get(0).getName().v();
+			else {
+				List<WorkTimeSetting> workTime = workTimeSettingList.stream()
+						.filter(e -> e.getWorktimeCode().v().equals(value)).collect(Collectors.toList());
+				if (!workTime.isEmpty())
+					return workTime.get(0).getWorkTimeDisplayName().getWorkTimeName().v();
+			}
 			return value;
 
 		}
