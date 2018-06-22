@@ -7,10 +7,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
 import nts.uk.ctx.pereg.dom.person.setting.init.category.PerInfoInitValSetCtgRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.system.config.InstalledProduct;
 
 /**
  * The class PerInfoInitValueSettingCtgFinder
@@ -29,8 +31,23 @@ public class PerInfoInitValueSettingCtgFinder {
 
 	public List<PerInfoInitValueSettingCtg> getAllCategory(String settingId) {
 		String companyId = AppContexts.user().companyId();
+		 int payroll = NotUseAtr.NOT_USE.value;
+		 int personnel = NotUseAtr.NOT_USE.value;
+		 int atttendance = NotUseAtr.NOT_USE.value;
+		 List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
+		 for(InstalledProduct productType : installProduct) {
+			 switch(productType.getProductType()) {
+			 case ATTENDANCE:
+				 atttendance = NotUseAtr.USE.value; break;
+			 case PAYROLL:
+				 payroll = NotUseAtr.USE.value; break;
+			 case PERSONNEL:
+				 personnel  = NotUseAtr.USE.value; break;
+			default: break;
+			 }
+		 }
 
-		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId, settingId);
+		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId, settingId, payroll, personnel, atttendance);
 		List<String> ctgId = ctgLst.stream().map(c ->  c.getPerInfoCtgId())
 				.collect(Collectors.toList());
 		List<String> ctgFilter = this.settingItemRepo.isExistItem(ctgId);
@@ -45,8 +62,6 @@ public class PerInfoInitValueSettingCtgFinder {
 			
 		});
 		
-
-
 		if (ctgList.size() > 0) {
 
 			return ctgList.stream().map(c -> {

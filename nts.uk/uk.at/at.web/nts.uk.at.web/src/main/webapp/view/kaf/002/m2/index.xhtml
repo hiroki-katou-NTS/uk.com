@@ -14,11 +14,10 @@
 							<div class="cell">
 								<div class="m2-inline-div" data-bind="with: startTime">
 									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
-									<input class="m2-time-editor" data-bind="ntsTimeWithDayEditor: { 
+									<input class="m2-time-editor m2-start-input" data-bind="ntsTimeWithDayEditor: { 
 													name: '#[KAF002_20]',
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													required: checked,
 													enable: checked }" />	
 								</div>
 								<div class="m2-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
@@ -37,11 +36,10 @@
 							<div class="cell">
 								<div class="m2-inline-div" data-bind="with: endTime">
 									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
-									<input class="m2-time-editor" data-bind="ntsTimeWithDayEditor: { 
+									<input class="m2-time-editor m2-end-input" data-bind="ntsTimeWithDayEditor: { 
 													name: '#[KAF002_20]', 
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													required: checked,
 													enable: checked }" />	
 								</div>	
 								<div class="m2-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">

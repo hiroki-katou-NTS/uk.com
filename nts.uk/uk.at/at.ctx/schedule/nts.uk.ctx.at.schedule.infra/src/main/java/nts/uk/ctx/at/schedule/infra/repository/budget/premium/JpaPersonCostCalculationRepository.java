@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
@@ -36,22 +37,29 @@ import nts.uk.shr.com.primitive.Memo;
 @Stateless
 public class JpaPersonCostCalculationRepository extends JpaRepository implements PersonCostCalculationRepository{
 
-	private final String SEL_BY_CID = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID ORDER BY a.startDate ASC";
+	private static final String SEL_BY_CID = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID ORDER BY a.startDate ASC";
 	
-	private final String SEL_ITEM_BY_DATE = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.startDate = :startDate";
+	private static final String SEL_ITEM_BY_DATE = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.startDate = :startDate";
 	
-	private final String SEL_ITEM_BY_HID = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.kmlmpPersonCostCalculationPK.historyID = :historyID";
+	private static final String SEL_ITEM_BY_HID = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.kmlmpPersonCostCalculationPK.historyID = :historyID";
 	
-	private final String SEL_ITEM_BEFORE = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.startDate < :startDate ORDER BY a.startDate DESC";
+	private static final String SEL_ITEM_BEFORE = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.startDate < :startDate ORDER BY a.startDate DESC";
 	
-	private final String SEL_ITEM_AFTER = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.startDate > :startDate";
+	private static final String SEL_ITEM_AFTER = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.startDate > :startDate";
 	
-	private final String SEL_PRE_ATTEND = "SELECT a FROM KmldtPremiumAttendance a "
+	private static final String SEL_PRE_ATTEND = "SELECT a FROM KmldtPremiumAttendance a "
 			+ "WHERE a.kmldpPremiumAttendancePK.companyID = :companyID "
 			+ "AND a.kmldpPremiumAttendancePK.historyID = :historyID "
 			+ "AND a.kmldpPremiumAttendancePK.displayNumber = :displayNumber "
 			+ "AND a.kmldpPremiumAttendancePK.attendanceID = :attendanceID ";
-	
+	private static final String FIND_BY_DISPLAY_NUMBER;
+	static{
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID");
+		query.append(" AND a.startDate <= :date");
+		query.append(" AND a.endDate >= :date");
+		FIND_BY_DISPLAY_NUMBER = query.toString();
+	}
 	@Override
 	public void add(PersonCostCalculation personCostCalculation) {
 		this.commandProxy().insert(toPersonCostCalculationEntity(personCostCalculation));
@@ -263,5 +271,16 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 						premiumSetting.getDisplayNumber()), 
 				premiumSetting.getName().v(), 
 				premiumSetting.getUseAtr().value);
+	}
+
+	@Override
+	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date) {
+		List<PersonCostCalculation> personCostCals = this.queryProxy().query(FIND_BY_DISPLAY_NUMBER, KmlmtPersonCostCalculation.class)
+				.setParameter("companyID", companyID)
+				.setParameter("date", date).getList(c -> toDomainPersonCostCalculation(c));
+		if(CollectionUtil.isEmpty(personCostCals)){
+			return null;
+		}
+		return personCostCals;
 	}
 }

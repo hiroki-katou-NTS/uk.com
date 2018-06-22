@@ -12,4 +12,5 @@ public class ApplicationsListOutput {
 	List<ApprovalSttAppDetail> approvalSttAppDetail; 
 	Optional<HdAppSet> lstHdAppSet;
 	List<AppCompltLeaveSync> listSync;
+	boolean displayPrePostFlg;
 }
