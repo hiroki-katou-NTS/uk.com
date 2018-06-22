@@ -302,7 +302,7 @@ module nts.uk.at.view.kdw003.b {
                 self.dateDetail = moment(model.date, "YYYY/MM/DD");
                 self.employeeIdLogin = employeeIdLogin;
                 self.arrAppTypeCode = arrAppTypeCode;
-                self.stateBtn = ((model.employeeId == employeeIdLogin) && (arrAppTypeCode.length > 0)) ? "" : "disabled";
+                self.stateBtn = ((model.employeeId == employeeIdLogin) && (arrAppTypeCode.length > 0)) ? "" : "hidden";
             }
         }
 
