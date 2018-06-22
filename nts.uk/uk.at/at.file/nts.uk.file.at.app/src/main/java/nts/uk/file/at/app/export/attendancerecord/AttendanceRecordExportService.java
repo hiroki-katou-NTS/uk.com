@@ -849,7 +849,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 				Integer totalCount = countA + countB;
 
-				return totalCount + "回";
+				return totalCount + " 回";
 			} else {
 				String stringAmountA = a.replaceAll(",", "");
 				String stringAmountB = b.replaceAll(",", "");
