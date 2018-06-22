@@ -174,10 +174,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 
 			workbook = reportContext.getWorkbook();
 			WorksheetCollection sheetCollection = workbook.getWorksheets();
-			Worksheet sheet = sheetCollection.get(0);
+			Worksheet sheet;
+			if (query.getCondition().getOutputType() == FormOutputType.BY_EMPLOYEE.outputType) {
+				sheet = sheetCollection.get(0);
+			} else {
+				sheet = sheetCollection.get(1);
+			}
 
-			this.setPageHeader(sheet, GeneralDate.today(), GeneralDate.today());
-			//this.setItemHeader(sheet.getCells(), sheetCollection);
+			this.setPageHeader(sheet, query);
+			this.setItemHeader(sheet.getCells());
 
 			//this.printData(sheet.getCells(), sheetCollection);
 
@@ -225,7 +230,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param endDate the end date
 	 * @param companyName the company name
 	 */
-	private void setPageHeader(Worksheet sheet, GeneralDate startDate, GeneralDate endDate) {
+	private void setPageHeader(Worksheet sheet, MonthlyWorkScheduleQuery query) {
 		PageSetup pageSetup = sheet.getPageSetup();
 		Cells cells = sheet.getCells();
 
@@ -238,31 +243,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		// set title header
 		pageSetup.setHeader(1, "&\"源ノ角ゴシック Normal,太字\"&16" + TextResource.localize("KWR006_1"));
 
-		// Set header date time + page number
+		// Set header date time + page number (if not set, excel file will always show current system date time when open)
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
 		pageSetup.setHeader(2, "&8 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 
 		// Set period cell
 		Cell periodCell = cells.get(0, 0);
-		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/M", Locale.JAPAN);
-		String periodStr = TextResource.localize("KWR006_66") + " " + startDate.toLocalDate().format(jpFormatter) + " ～ "
-				+ endDate.toLocalDate().format(jpFormatter);
+		String periodStr = TextResource.localize("KWR006_66") + " " + query.getStartYearMonth().toString() + " ～ "
+				+ query.getEndYearMonth().toString();
 		periodCell.setValue(periodStr);
 	}
 
 	/**
 	 * Sets the item header.
 	 */
-	private void setItemHeader(Cells cells, WorksheetCollection sheetCollection) {
-		// Set item header (A2_1/B2_1) 
-		Cell itemHeader = cells.get("A3");
-		itemHeader.setValue(TextResource.localize("KWR006_65")); // yearmonth
-		//itemHeader.setValue(TextResource.localize("KWR006_76")); // personal name
-
-		// remark header
-		Range remarkHeader = sheetCollection.getRangeByName("REMARK");
-		remarkHeader.setValue(TextResource.localize("KWR006_67"));
-
+	private void setItemHeader(Cells cells) {
 		// create mock data.
 		List<String> mock = new ArrayList<>();
 		int count = 0;

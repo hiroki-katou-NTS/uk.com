@@ -7,7 +7,7 @@ package nts.uk.file.at.app.export.monthlyschedule;
 import java.util.List;
 
 import lombok.Data;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.file.at.app.export.dailyschedule.FileOutputType;
 
 /**
@@ -15,13 +15,13 @@ import nts.uk.file.at.app.export.dailyschedule.FileOutputType;
  */
 
 @Data
-public class MonthlyWorkScheduleQuery implements Cloneable {
+public class MonthlyWorkScheduleQuery {
 	
 	/** The start date. */
-	private GeneralDate startDate;
+	private YearMonth startYearMonth;
 	
 	/** The end date. */
-	private GeneralDate endDate;
+	private YearMonth endYearMonth;
 	
 	/** The workplace ids. */
 	private List<String> workplaceIds;
