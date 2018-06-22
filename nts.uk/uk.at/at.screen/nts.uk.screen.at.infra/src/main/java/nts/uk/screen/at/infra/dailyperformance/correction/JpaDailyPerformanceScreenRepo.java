@@ -232,10 +232,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId ORDER BY a.kfnmtApplicationCallPK.applicationType";
 
-	private final static String FIND_ITEM_MON_AUT;
-	
-	private final static String FIND_ITEM_MON_BUSS;
-	
 	private final static String FIND_PERIOD_ORDER_BY_STR_D_FOR_MULTI = "SELECT wi FROM KshmtWorkingCond wi "
 			+ "WHERE wi.kshmtWorkingCondPK.sid = :employeeId " 
 			+ "AND wi.strD <= :endDate " + "AND wi.endD >= :startDate "
@@ -518,20 +514,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" AND w.kshmtWorkingCondPK.sid = :sid");
 		builderString.append(" ORDER BY w.endD DESC");
 		FIND_WORK_CONDITION = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("SELECT a.kfnmtAuthorityMonthlyItemPK.attendanceItemId ");
-		builderString.append("FROM KfnmtAuthorityMonthlyItem a ");
-		builderString.append("WHERE a.kfnmtAuthorityMonthlyItemPK.companyId = :companyId ");
-		builderString.append("AND a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode IN :formats ");
-		FIND_ITEM_MON_AUT =  builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("SELECT a.krcmtBusinessTypeMonthlyPK.attendanceItemId ");
-		builderString.append("FROM KrcmtBusinessTypeMonthly a ");
-		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
-		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.businessTypeCode IN :formats ");
-		FIND_ITEM_MON_BUSS =  builderString.toString();
 
 	}
 
@@ -1314,16 +1296,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<KshmtWorkingCond> entitys = this.queryProxy().query(FIND_WORK_CONDITION, KshmtWorkingCond.class)
 				.setParameter("historyId", hists).setParameter("sid", employeeId).getList();
 		return entitys.isEmpty() ? "" : entitys.get(0).getKshmtWorkingCondItem().getHistoryId();
-	}
-
-	@Override
-	public List<Integer> getItemIdsMonthByAuthority(String companyId, Set<String> formats) {
-	     return this.queryProxy().query(FIND_ITEM_MON_AUT, Integer.class).setParameter("companyId", companyId).setParameter("formats", formats).getList();
-	}
-
-	@Override
-	public List<Integer> getItemIdsMonthByBussiness(String companyId, Set<String> formats) {
-		return this.queryProxy().query(FIND_ITEM_MON_BUSS, Integer.class).setParameter("companyId", companyId).setParameter("formats", formats).getList();
 	}
 
 	@Override
