@@ -86,6 +86,29 @@ public class EmployeeInfoFinder {
 		}
 		return "";
 	}
+	
+	public String getStampCardAfterLostFocusEmpCd(String newEmployeeCode) {
+		String employeeId = AppContexts.user().employeeId();
+		String companyCode = AppContexts.user().companyCode();
+		Optional<UserSetting> _userSetting = userSettingRepo.getUserSetting(employeeId);
+		if (!_userSetting.isPresent()) {
+			return "";
+		}
+		UserSetting userSetting = _userSetting.get();
+		switch (userSetting.getCardNoValType()) {
+		case BLANK:
+			return "";
+		case SAME_AS_EMP_CODE:
+			return newEmployeeCode;
+		case CPC_AND_EMPC:
+			return companyCode + newEmployeeCode;
+		case MAXVALUE:
+			return "";
+		case INIT_DESIGNATION:
+			return "";
+		}
+		return "";
+	}
 
 	/**
 	 * validate EmpInfo EA修正履歴 - No1159 EA修正履歴 - No1160 EA修正履歴 - No1161 EA修正履歴 -

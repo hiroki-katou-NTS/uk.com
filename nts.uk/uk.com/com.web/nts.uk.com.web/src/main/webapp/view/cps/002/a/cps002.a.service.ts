@@ -21,6 +21,7 @@ module cps002.a.service {
         addNewEmployee: 'ctx/pereg/addemployee/addNewEmployee',
         getEmployeeInfo: 'basic/organization/employee/getoffselect',
         permision: 'ctx/pereg/functions/auth/find-all',
+        getStampCardAfterLostFocusEmpCd: 'ctx/pereg/employee/mngdata/getStampCardAfterLostFocusEmpCd'
     };
 
     export function getLayout() {
@@ -95,6 +96,21 @@ module cps002.a.service {
         let self = this;
         _.defer(() => block.invisible());
         nts.uk.request.ajax("com", paths.getCardNumber, newEmployeeCode).done(function(res) {
+            dfd.resolve(res);
+        }).fail(function(res) {
+            dfd.reject(res);
+        }).always(() => {
+            _.defer(() => block.clear());
+        });
+        return dfd.promise();
+    }
+    
+    export function getStampCardAfterLostFocusEmp(newEmployeeCode) {
+
+        let dfd = $.Deferred<any>();
+        let self = this;
+        _.defer(() => block.invisible());
+        nts.uk.request.ajax("com", paths.getStampCardAfterLostFocusEmpCd, newEmployeeCode).done(function(res) {
             dfd.resolve(res);
         }).fail(function(res) {
             dfd.reject(res);
