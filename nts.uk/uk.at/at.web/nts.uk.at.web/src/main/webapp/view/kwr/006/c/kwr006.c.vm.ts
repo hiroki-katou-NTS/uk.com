@@ -272,7 +272,7 @@ module nts.uk.at.view.kwr006.c {
                         arrCodeName.push({ code: value.itemCode + "", name: value.itemName });
                     });
                     self.outputItemList(arrCodeName);
-                    self.items(data.dailyAttendanceItem);
+                    self.items(_.isEmpty(data.dailyAttendanceItem) ? [] : data.dailyAttendanceItem);
                     dfd.resolve();
                 })
 
