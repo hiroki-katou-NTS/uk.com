@@ -100,6 +100,13 @@ module nts.uk.com.view.cmf004.d {
                 close();
             }
             continueProcessing() {
+                let self = this;
+                let fileInfo = {
+                    fileId: self.fileId(),
+                    fileName: self.fileName(), 
+                    password: self.password()
+                };
+                setShared("CMF004_E_PARAMS", {processingId: self.processingId, fileInfo: fileInfo});
                 close();
             }
             convertToDisplayStatus(status){
