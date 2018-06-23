@@ -31,6 +31,9 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository;
+import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
+import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
+import nts.uk.ctx.at.record.app.find.divergence.time.ScreenUseAtr;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
@@ -107,6 +110,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 	@Inject
 	private WorkTimeSettingRepository workTimeRepo;
+
+	@Inject
+	private AttendanceTypeRepository attendanceRepo;
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
@@ -190,10 +196,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 				if (closureDate.getClosureDay().v() != 0 || closureDate.getLastDayOfMonth()) {
 
+					List<Integer> attendanceItemList = new ArrayList<>();
+
 					// get upper-daily-singleItem list
 					List<Integer> singleIdUpper = this.singleAttendanceRepo
 							.getIdSingleAttendanceRecordByPosition(companyId, request.getLayout(), UPPER_POSITION);
-
+					attendanceItemList.addAll(singleIdUpper);
 					// get upper-daily-calculateItem list
 
 					List<CalculateAttendanceRecord> calculateUpperDaily = this.calculateAttendanceRepo
@@ -204,6 +212,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					List<Integer> singleIdLower = this.singleAttendanceRepo
 							.getIdSingleAttendanceRecordByPosition(companyId, request.getLayout(), LOWER_POSITION);
 
+					attendanceItemList.addAll(singleIdLower);
 					// get lower-daily-CalculateItem list
 
 					List<CalculateAttendanceRecord> calculateLowerDaily = this.calculateAttendanceRepo
@@ -219,6 +228,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
 							.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(),
 									LOWER_POSITION);
+
+					List<ScreenUseAtr> screenUseAtrList = new ArrayList<ScreenUseAtr>();
+					screenUseAtrList.add(ScreenUseAtr.valueOf(13));
+					screenUseAtrList.add(ScreenUseAtr.valueOf(14));
 
 					YearMonth startYearMonth = closureDate.getLastDayOfMonth() ? request.getStartDate().yearMonth()
 							: request.getStartDate().yearMonth().previousMonth();
@@ -288,8 +301,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								valueSingleUpper.getAttendanceItems().forEach(item -> {
 									if (item != null)
 										upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-												employee.getEmployeeName(), closureDateTemp, "",
-												this.convertString(item, workTypeList, workTimeList)));
+												employee.getEmployeeName(), closureDateTemp, "", this.convertString(
+														item, workTypeList, workTimeList, screenUseAtrList)));
 
 								});
 							}
@@ -355,8 +368,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								valueSingleLower.getAttendanceItems().forEach(item -> {
 									if (item != null)
 										lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-												employee.getEmployeeName(), closureDateTemp, "",
-												this.convertString(item, workTypeList, workTimeList)));
+												employee.getEmployeeName(), closureDateTemp, "", this.convertString(
+														item, workTypeList, workTimeList, screenUseAtrList)));
 
 								});
 
@@ -867,8 +880,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 	}
 
-	private String convertString(ItemValue item, List<WorkType> workTypeList,
-			List<WorkTimeSetting> workTimeSettingList) {
+	private String convertString(ItemValue item, List<WorkType> workTypeList, List<WorkTimeSetting> workTimeSettingList,
+			List<ScreenUseAtr> screenUseAtrList) {
 		final String value = item.getValue();
 		if (item.getValueType() == null || item.getValue() == null)
 			return "";
@@ -887,15 +900,27 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			DecimalFormat format = new DecimalFormat("###,###,###");
 			return format.format(Integer.parseInt(value));
 		default:
-			List<WorkType> worktype = workTypeList.stream().filter(ite -> ite.getWorkTypeCode().v().equals(value))
-					.collect(Collectors.toList());
-			if (!worktype.isEmpty())
-				return worktype.get(0).getName().v();
-			else {
-				List<WorkTimeSetting> workTime = workTimeSettingList.stream()
-						.filter(e -> e.getWorktimeCode().v().equals(value)).collect(Collectors.toList());
-				if (!workTime.isEmpty())
-					return workTime.get(0).getWorkTimeDisplayName().getWorkTimeName().v();
+			List<AttendanceType> attendanceTypeList = new ArrayList<>();
+			screenUseAtrList.forEach(screenUseAtr -> {
+				attendanceTypeList.addAll(
+						attendanceRepo.getItemByAtrandType(AppContexts.user().companyId(), screenUseAtr.value, 1));
+			});
+
+			if (!attendanceTypeList.isEmpty()) {
+				if (attendanceTypeList.get(0).getScreenUseAtr().equals(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE)) {
+					List<WorkType> worktype = workTypeList.stream()
+							.filter(ite -> ite.getWorkTypeCode().v().equals(value)).collect(Collectors.toList());
+					if (!worktype.isEmpty())
+						return worktype.get(0).getName().v();
+					return value;
+				} else {
+
+					List<WorkTimeSetting> workTime = workTimeSettingList.stream()
+							.filter(e -> e.getWorktimeCode().v().equals(value)).collect(Collectors.toList());
+					if (!workTime.isEmpty())
+						return workTime.get(0).getWorkTimeDisplayName().getWorkTimeName().v();
+					return value;
+				}
 			}
 			return value;
 
