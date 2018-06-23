@@ -14,10 +14,16 @@ import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataReEmployeeAdapter;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.EmployeeDataReInfoImport;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
@@ -26,6 +32,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
 import nts.uk.ctx.sys.assist.dom.datarestoration.common.CsvFileUtil;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.sample.report.AsposeLicenseLoader;
 
 @Stateless
 public class RecoveryStorageService {
@@ -48,9 +55,11 @@ public class RecoveryStorageService {
 
 	public static final String COLUMN_NAME_CID = "CID";
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(RecoveryStorageService.class);
+
 	public void RecoveryStorage(String dataRecoveryProcessId) throws ParseException {
 
-		Boolean check = true;
+		int errorCodeFinal = 0;
 		Optional<PerformDataRecovery> performRecoveries = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 		String uploadId = performRecoveries.get().getUploadfileId();
@@ -74,30 +83,37 @@ public class RecoveryStorageService {
 					tableNotUse);
 
 			int index = 0;
-
+			int errorCode;
 			// カテゴリ単位の復旧
-			exCurrentCategory(tableListByCategory, tableNotUseCategory, uploadId, dataRecoveryProcessId);
+			errorCode = exCurrentCategory(tableListByCategory, tableNotUseCategory, uploadId, dataRecoveryProcessId);
 
 			// のカテゴリカウントをカウントアップ
-			if (check) {
+			errorCodeFinal = errorCode;
+			if (errorCode == 0) {
 				index++;
 				dataRecoveryMngRepository.updateTotalNumOfProcesses(dataRecoveryProcessId, index);
-			} else {
-				check = false;
+			} else if (errorCode == 1) {
+				break;
+			} else if (errorCode == 5) {
+				break;
 			}
 
 		}
 
-		if (check) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 3);
-		} else {
+		if (errorCodeFinal == 1) {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 1);
+		} else if (errorCodeFinal == 5) {
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 5);
+		} else {
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 3);
 		}
 	}
 
-	public boolean recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode, String employeeId,
+	@Transactional
+	public int recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode, String employeeId,
 			List<DataRecoveryTable> targetDataByCate) throws ParseException {
 
+		int errorCode = 0;
 		Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 
@@ -109,7 +125,8 @@ public class RecoveryStorageService {
 				return employeeId.equals(x.getSid());
 			}).findFirst();
 			if (!isExist.isPresent()) {
-				return false;
+				errorCode = 0;
+				return errorCode;
 			}
 
 		}
@@ -123,6 +140,10 @@ public class RecoveryStorageService {
 
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
+			if (resultsSetting.isEmpty()) {
+				errorCode = 5;
+				return errorCode;
+			}
 
 			if (tableList.isPresent()) {
 
@@ -136,22 +157,26 @@ public class RecoveryStorageService {
 			// sort target data by date - TO DO
 
 			// 対象社員の日付順の処理
-			if(!crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode, dataRecoveryProcessId,
-					dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery, resultsSetting)) {
-				return false;
-			}
+			errorCode = crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode,
+					dataRecoveryProcessId, dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery,
+					resultsSetting, true);
 
 			// phân biệt DELETE/INSERT error và Setting error
+			if (errorCode == 5) {
+				// roll back
+				// Count up số lượng error
+			}
 
 		}
 
-		return true;
+		return errorCode;
 	}
 
-	public Boolean crudDataByTable(List<List<String>> targetDataTable, String employeeId, String employeeCode,
+	public int crudDataByTable(List<List<String>> targetDataTable, String employeeId, String employeeCode,
 			String dataRecoveryProcessId, String fileNameCsv, Optional<TableList> tableList,
-			Optional<PerformDataRecovery> performDataRecovery, List<String> resultsSetting) throws ParseException {
-
+			Optional<PerformDataRecovery> performDataRecovery, List<String> resultsSetting, Boolean tableUse)
+			throws ParseException {
+		int errorCode = 0;
 		Integer indexUpdate1 = null;
 		Integer indexUpdate2 = null;
 		Integer indexUpdate3 = null;
@@ -318,25 +343,61 @@ public class RecoveryStorageService {
 
 			Map<String, String> filedWhere = new HashMap<>();
 			List<String> dataRow = targetDataTable.get(i);
+			// データベース復旧処理
+			if (employeeId != null && dataRow.get(1).equals(employeeId)) {
+				// 履歴区分を判別する - Phân loại lịch sử
+				if ((tableList.get().getHistoryCls().value == 0 && tableUse) || !tableUse) {
 
-			// 履歴区分を判別する - Phân loại lịch sử
-			if (tableList.get().getHistoryCls().value == 0) {
+					// 復旧方法 - Phương pháp phục hồi
+					if (performDataRecovery.isPresent() && performDataRecovery.get().getRecoveryMethod().value == 1) {
 
-				// 復旧方法 - Phương pháp phục hồi
-				if (performDataRecovery.isPresent() && performDataRecovery.get().getRecoveryMethod().value == 1) {
+						// 保存期間区分を判別 - Phân loại khoảng thời gian save
+						if (tableList.get().getRetentionPeriodCls().value != 0) {
+							if (!checkSettingDate(resultsSetting, tableList, dataRow)) {
+								if (tableUse) {
+									errorCode = 5;
+									return errorCode;
+								} else {
+									continue;
+								}
+							}
+						} else {
 
-					// 保存期間区分を判別 - Phân loại khoảng thời gian save
-					if (tableList.get().getRetentionPeriodCls().value != 0) {
-						if (!checkSettingDate(resultsSetting, tableList, dataRow))
-							return false;
+							// update date phục hồi Domain - To do
+							String date = dataRow.get(2);
+							dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
+									GeneralDate.fromString(date, "yyyy/MM/dd"));
+
+						}
 					}
+
+				} else {
+
+					// update date phục hồi Domain
+					String date = dataRow.get(2);
+					if (date != null)
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
+								GeneralDate.fromString(date, "yyyy/MM/dd"));
 				}
 
-			}
+				// update date phục hồi Domain
+				if (resultsSetting.get(0).equals("6")) {
+					String date = dataRow.get(2);
+					if (date != null)
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
+								GeneralDate.fromString(date, "yyyy"));
+				} else if (resultsSetting.get(0).equals("7")) {
+					String date = dataRow.get(2);
+					if (date != null)
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
+								GeneralDate.fromString(date, "yyyy/MM"));
+				} else if (resultsSetting.get(0).equals("8")) {
+					String date = dataRow.get(2);
+					if (date != null)
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
+								GeneralDate.fromString(date, "yyyy/MM/dd"));
+				}
 
-			// update date phục hồi Domain - To do
-
-			if (employeeId != null && dataRow.get(1).equals(employeeId)) {
 				if (indexUpdate1 != null) {
 					V_FILED_KEY_UPDATE_1 = dataRow.get(indexUpdate1);
 					filedWhere.put(FILED_KEY_UPDATE_1, V_FILED_KEY_UPDATE_1);
@@ -447,13 +508,19 @@ public class RecoveryStorageService {
 				int count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME);
 
 				if (count == 2) {
-					return false;
+					if (tableUse) {
+						errorCode = 5;
+						return errorCode;
+					} else {
+						continue;
+					}
 				} else if (count == 1) {
 					// delete data
 					try {
 						performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME);
-					} catch (Exception e) {
-						
+					} catch (Exception ex) {
+						LOGGER.info("Failed delete data : " + TABLE_NAME);
+						LOGGER.info(ex.toString());
 					}
 
 				}
@@ -470,14 +537,15 @@ public class RecoveryStorageService {
 				// insert data
 				try {
 					performDataRecoveryRepository.insertDataTable(dataInsertDB, TABLE_NAME);
-				} catch (Exception e) {
-					// TODO: handle exception
+				} catch (Exception ex) {
+					LOGGER.info("Failed insert data: " + TABLE_NAME);
+					LOGGER.info(ex.toString());
 				}
 
 			}
 		}
 
-		return true;
+		return errorCode;
 	}
 
 	public void deleteEmployeeHistory(Optional<TableList> tableList, String employeeId, String tableName,
@@ -487,114 +555,130 @@ public class RecoveryStorageService {
 		String whereCid = null;
 		String whereSid = null;
 		if (tableList.get().getClsKeyQuery1().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery1();
+			whereCid = tableList.get().getFiledKeyUpdate1();
 		} else if (tableList.get().getClsKeyQuery1().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery1();
+			whereSid = tableList.get().getFiledKeyUpdate1();
 		}
 
 		if (tableList.get().getClsKeyQuery2().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery2();
+			whereCid = tableList.get().getFiledKeyUpdate2();
 		} else if (tableList.get().getClsKeyQuery2().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery2();
+			whereSid = tableList.get().getFiledKeyUpdate2();
 		}
 
 		if (tableList.get().getClsKeyQuery3().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery3();
+			whereCid = tableList.get().getFiledKeyUpdate3();
 		} else if (tableList.get().getClsKeyQuery3().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery3();
+			whereSid = tableList.get().getFiledKeyUpdate3();
 		}
 
 		if (tableList.get().getClsKeyQuery4().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery4();
+			whereCid = tableList.get().getFiledKeyUpdate4();
 		} else if (tableList.get().getClsKeyQuery4().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery4();
+			whereSid = tableList.get().getFiledKeyUpdate4();
 		}
 
 		if (tableList.get().getClsKeyQuery5().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery5();
+			whereCid = tableList.get().getFiledKeyUpdate5();
 		} else if (tableList.get().getClsKeyQuery5().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery5();
+			whereSid = tableList.get().getFiledKeyUpdate5();
 		}
 
 		if (tableList.get().getClsKeyQuery6().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery6();
+			whereCid = tableList.get().getFiledKeyUpdate6();
 		} else if (tableList.get().getClsKeyQuery6().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery6();
+			whereSid = tableList.get().getFiledKeyUpdate6();
 		}
 
 		if (tableList.get().getClsKeyQuery7().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery7();
+			whereCid = tableList.get().getFiledKeyUpdate7();
 		} else if (tableList.get().getClsKeyQuery7().equals("5") && !tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery7();
+			whereSid = tableList.get().getFiledKeyUpdate7();
 		}
 		if (tableList.get().getClsKeyQuery8().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery8();
+			whereCid = tableList.get().getFiledKeyUpdate8();
 		} else if (tableList.get().getClsKeyQuery8().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery8();
+			whereSid = tableList.get().getFiledKeyUpdate8();
 		}
 
 		if (tableList.get().getClsKeyQuery9().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery9();
+			whereCid = tableList.get().getFiledKeyUpdate9();
 		} else if (tableList.get().getClsKeyQuery9().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery9();
+			whereSid = tableList.get().getFiledKeyUpdate9();
 		}
 
 		if (tableList.get().getClsKeyQuery10().equals("0")) {
-			whereCid = tableList.get().getClsKeyQuery10();
+			whereCid = tableList.get().getFiledKeyUpdate10();
 		} else if (tableList.get().getClsKeyQuery10().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getClsKeyQuery10();
+			whereSid = tableList.get().getFiledKeyUpdate10();
 		}
 
 		String cidCurrent = AppContexts.user().companyId();
-		performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereSid, cidCurrent, employeeId);
+		try {
+			performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereSid, cidCurrent, employeeId);
+		} catch (Exception ex) {
+			LOGGER.info("Failed delete data employee : " + tableName);
+			LOGGER.info(ex.toString());
+		}
+
 	}
 
-	public void exCurrentCategory(TableListByCategory tableListByCategory, TableListByCategory tableNotUseByCategory,
+	public int exCurrentCategory(TableListByCategory tableListByCategory, TableListByCategory tableNotUseByCategory,
 			String uploadId, String dataRecoveryProcessId) throws ParseException {
 
-		Boolean check = false;
-
+		int errorCode;
 		// カテゴリの中の社員単位の処理
-		exCurrentTable(tableListByCategory, dataRecoveryProcessId, uploadId);
+		errorCode = exCurrentTable(tableListByCategory, dataRecoveryProcessId, uploadId);
 
-		if (check) {
+		if (errorCode == 0) {
 			// の処理対象社員コードをクリアする
 			dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId, null);
 
 			// カテゴリの中の日付単位の処理
 			if (tableNotUseByCategory.getTables().size() != 0) {
 
-				// Get trạng thái domain データ復旧動作管理 - TO DO
-
 				// テーブル一覧のカレントの1行分の項目を取得する
 
 				for (int i = 0; i < tableNotUseByCategory.getTables().size(); i++) {
+
+					// Get trạng thái domain データ復旧動作管理
+					Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository
+							.getDataRecoveryMngById(dataRecoveryProcessId);
+					if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition().value == 1) {
+						errorCode = 1;
+						break;
+					}
+
 					List<List<String>> targetDataRecovery = CsvFileUtil
 							.getAllRecord(tableNotUseByCategory.getTables().get(i).getInternalFileName(), uploadId);
 
 					// 期間別データ処理
 					Optional<TableList> tableList = performDataRecoveryRepository.getByInternal(
 							tableNotUseByCategory.getTables().get(i).getInternalFileName(), dataRecoveryProcessId);
-					exDataTabeRangeDate(tableNotUseByCategory.getTables().get(i).getInternalFileName(),
+					errorCode = exDataTabeRangeDate(tableNotUseByCategory.getTables().get(i).getInternalFileName(),
 							targetDataRecovery, tableList, dataRecoveryProcessId);
 
 					// Xác định trạng thái error TO-DO
+					if (errorCode == 5) {
+						break;
+					}
 
 				}
 
 			}
 
-		} else {
-
+		} else if (errorCode == 1) {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 1);
+		} else if (errorCode == 5) {
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 5);
 		}
-
+		return errorCode;
 	}
 
-	public void exCurrentTable(TableListByCategory tableListByCategory, String dataRecoveryProcessId, String uploadId)
+	public int exCurrentTable(TableListByCategory tableListByCategory, String dataRecoveryProcessId, String uploadId)
 			throws ParseException {
 
-		Boolean check = false;
+		int errorCode = 0;
 		List<DataRecoveryTable> targetDataByCate = new ArrayList<>();
 
 		// カテゴリ単位の復旧
@@ -635,22 +719,26 @@ public class RecoveryStorageService {
 						employeeDataMngInfoImport.getEmployeeCode());
 
 				// 対象社員データ処理
-				this.recoveryDataByEmployee(dataRecoveryProcessId, employeeDataMngInfoImport.getEmployeeCode(),
-						employeeDataMngInfoImport.getEmployeeId(), targetDataByCate);
+				errorCode = this.recoveryDataByEmployee(dataRecoveryProcessId,
+						employeeDataMngInfoImport.getEmployeeCode(), employeeDataMngInfoImport.getEmployeeId(),
+						targetDataByCate);
 
-				// phan biet error - TO DO
+				// phan biet error
+				if (errorCode == 5) {
+					return errorCode;
+				}
 
-				if (check) {
-					// update trạng thái dataRecoveryMngRepository - TO
-					// DO
-				} else {
-					// error - TO DO
+				Optional<DataRecoveryMng> dataRecovery = dataRecoveryMngRepository
+						.getDataRecoveryMngById(dataRecoveryProcessId);
+				if (dataRecovery.isPresent() && dataRecovery.get().getOperatingCondition().value == 1) {
+					errorCode = 1;
+					return errorCode;
 				}
 
 			}
 
 		}
-
+		return errorCode;
 	}
 
 	public List<String> settingDate(Optional<TableList> tableList) {
@@ -759,12 +847,14 @@ public class RecoveryStorageService {
 
 	}
 
-	public Boolean exDataTabeRangeDate(String fileNameCsv, List<List<String>> targetDataRecovery,
+	public int exDataTabeRangeDate(String fileNameCsv, List<List<String>> targetDataRecovery,
 			Optional<TableList> tableList, String dataRecoveryProcessId) throws ParseException {
 
 		// アルゴリズム「日付処理の設定」を実行し日付設定を取得する
 		List<String> resultsSetting = new ArrayList<>();
 		resultsSetting = this.settingDate(tableList);
+
+		int errorCode = 0;
 
 		if (!resultsSetting.isEmpty()) {
 
@@ -779,16 +869,15 @@ public class RecoveryStorageService {
 				Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
 						.getPerformDatRecoverById(dataRecoveryProcessId);
 
-				//
-				
-				this.crudDataByTable(targetDataRecovery, null, null, dataRecoveryProcessId, fileNameCsv, tableList,
-						performDataRecovery, resultsSetting);
+				errorCode = this.crudDataByTable(targetDataRecovery, null, null, dataRecoveryProcessId, fileNameCsv,
+						tableList, performDataRecovery, resultsSetting, false);
 
 			}
 		} else {
-			return false;
+			errorCode = 5;
+			return errorCode;
 		}
-		return true;
+		return errorCode;
 
 	}
 

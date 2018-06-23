@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoveryMng;
@@ -65,5 +66,14 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 	@Override
 	public Optional<DataRecoveryMng> getByUploadId(String dataRecoveryProcessId) {
 		return this.queryProxy().find(dataRecoveryProcessId, SspmtDataRecoveryMng.class).map(SspmtDataRecoveryMng::toDomain);
+	}
+
+	@Override
+	public void updateRecoveryDate(String dataRecoveryProcessId, GeneralDate date) {
+		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId, SspmtDataRecoveryMng.class);
+		entity.ifPresent(x->{
+			x.recoveryDate = date;
+			this.commandProxy().update(x);
+		});
 	}
 }
