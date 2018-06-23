@@ -55,13 +55,13 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             let self = this;
             //Fixed table
             if (/Chrome/.test(navigator.userAgent)) {
-                $("#E4_1").ntsFixedTable({height: 164, width: 700});
-                $("#F4_1").ntsFixedTable({height: 184, width: 700});
+                $("#E4_1").ntsFixedTable({ height: 164, width: 700 });
+                $("#F4_1").ntsFixedTable({ height: 184, width: 700 });
             } else {
-                $("#E4_1").ntsFixedTable({height: 162, width: 700});
-                $("#F4_1").ntsFixedTable({height: 182, width: 700});
+                $("#E4_1").ntsFixedTable({ height: 162, width: 700 });
+                $("#F4_1").ntsFixedTable({ height: 182, width: 700 });
             }
-            $("#H4_1").ntsFixedTable({ height: 164});
+            $("#H4_1").ntsFixedTable({ height: 164 });
 
             //_____KCP005G________
             self.kcp005ComponentOptionScreenG = {
@@ -125,7 +125,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     fileId: fileInfo.id,
                     fileName: fileInfo.originalName
                 });
-                nts.uk.ui.windows.sub.modal("/view/cmf/004/c/index.xhtml");
+                nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(()=>{
+                    nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(()=>{
+                        $('#data-recovery-wizard').ntsWizard("next");
+                    });
+                });
             }
         }
 
@@ -152,7 +156,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             self.endDateString(moment.utc().format("YYYY/MM/DD"));
             let paramSearch = {
                 startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
-                endDate  : moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD hh:mm:ss").add(1, "d").add(-1, "s").toISOString()
+                endDate: moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD hh:mm:ss").add(1, "d").add(-1, "s").toISOString()
             };
             service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
                 if (data && data.length) {
@@ -173,8 +177,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 }
             });
         }
-        
-         
+
+
 
         /**
          * E:データ内容確認
@@ -189,13 +193,13 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     _.each(data, (x, i) => {
                         let rowNumber = i + 1;
                         let iscanNotBeOld: boolean = (x.canNotBeOld == 1);
-                        let isRecover:boolean      = iscanNotBeOld;
-                        let categoryName            = x.categoryName;
-                        let categoryId              = x.categoryId;
-                        let recoveryPeriod          = x.retentionPeriodCls;
-                        let startOfPeriod           = x.saveDateFrom;
-                        let endOfPeriod             = x.saveDateTo;
-                        let recoveryMethod          = x.storageRangeSaved == 0 ? getText('CMF004_305') : getText('CMF004_306');
+                        let isRecover: boolean = iscanNotBeOld;
+                        let categoryName = x.categoryName;
+                        let categoryId = x.categoryId;
+                        let recoveryPeriod = x.retentionPeriodCls;
+                        let startOfPeriod = x.saveDateFrom;
+                        let endOfPeriod = x.saveDateTo;
+                        let recoveryMethod = x.storageRangeSaved == 0 ? getText('CMF004_305') : getText('CMF004_306');
                         listCategory.push(new CategoryInfo(rowNumber, isRecover, categoryId, categoryName, recoveryPeriod, startOfPeriod, endOfPeriod, recoveryMethod, iscanNotBeOld));
                     });
                     self.dataContentConfirm().dataContentcategoryList(listCategory);
@@ -235,9 +239,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 if (data.targets) {
                     self.employeeListScreenG.removeAll();
                     _.forEach(data.targets, x => {
-                        self.employeeListScreenG.push({code: x.scd, name: x.bussinessName, id: x.sid});
+                        self.employeeListScreenG.push({ code: x.scd, name: x.bussinessName, id: x.sid });
                     });
-                }               
+                }
             })
         }
 
@@ -373,17 +377,17 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         startOfPeriod: KnockoutObservable<string>;
         endOfPeriod: KnockoutObservable<string>;
         iscanNotBeOld: KnockoutObservable<boolean>;
-        constructor(rowNumber: number, isRecover: boolean, categoryId: string,  categoryName: string, recoveryPeriod: string, startOfPeriod: string, endOfPeriod: string, recoveryMethod: string, iscanNotBeOld: boolean) {
+        constructor(rowNumber: number, isRecover: boolean, categoryId: string, categoryName: string, recoveryPeriod: string, startOfPeriod: string, endOfPeriod: string, recoveryMethod: string, iscanNotBeOld: boolean) {
             let self = this;
-            self.rowNumber      = ko.observable(rowNumber);
-            self.isRecover      = ko.observable(isRecover);
-            self.categoryId     = ko.observable(categoryId);
-            self.categoryName   = ko.observable(categoryName);
+            self.rowNumber = ko.observable(rowNumber);
+            self.isRecover = ko.observable(isRecover);
+            self.categoryId = ko.observable(categoryId);
+            self.categoryName = ko.observable(categoryName);
             self.recoveryPeriod = ko.observable(recoveryPeriod);
-            self.startOfPeriod  = ko.observable(startOfPeriod);
-            self.endOfPeriod    = ko.observable(endOfPeriod);
+            self.startOfPeriod = ko.observable(startOfPeriod);
+            self.endOfPeriod = ko.observable(endOfPeriod);
             self.recoveryMethod = ko.observable(recoveryMethod);
-            self.iscanNotBeOld  = ko.observable(iscanNotBeOld);
+            self.iscanNotBeOld = ko.observable(iscanNotBeOld);
         }
     }
 

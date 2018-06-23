@@ -71,7 +71,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		serverPrepareMngRepository.add(serverPrepareMng);
 		setter.setData(STATUS, convertToStatus(0, serverPrepareMng));
 		serverPrepareMng = serverUploadProcessingService.serverUploadProcessing(serverPrepareMng, fileId, fileName,
-				password);
+				password); 
 		setter.updateData(STATUS, convertToStatus(0, serverPrepareMng));
 		if (serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.UPLOAD_COMPLETED) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTING);
@@ -132,7 +132,6 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 
 	private String convertToStatus(int processNum, ServerPrepareMng serverPrepareMng) {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		String processingStatus;
 		try {
 			return ow.writeValueAsString( procesingStatus(serverPrepareMng.getOperatingCondition()));
 		} catch (JsonProcessingException e) {

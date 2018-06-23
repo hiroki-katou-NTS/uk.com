@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 350, height: 350 };</script>
+			<script>var dialogSize = { width: 380, height: 350 };</script>
 			<com:ValidatorScript>
                     nts.uk.ctx.sys.assist.dom.storage.FileCompressionPassword
             </com:ValidatorScript>
@@ -28,8 +28,9 @@
 						<div class="div-table-col">
 							<div class="flex valign-center fixed-height outer"
 								style="height: 37px;">
-								<div style="display: inline;" data-bind="text: fileName"
-									id="C1_2" class="label-left cell"></div>
+								<div style="display: inline; width: 180px;" data-bind="text: fileName"
+									id="C1_2" class="label-left cell">
+									</div>
 							</div>
 						</div>
 					</div>
@@ -53,8 +54,8 @@
 					</div>
 				</div>
 				<div id="functions-area-bottom">
-					<button tabindex="2" id="C1_5" class="large"
-						data-bind="click: processing, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_258')}</button>
+					<button tabindex="2" id="C1_5" class="large proceed"
+						data-bind="click: processing, enable: $root.errors.isEmpty">#{i18n.getText('CMF004_53')}</button>
 				</div>
 			</div>
 		</ui:define>
