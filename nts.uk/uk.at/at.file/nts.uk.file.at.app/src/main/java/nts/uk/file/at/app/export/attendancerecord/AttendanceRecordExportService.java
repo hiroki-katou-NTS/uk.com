@@ -28,6 +28,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.NameUseAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository;
@@ -123,6 +124,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		Map<String, List<AttendanceRecordReportEmployeeData>> reportData = new LinkedHashMap<>();
 		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<AttendanceRecordReportEmployeeData>();
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
+
+		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = attendanceRecExpSetRepo
+				.getAttendanceRecExpSet(companyId, request.getLayout());
 
 		List<WorkType> workTypeList = workTypeRepo.findByCompanyId(companyId);
 
@@ -300,9 +304,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 								valueSingleUpper.getAttendanceItems().forEach(item -> {
 									if (item != null)
-										upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-												employee.getEmployeeName(), closureDateTemp, "", this.convertString(
-														item, workTypeList, workTimeList, screenUseAtrList)));
+										upperDailyRespond
+												.add(new AttendanceRecordResponse(employee.getEmployeeId(),
+														employee.getEmployeeName(), closureDateTemp, "",
+														this.convertString(item, workTypeList, workTimeList,
+																screenUseAtrList, optionalAttendanceRecExpSet.get()
+																		.getNameUseAtr())));
 
 								});
 							}
@@ -367,9 +374,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							if (valueSingleLower != null)
 								valueSingleLower.getAttendanceItems().forEach(item -> {
 									if (item != null)
-										lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-												employee.getEmployeeName(), closureDateTemp, "", this.convertString(
-														item, workTypeList, workTimeList, screenUseAtrList)));
+										lowerDailyRespond
+												.add(new AttendanceRecordResponse(employee.getEmployeeId(),
+														employee.getEmployeeName(), closureDateTemp, "",
+														this.convertString(item, workTypeList, workTimeList,
+																screenUseAtrList, optionalAttendanceRecExpSet.get()
+																		.getNameUseAtr())));
 
 								});
 
@@ -686,8 +696,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		AttendanceRecordReportData recordReportData = new AttendanceRecordReportData();
 		Optional<Company> optionalCompany = companyRepo.find(companyId);
-		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = attendanceRecExpSetRepo
-				.getAttendanceRecExpSet(companyId, request.getLayout());
 
 		recordReportData.setCompanyName(optionalCompany.get().getCompanyName().toString());
 		recordReportData.setDailyHeader(dailyHeader);
@@ -881,7 +889,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	}
 
 	private String convertString(ItemValue item, List<WorkType> workTypeList, List<WorkTimeSetting> workTimeSettingList,
-			List<ScreenUseAtr> screenUseAtrList) {
+			List<ScreenUseAtr> screenUseAtrList, NameUseAtr nameUseAtr) {
 		final String value = item.getValue();
 		if (item.getValueType() == null || item.getValue() == null)
 			return "";
@@ -911,14 +919,18 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					List<WorkType> worktype = workTypeList.stream()
 							.filter(ite -> ite.getWorkTypeCode().v().equals(value)).collect(Collectors.toList());
 					if (!worktype.isEmpty())
-						return worktype.get(0).getName().v();
+
+						return nameUseAtr.equals(NameUseAtr.FORMAL_NAME) ? worktype.get(0).getName().v()
+								: worktype.get(0).getAbbreviationName().v();
 					return value;
 				} else {
 
 					List<WorkTimeSetting> workTime = workTimeSettingList.stream()
 							.filter(e -> e.getWorktimeCode().v().equals(value)).collect(Collectors.toList());
 					if (!workTime.isEmpty())
-						return workTime.get(0).getWorkTimeDisplayName().getWorkTimeName().v();
+						return nameUseAtr.equals(NameUseAtr.FORMAL_NAME)
+								? workTime.get(0).getWorkTimeDisplayName().getWorkTimeName().v()
+								: workTime.get(0).getWorkTimeDisplayName().getWorkTimeAbName().v();
 					return value;
 				}
 			}
