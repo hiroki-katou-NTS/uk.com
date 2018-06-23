@@ -126,8 +126,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     fileName: fileInfo.originalName
                 });
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(()=>{
+                    setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
                     nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(()=>{
-                        $('#data-recovery-wizard').ntsWizard("next");
+                        if (getShared("CMF004_E_PARAMS")){
+                            setShared("CMF004_E_PARAMS", getShared("CMF004_E_PARAMS"));
+                            $('#data-recovery-wizard').ntsWizard("next");
+                        }
                     });
                 });
             }
