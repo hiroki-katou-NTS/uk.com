@@ -1,5 +1,8 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -149,7 +152,11 @@ public class CsvFileUtil {
 	
 	public static InputStream createInputStreamFromFile(String fileId, String fileName) {
 		String filePath = DATA_STORE_PATH + "//packs//" + fileId + "//temp//" + fileName + ".csv";
-		return FileUtil.NoCheck.newInputStream(Paths.get(filePath));
+		try {
+			return new FileInputStream(new File(filePath));
+		} catch (FileNotFoundException e) {
+			return null;
+		}
 	}
 
 	public static String getStoragePath() {
