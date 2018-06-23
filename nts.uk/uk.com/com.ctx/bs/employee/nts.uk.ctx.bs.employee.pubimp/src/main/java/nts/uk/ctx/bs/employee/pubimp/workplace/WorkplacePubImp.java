@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.pubimp.workplace;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -627,12 +628,15 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			dateHistoryItemLst.addAll(x.getHistoryItems());
 		});
 		List<String> hisIDs = dateHistoryItemLst.stream().map(x -> x.identifier()).collect(Collectors.toList());
-		List<String> wkpIDLst = affWorkplaceHistoryItemRepository.findByHistIds(hisIDs).stream().map(x -> x.getWorkplaceId()).collect(Collectors.toList());
-		List<WorkplaceInfo> wkpInfoLst = workplaceInfoRepo.findByWkpIds(companyID, wkpIDLst);
-		
+		Map<String,String> wkpIDLst = new HashMap<String,String>();  
+		affWorkplaceHistoryItemRepository.findByHistIds(hisIDs).forEach(x -> {
+			wkpIDLst.put(x.getHistoryId(), x.getWorkplaceId());
+		});
+		List<WorkplaceInfo> wkpInfoLst = workplaceInfoRepo.findByWkpIds(companyID, wkpIDLst.entrySet().stream().map(x -> x.getValue()).collect(Collectors.toList()));
 		List<WkpInfoExport> wkpInfoExportLst = new ArrayList<>();
 		dateHistoryItemLst.forEach(x -> {
-			WorkplaceInfo wkpInfo = wkpInfoLst.stream().filter(y -> y.equals(x.identifier())).findAny().get();
+			String wkpID = wkpIDLst.entrySet().stream().filter(t -> t.getKey().equals(x.identifier())).findAny().get().getValue();
+			WorkplaceInfo wkpInfo = wkpInfoLst.stream().filter(y -> y.getWorkplaceId().equals(wkpID)).findAny().get();
 			wkpInfoExportLst.add(
 					new WkpInfoExport(
 							x.span(), 
