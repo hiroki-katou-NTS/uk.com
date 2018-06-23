@@ -12,7 +12,7 @@
 				<div
 					data-bind="ntsRadioButton: {checked: selectedUploadCls, 
 												enable: true, 
-												option: $parent.options()[0], 
+												option: $vm.options()[0], 
 												optionValue: 'value', 
 												optionText: 'text',
 												group: 'effectDigitCls' }" tabindex="1"/>
@@ -39,30 +39,37 @@
 				<div
 					data-bind="ntsRadioButton: {checked: selectedSaveFileCls, 
 																	enable: true, 
-																	option: $parent.options()[1], 
+																	option: $vm.options()[1], 
 																	optionValue: 'value', 
 																	optionText: 'text',
 																	group: 'effectDigitCls'} " tabindex="3"/>
 			</div>
-			<div class="div-line">
-				<!--B4_2 カテゴリパネル-->
-				<div
-					data-bind="ntsPanel:{width: '500px', height: '80px', direction: 'none', showIcon: true, visible: true}">
-					<div class="flex div-line">
-						<!--B4_3 実行期間-->
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_33')}</div>
-						<!--B4_4-->
-						<div class="ntsControl">
-							<div id="daterangepicker"
-								data-bind="ntsDateRangePicker: {required: false,
+
+			<div class="div-line flex" style="margin-left: 22px;margin-bottom: 25px;">
+				<!--B4_3 実行期間-->
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_33')}</div>
+				<!--B4_4-->
+				<div class="ntsControl">
+					<div id="daterangepicker"
+						data-bind="ntsDateRangePicker: {required: false,
 																enable: true,
 																name: '#[CMF004_34]',
 																showNextPrevious: false,
 																value: executePeriodInput,
 																required: true,
-																maxRange: 'none'}" tabindex="4"/>
-						</div>
+																maxRange: 'none'}"
+						tabindex="4" />
+				</div>
+				<!--B4_7-->
+					<div class="large flex" style="margin-left: 10px;">
+						<button data-bind="click: function(){$vm.searchDataRecovery()}">#{i18n.getText('CMF004_45')}</button>
 					</div>
+			</div>
+
+			<div class="div-line">
+				<!--B4_2 カテゴリパネル-->
+				<div style="width: 100%;max-height: 70px;"
+					data-bind="ntsPanel:{width: '100%', height: '80px', direction: 'none', showIcon: true, visible: true}">
 					<div class="flex">
 						<!--B4_5 コード保存セット検索-->
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_35')}</div>
@@ -106,7 +113,7 @@
 				<!--B7_1 処理を選びなおすボタン-->
 				<button class="large" tabindex="6">#{i18n.getText('CMF004_43')}</button>
 				<!--B7_2 次へボタン-->
-				<button class="x-large proceed" data-bind="click: function(){$parent.nextToScreenE()}" tabindex="7">#{i18n.getText('CMF004_44')}</button>
+				<button class="x-large proceed" data-bind="click: function(){$vm.nextToScreenE()}" tabindex="7">#{i18n.getText('CMF004_44')}</button>
 			</div>
 		</div>
 	</ui:composition>

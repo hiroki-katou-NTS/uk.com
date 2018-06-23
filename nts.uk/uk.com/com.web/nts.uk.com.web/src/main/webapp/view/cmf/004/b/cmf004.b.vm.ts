@@ -177,8 +177,35 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 }
             });
         }
-
-
+        
+        searchDataRecovery(): void {
+            let self = this;
+            self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
+            self.endDateString(moment.utc().format("YYYY/MM/DD"));
+            let paramSearch = {
+                startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
+                endDate: moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD hh:mm:ss").add(1, "d").add(-1, "s").toISOString()
+            };
+            self.dataRecoverySelection().recoveryFileList.removeAll();
+            service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
+                if (data && data.length) {
+                    for (let i = 0; i < data.length; i++) {
+                        let itemTarget =
+                            {
+                                saveSetCode: data[i].code,
+                                saveSetName: data[i].name,
+                                supplementaryExplanation: data[i].suppleExplanation,
+                                storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD hh:mm:ss'),
+                                executeCategory: (data[i].saveForm) % 2 == 0 ? getText('CMF004_460') : getText('CMF004_461'),
+                                targetNumber: data[i].targetNumberPeople + "人",
+                                saveFileName: data[i].saveFileName + ".zip",
+                                fileId: data[i].fileId
+                            };
+                        self.dataRecoverySelection().recoveryFileList.push(itemTarget);
+                    }
+                }
+            });
+        }
 
         /**
          * E:データ内容確認
@@ -338,8 +365,33 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
 
         restoreData_click(): void {
+            let self = this;
+            self.restoreData();
             nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
         }
+        
+        restoreData(): void {
+                let self = this;
+                let data = {
+                    
+                };
+
+                service.addMalSet(data).done((res) => {
+                    if((res != null) && (res != "")) {
+                        let params = {
+                            storeProcessingId: res,
+                            dataSaveSetName : self.dataSaveSetName(),
+                            dayValue : self.dayValue(),
+                            monthValue : self.monthValue(),
+                            yearValue : self.yearValue()
+                        };
+
+                        nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
+                    }
+                }).fail((err) => {
+                });
+            }
+        
 
         backToPreviousScreen(): void {
             $('#data-recovery-wizard').ntsWizard("prev");

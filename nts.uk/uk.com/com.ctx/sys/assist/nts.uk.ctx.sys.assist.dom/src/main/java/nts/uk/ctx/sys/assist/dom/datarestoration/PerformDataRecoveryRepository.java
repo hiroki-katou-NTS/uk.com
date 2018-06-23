@@ -39,4 +39,6 @@ public interface PerformDataRecoveryRepository {
 	void deleteEmployeeHis(String tableName, String whereCid, String whereSid ,String cid, String employeeId);
 	
 	void addTargetEmployee(Target domain);
+	
+	void updatePerformDataRecoveryById(String dataRecoveryProcessId);
 }
