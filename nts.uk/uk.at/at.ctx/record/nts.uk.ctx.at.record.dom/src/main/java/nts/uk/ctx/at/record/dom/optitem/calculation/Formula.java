@@ -196,6 +196,7 @@ public class Formula extends AggregateRoot {
 		else {
 			throw new RuntimeException("unknown FormulaSetting"+ this.getCalcAtr());
 		}
-		return ResultOfCalcFormula.of(formulaId,this.formulaAtr, calcValue);
+//		return ResultOfCalcFormula.of(formulaId,this.formulaAtr, calcValue);
+		return ResultOfCalcFormula.of(formulaId,optionalItem.getOptionalItemAtr(), calcValue);
 	}
 }
