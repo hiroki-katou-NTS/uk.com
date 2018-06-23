@@ -173,7 +173,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD hh:mm:ss'),
                                 executeCategory: (data[i].saveForm) % 2 == 0 ? getText('CMF004_460') : getText('CMF004_461'),
                                 targetNumber: data[i].targetNumberPeople + "人",
-                                saveFileName: data[i].saveFileName,
+                                saveFileName: data[i].saveFileName + ".zip",
                                 fileId: data[i].fileId
                             };
                         self.dataRecoverySelection().recoveryFileList.push(itemTarget);
