@@ -1025,7 +1025,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				wkpName =  wkp == null ? "" : wkp.getWpkName();
 			}
 			//get Application Name
-			String appDispNameStr = this.findAppName(appDispName, app.getAppType().value);
+			String appDispNameStr = this.findAppName(appDispName, app.getAppType());
 			Integer detailSet = 0;
 			if(app.isAppOverTime() || app.isAppAbsence()){
 				String wpk = wkpID + app.getAppType().value;
@@ -1055,9 +1055,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return null;
 	}
 	//tim ten hien thi loai don xin
-	private String findAppName(List<AppDispName> appDispName, Integer appType){
+	private String findAppName(List<AppDispName> appDispName, ApplicationType appType){
 		for (AppDispName appName : appDispName) {
-			if(appName.getAppType().equals(appType)){
+			if(appName.getAppType().value == appType.value){
 				return appName.getDispName().v();
 			}
 		}
