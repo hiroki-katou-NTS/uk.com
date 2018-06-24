@@ -26,13 +26,13 @@
 											name: '#[CMF003_75]',
 											value: dataSaveSetName, required: true,
 											constraint: 'SaveSetName', 
-											option: {width: '200px'}}" />
+											option: {width: '275px'}}" />
 				</div>
 				<div class="valign-center control-group">
 					<div id="B4_3" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF003_29')}</div>
 					<div class="pull-right">
 						<div id="B4_23" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF003_54')}</div>
-						<span id="B4_24" style="margin-left: 40px;"></span>
+						<span id="B4_24" style="margin-left: 40px; margin-right: 90px;"></span>
 					</div>
 				</div>
 				<div class="valign-center control-group"
@@ -102,7 +102,7 @@
 											name: '#[CMF003_73]',
 											value: password,
 											required: isCompressPass, constraint: passwordConstraint,
-											option: {textmode: 'password',width: '152px'},
+											option: {textmode: 'password',width: '230px'},
 											enable: true,
 											readonly: false
 											}" />
@@ -115,7 +115,7 @@
 											name: '#[CMF003_74]',
 											value: confirmPassword,
 											required: isCompressPass, constraint: passwordConstraint, 
-											option: {textmode: 'password',width: '152px'},
+											option: {textmode: 'password',width: '230px'},
 											enable: true,
 											readonly: false
 											}" />

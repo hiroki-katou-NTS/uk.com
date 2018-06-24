@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,7 @@ import javax.persistence.EmbeddedId;
 
 import com.google.common.base.Strings;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -28,12 +28,12 @@ import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
-import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -119,7 +119,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		String saveFileName = null;
 		GeneralDateTime saveEndDatetime = null;
 		int deletedFiles = 0;
-		String compressedPassword = null;
+		String compressedPassword = manualSetting.getCompressedPassword().v();
 		int targetNumberPeople = 0;
 		int saveStatus = 0;
 		String fileId = null;
@@ -133,43 +133,63 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		repoDataSto.update(storeProcessingId, OperatingCondition.INPREPARATION);
 
 		// アルゴリズム「対象テーブルの選定と条件設定」を実行
-		int countCategories = selectTargetTable(storeProcessingId, manualSetting);
+		StringBuffer outCompressedFileName = new StringBuffer();
+		ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
 
-		// update domain 「データ保存動作管理」 Data storage operation management
-		repoDataSto.update(storeProcessingId, countCategories, 0, OperatingCondition.SAVING);
+		if (resultState != ResultState.NORMAL_END) {
+			evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
+			return;
+		}
 
 		// 対象社員のカウント件数を取り保持する
 		List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
 
 		// アルゴリズム「対象データの保存」を実行
-		ResultState resultState = saveTargetData(storeProcessingId, generatorContext, manualSetting, targetEmployees);
+		resultState = saveTargetData(storeProcessingId, generatorContext, manualSetting, targetEmployees);
 
 		// 処理結果を判定
 		switch (resultState) {
 		case NORMAL_END:
-			evaluateNormalEnd(storeProcessingId, generatorContext, manualSetting, targetEmployees);
+			evaluateNormalEnd(storeProcessingId, generatorContext, manualSetting, targetEmployees.size(), outCompressedFileName.toString());
 			break;
 
 		case ABNORMAL_END:
-			evaluateAbnormalEnd(storeProcessingId, targetEmployees);
+			evaluateAbnormalEnd(storeProcessingId, targetEmployees.size());
 			break;
 
 		case INTERRUPTION:
-			evaluateInterruption(storeProcessingId, targetEmployees);
+			evaluateInterruption(storeProcessingId, targetEmployees.size());
 			break;
 		}
 
 	}
 
-	private int selectTargetTable(String storeProcessingId, ManualSetOfDataSave optManualSetting) {
+	private ResultState selectTargetTable(String storeProcessingId, ManualSetOfDataSave optManualSetting, StringBuffer outCompressedFileName) {
 		// Get list category from
 		List<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
 		List<String> categoryIds = targetCategories.stream().map(x -> {
 			return x.getCategoryId();
 		}).collect(Collectors.toList());
+
+		// update domain 「データ保存動作管理」 Data storage operation management
+		repoDataSto.update(storeProcessingId, categoryIds.size(), 0, OperatingCondition.SAVING);
+
 		List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
 		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
+		int countCategoryFieldMts = categoryFieldMts.stream()
+				.collect(Collectors.groupingBy(CategoryFieldMt::getCategoryId)).keySet().size();
+		if (categoryIds.size() != countCategoryFieldMts) {
+			return ResultState.ABNORMAL_END;
+		}
+
 		String cId = optManualSetting.getCid();
+		
+		// B42
+		String datetimenow = GeneralDateTime.now().toString();
+		SaveSetName savename = optManualSetting.getSaveSetName();
+		String compressedFileName = cId + savename.toString() + datetimenow;
+		outCompressedFileName.setLength(0);
+		outCompressedFileName = outCompressedFileName.append(compressedFileName);
 		for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
 
 			String categoryName = "";
@@ -180,7 +200,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			GeneralDate saveDateFrom = null;
 			GeneralDate saveDateTo = null;
 			int surveyPreservation = optManualSetting.getIdentOfSurveyPre().value;
-			String compressedFileName = "";
 			Optional<Category> category = categorys.stream()
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
 			if (category.isPresent()) {
@@ -214,10 +233,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 			String internalFileName = cId + categoryName + categoryFieldMt.getTableJapanName();
 
-			// B42
-			String datetimenow = LocalDateTime.now().toString();
-			SaveSetName savename = optManualSetting.getSaveSetName();
-			compressedFileName = cId + savename.toString() + datetimenow;
+			
 
 			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId, "",
 					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(),
@@ -272,7 +288,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 			repoTableList.add(listtable);
 		}
-		return categorys.size();
+		
+
+		return ResultState.NORMAL_END;
 	}
 
 	private ResultState saveTargetData(String storeProcessingId, FileGeneratorContext generatorContext,
@@ -357,18 +375,18 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		rowCsv.put(headerCsv.get(4), tableList.getSupplementaryExplanation());
 		rowCsv.put(headerCsv.get(5), tableList.getCategoryId());
 		rowCsv.put(headerCsv.get(6), tableList.getCategoryName());
-		rowCsv.put(headerCsv.get(7), TextResource.localize(tableList.getRetentionPeriodCls().nameId));
-		rowCsv.put(headerCsv.get(8), TextResource.localize(tableList.getStorageRangeSaved().nameId));
+		rowCsv.put(headerCsv.get(7), tableList.getRetentionPeriodCls().value);
+		rowCsv.put(headerCsv.get(8), tableList.getStorageRangeSaved().value);
 		rowCsv.put(headerCsv.get(9), tableList.getScreenRetentionPeriod());
 		rowCsv.put(headerCsv.get(10), tableList.getReferenceYear());
 		rowCsv.put(headerCsv.get(11), tableList.getReferenceMonth());
 		rowCsv.put(headerCsv.get(12), tableList.getSurveyPreservation().value);
-		rowCsv.put(headerCsv.get(13), TextResource.localize(tableList.getAnotherComCls().nameId));
+		rowCsv.put(headerCsv.get(13), tableList.getAnotherComCls().value);
 		rowCsv.put(headerCsv.get(14), tableList.getTableNo());
 		rowCsv.put(headerCsv.get(15), tableList.getTableJapaneseName());
 		rowCsv.put(headerCsv.get(16), tableList.getTableEnglishName());
-		rowCsv.put(headerCsv.get(17), tableList.getHistoryCls() == HistoryDiviSion.NO_HISTORY ? "0：なし" : "1：あり");
-		rowCsv.put(headerCsv.get(18), tableList.getHasParentTblFlg() == NotUseAtr.NOT_USE ? "0：なし" : "1：あり");
+		rowCsv.put(headerCsv.get(17), tableList.getHistoryCls().value);
+		rowCsv.put(headerCsv.get(18), tableList.getHasParentTblFlg().value);
 		rowCsv.put(headerCsv.get(19), tableList.getParentTblJpName());
 		rowCsv.put(headerCsv.get(20), tableList.getParentTblName());
 		rowCsv.put(headerCsv.get(21), tableList.getFieldParent1());
@@ -462,7 +480,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		rowCsv.put(headerCsv.get(109), tableList.getCompressedFileName());
 		rowCsv.put(headerCsv.get(110), tableList.getInternalFileName());
 		rowCsv.put(headerCsv.get(111), tableList.getDataRecoveryProcessId());
-		rowCsv.put(headerCsv.get(112), tableList.getCanNotBeOld() == 0 ? "復旧しない" : "復旧する");
+		rowCsv.put(headerCsv.get(112), tableList.getCanNotBeOld());
 		rowCsv.put(headerCsv.get(113), tableList.getSelectionTargetForRes());
 
 		dataSourceCsv.add(rowCsv);
@@ -478,8 +496,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				Map<String, Object> rowCsv2 = new HashMap<>();
 				rowCsv2.put(headerCsv2.get(0), targetEmp.getSid());
 				rowCsv2.put(headerCsv2.get(1), targetEmp.getScd());
-				rowCsv2.put(headerCsv2.get(2),
-						Base64.getEncoder().encodeToString(targetEmp.getBusinessname().v().getBytes()));
+				rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(targetEmp.getBusinessname().v()));
 				dataSourceCsv2.add(rowCsv2);
 			}
 
@@ -499,10 +516,18 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		try {
 			// ドメインモデル「データ保存動作管理」を取得し「中断終了」を判別
 			Optional<DataStorageMng> dataStorageMng = repoDataSto.getDataStorageMngById(storeProcessingId);
-			if (dataStorageMng.isPresent()
-					&& dataStorageMng.get().operatingCondition == OperatingCondition.INTERRUPTION_END) {
+
+			// TrungBV: Fix check interrupt
+			if (dataStorageMng.isPresent() && dataStorageMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
+				dataStorageMng.get().operatingCondition = EnumAdaptor.valueOf(OperatingCondition.INTERRUPTION_END.value, OperatingCondition.class);
+				repoDataSto.update(dataStorageMng.get());
 				return ResultState.INTERRUPTION;
 			}
+			
+//			if (dataStorageMng.isPresent()
+//					&& dataStorageMng.get().operatingCondition == OperatingCondition.INTERRUPTION_END) {
+//				return ResultState.INTERRUPTION;
+//			}
 
 			Class<?> tableExport = repoTableList.getTypeForTableName(tableList.getTableEnglishName());
 			List<?> listObject = repoTableList.getDataDynamic(tableList, tableExport);
@@ -561,7 +586,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private ResultState evaluateNormalEnd(String storeProcessingId, FileGeneratorContext generatorContext,
-			ManualSetOfDataSave optManualSetting, List<TargetEmployees> targetEmployees) {
+			ManualSetOfDataSave optManualSetting, int totalTargetEmployees, String outCompressedFileName) {
 		// ドメインモデル「データ保存動作管理」を更新する
 		repoDataSto.update(storeProcessingId, OperatingCondition.INPROGRESS);
 
@@ -583,7 +608,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			applicationTemporaryFilesContainer.removeContainer();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return evaluateAbnormalEnd(storeProcessingId, targetEmployees);
+			return evaluateAbnormalEnd(storeProcessingId, totalTargetEmployees);
 		}
 
 		// ドメインモデル「データ保存動作管理」を更新する
@@ -591,28 +616,26 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 		// ドメインモデル「データ保存の保存結果」を書き出し
 		String fileId = generatorContext.getTaskId();
-		repoResultSaving.update(storeProcessingId, targetEmployees.size(), SaveStatus.SUCCESS, fileId,
-				NotUseAtr.NOT_USE);
-
+		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.SUCCESS, fileId, NotUseAtr.NOT_USE,outCompressedFileName);
 		return ResultState.NORMAL_END;
 	}
 
-	private ResultState evaluateAbnormalEnd(String storeProcessingId, List<TargetEmployees> targetEmployees) {
+	private ResultState evaluateAbnormalEnd(String storeProcessingId, int totalTargetEmployees) {
 		// ドメインモデル「データ保存動作管理」を更新する
 		repoDataSto.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
 
 		// ドメインモデル「データ保存の保存結果」を書き出し
-		repoResultSaving.update(storeProcessingId, targetEmployees.size(), SaveStatus.FAILURE);
+		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.FAILURE);
 
 		return ResultState.ABNORMAL_END;
 	}
 
-	private ResultState evaluateInterruption(String storeProcessingId, List<TargetEmployees> targetEmployees) {
+	private ResultState evaluateInterruption(String storeProcessingId, int totalTargetEmployees) {
 		// ドメインモデル「データ保存動作管理」を更新する
 		repoDataSto.update(storeProcessingId, OperatingCondition.INTERRUPTION_END);
 
 		// ドメインモデル「データ保存の保存結果」を書き出し
-		repoResultSaving.update(storeProcessingId, targetEmployees.size(), SaveStatus.INTERRUPTION);
+		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.INTERRUPTION);
 
 		return ResultState.INTERRUPTION;
 	}

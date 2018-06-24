@@ -23,6 +23,8 @@ module nts.uk.com.view.cmf003.f {
             categoryTotalCount: KnockoutObservable<number>;
             errorCount: KnockoutObservable<number>;
             
+            operatingCondition: number;
+            
             // F2_2
             dataSaveSetName : string;
             dayStartValue : string;
@@ -97,6 +99,8 @@ module nts.uk.com.view.cmf003.f {
                     self.categoryTotalCount(storageMng.categoryTotalCount);
                     self.errorCount(storageMng.errorCount);
                     
+                    self.operatingCondition = storageMng.operatingCondition;
+                    
                     // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
                     // 完了, 中断終了, 異常終了
                     if((storageMng.operatingCondition == 4) || (storageMng.operatingCondition == 5) || (storageMng.operatingCondition == 6)) {
@@ -106,18 +110,22 @@ module nts.uk.com.view.cmf003.f {
                         // end: update dialog to complete mode
                         if(storageMng.operatingCondition == 4) {
                             self.dialogMode("done");
-                            
+                            let fileId = null;
+                            service.findResultOfSaving(storeProcessingId).done(function(res: any) {
+                                fileId = res.fileId;
+                                service.updateFileSize(storeProcessingId,fileId).done(function(data: any){
+                                });
+                            }).fail(function(res: any) {
+                                console.log("Get fileId fail");
+                            });
                             // confirm down load when done
                             nts.uk.ui.dialog.confirm({ messageId: "Msg_334" })
                             .ifYes(() => {
-                                service.findResultOfSaving(storeProcessingId).done(function(res: any) {
-                                    let fileId = res.fileId;
+                                if (fileId){
                                     nts.uk.request.specials.donwloadFile(fileId);
                                     self.isDownloaded(true);
                                     $('#F3_3').focus();
-                                }).fail(function(res: any) {
-                                    console.log("Get fileId fail");
-                                });                            
+                                }                           
                             })
                             .ifNo(() => {
                                 $('#F3_3').focus();
@@ -147,7 +155,7 @@ module nts.uk.com.view.cmf003.f {
             // interrupt process when click button
             public interrupt(): void {
                 let self = this;
-                let dataStorageMng = new DataStorageMng(self.storeProcessingId, 1, self.categoryCount(), self.categoryTotalCount(), self.errorCount(), 5);
+                let dataStorageMng = new DataStorageMng(self.storeProcessingId, 1, self.categoryCount(), self.categoryTotalCount(), self.errorCount(), self.operatingCondition);
                 
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                 .ifYes(() => {
@@ -184,6 +192,7 @@ module nts.uk.com.view.cmf003.f {
             // close popup
             public close(): void {
                  nts.uk.ui.windows.close();
+                 $("#E1_1").focus();
             }
             
             public getStatusEnum(value): string {

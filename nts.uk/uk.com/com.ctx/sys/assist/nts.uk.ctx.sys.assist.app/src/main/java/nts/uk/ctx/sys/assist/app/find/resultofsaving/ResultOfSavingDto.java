@@ -30,7 +30,7 @@ public class ResultOfSavingDto {
 	/**
 	 * ファイル容量
 	 */
-	private int fileSize;
+	private long fileSize;
 
 	/**
 	 * 保存セットコード

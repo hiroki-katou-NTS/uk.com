@@ -1,5 +1,5 @@
 #ex_accept_wizard {
-	width: 1270px;
+	width: 1250px;
 	height: 480px;
 }
 
@@ -9,7 +9,7 @@
 }
 
 #ex_accept_wizard>.content {
-	width: 1010px;
+	width: 990px;
 	height: 590px;
 	background: none;
 	margin-left: 5px;
@@ -92,7 +92,7 @@
 }
 
 #B4_35 {
-	width: 350px !important;
+	width: 398px !important;
 }
 
 #D4_8 {
@@ -101,6 +101,11 @@
 
 #D5_1 {
 	margin-left: 150px;
+}
+
+#D4_7 {
+	display: inline-block;
+    width: 80px;
 }
 
 #E3_1 {
@@ -252,10 +257,4 @@
 	padding-top: 5px;
 	padding-bottom: 5px;
 	padding-right: 5px;
-}
-
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-	.fixed-flex-layout-right {
-		padding-left: 20px !important;	
-	}
 }

@@ -51,7 +51,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "FILE_SIZE")
-	public int fileSize;
+	public long fileSize;
 
 	/**
 	 * 保存セットコード
