@@ -846,7 +846,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				filedKeyUpdate17, filedKeyUpdate18, filedKeyUpdate19, filedKeyUpdate20, screenRetentionPeriod,
 				supplementaryExplanation, parentTblJpName, hasParentTblFlg, parentTblName, fieldParent1, fieldParent2,
 				fieldParent3, fieldParent4, fieldParent5, fieldParent6, fieldParent7, fieldParent8, fieldParent9,
-				fieldParent10, 1);
+				fieldParent10, surveyPreservation);
 	}
 
 	public static SspmtTableList toEntity(TableList domain) {
