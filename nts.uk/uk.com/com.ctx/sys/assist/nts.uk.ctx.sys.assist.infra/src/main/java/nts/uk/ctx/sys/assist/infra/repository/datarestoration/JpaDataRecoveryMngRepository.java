@@ -12,8 +12,6 @@ import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoveryMng;
 @Stateless
 public class JpaDataRecoveryMngRepository extends JpaRepository implements DataRecoveryMngRepository {
 
-	public static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtDataRecoveryMng t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId ";
-
 	@Override
 	public Optional<DataRecoveryMng> getDataRecoveryMngById(String dataRecoveryProcessId) {
 		return Optional
