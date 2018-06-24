@@ -121,6 +121,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
 
         finished(fileInfo: any) {
+            let self = this;
             console.log(fileInfo);
             if (fileInfo.id != null && fileInfo.originalName != null) {
                 setShared("CMF004lParams", {
@@ -131,8 +132,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
                     nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(()=>{
                         if (getShared("CMF004_E_PARAMS")){
-                            setShared("CMF004_E_PARAMS", getShared("CMF004_E_PARAMS"));
-                            $('#data-recovery-wizard').ntsWizard("next");
+                            let recoveryInfo = getShared("CMF004_E_PARAMS");
+                            if(recoveryInfo){
+                                self.recoveryProcessingId = recoveryInfo.processingId;
+                                $('#data-recovery-wizard').ntsWizard("next");
+                            }
+                            
                         }
                     });
                 });
