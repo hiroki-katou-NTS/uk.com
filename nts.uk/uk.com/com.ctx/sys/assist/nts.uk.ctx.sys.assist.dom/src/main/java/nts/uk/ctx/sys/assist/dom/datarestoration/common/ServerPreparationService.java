@@ -47,7 +47,7 @@ public class ServerPreparationService {
 	private EmployeeRestoration employeeRestoration;
 
 	// アルゴリズム「サーバー準備処理」を実行する
-	public ServerPrepareMng serverPreparationProcessing(ServerPrepareMng serverPrepareMng) {
+	public String serverPreparationProcessing(ServerPrepareMng serverPrepareMng) {
 		serverPrepareMng = dataExtractionService.extractData(serverPrepareMng);
 		if (checkNormalFile(serverPrepareMng)) {
 			PerformDataRecovery performDataRecovery = new PerformDataRecovery(
@@ -85,10 +85,35 @@ public class ServerPreparationService {
 				}
 			}
 		}
-		return serverPrepareMng;
+		return convertToMessage(serverPrepareMng.getOperatingCondition());
 	}
 
 	public boolean checkNormalFile(ServerPrepareMng serverPrepareMng) {
 		return serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_FILE_STRUCTURE;
+	}
+
+	public static String convertToMessage(ServerPrepareOperatingCondition condition){
+		switch (condition) {
+		case UPLOAD_FAILED:
+			return "Msg_610";
+		case PASSWORD_DIFFERENCE:
+			return "Msg_606";
+		case EXTRACTION_FAILED:
+			return "Msg_607";
+		case TABLE_LIST_FAULT:
+			return "Msg_608";
+		case CAN_NOT_SAVE_SURVEY:
+			return "Msg_605";
+		case FILE_CONFIG_ERROR:
+			return "Msg_608";
+		case NO_SEPARATE_COMPANY:
+			return "Msg_631";
+		case TABLE_ITEM_DIFFERENCE:
+			return "Msg_609";
+		case EM_LIST_ABNORMALITY:
+			return "Msg_670";
+		default:
+			return "";
+		}
 	}
 }
