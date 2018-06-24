@@ -27,6 +27,7 @@ public class CompanyDeterminationProcess {
 			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
 			boolean isRecoveryOtherCompanyNoOccur = true;
 			for(int i = 0; i < tableList.size(); i++){
+				//TODO
 				TableList tableListRecord = tableList.get(i);
 				if (tableListRecord.getAnotherComCls() == RecoverFormCompanyOther.IS_RE_OTHER_COMPANY){
 					tableListRecord.setCanNotBeOld(1);
