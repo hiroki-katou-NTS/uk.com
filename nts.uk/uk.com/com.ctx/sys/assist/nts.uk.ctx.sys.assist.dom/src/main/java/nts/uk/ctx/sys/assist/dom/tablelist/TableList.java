@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.assist.dom.tablelist;
 
-import javax.persistence.EnumType;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;

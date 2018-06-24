@@ -96,25 +96,33 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName) {
+	public int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid, String cidCurrent) {
 		if (tableName != null) {
 			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere));
+			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere,namePhysicalCid,cidCurrent));
 			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
 		}
 		return 0;
 	}
 
-	private StringBuilder makeWhereClause(Map<String, String> filedWhere) {
+	private StringBuilder makeWhereClause(Map<String, String> filedWhere, String namePhysicalCid , String cidCurrent) {
 		StringBuilder whereClause = new StringBuilder();
 		int i = 0;
 		for (Map.Entry<String, String> filed : filedWhere.entrySet()) {
 			if (!filed.getValue().isEmpty()) {
 				i++;
 				if (i != 0) {
-					whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(filed.getValue());
+					if(namePhysicalCid != null && filed.getKey().equals(namePhysicalCid)) {
+						whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(cidCurrent);
+					} else {
+						whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(filed.getValue());
+					}
 				} else {
-					whereClause.append(filed.getKey()).append(" = ").append(filed.getValue());
+					if(namePhysicalCid != null && filed.getKey().equals(namePhysicalCid)) {
+						whereClause.append(filed.getKey()).append(" = ").append(namePhysicalCid);
+					} else {
+						whereClause.append(filed.getKey()).append(" = ").append(filed.getValue());
+					}
 				}
 			}
 		}
@@ -122,13 +130,13 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName) {
+	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid , String cidCurrent) {
 
 		EntityManager em = this.getEntityManager();
 
 		if (tableName != null) {
 			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-			DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere));
+			DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere,namePhysicalCid,cidCurrent));
 
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 			query.executeUpdate();
@@ -136,20 +144,13 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public void insertDataTable(Map<String, String> dataInsertDB, String tableName) {
+	public void insertDataTable(List<String> dataInsertDB, String tableName) {
 		if (tableName != null) {
 			INSERT_BY_TABLE.append(tableName);
 		}
 		EntityManager em = this.getEntityManager();
-		List<String> columns = new ArrayList<>();
-		List<String> values = new ArrayList<>();
-		for (Map.Entry<String, String> filed : dataInsertDB.entrySet()) {
-			columns.add(filed.getKey());
-			values.add(filed.getValue());
-		}
-		INSERT_BY_TABLE.append(columns);
 		INSERT_BY_TABLE.append(" VALUES ");
-		INSERT_BY_TABLE.append(values);
+		INSERT_BY_TABLE.append(dataInsertDB);
 		Query query = em.createNativeQuery(INSERT_BY_TABLE.toString());
 		query.executeUpdate();
 
