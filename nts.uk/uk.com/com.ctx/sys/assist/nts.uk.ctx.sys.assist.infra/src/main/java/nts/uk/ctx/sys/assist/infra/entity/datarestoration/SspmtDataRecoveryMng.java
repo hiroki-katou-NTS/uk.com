@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -93,7 +92,7 @@ public class SspmtDataRecoveryMng extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "RECOVERY_DATE")
-	public GeneralDate recoveryDate;
+	public String recoveryDate;
 
 	@Override
 	protected Object getKey() {
