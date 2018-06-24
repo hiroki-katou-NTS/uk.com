@@ -32,7 +32,6 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
 import nts.uk.ctx.sys.assist.dom.datarestoration.common.CsvFileUtil;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.sample.report.AsposeLicenseLoader;
 
 @Stateless
 public class RecoveryStorageService {
@@ -364,9 +363,7 @@ public class RecoveryStorageService {
 						} else {
 
 							// update date phục hồi Domain - To do
-							String date = dataRow.get(2);
-							dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
-									GeneralDate.fromString(date, "yyyy/MM/dd"));
+							dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,null);
 
 						}
 					}
@@ -658,7 +655,7 @@ public class RecoveryStorageService {
 					errorCode = exDataTabeRangeDate(tableNotUseByCategory.getTables().get(i).getInternalFileName(),
 							targetDataRecovery, tableList, dataRecoveryProcessId);
 
-					// Xác định trạng thái error TO-DO
+					// Xác định trạng thái error 
 					if (errorCode == 5) {
 						break;
 					}
