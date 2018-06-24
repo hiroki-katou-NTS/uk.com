@@ -134,10 +134,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                         if (getShared("CMF004_E_PARAMS")){
                             let recoveryInfo = getShared("CMF004_E_PARAMS");
                             if(recoveryInfo){
+                                let self = this;
                                 self.recoveryProcessingId = recoveryInfo.processingId;
+                                self.initScreenE();
                                 $('#data-recovery-wizard').ntsWizard("next");
                             }
-                            
                         }
                     });
                 });

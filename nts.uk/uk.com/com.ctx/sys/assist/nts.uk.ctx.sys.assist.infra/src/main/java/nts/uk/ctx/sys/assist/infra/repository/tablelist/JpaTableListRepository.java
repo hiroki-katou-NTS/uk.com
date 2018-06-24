@@ -316,8 +316,6 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	@Override
 	public void updateByStorageId(String storageId, String recoveryId) {
-		this.queryProxy().query(UPDATE_BY_STORAGE_ID).setParameter("recoveryId", recoveryId).setParameter("storageId", storageId);
-		
+		this.getEntityManager().createQuery(UPDATE_BY_STORAGE_ID).setParameter("recoveryId", recoveryId).setParameter("storageId", storageId).executeUpdate();		
 	}
-
 }

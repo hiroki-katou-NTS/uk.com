@@ -31,7 +31,7 @@
 													enable: true,
 													required: true,
 													immediateUpload: true,
-													uploadFinished: $vm.finished}">
+													uploadFinished: function(fileInfo){$vm.finished(fileInfo)}}">
 				</div>
 			</div>
 			<div class="div-line" style="margin-bottom: 20px;">
