@@ -76,11 +76,11 @@
 						<!--B4_6 絞り込み検索-->
 						<div
 							data-bind="ntsSearchBox: {searchMode: 'filter',
-													targetKey: 'fileId',
+													targetKey: 'storeProcessingId',
 													comId: 'B5_1',
 													items: recoveryFileList,
 													selected: selectedRecoveryFile,
-													selectedKey: 'fileId',
+													selectedKey: 'storeProcessingId',
 													fields: ['saveSetCode','saveSetName'],
 													mode: 'igGrid'}"
 							tabindex="5" />
@@ -93,9 +93,9 @@
 					data-bind="ntsGridList: {
 										options: recoveryFileList,
 										optionsValue: selectedRecoveryFile,
-										primaryKey: 'fileId',
+										primaryKey: 'storeProcessingId',
 										columns: [
-													{headerText: '', key: 'fileId', width: 40, hidden: true},
+													{headerText: '', key: 'storeProcessingId', width: 40, hidden: true},
 													{headerText: '', key: 'saveSetCode', width: 40},
 													{headerText: '#{i18n.getText('CMF004_37')}', key: 'saveSetName', width: 120},
 													{headerText: '#{i18n.getText('CMF004_38')}', key: 'supplementaryExplanation', width: 150},

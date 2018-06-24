@@ -50,7 +50,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         kcp005ComponentOptionScreenH: any;
         selectedEmployeeCodeScreenH: KnockoutObservableArray<string> = ko.observableArray([]);
         employeeListScreenH: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
-
+        
+        
+        recoveryProcessingId: string = nts.uk.util.randomId();
         constructor() {
             let self = this;
             //Fixed table
@@ -171,10 +173,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 saveSetName: data[i].name,
                                 supplementaryExplanation: data[i].suppleExplanation,
                                 storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD hh:mm:ss'),
-                                executeCategory: (data[i].saveForm) % 2 == 0 ? getText('CMF004_460') : getText('CMF004_461'),
+                                executeCategory: (data[i].saveForm) == 0 ? getText('CMF004_300') : getText('CMF004_301'),
                                 targetNumber: data[i].targetNumberPeople + "人",
                                 saveFileName: data[i].saveFileName + ".zip",
-                                fileId: data[i].fileId
+                                fileId: data[i].fileId,
+                                storeProcessingId: data[i].storeProcessingId
                             };
                         self.dataRecoverySelection().recoveryFileList.push(itemTarget);
                     }
@@ -200,10 +203,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 saveSetName: data[i].name,
                                 supplementaryExplanation: data[i].suppleExplanation,
                                 storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD hh:mm:ss'),
-                                executeCategory: (data[i].saveForm) % 2 == 0 ? getText('CMF004_460') : getText('CMF004_461'),
+                                executeCategory: (data[i].saveForm) == 0 ? getText('CMF004_300') : getText('CMF004_301'),
                                 targetNumber: data[i].targetNumberPeople + "人",
                                 saveFileName: data[i].saveFileName + ".zip",
-                                fileId: data[i].fileId
+                                fileId: data[i].fileId,
+                                storeProcessingId: data[i].storeProcessingId
                             };
                         self.dataRecoverySelection().recoveryFileList.push(itemTarget);
                     }
@@ -218,7 +222,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             let self = this;
 
             //Get Data TableList for Screen E
-            service.findTableList('11111111-5a91-4e42-9a29-fefa858942d5').done(function(data: Array<any>) {
+            service.findTableList(self.recoveryProcessingId).done(function(data: Array<any>) {
                 let listCategory: Array<CategoryInfo> = [];
                 if (data && data.length) {
                     _.each(data, (x, i) => {
@@ -266,7 +270,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         initScreenG(): void {
             let self = this;
             //Get Data PerformDataRecover for Screen KCP 005
-            service.findPerformDataRecover('11111111-5a91-4e42-9a29-fefa858942d5').done(function(data: any) {
+            service.findPerformDataRecover(self.recoveryProcessingId).done(function(data: any) {
                 if (data.targets) {
                     self.employeeListScreenG.removeAll();
                     _.forEach(data.targets, x => {
@@ -344,8 +348,21 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         nextToScreenE(): void {
             let self = this;
-            self.initScreenE();
-            $('#data-recovery-wizard').ntsWizard("next");
+             let paramObtainRecovery = {
+                storeProcessingId: self.dataRecoverySelection().selectedRecoveryFile(),
+                dataRecoveryProcessId: self.recoveryProcessingId
+            };
+            service.obtainRecovery(paramObtainRecovery).done((res) => {
+                if (res != null) {
+                    if (res != ""){
+                       dialog.alertError({ messageId: res });
+                   }else{
+                     self.initScreenE();
+                    $('#data-recovery-wizard').ntsWizard("next");  
+                   }
+                }
+            }).fail((err) => {
+            });
         }
 
         nextToScreenF(): void {
@@ -376,18 +393,16 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         
         restoreData(): void {
                 let self = this;
-                let data = {
+                let paramObtainRecovery = {
+                    recoveryProcessingId : self.dataRecoverySelection().selectedRecoveryFile(),
+                    dataRecoveryProcessId : self.processingId
                     
                 };
 
-                service.addMalSet(data).done((res) => {
-                    if((res != null) && (res != "")) {
-                        let params = {
-                            storeProcessingId: res,
-                            dataSaveSetName : self.dataSaveSetName(),
-                            dayValue : self.dayValue(),
-                            monthValue : self.monthValue(),
-                            yearValue : self.yearValue()
+                service.obtainRecovery(paramObtainRecovery).done((res) => {
+                    if((res) && (res != "")) {
+                        let paramObtainRecovery = {
+                            
                         };
 
                         nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");

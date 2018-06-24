@@ -45,8 +45,13 @@ public class DataRecoverySelection {
 	 */
 	private String fileId;
 
+	/**
+	 * データ保存処理ID
+	 */
+	private String storeProcessingId;
+
 	public DataRecoverySelection(String code, String name, String suppleExplanation, GeneralDateTime saveStartDatetime,
-			int saveForm, int targetNumberPeople, String saveFileName, String fileId) {
+			int saveForm, int targetNumberPeople, String saveFileName, String fileId, String storeProcessingId) {
 		super();
 		this.code = code;
 		this.name = name;
@@ -56,6 +61,7 @@ public class DataRecoverySelection {
 		this.targetNumberPeople = targetNumberPeople;
 		this.saveFileName = saveFileName;
 		this.fileId = fileId;
+		this.storeProcessingId = storeProcessingId;
 	}
 
 }

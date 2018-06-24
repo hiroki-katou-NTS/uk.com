@@ -23,7 +23,7 @@ public class PerformDataRecoveryCommandHandler extends CommandHandler<PerformDat
 	@Inject
 	private DataRecoveryResultRepository repoDataRecoveryResult;
 
-	protected void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
+	public void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
 		PerformDataRecoveryCommand performDataCommand = context.getCommand();
 		// ドメインモデル「データ復旧動作管理」の動作状態を「準備中」で登録する
 		// repoPerformDataRecovery.add(domain);

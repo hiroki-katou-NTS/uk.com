@@ -48,6 +48,11 @@ public class DataRecoverySelectionDto {
 	 * ファイルID
 	 */
 	private String fileId;
+	
+	/**
+	 * データ保存処理ID
+	 */
+	private String storeProcessingId;
 
 	/*
 	 * public static DataRecoverySelectionDto
@@ -66,7 +71,7 @@ public class DataRecoverySelectionDto {
 	public static DataRecoverySelectionDto fromDomain(DataRecoverySelection domain) {
 		return new DataRecoverySelectionDto(domain.getCode(), domain.getName(), domain.getSuppleExplanation(),
 				domain.getSaveStartDatetime(), domain.getSaveForm(), domain.getTargetNumberPeople(),
-				domain.getSaveFileName(), domain.getFileId());
+				domain.getSaveFileName(), domain.getFileId(), domain.getStoreProcessingId());
 	}
 
 }
