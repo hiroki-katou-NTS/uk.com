@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -22,16 +23,21 @@ public class TableItemValidation {
 	// テーブル一覧のすべての行をアルゴリズム「項目の比較」でチェックする
 	private boolean compareItem(ServerPrepareMng serverPrepareMng, List<TableList> tableList){
 		String fileId = serverPrepareMng.getFileId().get();
-		for(int i = 1; i < tableList.size(); i++){
-			List<String> csvHeader = getActualCsvHeader(fileId, tableList.get(i).getInternalFileName());
+		for(TableList tableListItem: tableList){
+			List<String> csvHeader = getActualCsvHeader(fileId, tableListItem.getInternalFileName());
 			if (csvHeader.isEmpty()) return true;
-			List<String> tableColumn = tableColumnRepository.getTableColumnName(tableList.get(i).getTableEnglishName());
-			if (!tableColumn.containsAll(csvHeader)) return true;
+			List<String> tableColumn = tableColumnRepository.getTableColumnName(tableListItem.getTableEnglishName());
+			//TODO
+			if (tableColumn.isEmpty() || csvHeader.isEmpty() || !tableColumn.containsAll(csvHeader)) return true; 
+			//if (tableColumn.isEmpty() || csvHeader.isEmpty() || !tableColumn.containsAll(csvHeader) || !csvHeader.containsAll(tableColumn)) return true; 
 		}
 		return false;
 	}
 	private List<String> getActualCsvHeader(String fileId, String fileName){
 		List<String> csvHeader = CsvFileUtil.getCsvHeader(fileName, fileId);
-		return csvHeader.subList(5, csvHeader.size());
+		if (csvHeader.size() >5){
+			return csvHeader.subList(5, csvHeader.size());
+		}
+		return Collections.EMPTY_LIST;
 	}
 }

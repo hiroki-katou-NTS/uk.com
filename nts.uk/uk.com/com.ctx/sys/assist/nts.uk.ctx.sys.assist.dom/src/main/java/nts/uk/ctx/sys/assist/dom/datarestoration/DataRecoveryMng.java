@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -62,11 +61,11 @@ public class DataRecoveryMng extends AggregateRoot {
 	/**
 	 * 復旧日付
 	 */
-	private GeneralDate recoveryDate;
+	private String recoveryDate;
 
 	public DataRecoveryMng(String dataRecoveryProcessId, Integer errorCount, Integer categoryCnt,
 			Integer categoryTotalCount, Integer totalNumOfProcesses, Integer numOfProcesses,
-			String processTargetEmpCode, Integer suspendedState, Integer operatingCondition, GeneralDate recoveryDate) {
+			String processTargetEmpCode, Integer suspendedState, Integer operatingCondition, String recoveryDate) {
 		this.dataRecoveryProcessId = dataRecoveryProcessId;
 		this.errorCount            = errorCount;
 		this.categoryCnt           = categoryCnt;

@@ -1,32 +1,27 @@
 module nts.uk.com.view.cmf004.d {
     export module viewmodel {
-        import block = nts.uk.ui.block;
-        import close = nts.uk.ui.windows.close;
-        import getText = nts.uk.resource.getText;
+        import block     = nts.uk.ui.block;
+        import close     = nts.uk.ui.windows.close;
+        import getText   = nts.uk.resource.getText;
         import setShared = nts.uk.ui.windows.setShared;
         import getShared = nts.uk.ui.windows.getShared;
-        import dialog = nts.uk.ui.dialog;
+        import dialog    = nts.uk.ui.dialog;
         export class ScreenModel {
-            isSuccess: KnockoutObservable<boolean> = ko.observable(true);
-
-            fileName: KnockoutObservable<string> = ko.observable('');
-            fileId: KnockoutObservable<string> = ko.observable('');
-            password: KnockoutObservable<string> = ko.observable('');
-            processingId: string = nts.uk.util.randomId();
-            timeLabel: KnockoutObservable<string>;
-            statusLabel: KnockoutObservable<string>;
-            statusUpload: KnockoutObservable<string>;
-            statusDecom: KnockoutObservable<string>;
-            statusCheck: KnockoutObservable<string>;
+            isSuccess   : KnockoutObservable<boolean> = ko.observable(true);
+            fileName    : KnockoutObservable<string>  = ko.observable('');
+            fileId      : KnockoutObservable<string>  = ko.observable('');
+            password    : KnockoutObservable<string>  = ko.observable('');
+            timeLabel   : KnockoutObservable<string>  = ko.observable("00:00:00");
+            statusLabel : KnockoutObservable<string>  = ko.observable('');
+            statusUpload: KnockoutObservable<string>  = ko.observable('');
+            statusDecom : KnockoutObservable<string>  = ko.observable('');
+            statusCheck : KnockoutObservable<string>  = ko.observable('');
+            dataRecoveryProcessId: string = nts.uk.util.randomId();
             timeStart: any;
+
             constructor() {
                 let self = this;
                 self.timeStart = new Date();
-                self.timeLabel = ko.observable("00:00:00");
-                self.statusLabel = ko.observable("");
-                self.statusUpload = ko.observable("");
-                self.statusDecom = ko.observable("");
-                self.statusCheck = ko.observable("");
                 let fileInfo = getShared("CMF004_D_PARAMS");
                 if (fileInfo) {
                     self.fileId(fileInfo.fileId);
@@ -36,11 +31,10 @@ module nts.uk.com.view.cmf004.d {
             }
 
             startPage(): JQueryPromise<any> {
-
-                var self = this;
+                let self = this;
                 let dfd = $.Deferred();
                 let fileInfo = {
-                    processingId: self.processingId,
+                    processingId: self.dataRecoveryProcessId,
                     fileId: self.fileId(),
                     fileName: self.fileName(),
                     password: self.password()
@@ -48,20 +42,19 @@ module nts.uk.com.view.cmf004.d {
                 service.extractData(fileInfo).done(function(result) {
                     dfd.resolve();
                     block.invisible();
-                    self.taskId = result.id;
+                    let taskId = result.id;
                     // 1秒おきに下記を実行
                     nts.uk.deferred.repeat(conf => conf
                         .task(() => {
-                            return nts.uk.request.asyncTask.getInfo(self.taskId).done(function(res: any) {
+                            return nts.uk.request.asyncTask.getInfo(taskId).done(function(res: any) {
                                 // update state on screen
                                 let status;
-                                if (res.taskDatas.length >0){
+                                if (res.taskDatas.length > 0) {
                                     status = JSON.parse(res.taskDatas[0].valueAsString);
                                     self.statusLabel(getText(status.conditionName));
                                 }
-                                
                                 if (res.succeeded || res.failed) {
-                                    if(status){
+                                    if (status) {
                                         self.convertToDisplayStatus(status);
                                         if (status.processingType == 3 && status.processingStatus == 2) {
                                             self.isSuccess(true);
@@ -76,13 +69,13 @@ module nts.uk.com.view.cmf004.d {
                                 }
                                 if (res.running) {
                                     // 経過時間＝現在時刻－開始時刻
-                                    self.timeNow = new Date();
-                                    let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
+                                    let timeNow = new Date();
+                                    let over = (timeNow.getSeconds() + timeNow.getMinutes() * 60 + timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
                                     let time = new Date(null);
                                     time.setSeconds(over); // specify value for SECONDS here
                                     let result = time.toISOString().substr(11, 8);
                                     self.timeLabel(result);
-                                    if (status){ 
+                                    if (status) {
                                         self.convertToDisplayStatus(status);
                                     }
                                 }
@@ -99,34 +92,37 @@ module nts.uk.com.view.cmf004.d {
             closeUp() {
                 close();
             }
+
             continueProcessing() {
                 let self = this;
                 let fileInfo = {
                     fileId: self.fileId(),
-                    fileName: self.fileName(), 
+                    fileName: self.fileName(),
                     password: self.password()
                 };
-                setShared("CMF004_E_PARAMS", {processingId: self.processingId, fileInfo: fileInfo});
+                setShared("CMF004_E_PARAMS", { processingId: self.dataRecoveryProcessId, fileInfo: fileInfo });
                 close();
             }
-            convertToDisplayStatus(status){
+
+            convertToDisplayStatus(status) {
                 let self = this;
-                if (status.processingType == 1){
+                if (status.processingType == 1) {
                     self.statusUpload(self.convertToName(status.processingStatus));
                 }
-                if (status.processingType == 2){
+                if (status.processingType == 2) {
                     // If status is 2, upload is compelete
                     self.statusUpload(self.convertToName(2));
                     self.statusDecom(self.convertToName(status.processingStatus));
                 }
-                if (status.processingType == 3){
+                if (status.processingType == 3) {
                     // If status is 3, upload and extract is compelete
                     self.statusUpload(self.convertToName(2));
                     self.statusDecom(self.convertToName(2));
                     self.statusCheck(self.convertToName(status.processingStatus));
                 }
             }
-            convertToName(processingType){
+
+            convertToName(processingType) {
                 switch (processingType) {
                     //処理中
                     case 0: return getText("CMF004_302");

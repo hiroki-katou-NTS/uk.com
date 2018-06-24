@@ -19,7 +19,6 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataReEmployeeAdapter;
@@ -373,26 +372,22 @@ public class RecoveryStorageService {
 					// update date phục hồi Domain
 					String date = dataRow.get(2);
 					if (date != null)
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
-								GeneralDate.fromString(date, "yyyy/MM/dd"));
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,date);
 				}
 
 				// update date phục hồi Domain
 				if (resultsSetting.get(0).equals("6")) {
 					String date = dataRow.get(2);
 					if (date != null)
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
-								GeneralDate.fromString(date, "yyyy"));
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,date);
 				} else if (resultsSetting.get(0).equals("7")) {
 					String date = dataRow.get(2);
 					if (date != null)
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
-								GeneralDate.fromString(date, "yyyy/MM"));
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,date);
 				} else if (resultsSetting.get(0).equals("8")) {
 					String date = dataRow.get(2);
 					if (date != null)
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,
-								GeneralDate.fromString(date, "yyyy/MM/dd"));
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,date);
 				}
 
 				if (indexUpdate1 != null) {

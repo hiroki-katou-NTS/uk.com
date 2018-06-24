@@ -38,7 +38,7 @@ public class EmployeeRestoration {
 					performDataRecoveryRepository.addTargetEmployee(new Target(serverPrepareMng.getDataRecoveryProcessId(), employeeInfo.get(0), employeeInfo.get(1), CommonKeyCrypt.decrypt(employeeInfo.get(2))));
 				}
 				int numOfPeopleRestore = 0;
-				int numPeopleSave = targetEmployee.size();
+				int numPeopleSave = targetEmployee.size() - 1;
 				Optional<String> saveProcessId = Optional.empty();
 				if (!tableList.isEmpty()){
 					Optional<ResultOfSaving> savingInfo = resultOfSavingRepository.getResultOfSavingById(tableList.get(0).getDataStorageProcessingId());
@@ -52,6 +52,8 @@ public class EmployeeRestoration {
 				performDataRecovery.setNumPeopleSave(numPeopleSave);
 				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECK_COMPLETED);
 				performDataRecoveryRepository.add(performDataRecovery);
+			} else {
+				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
 			}
 		}
 		return Arrays.asList(serverPrepareMng, performDataRecovery, tableList);

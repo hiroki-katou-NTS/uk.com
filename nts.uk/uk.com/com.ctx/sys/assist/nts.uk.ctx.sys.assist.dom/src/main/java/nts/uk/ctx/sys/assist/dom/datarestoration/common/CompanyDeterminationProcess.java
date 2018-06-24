@@ -21,11 +21,9 @@ public class CompanyDeterminationProcess {
 		String cid = tableList.get(0).getFieldAcqCid();
 		performDataRecovery.setRecoverFromAnoCom(NotUseAtr.NOT_USE);
 		if (AppContexts.user().companyId().equals(cid)){
-			//TODO
 			performDataRecovery.setRecoverFromAnoCom(NotUseAtr.USE);
 			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
 		} else {
-			//TODO
 			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
 			boolean isRecoveryOtherCompanyNoOccur = true;
 			for(int i = 0; i < tableList.size(); i++){
