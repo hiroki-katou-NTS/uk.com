@@ -51,8 +51,6 @@ public class RecoveryStorageService {
 
 	public static final String NOT_STORAGE_RANGE_SAVED = "1";
 
-	public static final String COLUMN_NAME_CID = "CID";
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecoveryStorageService.class);
 
 	public void RecoveryStorage(String dataRecoveryProcessId) throws ParseException {
@@ -159,7 +157,7 @@ public class RecoveryStorageService {
 					dataRecoveryProcessId, dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery,
 					resultsSetting, true);
 
-			// phân biệt DELETE/INSERT error và Setting error
+			// phân biệt DELETE/INSERT error và Setting error TO - DO
 			if (errorCode == 5) {
 				// roll back
 				// Count up số lượng error
@@ -362,7 +360,7 @@ public class RecoveryStorageService {
 						} else {
 
 							// update date phục hồi Domain - To do
-							dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,null);
+							dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, null);
 
 						}
 					}
@@ -372,22 +370,22 @@ public class RecoveryStorageService {
 					// update date phục hồi Domain
 					String date = dataRow.get(2);
 					if (date != null)
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,date);
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date);
 				}
 
 				// update date phục hồi Domain
 				if (resultsSetting.get(0).equals("6")) {
 					String date = dataRow.get(2);
 					if (date != null)
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,date);
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date.substring(0, 3));
 				} else if (resultsSetting.get(0).equals("7")) {
 					String date = dataRow.get(2);
 					if (date != null)
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,date);
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date.substring(0, 6));
 				} else if (resultsSetting.get(0).equals("8")) {
 					String date = dataRow.get(2);
 					if (date != null)
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId,date);
+						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date);
 				}
 
 				if (indexUpdate1 != null) {
@@ -497,7 +495,9 @@ public class RecoveryStorageService {
 				}
 
 				// 既存データの検索
-				int count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME);
+				String namePhysicalCid = findNamePhysicalCid(tableList);
+				int count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME,
+						namePhysicalCid, cidCurrent);
 
 				if (count == 2) {
 					if (tableUse) {
@@ -509,7 +509,8 @@ public class RecoveryStorageService {
 				} else if (count == 1) {
 					// delete data
 					try {
-						performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME);
+						performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
+								cidCurrent);
 					} catch (Exception ex) {
 						LOGGER.info("Failed delete data : " + TABLE_NAME);
 						LOGGER.info(ex.toString());
@@ -517,13 +518,13 @@ public class RecoveryStorageService {
 
 				}
 
-				Map<String, String> dataInsertDB = new HashMap<>();
-
-				for (int j = 5; j < targetDataHeader.size(); j++) {
-					if (targetDataHeader.get(j).equals(COLUMN_NAME_CID)) {
-						dataInsertDB.put(targetDataHeader.get(j), cidCurrent);
+				int indexCidOfCsv = targetDataHeader.indexOf(namePhysicalCid);
+				List<String> dataInsertDB = new ArrayList<>();
+				for (int j = 5; j < dataRow.size(); j++) {
+					if (j == indexCidOfCsv) {
+						dataInsertDB.add(cidCurrent);
 					} else {
-						dataInsertDB.put(targetDataHeader.get(j), dataRow.get(j));
+						dataInsertDB.add(dataRow.get(j));
 					}
 				}
 				// insert data
@@ -538,6 +539,36 @@ public class RecoveryStorageService {
 		}
 
 		return errorCode;
+	}
+
+	public String findNamePhysicalCid(Optional<TableList> tableList) {
+
+		String namePhysical = null;
+		if (tableList.isPresent()) {
+
+			if (tableList.get().getClsKeyQuery1().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate1();
+			} else if (tableList.get().getClsKeyQuery2().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate2();
+			} else if (tableList.get().getClsKeyQuery3().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate3();
+			} else if (tableList.get().getClsKeyQuery4().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate4();
+			} else if (tableList.get().getClsKeyQuery5().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate5();
+			} else if (tableList.get().getClsKeyQuery6().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate6();
+			} else if (tableList.get().getClsKeyQuery7().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate7();
+			} else if (tableList.get().getClsKeyQuery8().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate8();
+			} else if (tableList.get().getClsKeyQuery9().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate9();
+			} else if (tableList.get().getClsKeyQuery10().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate10();
+			}
+		}
+		return namePhysical;
 	}
 
 	public void deleteEmployeeHistory(Optional<TableList> tableList, String employeeId, String tableName,
@@ -620,44 +651,14 @@ public class RecoveryStorageService {
 
 		int errorCode;
 		// カテゴリの中の社員単位の処理
-		errorCode = exCurrentTable(tableListByCategory, dataRecoveryProcessId, uploadId);
+		errorCode = exTableUse(tableListByCategory, dataRecoveryProcessId, uploadId);
 
 		if (errorCode == 0) {
 			// の処理対象社員コードをクリアする
 			dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId, null);
 
 			// カテゴリの中の日付単位の処理
-			if (tableNotUseByCategory.getTables().size() != 0) {
-
-				// テーブル一覧のカレントの1行分の項目を取得する
-
-				for (int i = 0; i < tableNotUseByCategory.getTables().size(); i++) {
-
-					// Get trạng thái domain データ復旧動作管理
-					Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository
-							.getDataRecoveryMngById(dataRecoveryProcessId);
-					if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition().value == 1) {
-						errorCode = 1;
-						break;
-					}
-
-					List<List<String>> targetDataRecovery = CsvFileUtil
-							.getAllRecord(tableNotUseByCategory.getTables().get(i).getInternalFileName(), uploadId);
-
-					// 期間別データ処理
-					Optional<TableList> tableList = performDataRecoveryRepository.getByInternal(
-							tableNotUseByCategory.getTables().get(i).getInternalFileName(), dataRecoveryProcessId);
-					errorCode = exDataTabeRangeDate(tableNotUseByCategory.getTables().get(i).getInternalFileName(),
-							targetDataRecovery, tableList, dataRecoveryProcessId);
-
-					// Xác định trạng thái error 
-					if (errorCode == 5) {
-						break;
-					}
-
-				}
-
-			}
+			errorCode = exTableNotUse(tableNotUseByCategory, dataRecoveryProcessId, uploadId);
 
 		} else if (errorCode == 1) {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 1);
@@ -667,7 +668,46 @@ public class RecoveryStorageService {
 		return errorCode;
 	}
 
-	public int exCurrentTable(TableListByCategory tableListByCategory, String dataRecoveryProcessId, String uploadId)
+	public int exTableNotUse(TableListByCategory tableNotUseByCategory, String dataRecoveryProcessId, String uploadId)
+			throws ParseException {
+
+		int errorCode = 0;
+		if (tableNotUseByCategory.getTables().size() != 0) {
+
+			// テーブル一覧のカレントの1行分の項目を取得する
+
+			for (int i = 0; i < tableNotUseByCategory.getTables().size(); i++) {
+
+				// Get trạng thái domain データ復旧動作管理
+				Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository
+						.getDataRecoveryMngById(dataRecoveryProcessId);
+				if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition().value == 1) {
+					errorCode = 1;
+					break;
+				}
+
+				List<List<String>> targetDataRecovery = CsvFileUtil
+						.getAllRecord(tableNotUseByCategory.getTables().get(i).getInternalFileName(), uploadId);
+
+				// 期間別データ処理
+				Optional<TableList> tableList = performDataRecoveryRepository.getByInternal(
+						tableNotUseByCategory.getTables().get(i).getInternalFileName(), dataRecoveryProcessId);
+				errorCode = exDataTabeRangeDate(tableNotUseByCategory.getTables().get(i).getInternalFileName(),
+						targetDataRecovery, tableList, dataRecoveryProcessId);
+
+				// Xác định trạng thái error
+				if (errorCode == 5) {
+					break;
+				}
+
+			}
+
+		}
+
+		return errorCode;
+	}
+
+	public int exTableUse(TableListByCategory tableListByCategory, String dataRecoveryProcessId, String uploadId)
 			throws ParseException {
 
 		int errorCode = 0;

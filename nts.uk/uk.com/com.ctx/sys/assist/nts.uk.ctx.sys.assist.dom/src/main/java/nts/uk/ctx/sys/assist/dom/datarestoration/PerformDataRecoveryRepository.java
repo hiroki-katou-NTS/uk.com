@@ -25,12 +25,11 @@ public interface PerformDataRecoveryRepository {
 	
 	Optional<TableList> getByInternal(String internalFileName, String dataRecoveryProcessId);
 	
-	int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName);
+	int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid, String cidCurrent);
 	
-	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName);
+	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid , String cidCurrent);
 	
-	void insertDataTable(Map<String, String> dataInsertDB, String tableName);
-
+	void insertDataTable(List<String> dataInsertDB, String tableName);
 
 	List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId);
 
