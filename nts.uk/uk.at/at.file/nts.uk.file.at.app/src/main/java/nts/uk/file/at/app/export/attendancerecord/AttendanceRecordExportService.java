@@ -761,6 +761,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						sum = Double.parseDouble(sum.toString()) - Double.parseDouble(i.value().toString());
 				}
 			}
+			if (sum.equals(0.0))
+				return "";
 
 			Integer sumInt;
 			List<ItemValue> list = new ArrayList<>();
@@ -774,8 +776,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			case 1:
 			case 2:
 
-				if (sum.equals(0))
-					return "0:00";
 				sumInt = sum.intValue();
 				return this.convertMinutesToHours(sumInt.toString());
 			case 7:
@@ -910,13 +910,17 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		case 1:
 		case 2:
 
-			if (value.equals(0))
-				return "0:00";
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().equals(""))
+				return "";
 			return this.convertMinutesToHours(value.toString());
 		case 7:
 		case 8:
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().equals(""))
+				return "";
 			return value.toString() + " 回";
 		case 13:
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().equals(""))
+				return "";
 			DecimalFormat format = new DecimalFormat("###,###,###");
 			return format.format(Integer.parseInt(value));
 		default:
