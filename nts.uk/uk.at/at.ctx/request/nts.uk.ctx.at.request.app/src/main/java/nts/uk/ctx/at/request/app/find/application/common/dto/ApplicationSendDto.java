@@ -80,7 +80,8 @@ class ApprovalFrameDto {
 							x.getApproverName(),
 							x.getRepresenterID(),
 							x.getRepresenterName(),
-							x.getSMail()))
+							x.getSMail(),
+							x.getSMailAgent()))
 					.collect(Collectors.toList()), 
 				approvalFrame.getApproverID(),
 				approvalFrame.getApproverName(),
@@ -102,4 +103,6 @@ class ApproverStateDto {
 	private String representerName;
 	
 	private String approverMail;
+	
+	private String agentMail;
 }

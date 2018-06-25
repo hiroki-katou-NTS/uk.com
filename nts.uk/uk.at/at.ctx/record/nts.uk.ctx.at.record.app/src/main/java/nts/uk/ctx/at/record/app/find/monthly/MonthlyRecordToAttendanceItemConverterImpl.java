@@ -11,11 +11,13 @@ import nts.uk.ctx.at.record.app.find.monthly.root.AnyItemOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AttendanceTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
@@ -56,6 +58,28 @@ public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecord
 	}
 	
 	@Override
+	public IntegrationOfMonthly toDomain() {
+		return this.monthlyRecord.toDomain(
+				this.monthlyRecord.employeeId(),
+				this.monthlyRecord.getYearMonth(),
+				this.monthlyRecord.getClosureID(),
+				this.monthlyRecord.getClosureDate());
+	}
+	
+	@Override
+	public MonthlyRecordToAttendanceItemConverter setData(IntegrationOfMonthly domain) {
+		if (domain == null) return this;
+		if (!domain.getAttendanceTime().isPresent()) return this;
+		
+		this.withAttendanceTime(domain.getAttendanceTime().get());
+		this.withAffiliation(domain.getAffiliationInfo().orElse(null));
+		this.withAnyItem(domain.getAnyItemList());
+		this.withAnnLeave(domain.getAnnualLeaveRemain().orElse(null));
+		this.withRsvLeave(domain.getReserveLeaveRemain().orElse(null));
+		return this;
+	}
+	
+	@Override
 	public MonthlyRecordToAttendanceItemConverter withAffiliation(AffiliationInfoOfMonthly domain) {
 		this.monthlyRecord.withAffiliation(AffiliationInfoOfMonthlyDto.from(domain));
 		return this;
@@ -63,6 +87,12 @@ public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecord
 	
 	@Override
 	public MonthlyRecordToAttendanceItemConverter withAttendanceTime(AttendanceTimeOfMonthly domain) {
+		if (domain != null) {
+			this.monthlyRecord.employeeId(domain.getEmployeeId());
+			this.monthlyRecord.yearMonth(domain.getYearMonth());
+			this.monthlyRecord.closureID(domain.getClosureId().value);
+			this.monthlyRecord.closureDate(ClosureDateDto.from(domain.getClosureDate()));
+		}
 		this.monthlyRecord.withAttendanceTime(AttendanceTimeOfMonthlyDto.from(domain));
 		return this;
 	}

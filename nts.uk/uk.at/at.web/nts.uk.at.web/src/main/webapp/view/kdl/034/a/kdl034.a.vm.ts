@@ -13,7 +13,7 @@ module nts.uk.at.view.kdl034.a {
             returnReason: KnockoutObservable<string> = ko.observable("");
             version: number = 0;
             applicationContent: ApplicationDto;
-            appID: string = "";
+            appID: Array<string> = [];
             constructor() {
                 var self = this;
                 let param = getShared("KDL034_PARAM");

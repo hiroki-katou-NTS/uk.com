@@ -18,6 +18,8 @@ module nts.uk.com.view.cdl008.a {
             isMultiple: boolean;
             selectedSystemType: KnockoutObservable<number>;
             restrictionOfReferenceRange: boolean;
+            isDisplayUnselect: KnockoutObservable<boolean>;
+
             constructor() {
                 var self = this;
                 self.baseDate = ko.observable(new Date());
@@ -42,6 +44,9 @@ module nts.uk.com.view.cdl008.a {
                     } else {
                         self.restrictionOfReferenceRange = inputCDL008.isrestrictionOfReferenceRange;
                     }
+
+                    // If Selection Mode is Multiple Then not show Unselected Row
+                    self.isDisplayUnselect = ko.observable(self.isMultiple ? false : inputCDL008.showNoSelection);
                 }
 
                 self.workplaces = {
@@ -56,8 +61,9 @@ module nts.uk.com.view.cdl008.a {
                     maxRows: 12,
                     tabindex: 1,
                     systemType: self.selectedSystemType,
-                    restrictionOfReferenceRange: self.restrictionOfReferenceRange
-                }
+                    restrictionOfReferenceRange: self.restrictionOfReferenceRange,
+                    isShowNoSelectRow: self.isDisplayUnselect()
+                };
                 if (self.isMultiple) {
                     self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
                 }

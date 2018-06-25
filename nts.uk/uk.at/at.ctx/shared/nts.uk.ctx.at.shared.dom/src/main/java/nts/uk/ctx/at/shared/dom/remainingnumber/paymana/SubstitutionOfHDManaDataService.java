@@ -51,14 +51,14 @@ public class SubstitutionOfHDManaDataService {
 			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
 					.findByID(item.getSubOfHDID());
 			if (subMana.isPresent()) {
-				subMana.get().setRemainsDay(item.getUsedDays().v().doubleValue());
+				subMana.get().setRemainsDayToFree(item.getUsedDays().v());
 				substitutionOfHDManaDataRepository.update(subMana.get());
 			}
 		});
 
 		subOfHDId.forEach(i -> {
 			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
-					i.getRequiredDays(), TargetSelectionAtr.MANUAL.value));
+					i.getRemainDays(), TargetSelectionAtr.MANUAL.value));
 			// Update remain days 振休管理データ
 			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
 					.findByID(i.getSubOfHDID());
@@ -71,7 +71,9 @@ public class SubstitutionOfHDManaDataService {
 		Optional<PayoutManagementData> payoutData = payoutManagementDataRepository.findByID(payoutId);
 		if (payoutData.isPresent()) {
 			payoutData.get().setRemainNumber(remainNumber);
-			payoutData.get().setStateAtr(DigestionAtr.USED.value);
+			if (remainNumber.equals(0d)){
+				payoutData.get().setStateAtr(DigestionAtr.USED.value);
+			}
 			payoutManagementDataRepository.update(payoutData.get());
 		}
 

@@ -2,6 +2,10 @@ package nts.uk.screen.at.app.dailyperformance.correction.datadialog.classificati
 
 import lombok.AllArgsConstructor;
 
+/**
+ * @author thanhnx
+ * するしない区分
+ */
 @AllArgsConstructor
 @SuppressWarnings("unused")
 public enum DoWork {
