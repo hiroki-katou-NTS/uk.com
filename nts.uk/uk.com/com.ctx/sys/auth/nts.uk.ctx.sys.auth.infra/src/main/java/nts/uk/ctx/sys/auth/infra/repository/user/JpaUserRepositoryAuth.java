@@ -138,7 +138,20 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.setParameter("defUser", 1)
 				.setParameter("expirationDate", expirationDate).getSingle(c -> c.toDomain());
 	}
-
+	private final String SELECT_USER_DATE = "SELECT c From SacmtUser c"
+			+"WHERE c.sacmtUserPK.userID = :userID"
+			+ "AND c.expirationDate >= :systemDate" ;
+		
+	@Override
+	public Optional<User> getByUserIDAndDate(String userID, GeneralDate systemDate) {
+		return this.queryProxy()
+				.query(SELECT_USER_DATE , SacmtUser.class)
+				.setParameter("userID", userID)
+				.setParameter("systemDate", systemDate)
+				.getSingle(c -> c.toDomain());
+		
+	}
+	
 	@Override
 	public void update(User user) {
 		SacmtUser entity = SacmtUser.toEntity(user);
@@ -223,9 +236,5 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				user.associatedPersonID, 
 				user.passStatus);
 	}
-
-	
-
-
 
 }
