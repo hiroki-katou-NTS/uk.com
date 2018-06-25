@@ -259,16 +259,16 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 					switch (tableList.getRetentionPeriodCls()) {
 					case ANNUAL:
-						params.add(tableList.getSaveDateFrom().year());
-						params.add(tableList.getSaveDateTo().year());
+						params.add(tableList.getSaveDateFrom());
+						params.add(tableList.getSaveDateTo());
 						break;
 					case MONTHLY:
-						params.add(tableList.getSaveDateFrom().yearMonth().v());
-						params.add(tableList.getSaveDateTo().yearMonth().v());
+						params.add(tableList.getSaveDateFrom());
+						params.add(tableList.getSaveDateTo());
 						break;
 					case DAILY:
-						params.add(tableList.getSaveDateFrom().toString("yyyy/MM/dd"));
-						params.add(tableList.getSaveDateTo().toString("yyyy/MM/dd"));
+						params.add(tableList.getSaveDateFrom());
+						params.add(tableList.getSaveDateTo());
 						break;
 
 					default:

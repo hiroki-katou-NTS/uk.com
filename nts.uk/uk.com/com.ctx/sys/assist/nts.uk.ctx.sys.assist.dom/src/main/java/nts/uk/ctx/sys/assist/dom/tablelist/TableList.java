@@ -98,12 +98,12 @@ public class TableList extends DomainObject {
 	/**
 	 * 保存日付From
 	 */
-	private GeneralDate saveDateFrom;
+	private String saveDateFrom;
 
 	/**
 	 * 保存日付To
 	 */
-	private GeneralDate saveDateTo;
+	private String saveDateTo;
 
 	/**
 	 * 保存時保存範囲
@@ -593,7 +593,7 @@ public class TableList extends DomainObject {
 			String dataRecoveryProcessId, int tableNo, String tableJapaneseName, String tableEnglishName,
 			String fieldAcqCid, String fieldAcqDateTime, String fieldAcqEmployeeId, String fieldAcqEndDate,
 			String fieldAcqStartDate, String saveSetCode, String saveSetName, String saveForm,
-			GeneralDate saveDateFrom, GeneralDate saveDateTo, int storageRangeSaved, int retentionPeriodCls,
+			String saveDateFrom, String saveDateTo, int storageRangeSaved, int retentionPeriodCls,
 			String internalFileName, int anotherComCls, String referenceYear, String referenceMonth,
 			String compressedFileName, String fieldChild1, String fieldChild2, String fieldChild3, String fieldChild4,
 			String fieldChild5, String fieldChild6, String fieldChild7, String fieldChild8, String fieldChild9,
