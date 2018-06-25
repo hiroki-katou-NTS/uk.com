@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeO
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
@@ -146,6 +147,7 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 * @param workInfo 勤務情報
 	 * @param settingsByReg 通常勤務が必要とする設定
 	 * @param settingsByDefo 変形労働勤務が必要とする設定
+	 * @param companySets 月別集計で必要な会社別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregateDailyForRegAndIrreg(
@@ -155,6 +157,7 @@ public class AggregateTotalWorkingTime implements Cloneable {
 			WorkInformation workInfo,
 			SettingRequiredByReg settingsByReg,
 			SettingRequiredByDefo settingsByDefo,
+			MonAggrCompanySettings companySets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 労働制を元に、該当する設定を取得する
@@ -186,12 +189,12 @@ public class AggregateTotalWorkingTime implements Cloneable {
 		// 残業時間を集計する　（通常・変形労働時間勤務用）
 		this.overTime.aggregateForRegAndIrreg(attendanceTimeOfDaily, companyId, workplaceId, employmentCd,
 				workingSystem, workInfo, legalTransferOrderSet.getLegalOverTimeTransferOrder(),
-				roleOverTimeFrameMap, autoExceptOverTimeFrames, repositories);
+				roleOverTimeFrameMap, autoExceptOverTimeFrames, companySets, repositories);
 		
 		// 休出時間を集計する　（通常・変形労働時間勤務用）
 		this.holidayWorkTime.aggregateForRegAndIrreg(attendanceTimeOfDaily, companyId, workplaceId, employmentCd,
 				workingSystem, aggregateAtr, workInfo, legalTransferOrderSet.getLegalHolidayWorkTransferOrder(),
-				excessOutsideTimeSet, roleHolidayWorkFrameMap, autoExceptHolidayWorkFrames, repositories);
+				excessOutsideTimeSet, roleHolidayWorkFrameMap, autoExceptHolidayWorkFrames, companySets, repositories);
 	}
 	
 	/**

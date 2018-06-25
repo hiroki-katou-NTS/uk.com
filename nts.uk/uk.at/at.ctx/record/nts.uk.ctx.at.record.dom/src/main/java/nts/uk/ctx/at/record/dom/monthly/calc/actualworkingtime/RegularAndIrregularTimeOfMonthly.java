@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
@@ -149,6 +150,8 @@ public class RegularAndIrregularTimeOfMonthly {
 		
 		List<AttendanceTimeOfWeekly> resultWeeks = new ArrayList<>();
 		
+		ConcurrentStopwatches.start("12222.1:週開始の取得：");
+		
 		// 週開始を取得する
 		val weekStartOpt = repositories.getWeekStart().algorithm(
 				companyId, employmentCd, employeeId, datePeriod.end(), workingSystem);
@@ -158,6 +161,9 @@ public class RegularAndIrregularTimeOfMonthly {
 			return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
 		}
 		WeekStart weekStart = weekStartOpt.get();
+
+		ConcurrentStopwatches.stop("12222.1:週開始の取得：");
+		ConcurrentStopwatches.start("12222.2:前月の最終週：");
 		
 		this.weekPremiumTimeOfPrevMonth = new AttendanceTimeMonth(0);
 		if (weekStart != WeekStart.TighteningStartDate){
@@ -168,6 +174,8 @@ public class RegularAndIrregularTimeOfMonthly {
 					weekStart, startWeekNo, companySets, employeeSets, monthlyCalcDailys, repositories);;
 		}
 
+		ConcurrentStopwatches.stop("12222.2:前月の最終週：");
+		
 		// 期間．開始日を処理日にする
 		GeneralDate procDate = datePeriod.start();
 		int procWeekNo = startWeekNo;
@@ -197,6 +205,8 @@ public class RegularAndIrregularTimeOfMonthly {
 					procEmploymentCd = employmentOpt.get().getEmploymentCode();
 				}
 				
+				ConcurrentStopwatches.start("12222.3:日別実績の集計：");
+				
 				// 処理日の勤務情報を取得する
 				if (workInformationOfDailyMap.containsKey(procDate)) {
 					val workInfo = workInformationOfDailyMap.get(procDate).getRecordInfo();
@@ -204,8 +214,10 @@ public class RegularAndIrregularTimeOfMonthly {
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
 					aggregateTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
 							companyId, procWorkplaceId, procEmploymentCd, workingSystem, aggregateAtr,
-							workInfo, settingsByReg, settingsByDefo, repositories);
+							workInfo, settingsByReg, settingsByDefo, companySets, repositories);
 				}
+				
+				ConcurrentStopwatches.stop("12222.3:日別実績の集計：");
 			}
 			
 			// 週の集計をする日か確認する
@@ -224,14 +236,18 @@ public class RegularAndIrregularTimeOfMonthly {
 				
 				// 週別実績を集計する
 				{
+					ConcurrentStopwatches.start("12222.4:週別実績の集計：");
+					
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
 					weekCalc.aggregate(companyId, employeeId, yearMonth, this.weekAggrPeriod,
 							workingSystem, aggregateAtr,
 							settingsByReg, settingsByDefo, aggregateTotalWorkingTime,
 							weekStart, this.weekPremiumTimeOfPrevMonth,
-							attendanceTimeOfDailyMap, repositories);
+							attendanceTimeOfDailyMap, companySets, repositories);
 					resultWeeks.add(newWeek);
+
+					ConcurrentStopwatches.stop("12222.4:週別実績の集計：");
 					
 					// 「前月の最終週の週割増対象時間 」を0にする　（前月の最終週の～は、1回目の週の計算だけで使う）
 					this.weekPremiumTimeOfPrevMonth = new AttendanceTimeMonth(0);
@@ -243,15 +259,22 @@ public class RegularAndIrregularTimeOfMonthly {
 					
 					// 集計区分を確認する
 					if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
-					
+
+						ConcurrentStopwatches.start("12222.5:時間外超過の集計：");
+						
 						// 時間外超過の集計
 						newWeek.getExcessOutside().aggregate(
-								companySets.getOutsideOverTimeSet(), weekCalc, repositories);
+								companySets.getOutsideOverTimeSet(), weekCalc, companySets);
+						
+						ConcurrentStopwatches.stop("12222.5:時間外超過の集計：");
+						ConcurrentStopwatches.start("12222.6:逆時系列割り当て：");
 						
 						// 時間外超過の時、週割増時間を逆時系列で割り当てる
 						excessOutsideWorkMng.assignWeeklyPremiumTimeByReverseTimeSeries(
 								weekTime.getWeekPremiumProcPeriod(), weekTime.getWeeklyTotalPremiumTime(),
 								aggregateTotalWorkingTime, repositories);
+						
+						ConcurrentStopwatches.stop("12222.6:逆時系列割り当て：");
 					}
 				}
 			}
@@ -364,7 +387,7 @@ public class RegularAndIrregularTimeOfMonthly {
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
 					prevTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
 							companyId, procWorkplaceId, procEmploymentCd, workingSystem, aggregateAtr,
-							workInfo, settingsByReg, settingsByDefo, repositories);
+							workInfo, settingsByReg, settingsByDefo, companySets, repositories);
 				}
 			}
 			
