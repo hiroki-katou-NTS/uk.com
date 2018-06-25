@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.history;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -64,6 +65,9 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	private static final String SELECT_BY_EMPID_AND_DATE_PERIOD = String.join(" ", SELECT_NO_PARAM,
 			" WHERE c.bsymtAffCompanyHistPk.sId IN :employeeIds   AND c.startDate <= :endDate AND :startDate <= c.endDate ");
+	
+	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT af.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist af " 
+			+ " WHERE af.bsymtAffCompanyHistPk.sId IN :employeeIds AND af.startDate <= :endDate AND :startDate <= af.endDate";
 
 	/** The Constant MAX_ELEMENTS. */
 	private static final Integer MAX_ELEMENTS = 1000;
@@ -363,6 +367,22 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		});
 
 		return resultData;
+	}
+
+	@Override
+	public List<String> getLstSidByLstSidAndPeriod(List<String> employeeIds, DatePeriod dateperiod) {
+		List<String> listSid = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_LSTSID_DATEPERIOD, String.class)
+					.setParameter("employeeIds", subList)
+					.setParameter("startDate", dateperiod.start())
+					.setParameter("endDate", dateperiod.end())
+					.getList());
+		});
+		if(listSid.isEmpty()){
+			return Collections.emptyList();
+		}
+		return listSid;
 	}
 
 }

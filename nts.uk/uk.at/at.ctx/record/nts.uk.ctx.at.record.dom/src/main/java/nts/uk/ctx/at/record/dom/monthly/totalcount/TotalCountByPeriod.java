@@ -8,11 +8,11 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.totaltimes.TotalTimesFromDailyRecord;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -68,25 +68,27 @@ public class TotalCountByPeriod implements Cloneable {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param period 期間
+	 * @param companySets 月別集計で必要な会社別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
-	 * @param workTypeList 勤務種類リスト
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void totalize(
 			String companyId,
 			String employeeId,
 			DatePeriod period,
+			MonAggrCompanySettings companySets,
 			MonthlyCalculatingDailys monthlyCalcDailys,
-			List<WorkType> workTypeList,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 日別実績から回数集計結果を取得する準備をする
 		TotalTimesFromDailyRecord algorithm = new TotalTimesFromDailyRecord(
+				companyId,
 				period,
 				new ArrayList<>(monthlyCalcDailys.getAttendanceTimeOfDailyMap().values()),
 				new ArrayList<>(monthlyCalcDailys.getTimeLeaveOfDailyMap().values()),
 				new ArrayList<>(monthlyCalcDailys.getWorkInfoOfDailyMap().values()),
-				workTypeList);
+				companySets.getAllWorkTypeMap(),
+				repositories.getWorkType());
 		
 		// 回数集計マスタを取得
 		val totalTimesList = repositories.getTotalTimes().getAllTotalTimes(companyId);

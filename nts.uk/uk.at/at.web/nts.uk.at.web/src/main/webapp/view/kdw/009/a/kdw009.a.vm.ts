@@ -17,6 +17,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         check: KnockoutObservable<boolean>;
         // check update or insert
         checkUpdate: KnockoutObservable<boolean>;
+        // display or hide delete button
+        isHide: KnockoutObservable<boolean>;
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
@@ -30,6 +32,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             self.check = ko.observable(false);
             self.codeObject = ko.observable("");
             self.checkUpdate = ko.observable(true);
+            self.isHide = ko.observable(true);
             self.selectedCode.subscribe((businessTypeCode) => {
                 if (businessTypeCode) {
                     let foundItem = _.find(self.lstBusinessType(), (item: BusinessType) => {
@@ -42,8 +45,11 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                     self.codeObject(self.selectedOption().businessTypeCode)
                     self.check(false);
                     $("#inpPattern").focus();
+                    self.checkUpdateMode();
                 }
             });
+            
+            self.checkUpdateMode();
         }
 
         /** get data to list **/
@@ -74,9 +80,26 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                 else {
                     self.selectedCode(self.lstBusinessType()[0].businessTypeCode.toString());
                 }
+                self.checkUpdateMode();
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+        
+        checkUpdateMode() {
+            let self = this;
+            
+            if(self.lstBusinessType().length == 0) {
+                self.isHide(false);
+            } else {
+                self.isHide(true);
+            }
+            
+            if(self.checkUpdate()) {
+                self.isHide(true);
+            } else {
+                self.isHide(false);
+            }
         }
 
         /** update or insert data when click button register **/
@@ -93,6 +116,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                         service.update(updateOption).done(function() {
                             self.getData().done(function() {
                                 self.selectedCode(code);
+                                self.checkUpdateMode();
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             });
                         });
@@ -106,6 +130,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                             self.getData().done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                 self.selectedCode(code);
+                                self.checkUpdateMode();
                             });
                         }).fail(function(res) {
                             $('#inpCode').ntsError('set', res);
@@ -124,6 +149,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             self.codeObject("");
             self.selectedName("");
             $("#inpCode").focus();
+            self.checkUpdateMode();
         }
 
         /** remove item from list **/
@@ -162,6 +188,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                     })
                 })
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                self.checkUpdateMode();
             }).ifNo(() => {
             });
             $("#inpPattern").focus();

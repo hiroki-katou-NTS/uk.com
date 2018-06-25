@@ -51,21 +51,22 @@
 							<com:ko bind="$data.listApprovalFrame" tag="foreach">
 								<tr style="cursor:pointer;">
 									<com:ko bind="$index() === 0" tag="if">
-										<td data-bind="attr: {rowspan: $parent.listApprovalFrame().length}, text: 'フェーズ'+$parent.phaseOrder()" style="width: 111px;"  class="bg-green"></td>
+										<td data-bind="attr: {rowspan: $parent.listApprovalFrame.length}, text: 'フェーズ'+$parent.phaseOrder" 
+											style="width: 111px;"  class="bg-green"></td>
 									</com:ko>
 									<!-- 承認者 -->
-									<td data-bind="text: '承認者'+$data.frameOrder()" class="bg-green" ></td>
+									<td data-bind="text: '承認者'+$data.frameOrder" class="bg-green" ></td>
 									<!-- 社員名 -->
 									<td data-bind="foreach: $data.listApprover">
-										<div class = "rowPer"  data-bind="text: $data.dispApproverName(),
-																css: { rowBorder:  ($parent.listApprover().length - $index()) > 1 }"></div>
+										<div class = "rowPer"  data-bind="text: $data.dispApproverName,
+																css: { rowBorder:  ($parent.listApprover.length - $index()) > 1 }"></div>
 									</td>
 									<!-- 状況 -->
-									<td data-bind="text: $data.approvalAtrName()" ></td>
+									<td data-bind="text: $parent.approvalAtrName" ></td>
  									<!-- メール送信 -->
  									<td data-bind="foreach: $data.listApprover">
- 										<div  class = "rowPer" data-bind = "if: $data.approverMail().length > 0,
- 												css: {rowBorder: ($parent.listApprover().length - $index()) > 1},
+ 										<div  class = "rowPer" data-bind = "if: $data.showButton,
+ 												css: {rowBorder: ($parent.listApprover.length - $index()) > 1},
  													attr: { id: 'sendAtr_' + $index()}">
 	 										<div data-bind="ntsSwitchButton: { 
 			   										name: '#{i18n.getText('KAF030_25')}',   

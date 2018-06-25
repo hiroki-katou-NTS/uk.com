@@ -103,34 +103,39 @@ module nts.uk.ui.koExtentions {
             }
         }
     }
-    
-    function getConstraintText(constraint: any) {
+
+    let getConstraintText = (constraint: any) => {
         let dfd = $.Deferred();
-        if (constraint === "EmployeeCode" && (!__viewContext.primitiveValueConstraints
-            || !__viewContext.primitiveValueConstraints.EmployeeCode)) {
+        if (constraint === "EmployeeCode") {
             request.ajax("com", "/bs/employee/setting/code/find").done(res => {
-                
+                // if not have primitive, create new
                 if (!__viewContext.primitiveValueConstraints) {
-                    __viewContext.primitiveValueConstraints = {};
+                    __viewContext.primitiveValueConstraints = {
+                        EmployeeCode: {
+                            valueType: "String",
+                            charType: "AlphaNumeric",
+                            maxLength: res.numberOfDigits
+                        }
+                    };
+                } else {
+                    // extend primitive constraint
+                    _.extend(__viewContext.primitiveValueConstraints, {
+                        EmployeeCode: {
+                            valueType: "String",
+                            charType: "AlphaNumeric",
+                            maxLength: res.numberOfDigits
+                        }
+                    });
                 }
-                
-                let employeeCodeConstr = {
-                    valueType: "String",
-                    charType: "AlphaNumeric",
-                    maxLength: res.numberOfDigits
-                };
-                
-                __viewContext.primitiveValueConstraints.EmployeeCode = employeeCodeConstr;
-                let label = text.getCharTypeByType(employeeCodeConstr.charType).buildConstraintText(res.numberOfDigits);
-                dfd.resolve(label);
+
+                dfd.resolve(util.getConstraintMes(constraint));
             });
         } else {
-            let label = util.getConstraintMes(constraint);
-            dfd.resolve(label);
+            dfd.resolve(util.getConstraintMes(constraint));
         }
-        
+
         return dfd.promise();
-    }
+    };
 
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
 }

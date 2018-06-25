@@ -44,6 +44,12 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"WHERE e.companyId = :cId AND e.employeeCode = :sCd ");
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
+	
+	private static final String SELECT_BY_COM_ID_AND_BASEDATE = "SELECT e.companyId, e.employeeCode, e.bsymtEmployeeDataMngInfoPk.sId, e.bsymtEmployeeDataMngInfoPk.pId  , ps.businessName , ps.personName"
+			+ " FROM BsymtEmployeeDataMngInfo e "
+			+ " INNER JOIN BsymtAffCompanyHist h ON e.bsymtEmployeeDataMngInfoPk.pId = h.bsymtAffCompanyHistPk.pId "
+			+ " INNER JOIN BpsmtPerson ps ON  e.bsymtEmployeeDataMngInfoPk.pId = ps.bpsmtPersonPk.pId "
+			+ " WHERE e.companyId = :companyId AND h.startDate <= :baseDate AND h.endDate >= :baseDate ";
 
 	private final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
 			+ " WHERE c.companyId = :companyId AND c.delStatus = 0 AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
@@ -165,6 +171,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return queryProxy().query(SELECT_BY_COM_ID, BsymtEmployeeDataMngInfo.class).setParameter("companyId", cId)
 				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
 	}
+	
+	
 
 	private EmployeeDataMngInfo toDomain(BsymtEmployeeDataMngInfo entity) {
 		return EmployeeDataMngInfo.createFromJavaType(entity.companyId, entity.bsymtEmployeeDataMngInfoPk.pId,
@@ -438,6 +446,15 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("cid", cid).getList();
 
 		return toListEmployeeDataMngInfo(listEntity);
+	}
+
+	@Override
+	public List<Object[]> findByCompanyIdAndBaseDate(String cid, GeneralDate baseDate) {
+		
+		return queryProxy().query(SELECT_BY_COM_ID_AND_BASEDATE, Object[].class)
+				.setParameter("companyId", cid)
+				.setParameter("baseDate", baseDate)
+				.getList();
 	}
 
 	// laitv code end

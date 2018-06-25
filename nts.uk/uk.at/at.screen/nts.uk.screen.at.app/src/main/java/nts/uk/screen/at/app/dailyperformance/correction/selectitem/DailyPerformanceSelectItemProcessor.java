@@ -373,9 +373,10 @@ public class DailyPerformanceSelectItemProcessor {
 					}
 				}
 				//アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
-				Optional<WorkFixedDto> workFixedOp =repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
-				if(workFixedOp.isPresent()){
-					employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+workFixedOp.get().getWkpId()+"|"+LOCK_EDIT_CELL_WORK, datePeriod);
+				List<WorkFixedDto> workFixeds = repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
+				for (WorkFixedDto workFixedOp : workFixeds) {
+					employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId().toString()+
+							"|" + workFixedOp.getWkpId()+ "|"+LOCK_EDIT_CELL_WORK, datePeriod);
 				}
 			});
 		}

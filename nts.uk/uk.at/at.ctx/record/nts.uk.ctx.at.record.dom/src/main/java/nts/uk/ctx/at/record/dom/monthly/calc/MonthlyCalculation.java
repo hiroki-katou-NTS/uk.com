@@ -624,7 +624,7 @@ public class MonthlyCalculation {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 36協定運用設定を取得
-		val agreementOperationSetOpt = repositories.getAgreementOperationSet().find(companyId);
+		val agreementOperationSetOpt = companySets.getAgreementOperationSet();
 		if (!agreementOperationSetOpt.isPresent()) {
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"017", new ErrMessageContent(TextResource.localize("Msg_1246"))));
@@ -896,10 +896,11 @@ public class MonthlyCalculation {
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
 		}
 		
-		// フレックス超過時間
+		// フレックス超過時間　（フレックス時間のプラス分）
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value){
-			val flexExcessTime = this.flexTime.getFlexExcessTime();
-			return roundingSet.itemRound(attendanceItemId, flexExcessTime);
+			val flexExcessMinutes = this.flexTime.getFlexTime().getFlexTime().getTime().v();
+			if (flexExcessMinutes <= 0) return notExistTime;
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinutes));
 		}
 		
 		// 所定内割増時間
@@ -1027,9 +1028,11 @@ public class MonthlyCalculation {
 	 */
 	public List<MonthlyAggregationErrorInfo> getErrorInfos(){
 		
-		this.errorInfos.addAll(this.actualWorkingTime.getErrorInfos());
-		this.errorInfos.addAll(this.flexTime.getErrorInfos());
-		return this.errorInfos;
+		List<MonthlyAggregationErrorInfo> results = new ArrayList<>();
+		results.addAll(this.errorInfos);
+		results.addAll(this.actualWorkingTime.getErrorInfos());
+		results.addAll(this.flexTime.getErrorInfos());
+		return results;
 	}
 	
 	/**

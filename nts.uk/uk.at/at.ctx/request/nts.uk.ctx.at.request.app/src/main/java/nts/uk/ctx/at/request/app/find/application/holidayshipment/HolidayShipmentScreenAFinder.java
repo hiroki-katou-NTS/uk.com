@@ -25,12 +25,12 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.ApplicationMetaOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
@@ -38,8 +38,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
@@ -52,16 +50,15 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -89,8 +86,6 @@ public class HolidayShipmentScreenAFinder {
 	@Inject
 	private ComSubstVacationRepository comSubrepo;
 	@Inject
-	private PersonalLaborConditionRepository perLaborConRepo;
-	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
 	@Inject
 	private ApplicationReasonRepository appResonRepo;
@@ -117,15 +112,14 @@ public class HolidayShipmentScreenAFinder {
 	@Inject
 	private RequestSettingRepository reqSetRepo;
 	@Inject
+	private WorkingConditionRepository wkingCondRepo;
+	@Inject
+	private WorkingConditionItemRepository wkingCondItemRepo;
+	@Inject
 	private WorkTimeSettingRepository wkTimeSetRepo;
-	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
-	AppCommonSettingOutput appCommonSettingOutput;
-	RecruitmentApp recApp;
-	AbsenceLeaveApp absApp;
-	ApplicationMetaOutput recAppOutput;
-	ApplicationMetaOutput absAppOutput;
-	String companyID;
-	HolidayShipmentDto output;
+	@Inject
+	private AtEmployeeAdapter atEmpAdaptor;
+	private final ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
 	/**
 	 * start event
@@ -136,11 +130,16 @@ public class HolidayShipmentScreenAFinder {
 	 * @return HolidayShipmentDto
 	 */
 	// Screen A Start
-	public HolidayShipmentDto startPageA(String employeeID, GeneralDate initDate, int uiType) {
-		employeeID = employeeID == null ? AppContexts.user().employeeId() : employeeID;
-		companyID = AppContexts.user().companyId();
+	public HolidayShipmentDto startPageA(List<String> sIDs, GeneralDate initDate, int uiType) {
+		String employeeID = CollectionUtil.isEmpty(sIDs) ? AppContexts.user().employeeId() : sIDs.get(0);
+		String companyID = AppContexts.user().companyId();
+
+		AppCommonSettingOutput appCommonSettingOutput = getAppCommonSet(companyID, employeeID, initDate);
 		// アルゴリズム「起動前共通処理（新規）」を実行する
-		HolidayShipmentDto result = commonProcessBeforeStart(appType, companyID, employeeID, initDate);
+		HolidayShipmentDto result = commonProcessBeforeStart(appType, companyID, employeeID, initDate,
+				appCommonSettingOutput);
+		
+		result.setEmployees(atEmpAdaptor.getByListSID(sIDs));
 
 		GeneralDate refDate = result.getRefDate();
 
@@ -148,10 +147,10 @@ public class HolidayShipmentScreenAFinder {
 		result.setPreOrPostType(
 				otherCommonAlgorithm.judgmentPrePostAtr(appType, refDate, uiType == 0 ? true : false).value);
 
-		// アルゴリズム「平日時就業時間帯の取得」を実行する
-		SingleDaySchedule wkOnWeekDays = getWorkingHourOnWeekDays(employeeID, refDate);
+		// アルゴリズム「社員の労働条件を取得する」を実行する
+		Optional<WorkingConditionItem> wkingItem = getWorkingCondition(companyID, employeeID, refDate);
 
-		String wkTimeCD = getWkTimeCD(wkOnWeekDays);
+		String wkTimeCD = getWkTimeCD(wkingItem);
 
 		result.setWkTimeCD(wkTimeCD);
 
@@ -168,12 +167,33 @@ public class HolidayShipmentScreenAFinder {
 				holiDayWkTypeCD, holidayWkTimeCD, result, appCommonSettingOutput);
 		// アルゴリズム「勤務時間初期値の取得」を実行する
 		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
-		setWorkTimeInfo(result, wkTimeCD, wkTypeCD);
+		setWorkTimeInfo(result, wkTimeCD, wkTypeCD, companyID);
 
 		return result;
 	}
 
-	private void setWorkTimeInfo(HolidayShipmentDto result, String wkTimeCD, String wkTypeCD) {
+	private Optional<WorkingConditionItem> getWorkingCondition(String companyID, String employeeID,
+			GeneralDate refDate) {
+		List<WorkingConditionItem> wkingItems = new ArrayList<WorkingConditionItem>();
+		wkingCondRepo.getBySidAndStandardDate(companyID, employeeID, refDate).ifPresent(wkCond -> {
+			wkCond.getDateHistoryItem().forEach(hisItem -> {
+				wkingCondItemRepo.getByHistoryId(hisItem.identifier()).ifPresent(wkItem -> {
+					wkingItems.add(wkItem);
+				});
+				;
+			});
+		});
+		return CollectionUtil.isEmpty(wkingItems) ? Optional.empty() : Optional.of(wkingItems.get(0));
+	}
+
+	public AppCommonSettingOutput getAppCommonSet(String companyID, String employeeID, GeneralDate initDate) {
+		int rootAtr = 1;
+		// 1-1.新規画面起動前申請共通設定を取得する
+		return beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, rootAtr, appType,
+				initDate);
+	}
+
+	private void setWorkTimeInfo(HolidayShipmentDto result, String wkTimeCD, String wkTypeCD, String companyID) {
 		if (wkTimeCD != null) {
 			if (StringUtils.isNoneEmpty(wkTypeCD)) {
 				result.setWorkTimeInfo(getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD));
@@ -193,8 +213,9 @@ public class HolidayShipmentScreenAFinder {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate baseDate = comType == ApplicationCombination.Abs.value ? absDate : recDate;
-
-		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
+		AppCommonSettingOutput appCommonSettingOutput = getAppCommonSet(companyID, employeeID, baseDate);
+		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate,
+				appCommonSettingOutput);
 		// アルゴリズム「実績の取得」を実行する
 		// AchievementOutput achievementOutput = getAchievement(companyID,
 		// employeeID, baseDate);
@@ -209,22 +230,17 @@ public class HolidayShipmentScreenAFinder {
 		return getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD);
 	}
 
-	private String getWkTimeCD(SingleDaySchedule wkOnWeekDays) {
-		if (wkOnWeekDays != null) {
-			Optional<WorkTimeCode> wkTimeCodeOpt = wkOnWeekDays.getWorkTimeCode();
+	private String getWkTimeCD(Optional<WorkingConditionItem> wkingItem) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("");
 
-			if (wkTimeCodeOpt.isPresent()) {
+		wkingItem.ifPresent(item -> {
+			item.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(wkIimeCd -> {
+				builder.append(wkIimeCd);
+			});
+		});
 
-				return wkTimeCodeOpt.get().v();
-
-			} else {
-
-				return "";
-			}
-
-		} else {
-			return "";
-		}
+		return builder.toString();
 	}
 
 	private void setChangeAppDateData(GeneralDate recDate, GeneralDate absDate, String companyID, String employeeID,
@@ -415,7 +431,7 @@ public class HolidayShipmentScreenAFinder {
 				setAppEmploymentSettings(appCommonSet, employmentCD, output);
 
 				// アルゴリズム「申請承認機能設定の取得」を実行する
-				setApprovalFunctionSetting(employeeID, refDate, output);
+				setApprovalFunctionSetting(employeeID, refDate, output, companyID);
 
 			}
 			// アルゴリズム「振出用勤務種類の取得」を実行する
@@ -450,7 +466,8 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private void setApprovalFunctionSetting(String employeeID, GeneralDate refDate, HolidayShipmentDto output) {
+	private void setApprovalFunctionSetting(String employeeID, GeneralDate refDate, HolidayShipmentDto output,
+			String companyID) {
 		List<String> workPlaceIds = empAdaptor.findWpkIdsBySid(companyID, employeeID, refDate);
 		if (!CollectionUtil.isEmpty(workPlaceIds)) {
 			output.setApprovalFunctionSetting(
@@ -608,28 +625,13 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private SingleDaySchedule getWorkingHourOnWeekDays(String employeeID, GeneralDate baseDate) {
-		// ドメインモデル「個人労働条件」を取得する
-		Optional<PersonalLaborCondition> perLaborConOpt = perLaborConRepo.findById(employeeID, baseDate);
-		if (!perLaborConOpt.isPresent()) {
-			return null;
-		} else {
-			return perLaborConOpt.get().getWorkCategory().getWeekdayTime();
-		}
-
-	}
-
 	public HolidayShipmentDto commonProcessBeforeStart(ApplicationType appType, String companyID, String employeeID,
-			GeneralDate baseDate) {
+			GeneralDate baseDate, AppCommonSettingOutput appCommonSettingOutput) {
 		HolidayShipmentDto result = new HolidayShipmentDto();
-		int rootAtr = 1;
 
 		result.setEmployeeID(employeeID);
 
 		result.setEmployeeName(empAdaptor.getEmployeeName(employeeID));
-		// 1-1.新規画面起動前申請共通設定を取得する
-		appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID,
-				rootAtr, appType, baseDate);
 
 		result.setRefDate(appCommonSettingOutput.generalDate);
 
@@ -639,14 +641,18 @@ public class HolidayShipmentScreenAFinder {
 
 		result.setManualSendMailAtr(
 				appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value == 1 ? true : false);
-		result.setSendMailWhenApprovalFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true : false);
-		result.setSendMailWhenRegisterFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true : false);
-		startupErrorCheck(employeeID, baseDate);
+		result.setSendMailWhenApprovalFlg(
+				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true
+						: false);
+		result.setSendMailWhenRegisterFlg(
+				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true
+						: false);
+		startupErrorCheck(employeeID, baseDate, companyID);
 
 		return result;
 	}
 
-	private void startupErrorCheck(String employeeID, GeneralDate baseDate) {
+	private void startupErrorCheck(String employeeID, GeneralDate baseDate, String companyID) {
 		// // アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
 		// ApprovalRootPattern approvalRootPattern =
 		// collectApprovalRootPatternService.getApprovalRootPatternService(
