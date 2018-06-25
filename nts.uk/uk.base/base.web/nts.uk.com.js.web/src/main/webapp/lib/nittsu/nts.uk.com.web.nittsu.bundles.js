@@ -16467,6 +16467,7 @@ var nts;
                                 $dialog.dialog("option", "height", maxrowsHeight);
                             });
                             PS.$("body").data(self.id, $dialog);
+                            $(element).data("dialogX", $dialog);
                             if (self.isRoot) {
                                 $("body").bind("dialogclosed", function (evt, eData) {
                                     //                            console.log(eData.dialogId);
@@ -17768,7 +17769,7 @@ var nts;
                         $grid.on("iggridvirtualrecordsrender", function (evt, ui) {
                             var disables = $grid.data("selectionDisables");
                             var $header = ui.owner._headerParent;
-                            if (!disables || disables.length === 0 || !$header)
+                            if (!disables || !$header)
                                 return;
                             var data = ui.owner.dataSource._data;
                             var selected = $grid.ntsGridList('getSelected');
