@@ -133,7 +133,7 @@ module nts.uk.at.view.ksu007.b {
                                      self.numberSuccess(item.valueAsNumber);
                                 }
                                 if (item.key == 'NUMBER_OF_ERROR') {
-                                     self.numberFail(item.valueAsNumber);
+                                     self.numberFail(self.errorLogs().length);
                                 }
                                 //self.totalRecord(self.numberSuccess() + self.numberFail());
                             });

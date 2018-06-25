@@ -10,6 +10,7 @@
 
 .infoKDL003 {
 	width: 250px;
+	margin-top: -15px;
 }
 
 .periodCovered {
@@ -17,15 +18,21 @@
 	margin-bottom: 10px;
 }
 
-.lableInfo {
+.lableInfo-work {
 	margin-top: 8px;
 	margin-left: 10px;
 	width: 100%;
 }
 
+.lableInfo {
+	margin-top: 8px;
+	margin-left: 10px;
+	width: 150px;
+}
+
 .buttonWorkSetting {
 	margin-left: -5px;
-	height: 60px;
+	height: 30px;
 }
 
 .infoButtonSetting {
@@ -52,4 +59,8 @@
 
 #contents-area { 
 	overflow-x: hidden;
+}
+
+.workInfo {
+	display: inline-flex;
 }
