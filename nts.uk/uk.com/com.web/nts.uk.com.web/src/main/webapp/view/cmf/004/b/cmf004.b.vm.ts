@@ -426,26 +426,23 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         restoreData_click(): void {
             let self = this;
             self.restoreData();
-            nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
+            //nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
         }
         
         restoreData(): void {
                 let self = this;
-                let paramObtainRecovery = {
-                    recoveryProcessingId : self.dataRecoverySelection().selectedRecoveryFile(),
-                    dataRecoveryProcessId : self.processingId
+                let paramRestore = {
+                    dataRecoveryProcessId: self.recoveryProcessingId
                 };
 
-                service.obtainRecovery(paramObtainRecovery).done((res) => {
+                service.performDataRecover(paramRestore).done((res) => {
                     if((res) && (res != "")) {
-                        let paramObtainRecovery = {
-                            
-                        };
-
-                        nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
+                        
                     }
                 }).fail((err) => {
                 });
+            
+            nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
             }
         
 
