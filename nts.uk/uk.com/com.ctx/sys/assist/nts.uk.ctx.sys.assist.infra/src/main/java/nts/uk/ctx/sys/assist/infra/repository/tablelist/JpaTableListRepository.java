@@ -35,6 +35,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	private static final String YEAR = "6";
 	private static final String YEAR_MONTH = "7";
 	private static final String YEAR_MONTH_DAY = "8";
+	private static final String UPDATE_BY_STORAGE_ID = "UPDATE SspmtTableList SET dataRecoveryProcessId = :recoveryId WHERE dataStorageProcessingId = :storageId";
 
 	@Override
 	public void add(TableList domain) {
@@ -313,4 +314,8 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		return "";
 	}
 
+	@Override
+	public void updateByStorageId(String storageId, String recoveryId) {
+		this.getEntityManager().createQuery(UPDATE_BY_STORAGE_ID).setParameter("recoveryId", recoveryId).setParameter("storageId", storageId).executeUpdate();		
+	}
 }
