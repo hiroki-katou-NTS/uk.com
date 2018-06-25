@@ -3842,13 +3842,13 @@ var nts;
             var log;
             (function (log) {
                 var logApp = "nts.uk.log.collector";
-                function pull(logServer, time) {
+                function pull(logServer, start, end) {
                     $.ajax({
                         type: 'POST',
                         contentType: 'application/json',
                         url: extractUrl(logServer),
                         dataType: 'json',
-                        data: time
+                        data: JSON.stringify({ from: start, to: end })
                     }).then(function (data) {
                         if (!data || !data.taskId)
                             return;
@@ -8415,7 +8415,7 @@ var nts;
                             var det = $.data(self.$container, internal.DET);
                             if (!det)
                                 return;
-                            self.eachKey(det, function (obj) { return obj; }, function ($cell) { return helper.markCellWith(style.DET_CLS, $cell); });
+                            self.eachKey(det, function (obj) { return obj.columnKey; }, function ($cell) { return helper.markCellWith(style.DET_CLS, $cell); });
                         };
                         /**
                          * Made up cells in.
@@ -12140,7 +12140,7 @@ var nts;
                                         _.forEach(rows, function (k, i) {
                                             var found = false;
                                             _.forEach(det[k], function (c, j) {
-                                                if (c === coord.columnKey) {
+                                                if (c.columnKey === coord.columnKey) {
                                                     indices_1[k] = j;
                                                     found = true;
                                                     return false;
@@ -12157,7 +12157,7 @@ var nts;
                                                 var col = det[k].splice(indices_1[k], 1);
                                                 if (det[k].length === 0)
                                                     delete det[k];
-                                                var $c = selection.cellAt($main, k, col[0]);
+                                                var $c = selection.cellAt($main, k, col[0].columnKey);
                                                 if ($c)
                                                     helper.stripCellWith(style.DET_CLS, $c);
                                             });
@@ -12174,19 +12174,19 @@ var nts;
                                         else if (helper.isXCell($main, item[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
                                             return;
                                         if (!det[index]) {
-                                            det[index] = [coord.columnKey];
+                                            det[index] = [{ columnKey: coord.columnKey, value: item[coord.columnKey] }];
                                             $.data($main, internal.DET, det);
                                         }
                                         else {
                                             var dup_1;
                                             _.forEach(det[index], function (key) {
-                                                if (key === coord.columnKey) {
+                                                if (key.columnKey === coord.columnKey) {
                                                     dup_1 = true;
                                                     return false;
                                                 }
                                             });
                                             if (!dup_1) {
-                                                det[index].push(coord.columnKey);
+                                                det[index].push({ columnKey: coord.columnKey, value: item[coord.columnKey] });
                                             }
                                         }
                                     });
@@ -12208,6 +12208,7 @@ var nts;
                                         if (!evt.ctrlKey)
                                             return;
                                         var $main = helper.getMainTable($tbl);
+                                        var ds = internal.getDataSource($main);
                                         var coord = helper.getCellCoord($cell);
                                         var $targetRow = selection.rowAt($main, coord.rowIdx);
                                         if ($targetRow === intan.NULL || !$targetRow)
@@ -12237,26 +12238,29 @@ var nts;
                                             return;
                                         }
                                         helper.markCellsWith(style.DET_CLS, detables);
+                                        var detCols = colKeys.map(function (c) {
+                                            return { columnKey: c, value: ds[coord.rowIdx][c] };
+                                        });
                                         if (!det) {
                                             det = {};
-                                            det[coord.rowIdx] = colKeys;
+                                            det[coord.rowIdx] = detCols;
                                             $.data($main, internal.DET, det);
                                         }
                                         else if (!det[coord.rowIdx]) {
-                                            det[coord.rowIdx] = colKeys;
+                                            det[coord.rowIdx] = detCols;
                                         }
                                         else {
                                             var dup_2;
                                             _.forEach(colKeys, function (k) {
                                                 dup_2 = false;
                                                 _.forEach(det[coord.rowIdx], function (existedKey) {
-                                                    if (existedKey === k) {
+                                                    if (existedKey.columnKey === k) {
                                                         dup_2 = true;
                                                         return false;
                                                     }
                                                 });
                                                 if (!dup_2) {
-                                                    det[coord.rowIdx].push(k);
+                                                    det[coord.rowIdx].push({ columnKey: k, value: ds[coord.rowIdx][k] });
                                                 }
                                             });
                                         }
@@ -12290,19 +12294,20 @@ var nts;
                         if (!evt.ctrlKey || !helper.isDetable($cell))
                             return;
                         var $main = helper.getMainTable($tbl);
+                        var ds = internal.getDataSource($main);
                         var det = $.data($main, internal.DET);
                         if (!det) {
                             det = {};
-                            det[rowIdx] = [columnKey];
+                            det[rowIdx] = [{ columnKey: columnKey, value: ds[rowIdx][columnKey] }];
                             $.data($main, internal.DET, det);
                         }
                         else if (!det[rowIdx]) {
-                            det[rowIdx] = [columnKey];
+                            det[rowIdx] = [{ columnKey: columnKey, value: ds[rowIdx][columnKey] }];
                         }
                         else {
                             var dup_3 = -1;
                             _.forEach(det[rowIdx], function (key, index) {
-                                if (key === columnKey) {
+                                if (key.columnKey === columnKey) {
                                     dup_3 = index;
                                     return false;
                                 }
@@ -12315,7 +12320,7 @@ var nts;
                                 helper.stripCellWith(style.DET_CLS, $cell);
                                 return;
                             }
-                            det[rowIdx].push(columnKey);
+                            det[rowIdx].push({ columnKey: columnKey, value: ds[rowIdx][columnKey] });
                         }
                         helper.markCellWith(style.DET_CLS, $cell);
                     }
@@ -12924,7 +12929,7 @@ var nts;
                         var found = -1;
                         if (locks && locks[i] && locks[i].length > 0) {
                             _.forEach(locks[i], function (c, j) {
-                                if (c === columnKey) {
+                                if (c.columnKey === columnKey) {
                                     found = j;
                                     return false;
                                 }
@@ -12934,14 +12939,14 @@ var nts;
                             var $cell = selection.cellAt($table, i, columnKey);
                             if (!locks) {
                                 locks = {};
-                                locks[i] = [columnKey];
+                                locks[i] = [{ columnKey: columnKey, value: ds[i][columnKey] }];
                                 $.data($table, internal.DET, locks);
                             }
                             else if (locks && !locks[i]) {
-                                locks[i] = [columnKey];
+                                locks[i] = [{ columnKey: columnKey, value: ds[i][columnKey] }];
                             }
                             else
-                                locks[i].push(columnKey);
+                                locks[i].push({ columnKey: columnKey, value: ds[i][columnKey] });
                             helper.markCellWith(style.DET_CLS, $cell);
                         }
                     }
@@ -12965,7 +12970,7 @@ var nts;
                         var found = -1;
                         if (locks && locks[i] && locks[i].length > 0) {
                             _.forEach(locks[i], function (c, j) {
-                                if (c === columnKey) {
+                                if (c.columnKey === columnKey) {
                                     found = j;
                                     return false;
                                 }
@@ -12976,7 +12981,7 @@ var nts;
                             locks[i].splice(found, 1);
                             if (locks[i].length === 0)
                                 delete locks[i];
-                            helper.stripCellWith(style.DET_CLS, $cell[0]);
+                            helper.stripCellWith(style.DET_CLS, $cell);
                         }
                     }
                     /**
@@ -13054,7 +13059,7 @@ var nts;
                         Object.keys(det).forEach(function (k) {
                             if (!uk.util.isNullOrUndefined(det[k])) {
                                 det[k].forEach(function (v) {
-                                    cells.push({ rowIndex: k, columnKey: v });
+                                    cells.push({ rowIndex: k, columnKey: v.columnKey, value: v.value });
                                 });
                             }
                         });
@@ -13778,6 +13783,8 @@ var nts;
                      * Mark cell.
                      */
                     function markCellWith(clazz, $cell, nth, value) {
+                        if (!$cell)
+                            return;
                         var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if (selector.is($cell, "td") && $childCells.length > 0) {
                             if (!uk.util.isNullOrUndefined(nth) && nth !== -1) {
@@ -13799,6 +13806,8 @@ var nts;
                      * Strip cell.
                      */
                     function stripCellWith(clazz, $cell, nth) {
+                        if (!$cell)
+                            return;
                         var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if (selector.is($cell, "td") && $childCells.length > 0) {
                             if (!uk.util.isNullOrUndefined(nth) && nth !== -1) {
@@ -13815,6 +13824,8 @@ var nts;
                      * Mark cells.
                      */
                     function markCellsWith(clazz, $cells) {
+                        if (!$cells || $cells.constructor !== Array)
+                            return;
                         $cells.forEach(function (e) {
                             markCellWith(clazz, e);
                         });
@@ -13824,6 +13835,8 @@ var nts;
                      * Strip cells.
                      */
                     function stripCellsWith(clazz, $cells) {
+                        if (!$cells || $cells.constructor !== Array)
+                            return;
                         $cells.forEach(function (e) {
                             stripCellWith(clazz, e);
                         });

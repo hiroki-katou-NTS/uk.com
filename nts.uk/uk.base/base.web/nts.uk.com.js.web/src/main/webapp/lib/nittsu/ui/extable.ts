@@ -1704,7 +1704,7 @@ module nts.uk.ui.exTable {
                 let self = this;
                 let det = $.data(self.$container, internal.DET);
                 if (!det) return;
-                self.eachKey(det, obj => obj, $cell => helper.markCellWith(style.DET_CLS, $cell));
+                self.eachKey(det, obj => obj.columnKey, $cell => helper.markCellWith(style.DET_CLS, $cell));
             }
             
             /**
@@ -5322,7 +5322,7 @@ module nts.uk.ui.exTable {
                             _.forEach(rows, function(k, i) {
                                 let found = false;
                                 _.forEach(det[k], (c, j) => { 
-                                    if (c === coord.columnKey) {
+                                    if (c.columnKey === coord.columnKey) {
                                         indices[k] = j;
                                         found = true;
                                         return false;
@@ -5338,7 +5338,7 @@ module nts.uk.ui.exTable {
                                 _.forEach(rKeys, function(k, i) {
                                     let col = det[k].splice(indices[k], 1);
                                     if (det[k].length === 0) delete det[k];
-                                    let $c = selection.cellAt($main, k, col[0]);
+                                    let $c = selection.cellAt($main, k, col[0].columnKey);
                                     if ($c) helper.stripCellWith(DET_CLS, $c);
                                 });
                                 return;
@@ -5352,18 +5352,18 @@ module nts.uk.ui.exTable {
                             } else if (helper.isXCell($main, item[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) return;
                             
                             if (!det[index]) {
-                                det[index] = [ coord.columnKey ];
+                                det[index] = [ { columnKey: coord.columnKey, value: item[coord.columnKey] } ];
                                 $.data($main, internal.DET, det);
                             } else {
                                 let dup;
                                 _.forEach(det[index], function(key) {
-                                    if (key === coord.columnKey) {
+                                    if (key.columnKey === coord.columnKey) {
                                         dup = true;
                                         return false;
                                     }
                                 });
                                 if (!dup) {
-                                    det[index].push(coord.columnKey);
+                                    det[index].push({ columnKey: coord.columnKey, value: item[coord.columnKey] });
                                 }
                             }
                         });
@@ -5383,6 +5383,7 @@ module nts.uk.ui.exTable {
                         $cell.addXEventListener(events.MOUSE_DOWN, function(evt: any) {
                             if (!evt.ctrlKey) return;
                             let $main = helper.getMainTable($tbl);
+                            let ds = internal.getDataSource($main);
                             let coord = helper.getCellCoord($cell);
                             let $targetRow = selection.rowAt($main, coord.rowIdx);
                             if ($targetRow === intan.NULL || !$targetRow) return;
@@ -5415,24 +5416,28 @@ module nts.uk.ui.exTable {
                             }
                             helper.markCellsWith(DET_CLS, detables);
                             
+                            let detCols = colKeys.map(c => {
+                                return { columnKey: c, value: ds[coord.rowIdx][c] };
+                            });
+                            
                             if (!det) {
                                 det = {};
-                                det[coord.rowIdx] = colKeys;
+                                det[coord.rowIdx] = detCols;
                                 $.data($main, internal.DET, det);
                             } else if (!det[coord.rowIdx]) {
-                                det[coord.rowIdx] = colKeys;
+                                det[coord.rowIdx] = detCols;
                             } else {
                                 let dup;
                                 _.forEach(colKeys, function(k) {
                                     dup = false;
                                     _.forEach(det[coord.rowIdx], function(existedKey) {
-                                        if (existedKey === k) {
+                                        if (existedKey.columnKey === k) {
                                             dup = true;
                                             return false;
                                         }
                                     });
                                     if (!dup) {
-                                        det[coord.rowIdx].push(k);
+                                        det[coord.rowIdx].push({ columnKey: k, value: ds[coord.rowIdx][k] });
                                     }
                                 });
                                 
@@ -5465,17 +5470,18 @@ module nts.uk.ui.exTable {
         function onDetSingleCell(evt: any, $tbl: HTMLElement, $cell: HTMLElement, rowIdx: any, columnKey: any) {
             if (!evt.ctrlKey || !helper.isDetable($cell)) return;
             let $main = helper.getMainTable($tbl);
+            let ds = internal.getDataSource($main);
             let det = $.data($main, internal.DET);
             if (!det) {
                 det = {};
-                det[rowIdx] = [ columnKey ];
+                det[rowIdx] = [{ columnKey: columnKey, value: ds[rowIdx][columnKey] }];
                 $.data($main, internal.DET, det);
             } else if (!det[rowIdx]) {
-                det[rowIdx] = [ columnKey ];
+                det[rowIdx] = [{ columnKey: columnKey, value: ds[rowIdx][columnKey] }];
             } else {
                 let dup = -1;
                 _.forEach(det[rowIdx], function(key: any, index: any) {
-                    if (key === columnKey) {
+                    if (key.columnKey === columnKey) {
                         dup = index;
                         return false;
                     }
@@ -5487,7 +5493,7 @@ module nts.uk.ui.exTable {
                     helper.stripCellWith(DET_CLS, $cell);
                     return;
                 }
-                det[rowIdx].push(columnKey);
+                det[rowIdx].push({ columnKey: columnKey, value: ds[rowIdx][columnKey] });
             }
             helper.markCellWith(DET_CLS, $cell);
         }
@@ -6102,7 +6108,7 @@ module nts.uk.ui.exTable {
             let found = -1;
             if (locks && locks[i] && locks[i].length > 0) { 
                 _.forEach(locks[i], function(c, j) {
-                    if (c === columnKey) {
+                    if (c.columnKey === columnKey) {
                         found = j;
                         return false;
                     }
@@ -6113,11 +6119,11 @@ module nts.uk.ui.exTable {
                 let $cell = selection.cellAt($table, i, columnKey);
                 if (!locks) {
                     locks = {};
-                    locks[i] = [ columnKey ];
+                    locks[i] = [{ columnKey: columnKey, value: ds[i][columnKey] }];
                     $.data($table, internal.DET, locks);
                 } else if (locks && !locks[i]) {
-                    locks[i] = [ columnKey ];
-                } else locks[i].push(columnKey);
+                    locks[i] = [{ columnKey: columnKey, value: ds[i][columnKey] }];
+                } else locks[i].push({ columnKey: columnKey, value: ds[i][columnKey] });
                 helper.markCellWith(style.DET_CLS, $cell);
             }
         }
@@ -6141,7 +6147,7 @@ module nts.uk.ui.exTable {
             let found = -1;
             if (locks && locks[i] && locks[i].length > 0) {
                 _.forEach(locks[i], function(c, j) {
-                    if (c === columnKey) {
+                    if (c.columnKey === columnKey) {
                         found = j;
                         return false;
                     }
@@ -6152,7 +6158,7 @@ module nts.uk.ui.exTable {
                 let $cell = selection.cellAt($table, i, columnKey);
                 locks[i].splice(found, 1);
                 if (locks[i].length === 0) delete locks[i];
-                helper.stripCellWith(style.DET_CLS, $cell[0]);
+                helper.stripCellWith(style.DET_CLS, $cell);
             }
         }
         
@@ -6228,7 +6234,7 @@ module nts.uk.ui.exTable {
             Object.keys(det).forEach(function(k) {
                 if (!util.isNullOrUndefined(det[k])) {
                     det[k].forEach(function(v) {
-                        cells.push({ rowIndex: k, columnKey: v });
+                        cells.push({ rowIndex: k, columnKey: v.columnKey, value: v.value });
                     });
                 }
             }); 
@@ -6938,6 +6944,7 @@ module nts.uk.ui.exTable {
          * Mark cell.
          */
         export function markCellWith(clazz: any, $cell: HTMLElement, nth?: any, value?: any) {
+            if (!$cell) return;
             let $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
             if (selector.is($cell, "td") && $childCells.length > 0) {
                 if (!util.isNullOrUndefined(nth) && nth !== -1) {
@@ -6956,6 +6963,7 @@ module nts.uk.ui.exTable {
          * Strip cell.
          */
         export function stripCellWith(clazz: any, $cell: HTMLElement, nth?: any) {
+            if (!$cell) return;
             let $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
             if (selector.is($cell, "td") && $childCells.length > 0) {
                 if (!util.isNullOrUndefined(nth) && nth !== -1) {
@@ -6970,6 +6978,7 @@ module nts.uk.ui.exTable {
          * Mark cells.
          */
         export function markCellsWith(clazz: any, $cells: Array<HTMLElement>) {
+            if (!$cells || $cells.constructor !== Array) return;
             $cells.forEach(function(e) {
                 markCellWith(clazz, e);
             });
@@ -6979,6 +6988,7 @@ module nts.uk.ui.exTable {
          * Strip cells.
          */
         export function stripCellsWith(clazz: any, $cells: Array<HTMLElement>) {
+            if (!$cells || $cells.constructor !== Array) return;
             $cells.forEach(function(e) {
                 stripCellWith(clazz, e);
             });
