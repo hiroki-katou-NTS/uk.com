@@ -20,7 +20,7 @@ public interface PerformDataRecoveryRepository {
 
 	void remove(String dataRecoveryProcessId);
 	
-	List<TableList> getByStorageRangeSaved(String categoryId,String storageRangeSaved);
+	List<TableList> getByStorageRangeSaved(String categoryId,int value);
 	
 	List<Target> findByDataRecoveryId(String dataRecoveryProcessId);
 	

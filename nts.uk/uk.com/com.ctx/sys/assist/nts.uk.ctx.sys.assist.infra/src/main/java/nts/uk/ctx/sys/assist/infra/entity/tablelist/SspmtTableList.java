@@ -128,14 +128,14 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "SAVE_DATE_FROM")
-	public GeneralDate saveDateFrom;
+	public String saveDateFrom;
 
 	/**
 	 * 保存日付To
 	 */
 	@Basic(optional = true)
 	@Column(name = "SAVE_DATE_TO")
-	public GeneralDate saveDateTo;
+	public String saveDateTo;
 
 	/**
 	 * 保存時保存範囲

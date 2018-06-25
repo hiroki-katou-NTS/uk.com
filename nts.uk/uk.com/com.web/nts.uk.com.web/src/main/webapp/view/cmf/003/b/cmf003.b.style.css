@@ -17,6 +17,7 @@
 }
 #ex_accept_wizard > .content > .body {
 	padding-top: 0;
+	left: 0px !important;
 }
 #ex_accept_wizard, #ex_accept_wizard .content {
 	overflow: visible;
@@ -195,7 +196,7 @@
 
 .labelRangeDate {
 	margin-right: 5px;
-	width: 120px;
+	width: 100px;
 }
 
 .labelWork {

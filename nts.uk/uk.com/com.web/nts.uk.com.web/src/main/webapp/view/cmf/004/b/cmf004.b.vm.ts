@@ -2,6 +2,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import alertError = nts.uk.ui.dialog;
     export class ScreenModel {
         stepList: Array<NtsWizardStep> = [
             { content: '.step-1' },
@@ -51,7 +52,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         selectedEmployeeCodeScreenH: KnockoutObservableArray<string> = ko.observableArray([]);
         employeeListScreenH: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         
-        
+        categoryListOld: Array<any> = [];
         recoveryProcessingId: string = nts.uk.util.randomId();
         constructor() {
             let self = this;
@@ -271,6 +272,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 _itemList.push(new CategoryInfo(i + 1, x.isRecover(), x.categoryId(), x.categoryName(), x.recoveryPeriod(), x.startOfPeriod(), x.endOfPeriod(), x.recoveryMethod(), x.iscanNotBeOld()));
             });
             self.changeDataRecoveryPeriod().changeDataCategoryList(_itemList);
+            self.categoryListOld = ko.toJS(_itemList);
         }
 
         initScreenG(): void {
@@ -383,12 +385,40 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         nextToScreenG(): void {
             let self = this;
-            self.initScreenG();
-            $('#data-recovery-wizard').ntsWizard("next");
+            nts.uk.ui.errors.clearAll();
+            for(let checkRow of self.changeDataRecoveryPeriod().changeDataCategoryList()){
+                if(checkRow.isRecover()){
+                    if(checkRow.startOfPeriod() > checkRow.endOfPeriod()){
+                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1320'});
+                    }
+                    
+                }
+                let oldData =  _.find(self.categoryListOld, x =>{
+                    return x.categoryId = checkRow.categoryId();
+                });
+                if(oldData.startOfPeriod < checkRow.startOfPeriod()){
+                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
+                    }
+                //Todo : cho ben cmf003fix
+//                if(oldData.endOfPeriod > checkRow.endOfPeriod() ){
+//                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
+//                    }
+            } 
+            
+           
+            
+            
+            if (!nts.uk.ui.errors.hasError()) {
+                self.initScreenG();
+                $('#data-recovery-wizard').ntsWizard("next");
+            }
         }
 
         nextToScreenH(): void {
             let self = this;
+            
+            
+            
             self.initScreenH();
             $('#data-recovery-wizard').ntsWizard("next");
         }
@@ -396,27 +426,23 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         restoreData_click(): void {
             let self = this;
             self.restoreData();
-            nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
+            //nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
         }
         
         restoreData(): void {
                 let self = this;
-                let paramObtainRecovery = {
-                    recoveryProcessingId : self.dataRecoverySelection().selectedRecoveryFile(),
-                    dataRecoveryProcessId : self.processingId
-                    
+                let paramRestore = {
+                    dataRecoveryProcessId: self.recoveryProcessingId
                 };
 
-                service.obtainRecovery(paramObtainRecovery).done((res) => {
+                service.performDataRecover(paramRestore).done((res) => {
                     if((res) && (res != "")) {
-                        let paramObtainRecovery = {
-                            
-                        };
-
-                        nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
+                        
                     }
                 }).fail((err) => {
                 });
+            
+            nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
             }
         
 

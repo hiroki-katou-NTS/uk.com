@@ -201,8 +201,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			TimeStore retentionPeriodCls = null;
 			int anotherComCls = 0;
 			String screenRetentionPeriod = "";
-			GeneralDate saveDateFrom = null;
-			GeneralDate saveDateTo = null;
+			String saveDateFrom = "";
+			String saveDateTo = "";
 			int surveyPreservation = optManualSetting.getIdentOfSurveyPre().value;
 			Optional<Category> category = categorys.stream()
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
@@ -215,20 +215,19 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 				switch (retentionPeriodCls) {
 				case DAILY:
-					saveDateFrom = optManualSetting.getDaySaveStartDate();
-					saveDateTo = optManualSetting.getDaySaveEndDate();
-					screenRetentionPeriod = saveDateFrom.toString("yyyy/MM/dd") + "～"
-							+ saveDateTo.toString("yyyy/MM/dd");
+					saveDateFrom = optManualSetting.getDaySaveStartDate().toString();
+					saveDateTo = optManualSetting.getDaySaveEndDate().toString();
+					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case MONTHLY:
-					saveDateFrom = optManualSetting.getMonthSaveStartDate();
-					saveDateTo = optManualSetting.getMonthSaveEndDate();
-					screenRetentionPeriod = saveDateFrom.toString("yyyy/MM") + "～" + saveDateTo.toString("yyyy/MM");
+					saveDateFrom = optManualSetting.getMonthSaveStartDate().toString();
+					saveDateTo = optManualSetting.getMonthSaveEndDate().toString();
+					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case ANNUAL:
-					saveDateFrom = GeneralDate.ymd(optManualSetting.getStartYear().v(), 1, 1);
-					saveDateTo = GeneralDate.ymd(optManualSetting.getEndYear().v(), 12, 31);
-					screenRetentionPeriod = saveDateFrom.toString("yyyy") + "～" + saveDateTo.toString("yyyy");
+					saveDateFrom = optManualSetting.getStartYear().v().toString();
+					saveDateTo = optManualSetting.getEndYear().v().toString();
+					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				default:
 					break;
