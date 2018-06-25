@@ -242,6 +242,7 @@ module cps002.a.vm {
                 let self = this,
                     employee = self.currentEmployee();
                 if (employee.cardNo() == "") {
+                    console.log("value change");
                     employee.cardNo(self.initStampCard(employeeCode));
                 }
             }); 
@@ -317,10 +318,17 @@ module cps002.a.vm {
         
         logMouseOver() {
             let self = this;
-            if (self.cardNo() == "") {
-                 debugger;
-                 self.getStampCardAfterLostFocusEmpCode(self.employeeCode());
+            if (self.currentEmployee().cardNo() == "") {
+                 console.log("lost focus");
+                 self.getStampCardAfterLostFocusEmpCode(self.currentEmployee().employeeCode());
             }
+        }
+        
+        getStampCardAfterLostFocusEmpCode(newEmployeeCode : any) {
+            let self = this;
+            service.getStampCardAfterLostFocusEmp(newEmployeeCode).done((value) => {
+                self.currentEmployee().cardNo(value);
+            });
         }
         
         start() {
@@ -405,18 +413,11 @@ module cps002.a.vm {
         
         initStampCard(newEmployeeCode : string) {
             let self = this;
-            service.getInitCardNumber(newEmployeeCode).done((value) => {
+            service.getInitCardNumber(self.currentEmployee().employeeCode()).done((value) => {
                 self.currentEmployee().cardNo(value);
             });
         }
         
-        getStampCardAfterLostFocusEmpCode(newEmployeeCode : string) {
-            let self = this;
-            service.getStampCardAfterLostFocusEmp(newEmployeeCode).done((value) => {
-                self.currentEmployee().cardNo(value);
-            });
-        }
-
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
