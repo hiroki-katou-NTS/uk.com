@@ -204,6 +204,7 @@ module nts.uk.ui.koExtentions {
                 });  
                 
                 PS.$("body").data(self.id, $dialog);
+                $(element).data("dialogX", $dialog);
                 if(self.isRoot){
                     $("body").bind("dialogclosed", function(evt, eData){
 //                            console.log(eData.dialogId);
