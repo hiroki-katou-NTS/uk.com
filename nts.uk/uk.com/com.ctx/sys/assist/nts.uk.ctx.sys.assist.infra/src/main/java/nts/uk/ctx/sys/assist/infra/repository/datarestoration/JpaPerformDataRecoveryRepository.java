@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.infra.repository.datarestoration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -144,13 +145,21 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public void insertDataTable(List<String> dataInsertDB, String tableName) {
+	public void insertDataTable(HashMap<String, String> dataInsertDb, String tableName) {
 		if (tableName != null) {
 			INSERT_BY_TABLE.append(tableName);
 		}
+		List<String> cloumns = null;
+		List<String> values = null;
 		EntityManager em = this.getEntityManager();
+		for(Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
+			cloumns.add(entry.getKey());
+			values.add(entry.getValue());
+
+		}
+		INSERT_BY_TABLE.append(" " + cloumns);
 		INSERT_BY_TABLE.append(" VALUES ");
-		INSERT_BY_TABLE.append(dataInsertDB);
+		INSERT_BY_TABLE.append(values);
 		Query query = em.createNativeQuery(INSERT_BY_TABLE.toString());
 		query.executeUpdate();
 

@@ -162,6 +162,8 @@ public class RecoveryStorageService {
 
 			// phân biệt DELETE/INSERT error và Setting error TO - DO
 			if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
+				
+				throw new RollBackException("113", "RollBack transaction");
 				// roll back
 				// Count up số lượng error
 			}
@@ -513,27 +515,29 @@ public class RecoveryStorageService {
 						performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 								cidCurrent);
 					} catch (Exception ex) {
-						LOGGER.info("Failed delete data : " + TABLE_NAME);
-						LOGGER.info(ex.toString());
+						LOGGER.error("Failed delete data : " + TABLE_NAME);
+						LOGGER.error(ex.toString());
+						throw new RollBackException("113", "rollBack transaction");
 					}
 
 				}
 
 				int indexCidOfCsv = targetDataHeader.indexOf(namePhysicalCid);
-				List<String> dataInsertDB = new ArrayList<>();
+				HashMap<String, String> dataInsertDb = new HashMap<>();
 				for (int j = 5; j < dataRow.size(); j++) {
 					if (j == indexCidOfCsv) {
-						dataInsertDB.add(cidCurrent);
+						dataInsertDb.put(targetDataHeader.get(j), cidCurrent);
 					} else {
-						dataInsertDB.add(dataRow.get(j));
+						dataInsertDb.put(targetDataHeader.get(j), dataRow.get(j));
 					}
 				}
 				// insert data
 				try {
-					performDataRecoveryRepository.insertDataTable(dataInsertDB, TABLE_NAME);
+					performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
 				} catch (Exception ex) {
-					LOGGER.info("Failed insert data: " + TABLE_NAME);
-					LOGGER.info(ex.toString());
+					LOGGER.error("Failed insert data: " + TABLE_NAME);
+					LOGGER.error(ex.toString());
+					throw new RollBackException("113", "rollBack transaction");
 				}
 
 			}
@@ -641,8 +645,9 @@ public class RecoveryStorageService {
 		try {
 			performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereSid, cidCurrent, employeeId);
 		} catch (Exception ex) {
-			LOGGER.info("Failed delete data employee : " + tableName);
-			LOGGER.info(ex.toString());
+			LOGGER.error("Failed delete data employee : " + tableName);
+			LOGGER.error(ex.toString());
+			throw new RollBackException("113", "rollBack transaction");
 		}
 
 	}
