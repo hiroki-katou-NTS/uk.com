@@ -1279,6 +1279,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.app')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
 		
+		compile project (':com.screen:nts.uk.screen.com.app')
+		
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
 		
