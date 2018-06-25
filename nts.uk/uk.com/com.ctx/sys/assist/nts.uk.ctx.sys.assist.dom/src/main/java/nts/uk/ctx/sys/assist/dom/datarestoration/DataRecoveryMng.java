@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.assist.dom.datarestoration;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -56,6 +57,7 @@ public class DataRecoveryMng extends AggregateRoot {
 	/**
 	 * 動作状態
 	 */
+	@Setter
 	private DataRecoveryOperatingCondition operatingCondition;
 
 	/**

@@ -416,34 +416,29 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         nextToScreenH(): void {
             let self = this;
-            
-            
-            
             self.initScreenH();
             $('#data-recovery-wizard').ntsWizard("next");
         }
 
         restoreData_click(): void {
             let self = this;
-            self.restoreData();
-            //nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
-        }
-        
-        restoreData(): void {
-                let self = this;
-                let paramRestore = {
+            setShared("CMF004IParams", {
+                    employeeList: ko.toJS(self.employeeListScreenH),
+                    recoveryCategoryList : ko.toJS(self.dataRecoverySummary().recoveryCategoryList),
+                    recoveryFile : recoverySourceFile(),
+                    recoverySourceCode : recoverySourceCode(),
+                    recoverySourceName : recoverySourceName(),
+                    upplementaryExplanation : upplementaryExplanation(),
+                    recoveryMethodOptions:recoveryMethodOptions(),
                     dataRecoveryProcessId: self.recoveryProcessingId
-                };
-
-                service.performDataRecover(paramRestore).done((res) => {
-                    if((res) && (res != "")) {
-                        
-                    }
-                }).fail((err) => {
                 });
             
+
+            self.restoreData();
             nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
-            }
+        }
+        
+        
         
 
         backToPreviousScreen(): void {
