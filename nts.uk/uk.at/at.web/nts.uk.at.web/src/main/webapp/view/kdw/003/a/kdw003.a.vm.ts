@@ -942,6 +942,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred(), self = this, arrItemId: string[] = [];
             if(self.listAttendanceItemId().length <= 0){
                 dfd.resolve();
+                return;
             }
             
             _.each(self.listAttendanceItemId(), (attendanceItemId) => {
