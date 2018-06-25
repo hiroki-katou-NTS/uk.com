@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 
 public interface Checking36AgreementCondition {
 	//36協定チェック条件をチェックする
-	void check36AgreementCondition(String companyId,String employeeId,GeneralDate date,YearMonth yearMonth, Year year);
+	boolean check36AgreementCondition(String companyId,String employeeId,GeneralDate date,YearMonth yearMonth, Year year,AgreementCheckCon36 agreementCheckCon36);
 	//36協定特例設定を取得する
 	void acquire36AgreementExceptionSetting(String companyId, String employeeId, GeneralDate criteriaDate,YearMonth yearMonth,Year year,BasicAgreementSetting basicSet);
 }

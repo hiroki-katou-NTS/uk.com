@@ -52,26 +52,41 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 	
 	
 	@Override
-	public void check36AgreementCondition(String companyId,String employeeId,GeneralDate date,YearMonth yearMonth, Year year) {
-		
+	public boolean check36AgreementCondition(String companyId,String employeeId,GeneralDate date,
+			YearMonth yearMonth, Year year,AgreementCheckCon36 agreementCheckCon36) {
+		//1名の36上限時間を取得
 		BasicAgreementSetting basicAgreementSet = this.getBasicAgreementSet(companyId, employeeId, date, yearMonth, year);
 		
-		//「36協定チェック条件」を取得する
+		//取得できない　or　エラー時間、アラーム時間=null
+		if(basicAgreementSet==null) {
+			return false;
+		}
+		//「36協定チェック条件」を取得する : input agreementCheckCon36 
+		//チェック値を計算する
+		int value = 0;
+		if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ALARM ) {
+			value = basicAgreementSet.getAlarmOneMonth().v() - agreementCheckCon36.getEralBeforeTime().intValue();
+		}else if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ERROR) {
+			value = basicAgreementSet.getErrorOneMonth().v() - agreementCheckCon36.getEralBeforeTime().intValue();
+		}
+			
+		
+		//月別実績を取得する
+		
+			
 		
 		
 		
-		//36協定実績(Work)の作成
-		AgreementActualOutput creatAgreementRecord = this.creatAgreementRecord(employeeId,new nts.uk.ctx.at.shared.dom.common.Year(year.v()));	
-		
-		
-	}
-	//36協定実績(Work)の作成
-	private AgreementActualOutput creatAgreementRecord(String employeeId, nts.uk.ctx.at.shared.dom.common.Year year){
-		//ドメインモデル「管理期間の36協定時間」を取得
-		List<AgreementTimeOfManagePeriod> lstAgreementTimeOfManagePeriod = this.agreementTimeOfManagePeriodRepo.findByYearOrderByYearMonth(employeeId,year);
-		return new AgreementActualOutput(lstAgreementTimeOfManagePeriod,year,employeeId);
+		return false;
 	}
 	
+//	//36協定実績(Work)の作成
+//	private AgreementActualOutput creatAgreementRecord(String employeeId, nts.uk.ctx.at.shared.dom.common.Year year){
+//		//ドメインモデル「管理期間の36協定時間」を取得
+//		List<AgreementTimeOfManagePeriod> lstAgreementTimeOfManagePeriod = this.agreementTimeOfManagePeriodRepo.findByYearOrderByYearMonth(employeeId,year);
+//		return new AgreementActualOutput(lstAgreementTimeOfManagePeriod,year,employeeId);
+//	}
+//	
 	//1名の36上限時間を取得
 	public BasicAgreementSetting getBasicAgreementSet(String companyId,String employeeId,GeneralDate date,YearMonth yearMonth, Year year ){
 		return this.onePersonGet36MaxTime(companyId,employeeId, date, yearMonth, year);
@@ -81,7 +96,7 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 		//ドメインモデル「３６協定単位設定」を取得する
 		Optional<AgreementUnitSetting> optAgreementUnitSetting = this.agreementUnitSettingRepo.find(companyId);
 		if(optAgreementUnitSetting.isPresent()){
-			AgreementUnitSetting agreementUnitSetting = optAgreementUnitSetting.get();
+//			AgreementUnitSetting agreementUnitSetting = optAgreementUnitSetting.get();
 			//ドメインモデル「労働契約履歴」を取得する fixed -> 労働条件項目
 			val workingConditionItemOpt =
 					this.workingConditionItem.getBySidAndStandardDate(employeeId, date);
