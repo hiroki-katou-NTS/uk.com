@@ -74,7 +74,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public List<TableList> getByStorageRangeSaved(String categoryId, String storageRangeSaved) {
+	public List<TableList> getByStorageRangeSaved(String categoryId, int storageRangeSaved) {
 		List<SspmtTableList> listTable = this.getEntityManager()
 				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class).setParameter("categoryId", categoryId)
 				.setParameter("storageRangeSaved", storageRangeSaved).getResultList();
@@ -115,7 +115,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 			if (!filed.getValue().isEmpty()) {
 				i++;
 				if (i != 0) {
-					if (!Objects.isNull(namePhysicalCid)&& filed.getKey().equals(namePhysicalCid)) {
+					if (!Objects.isNull(namePhysicalCid) && filed.getKey().equals(namePhysicalCid)) {
 						whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(cidCurrent);
 					} else {
 						whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(filed.getValue());
@@ -152,10 +152,10 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		if (tableName != null) {
 			INSERT_BY_TABLE.append(tableName);
 		}
-		List<String> cloumns = null;
-		List<String> values = null;
+		List<String> cloumns = new ArrayList<>();
+		List<String> values = new ArrayList<>();
 		EntityManager em = this.getEntityManager();
-		for(Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
+		for (Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
 			cloumns.add(entry.getKey());
 			values.add(entry.getValue());
 
@@ -180,7 +180,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		List<Object[]> listItems = this.queryProxy()
 				.query(SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING, Object[].class)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList();
-		listItems.stream().forEach(x->{
+		listItems.stream().forEach(x -> {
 			tableList.add(fromDomain(x));
 		});
 		return tableList;
@@ -189,21 +189,23 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	@Override
 	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
 		EntityManager em = this.getEntityManager();
-		DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-		int count = 0;
-		if (!Objects.isNull(whereCid)) {
-			DELETE_BY_TABLE_SQL.append(whereCid).append(" = ").append(cid);
-			count++;
-		}
-		if ( !Objects.isNull(whereCid) && !Objects.isNull(employeeId)) {
-			if (count != 0) {
-				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = ").append(employeeId);
-			} else {
-				DELETE_BY_TABLE_SQL.append(whereSid).append(" = ").append(employeeId);
+		if (tableName != null) {
+			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
+			int count = 0;
+			if (!Objects.isNull(whereCid)) {
+				DELETE_BY_TABLE_SQL.append(whereCid).append(" = ").append(cid);
+				count++;
 			}
+			if (!Objects.isNull(whereCid) && !Objects.isNull(employeeId)) {
+				if (count != 0) {
+					DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = ").append(employeeId);
+				} else {
+					DELETE_BY_TABLE_SQL.append(whereSid).append(" = ").append(employeeId);
+				}
+			}
+			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
+			query.executeUpdate();
 		}
-		Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
-		query.executeUpdate();
 	}
 
 	public void addTargetEmployee(Target domain) {
