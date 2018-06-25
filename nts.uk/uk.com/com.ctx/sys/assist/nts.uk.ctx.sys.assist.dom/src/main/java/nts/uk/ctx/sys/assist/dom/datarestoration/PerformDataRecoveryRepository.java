@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public interface PerformDataRecoveryRepository {
 	
 	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid , String cidCurrent);
 	
-	void insertDataTable(List<String> dataInsertDB, String tableName);
+	void insertDataTable(HashMap<String, String> dataInsertDb, String tableName);
 
 	List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId);
 
