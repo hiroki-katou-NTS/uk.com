@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface BasicScheduleRepository.
@@ -110,4 +111,11 @@ public interface BasicScheduleRepository {
 	 * @return GeneralDate
 	 */
 	GeneralDate findMaxDateByListSid(List<String> sIds);
+	/**
+	 * 検索
+	 * @param employeeId 社員ID
+	 * @param dateData　期間
+	 * @return
+	 */
+	List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, DatePeriod dateData);
 }
