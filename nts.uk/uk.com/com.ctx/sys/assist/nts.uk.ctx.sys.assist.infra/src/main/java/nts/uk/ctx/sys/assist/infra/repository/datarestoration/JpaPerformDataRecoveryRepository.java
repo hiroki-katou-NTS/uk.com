@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -97,29 +98,30 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid, String cidCurrent) {
+	public int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+			String cidCurrent) {
 		if (tableName != null) {
 			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere,namePhysicalCid,cidCurrent));
+			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
 			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
 		}
 		return 0;
 	}
 
-	private StringBuilder makeWhereClause(Map<String, String> filedWhere, String namePhysicalCid , String cidCurrent) {
+	private StringBuilder makeWhereClause(Map<String, String> filedWhere, String namePhysicalCid, String cidCurrent) {
 		StringBuilder whereClause = new StringBuilder();
 		int i = 0;
 		for (Map.Entry<String, String> filed : filedWhere.entrySet()) {
 			if (!filed.getValue().isEmpty()) {
 				i++;
 				if (i != 0) {
-					if(namePhysicalCid != null && filed.getKey().equals(namePhysicalCid)) {
+					if (!Objects.isNull(namePhysicalCid)&& filed.getKey().equals(namePhysicalCid)) {
 						whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(cidCurrent);
 					} else {
 						whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(filed.getValue());
 					}
 				} else {
-					if(namePhysicalCid != null && filed.getKey().equals(namePhysicalCid)) {
+					if (!Objects.isNull(namePhysicalCid) && filed.getKey().equals(namePhysicalCid)) {
 						whereClause.append(filed.getKey()).append(" = ").append(namePhysicalCid);
 					} else {
 						whereClause.append(filed.getKey()).append(" = ").append(filed.getValue());
@@ -131,13 +133,14 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid , String cidCurrent) {
+	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+			String cidCurrent) {
 
 		EntityManager em = this.getEntityManager();
 
 		if (tableName != null) {
 			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-			DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere,namePhysicalCid,cidCurrent));
+			DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
 
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 			query.executeUpdate();
@@ -177,24 +180,23 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		List<Object[]> listItems = this.queryProxy()
 				.query(SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING, Object[].class)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getList();
-		for (int i = 0; i < listItems.size(); i++) {
-			tableList.add(fromDomain(listItems.get(i)));
-		}
+		listItems.stream().forEach(x->{
+			tableList.add(fromDomain(x));
+		});
 		return tableList;
 	}
 
 	@Override
-	public void deleteEmployeeHis(String tableName,String whereCid, String whereSid, String cid,
-			String employeeId) {
+	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
 		EntityManager em = this.getEntityManager();
 		DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
 		int count = 0;
-		if (whereCid != null) {
+		if (!Objects.isNull(whereCid)) {
 			DELETE_BY_TABLE_SQL.append(whereCid).append(" = ").append(cid);
-			count ++;
+			count++;
 		}
-		if (whereSid != null && employeeId != null) {
-			if(count !=0) {
+		if ( !Objects.isNull(whereCid) && !Objects.isNull(employeeId)) {
+			if (count != 0) {
 				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = ").append(employeeId);
 			} else {
 				DELETE_BY_TABLE_SQL.append(whereSid).append(" = ").append(employeeId);
@@ -222,6 +224,6 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	@Override
 	public void updatePerformDataRecoveryById(String dataRecoveryProcessId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
