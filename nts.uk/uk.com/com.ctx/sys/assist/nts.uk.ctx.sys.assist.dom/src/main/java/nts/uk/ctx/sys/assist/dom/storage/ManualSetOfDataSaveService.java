@@ -534,24 +534,24 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				for (String key : headerCsv3) {
 					String header = key;
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(0))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqCid())) {
-						header = tableList.getFieldAcqCid();
+							&& tableList.getFieldAcqCid().isPresent()) {
+						header = tableList.getFieldAcqCid().get();
 					}
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(1))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqEmployeeId())) {
-						header = tableList.getFieldAcqEmployeeId();
+							&& tableList.getFieldAcqEmployeeId().isPresent()) {
+						header = tableList.getFieldAcqEmployeeId().get();
 					}
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(2))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqDateTime())) {
-						header = tableList.getFieldAcqDateTime();
+							&& tableList.getFieldAcqDateTime().isPresent()) {
+						header = tableList.getFieldAcqDateTime().get();
 					}
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(3))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqStartDate())) {
-						header = tableList.getFieldAcqStartDate();
+							&& tableList.getFieldAcqStartDate().isPresent()) {
+						header = tableList.getFieldAcqStartDate().get();
 					}
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(4))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqEndDate())) {
-						header = tableList.getFieldAcqEndDate();
+							&& tableList.getFieldAcqEndDate().isPresent()) {
+						header = tableList.getFieldAcqEndDate().get();
 					}
 					String fieldName = repoTableList.getFieldForColumnName(object.getClass(), header);
 					Object resultObj = null;

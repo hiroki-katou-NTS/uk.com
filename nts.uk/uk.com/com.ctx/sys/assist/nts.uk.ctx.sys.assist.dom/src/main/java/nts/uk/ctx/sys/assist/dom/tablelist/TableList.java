@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.tablelist;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -33,7 +35,7 @@ public class TableList extends DomainObject {
 	/**
 	 * データ復旧処理ID
 	 */
-	private String dataRecoveryProcessId;
+	private Optional<String> dataRecoveryProcessId;
 
 	/**
 	 * テーブルNo
@@ -53,32 +55,32 @@ public class TableList extends DomainObject {
 	/**
 	 * 付加取得項目_会社ID
 	 */
-	private String fieldAcqCid;
+	private Optional<String> fieldAcqCid;
 
 	/**
 	 * 付加取得項目_日付
 	 */
-	private String fieldAcqDateTime;
+	private Optional<String> fieldAcqDateTime;
 
 	/**
 	 * 付加取得項目_社員ID
 	 */
-	private String fieldAcqEmployeeId;
+	private Optional<String> fieldAcqEmployeeId;
 
 	/**
 	 * 付加取得項目_終了日付
 	 */
-	private String fieldAcqEndDate;
+	private Optional<String> fieldAcqEndDate;
 
 	/**
 	 * 付加取得項目_開始日付
 	 */
-	private String fieldAcqStartDate;
+	private Optional<String> fieldAcqStartDate;
 
 	/**
 	 * 保存セットコード
 	 */
-	private String saveSetCode;
+	private Optional<String> saveSetCode;
 
 	/**
 	 * 保存セット名称
@@ -98,12 +100,12 @@ public class TableList extends DomainObject {
 	/**
 	 * 保存日付From
 	 */
-	private String saveDateFrom;
+	private Optional<String> saveDateFrom;
 
 	/**
 	 * 保存日付To
 	 */
-	private String saveDateTo;
+	private Optional<String> saveDateTo;
 
 	/**
 	 * 保存時保存範囲
@@ -128,12 +130,12 @@ public class TableList extends DomainObject {
 	/**
 	 * 参照年
 	 */
-	private String referenceYear;
+	private Optional<String> referenceYear;
 
 	/**
 	 * 参照月
 	 */
-	private String referenceMonth;
+	private Optional<String> referenceMonth;
 
 	/**
 	 * 圧縮ファイル名
@@ -143,52 +145,52 @@ public class TableList extends DomainObject {
 	/**
 	 * 子側結合キー1
 	 */
-	private String fieldChild1;
+	private Optional<String> fieldChild1;
 
 	/**
 	 * 子側結合キー2
 	 */
-	private String fieldChild2;
+	private Optional<String> fieldChild2;
 
 	/**
 	 * 子側結合キー3
 	 */
-	private String fieldChild3;
+	private Optional<String> fieldChild3;
 
 	/**
 	 * 子側結合キー4
 	 */
-	private String fieldChild4;
+	private Optional<String> fieldChild4;
 
 	/**
 	 * 子側結合キー5
 	 */
-	private String fieldChild5;
+	private Optional<String> fieldChild5;
 
 	/**
 	 * 子側結合キー6
 	 */
-	private String fieldChild6;
+	private Optional<String> fieldChild6;
 
 	/**
 	 * 子側結合キー7
 	 */
-	private String fieldChild7;
+	private Optional<String> fieldChild7;
 
 	/**
 	 * 子側結合キー8
 	 */
-	private String fieldChild8;
+	private Optional<String> fieldChild8;
 
 	/**
 	 * 子側結合キー9
 	 */
-	private String fieldChild9;
+	private Optional<String> fieldChild9;
 
 	/**
 	 * 子側結合キー10
 	 */
-	private String fieldChild10;
+	private Optional<String> fieldChild10;
 
 	/**
 	 * 履歴区分
@@ -198,331 +200,331 @@ public class TableList extends DomainObject {
 	/**
 	 * 復旧対象可不可
 	 */
-	private int canNotBeOld;
+	private Optional<Integer> canNotBeOld;
 
 	/**
 	 * 復旧対象選択
 	 */
-	private int selectionTargetForRes;
+	private Optional<Integer> selectionTargetForRes;
 
 	/**
 	 * 抽出キー区分1
 	 */
-	private String clsKeyQuery1;
+	private Optional<String> clsKeyQuery1;
 
 	/**
 	 * 抽出キー区分2
 	 */
-	private String clsKeyQuery2;
+	private Optional<String> clsKeyQuery2;
 
 	/**
 	 * 抽出キー区分3
 	 */
-	private String clsKeyQuery3;
+	private Optional<String> clsKeyQuery3;
 
 	/**
 	 * 抽出キー区分4
 	 */
-	private String clsKeyQuery4;
+	private Optional<String> clsKeyQuery4;
 
 	/**
 	 * 抽出キー区分5
 	 */
-	private String clsKeyQuery5;
+	private Optional<String> clsKeyQuery5;
 
 	/**
 	 * 抽出キー区分6
 	 */
-	private String clsKeyQuery6;
+	private Optional<String> clsKeyQuery6;
 
 	/**
 	 * 抽出キー区分7
 	 */
-	private String clsKeyQuery7;
+	private Optional<String> clsKeyQuery7;
 
 	/**
 	 * 抽出キー区分8
 	 */
-	private String clsKeyQuery8;
+	private Optional<String> clsKeyQuery8;
 
 	/**
 	 * 抽出キー区分9
 	 */
-	private String clsKeyQuery9;
+	private Optional<String> clsKeyQuery9;
 
 	/**
 	 * 抽出キー区分10
 	 */
-	private String clsKeyQuery10;
+	private Optional<String> clsKeyQuery10;
 
 	/**
 	 * 抽出キー項目1
 	 */
-	private String fieldKeyQuery1;
+	private Optional<String> fieldKeyQuery1;
 
 	/**
 	 * 抽出キー項目2
 	 */
-	private String fieldKeyQuery2;
+	private Optional<String> fieldKeyQuery2;
 
 	/**
 	 * 抽出キー項目3
 	 */
-	private String fieldKeyQuery3;
+	private Optional<String> fieldKeyQuery3;
 
 	/**
 	 * 抽出キー項目4
 	 */
-	private String fieldKeyQuery4;
+	private Optional<String> fieldKeyQuery4;
 
 	/**
 	 * 抽出キー項目5
 	 */
-	private String fieldKeyQuery5;
+	private Optional<String> fieldKeyQuery5;
 
 	/**
 	 * 抽出キー項目6
 	 */
-	private String fieldKeyQuery6;
+	private Optional<String> fieldKeyQuery6;
 
 	/**
 	 * 抽出キー項目7
 	 */
-	private String fieldKeyQuery7;
+	private Optional<String> fieldKeyQuery7;
 
 	/**
 	 * 抽出キー項目8
 	 */
-	private String fieldKeyQuery8;
+	private Optional<String> fieldKeyQuery8;
 
 	/**
 	 * 抽出キー項目9
 	 */
-	private String fieldKeyQuery9;
+	private Optional<String> fieldKeyQuery9;
 
 	/**
 	 * 抽出キー項目10
 	 */
-	private String fieldKeyQuery10;
+	private Optional<String> fieldKeyQuery10;
 
 	/**
 	 * 抽出条件キー固定
 	 */
-	private String defaultCondKeyQuery;
+	private Optional<String> defaultCondKeyQuery;
 
 	/**
 	 * 日付項目1
 	 */
-	private String fieldDate1;
+	private Optional<String> fieldDate1;
 
 	/**
 	 * 日付項目2
 	 */
-	private String fieldDate2;
+	private Optional<String> fieldDate2;
 
 	/**
 	 * 日付項目3
 	 */
-	private String fieldDate3;
+	private Optional<String> fieldDate3;
 
 	/**
 	 * 日付項目4
 	 */
-	private String fieldDate4;
+	private Optional<String> fieldDate4;
 
 	/**
 	 * 日付項目5
 	 */
-	private String fieldDate5;
+	private Optional<String> fieldDate5;
 
 	/**
 	 * 日付項目6
 	 */
-	private String fieldDate6;
+	private Optional<String> fieldDate6;
 
 	/**
 	 * 日付項目7
 	 */
-	private String fieldDate7;
+	private Optional<String> fieldDate7;
 
 	/**
 	 * 日付項目8
 	 */
-	private String fieldDate8;
+	private Optional<String> fieldDate8;
 
 	/**
 	 * 日付項目9
 	 */
-	private String fieldDate9;
+	private Optional<String> fieldDate9;
 
 	/**
 	 * 日付項目10
 	 */
-	private String fieldDate10;
+	private Optional<String> fieldDate10;
 
 	/**
 	 * 日付項目11
 	 */
-	private String fieldDate11;
+	private Optional<String> fieldDate11;
 
 	/**
 	 * 日付項目12
 	 */
-	private String fieldDate12;
+	private Optional<String> fieldDate12;
 
 	/**
 	 * 日付項目13
 	 */
-	private String fieldDate13;
+	private Optional<String> fieldDate13;
 
 	/**
 	 * 日付項目14
 	 */
-	private String fieldDate14;
+	private Optional<String> fieldDate14;
 
 	/**
 	 * 日付項目15
 	 */
-	private String fieldDate15;
+	private Optional<String> fieldDate15;
 
 	/**
 	 * 日付項目16
 	 */
-	private String fieldDate16;
+	private Optional<String> fieldDate16;
 
 	/**
 	 * 日付項目17
 	 */
-	private String fieldDate17;
+	private Optional<String> fieldDate17;
 
 	/**
 	 * 日付項目18
 	 */
-	private String fieldDate18;
+	private Optional<String> fieldDate18;
 	/**
 	 * 日付項目19
 	 */
-	private String fieldDate19;
+	private Optional<String> fieldDate19;
 
 	/**
 	 * 日付項目20
 	 */
-	private String fieldDate20;
+	private Optional<String> fieldDate20;
 
 	/**
 	 * 更新キー項目1
 	 */
-	private String filedKeyUpdate1;
+	private Optional<String> filedKeyUpdate1;
 
 	/**
 	 * 更新キー項目2
 	 */
-	private String filedKeyUpdate2;
+	private Optional<String> filedKeyUpdate2;
 
 	/**
 	 * 更新キー項目3
 	 */
-	private String filedKeyUpdate3;
+	private Optional<String> filedKeyUpdate3;
 
 	/**
 	 * 更新キー項目4
 	 */
-	private String filedKeyUpdate4;
+	private Optional<String> filedKeyUpdate4;
 
 	/**
 	 * 更新キー項目5
 	 */
-	private String filedKeyUpdate5;
+	private Optional<String> filedKeyUpdate5;
 
 	/**
 	 * 更新キー項目6
 	 */
-	private String filedKeyUpdate6;
+	private Optional<String> filedKeyUpdate6;
 
 	/**
 	 * 更新キー項目7
 	 */
-	private String filedKeyUpdate7;
+	private Optional<String> filedKeyUpdate7;
 
 	/**
 	 * 更新キー項目8
 	 */
-	private String filedKeyUpdate8;
+	private Optional<String> filedKeyUpdate8;
 
 	/**
 	 * 更新キー項目9
 	 */
-	private String filedKeyUpdate9;
+	private Optional<String> filedKeyUpdate9;
 
 	/**
 	 * 更新キー項目10
 	 */
-	private String filedKeyUpdate10;
+	private Optional<String> filedKeyUpdate10;
 
 	/**
 	 * 更新キー項目11
 	 */
-	private String filedKeyUpdate11;
+	private Optional<String> filedKeyUpdate11;
 
 	/**
 	 * 更新キー項目12
 	 */
-	private String filedKeyUpdate12;
+	private Optional<String> filedKeyUpdate12;
 
 	/**
 	 * 更新キー項目13
 	 */
-	private String filedKeyUpdate13;
+	private Optional<String> filedKeyUpdate13;
 
 	/**
 	 * 更新キー項目14
 	 */
-	private String filedKeyUpdate14;
+	private Optional<String> filedKeyUpdate14;
 
 	/**
 	 * 更新キー項目15
 	 */
-	private String filedKeyUpdate15;
+	private Optional<String> filedKeyUpdate15;
 
 	/**
 	 * 更新キー項目16
 	 */
-	private String filedKeyUpdate16;
+	private Optional<String> filedKeyUpdate16;
 
 	/**
 	 * 更新キー項目17
 	 */
-	private String filedKeyUpdate17;
+	private Optional<String> filedKeyUpdate17;
 
 	/**
 	 * 更新キー項目18
 	 */
-	private String filedKeyUpdate18;
+	private Optional<String> filedKeyUpdate18;
 
 	/**
 	 * 更新キー項目19
 	 */
-	private String filedKeyUpdate19;
+	private Optional<String> filedKeyUpdate19;
 
 	/**
 	 * 更新キー項目20
 	 */
-	private String filedKeyUpdate20;
+	private Optional<String> filedKeyUpdate20;
 
 	/**
 	 * 画面保存期間
 	 */
-	private String screenRetentionPeriod;
+	private Optional<String> screenRetentionPeriod;
 
 	/**
 	 * 補足説明
 	 */
-	private String supplementaryExplanation;
+	private Optional<String> supplementaryExplanation;
 
 	/**
 	 * 親テーブル日本語名
 	 */
-	private String parentTblJpName;
+	private Optional<String> parentTblJpName;
 
 	/**
 	 * 親テーブル有無
@@ -532,57 +534,57 @@ public class TableList extends DomainObject {
 	/**
 	 * 親テーブル物理名
 	 */
-	private String parentTblName;
+	private Optional<String> parentTblName;
 
 	/**
 	 * 親側結合キー1
 	 */
-	private String fieldParent1;
+	private Optional<String> fieldParent1;
 
 	/**
 	 * 親側結合キー2
 	 */
-	private String fieldParent2;
+	private Optional<String> fieldParent2;
 
 	/**
 	 * 親側結合キー3
 	 */
-	private String fieldParent3;
+	private Optional<String> fieldParent3;
 
 	/**
 	 * 親側結合キー4
 	 */
-	private String fieldParent4;
+	private Optional<String> fieldParent4;
 
 	/**
 	 * 親側結合キー5
 	 */
-	private String fieldParent5;
+	private Optional<String> fieldParent5;
 
 	/**
 	 * 親側結合キー6
 	 */
-	private String fieldParent6;
+	private Optional<String> fieldParent6;
 
 	/**
 	 * 親側結合キー7
 	 */
-	private String fieldParent7;
+	private Optional<String> fieldParent7;
 
 	/**
 	 * 親側結合キー8
 	 */
-	private String fieldParent8;
+	private Optional<String> fieldParent8;
 
 	/**
 	 * 親側結合キー9
 	 */
-	private String fieldParent9;
+	private Optional<String> fieldParent9;
 
 	/**
 	 * 親側結合キー10
 	 */
-	private String fieldParent10;
+	private Optional<String> fieldParent10;
 
 	/**
 	 * 調査用保存
@@ -620,116 +622,116 @@ public class TableList extends DomainObject {
 		this.categoryId = categoryId;
 		this.categoryName = categoryName;
 		this.dataStorageProcessingId = dataStorageProcessingId;
-		this.dataRecoveryProcessId = dataRecoveryProcessId;
+		this.dataRecoveryProcessId = Optional.ofNullable(dataRecoveryProcessId);
 		this.tableNo = tableNo;
 		this.tableJapaneseName = tableJapaneseName;
 		this.tableEnglishName = tableEnglishName;
-		this.fieldAcqCid = fieldAcqCid;
-		this.fieldAcqDateTime = fieldAcqDateTime;
-		this.fieldAcqEmployeeId = fieldAcqEmployeeId;
-		this.fieldAcqEndDate = fieldAcqEndDate;
-		this.fieldAcqStartDate = fieldAcqStartDate;
-		this.saveSetCode = saveSetCode;
+		this.fieldAcqCid = Optional.ofNullable(fieldAcqCid);
+		this.fieldAcqDateTime = Optional.ofNullable(fieldAcqDateTime);
+		this.fieldAcqEmployeeId = Optional.ofNullable(fieldAcqEmployeeId);
+		this.fieldAcqEndDate = Optional.ofNullable(fieldAcqEndDate);
+		this.fieldAcqStartDate = Optional.ofNullable(fieldAcqStartDate);
+		this.saveSetCode = Optional.ofNullable(saveSetCode);
 		this.saveSetName = saveSetName;
 		this.saveForm = saveForm;
-		this.saveDateFrom = saveDateFrom;
-		this.saveDateTo = saveDateTo;
+		this.saveDateFrom = Optional.ofNullable(saveDateFrom);
+		this.saveDateTo = Optional.ofNullable(saveDateTo);
 		this.storageRangeSaved = EnumAdaptor.valueOf(storageRangeSaved, StorageRangeSaved.class);
 		this.retentionPeriodCls = EnumAdaptor.valueOf(retentionPeriodCls, TimeStore.class);
 		this.internalFileName = internalFileName;
 		this.anotherComCls = EnumAdaptor.valueOf(anotherComCls, RecoverFormCompanyOther.class);
-		this.referenceYear = referenceYear;
-		this.referenceMonth = referenceMonth;
+		this.referenceYear = Optional.ofNullable(referenceYear);
+		this.referenceMonth = Optional.ofNullable(referenceMonth);
 		this.compressedFileName = compressedFileName;
-		this.fieldChild1 = fieldChild1;
-		this.fieldChild2 = fieldChild2;
-		this.fieldChild3 = fieldChild3;
-		this.fieldChild4 = fieldChild4;
-		this.fieldChild5 = fieldChild5;
-		this.fieldChild6 = fieldChild6;
-		this.fieldChild7 = fieldChild7;
-		this.fieldChild8 = fieldChild8;
-		this.fieldChild9 = fieldChild9;
-		this.fieldChild10 = fieldChild10;
+		this.fieldChild1 = Optional.ofNullable(fieldChild1);
+		this.fieldChild2 = Optional.ofNullable(fieldChild2);
+		this.fieldChild3 = Optional.ofNullable(fieldChild3);
+		this.fieldChild4 = Optional.ofNullable(fieldChild4);
+		this.fieldChild5 = Optional.ofNullable(fieldChild5);
+		this.fieldChild6 = Optional.ofNullable(fieldChild6);
+		this.fieldChild7 = Optional.ofNullable(fieldChild7);
+		this.fieldChild8 = Optional.ofNullable(fieldChild8);
+		this.fieldChild9 = Optional.ofNullable(fieldChild9);
+		this.fieldChild10 = Optional.ofNullable(fieldChild10);
 		this.historyCls = EnumAdaptor.valueOf(historyCls, HistoryDiviSion.class);
-		this.canNotBeOld = canNotBeOld;
-		this.selectionTargetForRes = selectionTargetForRes;
-		this.clsKeyQuery1 = clsKeyQuery1;
-		this.clsKeyQuery2 = clsKeyQuery2;
-		this.clsKeyQuery3 = clsKeyQuery3;
-		this.clsKeyQuery4 = clsKeyQuery4;
-		this.clsKeyQuery5 = clsKeyQuery5;
-		this.clsKeyQuery6 = clsKeyQuery6;
-		this.clsKeyQuery7 = clsKeyQuery7;
-		this.clsKeyQuery8 = clsKeyQuery8;
-		this.clsKeyQuery9 = clsKeyQuery9;
-		this.clsKeyQuery10 = clsKeyQuery10;
-		this.fieldKeyQuery1 = fieldKeyQuery1;
-		this.fieldKeyQuery2 = fieldKeyQuery2;
-		this.fieldKeyQuery3 = fieldKeyQuery3;
-		this.fieldKeyQuery4 = fieldKeyQuery4;
-		this.fieldKeyQuery5 = fieldKeyQuery5;
-		this.fieldKeyQuery6 = fieldKeyQuery6;
-		this.fieldKeyQuery7 = fieldKeyQuery7;
-		this.fieldKeyQuery8 = fieldKeyQuery8;
-		this.fieldKeyQuery9 = fieldKeyQuery9;
-		this.fieldKeyQuery10 = fieldKeyQuery10;
-		this.defaultCondKeyQuery = defaultCondKeyQuery;
-		this.fieldDate1 = fieldDate1;
-		this.fieldDate2 = fieldDate2;
-		this.fieldDate3 = fieldDate3;
-		this.fieldDate4 = fieldDate4;
-		this.fieldDate5 = fieldDate5;
-		this.fieldDate6 = fieldDate6;
-		this.fieldDate7 = fieldDate7;
-		this.fieldDate8 = fieldDate8;
-		this.fieldDate9 = fieldDate9;
-		this.fieldDate10 = fieldDate10;
-		this.fieldDate11 = fieldDate11;
-		this.fieldDate12 = fieldDate12;
-		this.fieldDate13 = fieldDate13;
-		this.fieldDate14 = fieldDate14;
-		this.fieldDate15 = fieldDate15;
-		this.fieldDate16 = fieldDate16;
-		this.fieldDate17 = fieldDate17;
-		this.fieldDate18 = fieldDate18;
-		this.fieldDate19 = fieldDate19;
-		this.fieldDate20 = fieldDate20;
-		this.filedKeyUpdate1 = filedKeyUpdate1;
-		this.filedKeyUpdate2 = filedKeyUpdate2;
-		this.filedKeyUpdate3 = filedKeyUpdate3;
-		this.filedKeyUpdate4 = filedKeyUpdate4;
-		this.filedKeyUpdate5 = filedKeyUpdate5;
-		this.filedKeyUpdate6 = filedKeyUpdate6;
-		this.filedKeyUpdate7 = filedKeyUpdate7;
-		this.filedKeyUpdate8 = filedKeyUpdate8;
-		this.filedKeyUpdate9 = filedKeyUpdate9;
-		this.filedKeyUpdate10 = filedKeyUpdate10;
-		this.filedKeyUpdate11 = filedKeyUpdate11;
-		this.filedKeyUpdate12 = filedKeyUpdate12;
-		this.filedKeyUpdate13 = filedKeyUpdate13;
-		this.filedKeyUpdate14 = filedKeyUpdate14;
-		this.filedKeyUpdate15 = filedKeyUpdate15;
-		this.filedKeyUpdate16 = filedKeyUpdate16;
-		this.filedKeyUpdate17 = filedKeyUpdate17;
-		this.filedKeyUpdate18 = filedKeyUpdate18;
-		this.filedKeyUpdate19 = filedKeyUpdate19;
-		this.filedKeyUpdate20 = filedKeyUpdate20;
-		this.screenRetentionPeriod = screenRetentionPeriod;
-		this.supplementaryExplanation = supplementaryExplanation;
-		this.parentTblJpName = parentTblJpName;
+		this.canNotBeOld = Optional.ofNullable(canNotBeOld);
+		this.selectionTargetForRes = Optional.ofNullable(selectionTargetForRes);
+		this.clsKeyQuery1 = Optional.ofNullable(clsKeyQuery1);
+		this.clsKeyQuery2 = Optional.ofNullable(clsKeyQuery2);
+		this.clsKeyQuery3 = Optional.ofNullable(clsKeyQuery3);
+		this.clsKeyQuery4 = Optional.ofNullable(clsKeyQuery4);
+		this.clsKeyQuery5 = Optional.ofNullable(clsKeyQuery5);
+		this.clsKeyQuery6 = Optional.ofNullable(clsKeyQuery6);
+		this.clsKeyQuery7 = Optional.ofNullable(clsKeyQuery7);
+		this.clsKeyQuery8 = Optional.ofNullable(clsKeyQuery8);
+		this.clsKeyQuery9 = Optional.ofNullable(clsKeyQuery9);
+		this.clsKeyQuery10 = Optional.ofNullable(clsKeyQuery10);
+		this.fieldKeyQuery1 = Optional.ofNullable(fieldKeyQuery1);
+		this.fieldKeyQuery2 = Optional.ofNullable(fieldKeyQuery2);
+		this.fieldKeyQuery3 = Optional.ofNullable(fieldKeyQuery3);
+		this.fieldKeyQuery4 = Optional.ofNullable(fieldKeyQuery4);
+		this.fieldKeyQuery5 = Optional.ofNullable(fieldKeyQuery5);
+		this.fieldKeyQuery6 = Optional.ofNullable(fieldKeyQuery6);
+		this.fieldKeyQuery7 = Optional.ofNullable(fieldKeyQuery7);
+		this.fieldKeyQuery8 = Optional.ofNullable(fieldKeyQuery8);
+		this.fieldKeyQuery9 = Optional.ofNullable(fieldKeyQuery9);
+		this.fieldKeyQuery10 = Optional.ofNullable(fieldKeyQuery10);
+		this.defaultCondKeyQuery = Optional.ofNullable(defaultCondKeyQuery);
+		this.fieldDate1 = Optional.ofNullable(fieldDate1);
+		this.fieldDate2 = Optional.ofNullable(fieldDate2);
+		this.fieldDate3 = Optional.ofNullable(fieldDate3);
+		this.fieldDate4 = Optional.ofNullable(fieldDate4);
+		this.fieldDate5 = Optional.ofNullable(fieldDate5);
+		this.fieldDate6 = Optional.ofNullable(fieldDate6);
+		this.fieldDate7 = Optional.ofNullable(fieldDate7);
+		this.fieldDate8 = Optional.ofNullable(fieldDate8);
+		this.fieldDate9 = Optional.ofNullable(fieldDate9);
+		this.fieldDate10 = Optional.ofNullable(fieldDate10);
+		this.fieldDate11 = Optional.ofNullable(fieldDate11);
+		this.fieldDate12 = Optional.ofNullable(fieldDate12);
+		this.fieldDate13 = Optional.ofNullable(fieldDate13);
+		this.fieldDate14 = Optional.ofNullable(fieldDate14);
+		this.fieldDate15 = Optional.ofNullable(fieldDate15);
+		this.fieldDate16 = Optional.ofNullable(fieldDate16);
+		this.fieldDate17 = Optional.ofNullable(fieldDate17);
+		this.fieldDate18 = Optional.ofNullable(fieldDate18);
+		this.fieldDate19 = Optional.ofNullable(fieldDate19);
+		this.fieldDate20 = Optional.ofNullable(fieldDate20);
+		this.filedKeyUpdate1 = Optional.ofNullable(filedKeyUpdate1);
+		this.filedKeyUpdate2 = Optional.ofNullable(filedKeyUpdate2);
+		this.filedKeyUpdate3 = Optional.ofNullable(filedKeyUpdate3);
+		this.filedKeyUpdate4 = Optional.ofNullable(filedKeyUpdate4);
+		this.filedKeyUpdate5 = Optional.ofNullable(filedKeyUpdate5);
+		this.filedKeyUpdate6 = Optional.ofNullable(filedKeyUpdate6);
+		this.filedKeyUpdate7 = Optional.ofNullable(filedKeyUpdate7);
+		this.filedKeyUpdate8 = Optional.ofNullable(filedKeyUpdate8);
+		this.filedKeyUpdate9 = Optional.ofNullable(filedKeyUpdate9);
+		this.filedKeyUpdate10 = Optional.ofNullable(filedKeyUpdate10);
+		this.filedKeyUpdate11 = Optional.ofNullable(filedKeyUpdate11);
+		this.filedKeyUpdate12 = Optional.ofNullable(filedKeyUpdate12);
+		this.filedKeyUpdate13 = Optional.ofNullable(filedKeyUpdate13);
+		this.filedKeyUpdate14 = Optional.ofNullable(filedKeyUpdate14);
+		this.filedKeyUpdate15 = Optional.ofNullable(filedKeyUpdate15);
+		this.filedKeyUpdate16 = Optional.ofNullable(filedKeyUpdate16);
+		this.filedKeyUpdate17 = Optional.ofNullable(filedKeyUpdate17);
+		this.filedKeyUpdate18 = Optional.ofNullable(filedKeyUpdate18);
+		this.filedKeyUpdate19 = Optional.ofNullable(filedKeyUpdate19);
+		this.filedKeyUpdate20 = Optional.ofNullable(filedKeyUpdate20);
+		this.screenRetentionPeriod = Optional.ofNullable(screenRetentionPeriod);
+		this.supplementaryExplanation = Optional.ofNullable(supplementaryExplanation);
+		this.parentTblJpName = Optional.ofNullable(parentTblJpName);
 		this.hasParentTblFlg = EnumAdaptor.valueOf(hasParentTblFlg, NotUseAtr.class);
-		this.parentTblName = parentTblName;
-		this.fieldParent1 = fieldParent1;
-		this.fieldParent2 = fieldParent2;
-		this.fieldParent3 = fieldParent3;
-		this.fieldParent4 = fieldParent4;
-		this.fieldParent5 = fieldParent5;
-		this.fieldParent6 = fieldParent6;
-		this.fieldParent7 = fieldParent7;
-		this.fieldParent8 = fieldParent8;
-		this.fieldParent9 = fieldParent9;
-		this.fieldParent10 = fieldParent10;
+		this.parentTblName = Optional.ofNullable(parentTblName);
+		this.fieldParent1 = Optional.ofNullable(fieldParent1);
+		this.fieldParent2 = Optional.ofNullable(fieldParent2);
+		this.fieldParent3 = Optional.ofNullable(fieldParent3);
+		this.fieldParent4 = Optional.ofNullable(fieldParent4);
+		this.fieldParent5 = Optional.ofNullable(fieldParent5);
+		this.fieldParent6 = Optional.ofNullable(fieldParent6);
+		this.fieldParent7 = Optional.ofNullable(fieldParent7);
+		this.fieldParent8 = Optional.ofNullable(fieldParent8);
+		this.fieldParent9 = Optional.ofNullable(fieldParent9);
+		this.fieldParent10 = Optional.ofNullable(fieldParent10);
 		this.surveyPreservation = EnumAdaptor.valueOf(surveyPreservation, NotUseAtr.class);
 	}
 
