@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author hoatt
@@ -22,4 +23,6 @@ public interface WorkplaceAdapter {
 	Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 	
 	List<EmployeeBasicInfoImport> findBySIds(List<String> sIds);
+	
+	WorkPlaceHistBySIDImport findWpkBySIDandPeriod(String sID, DatePeriod datePeriod);
 }
