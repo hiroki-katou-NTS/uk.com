@@ -216,8 +216,8 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 		return new TableList(objectSurfaceItem[0].toString(), objectSurfaceItem[1].toString(),
 				objectSurfaceItem[2].toString(), objectSurfaceItem[3].toString(),
-				GeneralDate.fromString(objectSurfaceItem[4].toString(), "yyyy/MM/dd"),
-				GeneralDate.fromString(objectSurfaceItem[5].toString(), "yyyy/MM/dd"),
+				objectSurfaceItem[4].toString(),
+				objectSurfaceItem[5].toString(),
 				Integer.parseInt(objectSurfaceItem[6].toString()), Integer.parseInt(objectSurfaceItem[7].toString()),
 				Integer.parseInt(objectSurfaceItem[8].toString()), objectSurfaceItem[9].toString(),
 				Integer.parseInt(objectSurfaceItem[10].toString()), objectSurfaceItem[11].toString());

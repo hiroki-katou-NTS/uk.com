@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -51,8 +52,8 @@ public class TableListRestorationService {
 							HistoryDiviSion.class);
 					NotUseAtr hasParentTblFlg = EnumAdaptor.valueOf(Integer.parseInt(tableListSetting.get(18)),
 							NotUseAtr.class);
-					GeneralDate saveDateFrom = GeneralDate.fromString(tableListSetting.get(107), dateFormat);
-					GeneralDate saveDateTo = GeneralDate.fromString(tableListSetting.get(108), dateFormat);
+					String saveDateFrom = tableListSetting.get(107);
+					String saveDateTo = tableListSetting.get(108);
 					TableList tableListData = new TableList(tableListSetting.get(0), tableListSetting.get(1),
 							tableListSetting.get(2), tableListSetting.get(3), tableListSetting.get(4),
 							tableListSetting.get(5), tableListSetting.get(6), retentionPeriodCls,
@@ -91,7 +92,7 @@ public class TableListRestorationService {
 							tableListSetting.get(104), tableListSetting.get(105), tableListSetting.get(106),
 							saveDateFrom, saveDateTo, tableListSetting.get(109), tableListSetting.get(110),
 							tableListSetting.get(111), Integer.parseInt(tableListSetting.get(112)), Integer.parseInt(tableListSetting.get(113)));
-					tableListData.setDataRecoveryProcessId(serverPrepareMng.getDataRecoveryProcessId());
+					tableListData.setDataRecoveryProcessId(Optional.ofNullable(serverPrepareMng.getDataRecoveryProcessId()));
 					tableList.add(tableListData);
 					tableListRepository.update(tableListData);
 					//tableListRepository.updateByStorageId(tableListData.getDataStorageProcessingId(), serverPrepareMng.getDataRecoveryProcessId());
