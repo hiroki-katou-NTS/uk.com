@@ -1027,10 +1027,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//get Application Name
 			String appDispNameStr = this.findAppName(appDispName, app.getAppType());
 			Integer detailSet = 0;
-			if(app.isAppOverTime() || app.isAppAbsence()){
+			if(app.isAppOverTime()){//TH: app.isAppAbsence() tam thoi bo qua do tren spec chua su dung
 				String wpk = wkpID + app.getAppType().value;
 				detailSet = this.finSetByWpkIDAppType(mapWpkSet, wpk);
-				if(detailSet == -1){
+				if(detailSet != null && detailSet == -1){
 					detailSet = this.detailSet(companyId, wkpID, app.getAppType().value);
 					mapWpkSet.put(wpk, detailSet);
 				}
@@ -1131,7 +1131,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
 		}
 		return appFuncSet.isPresent() &&  appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.USE) 
-				? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : null;
+				? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : 0;
 	} 
 	/**
 	 * 12 - 申請一覧初期日付期間
