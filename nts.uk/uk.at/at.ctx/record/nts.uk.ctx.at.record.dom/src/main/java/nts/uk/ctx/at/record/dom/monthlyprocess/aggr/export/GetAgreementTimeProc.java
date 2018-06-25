@@ -1,19 +1,21 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -23,10 +25,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public class GetAgreementTimeProc {
 
+	/** 月別集計で必要な会社別設定 */
+	private MonAggrCompanySettings companySets;
+	/** 月別集計で必要な社員別設定 */
+	private MonAggrEmployeeSettings employeeSets;
 	/** 月別集計が必要とするリポジトリ */
 	private RepositoriesRequiredByMonthlyAggr repositories;
-	/** 締めの取得 */
-	private ClosureRepository closureRepository;
 	
 	/** 会社ID */
 	private String companyId;
@@ -40,11 +44,9 @@ public class GetAgreementTimeProc {
 	private String errorMessage;
 	
 	public GetAgreementTimeProc(
-			RepositoriesRequiredByMonthlyAggr repositories,
-			ClosureRepository closureRepository) {
+			RepositoriesRequiredByMonthlyAggr repositories) {
 		
 		this.repositories = repositories;
-		this.closureRepository = closureRepository;
 	}
 	
 	/**
@@ -58,34 +60,51 @@ public class GetAgreementTimeProc {
 	public List<AgreementTimeDetail> get(String companyId, List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId) {
 
-		List<AgreementTimeDetail> returnList = new ArrayList<>();
+		CopyOnWriteArrayList<AgreementTimeDetail> results = new CopyOnWriteArrayList<>();
 		this.companyId = companyId;
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
 		this.errorMessage = null;
 		
+		// 月別集計で必要な会社別設定を取得　（36協定時間用）
+		this.companySets = MonAggrCompanySettings.loadSettingsForAgreement(companyId, this.repositories);
+		if (this.companySets.getErrorInfos().size() > 0){
+			this.errorMessage = this.companySets.getErrorInfos().values().stream().findFirst().get().v();
+			return results;
+		}
+		
 		// 年月を集計期間に変換
 		val aggrPeriod = this.convertToAggregatePeriod();
-		if (aggrPeriod == null) return returnList;
+		if (aggrPeriod == null) return results;
 		
-		for (val employeeId : employeeIds){
+		CopyOnWriteArrayList<String> errorMessages = new CopyOnWriteArrayList<>();
+		employeeIds.parallelStream().forEach(employeeId -> {
+			if (errorMessages.size() > 0) return;
+			
+			// 月別集計で必要な社員別設定を取得
+			this.employeeSets = MonAggrEmployeeSettings.loadSettings(
+					companyId, employeeId, aggrPeriod, this.repositories);
+			if (this.employeeSets.getErrorInfos().size() > 0){
+				errorMessages.add(this.employeeSets.getErrorInfos().values().stream().findFirst().get().v());
+				return;
+			}
 			
 			// 36協定時間一覧を作成
 			AgreementTimeDetail aggrTimeDetail = new AgreementTimeDetail(employeeId);
 
 			// 労働条件項目を取得する
-			val workConditionItemOpt =
-					this.repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, aggrPeriod.end());
-			if (!workConditionItemOpt.isPresent()) continue;
-			val workConditionItem = workConditionItemOpt.get();
+			// ※　必要ないかもしれない。
+			//val workConditionItemOpt =
+			//		this.repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, aggrPeriod.end());
+			//if (!workConditionItemOpt.isPresent()) continue;
+			//val workConditionItem = workConditionItemOpt.get();
 			
 			// 「日別実績の勤怠時間」を取得
 			val confirmedAttdTimeList =
 					this.repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, aggrPeriod);
 
 			// 確定情報の取得
-			val confirmed = this.getConfirmed(employeeId, aggrPeriod, workConditionItem,
-					Optional.of(confirmedAttdTimeList));
+			val confirmed = this.getConfirmed(employeeId, aggrPeriod, Optional.of(confirmedAttdTimeList));
 			
 			// 社員の申請を反映　（反映結果の取得）
 			//*****（未）　申請反映側処理の完成後、本実装。（永続化でない）「取得モード」で貰う。
@@ -97,10 +116,12 @@ public class GetAgreementTimeProc {
 			//		Optional.of(appReflectAttdTimeList));
 			
 			aggrTimeDetail = AgreementTimeDetail.of(employeeId, confirmed, afterAppReflect, this.errorMessage);
-			returnList.add(aggrTimeDetail);
-		}
+			results.add(aggrTimeDetail);
+		});
 		
-		return returnList;
+		if (errorMessages.size() > 0) this.errorMessage = errorMessages.get(0);
+		
+		return results;
 	}
 	
 	/**
@@ -110,9 +131,8 @@ public class GetAgreementTimeProc {
 	private DatePeriod convertToAggregatePeriod(){
 		
 		// 「締め」を取得
-		val closureOpt = this.closureRepository.findById(this.companyId, this.closureId.value);
-		if (!closureOpt.isPresent()) return null;
-		val closure = closureOpt.get();
+		val closure = this.companySets.getClosureMap().get(this.closureId.value);
+		if (closure == null) return null;
 		if (closure.getUseClassification() != UseClassification.UseClass_Use) return null;
 		
 		// 締め日を取得
@@ -122,7 +142,7 @@ public class GetAgreementTimeProc {
 		this.closureDate = closureHistory.getClosureDate();
 		
 		// 36協定運用設定を取得
-		val agreementOperationSetOpt = this.repositories.getAgreementOperationSet().find(this.companyId);
+		val agreementOperationSetOpt = this.companySets.getAgreementOperationSet();
 		if (!agreementOperationSetOpt.isPresent()) return null;
 		val agreementOperationSet = agreementOperationSetOpt.get();
 		
@@ -138,24 +158,24 @@ public class GetAgreementTimeProc {
 	 * 確定情報の取得
 	 * @param employeeId 社員ID
 	 * @param aggrPeriod 集計期間
-	 * @param workingConditionItem 労働条件項目
 	 * @param attendanceTimeOfDailysOpt 日別実績の勤怠時間リスト
 	 * @return 月別実績の36協定時間
 	 */
 	private AgreementTimeOfMonthly getConfirmed(
-			String employeeId, DatePeriod aggrPeriod, WorkingConditionItem workingConditionItem,
+			String employeeId,
+			DatePeriod aggrPeriod,
 			Optional<List<AttendanceTimeOfDailyPerformance>> attendanceTimeOfDailysOpt){
 		
 		// 「月別実績の勤怠時間」を取得
+		DatePeriod monthPeriod = null;
 		AttendanceTimeOfMonthly attendanceTimeOfMonthly = null;
 		val attendanceTimeOfMonthlys = this.repositories.getAttendanceTimeOfMonthly()
 				.findByYMAndClosureIdOrderByStartYmd(employeeId, this.yearMonth, this.closureId);
-		if (attendanceTimeOfMonthlys.size() <= 0) {
+		if (attendanceTimeOfMonthlys.size() == 0) {
 			
 			// 「締め」を取得する
-			val closureOpt = this.closureRepository.findById(this.companyId, this.closureId.value);
-			if (!closureOpt.isPresent()) return null;
-			val closure = closureOpt.get();
+			val closure = this.companySets.getClosureMap().get(this.closureId.value);
+			if (closure == null) return null;
 			if (closure.getUseClassification() != UseClassification.UseClass_Use) return null;
 			
 			// 指定した年月日時点の締め期間を取得する
@@ -164,19 +184,36 @@ public class GetAgreementTimeProc {
 			val closurePeriod = closurePeriodOpt.get();
 
 			// 「月別実績の勤怠時間」を作成する
+			monthPeriod = closurePeriod.getPeriod();
 			attendanceTimeOfMonthly = new AttendanceTimeOfMonthly(
-					employeeId, this.yearMonth, this.closureId, this.closureDate, closurePeriod.getPeriod());
+					employeeId, this.yearMonth, this.closureId, this.closureDate, monthPeriod);
 		}
 		else {
 			attendanceTimeOfMonthly = attendanceTimeOfMonthlys.get(0);
+			monthPeriod = attendanceTimeOfMonthly.getDatePeriod();
 		}
-		if (attendanceTimeOfMonthly == null) return null;
-	
+
+		// 集計に必要な日別実績データを取得する
+		MonthlyCalculatingDailys monthlyCalcDailys = null;
+		if (attendanceTimeOfDailysOpt.isPresent()){
+			monthlyCalcDailys = MonthlyCalculatingDailys.loadDataForAgreement(employeeId, monthPeriod,
+					attendanceTimeOfDailysOpt.get(), this.repositories);
+		}
+		else {
+			monthlyCalcDailys = MonthlyCalculatingDailys.loadDataForAgreement(employeeId, monthPeriod,
+					this.repositories);
+		}
+		
+		// 集計前の月別実績データを確認する
+		MonthlyOldDatas monthlyOldDatas = MonthlyOldDatas.loadData(
+				employeeId, this.yearMonth, this.closureId, this.closureDate, this.repositories);
+		
 		// 36協定時間の集計
 		val monthlyCalculation = attendanceTimeOfMonthly.getMonthlyCalculation();
 		val agreementTimeOpt = monthlyCalculation.aggregateAgreementTime(
 				this.companyId, employeeId, this.yearMonth, this.closureId, this.closureDate, aggrPeriod,
-				attendanceTimeOfDailysOpt, Optional.empty(), Optional.empty(), this.repositories);
+				Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
+				monthlyCalcDailys, monthlyOldDatas, this.repositories);
 		if (agreementTimeOpt.isPresent()){
 			
 			// エラーメッセージがあれば、エラーメッセージを入れる

@@ -32,7 +32,7 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 	private List<WorkLeaveTimeDto> workAndLeave;
 
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = COUNT)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer workTimes;
 
 	public static TimeLeavingOfDailyPerformanceDto getDto(TimeLeavingOfDailyPerformance domain) {

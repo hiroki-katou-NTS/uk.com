@@ -6,7 +6,8 @@ import java.util.Optional;
 
 public interface PersonInfoCategoryAuthRepository {
 
-	List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId);
+	List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId, int salaryUseAtr,
+			int personnelUseAtr, int employmentUseAtr);
 
 	void add(PersonInfoCategoryAuth domain);
 
@@ -17,9 +18,9 @@ public interface PersonInfoCategoryAuthRepository {
 	void deleteByRoleId(String roleId);
 
 	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId);
-	
+
 	Map<String, PersonInfoCategoryAuth> getByRoleIdAndCategories(String roleId, List<String> categoryIdList);
-	
+
 	Map<String, PersonInfoCategoryAuth> getByRoleId(String roleId);
 
 	List<PersonInfoCategoryAuth> getAllCategoryAuthByRoleId(String roleId);

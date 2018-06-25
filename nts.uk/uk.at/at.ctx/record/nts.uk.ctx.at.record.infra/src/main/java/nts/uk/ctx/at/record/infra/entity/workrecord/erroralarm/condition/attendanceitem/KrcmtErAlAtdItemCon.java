@@ -60,6 +60,11 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	@NotNull
 	@Column(name = "USE_ATR")
 	public int useAtr;
+	
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "TYPE")
+	public int type;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({
@@ -72,6 +77,9 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
 	public KrcstErAlCompareRange erAlCompareRange;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
+	public KrcstErAlInputCheck erAlInputCheck;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
 	public KrcstErAlSingleFixed erAlSingleFixed;
@@ -91,17 +99,19 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 		return this.krcmtErAlAtdItemConPK;
 	}
 
-	public KrcmtErAlAtdItemCon(KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK, int conditionAtr, int useAtr,
+	public KrcmtErAlAtdItemCon(KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK, int conditionAtr, int useAtr, int type,
 			List<KrcstErAlAtdTarget> lstAtdItemTarget, KrcstErAlCompareSingle erAlCompareSingle,
-			KrcstErAlCompareRange erAlCompareRange, KrcstErAlSingleFixed erAlSingleFixed,
-			List<KrcstErAlSingleAtd> erAlSingleAtd) {
+			KrcstErAlCompareRange erAlCompareRange, KrcstErAlInputCheck erAlInputCheck,
+			KrcstErAlSingleFixed erAlSingleFixed, List<KrcstErAlSingleAtd> erAlSingleAtd) {
 		super();
 		this.krcmtErAlAtdItemConPK = krcmtErAlAtdItemConPK;
 		this.conditionAtr = conditionAtr;
 		this.useAtr = useAtr;
+		this.type = type;
 		this.lstAtdItemTarget = lstAtdItemTarget;
 		this.erAlCompareSingle = erAlCompareSingle;
 		this.erAlCompareRange = erAlCompareRange;
+		this.erAlInputCheck = erAlInputCheck;
 		this.erAlSingleFixed = erAlSingleFixed;
 		this.erAlSingleAtd = erAlSingleAtd;
 	}
@@ -138,6 +148,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
         int endValue = 0;
         KrcstErAlCompareSingle erAlCompareSingle = null;
         KrcstErAlCompareRange erAlCompareRange = null;
+        KrcstErAlInputCheck erAlInputCheck = null;
         KrcstErAlSingleFixed erAlSingleFixed = null;
         List<KrcstErAlSingleAtd> erAlSingleAtd = new ArrayList<>();
         if (erAlAtdItemCon.getCompareRange() != null) {
@@ -188,19 +199,22 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                         new KrcstErAlSingleAtdPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO(),
                                 (((AttendanceItemId) erAlAtdItemCon.getCompareSingleValue().getValue()).v())),2));
             }
-        }
-        return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
-                erAlAtdItemCon.isUse() ? 1 : 0, lstAtdItemTarget, erAlCompareSingle,
-                erAlCompareRange, erAlSingleFixed, erAlSingleAtd);
+		} else if (erAlAtdItemCon.getInputCheck() != null) {
+			erAlInputCheck = new KrcstErAlInputCheck(
+					new KrcstErAlInputCheckPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()),
+					erAlAtdItemCon.getInputCheck().getInputCheckCondition().value);
+		}
+		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
+				erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
+				erAlCompareRange, erAlInputCheck, erAlSingleFixed, erAlSingleAtd);
     }
     
     @SuppressWarnings("unchecked")
     public <V> ErAlAttendanceItemCondition<V> toDomain(
             KrcmtErAlAtdItemCon atdItemCon, String companyId, String errorAlarmCode) {
-        ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode,
-                atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo,
-                atdItemCon.conditionAtr,
-                atdItemCon.useAtr == 1?true:false);
+		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode,
+				atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo, atdItemCon.conditionAtr,
+				atdItemCon.useAtr == 1 ? true : false, atdItemCon.type);
         // Set Target
         if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
             atdItemConDomain.setUncountableTarget(
@@ -266,9 +280,10 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                         (V) new AttendanceItemId(
                                 atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId));
             }
+        } else if (atdItemCon.erAlInputCheck != null) {
+        	atdItemConDomain.setInputCheck(atdItemCon.erAlInputCheck.inputCheckCondition);
         }
         return atdItemConDomain;
     }
-
 
 }

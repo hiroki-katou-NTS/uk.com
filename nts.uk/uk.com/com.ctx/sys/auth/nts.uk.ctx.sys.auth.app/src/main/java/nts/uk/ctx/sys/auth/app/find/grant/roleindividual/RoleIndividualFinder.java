@@ -181,22 +181,16 @@ public class RoleIndividualFinder {
 			return null;
 		
 		Optional<RoleIndividualGrant> rGrant = this.roleIndividualGrantRepo.findByKey(userId, companyId, roleId);
-		
-		try {
-			Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
-			if(user.get().getAssociatedPersonID() != null){
-				List<String> PersonID = new ArrayList<>();
-				PersonID.add(user.get().getAssociatedPersonID());
-				
-				List<PersonImport> listPerson = personAdapter.findByPersonIds(PersonID);
-				if(listPerson.size()>0){
-					user.get().setUserName(new UserName(listPerson.get(0).getPersonName()));
-				}
-			}
-			return RoleIndividualGrantDto.fromDomain(rGrant.get(), user.get().getUserName().v(), user.get().getLoginID().v());
-		} catch (Exception e) {
+		if(!rGrant.isPresent()) {
 			return null;
 		}
+		Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
+		if(user.isPresent()) {
+			return RoleIndividualGrantDto.fromDomain(rGrant.get(), user.get().getUserName().v(), user.get().getLoginID().v());
+		}else {
+			return null;
+		}
+
 	}
 	
 }

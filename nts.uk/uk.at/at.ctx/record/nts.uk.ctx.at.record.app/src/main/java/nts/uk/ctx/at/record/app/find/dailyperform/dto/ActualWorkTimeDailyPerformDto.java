@@ -34,7 +34,7 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 
 	/** 拘束差異時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = RESTRAINT + DIFF)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer constraintDifferenceTime;
 
 	/** 拘束時間: 総拘束時間 */
@@ -43,7 +43,7 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 
 	/** 時差勤務時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = TIME_DIFF + WORKING_TIME)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer timeDifferenceWorkingHours;
 
 	/** 総労働時間: 日別実績の総労働時間 */

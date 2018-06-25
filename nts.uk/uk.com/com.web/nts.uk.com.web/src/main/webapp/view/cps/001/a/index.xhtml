@@ -34,10 +34,12 @@
 				<button type="button" class="proceed"
 					data-bind="click: saveData, enable: $root.errors.isEmpty &amp;&amp; saveAble"
 					tabindex="1">#{i18n.getText('CPS001_4')}</button>
-				<button type="button" data-bind="click: unManagerEmployee"
+				<button type="button" data-bind="click: unManagerEmployee ,
+												 style: { visibility: enaBtnManagerEmp() ? 'visible' : 'hidden' }"
 					tabindex="2">#{i18n.getText('CPS001_5')}</button>
 				<button type="button" class="danger"
-					data-bind="click: deleteEmployee" tabindex="3">#{i18n.getText('CPS001_6')}</button>
+					data-bind="click: deleteEmployee ,
+							   style: { visibility: enaBtnDelEmp() ? 'visible' : 'hidden' }" tabindex="3">#{i18n.getText('CPS001_6')}</button>
 				<a class="goout"
 					data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }"
 					tabindex="4">#{i18n.getText('CPS001_7')}</a> <a class="goout"

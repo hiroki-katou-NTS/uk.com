@@ -33,6 +33,7 @@ import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrderPK;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.query.infra.entity.employee.EmployeeDataView;
 import nts.uk.query.infra.entity.employee.EmployeeDataView_;
+import nts.uk.query.model.employee.CCG001SystemType;
 import nts.uk.query.model.employee.EmployeeSearchQuery;
 import nts.uk.query.model.employee.RegulationInfoEmployee;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
@@ -164,7 +165,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			conditions
 					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), paramQuery.getBaseDate()));
 		}
-		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value) {
+		if (paramQuery.getSystemType() == CCG001SystemType.EMPLOYMENT.value) {
 			if (paramQuery.getFilterByWorktype()) {
 				// return empty list if condition code list is empty
 				if (worktypeCodes.isEmpty()) {
@@ -203,7 +204,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				paramQuery.getSortOrderNo());
 
 		// sort
-		if (paramQuery.getSystemType() != SystemType.ADMINISTRATOR.value) {
+		if (paramQuery.getSystemType() != CCG001SystemType.ADMINISTRATOR.value) {
 			List<Order> orders = this.getOrders(paramQuery.getSystemType(), 1, sortConditions); // TODO: fixed name type
 			cq.orderBy(orders);
 		}
@@ -212,7 +213,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		resultList.addAll(em.createQuery(cq).getResultList());
 
 		// Filter result list by status of employee
-		resultList = resultList.stream().filter(item -> item.isFiltered(paramQuery)).collect(Collectors.toList());
+		resultList = resultList.stream().filter(item -> item.isIncluded(paramQuery)).collect(Collectors.toList());
 
 		// Distinct employee in result list.
 		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid))
@@ -307,73 +308,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		});
 
 		// sort by worktype code
-		if (systemType == SystemType.EMPLOYMENT.value) {
+		if (systemType == CCG001SystemType.EMPLOYMENT.value) {
 			orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
 		}
 		return orders;
-	}
-
-	/**
-	 * The Enum SystemType.
-	 */
-	public enum SystemType {
-
-		/** The personal information. */
-		// システム管理者
-		PERSONAL_INFORMATION(1),
-
-		/** The employment. */
-		// 就業
-		EMPLOYMENT(2),
-
-		/** The salary. */
-		// 給与
-		SALARY(3),
-
-		/** The human resources. */
-		// 人事
-		HUMAN_RESOURCES(4),
-
-		/** The administrator. */
-		// 管理者
-		ADMINISTRATOR(5);
-
-		/** The value. */
-		public final int value;
-
-		/** The Constant values. */
-		private final static SystemType[] values = SystemType.values();
-
-		/**
-		 * Instantiates a new system type.
-		 *
-		 * @param value the value
-		 */
-		private SystemType(int value) {
-			this.value = value;
-		}
-
-		/**
-		 * Value of.
-		 *
-		 * @param value the value
-		 * @return the system type
-		 */
-		public static SystemType valueOf(Integer value) {
-			// Invalid object.
-			if (value == null) {
-				return null;
-			}
-
-			// Find value.
-			for (SystemType val : SystemType.values) {
-				if (val.value == value) {
-					return val;
-				}
-			}
-			// Not found.
-			return null;
-		}
 	}
 
 	/*
