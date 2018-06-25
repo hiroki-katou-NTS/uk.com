@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
@@ -35,7 +37,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	@Override
 	public void add(ResultOfSaving data) {
 		SspmtResultOfSaving entity = SspmtResultOfSaving.toEntity(data);
-		entity.compressedPassword = data.getCompressedPassword() != null ? CommonKeyCrypt.encrypt(data.getCompressedPassword().v()) : null;
+		entity.compressedPassword = (data.getCompressedPassword() != null && StringUtils.isNotEmpty(data.getCompressedPassword().v())) ? CommonKeyCrypt.encrypt(data.getCompressedPassword().v()) : null;
 		this.commandProxy().insert(entity);
 
 	}
