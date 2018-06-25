@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -151,9 +152,18 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KrqmtVacationHistory_.startDate), start));
 		
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KrqmtVacationHistory_.endDate), end));
-
+		
+		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
+		List<Order> orders = new ArrayList<>();
+		//Sortby StartDate and WorkTypeCode
+		orders.add(criteriaBuilder.asc(root.get(KrqmtVacationHistory_.startDate)));
+		orders.add(criteriaBuilder.asc(root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.worktypeCd)));
+		
+		//order
+		cq.orderBy(orders);
 
 		// exclude select
 		List<PlanVacationHistory> lstHist = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
