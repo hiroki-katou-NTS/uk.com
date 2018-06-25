@@ -72,7 +72,7 @@ module nts.uk.com.view.cmm020.a {
                             var indexOfEraSelected = self.dataSource().indexOf(currentEra);
                             if (currentEra.systemType == 1) {
                                 self.activeUpdate(false);
-                                self.activeDelete(false); 
+                                self.activeDelete(false);
                             } else {
                                 self.activeUpdate(indexOfEraSelected > LAST_INDEX_ERA_NAME_SYTEM);
                                 self.activeDelete(indexOfEraSelected == self.dataSource().length - 1);
@@ -97,13 +97,13 @@ module nts.uk.com.view.cmm020.a {
                 //                listEraName.push(new model.EraItem("code5", "T", "CusSb", "2018/06/25", false));
                 //                listEraName.push(new model.EraItem("code6", "D", "222", "2018/3/28", false));
 
-                self.loadEraNameList();
+                self.loadEraNameList(null);
                 dfd.resolve();
 
                 return dfd.promise();
             }
 
-            public loadEraNameList() {
+            public loadEraNameList(code) {
                 let self = this;
                 service.getAllEraNameItem().done(function(listEraName: Array<model.EraItem>) {
                     if (listEraName === undefined || listEraName.length == 0) {
@@ -111,9 +111,20 @@ module nts.uk.com.view.cmm020.a {
                     } else {
                         var listEraName = _.orderBy(listEraName, [function(item) { return new Date(item.startDate); }], ['asc']);
                         self.dataSource(listEraName);
-                        let eraNameLast = _.last(listEraName);
-                        self.currentCode(eraNameLast.eraId);
-                        self.setValueCurrentEraShow(eraNameLast);
+                        if (code != null) {
+                            // focus on current item
+                            let eraNameCurrent = _.find(listEraName, function(o) { return o.eraId == code; });
+                            self.currentCode(eraNameCurrent.eraId);
+                            self.eraSelected(eraNameCurrent);
+
+                        }
+                        else {
+                            // focus on the last item
+                            let eraNameLast = _.last(listEraName);
+                            self.currentCode(eraNameLast.eraId);
+                            self.eraSelected(eraNameLast);
+                        }
+                        self.setValueCurrentEraShow(self.eraSelected());
                     }
 
                 });
@@ -147,7 +158,7 @@ module nts.uk.com.view.cmm020.a {
                                     blockUI.clear();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                         blockUI.clear();
-                                        self.loadEraNameList();
+                                        self.loadEraNameList(null);
                                     });
                                 });
                             } else {
@@ -173,7 +184,7 @@ module nts.uk.com.view.cmm020.a {
                                             blockUI.clear();
                                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                                 blockUI.clear();
-                                                self.loadEraNameList();
+                                                self.loadEraNameList(self.currentCode());
                                             });
                                         });
                                     }
@@ -183,7 +194,7 @@ module nts.uk.com.view.cmm020.a {
                                         blockUI.clear();
                                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                             blockUI.clear();
-                                            self.loadEraNameList();
+                                            self.loadEraNameList(null);
                                         });
                                     });
                                 }

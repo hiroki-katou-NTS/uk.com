@@ -41,6 +41,8 @@ public class EraNameSaveCommandHandler extends CommandHandler<EraNameSaveCommand
 				
 				// get previous era name item
 				EraNameDom preItem = this.repo.getEraNameByEndDate(GeneralDate.localDate(domain.getStartDate().localDate().minusDays(1)));
+				if(preItem == null)
+					throw new RuntimeException("Not found previous EraName item"); 
 				
 				// update saved item
 				domain.setEraName(new EraName(command.getEraName()));
