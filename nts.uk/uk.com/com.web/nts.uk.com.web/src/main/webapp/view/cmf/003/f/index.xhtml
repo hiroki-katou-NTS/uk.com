@@ -76,7 +76,9 @@
 							<label>#{i18n.getText('CMF003_34')}</label>
 							<label style="padding-right: 5px;">: </label>
 							<label data-bind="text : dayStartValue"></label>
-							<label>~</label>
+							<com:ko-if bind="!((dayStartValue == '') &amp;&amp; (dayEndValue == ''))">
+								<label>~</label>
+							</com:ko-if>
 							<label data-bind="text : dayEndValue"></label>
 						</td>
 					</tr>
@@ -85,7 +87,9 @@
 							<label>#{i18n.getText('CMF003_35')}</label>
 							<label style="padding-right: 5px;">: </label>
 							<label data-bind="text : monthStartValue"></label>
-							<label>~</label> 
+							<com:ko-if bind="!((monthStartValue == '') &amp;&amp; (monthEndValue == ''))">
+								<label>~</label>
+							</com:ko-if>
 							<label data-bind="text : monthEndValue"></label>
 						</td>
 					</tr>
@@ -94,7 +98,9 @@
 							<label>#{i18n.getText('CMF003_36')}</label>
 							<label style="padding-right: 5px;">: </label> 
 							<label data-bind="text : yearStartValue"></label>
-							<label>~</label>
+							<com:ko-if bind="!((yearStartValue == '') &amp;&amp; (yearEndValue == ''))">
+								<label>~</label>
+							</com:ko-if>
 							<label data-bind="text : yearEndValue"></label>
 						</td>
 					</tr>
