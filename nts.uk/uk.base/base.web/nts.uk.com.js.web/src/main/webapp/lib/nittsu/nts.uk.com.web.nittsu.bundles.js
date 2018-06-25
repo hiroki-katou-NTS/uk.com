@@ -1932,6 +1932,7 @@ var nts;
                 return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
             }
             time_1.parseTime = parseTime;
+<<<<<<< HEAD
             var ResultParseTimeWithSecond = /** @class */ (function (_super) {
                 __extends(ResultParseTimeWithSecond, _super);
                 function ResultParseTimeWithSecond(success, minus, hours, minutes, second, msg) {
@@ -2007,6 +2008,8 @@ var nts;
                 return ResultParseTimeWithSecond.succeeded(minusNumber, parseInt(hours), parseInt(minutes), parseInt(seconds));
             }
             time_1.parseTimeWithSecond = parseTimeWithSecond;
+=======
+>>>>>>> origin/kiban-feature/updatentsgrid27
             var ResultParseYearMonth = /** @class */ (function (_super) {
                 __extends(ResultParseYearMonth, _super);
                 function ResultParseYearMonth(success, msg, year, month) {
@@ -4673,6 +4676,7 @@ var nts;
                     return PunchCardNoValidator;
                 }());
                 validation.PunchCardNoValidator = PunchCardNoValidator;
+<<<<<<< HEAD
                 var EmployeeCodeValidator = /** @class */ (function () {
                     function EmployeeCodeValidator(name, options) {
                         var self = this;
@@ -4706,6 +4710,8 @@ var nts;
                     return EmployeeCodeValidator;
                 }());
                 validation.EmployeeCodeValidator = EmployeeCodeValidator;
+=======
+>>>>>>> origin/kiban-feature/updatentsgrid27
                 var StringValidator = /** @class */ (function () {
                     function StringValidator(name, primitiveValueName, option) {
                         this.name = name;
@@ -23631,7 +23637,7 @@ var nts;
                                 $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: columnKey, value: cellValue }]);
                             }
                             gridUpdate._notifyCellUpdated(rId);
-                            notifyUpdate($grid, rowId, columnKey, cellValue, origData);
+                            notifyUpdate($grid, rId, columnKey, cellValue, origData);
                         }
                         updating.updateCell = updateCell;
                         /**
@@ -23653,7 +23659,7 @@ var nts;
                             var origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
                             grid.dataSource.updateRow(rId, $.extend({}, gridUpdate._getLatestValues(rId), updatedRowData), autoCommit);
                             _.forEach(Object.keys(updatedRowData), function (key) {
-                                notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
+                                notifyUpdate($grid, rId, key, updatedRowData[key], origData);
                                 var isControl = utils.isNtsControl($grid, key);
                                 if (isControl) {
                                     $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: key, value: updatedRowData[key] }]);
@@ -24843,18 +24849,64 @@ var nts;
                         /**
                          * Clear states.
                          */
-                        function clearStates($grid, id) {
-                            var cellFormatter = $grid.data(internal.CELL_FORMATTER);
-                            if (cellFormatter && cellFormatter.rowStates && cellFormatter.rowStates[id]) {
-                                delete cellFormatter.rowStates[id];
-                                var $row = $grid.igGrid("rowById", id, false);
-                                var $cells_1 = $row.find("td");
-                                [color.Error, color.Alarm, color.ManualEditTarget, color.ManualEditOther,
-                                    color.Reflect, color.Calculation, color.Disable].forEach(function (s) {
-                                    if ($cells_1.hasClass(s))
-                                        $cells_1.removeClass(s);
-                                });
+                        function clearStates($grid, arr) {
+                            if (arr && arr.constructor !== Array) {
+                                return clearStates.apply(null, [$grid, [arr]]);
                             }
+                            var cellFormatter = $grid.data(internal.CELL_FORMATTER);
+                            if (!cellFormatter)
+                                return;
+                            arr.forEach(function (id) {
+                                var disableRow;
+                                if (cellFormatter.disableRows && (disableRow = cellFormatter.disableRows[id])
+                                    && disableRow[0].disable) {
+                                    delete cellFormatter.disableRows[id];
+                                }
+                                else if (cellFormatter.rowStates && cellFormatter.rowStates[id]) {
+                                    delete cellFormatter.rowStates[id];
+                                }
+                                clearRowStates($grid, id);
+                            });
+                        }
+                        /**
+                         * Clear row states.
+                         */
+                        function clearRowStates($grid, id) {
+                            var $row = $grid.igGrid("rowById", id, false);
+                            removeClass($grid, $row, id);
+                            $row = $grid.igGrid("rowById", id, true);
+                            if ($row.length > 0) {
+                                removeClass($grid, $row, id);
+                            }
+                        }
+                        /**
+                         * Remove class.
+                         */
+                        function removeClass($grid, $row, id) {
+                            var $cells = $row.find("td");
+                            [color.Error, color.Alarm, color.ManualEditTarget, color.ManualEditOther,
+                                color.Reflect, color.Calculation, color.Disable].forEach(function (s) {
+                                $cells.each(function (i, td) {
+                                    var $cell = $(td);
+                                    if ($cell.hasClass(s)) {
+                                        $cell.removeClass(s);
+                                        if (s === color.Disable) {
+                                            var described = $cell.attr("aria-describedby");
+                                            if (!described)
+                                                return;
+                                            var key = described.split("_")[1];
+                                            var controlType = utils.getControlType($grid, key);
+                                            if (controlType && controlType !== ntsControls.TEXTBOX) {
+                                                var control = ntsControls.getControl(controlType);
+                                                if (uk.util.isNullOrUndefined(control))
+                                                    return;
+                                                control.enable($cell);
+                                                color.popDisable($grid, { id: id, columnKey: key });
+                                            }
+                                        }
+                                    }
+                                });
+                            });
                         }
                         /**
                          * Reset orig ds.
@@ -25538,7 +25590,7 @@ var nts;
                             };
                             LinkLabel.prototype.enable = function ($container) {
                                 var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
-                                $wrapper.find("a").css("color", "deepskyblue").on("click", $wrapper.data("click"));
+                                $wrapper.find("a").css("color", "#0066CC").on("click", $wrapper.data("click"));
                             };
                             LinkLabel.prototype.disable = function ($container) {
                                 var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
@@ -25657,7 +25709,14 @@ var nts;
                             var nextColumn = utils.nextColumnByKey(visibleColumnsMap, columnKey, isFixedColumn);
                             if (uk.util.isNullOrUndefined(nextColumn) || nextColumn.index === 0)
                                 return;
-                            specialColumn.onChange(columnKey, cell.id, pastedText).done(function (res) {
+                            var origDs = $grid.data(internal.ORIG_DS);
+                            var setting = $grid.data(internal.SETTINGS);
+                            var idx = setting.descriptor.keyIdxes[cell.id];
+                            var prevData;
+                            if (origDs && !uk.util.isNullOrUndefined(idx) && (prevData = origDs[idx])) {
+                                prevData = prevData[columnKey];
+                            }
+                            specialColumn.onChange(columnKey, cell.id, pastedText, prevData).done(function (res) {
                                 var updatedRow = {};
                                 var $gridRow = utils.rowAt(cell);
                                 if (specialColumn.type === specialColumn_1.COMBO_CODE) {
