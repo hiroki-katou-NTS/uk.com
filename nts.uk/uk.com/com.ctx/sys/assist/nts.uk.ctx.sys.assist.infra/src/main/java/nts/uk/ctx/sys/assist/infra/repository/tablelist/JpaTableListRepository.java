@@ -111,20 +111,20 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		// From
 		query.append(" FROM ").append(tableExport.getSimpleName()).append(" t");
 		Class<?> tableParent = null;
-		if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
-			tableParent = this.getTypeForTableName(tableList.getParentTblName());
+		if (tableList.getHasParentTblFlg() == NotUseAtr.USE && tableList.getParentTblName().isPresent()) {
+			tableParent = this.getTypeForTableName(tableList.getParentTblName().get());
 			// アルゴリズム「親テーブルをJOINする」を実行する
 			query.append(" INNER JOIN ").append(tableParent.getSimpleName()).append(" p ON ");
 
-			String[] parentFields = { tableList.getFieldParent1(), tableList.getFieldParent2(),
-					tableList.getFieldParent3(), tableList.getFieldParent4(), tableList.getFieldParent5(),
-					tableList.getFieldParent6(), tableList.getFieldParent7(), tableList.getFieldParent8(),
-					tableList.getFieldParent9(), tableList.getFieldParent10() };
+			String[] parentFields = { tableList.getFieldParent1().orElse(""), tableList.getFieldParent2().orElse(""),
+					tableList.getFieldParent3().orElse(""), tableList.getFieldParent4().orElse(""), tableList.getFieldParent5().orElse(""),
+					tableList.getFieldParent6().orElse(""), tableList.getFieldParent7().orElse(""), tableList.getFieldParent8().orElse(""),
+					tableList.getFieldParent9().orElse(""), tableList.getFieldParent10().orElse("") };
 
-			String[] childFields = { tableList.getFieldChild1(), tableList.getFieldChild2(), tableList.getFieldChild3(),
-					tableList.getFieldChild4(), tableList.getFieldChild5(), tableList.getFieldChild6(),
-					tableList.getFieldChild7(), tableList.getFieldChild8(), tableList.getFieldChild9(),
-					tableList.getFieldChild10() };
+			String[] childFields = { tableList.getFieldChild1().orElse(""), tableList.getFieldChild2().orElse(""), tableList.getFieldChild3().orElse(""),
+					tableList.getFieldChild4().orElse(""), tableList.getFieldChild5().orElse(""), tableList.getFieldChild6().orElse(""),
+					tableList.getFieldChild7().orElse(""), tableList.getFieldChild8().orElse(""), tableList.getFieldChild9().orElse(""),
+					tableList.getFieldChild10().orElse("") };
 
 			boolean isFirstOnStatement = true;
 			for (int i = 0; i < parentFields.length; i++) {
@@ -139,14 +139,14 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 			}
 		}
 
-		String[] fieldKeyQuerys = { tableList.getFieldKeyQuery1(), tableList.getFieldKeyQuery2(),
-				tableList.getFieldKeyQuery3(), tableList.getFieldKeyQuery4(), tableList.getFieldKeyQuery5(),
-				tableList.getFieldKeyQuery6(), tableList.getFieldKeyQuery7(), tableList.getFieldKeyQuery8(),
-				tableList.getFieldKeyQuery9(), tableList.getFieldKeyQuery10() };
-		String[] clsKeyQuerys = { tableList.getClsKeyQuery1(), tableList.getClsKeyQuery2(), tableList.getClsKeyQuery3(),
-				tableList.getClsKeyQuery4(), tableList.getClsKeyQuery5(), tableList.getClsKeyQuery6(),
-				tableList.getClsKeyQuery7(), tableList.getClsKeyQuery8(), tableList.getClsKeyQuery9(),
-				tableList.getClsKeyQuery10() };
+		String[] fieldKeyQuerys = { tableList.getFieldKeyQuery1().orElse(""), tableList.getFieldKeyQuery2().orElse(""),
+				tableList.getFieldKeyQuery3().orElse(""), tableList.getFieldKeyQuery4().orElse(""), tableList.getFieldKeyQuery5().orElse(""),
+				tableList.getFieldKeyQuery6().orElse(""), tableList.getFieldKeyQuery7().orElse(""), tableList.getFieldKeyQuery8().orElse(""),
+				tableList.getFieldKeyQuery9().orElse(""), tableList.getFieldKeyQuery10().orElse("") };
+		String[] clsKeyQuerys = { tableList.getClsKeyQuery1().orElse(""), tableList.getClsKeyQuery2().orElse(""), tableList.getClsKeyQuery3().orElse(""),
+				tableList.getClsKeyQuery4().orElse(""), tableList.getClsKeyQuery5().orElse(""), tableList.getClsKeyQuery6().orElse(""),
+				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""), tableList.getClsKeyQuery9().orElse(""),
+				tableList.getClsKeyQuery10().orElse("") };
 
 		for (int i = 0; i < clsKeyQuerys.length; i++) {
 			if (clsKeyQuerys[i] == EMPLOYEE_CD) {
@@ -286,7 +286,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		}
 
 		// 抽出条件キー固定
-		String extractCondKeyFix = tableList.getDefaultCondKeyQuery() == null ? "" : tableList.getDefaultCondKeyQuery();
+		String extractCondKeyFix = tableList.getDefaultCondKeyQuery() == null ? "" : tableList.getDefaultCondKeyQuery().orElse("");
 
 		TypedQueryWrapper<?> queryWrapper = this.queryProxy().query(query.toString(), tableExport);
 		DatabaseQuery databaseQuery = queryWrapper.getQuery().unwrap(EJBQueryImpl.class).getDatabaseQuery();
