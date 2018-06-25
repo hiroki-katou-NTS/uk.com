@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.Column;
+
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -47,6 +49,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -221,4 +224,6 @@ public interface DailyPerformanceScreenRepo {
 	List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 
 	
 	Integer getLimitFexMonth();
+	
+	Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId, Integer closureId, Integer closeDay, Integer isLastDay);
  }
