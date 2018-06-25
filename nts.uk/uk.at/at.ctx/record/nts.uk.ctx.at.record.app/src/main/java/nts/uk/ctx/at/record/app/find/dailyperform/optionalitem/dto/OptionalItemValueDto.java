@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
@@ -28,7 +29,8 @@ public class OptionalItemValueDto implements ItemConst {
 	private boolean autoInit = true;
 
 	/** 任意項目: 回数, 時間, 金額 */
-	@AttendanceItemValue
+	/** TODO: set */
+	@AttendanceItemValue(type = ValueType.UNKNOWN, getTypeWith = DEFAULT_GET_TYPE, setValueWith = DEFAULT_SET_VALUE)
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = VALUE)
 	private String value;
 
@@ -79,6 +81,10 @@ public class OptionalItemValueDto implements ItemConst {
 				Optional.of(new AnyItemTime(getDailyTimeOrDefault())));
 	}
 
+	public void value(Object val) {
+		this.value = val.toString();
+	}
+	
 	public boolean isHaveData() {
 		return !StringUtil.isNullOrEmpty(this.value, true);
 	}
@@ -190,6 +196,16 @@ public class OptionalItemValueDto implements ItemConst {
 
 	public boolean isTimeItem() {
 		return itemAttr == OptionalItemAtr.TIME;
+	}
+	
+	public ValueType getValueType(){
+		if(isAmoutItem()){
+			return ValueType.AMOUNT;
+		}
+		if(isTimesItem()){
+			return ValueType.COUNT_WITH_DECIMAL;
+		}
+		return ValueType.TIME;
 	}
 	
 	private void correctValue(AnyItemValue c, OptionalItemAtr attr){

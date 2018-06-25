@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.tempabsence;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
@@ -20,16 +22,19 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaTempAbsHist extends JpaRepository implements TempAbsHistRepository {
 
-	private final String QUERY_GET_TEMPORARYABSENCE_BYSID = "SELECT ta FROM BsymtTempAbsHistory ta"
+	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID = "SELECT ta FROM BsymtTempAbsHistory ta"
 			+ " WHERE ta.sid = :sid and ta.cid = :cid ORDER BY ta.startDate";
 	
-	private final String QUERY_GET_TEMPORARYABSENCE_BYSID_DESC = QUERY_GET_TEMPORARYABSENCE_BYSID + " DESC";
+	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID_DESC = QUERY_GET_TEMPORARYABSENCE_BYSID + " DESC";
 	
-	private final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
+	private static final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
 			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
-	private final String SELECT_BY_LIST_SID_DATEPERIOD =  "SELECT th FROM BsymtTempAbsHistory th"
+	private static final String SELECT_BY_LIST_SID_DATEPERIOD =  "SELECT th FROM BsymtTempAbsHistory th"
 			+ " WHERE th.sid IN :employeeIds AND th.startDate <= :endDate AND :startDate <= th.endDate"
 			+ " ORDER BY th.sid, th.startDate";
+	
+	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT tah.sid FROM BsymtTempAbsHistory tah" 
+			+ " WHERE tah.sid IN :employeeIds AND tah.startDate <= :endDate AND :startDate <= tah.endDate ";
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -159,6 +164,22 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	private List<DateHistoryItem> convertToDateHistoryItems(List<BsymtTempAbsHistory> entities) {
 		return entities.stream().map(ent -> new DateHistoryItem(ent.histId, new DatePeriod(ent.startDate, ent.endDate)))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getLstSidByListSidAndDatePeriod(List<String> employeeIds, DatePeriod dateperiod) {
+		List<String> listSid = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_LSTSID_DATEPERIOD, String.class)
+					.setParameter("employeeIds", subList)
+					.setParameter("startDate", dateperiod.start())
+					.setParameter("endDate", dateperiod.end())
+					.getList());
+		});
+		if(listSid.isEmpty()){
+			return Collections.emptyList();
+		}
+		return listSid;
 	}
 
 }

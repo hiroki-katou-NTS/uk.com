@@ -19,19 +19,27 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/ntscommons/arc/diagnose/.*",
 			"/shr/infra/file/storage/.*",
 			"/i18n/.*",
-			"/ctx/sys/gateway/login/.*"
+			"/ctx/sys/gateway/login/.*",
+			"/ctx/sys/gateway/sendmail/.*",
+			"/ctx/sys/gateway/changepassword/.*",
+			"/ctx/sys/gateway/url/.*"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
 			"/view/sample/.*",
 			"/view/common/error/.*",
 			"/view/spr/index.xhtml",
+			"/view/url/index.xhtml",
+			"/view/ccg/033/index.xhtml",
 			ProgramsManager.CCG007A.getPPath(),
 			ProgramsManager.CCG007B.getPPath(),
 			ProgramsManager.CCG007C.getPPath(),
 			ProgramsManager.CCG007D.getPPath(),
+			ProgramsManager.CCG007E.getPPath(),
 			ProgramsManager.CCG007F.getPPath(),
 			ProgramsManager.CCG007G.getPPath(),
+			ProgramsManager.CCG007H.getPPath(),
+			ProgramsManager.CCG007I.getPPath(),
 			ProgramsManager.KDW003A.getPPath()
 			);
 

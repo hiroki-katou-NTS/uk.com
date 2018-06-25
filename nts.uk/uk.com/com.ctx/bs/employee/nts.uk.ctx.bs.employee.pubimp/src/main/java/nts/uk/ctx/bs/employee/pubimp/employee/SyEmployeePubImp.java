@@ -30,6 +30,8 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
@@ -90,6 +92,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Inject
 	private EmployeeDataMngInfoRepository sDataMngInfoRepo;
+	
+	@Inject
+	private TempAbsHistRepository  tempAbsHistRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -439,48 +444,40 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<String> getListEmpByWkpAndEmpt(List<String> wkpsId, List<String> lstemptsCode, DatePeriod dateperiod) {
 
-		// lấy List workplace history items từ dateperiod and list workplaceId
-		List<AffWorkplaceHistoryItem> lstWkpHisItem = affWkpItemRepo
-				.getAffWkpHistItemByListWkpIdAndDatePeriod(dateperiod, wkpsId);
+		// lấy List sid từ dateperiod and list workplaceId
+		List<String> lstSidFromWorkPlace = affWkpItemRepo.getSidByListWkpIdAndDatePeriod(dateperiod, wkpsId);
 
-		if (lstWkpHisItem.isEmpty()) {
+		if (lstSidFromWorkPlace.isEmpty()) {
 			return Collections.emptyList();
 		}
-		// Lấy list sid từ lstWkpHisItem
-		List<String> lstEmpIdOfWkp = lstWkpHisItem.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
-		// (Thực hiện Lấy List employeement history item từ list employeementId và
-		// period)
+		
+		// (Thực hiện Lấy List sid từ list employeementId và period)
 
-		List<EmploymentHistoryItem> lstEmptHisItem = emptHistItem.getListEmptByListCodeAndDatePeriod(dateperiod,
-				lstemptsCode);
+		List<String> lstSidFromEmpt = emptHistItem.getLstSidByListCodeAndDatePeriod(dateperiod, lstemptsCode);
 
-		if (lstEmptHisItem.isEmpty()) {
+		if (lstSidFromEmpt.isEmpty()) {
 			return Collections.emptyList();
 		}
-		// Lấy list sid từ lstEmptHisItem
-		List<String> lstEmpIdOfEmpt = lstEmptHisItem.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 
 		// lấy list sid chung từ 2 list lstEmpIdOfWkp vs lstEmpIdOfEmpt
-		List<String> lstId = lstEmpIdOfWkp.stream().filter(lstEmpIdOfEmpt::contains).collect(Collectors.toList());
+		List<String> generalLstId = lstSidFromWorkPlace.stream().filter(lstSidFromEmpt::contains).collect(Collectors.toList());
 
-		if (lstId.isEmpty()) {
+		if (generalLstId.isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		// lây list Employee từ list sid và dateperiod
-		List<AffCompanyHist> lstAffComHist = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(lstId, dateperiod);
+		// lây list Sid từ list sid và dateperiod
+		List<String> lstSidFromAffComHist = affComHistRepo.getLstSidByLstSidAndPeriod(generalLstId, dateperiod);
 
-		if (lstAffComHist.isEmpty()) {
+		if (lstSidFromAffComHist.isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		List<AffCompanyHistByEmployee> lstAffComHistByEmp = getAffCompanyHistByEmployee(lstAffComHist);
-
-		// List sid sau khi lọc qua điều kiện datePeriod
-		List<String> lstSidAfterFilter = lstAffComHistByEmp.stream().map(m -> m.getSId()).collect(Collectors.toList());
-
-		// List sid tồn tại ở lstId nhưng không tồn tại ở list sid
-		List<String> result = lstId.stream().filter(i -> !lstSidAfterFilter.contains(i)).collect(Collectors.toList());
+		// lây list sid từ list sid và dateperiod
+		List<String> lstTempAbsenceHistory =  tempAbsHistRepository.getLstSidByListSidAndDatePeriod(lstSidFromAffComHist , dateperiod );
+		
+		// List sid tồn tại ở lstSidFromAffComHist nhưng không tồn tại ở list lstSidFromTempAbsHis
+		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstTempAbsenceHistory.contains(i)).collect(Collectors.toList());
 		if (result.isEmpty()) {
 			return Collections.emptyList();
 		}

@@ -349,7 +349,9 @@ module nts.uk.at.view.kal003.share.model {
                     let ag36 = new AgreementCheckCon36(ko.toJS(param.agreementCheckCon36));
                     temp.push(ag36);
                     temp.push(ag36.setupDefaultOtherType(ko.toJS(ag36)));
-                    let attdItem: AttdItemConCommon = new AttdItemConCommon(ko.toJS(param.checkConMonthly));
+                    let attdItem: AttdItemConCommon =  _.isNil(param.checkConMonthly.group2) ? 
+                                                            new AttdItemConCommon(ko.toJS(param.checkConMonthly), param.typeCheckItem) : 
+                                                            new AttdItemConCommonWithGroup2(ko.toJS(param.checkConMonthly), param.typeCheckItem);
                     temp.push(attdItem);
                     _.forEach(AttdItemConCommon.initDefaultOtherTypes(attdItem.typeCheckItem()), (x) => {
                         temp.push(x);
@@ -571,8 +573,9 @@ module nts.uk.at.view.kal003.share.model {
         constructor(data : any){
             
             super();
+            let self = this;
             this.extractType=ko.observable(0);
-            this.textLabel=ko.observable("所定公休日数の");
+            this.textLabel=ko.observable(nts.uk.resource.getText("KAL003_78"));
             this.haveTypeVacation=ko.observable(false);
             this.haveCombobox=ko.observable(true);
             this.haveComboboxFrame = ko.observable(false);
@@ -580,16 +583,21 @@ module nts.uk.at.view.kal003.share.model {
             this.haveGroup=ko.observable(false);
             this.haveInput=ko.observable(0);
             this.typeCheckItem = ko.observable(0);
+            this.operator=ko.computed(() => {
+                return self.extractType();    
+            });
             if(!nts.uk.util.isNullOrUndefined(data)){
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
-                this.operator=ko.observable(data.extractType || 0);
+                this.extractType(data.compareOperator);
                 this.numberDayDiffHoliday1=ko.observable(data.numberDayDiffHoliday1 || 0);
-                this.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2 || null);    
+                this.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2 || null); 
+                this.setupScrible();  
             }else{
                 this.errorAlarmCheckID=ko.observable("");
-                this.operator=ko.observable(0);
+//                this.operator=ko.observable(0);
                 this.numberDayDiffHoliday1=ko.observable(0);
                 this.numberDayDiffHoliday2=ko.observable(null);
+                this.setupScrible();
             }
         }
         
@@ -618,11 +626,11 @@ module nts.uk.at.view.kal003.share.model {
         }
         public static  clone(data: any) : SpecHolidayCheckCon{
             var x = new SpecHolidayCheckCon();
-            x.extractType(data.operator);
+            x.extractType(data.extractType);
             x.numberDayDiffHoliday1(data.numberDayDiffHoliday1);
             x.numberDayDiffHoliday2(data.numberDayDiffHoliday2);
             x.errorAlarmCheckID(data.errorAlarmCheckID);
-            x.operator(data.operator);
+//            x.operator(data.operator);
             x.textLabel(data.textLabel);
             x.haveTypeVacation(data.haveTypeVacation);
             x.haveCombobox(data.haveCombobox);
@@ -679,16 +687,18 @@ module nts.uk.at.view.kal003.share.model {
                     this.extractType(data.compareRangeEx ? data.compareRangeEx.compareOperator : data.compareSingleValueEx.compareOperator);
                     this.compareRangeEx=ko.observable(data.compareRangeEx?new CompareRangeImport(data.compareRangeEx) : null);
                     this.compareSingleValueEx=ko.observable(data.compareSingleValueEx? new CompareSingleValueImport( data.compareSingleValueEx) : null);
+                    this.setupScrible();
                 }
                 this.listItemID=ko.observableArray(data.listItemID? data.listItemID : null);    
             }else{
                 this.errorAlarmCheckID=ko.observable("");
-                this.operator=ko.observable(0);
+//                this.operator=ko.observable(0);
                 this.checkOperatorType=ko.observable(data.extractType >5 ?1:0);
                 this.checkVacation=ko.observable(0);
                 this.compareRangeEx=ko.observable(null);
                 this.compareSingleValueEx=ko.observable(null);
                 this.listItemID=ko.observableArray([]);
+                this.setupScrible();
             }
             
             
@@ -697,7 +707,7 @@ module nts.uk.at.view.kal003.share.model {
         public static  clone(data: any):CheckRemainNumberMon{
             var x = new CheckRemainNumberMon({noinit: true});
             x.errorAlarmCheckID(data.errorAlarmCheckID);
-            x.extractType(data.operator);
+            x.extractType(data.extractType);
             x.textLabel(data.textLabel);
             x.haveTypeVacation(data.haveTypeVacation);
             x.haveCombobox(data.haveCombobox);
@@ -869,17 +879,20 @@ module nts.uk.at.view.kal003.share.model {
             if(!nts.uk.util.isNullOrUndefined(data)){
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
                 this.extractType=ko.observable(data.compareOperator || 0);
-                this.textLabel=ko.observable(data.classification == 0 ? "エラー時間" : "アラーム時間");
+                this.textLabel=ko.observable(data.classification == 0 ? nts.uk.resource.getText("KAL003_159"): nts.uk.resource.getText("KAL003_158"));
                 this.operator=ko.observable(data.compareOperator || 0);
                 this.haveInput=ko.observable(data.classification == 0 ? 1 : 2);
                 this.typeCheckItem =ko.observable(data.classification == 0 ? 1 : 2 );
                 
                 this.classification=ko.observable(data.classification || 0);
-                this.eralBeforeTime=ko.observable(data.eralBeforeTime || 0);    
+                this.eralBeforeTime=ko.observable(data.eralBeforeTime || 0);
+                this.setupScrible();    
             }else{
                 
                 this.classification=ko.observable(0);
-                this.eralBeforeTime=ko.observable(0);    
+                this.eralBeforeTime=ko.observable(0);   
+                this.extractType=ko.observable(0);
+                this.setupScrible(); 
             }
             
         }
@@ -939,12 +952,15 @@ module nts.uk.at.view.kal003.share.model {
                 
                 if(param.noinit !== true){
                     self.group1=ko.observable(param ? new ErAlConditionsAttendanceItem(param.group1) : null);    
+                    self.extractType(param.group1.lstErAlAtdItemCon[0].compareOperator);
                     self.getTextAttdName(undefined);
+                    self.setupScrible();
                 }
             } else {
                 self.errorAlarmCheckID=ko.observable("");
                 self.operator=ko.observable(0);
-                self.group1=ko.observable(kal003utils.getDefaultAttdItemGroup3Item());//set default group 1 for type 4, 5, 6, 7 
+                self.group1=ko.observable(kal003utils.getDefaultAttdItemGroup3Item());//set default group 1 for type 4, 5, 6, 7
+                self.setupScrible(); 
             }
         }
         
@@ -1006,7 +1022,7 @@ module nts.uk.at.view.kal003.share.model {
                 } else {
                     self.inputs()[1].enable(false);
                     self.inputs()[1].required(false);
-                    self.inputs()[1].value('');
+                    self.inputs()[1].value(0);
                 }
             });  
         }
@@ -1112,14 +1128,16 @@ module nts.uk.at.view.kal003.share.model {
             self.haveGroup=ko.observable(true);
             if(!nts.uk.util.isNullOrUndefined(param)){
                 self.group2UseAtr=ko.observable(param ? param.group2UseAtr || false : false);
-                self.group1(kal003utils.getDefaultAttdItemGroup3Item());
+                //self.group1(kal003utils.getDefaultAttdItemGroup3Item());
                 if(param.noinit !== true){
                     self.group2=ko.observable(param ? new ErAlConditionsAttendanceItem(param.group2) : null);
                 }
+                this.setupScrible();
             } else {
                 self.group2UseAtr=ko.observable(false);
-                self.group1(kal003utils.getDefaultAttdItemGroup3Item());
+                //self.group1(kal003utils.getDefaultAttdItemGroup3Item());
                 self.group2=ko.observable(kal003utils.getDefaultAttdItemGroup3Item());
+                this.setupScrible();
             }
         }
         public static clone(data: any): AttdItemConCommonWithGroup2{
@@ -1222,8 +1240,8 @@ module nts.uk.at.view.kal003.share.model {
                 self.conditionAtr=ko.observable(param.conditionAtr);
                 self.useAtr=ko.observable(param.useAtr);
                 self.uncountableAtdItem=ko.observable(param.uncountableAtdItem);
-                self.countableAddAtdItems=ko.observableArray(param.countableAddAtdItems ? param.countableAddAtdItems : []);
-                self.countableSubAtdItems=ko.observableArray(param.countableSubAtdItems ? param.countableSubAtdItems : []);
+                self.countableAddAtdItems=ko.observableArray(_.values(param.countableAddAtdItems));
+                self.countableSubAtdItems=ko.observableArray(_.values(param.countableSubAtdItems));
                 self.conditionType=ko.observable(param.conditionType);
                 self.singleAtdItem=ko.observable(param.singleAtdItem);
                 self.compareStartValue=ko.observable(param.compareStartValue);
@@ -1255,24 +1273,33 @@ module nts.uk.at.view.kal003.share.model {
                 self.setTextDisplay();    
             }
             self.displayLeft = ko.computed(() => {
-                if(self.compareOperator() === 6 || self.compareOperator() === 7){
-                    return self.displayLeftCompare();
+                let compareOp = self.compareOperator();
+                let case1 = self.displayLeftCompare();
+                let case2 = self.displayTarget();
+                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                    return case1;
                 } else {
-                    return self.displayTarget();
+                    return case2;
                 }  
             });
             self.displayRight = ko.computed(() => {
-                if(self.compareOperator() === 8 || self.compareOperator() === 9){
-                    return self.displayTarget();
+                let compareOp = self.compareOperator();
+                let case1 = self.displayRightCompare();
+                let case2 = self.displayTarget();
+                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                    return case1;
                 } else {
-                    return self.displayRightCompare();
+                    return case2;
                 }
             });
             self.displayCenter = ko.computed(() => {
-                if(self.compareOperator() === 6 || self.compareOperator() === 7){
-                    return self.displayTarget();
+                let compareOp = self.compareOperator();
+                let case1 = self.displayLeftCompare();
+                let case2 = self.displayTarget();
+                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                    return case2;
                 } else {
-                    return self.displayLeftCompare();
+                    return case1;
                 }
             });
             
@@ -1350,12 +1377,12 @@ module nts.uk.at.view.kal003.share.model {
                     self.displayRightOperator("≦");
                     break;
                 case 8:
-                    self.displayLeftOperator("＜");
-                    self.displayRightOperator("＜");
+                    self.displayLeftOperator("＞");
+                    self.displayRightOperator("＞");
                     break;
                 case 9:
-                    self.displayLeftOperator("≦");
-                    self.displayRightOperator("≦");
+                    self.displayLeftOperator("≧");
+                    self.displayRightOperator("≧");
                     break;
                 default: 
                     self.displayLeftOperator("");
@@ -1520,7 +1547,11 @@ module nts.uk.at.view.kal003.share.model {
                 self.atdItemConGroupId(param ? param.atdItemConGroupId || '' : '');
                 self.conditionOperator(param ? param.conditionOperator || 0 : 0);
                 if(param.noinit !== true){
-                    self.lstErAlAtdItemCon = ko.observableArray(param ? _.map(param.lstErAlAtdItemCon,acc =>{ return new ErAlAtdItemCondition(acc); }) || [] : []);
+                    self.lstErAlAtdItemCon = ko.observableArray(param 
+                        ? _.map(ko.mapping.toJS(param.lstErAlAtdItemCon),acc =>{ 
+                            let js = ko.mapping.toJS(acc);
+                            return new ErAlAtdItemCondition(js.targetNO, js); 
+                        }) || [] : []);
                 }
             }
         }
@@ -1549,9 +1580,9 @@ module nts.uk.at.view.kal003.share.model {
         operatorBetweenGroups: KnockoutObservable<number> = ko.observable(0);
         constructor(param: IAttendanceItemCondition) {
             let self = this;
-            self.group1 = ko.observable(param ? new ErAlConditionsAttendanceItem(param.group1) : null);
+            self.group1 = ko.observable(param ? new ErAlConditionsAttendanceItem(ko.mapping.toJS(param.group1)) : null);
             self.group2UseAtr(param ? param.group2UseAtr || false : false);
-            self.group2 = ko.observable(param ? new ErAlConditionsAttendanceItem(param.group2) : null);
+            self.group2 = ko.observable(param ? new ErAlConditionsAttendanceItem(ko.mapping.toJS(param.group2)) : null);
             self.operatorBetweenGroups(param ? param.operatorBetweenGroups || 0 : 0);
         }
     }

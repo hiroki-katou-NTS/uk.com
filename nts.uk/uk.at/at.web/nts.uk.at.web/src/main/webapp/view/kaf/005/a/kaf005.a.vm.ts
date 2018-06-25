@@ -358,6 +358,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.workTypeChangeFlg(data.workTypeChangeFlg);
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
+            self.convertAppOvertimeReferDto(data);
             // 休憩時間
             for (let i = 1; i < 11; i++) {
                 self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i, null, null, null,""));

@@ -10,8 +10,12 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
+import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
+import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
@@ -356,10 +360,18 @@ public class AnnualLeaveInfo implements Cloneable {
 		val retentionYears = this.annualPaidLeaveSet.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v();
 		val deadline = grantDate.addYears(retentionYears).addDays(-1);
 		
-		// 付与日数を計算する
+		// 付与日数を確認する
 		double grantDays = 0.0;
 		if (aggregatePeriodWork.getAnnualLeaveGrant().isPresent()){
 			grantDays = aggregatePeriodWork.getAnnualLeaveGrant().get().getGrantDays().v().doubleValue();
+		}
+		
+		// 次回年休付与を確認する
+		Double prescribedDays = null;
+		Double deductedDays = null;
+		Double workingDays = null;
+		if (aggregatePeriodWork.getAnnualLeaveGrant().isPresent()){
+			val nextAnnLeaGrant = aggregatePeriodWork.getAnnualLeaveGrant().get();
 		}
 		
 		// 「年休付与残数データ」を作成する
@@ -369,18 +381,32 @@ public class AnnualLeaveInfo implements Cloneable {
 				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
 				grantDays, null,
 				0.0, null, null,
-				0.0, null,
+				grantDays, null,
 				0.0,
-				null, null, null));
+				prescribedDays,
+				deductedDays,
+				workingDays));
 		newRemainData.setDummyAtr(false);
 		
 		// 作成した「年休付与残数データ」を付与残数データリストに追加
 		this.grantRemainingList.add(newRemainData);
 
-		// 上限データを作成
-		
 		// 付与後フラグ　←　true
 		this.afterGrantAtr = true;
+		
+		// 年休情報．付与情報に付与時の情報をセット
+		double oldGrantDays = 0.0;
+		if (this.grantInfo.isPresent()){
+			oldGrantDays = this.grantInfo.get().getGrantDays().v().doubleValue();
+		}
+		this.grantInfo = Optional.of(AnnualLeaveGrant.of(
+				new AnnualLeaveGrantDayNumber(oldGrantDays + grantDays),
+				new YearlyDays(workingDays == null ? 0.0 : workingDays),
+				new YearlyDays(prescribedDays == null ? 0.0 : prescribedDays),
+				new YearlyDays(deductedDays == null ? 0.0 : deductedDays),
+				new MonthlyDays(0.0),
+				new MonthlyDays(0.0),
+				new AttendanceRate(0.0)));
 		
 		// 年休情報残数を更新
 		this.updateRemainingNumber();

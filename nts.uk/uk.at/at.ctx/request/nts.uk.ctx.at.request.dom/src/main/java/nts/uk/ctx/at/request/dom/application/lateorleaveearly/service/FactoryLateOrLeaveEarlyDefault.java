@@ -12,13 +12,21 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
 public class FactoryLateOrLeaveEarlyDefault implements FactoryLateOrLeaveEarly {
 
 	@Override
-	public LateOrLeaveEarly buildLateOrLeaveEarly(Application_New application, int early1, int earlyTime1, int late1, int lateTime1, 
-			int early2, int earlyTime2, int late2, int lateTime2) {
-		return new LateOrLeaveEarly(application, 0, 
-				EnumAdaptor.valueOf(early1, Select.class), new TimeDay(early1), 
-				EnumAdaptor.valueOf(late1, Select.class), new TimeDay(lateTime1),  
-				EnumAdaptor.valueOf(early2, Select.class), new TimeDay(early2), 
-				EnumAdaptor.valueOf(late2, Select.class), new TimeDay(lateTime2));
+	public LateOrLeaveEarly buildLateOrLeaveEarly(Application_New application, int early1, Integer earlyTime1, int late1, Integer lateTime1, 
+			int early2, Integer earlyTime2, int late2, Integer lateTime2) {
+		return new LateOrLeaveEarly(application, 1, 
+									EnumAdaptor.valueOf(early1, Select.class),
+									getTimeDay(earlyTime1), 
+									EnumAdaptor.valueOf(late1, Select.class),
+									getTimeDay(lateTime1),  
+									EnumAdaptor.valueOf(early2, Select.class),
+									getTimeDay(earlyTime2), 
+									EnumAdaptor.valueOf(late2, Select.class),
+									getTimeDay(lateTime2));
+	}
+
+	private TimeDay getTimeDay(Integer timeDay) {
+		return timeDay!=null?new TimeDay(timeDay):null;
 	}
 	
 

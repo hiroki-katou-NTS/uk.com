@@ -36,7 +36,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 
         listApprovalEmployee: Array<ApprovalStatusEmployee> = [];
         listDailyStatus: Array<DailyStatusOut> = [];
-        multiSelectedWorkplaceId: Array<any>;
+        inputContent: any;
         dateFormat = "yyyy/MM/dd";
         constructor() {
             var self = this;
@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 self.listWorkplace = params.listWorkplace;
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
-                self.multiSelectedWorkplaceId = params.multiSelectedWorkplaceId;
+                self.inputContent = params.inputContent;
             }
             self.dtPrev(new Date(self.startDateFormat));
             self.dtAft(new Date(self.endDateFormat));
@@ -207,7 +207,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let initExTable = self.setFormatData(detailHeaderDeco, self.listDailyStatus);
 
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "42px", bodyRowHeight: "23px", bodyHeight: "330px",
+                        headerHeight: "46px", bodyRowHeight: "23px", bodyHeight: "322px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         remainSizes: false,
@@ -273,7 +273,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             ];
             leftmostHeader = {
                 columns: leftmostColumns,
-                rowHeight: "42px",
+                rowHeight: "46px",
                 width: "200px"
             };
             leftmostContent = {
@@ -288,7 +288,14 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             _.each(listResize, function(item: ResizeColumn) {
                 let time = new shareModel.Time(new Date(item.date));
                 detailHeaderColumns.push({
-                    key: "_" + time.yearMonthDay, width: item.width, headerText: self.getDay(time)
+                    key: "_" + time.yearMonthDay, 
+                    width: item.width, 
+                    headerText: time.day,
+                    group:[{
+                        key: "___" + time.yearMonthDay, 
+                        width: item.width, 
+                        headerText: time.weekDay
+                    }]
                 });
                 detailContentColumns.push({
                     key: "__" + time.yearMonthDay, width: item.width
@@ -302,7 +309,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 features: [
                     {
                         name: "HeaderRowHeight",
-                        rows: { 0: "42px" }
+                        rows: { 0: "23px", 1: "23px" }
                     },
                     {
                         name: "HeaderCellStyle",
@@ -342,14 +349,19 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, undefined, "bg-schedule-specific-date"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "1", "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, undefined, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
                     } else if (date.weekDay === '土') {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, undefined, "bg-schedule-saturday color-schedule-saturday"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "1", "bg-schedule-saturday color-schedule-saturday"));
                     } else if (date.weekDay === '日') {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, undefined, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
                     } else {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, undefined, "bg-weekdays color-weekdays"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "1", "bg-weekdays color-weekdays"));
                     }
                 });
                 dfd.resolve(detailHeaderDeco);
@@ -444,7 +456,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         goBackA() {
             var self = this;
             let params = {
-                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
+                inputContent: self.inputContent
             };
             nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);
         }
@@ -459,6 +471,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 closureName: self.closureName,
                 listWorkplace: self.listWorkplace,
                 listEmployeeCode: self.listEmpCd,
+                inputContent: self.inputContent
             }
             nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
         }
@@ -474,7 +487,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             let params = {
                 empName: rData.empName,
                 selectedEmpId: rData.empId,
-                listStatusEmp: listStatusEmp
+                listStatusEmp: listStatusEmp,
+                inputContent: self.inputContent
             }
             nts.uk.ui.windows.setShared("KAF018D_VALUE", params);
             nts.uk.ui.windows.sub.modal('/view/kaf/018/d/index.xhtml');

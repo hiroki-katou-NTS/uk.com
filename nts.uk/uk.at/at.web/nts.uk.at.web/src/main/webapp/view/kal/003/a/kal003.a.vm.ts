@@ -43,7 +43,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
-
+        
         constructor() {
             var self = this;
 
@@ -53,7 +53,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK }, this) },
                 { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
                 { id: 'tab-5', title: getText('KAL003_67'), content: '.tab-content-5', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
-                { id: 'tab-6', title: getText('KAL003_67'), content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
+                { id: 'tab-6', title: 'アラームリストのチェック条件', content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-7', title: getText('KAL003_210'), content: '.tab-content-7', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) },
                 { id: 'tab-8', title: getText('KAL003_211'), content: '.tab-content-8', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) }
             ]);
@@ -153,11 +153,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 service.getAllFixedExtraItemMon().done((data: Array<any>) => {
                     if (data && data.length) {
                         let _list: Array<model.FixedExtraMonFun> = _.map(data, acc => {
-                            return new model.FixedExtraMonFun({ monAlarmCheckID: "", monAlarmCheckName: acc.monAlarmCheckName, fixedExtraItemMonNo: acc.fixedExtraItemMonNo, message: acc.message, useAtr: false });
+                            return new model.FixedExtraMonFun({ monAlarmCheckID: "", monAlarmCheckName: acc.fixedExtraItemMonName, fixedExtraItemMonNo: acc.fixedExtraItemMonNo, message: acc.message, useAtr: false });
                         });
                         self.tabAlarmcheck.listFixedExtraMonFun(_list);
                     }
                 });
+                self.tabCheckAlarm.listExtraResultMonthly([]);
 
             }
 
@@ -181,7 +182,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         let conError = new model.AgreeConditionErrorDto(temp);
                         listName.push(conError);
                     });
-                    self.tabAgreementError.listAgreementError(_.orderBy(listName, ['period'], ['asc']));
+                    self.tabAgreementError.listAgreementError(_.orderBy(listName, ['errorAlarm', 'period'], ['asc', 'asc']));
                     i = 0;
                 });
             }
@@ -417,7 +418,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             });
 
 //                            self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
-                            self.tabAgreementError.listAgreementError(_.orderBy(listAgreementErrorKnockout, ['period'], ['asc']));
+                            self.tabAgreementError.listAgreementError(_.orderBy(listAgreementErrorKnockout, ['errorAlarm', 'period'], ['asc', 'asc']));
                             self.tabAgreementHour.listAgreementHour(_.sortBy(listAgreementHourKnockout, ['no']));
                         }
 
@@ -431,13 +432,16 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         }
 
                         self.screenMode(model.SCREEN_MODE.UPDATE);
-                        $("#A3_4").focus();
+//                        $("#A3_4").focus();
+                        setTimeout(function() { $("#A3_4").focus(); }, 500);
                     }
                 }).fail(function(error) {
                     alertError(error);
                 }).always(() => {
                     block.clear();
                 });
+            }else{
+                
             }
         }
 

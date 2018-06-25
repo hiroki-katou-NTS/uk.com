@@ -209,6 +209,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
                     self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
                     self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
+                    //remove 3 enum : 4 5 6 as required ( ohashi)
+                    _.remove(self.listTypeCheckWorkRecords(), function(n) {
+                        return (n.value == 5 || n.value == 6 || n.value == 4 );
+                    });
                     let listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
                     self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
                     self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));
@@ -910,10 +914,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
         btnDecision() {
             let self = this;
             $('.nts-input').trigger("validate");
-                    if (errors.hasError() === true) {
-                        nts.uk.ui.errors.show();
-                        return;
-                    }
+            if (errors.hasError() === true) {
+                nts.uk.ui.errors.show();
+                return;
+            }
             switch (self.category()) {
                 case sharemodel.CATEGORY.DAILY:
                     let workRecordExtractingCondition = self.workRecordExtractingCondition();

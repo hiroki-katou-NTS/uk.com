@@ -277,7 +277,6 @@ public class ApprovalStatusFinder {
 		List<ApplicationDetailDto> listApplicationDetail = new ArrayList<>();
 		List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
 		List<AppCompltLeaveSync> lstCompltLeaveSync = appList.getListSync();
-		//List<ApplicationDto_New> listApp = new ArrayList<>();
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
 			
@@ -322,7 +321,7 @@ public class ApprovalStatusFinder {
 			for (ApproverOutput approver : listApprover) {
 				int phase = approver.getPhase();
 				String numOfPerson = approver.getNumOfPeople() > 0
-						? I18NText.getText("KAF018_47", approver.getNumOfPeople().toString()) : "";
+						? ("確定者" + I18NText.getText("KAF018_47", approver.getNumOfPeople().toString())) : "";
 				String others = approver.getEmpName() + numOfPerson;
 				switch (phase) {
 				case 1:
@@ -413,7 +412,7 @@ public class ApprovalStatusFinder {
 			detail.setReflectState(reflectState);
 			listApplicationDetail.add(detail);
 		}
-		return new ApplicationListDto(listApplicationDetail, lstCompltLeaveSync);
+		return new ApplicationListDto(listApplicationDetail, lstCompltLeaveSync, appList.isDisplayPrePostFlg());
 	}
 
 	private String getBreakTimeApp(ApplicationDto_New applicaton_N, String companyID, String appId) {
@@ -454,13 +453,13 @@ public class ApprovalStatusFinder {
 		String appContent = "";
 		AppGoBackInfoFull appGoBackInfo = appDetailInfoRepo.getAppGoBackInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_258");
-		appContent += Objects.isNull(appGoBackInfo.getGoWorkAtr1()) ? "" : I18NText.getText("KAF018_259");
+		appContent += !Objects.isNull(appGoBackInfo.getGoWorkAtr1()) && appGoBackInfo.getGoWorkAtr1() == 1 ? I18NText.getText("KAF018_259") : "";
 		appContent += appGoBackInfo.getWorkTimeStart1();
-		appContent += Objects.isNull(appGoBackInfo.getBackHomeAtr1()) ? "" : I18NText.getText("KAF018_260");
+		appContent += !Objects.isNull(appGoBackInfo.getBackHomeAtr1()) && appGoBackInfo.getBackHomeAtr1() == 1 ? I18NText.getText("KAF018_260") : "";
 		appContent += appGoBackInfo.getWorkTimeEnd1();
-		appContent += Objects.isNull(appGoBackInfo.getGoWorkAtr2()) ? "" : I18NText.getText("KAF018_259");
+		appContent += !Objects.isNull(appGoBackInfo.getGoWorkAtr2()) && appGoBackInfo.getGoWorkAtr2() == 1 ? I18NText.getText("KAF018_259") : "";
 		appContent += appGoBackInfo.getWorkTimeStart2();
-		appContent += Objects.isNull(appGoBackInfo.getBackHomeAtr2()) ? "" : I18NText.getText("KAF018_260");
+		appContent += !Objects.isNull(appGoBackInfo.getBackHomeAtr2()) && appGoBackInfo.getBackHomeAtr2() == 1 ? I18NText.getText("KAF018_260") : "";
 		appContent += appGoBackInfo.getWorkTimeEnd2();
 		return appContent;
 	}
@@ -515,12 +514,13 @@ public class ApprovalStatusFinder {
 		String frameName = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
-				frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
-				time += overFrame.getApplicationTime();
-				countItem++;
 				if (countItem > 2) {
+					time += overFrame.getApplicationTime();
 					countRest = lstFrame.size() - 3;
-					break;
+				} else {
+					frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
+					time += overFrame.getApplicationTime();
+					countItem++;
 				}
 			}
 		}

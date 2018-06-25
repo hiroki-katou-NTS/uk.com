@@ -92,8 +92,16 @@ module nts.uk.at.view.kal001.a.service {
                         this.endDate = nts.uk.time.parseMoment(p.dateValue().endDate).momentObject.toISOString() ;
                         
                     }else if(p.category ==7){
-                        this.startDate = null ;
-                        this.endDate = null;
+//                        this.startDate = null ;
+//                        this.endDate = null;
+                        let sDate =p.dateValue().startDate + '/01';
+                            let eDate = p.dateValue().endDate;
+
+                            let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
+                            eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());
+                                                        
+                            this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
+                            this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;   
                         
                     }else if(p.category==12){
                         this.name=nts.uk.resource.getText("KAL010_208");
@@ -103,7 +111,7 @@ module nts.uk.at.view.kal001.a.service {
                                                         
                         } else if(p.categoryName=="36協定　年間"){
                             let sDate =p.year() +'/' + p.dateValue().startDate.slice(5, 7) +"/01";
-                            let eDate =(p.year() + 1) +'/' + p.dateValue().endDate.slice(5,7) ;
+                            let eDate =(parseInt(p.year()) + 1) +'/' + p.dateValue().endDate.slice(5,7)+"/31" ;
                             
                             let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
                             eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());                            

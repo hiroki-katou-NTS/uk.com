@@ -38,6 +38,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQue
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -72,6 +73,9 @@ public class FlexInfoDisplay {
 	
 	@Inject
 	private DailyPerformanceScreenRepo dailyPerformanceScreenRepo;
+	
+	@Inject
+	private CheckBeforeCalcFlex checkBeforeCalcFlex;
 	
 	//<<Public>> フレックス情報を表示する
 	public FlexShortage flexInfo(String employeeId, GeneralDate baseDate, String roleId){
@@ -132,6 +136,14 @@ public class FlexInfoDisplay {
 		 //set closureId
 		 calcFlex.setClosureId(closureEmploymentOptional.get().getClosureId());
 		 calcFlex.setHistId(workConditions.get(0).getHistoryId());
+		 
+		 //翌月繰越可能時間をチェックする
+		 String condition = checkBeforeCalcFlex.getConditionCalcFlex(calcFlex);
+		 dataMonth.createRedConditionMessage(condition);
+		 dataMonth.createNotForward("");
+		 if(condition.equals("0:00")){
+			 dataMonth.createNotForward(TextResource.localize("KDW003_114")); 
+		 }
 		 BreakDownTimeDayExport time = predertermineOpt.get().getPredTime();
 		return dataMonth.createCanFlex(checkFlex)
 				.createBreakTimeDay(new BreakTimeDay(time.getOneDay(), time.getMorning(), time.getAfternoon()))

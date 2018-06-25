@@ -109,9 +109,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 			KfnmtExecutionTaskLog innitExecutionTaskLog = this.taskLogList.get(0);
 			int size = this.taskLogList.size();
 			for (int i = 1; i < size; i++) {
-				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.taskId != this.taskLogList.get(i).kfnmtExecTaskLogPK.taskId)
-					continue;
-				if(innitExecutionTaskLog.getUpdDate().compareTo(this.taskLogList.get(i).getUpdDate())==1){
+				if(innitExecutionTaskLog.getUpdDate()!=null && this.taskLogList.get(i).getUpdDate()!=null && innitExecutionTaskLog.getUpdDate().before(this.taskLogList.get(i).getUpdDate())){
 					innitExecutionTaskLog = this.taskLogList.get(i);
 				}
 			}
@@ -120,7 +118,15 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 					taskLogList.add(this.taskLogList.get(i).toNewDomain());
 				}
 			}
+			//asc
+			Collections.sort(taskLogList, new Comparator<ExecutionTaskLog>() {
+			    @Override
+			    public int compare(ExecutionTaskLog e1, ExecutionTaskLog e2) {
+			        return e1.getProcExecTask().value < e2.getProcExecTask().value ?-1 : 1;
+			    }
+			});
 		}
+		
 		
 		DatePeriod scheduleCreationPeriod = (this.schCreateStart == null || this.schCreateEnd == null) ? null
 				: new DatePeriod(this.schCreateStart, this.schCreateEnd);
@@ -142,7 +148,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 			KfnmtExecutionTaskLog innitExecutionTaskLog = stTaskList.get(0);
 			int size = stTaskList.size();
 			for (int i = 1; i < size; i++) {
-				if(innitExecutionTaskLog.getUpdDate()!=null && stTaskList.get(i).getUpdDate()!=null && innitExecutionTaskLog.getUpdDate().compareTo(stTaskList.get(i).getUpdDate())== -1){
+				if(innitExecutionTaskLog.getUpdDate()!=null && stTaskList.get(i).getUpdDate()!=null && innitExecutionTaskLog.getUpdDate().before(stTaskList.get(i).getUpdDate())){
 					innitExecutionTaskLog = stTaskList.get(i);
 				}
 			}
@@ -151,6 +157,13 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 					taskLogList.add(stTaskList.get(i).toNewDomain());
 				}
 			}
+			//asc
+			Collections.sort(taskLogList, new Comparator<ExecutionTaskLog>() {
+			    @Override
+			    public int compare(ExecutionTaskLog e1, ExecutionTaskLog e2) {
+			        return e1.getProcExecTask().value < e2.getProcExecTask().value ?-1 : 1;
+			    }
+			});
 		}
 		
 		DatePeriod scheduleCreationPeriod = (this.schCreateStart == null || this.schCreateEnd == null) ? null

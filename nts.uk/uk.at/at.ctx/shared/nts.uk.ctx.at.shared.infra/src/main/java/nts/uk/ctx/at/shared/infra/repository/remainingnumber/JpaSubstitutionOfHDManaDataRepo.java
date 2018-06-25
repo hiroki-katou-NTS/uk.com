@@ -37,11 +37,11 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	
 	private static final String QUERY_DELETE_SUB = "DELETE FROM KrcmtPayoutSubOfHDMana p WHERE p.krcmtPayoutSubOfHDManaPK.subOfHDID = :subOfHDID ";
 
-	private String QUERY_BY_SID_DATE_PERIOD = "SELECT c FROM KrcmtSubOfHDManaData c"
+	private static final String QUERY_BY_SID_DATE_PERIOD = "SELECT c FROM KrcmtSubOfHDManaData c"
 			+ " WHERE c.sID = :sid"
 			+ " AND c.dayOff >= :startDate"
 			+ " AND c.dayOff <= :endDate";
-	private String QUERY_BY_SID_REMAINDAYS = "SELECT c FROM KrcmtSubOfHDManaData c"
+	private static final String QUERY_BY_SID_REMAINDAYS = "SELECT c FROM KrcmtSubOfHDManaData c"
 			+ " WHERE c.sID = :sid"
 			+ " AND c.remainDays > :remainDays";
 	

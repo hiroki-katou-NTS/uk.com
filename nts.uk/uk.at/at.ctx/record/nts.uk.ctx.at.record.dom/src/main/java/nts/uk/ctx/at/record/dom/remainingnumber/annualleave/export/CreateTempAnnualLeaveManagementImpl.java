@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -8,6 +9,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
@@ -53,5 +56,21 @@ public class CreateTempAnnualLeaveManagementImpl implements CreateTempAnnualLeav
 				this.getVacationAddSet,
 				this.attendanceTimeOfMonthlyRepo);
 		return proc.algorithm(companyId, employeeId, period, mode);
+	}
+	
+	/** 暫定年休管理データを作成する　（月別集計用） */
+	@Override
+	public List<TempAnnualLeaveManagement> algorithm(String companyId, String employeeId, DatePeriod period,
+			TempAnnualLeaveMngMode mode, Optional<MonAggrCompanySettings> companySets,
+			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
+		
+		CreateTempAnnLeaMngProc proc = new CreateTempAnnLeaMngProc(
+				this.workInformationRepo,
+				this.basicScheduleAdapter,
+				this.tempAnnualLeaveMngRepo,
+				this.workTypeRepo,
+				this.getVacationAddSet,
+				this.attendanceTimeOfMonthlyRepo);
+		return proc.algorithm(companyId, employeeId, period, mode, companySets, monthlyCalcDailys);
 	}
 }

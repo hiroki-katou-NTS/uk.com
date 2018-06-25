@@ -35,11 +35,11 @@ public class AttendanceItemDictionaryForCalc {
 	//遅刻・早退系の追加
 	private void putLateEarly() {
 		//遅刻時間
-		this.dictionary.put("遅刻時間1", 561);
-		this.dictionary.put("遅刻時間2", 561);
+		this.dictionary.put("遅刻時間1", 592);
+		this.dictionary.put("遅刻時間2", 598);
 		//早退時間
-		this.dictionary.put("早退時間1", 561);
-		this.dictionary.put("早退時間2", 561);
+		this.dictionary.put("早退時間1", 604);
+		this.dictionary.put("早退時間2", 610);
 	}
 
 	//深夜系の追加
@@ -64,13 +64,13 @@ public class AttendanceItemDictionaryForCalc {
 		this.dictionary.put("残業時間1", 216);
 		this.dictionary.put("残業時間2", 221);
 		this.dictionary.put("残業時間3", 226);
-		this.dictionary.put("残業時間4", 226);
-		this.dictionary.put("残業時間5", 231);
-		this.dictionary.put("残業時間6", 236);
-		this.dictionary.put("残業時間7", 241);
-		this.dictionary.put("残業時間8", 246);
-		this.dictionary.put("残業時間9", 251);
-		this.dictionary.put("残業時間10", 256);
+		this.dictionary.put("残業時間4", 231);
+		this.dictionary.put("残業時間5", 236);
+		this.dictionary.put("残業時間6", 241);
+		this.dictionary.put("残業時間7", 246);
+		this.dictionary.put("残業時間8", 251);
+		this.dictionary.put("残業時間9", 256);
+		this.dictionary.put("残業時間10", 261);
 		
 		//フレックス時間
 		this.dictionary.put("フレックス時間", 556);

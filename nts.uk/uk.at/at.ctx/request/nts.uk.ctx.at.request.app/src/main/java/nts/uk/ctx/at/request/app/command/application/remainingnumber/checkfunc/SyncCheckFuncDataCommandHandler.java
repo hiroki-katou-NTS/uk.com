@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -118,7 +116,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				
 				if (asyncTask.hasBeenRequestedToCancel()) {
 					asyncTask.finishedAsCancelled();
-					break;
+					return;
 				}
 			}
 		} else {
@@ -161,11 +159,11 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				//(Check số phép còn lại trong param -パラメータ.年休残数)
 				if (command.getMaxDay() != null) {
 					for (YearlyHolidaysTimeRemainingImport yearlyHolidaysTimeRemaining : yearlyHolidaysTimeRemainingImport) {
-						if (yearlyHolidaysTimeRemaining.getAnnualRemaining().compareTo(command.getMaxDay()) > 0) {
+						if (yearlyHolidaysTimeRemaining.getAnnualRemaining().compareTo(command.getMaxDay()) >= 0) {
 							//取得した年休残数　≧　パラメータ.年休残数
 							//パラメータ.処理人数に＋１加算する
 							setter.updateData(NUMBER_OF_SUCCESS, i + 1);
-							continue;
+							return;
 						}
 					}
 				}
@@ -189,7 +187,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				}
 				//取得した情報をもとにExcel 出力情報Listに設定する
 				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
-				excelInforCommand.setName(employeeRecordImport.getPname());
+				excelInforCommand.setName(employeeRecordImport.getBusinessName());
 				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate().toString());
 				//GeneralDate temDate9999 = GeneralDate.fromString("99991231", "YYYY/MM/DD");
 				excelInforCommand.setDateEnd("9999/12/31".equals(employeeRecordImport.getRetiredDate().toString()) ?
@@ -258,7 +256,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
 			outputErrorInfo.setEmployeeCode("");
 			outputErrorInfo.setEmployeeName("");
-			outputErrorInfo.setErrorMessage("Msg_1138");
+			outputErrorInfo.setErrorMessage("Msg_1139");
 
 			outputErrorInfoCommand.add(outputErrorInfo);
 			return plannedVacationListCommand;
