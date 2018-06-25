@@ -183,7 +183,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         lstHeaderReceive: any;
         
-        //monthly item grid
+        workTypeNotFound: any = [];
+
         isVisibleMIGrid: KnockoutObservable<boolean> = ko.observable(false);
         listAttendanceItemId: KnockoutObservableArray<any> = ko.observableArray([]);
         monthYear: KnockoutObservable<string> = ko.observable(null);
@@ -591,17 +592,23 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 _.each(listFormatDaily, (item) => {
                     let formatDailyItem = _.find(self.listAttendanceItemId(), { 'itemId': item.attendanceItemId });
                     formatDailyItem['columnWidth'] = (!_.isNil(item) && !!item.columnWidth) ? item.columnWidth : 100;
+                    formatDailyItem['order'] = item.order
                 });
-                
+                let arr: any[] = _.orderBy(self.listAttendanceItemId(), ['order'], ['asc']);
+                self.listAttendanceItemId(arr);
                 self.isVisibleMIGrid(data.monthResult.hasItem);
                 self.monthYear(nts.uk.time.formatYearMonth(data.monthResult.month));
+                // reload MiGrid
+                // delete localStorage miGrid
+                localStorage.removeItem(window.location.href + '/miGrid');
+                self.getNameMonthly();
             }
             
             if (data.monthResult != null &&  data.monthResult.flexShortage != null && data.monthResult.flexShortage.showFlex && self.displayFormat() == 0) {
                 self.showFlex(true);
                 self.canFlex(data.monthResult.flexShortage.canflex);
                 self.breakTimeDay(data.monthResult.flexShortage.breakTimeDay);
-                self.calcFlex(new CalcFlex(data.monthResult.flexShortage.value18, data.monthResult.flexShortage.value21, data.monthResult.flexShortage.value189, data.monthResult.flexShortage.value190, data.monthResult.flexShortage.value191));
+                self.calcFlex(new CalcFlex(data.monthResult.flexShortage.value18, data.monthResult.flexShortage.value19, data.monthResult.flexShortage.value21, data.monthResult.flexShortage.value189, data.monthResult.flexShortage.value190, data.monthResult.flexShortage.value191));
                 self.itemMonth = [];
                 self.valueFlexCheck = data.monthResult.flexShortage.calc;
                 let fst: FlexShortage = self.flexShortage();
@@ -655,6 +662,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
                 self.dialogShow.close();
+            }
+            if(self.workTypeNotFound.length > 0) {
+                nts.uk.ui.dialog.alert({ messageId: "Msg_1293" }).then(function() {
+                    self.showErrorDialog();
+                });
+                return;
             }
             // insert flex
             let errorGrid: any = $("#dpGrid").ntsGrid("errors");
@@ -896,7 +909,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                
                 console.log(dataSourceNew);
-                $("#dpGrid").ntsGrid("resetOrigDataSource", dataSourceNew)
+                $("#dpGrid").ntsGrid("resetOrigDataSource", dataSourceNew);
                 $("#dpGrid").igGrid("option", "dataSource", _.cloneDeep(dataSourceNew));
 //                _.forEach(dataSourceRow, (valueUpate) =>{
 //                    delete valueUpate.dateDetail
@@ -1193,13 +1206,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.listCareError([]);
             self.listCareInputError([]);
             self.listCheckHolidays([]);
-            self.listCheck28([]);    
+            self.listCheck28([]);
+            self.workTypeNotFound = [];    
         }
         
         btnExtraction_Click() {
-            var self = this;
+            let self = this;
             self.showTextStyle = false;
             self.clickFromExtract = true;
+            if(self.isVisibleMIGrid()) {
+                //reload MiGrid
+                $('#miGrid').igGrid("destroy");
+            } 
             self.reloadScreen();
         }
 
@@ -1297,6 +1315,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 errorValidateScreeen.push(object);
             });
 
+            // item28 , search
+            _.each(self.workTypeNotFound, value => {
+                let dateCon = _.find(self.dpData, (item: any) => {
+                    return item.id == value.rowId.substring(1, value.rowId.length);
+                });
+                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: nts.uk.resource.getMessage("Msg_1293"), itemName: "", columnKey: value.itemId };
+                let item = _.find(self.optionalHeader, (data) => {
+                    if (data.group != undefined && data.group != null) {
+                        return String(data.group[0].key) === value.columnKey;
+                    } 
+                })
+                object.itemName = (item == undefined) ? "" : item.headerText;
+                errorValidateScreeen.push(object);
+            });
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
@@ -1541,7 +1573,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             };
             let jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
             let jsonColumnWidthMiGrid = localStorage.getItem(window.location.href + '/miGrid');
-            let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid);
+            let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
             let valueTemp = 0;
             _.forEach($.parseJSON(jsonColumnWith), (value, key) => {
                 if (key.indexOf('A') != -1) {
@@ -2063,23 +2095,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 totalWidthColumn : number = 75,
                 maxWidth: number = window.screen.availWidth - 200;
 
-            _.each(data, (dt) => {
-                let attendanceItemId: any = _.find(self.listAttendanceItemId(), { 'itemId': dt.attendanceItemId });
+            _.forEach(self.listAttendanceItemId(), (id) => {
+                let attendanceItemId: any = _.find(data, { 'attendanceItemId': id.itemId }),
+                    cDisplayType = self.convertToCDisplayType(id.valueType);
                 columnsMIGrid.push(
                     {
-                        headerText: dt.attendanceItemName, key: dt.attendanceItemId.toString(), width: attendanceItemId.columnWidth + 'px',
+                        headerText: attendanceItemId.attendanceItemName, key: '_' +attendanceItemId.attendanceItemId, width: id.columnWidth + 'px',
                         constraint: {
-                            cDisplayType: self.convertToCDisplayType(attendanceItemId.valueType),
-                            required: true
+                            cDisplayType: cDisplayType,
+                            required: false
                         }
                     }
                 );
-                dataSourceMIGrid[0][dt.attendanceItemId.toString()] = attendanceItemId != null ? attendanceItemId.value : '';
-                totalWidthColumn += attendanceItemId.columnWidth;
+                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] =  cDisplayType == 'Clock' ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
+                totalWidthColumn += id.columnWidth;
             });
             
             $("#miGrid").ntsGrid({
-                width: (totalWidthColumn >= maxWidth) ? maxWidth + 'px' : totalWidthColumn+ 'px',
+                width: (totalWidthColumn >= maxWidth) ? maxWidth + 'px' : totalWidthColumn + 'px',
                 dataSource: dataSourceMIGrid,
                 primaryKey: 'monthYear',
                 autoFitWindow: false,
@@ -2529,7 +2562,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $("#dpGrid").igGrid("option", "dataSource", dataTemp);
             }
         }
-        search(columnKey, rowId, val) {
+        
+        search(columnKey, rowId, val, valOld) {
             let dfd = $.Deferred();
             let i = 0;
             let data: any = $("#dpGrid").igGrid("option", "dataSource");
@@ -2544,6 +2578,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return "Code" + splitData[0] === columnKey;
                 })
             }
+            
             if (typeGroup != undefined && typeGroup != null) {
                 let param = {
                     typeDialog: typeGroup.split(":")[1],
@@ -2552,15 +2587,40 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         employmentCode: rowItemSelect.employmentCode,
                         workplaceId: rowItemSelect.workplaceId,
                         date: rowItemSelect.dateDetail,
-                        selectCode: val
+                        selectCode: val,
+                        employeeId: rowItemSelect.employeeId,
+                        itemId: Number(columnKey.substring(4, columnKey.length)),
+                        valueOld: valOld
                     }
                 }
                 var object = {};
                 if (val == "") {
                     dfd.resolve(nts.uk.resource.getText("KDW003_82"));
+                }else if(val == valOld && columnKey == "Code28"){
+                    let dataSourceOld: any = __viewContext.vm.formatDate(__viewContext.vm.dailyPerfomanceData());
+                    let item28Old = _.find(dataSourceOld, valueData => {
+                        return valueData.id == rowId && valueData["Code28"] != undefined;
+                    });
+                    _.remove(__viewContext.vm.workTypeNotFound, dataTemp => {
+                        return dataTemp.rowId == rowId;
+                    });
+                    dfd.resolve(item28Old["Name28"]);
                 } else {
                     $.when(service.findCodeName(param)).done((data) => {
-                        dfd.resolve(data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
+                        if (data != undefined && data.errorFind) {
+                            let typeError = _.find(__viewContext.vm.workTypeNotFound, data => {
+                                return data.columnKey == columnKey && data.rowId == rowId;
+                            });
+                            if (typeError == undefined) {
+                                __viewContext.vm.workTypeNotFound.push({ columnKey: columnKey, rowId: rowId });
+                            }
+                            dfd.resolve(data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
+                        } else {
+                            _.remove(__viewContext.vm.workTypeNotFound, dataTemp => {
+                                return dataTemp.columnKey == columnKey && dataTemp.rowId == rowId;
+                            });
+                            dfd.resolve(data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
+                        }
                     });
                 }
 
@@ -2591,6 +2651,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.request.jump("at", path);
         }
     }
+    
     export class AuthorityDetailModel {
         available1: KnockoutObservable<boolean> = ko.observable(false);
         available4: KnockoutObservable<boolean> = ko.observable(false);
@@ -2718,14 +2779,27 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 case 1:
                     // KDL002  
                     let dfd = $.Deferred();
+                    let dataSource: any = $("#dpGrid").igGrid("option", "dataSource");
+                    let rowItemSelect: any = _.find(dataSource, function(value: any) {
+                        return value.id == self.rowId();
+                    })
+                    
+                    let dataSourceOld: any = selfParent.formatDate(selfParent.dailyPerfomanceData());
+                    let item28Old = _.find(dataSourceOld, valueData =>{
+                        return valueData.id == self.rowId() &&  valueData["Code28"] != undefined;
+                    });
+                    
                     let param1 = {
                         typeDialog: 1,
                         param: {
                             workTypeCode: self.selectedCode(),
                             employmentCode: selfParent.employmentCode(),
                             workplaceId: "",
-                            date: new Date(),
-                            selectCode: self.selectedCode()
+                            date: rowItemSelect.dateDetail,
+                            selectCode: self.selectedCode(),
+                            employeeId: rowItemSelect.employeeId,
+                            itemId: item.id,
+                            valueOld: item28Old == undefined ? null : item28Old["Code28"]
                         }
                     }
                     service.findAllCodeName(param1).done((data) => {
@@ -3019,6 +3093,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             $("#dpGrid").ntsGrid("updateRow", rowId, objectCode);
         }
     }
+    
     export interface DPAttendanceItem {
         id: string;
         name: string;
