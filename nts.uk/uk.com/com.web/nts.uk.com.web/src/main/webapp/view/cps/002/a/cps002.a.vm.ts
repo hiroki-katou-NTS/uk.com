@@ -318,7 +318,8 @@ module cps002.a.vm {
         logMouseOver() {
             let self = this;
             if (self.cardNo() == "") {
-                self.cardNo(__viewContext.user.companyCode + self.employeeCode());
+                 debugger;
+                 self.getStampCardAfterLostFocusEmpCode(self.employeeCode());
             }
         }
         
@@ -405,6 +406,13 @@ module cps002.a.vm {
         initStampCard(newEmployeeCode : string) {
             let self = this;
             service.getInitCardNumber(newEmployeeCode).done((value) => {
+                self.currentEmployee().cardNo(value);
+            });
+        }
+        
+        getStampCardAfterLostFocusEmpCode(newEmployeeCode : string) {
+            let self = this;
+            service.getStampCardAfterLostFocusEmp(newEmployeeCode).done((value) => {
                 self.currentEmployee().cardNo(value);
             });
         }
