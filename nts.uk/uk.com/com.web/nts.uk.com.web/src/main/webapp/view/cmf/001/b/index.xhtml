@@ -36,7 +36,7 @@
 							<div class="pull-left" tabindex="8" style="width: 240px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispConditionSettingCode', comId: 'B3_4', 
 								items: listStandardImportSetting, selected: selectedStandardImportSettingCode, selectedKey: 'dispConditionSettingCode', fields: ['dispConditionSettingCode', 'dispConditionSettingName'], mode: 'igGrid'}" />		
 						</div>
-						<table id="B3_4" data-bind="ntsGridList: {
+						<table tabindex="-1" id="B3_4" data-bind="ntsGridList: {
 								rows: 15,
 								name: '#[CMF001_39]', 
 								dataSource: listStandardImportSetting,
@@ -84,7 +84,7 @@
 									optionsText: 'name',
 									value: deleteExistData}"></div>
 							</div>
-							<div tabindex="12" data-bind="ntsComboBox: {
+							<div id="deleteExistDataMethod" tabindex="12" data-bind="ntsComboBox: {
 								options: $parent.deleteExistDataMethod,
 								optionsValue: 'code',
 								name: '#[CMF001_58]',
@@ -93,9 +93,9 @@
 								editable: false,
 								enable:  deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
 								required: deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
-								width: 342,
+								width: 320,
 								columns: [
-									{ prop: 'name' }
+									{ prop: 'name', lengthDropDown: 20 }
 								]}"></div>
 						</div>
 						

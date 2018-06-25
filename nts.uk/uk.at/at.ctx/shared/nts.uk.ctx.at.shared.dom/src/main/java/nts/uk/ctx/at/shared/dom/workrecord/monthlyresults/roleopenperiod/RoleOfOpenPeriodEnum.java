@@ -6,17 +6,17 @@ package nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod;
 // 休出枠の役割
 public enum RoleOfOpenPeriodEnum {
 	
-	// 法定内・外混在
-	/** The mix within outside statutory. */
-	MIX_WITHIN_OUTSIDE_STATUTORY(0, "Enum_MixWithinOutsideStatutory", "法定内・外混在"),
+	// 法定外休出
+	/** The non statutory holidays. */
+	NON_STATUTORY_HOLIDAYS(0, "Enum_NonStatutoryHolidays", "法定外休出"),
 	
 	// 法定内休出
 	/** The statutory holidays. */
 	STATUTORY_HOLIDAYS(1,"Enum_StatutoryHolidays", "法定内休出"),
 	
-	// 法定外休出
-	/** The non statutory holidays. */
-	NON_STATUTORY_HOLIDAYS(2, "Enum_NonStatutoryHolidays", "法定外休出");
+	// 法定内・外混在
+	/** The mix within outside statutory. */
+	MIX_WITHIN_OUTSIDE_STATUTORY(2, "Enum_MixWithinOutsideStatutory", "法定内・外混在");
 	
 	/** The value. */
 	public final int value;

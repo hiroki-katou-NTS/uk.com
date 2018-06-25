@@ -237,15 +237,9 @@ module nts.uk.ui.koExtentions {
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
             $input.data("setValOnRequiredError", setValOnRequiredError);
-            var characterWidth: number = 9;
             
-            self.loadConstraints(constraintName, $input).done(() => {
-                let constraint = validation.getConstraint(constraintName);
-                if (constraint && constraint.maxLength && !$input.is("textarea")) {
-                    let autoWidth = constraint.maxLength * characterWidth;
-                    $input.width(autoWidth);
-                }
-            });
+            self.setWidthByConstraint(constraintName, $input);
+            
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
@@ -339,10 +333,14 @@ module nts.uk.ui.koExtentions {
         }
 
         update($input: JQuery, data: any) {
-            this.$input = $input;
+            let self = this;
+            self.$input = $input;
             super.update($input, data);
             var textmode: string = this.editorOption.textmode;
             $input.attr('type', textmode);
+            
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            self.setWidthByConstraint(constraintName, $input);
             
             // このif文は何のため？ ユーザが入力操作をしたときしかtrueにならないか？
             if (!$input.ntsError('hasError') && data.value() !== $input.val()) { 
@@ -388,6 +386,18 @@ module nts.uk.ui.koExtentions {
             }
 
             return new validation.StringValidator(name, constraintName, { required: required });
+        }
+        
+        setWidthByConstraint(constraintName: string, $input: JQuery){
+            let self = this;
+            var characterWidth: number = 9;
+            self.loadConstraints(constraintName, $input).done(() => {
+                let constraint = validation.getConstraint(constraintName);
+                if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                    let autoWidth = constraint.maxLength * characterWidth;
+                    $input.width(autoWidth);
+                }
+            });  
         }
         
         loadConstraints(name: string, $input: JQuery) {

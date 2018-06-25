@@ -59,8 +59,6 @@ public class CreScheWithBusinessDayCalService {
 		}
 
 		// ドメインモデル「勤務種類」を取得する
-		// Optional<WorkType> workTypeOpt =
-		// workTypeRepository.findByPK(companyId, workTypeCode);
 		// EA No2018
 		// 勤務種類一覧から入力パラメータ.勤務種類コードと一致する情報を取得する
 		Optional<WorkType> workTypeOpt = listWorkType.stream()
@@ -76,7 +74,6 @@ public class CreScheWithBusinessDayCalService {
 		DailyWork dailyWork = workType.getDailyWork();
 
 		// ドメインモデル「就業時間帯の設定」を取得する
-		// Optional<WorkTimeSetting> workTimeSettingOpt = workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		// EA No2018
 		// 就業時間帯一覧から入力パラメータ.就業時間帯コードと一致する情報を取得する
 		Optional<WorkTimeSetting> workTimeSettingOpt = listWorkTimeSetting.stream()
