@@ -7,7 +7,7 @@
 <body>
 	<ui:composition>
 		<div id="ccgcomponent"></div>
-		<div class="contentB" tabindex="-1">
+		<div class="contentB">
 		<div class="fixed-flex-layout-right-screenD" style="padding-top: 20px; padding-left: 30px;">
 							<div class="top-right-panel">
 								<div style="float: left; margin-right: 10px;">
@@ -17,7 +17,7 @@
 								<div style="float: left; padding-bottom: 20px; width: 65%; margin-left: 40px;">
 									<!-- E4_2 -->
 									<!-- E4_3 -->
-									<div tabindex="3" class="selectEmpType"
+									<div class="selectEmpType" tabindex="1"
 										data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
 																			optionsValue: 'value',
 																			optionsText: 'titleAtrName',
@@ -27,8 +27,8 @@
 								</div>
 							</div>
 				<!-- List employee -->
-				<div class="selectionEmployee" tabindex="3">
-							<div id="employeeSearch" tabindex="-1"></div>
+				<div class="selectionEmployee" tabindex="2">
+							<div id="employeeSearch"></div>
 						</div>
 				<!-- List employee -->
 				<div class="valign-center control-group bot-right-panel">
@@ -38,7 +38,7 @@
 	 						<label data-bind="text : referenceDate"></label>
 	 					</com:ko-if>
 	 				</div>
-					<button id="D4_8"
+					<button id="D4_8" tabindex="3"
 								data-bind="ntsHelpButton: {image: '../resource/実行間隔説明画像.jpg', position: 'top right'}">?</button>
 				</div>
 				<div style="clear: both;">
@@ -46,8 +46,8 @@
 				</div>
 				<!-- button -->
 				<div class="valign-center control-group button-bottom-area">
-					<button id="D5_1" class="large" tabindex="14" data-bind="click: previousB">#{i18n.getText('CMF003_101')}</button>
-					<button id="D5_2" class="x-large proceed" tabindex="15" data-bind="click: nextFromDToE">#{i18n.getText('CMF003_102')}</button>	
+					<button id="D5_1" tabindex="4" class="large" data-bind="click: previousB">#{i18n.getText('CMF003_101')}</button>
+					<button id="D5_2" tabindex="5" class="x-large proceed" data-bind="click: nextFromDToE">#{i18n.getText('CMF003_102')}</button>	
 				</div>
 				<!-- button -->
 			</div>

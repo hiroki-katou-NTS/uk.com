@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -85,49 +84,49 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
     /**
     * 日次保存終了日
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "DAY_SAVE_END_DATE")
     public GeneralDate daySaveEndDate;
     
     /**
     * 日次保存開始日
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "DAY_SAVE_START_DATE")
     public GeneralDate daySaveStartDate;
     
     /**
     * 月次保存終了日
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "MONTH_SAVE_END_DATE")
     public GeneralDate monthSaveEndDate;
     
     /**
     * 月次保存開始日
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "MONTH_SAVE_START_DATE")
     public GeneralDate monthSaveStartDate;
     
     /**
     * 補足説明
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "SUPPLE_EXPLANATION")
     public String suppleExplanation;
     
     /**
     * 年次終了年
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "END_YEAR")
     public int endYear;
     
     /**
     * 年次開始年
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "START_YEAR")
     public int startYear;
     

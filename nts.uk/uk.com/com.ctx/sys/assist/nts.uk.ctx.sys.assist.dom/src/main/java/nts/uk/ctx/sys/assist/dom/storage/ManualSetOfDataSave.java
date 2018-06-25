@@ -8,7 +8,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

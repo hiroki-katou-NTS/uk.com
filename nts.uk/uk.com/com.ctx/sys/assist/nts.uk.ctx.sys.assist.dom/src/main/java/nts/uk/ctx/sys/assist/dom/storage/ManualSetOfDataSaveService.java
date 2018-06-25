@@ -4,7 +4,6 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import javax.persistence.EmbeddedId;
 
 import com.google.common.base.Strings;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -106,65 +104,71 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	public void serverManualSaveProcessing(ManualSetOfDataSave manualSetting, FileGeneratorContext generatorContext) {
 		// ドメインモデル「データ保存の保存結果」へ書き出す
 		String storeProcessingId = manualSetting.getStoreProcessingId();
-		String cid = manualSetting.getCid();
-		int systemType = manualSetting.getSystemType().value;
-		String practitioner = manualSetting.getPractitioner();
-		int saveForm = 0;
-		String saveSetCode = null;
-		String saveName = manualSetting.getSaveSetName().v();
-		int saveForInvest = manualSetting.getIdentOfSurveyPre().value;
-		GeneralDateTime saveStartDatetime = GeneralDateTime.now();
+		try {
+			String cid = manualSetting.getCid();
+			int systemType = manualSetting.getSystemType().value;
+			String practitioner = manualSetting.getPractitioner();
+			int saveForm = 0;
+			String saveSetCode = null;
+			String saveName = manualSetting.getSaveSetName().v();
+			int saveForInvest = manualSetting.getIdentOfSurveyPre().value;
+			GeneralDateTime saveStartDatetime = GeneralDateTime.now();
 
-		int fileSize = 0;
-		String saveFileName = null;
-		GeneralDateTime saveEndDatetime = null;
-		int deletedFiles = 0;
-		String compressedPassword = manualSetting.getCompressedPassword().v();
-		int targetNumberPeople = 0;
-		int saveStatus = 0;
-		String fileId = null;
+			int fileSize = 0;
+			String saveFileName = null;
+			GeneralDateTime saveEndDatetime = null;
+			int deletedFiles = 0;
+			String compressedPassword = manualSetting.getCompressedPassword().v();
+			int targetNumberPeople = 0;
+			int saveStatus = 0;
+			String fileId = null;
 
-		ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, systemType, fileSize, saveSetCode,
-				saveFileName, saveName, saveForm, saveEndDatetime, saveStartDatetime, deletedFiles, compressedPassword,
-				practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId);
-		repoResultSaving.add(data);
+			ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, systemType, fileSize, saveSetCode,
+					saveFileName, saveName, saveForm, saveEndDatetime, saveStartDatetime, deletedFiles,
+					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId);
+			repoResultSaving.add(data);
 
-		// ドメインモデル「データ保存動作管理」を登録する
-		repoDataSto.update(storeProcessingId, OperatingCondition.INPREPARATION);
+			// ドメインモデル「データ保存動作管理」を登録する
+			repoDataSto.update(storeProcessingId, OperatingCondition.INPREPARATION);
 
-		// アルゴリズム「対象テーブルの選定と条件設定」を実行
-		StringBuffer outCompressedFileName = new StringBuffer();
-		ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
+			// アルゴリズム「対象テーブルの選定と条件設定」を実行
+			StringBuffer outCompressedFileName = new StringBuffer();
+			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
 
-		if (resultState != ResultState.NORMAL_END) {
-			evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
-			return;
+			if (resultState != ResultState.NORMAL_END) {
+				evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
+				return;
+			}
+
+			// 対象社員のカウント件数を取り保持する
+			List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
+
+			// アルゴリズム「対象データの保存」を実行
+			resultState = saveTargetData(storeProcessingId, generatorContext, manualSetting, targetEmployees);
+
+			// 処理結果を判定
+			switch (resultState) {
+			case NORMAL_END:
+				evaluateNormalEnd(storeProcessingId, generatorContext, manualSetting, targetEmployees.size(),
+						outCompressedFileName.toString());
+				break;
+
+			case ABNORMAL_END:
+				evaluateAbnormalEnd(storeProcessingId, targetEmployees.size());
+				break;
+
+			case INTERRUPTION:
+				evaluateInterruption(storeProcessingId, targetEmployees.size());
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			evaluateAbnormalEnd(storeProcessingId, 0);
 		}
-
-		// 対象社員のカウント件数を取り保持する
-		List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
-
-		// アルゴリズム「対象データの保存」を実行
-		resultState = saveTargetData(storeProcessingId, generatorContext, manualSetting, targetEmployees);
-
-		// 処理結果を判定
-		switch (resultState) {
-		case NORMAL_END:
-			evaluateNormalEnd(storeProcessingId, generatorContext, manualSetting, targetEmployees.size(), outCompressedFileName.toString());
-			break;
-
-		case ABNORMAL_END:
-			evaluateAbnormalEnd(storeProcessingId, targetEmployees.size());
-			break;
-
-		case INTERRUPTION:
-			evaluateInterruption(storeProcessingId, targetEmployees.size());
-			break;
-		}
-
 	}
 
-	private ResultState selectTargetTable(String storeProcessingId, ManualSetOfDataSave optManualSetting, StringBuffer outCompressedFileName) {
+	private ResultState selectTargetTable(String storeProcessingId, ManualSetOfDataSave optManualSetting,
+			StringBuffer outCompressedFileName) {
 		// Get list category from
 		List<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
 		List<String> categoryIds = targetCategories.stream().map(x -> {
@@ -183,9 +187,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}
 
 		String cId = optManualSetting.getCid();
-		
+
 		// B42
-		String datetimenow = GeneralDateTime.now().toString();
+		String datetimenow = GeneralDateTime.now().toString("yyyyMMddHHmmss");
 		SaveSetName savename = optManualSetting.getSaveSetName();
 		String compressedFileName = cId + savename.toString() + datetimenow;
 		outCompressedFileName.setLength(0);
@@ -232,8 +236,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 			}
 			String internalFileName = cId + categoryName + categoryFieldMt.getTableJapanName();
-
-			
 
 			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId, "",
 					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(),
@@ -288,7 +290,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 			repoTableList.add(listtable);
 		}
-		
 
 		return ResultState.NORMAL_END;
 	}
@@ -517,17 +518,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			// ドメインモデル「データ保存動作管理」を取得し「中断終了」を判別
 			Optional<DataStorageMng> dataStorageMng = repoDataSto.getDataStorageMngById(storeProcessingId);
 
-			// TrungBV: Fix check interrupt
+			// heck interrupt
 			if (dataStorageMng.isPresent() && dataStorageMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
-				dataStorageMng.get().operatingCondition = EnumAdaptor.valueOf(OperatingCondition.INTERRUPTION_END.value, OperatingCondition.class);
-				repoDataSto.update(dataStorageMng.get());
 				return ResultState.INTERRUPTION;
 			}
-			
-//			if (dataStorageMng.isPresent()
-//					&& dataStorageMng.get().operatingCondition == OperatingCondition.INTERRUPTION_END) {
-//				return ResultState.INTERRUPTION;
-//			}
 
 			Class<?> tableExport = repoTableList.getTypeForTableName(tableList.getTableEnglishName());
 			List<?> listObject = repoTableList.getDataDynamic(tableList, tableExport);
@@ -596,7 +590,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					.createContainer();
 			NotUseAtr passwordAvailability = optManualSetting.getPasswordAvailability();
 			String fileName = AppContexts.user().companyId() + optManualSetting.getSaveSetName()
-					+ LocalDateTime.now().toString() + ZIP_EXTENSION;
+					+ GeneralDateTime.now().toString("yyyyMMddHHmmss") + ZIP_EXTENSION;
 			if (passwordAvailability == NotUseAtr.NOT_USE) {
 				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName);
 			}
@@ -616,7 +610,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 		// ドメインモデル「データ保存の保存結果」を書き出し
 		String fileId = generatorContext.getTaskId();
-		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.SUCCESS, fileId, NotUseAtr.NOT_USE,outCompressedFileName);
+		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.SUCCESS, fileId, NotUseAtr.NOT_USE,
+				outCompressedFileName);
 		return ResultState.NORMAL_END;
 	}
 
