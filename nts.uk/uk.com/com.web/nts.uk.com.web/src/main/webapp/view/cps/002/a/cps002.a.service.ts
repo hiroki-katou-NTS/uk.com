@@ -20,8 +20,7 @@ module cps002.a.service {
         getLayoutByCreateType: 'ctx/pereg/layout/getByCreateType',
         addNewEmployee: 'ctx/pereg/addemployee/addNewEmployee',
         getEmployeeInfo: 'basic/organization/employee/getoffselect',
-        permision: 'ctx/pereg/functions/auth/find-all',
-        getStampCardAfterLostFocusEmpCd: 'ctx/pereg/employee/mngdata/getStampCardAfterLostFocusEmpCd'
+        permision: 'ctx/pereg/functions/auth/find-all'
     };
 
     export function getLayout() {
@@ -105,21 +104,6 @@ module cps002.a.service {
         return dfd.promise();
     }
     
-    export function getStampCardAfterLostFocusEmp(newEmployeeCode) {
-
-        let dfd = $.Deferred<any>();
-        let self = this;
-        _.defer(() => block.invisible());
-        nts.uk.request.ajax("com", paths.getStampCardAfterLostFocusEmpCd, newEmployeeCode).done(function(res) {
-            dfd.resolve(res);
-        }).fail(function(res) {
-            dfd.reject(res);
-        }).always(() => {
-            _.defer(() => block.clear());
-        });
-        return dfd.promise();
-    }
-
     export function getStamCardEdit() {
         return nts.uk.request.ajax("at", paths.getStamCardEditing);
     }
