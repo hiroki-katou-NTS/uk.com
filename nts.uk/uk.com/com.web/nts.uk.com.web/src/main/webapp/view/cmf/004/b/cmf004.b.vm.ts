@@ -279,9 +279,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             service.findPerformDataRecover(self.recoveryProcessingId).done(function(data: any) {
                 if (data.targets) {
                     self.employeeListScreenG.removeAll();
+                    let employeeData: Array<any> = [];
                     _.forEach(data.targets, x => {
-                        self.employeeListScreenG.push({ code: x.scd, name: x.bussinessName, id: x.sid });
+                        employeeData.push({ code: x.scd, name: x.bussinessName, id: x.sid });
                     });
+                    self.employeeListScreenG(employeeData);
                 }
             })
         }

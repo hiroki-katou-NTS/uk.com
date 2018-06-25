@@ -24,6 +24,7 @@ import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataReEmployeeAdapter;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryOperatingCondition;
 import nts.uk.ctx.sys.assist.dom.datarestoration.EmployeeDataReInfoImport;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
@@ -50,6 +51,8 @@ public class RecoveryStorageService {
 	public static final String STORAGE_RANGE_SAVED = "0";
 
 	public static final String NOT_STORAGE_RANGE_SAVED = "1";
+	
+	public static final String SELECTION_TARGET_FOR_RES = "1";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecoveryStorageService.class);
 
@@ -59,7 +62,7 @@ public class RecoveryStorageService {
 		Optional<PerformDataRecovery> performRecoveries = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 		String uploadId = performRecoveries.get().getUploadfileId();
-		List<Category> listCategory = categoryRepository.findById(dataRecoveryProcessId, "1");
+		List<Category> listCategory = categoryRepository.findById(dataRecoveryProcessId, SELECTION_TARGET_FOR_RES);
 
 		// update OperatingCondition
 		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 0);
@@ -68,13 +71,13 @@ public class RecoveryStorageService {
 
 		for (int i = 0; i < listCategory.size(); i++) {
 
-			List<TableList> tables = performDataRecoveryRepository
+			List<TableList> tableUse = performDataRecoveryRepository
 					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), STORAGE_RANGE_SAVED);
 			List<TableList> tableNotUse = performDataRecoveryRepository
 					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), NOT_STORAGE_RANGE_SAVED);
 
 			TableListByCategory tableListByCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
-					tables);
+					tableUse);
 			TableListByCategory tableNotUseCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
 					tableNotUse);
 
@@ -85,23 +88,23 @@ public class RecoveryStorageService {
 
 			// のカテゴリカウントをカウントアップ
 			errorCodeFinal = errorCode;
-			if (errorCode == 0) {
+			if (errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
 				index++;
 				dataRecoveryMngRepository.updateTotalNumOfProcesses(dataRecoveryProcessId, index);
-			} else if (errorCode == 1) {
+			} else if (errorCode == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
 				break;
-			} else if (errorCode == 5) {
+			} else if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
 				break;
 			}
 
 		}
 
-		if (errorCodeFinal == 1) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 1);
-		} else if (errorCodeFinal == 5) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 5);
+		if (errorCodeFinal == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.INTERRUPTION_END.value);
+		} else if (errorCodeFinal == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
 		} else {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 3);
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.DONE.value);
 		}
 	}
 
@@ -121,7 +124,7 @@ public class RecoveryStorageService {
 				return employeeId.equals(x.getSid());
 			}).findFirst();
 			if (!isExist.isPresent()) {
-				errorCode = 0;
+				errorCode = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value;
 				return errorCode;
 			}
 
@@ -137,7 +140,7 @@ public class RecoveryStorageService {
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
 			if (resultsSetting.isEmpty()) {
-				errorCode = 5;
+				errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
 				return errorCode;
 			}
 
@@ -158,7 +161,7 @@ public class RecoveryStorageService {
 					resultsSetting, true);
 
 			// phân biệt DELETE/INSERT error và Setting error TO - DO
-			if (errorCode == 5) {
+			if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
 				// roll back
 				// Count up số lượng error
 			}
@@ -240,9 +243,7 @@ public class RecoveryStorageService {
 		String V_FILED_KEY_UPDATE_20 = null;
 
 		String TABLE_NAME = null;
-
-		// update Status domain - to do
-
+		
 		// tìm kiếm data by employee
 
 		if (tableList.isPresent()) {
@@ -351,7 +352,7 @@ public class RecoveryStorageService {
 						if (tableList.get().getRetentionPeriodCls().value != 0) {
 							if (!checkSettingDate(resultsSetting, tableList, dataRow)) {
 								if (tableUse) {
-									errorCode = 5;
+									errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
 									return errorCode;
 								} else {
 									continue;
@@ -359,7 +360,7 @@ public class RecoveryStorageService {
 							}
 						} else {
 
-							// update date phục hồi Domain - To do
+							// update date phục hồi Domain
 							dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, null);
 
 						}
@@ -501,7 +502,7 @@ public class RecoveryStorageService {
 
 				if (count == 2) {
 					if (tableUse) {
-						errorCode = 5;
+						errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
 						return errorCode;
 					} else {
 						continue;
@@ -653,17 +654,19 @@ public class RecoveryStorageService {
 		// カテゴリの中の社員単位の処理
 		errorCode = exTableUse(tableListByCategory, dataRecoveryProcessId, uploadId);
 
-		if (errorCode == 0) {
+		if (errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
 			// の処理対象社員コードをクリアする
 			dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId, null);
 
 			// カテゴリの中の日付単位の処理
 			errorCode = exTableNotUse(tableNotUseByCategory, dataRecoveryProcessId, uploadId);
 
-		} else if (errorCode == 1) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 1);
+		} 
+		
+		if (errorCode == 1) {
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.INTERRUPTION_END.value);
 		} else if (errorCode == 5) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 5);
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
 		}
 		return errorCode;
 	}
@@ -682,7 +685,7 @@ public class RecoveryStorageService {
 				Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository
 						.getDataRecoveryMngById(dataRecoveryProcessId);
 				if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition().value == 1) {
-					errorCode = 1;
+					errorCode = DataRecoveryOperatingCondition.INTERRUPTION_END.value;
 					break;
 				}
 
@@ -696,7 +699,7 @@ public class RecoveryStorageService {
 						targetDataRecovery, tableList, dataRecoveryProcessId);
 
 				// Xác định trạng thái error
-				if (errorCode == 5) {
+				if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
 					break;
 				}
 
@@ -756,14 +759,14 @@ public class RecoveryStorageService {
 						targetDataByCate);
 
 				// phan biet error
-				if (errorCode == 5) {
+				if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
 					return errorCode;
 				}
 
 				Optional<DataRecoveryMng> dataRecovery = dataRecoveryMngRepository
 						.getDataRecoveryMngById(dataRecoveryProcessId);
 				if (dataRecovery.isPresent() && dataRecovery.get().getOperatingCondition().value == 1) {
-					errorCode = 1;
+					errorCode = DataRecoveryOperatingCondition.INTERRUPTION_END.value;
 					return errorCode;
 				}
 
@@ -906,7 +909,7 @@ public class RecoveryStorageService {
 
 			}
 		} else {
-			errorCode = 5;
+			errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
 			return errorCode;
 		}
 		return errorCode;
