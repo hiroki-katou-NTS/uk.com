@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.primitive.constraint.IntegerRange;
 
 @AllArgsConstructor
-@IntegerRange(max = 6, min = 1)
+@IntegerRange(max = 7, min = 1)
 public enum StringItemType {
 	// 1:すべての文字(any)
 	ANY(1),
@@ -21,7 +21,9 @@ public enum StringItemType {
 	// 5:全角カタカナ(Kana)
 	KANA(5),
 	// 6: カードNO(CardNo)
-	CARDNO(6);
+	CARDNO(6),	
+	// 7: 社員コード(EmployeeCode)
+	EMPLOYEECODE(7);
 
 	public final int value;
 }

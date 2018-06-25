@@ -148,16 +148,17 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 			if (opNumber.isPresent()) {
 				cells.get(firstRow, 7 + i)
 						.setValue(opNumber.get().getAttendanceDaysMonth() + TextResource.localize("KDM002_33"));
+				setBorderStyle(cells.get(firstRow, 7 + i));
+				i++;
 			}
-			setBorderStyle(cells.get(firstRow, 7 + i));
 			Optional<PlannedVacationListCommand> opPlanVa = excelInforCommand.getPlannedVacationListCommand().stream()
 					.filter(x -> x.getWorkTypeCode().equals(wtCode)).findFirst();
 			if (opPlanVa.isPresent()) {
-				cells.get(firstRow, 8 + i)
+				cells.get(firstRow, 7 + i)
 						.setValue(opPlanVa.get().getMaxNumberDays() + TextResource.localize("KDM002_33"));
+				setBorderStyle(cells.get(firstRow, 7 + i));
+				i++;
 			}
-			setBorderStyle(cells.get(firstRow, 8 + i));
-			i = i + 2;
 		}
 		firstRow += 1;
 		return firstRow;

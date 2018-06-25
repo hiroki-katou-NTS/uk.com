@@ -14,4 +14,6 @@ public @interface AttendanceItemValue {
 	ValueType type() default ValueType.CODE;
 	
 	String getTypeWith() default "";
+	
+	String setValueWith() default "";
 }

@@ -32,7 +32,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 			+ " LEFT JOIN BsymtWorkplaceHist wphist ON wphist.bsymtWorkplaceHistPK.wkpid = hi.workPlaceId "
 			+ " AND wphist.strD <= :baseDate "
 			+ " AND wphist.endD >= :baseDate "				
-			+ " LEFT JOIN BsymtWorkplaceInfo wp ON wphist.bsymtWorkplaceHistPK.wkpid = wp.bsymtWorkplaceInfoPK.wkpid"
+			+ " LEFT JOIN BsymtWorkplaceInfo wp ON wphist.bsymtWorkplaceHistPK.hisId = wp.bsymtWorkplaceInfoPK.hisId"
 			+ " AND wp.bsymtWorkplaceInfoPK.cid = e.companyId "
 			+ " LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsymtEmployeeDataMngInfoPk.sId "
 			+ " AND ad.strD <= :baseDate"

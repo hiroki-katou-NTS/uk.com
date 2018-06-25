@@ -143,7 +143,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		WorkMonthlySetting workMonthlySet = workMonthlySetOpt.get();
 
 		// 在職状態に対応する「勤務種類コード」を取得する
-		WorkTypeGetterCommand commandWorktypeGetter = getWorkTypeGetter(command, workingConditionItem);
+		WorkTypeGetterCommand commandWorktypeGetter = this.getWorkTypeGetter(command, workingConditionItem);
 		Optional<WorktypeDto> workTypeOpt = this.getWorkTypeByEmploymentStatus(workMonthlySet, commandWorktypeGetter,
 				mapEmploymentStatus, listWorkingConItem, listWorkType);
 		if (workTypeOpt.isPresent()) {// 取得エラーなし

@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         // applicantName
         applicantName: KnockoutObservable<string> = ko.observable("");
         // date editor
-        date: KnockoutObservable<string>  = ko.observable(moment().format('YYYY/MM/DD'));
+        date: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
         //latetime editor
         lateTime1: KnockoutObservable<number> = ko.observable(0);
         lateTime2: KnockoutObservable<number> = ko.observable(0);
@@ -40,6 +40,9 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         txtlateTime2: KnockoutObservable<string> = ko.observable('1:00');
         version: number = 0;
         displayOrder: KnockoutObservable<number> = ko.observable(0);
+        actualCancelType: KnockoutObservable<string> = ko.observable('');
+
+        appCommonSetting: KnockoutObservable<AppComonSetting> = ko.observable(new AppComonSetting());
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             var self = this;
@@ -51,19 +54,17 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             nts.uk.ui.block.invisible();
             var self = this;
             var dfd = $.Deferred();
-            service.getByCode(self.appID()).done(function(data) { 
+            service.getByCode(self.appID()).done(function(data) {
                 self.displayOrder(data.workManagementMultiple.useATR);
-                self.ListTypeReason.removeAll();
-                _.forEach(data.listApplicationReasonDto, data => {
-                    let reasonTmp: TypeReason = {reasonID: data.reasonID, reasonTemp: data.reasonTemp};
-                    self.ListTypeReason.push(reasonTmp); 
-                    if(data.defaultFlg == 1){
-                        self.selectedCode(data.reasonID);
-                    }          
-                });
+                self.ListTypeReason(_.map(data.listApplicationReasonDto, x => { return { reasonID: x.reasonID, reasonTemp: x.reasonTemp }; }));
+                if (data.listApplicationReasonDto) {
+                    self.selectedCode(self.ListTypeReason()[0].reasonID);
+                }
+                self.appCommonSetting(new AppComonSetting(data.appCommonSettingDto));
                 self.applicantName(data.applicantName);
                 self.appreason(data.lateOrLeaveEarlyDto.appReason);
                 self.date(data.lateOrLeaveEarlyDto.applicationDate);
+                self.actualCancelType(data.lateOrLeaveEarlyDto.actualCancelAtr == 1 ? '取消する' : '取消しない');
                 self.lateTime1(data.lateOrLeaveEarlyDto.lateTime1);
                 self.lateTime2(data.lateOrLeaveEarlyDto.lateTime2);
                 self.late1(data.lateOrLeaveEarlyDto.late1 == 1 ? true : false);
@@ -79,60 +80,61 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.early1.subscribe(value => { $("#inpEarlyTime1").trigger("validate"); });
                 self.late2.subscribe(value => { $("#inpLate2").trigger("validate"); });
                 self.early2.subscribe(value => { $("#inpEarlyTime2").trigger("validate"); });
-                if(self.showScreen() === 'F'){
-                    self.isVisibleTimeF(false);  
+                if (self.showScreen() === 'F') {
+                    self.isVisibleTimeF(false);
                     self.isLblTimeF(true);
-                    
-                    
-                }else{
+
+
+                } else {
                     self.isVisibleTimeF(true);
                     self.isLblTimeF(false);
                     self.txtEarlyTime2("");
-                    self.txtlateTime2("");  
+                    self.txtlateTime2("");
                     self.txtlateTime1("");
-                    self.txtearlyTime1(""); 
-                    $("#lblLateTime1").css("margin-left","0px");
-                    $("#lblLateTime2").css("margin-left","0px");
+                    self.txtearlyTime1("");
+                    $("#lblLateTime1").css("margin-left", "0px");
+                    $("#lblLateTime2").css("margin-left", "0px");
                 }
                 $("#inputdate").focus();
                 nts.uk.ui.block.clear();
                 dfd.resolve();
-            }).fail((res) =>{
-                if(res.messageId == 'Msg_426'){
-                        nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
-                            nts.uk.ui.block.clear();
-                        });
-                }else{ 
-                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
-                            nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
-                        });
+            }).fail((res) => {
+                if (res.messageId == 'Msg_426') {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
+                        nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
+                    });
                 }
                 nts.uk.ui.block.clear();
                 dfd.reject();
             });
-               
+
             return dfd.promise();
         }
-        
+
         update() {
             var self = this;
+            $('#appReason').ntsError('check');
             if (!nts.uk.ui.errors.hasError()) {
                 //DuDT: 2017.10.27処理が対応できてない、とりあえず値が固定する
-                if(self.showScreen() === 'F'){
+                if (self.showScreen() === 'F') {
                     self.lateTime1(self.late1() ? 120 : 0);
-                    self.earlyTime1(self.early1() ? 60: 0);
+                    self.earlyTime1(self.early1() ? 60 : 0);
                     self.lateTime2(self.late2() ? 60 : 0);
                     self.earlyTime2(self.early2() ? 30 : 0);
                 }
-                nts.uk.ui.block.invisible();
+
                 let txtReasonTmp = self.selectedCode();
-                if(!nts.uk.text.isNullOrEmpty(self.selectedCode())){
-                    let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
+                if (!nts.uk.text.isNullOrEmpty(self.selectedCode())) {
+                    let reasonText = _.find(self.ListTypeReason(), function(data) { return data.reasonID == self.selectedCode() });
                     txtReasonTmp = reasonText.reasonTemp;
                 }
-                 if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.appreason() : self.appreason(),"#appReason")){
-                        return;
-                 }
+                if (!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.appreason() : self.appreason(), "#appReason")) {
+                    return;
+                }
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
                     version: self.version,
                     appID: self.appID(),
@@ -151,6 +153,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     appReason: self.appreason(),
                     appApprovalPhaseCmds: self.approvalList
                 };
+                nts.uk.ui.block.invisible();
                 service.updateLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         if(data.autoSendMail){
@@ -160,12 +163,12 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                         }
                     });
                 }).fail((res) => {
-                    if(res.optimisticLock == true){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                    if (res.optimisticLock == true) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function() {
                             location.reload();
-                        });    
+                        });
                     } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
                     }
                 });
 
@@ -173,11 +176,34 @@ module nts.uk.at.view.kaf004.e.viewmodel {
 
         }
     }
-    
+
 
     interface TypeReason {
         reasonID: string;
         reasonTemp: string;
+    }
+    
+    class AppComonSetting {
+        appTypeDiscreteSetting = ko.observable(null);
+        generalDate = ko.observable(null);
+        constructor(data?) {
+            if (data) {
+                //this.generalDate(data.generalDate);
+                this.appTypeDiscreteSetting(new AppTypeDiscreteSetting(data.appTypeDiscreteSettingDtos[0]));
+            }
+
+        }
+    }
+    class AppTypeDiscreteSetting {
+        displayReasonFlg = ko.observable(0);
+        typicalReasonDisplayFlg = ko.observable(0);
+        constructor(data) {
+            if (data) {
+                this.displayReasonFlg(data.displayReasonFlg);
+                this.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
+            }
+        }
+
     }
 
     interface LateOrLeaveEarly {

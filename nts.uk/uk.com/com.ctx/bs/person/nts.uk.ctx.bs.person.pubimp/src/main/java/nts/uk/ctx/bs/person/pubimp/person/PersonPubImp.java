@@ -60,7 +60,7 @@ public class PersonPubImp implements PersonPub {
 		return personRepository.getPersonByPersonIds(personIds).stream()
 				.map(item -> new PersonInfoExport(
 						item.getPersonId(),
-						item.getPersonNameGroup().getPersonName() == null ? "" : item.getPersonNameGroup().getPersonName().getFullName().v(),
+						item.getPersonNameGroup().getBusinessName() == null ? "" : item.getPersonNameGroup().getBusinessName().v(),
 						item.getBirthDate(), 
 						null,
 						item.getGender() == null ? 0 : item.getGender().value))

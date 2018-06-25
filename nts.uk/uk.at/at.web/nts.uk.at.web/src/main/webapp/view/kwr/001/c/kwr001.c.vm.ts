@@ -237,12 +237,17 @@ module nts.uk.at.view.kwr001.c {
                     if (!_.isEmpty(nts.uk.ui.windows.getShared('KWR001_D'))) {
                         self.currentCodeList('');
                         if (!_.isUndefined(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose) && !_.isEmpty(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose)) {
-                            self.currentCodeListSwap(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose);
                             $('#C3_3').focus();                            
                         } else {
                             $('#C3_2').focus();
                         }
                         
+                        let arrTemp: any[] = [];
+                        _.forEach(self.outputItemPossibleLst(), function(value) {
+                            arrTemp.push(value);
+                        })
+                        self.currentCodeListSwap(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose);
+                        self.items(arrTemp);
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR001_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR001_D').nameCopy);
                     } else {
