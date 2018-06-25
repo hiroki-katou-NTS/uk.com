@@ -1211,11 +1211,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         
         btnExtraction_Click() {
-            var self = this;
+            let self = this;
             self.showTextStyle = false;
             self.clickFromExtract = true;
-            //reload MiGrid
-            $('#miGrid').igGrid("destroy");
+            if(self.isVisibleMIGrid()) {
+                //reload MiGrid
+                $('#miGrid').igGrid("destroy");
+            } 
             self.reloadScreen();
         }
 
