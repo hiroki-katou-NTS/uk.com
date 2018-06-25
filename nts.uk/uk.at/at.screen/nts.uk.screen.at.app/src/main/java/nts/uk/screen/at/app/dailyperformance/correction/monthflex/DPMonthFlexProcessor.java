@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
@@ -19,11 +22,11 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
-import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexInfoDisplayChange;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexShortageDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuery;
@@ -39,9 +42,6 @@ public class DPMonthFlexProcessor {
 	private ShClosurePub shClosurePub;
 
 	@Inject
-	private DailyPerformanceScreenRepo repo;
-
-	@Inject
 	private MonthlyModifyQueryProcessor monthlyModifyQueryProcessor;
 
 	@Inject
@@ -49,6 +49,12 @@ public class DPMonthFlexProcessor {
 	
 	@Inject
 	private FlexInfoDisplayChange flexInfoDisplayChange;
+	
+	@Inject
+	private BusinessTypeFormatMonthlyRepository businessTypeFormatMonthlyRepository;
+	
+	@Inject
+	private AuthorityFormatMonthlyRepository authorityFormatMonthlyRepository;
 
 	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191);
 
@@ -58,6 +64,7 @@ public class DPMonthFlexProcessor {
 		boolean hasItem = false;
 		List<MonthlyModifyResult> itemMonthResults = new ArrayList<>();
 		List<MonthlyModifyResult> itemMonthFlexResults = new ArrayList<>();
+		List<FormatDailyDto> formatDaily = new ArrayList<>();
 		// 社員に対応する処理締めを取得する
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 				.findByEmploymentCD(companyId, param.getEmploymentCode());
@@ -70,10 +77,27 @@ public class DPMonthFlexProcessor {
 			return null;
 
 		if (param.dailyPerformanceDto.getSettingUnit() == SettingUnitType.AUTHORITY) {
-			itemIds = repo.getItemIdsMonthByAuthority(companyId, param.getFormatCode());
+			List<String> listDailyPerformanceFormatCode = new ArrayList<>(param.getFormatCode());
+			if (listDailyPerformanceFormatCode.size() > 0) {
+				formatDaily = authorityFormatMonthlyRepository
+						.getListAuthorityFormatDaily(companyId, listDailyPerformanceFormatCode).stream()
+						.map(x -> new FormatDailyDto(x.getDailyPerformanceFormatCode().v(), new Integer(x.getAttendanceItemId()),
+								x.getColumnWidth(), x.getDisplayOrder()))
+						.collect(Collectors.toList());
+			}
 		} else {
-			itemIds = repo.getItemIdsMonthByBussiness(companyId, param.getFormatCode());
+			List<String> listBusinessTypeCode = new ArrayList<>(param.getFormatCode());
+			if (listBusinessTypeCode.size() > 0) {
+				formatDaily = businessTypeFormatMonthlyRepository
+						.getListBusinessTypeFormat(companyId, listBusinessTypeCode).stream()
+						.map(x -> new FormatDailyDto(x.getBusinessTypeCode().v(), new Integer(x.getAttendanceItemId()),
+								x.getColumnWidth(), x.getOrder()))
+						.collect(Collectors.toList());
+			}
 		}
+		
+		itemIds = formatDaily.stream().map(x-> x.getAttendanceItemId()).collect(Collectors.toList());
+		
 		if (!itemIds.isEmpty()) {
 			hasItem = true;
 			// itemIds.addAll(DAFAULT_ITEM);
@@ -108,7 +132,8 @@ public class DPMonthFlexProcessor {
 				closureEmploymentOptional.get().getClosureId(),
 				new ClosureDateDto(closingPeriod.get().getClosureDate().getClosureDay(),
 						closingPeriod.get().getClosureDate().getLastDayOfMonth())));
-		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem, closingPeriod.get().getProcessingYm().v());
+		
+		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem, closingPeriod.get().getProcessingYm().v(), formatDaily);
 	}
 
 }

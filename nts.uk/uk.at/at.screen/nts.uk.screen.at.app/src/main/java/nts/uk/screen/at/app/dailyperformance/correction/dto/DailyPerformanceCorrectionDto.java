@@ -77,6 +77,8 @@ public class DailyPerformanceCorrectionDto {
 	private ChangeSPR changeSPR;
 	
 	private List<TextStyle> textStyles;
+	
+	private Set<String> autBussCode;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -88,6 +90,7 @@ public class DailyPerformanceCorrectionDto {
 		this.dPErrorDto = new ArrayList<>();
 		this.changeSPR = new ChangeSPR(false, false);
 		this.textStyles = new ArrayList<>();
+		this.autBussCode = new HashSet<>();
 	}
 
 	/** Check if employeeId is login user */
