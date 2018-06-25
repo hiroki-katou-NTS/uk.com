@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.Ab
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
@@ -32,15 +33,18 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 public class AggregateMonthlyRecordValue {
 
 	/** 月別実績の勤怠時間 */
-	private List<AttendanceTimeOfMonthly> attendanceTimeList;
+	@Setter
+	private Optional<AttendanceTimeOfMonthly> attendanceTime;
 	/** 週別実績の勤怠時間 */
 	private List<AttendanceTimeOfWeekly> attendanceTimeWeeks;
 	/** 月別実績の所属情報 */
-	private List<AffiliationInfoOfMonthly> affiliationInfoList;
+	@Setter
+	private Optional<AffiliationInfoOfMonthly> affiliationInfo;
 	/** 月別実績の任意項目 */
 	private List<AnyItemOfMonthly> anyItemList;
 	/** 管理時間の36協定時間 */
-	private List<AgreementTimeOfManagePeriod> agreementTimeList;
+	@Setter
+	private Optional<AgreementTimeOfManagePeriod> agreementTime;
 	/** 年休月別残数データ */
 	private List<AnnLeaRemNumEachMonth> annLeaRemNumEachMonthList;
 	/** 積立年休月別残数データ */
@@ -64,11 +68,11 @@ public class AggregateMonthlyRecordValue {
 	 */
 	public AggregateMonthlyRecordValue(){
 		
-		this.attendanceTimeList = new ArrayList<>();
+		this.attendanceTime = Optional.empty();
 		this.attendanceTimeWeeks = new ArrayList<>();
-		this.affiliationInfoList = new ArrayList<>();
+		this.affiliationInfo = Optional.empty();
 		this.anyItemList = new ArrayList<>();
-		this.agreementTimeList = new ArrayList<>();
+		this.agreementTime = Optional.empty();
 		this.annLeaRemNumEachMonthList = new ArrayList<>();
 		this.rsvLeaRemNumEachMonthList = new ArrayList<>();
 		this.absenceLeaveRemainList = new ArrayList<>();
@@ -95,30 +99,6 @@ public class AggregateMonthlyRecordValue {
 	 */
 	public boolean existErrorResource(String resourceId){
 		return this.errorInfos.containsKey(resourceId);
-	}
-	
-	/**
-	 * 月別実績の所属情報を取得
-	 * @param employeeId 社員ID
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @param closureDate 締め日
-	 * @return 月別実績の所属情報
-	 */
-	public Optional<AffiliationInfoOfMonthly> getAffiliationInfo(
-			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate){
-		
-		for (val affiliationInfo : this.affiliationInfoList){
-			if (affiliationInfo.getEmployeeId() == employeeId &&
-				affiliationInfo.getYearMonth().equals(yearMonth) &&
-				affiliationInfo.getClosureId() == closureId &&
-				affiliationInfo.getClosureDate().getClosureDay().equals(closureDate.getClosureDay()) &&
-				affiliationInfo.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth()){
-				
-				return Optional.of(affiliationInfo);
-			}
-		}
-		return Optional.empty();
 	}
 	
 	/**
@@ -191,5 +171,31 @@ public class AggregateMonthlyRecordValue {
 			}
 		}
 		this.anyItemList.add(sumAnyItem);
+	}
+	
+	/**
+	 * 月別実績(Work)の取得
+	 * @return 月別実績(Work)
+	 */
+	public IntegrationOfMonthly getIntegration(){
+		
+		IntegrationOfMonthly result = new IntegrationOfMonthly();
+		result.setAttendanceTime(this.attendanceTime);
+		result.setAffiliationInfo(this.affiliationInfo);
+		result.getAnyItemList().addAll(this.anyItemList);
+		result.setAgreementTime(this.agreementTime);
+		AnnLeaRemNumEachMonth annualLeaveRemain = null;
+		if (this.annLeaRemNumEachMonthList.size() > 0) annualLeaveRemain = this.annLeaRemNumEachMonthList.get(0);
+		result.setAnnualLeaveRemain(Optional.ofNullable(annualLeaveRemain));
+		RsvLeaRemNumEachMonth reserveLeaveRemain = null;
+		if (this.rsvLeaRemNumEachMonthList.size() > 0) reserveLeaveRemain = this.rsvLeaRemNumEachMonthList.get(0);
+		result.setReserveLeaveRemain(Optional.ofNullable(reserveLeaveRemain));
+		AbsenceLeaveRemainData absenceLeaveRemain = null;
+		if (this.absenceLeaveRemainList.size() > 0) absenceLeaveRemain = this.absenceLeaveRemainList.get(0);
+		result.setAbsenceLeaveRemain(Optional.ofNullable(absenceLeaveRemain));
+		MonthlyDayoffRemainData monthlyDayoffRemain = null;
+		if (this.monthlyDayoffRemainList.size() > 0) monthlyDayoffRemain = this.monthlyDayoffRemainList.get(0);
+		result.setMonthlyDayoffRemain(Optional.ofNullable(monthlyDayoffRemain));
+		return result;
 	}
 }

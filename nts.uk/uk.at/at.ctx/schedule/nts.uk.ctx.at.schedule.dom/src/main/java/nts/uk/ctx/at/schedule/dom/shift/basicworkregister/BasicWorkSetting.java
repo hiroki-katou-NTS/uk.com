@@ -43,10 +43,10 @@ public class BasicWorkSetting extends DomainObject {
 	 */
 	public void saveToMemento(BasicWorkSettingSetMemento memento) {
 		memento.setWorkTypeCode(this.worktypeCode);
-		if (this.workingCode != null) {
-			memento.setSiftCode(this.workingCode);
+		if (this.workingCode == null || StringUtils.isEmpty(this.workingCode.v())) {
+			memento.setSiftCode(null);
 		} else {
-			memento.setSiftCode(new WorkingCode(StringUtils.EMPTY));
+			memento.setSiftCode(this.workingCode);
 		}
 		memento.setWorkDayDivision(this.workdayDivision);
 	}

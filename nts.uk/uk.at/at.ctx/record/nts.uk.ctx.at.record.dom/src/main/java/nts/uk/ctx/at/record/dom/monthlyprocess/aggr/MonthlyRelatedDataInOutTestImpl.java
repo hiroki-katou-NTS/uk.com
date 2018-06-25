@@ -269,7 +269,7 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		if (randomVal >= 6) anyLeaveDays.put(1, anyLeave02);
 		vWorkDays.getWorkDays().setDays(new AttendanceDaysMonth(20.0 +  randomVal));
 		
-		returnValue.getAttendanceTimeList().add(attendanceTime);
+		returnValue.setAttendanceTime(Optional.of(attendanceTime));
 		//*****end（テスト shuichi_ishida）　2017.12 検収用。仮データ設定。
 		
 		//*****（テスト 2017.12 shuichi_ichida）　集計設定読み込み　（テストデータは、DB直接手入力）

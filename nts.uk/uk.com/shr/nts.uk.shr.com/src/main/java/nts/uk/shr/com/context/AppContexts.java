@@ -23,6 +23,10 @@ public final class AppContexts {
 	public static String programId() {
 		return RequestContextProvider.get().get(AppContextsConfig.KEY_PROGRAM_ID);
 	}
+	
+	public static RequestInfo requestedWebApi() {
+		return RequestContextProvider.get().get(AppContextsConfig.REQUEST_WEBAPI);
+	}
 
 	public static WindowsAccount windowsAccount() {
 		return SessionContextProvider.get().get(AppContextsConfig.WINS_ACCOUNT);

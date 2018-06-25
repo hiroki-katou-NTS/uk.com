@@ -50,8 +50,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(837, join(DAILY_REMARKS_NAME, joinNS(REMARK, NUMBER_5)));
 
 		temp.put(794, join(DAILY_PC_LOG_INFO_NAME, INFO, joinNS(LOGON, NUMBER_1)));
-		temp.put(795, join(DAILY_PC_LOG_INFO_NAME, INFO, joinNS(LOGOFF, NUMBER_2)));
-		temp.put(796, join(DAILY_PC_LOG_INFO_NAME, INFO, joinNS(LOGON, NUMBER_1)));
+		temp.put(795, join(DAILY_PC_LOG_INFO_NAME, INFO, joinNS(LOGOFF, NUMBER_1)));
+		temp.put(796, join(DAILY_PC_LOG_INFO_NAME, INFO, joinNS(LOGON, NUMBER_2)));
 		temp.put(797, join(DAILY_PC_LOG_INFO_NAME, INFO, joinNS(LOGOFF, NUMBER_2)));
 
 		temp.put(756, "日別実績の遅刻時間．インターバル免除時間.インターバル時間");

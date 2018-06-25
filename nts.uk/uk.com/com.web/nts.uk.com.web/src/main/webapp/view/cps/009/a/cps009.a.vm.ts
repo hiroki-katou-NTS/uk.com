@@ -459,12 +459,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
-        historyFilter_Lan() {
+        historyFilter() {
             let self = this,
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
                 itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
                     function(item: PerInfoInitValueSettingItemDto) {
-                        return item.selectedRuleCode() == 2 && item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1);
+                        return item.selectedRuleCode() == 2 && ((item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1)) || item.itemCode() == "IS00084" || item.itemCode() == "IS00085");
                     }),
                 itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
                     return {
@@ -505,26 +505,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 });
             }
 
-        }
-
-        /**
-         * check item co thoa man dieu kien de loc khong?
-         */
-        checkFilter(objItem: PerInfoInitValueSettingItemDto): boolean {
-            //画面項目「個人情報初期値設定区分（A3_22）」で、「固定値」を選択している項目をチェックする(Kiểm tra Item mà có 「個人情報初期値設定区分（A3_22）」 là 「固定値」)
-            if (objItem.selectedRuleCode() != 2) {
-                return false;
-            }
-            //「固定値」になっているかつ、項目のデータ型＝選択項目かつ、参照区分！＝Enum参照条件の項目があるかチェックする(Kiểm tra những Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件)
-            //Type là Selection
-            if (objItem.dataType() != 6) {
-                return false;
-            }
-            //参照区分 != Enum参照条件 && 参照区分＝コード名称参照条件の場合
-            if (objItem.selectionItemRefType != 1) {
-                return false;
-            }
-            return true;
         }
 
         /**
@@ -929,12 +909,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                 self.selection = ko.observableArray(params.selection || []);
 
-
+            }
+            if (params.dataType == 6) {
                 self.selectedCode = ko.observable((params.stringValue == null ? (params.selection.length > 0 ? params.selection[0].optionValue : undefined) : params.stringValue) || undefined);
-
             }
 
+
             if (params.dataType === 8) {
+                self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
                 let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
                 self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
             }
@@ -1345,7 +1327,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this;
             setShared('inputCDL008', {
                 selectedCodes: [self.selectedCode()],
-                baseDate: moment.utc(new Date()).toDate(),
+                baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
                 isMultiple: false,
                 selectedSystemType: 5,
                 isrestrictionOfReferenceRange: false

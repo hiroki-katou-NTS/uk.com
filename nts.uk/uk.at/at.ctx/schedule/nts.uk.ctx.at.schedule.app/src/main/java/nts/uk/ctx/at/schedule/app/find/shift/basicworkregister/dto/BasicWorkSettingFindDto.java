@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSettingSetMemento;
@@ -53,7 +55,12 @@ public class BasicWorkSettingFindDto implements BasicWorkSettingSetMemento {
 	 */
 	@Override
 	public void setSiftCode(WorkingCode workingCode) {
-		this.workingCode = workingCode.v();
+		if (workingCode == null) {
+			this.workingCode = StringUtils.EMPTY;
+		} else {
+			this.workingCode = workingCode.v();
+		}
+		
 	}
 
 	/*
