@@ -51,7 +51,7 @@
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: changeDataCategoryList">
-                    <tr>
+                    <tr data-bind="attr: { 'data-id': rowNumber }">
                         <td class="halign-right row-number"><label data-bind="text: rowNumber"/></td>
                         <td class="halign-center">
                             <div data-bind="ntsCheckBox: { checked: isRecover }"/>

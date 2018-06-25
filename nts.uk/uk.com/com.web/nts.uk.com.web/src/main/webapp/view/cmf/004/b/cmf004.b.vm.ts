@@ -2,6 +2,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import alertError = nts.uk.ui.dialog;
     export class ScreenModel {
         stepList: Array<NtsWizardStep> = [
             { content: '.step-1' },
@@ -51,7 +52,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         selectedEmployeeCodeScreenH: KnockoutObservableArray<string> = ko.observableArray([]);
         employeeListScreenH: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         
-        
+        categoryListOld: Array<any> = [];
         recoveryProcessingId: string = nts.uk.util.randomId();
         constructor() {
             let self = this;
@@ -271,6 +272,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 _itemList.push(new CategoryInfo(i + 1, x.isRecover(), x.categoryId(), x.categoryName(), x.recoveryPeriod(), x.startOfPeriod(), x.endOfPeriod(), x.recoveryMethod(), x.iscanNotBeOld()));
             });
             self.changeDataRecoveryPeriod().changeDataCategoryList(_itemList);
+            self.categoryListOld = ko.toJS(_itemList);
         }
 
         initScreenG(): void {
@@ -383,12 +385,40 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         nextToScreenG(): void {
             let self = this;
-            self.initScreenG();
-            $('#data-recovery-wizard').ntsWizard("next");
+            nts.uk.ui.errors.clearAll();
+            for(let checkRow of self.changeDataRecoveryPeriod().changeDataCategoryList()){
+                if(checkRow.isRecover()){
+                    if(checkRow.startOfPeriod() > checkRow.endOfPeriod()){
+                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1320'});
+                    }
+                    
+                }
+                let oldData =  _.find(self.categoryListOld, x =>{
+                    return x.categoryId = checkRow.categoryId();
+                });
+                if(oldData.startOfPeriod < checkRow.startOfPeriod()){
+                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
+                    }
+                //Todo : cho ben cmf003fix
+//                if(oldData.endOfPeriod > checkRow.endOfPeriod() ){
+//                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
+//                    }
+            } 
+            
+           
+            
+            
+            if (!nts.uk.ui.errors.hasError()) {
+                self.initScreenG();
+                $('#data-recovery-wizard').ntsWizard("next");
+            }
         }
 
         nextToScreenH(): void {
             let self = this;
+            
+            
+            
             self.initScreenH();
             $('#data-recovery-wizard').ntsWizard("next");
         }
@@ -404,7 +434,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 let paramObtainRecovery = {
                     recoveryProcessingId : self.dataRecoverySelection().selectedRecoveryFile(),
                     dataRecoveryProcessId : self.processingId
-                    
                 };
 
                 service.obtainRecovery(paramObtainRecovery).done((res) => {
