@@ -15,6 +15,7 @@
 			
 			<ui:define name="content">
 				<div id="contents-area">
+				<div style="width: 380px;">
 					<div class="label">#{i18n.getText('KAF001_11')}</div>
 					<!-- B2-普通残業申請 -->
 					<div><button class="caret-right" data-bind="text: b2, click: function(){ openOverTime(1); }"></button></div>
@@ -22,6 +23,7 @@
 					<div><button class="caret-right" data-bind="text: b3, click: function(){ openOverTime(0); }"></button></div>
 					<!-- B4-早出・普通残業申請 -->
 					<div><button class="caret-right" data-bind="text: b4, click: function(){ openOverTime(2); }"></button></div>
+					</div>
 				</div>
 			</ui:define>
 		</ui:composition>
