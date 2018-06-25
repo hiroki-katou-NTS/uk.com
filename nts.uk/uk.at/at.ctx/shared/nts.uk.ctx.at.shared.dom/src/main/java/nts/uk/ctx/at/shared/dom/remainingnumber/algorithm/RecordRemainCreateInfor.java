@@ -30,7 +30,7 @@ public class RecordRemainCreateInfor {
 	private List<VacationTimeInfor> lstVacationTimeInfor;
 	/**	振替残業時間合計 */
 	private Integer transferOvertimesTotal;
-	/**	振替時間合計 */
+	/**	振替時間合計     休出 */
 	private Integer transferTotal;
 	/**	就業時間帯コード */
 	private Optional<String> workTimeCode;
