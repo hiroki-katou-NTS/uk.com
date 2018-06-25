@@ -32,7 +32,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecor
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
-import nts.uk.ctx.at.record.app.find.divergence.time.ScreenUseAtr;
+import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
@@ -927,7 +927,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			});
 
 			if (!attendanceTypeList.isEmpty()) {
-				if (attendanceTypeList.get(0).getScreenUseAtr().equals(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE)) {
+				AttendanceType attendance = attendanceTypeList.stream()
+						.filter(e -> e.getAttendanceItemId() == item.getItemId()).collect(Collectors.toList()).get(0);
+				if (attendance.getScreenUseAtr().equals(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE)) {
 					List<WorkType> worktype = workTypeList.stream()
 							.filter(ite -> ite.getWorkTypeCode().v().equals(value)).collect(Collectors.toList());
 					if (!worktype.isEmpty())
