@@ -153,14 +153,22 @@ public class RegularAndIrregularTimeOfMonthly {
 		ConcurrentStopwatches.start("12222.1:週開始の取得：");
 		
 		// 週開始を取得する
-		val weekStartOpt = repositories.getWeekStart().algorithm(
-				companyId, employmentCd, employeeId, datePeriod.end(), workingSystem);
-		if (!weekStartOpt.isPresent()) {
+		val workTimeSetOpt = companySets.getWorkingTimeSetting(employmentCd,
+				employeeSets.getWorkplacesToRoot(datePeriod.end()), workingSystem, employeeSets, repositories);
+		if (!workTimeSetOpt.isPresent()){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"005", new ErrMessageContent(TextResource.localize("Msg_1171"))));
 			return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
 		}
-		WeekStart weekStart = weekStartOpt.get();
+		WeekStart weekStart = null;
+		if (workTimeSetOpt.get().getWeeklyTime() != null){
+			weekStart = workTimeSetOpt.get().getWeeklyTime().getStart();
+		}
+		if (weekStart == null) {
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"005", new ErrMessageContent(TextResource.localize("Msg_1171"))));
+			return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
+		}
 
 		ConcurrentStopwatches.stop("12222.1:週開始の取得：");
 		ConcurrentStopwatches.start("12222.2:前月の最終週：");
@@ -214,7 +222,7 @@ public class RegularAndIrregularTimeOfMonthly {
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
 					aggregateTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
 							companyId, procWorkplaceId, procEmploymentCd, workingSystem, aggregateAtr,
-							workInfo, settingsByReg, settingsByDefo, companySets, repositories);
+							workInfo, settingsByReg, settingsByDefo, companySets, employeeSets, repositories);
 				}
 				
 				ConcurrentStopwatches.stop("12222.3:日別実績の集計：");
@@ -368,7 +376,7 @@ public class RegularAndIrregularTimeOfMonthly {
 				
 				// 処理日の職場コードを取得する
 				String procWorkplaceId = "empty";
-				val affWorkplaceOpt = repositories.getAffWorkplace().findBySid(employeeId, procDate);
+				val affWorkplaceOpt = employeeSets.getWorkplace(procDate);
 				if (affWorkplaceOpt.isPresent()){
 					procWorkplaceId = affWorkplaceOpt.get().getWorkplaceId();
 				}
@@ -387,7 +395,7 @@ public class RegularAndIrregularTimeOfMonthly {
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
 					prevTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
 							companyId, procWorkplaceId, procEmploymentCd, workingSystem, aggregateAtr,
-							workInfo, settingsByReg, settingsByDefo, companySets, repositories);
+							workInfo, settingsByReg, settingsByDefo, companySets, employeeSets, repositories);
 				}
 			}
 			
