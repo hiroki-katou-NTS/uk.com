@@ -24,6 +24,8 @@ public class ApprovalStateOutput {
 	
 	@Setter
 	private String sMail;
+	@Setter
+	private String sMailAgent;
 	
 	public static ApprovalStateOutput fromApprovalStateImportToOutput(ApproverStateImport_New approvalState){
 		return new ApprovalStateOutput(approvalState.getApproverID(), approvalState.getApproverName(), approvalState.getRepresenterID(), approvalState.getRepresenterName());

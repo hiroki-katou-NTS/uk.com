@@ -18,27 +18,27 @@ public class StayingTimeDto implements ItemConst {
 
 	/** 滞在時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = STAYING)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer stayingTime;
 
 	/** 出勤前時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = ATTENDANCE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer beforeWoringTime;
 
 	/** 退勤後時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = LEAVE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer afterLeaveTime;
 
 	/** PCログオン前時間 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = LOGON)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer beforePCLogOnTime;
 
 	/** PCログオフ後時間 */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = LOGOFF)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer afterPCLogOffTime;
 
 	public static StayingTimeDto fromStayingTime(StayingTimeOfDaily domain) {

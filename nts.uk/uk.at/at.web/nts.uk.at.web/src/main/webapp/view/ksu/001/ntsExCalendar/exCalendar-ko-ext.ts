@@ -80,6 +80,24 @@ module nts.uk.at.view.ksu001 {
                     $(this).find('input')[0].checked = true;
                 }
             });
+            
+            //When click td contain checkbox
+            $(container).on("click", ".fc-day", function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                if($($(this)[0]).hasClass('fc-disabled-day')) return;
+                var element = $(event.target);
+                var choosenDate = element.closest('td').attr("data-date");
+                if ($(this).find('input')[0].checked) {
+                    _.remove(data.value(), (x) => {
+                        return x == choosenDate;
+                    });
+                    $(this).find('input')[0].checked = false;
+                } else {
+                    data.value.push(choosenDate);
+                    $(this).find('input')[0].checked = true;
+                }
+            });
 
             //checkAll
             $('#checkAll').click(() => {

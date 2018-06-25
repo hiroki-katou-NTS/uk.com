@@ -16,5 +16,5 @@ import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 public class ApplicationListDto {
 	private List<ApplicationDetailDto> listAppDetail;
 	private List<AppCompltLeaveSync> lstAppCompltLeaveSync;
-	//private List<Application_New> listApp;
+	boolean displayPrePostFlg;
 }

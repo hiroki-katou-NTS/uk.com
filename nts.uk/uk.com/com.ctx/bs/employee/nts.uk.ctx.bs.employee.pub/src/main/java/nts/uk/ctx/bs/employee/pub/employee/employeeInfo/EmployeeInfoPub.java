@@ -15,13 +15,13 @@ import nts.arc.time.GeneralDate;
 public interface EmployeeInfoPub {
 
 	/**
-	 * Find Employee by companyId,employeeCode For request No.18
+	 * Find Employee by companyId,employeeCode For RequestList18
 	 *
 	 */
 	Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode);
 
 	/**
-	 * Get List Employee by companyId,baseDate For request No.60
+	 * Get List Employee by companyId,baseDate For RequestList60
 	 *
 	 */
 
@@ -33,7 +33,7 @@ public interface EmployeeInfoPub {
 	 */
 	//List<EmpBasicInfoExport> getListEmpBasicInfo(List<String> sid);
 
-	/**
+	/**RequestList124
 	 * Get Employee Info By Pid.
 	 * Requets List No.124
 	 * @param pid

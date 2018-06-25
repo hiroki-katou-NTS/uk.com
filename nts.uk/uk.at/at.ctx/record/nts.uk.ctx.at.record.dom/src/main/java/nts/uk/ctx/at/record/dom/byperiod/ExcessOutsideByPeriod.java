@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.byperiod;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -70,14 +69,10 @@ public class ExcessOutsideByPeriod implements Cloneable {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(
-			Optional<OutsideOTSetting> outsideOTSetOpt,
+			OutsideOTSetting outsideOTSet,
 			WeeklyCalculation weeklyCalculation,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		// 「時間外超過設定」を取得
-		if (!outsideOTSetOpt.isPresent()) return;
-		val outsideOTSet = outsideOTSetOpt.get();
-
 		// 丸め設定取得
 		RoundingSetOfMonthly roundingSet = new RoundingSetOfMonthly(weeklyCalculation.getCompanyId());
 		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(weeklyCalculation.getCompanyId());

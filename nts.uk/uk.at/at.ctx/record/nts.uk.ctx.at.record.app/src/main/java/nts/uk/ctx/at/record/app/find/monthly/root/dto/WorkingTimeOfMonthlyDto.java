@@ -17,17 +17,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class WorkingTimeOfMonthlyDto implements ItemConst {
 
 	/** 就業時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = WORK_TIME, layout = LAYOUT_A)
 	private int workTime;
 
 	/** 所定内割増時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = PREMIUM, layout = LAYOUT_B)
 	private int withinPrescribedPremiumTime;
 	
 	/** 実働就業時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ACTUAL, layout = LAYOUT_C)
 	private int actualWorkTime;
 	

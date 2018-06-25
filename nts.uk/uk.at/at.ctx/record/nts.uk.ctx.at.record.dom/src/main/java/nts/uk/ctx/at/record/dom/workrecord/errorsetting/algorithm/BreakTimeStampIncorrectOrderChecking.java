@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
-import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 
 /*
@@ -20,13 +18,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 @Stateless
 public class BreakTimeStampIncorrectOrderChecking {
 
-	@Inject
-	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
+	public List<EmployeeDailyPerError> breakTimeStampIncorrectOrderChecking(String companyId, String employeeId, GeneralDate processingDate, BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
 
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	public void breakTimeStampIncorrectOrderChecking(String companyId, String employeeId, GeneralDate processingDate, BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
+		List<EmployeeDailyPerError> employeeDailyPerErrorList = new ArrayList<>();
+		
 //		List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformances = breakTimeOfDailyPerformanceRepository
 //				.findByKey(employeeId, processingDate);
 		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
@@ -79,12 +74,20 @@ public class BreakTimeStampIncorrectOrderChecking {
 				}
 				
 				if(breakTimeSheet.getStartTime().greaterThan(breakTimeSheet.getEndTime())){
-					if (!attendanceItemIDList.isEmpty()) {
-						createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
-								new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+					if (!attendanceItemIDList.isEmpty()){
+						EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+								employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+								attendanceItemIDList);
+						employeeDailyPerErrorList.add(employeeDailyPerError);
 					}
+					
+//					if (!attendanceItemIDList.isEmpty()) {
+//						createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
+//								new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+//					}
 				}
 			}
 		}
+		return employeeDailyPerErrorList;
 	}
 }

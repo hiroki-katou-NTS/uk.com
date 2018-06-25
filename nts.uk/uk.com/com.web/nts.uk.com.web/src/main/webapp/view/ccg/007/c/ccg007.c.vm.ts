@@ -213,7 +213,8 @@ module nts.uk.pr.view.ccg007.c {
                             companyCode: self.companyCode(),
                             companyName: self.companyName(),
                             contractCode: self.contractCode(),
-                            employeeCode : self.employeeCode()
+                            employeeCode : self.employeeCode(),
+                            contractPassword: self.contractPassword()
                         }, true);
                         
                         nts.uk.ui.windows.sub.modal('/view/ccg/007/g/index.xhtml',{
@@ -222,6 +223,12 @@ module nts.uk.pr.view.ccg007.c {
                         }).onClosed(function(): any {})
                     });
                 }
+            }
+            
+            private account(){
+                service.account().done(data => {
+                    alert('domain: ' + data.domain + '\n' + 'user name: ' + data.userName)
+                });
             }
         }
         export class CompanyItemModel {

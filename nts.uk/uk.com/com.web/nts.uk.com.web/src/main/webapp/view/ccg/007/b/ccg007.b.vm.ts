@@ -169,7 +169,8 @@ module nts.uk.pr.view.ccg007.b {
                 //set LoginId to dialog
                 nts.uk.ui.windows.setShared('parentCodes', {
                     loginId: self.loginId(),
-                    contractCode : self.contractCode()
+                    contractCode : self.contractCode(),
+                    contractPassword: self.contractPassword()
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/ccg/007/e/index.xhtml',{
@@ -197,6 +198,12 @@ module nts.uk.pr.view.ccg007.b {
                     width : 520,
                     height : 350
                 }).onClosed(function(): any {})
+            }
+            
+            private account(){
+                service.account().done(data => {
+                    alert('domain: ' + data.domain + '\n' + 'user name: ' + data.userName)
+                });
             }
         }
     }

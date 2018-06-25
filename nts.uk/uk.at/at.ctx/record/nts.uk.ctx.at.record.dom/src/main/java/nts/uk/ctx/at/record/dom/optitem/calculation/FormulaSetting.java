@@ -209,7 +209,8 @@ public class FormulaSetting extends DomainObject {
 			return calcItem.getLeftItemValue()-calcItem.getRightItemValue();
 		case MULTIPLY:
 			return calcItem.getLeftItemValue()*calcItem.getRightItemValue();
-		case DIVIDE:	
+		case DIVIDE:
+			if (calcItem.getRightItemValue() == 0) return 0;
 			return calcItem.getLeftItemValue()/calcItem.getRightItemValue();
 		default:
 			throw new RuntimeException("unknown operator:"+operator);

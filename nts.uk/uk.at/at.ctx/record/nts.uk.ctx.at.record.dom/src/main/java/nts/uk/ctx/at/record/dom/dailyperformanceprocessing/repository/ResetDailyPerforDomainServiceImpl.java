@@ -27,7 +27,6 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Exe
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 
 @Stateless
 public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomainService {
@@ -40,9 +39,6 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
-
-	@Inject
-	private AutoCalculationSetService autoCalculationSetService;
 
 	@Inject
 	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
@@ -101,7 +97,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 								.getCalculationClassificationResetting() == true) {
 
 							calAttrOfDailyPerformance = this.reflectWorkInforDomainService
-									.reflectCalAttOfDaiPer(companyID, employeeID, processingDate);
+									.reflectCalAttOfDaiPer(companyID, employeeID, processingDate, affiliationInforOfDailyPerfor.get());
 
 						}
 						// 所属情報を反映する(Reflect info 所属情報)

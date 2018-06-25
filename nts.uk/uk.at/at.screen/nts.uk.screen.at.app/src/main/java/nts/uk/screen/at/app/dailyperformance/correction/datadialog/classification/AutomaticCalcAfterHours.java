@@ -2,8 +2,13 @@ package nts.uk.screen.at.app.dailyperformance.correction.datadialog.classificati
 
 import lombok.AllArgsConstructor;
 
+/**
+ * @author thanhnx
+ * 時間外の自動計算区分
+ */
 @AllArgsConstructor
 @SuppressWarnings("unused")
+
 public enum AutomaticCalcAfterHours {
 	
 	/** The applymanuallyenter. */
