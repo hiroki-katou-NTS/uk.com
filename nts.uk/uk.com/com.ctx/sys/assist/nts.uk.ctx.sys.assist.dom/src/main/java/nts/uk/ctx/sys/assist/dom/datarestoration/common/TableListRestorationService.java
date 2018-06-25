@@ -93,7 +93,8 @@ public class TableListRestorationService {
 							tableListSetting.get(111), Integer.parseInt(tableListSetting.get(112)), Integer.parseInt(tableListSetting.get(113)));
 					tableListData.setDataRecoveryProcessId(serverPrepareMng.getDataRecoveryProcessId());
 					tableList.add(tableListData);
-					tableListRepository.updateByStorageId(tableListData.getDataStorageProcessingId(), serverPrepareMng.getDataRecoveryProcessId());
+					tableListRepository.update(tableListData);
+					//tableListRepository.updateByStorageId(tableListData.getDataStorageProcessingId(), serverPrepareMng.getDataRecoveryProcessId());
 				}
 				
 			} catch (NumberFormatException e) {

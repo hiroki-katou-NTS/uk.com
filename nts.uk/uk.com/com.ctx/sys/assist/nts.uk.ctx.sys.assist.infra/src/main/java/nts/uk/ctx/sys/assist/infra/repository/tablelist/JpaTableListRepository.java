@@ -41,6 +41,11 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	public void add(TableList domain) {
 		this.commandProxy().insert(SspmtTableList.toEntity(domain));
 	}
+	
+	@Override
+	public void update(TableList domain) {
+		this.commandProxy().update(SspmtTableList.toEntity(domain));
+	}
 
 	@Override
 	public Class<?> getTypeForTableName(String tableName) {
@@ -316,6 +321,10 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	@Override
 	public void updateByStorageId(String storageId, String recoveryId) {
+		this.getEntityManager().createQuery(UPDATE_BY_STORAGE_ID).setParameter("recoveryId", recoveryId).setParameter("storageId", storageId).executeUpdate();		
+	}
+	@Override
+	public void updateOldDataFieldByStorageId(String storageId, int recoveryId) {
 		this.getEntityManager().createQuery(UPDATE_BY_STORAGE_ID).setParameter("recoveryId", recoveryId).setParameter("storageId", storageId).executeUpdate();		
 	}
 }
