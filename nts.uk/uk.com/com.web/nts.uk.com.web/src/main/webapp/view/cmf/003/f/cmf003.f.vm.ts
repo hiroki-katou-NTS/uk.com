@@ -48,12 +48,42 @@ module nts.uk.com.view.cmf003.f {
                 self.timeOver = ko.observable('00:00:00');
                 self.storeProcessingId = params.storeProcessingId;
                 self.dataSaveSetName = params.dataSaveSetName;
-                self.dayStartValue = moment.utc(params.dayValue.startDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
-                self.dayEndValue = moment.utc(params.dayValue.endDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
-                self.monthStartValue = moment.utc(params.monthValue.startDate, 'YYYY/MM/DD').format("YYYY/MM");
-                self.monthEndValue = moment.utc(params.monthValue.endDate, 'YYYY/MM/DD').format("YYYY/MM");
-                self.yearStartValue = moment.utc(params.yearValue.startDate, 'YYYY/MM/DD').format("YYYY");
-                self.yearEndValue = moment.utc(params.yearValue.endDate, 'YYYY/MM/DD').format("YYYY");
+                
+                if(_.isNil(params.dayValue.startDate)) {
+                    self.dayStartValue = ""
+                } else {
+                    self.dayStartValue = moment.utc(params.dayValue.startDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
+                }
+                
+                if(_.isNil(params.dayValue.endDate)) {
+                    self.dayEndValue = ""
+                } else {
+                    self.dayEndValue = moment.utc(params.dayValue.endDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
+                }
+                
+                if(_.isNil(params.monthValue.startDate)) {
+                    self.monthStartValue = "";
+                } else {
+                    self.monthStartValue = moment.utc(params.monthValue.startDate, 'YYYY/MM/DD').format("YYYY/MM");
+                }
+                
+                if(_.isNil(params.monthValue.endDate)) {
+                    self.monthEndValue = "";
+                } else {
+                    self.monthEndValue = moment.utc(params.monthValue.endDate, 'YYYY/MM/DD').format("YYYY/MM");
+                }
+                
+                if(_.isNil(params.yearValue.startDate)) {
+                    self.yearStartValue = "";
+                } else {
+                    self.yearStartValue = moment.utc(params.yearValue.startDate, 'YYYY/MM/DD').format("YYYY");
+                }
+                
+                if(_.isNil(params.yearValue.endDate)) {
+                    self.yearEndValue = "";
+                } else {
+                    self.yearEndValue = moment.utc(params.yearValue.endDate, 'YYYY/MM/DD').format("YYYY");
+                }
                 
                 // init F1_7
                 self.status = ko.observable('');
