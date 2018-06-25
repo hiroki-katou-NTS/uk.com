@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
@@ -60,7 +60,7 @@ public class GetAgreementTimeProc {
 	public List<AgreementTimeDetail> get(String companyId, List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId) {
 
-		List<AgreementTimeDetail> returnList = new ArrayList<>();
+		CopyOnWriteArrayList<AgreementTimeDetail> results = new CopyOnWriteArrayList<>();
 		this.companyId = companyId;
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
@@ -68,19 +68,25 @@ public class GetAgreementTimeProc {
 		
 		// 月別集計で必要な会社別設定を取得　（36協定時間用）
 		this.companySets = MonAggrCompanySettings.loadSettingsForAgreement(companyId, this.repositories);
+		if (this.companySets.getErrorInfos().size() > 0){
+			this.errorMessage = this.companySets.getErrorInfos().values().stream().findFirst().get().v();
+			return results;
+		}
 		
 		// 年月を集計期間に変換
 		val aggrPeriod = this.convertToAggregatePeriod();
-		if (aggrPeriod == null) return returnList;
+		if (aggrPeriod == null) return results;
 		
-		for (val employeeId : employeeIds){
+		CopyOnWriteArrayList<String> errorMessages = new CopyOnWriteArrayList<>();
+		employeeIds.parallelStream().forEach(employeeId -> {
+			if (errorMessages.size() > 0) return;
 			
 			// 月別集計で必要な社員別設定を取得
 			this.employeeSets = MonAggrEmployeeSettings.loadSettings(
 					companyId, employeeId, aggrPeriod, this.repositories);
 			if (this.employeeSets.getErrorInfos().size() > 0){
-				this.errorMessage = this.employeeSets.getErrorInfos().values().stream().findFirst().get().v();
-				continue;
+				errorMessages.add(this.employeeSets.getErrorInfos().values().stream().findFirst().get().v());
+				return;
 			}
 			
 			// 36協定時間一覧を作成
@@ -110,10 +116,12 @@ public class GetAgreementTimeProc {
 			//		Optional.of(appReflectAttdTimeList));
 			
 			aggrTimeDetail = AgreementTimeDetail.of(employeeId, confirmed, afterAppReflect, this.errorMessage);
-			returnList.add(aggrTimeDetail);
-		}
+			results.add(aggrTimeDetail);
+		});
 		
-		return returnList;
+		if (errorMessages.size() > 0) this.errorMessage = errorMessages.get(0);
+		
+		return results;
 	}
 	
 	/**

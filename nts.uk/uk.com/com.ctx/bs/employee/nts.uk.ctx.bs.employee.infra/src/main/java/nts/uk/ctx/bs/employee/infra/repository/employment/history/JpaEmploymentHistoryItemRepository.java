@@ -60,6 +60,10 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId" 
 			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
 	
+	private static final String GET_LST_SID_BY_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtEmploymentHistItem ehi" 
+			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId" 
+			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
+	
 	@Override
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
 		Optional<EmploymentInfo> employee = this.queryProxy().query(SEL_HIS_ITEM, Object[].class)
@@ -436,6 +440,22 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			EmploymentHistoryItem domain = this.toDomain(e);
 			return domain;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getLstSidByListCodeAndDatePeriod(DatePeriod dateperiod, List<String> employmentCodes) {
+		List<String> listSid = new ArrayList<>();
+		CollectionUtil.split(employmentCodes, 1000, subList -> {
+			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_EMPTCODE_DATEPERIOD, String.class)
+					.setParameter("employmentCodes", subList)
+					.setParameter("startDate", dateperiod.start())
+					.setParameter("endDate", dateperiod.end())
+					.getList());
+		});
+		if(listSid.isEmpty()){
+			return Collections.emptyList();
+		}
+		return listSid;
 	}
 
 }

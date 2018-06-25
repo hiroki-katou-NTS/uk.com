@@ -450,6 +450,8 @@ public class ProgramIdConsts {
 	public static final String CPS002H = "CPS002H";
 
 	public static final String CPS002I = "CPS002I";
+	
+	public static final String CPS002J = "CPS002J";
 
 	public static final String CMM008A = "CMM008A";
 

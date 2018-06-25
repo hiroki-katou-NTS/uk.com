@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import lombok.Getter;
 import lombok.val;
@@ -46,11 +48,11 @@ public class MonAggrCompanySettings {
 	@Getter
 	private String companyId;
 	/** 勤務種類 */
-	private Map<String, WorkType> workTypeMap;
+	private ConcurrentMap<String, WorkType> workTypeMap;
 	/** 就業時間帯：共通設定 */
-	private Map<String, WorkTimezoneCommonSet> workTimeCommonSetMap;
+	private ConcurrentMap<String, WorkTimezoneCommonSet> workTimeCommonSetMap;
 	/** 所定時間設定 */
-	private Map<String, PredetemineTimeSetting> predetermineTimeSetMap;
+	private ConcurrentMap<String, PredetemineTimeSetting> predetermineTimeSetMap;
 	/** 締め */
 	@Getter
 	private Map<Integer, Closure> closureMap;
@@ -121,9 +123,9 @@ public class MonAggrCompanySettings {
 	
 	private MonAggrCompanySettings(String companyId){
 		this.companyId = companyId;
-		this.workTypeMap = new HashMap<>();
-		this.workTimeCommonSetMap = new HashMap<>();
-		this.predetermineTimeSetMap = new HashMap<>();
+		this.workTypeMap = new ConcurrentHashMap<>();
+		this.workTimeCommonSetMap = new ConcurrentHashMap<>();
+		this.predetermineTimeSetMap = new ConcurrentHashMap<>();
 		this.closureMap = new HashMap<>();
 		this.roleOverTimeFrameList = new ArrayList<>();
 		this.roleHolidayWorkFrameList = new ArrayList<>();
