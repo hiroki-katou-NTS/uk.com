@@ -135,11 +135,11 @@ module nts.uk.at.view.ktg031.a.viewmodel {
         updateRoger(index: number) {
             let self = this;
             block.grayout;
+            let cmd = {
+                executionLogId: self.listToppage()[index].executionLogId,
+                rogerFlag: 1
+            }
             if (self.selectedRuleCode() == 0) {
-                let cmd = {
-                    executionLogId: self.listToppage()[index].executionLogId,
-                    rogerFlag: 1
-                }
                 service.update(cmd).done(function() {
                     self.startPage();
                 }).always(() => {
@@ -147,7 +147,10 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 });
             } else {
                 self.listToppage()[index].hidden(false);
-                block.clear();
+                service.update(cmd).done(function() {
+                }).always(() => {
+                    block.clear();
+                });
             }
         }
 

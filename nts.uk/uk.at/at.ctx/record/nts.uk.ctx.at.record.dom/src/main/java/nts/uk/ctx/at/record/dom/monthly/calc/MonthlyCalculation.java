@@ -1028,9 +1028,11 @@ public class MonthlyCalculation {
 	 */
 	public List<MonthlyAggregationErrorInfo> getErrorInfos(){
 		
-		this.errorInfos.addAll(this.actualWorkingTime.getErrorInfos());
-		this.errorInfos.addAll(this.flexTime.getErrorInfos());
-		return this.errorInfos;
+		List<MonthlyAggregationErrorInfo> results = new ArrayList<>();
+		results.addAll(this.errorInfos);
+		results.addAll(this.actualWorkingTime.getErrorInfos());
+		results.addAll(this.flexTime.getErrorInfos());
+		return results;
 	}
 	
 	/**

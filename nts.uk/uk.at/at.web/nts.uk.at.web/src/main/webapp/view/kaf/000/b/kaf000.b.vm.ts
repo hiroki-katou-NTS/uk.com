@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     export abstract class ScreenModel {
+        displayGoback: KnockoutObservable<boolean> = ko.observable(false);
         // Metadata
         appID: KnockoutObservable<string>;
         appType: KnockoutObservable<number>;
@@ -16,11 +17,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         listPhase: KnockoutObservableArray<shrvm.model.AppApprovalPhase> = ko.observableArray([]);
         //listPhaseID
         listPhaseID: Array<string>;
-        //list appID 
+        //list appID
         listReasonByAppID: KnockoutObservableArray<string> = ko.observableArray([]);
 
         /**InputCommonData
-         * value obj 
+         * value obj
          */
         reasonToApprover: KnockoutObservable<string> = ko.observable('');
         reasonOutputMess: string = nts.uk.resource.getText('KAF000_1');
@@ -78,6 +79,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             //reason input event
             // Metadata
+            nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
+                if(nts.uk.util.isNullOrUndefined(obj)){
+                    self.displayGoback(false);        
+                } else {
+                    self.displayGoback(true);                 
+                }
+            }).fail(()=>{
+                self.displayGoback(false);      
+            });
             self.listAppMeta = listAppMetadata;
             self.appType = ko.observable(currentApp.appType);
             self.appID = ko.observable(currentApp.appID);
@@ -143,7 +153,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             state: any, // trạng thái đơn
             canApprove: any,  // có thể bấm nút approval không true, false
             expired: any, // phân biệt thời hạn
-            loginFlg: any // login có phải người viết đơn/ người xin hay k 
+            loginFlg: any // login có phải người viết đơn/ người xin hay k
         ) {
             var self = this;
             self.displayApprovalButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
@@ -214,7 +224,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             });;
             return dfd.promise();
         }
-        //get detail check 
+        //get detail check
         getDetailCheck(inputGetDetail: any) {
             let self = this;
             let dfd = $.Deferred<any>();
@@ -457,7 +467,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
 
             self.listAppMeta.splice(index, 1);
-            //if list # null    
+            //if list # null
             if (self.listAppMeta.length == 0) {
                 //nếu list null thì trả về màn hình mẹ
                 nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
@@ -480,7 +490,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         /**
-         *  btn Cancel 
+         *  btn Cancel
          */
         btnCancel() {
             nts.uk.ui.block.invisible();
@@ -549,7 +559,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }//end class OutputGetAllDataApp
 
 
-        //class Application 
+        //class Application
         export class ApplicationDto {
             version: number;
             applicationID: string;
@@ -619,7 +629,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }//end class Application
 
 
-        //class OutputPhaseAndFrame 
+        //class OutputPhaseAndFrame
         export class OutputPhaseAndFrame {
             appApprovalPhase: shrvm.model.AppApprovalPhase;
             listApprovalFrame: Array<shrvm.model.ApprovalFrame>;
@@ -631,7 +641,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
         }//end class OutputPhaseAndFrame
 
-        //class InputGetDetailCheck 
+        //class InputGetDetailCheck
         export class InputGetDetailCheck {
             applicationID: string;
             baseDate: string;
@@ -730,10 +740,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             // B3-1
             displayReturnReasonPanel: KnockoutObservable<boolean>;
 
-            // B4-1 
+            // B4-1
             displayReturnReasonLabel: KnockoutObservable<boolean>;
 
-            // B4-2 
+            // B4-2
             displayReturnReason: KnockoutObservable<boolean>;
             enableReturnReason: KnockoutObservable<boolean>;
             displayMessageArea: KnockoutObservable<boolean>;

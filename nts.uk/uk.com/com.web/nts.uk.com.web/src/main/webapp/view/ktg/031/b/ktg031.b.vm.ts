@@ -7,13 +7,13 @@ module nts.uk.at.view.ktg031.b.viewmodel {
         constructor() {
             var self = this;
             self.columns = ko.observableArray([
-                { headerText: '', key: 'serialNo', width: 80 },
+                { headerText: '', key: 'serialNo', width: 50 },
                 { headerText: getText('KTG031_10'), key: 'employeeCode', width: 100 },
                 { headerText: getText('KTG031_11'), key: 'employeeName', width: 110 },
                 { headerText: getText('KTG031_12'), key: 'processingName', width: 150 },
                 { headerText: getText('KTG031_13'), key: 'errorMessage', width: 190 },
             ]);
-        }
+        }   
 
         startPage(): JQueryPromise<any> {
             var self = this;

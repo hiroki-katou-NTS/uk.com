@@ -214,10 +214,6 @@ public interface DailyPerformanceScreenRepo {
 	
 	String findWorkConditionLastest(List<String> hists, String employeeId);
 	
-    List<Integer> getItemIdsMonthByAuthority(String companyId, Set<String> formats);
-	
-	List<Integer> getItemIdsMonthByBussiness(String companyId, Set<String> formats);
-	
 	List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 
 	
 	Integer getLimitFexMonth();

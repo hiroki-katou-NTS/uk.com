@@ -12,6 +12,10 @@ module cps002.j.vm {
         txtCardNo: KnockoutObservable<string> = ko.observable("");
         generateEmCode: KnockoutObservable<string> = ko.observable("");
         displayGenerateEmCode: KnockoutObservable<string> = ko.observable("");
+        stampCardEditing: KnockoutObservable<IStampCardEditing> = ko.observable({
+            method: EDIT_METHOD.PreviousZero,
+            digitsNumber: 20
+        });
         
         constructor() {
             let self = this, textValue = "";
@@ -30,36 +34,61 @@ module cps002.j.vm {
                 });
                 self.displayGenerateEmCode(displayEmCode.join("").toString());
             }
+            
+            self.start();
         }
 
-        /*getCode() {
+        start() {
             let self = this;
-            self.cardNoMode ? self.getCardNo() : self.getEmlCode();
-        }*/
+
+            let dfd = $.Deferred();
+            service.getStamCardEdit().done(data => {
+                self.stampCardEditing(data);
+                dfd.resolve(data);
+            });
+
+            return dfd.promise();
+        }
 
         getCardNo() {
             let self = this;
-            service.getCardNo(self.txtCardNo()).done(function(emCode) {
-                self.generateEmCode(emCode);
-                let displayEmCode = _.map(emCode).map(function(i){ 
+            service.getCardNo(self.txtCardNo()).done(function(cardNo) {
+                self.generateEmCode(cardNo);
+                
+                let ce = ko.toJS(self.stampCardEditing);
+                let s ="";
+                if (cardNo && cardNo.length < ce.digitsNumber) {
+                    switch (ce.method) {
+                        case EDIT_METHOD.PreviousZero: {
+                            s = _.padStart(cardNo, ce.digitsNumber, '0');
+                            break;
+                        }
+                        case EDIT_METHOD.AfterZero: {
+                            s = _.padEnd(cardNo, ce.digitsNumber, '0');
+                            break;
+                        }
+                        case EDIT_METHOD.PreviousSpace: {
+                            s = _.padStart(cardNo, ce.digitsNumber, ' ');
+                            break;
+                        }
+                        case EDIT_METHOD.AfterSpace: {
+                            s = _.padEnd(cardNo, ce.digitsNumber, ' ');
+                            break;
+                        }
+                    }
+                }
+                
+                let displayCardNo = _.map(s).map(function(i){ 
                     return i == ' '? "&nbsp" : i;
                 });
-                self.displayGenerateEmCode(displayEmCode.join("").toString());
+                self.displayGenerateEmCode(displayCardNo.join("").toString());
 
             }).fail(function() {
                 alertError({ messageId: "Msg_505" });
             });
         }
 
-        /*getCardNo() {
-            let self = this;
-            service.getCardNo(self.txtCardNo()).done(function(emCode) {
-                self.generateEmCode(emCode);
 
-            }).fail(function() {
-                alertError({ messageId: "Msg_505" });
-            });
-        }*/
 
         returnEmCode() {
             let self = this;
@@ -70,5 +99,17 @@ module cps002.j.vm {
         close() {
             close();
         }
+    }
+    
+    interface IStampCardEditing {
+        method: EDIT_METHOD;
+        digitsNumber: number;
+    }
+
+    enum EDIT_METHOD {
+        PreviousZero = 1,
+        AfterZero = 2,
+        PreviousSpace = 3,
+        AfterSpace = 4
     }
 }
