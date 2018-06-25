@@ -73,8 +73,10 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		return widget;
 	}
 
+	
 	@Override
 	public void add(OptionalWidget widget) {
+		//insert into Top page part
 		CcgmtTopPagePart cmTopPagePart = new CcgmtTopPagePart();
 		CcgmtTopPagePartPK cmPagePartPK = new CcgmtTopPagePartPK(widget.getCompanyID(), widget.getToppagePartID());
 		cmTopPagePart.ccgmtTopPagePartPK = cmPagePartPK;
@@ -84,13 +86,13 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		cmTopPagePart.topPagePartType = widget.getType().value;
 		cmTopPagePart.width = widget.getWidth().v();
 		this.commandProxy().insert(cmTopPagePart);
-
+		//insert into Optional Widget
 		SptstOptionalWidget sptstOptionalWidget = new SptstOptionalWidget();
 		SptstOptionalWidgetPK sptstOptionalWidgetPK = new SptstOptionalWidgetPK(widget.getCompanyID(),
 				widget.getToppagePartID());
 		sptstOptionalWidget.sptstOptionalWidgetPK = sptstOptionalWidgetPK;
 		this.commandProxy().insert(sptstOptionalWidget);
-
+		//insert into Widget display items
 		widget.getWDisplayItems().stream().forEach(x -> {
 			SptstWidgetDisplay sptstWidgetDisplay = new SptstWidgetDisplay();
 			SptstWidgetDisplayPK sptstWidgetDisplayPK = new SptstWidgetDisplayPK(widget.getCompanyID(),

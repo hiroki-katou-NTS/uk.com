@@ -320,7 +320,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -2328,7 +2328,6 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
-                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -5766,11 +5765,9 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
-                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
-                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -15045,7 +15042,6 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
-                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -15068,7 +15064,6 @@ var nts;
                                     $show.empty();
                                 }
                             })
-                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -15077,7 +15072,6 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
-                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -15091,7 +15085,6 @@ var nts;
                                         .ntsError("clear");
                                 }
                             })
-                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -15324,9 +15317,7 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
-                                    // enable or disable 
                                     .igCombo(OPTION, "disabled", !enable)
-                                    // set new value
                                     .igCombo("value", value);
                                 // validate if has dataOptions
                                 $element
@@ -15340,7 +15331,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else { // auto width
+                                    else {
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -16933,45 +16924,61 @@ var nts;
                         return new validation.StringValidator(name, constraintName, { required: required });
                     };
                     TextEditorProcessor.prototype.loadConstraints = function (name, $input) {
-                        var self = this;
-                        var dfd = $.Deferred();
-                        if (name !== "EmployeeCode" || (__viewContext.primitiveValueConstraints
-                            && __viewContext.primitiveValueConstraints.EmployeeCode)) {
+                        var self = this, dfd = $.Deferred();
+                        if (name !== "EmployeeCode") {
                             dfd.resolve();
                             return dfd.promise();
                         }
-                        uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (res) {
-                            if (!__viewContext.primitiveValueConstraints) {
-                                __viewContext.primitiveValueConstraints = {};
-                            }
-                            var employeeCodeConstr = {
-                                valueType: "String",
-                                charType: "AlphaNumeric",
-                                maxLength: res.numberOfDigits
-                            };
-                            __viewContext.primitiveValueConstraints.EmployeeCode = employeeCodeConstr;
-                            var formatOption = { autofill: true };
-                            if (res.ceMethodAttr === 0) {
-                                formatOption.filldirection = "left";
-                                formatOption.fillcharacter = "0";
-                            }
-                            else if (res.ceMethodAttr === 1) {
-                                formatOption.filldirection = "right";
-                                formatOption.fillcharacter = "0";
-                            }
-                            else if (res.ceMethodAttr === 2) {
-                                formatOption.filldirection = "left";
-                                formatOption.fillcharacter = " ";
-                            }
-                            else {
-                                formatOption.filldirection = "right";
-                                formatOption.fillcharacter = " ";
-                            }
-                            $input.data("editorFormatOption", formatOption);
-                            dfd.resolve();
-                        }).fail(function (res) {
-                            dfd.reject();
-                        });
+                        if (!$input.data('_nts_load_setting')) {
+                            uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (res) {
+                                // if not have primitive, create new
+                                if (!__viewContext.primitiveValueConstraints) {
+                                    __viewContext.primitiveValueConstraints = {
+                                        EmployeeCode: {
+                                            valueType: "String",
+                                            charType: "AlphaNumeric",
+                                            maxLength: res.numberOfDigits
+                                        }
+                                    };
+                                }
+                                else {
+                                    // extend primitive constraint
+                                    _.extend(__viewContext.primitiveValueConstraints, {
+                                        EmployeeCode: {
+                                            valueType: "String",
+                                            charType: "AlphaNumeric",
+                                            maxLength: res.numberOfDigits
+                                        }
+                                    });
+                                }
+                                var formatOption = {
+                                    autofill: true
+                                };
+                                if (res.ceMethodAttr === 0) {
+                                    formatOption.filldirection = "left";
+                                    formatOption.fillcharacter = "0";
+                                }
+                                else if (res.ceMethodAttr === 1) {
+                                    formatOption.filldirection = "right";
+                                    formatOption.fillcharacter = "0";
+                                }
+                                else if (res.ceMethodAttr === 2) {
+                                    formatOption.filldirection = "left";
+                                    formatOption.fillcharacter = " ";
+                                }
+                                else {
+                                    formatOption.filldirection = "right";
+                                    formatOption.fillcharacter = " ";
+                                }
+                                $input
+                                    .data('_nts_load_setting', true)
+                                    .data("editorFormatOption", formatOption);
+                                dfd.resolve();
+                            }).fail(function (res) {
+                                $input.data('_nts_load_setting', false);
+                                dfd.reject();
+                            });
+                        }
                         return dfd.promise();
                     };
                     return TextEditorProcessor;
@@ -17429,30 +17436,38 @@ var nts;
                     };
                     return NtsFormLabelBindingHandler;
                 }());
-                function getConstraintText(constraint) {
+                var getConstraintText = function (constraint) {
                     var dfd = $.Deferred();
-                    if (constraint === "EmployeeCode" && (!__viewContext.primitiveValueConstraints
-                        || !__viewContext.primitiveValueConstraints.EmployeeCode)) {
+                    if (constraint === "EmployeeCode") {
                         uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (res) {
+                            // if not have primitive, create new
                             if (!__viewContext.primitiveValueConstraints) {
-                                __viewContext.primitiveValueConstraints = {};
+                                __viewContext.primitiveValueConstraints = {
+                                    EmployeeCode: {
+                                        valueType: "String",
+                                        charType: "AlphaNumeric",
+                                        maxLength: res.numberOfDigits
+                                    }
+                                };
                             }
-                            var employeeCodeConstr = {
-                                valueType: "String",
-                                charType: "AlphaNumeric",
-                                maxLength: res.numberOfDigits
-                            };
-                            __viewContext.primitiveValueConstraints.EmployeeCode = employeeCodeConstr;
-                            var label = uk.text.getCharTypeByType(employeeCodeConstr.charType).buildConstraintText(res.numberOfDigits);
-                            dfd.resolve(label);
+                            else {
+                                // extend primitive constraint
+                                _.extend(__viewContext.primitiveValueConstraints, {
+                                    EmployeeCode: {
+                                        valueType: "String",
+                                        charType: "AlphaNumeric",
+                                        maxLength: res.numberOfDigits
+                                    }
+                                });
+                            }
+                            dfd.resolve(uk.util.getConstraintMes(constraint));
                         });
                     }
                     else {
-                        var label = uk.util.getConstraintMes(constraint);
-                        dfd.resolve(label);
+                        dfd.resolve(uk.util.getConstraintMes(constraint));
                     }
                     return dfd.promise();
-                }
+                };
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -17501,7 +17516,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -27692,7 +27707,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) { // Switch sheet
+                            else if (loader.keys) {
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -28452,7 +28467,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
+                                    && !$(e.target).is(setting.trigger)) {
                                     hide(control);
                                 }
                             });
@@ -31274,7 +31289,6 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
-                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -31302,7 +31316,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else { //employ the strategy of moving items
+                            else {
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {

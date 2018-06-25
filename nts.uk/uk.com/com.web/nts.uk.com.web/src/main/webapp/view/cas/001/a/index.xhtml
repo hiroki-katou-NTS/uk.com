@@ -94,84 +94,6 @@
 									<button id="A3_004" data-bind="click:openDModal">#{i18n.getText('CAS001_13')}</button>
 								</div>
 							</div>
-							<div class="div_line">
-								<div id="role_auth_cover">
-									<div data-bind="ntsAccordion: {active:0 }">
-										<h3>#{i18n.getText('CAS001_20')}</h3>
-										<div>
-											<table id="roleAuTable" class="auth_table">
-												<tr>
-													<th></th>
-													<th style="width: 150px">#{i18n.getText('CAS001_18')}</th>
-													<th style="width: 150px">#{i18n.getText('CAS001_19')}</th>
-												</tr>
-												<tr>
-													<th>#{i18n.getText('CAS001_15')}</th>
-													<td><div id="A3_012" class="cf"
-															data-bind="ntsSwitchButton: {
-													options: $parent.roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: allowAvatarUpload ,
-													enable: true }"></div>
-													</td>
-													<td>
-														<div id="A3_013" class="cf"
-															data-bind="ntsSwitchButton: {
-													options: $parent.roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: allowAvatarRef ,
-													enable: true }"></div>
-													</td>
-												</tr>
-												<tr>
-													<th>#{i18n.getText('CAS001_16')}</th>
-													<td><div id="A3_014" class="cf"
-															data-bind="ntsSwitchButton: {
-													options: $parent.roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: allowMapUpload ,
-													enable: true }"></div>
-													</td>
-													<td>
-														<div id="A3_015" class="cf"
-															data-bind="ntsSwitchButton: {
-													options: $parent.roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: allowMapBrowse ,
-													enable: true }"></div>
-													</td>
-												</tr>
-												<tr>
-													<th>#{i18n.getText('CAS001_17')}</th>
-													<td><div id="A3_016" class="cf"
-															data-bind="ntsSwitchButton: {
-													options: $parent.roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: allowDocUpload ,
-													enable: true }"></div>
-													</td>
-													<td>
-														<div id="A3_017" class="cf"
-															data-bind="ntsSwitchButton: {
-													options: $parent.roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value:  allowDocRef,
-													enable: true }"></div>
-													</td>
-												</tr>
-											</table>
-
-										</div>
-									</div>
-								</div>
-								<hr />
-							</div>
 							<!-- 	category area -->
 							<div id="category_config_arena" data-bind="with:currentCategory">
 								<div class="div_line">
@@ -218,18 +140,6 @@
 													value: $parents[1].allowPersonRef ,
 													enable: true }"></div>
 													</div>
-													<com:ko-if bind="$parents[1].isHistoryNotCons()">
-														<div>
-															<span id="A4_011">#{i18n.getText('CAS001_28')}</span>
-															<div id="A4_012" class="cf margin_left_10"
-																data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: allowOtherCompanyRef ,
-													enable: true }"></div>
-														</div>
-													</com:ko-if>
 												</div>
 												<div id="auth_group_table">
 													<com:ko-if bind="categoryType === 2">

@@ -7,9 +7,9 @@ import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 
 public interface PerInfoCategoryRepositoty {
 
-	List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd);
+	List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr);
 	
-	List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd);
+	List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd, int forAttendance , int forPayroll, int forPersonnel);
 
 	Optional<PersonInfoCategory> getPerInfoCategory(String perInfoCategoryId, String contractCd);
 
@@ -32,7 +32,7 @@ public interface PerInfoCategoryRepositoty {
 	 */
 	List<PersonInfoCategory> getAllPerInfoCtg(String companyId);
 	
-	List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth, boolean isOtherCompany);
+	List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth, boolean isOtherCompany , int forAttendance , int forPayroll , int forPersonnel);
 	
 	List<PersonInfoCategory> getAllPerInfoCtgUsed(String companyId);
 
@@ -48,7 +48,7 @@ public interface PerInfoCategoryRepositoty {
 	List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgCd, String contractCd, String companyId, boolean isASC);
 
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
-	List<PersonInfoCategory> getAllPerInfoCategoryNoMulAndDupHist(String companyId, String contractCd);
+	List<PersonInfoCategory> getAllPerInfoCategoryNoMulAndDupHist(String companyId, String contractCd , int forAttendance , int forPayroll, int forPersonnel);
 	
 	List<PersonInfoCategory> getPerCtgByListCtgCd(List<String> ctgCd, String companyId);
 	

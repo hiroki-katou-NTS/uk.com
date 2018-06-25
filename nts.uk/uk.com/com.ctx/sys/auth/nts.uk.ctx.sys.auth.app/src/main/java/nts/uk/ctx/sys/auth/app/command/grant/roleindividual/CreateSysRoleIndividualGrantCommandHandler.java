@@ -74,7 +74,7 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 			Optional<User> user = userRepo.getListUserByDefUser(command.getUserID(), 1, GeneralDate.max());
 			if (user.isPresent()) {
 				if (user.get().isDefaultUser() == true) {
-					user.get().setExpirationDate(command.getEndValidPeriod());
+					user.get().setExpirationDate(command.getStartValidPeriod());
  					userRepo.update(user.get());
 				}
 			}

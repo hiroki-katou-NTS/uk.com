@@ -31,54 +31,51 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResu
 
 	@Inject
 	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
-	
+
 	@Inject
 	private DetailBeforeUpdate detailBeforeProcessRegisterService;
-	
-	@Inject DetailAfterUpdate afterProcessDetailSerivce;
-	
+
+	@Inject
+	DetailAfterUpdate afterProcessDetailSerivce;
+
 	@Inject
 	private ApplicationRepository_New applicationRepository;
-	
+
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateLateOrLeaveEarlyCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		UpdateLateOrLeaveEarlyCommand command = context.getCommand();
 		String appReason = "";
-		if(!command.getReasonTemp().isEmpty() || !command.getAppReason().isEmpty()) {
-			appReason = !command.getReasonTemp().isEmpty() ? command.getReasonTemp() +  System.lineSeparator() + command.getAppReason() : command.getAppReason();
+		Long version = command.getVersion();
+		if (!command.getReasonTemp().isEmpty() || !command.getAppReason().isEmpty()) {
+			appReason = !command.getReasonTemp().isEmpty()
+					? command.getReasonTemp() + System.lineSeparator() + command.getAppReason()
+					: command.getAppReason();
 		}
 		Application_New application = applicationRepository.findByID(companyID, command.getAppID()).get();
 		application.setAppReason(new AppReason(appReason));
-		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
-				application,
-        		command.getEarly1(), command.getEarlyTime1(),
-        		command.getLate1(), command.getLateTime1(),
-        		command.getEarly2(), command.getEarlyTime2(),
-        		command.getLate2(), command.getLateTime2());
-		domainLateOrLeaveEarly.setVersion(command.getVersion());
-		
-		
-		//「4-1.詳細画面登録前の処理」を実行する 
-		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(
-				companyID,
-				//ApplicantSID = EmployeeID
+		application.setVersion(version);
+		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(application,
+				command.getEarly1(), command.getEarlyTime1(), command.getLate1(), command.getLateTime1(),
+				command.getEarly2(), command.getEarlyTime2(), command.getLate2(), command.getLateTime2());
+		domainLateOrLeaveEarly.setVersion(version);
+
+		// 「4-1.詳細画面登録前の処理」を実行する
+		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyID,
+				// ApplicantSID = EmployeeID
 				domainLateOrLeaveEarly.getApplication().getEmployeeID(),
-				domainLateOrLeaveEarly.getApplication().getAppDate(), 
+				domainLateOrLeaveEarly.getApplication().getAppDate(),
 				domainLateOrLeaveEarly.getApplication().getAppType().value,
 				domainLateOrLeaveEarly.getApplication().getAppID(),
-				domainLateOrLeaveEarly.getApplication().getPrePostAtr(), 
-				domainLateOrLeaveEarly.getVersion());
-		
-		//ドメインモデル「遅刻早退取消申請」の更新する
-		//Update the domain model 'Cancellation for late arrival cancellation'
+				domainLateOrLeaveEarly.getApplication().getPrePostAtr(), domainLateOrLeaveEarly.getVersion());
+
+		// ドメインモデル「遅刻早退取消申請」の更新する
+		// Update the domain model 'Cancellation for late arrival cancellation'
 		lateOrLeaveEarlyService.updateLateOrLeaveEarly(domainLateOrLeaveEarly);
 		
 		//「4-2.詳細画面登録後の処理」を実行する
 		//TODO: Waiting for common change
 		return afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly.getApplication());
-		
 	}
-	
 
 }
