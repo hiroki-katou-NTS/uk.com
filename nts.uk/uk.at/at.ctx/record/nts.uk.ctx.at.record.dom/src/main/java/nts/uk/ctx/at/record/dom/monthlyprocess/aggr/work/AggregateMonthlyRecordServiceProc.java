@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResu
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.remainingnumber.absenceleave.temp.TempAbsenceLeaveService;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
@@ -127,7 +128,8 @@ public class AggregateMonthlyRecordServiceProc {
 			String companyId, String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
 			AggrResultOfAnnAndRsvLeave prevAggrResult,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets) {
 		
 		this.aggregateResult = new AggregateMonthlyRecordValue();
 		this.errorInfos = new HashMap<>();
@@ -141,8 +143,8 @@ public class AggregateMonthlyRecordServiceProc {
 		this.weekNoMap = new HashMap<>();
 		this.isRetouch = false;
 		
-		Stopwatches.reset("12100:集計期間ごと準備：" + this.yearMonth.toString());
-		Stopwatches.start("12100:集計期間ごと準備：" + this.yearMonth.toString());
+		//Stopwatches.reset("12100:集計期間ごと準備：" + this.yearMonth.toString());
+		//Stopwatches.start("12100:集計期間ごと準備：" + this.yearMonth.toString());
 
 		this.companySets = companySets;
 		this.employeeSets = employeeSets;
@@ -182,13 +184,13 @@ public class AggregateMonthlyRecordServiceProc {
 		if (affiliationInfo == null) return this.aggregateResult;
 		this.aggregateResult.setAffiliationInfo(Optional.of(affiliationInfo));
 
-		Stopwatches.stop("12100:集計期間ごと準備：" + this.yearMonth.toString());
+		//Stopwatches.stop("12100:集計期間ごと準備：" + this.yearMonth.toString());
 		
 		// 項目の数だけループ
 		for (val workingConditionItem : this.workingConditionItems){
 
-			Stopwatches.reset("12200:労働条件ごと：" + this.yearMonth.toString());
-			Stopwatches.start("12200:労働条件ごと：" + this.yearMonth.toString());
+			//Stopwatches.reset("12200:労働条件ごと：" + this.yearMonth.toString());
+			//Stopwatches.start("12200:労働条件ごと：" + this.yearMonth.toString());
 			
 			// 「労働条件」の該当履歴から期間を取得
 			val historyId = workingConditionItem.getHistoryId();
@@ -223,7 +225,7 @@ public class AggregateMonthlyRecordServiceProc {
 			this.aggregateResult.setAttendanceTime(Optional.of(attendanceTime));
 			this.aggregateResult.getAttendanceTimeWeeks().addAll(aggregateResult.getAttendanceTimeWeeks());
 
-			Stopwatches.stop("12200:労働条件ごと：" + this.yearMonth.toString());
+			//Stopwatches.stop("12200:労働条件ごと：" + this.yearMonth.toString());
 		}
 		
 		if (this.aggregateResult.getAttendanceTime().isPresent()){
@@ -238,8 +240,8 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 		}
 		
-		Stopwatches.reset("12300:36協定時間：" + this.yearMonth.toString());
-		Stopwatches.start("12300:36協定時間：" + this.yearMonth.toString());
+		//Stopwatches.reset("12300:36協定時間：" + this.yearMonth.toString());
+		//Stopwatches.start("12300:36協定時間：" + this.yearMonth.toString());
 		
 		// 36協定時間の集計
 		MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
@@ -252,28 +254,28 @@ public class AggregateMonthlyRecordServiceProc {
 			this.aggregateResult.setAgreementTime(Optional.of(agreementTime));
 		}
 
-		Stopwatches.stop("12300:36協定時間：" + this.yearMonth.toString());
-		Stopwatches.reset("12400:残数処理：" + this.yearMonth.toString());
-		Stopwatches.start("12400:残数処理：" + this.yearMonth.toString());
+		//Stopwatches.stop("12300:36協定時間：" + this.yearMonth.toString());
+		//Stopwatches.reset("12400:残数処理：" + this.yearMonth.toString());
+		//Stopwatches.start("12400:残数処理：" + this.yearMonth.toString());
 		
 		// 残数処理
 		this.remainingProcess(monthPeriod);
 
-		Stopwatches.stop("12400:残数処理：" + this.yearMonth.toString());
-		Stopwatches.reset("12500:任意項目：" + this.yearMonth.toString());
-		Stopwatches.start("12500:任意項目：" + this.yearMonth.toString());
+		//Stopwatches.stop("12400:残数処理：" + this.yearMonth.toString());
+		//Stopwatches.reset("12500:任意項目：" + this.yearMonth.toString());
+		//Stopwatches.start("12500:任意項目：" + this.yearMonth.toString());
 		
 		// 月別実績の任意項目を集計
 		this.aggregateAnyItem(monthPeriod);
 
-		Stopwatches.stop("12500:任意項目：" + this.yearMonth.toString());
-		Stopwatches.reset("12600:大塚カスタマイズ：" + this.yearMonth.toString());
-		Stopwatches.start("12600:大塚カスタマイズ：" + this.yearMonth.toString());
+		//Stopwatches.stop("12500:任意項目：" + this.yearMonth.toString());
+		//Stopwatches.reset("12600:大塚カスタマイズ：" + this.yearMonth.toString());
+		//Stopwatches.start("12600:大塚カスタマイズ：" + this.yearMonth.toString());
 		
 		// 大塚カスタマイズ
 		this.customizeForOtsuka();
 
-		Stopwatches.stop("12600:大塚カスタマイズ：" + this.yearMonth.toString());
+		//Stopwatches.stop("12600:大塚カスタマイズ：" + this.yearMonth.toString());
 		
 		// 戻り値にエラー情報を移送
 		for (val errorInfo : this.errorInfos.values()){
@@ -356,8 +358,8 @@ public class AggregateMonthlyRecordServiceProc {
 		// 労働制を確認する
 		val workingSystem = workingConditionItem.getLaborSystem();
 		
-		Stopwatches.reset("12210:集計準備：" + this.yearMonth.toString());
-		Stopwatches.start("12210:集計準備：" + this.yearMonth.toString());
+		//Stopwatches.reset("12210:集計準備：" + this.yearMonth.toString());
+		//Stopwatches.start("12210:集計準備：" + this.yearMonth.toString());
 		
 		// 月別実績の勤怠時間　初期設定
 		val attendanceTime = new AttendanceTimeOfMonthly(
@@ -373,17 +375,17 @@ public class AggregateMonthlyRecordServiceProc {
 			return result;
 		}
 		
-		Stopwatches.stop("12210:集計準備：" + this.yearMonth.toString());
-		Stopwatches.reset("12220:月の計算：" + this.yearMonth.toString());
-		Stopwatches.start("12220:月の計算：" + this.yearMonth.toString());
+		//Stopwatches.stop("12210:集計準備：" + this.yearMonth.toString());
+		//Stopwatches.reset("12220:月の計算：" + this.yearMonth.toString());
+		//Stopwatches.start("12220:月の計算：" + this.yearMonth.toString());
 		
 		// 月の計算
 		monthlyCalculation.aggregate(datePeriod, MonthlyAggregateAtr.MONTHLY,
 				Optional.empty(), Optional.empty(), this.repositories);
 		
-		Stopwatches.stop("12220:月の計算：" + this.yearMonth.toString());
-		Stopwatches.reset("12230:縦計：" + this.yearMonth.toString());
-		Stopwatches.start("12230:縦計：" + this.yearMonth.toString());
+		//Stopwatches.stop("12220:月の計算：" + this.yearMonth.toString());
+		//Stopwatches.reset("12230:縦計：" + this.yearMonth.toString());
+		//Stopwatches.start("12230:縦計：" + this.yearMonth.toString());
 		
 		// 縦計
 		{
@@ -403,9 +405,9 @@ public class AggregateMonthlyRecordServiceProc {
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, this.repositories);
 		}
 		
-		Stopwatches.stop("12230:縦計：" + this.yearMonth.toString());
-		Stopwatches.reset("12240:時間外超過：" + this.yearMonth.toString());
-		Stopwatches.start("12240:時間外超過：" + this.yearMonth.toString());
+		//Stopwatches.stop("12230:縦計：" + this.yearMonth.toString());
+		//Stopwatches.reset("12240:時間外超過：" + this.yearMonth.toString());
+		//Stopwatches.start("12240:時間外超過：" + this.yearMonth.toString());
 		
 		// 時間外超過
 		ExcessOutsideWorkMng excessOutsideWorkMng = new ExcessOutsideWorkMng(monthlyCalculation);
@@ -417,15 +419,12 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 		attendanceTime.setExcessOutsideWork(excessOutsideWorkMng.getExcessOutsideWork());
 
-		Stopwatches.stop("12240:時間外超過：" + this.yearMonth.toString());
-		Stopwatches.reset("12250:回数集計：" + this.yearMonth.toString());
-		Stopwatches.start("12250:回数集計：" + this.yearMonth.toString());
+		//Stopwatches.stop("12240:時間外超過：" + this.yearMonth.toString());
+		//Stopwatches.reset("12250:回数集計：" + this.yearMonth.toString());
+		//Stopwatches.start("12250:回数集計：" + this.yearMonth.toString());
 		
 		// 回数集計
 		{
-			// 勤務種類リストを取得する
-			val workTypeList = new ArrayList<>(this.companySets.getWorkTypeMap().values());
-			
 			// 週単位の期間を取得
 			for (val attendanceTimeWeek : attendanceTime.getMonthlyCalculation().getAttendanceTimeWeeks()){
 				DatePeriod weekPeriod = attendanceTimeWeek.getPeriod();
@@ -433,16 +432,16 @@ public class AggregateMonthlyRecordServiceProc {
 				// 週の回数集計
 				val totalCountWeek = attendanceTimeWeek.getTotalCount();
 				totalCountWeek.totalize(this.companyId, this.employeeId, weekPeriod,
-						this.monthlyCalculatingDailys, workTypeList, this.repositories);
+						this.companySets, this.monthlyCalculatingDailys, this.repositories);
 			}
 			
 			// 月の回数集計
 			val totalCount = attendanceTime.getTotalCount();
 			totalCount.totalize(this.companyId, this.employeeId, datePeriod,
-					this.monthlyCalculatingDailys, workTypeList, this.repositories);
+					this.companySets, this.monthlyCalculatingDailys, this.repositories);
 		}
 		
-		Stopwatches.stop("12250:回数集計：" + this.yearMonth.toString());
+		//Stopwatches.stop("12250:回数集計：" + this.yearMonth.toString());
 		
 		// 集計結果を返す
 		result.setAttendanceTime(attendanceTime);
@@ -577,11 +576,28 @@ public class AggregateMonthlyRecordServiceProc {
 					val attendanceTime = this.aggregateResult.getAttendanceTime().get();
 					
 					// 月別実績　計算処理
+					List<Formula> targetFormulas = this.companySets.getFormulaList().stream()
+							.filter(c -> c.getOptionalItemNo().equals(optionalItem.getOptionalItemNo()))
+							.collect(Collectors.toList());
 					val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
 					val monthlyRecordDto = monthlyConverter.withAttendanceTime(attendanceTime);
-					optionalItem.caluculationFormula(
-							this.companyId, optionalItem, this.companySets.getFormulaList(),
+					val calcResult = optionalItem.caluculationFormula(
+							this.companyId, optionalItem, targetFormulas,
 							Optional.empty(), Optional.of(monthlyRecordDto));
+					if (calcResult != null){
+						if (calcResult.getTime().isPresent()){
+							if (anyTime == null) anyTime = new AnyTimeMonth(0);
+							anyTime = anyTime.addMinutes(calcResult.getTime().get());
+						}
+						if (calcResult.getCount().isPresent()){
+							if (anyTimes == null) anyTimes = new AnyTimesMonth(0.0);
+							anyTimes = anyTimes.addTimes(calcResult.getCount().get().doubleValue());
+						}
+						if (calcResult.getMoney().isPresent()){
+							if (anyAmount == null) anyAmount = new AnyAmountMonth(0);
+							anyAmount = anyAmount.addAmount(calcResult.getMoney().get());
+						}
+					}
 				}
 				
 				// 任意項目集計結果を返す
@@ -654,27 +670,27 @@ public class AggregateMonthlyRecordServiceProc {
 	 */
 	private void remainingProcess(DatePeriod period){
 		
-		Stopwatches.reset("12410:年休積休：" + this.yearMonth.toString());
-		Stopwatches.start("12410:年休積休：" + this.yearMonth.toString());
+		//Stopwatches.reset("12410:年休積休：" + this.yearMonth.toString());
+		//Stopwatches.start("12410:年休積休：" + this.yearMonth.toString());
 		
 		// 年休、積休
 		this.annualAndReserveLeaveRemain(period);
 
-		Stopwatches.stop("12410:年休積休：" + this.yearMonth.toString());
-		Stopwatches.reset("12420:振休：" + this.yearMonth.toString());
-		Stopwatches.start("12420:振休：" + this.yearMonth.toString());
+		//Stopwatches.stop("12410:年休積休：" + this.yearMonth.toString());
+		//Stopwatches.reset("12420:振休：" + this.yearMonth.toString());
+		//Stopwatches.start("12420:振休：" + this.yearMonth.toString());
 		
 		// 振休（仮対応）
 		this.absenceLeaveRemain_temp(period);
 
-		Stopwatches.stop("12420:振休：" + this.yearMonth.toString());
-		Stopwatches.reset("12430:代休：" + this.yearMonth.toString());
-		Stopwatches.start("12430:代休：" + this.yearMonth.toString());
+		//Stopwatches.stop("12420:振休：" + this.yearMonth.toString());
+		//Stopwatches.reset("12430:代休：" + this.yearMonth.toString());
+		//Stopwatches.start("12430:代休：" + this.yearMonth.toString());
 		
 		// 代休（仮対応）
 		this.dayoffRemain_temp(period);
 
-		Stopwatches.stop("12430:代休：" + this.yearMonth.toString());
+		//Stopwatches.stop("12430:代休：" + this.yearMonth.toString());
 	}
 	
 	/**
@@ -687,7 +703,8 @@ public class AggregateMonthlyRecordServiceProc {
 		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
 				this.companyId, this.employeeId, period, TempAnnualLeaveMngMode.MONTHLY,
 				period.end(), false, true, Optional.of(false), Optional.empty(), Optional.empty(),
-				this.prevAggrResult.getAnnualLeave(), this.prevAggrResult.getReserveLeave());
+				this.prevAggrResult.getAnnualLeave(), this.prevAggrResult.getReserveLeave(),
+				Optional.of(this.companySets), Optional.of(this.monthlyCalculatingDailys));
 		
 		if (aggrResult.getAnnualLeave().isPresent()){
 			val asOfPeriodEnd = aggrResult.getAnnualLeave().get().getAsOfPeriodEnd();

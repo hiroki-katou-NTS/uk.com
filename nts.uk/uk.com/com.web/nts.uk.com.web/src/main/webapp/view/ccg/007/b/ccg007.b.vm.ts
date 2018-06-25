@@ -169,7 +169,8 @@ module nts.uk.pr.view.ccg007.b {
                 //set LoginId to dialog
                 nts.uk.ui.windows.setShared('parentCodes', {
                     loginId: self.loginId(),
-                    contractCode : self.contractCode()
+                    contractCode : self.contractCode(),
+                    contractPassword: self.contractPassword()
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/ccg/007/e/index.xhtml',{

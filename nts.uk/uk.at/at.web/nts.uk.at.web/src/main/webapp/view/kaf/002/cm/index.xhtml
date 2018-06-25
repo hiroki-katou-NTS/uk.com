@@ -21,7 +21,7 @@
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF002_9')}</div>
 						</div>
 						<div class="cell cm-column2">
-							<div class="cm-time-editor" data-bind="ntsDatePicker: {
+							<div class="cm-time-editor" id= "appDate" data-bind="ntsDatePicker: {
 											name: '#[KAF002_9]',
 											value: application().appDate,
 											dateFormat: 'YYYY/MM/DD',

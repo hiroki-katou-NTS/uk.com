@@ -127,7 +127,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 			messages = this.checkPolicyChar(passwordPolicyImport, passSplit);
 			
 			//check historyCount
-			PasswordMessageObject messHist = this.checkHistoyCount(passwordPolicyImport.getHistoryCount(), newPass, userId);
+			PasswordMessageObject messHist = this.checkHistoyCount(passwordPolicyImport.getHistoryCount(), userId, newPass);
 			
 			if (messHist.getMessage() != null){
 				messages.add(messHist);

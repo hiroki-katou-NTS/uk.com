@@ -101,6 +101,11 @@ module kcp.share.tree {
 
         // 参照範囲の絞
         restrictionOfReferenceRange?: boolean;
+
+        /**
+         * Check is show no select row in grid list.
+         */
+        isShowNoSelectRow?: boolean;
     }
 
     /**
@@ -161,6 +166,7 @@ module kcp.share.tree {
         maxRows: number;
         systemType: SystemType;
         isFullView: KnockoutObservable<boolean>;
+        isShowNoSelectRow: boolean;
 
         isSetTabindex: KnockoutObservable<boolean>;
         tabindex: number;
@@ -203,6 +209,7 @@ module kcp.share.tree {
             let dfd = $.Deferred<void>();
             ko.cleanNode($input[0]);
             self.data = data;
+            self.isShowNoSelectRow = _.isNil(data.isShowNoSelectRow) ? false : data.isShowNoSelectRow;;
             self.$input = $input;
             
             // set parameter 
@@ -279,7 +286,8 @@ module kcp.share.tree {
 
                     // Init component.
                     self.itemList(res);
-                    self.backupItemList(res);
+                    self.initNoSelectRow();
+                    self.backupItemList(self.itemList());
                 }
                 // Set default value when initial component.
                 self.initSelectedValue(res);
@@ -318,6 +326,31 @@ module kcp.share.tree {
             }
 
             return dfd.promise();
+        }
+
+        /**
+         * Add No select row to list
+         */
+        private initNoSelectRow() {
+            let self = this;
+            let noSelectItem = {
+                code: '',
+                nodeText: nts.uk.resource.getText('KCP001_5'),
+                name: nts.uk.resource.getText('KCP001_5'),
+                isAlreadySetting: false,
+                workplaceId: '',
+                level: 1,
+                hierarchyCode: '',
+                childs: []
+            };
+
+            // Remove No select row.
+            self.itemList.remove(noSelectItem);
+
+            // Check is show no select row.
+            if (self.isShowNoSelectRow && !self.isMultiSelect) {
+                self.itemList.unshift(noSelectItem);
+            }
         }
 
         /**
@@ -610,7 +643,8 @@ module kcp.share.tree {
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
                 }
                 self.itemList(res);
-                self.backupItemList(res);
+                self.initNoSelectRow();
+                self.backupItemList(self.itemList());
 
                 // Filter data
                 self.filterData();

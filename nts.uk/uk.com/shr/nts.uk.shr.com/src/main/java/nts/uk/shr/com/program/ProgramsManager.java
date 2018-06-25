@@ -1215,6 +1215,13 @@ public class ProgramsManager {
 	 */
 	public static final Program CPS002I = new Program(WebAppId.COM, ProgramIdConsts.CPS002I, "CPS002_9",
 			"/view/cps/002/i/index.xhtml");
+	
+	/**
+	 * CPS002J
+	 */
+	public static final Program CPS002J = new Program(WebAppId.COM, ProgramIdConsts.CPS002J, "CPS002_111",
+			"/view/cps/002/j/index.xhtml");
+	
 
 	public static final Program CMM008A = new Program(WebAppId.COM, ProgramIdConsts.CMM008A, null,
 			"/view/cmm/008/a/index.xhtml");
@@ -1879,6 +1886,16 @@ public class ProgramsManager {
 	public static final Program KMW006F = new Program(WebAppId.AT, ProgramIdConsts.KMW006F, "KMW006_46",
 			"/view/kmw/006/f/index.xhtml");
 
+	/**
+	 * KWR002
+	 */
+	public static final Program KWR002A = new Program(WebAppId.AT, ProgramIdConsts.KWR002A, "KWR002_1",
+			"/view/kwr/002/a/index.xhtml");
+	public static final Program KWR002B = new Program(WebAppId.AT, ProgramIdConsts.KWR002B, "KWR002_2", "/view/kwr/002/b/index.xhtml");
+	public static final Program KWR002C = new Program(WebAppId.AT, ProgramIdConsts.KWR002C, "KWR002_3", "/view/kwr/002/c/index.xhtml");
+	public static final Program KWR002D = new Program(WebAppId.AT, ProgramIdConsts.KWR002D, "KWR002_4", "/view/kwr/002/d/index.xhtml");
+	public static final Program KWR002E = new Program(WebAppId.AT, ProgramIdConsts.KWR002E, "KWR002_5", "/view/kwr/002/e/index.xhtml");
+
 	/** KDM001 */
 	public static final Program KDM001A = new Program(WebAppId.AT, ProgramIdConsts.KDM001A, "KDM001_131",
 			"/view/kdm/001/a/index.xhtml");
@@ -1967,6 +1984,12 @@ public class ProgramsManager {
 	public static final Program CCG009A = new Program(WebAppId.COM, ProgramIdConsts.CCG009A, "CCG009_1",
 			"/view/ccg/009/index.xhtml");
 
+	/** KTG031 */
+	public static final Program KTG031A = new Program(WebAppId.COM, ProgramIdConsts.KTG031A, "KTG031_1",
+			"/view/ktg/031/a/index.xhtml");
+	public static final Program KTG031B = new Program(WebAppId.COM, ProgramIdConsts.KTG031B, "KTG031_5",
+			"/view/ktg/031/b/index.xhtml");
+	
 	/**
 	 * All programs map.
 	 */

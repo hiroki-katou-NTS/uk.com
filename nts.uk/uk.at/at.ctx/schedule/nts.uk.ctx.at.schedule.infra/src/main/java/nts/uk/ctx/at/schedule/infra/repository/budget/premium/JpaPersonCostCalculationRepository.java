@@ -277,7 +277,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date) {
 		List<PersonCostCalculation> personCostCals = this.queryProxy().query(FIND_BY_DISPLAY_NUMBER, KmlmtPersonCostCalculation.class)
 				.setParameter("companyID", companyID)
-				.setParameter("date", date).getList(c -> toSimpleDomain(c));
+				.setParameter("date", date).getList(c -> toDomainPersonCostCalculation(c));
 		if(CollectionUtil.isEmpty(personCostCals)){
 			return null;
 		}

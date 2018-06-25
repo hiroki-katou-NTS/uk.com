@@ -51,6 +51,8 @@ public class PerInfoItemDefDto {
 	// is not ItemDefinition of attribute
 	private List<EnumConstant> selectionItemRefTypes;
 	
+	private boolean canAbolition;
+	
 	/**
 	 * @param itemDefinition
 	 * This constructor initial value from domain
@@ -85,6 +87,7 @@ public class PerInfoItemDefDto {
 		this.resourceId = itemDefinition.getResourceId().isPresent() ? itemDefinition.getResourceId().get() : null;
 		// will remove
 		this.selectionItemRefType = itemDefinition.getSelectionItemRefType();
+		this.canAbolition = itemDefinition.isCanAbolition();
 
 	}
 	

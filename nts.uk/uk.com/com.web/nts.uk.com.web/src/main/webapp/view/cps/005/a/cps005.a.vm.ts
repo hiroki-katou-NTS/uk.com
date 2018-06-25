@@ -134,8 +134,11 @@ module nts.uk.com.view.cps005.a {
                                     block.clear();
                                 });
                             }).ifNo(() => {
+                                let ctrl = $("#category-name-control"),
+                                        str = ctrl.val();
+
+                                 ctrl.focus().val('').val(str);
                                 block.clear();
-                                return;
                             })
                         });
                     }).fail(res => {
