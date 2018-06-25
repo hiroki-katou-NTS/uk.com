@@ -54,6 +54,13 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "DISPLAY_FORMAT")
 	public int displayFormat;
+	
+	/*
+	 * 年間勤務表印刷形式
+	 */
+	@Basic(optional = false)
+	@Column(name = "PRINT_FORM")
+	public int printForm;
 
 	@Override
 	protected Object getKey() {
@@ -67,14 +74,14 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 	public SetOutItemsWoSc toDomain() {
 		return SetOutItemsWoSc.createFromJavaType(this.setOutItemsWoScPk.cid, this.setOutItemsWoScPk.cd,
 													this.name, this.outNumExceedTime36Agr == 1? true: false,
-													this.displayFormat,
+													this.displayFormat, this.printForm,
 			this.listItemOutTblBook.stream().map(m-> m.toDomain()).collect(Collectors.toList()));
 	}
 
 	public static KfnrtSetOutItemsWoSc toEntity(SetOutItemsWoSc domain) {
 		return new KfnrtSetOutItemsWoSc(new KfnrtSetOutItemsWoScPk(domain.getCid(), domain.getCd().v()),
 										domain.getName().v(), domain.isOutNumExceedTime36Agr()? 1: 0,
-										domain.getDisplayFormat().value,
+										domain.getDisplayFormat().value, domain.getPrintForm(),
 			domain.getListItemOutTblBook().stream().map(m -> KfnrtItemOutTblBook.toEntity(m)).collect(Collectors.toList()));
 	}
 }
