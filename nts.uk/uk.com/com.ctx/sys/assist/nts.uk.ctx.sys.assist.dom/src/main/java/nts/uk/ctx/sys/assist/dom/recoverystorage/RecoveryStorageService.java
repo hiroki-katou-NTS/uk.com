@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
+import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataReEmployeeAdapter;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
@@ -48,15 +49,11 @@ public class RecoveryStorageService {
 	@Inject
 	private DataReEmployeeAdapter empDataMngRepo;
 
-	public static final String STORAGE_RANGE_SAVED = "0";
-
-	public static final String NOT_STORAGE_RANGE_SAVED = "1";
-	
 	public static final String SELECTION_TARGET_FOR_RES = "1";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecoveryStorageService.class);
 
-	public void RecoveryStorage(String dataRecoveryProcessId) throws ParseException {
+	public void recoveryStorage(String dataRecoveryProcessId) throws ParseException {
 
 		int errorCodeFinal = 0;
 		Optional<PerformDataRecovery> performRecoveries = performDataRecoveryRepository
@@ -72,9 +69,9 @@ public class RecoveryStorageService {
 		for (int i = 0; i < listCategory.size(); i++) {
 
 			List<TableList> tableUse = performDataRecoveryRepository
-					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), STORAGE_RANGE_SAVED);
+					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), StorageRangeSaved.EARCH_EMP.value);
 			List<TableList> tableNotUse = performDataRecoveryRepository
-					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), NOT_STORAGE_RANGE_SAVED);
+					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), StorageRangeSaved.ALL_EMP.value);
 
 			TableListByCategory tableListByCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
 					tableUse);
@@ -100,11 +97,14 @@ public class RecoveryStorageService {
 		}
 
 		if (errorCodeFinal == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.INTERRUPTION_END.value);
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
+					DataRecoveryOperatingCondition.INTERRUPTION_END.value);
 		} else if (errorCodeFinal == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
+					DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
 		} else {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.DONE.value);
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
+					DataRecoveryOperatingCondition.DONE.value);
 		}
 	}
 
@@ -147,9 +147,8 @@ public class RecoveryStorageService {
 			if (tableList.isPresent()) {
 
 				// 履歴区分の判別する - check phân loại lịch sử
-				String tableName = tableList.get().getTableEnglishName();
 				if (tableList.get().getHistoryCls().value == 1) {
-					deleteEmployeeHistory(tableList, employeeId, tableName, true);
+					deleteEmployeeHistory(tableList, employeeId, true);
 				}
 			}
 
@@ -162,7 +161,7 @@ public class RecoveryStorageService {
 
 			// phân biệt DELETE/INSERT error và Setting error TO - DO
 			if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
-				
+
 				throw new RollBackException("113", "RollBack transaction");
 				// roll back
 				// Count up số lượng error
@@ -200,7 +199,6 @@ public class RecoveryStorageService {
 		Integer indexUpdate20 = null;
 		String cidTable = null;
 		List<String> targetDataHeader = targetDataTable.get(0);
-		cidTable = targetDataHeader.get(0);
 
 		String FILED_KEY_UPDATE_1 = null;
 		String FILED_KEY_UPDATE_2 = null;
@@ -245,7 +243,7 @@ public class RecoveryStorageService {
 		String V_FILED_KEY_UPDATE_20 = null;
 
 		String TABLE_NAME = null;
-		
+
 		// tìm kiếm data by employee
 
 		if (tableList.isPresent()) {
@@ -492,6 +490,7 @@ public class RecoveryStorageService {
 				}
 
 				// 対象データの会社IDをパラメータの会社IDに入れ替える - Thay thế CID
+				cidTable = dataRow.get(0);
 				String cidCurrent = AppContexts.user().companyId();
 				if (!cidTable.equals(cidCurrent)) {
 					cidCurrent = cidTable;
@@ -576,8 +575,7 @@ public class RecoveryStorageService {
 		return namePhysical;
 	}
 
-	public void deleteEmployeeHistory(Optional<TableList> tableList, String employeeId, String tableName,
-			Boolean tableNotUse) {
+	public void deleteEmployeeHistory(Optional<TableList> tableList, String employeeId, Boolean tableNotUse) {
 		// Delete history
 
 		String whereCid = null;
@@ -642,6 +640,7 @@ public class RecoveryStorageService {
 		}
 
 		String cidCurrent = AppContexts.user().companyId();
+		String tableName = tableList.get().getTableEnglishName();
 		try {
 			performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereSid, cidCurrent, employeeId);
 		} catch (Exception ex) {
@@ -666,12 +665,14 @@ public class RecoveryStorageService {
 			// カテゴリの中の日付単位の処理
 			errorCode = exTableNotUse(tableNotUseByCategory, dataRecoveryProcessId, uploadId);
 
-		} 
-		
-		if (errorCode == 1) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.INTERRUPTION_END.value);
-		} else if (errorCode == 5) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
+		}
+
+		if (errorCode == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
+					DataRecoveryOperatingCondition.INTERRUPTION_END.value);
+		} else if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
+					DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
 		}
 		return errorCode;
 	}
@@ -901,9 +902,8 @@ public class RecoveryStorageService {
 			if (tableList.isPresent()) {
 
 				// 履歴区分の判別する - check phân loại lịch sử
-				String tableName = tableList.get().getTableEnglishName();
 				if (tableList.get().getHistoryCls().value == 1) {
-					deleteEmployeeHistory(tableList, null, tableName, false);
+					deleteEmployeeHistory(tableList, null, false);
 				}
 
 				Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
