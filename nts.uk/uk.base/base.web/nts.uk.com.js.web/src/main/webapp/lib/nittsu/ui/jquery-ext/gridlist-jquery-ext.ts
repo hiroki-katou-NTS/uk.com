@@ -62,10 +62,7 @@ module nts.uk.ui.jqueryExtentions {
             }
         }
         
-        $.fn.ntsGridList = function(action: string, param?: any): any {
-
-            var $grid = $(this);
-
+        function delegateMethod($grid: JQuery, action: string, param?: any) {
             switch (action) {
                 case 'setupSelecting':
                     return setupSelecting($grid);
@@ -82,7 +79,7 @@ module nts.uk.ui.jqueryExtentions {
                 case 'setupScrollWhenBinding':
                     return setupScrollWhenBinding($grid);
             }
-        };
+        }
         
         function setupScrollWhenBinding($grid: JQuery): any {
             let gridId = "#" + $grid.attr("id");
@@ -353,6 +350,407 @@ module nts.uk.ui.jqueryExtentions {
             $grid.unbind('iggridselectionrowselectionchanged');
 
             //            $grid.off('mouseup');
+        }
+        
+        $.fn.ntsGridList = function(options: any): any {
+            let self = this;
+            let $grid = $(self);
+            
+            if (typeof options === "string") {
+                return delegateMethod($grid, options, arguments[1]);
+            }
+            
+            let HEADER_HEIGHT = 27;
+            let ROW_HEIGHT = 23;
+            let DIFF_NUMBER = 2;
+            
+            $grid.addClass("nts-gridlist");
+            let gridId = $grid.attr('id');
+            if (nts.uk.util.isNullOrUndefined(gridId)) {
+                throw new Error('the element NtsGridList must have id attribute.');
+            }
+            
+            let optionsValue: string = options.primaryKey !== undefined ? options.primaryKey : options.optionsValue;
+            var dataSource = options.dataSource;
+            var deleteOptions = options.deleteOptions;
+            var observableColumns = _.cloneDeep(options.columns);
+            let selectionDisables = options.selectionDisables;
+            let showNumbering = options.showNumbering === true ? true : false;
+            let columnResize = options.columnResize;
+            let enable = options.enable;
+            let value = options.value;
+            
+            let rows = options.rows;
+            $grid.data("init", true);
+            $grid.data("selectionDisables", selectionDisables);
+            $grid.data("initValue", value); 
+            
+            if (options.multiple) {
+                ROW_HEIGHT = 24;
+                // Internet Explorer 6-11
+                let _document: any = document;
+                let isIE = /*@cc_on!@*/false || !!_document.documentMode;
+                
+                // Edge 20+
+                let _window: any = window;
+                let isEdge = !isIE && !!_window.StyleMedia; 
+                if (isIE || isEdge) {
+                    DIFF_NUMBER = -2;    
+                }
+            }
+            
+            let features = [];
+            features.push({ name: 'Selection', multipleSelection: options.multiple });
+            if (options.multiple || showNumbering) { 
+                features.push({
+                    name: 'RowSelectors',
+                    enableCheckBoxes: options.multiple,
+                    enableRowNumbering: false,
+                    rowSelectorColumnWidth: 25
+                });    
+            }
+            
+            if (columnResize) {
+                features.push({
+                    name: "Resizing"
+                });
+            }
+            
+            let tabIndex = $grid.attr("tabindex");
+            $grid.data("tabindex", nts.uk.util.isNullOrEmpty(tabIndex) ? "0" : tabIndex);
+            $grid.attr("tabindex", "-1");
+            let gridFeatures = options.features;
+            var iggridColumns = _.map(observableColumns, c => {
+                c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
+                c["dataType"] = 'string';
+                let formatter = c["formatter"];
+                if (c["controlType"] === "switch") {
+                    let switchF = _.find(gridFeatures, function(s) { 
+                        return s["name"] === "Switch";
+                    });
+                    if (!util.isNullOrUndefined(switchF)) {
+                        features.push({name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none'});
+                        let switchOptions = switchF['options'];
+                        let switchValue = switchF['optionsValue']; 
+                        let switchText = switchF['optionsText'];
+                        c["formatter"] = function createButton(val, row) {
+                            let result: JQuery = $('<div class="ntsControl"/>');
+                            let rVal = nts.uk.util.isNullOrUndefined(formatter) ? val : formatter(val, row);
+                            result.attr("data-value", rVal);
+                            _.forEach(switchOptions, function(opt) {
+                                let value = opt[switchValue];
+                                let text = opt[switchText]; 
+                                let btn = $('<button class="nts-switch-button" tabindex="-1"/>').text(text);
+                                if ($grid.data("enable") === false){
+                                    btn.attr("disabled", "disabled");      
+                                }
+                                btn.attr('data-value', value);
+                                if (rVal == value) {
+                                    btn.addClass('selected');
+                                }
+                                btn.appendTo(result);
+                            });
+                            return result[0].outerHTML;
+                        };
+                           
+                        $grid.on("click", ".nts-switch-button", function(evt, ui) {
+                            let $element = $(this);
+                            let selectedValue = $element.attr('data-value');
+                            let $tr = $element.closest("tr");  
+                            $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
+                        });  
+                        
+                        ROW_HEIGHT = 30;
+                    }       
+                } else {
+                    let formatter = c.formatter;
+                    c.formatter = function(val, row) {
+                        if (row) {
+                            setTimeout(() => {
+                                let id = row[optionsValue];
+                                let disables = $grid.data("selectionDisables");
+                                if (!disables) return;
+                                _.forEach(disables, d => {
+                                    if (id === d) {
+                                        let $row = $grid.igGrid("rowById", id, false);
+                                        if (!$row.hasClass("row-disable")) $row.addClass("row-disable");
+                                        return false;
+                                    }
+                                });
+                            }, 0);
+                        }
+                        return nts.uk.util.isNullOrUndefined(formatter) ? val : formatter(val, row);
+                    };
+                }
+                return c; 
+            });
+            
+            let isDeleteButton = !util.isNullOrUndefined(deleteOptions) && !util.isNullOrUndefined(deleteOptions.deleteField)
+                && deleteOptions.visible === true;
+            
+            let height = options.height;
+            if(!nts.uk.util.isNullOrEmpty(rows)){
+                if (isDeleteButton){
+                    ROW_HEIGHT = 30;        
+                }
+                height = rows * ROW_HEIGHT + HEADER_HEIGHT - DIFF_NUMBER;   
+                
+                let colSettings = [];
+                _.forEach(iggridColumns, function (c){
+                    if(c["hidden"] === undefined || c["hidden"] === false){
+                        colSettings.push({ columnKey: c["key"], allowTooltips: true }); 
+                        if (nts.uk.util.isNullOrEmpty(c["columnCssClass"])) { 
+                            c["columnCssClass"] = "text-limited";             
+                        } else {
+                            c["columnCssClass"] += " text-limited";
+                        }
+                    }      
+                });
+                
+                features.push({
+                    name: "Tooltips",
+                    columnSettings: colSettings,
+                    visibility: "overflow",
+                    showDelay: 200,
+                    hideDelay: 200
+                });
+                
+                $grid.addClass("row-limited");
+            }
+
+            $grid.igGrid({
+                width: options.width,
+                height: height,
+                primaryKey: optionsValue,
+                columns: iggridColumns,
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                features: features,
+                tabIndex: -1
+            });
+            
+            $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(height).attr("tabindex", $grid.data("tabindex"));
+            
+//            if (options.itemDraggable) {
+//                new swap.SwapHandler().setModel(new swap.GridSwapList($grid, optionsValue)).enableDragDrop(options.dataSource);
+//            }
+
+            if (isDeleteButton) {
+                $grid.ntsGridList("setupDeleteButton", {
+                    deleteField: deleteOptions.deleteField,
+                    sourceTarget: options.dataSource
+                });
+            }
+
+            $grid.ntsGridList('setupSelecting');
+            
+            if (options.multiple) {
+                $grid.bind('iggridrowselectorscheckboxstatechanging', (eventObject: JQueryEventObject, data: any) => {
+                    if (String($grid.data("enable")) === "false") return false;
+                    let disables = $grid.data("selectionDisables");
+                    if (disables && !util.isNullOrUndefined(_.find(disables, d => data.rowKey === d))) {
+                        return false;
+                    }
+                    return true;
+                });
+            }
+            
+            $grid.bind('iggridselectionrowselectionchanging', (eventObject: JQueryEventObject, ui: any) => {
+                if (String($grid.data("enable")) === "false") return false;
+                let disables = $grid.data("selectionDisables");
+                if (disables && util.isNullOrUndefined(ui.startIndex)
+                    && !util.isNullOrUndefined(_.find(disables, d => ui.row.id === d))) {
+                    return false;
+                }
+                
+                if (disables && util.isNullOrUndefined(ui.startIndex) 
+                    && util.isNullOrUndefined(ui.row.id)) {
+                    setTimeout(() => {
+                        _.forEach(_.intersection(disables, value), iv => {
+                            $grid.igGridSelection("selectRowById", iv);
+                        });
+                        
+                        $grid.trigger("selectionchanged");
+                    }, 0);
+                }
+                return true;
+            });
+
+            let $oselect, $iselect;
+            let checkAll = function() {
+                if ($oselect && $iselect && $oselect.attr("data-chk") === "off") {
+                    $oselect.attr("data-chk", "on");
+                    $iselect.removeClass("ui-igcheckbox-normal-off");
+                    $iselect.addClass("ui-igcheckbox-normal-on");
+                }
+            };
+            
+            $grid.bind('selectionchanged', () => {
+                if (options.multiple) {
+                    let selected: Array<any> = $grid.ntsGridList('getSelected');
+                    
+                    let disables = $grid.data("selectionDisables");
+                    let disableIds = [];
+                    if (disables) {
+                        _.forEach(selected, (s, i) => {
+                            _.forEach(disables, (d) => {
+                                if (d === s.id && util.isNullOrUndefined(_.find(value, iv => iv === d))) {
+                                    $grid.igGridSelection("deselectRowById", d);
+                                    disableIds.push(i);
+                                    return false;
+                                }
+                            });
+                        });
+                        
+                        disableIds.sort((i1, i2) => i2 - i1).forEach(d => {
+                            selected.splice(d, 1);
+                        });
+                        
+                        let valueCount = _.intersection(disables, value).length; 
+                        let ds = $grid.igGrid("option", "dataSource");
+                        if (selected.length === ds.length - disables.length + valueCount) {
+                            checkAll();
+                        }
+                    }
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
+                        let newValue = _.map(selected, s => s.id);
+                        newValue = _.union(_.intersection(disables, value), newValue);
+                        setValue($grid, newValue);
+                    } else {
+                        setValue($grid, []);
+                    }
+                } else {
+                    let selected = $grid.ntsGridList('getSelected');
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
+                        setValue($grid, [ selected.id ]);
+                    } else {
+                        setValue($grid, []);
+                    }
+                }
+            });
+            
+            $grid.on("iggridvirtualrecordsrender", function(evt, ui) {
+                let disables = $grid.data("selectionDisables");
+                let $header = ui.owner._headerParent;
+                if (!disables || disables.length === 0 || !$header) return;
+                let data = ui.owner.dataSource._data;
+                let selected = $grid.ntsGridList('getSelected');
+                let valueCount = _.intersection(disables, value).length;
+                let selector = $header.find(".ui-iggrid-rowselector-header span");
+                
+                if (selector.length > 1) {
+                    $oselect = $(selector[0]); 
+                    $iselect = $(selector[1]);
+                }
+                
+                if (selected && (data.length - disables.length + valueCount) === selected.length) {
+                    checkAll();
+                }
+            });
+            
+            $grid.setupSearchScroll("igGrid", true);
+            $grid.ntsGridList("setupScrollWhenBinding");  
+            
+            $grid.on("switchvaluechanged", function(evt, dataX) {
+                setTimeout(function() {
+                    let source = _.cloneDeep(options.dataSource);
+                    _.forEach(source, function(o) {
+                        if (o[optionsValue] === dataX.rowKey) {
+                            o[dataX.columnKey] = dataX.value;
+                            return true;
+                        }
+                    });
+                    
+                    setDataSource($grid, options, source); 
+                }, 100);
+            });
+            
+            $grid.on("checknewitem", function(evt){
+                return false;
+            });
+            
+            setDataSource($grid, options, options.dataSource);
+            if (!_.isNil(options.value) && !_.isEmpty(options.value)) {
+                setValue($grid, options.value.constructor === Array ? options.value : [ options.value ]);
+            }
+        };
+        
+        function setDataSource($grid: JQuery, options: any, sources: any) {
+            if (!sources) return;
+            let optionsValue: string = options.primaryKey !== undefined ? options.primaryKey : options.optionsValue;
+            let gridSource = $grid.igGrid('option', 'dataSource');
+            
+            if (String($grid.attr("filtered")) === "true") {
+                let filteredSource = [];
+                _.forEach(gridSource, function(item) {
+                    let itemX = _.find(sources, function (s){
+                        return s[optionsValue] === item[optionsValue];        
+                    });
+                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+                        filteredSource.push(itemX);
+                    }     
+                });     
+                
+                if(!_.isEqual(filteredSource, gridSource)){
+                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
+                    $grid.igGrid("dataBind");    
+                }
+            } else {
+                let currentSources = sources.slice();
+                let observableColumns = _.filter(options.columns, function(c) {
+                    c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
+                    return !_.isNil(c["isDateColumn"]) && c["isDateColumn"] === true;
+                });
+                
+                if (!nts.uk.util.isNullOrEmpty(observableColumns)) {
+                    _.forEach(currentSources, function(s) {
+                        _.forEach(observableColumns, function(c) {
+                            let key = c["key"] === undefined ? c["prop"] : c["key"];
+                            s[key] = moment(s[key]).format(c["format"]);
+                        });
+                    });    
+                }
+                if (!_.isEqual(currentSources, gridSource)) {
+                    $grid.igGrid('option', 'dataSource', _.cloneDeep(currentSources));
+                    $grid.igGrid("dataBind");
+                }
+            }
+        }
+        
+        function setValue($grid: JQuery, value: any) {
+            if (!value) return;
+            let sources = $grid.igGrid("option", "dataSource");
+            let multiple = $grid.igGridSelection('option', 'multipleSelection');
+            let currentSelectedItems = $grid.ntsGridList('getSelected');
+            let isEqual = _.isEqualWith(currentSelectedItems, value, function(current, newVal) {
+                if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
+                    return true;
+                }
+            });
+            
+            if (!isEqual) {
+                let clickCheckBox = false;
+                if (value.length == sources.length) {
+                    if (multiple) {
+                        let features = _.find($grid.igGrid("option", "features"), function (f){
+                            return f.name === "RowSelectors";     
+                        });
+                        clickCheckBox = !nts.uk.util.isNullOrUndefined(features.enableCheckBoxes) && features.enableCheckBoxes;
+                    }
+                }
+                
+                if (clickCheckBox) {
+                    $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']").click();
+                } else {
+                    $grid.ntsGridList('setSelected', value.length === 0 ? (!multiple ? undefined : value) : value);    
+                }
+                
+                let initVal = $grid.data("initValue");
+                let disables = $grid.data("selectionDisables");
+                if (!disables || !initVal || _.intersection(disables, initVal).length === 0) { 
+                    _.defer(() => { $grid.trigger("selectChange"); });
+                }
+            }
         }
     }
 }

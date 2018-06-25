@@ -1,0 +1,18 @@
+.form-group {
+	margin-bottom: 5px;
+}
+
+#contents-area .drag-panel {
+	display:inline-block;
+	vertical-align: top;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	width: 580px;
+	height: 420px;
+	padding: 30px;
+	box-sizing: border-box;
+}
+table tr td {
+    white-space: nowrap;
+}
+

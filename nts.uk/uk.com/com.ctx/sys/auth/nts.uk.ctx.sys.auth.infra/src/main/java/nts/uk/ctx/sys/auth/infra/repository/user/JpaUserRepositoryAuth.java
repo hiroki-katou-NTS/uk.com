@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -14,7 +15,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.dom.user.SearchUser;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiviGrant;
 import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
 
 @Stateless
@@ -156,6 +156,85 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	public void update(User user) {
 		SacmtUser entity = SacmtUser.toEntity(user);
 	    this.commandProxy().update(entity);
+	}
+
+	private final String SELECT_ALL_USER_LIKE_NAME = "SELECT p.businessName, c From SacmtUser c LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId "
+			+ "WHERE c.expirationDate >= :systemDate "
+			+ "AND c.specialUser = :specialUser "
+			+ "AND c.multiCompanyConcurrent = :multiCompanyConcurrent " 
+			+ "AND c.userName LIKE :key "
+			+ "AND c.associatedPersonID IS NOT NULL";
+	@Override
+	public List<User> searchByKey(GeneralDate systemDate, int special, int multi, String key) {
+		return this.queryProxy()
+				.query(SELECT_ALL_USER_LIKE_NAME, Object[].class)
+				.setParameter("systemDate", systemDate)
+				.setParameter("specialUser", special)
+				.setParameter("multiCompanyConcurrent", multi)
+				.setParameter("key", '%' +key+ '%')
+				.getList(c -> this.joinObjectToDomain(c));
+	}
+
+	private final String SELECT_MULTI_CONDITION = "SELECT p.businessName, c From SacmtUser c LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId "
+			+ "WHERE c.expirationDate >= :systemDate "
+			+ "AND c.specialUser = :specialUser "
+			+ "AND c.multiCompanyConcurrent = :multiCompanyConcurrent "
+			+ "AND c.associatedPersonID IN :employeePersonId ";
+	private final String SELECT_MULTI_AND_PERSON_ID = SELECT_MULTI_CONDITION 
+			+ "AND (c.userName LIKE :key OR c.associatedPersonID IN :employeePersonIdFindName)";
+	private final String SELECT_MULTI_NO_PERSON_ID = SELECT_MULTI_CONDITION 
+			+ "AND c.userName LIKE :key ";
+	@Override
+	public List<User> searchUserMultiCondition(GeneralDate systemDate, int special, int multi, String key,
+			List<String> employeePersonIdFindName, List<String> employeePersonId) {
+		if(employeePersonId.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<User> result = new ArrayList<>();
+		if(employeePersonIdFindName.isEmpty()) {
+			CollectionUtil.split(employeePersonId, 1000, subIdList -> {
+				result.addAll(this.queryProxy()
+					.query(SELECT_MULTI_NO_PERSON_ID, Object[].class)
+					.setParameter("systemDate", systemDate)
+					.setParameter("specialUser", special)
+					.setParameter("multiCompanyConcurrent", multi)
+					.setParameter("employeePersonId", subIdList)
+					.setParameter("key", '%' +key+ '%')
+					.getList(c -> this.joinObjectToDomain(c)));
+			});
+		}else {
+			CollectionUtil.split(employeePersonIdFindName, 1000, subIdList -> {
+				CollectionUtil.split(employeePersonId, 1000, subList -> {
+					result.addAll(this.queryProxy()
+						.query(SELECT_MULTI_AND_PERSON_ID, Object[].class)
+						.setParameter("systemDate", systemDate)
+						.setParameter("specialUser", special)
+						.setParameter("multiCompanyConcurrent", multi)
+						.setParameter("employeePersonId", subList)
+						.setParameter("key", '%' +key+ '%')
+						.setParameter("employeePersonIdFindName", subIdList)
+						.getList(c -> this.joinObjectToDomain(c)));
+				});
+			});
+		}
+		return result;
+	}
+	private User joinObjectToDomain(Object[] object) {
+		String businessName =  object[0]==null?"":(String) object[0];
+		SacmtUser user = (SacmtUser) object[1];
+		return User.createFromJavatype(
+				user.sacmtUserPK.userID, 
+				user.defaultUser == 1, 
+				user.password, 
+				user.loginID, 
+				user.contractCd, 
+				user.expirationDate, 
+				user.specialUser, 
+				user.multiCompanyConcurrent, 
+				user.mailAdd, 
+				StringUtil.isNullOrEmpty(businessName, true)? user.userName : businessName, 
+				user.associatedPersonID, 
+				user.passStatus);
 	}
 
 }

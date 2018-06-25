@@ -16,4 +16,13 @@ public interface AttendanceTypeRepository {
 	 */
 	public List<AttendanceType> getItemByScreenUseAtr(String companyID, int screenUseAtr);
 	
+	/**
+	 * 
+	 * @param companyId
+	 * @param screenUseAtr
+	 * @param attendanceItemType
+	 * @return
+	 */
+	public List<AttendanceType> getItemByAtrandType(String companyId, int screenUseAtr, int attendanceItemType);
+	
 }
