@@ -11,4 +11,5 @@ public class SendMailCommand {
 	private String mailContent;
 	private List<String> sendMailOption;
 	private ApplicationCommand_New application;
+	private String applicantID;
 }

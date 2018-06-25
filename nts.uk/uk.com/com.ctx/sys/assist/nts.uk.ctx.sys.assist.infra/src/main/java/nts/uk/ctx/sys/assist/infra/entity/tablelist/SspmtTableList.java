@@ -112,9 +112,9 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	/**
 	 * 保存ファイル名
 	 */
-//	@Basic(optional = false)
-//	@Column(name = "SAVE_FILE_NAME")
-//	public String saveFileName;
+	// @Basic(optional = false)
+	// @Column(name = "SAVE_FILE_NAME")
+	// public String saveFileName;
 
 	/**
 	 * 保存形態
@@ -128,14 +128,14 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "SAVE_DATE_FROM")
-	public GeneralDate saveDateFrom;
+	public String saveDateFrom;
 
 	/**
 	 * 保存日付To
 	 */
 	@Basic(optional = true)
 	@Column(name = "SAVE_DATE_TO")
-	public GeneralDate saveDateTo;
+	public String saveDateTo;
 
 	/**
 	 * 保存時保存範囲
@@ -821,63 +821,83 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	}
 
 	public TableList toDomain() {
-		return new TableList(tableListPk.categoryId, categoryName, tableListPk.dataStorageProcessingId, dataRecoveryProcessId,
-				tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid, fieldAcqDateTime,
-				fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName,
+		return new TableList(tableListPk.categoryId, categoryName, tableListPk.dataStorageProcessingId,
+				dataRecoveryProcessId, tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid,
+				fieldAcqDateTime, fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName,
 				saveForm, saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls, internalFileName,
 				anotherComCls, referenceYear, referenceMonth, compressedFileName, fieldChild1, fieldChild2, fieldChild3,
 				fieldChild4, fieldChild5, fieldChild6, fieldChild7, fieldChild8, fieldChild9, fieldChild10, historyCls,
 				canNotBeOld, selectionTargetForRes, clsKeyQuery1, clsKeyQuery2, clsKeyQuery3, clsKeyQuery4,
 				clsKeyQuery5, clsKeyQuery6, clsKeyQuery7, clsKeyQuery8, clsKeyQuery9, clsKeyQuery10, fieldKeyQuery1,
 				fieldKeyQuery2, fieldKeyQuery3, fieldKeyQuery4, fieldKeyQuery5, fieldKeyQuery6, fieldKeyQuery7,
-				fieldKeyQuery8, fieldKeyQuery9, fieldKeyQuery10, defaultCondKeyQuery, fieldDate1, fieldDate2, fieldDate3,
-				fieldDate4, fieldDate5, fieldDate6, fieldDate7, fieldDate8, fieldDate9, fieldDate10, fieldDate11,
-				fieldDate12, fieldDate13, fieldDate14, fieldDate15, fieldDate16, fieldDate17, fieldDate18, fieldDate19,
-				fieldDate20, filedKeyUpdate1, filedKeyUpdate2, filedKeyUpdate3, filedKeyUpdate4, filedKeyUpdate5,
-				filedKeyUpdate6, filedKeyUpdate7, filedKeyUpdate8, filedKeyUpdate9, filedKeyUpdate10, filedKeyUpdate11,
-				filedKeyUpdate12, filedKeyUpdate13, filedKeyUpdate14, filedKeyUpdate15, filedKeyUpdate16,
-				filedKeyUpdate17, filedKeyUpdate18, filedKeyUpdate19, filedKeyUpdate20, screenRetentionPeriod,
-				supplementaryExplanation, parentTblJpName, hasParentTblFlg, parentTblName, fieldParent1, fieldParent2,
-				fieldParent3, fieldParent4, fieldParent5, fieldParent6, fieldParent7, fieldParent8, fieldParent9,
-				fieldParent10, surveyPreservation);
+				fieldKeyQuery8, fieldKeyQuery9, fieldKeyQuery10, defaultCondKeyQuery, fieldDate1, fieldDate2,
+				fieldDate3, fieldDate4, fieldDate5, fieldDate6, fieldDate7, fieldDate8, fieldDate9, fieldDate10,
+				fieldDate11, fieldDate12, fieldDate13, fieldDate14, fieldDate15, fieldDate16, fieldDate17, fieldDate18,
+				fieldDate19, fieldDate20, filedKeyUpdate1, filedKeyUpdate2, filedKeyUpdate3, filedKeyUpdate4,
+				filedKeyUpdate5, filedKeyUpdate6, filedKeyUpdate7, filedKeyUpdate8, filedKeyUpdate9, filedKeyUpdate10,
+				filedKeyUpdate11, filedKeyUpdate12, filedKeyUpdate13, filedKeyUpdate14, filedKeyUpdate15,
+				filedKeyUpdate16, filedKeyUpdate17, filedKeyUpdate18, filedKeyUpdate19, filedKeyUpdate20,
+				screenRetentionPeriod, supplementaryExplanation, parentTblJpName, hasParentTblFlg, parentTblName,
+				fieldParent1, fieldParent2, fieldParent3, fieldParent4, fieldParent5, fieldParent6, fieldParent7,
+				fieldParent8, fieldParent9, fieldParent10, surveyPreservation);
 	}
 
 	public static SspmtTableList toEntity(TableList domain) {
-		return new SspmtTableList(new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId()),
-				domain.getCategoryName(), domain.getDataRecoveryProcessId(),
-				domain.getTableJapaneseName(), domain.getTableEnglishName(), domain.getFieldAcqCid(),
-				domain.getFieldAcqDateTime(), domain.getFieldAcqEmployeeId(), domain.getFieldAcqEndDate(),
-				domain.getFieldAcqStartDate(), domain.getSaveSetCode(), domain.getSaveSetName(),
-			    domain.getSaveForm(), domain.getSaveDateFrom(), domain.getSaveDateTo(),
+		return new SspmtTableList(
+				new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId()),
+				domain.getCategoryName(), domain.getDataRecoveryProcessId().orElse(null), domain.getTableJapaneseName(),
+				domain.getTableEnglishName(), domain.getFieldAcqCid().orElse(null),
+				domain.getFieldAcqDateTime().orElse(null), domain.getFieldAcqEmployeeId().orElse(null),
+				domain.getFieldAcqEndDate().orElse(null), domain.getFieldAcqStartDate().orElse(null),
+				domain.getSaveSetCode().orElse(null), domain.getSaveSetName(), domain.getSaveForm(),
+				domain.getSaveDateFrom().orElse(null), domain.getSaveDateTo().orElse(null),
 				domain.getStorageRangeSaved().value, domain.getRetentionPeriodCls().value, domain.getInternalFileName(),
-				domain.getAnotherComCls().value, domain.getReferenceYear(), domain.getReferenceMonth(),
-				domain.getCompressedFileName(), domain.getFieldChild1(), domain.getFieldChild2(),
-				domain.getFieldChild3(), domain.getFieldChild4(), domain.getFieldChild5(), domain.getFieldChild6(),
-				domain.getFieldChild7(), domain.getFieldChild8(), domain.getFieldChild9(), domain.getFieldChild10(),
-				domain.getHistoryCls().value, domain.getCanNotBeOld(), domain.getSelectionTargetForRes(),
-				domain.getClsKeyQuery1(), domain.getClsKeyQuery2(), domain.getClsKeyQuery3(),
-				domain.getClsKeyQuery4(), domain.getClsKeyQuery5(), domain.getClsKeyQuery6(),
-				domain.getClsKeyQuery7(), domain.getClsKeyQuery8(), domain.getClsKeyQuery9(),
-				domain.getClsKeyQuery10(), domain.getFieldKeyQuery1(), domain.getFieldKeyQuery2(),
-				domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(), domain.getFieldKeyQuery5(),
-				domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(), domain.getFieldKeyQuery8(),
-				domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(), domain.getDefaultCondKeyQuery(),
-				domain.getFieldDate1(), domain.getFieldDate2(), domain.getFieldDate3(), domain.getFieldDate4(),
-				domain.getFieldDate5(), domain.getFieldDate6(), domain.getFieldDate7(), domain.getFieldDate8(),
-				domain.getFieldDate9(), domain.getFieldDate10(), domain.getFieldDate11(), domain.getFieldDate12(),
-				domain.getFieldDate13(), domain.getFieldDate14(), domain.getFieldDate15(), domain.getFieldDate16(),
-				domain.getFieldDate17(), domain.getFieldDate18(), domain.getFieldDate19(), domain.getFieldDate20(),
-				domain.getFiledKeyUpdate1(), domain.getFiledKeyUpdate2(), domain.getFiledKeyUpdate3(),
-				domain.getFiledKeyUpdate4(), domain.getFiledKeyUpdate5(), domain.getFiledKeyUpdate6(),
-				domain.getFiledKeyUpdate7(), domain.getFiledKeyUpdate8(), domain.getFiledKeyUpdate9(),
-				domain.getFiledKeyUpdate10(), domain.getFiledKeyUpdate11(), domain.getFiledKeyUpdate12(),
-				domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(), domain.getFiledKeyUpdate15(),
-				domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(), domain.getFiledKeyUpdate18(),
-				domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(), domain.getScreenRetentionPeriod(),
-				domain.getSupplementaryExplanation(), domain.getParentTblJpName(), domain.getHasParentTblFlg().value,
-				domain.getParentTblName(), domain.getFieldParent1(), domain.getFieldParent2(), domain.getFieldParent3(),
-				domain.getFieldParent4(), domain.getFieldParent5(), domain.getFieldParent6(), domain.getFieldParent7(),
-				domain.getFieldParent8(), domain.getFieldParent9(), domain.getFieldParent10(),
-				domain.getSurveyPreservation().value);
+				domain.getAnotherComCls().value, domain.getReferenceYear().orElse(null),
+				domain.getReferenceMonth().orElse(null), domain.getCompressedFileName(),
+				domain.getFieldChild1().orElse(null), domain.getFieldChild2().orElse(null),
+				domain.getFieldChild3().orElse(null), domain.getFieldChild4().orElse(null),
+				domain.getFieldChild5().orElse(null), domain.getFieldChild6().orElse(null),
+				domain.getFieldChild7().orElse(null), domain.getFieldChild8().orElse(null),
+				domain.getFieldChild9().orElse(null), domain.getFieldChild10().orElse(null),
+				domain.getHistoryCls().value, domain.getCanNotBeOld().orElse(null),
+				domain.getSelectionTargetForRes().orElse(null), domain.getClsKeyQuery1().orElse(null),
+				domain.getClsKeyQuery2().orElse(null), domain.getClsKeyQuery3().orElse(null),
+				domain.getClsKeyQuery4().orElse(null), domain.getClsKeyQuery5().orElse(null),
+				domain.getClsKeyQuery6().orElse(null), domain.getClsKeyQuery7().orElse(null),
+				domain.getClsKeyQuery8().orElse(null), domain.getClsKeyQuery9().orElse(null),
+				domain.getClsKeyQuery10().orElse(null), domain.getFieldKeyQuery1().orElse(null),
+				domain.getFieldKeyQuery2().orElse(null), domain.getFieldKeyQuery3().orElse(null),
+				domain.getFieldKeyQuery4().orElse(null), domain.getFieldKeyQuery5().orElse(null),
+				domain.getFieldKeyQuery6().orElse(null), domain.getFieldKeyQuery7().orElse(null),
+				domain.getFieldKeyQuery8().orElse(null), domain.getFieldKeyQuery9().orElse(null),
+				domain.getFieldKeyQuery10().orElse(null), domain.getDefaultCondKeyQuery().orElse(null),
+				domain.getFieldDate1().orElse(null), domain.getFieldDate2().orElse(null),
+				domain.getFieldDate3().orElse(null), domain.getFieldDate4().orElse(null),
+				domain.getFieldDate5().orElse(null), domain.getFieldDate6().orElse(null),
+				domain.getFieldDate7().orElse(null), domain.getFieldDate8().orElse(null),
+				domain.getFieldDate9().orElse(null), domain.getFieldDate10().orElse(null),
+				domain.getFieldDate11().orElse(null), domain.getFieldDate12().orElse(null),
+				domain.getFieldDate13().orElse(null), domain.getFieldDate14().orElse(null),
+				domain.getFieldDate15().orElse(null), domain.getFieldDate16().orElse(null),
+				domain.getFieldDate17().orElse(null), domain.getFieldDate18().orElse(null),
+				domain.getFieldDate19().orElse(null), domain.getFieldDate20().orElse(null),
+				domain.getFiledKeyUpdate1().orElse(null), domain.getFiledKeyUpdate2().orElse(null),
+				domain.getFiledKeyUpdate3().orElse(null), domain.getFiledKeyUpdate4().orElse(null),
+				domain.getFiledKeyUpdate5().orElse(null), domain.getFiledKeyUpdate6().orElse(null),
+				domain.getFiledKeyUpdate7().orElse(null), domain.getFiledKeyUpdate8().orElse(null),
+				domain.getFiledKeyUpdate9().orElse(null), domain.getFiledKeyUpdate10().orElse(null),
+				domain.getFiledKeyUpdate11().orElse(null), domain.getFiledKeyUpdate12().orElse(null),
+				domain.getFiledKeyUpdate13().orElse(null), domain.getFiledKeyUpdate14().orElse(null),
+				domain.getFiledKeyUpdate15().orElse(null), domain.getFiledKeyUpdate16().orElse(null),
+				domain.getFiledKeyUpdate17().orElse(null), domain.getFiledKeyUpdate18().orElse(null),
+				domain.getFiledKeyUpdate19().orElse(null), domain.getFiledKeyUpdate20().orElse(null),
+				domain.getScreenRetentionPeriod().orElse(null), domain.getSupplementaryExplanation().orElse(null),
+				domain.getParentTblJpName().orElse(null), domain.getHasParentTblFlg().value,
+				domain.getParentTblName().orElse(null), domain.getFieldParent1().orElse(null),
+				domain.getFieldParent2().orElse(null), domain.getFieldParent3().orElse(null),
+				domain.getFieldParent4().orElse(null), domain.getFieldParent5().orElse(null),
+				domain.getFieldParent6().orElse(null), domain.getFieldParent7().orElse(null),
+				domain.getFieldParent8().orElse(null), domain.getFieldParent9().orElse(null),
+				domain.getFieldParent10().orElse(null), domain.getSurveyPreservation().value);
 	}
 }

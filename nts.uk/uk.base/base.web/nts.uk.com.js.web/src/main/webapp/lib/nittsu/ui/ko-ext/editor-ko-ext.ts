@@ -391,48 +391,66 @@ module nts.uk.ui.koExtentions {
         }
         
         loadConstraints(name: string, $input: JQuery) {
-            let self = this;
-            let dfd = $.Deferred();
-            if (name !== "EmployeeCode" || (__viewContext.primitiveValueConstraints 
-                && __viewContext.primitiveValueConstraints.EmployeeCode)) { 
+            let self = this,
+                dfd = $.Deferred();
+
+            if (name !== "EmployeeCode") {
                 dfd.resolve();
                 return dfd.promise();
             }
-            
-            request.ajax("com", "/bs/employee/setting/code/find").done(res => {
-                if (!__viewContext.primitiveValueConstraints) {
-                    __viewContext.primitiveValueConstraints = {};
-                }
-                
-                let employeeCodeConstr = {
-                    valueType: "String",
-                    charType: "AlphaNumeric",
-                    maxLength: res.numberOfDigits
-                };
-                
-                __viewContext.primitiveValueConstraints.EmployeeCode = employeeCodeConstr;
-                let formatOption = { autofill: true };
-                
-                if (res.ceMethodAttr === 0) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 1) {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 2) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = " ";
-                } else {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = " ";   
-                }
-                
-                $input.data("editorFormatOption", formatOption);
-                dfd.resolve();
-            }).fail(res => {
-                dfd.reject();
-            });
-            
+
+            if (!$input.data('_nts_load_setting')) {
+                request.ajax("com", "/bs/employee/setting/code/find").done(res => {
+                    // if not have primitive, create new
+                    if (!__viewContext.primitiveValueConstraints) {
+                        __viewContext.primitiveValueConstraints = {
+                            EmployeeCode: {
+                                valueType: "String",
+                                charType: "AlphaNumeric",
+                                maxLength: res.numberOfDigits
+                            }
+                        };
+                    } else {
+                        // extend primitive constraint
+                        _.extend(__viewContext.primitiveValueConstraints, {
+                            EmployeeCode: {
+                                valueType: "String",
+                                charType: "AlphaNumeric",
+                                maxLength: res.numberOfDigits
+                            }
+                        });
+                    }
+
+                    let formatOption: any = {
+                        autofill: true
+                    };
+
+                    if (res.ceMethodAttr === 0) {
+                        formatOption.filldirection = "left";
+                        formatOption.fillcharacter = "0";
+                    } else if (res.ceMethodAttr === 1) {
+                        formatOption.filldirection = "right";
+                        formatOption.fillcharacter = "0";
+                    } else if (res.ceMethodAttr === 2) {
+                        formatOption.filldirection = "left";
+                        formatOption.fillcharacter = " ";
+                    } else {
+                        formatOption.filldirection = "right";
+                        formatOption.fillcharacter = " ";
+                    }
+
+                    $input
+                        .data('_nts_load_setting', true)
+                        .data("editorFormatOption", formatOption);
+
+                    dfd.resolve();
+                }).fail(res => {
+                    $input.data('_nts_load_setting', false);
+
+                    dfd.reject();
+                });
+            }
+
             return dfd.promise();
         }
     }

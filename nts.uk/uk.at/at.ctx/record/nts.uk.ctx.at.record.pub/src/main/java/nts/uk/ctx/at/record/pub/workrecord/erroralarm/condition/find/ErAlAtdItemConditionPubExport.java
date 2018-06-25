@@ -24,6 +24,7 @@ public class ErAlAtdItemConditionPubExport {
 	private int singleAtdItem;
 	private BigDecimal compareStartValue;
 	private BigDecimal compareEndValue;
+	private Integer inputCheckCondition;
 	
 	public ErAlAtdItemConditionPubExport() {
 		super();
@@ -31,7 +32,8 @@ public class ErAlAtdItemConditionPubExport {
 
 	public ErAlAtdItemConditionPubExport(int targetNO, int conditionAtr, boolean useAtr, int uncountableAtdItem,
 			List<Integer> countableAddAtdItems, List<Integer> countableSubAtdItems, int conditionType,
-			int compareOperator, int singleAtdItem, BigDecimal compareStartValue, BigDecimal compareEndValue) {
+			int compareOperator, int singleAtdItem, BigDecimal compareStartValue, BigDecimal compareEndValue,
+			Integer inputCheckCondition) {
 		super();
 		this.targetNO = targetNO;
 		this.conditionAtr = conditionAtr;
@@ -44,6 +46,7 @@ public class ErAlAtdItemConditionPubExport {
 		this.singleAtdItem = singleAtdItem;
 		this.compareStartValue = compareStartValue;
 		this.compareEndValue = compareEndValue;
+		this.inputCheckCondition = inputCheckCondition;
 	}
 	
 }

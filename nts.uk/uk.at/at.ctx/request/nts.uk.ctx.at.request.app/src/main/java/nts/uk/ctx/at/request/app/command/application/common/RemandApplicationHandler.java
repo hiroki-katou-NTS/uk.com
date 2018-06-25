@@ -29,10 +29,12 @@ public class RemandApplicationHandler extends CommandHandlerWithResult<RemandCom
 	protected MailSenderResult handle(CommandHandlerContext<RemandCommand> context) {
 		String companyID =  AppContexts.user().companyId();
 		RemandCommand remandCommand = context.getCommand();
+		List<String> lstAppID = remandCommand.getAppID();
+		for (String appId : lstAppID) {
+			// 11-1.詳細画面差し戻し前の処理
+			detailBeforeUpdate.exclusiveCheck(companyID, appId, remandCommand.getVersion());
+		}
 		
-		// 11-1.詳細画面差し戻し前の処理
-		detailBeforeUpdate.exclusiveCheck(companyID, remandCommand.getAppID(), remandCommand.getVersion());
-		
-		return detailAfterRemand.doRemand(companyID, remandCommand.getAppID(), remandCommand.getVersion(), remandCommand.getOrder(), remandCommand.getReturnReason());
+		return detailAfterRemand.doRemand(companyID, lstAppID, remandCommand.getVersion(), remandCommand.getOrder(), remandCommand.getReturnReason());
 	}
 }

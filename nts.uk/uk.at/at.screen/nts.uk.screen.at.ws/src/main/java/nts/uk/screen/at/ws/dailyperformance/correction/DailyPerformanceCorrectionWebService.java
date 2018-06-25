@@ -24,7 +24,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
@@ -45,6 +48,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferDto;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportDto;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportService;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferFinder;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
@@ -95,6 +102,15 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DPLoadRowProcessor loadRowProcessor;
+	
+	@Inject
+	private DailyPerformErrorReferExportService dailyPerformErrorExportService;
+
+	@Inject
+	private DailyPerformErrorReferFinder dailyPerforErrorReferFinder;
+	
+	@Inject
+	private AttendanceItemNameDomainService attendanceItemNameDomainService;
 	
 	@POST
 	@Path("startScreen")
@@ -191,11 +207,12 @@ public class DailyPerformanceCorrectionWebService {
 				itemInputErors.addAll(itemInputs);
 			}
 			
-			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInputItem28(itemCovert);
+			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInput28And1(itemCovert);
 			itemInputError28.addAll(itemInputs28);
 			
 		});
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
+			List<DailyModifyQuery> querys = new ArrayList<>();
 				mapSidDate.entrySet().forEach(x -> {
 					List<ItemValue> itemCovert = x.getValue().stream()
 							.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()),
@@ -203,11 +220,13 @@ public class DailyPerformanceCorrectionWebService {
 							.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
 							.collect(Collectors.toList());
 					if (!itemCovert.isEmpty())
-						dailyModifyCommandFacade.handleUpdate(new DailyModifyQuery(x.getKey().getKey(),
+						querys.add(new DailyModifyQuery(x.getKey().getKey(),
 								x.getKey().getValue(), itemCovert));
+						//dailyModifyCommandFacade.handleUpdate();
 				});
+				dailyModifyCommandFacade.handleUpdate(querys);
 				// insert cell edit
-				dailyModifyCommandFacade.handleEditCell(itemValueChild);
+				//dailyModifyCommandFacade.handleEditCell(itemValueChild);
 				//resultError.put(1, itemInputErors);
 				//return resultError;
 		}else{
@@ -261,4 +280,29 @@ public class DailyPerformanceCorrectionWebService {
 	public DailyPerformanceCorrectionDto reloadRow(DPPramLoadRow param) {
 		return loadRowProcessor.reloadGrid(param);
 	}
+	
+	@POST
+	@Path("exportCsv")
+	public ExportServiceResult exportCsvErrorInfor(List<DailyPerformErrorReferExportDto> command) {
+		return this.dailyPerformErrorExportService.start(command);
+	}
+
+	@POST
+	@Path("getErrAndAppTypeCd")
+	public DailyPerformErrorReferDto findByCidAndListErrCd(List<String> listErrorCode) {
+		return this.dailyPerforErrorReferFinder.findByCidAndListErrCd(listErrorCode);
+	}
+	
+	/**
+	 * typeOfAttendanceItem = 0 to case is monthly
+	 * 
+	 * @param dailyAttendanceItemIds
+	 * @return
+	 */
+	@POST
+	@Path("getNameMonthlyAttItem")
+	public List<AttendanceItemName> getNameOfMonthlyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
+		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(dailyAttendanceItemIds, 0);
+	}
+
 }

@@ -171,6 +171,8 @@ module nts.uk.com.view.cmf003.b {
                         self.passwordConstraint("FileCompressionPassword");
                         $(".passwordInput").trigger("validate");
                     } else {
+                        nts.uk.util.value.reset($("#B4_32"), $("#B4_32").val());
+                        nts.uk.util.value.reset($("#B4_41"), $("#B4_41").val());						
                         self.passwordConstraint("");
                         $('.passwordInput').ntsError('clear');
                     }

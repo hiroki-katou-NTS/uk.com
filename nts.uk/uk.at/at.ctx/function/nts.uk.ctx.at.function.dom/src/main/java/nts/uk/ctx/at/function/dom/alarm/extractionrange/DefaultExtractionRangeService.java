@@ -24,6 +24,8 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyEndMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -69,13 +71,11 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				result.add(schedual_4week);
 				
 			} else if(c.isMonthly()) {
-				CheckConditionTimeDto other = new CheckConditionTimeDto(c.getAlarmCategory().value,
-						EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null, null, null, null);
+				CheckConditionTimeDto other = this.getMonthlyTime(c,closureId,new YearMonth(processingYm));
 				result.add(other);
 				
 			} else if(c.isAgrrement()) {
 				result.addAll(this.getAgreementTime(c, closureId, new YearMonth(processingYm)));
-				
 			}
 
 		});
@@ -187,6 +187,24 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		return new CheckConditionTimeDto(c.getAlarmCategory().value,
 				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), formatter.format(startDate),
 				formatter.format(endDate), null, null);
+	}
+	
+	
+	public CheckConditionTimeDto getMonthlyTime(CheckCondition c, int closureId, YearMonth yearMonth) {
+		//DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+		YearMonth startMonthly = yearMonth;
+		YearMonth endMonthly = yearMonth;
+		ExtractionPeriodMonth extractionPeriodMonth =  (ExtractionPeriodMonth) c.getExtractPeriodList().get(0);
+		if(extractionPeriodMonth.getStartMonth().getSpecifyStartMonth().value == SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE.value) {
+			startMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo());
+		}
+		if(extractionPeriodMonth.getEndMonth().getSpecifyEndMonth().value == SpecifyEndMonth.SPECIFY_PERIOD_START_MONTH.value ) {
+			endMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo());
+		}
+		
+		return new CheckConditionTimeDto(c.getAlarmCategory().value,
+				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null,
+				null, startMonthly.toString(), endMonthly.toString());
 	}
 	
 	

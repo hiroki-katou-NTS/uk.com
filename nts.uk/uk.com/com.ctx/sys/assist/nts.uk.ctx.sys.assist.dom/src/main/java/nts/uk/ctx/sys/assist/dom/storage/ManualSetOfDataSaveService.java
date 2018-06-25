@@ -201,8 +201,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			TimeStore retentionPeriodCls = null;
 			int anotherComCls = 0;
 			String screenRetentionPeriod = "";
-			GeneralDate saveDateFrom = null;
-			GeneralDate saveDateTo = null;
+			String saveDateFrom = "";
+			String saveDateTo = "";
 			int surveyPreservation = optManualSetting.getIdentOfSurveyPre().value;
 			Optional<Category> category = categorys.stream()
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
@@ -215,20 +215,19 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 				switch (retentionPeriodCls) {
 				case DAILY:
-					saveDateFrom = optManualSetting.getDaySaveStartDate();
-					saveDateTo = optManualSetting.getDaySaveEndDate();
-					screenRetentionPeriod = saveDateFrom.toString("yyyy/MM/dd") + "～"
-							+ saveDateTo.toString("yyyy/MM/dd");
+					saveDateFrom = optManualSetting.getDaySaveStartDate().toString();
+					saveDateTo = optManualSetting.getDaySaveEndDate().toString();
+					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case MONTHLY:
-					saveDateFrom = optManualSetting.getMonthSaveStartDate();
-					saveDateTo = optManualSetting.getMonthSaveEndDate();
-					screenRetentionPeriod = saveDateFrom.toString("yyyy/MM") + "～" + saveDateTo.toString("yyyy/MM");
+					saveDateFrom = optManualSetting.getMonthSaveStartDate().toString();
+					saveDateTo = optManualSetting.getMonthSaveEndDate().toString();
+					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case ANNUAL:
-					saveDateFrom = GeneralDate.ymd(optManualSetting.getStartYear().v(), 1, 1);
-					saveDateTo = GeneralDate.ymd(optManualSetting.getEndYear().v(), 12, 31);
-					screenRetentionPeriod = saveDateFrom.toString("yyyy") + "～" + saveDateTo.toString("yyyy");
+					saveDateFrom = optManualSetting.getStartYear().v().toString();
+					saveDateTo = optManualSetting.getEndYear().v().toString();
+					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				default:
 					break;
@@ -535,24 +534,24 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				for (String key : headerCsv3) {
 					String header = key;
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(0))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqCid())) {
-						header = tableList.getFieldAcqCid();
+							&& tableList.getFieldAcqCid().isPresent()) {
+						header = tableList.getFieldAcqCid().get();
 					}
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(1))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqEmployeeId())) {
-						header = tableList.getFieldAcqEmployeeId();
+							&& tableList.getFieldAcqEmployeeId().isPresent()) {
+						header = tableList.getFieldAcqEmployeeId().get();
 					}
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(2))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqDateTime())) {
-						header = tableList.getFieldAcqDateTime();
+							&& tableList.getFieldAcqDateTime().isPresent()) {
+						header = tableList.getFieldAcqDateTime().get();
 					}
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(3))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqStartDate())) {
-						header = tableList.getFieldAcqStartDate();
+							&& tableList.getFieldAcqStartDate().isPresent()) {
+						header = tableList.getFieldAcqStartDate().get();
 					}
 					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(4))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqEndDate())) {
-						header = tableList.getFieldAcqEndDate();
+							&& tableList.getFieldAcqEndDate().isPresent()) {
+						header = tableList.getFieldAcqEndDate().get();
 					}
 					String fieldName = repoTableList.getFieldForColumnName(object.getClass(), header);
 					Object resultObj = null;

@@ -26,14 +26,6 @@ public class AddEmployeeWebService extends WebService {
 	@Inject
 	private EmployeeInfoFinder employeeFinder;
 
-	// sonnlb code start
-
-	@POST
-	@Path("getGenerateEmplCodeAndComId")
-	public JavaTypeResult<String> getGenerateEmplCodeAndComId(String startLetters) {
-		return new JavaTypeResult<String>(this.employeeFinder.getGenerateEmplCodeAndComId(startLetters));
-	}
-
 	@POST
 	@Path("validateEmpInfo")
 	public void validateEmpInfo(EmpInfoDto empInfo) {

@@ -59,6 +59,10 @@ public class ItemValue {
 		throw new RuntimeException("invalid type: " + this.valueType);
 	}
 	
+	public Object valueAsObjet() {
+		return value;
+	}
+	
 	public <T> T valueOrDefault(T defaultVal) {
 		if(value == null || this.value.isEmpty()){
 			return defaultVal;

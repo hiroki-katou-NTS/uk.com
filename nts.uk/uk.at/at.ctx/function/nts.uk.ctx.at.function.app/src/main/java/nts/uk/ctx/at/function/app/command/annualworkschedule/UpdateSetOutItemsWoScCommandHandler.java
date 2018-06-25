@@ -78,6 +78,7 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
 						new OutItemsWoScName(updateCommand.getName()),
 						updateCommand.isOutNumExceedTime36Agr(),
 						EnumAdaptor.valueOf(updateCommand.getDisplayFormat(), OutputAgreementTime.class),
+						updateCommand.getPrintForm(),
 						listItemOutTblBook));
 	}
 }
