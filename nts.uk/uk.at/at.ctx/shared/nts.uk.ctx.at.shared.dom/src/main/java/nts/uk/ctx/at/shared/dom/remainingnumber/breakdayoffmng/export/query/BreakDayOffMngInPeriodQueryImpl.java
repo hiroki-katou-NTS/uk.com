@@ -224,35 +224,36 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		//「休出代休明細」をループする
 		for (BreakDayOffDetail detailData : lstDetailData) {
 			//ループ中の「休出代休明細」．発生消化区分をチェックする
-			if(detailData.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
+			if(detailData.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
+				UnUserOfBreak breakData = detailData.getUnUserOfBreak().get();
 				//期限切れかをチェックする
-				if(detailData.getUnUserOfBreak().get().getExpirationDate().before(baseDate)) {
+				if(breakData.getExpirationDate().before(baseDate)) {
 					//時間代休管理区分をチェックする
 					if(dayOffSetting != null && dayOffSetting.isSubstitutionFlg()) {
 						//未消化時間 += ループ中の「休出の未使用」．未使用時間 
-						outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + detailData.getUnUserOfBreak().get().getUnUsedTimes());
+						outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + breakData.getUnUsedTimes());
 					} else {
 						//未消化日数 += ループ中の「休出の未使用」．未使用日数
-						outputData.setUnDigestedDays(outputData.getUnDigestedDays() + detailData.getUnUserOfBreak().get().getUnUsedDays());
+						outputData.setUnDigestedDays(outputData.getUnDigestedDays() + breakData.getUnUsedDays());
 						//ループ中の「休出の未使用」．未使用日数をチェックする
-						if(detailData.getUnUserOfBreak().get().getUnUsedDays() == 1) {
+						if(breakData.getUnUsedDays() == 1) {
 							//未消化時間 += ループ中の「休出の未使用」．１日相当時間
-							outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + detailData.getUnUserOfBreak().get().getOnedayTime());
+							outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + breakData.getOnedayTime());
 						} else if (detailData.getUnUserOfBreak().get().getUnUsedDays() == 0.5) {
 							//未消化時間 += ループ中の「休出の未使用」．半日相当時間
-							outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + detailData.getUnUserOfBreak().get().getHaftDayTime());
+							outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + breakData.getHaftDayTime());
 						}
 					}
 				} else {
 					//残日数 += ループ中の「休出の未使用」．未使用日数、残時間 += ループ中の「休出の未使用」．未使用時間
-					outputData.setRemainDays(outputData.getRemainDays() + detailData.getUnUserOfBreak().get().getUnUsedDays());
-					outputData.setRemainTimes(outputData.getRemainTimes() + detailData.getUnUserOfBreak().get().getUnUsedTimes());
+					outputData.setRemainDays(outputData.getRemainDays() + breakData.getUnUsedDays());
+					outputData.setRemainTimes(outputData.getRemainTimes() + breakData.getUnUsedTimes());
 				}
 			} else {
 				//残日数 -= ループ中の「代休の未相殺」．未相殺日数、残時間 -= ループ中の「代休の未相殺」．未相殺時間 
-				outputData.setUnDigestedDays(outputData.getUnDigestedDays() - detailData.getUnOffsetOfDayoff().get().getUnOffsetDay());
-				outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() - detailData.getUnOffsetOfDayoff().get().getUnOffsetTimes());
-								
+				UnOffSetOfDayOff dayOffData = detailData.getUnOffsetOfDayoff().get();
+				outputData.setUnDigestedDays(outputData.getUnDigestedDays() - dayOffData.getUnOffsetDay());
+				outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() - dayOffData.getUnOffsetTimes());
 			}
 		}
 		return outputData;
@@ -445,8 +446,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				.collect(Collectors.toList());
 		List<BreakDayOffDetail> lstDayoff = lstDataDetail.stream().filter(y -> y.getOccurrentClass() == OccurrenceDigClass.DIGESTION)
 				.collect(Collectors.toList());
-		List<BreakDayOffDetail> lstBreackTmp = lstBreak;
-		List<BreakDayOffDetail> lstDayoffTmp = lstDayoff;
+		List<BreakDayOffDetail> lstBreackTmp = new ArrayList<>(lstBreak);
+		List<BreakDayOffDetail> lstDayoffTmp = new ArrayList<>(lstDayoff);
 		//「休出代休明細」(代休)をループする
 		for (BreakDayOffDetail dayOffData : lstDayoff) {
 			UnOffSetOfDayOff dayOffMng = dayOffData.getUnOffsetOfDayoff().get();
@@ -537,9 +538,9 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	@Override
 	public List<BreakDayOffDetail> calDigestionAtr(List<BreakDayOffDetail> lstDetail, GeneralDate baseDate) {
 		lstDetail.stream().forEach(x -> {
-			UnUserOfBreak breakData = x.getUnUserOfBreak().get();
 			//ループ中の「休出代休明細．発生消化区分」をチェック
 			if(x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
+				UnUserOfBreak breakData = x.getUnUserOfBreak().get();
 				//ループ中の「休出の未使用」の「未使用日数」と「未使用時間」をチェックする
 				if(breakData.getUnUsedDays() == 0
 						&& breakData.getUnUsedTimes() == 0) {

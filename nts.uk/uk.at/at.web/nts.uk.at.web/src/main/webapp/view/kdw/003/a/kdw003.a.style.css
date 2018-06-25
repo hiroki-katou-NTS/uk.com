@@ -244,6 +244,9 @@
     margin: 3px 9px;
     padding: 10px 10px;
 }
+#short-time{
+	background-color: #CCC;
+}
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;
 } */

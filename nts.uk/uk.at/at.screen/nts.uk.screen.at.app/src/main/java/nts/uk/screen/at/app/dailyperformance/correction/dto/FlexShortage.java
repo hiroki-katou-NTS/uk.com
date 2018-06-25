@@ -25,6 +25,8 @@ public class FlexShortage {
 	private DPMonthParent monthParent;
 	private boolean retiredFlag;
 	private CalcFlexDto calc;
+	private String redConditionMessage;
+	private String messageNotForward;
 
 	public FlexShortage(ItemValue value18, ItemValue value21, ItemValue value189, ItemValue value190, ItemValue value191) {
 		this.value18 = value18;
@@ -61,6 +63,16 @@ public class FlexShortage {
 	
 	public FlexShortage createCalcFlex(CalcFlexDto calc){
 		this.calc = calc;
+		return this;
+	}
+	
+	public FlexShortage createRedConditionMessage(String condition){
+		this.redConditionMessage = condition;
+		return this;
+	}
+	
+	public FlexShortage createNotForward(String message){
+		this.messageNotForward = message;
 		return this;
 	}
 }

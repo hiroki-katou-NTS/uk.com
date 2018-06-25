@@ -59,16 +59,16 @@
 						</table>
 					</div>
 					<!-- A2職場リスト -->
-					<div class="content-bottom" tabindex="1">
+					<div class="content-bottom">
 						<div id="tree-grid"></div>
 					</div>
 				</div>
 				<!-- A4形式選択 -->
-				<div class="content-area-right" tabindex="1">
+				<div class="content-area-right">
 					<!-- A4_1申請承認 -->
 					<!-- A4_2日別・月別確認  -->
 					<div class="content-left-top">
-						<div class="format-selected" tabindex="-1"
+						<div class="format-selected"
 							data-bind="ntsRadioBoxGroup: {
 								options: items,
 								optionsValue: 'code',
@@ -77,13 +77,13 @@
 								enable: enable}">
 						</div>
 						<com:ko-if bind="isVisibleComfirm">
-							<div class="format-checkbox" tabindex="-1"
+							<div class="format-checkbox"
 								data-bind="ntsCheckBox: { checked: isDailyComfirm, enable: isEnableDailyComfirm, text: '#{i18n.getText('KAF018_14')}' }"></div>
 						</com:ko-if>
 					</div>
 					<!-- A10抽出 -->
 					<div class="content-left-bottom">
-					<button class="btn-excute large" tabindex="2"
+					<button class="btn-excute large"
 						data-bind="click: choiceNextScreen">#{i18n.getText('KAF018_16')}</button>
 					</div>
 				</div>

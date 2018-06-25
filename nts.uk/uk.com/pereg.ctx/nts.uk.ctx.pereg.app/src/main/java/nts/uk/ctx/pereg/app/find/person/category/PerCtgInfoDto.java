@@ -21,5 +21,6 @@ public class PerCtgInfoDto {
 	private int personEmployeeType;
 	private boolean initValMasterObjCls;
 	private boolean addItemObjCls;
+	private boolean canAbolition;
 	private List<PersonInfoItemDefDto> itemLst;
 }
