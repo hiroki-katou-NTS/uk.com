@@ -3,9 +3,9 @@ package nts.uk.ctx.sys.assist.dom.tablelist;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
@@ -35,6 +35,7 @@ public class TableList extends DomainObject {
 	/**
 	 * データ復旧処理ID
 	 */
+	@Setter
 	private Optional<String> dataRecoveryProcessId;
 
 	/**
@@ -200,6 +201,7 @@ public class TableList extends DomainObject {
 	/**
 	 * 復旧対象可不可
 	 */
+	@Setter
 	private Optional<Integer> canNotBeOld;
 
 	/**
@@ -734,7 +736,167 @@ public class TableList extends DomainObject {
 		this.fieldParent10 = Optional.ofNullable(fieldParent10);
 		this.surveyPreservation = EnumAdaptor.valueOf(surveyPreservation, NotUseAtr.class);
 	}
+	public TableList(String dataStorageProcessingId, String saveForm, String saveSetCode, String saveSetName,
+			String supplementaryExplanation, String categoryId, String categoryName, TimeStore retentionPeriodCls,
+			StorageRangeSaved storageRangeSaved, String screenRetentionPeriod, String referenceYear,
+			String referenceMonth, NotUseAtr surveyPreservation, RecoverFormCompanyOther anotherComCls, int tableNo,
+			String tableJapaneseName, String tableEnglishName, HistoryDiviSion historyCls, NotUseAtr hasParentTblFlg,
+			String parentTblJpName, String parentTblName, String fieldParent1, String fieldParent2, String fieldParent3,
+			String fieldParent4, String fieldParent5, String fieldParent6, String fieldParent7, String fieldParent8,
+			String fieldParent9, String fieldParent10, String fieldChild1, String fieldChild2, String fieldChild3,
+			String fieldChild4, String fieldChild5, String fieldChild6, String fieldChild7, String fieldChild8,
+			String fieldChild9, String fieldChild10, String fieldAcqCid, String fieldAcqEmployeeId,
+			String fieldAcqDateTime, String fieldAcqStartDate, String fieldAcqEndDate, String defaultCondKeyQuery,
+			String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3, String fieldKeyQuery4,
+			String fieldKeyQuery5, String fieldKeyQuery6, String fieldKeyQuery7, String fieldKeyQuery8,
+			String fieldKeyQuery9, String fieldKeyQuery10, String clsKeyQuery1, String clsKeyQuery2,
+			String clsKeyQuery3, String clsKeyQuery4, String clsKeyQuery5, String clsKeyQuery6, String clsKeyQuery7,
+			String clsKeyQuery8, String clsKeyQuery9, String clsKeyQuery10, String filedKeyUpdate1,
+			String filedKeyUpdate2, String filedKeyUpdate3, String filedKeyUpdate4, String filedKeyUpdate5,
+			String filedKeyUpdate6, String filedKeyUpdate7, String filedKeyUpdate8, String filedKeyUpdate9,
+			String filedKeyUpdate10, String filedKeyUpdate11, String filedKeyUpdate12, String filedKeyUpdate13,
+			String filedKeyUpdate14, String filedKeyUpdate15, String filedKeyUpdate16, String filedKeyUpdate17,
+			String filedKeyUpdate18, String filedKeyUpdate19, String filedKeyUpdate20, String fieldDate1,
+			String fieldDate2, String fieldDate3, String fieldDate4, String fieldDate5, String fieldDate6,
+			String fieldDate7, String fieldDate8, String fieldDate9, String fieldDate10, String fieldDate11,
+			String fieldDate12, String fieldDate13, String fieldDate14, String fieldDate15, String fieldDate16,
+			String fieldDate17, String fieldDate18, String fieldDate19, String fieldDate20, String saveDateFrom,
+			String saveDateTo, String compressedFileName, String internalFileName, String dataRecoveryProcessId,
+			int canNotBeOld, int selectionTargetForRes) {
+		this.categoryId = categoryId;
+		this.categoryName = categoryName;
+		this.dataStorageProcessingId = dataStorageProcessingId;
+		this.dataRecoveryProcessId = Optional.ofNullable(dataRecoveryProcessId);
+		this.tableNo = tableNo;
+		this.tableJapaneseName = tableJapaneseName;
+		this.tableEnglishName = tableEnglishName;
+		this.fieldAcqCid = Optional.ofNullable(fieldAcqCid);
+		this.fieldAcqDateTime = Optional.ofNullable(fieldAcqDateTime);
+		this.fieldAcqEmployeeId = Optional.ofNullable(fieldAcqEmployeeId);
+		this.fieldAcqEndDate = Optional.ofNullable(fieldAcqEndDate);
+		this.fieldAcqStartDate = Optional.ofNullable(fieldAcqStartDate);
+		this.saveSetCode = Optional.ofNullable(saveSetCode);
+		this.saveSetName = saveSetName;
+		this.saveForm = saveForm;
+		this.saveDateFrom = Optional.ofNullable(saveDateFrom);
+		this.saveDateTo = Optional.ofNullable(saveDateTo);
+		this.storageRangeSaved = storageRangeSaved;
+		this.retentionPeriodCls = retentionPeriodCls;
+		this.internalFileName = internalFileName;
+		this.anotherComCls = anotherComCls;
+		this.referenceYear = Optional.ofNullable(referenceYear);
+		this.referenceMonth = Optional.ofNullable(referenceMonth);
+		this.compressedFileName = compressedFileName;
+		this.fieldChild1 = Optional.ofNullable(fieldChild1);
+		this.fieldChild2 = Optional.ofNullable(fieldChild2);
+		this.fieldChild3 = Optional.ofNullable(fieldChild3);
+		this.fieldChild4 = Optional.ofNullable(fieldChild4);
+		this.fieldChild5 = Optional.ofNullable(fieldChild5);
+		this.fieldChild6 = Optional.ofNullable(fieldChild6);
+		this.fieldChild7 = Optional.ofNullable(fieldChild7);
+		this.fieldChild8 = Optional.ofNullable(fieldChild8);
+		this.fieldChild9 = Optional.ofNullable(fieldChild9);
+		this.fieldChild10 = Optional.ofNullable(fieldChild10);
+		this.historyCls = historyCls;
+		this.canNotBeOld = Optional.ofNullable(canNotBeOld);
+		this.selectionTargetForRes = Optional.ofNullable(selectionTargetForRes);
+		this.clsKeyQuery1 = Optional.ofNullable(clsKeyQuery1);
+		this.clsKeyQuery2 = Optional.ofNullable(clsKeyQuery2);
+		this.clsKeyQuery3 = Optional.ofNullable(clsKeyQuery3);
+		this.clsKeyQuery4 = Optional.ofNullable(clsKeyQuery4);
+		this.clsKeyQuery5 = Optional.ofNullable(clsKeyQuery5);
+		this.clsKeyQuery6 = Optional.ofNullable(clsKeyQuery6);
+		this.clsKeyQuery7 = Optional.ofNullable(clsKeyQuery7);
+		this.clsKeyQuery8 = Optional.ofNullable(clsKeyQuery8);
+		this.clsKeyQuery9 = Optional.ofNullable(clsKeyQuery9);
+		this.clsKeyQuery10 = Optional.ofNullable(clsKeyQuery10);
+		this.fieldKeyQuery1 = Optional.ofNullable(fieldKeyQuery1);
+		this.fieldKeyQuery2 = Optional.ofNullable(fieldKeyQuery2);
+		this.fieldKeyQuery3 = Optional.ofNullable(fieldKeyQuery3);
+		this.fieldKeyQuery4 = Optional.ofNullable(fieldKeyQuery4);
+		this.fieldKeyQuery5 = Optional.ofNullable(fieldKeyQuery5);
+		this.fieldKeyQuery6 = Optional.ofNullable(fieldKeyQuery6);
+		this.fieldKeyQuery7 = Optional.ofNullable(fieldKeyQuery7);
+		this.fieldKeyQuery8 = Optional.ofNullable(fieldKeyQuery8);
+		this.fieldKeyQuery9 = Optional.ofNullable(fieldKeyQuery9);
+		this.fieldKeyQuery10 = Optional.ofNullable(fieldKeyQuery10);
+		this.defaultCondKeyQuery = Optional.ofNullable(defaultCondKeyQuery);
+		this.fieldDate1 = Optional.ofNullable(fieldDate1);
+		this.fieldDate2 = Optional.ofNullable(fieldDate2);
+		this.fieldDate3 = Optional.ofNullable(fieldDate3);
+		this.fieldDate4 = Optional.ofNullable(fieldDate4);
+		this.fieldDate5 = Optional.ofNullable(fieldDate5);
+		this.fieldDate6 = Optional.ofNullable(fieldDate6);
+		this.fieldDate7 = Optional.ofNullable(fieldDate7);
+		this.fieldDate8 = Optional.ofNullable(fieldDate8);
+		this.fieldDate9 = Optional.ofNullable(fieldDate9);
+		this.fieldDate10 = Optional.ofNullable(fieldDate10);
+		this.fieldDate11 = Optional.ofNullable(fieldDate11);
+		this.fieldDate12 = Optional.ofNullable(fieldDate12);
+		this.fieldDate13 = Optional.ofNullable(fieldDate13);
+		this.fieldDate14 = Optional.ofNullable(fieldDate14);
+		this.fieldDate15 = Optional.ofNullable(fieldDate15);
+		this.fieldDate16 = Optional.ofNullable(fieldDate16);
+		this.fieldDate17 = Optional.ofNullable(fieldDate17);
+		this.fieldDate18 = Optional.ofNullable(fieldDate18);
+		this.fieldDate19 = Optional.ofNullable(fieldDate19);
+		this.fieldDate20 = Optional.ofNullable(fieldDate20);
+		this.filedKeyUpdate1 = Optional.ofNullable(filedKeyUpdate1);
+		this.filedKeyUpdate2 = Optional.ofNullable(filedKeyUpdate2);
+		this.filedKeyUpdate3 = Optional.ofNullable(filedKeyUpdate3);
+		this.filedKeyUpdate4 = Optional.ofNullable(filedKeyUpdate4);
+		this.filedKeyUpdate5 = Optional.ofNullable(filedKeyUpdate5);
+		this.filedKeyUpdate6 = Optional.ofNullable(filedKeyUpdate6);
+		this.filedKeyUpdate7 = Optional.ofNullable(filedKeyUpdate7);
+		this.filedKeyUpdate8 = Optional.ofNullable(filedKeyUpdate8);
+		this.filedKeyUpdate9 = Optional.ofNullable(filedKeyUpdate9);
+		this.filedKeyUpdate10 = Optional.ofNullable(filedKeyUpdate10);
+		this.filedKeyUpdate11 = Optional.ofNullable(filedKeyUpdate11);
+		this.filedKeyUpdate12 = Optional.ofNullable(filedKeyUpdate12);
+		this.filedKeyUpdate13 = Optional.ofNullable(filedKeyUpdate13);
+		this.filedKeyUpdate14 = Optional.ofNullable(filedKeyUpdate14);
+		this.filedKeyUpdate15 = Optional.ofNullable(filedKeyUpdate15);
+		this.filedKeyUpdate16 = Optional.ofNullable(filedKeyUpdate16);
+		this.filedKeyUpdate17 = Optional.ofNullable(filedKeyUpdate17);
+		this.filedKeyUpdate18 = Optional.ofNullable(filedKeyUpdate18);
+		this.filedKeyUpdate19 = Optional.ofNullable(filedKeyUpdate19);
+		this.filedKeyUpdate20 = Optional.ofNullable(filedKeyUpdate20);
+		this.screenRetentionPeriod = Optional.ofNullable(screenRetentionPeriod);
+		this.supplementaryExplanation = Optional.ofNullable(supplementaryExplanation);
+		this.parentTblJpName = Optional.ofNullable(parentTblJpName);
+		this.hasParentTblFlg =hasParentTblFlg;
+		this.parentTblName = Optional.ofNullable(parentTblName);
+		this.fieldParent1 = Optional.ofNullable(fieldParent1);
+		this.fieldParent2 = Optional.ofNullable(fieldParent2);
+		this.fieldParent3 = Optional.ofNullable(fieldParent3);
+		this.fieldParent4 = Optional.ofNullable(fieldParent4);
+		this.fieldParent5 = Optional.ofNullable(fieldParent5);
+		this.fieldParent6 = Optional.ofNullable(fieldParent6);
+		this.fieldParent7 = Optional.ofNullable(fieldParent7);
+		this.fieldParent8 = Optional.ofNullable(fieldParent8);
+		this.fieldParent9 = Optional.ofNullable(fieldParent9);
+		this.fieldParent10 = Optional.ofNullable(fieldParent10);
+		this.surveyPreservation = surveyPreservation;
+	}
 
+	public TableList(String categoryId, String categoryName, String saveSetCode, String saveSetName,
+			String saveDateFrom, String saveDateTo, int storageRangeSaved,
+			int retentionPeriodCls, int anotherComCls, String compressedFileName,
+			int canNotBeOld, String supplementaryExplanation) {
+		super();
+		this.categoryId = categoryId;
+		this.categoryName = categoryName;
+		this.saveSetCode = Optional.ofNullable(saveSetCode);
+		this.saveSetName = saveSetName;
+		this.saveDateFrom = Optional.ofNullable(saveDateFrom);
+		this.saveDateTo = Optional.ofNullable(saveDateTo);
+		this.storageRangeSaved = EnumAdaptor.valueOf(storageRangeSaved, StorageRangeSaved.class);
+		this.retentionPeriodCls = EnumAdaptor.valueOf(retentionPeriodCls, TimeStore.class);
+		this.anotherComCls = EnumAdaptor.valueOf(anotherComCls, RecoverFormCompanyOther.class);;
+		this.compressedFileName = compressedFileName;
+		this.canNotBeOld = Optional.ofNullable(canNotBeOld);
+		this.supplementaryExplanation = Optional.ofNullable(supplementaryExplanation);
+	}
 	
 
 	

@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
@@ -27,19 +29,35 @@ public class PerformDataRecoveryCommandHandler extends CommandHandler<PerformDat
 	private PerformDataRecoveryRepository repoPerformDataRecovery;
 	@Inject
 	private DataRecoveryResultRepository repoDataRecoveryResult;
-	
 	@Inject
 	private RecoveryStorageService recoveryStorageService;
-	
+	@Inject
+	private DataRecoveryMngRepository repoDataRecoveryMng;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PerformDataRecoveryCommandHandler.class);
 
 	public void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
 		PerformDataRecoveryCommand performDataCommand = context.getCommand();
-		// ドメインモデル「データ復旧動作管理」の動作状態を「準備中」で登録する
-		// repoPerformDataRecovery.add(domain);
-
-		// データ復旧の結果
 		String dataRecoveryProcessId = context.getCommand().dataRecoveryProcessId;
+
+		String recoveryDate = null;
+		Integer categoryCnt = 0;
+		Integer errorCount = 0;
+		Integer categoryTotalCount = null;
+		String processTargetEmpCode = null;
+		Integer suspendedState = 0;
+		Integer numOfProcesses = null;
+		Integer totalNumOfProcesses = null;
+		Integer operatingCondition = 4;
+		// ドメインモデル「データ復旧動作管理」の動作状態を「準備中」で登録する
+		DataRecoveryMng dataRecoveryMng = new DataRecoveryMng(dataRecoveryProcessId, errorCount, categoryCnt,
+				categoryTotalCount, totalNumOfProcesses, numOfProcesses, processTargetEmpCode, suspendedState,
+				operatingCondition, recoveryDate);
+		repoDataRecoveryMng.add(dataRecoveryMng);
+
+		// ドメインモデル「データ復旧動作管理」の動作状態を「準備中」で登録する
+		// データ復旧の結果
+
 		String cid = context.getCommand().cid;
 		String saveSetCode = null;
 		String practitioner = null;
@@ -51,16 +69,12 @@ public class PerformDataRecoveryCommandHandler extends CommandHandler<PerformDat
 		DataRecoveryResult dataRecoveryResult = new DataRecoveryResult(dataRecoveryProcessId, cid, saveSetCode,
 				practitioner, executionResult, startDateTime, endDateTime, saveForm, saveName);
 		repoDataRecoveryResult.add(dataRecoveryResult);
+		
 		// 復旧条件の調整, update recoveryMethod
 		repoPerformDataRecovery.updatePerformDataRecoveryById(context.getCommand().dataRecoveryProcessId);
-		// 復旧対象カテゴリ選別
 
-		// 「復旧方法」の判別
 
-		// 復旧条件の調整
-		// 「選択範囲で復旧」の場合
-		
-		
+
 		// サーバー復旧処理
 		try {
 			recoveryStorageService.recoveryStorage(dataRecoveryProcessId);
@@ -72,7 +86,7 @@ public class PerformDataRecoveryCommandHandler extends CommandHandler<PerformDat
 				.getPerformDatRecoverById(context.getCommand().dataRecoveryProcessId);
 		if (otpPerformDataRecovery.isPresent()) {
 			if (otpPerformDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE) {
-				//復旧期間の調整	
+				// 復旧期間の調整
 			}
 		}
 

@@ -5,8 +5,7 @@ module nts.uk.com.view.cmf004.b.service {
         findPerformDataRecover: "ctx/sys/assist/datarestoration/findPerformDataRecover/{0}",
         findTableList: "ctx/sys/assist/datarestoration/findTableList/{0}",
         findDataRecoverySelection: "ctx/sys/assist/datarestoration/findDataRecoverySelection",
-        obtainRecovery: "ctx/sys/assist/datarestoration/obtainRecovery",
-        performDataRecover : "ctx/sys/assist/datarestoration/performDataRecover"
+        obtainRecovery: "ctx/sys/assist/datarestoration/obtainRecovery",       
     }
     /**
      * get SSPMT_PERFORM_DAT_RECOVER
@@ -36,10 +35,5 @@ module nts.uk.com.view.cmf004.b.service {
     export function obtainRecovery(paramObtainRecovery): JQueryPromise<any> {
         return nts.uk.request.ajax('com', paths.obtainRecovery, paramObtainRecovery);
     };
-    /**
-      * send for screen I
-     */
-    export function performDataRecover(paramRestore): JQueryPromise<any> {
-        return nts.uk.request.ajax('com', paths.obtainRecovery, paramRestore);
-    };
+    
 }
