@@ -1,8 +1,9 @@
-module nts.uk.at.view.kfp001.h {  
+module nts.uk.com.view.kfp001.h {
     __viewContext.ready(function() {
-        let screenModel = new viewmodel.ScreenModel();
-            __viewContext.bind(screenModel);
-
-            screenModel.start();
+            var screenModel = new viewmodel.ScreenModel();
+            screenModel.startPage().done(function() {
+                __viewContext.bind(screenModel);
+                screenModel.bindLinkClick();
+            });
     });
 }
