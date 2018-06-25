@@ -591,10 +591,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 _.each(listFormatDaily, (item) => {
                     let formatDailyItem = _.find(self.listAttendanceItemId(), { 'itemId': item.attendanceItemId });
                     formatDailyItem['columnWidth'] = (!_.isNil(item) && !!item.columnWidth) ? item.columnWidth : 100;
+                    formatDailyItem['order'] = item.order
                 });
-                
+                let arr: any[] = _.orderBy(self.listAttendanceItemId(), ['order'], ['asc']);
+                self.listAttendanceItemId(arr);
                 self.isVisibleMIGrid(data.monthResult.hasItem);
                 self.monthYear(nts.uk.time.formatYearMonth(data.monthResult.month));
+                // reload MiGrid
+                // delete localStorage miGrid
+                localStorage.removeItem(window.location.href + '/miGrid');
+                self.getNameMonthly();
             }
             
             if (data.monthResult != null &&  data.monthResult.flexShortage != null && data.monthResult.flexShortage.showFlex && self.displayFormat() == 0) {
@@ -1200,6 +1206,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             self.showTextStyle = false;
             self.clickFromExtract = true;
+            //reload MiGrid
+            $('#miGrid').igGrid("destroy");
             self.reloadScreen();
         }
 
@@ -1541,7 +1549,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             };
             let jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
             let jsonColumnWidthMiGrid = localStorage.getItem(window.location.href + '/miGrid');
-            let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid);
+            let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
             let valueTemp = 0;
             _.forEach($.parseJSON(jsonColumnWith), (value, key) => {
                 if (key.indexOf('A') != -1) {
@@ -2063,23 +2071,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 totalWidthColumn : number = 75,
                 maxWidth: number = window.screen.availWidth - 200;
 
-            _.each(data, (dt) => {
-                let attendanceItemId: any = _.find(self.listAttendanceItemId(), { 'itemId': dt.attendanceItemId });
+            _.forEach(self.listAttendanceItemId(), (id) => {
+                let attendanceItemId: any = _.find(data, { 'attendanceItemId': id.itemId }),
+                    cDisplayType = self.convertToCDisplayType(id.valueType);
                 columnsMIGrid.push(
                     {
-                        headerText: dt.attendanceItemName, key: dt.attendanceItemId.toString(), width: attendanceItemId.columnWidth + 'px',
+                        headerText: attendanceItemId.attendanceItemName, key: '_' +attendanceItemId.attendanceItemId, width: id.columnWidth + 'px',
                         constraint: {
-                            cDisplayType: self.convertToCDisplayType(attendanceItemId.valueType),
-                            required: true
+                            cDisplayType: cDisplayType,
+                            required: false
                         }
                     }
                 );
-                dataSourceMIGrid[0][dt.attendanceItemId.toString()] = attendanceItemId != null ? attendanceItemId.value : '';
-                totalWidthColumn += attendanceItemId.columnWidth;
+                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] =  cDisplayType == 'Clock' ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
+                totalWidthColumn += id.columnWidth;
             });
             
             $("#miGrid").ntsGrid({
-                width: (totalWidthColumn >= maxWidth) ? maxWidth + 'px' : totalWidthColumn+ 'px',
+                width: (totalWidthColumn >= maxWidth) ? maxWidth + 'px' : totalWidthColumn + 'px',
                 dataSource: dataSourceMIGrid,
                 primaryKey: 'monthYear',
                 autoFitWindow: false,
