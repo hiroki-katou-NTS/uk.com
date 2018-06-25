@@ -44,8 +44,7 @@ public class BsymtAffCompanyHist extends UkJpaEntity implements Serializable {
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate endDate;
 
-	@OneToOne(fetch = FetchType.LAZY, targetEntity = BsymtAffCompanyInfo.class, optional = false, cascade = CascadeType.REMOVE)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "bpsdtAffCompanyHist", cascade = CascadeType.REMOVE)
 	public BsymtAffCompanyInfo bsymtAffCompanyInfo;
 
 	@Override

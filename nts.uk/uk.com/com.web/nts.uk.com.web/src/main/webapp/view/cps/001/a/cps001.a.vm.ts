@@ -25,38 +25,38 @@ module cps001.a.vm {
     export class ViewModel {
         ccgcomponent: any = {
             /** Common properties */
-            systemType: 1, // システム区分
-            showEmployeeSelection: true, // 検索タイプ
-            showQuickSearchTab: true, // クイック検索
+            systemType: 1, // シスッ�区�
+            showEmployeeSelection: true, // 検索タイ�
+            showQuickSearchTab: true, // クイヂ�検索
             showAdvancedSearchTab: true, // 詳細検索
             showBaseDate: false, // 基準日利用
-            showClosure: false, // 就業締め日利用
-            showAllClosure: true, // 全締め表示
+            showClosure: false, // 就業�め日利用
+            showAllClosure: true, // 全�め表示
             showPeriod: false, // 対象期間利用
             periodFormatYM: true, // 対象期間精度
 
             /** Required parame*/
             baseDate: moment.utc().toISOString(), // 基準日
             periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
-            periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
-            inService: true, // 在職区分
-            leaveOfAbsence: true, // 休職区分
-            closed: true, // 休業区分
-            retirement: false, // 退職区分
+            periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終亗�
+            inService: true, // 在職区�
+            leaveOfAbsence: true, // 休�区�
+            closed: true, // 休業区�
+            retirement: false, // 退職区�
 
             /** Quick search tab options */
-            showAllReferableEmployee: true, // 参照可能な社員すべて
-            showOnlyMe: true, // 自分だけ
+            showAllReferableEmployee: true, // 参�可能な社員すべて
+            showOnlyMe: true, // 自刁��
             showSameWorkplace: true, // 同じ職場の社員
-            showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+            showSameWorkplaceAndChild: true, // 同じ職場とそ�配下�社員
 
             /** Advanced search properties */
-            showEmployment: true, // 雇用条件
+            showEmployment: true, // 雔�条件
             showWorkplace: true, // 職場条件
-            showClassification: true, // 分類条件
+            showClassification: true, // 刡�条件
             showJobTitle: true, // 職位条件
             showWorktype: false, // 勤種条件
-            isMutipleCheck: true, // 選択モード
+            isMutipleCheck: true, // 選択モー�
 
             /** Return data */
             returnDataFromCcg001: (data: any) => {
@@ -212,21 +212,9 @@ module cps001.a.vm {
                 }).fail((mes : any) => {
                     self.unblock();
                     if (mes.messageId == "Msg_346") {
-                        let lstCardNumber = _.map($('[id = COM1000000000000000CS00069IS00779]'), e => e.value);
-                        let listIndex = new Array();
-                        for (let i = 0; i < lstCardNumber.length; i++) {
-
-                            let duplicate = _.filter(listIndex, function(o) { return o == i; });
-
-                            if (duplicate.length == 0) {
-                                for (let j = i + 1; j < lstCardNumber.length - 1; j++) {
-                                    if (lstCardNumber[i] == lstCardNumber[j]) {
-                                        listIndex.push(j);
-                                        $($('[id = COM1000000000000000CS00069IS00779]')[j]).ntsError('set', { messageId: "Msg_346" });
-                                    }
-                                }
-                            }
-                        }
+                        let lstCardNumber = _.map($('[data-code = IS00779]'), e => e.value);
+                        let index = _.findLastIndex(lstCardNumber, function(o) { return o == mes.parameterIds[0]; });
+                        $($('[data-code = IS00779]')[index]).ntsError('set', { messageId: "Msg_346" });
                     } else {
                         alert(mes.message);
                     }
@@ -318,7 +306,6 @@ module cps001.a.vm {
                         _.defer(() => {
                             new vc(self.layout.listItemCls());
                             _.defer(() => {
-                                $('.drag-panel input:not(:disabled):first').focus();
                                 self.unblock();
                             });
                         });
@@ -371,7 +358,6 @@ module cps001.a.vm {
                             _.defer(() => {
                                 new vc(self.listItemCls());
                                 _.defer(() => {
-                                    $('.drag-panel input:not(:disabled):first').focus();
                                     __viewContext.viewModel.unblock();
                                 });
                             });
@@ -414,12 +400,12 @@ module cps001.a.vm {
         categoryType?: IT_CAT_TYPE;
     }
 
-    enum TABS {
+    export enum TABS {
         LAYOUT = <any>"layout",
         CATEGORY = <any>"category"
     }
 
-    interface IPeregQuery {
+    export interface IPeregQuery {
         ctgId: string;
         ctgCd?: string;
         empId: string;
@@ -427,19 +413,19 @@ module cps001.a.vm {
         infoId?: string;
     }
 
-    interface ILayoutQuery {
+    export interface ILayoutQuery {
         layoutId: string;
         browsingEmpId: string;
         standardDate: Date;
     }
 
-    interface IPeregCommand {
+    export interface IPeregCommand {
         personId: string;
         employeeId: string;
         inputs: Array<IPeregItemCommand>;
     }
 
-    interface IPeregItemCommand {
+    export interface IPeregItemCommand {
         /** category code */
         categoryCd: string;
         /** Record Id, but this is null when new record */
@@ -448,19 +434,19 @@ module cps001.a.vm {
         items: Array<IPeregItemValueCommand>;
     }
 
-    interface IPeregItemValueCommand {
+    export interface IPeregItemValueCommand {
         definitionId: string;
         itemCode: string;
         value: string;
         'type': number;
     }
 
-    interface IParam {
+    export interface IParam {
         showAll?: boolean;
         employeeId: string;
     }
 
-    interface IEventData {
+    export interface IEventData {
         id: string;
         iid?: string;
         tab: TABS;
@@ -470,7 +456,7 @@ module cps001.a.vm {
     }
 
     // define ITEM_CATEGORY_TYPE
-    enum IT_CAT_TYPE {
+    export enum IT_CAT_TYPE {
         SINGLE = 1, // Single info
         MULTI = 2, // Multi info
         CONTINU = 3, // Continuos history
@@ -479,7 +465,7 @@ module cps001.a.vm {
         CONTINUWED = 6 // Continuos history with end date
     }
 
-    enum ITEM_SINGLE_TYPE {
+    export enum ITEM_SINGLE_TYPE {
         STRING = 1,
         NUMERIC = 2,
         DATE = 3,

@@ -35,9 +35,14 @@ public class TemporaryTimeOfDailyPerformanceFinder extends FinderFacade {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param) {
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		return (List<T>) this.repo.finds(param).stream()
 			.map(c -> TemporaryTimeOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.findByKey(employeeId, baseDate);
 	}
 
 }

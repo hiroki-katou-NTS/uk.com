@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHol
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -339,6 +337,7 @@ public class ErAlWorkRecordCheckService {
 			if (item.isEmpty()) {
 				return item;
 			}
+			/** TODO: case double value */
 			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 		});
@@ -348,7 +347,7 @@ public class ErAlWorkRecordCheckService {
 		if (value.value() == null) {
 			return 0;
 		}
-		return value.getValueType() == ValueType.DECIMAL ? ((BigDecimal) value.value()).intValue()
+		return value.getValueType().isDouble() ? ((Double) value.value()).intValue()
 				: (Integer) value.value();
 	}
 

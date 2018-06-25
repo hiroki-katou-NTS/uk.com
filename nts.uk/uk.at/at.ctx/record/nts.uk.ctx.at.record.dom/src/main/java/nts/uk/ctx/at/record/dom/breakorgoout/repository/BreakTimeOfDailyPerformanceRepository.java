@@ -18,7 +18,7 @@ public interface BreakTimeOfDailyPerformanceRepository {
 	
 	List<BreakTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 	
-	List<BreakTimeOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	List<BreakTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 
 	void insert(BreakTimeOfDailyPerformance breakTimes);
 	

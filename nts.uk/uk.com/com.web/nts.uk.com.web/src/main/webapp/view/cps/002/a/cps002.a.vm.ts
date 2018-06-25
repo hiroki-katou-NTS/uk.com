@@ -235,8 +235,8 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
                 let self = this,
                     employee = self.currentEmployee();
-
                 employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
+
             });
 
             self.currentEmployee().cardNo.subscribe((cardNo) => {
@@ -292,16 +292,24 @@ module cps002.a.vm {
             let self = this;
             self.currentEmployee().clearData();
 
+            let dfd = $.Deferred();
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing(data);
                 self.subContraint(false);
                 __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
                 self.subContraint(true);
+                nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
+                    self.employeeBasicInfo(data);
+                });
+                self.getLayout();
+                dfd.resolve(data);
             });
 
-            nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
-                self.employeeBasicInfo(data);
-            });
+            return dfd.promise();
+        }
+
+        getLayout() {
+            let self = this;
             service.getLayout().done((layout) => {
                 if (layout) {
                     service.getUserSetting().done(userSetting => {
@@ -322,7 +330,6 @@ module cps002.a.vm {
                     });
                 }
             });
-
         }
 
         getLastRegHistory(userSetting: IUserSetting) {
@@ -446,12 +453,10 @@ module cps002.a.vm {
 
                 layout.listItemCls(data.itemsClassification || []);
                 if (layout.listItemCls().length > 0) {
-                    _.defer(() => {
-                        new vc(layout.listItemCls());
-                        _.defer(() => {
-                            $('.drag-panel input:not(:disabled):first').focus();
-                        });
-                    });
+                    new vc(layout.listItemCls());
+                    setTimeout(() => {
+                        $('.drag-panel input:not(:disabled):first').focus();
+                    }, 100);
                 }
 
             });
@@ -464,7 +469,6 @@ module cps002.a.vm {
                 }
 
             });
-
 
         }
 
@@ -483,8 +487,6 @@ module cps002.a.vm {
             }
 
             self.gotoStep2();
-
-
         }
 
         isUseInitValue() {

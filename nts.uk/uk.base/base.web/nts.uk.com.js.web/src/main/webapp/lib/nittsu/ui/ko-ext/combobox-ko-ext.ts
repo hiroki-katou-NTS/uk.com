@@ -2,8 +2,10 @@
 
 module nts.uk.ui.koExtentions {
 
-    const WoC = 14,
-        MINWIDTH = 'initial',
+    import count = nts.uk.text.countHalf;
+
+    const WoC = 9,
+        MINWIDTH = 'auto',
         TAB_INDEX = 'tabindex',
         KEYPRESS = 'keypress',
         KEYDOWN = 'keydown',
@@ -103,7 +105,7 @@ module nts.uk.ui.koExtentions {
 
                         _.each(ks, k => {
                             $show.find(`.${k.toLowerCase()}:not(:last-child)`)
-                                .css('min-width', `${cws[k] * WoC}px`);
+                                .css('width', `${cws[k] * WoC}px`);
 
                             $show.find(`.${k.toLowerCase()}`)
                                 .css('height', '31px')
@@ -127,7 +129,7 @@ module nts.uk.ui.koExtentions {
                     let data = $element.data(DATA),
                         value = data[VALUE];
 
-                    if (data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNull(value) || _.isUndefined(value))) {
+                    if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
                         $element
                             .addClass('error')
                             .ntsError("set", resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
@@ -193,7 +195,7 @@ module nts.uk.ui.koExtentions {
                         _.each(ks, k => {
                             $("[class*=ui-igcombo-orientation]")
                                 .find(`.${k.toLowerCase()}:not(:last-child)`)
-                                .css('min-width', `${cws[k] * WoC}px`);
+                                .css('width', `${cws[k] * WoC}px`);
                         });
                     },
                     selectionChanged: (evt, ui) => {
@@ -206,15 +208,25 @@ module nts.uk.ui.koExtentions {
                         }
                     },
                     dropDownClosed: (evt, ui) => {
+                        // check flag changed for validate
+                        $element.trigger(CHANGED, [CHANGED, true]);
+
                         setTimeout(() => {
                             let data = $element.data(DATA);
+
+                            // select first if !select and !editable
+                            if (!data[EDITABLE] && !data[VALUE]) {
+                                $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
+                                //reload data
+                                data = $element.data(DATA);
+                            }
 
                             // set value on select
                             accessor.value(data[VALUE]);
 
                             // validate if required
                             $element
-                                .trigger(VALIDATE)
+                                .trigger(VALIDATE, [true])
                                 .trigger(SHOWVALUE)
                                 .focus();
                         }, 10);
@@ -237,6 +249,7 @@ module nts.uk.ui.koExtentions {
                             .css('background-color', !!data[EDITABLE] ? '#f6f6f6' : '')
                             .show()
                             .find('input')
+                            .css('width', '0px')
                             .css('height', !!data[EDITABLE] ? '29px' : '0px')
                             .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
 
@@ -258,8 +271,8 @@ module nts.uk.ui.koExtentions {
 
                         // calc new size of template columns
                         _.each(ks, k => {
-                            $(ui.list).find(`.${k.toLowerCase()}:not(:last-child)`)
-                                .css('min-width', `${cws[k] * WoC}px`);
+                            $(ui.list).find(`.${k.toLowerCase()}${_.size(ks) == 1 ? '' : ':not(:last-child)'}`)
+                                .css('width', `${cws[k] * WoC}px`);
                         });
 
                         // fix min width of dropdown = $element.width();
@@ -267,6 +280,10 @@ module nts.uk.ui.koExtentions {
                             .css('min-width', $element.width() + 'px')
                             .find('.nts-column:last-child')
                             .css('margin-right', 0);
+
+                        setTimeout(() => {
+                            $input.css('width', ($(ui.list).width() - 6) + 'px')
+                        }, 25);
                     }
                 })
                 .trigger(CHANGED, [DATA, options])
@@ -283,7 +300,7 @@ module nts.uk.ui.koExtentions {
             let ss = new Date().getTime(),
                 $element = $(element),
                 accessor = valueAccessor(),
-                width = _.has(accessor, 'width') ? ko.unwrap(accessor.width) : MINWIDTH,
+                width = _.has(accessor, 'width') ? ko.unwrap(accessor.width) : undefined,
                 name: string = ko.unwrap(accessor.name),
                 value: any = ko.unwrap(accessor.value),
                 // dataSource of igCombo
@@ -317,7 +334,7 @@ module nts.uk.ui.koExtentions {
                                 .keys(m)
                                 .map(t => ({
                                     k: t,
-                                    w: _.max([_.trim(m[t]).length, (_.find(columns, c => c.prop == t) || {}).length || 0])
+                                    w: _.max([count(_.trim(m[t])), (_.find(columns, c => c.prop == t) || {}).length || 0])
                                 }))
                                 .filter(m => props.indexOf(m.k) > -1)
                                 .keyBy('k')
@@ -345,7 +362,7 @@ module nts.uk.ui.koExtentions {
                         n = _.omit(k, [optionsValue]),
                         nt = _.map(props, p => k[p]).join(' ').trim();
 
-                    c[optionsValue] = v || ' ';
+                    c[optionsValue] = !_.isNil(v) ? v : '';
                     c['nts_' + optionsText] = nt || t || ' ';
 
                     return _.extend(n, c);
@@ -367,6 +384,12 @@ module nts.uk.ui.koExtentions {
                 } else {
                     value = undefined;
                 }
+                accessor.value(value);
+            }
+
+            // check flag changed for validate
+            if (_.has($element.data(DATA), VALUE)) {
+                $element.trigger(CHANGED, [CHANGED, true]);
             }
 
             // save change value
@@ -394,9 +417,9 @@ module nts.uk.ui.koExtentions {
                     // set new value
                     .igCombo("value", value);
 
+                // validate if has dataOptions
                 $element
-                    // validate again
-                    .trigger('validate');
+                    .trigger(VALIDATE, [true]);
 
                 if (!value) {
                     $element
@@ -404,11 +427,13 @@ module nts.uk.ui.koExtentions {
                 }
 
                 // set width of container
-                if (width != MINWIDTH && width != 'auto') {
-                    $element.igCombo("option", "width", width);
-                } else if (width == 'auto') { // auto width
-                    $element
-                        .igCombo("option", "width", (_.sum(_.map(cws, c => c)) * WoC + 20) + 'px');
+                if (width) {
+                    if (width != MINWIDTH) {
+                        $element.igCombo("option", "width", width);
+                    } else { // auto width
+                        $element
+                            .igCombo("option", "width", (_.sum(_.map(cws, c => c)) * WoC + 60) + 'px');
+                    }
                 }
             }
 

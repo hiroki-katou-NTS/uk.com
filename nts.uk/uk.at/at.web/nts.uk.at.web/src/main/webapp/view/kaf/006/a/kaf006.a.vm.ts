@@ -3,11 +3,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
     import service = nts.uk.at.view.kaf006.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         DATE_FORMAT: string = "YYYY/MM/DD";
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
-        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(true);
+        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
         mailFlag: KnockoutObservable<boolean> = ko.observable(true);
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         displayEndDateFlg: KnockoutObservable<boolean> = ko.observable(false);
@@ -62,7 +64,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: KnockoutObservable<string> = ko.observable('');
         //menu-bar 
-        enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti: KnockoutObservable<boolean> = ko.observable(true);
@@ -368,7 +369,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         initData(data: any) {
             let self = this;
-            self.manualSendMailAtr(data.manualSendMailFlg);
+            self.checkBoxValue(data.manualSendMailFlg);
+            self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.employeeName(data.employeeName);
             self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);
@@ -441,8 +443,16 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 displayEndDateFlg: self.displayEndDateFlg()
             };
             service.createAbsence(paramInsert).done((data) => {
-                dialog.info({ messageId: "Msg_15" }).then(function() {
-                    location.reload();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    if(data.autoSendMail){
+                        appcommon.CommonProcess.displayMailResult(data);   
+                    } else {
+                        if(self.checkBoxValue()){
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);   
+                        } else {
+                            location.reload();
+                        }   
+                    }
                 });
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })

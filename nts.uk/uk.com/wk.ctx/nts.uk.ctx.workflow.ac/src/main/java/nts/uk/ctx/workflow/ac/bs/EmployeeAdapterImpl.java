@@ -58,10 +58,12 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 		//
 		DatePeriod period = new DatePeriod(baseDate,baseDate);
 		List<String> lstEmpId = new ArrayList<>();
-		for (String wkpId : workplaceIds) {
-			List<String> empId = roleSetPub.findEmpGrantedInWorkplace(wkpId, period);
-			lstEmpId.addAll(empId);
-		}
+		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, period);
+		lstEmpId.addAll(empId);
+//		for (String wkpId : workplaceIds) {
+//			List<String> empId = roleSetPub.findEmpGrantedInWorkplace(wkpId, period);
+//			lstEmpId.addAll(empId);
+//		}
 		List<EmployeeImport> lstEmpDto = lstEmpId.stream().map(x -> {
 			PersonImport perInfo = psInfor.getPersonInfo(x);
 			return new EmployeeImport(companyId,

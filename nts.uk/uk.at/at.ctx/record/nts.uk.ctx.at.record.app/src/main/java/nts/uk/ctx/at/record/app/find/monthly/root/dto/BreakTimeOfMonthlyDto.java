@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,29 +14,29 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の休憩時間 */
-public class BreakTimeOfMonthlyDto {
+public class BreakTimeOfMonthlyDto implements ItemConst {
 
 	/** 休憩時間: 勤怠月間時間 */
-	@AttendanceItemLayout(jpPropertyName = "休憩時間", layout = "A")
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer breakTime;
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int breakTime;
 
 	/** 所定内休憩時間: 勤怠月間時間 */
-	@AttendanceItemLayout(jpPropertyName = "所定内休憩時間", layout = "B")
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer withinBreakTime;
+	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_B)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int withinBreakTime;
 
 	/** 所定外休憩時間: 勤怠月間時間 */
-	@AttendanceItemLayout(jpPropertyName = "所定外休憩時間", layout = "C")
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer excessBreakTime;
+	@AttendanceItemLayout(jpPropertyName = EXCESS_STATUTORY, layout = LAYOUT_C)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int excessBreakTime;
 
 	public static BreakTimeOfMonthlyDto from(BreakTimeOfMonthly domain) {
 		return domain == null ? null : 
-					new BreakTimeOfMonthlyDto(domain.getBreakTime() == null ? null : domain.getBreakTime().valueAsMinutes(), null, null);
+					new BreakTimeOfMonthlyDto(domain.getBreakTime() == null ? 0 : domain.getBreakTime().valueAsMinutes(), 0, 0);
 	}
 	
 	public BreakTimeOfMonthly toDomain() {
-		return BreakTimeOfMonthly.of(breakTime == null ? null : new AttendanceTimeMonth(breakTime));
+		return BreakTimeOfMonthly.of(new AttendanceTimeMonth(breakTime));
 	}
 }

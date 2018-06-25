@@ -101,8 +101,10 @@ public class WorkDeformedLaborAdditionSet extends AggregateRoot{
 																	= new EmploymentCalcDetailedSetIncludeVacationAmount(additionTime2, null, 
 																														null, 
 																														null);
+		
+		DeductLeaveEarly deductLeaveEarly2 = new DeductLeaveEarly(notDeductLateleave2, enableSetPerWorkHour1);
 		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = new WorkTimeCalcMethodDetailOfHoliday(includeVacationSet, incChildNursingCare2, 
-																									notDeductLateleave2, 
+																									deductLeaveEarly2, 
 																									exemptTaxTime2, minusAbsenceTime2);
 		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = new WorkTimeHolidayCalcMethod(calcActualOperation2, advanceSetWork);
 		
