@@ -40,6 +40,8 @@ module nts.uk.com.view.cmf003.f {
             // check file has been downloaded already
             isDownloaded: KnockoutObservable<boolean>;
             
+            errorText: string = nts.uk.text.format(nts.uk.resource.getText("CMF003_190"), 0);
+            
             constructor() {
                 let self = this;
                 let params =  nts.uk.ui.windows.getShared("CMF001_E_PARAMS");
