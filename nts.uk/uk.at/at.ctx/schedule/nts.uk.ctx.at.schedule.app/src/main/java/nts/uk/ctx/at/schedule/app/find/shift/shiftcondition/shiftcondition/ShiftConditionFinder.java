@@ -33,7 +33,7 @@ public class ShiftConditionFinder {
 	public ItemConditionNames checkExistedItems(List<String> items) {
 		String companyId = AppContexts.user().companyId();
 
-		 List<Integer> itemNos = items.stream().map(item -> Integer.parseInt(item.substring(0,1))).collect(Collectors.toList());
+		 List<Integer> itemNos = items.stream().map(item -> Integer.parseInt(item.replace("c", ""))).collect(Collectors.toList());
 		 Map<Integer, String> result = repo.getListShiftCondition(companyId).stream().collect(
 				 Collectors.toMap(ShiftCondition::getConditionNo, x->x.getConditionName().v()));
 		 StringBuilder nameList = new StringBuilder();
