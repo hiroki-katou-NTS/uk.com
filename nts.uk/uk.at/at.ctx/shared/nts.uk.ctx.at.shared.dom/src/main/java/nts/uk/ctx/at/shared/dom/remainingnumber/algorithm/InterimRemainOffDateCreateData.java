@@ -6,7 +6,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.TranferTimeInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 
 public interface InterimRemainOffDateCreateData {
 	/**
@@ -68,22 +67,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData);
-	/**
-	 * 残数作成元情報から暫定振休管理データを作成する
-	 * @param inforData
-	 * @return
-	 */
-	DailyInterimRemainMngData createInterimAbsData(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
-			DailyInterimRemainMngData mngData);
-	/**
-	 * 残数作成元情報から暫定代休管理データを作成する
-	 * @param inforData
-	 * @param workTypeClass
-	 * @param mngData
-	 * @return
-	 */
-	DailyInterimRemainMngData createInterimDayOffData(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
-			DailyInterimRemainMngData mngData);
+
 	/**
 	 * 予定から残数作成元情報を設定する
 	 * @param scheData
@@ -137,22 +121,5 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	DayoffTranferInfor transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
 			InterimRemainCreateInfor createInfo, WorkTypeRemainInfor remainInfor, CreateAtr createAtr);
-	/**
-	 * 残数作成元情報から暫定年休管理データを作成する
-	 * @param inforData
-	 * @param workTypeClass
-	 * @param mngData
-	 * @return
-	 */
-	DailyInterimRemainMngData createInterimAnnualHoliday(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
-			DailyInterimRemainMngData mngData);
-	/**
-	 * 残数作成元情報から暫定積立年休管理データを作成する
-	 * @param inforData
-	 * @param workTypeClass
-	 * @param mngData
-	 * @return
-	 */
-	DailyInterimRemainMngData createInterimReserveHoliday(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
-			DailyInterimRemainMngData mngData);
+	
 }
