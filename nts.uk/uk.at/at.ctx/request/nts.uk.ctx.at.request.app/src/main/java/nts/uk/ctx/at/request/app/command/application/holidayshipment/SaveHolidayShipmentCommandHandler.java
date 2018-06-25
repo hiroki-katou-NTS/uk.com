@@ -120,7 +120,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 		SaveHolidayShipmentCommand command = context.getCommand();
 		String sID = command.getAppCmd().getEmployeeID() != null ? command.getAppCmd().getEmployeeID()
-				: AppContexts.user().employeeId();
+				: AppContexts.user().employeeId();// Sua ho
 		GeneralDate absDate = command.getAbsCmd().getAppDate();
 		GeneralDate recDate = command.getRecCmd().getAppDate();
 		int comType = command.getComType();

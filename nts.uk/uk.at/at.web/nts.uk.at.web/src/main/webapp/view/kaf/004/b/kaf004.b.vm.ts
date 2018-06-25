@@ -63,7 +63,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             });
             self.date.subscribe(value => {
                 nts.uk.ui.block.invisible();
-                self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false)
+                self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false,self.employeeID)
                 .done(()=>{
                     nts.uk.ui.block.clear();         
                 }).fail(()=>{

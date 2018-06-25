@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf002.b {
                     self.kaf000_a2.getAppDataDate(
                         applicationType, 
                         moment(new Date()).format("YYYY/MM/DD"),
-                        true)
+                        true,self.employeeID)
                     .done(()=>{
                         if(nts.uk.util.isNullOrEmpty(self.kaf000_a2.approvalRootState())){
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf002.b {
                 });
                 self.cm.application().appDate.subscribe(value => {
                     nts.uk.ui.block.invisible();
-                    self.kaf000_a2.getAppDataDate(7, value, false)
+                    self.kaf000_a2.getAppDataDate(7, value, false,self.employeeID)
                     .done(()=>{
                         nts.uk.ui.block.clear();         
                     }).fail(()=>{

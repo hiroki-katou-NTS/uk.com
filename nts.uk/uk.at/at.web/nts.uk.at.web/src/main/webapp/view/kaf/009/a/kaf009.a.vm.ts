@@ -124,7 +124,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         if (!$('#inputdate').ntsError('hasError')) {
                             if (!nts.uk.util.isNullOrEmpty(value)) {
                                 nts.uk.ui.block.invisible();
-                                self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false)
+                                self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false,self.employeeID)
                                     .done((changeDateData) => {
                                         self.defaultPrePost = changeDateData.defaultPrePostAtr;
                                         nts.uk.ui.block.clear();
