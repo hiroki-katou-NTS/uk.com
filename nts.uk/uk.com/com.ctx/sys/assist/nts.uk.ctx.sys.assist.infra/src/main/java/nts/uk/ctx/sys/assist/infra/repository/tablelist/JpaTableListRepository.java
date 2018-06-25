@@ -29,7 +29,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaTableListRepository extends JpaRepository implements TableListRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.dataStorageProcessingId =:storeProcessingId";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE t.tableListPk.dataStorageProcessingId =:storeProcessingId";
 	private static final String COMPANY_CD = "0";
 	private static final String EMPLOYEE_CD = "5";
 	private static final String YEAR = "6";
