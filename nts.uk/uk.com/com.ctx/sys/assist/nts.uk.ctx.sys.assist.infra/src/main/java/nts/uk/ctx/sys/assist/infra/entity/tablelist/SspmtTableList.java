@@ -40,13 +40,6 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	public String categoryName;
 
 	/**
-	 * データ保存処理ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "DATA_STORAGE_PROCESSING_ID")
-	public String dataStorageProcessingId;
-
-	/**
 	 * データ復旧処理ID
 	 */
 	@Basic(optional = true)
@@ -828,7 +821,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	}
 
 	public TableList toDomain() {
-		return new TableList(tableListPk.categoryId, categoryName, dataStorageProcessingId, dataRecoveryProcessId,
+		return new TableList(tableListPk.categoryId, categoryName, tableListPk.dataStorageProcessingId, dataRecoveryProcessId,
 				tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid, fieldAcqDateTime,
 				fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName,
 				saveForm, saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls, internalFileName,
@@ -850,8 +843,8 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	}
 
 	public static SspmtTableList toEntity(TableList domain) {
-		return new SspmtTableList(new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo()),
-				domain.getCategoryName(), domain.getDataStorageProcessingId(), domain.getDataRecoveryProcessId(),
+		return new SspmtTableList(new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId()),
+				domain.getCategoryName(), domain.getDataRecoveryProcessId(),
 				domain.getTableJapaneseName(), domain.getTableEnglishName(), domain.getFieldAcqCid(),
 				domain.getFieldAcqDateTime(), domain.getFieldAcqEmployeeId(), domain.getFieldAcqEndDate(),
 				domain.getFieldAcqStartDate(), domain.getSaveSetCode(), domain.getSaveSetName(),

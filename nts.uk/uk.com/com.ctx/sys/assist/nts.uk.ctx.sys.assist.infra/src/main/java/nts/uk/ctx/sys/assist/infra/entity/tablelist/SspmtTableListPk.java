@@ -34,4 +34,12 @@ public class SspmtTableListPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "TABLE_NO")
 	public int tableNo;
+	
+	/**
+	 * データ保存処理ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "DATA_STORAGE_PROCESSING_ID")
+	public String dataStorageProcessingId;
+	
 }
