@@ -107,6 +107,12 @@ module nts.uk.com.view.ccg.model {
                     this.url = this.origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
                 }else if(placementPartDto.topPageCode === "0003"){
                     this.url = this.origin + "/nts.uk.at.web/view/ktg/027/a/index.xhtml"; 
+                }else if(placementPartDto.topPageCode === "0004"){
+                    this.url = this.origin + "/nts.uk.at.web/view/ktg/030/a/index.xhtml"; 
+                }else if(placementPartDto.topPageCode === "0005"){
+                    this.url = this.origin + ""; 
+                }else if(placementPartDto.topPageCode === "0006"){
+                    this.url = this.origin + "/nts.uk.com.web/view/ktg/031/a/index.xhtml"; 
                 }
             }else if(this.type == ENUM_OPTIONAL_WIDGET) {
                 this.topPagePart = new OptionalWidget(placementPartDto);

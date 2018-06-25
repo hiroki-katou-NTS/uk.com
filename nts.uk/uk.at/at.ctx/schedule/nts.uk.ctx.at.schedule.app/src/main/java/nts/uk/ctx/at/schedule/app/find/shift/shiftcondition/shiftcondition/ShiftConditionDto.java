@@ -33,9 +33,19 @@ public class ShiftConditionDto {
 	 * 条件詳細NO
 	 */
 	private int conditionDetailsNo;
+	
+	
 
 	public static ShiftConditionDto fromDomain(ShiftCondition domain) {
 		return new ShiftConditionDto(domain.getCompanyId(), domain.getCategoryNo(), domain.getConditionNo(),
 				domain.getConditionErrorMessage().v(), domain.getConditionName().v(), domain.getConditionDetailsNo());
+	}
+
+
+
+	public ShiftConditionDto(int conditionNo, String conditionName) {
+		super();
+		this.conditionNo = conditionNo;
+		this.conditionName = conditionName;
 	}
 }

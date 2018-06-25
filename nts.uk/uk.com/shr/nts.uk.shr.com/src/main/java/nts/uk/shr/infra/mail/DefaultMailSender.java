@@ -1,6 +1,6 @@
 package nts.uk.shr.infra.mail;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -19,7 +19,7 @@ import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.mail.SendMailSettingAdaptor;
 import nts.uk.shr.com.mail.UkSendMailSetting;
 
-@Stateless
+@RequestScoped
 public class DefaultMailSender implements MailSender {
 
 	@Inject

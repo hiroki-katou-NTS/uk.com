@@ -1,8 +1,10 @@
 package nts.uk.ctx.sys.log.dom.logbasicinfo;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -13,5 +15,7 @@ import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 public interface LogBasicInfoRepository {
 
 	Optional<LogBasicInformation> getLogBasicInfo(String companyId, String operationId);
+	
+	List<LogBasicInformation> findByOperatorsAndDate(String companyId, List<String> listEmployeeId, DatePeriod period);
 	
 }

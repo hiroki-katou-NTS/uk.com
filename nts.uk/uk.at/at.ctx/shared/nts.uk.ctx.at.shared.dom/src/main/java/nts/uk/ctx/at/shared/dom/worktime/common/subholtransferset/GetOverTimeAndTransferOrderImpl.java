@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -37,11 +36,9 @@ public class GetOverTimeAndTransferOrderImpl implements GetOverTimeAndTransferOr
 	
 	/** 残業・振替の処理順序を取得する */
 	@Override
-	public List<OverTimeAndTransferAtr> get(String companyId, String workTimeCode, boolean reverse,
-			Map<String, WorkTimezoneCommonSet> workTimeCommonSetMap) {
+	public List<OverTimeAndTransferAtr> get(String companyId, WorkTimezoneCommonSet workTimeCommonSet, boolean reverse) {
 
-		return this.getCommon(companyId, reverse,
-				Optional.ofNullable(workTimeCommonSetMap.get(workTimeCode)));
+		return this.getCommon(companyId, reverse, Optional.ofNullable(workTimeCommonSet));
 	}
 	
 	/**

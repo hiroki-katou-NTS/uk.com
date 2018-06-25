@@ -22,7 +22,12 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	
 	private String GET_BY_CONTRACT_CODE = "SELECT a.cardNo FROM KwkdtStampCard a WHERE a.contractCd = :contractCd";
 
-	private String GET_BY_CARD_NO_AND_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.cardNo = :cardNo and a.contractCd = :contractCd";
+	private String GET_BY_CARD_NO_AND_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a"
+			+ " WHERE a.cardNo = :cardNo and a.contractCd = :contractCd";
+	
+	public final String GET_LAST_CARD_NO = "SELECT c.cardNo FROM KwkdtStampCard c"
+			+ " WHERE c.contractCd = :contractCode AND c.cardNo LIKE CONCAT(:cardNo, '%')"
+			+ " ORDER BY c.cardNo DESC";
 
 	@Override
 	public List<StampCard> getListStampCard(String sid) {
@@ -111,6 +116,19 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		entity.cardNo = data.getStampNumber().v();
 		entity.registerDate = data.getRegisterDate();
 		entity.contractCd = data.getContractCd().v();
+	}
+
+	@Override
+	public Optional<String> getLastCardNo(String contractCode, String startCardNoLetters, int length) {
+		List<String> cardNoList = this.queryProxy().query(GET_LAST_CARD_NO, String.class)
+				.setParameter("contractCode", contractCode)
+				.setParameter("cardNo", startCardNoLetters).getList()
+				.stream().filter(cardNo -> cardNo.length() == length)
+				.collect(Collectors.toList()); 
+		if (cardNoList.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(cardNoList.get(0));
 	}
 
 	

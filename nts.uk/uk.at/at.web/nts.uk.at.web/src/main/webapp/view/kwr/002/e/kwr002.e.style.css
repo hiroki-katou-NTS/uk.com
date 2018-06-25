@@ -1,0 +1,44 @@
+@CHARSET "ISO-8859-1";
+body {
+	display: flex;
+}
+.external {
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+textarea {
+    background-color: #dce4c4;
+}
+
+#multiline-textbox {
+	width: 1030px; 
+	height: 70px;
+	border-radius: 5px;
+}
+
+table#selected-list {
+	border: 1px solid #dddddd;
+	width: 440px;
+}
+table .ui-iggrid-layout-helper {
+	border: 1px solid #dddddd;
+}
+
+#selected-list tr, th, td {
+	border: 2px solid #dddddd;
+}
+
+#selected-list tbody, #selected-list thead {
+	display: block;
+}
+
+#selected-list tbody {
+	overflow-y: scroll;
+	height: 370px;
+}
+#func-notifier-errors {
+	top: 0px;
+    left: 10px;
+    position: fixed;
+}

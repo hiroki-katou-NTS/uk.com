@@ -237,15 +237,9 @@ module nts.uk.ui.koExtentions {
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
             $input.data("setValOnRequiredError", setValOnRequiredError);
-            var characterWidth: number = 9;
             
-            self.loadConstraints(constraintName, $input).done(() => {
-                let constraint = validation.getConstraint(constraintName);
-                if (constraint && constraint.maxLength && !$input.is("textarea")) {
-                    let autoWidth = constraint.maxLength * characterWidth;
-                    $input.width(autoWidth);
-                }
-            });
+            self.setWidthByConstraint(constraintName, $input);
+            
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
@@ -339,10 +333,14 @@ module nts.uk.ui.koExtentions {
         }
 
         update($input: JQuery, data: any) {
-            this.$input = $input;
+            let self = this;
+            self.$input = $input;
             super.update($input, data);
             var textmode: string = this.editorOption.textmode;
             $input.attr('type', textmode);
+            
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            self.setWidthByConstraint(constraintName, $input);
             
             // このif文は何のため？ ユーザが入力操作をしたときしかtrueにならないか？
             if (!$input.ntsError('hasError') && data.value() !== $input.val()) { 
@@ -390,49 +388,79 @@ module nts.uk.ui.koExtentions {
             return new validation.StringValidator(name, constraintName, { required: required });
         }
         
-        loadConstraints(name: string, $input: JQuery) {
+        setWidthByConstraint(constraintName: string, $input: JQuery){
             let self = this;
-            let dfd = $.Deferred();
-            if (name !== "EmployeeCode" || (__viewContext.primitiveValueConstraints 
-                && __viewContext.primitiveValueConstraints.EmployeeCode)) { 
+            var characterWidth: number = 9;
+            self.loadConstraints(constraintName, $input).done(() => {
+                let constraint = validation.getConstraint(constraintName);
+                if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                    let autoWidth = constraint.maxLength * characterWidth;
+                    $input.width(autoWidth);
+                }
+            });  
+        }
+        
+        loadConstraints(name: string, $input: JQuery) {
+            let self = this,
+                dfd = $.Deferred();
+
+            if (name !== "EmployeeCode") {
                 dfd.resolve();
                 return dfd.promise();
             }
-            
-            request.ajax("com", "/bs/employee/setting/code/find").done(res => {
-                if (!__viewContext.primitiveValueConstraints) {
-                    __viewContext.primitiveValueConstraints = {};
-                }
-                
-                let employeeCodeConstr = {
-                    valueType: "String",
-                    charType: "AlphaNumeric",
-                    maxLength: res.numberOfDigits
-                };
-                
-                __viewContext.primitiveValueConstraints.EmployeeCode = employeeCodeConstr;
-                let formatOption = { autofill: true };
-                
-                if (res.ceMethodAttr === 0) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 1) {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 2) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = " ";
-                } else {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = " ";   
-                }
-                
-                $input.data("editorFormatOption", formatOption);
-                dfd.resolve();
-            }).fail(res => {
-                dfd.reject();
-            });
-            
+
+            if (!$input.data('_nts_load_setting')) {
+                request.ajax("com", "/bs/employee/setting/code/find").done(res => {
+                    // if not have primitive, create new
+                    if (!__viewContext.primitiveValueConstraints) {
+                        __viewContext.primitiveValueConstraints = {
+                            EmployeeCode: {
+                                valueType: "String",
+                                charType: "AlphaNumeric",
+                                maxLength: res.numberOfDigits
+                            }
+                        };
+                    } else {
+                        // extend primitive constraint
+                        _.extend(__viewContext.primitiveValueConstraints, {
+                            EmployeeCode: {
+                                valueType: "String",
+                                charType: "AlphaNumeric",
+                                maxLength: res.numberOfDigits
+                            }
+                        });
+                    }
+
+                    let formatOption: any = {
+                        autofill: true
+                    };
+
+                    if (res.ceMethodAttr === 0) {
+                        formatOption.filldirection = "left";
+                        formatOption.fillcharacter = "0";
+                    } else if (res.ceMethodAttr === 1) {
+                        formatOption.filldirection = "right";
+                        formatOption.fillcharacter = "0";
+                    } else if (res.ceMethodAttr === 2) {
+                        formatOption.filldirection = "left";
+                        formatOption.fillcharacter = " ";
+                    } else {
+                        formatOption.filldirection = "right";
+                        formatOption.fillcharacter = " ";
+                    }
+
+                    $input
+                        .data('_nts_load_setting', true)
+                        .data("editorFormatOption", formatOption);
+
+                    dfd.resolve();
+                }).fail(res => {
+                    $input.data('_nts_load_setting', false);
+
+                    dfd.reject();
+                });
+            }
+
             return dfd.promise();
         }
     }

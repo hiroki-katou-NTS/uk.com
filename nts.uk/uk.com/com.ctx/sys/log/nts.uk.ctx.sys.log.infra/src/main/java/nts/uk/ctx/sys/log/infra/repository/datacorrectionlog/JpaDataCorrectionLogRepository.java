@@ -61,4 +61,15 @@ public class JpaDataCorrectionLogRepository extends JpaRepository implements Dat
 				.setParameter("endY", yearEnd.getValue()).getList(c -> c.toDomainToView());
 	}
 
+	@Override
+	public List<DataCorrectionLog> findByTargetAndDate(String operationId, List<String> listEmployeeId,
+			DatePeriod period) {
+		String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd";
+		return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+				.setParameter("operationId", operationId)
+				.setParameter("listEmpId", listEmployeeId)
+				.setParameter("startYmd", period.start())
+				.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+	}
+
 }

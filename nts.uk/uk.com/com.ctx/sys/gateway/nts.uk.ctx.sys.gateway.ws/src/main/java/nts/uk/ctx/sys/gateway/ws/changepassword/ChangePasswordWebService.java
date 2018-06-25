@@ -60,7 +60,7 @@ public class ChangePasswordWebService extends WebService{
 	}
 	
 	/**
-	 * Submit login form 3.
+	 * getUserNameByLoginId
 	 *
 	 * @param contractCode the contract code
 	 * @param loginId the login id
@@ -68,11 +68,11 @@ public class ChangePasswordWebService extends WebService{
 	 */
 	@POST
 	@Path("getUserNameByLoginId/{contractCode}/{loginId}")
-	public LoginInforDto submitLoginForm3(@PathParam("contractCode") String contractCode, @PathParam("loginId") String loginId) {
+	public LoginInforDto getUserNameByLoginId(@PathParam("contractCode") String contractCode, @PathParam("loginId") String loginId) {
 		Optional<UserImport> user = this.userAdapter.findUserByContractAndLoginId(contractCode, loginId);
 		if (user.isPresent()){
-			return new LoginInforDto(loginId, user.get().getUserName());
+			return new LoginInforDto(loginId, user.get().getUserName(), user.get().getUserId());
 		}
-		return new LoginInforDto(null, null);
+		return new LoginInforDto(null, null, null);
 	}
 }
