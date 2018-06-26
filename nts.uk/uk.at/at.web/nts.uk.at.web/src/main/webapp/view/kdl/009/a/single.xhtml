@@ -44,42 +44,40 @@
 									<th class="ui-widget-header">#{i18n.getText('KDL009_6')}</th>
 								</tr>
 							</thead>
-							<tbody data-bind="foreach: dataItems">
-<!-- 								<tr> -->
-<!-- 									<td>2016/10/25(日)</td> -->
-<!-- 									<td>2016/10/25</td> -->
-<!-- 									<td>2016/10/25</td> -->
-<!-- 								</tr> -->
-								
-<!-- 								<tr> -->
-<!-- 									<td rowspan="2">[2016/10/25(日)]</td> -->
-<!-- 									<td>(2016/10/25(日))     0.5 日</td> -->
-<!-- 									<td rowspan="2">2016/10/25</td> -->
-<!-- 								</tr> -->
-<!-- 								<tr> -->
-<!-- 									<td height="20px"></td> -->
-<!-- 								</tr> -->
-								
-<!-- 								<tr> -->
-<!-- 									<td>2016/10/25(日)     0.5 日</td> -->
-<!-- 									<td>2016/10/25(日)</td> -->
-<!-- 									<td>2016/10/25(日)</td> -->
-<!-- 								</tr> -->
-								
-<!-- 								<tr> -->
-<!-- 									<td rowspan="2">[2016/10/25(日)]</td> -->
-<!-- 									<td>(2016/10/25(日))     0.5 日</td> -->
-<!-- 									<td rowspan="2">2016/10/25</td> -->
-<!-- 								</tr> -->
-<!-- 								<tr> -->
-<!-- 									<td height="20px"></td> -->
-<!-- 								</tr> -->
-								
-<!-- 								<tr> -->
-<!-- 									<td>2016/10/25(日)     0.5 日</td> -->
-<!-- 									<td>2016/10/25(日)</td> -->
-<!-- 									<td>2016/10/25(日)</td> -->
-<!-- 								</tr> -->
+							<tbody>
+								<com:ko-foreach bind="dataItems">
+									<com:ko-if bind="isHalfDay">
+										<tr>
+											<td rowspan="2">
+												<span style="float: left; padding-left: 20px;" data-bind="text: issueDate"></span> 
+												<span style="float: right; padding-right: 20px;" data-bind="text: occurrenceDays"></span>
+											</td> 
+		 									<td>
+		 										<span style="float: left; padding-left: 20px;" data-bind="text: holidayDate"></span> 
+		 										<span style="float: right; padding-right: 20px;" data-bind="text: occurrenceDays"></span>
+	 										</td>
+		 									<td rowspan="2"><span style="float: left; padding-left: 20px;" data-bind="text: expirationDate"></span></td>
+										</tr>
+										<tr>
+											<td>
+		 										<span style="float: left; padding-left: 20px;" data-bind="text: holidayDate"></span> 
+		 										<span style="float: right; padding-right: 20px;" data-bind="text: occurrenceDays"></span>
+	 										</td>
+										</tr>
+									</com:ko-if>
+									
+									<tr>
+										<td>
+											<span style="float: left; padding-left: 20px;" data-bind="text: issueDate"></span> 
+											<span style="float: right; padding-right: 20px;" data-bind="text: occurrenceDays"></span>
+										</td> 
+	 									<td>
+	 										<span style="float: left; padding-left: 20px;" data-bind="text: holidayDate"></span> 
+	 										<span style="float: right; padding-right: 20px;" data-bind="text: occurrenceDays"></span>
+ 										</td>
+	 									<td><span style="float: left; padding-left: 20px;" data-bind="text: expirationDate"></span></td>
+									</tr>
+								</com:ko-foreach>
 							</tbody>
 						</table>
 						

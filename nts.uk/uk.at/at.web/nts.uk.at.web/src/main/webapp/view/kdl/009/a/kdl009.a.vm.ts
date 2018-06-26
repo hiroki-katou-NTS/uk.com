@@ -63,7 +63,7 @@ module nts.uk.at.view.kdl009.a {
                     } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
-                        service.getAcquisitionNumberRestDays(data.employeeBasicInfo[0].employeeCode, data.baseDate).done(function(data) {
+                        service.getAcquisitionNumberRestDays(data.employeeBasicInfo[0].employeeId, data.baseDate).done(function(data) {
                             self.bindTimeData(data);
                             self.bindSummaryData(data);
                         }).fail(function(res) {
@@ -129,7 +129,40 @@ module nts.uk.at.view.kdl009.a {
             
             bindTimeData(data: any) {
                 var self = this;
+                var greneraGigesHisData = data.absRecGenerationDigestionHis.greneraGigesHis;
+                var issueDate = "";
+                var holidayDate = "";
+                var expirationDate = "";
+                var occurrenceDays = "";
+                var isHalfDay = false;
                 
+                if(greneraGigesHisData != null && greneraGigesHisData.length >= 1) {
+                    _.each(greneraGigesHisData, function (item) {
+                        if(greneraGigesHisData.recHisData != null) {
+                            if(greneraGigesHisData.recHisData.recDate.unknownDate) {
+                                issueDate = nts.uk.resource.getText("KDL009_11");
+                            } else if(greneraGigesHisData.recHisData.dataAtr == 3) {
+                                var time = nts.uk.resource.getText("KDL009_13", [greneraGigesHisData.ymdData.dayoffDate]);
+                                issueDate = nts.uk.time.applyFormat("Short_YMDW", time);
+                            } else {
+                                issueDate = "";
+                            }
+                            
+                            if(Number(greneraGigesHisData.recHisData.occurrenceDays) == 0.5) {
+                                occurrenceDays = nts.uk.resource.getText("KDL009_14", [greneraGigesHisData.recHisData.occurrenceDays]);
+                                isHalfDay = true;
+                            } else {
+                                occurrenceDays = "";
+                            }
+                            
+                            expirationDate = nts.uk.time.applyFormat("Short_YMDW", [greneraGigesHisData.recHisData.expirationDate]);
+                            
+                            var temp = new DataItems(issueDate, issueDate, expirationDate, occurrenceDays, isHalfDay);
+                            
+                            self.dataItems.push(temp);
+                        }
+                    });                    
+                }
             }
             
             bindSummaryData(data: any) {
@@ -183,6 +216,22 @@ module nts.uk.at.view.kdl009.a {
         export interface UnitAlreadySettingModel {
             code: string;
             isAlreadySetting: boolean;
+        }
+        
+        class DataItems {
+            issueDate: string;
+            holidayDate: string;
+            expirationDate: string;
+            occurrenceDays: string;
+            isHalfDay: boolean;
+    
+            constructor(issueDate: string, holidayDate: string, expirationDate: string, occurrenceDays: string, isHalfDay: boolean) {
+                this.issueDate = issueDate;
+                this.holidayDate = holidayDate;
+                this.expirationDate = expirationDate;
+                this.occurrenceDays = occurrenceDays;
+                this.isHalfDay = isHalfDay;
+            }
         }
     }
 }
