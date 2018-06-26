@@ -155,6 +155,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         let _list: Array<model.FixedExtraMonFun> = _.map(data, acc => {
                             return new model.FixedExtraMonFun({ monAlarmCheckID: "", monAlarmCheckName: acc.fixedExtraItemMonName, fixedExtraItemMonNo: acc.fixedExtraItemMonNo, message: acc.message, useAtr: false });
                         });
+                        // 
+                        let orderList = _.orderBy(_list, ['sortBy'], ['asc']);
                         self.tabAlarmcheck.listFixedExtraMonFun(_list);
                     }
                 });
@@ -230,10 +232,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
 
             if (data.category() == model.CATEGORY.MONTHLY) {
+                let i = -2;
                 data.monAlarmCheckCon().listFixExtraMon(self.tabAlarmcheck.listFixedExtraMonFun());
                 data.monAlarmCheckCon().arbExtraCon(
                     _.map(self.tabCheckAlarm.listExtraResultMonthly(), acc=>{ 
-                        return shareutils.convertTransferDataToExtraResultMonthly(acc); 
+                        i++;
+                        return shareutils.convertTransferDataToExtraResultMonthly(acc, i+1); 
                     }));
             }
 
@@ -424,7 +428,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
                         if (item.category() == model.CATEGORY.MONTHLY) {
                             //tab extraResult
-                            self.tabCheckAlarm.listExtraResultMonthly(item.monAlarmCheckCon().arbExtraCon());
+                            let orderList = _.orderBy(item.monAlarmCheckCon().arbExtraCon(), ['sortBy'], ['asc']);
+                            self.tabCheckAlarm.listExtraResultMonthly(orderList);
                             //tab fix
                             if (item.monAlarmCheckCon().listFixExtraMon().length > 0) {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
