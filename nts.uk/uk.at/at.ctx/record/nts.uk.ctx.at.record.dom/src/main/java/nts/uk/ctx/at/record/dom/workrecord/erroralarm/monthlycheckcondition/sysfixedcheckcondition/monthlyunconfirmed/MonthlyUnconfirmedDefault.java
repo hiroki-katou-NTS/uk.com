@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Confi
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
@@ -43,7 +44,13 @@ public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
 			}
 			//取得できなかった場合
 			GeneralDate date = GeneralDate.fromString(String.valueOf(yearMonth)+"01", "yyyy/MM/DD");
-			return Optional.of(new ValueExtractAlarmWR(null,employeeID,date,null,null,null,null));
+			return Optional.of(new ValueExtractAlarmWR(null,
+														employeeID,
+														date,
+														TextResource.localize("KAL010_100"),
+														TextResource.localize("KAL010_271"),	
+														TextResource.localize("KAL010_272"),
+														null));
 			
 		}
 		return Optional.empty();
