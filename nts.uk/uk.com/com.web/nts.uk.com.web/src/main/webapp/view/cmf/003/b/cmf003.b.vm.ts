@@ -623,6 +623,7 @@ module nts.uk.com.view.cmf003.b {
                     return _.includes(self.selectedEmployeeCode(), o.code); 
                 });
                 
+                tempEmployee = _.sortBy(tempEmployee, ["code"]);
                 self.targetEmployee(tempEmployee);
             }
 
