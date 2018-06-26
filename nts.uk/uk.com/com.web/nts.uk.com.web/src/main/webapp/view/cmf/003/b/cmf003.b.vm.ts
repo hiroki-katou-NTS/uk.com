@@ -247,7 +247,6 @@ module nts.uk.com.view.cmf003.b {
                 self.monthEndDateString.subscribe(function(value) {
                     self.monthValue().endDate = value;
                     self.monthValue.valueHasMutated();
-                    $('.datepickerE').ntsError('clear');
                 });
 
                 //Date Ranger Picker : type year
@@ -260,14 +259,31 @@ module nts.uk.com.view.cmf003.b {
                 self.yearStartDateString.subscribe(function(value) {
                     self.yearValue().startDate = value;
                     self.yearValue.valueHasMutated();
-                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.yearEndDateString.subscribe(function(value) {
                     self.yearValue().endDate = value;
                     self.yearValue.valueHasMutated();
-                    $('.datepickerE').ntsError('clear');
                 });
+                
+                self.dayValue.subscribe(function(value) {
+                    nts.uk.ui.errors.clearAll();
+                    $(".form-B").trigger("validate");
+                    $(".form-B .ntsDatepicker").trigger("validate");
+                });
+                
+                self.monthValue.subscribe(function(value) {
+                    nts.uk.ui.errors.clearAll();
+                    $(".form-B").trigger("validate");
+                    $(".form-B .ntsDatepicker").trigger("validate");
+                });
+                
+                self.yearValue.subscribe(function(value) {
+                    nts.uk.ui.errors.clearAll();
+                    $(".form-B").trigger("validate");
+                    $(".form-B .ntsDatepicker").trigger("validate");
+                });
+                
                 //Defaut D4_7
                 self.dateDefaut = ko.observable("2018/04/19");
 
@@ -612,7 +628,7 @@ module nts.uk.com.view.cmf003.b {
 
             private validateB(): boolean {
                 $(".form-B").trigger("validate");
-                $(".ntsDatepicker").trigger("validate");
+                $(".form-B .ntsDatepicker").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return false;
                 }
