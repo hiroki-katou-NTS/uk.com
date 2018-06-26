@@ -356,9 +356,8 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            let formatOption = this.$input.data("editorFormatOption");
-            if (formatOption) {
-                $.extend(this.editorOption, formatOption);
+            if (constraint && constraint.formatOption) {
+                $.extend(this.editorOption, constraint.formatOption);
             }
             this.editorOption.autofill = (constraint && constraint.isZeroPadded) ? constraint.isZeroPadded : this.editorOption.autofill;
             return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
@@ -391,59 +390,11 @@ module nts.uk.ui.koExtentions {
         setWidthByConstraint(constraintName: string, $input: JQuery){
             let self = this;
             var characterWidth: number = 9;
-            self.loadConstraints(constraintName, $input).done(() => {
-                let constraint = validation.getConstraint(constraintName);
-                if (constraint && constraint.maxLength && !$input.is("textarea")) {
-                    let autoWidth = constraint.maxLength * characterWidth;
-                    $input.width(autoWidth);
-                }
-            });  
-        }
-        
-        loadConstraints(name: string, $input: JQuery) {
-            let self = this;
-            let dfd = $.Deferred();
-            if (name !== "EmployeeCode" || (__viewContext.primitiveValueConstraints 
-                && __viewContext.primitiveValueConstraints.EmployeeCode)) { 
-                dfd.resolve();
-                return dfd.promise();
+            let constraint = validation.getConstraint(constraintName);
+            if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                let autoWidth = constraint.maxLength * characterWidth;
+                $input.width(autoWidth);
             }
-            
-            request.ajax("com", "/bs/employee/setting/code/find").done(res => {
-                if (!__viewContext.primitiveValueConstraints) {
-                    __viewContext.primitiveValueConstraints = {};
-                }
-                
-                let employeeCodeConstr = {
-                    valueType: "String",
-                    charType: "AlphaNumeric",
-                    maxLength: res.numberOfDigits
-                };
-                
-                __viewContext.primitiveValueConstraints.EmployeeCode = employeeCodeConstr;
-                let formatOption = { autofill: true };
-                
-                if (res.ceMethodAttr === 0) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 1) {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 2) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = " ";
-                } else {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = " ";   
-                }
-                
-                $input.data("editorFormatOption", formatOption);
-                dfd.resolve();
-            }).fail(res => {
-                dfd.reject();
-            });
-            
-            return dfd.promise();
         }
     }
 
