@@ -1706,7 +1706,7 @@ public class ProgramsManager {
 	/** KAL003 */
 	public static final Program KAL003A = new Program(WebAppId.AT, ProgramIdConsts.KAL003A, "KAL003_1",
 			"/view/kal/003/a/index.xhtml");
-	public static final Program KAL003B = new Program(WebAppId.AT, ProgramIdConsts.KAL003B, "KAL003_2",
+	public static final Program KAL003B = new Program(WebAppId.AT, ProgramIdConsts.KAL003B, "KAL003_160",
 			"/view/kal/003/b/index.xhtml");
 	public static final Program KAL003C = new Program(WebAppId.AT, ProgramIdConsts.KAL003C, "KAL003_3",
 			"/view/kal/003/c/index.xhtml");
