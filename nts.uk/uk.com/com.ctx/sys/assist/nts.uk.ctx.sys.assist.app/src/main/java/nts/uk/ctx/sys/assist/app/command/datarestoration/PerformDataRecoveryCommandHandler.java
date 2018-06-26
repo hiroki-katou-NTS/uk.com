@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
@@ -20,7 +21,6 @@ import nts.uk.ctx.sys.assist.dom.recoverystorage.RecoveryStorageService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-@Transactional
 public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<PerformDataRecoveryCommand, String> {
 	@Inject
 	private PerformDataRecoveryRepository repoPerformDataRecovery;
@@ -35,17 +35,16 @@ public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<
 
 	public String handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
 		PerformDataRecoveryCommand performDataCommand = context.getCommand();
-		String dataRecoveryProcessId = context.getCommand().recoveryProcessingId;
-		String recoveryDate = null;
-		Integer categoryCnt = 0;
-		Integer errorCount = 0;
-		Integer categoryTotalCount = null;
-		String processTargetEmpCode = null;
-		Integer suspendedState = 0;
-		Integer numOfProcesses = null;
-		Integer totalNumOfProcesses = null;
-		Integer operatingCondition = 4;
-		// ドメインモデル「データ復旧動作管理」の動作状態を「準備中」で登録する
+		String dataRecoveryProcessId = performDataCommand.recoveryProcessingId;
+		String recoveryDate = "";
+		int categoryCnt = 0;
+		int errorCount = 0;
+		int categoryTotalCount = 0;
+		String processTargetEmpCode = "";
+		int suspendedState = 0;
+		int numOfProcesses = 0;
+		int totalNumOfProcesses = 0;
+		int operatingCondition = 4;
 		DataRecoveryMng dataRecoveryMng = new DataRecoveryMng(dataRecoveryProcessId, errorCount, categoryCnt,
 				categoryTotalCount, totalNumOfProcesses, numOfProcesses, processTargetEmpCode, suspendedState,
 				operatingCondition, recoveryDate);
@@ -67,16 +66,6 @@ public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<
 				practitioner, executionResult, startDateTime, endDateTime, saveForm, saveName);
 		repoDataRecoveryResult.add(dataRecoveryResult);
 
-		// 復旧条件の調整, update recoveryMethod
-		repoPerformDataRecovery.updatePerformDataRecoveryById(context.getCommand().recoveryProcessingId);
-
-		Optional<PerformDataRecovery> otpPerformDataRecovery = repoPerformDataRecovery
-				.getPerformDatRecoverById(context.getCommand().recoveryProcessingId);
-		if (otpPerformDataRecovery.isPresent()) {
-			if (otpPerformDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE) {
-				// 復旧期間の調整
-			}
-		}
 		return dataRecoveryProcessId;
 
 	}

@@ -1,8 +1,9 @@
 package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
-import lombok.Value;
-
-@Value
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeListCommand {
 	public String code;
 	public String id;

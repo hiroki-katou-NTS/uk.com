@@ -15,7 +15,7 @@ public class RecoveryStogareAsysnCommandHandler extends AsyncCommandHandler<Perf
 	private RecoveryStorageService recoveryStorageService;
 
 	@Override
-	protected void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
+	public void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
 		PerformDataRecoveryCommand performDataCommand = context.getCommand();
 		String dataRecoveryProcessId = performDataCommand.recoveryProcessingId;
 		// サーバー復旧処理
