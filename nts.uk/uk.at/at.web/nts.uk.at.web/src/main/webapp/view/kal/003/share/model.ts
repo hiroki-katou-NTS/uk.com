@@ -1208,6 +1208,8 @@ module nts.uk.at.view.kal003.share.model {
         displayTarget: string;
         displayRightCompare: string;
         displayRightOperator: string;
+        inputCheckCondition :number;
+        
     }
 
     export class ErAlAtdItemCondition {
@@ -1232,7 +1234,8 @@ module nts.uk.at.view.kal003.share.model {
         displayTarget: KnockoutObservable<any>;
         displayRightCompare: KnockoutObservable<any>;
         displayRightOperator: KnockoutObservable<any>;
-
+        
+        inputCheckCondition :KnockoutObservable<number>;
         constructor(NO, param: IErAlAtdItemCondition) {
             let self = this;
             if(!nts.uk.util.isNullOrUndefined(param)){
@@ -1252,6 +1255,7 @@ module nts.uk.at.view.kal003.share.model {
                 self.displayTarget=ko.observable("");
                 self.displayRightCompare=ko.observable("");
                 self.displayRightOperator=ko.observable("");
+                self.inputCheckCondition = ko.observable(0);
                 self.setTextDisplay();    
             }else{
                 self.targetNO=ko.observable(NO);
@@ -1270,6 +1274,7 @@ module nts.uk.at.view.kal003.share.model {
                 self.displayTarget=ko.observable("");
                 self.displayRightCompare=ko.observable("");
                 self.displayRightOperator=ko.observable("");
+                self.inputCheckCondition = ko.observable(0);
                 self.setTextDisplay();    
             }
             self.displayLeft = ko.computed(() => {
@@ -1327,6 +1332,7 @@ module nts.uk.at.view.kal003.share.model {
             x.displayTarget(data.displayTarget);
             x.displayRightCompare(data.displayRightCompare);    
             x.displayRightOperator(data.displayRightOperator);
+            x.inputCheckCondition(0);
 //            x.setTextDisplay=ko.observable(data.setTextDisplay);
            // ko.mapping.fromJS(data, mapping, x);
             return x;
