@@ -92,17 +92,17 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			case ABSENCE_APPLICATION:
 				Optional<AppAbsence> absence = absenceRepo.getAbsenceByAppId(cid, appData.getAppID());
 				absence.ifPresent(x -> {
-					outData.setWorkTypeCode(Optional.of(x.getWorkTypeCode().v()));
+					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
 					if(x.isChangeWorkHour()) {
-						outData.setWorkTimeCode(Optional.of(x.getWorkTimeCode().v()));
+						outData.setWorkTimeCode(x.getWorkTimeCode() == null ? Optional.empty() : Optional.of(x.getWorkTimeCode().v()));
 					}
 				});
 			case COMPLEMENT_LEAVE_APPLICATION:
 				Optional<AppAbsence> absApp = absAppRepo.getAbsenceByAppId(cid, appData.getAppID());
 				absApp.ifPresent(x -> {
-					outData.setWorkTypeCode(Optional.of(x.getWorkTypeCode().v()));
+					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
 					if(x.isChangeWorkHour()) {
-						outData.setWorkTimeCode(Optional.of(x.getWorkTimeCode().v()));						
+						outData.setWorkTimeCode(x.getWorkTimeCode() == null ? Optional.empty() : Optional.of(x.getWorkTimeCode().v()));						
 					}
 				});
 				
@@ -117,8 +117,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				Integer appOvertimeTimeTotal = 0;
 				if(overTimeData.isPresent()){
 					AppOverTime x = overTimeData.get();
-					outData.setWorkTimeCode(Optional.of(x.getSiftCode().v()));
-					outData.setWorkTypeCode(Optional.of(x.getWorkTypeCode().v()));
+					outData.setWorkTimeCode(x.getSiftCode() == null ? Optional.empty() : Optional.of(x.getSiftCode().v()));
+					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
 					//申請休出時間合計を設定する
 					List<OverTimeInput> lstInput = x.getOverTimeInput().stream()
 							.filter(y -> y.getAttendanceType() == AttendanceType.BREAKTIME)
@@ -142,8 +142,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				Integer overtimeTimeTotal = 0;
 				if(holidayWork.isPresent()) {
 					AppHolidayWork holidayWorkData = holidayWork.get();
-					outData.setWorkTimeCode(Optional.of(holidayWorkData.getWorkTimeCode().v()));
-					outData.setWorkTypeCode(Optional.of(holidayWorkData.getWorkTypeCode().v()));
+					outData.setWorkTimeCode(holidayWorkData.getWorkTimeCode() == null ? Optional.empty() : Optional.of(holidayWorkData.getWorkTimeCode().v()));
+					outData.setWorkTypeCode(holidayWorkData.getWorkTypeCode() == null ? Optional.empty() : Optional.of(holidayWorkData.getWorkTypeCode().v()));
 					//申請休出時間合計を設定する
 					List<HolidayWorkInput> holidayWorkInputs = holidayWorkData.getHolidayWorkInputs()
 							.stream().filter(a -> a.getAttendanceType() == AttendanceType.BREAKTIME)

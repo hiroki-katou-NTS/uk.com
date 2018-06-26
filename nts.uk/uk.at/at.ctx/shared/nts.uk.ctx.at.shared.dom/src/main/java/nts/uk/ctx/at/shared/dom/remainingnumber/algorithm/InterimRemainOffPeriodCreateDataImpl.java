@@ -25,7 +25,9 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 			InterimRemainCreateInfor dataCreate = this.extractDataOfDate(loopDate, inputParam);
 			//アルゴリズム「指定日の暫定残数管理データを作成する」
 			DailyInterimRemainMngData outPutdata = createDataService.createData(inputParam.getCid(), inputParam.getSid(), loopDate, inputParam.isDayOffTimeIsUse(), dataCreate);
-			dataOutput.put(loopDate, outPutdata);
+			if(outPutdata != null) {
+				dataOutput.put(loopDate, outPutdata);	
+			}			
 		}
 		
 		return dataOutput;

@@ -15,6 +15,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
@@ -43,4 +44,9 @@ public class DailyInterimRemainMngData {
 	 * 暫定積立年休管理データ
 	 */
 	private Optional<TmpResereLeaveMng> resereData;
+	/**
+	 * 暫定休出管理データ
+	 */
+	private Optional<InterimBreakMng> breakData;
+	
 }
