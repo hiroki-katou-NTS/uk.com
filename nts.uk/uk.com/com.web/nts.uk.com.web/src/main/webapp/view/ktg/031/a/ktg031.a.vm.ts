@@ -57,7 +57,8 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 self.listToppage([]);
                 if (self.selectedRuleCode() == 0) {
                     service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
-                        self.listToppage(_.map(listData, acc => {
+                        let listOrder = _.orderBy(listData, ["finishDateTime"], ['asc']); 
+                        self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert;
                             return new TopPageAlarmDto(acc);
@@ -65,7 +66,8 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                     });
                 }else{
                     service.getAllToppage(temp).done((data) => {
-                        self.listToppage(_.map(data, acc => {
+                        let listOrder = _.orderBy(data, ["finishDateTime"], ['asc']);
+                        self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert;
                             let a = new TopPageAlarmDto(acc);

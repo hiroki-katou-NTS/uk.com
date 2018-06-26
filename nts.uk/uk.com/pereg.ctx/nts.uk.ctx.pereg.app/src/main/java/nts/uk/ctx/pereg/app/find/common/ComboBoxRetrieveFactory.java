@@ -166,7 +166,7 @@ public class ComboBoxRetrieveFactory {
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
 
-	private final String JP_SPACE = "　";
+	private static final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode) {

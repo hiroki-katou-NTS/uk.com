@@ -74,6 +74,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         displayApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
         enableApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReturnReasonPanel: KnockoutObservable<boolean> = ko.observable(false);
+        version: number = 0;
 
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
@@ -122,6 +123,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 appID: self.appID()
             }).done((data) => {
                 self.inputCommandEvent().version = data.applicationDto.version;
+                self.version = data.applicationDto.version;
                 self.dataApplication(data.applicationDto);
                 self.appType(data.applicationDto.applicationType);
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
@@ -320,9 +322,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 if (data.processDone) {
                     nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
                         if (data.autoSendMail) {
-                            appcommon.CommonProcess.displayMailResult(data);
+                            appcommon.CommonProcess.displayMailResultKAF000(data);
                         } else {
-                            location.reload();
+                            self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                                nts.uk.ui.block.clear();        
+                            });
                         }
                     });
                 } else {
@@ -330,7 +334,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 }
             } else {
                 nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
-                    location.reload();
+                    nts.uk.ui.block.clear();   
                 });
             }
         }
@@ -340,7 +344,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let command = { appID: self.getAppId(), version: self.dataApplication().version };
             setShared("KDL034_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml").onClosed(() => {
-                location.reload();
+                self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                    nts.uk.ui.block.clear();        
+                });
             });
         }
 
@@ -407,7 +413,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let command = { appID: self.appID() };
             setShared("KDL030_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                location.reload();
+                self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                    nts.uk.ui.block.clear();       
+                });
             });
         }
         /**
@@ -500,7 +508,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function() {
                 service.cancelApp(cancelCmd, self.appType()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_224" }).then(() => {
-                        location.reload();
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                            nts.uk.ui.block.clear();        
+                        });
                     });
                 }).fail(function(res: any) {
                     self.showError(res);

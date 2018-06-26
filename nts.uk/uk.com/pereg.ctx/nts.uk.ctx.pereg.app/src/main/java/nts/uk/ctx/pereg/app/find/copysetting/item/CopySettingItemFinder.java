@@ -59,7 +59,7 @@ public class CopySettingItemFinder {
 	@Inject
 	private PersonInfoCategoryAuthRepository perInfoCtgRepo;
 	
-	private final String END_DATE_NAME = "終了日";
+	private static final String END_DATE_NAME = "終了日";
 	
 	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String selectedEmployeeId, GeneralDate baseDate) {
 
