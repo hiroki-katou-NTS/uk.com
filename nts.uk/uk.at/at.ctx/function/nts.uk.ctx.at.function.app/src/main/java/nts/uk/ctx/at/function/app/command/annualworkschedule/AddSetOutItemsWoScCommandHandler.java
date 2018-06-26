@@ -62,6 +62,7 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 														  addCommand.getName(),
 														  addCommand.isOutNumExceedTime36Agr(),
 														  addCommand.getDisplayFormat(),
+														  addCommand.getPrintForm(),
 														  listItemOutTblBook));
 	}
 }

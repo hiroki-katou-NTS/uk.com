@@ -34,7 +34,7 @@ module nts.layout {
                 .map(x => x.items)
                 .flatten()
                 .flatten()
-                .filter((x: IItemData) => x.required && x.type != ITEM_TYPE.SET)
+                .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
                 .each((x: IItemData) => {
                     let v: any = ko.toJS(x),
                         id = v.itemDefId.replace(/[-_]/g, ''),
@@ -86,7 +86,7 @@ module nts.layout {
                                 .trigger('blur')
                                 .trigger('change');
                         } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
-                            if (nou(x.value) && x.required) {
+                            if (_.isNil(x.value) && (x.required || !_.isEmpty(x.textValue))) {
                                 if (!getError($element).length) {
                                     $element.ntsError('set', {
                                         messageId: "FND_E_REQ_SELECT",
@@ -1278,7 +1278,6 @@ module nts.layout {
             if (CS00017_IS00082 && CS00017_IS00084) {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
-                        data = ko.toJS(CS00017_IS00082.data),
                         comboData = ko.toJS(CS00017_IS00084.data);
 
                     if (!empId) {
@@ -1297,6 +1296,33 @@ module nts.layout {
                         workplaceId: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
+                        CS00017_IS00084.data.value.valueHasMutated();
+                    });
+                });
+            }
+
+            if (CS00017_IS00082 && CS00017_IS00085) {
+                CS00017_IS00082.data.value.subscribe(_date => {
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                        comboData = ko.toJS(CS00017_IS00085.data);
+
+                    if (!empId) {
+                        return;
+                    }
+
+                    fetch.get_cb_data({
+                        comboBoxType: comboData.item.referenceType,
+                        categoryId: comboData.categoryId,
+                        required: comboData.required,
+                        standardDate: moment.utc(_date).toDate(),
+                        typeCode: comboData.item.typeCode,
+                        masterType: comboData.item.masterType,
+                        employeeId: empId,
+                        cps002: false,
+                        workplaceId: undefined
+                    }).done((cbx: Array<IComboboxItem>) => {
+                        CS00017_IS00085.data.lstComboBoxValue(cbx);
+                        CS00017_IS00085.data.value.valueHasMutated();
                     });
                 });
             }

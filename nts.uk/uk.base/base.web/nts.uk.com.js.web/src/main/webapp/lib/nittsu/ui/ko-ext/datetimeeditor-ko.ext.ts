@@ -52,6 +52,8 @@ module nts.uk.ui.koExtentions {
         dateFormat: string = "YYYY/MM/DD";
         timeFormat: string = "H:mm:ss";
         timeMode: string = "time";
+        timeSignal: string = ":";
+        dateSignal: string = "/";
         $date: JQuery;
         $time: JQuery;
         
@@ -64,7 +66,7 @@ module nts.uk.ui.koExtentions {
             
             self.initVal(allBindData);
             
-            let $container = $("<div>", { "class": "datetime-editor datetimepair-container" }),
+            let $container = $("<div>", { "class": "datetime-editor datetimepair-container ntsControl control-container" }),
                                 $dateContainer = $("<div>", { "class": "date-container component-container" }),
                                 $timeContainer = $("<div>", { "class": "time-container component-container" });
             self.$date = $("<div>", { "class": "date-picker datetimepair-component" });
@@ -90,11 +92,15 @@ module nts.uk.ui.koExtentions {
             self.timeValue = ko.computed({
                 read: function() {
                     let value = allBindData.value();
-                    if(nts.uk.util.isNullOrEmpty(value)){
+                    if(nts.uk.util.isNullOrEmpty(value) || !self.isExistTime(value)){
                         self.timeValueBind("");
                         return "";
                     }
-                    let format = self.dateFormat + " " + self.timeFormat;
+                    let format = self.getFormat(value);
+                    if(nts.uk.util.isNullOrEmpty(format)){
+                        self.timeValueBind("");
+                        return "";
+                    }
                     let timeVal = nts.uk.time.secondsBased.duration.parseString(
                                             moment(value, format).format(self.timeFormat)).toValue();
                     self.timeValueBind(timeVal);
@@ -110,11 +116,16 @@ module nts.uk.ui.koExtentions {
             self.dateValue = ko.computed({
                 read: function() {
                     let value = allBindData.value();
-                    if(nts.uk.util.isNullOrEmpty(value)){
+                    if(nts.uk.util.isNullOrEmpty(value) || !self.isExistDate(value)){
                         self.dateValueBind("");
                         return "";
                     }
-                    let format = self.dateFormat + " " + self.timeFormat;
+                    let format = self.getFormat(value);
+                    if(nts.uk.util.isNullOrEmpty(format)){
+                        self.timeValueBind("");
+                        return "";
+                    }
+                    
                     let val = moment(value, format).format(self.dateFormat);
                     self.dateValueBind(val);
                     return val;
@@ -122,6 +133,9 @@ module nts.uk.ui.koExtentions {
                     let tv = self.timeValueBind();
                     let timeVal = nts.uk.time.secondsBased.duration.create(tv)
                                         .formatById(nts.uk.time.secondsBased.duration.DurationFormatId);
+                    if(_.isNil(val)){
+                        val = "";
+                    }
                     allBindData.value(val + " " + timeVal);
                 },
                 owner: this  
@@ -132,6 +146,28 @@ module nts.uk.ui.koExtentions {
             self.dateValueBind.subscribe((v) => {
                 self.dateValue(v);    
             });     
+        }
+        
+        getFormat(val: string){
+            let self = this;
+            let format = "";
+            if(self.isExistDate(val)){
+                format += self.dateFormat + " ";
+            }
+            if(self.isExistTime(val)){
+                format += self.timeFormat;
+            }
+            return format;
+        }
+        
+        isExistDate(val: string): boolean{
+            let self = this;
+            return val.toString().indexOf(self.dateSignal) > 0;
+        }
+        
+        isExistTime(val: string): boolean{
+            let self = this;
+            return val.toString().indexOf(self.timeSignal) > 0;
         }
         
         createDateData(allBindData: any): any{
@@ -156,7 +192,7 @@ module nts.uk.ui.koExtentions {
                      mode: self.timeMode, 
                      enable: allBindData.enable, 
                      disabled: allBindData.disabled,
-                     option: { width: "60" } };    
+                     option: { width: "70" } };    
         }
     }
 

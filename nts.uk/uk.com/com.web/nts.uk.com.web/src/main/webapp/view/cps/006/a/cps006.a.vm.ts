@@ -34,6 +34,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             let self = this;
             self.start(undefined);
             self.id.subscribe(function(value) {
+                $('#ctgName').focus();
                 nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value)) return;
                 self.getDetailCategory(value);
@@ -123,7 +124,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,
                         categoryType: data.categoryType, isAbolition: data.abolition,
                         personEmployeeType: data.personEmployeeType, itemList: data.itemLst
-                    }, data.systemRequired, data.isExistedItemLst);
+                    }, data.canAbolition, data.isExistedItemLst);
                     if (data.itemLst.length > 0) {
                         self.currentCategory().currentItemId(data.itemLst[0].id);
                     }
@@ -420,6 +421,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: string;
         categoryType: number;
         isAbolition: string;
+        canAbolition: boolean;
         personEmployeeType: number;
         itemList?: Array<any>;
     }
@@ -430,6 +432,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: KnockoutObservable<string>;
         categoryType: KnockoutObservable<number>;
         isAbolition: KnockoutObservable<boolean>;
+        canAbolition:  KnockoutObservable<boolean>;
         personEmployeeType: number;
         isExistedItemLst: KnockoutObservable<number>;
         displayIsAbolished: KnockoutObservable<number> = ko.observable(0);
@@ -449,18 +452,20 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.categoryName = ko.observable(params.categoryName);
             this.categoryType = ko.observable(params.categoryType);
             this.isAbolition = ko.observable(false);
+            this.canAbolition = ko.observable(params.canAbolition);
             this.itemList = ko.observableArray(params.itemList || []);
             this.personEmployeeType = params.personEmployeeType || 1;
             this.isExistedItemLst = ko.observable(0);
         }
 
-        setData(params: any, displayIsAbolished: number, isExistedItemLst: number) {
+        setData(params: any, displayIsAbolished: boolean, isExistedItemLst: number) {
             this.id(params.id);
             this.categoryNameDefault(params.categoryNameDefault);
             this.categoryName(params.categoryName);
             this.categoryType(params.categoryType);
             this.isAbolition(params.isAbolition);
-            this.displayIsAbolished(displayIsAbolished);
+            this.canAbolition(params.canAbolition);
+            this.displayIsAbolished(displayIsAbolished == true? 1 : 0);
             this.isExistedItemLst(isExistedItemLst);
             this.personEmployeeType = params.personEmployeeType;
             this.itemList(params.itemList);

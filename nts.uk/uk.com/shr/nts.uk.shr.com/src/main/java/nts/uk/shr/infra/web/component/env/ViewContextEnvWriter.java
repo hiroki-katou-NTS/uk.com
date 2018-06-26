@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.system.config.ProductType;
 import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 import nts.uk.shr.infra.web.component.util.ObjectWriter;
 
@@ -29,8 +30,17 @@ public class ViewContextEnvWriter {
 		
 		val system = AppContexts.system();
 		rw.write("__viewContext.env.systemName = '" + system.getSystemName() + "';");
-		rw.write("__viewContext.env.isCloud = " + (system.isCloud() ? "true" : "false") + ";");
-		rw.write("__viewContext.env.isOnPremise = " + (system.isOnPremise() ? "true" : "false") + ";");
+		rw.write("__viewContext.env.isCloud = " + bool(system.isCloud()) + ";");
+		rw.write("__viewContext.env.isOnPremise = " + bool(system.isOnPremise()) + ";");
+
+		rw.write("__viewContext.env.products = {};");
+		rw.write("__viewContext.env.products.attendance = " + bool(system.isInstalled(ProductType.ATTENDANCE)) + ";");
+		rw.write("__viewContext.env.products.payroll = " + bool(system.isInstalled(ProductType.PAYROLL)) + ";");
+		rw.write("__viewContext.env.products.personnel = " + bool(system.isInstalled(ProductType.PERSONNEL)) + ";");
+	}
+	
+	private static String bool(boolean bool) {
+		return bool ? "true" : "false";
 	}
 	
 	private void writeJapanseEras(ResponseWriter rw) throws IOException {

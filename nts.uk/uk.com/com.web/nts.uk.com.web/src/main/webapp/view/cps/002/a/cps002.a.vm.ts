@@ -11,6 +11,7 @@ module cps002.a.vm {
     import block = nts.uk.ui.block;
     import lv = nts.layout.validate;
     import vc = nts.layout.validation;
+    import permision = service.getCurrentEmpPermision;
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -60,6 +61,11 @@ module cps002.a.vm {
 
         defaultImgId: KnockoutObservable<string> = ko.observable("");
         subContraint: KnockoutObservable<boolean> = ko.observable(true);
+        
+        // check quyen có thể setting copy 
+        enaBtnOpenFModal: KnockoutObservable<boolean> = ko.observable(true);
+        // check quyen có thể setting giá trị ban đầu nhập vào 
+        enaBtnOpenInitModal: KnockoutObservable<boolean> = ko.observable(true);
 
         ccgcomponent: any = {
             /** Common properties */
@@ -233,18 +239,13 @@ module cps002.a.vm {
 
 
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
-                let self = this,
-                    employee = self.currentEmployee();
-                if (employee.cardNo() == "") {
-                    employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
-                }
+                let self = this;
+                self.autoUpdateCardNo(employeeCode);
             }); 
             
-            
-
             self.currentEmployee().cardNo.subscribe((cardNo) => {
-                let ce = ko.toJS(self.stampCardEditing),
-                    emp = self.currentEmployee();
+                let ce = ko.toJS(self.stampCardEditing);
+                let emp = self.currentEmployee();
 
                 if (cardNo && cardNo.length < ce.digitsNumber) {
                     switch (ce.method) {
@@ -267,6 +268,24 @@ module cps002.a.vm {
                     }
                 }
             });
+            
+            // check quyen có thể setting copy hoặc setting init
+            permision().done((data: Array<IPersonAuth>) => {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].functionNo == FunctionNo.No9_Allow_SetCoppy) {
+                            if (data[i].available == false) {
+                                self.enaBtnOpenFModal(false);
+                            }
+                        }
+                        if (data[i].functionNo == FunctionNo.No10_Allow_SetInit) {
+                            if (data[i].available == false) {
+                                self.enaBtnOpenInitModal(false);
+                            }
+                        }
+                    }
+                }
+            });
 
             self.start();
         }
@@ -276,7 +295,7 @@ module cps002.a.vm {
             let self = this,
                 currentCopyEmployeeId = self.copyEmployee().employeeId,
                 categorySelectedCode = self.categorySelectedCode(),
-                baseDate = nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd');
+                baseDate = self.currentEmployee().hireDate();
 
             if (currentCopyEmployeeId != "" && categorySelectedCode) {
                 service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
@@ -293,8 +312,35 @@ module cps002.a.vm {
         
         logMouseOver() {
             let self = this;
-            if (self.cardNo() == "") {
-                self.cardNo(__viewContext.user.companyCode + self.employeeCode());
+            self.autoUpdateCardNo(self.currentEmployee().employeeCode());
+        }
+        
+        autoUpdateCardNo(employeeCode) {
+            let self = this;
+            let employee = self.currentEmployee();
+
+            if (employee.cardNo() != "") {
+                return;
+            }
+            if (!self.currentUseSetting()) {
+                return;
+            }
+            let userSetting = self.currentUseSetting();
+            let maxLengthCardNo = self.stampCardEditing().digitsNumber;
+            switch (userSetting.cardNumberType) {
+                case CardNoValType.SAME_AS_EMP_CODE:
+                    if (employeeCode.length <= maxLengthCardNo) {
+                        employee.cardNo(employeeCode);
+                    }
+                    break;
+                case CardNoValType.CPC_AND_EMPC:
+                    let newCardNo = __viewContext.user.companyCode + employee.employeeCode();
+                    if (newCardNo.length <= maxLengthCardNo) {
+                        employee.cardNo(newCardNo);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
         
@@ -325,8 +371,10 @@ module cps002.a.vm {
                     service.getUserSetting().done(userSetting => {
                         if (userSetting) {
                             self.getEmployeeCode(userSetting).done((empCode) => {
+                                // get employee code
                                 self.currentEmployee().employeeCode(empCode);
-
+                                // get card number
+                                self.initStampCard(empCode);
                             });
                         }
                         self.currentUseSetting(new UserSetting(userSetting));
@@ -375,7 +423,14 @@ module cps002.a.vm {
 
             return dfd.promise();
         }
-
+        
+        initStampCard(newEmployeeCode : string) {
+            let self = this;
+            service.getInitCardNumber(newEmployeeCode).done((value) => {
+                self.currentEmployee().cardNo(value);
+            });
+        }
+        
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
@@ -472,12 +527,15 @@ module cps002.a.vm {
             });
 
 
-            service.getSelfRoleAuth().done((result: IRoleAuth) => {
-
-                if (result) {
-                    self.isAllowAvatarUpload(result.allowAvatarUpload == 0 ? false : true);
+            // check quyen có thể upload Avatar duoc khong
+            permision().done((data: Array<IPersonAuth>) => {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].functionNo == FunctionNo.No2_Allow_UploadAva) {
+                            self.isAllowAvatarUpload(data[i].available == false ? false : true);
+                        }
+                    }
                 }
-
             });
 
         }
@@ -676,7 +734,7 @@ module cps002.a.vm {
                 isCardNoMode = param === 'true' ? true : false,
                 useSetting = self.currentUseSetting(),
                 employee = self.currentEmployee();
-            setShared("cardNoMode", isCardNoMode);
+            setShared("empCodeMode", isCardNoMode);
             if (useSetting) {
 
                 if (!isCardNoMode) {
@@ -692,7 +750,7 @@ module cps002.a.vm {
 
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
-                let result = getShared("CPS002_PARAM"),
+                let result = getShared("CPS002_PARAM_MODE_EMP_CODE"),
                     currentEmp = self.currentEmployee();
                 if (result) {
                     $("#employeeCode").ntsError("clear");
@@ -703,6 +761,39 @@ module cps002.a.vm {
                         currentEmp.employeeCode(result);
                         currentEmp.employeeCode.valueHasMutated();
                     }
+                }
+            });
+        }
+        
+
+        openJModal(param, data) {
+
+            let self: ViewModel = __viewContext['viewModel'],
+                isCardNoMode = param === 'true' ? true : false,
+                useSetting = self.currentUseSetting(),
+                employee = self.currentEmployee();
+            setShared("cardNoMode", isCardNoMode);
+            if (useSetting) {
+
+                if (!isCardNoMode) {
+                    self.getEmployeeCode(useSetting).done((employeeCode) => {
+
+                        setShared("textValue", employeeCode);
+                    });
+                } else {
+
+
+                }
+            }
+
+            subModal('/view/cps/002/j/index.xhtml', { title: '' }).onClosed(() => {
+
+                let result = getShared("CPS002_PARAM_MODE_CARDNO"),
+                    currentEmp = self.currentEmployee();
+                if (result) {
+                    $("#cardNumber").ntsError("clear");
+                        currentEmp.cardNo(result);
+                        currentEmp.cardNo.valueHasMutated();
                 }
             });
         }
@@ -1052,10 +1143,45 @@ module cps002.a.vm {
         PreviousSpace = 3,
         AfterSpace = 4
     }
+    
+    enum CardNoValType {
+        //頭文字指定 (InitialDesignation)
+        INIT_DESIGNATION = 1,
+        //空白 (Blank)
+        BLANK = 2,
+        //社員コードと同じ (SameAsEmployeeCode)
+        SAME_AS_EMP_CODE = 3,
+        //最大値 (MaxValue)
+        MAXVALUE = 4,
+        //会社コード＋社員コード (CompanyCodeAndEmployeeCode)
+        CPC_AND_EMPC = 5 
+    }
 
     enum POSITION {
         Previous = 0,
         After = 1
+    }
+    
+    interface IPersonAuth {
+        functionNo: number;
+        functionName: string;
+        available: boolean;
+        description: string;
+        orderNumber: number;
+    }
+
+    enum FunctionNo {
+        No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
+        No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No3_Allow_RefAva = 3,// có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No4_Allow_UploadMap = 4, // có thể upload file bản đồ ở đăng ký thông tin cá nhân
+        No5_Allow_RefMap = 5, // có thể xem file bản đồ ở đăng ký thông tin cá nhân
+        No6_Allow_UploadDoc = 6,// có thể upload file điện tử employee ở đăng ký thông tin cá nhân
+        No7_Allow_RefDoc = 7,// có thể xem file điện tử employee ở đăng ký thông tin cá nhân
+        No8_Allow_Print = 8,  // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
+        No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
     }
 
 }

@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     export abstract class ScreenModel {
+        displayGoback: KnockoutObservable<boolean> = ko.observable(false);
         // Metadata
         appID: KnockoutObservable<string>;
         appType: KnockoutObservable<number>;
@@ -16,11 +17,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         listPhase: KnockoutObservableArray<shrvm.model.AppApprovalPhase> = ko.observableArray([]);
         //listPhaseID
         listPhaseID: Array<string>;
-        //list appID 
+        //list appID
         listReasonByAppID: KnockoutObservableArray<string> = ko.observableArray([]);
 
         /**InputCommonData
-         * value obj 
+         * value obj
          */
         reasonToApprover: KnockoutObservable<string> = ko.observable('');
         reasonOutputMess: string = nts.uk.resource.getText('KAF000_1');
@@ -73,11 +74,21 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         displayApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
         enableApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReturnReasonPanel: KnockoutObservable<boolean> = ko.observable(false);
+        version: number = 0;
 
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
             //reason input event
             // Metadata
+            nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
+                if(nts.uk.util.isNullOrUndefined(obj)){
+                    self.displayGoback(false);        
+                } else {
+                    self.displayGoback(true);                 
+                }
+            }).fail(()=>{
+                self.displayGoback(false);      
+            });
             self.listAppMeta = listAppMetadata;
             self.appType = ko.observable(currentApp.appType);
             self.appID = ko.observable(currentApp.appID);
@@ -112,6 +123,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 appID: self.appID()
             }).done((data) => {
                 self.inputCommandEvent().version = data.applicationDto.version;
+                self.version = data.applicationDto.version;
                 self.dataApplication(data.applicationDto);
                 self.appType(data.applicationDto.applicationType);
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
@@ -143,7 +155,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             state: any, // trạng thái đơn
             canApprove: any,  // có thể bấm nút approval không true, false
             expired: any, // phân biệt thời hạn
-            loginFlg: any // login có phải người viết đơn/ người xin hay k 
+            loginFlg: any // login có phải người viết đơn/ người xin hay k
         ) {
             var self = this;
             self.displayApprovalButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
@@ -214,7 +226,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             });;
             return dfd.promise();
         }
-        //get detail check 
+        //get detail check
         getDetailCheck(inputGetDetail: any) {
             let self = this;
             let dfd = $.Deferred<any>();
@@ -310,9 +322,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 if (data.processDone) {
                     nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
                         if (data.autoSendMail) {
-                            appcommon.CommonProcess.displayMailResult(data);
+                            appcommon.CommonProcess.displayMailResultKAF000(data);
                         } else {
-                            location.reload();
+                            self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                                nts.uk.ui.block.clear();        
+                            });
                         }
                     });
                 } else {
@@ -320,18 +334,42 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 }
             } else {
                 nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
-                    location.reload();
+                    nts.uk.ui.block.clear();   
                 });
             }
         }
 
         btnRemand() {
             let self = this;
-            let command = { appID: self.appID(), version: self.dataApplication().version };
+            let command = { appID: self.getAppId(), version: self.dataApplication().version };
             setShared("KDL034_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml").onClosed(() => {
-                location.reload();
+                self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                    nts.uk.ui.block.clear();        
+                });
             });
+        }
+
+        getAppId() {
+            let self = this,
+                isHolidayShipmentApp = self.appType() == 10,
+                resultIds = [];
+
+            if (isHolidayShipmentApp) {
+                let vm: nts.uk.at.view.kaf011.b.viewmodel.ScreenModel = __viewContext['viewModel'],
+                    recID = vm.recWk().appID(),
+                    absID = vm.absWk().appID();
+                if (recID) {
+                    resultIds.push(recID);
+                }
+                if (absID) {
+                    resultIds.push(absID);
+                }
+            } else {
+                resultIds.push(self.appID());
+            }
+            return resultIds;
+
         }
 
         /**
@@ -375,7 +413,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let command = { appID: self.appID() };
             setShared("KDL030_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                location.reload();
+                self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                    nts.uk.ui.block.clear();       
+                });
             });
         }
         /**
@@ -418,7 +458,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             shipmentCmd = {
                 absAppID: vm.absWk().appID(),
                 recAppID: vm.recWk().appID(),
-                appVersion: vm.version(),
+                appVersion: vm.version,
                 memo: memo ? memo : ""
             }
 
@@ -435,7 +475,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
 
             self.listAppMeta.splice(index, 1);
-            //if list # null    
+            //if list # null
             if (self.listAppMeta.length == 0) {
                 //nếu list null thì trả về màn hình mẹ
                 nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
@@ -458,7 +498,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         /**
-         *  btn Cancel 
+         *  btn Cancel
          */
         btnCancel() {
             nts.uk.ui.block.invisible();
@@ -468,7 +508,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function() {
                 service.cancelApp(cancelCmd, self.appType()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_224" }).then(() => {
-                        location.reload();
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                            nts.uk.ui.block.clear();        
+                        });
                     });
                 }).fail(function(res: any) {
                     self.showError(res);
@@ -527,7 +569,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }//end class OutputGetAllDataApp
 
 
-        //class Application 
+        //class Application
         export class ApplicationDto {
             version: number;
             applicationID: string;
@@ -597,7 +639,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }//end class Application
 
 
-        //class OutputPhaseAndFrame 
+        //class OutputPhaseAndFrame
         export class OutputPhaseAndFrame {
             appApprovalPhase: shrvm.model.AppApprovalPhase;
             listApprovalFrame: Array<shrvm.model.ApprovalFrame>;
@@ -609,7 +651,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
         }//end class OutputPhaseAndFrame
 
-        //class InputGetDetailCheck 
+        //class InputGetDetailCheck
         export class InputGetDetailCheck {
             applicationID: string;
             baseDate: string;
@@ -708,10 +750,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             // B3-1
             displayReturnReasonPanel: KnockoutObservable<boolean>;
 
-            // B4-1 
+            // B4-1
             displayReturnReasonLabel: KnockoutObservable<boolean>;
 
-            // B4-2 
+            // B4-2
             displayReturnReason: KnockoutObservable<boolean>;
             enableReturnReason: KnockoutObservable<boolean>;
             displayMessageArea: KnockoutObservable<boolean>;

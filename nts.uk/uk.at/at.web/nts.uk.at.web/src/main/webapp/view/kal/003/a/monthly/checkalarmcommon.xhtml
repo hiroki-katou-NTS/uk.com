@@ -10,8 +10,8 @@
     </com:ValidatorScript> 
 	
 	<div>
-		<div style="padding-bottom: 30px;">
-			<button style="margin-right: 20px;" data-bind="click: createNewCheckCondition_click,enable: true">#{i18n.getText('KAL003_21')}</button>
+		<div style = "padding-bottom: 10px;">
+			<button data-bind="click: createNewCheckCondition_click,enable: true">#{i18n.getText('KAL003_21')}</button>
 			<button data-bind="click: deleteCheckCondition_click, enable: true">#{i18n.getText('KAL003_22')}</button>
 		</div>
 		
@@ -19,9 +19,9 @@
 		       <colgroup>
 			        <col width="36px"/>
 			        <col width="36px"/>
-			        <col width="230px"/>
+			        <col width="200px"/>
 			        <col width="90px"/>
-			        <col width="230px"/>
+			        <col width="190px"/>
 			    </colgroup>
 			    <thead>
 			        <tr>
@@ -45,7 +45,7 @@
 		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 				                textmode: 'text',
 				                placeholder: '',
-				                width: '203px',
+				                width: '160px',
 				                textalign: 'left'
 				            }))}" />
 	                   </td>

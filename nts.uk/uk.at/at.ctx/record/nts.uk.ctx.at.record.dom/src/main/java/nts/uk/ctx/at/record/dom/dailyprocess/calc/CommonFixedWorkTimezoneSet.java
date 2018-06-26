@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;

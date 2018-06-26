@@ -879,7 +879,7 @@ module nts.uk.at.view.kal003.share.model {
             if(!nts.uk.util.isNullOrUndefined(data)){
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
                 this.extractType=ko.observable(data.compareOperator || 0);
-                this.textLabel=ko.observable(data.classification == 0 ? nts.uk.resource.getText("KAL003_158"): nts.uk.resource.getText("KAL003_159"));
+                this.textLabel=ko.observable(data.classification == 0 ? nts.uk.resource.getText("KAL003_159"): nts.uk.resource.getText("KAL003_158"));
                 this.operator=ko.observable(data.compareOperator || 0);
                 this.haveInput=ko.observable(data.classification == 0 ? 1 : 2);
                 this.typeCheckItem =ko.observable(data.classification == 0 ? 1 : 2 );
@@ -1022,7 +1022,7 @@ module nts.uk.at.view.kal003.share.model {
                 } else {
                     self.inputs()[1].enable(false);
                     self.inputs()[1].required(false);
-                    self.inputs()[1].value('');
+                    self.inputs()[1].value(0);
                 }
             });  
         }
@@ -1208,6 +1208,8 @@ module nts.uk.at.view.kal003.share.model {
         displayTarget: string;
         displayRightCompare: string;
         displayRightOperator: string;
+        inputCheckCondition :number;
+        
     }
 
     export class ErAlAtdItemCondition {
@@ -1232,7 +1234,8 @@ module nts.uk.at.view.kal003.share.model {
         displayTarget: KnockoutObservable<any>;
         displayRightCompare: KnockoutObservable<any>;
         displayRightOperator: KnockoutObservable<any>;
-
+        
+        inputCheckCondition :KnockoutObservable<number>;
         constructor(NO, param: IErAlAtdItemCondition) {
             let self = this;
             if(!nts.uk.util.isNullOrUndefined(param)){
@@ -1252,6 +1255,7 @@ module nts.uk.at.view.kal003.share.model {
                 self.displayTarget=ko.observable("");
                 self.displayRightCompare=ko.observable("");
                 self.displayRightOperator=ko.observable("");
+                self.inputCheckCondition = ko.observable(0);
                 self.setTextDisplay();    
             }else{
                 self.targetNO=ko.observable(NO);
@@ -1270,27 +1274,37 @@ module nts.uk.at.view.kal003.share.model {
                 self.displayTarget=ko.observable("");
                 self.displayRightCompare=ko.observable("");
                 self.displayRightOperator=ko.observable("");
+                self.inputCheckCondition = ko.observable(0);
                 self.setTextDisplay();    
             }
             self.displayLeft = ko.computed(() => {
-                if(self.compareOperator() === 6 || self.compareOperator() === 7){
-                    return self.displayLeftCompare();
+                let compareOp = self.compareOperator();
+                let case1 = self.displayLeftCompare();
+                let case2 = self.displayTarget();
+                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                    return case1;
                 } else {
-                    return self.displayTarget();
+                    return case2;
                 }  
             });
             self.displayRight = ko.computed(() => {
-                if(self.compareOperator() === 8 || self.compareOperator() === 9){
-                    return self.displayTarget();
+                let compareOp = self.compareOperator();
+                let case1 = self.displayRightCompare();
+                let case2 = self.displayTarget();
+                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                    return case1;
                 } else {
-                    return self.displayRightCompare();
+                    return case2;
                 }
             });
             self.displayCenter = ko.computed(() => {
-                if(self.compareOperator() === 6 || self.compareOperator() === 7){
-                    return self.displayTarget();
+                let compareOp = self.compareOperator();
+                let case1 = self.displayLeftCompare();
+                let case2 = self.displayTarget();
+                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                    return case2;
                 } else {
-                    return self.displayLeftCompare();
+                    return case1;
                 }
             });
             
@@ -1318,6 +1332,7 @@ module nts.uk.at.view.kal003.share.model {
             x.displayTarget(data.displayTarget);
             x.displayRightCompare(data.displayRightCompare);    
             x.displayRightOperator(data.displayRightOperator);
+            x.inputCheckCondition(0);
 //            x.setTextDisplay=ko.observable(data.setTextDisplay);
            // ko.mapping.fromJS(data, mapping, x);
             return x;
@@ -1368,12 +1383,12 @@ module nts.uk.at.view.kal003.share.model {
                     self.displayRightOperator("≦");
                     break;
                 case 8:
-                    self.displayLeftOperator("＜");
-                    self.displayRightOperator("＜");
+                    self.displayLeftOperator("＞");
+                    self.displayRightOperator("＞");
                     break;
                 case 9:
-                    self.displayLeftOperator("≦");
-                    self.displayRightOperator("≦");
+                    self.displayLeftOperator("≧");
+                    self.displayRightOperator("≧");
                     break;
                 default: 
                     self.displayLeftOperator("");
