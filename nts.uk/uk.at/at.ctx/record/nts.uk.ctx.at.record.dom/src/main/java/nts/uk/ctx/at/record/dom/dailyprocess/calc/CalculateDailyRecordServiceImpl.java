@@ -48,6 +48,7 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.CalcDefaultValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
@@ -742,13 +743,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																		   HolidayTimesheetCalculationSetting.CalculateAutomatical);
 
 		// 休暇クラス
-		VacationClass vacation = new VacationClass(new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
-				new TimeDigestOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-				new YearlyReservedOfDaily(new AttendanceTime(0)),
-				new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-				new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-				new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-				new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
+		VacationClass vacation = CalcDefaultValue.DEFAULT_VACATION;
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.of(new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
 																													new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay))));
