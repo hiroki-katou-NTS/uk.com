@@ -52,6 +52,7 @@ public class OptionalAggrPeriodFinder {
 		aggrPeriodDto.setOptionalAggrName(optionalAggrPeriod.getOptionalAggrName().v());
 		aggrPeriodDto.setStartDate(optionalAggrPeriod.getStartDate());
 		aggrPeriodDto.setEndDate(optionalAggrPeriod.getEndDate());
+		aggrPeriodDto.setPeopleNo(optionalAggrPeriod.getPeopleNo());
 		return aggrPeriodDto;
 	}
 

@@ -29,6 +29,9 @@ public class OptionalAggrPeriod extends AggregateRoot {
 
 	/** 対象期間 */
 	private GeneralDate endDate;
+	
+	/** 人数*/
+	private Integer peopleNo;
 
 	/**
 	 * Contructor
@@ -37,15 +40,17 @@ public class OptionalAggrPeriod extends AggregateRoot {
 	 * @param optionalAggrName
 	 * @param startDate
 	 * @param endDate
+	 * @param peopleNo
 	 */
 	public OptionalAggrPeriod(String companyId, AggrFrameCode aggrFrameCode, OptionalAggrName optionalAggrName,
-			GeneralDate startDate, GeneralDate endDate) {
+			GeneralDate startDate, GeneralDate endDate, Integer peopleNo) {
 		super();
 		this.companyId = companyId;
 		this.aggrFrameCode = aggrFrameCode;
 		this.optionalAggrName = optionalAggrName;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.peopleNo = peopleNo;
 	}
 
 	/**
@@ -58,9 +63,9 @@ public class OptionalAggrPeriod extends AggregateRoot {
 	 * @return
 	 */
 	public static OptionalAggrPeriod createFromJavaType(String companyId, String aggrFrameCode, String optionalAggrName,
-			GeneralDate startDate, GeneralDate endDate) {
+			GeneralDate startDate, GeneralDate endDate, Integer peopleNo) {
 
 		return new OptionalAggrPeriod(companyId, new AggrFrameCode(aggrFrameCode),
-				new OptionalAggrName(optionalAggrName), startDate, endDate);
+				new OptionalAggrName(optionalAggrName), startDate, endDate, peopleNo);
 	}
 }

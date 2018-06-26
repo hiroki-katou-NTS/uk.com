@@ -17,53 +17,56 @@ import nts.uk.ctx.at.record.infra.entity.resultsperiod.optionalaggregationperiod
  *
  */
 @Stateless
-public class JpaOptionalAggrPeriodRepository extends JpaRepository implements OptionalAggrPeriodRepository{
+public class JpaOptionalAggrPeriodRepository extends JpaRepository implements OptionalAggrPeriodRepository {
 
-	private static final String FIND_ALL;	
+	private static final String FIND_ALL;
 	private static final String FIND;
-	static{
-	StringBuilder builderString = new StringBuilder();
-	builderString.append("SELECT e");
-	builderString.append(" FROM KrcmtOptionalAggrPeriod e");
-	builderString.append(" WHERE e.krcmtOptionalAggrPeriodPK.companyId = :companyId");
-	FIND_ALL = builderString.toString();
-	
-	builderString = new StringBuilder();
-	builderString.append("SELECT e");
-	builderString.append(" FROM KrcmtOptionalAggrPeriod e");
-	builderString.append(" WHERE e.krcmtOptionalAggrPeriodPK.companyId = :companyId");
-	builderString.append(" AND e.krcmtOptionalAggrPeriodPK.aggrFrameCode = :aggrFrameCode");
-	FIND = builderString.toString();
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM KrcmtOptionalAggrPeriod e");
+		builderString.append(" WHERE e.krcmtOptionalAggrPeriodPK.companyId = :companyId");
+		FIND_ALL = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM KrcmtOptionalAggrPeriod e");
+		builderString.append(" WHERE e.krcmtOptionalAggrPeriodPK.companyId = :companyId");
+		builderString.append(" AND e.krcmtOptionalAggrPeriodPK.aggrFrameCode = :aggrFrameCode");
+		FIND = builderString.toString();
 	}
-	
+
 	/**
 	 * Find all Optional Aggr Period by companyId
 	 */
 	@Override
 	public List<OptionalAggrPeriod> findAll(String companyId) {
-		return this.queryProxy().query(FIND_ALL, KrcmtOptionalAggrPeriod.class)
-				.setParameter("companyId", companyId).getList(c -> convertToDomainOap(c));
+		return this.queryProxy().query(FIND_ALL, KrcmtOptionalAggrPeriod.class).setParameter("companyId", companyId)
+				.getList(c -> convertToDomainOap(c));
 	}
 
 	/**
 	 * Convert to Domain Optional Aggr Period
+	 * 
 	 * @param krcmtOptionalAggrPeriod
 	 * @return
 	 */
-    private OptionalAggrPeriod convertToDomainOap(KrcmtOptionalAggrPeriod krcmtOptionalAggrPeriod){
-    	OptionalAggrPeriod optionalAggrPeriod = OptionalAggrPeriod.createFromJavaType(krcmtOptionalAggrPeriod.krcmtOptionalAggrPeriodPK.companyId, 
-    			krcmtOptionalAggrPeriod.krcmtOptionalAggrPeriodPK.aggrFrameCode, 
-    			krcmtOptionalAggrPeriod.optionalAggrName, krcmtOptionalAggrPeriod.startDate, krcmtOptionalAggrPeriod.endDate);
+	private OptionalAggrPeriod convertToDomainOap(KrcmtOptionalAggrPeriod krcmtOptionalAggrPeriod) {
+		OptionalAggrPeriod optionalAggrPeriod = OptionalAggrPeriod.createFromJavaType(
+				krcmtOptionalAggrPeriod.krcmtOptionalAggrPeriodPK.companyId,
+				krcmtOptionalAggrPeriod.krcmtOptionalAggrPeriodPK.aggrFrameCode,
+				krcmtOptionalAggrPeriod.optionalAggrName, krcmtOptionalAggrPeriod.startDate,
+				krcmtOptionalAggrPeriod.endDate, krcmtOptionalAggrPeriod.peopleNo);
 		return optionalAggrPeriod;
-    }
-	
-    /**
-     * Add Optional Aggr Period
-     */
+	}
+
+	/**
+	 * Add Optional Aggr Period
+	 */
 	@Override
 	public void addOptionalAggrPeriod(OptionalAggrPeriod optionalAggrPeriod) {
 		this.commandProxy().insert(convertToDbTypeOap(optionalAggrPeriod));
-		
+
 	}
 
 	/**
@@ -77,6 +80,7 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 		entity.optionalAggrName = optionalAggrPeriod.getOptionalAggrName().v();
 		entity.startDate = optionalAggrPeriod.getStartDate();
 		entity.endDate = optionalAggrPeriod.getEndDate();
+		entity.peopleNo = optionalAggrPeriod.getPeopleNo();
 		return entity;
 	}
 
@@ -85,11 +89,13 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 	 */
 	@Override
 	public void updateOptionalAggrPeriod(OptionalAggrPeriod optionalAggrPeriod) {
-		KrcmtOptionalAggrPeriodPK primaryKey = new KrcmtOptionalAggrPeriodPK(optionalAggrPeriod.getCompanyId(), optionalAggrPeriod.getAggrFrameCode().v());
+		KrcmtOptionalAggrPeriodPK primaryKey = new KrcmtOptionalAggrPeriodPK(optionalAggrPeriod.getCompanyId(),
+				optionalAggrPeriod.getAggrFrameCode().v());
 		KrcmtOptionalAggrPeriod period = this.queryProxy().find(primaryKey, KrcmtOptionalAggrPeriod.class).get();
 		period.optionalAggrName = optionalAggrPeriod.getOptionalAggrName().v();
 		period.startDate = optionalAggrPeriod.getStartDate();
 		period.endDate = optionalAggrPeriod.getEndDate();
+		period.peopleNo = optionalAggrPeriod.getPeopleNo();
 		this.commandProxy().update(period);
 	}
 
@@ -100,7 +106,7 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 	public void deleteOptionalAggrPeriod(String companyId, String aggrFrameCode) {
 		KrcmtOptionalAggrPeriodPK aggrPeriodPK = new KrcmtOptionalAggrPeriodPK(companyId, aggrFrameCode);
 		this.commandProxy().remove(KrcmtOptionalAggrPeriod.class, aggrPeriodPK);
-		
+
 	}
 
 	/**
@@ -108,8 +114,7 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 	 */
 	@Override
 	public Optional<OptionalAggrPeriod> findByCid(String companyId) {
-		return this.queryProxy().query(FIND_ALL, KrcmtOptionalAggrPeriod.class)
-				.setParameter("companyId", companyId)
+		return this.queryProxy().query(FIND_ALL, KrcmtOptionalAggrPeriod.class).setParameter("companyId", companyId)
 				.getSingle(t -> convertToDomainOap(t));
 	}
 
@@ -118,10 +123,8 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 	 */
 	@Override
 	public Optional<OptionalAggrPeriod> find(String companyId, String aggrFrameCode) {
-		return this.queryProxy().query(FIND, KrcmtOptionalAggrPeriod.class)
-				.setParameter("companyId", companyId)
-				.setParameter("aggrFrameCode", aggrFrameCode)
-				.getSingle(t -> convertToDomainOap(t));
+		return this.queryProxy().query(FIND, KrcmtOptionalAggrPeriod.class).setParameter("companyId", companyId)
+				.setParameter("aggrFrameCode", aggrFrameCode).getSingle(t -> convertToDomainOap(t));
 	}
 
 }

@@ -24,6 +24,9 @@ public class OptionalAggrPeriodDto {
 
 	/** 対象期間 */
 	private GeneralDate endDate;
+	
+	/** */
+	private Integer peopleNo;
 
 	public static OptionalAggrPeriodDto fromDomain(OptionalAggrPeriod domain){
 		return new OptionalAggrPeriodDto(
@@ -31,7 +34,8 @@ public class OptionalAggrPeriodDto {
 				domain.getAggrFrameCode().v(),
 				domain.getOptionalAggrName().v(),
 				domain.getStartDate(),
-				domain.getEndDate()
+				domain.getEndDate(),
+				domain.getPeopleNo()
 				);
 	}
 }
