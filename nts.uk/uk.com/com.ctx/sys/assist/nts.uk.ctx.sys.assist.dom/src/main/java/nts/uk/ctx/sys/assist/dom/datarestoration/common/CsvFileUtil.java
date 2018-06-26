@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.csv.CSVParsedResult;
@@ -151,7 +152,7 @@ public class CsvFileUtil {
 	}
 	
 	public static InputStream createInputStreamFromFile(String fileId, String fileName) {
-		String filePath = DATA_STORE_PATH + "//packs//" + fileId + "//temp//" + fileName + ".csv";
+		String filePath = getCsvStoragePath(fileId) + "//" + fileName + ".csv";
 		try {
 			return new FileInputStream(new File(filePath));
 		} catch (FileNotFoundException e) {
@@ -164,6 +165,16 @@ public class CsvFileUtil {
 	}
 
 	public static String getCsvStoragePath(String fileId) {
-		return DATA_STORE_PATH + "//packs//" + fileId + "//temp";
+		String extractDataStoragePath = getExtractDataStoragePath(fileId);
+		File f = new File(extractDataStoragePath);
+		if (f.exists()){
+			if(f.list().length >0 ){
+				return extractDataStoragePath + "//" + f.list()[0]; 
+			}
+		}
+		return Strings.EMPTY;
+	}
+	public static String getExtractDataStoragePath(String fileId){
+		return DATA_STORE_PATH + "//packs//" + fileId;
 	}
 }
