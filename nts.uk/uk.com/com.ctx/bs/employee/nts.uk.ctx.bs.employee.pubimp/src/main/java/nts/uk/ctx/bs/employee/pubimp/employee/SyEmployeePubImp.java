@@ -45,6 +45,7 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
+import nts.uk.ctx.bs.employee.pub.employee.StatusOfEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -546,5 +547,17 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		result.setEmployeeCode(emp.getEmployeeCode().v());
 
 		return result;
+	}
+
+	
+	@Override
+	public StatusOfEmployeeExport getStatusOfEmployee(String sid) {
+
+		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sid);
+		if (empOpt.isPresent()) {
+			return new StatusOfEmployeeExport(empOpt.get().getDeletedStatus().value == 0 ? false : true);
+		} else {
+			return null;
+		}
 	}
 }

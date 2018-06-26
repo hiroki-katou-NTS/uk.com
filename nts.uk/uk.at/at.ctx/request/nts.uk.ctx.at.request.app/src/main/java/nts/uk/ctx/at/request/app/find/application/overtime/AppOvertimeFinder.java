@@ -889,7 +889,9 @@ public class AppOvertimeFinder {
 		if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value && appDate != null){
 			// 6.計算処理 :
 			DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation
-					.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), result.getWorkType().getWorkTypeCode(), result.getSiftType().getSiftCode(),
+					.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT),
+							result.getWorkType() == null? null : result.getWorkType().getWorkTypeCode(),
+							result.getSiftType()== null ? null : result.getSiftType().getSiftCode(),
 							result.getWorkClockFrom1(), result.getWorkClockTo1(), null, null);
 			Map<Integer, TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 			List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,
@@ -897,7 +899,8 @@ public class AppOvertimeFinder {
 					dailyAttendanceTimeCaculationImport.getMidNightTime());
 			// 01-18_実績の内容を表示し直す : chưa xử lí
 			if (approvalFunctionSetting != null) {
-				AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(result.getApplication().getPrePostAtr(), result.getSiftType().getSiftCode(),
+				AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(result.getApplication().getPrePostAtr(), 
+						result.getSiftType()== null ? null : result.getSiftType().getSiftCode(),
 						companyID, employeeID, appDate, approvalFunctionSetting, overTimeHours, overtimeInputCaculations);
 				result.setAppOvertimeReference(appOvertimeReference);
 			}

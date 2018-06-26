@@ -124,4 +124,23 @@ public class BasicAgreementSetting extends AggregateRoot {
 				new AlarmOneYear(alarmOneYear),new ErrorOneYear(errorOneYear), new LimitOneYear(limitOneYear));
 	}
 
+	public void setAlarmOneYear(AlarmOneYear alarmOneYear) {
+		this.alarmOneYear = alarmOneYear;
+	}
+
+	public void setErrorOneYear(ErrorOneYear errorOneYear) {
+		this.errorOneYear = errorOneYear;
+	}
+
+	public void setAlarmOneMonth(AlarmOneMonth alarmOneMonth) {
+		this.alarmOneMonth = alarmOneMonth;
+	}
+
+	public void setErrorOneMonth(ErrorOneMonth errorOneMonth) {
+		this.errorOneMonth = errorOneMonth;
+	}
+
+	
+	
+
 }

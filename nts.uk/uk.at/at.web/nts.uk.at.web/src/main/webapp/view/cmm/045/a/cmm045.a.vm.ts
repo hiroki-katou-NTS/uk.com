@@ -38,6 +38,8 @@ module cmm045.a.viewmodel {
         //spr
         isSpr: KnockoutObservable<boolean> = ko.observable(false);
         extractCondition: KnockoutObservable<number> = ko.observable(0);
+        //ver33
+        isHidden: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([
@@ -69,13 +71,6 @@ module cmm045.a.viewmodel {
             //get param spr
             let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ? 
                     null : __viewContext.transferred.value.PARAM_SPR_CMM045;
-//            let paramSprCmm045: vmbase.IntefaceSPR = {
-//                mode: 1,//1=承認一覧
-//                startDate: '2018/05/02',//yyyy-mm-dd //期間（開始日）
-//                endDate: '2018/05/02',//yyyy-mm-dd //期間（終了日）
-//                extractCondition: 1,//０＝全て、１＝早出・普通残業のみ
-//                agreementTime36: 0//０＝表示しない、1＝表示する
-//            }
             //spr call
             if(paramSprCmm045 !== undefined && paramSprCmm045 !== null){
                 character.save('AppListExtractCondition', null);
@@ -84,13 +79,8 @@ module cmm045.a.viewmodel {
                 self.mode(paramSprCmm045.mode);
                 self.isSpr(true);
                 self.extractCondition(paramSprCmm045.extractCondition);
-//                let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
-//                self.selectedCode(selectedType);
-//                self.selectedIds([1,2,3,4,5,6]);
-                
             }
             character.restore("AppListExtractCondition").done((obj) => {
-//                console.log(obj);
                 characterData = obj;
                 if (obj !== undefined && obj !== null && !self.isSpr()) {
                     let date: vmbase.Date = { startDate: obj.startDate, endDate: obj.endDate }
@@ -135,6 +125,8 @@ module cmm045.a.viewmodel {
                     });
                     service.getApplicationList(param).done(function(data) {
                         console.log(data);
+                        let isHidden = data.isDisPreP == 1 ? false : true;
+                        self.isHidden(isHidden);
                         self.selectedRuleCode.subscribe(function(codeChanged) {
                             self.filter();
                         });
@@ -240,10 +232,10 @@ module cmm045.a.viewmodel {
                         if (self.mode() == 1) {
                             let colorBackGr = self.fillColorbackGrAppr();
                              let lstHidden: Array<any> = self.findRowHidden(self.items());
-                             self.reloadGridApproval(lstHidden,colorBackGr);
+                             self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
                         } else {
                             let colorBackGr = self.fillColorbackGr();
-                            self.reloadGridApplicaion(colorBackGr);
+                            self.reloadGridApplicaion(colorBackGr, self.isHidden());
                         }
                         if(appCHeck != null){
                             self.selectedCode(appCHeck);
@@ -262,10 +254,11 @@ module cmm045.a.viewmodel {
             return dfd.promise();
         }
 
-        reloadGridApplicaion(colorBackGr: any) {
+        reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
             var self = this;
+            let widthAuto = isHidden == false ? '1120px' : '1040px';
             $("#grid2").ntsGrid({
-                width: '1120px',
+                width: widthAuto,
                 height: '500px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
@@ -279,7 +272,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                     { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '110px' },
-                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px' },
+                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px', hidden: isHidden},
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
                     { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px', 
                         formatter: (v) => (v.replace(/(<|<)script>/gi, '&lt;script&gt;').replace(/(<\/)script>/gi, '&lt;/script&gt;'))},
@@ -302,13 +295,6 @@ module cmm045.a.viewmodel {
                         state: 'state',
                         states: colorBackGr
                     },
-//                    {
-//                        name: 'TextColor',
-//                        rowId: 'rowId',
-//                        columnKey: 'columnKey',
-//                        color: 'color',
-//                        colorsTable: colorsText
-//                    }
                 ],
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: 'Button', text: getText('CMM045_50'), controlType: 'Button', enable: true },
@@ -430,10 +416,11 @@ module cmm045.a.viewmodel {
              });
             return result;
         }
-        reloadGridApproval(lstHidden: Array<any>, colorBackGr: any) {
+        reloadGridApproval(lstHidden: Array<any>, colorBackGr: any, isHidden: boolean) {
             var self = this;
+            let widthAuto = isHidden == false ? '1175px' : '1105px';
             $("#grid1").ntsGrid({
-                width: '1175px',
+                width: widthAuto,
                 height: '530px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
@@ -448,7 +435,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '60px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                     { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '90px'},
-                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '70px' },
+                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '70px', hidden: isHidden},
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
                     { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '220px',
                         formatter: (v) => (v.replace(/(<|<)script>/gi, '&lt;script&gt;').replace(/(<\/)script>/gi, '&lt;/script&gt;'))},
@@ -1446,11 +1433,11 @@ module cmm045.a.viewmodel {
                         $("#grid1").ntsGrid("destroy");
                         let colorBackGr = self.fillColorbackGrAppr();
                         let lstHidden: Array<any> = self.findRowHidden(self.items());
-                        self.reloadGridApproval(lstHidden,colorBackGr);
+                        self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
                     } else {
                         let colorBackGr = self.fillColorbackGr();
                         $("#grid2").ntsGrid("destroy");
-                        self.reloadGridApplicaion(colorBackGr);
+                        self.reloadGridApplicaion(colorBackGr, self.isHidden());
                     }
                 }
                 block.clear();
@@ -1557,13 +1544,13 @@ module cmm045.a.viewmodel {
                 }
                 let colorBackGr = self.fillColorbackGrAppr();
                 let lstHidden: Array<any> = self.findRowHidden(self.items());
-                self.reloadGridApproval(lstHidden,colorBackGr);
+                self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
             } else {
                 if($("#grid2").data("igGrid") !== undefined){
                     $("#grid2").ntsGrid("destroy");
                 }
                 let colorBackGr = self.fillColorbackGr();
-                self.reloadGridApplicaion(colorBackGr);
+                self.reloadGridApplicaion(colorBackGr, self.isHidden());
             }
         }
         /**

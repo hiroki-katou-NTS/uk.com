@@ -51,7 +51,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " INNER JOIN BpsmtPerson ps ON  e.bsymtEmployeeDataMngInfoPk.pId = ps.bpsmtPersonPk.pId "
 			+ " WHERE e.companyId = :companyId AND h.startDate <= :baseDate AND h.endDate >= :baseDate ";
 
-	private final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
+	private static final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
 			+ " WHERE c.companyId = :companyId AND c.delStatus = 0 AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
 			+ " ORDER BY c.employeeCode DESC";
 
@@ -82,29 +82,29 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	// duongtv start code
 	/** The select by list emp code. */
-	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
+	public static final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
 			+ " AND e.employeeCode IN :listEmployeeCode ";
 
 	/** The select by list emp id. */
-	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
+	public static final String SELECT_BY_LIST_EMP_ID = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
 			+ " AND e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ORDER BY e.employeeCode ASC";
 
 	// duongtv end code
 
 	/** The select by list empId. */
-	public final String SELECT_BY_LIST_EMPID = SELECT_NO_PARAM + " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
+	public static final String SELECT_BY_LIST_EMPID = SELECT_NO_PARAM + " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
 
 	/** The select by cid and pid. */
 
-	public final String SELECT_BY_CID_PID = SELECT_NO_PARAM
+	public static final String SELECT_BY_CID_PID = SELECT_NO_PARAM
 			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.pId = :pid ";
 
 	/** The select by cid and sid. */
-	public final String SELECT_BY_CID_SID = SELECT_NO_PARAM
+	public static final String SELECT_BY_CID_SID = SELECT_NO_PARAM
 			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.sId = :sid ";
 
 	/** The select by cid and sid. */
-	public final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
+	public static final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
 	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
 
