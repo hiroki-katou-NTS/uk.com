@@ -165,29 +165,50 @@ module nts.uk.at.view.kdm002.b {
                                 });
                                 
                                 if (res.succeeded) {
-                                    _.forEach(res.taskDatas, item => {
-                                        if (item.key.substring(0, 10) == "EXCEL_LIST") {
-                                            if (!exContent) {
-                                                exContent = JSON.parse(item.valueAsString);
+                                    let excelKeyList = [];
+                                    let i = 0;
+                                    for (let data of res.taskDatas) {
+                                        let [excelKeyData] = data.key.split(',');
+                                        if (i == 0) {
+                                            excelKeyList.push(excelKeyData);
+                                        }
+                                        if (res.taskDatas[i + 1]) {
+                                            let [nextExcelKeyData] = res.taskDatas[i + 1].key.split(',');
+                                            if (nts.uk.ntsNumber.isNumber(nextExcelKeyData) && excelKeyData != nextExcelKeyData) {
+                                                excelKeyList.push(nextExcelKeyData);
                                             }
-                                            if (exContent) {
-                                                if (item.key.substring(12, 24) == "WORKTYPEUSED") {
+                                        }
+                                        if (excelKeyData) {
+                                            data.excelKey = excelKeyData;
+                                        }
+                                        i++;
+                                    }
+                                    _.forEach(excelKeyList, extractExcelKey => {
+                                        let listData = _.filter(res.taskDatas, x =>{return x.excelKey === extractExcelKey;});
+                                        if (listData) {
+                                            let exContent;
+                                            for (let item of listData) {
+                                                let [itemKey, itemKeyValue] = item.key.split(',');
+                                                if (itemKeyValue === 'EXCEL_LIST' && !exContent) {
+                                                    exContent = JSON.parse(item.valueAsString);
+                                                }
+                                                if (exContent && itemKeyValue === "WORKTYPEUSED") {
                                                     if (exContent.numberOfWorkTypeUsedImport) {
                                                         exContent.numberOfWorkTypeUsedImport.push.apply(exContent.numberOfWorkTypeUsedImport, JSON.parse(item.valueAsString));
                                                     } else {
                                                         exContent.numberOfWorkTypeUsedImport = JSON.parse(item.valueAsString);
                                                     }
                                                 }
-                                                if (item.key.substring(12, 27) == "PLANNEDVACATION") {
+                                                if (exContent && itemKeyValue === "PLANNEDVACATION") {
                                                     if (exContent.plannedVacationListCommand) {
                                                         exContent.plannedVacationListCommand.push.apply(exContent.plannedVacationListCommand, JSON.parse(item.valueAsString));
                                                     } else {
                                                         exContent.plannedVacationListCommand = JSON.parse(item.valueAsString);
                                                     }
                                                 }
-                                                if(exContent.numberOfWorkTypeUsedImport && exContent.plannedVacationListCommand){
-                                                    self.excelContent.push(exContent);
-                                                }
+                                            }
+                                            if (exContent) {
+                                                self.excelContent.push(exContent);
                                             }
                                         }
                                     });
