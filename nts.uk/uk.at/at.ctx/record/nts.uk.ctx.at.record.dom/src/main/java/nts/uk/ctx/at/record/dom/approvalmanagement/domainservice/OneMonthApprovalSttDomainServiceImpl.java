@@ -230,16 +230,22 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			lstEmployment.addAll(lstClosureEmployment.stream().map(closureEmployment -> {
 				return closureEmployment.getEmploymentCD();
 			}).collect(Collectors.toList()));
+			/*
 			// しぼり込んだ社員一覧が0件の場合
 			if (lstEmployment.size() == 0) {
 				throw new BusinessException("Msg_875");
 			}
+			*/
 			// 対応するすべての社員を取得する
 			// 【条件】 ・取得したドメインモデル「雇用に紐づく就業締め．雇用コード」に一致する基準日時点の所属雇用 ・在職している社員
 			List<RegulationInfoEmployeeQueryR> lstEmployee = regulationInfoEmployeeQueryAdapter
 					.search(createQueryEmployee(lstEmployment, datePeriod.start(), datePeriod.end()));
+			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(lstEmployee, approvalRootOfEmployeeImport);
 			oneMonthApprovalStatusDto
-					.setLstEmployee(buildApprovalEmployeeData(lstEmployee, approvalRootOfEmployeeImport));
+			.setLstEmployee(buildApprovalEmployeeData);
+			if (buildApprovalEmployeeData.isEmpty()) {
+				throw new BusinessException("Msg_875");
+			}
 		} else {
 			throw new BusinessException("Msg_873");
 		}

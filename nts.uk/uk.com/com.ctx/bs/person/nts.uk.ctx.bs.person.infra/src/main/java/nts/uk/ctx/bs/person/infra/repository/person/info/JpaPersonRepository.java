@@ -193,18 +193,15 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 
 	@Override
 	public String getLastCardNo(String companyId, String startCardNoLetter) {
-		if (startCardNoLetter == null)
-			startCardNoLetter = "";
+		
+		startCardNoLetter = startCardNoLetter != null ? "" : startCardNoLetter;
+		
 		List<Object[]> lst = this.queryProxy().query(GET_LAST_CARD_NO).setParameter("companyId", companyId)
 				.setParameter("cardNo", startCardNoLetter).getList();
-
-		String returnStr = "";
-		if (lst.size() > 0) {
-			Object obj = lst.get(0);
-			returnStr = obj.toString();
+		if (lst.isEmpty()) {
+			return "";
 		}
-
-		return returnStr;
+		return lst.get(0).toString();
 	}
 
 	/**

@@ -30,4 +30,6 @@ public class ApprovalFrameExport {
 	private String representerName;
 	
 	private String approvalReason;
+	
+	private int confirmAtr;
 }

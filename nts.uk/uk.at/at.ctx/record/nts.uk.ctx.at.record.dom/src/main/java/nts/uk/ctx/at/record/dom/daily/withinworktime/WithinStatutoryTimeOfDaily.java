@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
@@ -49,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -99,76 +101,85 @@ public class WithinStatutoryTimeOfDaily {
 	 * @param workTimeCode 
 	 * @return
 	 */
-	public static WithinStatutoryTimeOfDaily calcStatutoryTime(CalculationRangeOfOneDay oneDay,	
-															   Optional<PersonalLaborCondition> personalCondition,
+	public static WithinStatutoryTimeOfDaily calcStatutoryTime(ManageReGetClass recordReget,	
 			   												   VacationClass vacationClass,
 			   												   WorkType workType,
-			   												   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-			   												   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-			   												   WorkingSystem workingSystem,
-			   												   WorkDeformedLaborAdditionSet illegularAddSetting,
-			   												   WorkFlexAdditionSet flexAddSetting,
-			   												   WorkRegularAdditionSet regularAddSetting,
-			   												   HolidayAddtionSet holidayAddtionSet,
-			   												   CalAttrOfDailyPerformance autoCalcSet,
-			   												   HolidayCalcMethodSet holidayCalcMethodSet, 
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
 			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,
-			   												   Optional<CoreTimeSetting> coreTimeSetting,
-			   												   DailyUnit dailyUnit,WorkTimezoneCommonSet commonSetting) {
+			   												   WorkingConditionItem conditionItem,
+			   												   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		AttendanceTime actualTime = new AttendanceTime(0);
 		AttendanceTime withinpremiumTime = new AttendanceTime(0);
-		//
-		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
+		//ここに係船できる状態でやってきているかチェックをする
+		//if(!recordReget.getCalculatable()) return new WithinStatutoryTimeOfDaily(workTime, actualTime, new AttendanceTime(0), new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))));
+		
+		if(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().isPresent() && recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc() != null) {
 			//所定内割増時間の計算
-			val predTime = oneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
-			withinpremiumTime = predTime.greaterThan(dailyUnit.getDailyTime().valueAsMinutes())
-										?new AttendanceTime(oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
+			val predTime = recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
+			withinpremiumTime = predTime.greaterThan(recordReget.getDailyUnit().getDailyTime().valueAsMinutes())
+										?new AttendanceTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
 																										  .filter(tc -> tc.getPremiumTimeSheetInPredetermined().isPresent())
 																										  .map(tc -> tc.getPremiumTimeSheetInPredetermined().get().getTimeSheet().lengthAsMinutes())
 																										  .collect(Collectors.summingInt(tc -> tc)))
 																										  
 										:new AttendanceTime(0);
-			
-		//就業時間の計算
-		if(workTimeDailyAtr.isPresent())
-			workTime = calcWithinStatutoryTime(oneDay.getWithinWorkingTimeSheet().get(),personalCondition,vacationClass,workType,
-														  late,leaveEarly,workingSystem,illegularAddSetting,
-														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
-														  calcMethod,
-														  flexCalcMethod,workTimeDailyAtr.get(),workTimeCode,preFlexTime,coreTimeSetting,
-														  oneDay.getPredetermineTimeSetForCalc(),oneDay.getTimeVacationAdditionRemainingTime(),dailyUnit,commonSetting);
-			
-
 		}
+		//就業時間の計算
+			workTime = calcWithinStatutoryTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
+					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
+					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
+														  recordReget.getPersonalInfo().getWorkingSystem(),
+														  recordReget.getWorkDeformedLaborAdditionSet(),
+														  recordReget.getWorkFlexAdditionSet(),recordReget.getWorkRegularAdditionSet(),
+														  recordReget.getHolidayAddtionSet().get(),
+														  recordReget.getHolidayCalcMethodSet(),
+														  calcMethod,
+														  flexCalcMethod,
+														  workTimeDailyAtr,
+														  workTimeCode,preFlexTime,
+														  recordReget.getCoreTimeSetting(),
+														  recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
+														  recordReget.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime(),
+														  recordReget.getDailyUnit(),
+														  recordReget.getWorkTimezoneCommonSet(),conditionItem,
+														  predetermineTimeSetByPersonInfo);
+			
 
-				//実働時間の計算					
-		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
-			actualTime =  calcWithinStatutoryTime(oneDay.getWithinWorkingTimeSheet().get(),personalCondition,vacationClass,workType,
-					  							  late,leaveEarly,workingSystem,illegularAddSetting,
+		//実働時間の計算					
+			actualTime =  calcWithinStatutoryTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
+					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
+					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
+					  							  recordReget.getPersonalInfo().getWorkingSystem(),
+					  							  recordReget.getWorkDeformedLaborAdditionSet(),
 //					  							  flexAddSetting,
-					  							  new WorkFlexAdditionSet(flexAddSetting.getCompanyId(),
-					  									  				  new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
-					  									  										   new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
+					  							  new WorkFlexAdditionSet(recordReget.getWorkFlexAdditionSet().getCompanyId(),
+					  									  				  new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,recordReget.getWorkFlexAdditionSet().getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
+					  									  										   new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, recordReget.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
 					  									  				  ),
 //					  							  regularAddSetting,
-					  							  new WorkRegularAdditionSet(regularAddSetting.getCompanyId(),
-					  									  					new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,regularAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
-					  									  											 new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
+					  							  new WorkRegularAdditionSet(recordReget.getWorkRegularAdditionSet().getCompanyId(),
+					  									  					new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,recordReget.getWorkRegularAdditionSet().getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
+					  									  											 new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, recordReget.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
 					  									  					),
-					  							  holidayAddtionSet,holidayCalcMethodSet,
+					  							  recordReget.getHolidayAddtionSet().get(),recordReget.getHolidayCalcMethodSet(),
 					  							  calcMethod,
-					  							  flexCalcMethod,workTimeDailyAtr.get(),workTimeCode,preFlexTime,coreTimeSetting,
-					  							  oneDay.getPredetermineTimeSetForCalc(),oneDay.getTimeVacationAdditionRemainingTime(),dailyUnit,commonSetting);
+					  							  flexCalcMethod,
+					  							  workTimeDailyAtr,
+					  							  workTimeCode,preFlexTime,
+					  							  recordReget.getCoreTimeSetting(),
+					  							recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
+					  							recordReget.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime(),
+					  							recordReget.getDailyUnit(),
+					  							recordReget.getWorkTimezoneCommonSet(),conditionItem,
+					  							predetermineTimeSetByPersonInfo);
 			actualTime = actualTime.minusMinutes(withinpremiumTime.valueAsMinutes());
-		}
 			
 		//所定内深夜時間の計算
-		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay);
+		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(recordReget.getCalculationRangeOfOneDay());
 
 		 
 		return new WithinStatutoryTimeOfDaily(workTime,actualTime,withinpremiumTime,midNightTime);
@@ -180,7 +191,7 @@ public class WithinStatutoryTimeOfDaily {
 	 * @param dailyUnit 
 	 * @param withinpremiumTime 
 	 */
-	public static AttendanceTime calcWithinStatutoryTime(WithinWorkTimeSheet withinTimeSheet,	Optional<PersonalLaborCondition> personalCondition,
+	public static AttendanceTime calcWithinStatutoryTime(WithinWorkTimeSheet withinTimeSheet,
 			   												   VacationClass vacationClass,
 			   												   WorkType workType,
 			   												   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
@@ -193,24 +204,24 @@ public class WithinStatutoryTimeOfDaily {
 			   												   HolidayCalcMethodSet holidayCalcMethodSet,
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
-			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
+			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
 			   												   PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			   												   Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime, DailyUnit dailyUnit,
-			   												   WorkTimezoneCommonSet commonSetting
+			   												   Optional<WorkTimezoneCommonSet> commonSetting,
+			   												   WorkingConditionItem conditionItem,
+			   												Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo
 			   												   ) {
-		AttendanceTime workTime = new AttendanceTime(0);
-
-		if(workTimeDailyAtr.isFlex()) {
+		if(conditionItem.getLaborSystem().isFlexTimeWork() 
+			&& (!workTimeDailyAtr.isPresent() || workTimeDailyAtr.get().isFlex())) {
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)withinTimeSheet;
-			workTime = changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
+			return changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
 															 flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 						  									 vacationClass,
 						  									 timeVacationAdditionRemainingTime.get(),
 						  									 StatutoryDivision.Nomal,workType,
 						  									 predetermineTimeSetForCalc,
 						  									 workTimeCode,
-						  									 personalCondition,
 						  									 late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 						  									 leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 						  									 workingSystem,
@@ -226,19 +237,19 @@ public class WithinStatutoryTimeOfDaily {
 						  									coreTimeSetting,
 						  									dailyUnit,
 						  									commonSetting,
-						  									TimeLimitUpperLimitSetting.NOUPPERLIMIT
-						  									
+						  									TimeLimitUpperLimitSetting.NOUPPERLIMIT,
+						  									conditionItem,
+						  									predetermineTimeSetByPersonInfo
 					   );
 		}
 		else {
-			workTime =  withinTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
+			return withinTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
 																				  regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 						  														  vacationClass,
 						  														  timeVacationAdditionRemainingTime.get(),
 						  														  StatutoryDivision.Nomal,workType,
 						  														  predetermineTimeSetForCalc,
 						  														  workTimeCode,
-						  														  personalCondition,
 						  														  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 						  														  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 						  														  workingSystem,
@@ -247,12 +258,10 @@ public class WithinStatutoryTimeOfDaily {
 						  														  regularAddSetting,
 						  														  holidayAddtionSet,
 						  														  holidayCalcMethodSet,
-						  														  dailyUnit,commonSetting,coreTimeSetting);
-				
-				
-				
+						  														  dailyUnit,commonSetting,
+						  														  conditionItem,
+						  														  predetermineTimeSetByPersonInfo,coreTimeSetting);
 		}
-		return workTime;
 	}
 	
 	/**

@@ -53,11 +53,11 @@ public class AddWidgetCommandHandler extends CommandHandler<AddWidgetCommand> {
 
 		opWidgetRepository.add(new OptionalWidget(companyID, topPagePartId,
 				new TopPagePartCode(command.getTopPageCode()), new TopPagePartName(command.getTopPageName()),
-				TopPagePartType.valueOf(1), Size.createFromJavaType(command.getWidth(), command.getHeight()), wItems));
+				TopPagePartType.OptionalWidget, Size.createFromJavaType(command.getWidth(), command.getHeight()), wItems));
 
 		myPageSettingRepository.addTopPagePartUseSetting(new TopPagePartUseSetting(companyID, topPagePartId,
 				new TopPagePartCode(command.getTopPageCode()), new TopPagePartName(command.getTopPageName()),
-				UseDivision.Use, TopPagePartType.OptionalWidget));
+				UseDivision.NotUse, TopPagePartType.OptionalWidget));
 	}
 
 }

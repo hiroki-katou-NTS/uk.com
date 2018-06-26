@@ -143,17 +143,17 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayPrsIncldTime krcdtDayPrsIncldTime;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
-	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
-	public List<KrcdtDayLateTime> krcdtDayLateTime;
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
-	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
-	public List<KrcdtDayShorttime> KrcdtDayShorttime;
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+//	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
+//
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+//	public List<KrcdtDayLateTime> krcdtDayLateTime;
+//
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+//	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
+//	
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+//	public List<KrcdtDayShorttime> KrcdtDayShorttime;
 	
 	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumns(value = { 
@@ -204,13 +204,13 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	}
     
 
-	public List<KrcdtDayLeaveEarlyTime> getKrcdtDayLeaveEarlyTime() {
-		return krcdtDayLeaveEarlyTime == null ? new ArrayList<>() : krcdtDayLeaveEarlyTime;
-	}
-
-	public List<KrcdtDayLateTime> getKrcdtDayLateTime() {
-		return krcdtDayLateTime == null ? new ArrayList<>() : krcdtDayLateTime;
-	}
+//	public List<KrcdtDayLeaveEarlyTime> getKrcdtDayLeaveEarlyTime() {
+//		return krcdtDayLeaveEarlyTime == null ? new ArrayList<>() : krcdtDayLeaveEarlyTime;
+//	}
+//
+//	public List<KrcdtDayLateTime> getKrcdtDayLateTime() {
+//		return krcdtDayLateTime == null ? new ArrayList<>() : krcdtDayLateTime;
+//	}
 
 
 	public static KrcdtDayAttendanceTime create(String employeeId, GeneralDate ymd,
@@ -302,13 +302,13 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 						new AttendanceTime(this.preOutPrsMidnTime)),
 				Optional.ofNullable(overTime), Optional.ofNullable(holiday));
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
-		for (KrcdtDayLateTime krcdt : getKrcdtDayLateTime()) {
-			lateTime.add(krcdt.toDomain());
-		}
+//		for (KrcdtDayLateTime krcdt : getKrcdtDayLateTime()) {
+//			lateTime.add(krcdt.toDomain());
+//		}
 		List<LeaveEarlyTimeOfDaily> leaveEarly = new ArrayList<>();
-		for (KrcdtDayLeaveEarlyTime krcdt : getKrcdtDayLeaveEarlyTime()) {
-			leaveEarly.add(krcdt.toDomain());
-		}
+//		for (KrcdtDayLeaveEarlyTime krcdt : getKrcdtDayLeaveEarlyTime()) {
+//			leaveEarly.add(krcdt.toDomain());
+//		}
 		
 		BreakTimeOfDaily breakTime = this.krcdtDayBreakTime == null ? defaultBreakTime() : createBreakTime();
 

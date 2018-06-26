@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements PerInfoCtgByCompanyRepositoty {
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
-			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, ca.canAbolition "
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
@@ -48,6 +48,7 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		entity.categoryCd = domain.getCategoryCode().v();
 		entity.categoryName = domain.getCategoryName().v();
 		entity.abolitionAtr = domain.getIsAbolition().value;
+		entity.canAbolition = domain.isCanAbolition() == true? 1: 0;
 		return entity;
 
 	}
@@ -70,11 +71,10 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		int categoryType = Integer.parseInt(String.valueOf(c[5]));
 		int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
 		int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
+		int canAbolition = Integer.parseInt(String.valueOf(c[8]));
 		return PersonInfoCategory.createFromEntity(personInfoCategoryId, AppContexts.user().companyId(), categoryCode,
-				categoryParentCd, categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
-
+				categoryParentCd, categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr, canAbolition);
 	}
-	
 	
 	@Override
 	public void update(PersonInfoCategory domain) {

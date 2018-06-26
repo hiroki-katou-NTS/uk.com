@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -173,9 +174,10 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 												DailyCalculationPersonalInformation personalInfo,boolean isCalcWithinOverTime,DeductionTimeSheet deductionTimeSheet,DailyUnit dailyUnit,
 												HolidayCalcMethodSet holidayCalcMethodSet, WithinWorkTimeSheet createWithinWorkTimeSheet,
                                         		VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily, 
-                                        		WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
+                                        		WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, 
                                         		boolean late, boolean leaveEarly,WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-                                        		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,WorkTimezoneCommonSet commonSetting,Optional<CoreTimeSetting> coreTimeSetting) {
+                                        		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+                                        		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
 		List<OverTimeFrameTimeSheetForCalc> createTimeSheet = new ArrayList<>();
 		
 		for(OverTimeOfTimeZoneSet overTimeHourSet:overTimeHourSetList) {
@@ -193,8 +195,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 //		/*法定内残業　振替*/
 		List<OverTimeFrameTimeSheetForCalc> afterCalcStatutoryOverTimeWork = new ArrayList<>();
 		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,afterVariableWork,autoCalculationSet,breakdownTimeDay,overTimeHourSetList,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
-															   vacationClass, timevacationUseTimeOfDaily, workType, predetermineTimeSet, siftCode, personalCondition, leaveEarly, leaveEarly, 
-															   workingSystem, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,coreTimeSetting);
+															   vacationClass, timevacationUseTimeOfDaily, workType, predetermineTimeSet, siftCode, leaveEarly, leaveEarly, 
+															   workingSystem, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting);
 				
 		
 		/*return*/
@@ -306,9 +308,10 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                                                                     		,AutoCalOvertimeSetting autoCalculationSet,BreakDownTimeDay breakdownTimeDay,
                                                                     		List<OverTimeOfTimeZoneSet> overTimeHourSetList,DailyUnit dailyUnit,HolidayCalcMethodSet holidayCalcMethodSet, WithinWorkTimeSheet createWithinWorkTimeSheet, 
                                                                     		VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily, 
-                                                                    		WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
+                                                                    		WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode,
                                                                     		boolean late, boolean leaveEarly, WorkingSystem workingSystem, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-                                                                    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet, WorkTimezoneCommonSet commonSetting,Optional<CoreTimeSetting> coreTimeSetting) {
+                                                                    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet, Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+                                                                    		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
         if(statutorySet.isLegal()) {//statutorySet.isLegal()) {
             /*振替処理   法定内基準時間を計算する*/
         	AttendanceTime workTime = new AttendanceTime(0);
@@ -322,7 +325,6 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         														  workType, 
         														  predetermineTimeSet, 
         														  siftCode, 
-        														  personalCondition, 
         														  late, 
         														  leaveEarly, 
         														  workingSystem, 
@@ -331,7 +333,9 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         														  regularAddSetting, 
         														  holidayAddtionSet, 
         														  holidayCalcMethodSet,
-        														  dailyUnit,commonSetting,coreTimeSetting);
+        														  dailyUnit,commonSetting,
+        														  conditionItem,
+        														  predetermineTimeSetByPersonInfo,coreTimeSetting);
         				
         				
         	}

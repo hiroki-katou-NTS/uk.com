@@ -61,7 +61,7 @@ module nts.uk.ui.jqueryExtentions {
                 });
             } else {
                 $tree.igTreeGridSelection('selectRowById', selectedId);
-                virtualScroll($tree, id);
+                virtualScroll($tree, selectedId);
             }
         }
         

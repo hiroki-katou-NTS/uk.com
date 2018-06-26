@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import lombok.Getter;
 import lombok.val;
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransf
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
@@ -25,7 +28,9 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -45,11 +50,11 @@ public class MonAggrCompanySettings {
 	@Getter
 	private String companyId;
 	/** 勤務種類 */
-	private Map<String, WorkType> workTypeMap;
+	private ConcurrentMap<String, WorkType> workTypeMap;
 	/** 就業時間帯：共通設定 */
-	private Map<String, WorkTimezoneCommonSet> workTimeCommonSetMap;
+	private ConcurrentMap<String, WorkTimezoneCommonSet> workTimeCommonSetMap;
 	/** 所定時間設定 */
-	private Map<String, PredetemineTimeSetting> predetermineTimeSetMap;
+	private ConcurrentMap<String, PredetemineTimeSetting> predetermineTimeSetMap;
 	/** 締め */
 	@Getter
 	private Map<Integer, Closure> closureMap;
@@ -68,6 +73,20 @@ public class MonAggrCompanySettings {
 	/** 労働時間と日数の設定の利用単位の設定 */
 	@Getter
 	private UsageUnitSetting usageUnitSet;
+	/** 会社別通常勤務労働時間 */
+	@Getter
+	private WorkingTimeSetting comRegLaborTime;
+	/** 会社別変形労働労働時間 */
+	@Getter
+	private WorkingTimeSetting comIrgLaborTime;
+	/** 雇用別通常勤務労働時間 */
+	private ConcurrentMap<String, WorkingTimeSetting> empRegLaborTimeMap;
+	/** 雇用別変形労働労働時間 */
+	private ConcurrentMap<String, WorkingTimeSetting> empIrgLaborTimeMap;
+	/** 職場別通常勤務労働時間 */
+	private ConcurrentMap<String, WorkingTimeSetting> wkpRegLaborTimeMap;
+	/** 職場別変形労働労働時間 */
+	private ConcurrentMap<String, WorkingTimeSetting> wkpIrgLaborTimeMap;
 	/** 通常勤務会社別月別実績集計設定 */
 	@Getter
 	private Optional<ComRegulaMonthActCalSet> comRegSetOpt;
@@ -98,6 +117,9 @@ public class MonAggrCompanySettings {
 	/** 月別実績の縦計方法 */
 	@Getter
 	private VerticalTotalMethodOfMonthly verticalTotalMethod;
+	/** 36協定運用設定 */
+	@Getter
+	private Optional<AgreementOperationSetting> agreementOperationSet;
 	/** 任意項目 */
 	@Getter
 	private Map<Integer, OptionalItem> optionalItemMap;
@@ -117,16 +139,21 @@ public class MonAggrCompanySettings {
 	
 	private MonAggrCompanySettings(String companyId){
 		this.companyId = companyId;
-		this.workTypeMap = new HashMap<>();
-		this.workTimeCommonSetMap = new HashMap<>();
-		this.predetermineTimeSetMap = new HashMap<>();
+		this.workTypeMap = new ConcurrentHashMap<>();
+		this.workTimeCommonSetMap = new ConcurrentHashMap<>();
+		this.predetermineTimeSetMap = new ConcurrentHashMap<>();
 		this.closureMap = new HashMap<>();
 		this.roleOverTimeFrameList = new ArrayList<>();
 		this.roleHolidayWorkFrameList = new ArrayList<>();
 		this.holidayAdditionMap = new HashMap<>();
+		this.empRegLaborTimeMap = new ConcurrentHashMap<>();
+		this.empIrgLaborTimeMap = new ConcurrentHashMap<>();
+		this.wkpRegLaborTimeMap = new ConcurrentHashMap<>();
+		this.wkpIrgLaborTimeMap = new ConcurrentHashMap<>();
 		this.comRegSetOpt = Optional.empty();
 		this.comIrgSetOpt = Optional.empty();
 		this.comFlexSetOpt = Optional.empty();
+		this.agreementOperationSet = Optional.empty();
 		this.optionalItemMap = new HashMap<>();
 		this.empConditionMap = new HashMap<>();
 		this.formulaList = new ArrayList<>();
@@ -146,76 +173,6 @@ public class MonAggrCompanySettings {
 		final String resourceId = "001";
 		
 		MonAggrCompanySettings domain = new MonAggrCompanySettings(companyId);
-
-		// 「締め」　取得
-		val closures = repositories.getClosure().findAllUse(companyId);
-		for (val closure : closures){
-			val closureId = closure.getClosureId().value;
-			domain.closureMap.putIfAbsent(closureId, closure);
-		}
-		
-		// 法定内振替順設定
-		val legalTransferOrderSetOpt = repositories.getLegalTransferOrderSetOfAggrMonthly().find(companyId);
-		if (!legalTransferOrderSetOpt.isPresent()){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1232")));
-			return domain;
-		}
-		domain.legalTransferOrderSet = legalTransferOrderSetOpt.get();
-
-		// 残業枠の役割
-		domain.roleOverTimeFrameList = repositories.getRoleOverTimeFrame().findByCID(companyId);
-
-		// 休出枠の役割
-		domain.roleHolidayWorkFrameList = repositories.getRoleHolidayWorkFrame().findByCID(companyId);
-		
-		// 休暇時間加算設定
-		domain.holidayAdditionMap = repositories.getHolidayAddition().findByCompanyId(companyId);
-		
-		// 労働時間と日数の設定の利用単位の設定
-		domain.usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
-		val usagaUnitSetOpt = repositories.getUsageUnitSetRepo().findByCompany(companyId);
-		if (usagaUnitSetOpt.isPresent()) domain.usageUnitSet = usagaUnitSetOpt.get();
-		
-		// 通常勤務会社別月別実績集計設定
-		domain.comRegSetOpt = repositories.getComRegSetRepo().find(companyId);
-		
-		// 変形労働会社別月別実績集計設定
-		domain.comIrgSetOpt = repositories.getComIrgSetRepo().find(companyId);
-		
-		// フレックス会社別月別実績集計設定
-		domain.comFlexSetOpt = repositories.getComFlexSetRepo().find(companyId);
-
-		// フレックス勤務の月別集計設定
-		val aggrSetOfFlexOpt = repositories.getMonthlyAggrSetOfFlex().find(companyId);
-		if (!aggrSetOfFlexOpt.isPresent()){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1238")));
-			return domain;
-		}
-		domain.aggrSetOfFlex = aggrSetOfFlexOpt.get();
-
-		// フレックス勤務所定労働時間
-		val flexPredWorkTimeOpt = repositories.getFlexPredWorktime().find(companyId);
-		if (!flexPredWorkTimeOpt.isPresent()){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1243")));
-			return domain;
-		}
-		domain.flexPredWorkTime = flexPredWorkTimeOpt.get();
-		
-		// 休暇加算設定
-		domain.vacationAddSet = repositories.getVacationAddSet().get(companyId);
-		
-		// 時間外超過設定
-		val outsideOTSetOpt = repositories.getOutsideOTSet().findById(companyId);
-		if (!outsideOTSetOpt.isPresent()){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1236")));
-			return domain;
-		}
-		domain.outsideOverTimeSet = outsideOTSetOpt.get();
-		
-		// 丸め設定
-		domain.roundingSet = new RoundingSetOfMonthly(companyId);
-		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(companyId);
-		if (roundingSetOpt.isPresent()) domain.roundingSet = roundingSetOpt.get();
 		
 		// 月別実績の給与項目カウント　取得
 		domain.payItemCount = new PayItemCountOfMonthly(companyId);
@@ -245,8 +202,125 @@ public class MonAggrCompanySettings {
 		
 		// 年休設定
 		domain.annualLeaveSet = repositories.getAnnualPaidLeaveSet().findByCompanyId(companyId);
+
+		// 設定読み込み処理　（36協定時間用）
+		domain.loadSettingsForAgreementProc(companyId, resourceId, repositories);
 		
 		return domain;
+	}
+	
+	/**
+	 * 設定読み込み　（36協定時間用）
+	 * @param companyId 会社ID
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 月別集計で必要な会社別設定
+	 */
+	public static MonAggrCompanySettings loadSettingsForAgreement(
+			String companyId,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		final String resourceId = "001";
+		
+		MonAggrCompanySettings domain = new MonAggrCompanySettings(companyId);
+
+		// 設定読み込み処理　（36協定時間用）
+		domain.loadSettingsForAgreementProc(companyId, resourceId, repositories);
+		
+		return domain;
+	}
+	
+	/**
+	 * 設定読み込み処理　（36協定時間用）
+	 * @param companyId 会社ID
+	 * @param resourceId リソースID
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 月別集計で必要な会社別設定
+	 */
+	private void loadSettingsForAgreementProc(
+			String companyId,
+			String resourceId,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 締め
+		val closures = repositories.getClosure().findAllUse(companyId);
+		for (val closure : closures){
+			val closureId = closure.getClosureId().value;
+			this.closureMap.putIfAbsent(closureId, closure);
+		}
+		
+		// 法定内振替順設定
+		val legalTransferOrderSetOpt = repositories.getLegalTransferOrderSetOfAggrMonthly().find(companyId);
+		if (!legalTransferOrderSetOpt.isPresent()){
+			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1232")));
+			return;
+		}
+		this.legalTransferOrderSet = legalTransferOrderSetOpt.get();
+
+		// 残業枠の役割
+		this.roleOverTimeFrameList = repositories.getRoleOverTimeFrame().findByCID(companyId);
+
+		// 休出枠の役割
+		this.roleHolidayWorkFrameList = repositories.getRoleHolidayWorkFrame().findByCID(companyId);
+		
+		// 休暇時間加算設定
+		this.holidayAdditionMap = repositories.getHolidayAddition().findByCompanyId(companyId);
+		
+		// 労働時間と日数の設定の利用単位の設定
+		this.usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
+		val usagaUnitSetOpt = repositories.getUsageUnitSetRepo().findByCompany(companyId);
+		if (usagaUnitSetOpt.isPresent()) this.usageUnitSet = usagaUnitSetOpt.get();
+		
+		// 会社別通常勤務労働時間
+		val comRegLaborTime = repositories.getComRegularLaborTime().find(companyId);
+		if (comRegLaborTime.isPresent()) this.comRegLaborTime = comRegLaborTime.get().getWorkingTimeSet();
+		
+		// 会社別変形労働労働時間
+		val comIrgLaborTime = repositories.getComTransLaborTime().find(companyId);
+		if (comIrgLaborTime.isPresent()) this.comIrgLaborTime = comIrgLaborTime.get().getWorkingTimeSet();
+		
+		// 通常勤務会社別月別実績集計設定
+		this.comRegSetOpt = repositories.getComRegSetRepo().find(companyId);
+		
+		// 変形労働会社別月別実績集計設定
+		this.comIrgSetOpt = repositories.getComIrgSetRepo().find(companyId);
+		
+		// フレックス会社別月別実績集計設定
+		this.comFlexSetOpt = repositories.getComFlexSetRepo().find(companyId);
+
+		// フレックス勤務の月別集計設定
+		val aggrSetOfFlexOpt = repositories.getMonthlyAggrSetOfFlex().find(companyId);
+		if (!aggrSetOfFlexOpt.isPresent()){
+			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1238")));
+			return;
+		}
+		this.aggrSetOfFlex = aggrSetOfFlexOpt.get();
+
+		// フレックス勤務所定労働時間
+		val flexPredWorkTimeOpt = repositories.getFlexPredWorktime().find(companyId);
+		if (!flexPredWorkTimeOpt.isPresent()){
+			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1243")));
+			return;
+		}
+		this.flexPredWorkTime = flexPredWorkTimeOpt.get();
+		
+		// 休暇加算設定
+		this.vacationAddSet = repositories.getVacationAddSet().get(companyId);
+		
+		// 時間外超過設定
+		val outsideOTSetOpt = repositories.getOutsideOTSet().findById(companyId);
+		if (!outsideOTSetOpt.isPresent()){
+			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1236")));
+			return;
+		}
+		this.outsideOverTimeSet = outsideOTSetOpt.get();
+		
+		// 丸め設定
+		this.roundingSet = new RoundingSetOfMonthly(companyId);
+		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(companyId);
+		if (roundingSetOpt.isPresent()) this.roundingSet = roundingSetOpt.get();
+		
+		// 36協定運用設定を取得
+		this.agreementOperationSet = repositories.getAgreementOperationSet().find(companyId);
 	}
 	
 	/**
@@ -321,5 +395,116 @@ public class MonAggrCompanySettings {
 			this.predetermineTimeSetMap.put(workTimeCode, null);
 		}
 		return this.predetermineTimeSetMap.get(workTimeCode);
+	}
+	
+	/**
+	 * 労働時間の取得
+	 * @param employmentCd 雇用コード
+	 * @param workplaceIds 上位職場含む職場コードリスト
+	 * @param workingSystem 労働制
+	 * @param employeeSets 月別集計で必要な社員別設定
+	 * @param repositories 月別集計が必要とするリポジトリ
+	 * @return 労働時間
+	 */
+	public Optional<WorkingTimeSetting> getWorkingTimeSetting(
+			String employmentCd,
+			List<String> workplaceIds,
+			WorkingSystem workingSystem,
+			MonAggrEmployeeSettings employeeSets,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 通常勤務
+		if (workingSystem == WorkingSystem.REGULAR_WORK){
+			if (this.usageUnitSet.isEmployee()){
+				if (employeeSets.getRegLaborTime().isPresent()){
+					return Optional.of(employeeSets.getRegLaborTime().get());
+				}
+			}
+			if (this.usageUnitSet.isWorkPlace()){
+				for (val workplaceId : workplaceIds){
+					if (this.wkpRegLaborTimeMap.containsKey(workplaceId)){
+						if (this.wkpRegLaborTimeMap.get(workplaceId) != null){
+							return Optional.of(this.wkpRegLaborTimeMap.get(workplaceId));
+						}
+					}
+					else {
+						val wkpLaborTimeOpt = repositories.getWkpRegularLaborTime().find(this.companyId, workplaceId);
+						if (wkpLaborTimeOpt.isPresent()){
+							this.wkpRegLaborTimeMap.put(workplaceId, wkpLaborTimeOpt.get().getWorkingTimeSet());
+							return Optional.of(this.wkpRegLaborTimeMap.get(workplaceId));
+						}
+						else {
+							this.wkpRegLaborTimeMap.put(workplaceId, null);
+						}
+					}
+				}
+			}
+			if (this.usageUnitSet.isEmployment()){
+				if (this.empRegLaborTimeMap.containsKey(employmentCd)){
+					if (this.empRegLaborTimeMap.get(employmentCd) != null){
+						return Optional.of(this.empRegLaborTimeMap.get(employmentCd));
+					}
+				}
+				else {
+					val empLaborTimeOpt = repositories.getEmpRegularWorkTime().findById(this.companyId, employmentCd);
+					if (empLaborTimeOpt.isPresent()){
+						this.empRegLaborTimeMap.put(employmentCd, empLaborTimeOpt.get().getWorkingTimeSet());
+						return Optional.of(this.empRegLaborTimeMap.get(employmentCd));
+					}
+					else {
+						this.empRegLaborTimeMap.put(employmentCd, null);
+					}
+				}
+			}
+			return Optional.ofNullable(this.comRegLaborTime);
+		}
+		
+		// 変形労働
+		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			if (this.usageUnitSet.isEmployee()){
+				if (employeeSets.getIrgLaborTime().isPresent()){
+					return Optional.of(employeeSets.getIrgLaborTime().get());
+				}
+			}
+			if (this.usageUnitSet.isWorkPlace()){
+				for (val workplaceId : workplaceIds){
+					if (this.wkpIrgLaborTimeMap.containsKey(workplaceId)){
+						if (this.wkpIrgLaborTimeMap.get(workplaceId) != null){
+							return Optional.of(this.wkpIrgLaborTimeMap.get(workplaceId));
+						}
+					}
+					else {
+						val wkpLaborTimeOpt = repositories.getWkpTransLaborTime().find(this.companyId, workplaceId);
+						if (wkpLaborTimeOpt.isPresent()){
+							this.wkpIrgLaborTimeMap.put(workplaceId, wkpLaborTimeOpt.get().getWorkingTimeSet());
+							return Optional.of(this.wkpIrgLaborTimeMap.get(workplaceId));
+						}
+						else {
+							this.wkpIrgLaborTimeMap.put(workplaceId, null);
+						}
+					}
+				}
+			}
+			if (this.usageUnitSet.isEmployment()){
+				if (this.empIrgLaborTimeMap.containsKey(employmentCd)){
+					if (this.empIrgLaborTimeMap.get(employmentCd) != null){
+						return Optional.of(this.empIrgLaborTimeMap.get(employmentCd));
+					}
+				}
+				else {
+					val empLaborTimeOpt = repositories.getEmpTransWorkTime().find(this.companyId, employmentCd);
+					if (empLaborTimeOpt.isPresent()){
+						this.empIrgLaborTimeMap.put(employmentCd, empLaborTimeOpt.get().getWorkingTimeSet());
+						return Optional.of(this.empIrgLaborTimeMap.get(employmentCd));
+					}
+					else {
+						this.empIrgLaborTimeMap.put(employmentCd, null);
+					}
+				}
+			}
+			return Optional.ofNullable(this.comIrgLaborTime);
+		}
+		
+		return Optional.empty();
 	}
 }

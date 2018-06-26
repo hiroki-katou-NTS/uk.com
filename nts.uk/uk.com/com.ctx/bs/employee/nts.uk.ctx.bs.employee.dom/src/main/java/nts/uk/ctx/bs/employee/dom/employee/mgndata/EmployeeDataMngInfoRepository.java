@@ -36,6 +36,8 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> findByPersonId(String pid);
 
 	List<EmployeeDataMngInfo> findByCompanyId(String cid);
+	
+	List<Object[]> findByCompanyIdAndBaseDate(String cid, GeneralDate baseDate);
 
 	Optional<EmployeeDataMngInfo> findByEmpId(String sId);
 

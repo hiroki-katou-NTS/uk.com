@@ -6,7 +6,15 @@ module nts.uk.at.view.ksm011.a.service {
         findScheFuncControl: "ctx/at/schedule/setting/functioncontrol/findScheFuncControl",
         saveScheFuncControl: "ctx/at/schedule/setting/functioncontrol/saveScheFuncControl",
         getShiftConditionCat: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftConCategory",
-        getShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftCondition"
+        getShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftCondition",
+        checkExistedItems: "at/schedule/shift/shiftCondition/shiftCondition/checkExistedItems"
+    }
+    
+    /**
+     *  Get Schedule Function Control
+     */
+    export function checkExistedItems(items): JQueryPromise<ScheFuncControlDto> {
+        return nts.uk.request.ajax("at", paths.checkExistedItems,items);
     }
     
     /**

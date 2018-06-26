@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
@@ -45,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
@@ -92,41 +94,35 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param flexAutoCalSet 
 	 * @return
 	 */
-	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(CalculationRangeOfOneDay oneDay,
-																	 CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,
+	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(ManageReGetClass recordReget,
+																	 CalcMethodOfNoWorkingDay calcMethod,
 																	 WorkType workType,
-																	 Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-			   														 VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
-			   														 StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
-			   														 Optional<PersonalLaborCondition> personalCondition, 
-			   														 WorkingSystem workingSystem, WorkDeformedLaborAdditionSet illegularAddSetting,
-			   														 WorkFlexAdditionSet flexAddSetting,
-			   														 WorkRegularAdditionSet regularAddSetting,
-			   														 HolidayAddtionSet holidayAddtionSet,
+																	 Optional<SettingOfFlexWork> flexCalcMethod,
+			   														 VacationClass vacationClass,
+			   														 StatutoryDivision statutoryDivision,
+			   														 Optional<WorkTimeCode> siftCode,
 			   														 Optional<WorkTimeDailyAtr> workTimeDailyAtr,
-			   														 List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
-			   														 IntegrationOfDaily integrationOfDaily, AttendanceTime flexPreAppTime,
-			   														 DailyUnit dailyUnit,List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting,
-			   														 CalAttrOfDailyPerformance calcAtrOfDaily,Optional<CoreTimeSetting> coreTimeSetting) {
+			   														 AttendanceTime flexPreAppTime,
+			   														 WorkingConditionItem conditionItem,
+			   														Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
 		//残業時間
-		val overTime = calculationOverTime(oneDay,calcAtrOfDaily,calcMethod,holidayCalcMethodSet,
+		val overTime = calculationOverTime(recordReget,calcMethod,
 										   workType,flexCalcMethod,
-										   predetermineTimeSet,vacationClass,timevacationUseTimeOfDaily,
+										   vacationClass,
 				   						   statutoryDivision,siftCode,
-				   						   personalCondition,
-				   						   calcAtrOfDaily.getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-				   						   calcAtrOfDaily.getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-				   						   workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
-				   						   holidayAddtionSet,workTimeDailyAtr,
-										   eachWorkTimeSet.stream().filter(tc -> tc.getOriginAtr().isOverTime()).findFirst(),
+				   						   recordReget.getSubHolTransferSetList() == null
+				   						   			  ? Optional.empty()
+				   							   		  :recordReget.getSubHolTransferSetList().stream().filter(tc -> tc.getOriginAtr().isOverTime()).findFirst(),
 										   eachCompanyTimeSet.stream().filter(tc -> tc.getOccurrenceType().isOverTime()).findFirst(),
-										   integrationOfDaily,flexPreAppTime,calcAtrOfDaily.getFlexExcessTime(),dailyUnit, statutoryFrameNoList,commonSetting,coreTimeSetting);
+										   flexPreAppTime,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting);
 		//休出時間
-		val workHolidayTime = calculationHolidayTime(oneDay,calcAtrOfDaily.getHolidayTimeSetting().getRestTime(),workType,
-													 eachWorkTimeSet.stream().filter(tc -> !tc.getOriginAtr().isOverTime()).findFirst(),
+		val workHolidayTime = calculationHolidayTime(recordReget,recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getRestTime(),workType,
+				   									 recordReget.getSubHolTransferSetList() == null
+				   									 ? Optional.empty()
+													 : recordReget.getSubHolTransferSetList().stream().filter(tc -> !tc.getOriginAtr().isOverTime()).findFirst(),
 													 eachCompanyTimeSet.stream().filter(tc -> !tc.getOccurrenceType().isOverTime()).findFirst(),
-													 integrationOfDaily);
+													 recordReget.getIntegrationOfDaily());
 		//所定外深夜
 		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(Optional.of(overTime),Optional.of(workHolidayTime));
 		
@@ -142,51 +138,30 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param flexPreAppTime 
 	 * @param flexAutoCalSet 
 	 */
-	private static OverTimeOfDaily calculationOverTime(CalculationRangeOfOneDay oneDay,CalAttrOfDailyPerformance autoCalcSet,
-													   CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,
+	private static OverTimeOfDaily calculationOverTime(ManageReGetClass oneDay,
+													   CalcMethodOfNoWorkingDay calcMethod,
 													   WorkType workType,
-													   Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-													   VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+													   Optional<SettingOfFlexWork> flexCalcMethod,
+													   VacationClass vacationClass,
 													   StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
-													   Optional<PersonalLaborCondition> personalCondition,
-													   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-													   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-													   WorkingSystem workingSystem,WorkDeformedLaborAdditionSet illegularAddSetting,
- 														 WorkFlexAdditionSet flexAddSetting,
- 														 WorkRegularAdditionSet regularAddSetting,
- 														HolidayAddtionSet holidayAddtionSet,Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 													   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-													   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily, AttendanceTime flexPreAppTime, AutoCalFlexOvertimeSetting flexAutoCalSet,
-													   DailyUnit dailyUnit,List<OverTimeFrameNo> statutoryFrameNoList,WorkTimezoneCommonSet commonSetting,Optional<CoreTimeSetting> coreTimeSetting) {
-		if(oneDay.getOutsideWorkTimeSheet().isPresent()) {
-			if(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
-				return OverTimeOfDaily.calculationTime(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get(),
-													   oneDay.getWithinWorkingTimeSheet().get(),
+													   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+													   AttendanceTime flexPreAppTime,
+													   WorkingConditionItem conditionItem,
+													   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
+		if(oneDay.getCalculationRangeOfOneDay() != null && oneDay.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().isPresent()) {
+			if(oneDay.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
+				return OverTimeOfDaily.calculationTime(oneDay,
 													   calcMethod,
-													   holidayCalcMethodSet,
-													   autoCalcSet,
 													   workType,
 													   flexCalcMethod,
-													   predetermineTimeSet,
 													   vacationClass,
-													   timevacationUseTimeOfDaily,
 													   statutoryDivision,siftCode,
-													   personalCondition,
-													   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-													   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-													   workingSystem,
-													   illegularAddSetting,
-													   flexAddSetting,
-													   regularAddSetting,
-													   holidayAddtionSet,
-													   workTimeDailyAtr,
 													   eachWorkTimeSet,
 													   eachCompanyTimeSet,
-													   integrationOfDaily,
 													   flexPreAppTime,
-													   flexAutoCalSet,
-													   dailyUnit, 
-													   statutoryFrameNoList,commonSetting,coreTimeSetting);
+													   conditionItem,
+													   predetermineTimeSetByPersonInfo,coreTimeSetting);
 			}
 		}
 		//残業時間帯が存在せず、時間を求められない場合
@@ -204,13 +179,13 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param integrationOfDaily 
 	 * @return
 	 */
-	private static HolidayWorkTimeOfDaily calculationHolidayTime(CalculationRangeOfOneDay oneDay,AutoCalSetting autoCalSetting,
+	private static HolidayWorkTimeOfDaily calculationHolidayTime(ManageReGetClass recordReget,AutoCalSetting autoCalSetting,
 			 													 WorkType workType,
 			 													Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			 													 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
-		if(oneDay.getOutsideWorkTimeSheet().isPresent()) {
-			if(oneDay.getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().isPresent()) {
-				return HolidayWorkTimeOfDaily.calculationTime(oneDay.getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().get(), 
+		if(recordReget.getCalculatable() && recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().isPresent()) {
+			if(recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().isPresent()) {
+				return HolidayWorkTimeOfDaily.calculationTime(recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().get(), 
 															  autoCalSetting,
 															  workType,
 															  eachWorkTimeSet,

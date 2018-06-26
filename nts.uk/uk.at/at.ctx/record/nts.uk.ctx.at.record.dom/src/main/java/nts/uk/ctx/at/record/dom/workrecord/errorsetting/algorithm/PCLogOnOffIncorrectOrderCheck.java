@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -29,13 +29,13 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class PCLogOnOffIncorrectOrderCheck {
 
 	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	public void pCLogOnOffIncorrectOrderCheck(String companyId, String employeeId, GeneralDate processingDate,
-			PCLogOnInfoOfDaily pCLogOnInfoOfDaily, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+	public EmployeeDailyPerError pCLogOnOffIncorrectOrderCheck(String companyId, String employeeId,
+			GeneralDate processingDate, PCLogOnInfoOfDaily pCLogOnInfoOfDaily,
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+
+		EmployeeDailyPerError employeeDailyPerError = null;
 
 		if (pCLogOnInfoOfDaily != null && !pCLogOnInfoOfDaily.getLogOnInfo().isEmpty()) {
 
@@ -45,8 +45,8 @@ public class PCLogOnOffIncorrectOrderCheck {
 			List<Integer> attendanceItemIds = this.checkPairReversed(pCLogOnInfoOfDaily);
 
 			if (!attendanceItemIds.isEmpty()) {
-				this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
-						new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+				employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId,
+						processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 			} else {
 				if (logOnInfos.size() == 2) {
 					if (logOnInfos.get(0).getLogOn().isPresent() && logOnInfos.get(1).getLogOn().isPresent()) {
@@ -57,8 +57,8 @@ public class PCLogOnOffIncorrectOrderCheck {
 							attendanceItemIds.add(795);
 							attendanceItemIds.add(796);
 							attendanceItemIds.add(797);
-							this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-									processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+							employeeDailyPerError = new EmployeeDailyPerError(companyId,
+									employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 						} else {
 							if (logOnInfos.get(0).getLogOff().isPresent()
 									&& logOnInfos.get(1).getLogOff().isPresent()) {
@@ -82,16 +82,17 @@ public class PCLogOnOffIncorrectOrderCheck {
 									attendanceItemIds.add(795);
 									attendanceItemIds.add(796);
 									attendanceItemIds.add(797);
-									this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-											processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+									employeeDailyPerError = new EmployeeDailyPerError(
+											companyId, employeeId, processingDate,
+											new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 								} else {
 									// PCログオンログオフと出退勤の順序不正判断処理
 									attendanceItemIds = this.checkOder(pCLogOnInfoOfDaily,
 											timeLeavingOfDailyPerformance);
 									if (!attendanceItemIds.isEmpty()) {
-										this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId,
-												employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
-												attendanceItemIds);
+										employeeDailyPerError = new EmployeeDailyPerError(
+												companyId, employeeId, processingDate,
+												new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 									}
 								}
 
@@ -101,7 +102,7 @@ public class PCLogOnOffIncorrectOrderCheck {
 				}
 			}
 		}
-
+		return employeeDailyPerError;
 	}
 
 	/**
