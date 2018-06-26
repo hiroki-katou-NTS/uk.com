@@ -41,7 +41,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         employeeID: KnockoutObservable<string> = ko.observable('');
 
         employeeName: KnockoutObservable<string> = ko.observable('');
-        
+
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -53,8 +53,14 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
 
+        employeeList = ko.observableArray([]);
+
+        selectedEmployeeCD = ko.observable('');
+
+        totalEmployeeText = ko.observable('');
         constructor() {
             let self = this;
+
             self.appComSelectedCode.subscribe((newCode) => {
                 if (newCode == 0) { return; };
                 if (newCode == 1) {
@@ -87,7 +93,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     $('#absTimeBtn').ntsError("clear");
                 }
             });
+            self.employeeList.subscribe((datas) => {
+                if (datas) {
+                    self.totalEmployeeText(text('KAF011_79', [datas.length]));
+                    self.selectedEmployeeCD(datas[0]);
+                }
 
+            });
         }
         enablePrepost() {
             let self = this;
@@ -98,11 +110,16 @@ module nts.uk.at.view.kaf011.a.screenModel {
             block.invisible();
             var self = this,
                 dfd = $.Deferred(),
-                startParam = {
-                    sID: null,
-                    appDate: self.appDate(),
-                    uiType: 0
-                };
+                employeeIDs;
+
+            __viewContext.transferred.ifPresent(data => {
+                employeeIDs = data.employeeIds;
+            });
+            let startParam = {
+                sIDs: employeeIDs,
+                appDate: self.appDate(),
+                uiType: 0
+            };
 
             service.start(startParam).done((data: common.IHolidayShipment) => {
                 self.setDataFromStart(data);
@@ -136,6 +153,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
+                self.employeeList(_.map(data.employees, (emp) => { return  { code: emp.scd, name: emp.bussinessName } }));
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
                 self.recWk().setWkTypes(data.recWkTypes || []);

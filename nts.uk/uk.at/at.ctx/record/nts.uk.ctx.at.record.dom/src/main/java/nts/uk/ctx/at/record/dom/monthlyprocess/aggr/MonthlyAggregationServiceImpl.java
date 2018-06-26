@@ -3,12 +3,14 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.diagnose.stopwatch.Stopwatches;
+import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
@@ -66,7 +68,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			DatePeriod datePeriod, ExecutionAttr executionAttr, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog) {
 		
-		ProcessState status = ProcessState.SUCCESS;
+		ProcessState success = ProcessState.SUCCESS;
 		
 		// 実行状態　初期設定
 		val dataSetter = asyncContext.getDataSetter();
@@ -76,9 +78,9 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 
 		// 月次集計を実行するかチェックする
 		// ※　実行しない時、終了状態＝正常終了
-		if (!executionLog.isPresent()) return status;
-		if (executionLog.get().getExecutionContent() != ExecutionContent.MONTHLY_AGGREGATION) return status;
-		if (!executionLog.get().getMonlyAggregationSetInfo().isPresent()) return status;
+		if (!executionLog.isPresent()) return success;
+		if (executionLog.get().getExecutionContent() != ExecutionContent.MONTHLY_AGGREGATION) return success;
+		if (!executionLog.get().getMonlyAggregationSetInfo().isPresent()) return success;
 		val executionContent = executionLog.get().getExecutionContent();
 		
 		// 実行種別　取得　（通常、再実行）
@@ -105,73 +107,90 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			procEmployeeIds = employeeIds;
 		}
 		
-		Stopwatches.reset("08000:会社別データ読み込み");
-		Stopwatches.start("08000:会社別データ読み込み");
+		ConcurrentStopwatches.start("08000:会社別データ読み込み");
 		
-		MonAggrCompanySettings companySets = null;
-		if (procEmployeeIds.size() > 0){
+		// 月別集計で必要な会社別設定を取得する
+		MonAggrCompanySettings companySets = MonAggrCompanySettings.loadSettings(companyId, this.repositories);
+		if (companySets.getErrorInfos().size() > 0){
 			
-			// 月別集計で必要な会社別設定を取得する
-			companySets = MonAggrCompanySettings.loadSettings(companyId, this.repositories);
-			if (companySets.getErrorInfos().size() > 0){
-				
-				// エラー処理
-				List<MonthlyAggregationErrorInfo> errorInfoList = new ArrayList<>();
-				for (val errorInfo : companySets.getErrorInfos().entrySet()){
-					errorInfoList.add(new MonthlyAggregationErrorInfo(errorInfo.getKey(), errorInfo.getValue()));
-				}
-				this.errorProc(dataSetter, procEmployeeIds.get(0), empCalAndSumExecLogID, criteriaDate, errorInfoList);
-				
-				// 処理を完了する
-				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
-				this.empCalAndSumExeLogRepository.updateLogInfo(
-						empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
-				return status;
+			// エラー処理
+			List<MonthlyAggregationErrorInfo> errorInfoList = new ArrayList<>();
+			for (val errorInfo : companySets.getErrorInfos().entrySet()){
+				errorInfoList.add(new MonthlyAggregationErrorInfo(errorInfo.getKey(), errorInfo.getValue()));
 			}
+			this.errorProc(dataSetter, procEmployeeIds.get(0), empCalAndSumExecLogID, criteriaDate, errorInfoList);
+			
+			// 処理を完了する
+			dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
+			this.empCalAndSumExeLogRepository.updateLogInfo(
+					empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
+			return success;
 		}
 		
-		Stopwatches.stop("08000:会社別データ読み込み");
+		ConcurrentStopwatches.stop("08000:会社別データ読み込み");
 		
-		// 社員の数だけループ
-		int aggregatedCount = 0;
-		for (val employeeId : procEmployeeIds) {
+		// 社員の数だけループ　（並列処理）
+		StateHolder stateHolder = new StateHolder(employeeIds.size());
+		employeeIds.parallelStream().forEach(employeeId -> {
+			if (stateHolder.isInterrupt()) return;
 		
-			Stopwatches.reset("10000:社員ごと：" + employeeId);
-			Stopwatches.start("10000:社員ごと：" + employeeId);
+			ConcurrentStopwatches.start("10000:社員ごと：" + employeeId);
 			
 			// 社員1人分の処理　（社員の月別実績を集計する）
-			status = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
+			ProcessState coStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
 					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr, companySets);
+			stateHolder.add(coStatus);
 
-			Stopwatches.stop("10000:社員ごと：" + employeeId);
-			Stopwatches.printAll();
+			ConcurrentStopwatches.stop("10000:社員ごと：" + employeeId);
 
-			if (status == ProcessState.SUCCESS){
+			if (coStatus == ProcessState.SUCCESS){
 				
 				// 成功時、ログ情報（実行内容の完了状態(（社員別））を更新する
 				//*****（未）　処理が不完全で、日別作成以外で使えない状態になっている。
 				//*****（未）　ステータスは、何を設定するかが規定されていない。未処理は、1っぽい。
 				//this.targetPersonRepository.update(employeeId, empCalAndSumExecLogID, 0);
 				
-				aggregatedCount++;
-				dataSetter.updateData("monthlyAggregateCount", aggregatedCount);
+				dataSetter.updateData("monthlyAggregateCount", stateHolder.count());
 			}
-			if (status == ProcessState.INTERRUPTION){
+			if (coStatus == ProcessState.INTERRUPTION){
 				
 				// 中断時
 				dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
-				break;
 			}
-		}
-		if (status == ProcessState.INTERRUPTION) return status;
+		});
+		
+		ConcurrentStopwatches.printAll();
+		ConcurrentStopwatches.STOPWATCHES.clear();
+		
+		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
 		
 		// 処理を完了する
 		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		this.empCalAndSumExeLogRepository.updateLogInfo(
 				empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
-		return status;
+		return success;
+	}
+	
+	/**
+	 * 状態保存
+	 * @author shuichu_ishida
+	 */
+	private class StateHolder {
+		private BlockingQueue<ProcessState> status;
+		
+		public StateHolder(int max) {
+			this.status = new ArrayBlockingQueue<>(max);
+		}
+		
+		public void add(ProcessState status) { this.status.add(status); }
+		
+		public int count() { return this.status.size(); }
+		
+		public boolean isInterrupt() {
+			return this.status.stream().filter(c -> c == ProcessState.INTERRUPTION).findFirst().isPresent();
+		}
 	}
 	
 	/**

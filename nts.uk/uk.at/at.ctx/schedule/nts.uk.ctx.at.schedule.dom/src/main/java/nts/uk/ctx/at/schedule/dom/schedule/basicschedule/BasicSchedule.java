@@ -80,8 +80,7 @@ public class BasicSchedule extends AggregateRoot {
 		this.employeeId = memento.getEmployeeId();
 		this.date = memento.getDate();
 		this.workTypeCode = memento.getWorkTypeCode();
-		this.workTimeCode = StringUtil.isNullOrEmpty(memento.getWorkTimeCode(), true)
-				|| ("000").equals(memento.getWorkTimeCode()) ? null : memento.getWorkTimeCode();
+		this.workTimeCode = StringUtil.isNullOrEmpty(memento.getWorkTimeCode(), true) ? null : memento.getWorkTimeCode();
 		this.confirmedAtr = memento.getConfirmedAtr();
 		this.workScheduleTimeZones = memento.getWorkScheduleTimeZones();
 		this.workScheduleBreaks = memento.getWorkScheduleBreaks();

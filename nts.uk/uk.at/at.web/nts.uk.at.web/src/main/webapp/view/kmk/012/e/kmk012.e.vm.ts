@@ -37,22 +37,29 @@ module nts.uk.at.view.kmk012.e {
                 _.forEach(source, function(item) {
                     if (item.closureId != -1) {
                         self.clousureEmpAddDto.empCdNameList.push(item);
+                    } else {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_915" });
+                        self.clousureEmpAddDto.empCdNameList =  new Array<EmpCdNameDto>();
+                        return false;
                     }
                 });
-
-                //Insert del in server.
-                service.insertDelArray(self.clousureEmpAddDto).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    nts.uk.ui.block.clear();    
-                    //Clear data when add success. To fix bug add duplicate item when not refresh web page.
-                    self.clousureEmpAddDto.empCdNameList = new Array<EmpCdNameDto>();
-                    
-                    dfd.resolve();
-
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                    nts.uk.ui.block.clear();    
-                });
+                if(self.clousureEmpAddDto.empCdNameList.length != 0){
+                     //Insert del in server.
+                    service.insertDelArray(self.clousureEmpAddDto).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        nts.uk.ui.block.clear();    
+                        //Clear data when add success. To fix bug add duplicate item when not refresh web page.
+                        self.clousureEmpAddDto.empCdNameList = new Array<EmpCdNameDto>();
+                        
+                        dfd.resolve();
+    
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error);
+                        nts.uk.ui.block.clear();    
+                    });
+                }
+               
 
                 return dfd.promise();
             }

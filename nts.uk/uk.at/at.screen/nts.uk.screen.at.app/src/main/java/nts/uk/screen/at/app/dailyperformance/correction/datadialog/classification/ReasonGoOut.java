@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @SuppressWarnings("unused")
+/** 外出理由 */
 public enum ReasonGoOut   {
 	// 私用
 	SUPPORT(0, "私用"),

@@ -36,17 +36,9 @@ module nts.uk.at.view.kmk013.q {
                 self.overtimeList = ko.observableArray([]);
                 self.roleFrameList = ko.observableArray([]);
                 
-                 self.itemListQ5_5 = ko.observableArray([
-                     new BoxModel(0, nts.uk.resource.getText('KMK013_389')),
-                     new BoxModel(1, nts.uk.resource.getText('KMK013_390')),
-                     new BoxModel(2, nts.uk.resource.getText('KMK013_391')),
-                 ]);
+                self.itemListQ5_5 = ko.observableArray([]);
                 
-                self.itemListQ13_5 = ko.observableArray([
-                     new BoxModel(0, nts.uk.resource.getText('KMK013_403')),
-                     new BoxModel(1, nts.uk.resource.getText('KMK013_404')),
-                     new BoxModel(2, nts.uk.resource.getText('KMK013_405')),
-                ]);
+                self.itemListQ13_5 = ko.observableArray([]);
                 
                 self.selectedIdQ5_5 = ko.observable(1);
 //                self.enableQ5_5 = ko.observable(true);
@@ -124,6 +116,21 @@ module nts.uk.at.view.kmk013.q {
                                 });    
                             }                            
                         }
+                            
+
+                        // set value enum get from service for itemListQ5_5
+                        let arrEnumRoleOTWork:  BoxModel[] = [];
+                        enumRoleOTWork.forEach(function(obj) {
+                            arrEnumRoleOTWork.push(new BoxModel(obj.value, obj.localizedName));
+                        })        
+                        self.itemListQ5_5(arrEnumRoleOTWork);
+                            
+                        // set value enum get from service for itemListQ13_5    
+                        let arrEnumRoleOPenPeriod: BoxModel[] = [];
+                        enumRoleOPenPeriod.forEach(function(obj) {
+                            arrEnumRoleOPenPeriod.push(new BoxModel(obj.value, obj.localizedName));
+                        })        
+                        self.itemListQ13_5(arrEnumRoleOPenPeriod);
                             
                         $( "#tab-panel" ).focus();
                     dfd.resolve();    
