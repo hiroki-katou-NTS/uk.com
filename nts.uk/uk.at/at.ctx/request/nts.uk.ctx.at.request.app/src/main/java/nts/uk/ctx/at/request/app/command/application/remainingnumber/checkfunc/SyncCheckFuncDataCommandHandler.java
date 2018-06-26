@@ -219,15 +219,15 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 								.getNumberOfWorkTypeUsedExports().stream().skip(j).limit(10)
 								.collect(Collectors.toList());
 						String workTypeUsedJsonString = mapper.writeValueAsString(listNumberOfWorkTypeUsedImport);
-						setter.setData("EXCEL_LIST" + i + "_WORKTYPEUSED" + j, workTypeUsedJsonString);
+						setter.setData(i + ",WORKTYPEUSED," + j, workTypeUsedJsonString);
 
 						List<PlannedVacationListCommand> listPlannedVacationListCommand = plannedVacationList.stream()
 								.skip(j).limit(10).collect(Collectors.toList());
 						String plannedVacationJsonString = mapper.writeValueAsString(listPlannedVacationListCommand);
-						setter.setData("EXCEL_LIST" + i + "_PLANNEDVACATION" + j, plannedVacationJsonString);
+						setter.setData(i + ",PLANNEDVACATION," + j, plannedVacationJsonString);
 					}
 					String jsonInString = mapper.writeValueAsString(excelInforCommand);
-					setter.setData("EXCEL_LIST" + i, jsonInString);
+					setter.setData(i + ",EXCEL_LIST", jsonInString);
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
 				}
