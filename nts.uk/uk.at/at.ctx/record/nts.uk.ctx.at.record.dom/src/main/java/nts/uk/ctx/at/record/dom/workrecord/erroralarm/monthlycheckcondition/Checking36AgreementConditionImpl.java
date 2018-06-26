@@ -7,10 +7,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
@@ -23,8 +28,11 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRep
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Stateless
 public class Checking36AgreementConditionImpl implements Checking36AgreementCondition{
@@ -50,6 +58,13 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 	@Inject
 	private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo;
 	
+	//
+	@Inject
+	private AttendanceTimeOfMonthlyRepository attdTimeOfMonthlyRepo;
+	
+	@Inject
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
+
 	
 	@Override
 	public boolean check36AgreementCondition(String companyId,String employeeId,GeneralDate date,
@@ -69,11 +84,14 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 		}else if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ERROR) {
 			value = basicAgreementSet.getErrorOneMonth().v() - agreementCheckCon36.getEralBeforeTime().intValue();
 		}
-			
 		
-		//月別実績を取得する
-		
-			
+		//月別実績を取得するa
+		//get closureId and closureDate
+		ClosureDate aa = new ClosureDate(31, true);
+		ClosureId closureId = EnumAdaptor.valueOf(1, ClosureId.class);
+		Optional<AttendanceTimeOfMonthly> attdTime =  attdTimeOfMonthlyRepo.find(employeeId, yearMonth,closureId, aa);
+		MonthlyRecordToAttendanceItemConverter monthlyRecord = attendanceItemConvertFactory.createMonthlyConverter();
+		Optional<ItemValue> itemValue = monthlyRecord.withAttendanceTime(attdTime.get()).convert(202);
 		
 		
 		
