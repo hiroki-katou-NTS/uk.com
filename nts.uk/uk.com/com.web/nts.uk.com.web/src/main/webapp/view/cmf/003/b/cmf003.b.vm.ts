@@ -616,16 +616,14 @@ module nts.uk.com.view.cmf003.b {
             }
 
             private setTargetEmployee(): void {
-                var self = this;
+                let self = this;
+                let tempEmployee;
 
-                self.targetEmployee.removeAll();
-                for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
-                    for (var j = 0; j < self.employeeList().length; j++) {
-                        if (self.employeeList()[j].code == self.selectedEmployeeCode()[i]) {
-                            self.targetEmployee.push(self.employeeList()[j]);
-                        }
-                    }
-                }
+                tempEmployee = _.filter(self.employeeList(), function(o) {
+                    return _.includes(self.selectedEmployeeCode(), o.code); 
+                });
+                
+                self.targetEmployee(tempEmployee);
             }
 
             private validateB(): boolean {
