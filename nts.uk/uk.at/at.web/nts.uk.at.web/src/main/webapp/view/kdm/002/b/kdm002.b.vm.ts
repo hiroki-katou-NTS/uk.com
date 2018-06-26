@@ -252,7 +252,7 @@ module nts.uk.at.view.kdm002.b {
                                     windowSize.$dialog.resize();
                                     
                                     self.isError(true);
-                                    self.startExportExcel(true);
+                                    //self.startExportExcel(true);
                                     self.isComplete(true);
                                     self.status(getText("KDM002_30"));
                                     $('#BTN_ERROR_EXPORT').focus();
