@@ -433,7 +433,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 	@Override
 	public Optional<AttendanceTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
-		val pk = new KrcdtDayAttendanceTimePK(employeeId, ymd);
+		//val pk = new KrcdtDayAttendanceTimePK(employeeId, ymd);
+		val pk = new KrcdtDayTimePK(employeeId, ymd);
 		//return this.queryProxy().find(pk, KrcdtDayAttendanceTime.class)
 		return this.queryProxy().find(pk, KrcdtDayTime.class)
 				// find(pk,対象テーブル)
