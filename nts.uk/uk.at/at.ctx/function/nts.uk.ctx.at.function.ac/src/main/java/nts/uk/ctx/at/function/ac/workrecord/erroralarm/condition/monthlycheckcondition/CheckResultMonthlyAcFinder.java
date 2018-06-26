@@ -94,7 +94,8 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 				export.getCompareOperator(),
 				export.getSingleAtdItem(),
 				export.getCompareStartValue(),
-				export.getCompareEndValue()
+				export.getCompareEndValue(),
+				export.getInputCheckCondition()
 				);
 	}
 
