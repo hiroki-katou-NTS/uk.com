@@ -169,13 +169,13 @@ module nts.uk.com.view.cmm020.a {
                             let currentEraNameIndex = self.dataSource().indexOf(self.eraSelected());
                             let preEraName = self.dataSource()[currentEraNameIndex - 1];
 
-                            if (self.currentStartDate() < preEraName.startDate) {
+                            if (self.currentStartDate() <= preEraName.startDate) {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_452" });
                                 return false;
                             } else {
                                 if (currentEraNameIndex != (self.dataSource().length - 1)) {
                                     let nextEraName = self.dataSource()[currentEraNameIndex + 1];
-                                    if (self.currentStartDate() > nextEraName.startDate) {
+                                    if (self.currentStartDate() >= nextEraName.startDate) {
                                         nts.uk.ui.dialog.info({ messageId: "Msg_453" });
                                         return false;
                                     } else {
@@ -211,29 +211,23 @@ module nts.uk.com.view.cmm020.a {
                 var self = this;
                 blockUI.invisible();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(function() {
+                    self.indexOfDelete(_.findIndex(self.dataSource(), function(e) {
+                        return e.eraId == self.currentCode();
+                    }));
+                    var eraNameDelete = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), 0);
+                    console.log(eraNameDelete);
 
-                        self.indexOfDelete(_.findIndex(self.dataSource(), function(e) {
-                            return e.eraId == self.currentCode();
-                        }));
-                        var eraNameDelete = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), 0);
-                        console.log(eraNameDelete);
-
-                        service.deleteEraName(eraNameDelete).done(function() {
+                    service.deleteEraName(eraNameDelete).done(function() {
+                        blockUI.clear();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             blockUI.clear();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                                blockUI.clear();
-
-                                self.loadEraNameList();
-
-                            });
+                            self.loadEraNameList(null);
                         });
                     });
+
                 }).ifNo(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_36" }).then(function() {
-                        blockUI.clear();
-                        return;
-                    });
+                    blockUI.clear();
+                    return;
                 })
             }
 
