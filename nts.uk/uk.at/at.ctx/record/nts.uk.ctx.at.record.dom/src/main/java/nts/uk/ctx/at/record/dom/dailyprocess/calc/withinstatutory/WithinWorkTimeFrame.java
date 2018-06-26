@@ -203,7 +203,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 														boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 														boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 														HolidayCalcMethodSet holidayCalcMethodSet,
-														nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,WorkTimezoneCommonSet commonSetting
+														nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,Optional<WorkTimezoneCommonSet> commonSetting
 														) {
 		AttendanceTime actualTime = calcActualTime();
 		AttendanceTime dedAllTime = new AttendanceTime(0);
@@ -423,7 +423,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																Optional<TimezoneUse> optional,
 																Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList
 																,WorkType workType,PredetermineTimeSetForCalc predetermineTimeForSet,
-																WorkTimezoneCommonSet commonSetting) {
+																Optional<WorkTimezoneCommonSet> commonSetting) {
 		
 		EmTimeZoneSet dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(),   
 													   new TimeZoneRounding(duplicateTimeSheet.getTimeSheet().getStart(),
@@ -504,7 +504,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * 遅刻早退を控除するかどうか判断
 	 * @return
 	 */
-	public boolean jugmentDeductLateEarly(nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,WorkTimezoneCommonSet commonSetting) {
+	public boolean jugmentDeductLateEarly(nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
 		//就業の休暇の就業時間計算方法詳細．遅刻・早退を控除する
 //		NotUseAtr workTimeDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
 //																				?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.breaktimegoout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
@@ -68,19 +70,27 @@ public class BreakTimeOfDaily {
 	 * 全ての休憩時間を算出する指示クラス
 	 * @param oneDay 1日の計算範囲
 	 * @param breakTimeCount 休憩回数
+	 * @param boolean 
 	 * @return 日別実績の休憩時間
 	 */
-	public static BreakTimeOfDaily calcTotalBreakTime(CalculationRangeOfOneDay oneDay, int breakTimeCount) {
-		//計上用計算時間
-		val recordCalcTime = calculationDedBreakTime(DeductionAtr.Appropriate,oneDay);
-		//控除用計算時間
-		val dedCalcTime = calculationDedBreakTime(DeductionAtr.Deduction,oneDay);
-		//休憩回数
-		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(breakTimeCount);
-		//勤務間時間
+	public static BreakTimeOfDaily calcTotalBreakTime(CalculationRangeOfOneDay oneDay, int breakTimeCount, Boolean isCalculatable) {
+		DeductionTotalTime recordCalcTime = DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)));
+		DeductionTotalTime dedCalcTime =  DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)));
+		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(0); 
 		AttendanceTime duringTime = new AttendanceTime(0);
-		//補正後時間帯
-		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
+		List<BreakTimeSheet> breakTimeSheets = Collections.emptyList();
+		if(isCalculatable) {
+			//計上用計算時間
+			recordCalcTime = calculationDedBreakTime(DeductionAtr.Appropriate,oneDay);
+			//控除用計算時間
+			dedCalcTime = calculationDedBreakTime(DeductionAtr.Deduction,oneDay);
+			//休憩回数
+			goOutTimes = new BreakTimeGoOutTimes(breakTimeCount);
+			//勤務間時間
+			duringTime = new AttendanceTime(0);
+			//補正後時間帯
+			breakTimeSheets = new ArrayList<>();
+		}
 		
 		return new BreakTimeOfDaily(recordCalcTime,dedCalcTime,goOutTimes,duringTime,breakTimeSheets);
 	}

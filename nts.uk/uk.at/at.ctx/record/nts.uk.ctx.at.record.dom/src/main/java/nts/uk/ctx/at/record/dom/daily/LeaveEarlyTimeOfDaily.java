@@ -85,7 +85,7 @@ public class LeaveEarlyTimeOfDaily {
 	public static LeaveEarlyTimeOfDaily calcLeaveEarlyTime(CalculationRangeOfOneDay oneDay,
 											   WorkNo workNo,
 											   boolean leaveEarly, //日別実績の計算区分.遅刻早退の自動計算設定.早退
-											   HolidayCalcMethodSet holidayCalcMethodSet,WorkTimezoneCommonSet commonSetting
+											   HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting
 			) {
 
 		//勤務Noに一致する早退時間をListで取得する

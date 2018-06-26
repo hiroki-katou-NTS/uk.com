@@ -72,7 +72,7 @@ public class LateTimeOfDaily {
 	public static LateTimeOfDaily calcLateTime(CalculationRangeOfOneDay oneDay,
 											   WorkNo workNo,
 											   boolean late, //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-											   HolidayCalcMethodSet holidayCalcMethodSet,WorkTimezoneCommonSet commonSetting
+											   HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting
 			) {
 					 
 		//勤務Noに一致する遅刻時間をListで取得する

@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
@@ -168,9 +169,10 @@ public class CalculationRangeOfOneDay {
 			,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo,Optional<CoreTimeSetting> coreTimeSetting,
 			HolidayCalcMethodSet holidayCalcMethodSet,DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList,
     		VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
-    		Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
+    		Optional<WorkTimeCode> siftCode, 
     		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,WorkTimezoneCommonSet commonSetting) {
+    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,
+    		WorkingConditionItem conditionItem,Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		/* 固定控除時間帯の作成 */
 		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
 				setMethod, clockManage, dailyGoOutSheet, this.oneDayOfRange, commonSet, attendanceLeavingWork,
@@ -183,8 +185,8 @@ public class CalculationRangeOfOneDay {
 				breakdownTimeDay, dailyTime, calcSetinIntegre, statutorySet, prioritySet, deductionTimeSheet,
 				workTime,midNightTimeSheet,personalInfo,holidayCalcMethodSet,coreTimeSetting,dailyUnit,breakTimeList, 
 				vacationClass, timevacationUseTimeOfDaily,  
-				siftCode, personalCondition, leaveEarly, leaveEarly, illegularAddSetting, 
-				flexAddSetting, regularAddSetting, holidayAddtionSet, commonSetting);
+				siftCode, leaveEarly, leaveEarly, illegularAddSetting, 
+				flexAddSetting, regularAddSetting, holidayAddtionSet, commonSetting,conditionItem,predetermineTimeSetByPersonInfo);
 	}
 
 	/**
@@ -241,9 +243,10 @@ public class CalculationRangeOfOneDay {
 			DailyCalculationPersonalInformation personalInfo,HolidayCalcMethodSet holidayCalcMethodSet,
 			Optional<CoreTimeSetting> coreTimeSetting,DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList,
     		VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily, 
-    		Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
+    		Optional<WorkTimeCode> siftCode, 
     		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,WorkTimezoneCommonSet commonSetting) {
+    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+    		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		if (workingSystem.isExcludedWorkingCalculate()) {
 			/* 計算対象外 */
 			return;
@@ -265,7 +268,6 @@ public class CalculationRangeOfOneDay {
 																			  holidayCalcMethodSet,
 																			  workTimeCommonSet.getLateEarlySet(),
 																			  dailyUnit,breakTimeList,
-																			  personalCondition, 
 																			  vacationClass, 
 																			  late, 
 																				leaveEarly, 
@@ -277,11 +279,13 @@ public class CalculationRangeOfOneDay {
 																				CalcMethodOfNoWorkingDay.isCalculateFlexTime, 
 																				Optional.of(new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
 																						                                                       new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay)))), 
-																				workTime.getWorkTimeDivision().getWorkTimeDailyAtr(), 
+																				Optional.of(workTime.getWorkTimeDivision().getWorkTimeDailyAtr()), 
 																				siftCode, 
 																				new AttendanceTime(1440), 
 																				Finally.of(timevacationUseTimeOfDaily),
-																				commonSetting);
+																				commonSetting,
+																				conditionItem,
+																				predetermineTimeSetByPersonInfo);
 			if(withinWorkingTimeSheet.isPresent()) {
 				withinWorkingTimeSheet.get().getWithinWorkTimeFrame().addAll(createWithinWorkTimeSheet.getWithinWorkTimeFrame());
 			}
@@ -296,7 +300,8 @@ public class CalculationRangeOfOneDay {
 					workingSystem, breakdownTimeDay, dailyTime, calcSetinIntegre.getOvertimeSetting(), statutorySet, prioritySet
 					,bonusPaySetting,midNightTimeSheet,personalInfo,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, predetermineTimeSetForCalc, 
-					siftCode, personalCondition, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting
+					siftCode,  leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,
+					conditionItem,predetermineTimeSetByPersonInfo
 					);
 			if(!outsideWorkTimeSheet.isPresent()) {
 				//outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
@@ -339,14 +344,15 @@ public class CalculationRangeOfOneDay {
 							 afterDay,
 							 predetermineTimeSetForCalc,
 							 siftCode,
-							 personalCondition,
 							 leaveEarly,
 							 workingSystem,
 							 holidayAddtionSet,
 							 regularAddSetting,
 							 flexAddSetting,
 							 illegularAddSetting,
-							 leaveEarly,commonSetting);
+							 leaveEarly,commonSetting,
+							 conditionItem,
+							 predetermineTimeSetByPersonInfo);
 		if(!overTimeFrame.isEmpty()) {
 			if(outsideWorkTimeSheet.isPresent()) {
 				if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
@@ -407,9 +413,10 @@ public class CalculationRangeOfOneDay {
 									  AutoCalOvertimeSetting autoCalculationSet, BreakDownTimeDay breakdownTimeDay, List<OverTimeOfTimeZoneSet> overTimeHourSetList, 
 									  DailyUnit dailyUnit, HolidayCalcMethodSet holidayCalcMethodSet,
 									  VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily, WorkType workType, 
-									  PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
+									  PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, 
 									  boolean late, WorkingSystem workingSystem, HolidayAddtionSet holidayAddtionSet, WorkRegularAdditionSet regularAddSetting, 
-									  WorkFlexAdditionSet flexAddSetting, WorkDeformedLaborAdditionSet illegularAddSetting, boolean leaveEarly, WorkTimezoneCommonSet commonSetting) {
+									  WorkFlexAdditionSet flexAddSetting, WorkDeformedLaborAdditionSet illegularAddSetting, boolean leaveEarly, Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+									  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		
 		if(!this.withinWorkingTimeSheet.isPresent())
 			return Collections.emptyList();
@@ -484,14 +491,15 @@ public class CalculationRangeOfOneDay {
 															workType, 
 															predetermineTimeSet, 
 															siftCode, 
-															personalCondition, 
 															late, 
 															leaveEarly, 
 															workingSystem, 
 															illegularAddSetting, 
 															flexAddSetting, 
 															regularAddSetting, 
-															holidayAddtionSet,commonSetting);
+															holidayAddtionSet,commonSetting,conditionItem,
+															predetermineTimeSetByPersonInfo
+															);
 	}
 
 	/**
@@ -672,9 +680,10 @@ public class CalculationRangeOfOneDay {
 					,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo,
 					HolidayCalcMethodSet holidayCalcMethodSet,Optional<CoreTimeSetting> coreTimeSetting,DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList,
             		VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
-            		Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
+            		Optional<WorkTimeCode> siftCode, 
             		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-            		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,WorkTimezoneCommonSet commonSetting){
+            		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+            		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo){
 		 //if(!flexTimeSet.getUseFixedRestTime()){
 			// predetermineTimeSetForCalc.correctPredetermineTimeSheet(dailyWork);
 			 /*�?��早�?処�?*/
@@ -699,8 +708,8 @@ public class CalculationRangeOfOneDay {
 					 statutorySet,  prioritySet,
 					 deductionTimeSheet,  workTime,midNightTimeSheet,personalInfo,holidayCalcMethodSet,coreTimeSetting,dailyUnit,breakTimeList,
 					 vacationClass, timevacationUseTimeOfDaily, siftCode, 
-					 personalCondition, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet
-					 ,commonSetting);
+					  leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet
+					 ,commonSetting,conditionItem,predetermineTimeSetByPersonInfo);
 		 /*コアタイ�?のセ�?��*/
 		 //this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
 		 if(this.withinWorkingTimeSheet.isPresent())

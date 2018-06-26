@@ -72,7 +72,7 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 * @param graceTimeSetting
 	 * @return
 	 */
-	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting, WorkTimezoneCommonSet commonSetting) {
+	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting, Optional<WorkTimezoneCommonSet> commonSetting) {
 //		if(this.notDeductLateLeaveEarly==NotUseAtr.USE) {//
 		if(isDeductLateLeaveEarly(commonSetting)) {//遅刻早退をマイナスする場合に処理に入る
 			if(deductTime.greaterThan(0) || !graceTimeSetting.isIncludeWorkingHour()) {//猶予時間の加算設定をチェック&&パラメータ「遅刻控除時間」の確認
@@ -89,10 +89,10 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 * 画面上で「遅刻早退をマイナスしない」のチェックボックスでチェックがある場合にここにUSEが来る為です
 	 * @return 控除する場合はtrueが返る
 	 */
-	public boolean isDeductLateLeaveEarly(WorkTimezoneCommonSet commonSetting) {
+	public boolean isDeductLateLeaveEarly(Optional<WorkTimezoneCommonSet> commonSetting) {
 
-		if(this.notDeductLateLeaveEarly.isEnableSetPerWorkHour()) {
-			if(commonSetting.getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+		if(this.notDeductLateLeaveEarly.isEnableSetPerWorkHour() && commonSetting.isPresent()) {
+			if(commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
 				return true;
 			}
 			return false;
