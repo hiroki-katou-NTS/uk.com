@@ -297,13 +297,8 @@ module kcp.share.tree {
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
 
                     dfd.resolve();
-                    if (self.isMultiSelect) {
-                        $('#multiple-tree-grid').igTreeGrid('dataBind');
-                    } else {
-                        $('#single-tree-grid').igTreeGrid('dataBind');
-                    }
                 })
-
+                
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt: any) {
                     self.addIconToAlreadyCol();
                 });
@@ -574,6 +569,28 @@ module kcp.share.tree {
                 ko.cleanNode($('#' + self.getComIdSearchBox())[0]);
                 self.addColToGrid(self.data, self.itemList());
                 ko.applyBindings(self, $('#' + self.getComIdSearchBox())[0]);
+                
+                let options = {
+                    width: self.treeStyle.width,
+                    dataSource: subItemList,
+                    selectedValues: self.selectedWorkplaceIds(),
+                    optionsValue: 'workplaceId',
+                    optionsChild: 'childs',
+                    optionsText: 'nodeText',
+                    multiple: self.isMultipleUse,
+                    virtualization: true,
+                    rows: self.maxRows,
+                    virtualizationMode: 'continuous',
+                    extColumns: self.treeComponentColumn,
+                    enable: true,
+                    showCheckBox: self.isMultiSelect
+                };
+                if (self.isMultiSelect) {
+                    $('#multiple-tree-grid').ntsTreeGrid(options);
+                } else {
+                    $('#single-tree-grid').ntsTreeGrid(options);
+                }
+                
                 self.createGlobalVarDataList();
             }
         }
@@ -588,6 +605,28 @@ module kcp.share.tree {
             self.$input.load(webserviceLocator, function() {
                 ko.cleanNode(self.$input[0]);
                 ko.applyBindings(self, self.$input[0]);
+                
+                let options = {
+                    width: self.treeStyle.width,
+                    dataSource: self.itemList(),
+                    selectedValues: self.selectedWorkplaceIds(),
+                    optionsValue: 'workplaceId',
+                    optionsChild: 'childs',
+                    optionsText: 'nodeText',
+                    multiple: self.isMultipleUse,
+                    virtualization: true,
+                    rows: self.maxRows,
+                    virtualizationMode: 'continuous',
+                    extColumns: self.treeComponentColumn,
+                    enable: true,
+                    showCheckBox: self.isMultiSelect
+                };
+                
+                if (self.isMultiSelect) {
+                    $('#multiple-tree-grid').ntsTreeGrid(options);
+                } else {
+                    $('#single-tree-grid').ntsTreeGrid(options);
+                }
 
                 // defined function get data list.
                 self.createGlobalVarDataList();
@@ -605,6 +644,7 @@ module kcp.share.tree {
                     self.isFullView(false);
                     self.filterData();
                 }
+                
                 dfd.resolve();
             });
             return dfd.promise();
@@ -648,6 +688,28 @@ module kcp.share.tree {
 
                 // Filter data
                 self.filterData();
+                
+                let options = {
+                    width: self.treeStyle.width,
+                    dataSource: self.itemList(),
+                    selectedValues: self.selectedWorkplaceIds(),
+                    optionsValue: 'workplaceId',
+                    optionsChild: 'childs',
+                    optionsText: 'nodeText',
+                    multiple: self.isMultipleUse,
+                    virtualization: true,
+                    rows: self.maxRows,
+                    virtualizationMode: 'continuous',
+                    extColumns: self.treeComponentColumn,
+                    enable: true,
+                    showCheckBox: self.isMultiSelect
+                };
+                
+                if (self.isMultiSelect) {
+                    $('#multiple-tree-grid').ntsTreeGrid(options);
+                } else {
+                    $('#single-tree-grid').ntsTreeGrid(options);
+                }
             });
         }
 

@@ -64,39 +64,11 @@
 		</div>
 		<div class="cf"></div>
 		<com:ko tag="if" bind="!isMultiSelect">
-			<table id="single-tree-grid" class="cf"
-				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
-					width: treeStyle.width,
-					dataSource: itemList,
-					value: selectedWorkplaceIds,
-					primaryKey: 'workplaceId',
-					childDataKey: 'childs',
-					primaryText: 'nodeText',
-					multiple: isMultiSelect,
-					enable: true,
-					rows: maxRows,
-					virtualization: true,
-					virtualizationMode: 'continuous',
-					extColumns: treeComponentColumn,
-					showCheckBox: isMultiSelect}">
+			<table id="single-tree-grid" class="cf">
 			</table>
 		</com:ko>
 		<com:ko tag="if" bind="isMultiSelect">
-			<table id="multiple-tree-grid" class="cf"
-				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
-					width: treeStyle.width,
-					options: itemList,
-					selectedValues: selectedWorkplaceIds,
-					optionsValue: 'workplaceId',
-					optionsChild: 'childs',
-					optionsText: 'nodeText',
-					multiple: isMultiSelect,
-					virtualization: true,
-					rows: maxRows,
-					virtualizationMode: 'continuous',
-					extColumns: treeComponentColumn,
-					enable: true,
-					showCheckBox: isMultiSelect}">
+			<table id="multiple-tree-grid" class="cf">
 			</table>
 		</com:ko>
 	</div>
