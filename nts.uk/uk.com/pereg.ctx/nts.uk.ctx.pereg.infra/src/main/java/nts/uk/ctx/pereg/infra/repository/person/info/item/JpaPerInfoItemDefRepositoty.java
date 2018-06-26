@@ -56,7 +56,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
 			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
 			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
-			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, i.canAbolition");
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, ic.canAbolition");
 
 	private final static String JOIN_COMMON_TABLE = String.join(" ",
 			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
@@ -601,7 +601,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDef.getPerInfoItemDefId());
 		return new PpemtPerInfoItem(perInfoItemPK, perInfoItemDef.getPerInfoCategoryId(),
 				perInfoItemDef.getItemCode().v(), perInfoItemDef.getItemName().v(),
-				perInfoItemDef.getIsAbolition().value, perInfoItemDef.getIsRequired().value, perInfoItemDef.isCanAbolition() == true? 1: 0);
+				perInfoItemDef.getIsAbolition().value, perInfoItemDef.getIsRequired().value);
 	}
 
 	private PpemtPerInfoItem createPerInfoItemDefFromDomainWithCtgId(PersonInfoItemDefinition perInfoItemDef,
@@ -609,7 +609,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(IdentifierUtil.randomUniqueId());
 		return new PpemtPerInfoItem(perInfoItemPK, perInfoCtgId, perInfoItemDef.getItemCode().v(),
 				perInfoItemDef.getItemName().v(), perInfoItemDef.getIsAbolition().value,
-				perInfoItemDef.getIsRequired().value, perInfoItemDef.isCanAbolition() == true? 1: 0);
+				perInfoItemDef.getIsRequired().value);
 	}
 
 	private PpemtPerInfoItemCm createPerInfoItemDefCmFromDomain(PersonInfoItemDefinition perInfoItemDef,
@@ -728,7 +728,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				timeItemMin, timeItemMax, timepointItemMin, timepointItemMax, dateItemType, stringItemType,
 				stringItemLength, stringItemDataType, numericItemMin, numericItemMax, numericItemAmountAtr,
 				numericItemMinusAtr, numericItemDecimalPart, numericItemIntegerPart, selectionItemRefType,
-				selectionItemRefCode, relatedCategoryCode, resourceId);
+				selectionItemRefCode, relatedCategoryCode, resourceId, perInfoItemDef.isCanAbolition() == true? 1: 0);
 	}
 	// Sonnlb Code start
 
