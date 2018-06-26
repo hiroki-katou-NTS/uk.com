@@ -1,70 +1,26 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
-import nts.gul.file.FileUtil;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.logging.log4j.util.Strings;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class CsvFileUtil {
 
 	private static final String NEW_LINE_CHAR = "\r\n";
 	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 	private static final Charset CHARSET = StandardCharsets.UTF_8;
-
-	public static int getNumberOfLine(InputStream inputStream, Integer endcoding) {
-		// get csv reader
-		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
-
-		int count = 0;
-		try {
-			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
-			count = csvParsedResult.getRecords().size();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return count;
-	}
-
-	public static List<List<String>> getRecordByIndex(InputStream inputStream, int dataLineNum, int startLine) {
-		// get csv reader
-		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
-		List<List<String>> result = new ArrayList<>();
-		try {
-			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
-			NtsCsvRecord colHeader = csvParsedResult.getRecords().get(dataLineNum - 1);
-			NtsCsvRecord record = csvParsedResult.getRecords().get(startLine - 1);
-			for (int i = 0; i < record.columnLength(); i++) {
-				List<String> data = new ArrayList<>();
-				data.add((String) colHeader.getColumn(i));
-				data.add((String) record.getColumn(i));
-				result.add(data);
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return result;
-	}
 	
-	public static List<List<String>> getAllRecord(InputStream inputStream) {
+	static List<List<String>> getAllRecord(InputStream inputStream) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
 				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
@@ -72,18 +28,22 @@ public class CsvFileUtil {
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
 			List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
-			for (NtsCsvRecord record : allRecord) {
-				List<String> data = new ArrayList<>();
-				for (int i = 0; i < record.columnLength(); i++) {
-					data.add((String) record.getColumn(i));
-				}
-				result.add(data);
-			}
+			getDataCSV(result, allRecord);
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		return result;
+	}
+
+	private static void getDataCSV(List<List<String>> result, List<NtsCsvRecord> allRecord) {
+		for (NtsCsvRecord record : allRecord) {
+			List<String> data = new ArrayList<>();
+			for (int i = 0; i < record.columnLength(); i++) {
+				data.add((String) record.getColumn(i));
+			}
+			result.add(data);
+		}
 	}
 
 
@@ -92,19 +52,12 @@ public class CsvFileUtil {
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
 				.withChartSet(StandardCharsets.UTF_8).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<List<String>> result = new ArrayList<>();
-		Optional.empty().orElse(null);
 		try {
 			InputStream inputStream = createInputStreamFromFile(fileId, fileName);
 			if (!Objects.isNull(inputStream)){
 				CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
 				List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
-				for (NtsCsvRecord record : allRecord) {
-					List<String> data = new ArrayList<>();
-					for (int i = 0; i < record.columnLength(); i++) {
-						data.add((String) record.getColumn(i));
-					}
-					result.add(data);
-				}
+				getDataCSV(result, allRecord);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -112,7 +65,7 @@ public class CsvFileUtil {
 		return result;
 	}
 	
-	public static List<String> getCsvHeader(String fileName, String fileId) {
+	static List<String> getCsvHeader(String fileName, String fileId) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
 				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
@@ -134,24 +87,7 @@ public class CsvFileUtil {
 		return data;
 	}
 	
-	public static List<String> getRecord(InputStream inputStream, int[] columns, int index) {
-		// get csv reader
-		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(CHARSET).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
-		List<String> result = new ArrayList<>();
-		try {
-			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
-			NtsCsvRecord record = csvParsedResult.getRecords().get(index);
-			for (int i = 0; i < columns.length; i++) {
-				result.add((String) record.getColumn(columns[i]));
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return result;
-	}
-	
-	public static InputStream createInputStreamFromFile(String fileId, String fileName) {
+	private static InputStream createInputStreamFromFile(String fileId, String fileName) {
 		String filePath = getCsvStoragePath(fileId) + "//" + fileName + ".csv";
 		try {
 			return new FileInputStream(new File(filePath));
@@ -160,21 +96,18 @@ public class CsvFileUtil {
 		}
 	}
 
-	public static String getStoragePath() {
-		return DATA_STORE_PATH;
-	}
-
-	public static String getCsvStoragePath(String fileId) {
+	private static String getCsvStoragePath(String fileId) {
 		String extractDataStoragePath = getExtractDataStoragePath(fileId);
 		File f = new File(extractDataStoragePath);
 		if (f.exists()){
-			if(f.list().length >0 ){
-				return extractDataStoragePath + "//" + f.list()[0]; 
+			if(Objects.requireNonNull(f.list()).length >0 ){
+				return extractDataStoragePath + "//" + Objects.requireNonNull(f.list())[0];
 			}
 		}
 		return Strings.EMPTY;
 	}
-	public static String getExtractDataStoragePath(String fileId){
+
+	private static String getExtractDataStoragePath(String fileId){
 		return DATA_STORE_PATH + "//packs//" + fileId;
 	}
 }
