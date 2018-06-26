@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.assist.app.find.datarestoration.PerformDataRecoveryDto;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
@@ -18,6 +17,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.RecoveryMethod;
 import nts.uk.ctx.sys.assist.dom.recoverystorage.RecoveryStorageService;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -55,7 +55,7 @@ public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<
 		// データ復旧の結果
 		recoveryStogareAsysnCommandHandler.handle(context);
 
-		String cid = context.getCommand().cid;
+		String cid = AppContexts.user().companyId();
 		String saveSetCode = null;
 		String practitioner = null;
 		String executionResult = null;
@@ -68,10 +68,10 @@ public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<
 		repoDataRecoveryResult.add(dataRecoveryResult);
 
 		// 復旧条件の調整, update recoveryMethod
-		repoPerformDataRecovery.updatePerformDataRecoveryById(context.getCommand().dataRecoveryProcessId);
+		repoPerformDataRecovery.updatePerformDataRecoveryById(context.getCommand().recoveryProcessingId);
 
 		Optional<PerformDataRecovery> otpPerformDataRecovery = repoPerformDataRecovery
-				.getPerformDatRecoverById(context.getCommand().dataRecoveryProcessId);
+				.getPerformDatRecoverById(context.getCommand().recoveryProcessingId);
 		if (otpPerformDataRecovery.isPresent()) {
 			if (otpPerformDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE) {
 				// 復旧期間の調整

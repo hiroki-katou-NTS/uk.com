@@ -7,18 +7,17 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.assist.app.find.datarestoration.PerformDataRecoveryDto;
 import nts.uk.ctx.sys.assist.dom.recoverystorage.RecoveryStorageService;
 
 @Stateless
-public class RecoveryStogareAsysnCommandHandler extends AsyncCommandHandler<PerformDataRecoveryDto> {
+public class RecoveryStogareAsysnCommandHandler extends AsyncCommandHandler<PerformDataRecoveryCommand> {
 	@Inject
 	private RecoveryStorageService recoveryStorageService;
 
 	@Override
-	protected void handle(CommandHandlerContext<PerformDataRecoveryDto> context) {
-		PerformDataRecoveryDto performDataCommand = context.getCommand();
-		String dataRecoveryProcessId = context.getCommand().dataRecoveryProcessId;
+	protected void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
+		PerformDataRecoveryCommand performDataCommand = context.getCommand();
+		String dataRecoveryProcessId = performDataCommand.recoveryProcessingId;
 		// サーバー復旧処理
 		try {
 			recoveryStorageService.recoveryStorage(dataRecoveryProcessId);
