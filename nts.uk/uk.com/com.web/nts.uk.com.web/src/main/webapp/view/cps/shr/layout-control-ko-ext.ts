@@ -320,12 +320,24 @@ module nts.custombinding {
                         border-left: 1px solid #aaa;
                     }
 
-                    .layout-control .item-control td div,
-                    .layout-control .item-controls td div {
+                    .layout-control .item-control td>div,
+                    .layout-control .item-controls td>div {
                         background-color: rgb(217, 217, 217);
                         height: 31px;
                         width: 100%;
                         display: block;
+                    }
+
+                    .layout-control .item-control td>div.nts-datepicker-wrapper,
+                    .layout-control .item-controls td>div.nts-datepicker-wrapper {                        
+                        background-color: #fff;
+                    }
+
+                    .layout-control .item-control td>div .ui-state-default,
+                    .layout-control .item-controls td>div .ui-state-default,
+                    .layout-control .item-control td>div .ui-state-default:hover,
+                    .layout-control .item-controls td>div .ui-state-default:hover {
+                        border: none;
                     }
                 
                     .layout-control .item-control td,

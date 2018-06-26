@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
@@ -418,13 +419,19 @@ public class MonthlyCalculation {
 		// 不正呼び出しの時、集計しない
 		if (this.workingConditionItem == null) return;
 		
+		ConcurrentStopwatches.start("12221:共有項目：");
+		
 		// 共有項目を集計する
 		this.aggregateTime.aggregateSharedItem(
 				aggrPeriod, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap());
+
+		ConcurrentStopwatches.stop("12221:共有項目：");
 		
 		// 通常勤務　or　変形労働　の時
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK ||
 				this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+
+			ConcurrentStopwatches.start("12222:通常変形の月別実績：");
 			
 			// 通常・変形労働勤務の月別実績を集計する
 			val aggrValue = this.actualWorkingTime.aggregateMonthly(
@@ -435,12 +442,17 @@ public class MonthlyCalculation {
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
 			this.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
 			this.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
+
+			ConcurrentStopwatches.stop("12222:通常変形の月別実績：");
+			ConcurrentStopwatches.start("12223:通常変形の月単位：");
 			
 			// 通常・変形労働勤務の月単位の時間を集計する
 			this.actualWorkingTime.aggregateMonthlyHours(this.companyId, this.employeeId,
 					this.yearMonth, this.closureId, this.closureDate, aggrPeriod, this.workingSystem,
 					aggrAtr, this.isRetireMonth, this.workplaceId, this.employmentCd,
 					this.settingsByReg, this.settingsByDefo, this.aggregateTime, repositories);
+
+			ConcurrentStopwatches.stop("12223:通常変形の月単位：");
 		}
 		// フレックス時間勤務　の時
 		else if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
@@ -448,6 +460,8 @@ public class MonthlyCalculation {
 			// フレックス集計方法を取得する
 			val flexAggrMethod = this.settingsByFlex.getFlexAggrSet().getAggrMethod();
 
+			ConcurrentStopwatches.start("12222:フレックスの月別実績：");
+			
 			// フレックス勤務の月別実績を集計する
 			val aggrValue = this.flexTime.aggregateMonthly(this.companyId, this.employeeId,
 					this.yearMonth, this.closureId, this.closureDate, aggrPeriod, this.workingSystem,
@@ -456,6 +470,9 @@ public class MonthlyCalculation {
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
 			this.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
 			this.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
+
+			ConcurrentStopwatches.stop("12222:フレックスの月別実績：");
+			ConcurrentStopwatches.start("12223:フレックスの月単位：");
 			
 			// フレックス勤務の月単位の時間を集計する
 			this.flexTime.aggregateMonthlyHours(this.companyId, this.employeeId,
@@ -463,28 +480,43 @@ public class MonthlyCalculation {
 					this.workplaceId, this.employmentCd,
 					this.settingsByFlex, this.aggregateTime,
 					repositories);
+
+			ConcurrentStopwatches.stop("12223:フレックスの月単位：");
 		}
 
+		ConcurrentStopwatches.start("12224:実働時間：");
+		
 		// 実働時間の集計
 		this.aggregateTime.aggregateActualWorkingTime(aggrPeriod, this.workingSystem,
 				this.actualWorkingTime, this.flexTime);
+
+		ConcurrentStopwatches.stop("12224:実働時間：");
+		ConcurrentStopwatches.start("12225:フレックス補填：");
 		
 		// フレックス時間勤務の時
 		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
-			
+
 			// 年休使用時間に加算する
 			this.addAnnualLeaveUseTime();
 			
 			// 控除時間が余分に入れられていないか確認する
 			this.checkDeductTime();
 		}
+
+		ConcurrentStopwatches.stop("12225:フレックス補填：");
+		ConcurrentStopwatches.start("12226:総労働時間：");
 		
 		// 総労働時間を計算
 		this.calcTotalWorkingTime();
+
+		ConcurrentStopwatches.stop("12226:総労働時間：");
+		ConcurrentStopwatches.start("12227:管理期間の36協定：");
 		
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
 		this.agreementTimeOfManagePeriod.aggregate(aggrPeriod.end(), aggrAtr, this, repositories);
+
+		ConcurrentStopwatches.stop("12227:管理期間の36協定：");
 		
 		// 月別実績の36協定へ値を移送
 		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
@@ -609,6 +641,7 @@ public class MonthlyCalculation {
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @param monthlyOldDatas 集計前の月別実績データ
+	 * @param basicCalced 月の計算結果（基本計算）
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public Optional<AgreementTimeOfManagePeriod> aggregateAgreementTime(
@@ -621,6 +654,7 @@ public class MonthlyCalculation {
 			MonAggrEmployeeSettings employeeSets,
 			MonthlyCalculatingDailys monthlyCalcDailys,
 			MonthlyOldDatas monthlyOldDatas,
+			Optional<MonthlyCalculation> basicCalced,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 36協定運用設定を取得
@@ -663,35 +697,49 @@ public class MonthlyCalculation {
 				// 履歴の期間と重複がない時
 				continue;
 			}
-			
-			// 集計準備
-			MonthlyCalculation calcWork = new MonthlyCalculation();
-			calcWork.prepareAggregation(
-					companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
-					period, workingConditionItem, weekNo,
-					companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas, repositories);
-			for (val errorInfo : calcWork.errorInfos){
-				if (errorInfo.getResourceId().compareTo("002") == 0) return Optional.empty();
-			}
-			calcWork.year = aggrPeriod.getYear();
-			
-			// 集計中の労働制を確認する
-			if (calcWork.workingSystem == WorkingSystem.FLEX_TIME_WORK){
-				
-				// 年休控除日数と欠勤控除時間があるか確認する
-				if (annualLeaveDeductDays.isPresent() || absenceDeductTime.isPresent()){
-					if (!annualLeaveDeductDays.isPresent()){
-						annualLeaveDeductDays = Optional.of(new AttendanceDaysMonth(0.0));
-					}
-					if (!absenceDeductTime.isPresent()){
-						absenceDeductTime = Optional.of(new AttendanceTimeMonth(0));
-					}
+
+			// 基本計算結果と計算期間が異なる場合に、集計する
+			boolean isSameBasic = false;
+			if (basicCalced.isPresent()){
+				if (period.start().compareTo(basicCalced.get().getProcPeriod().start()) == 0 &&
+					period.end().compareTo(basicCalced.get().getProcPeriod().end()) == 0){
+					isSameBasic = true;
 				}
 			}
-			
-			// 履歴ごとに月別実績を集計する
-			calcWork.aggregate(aggrPeriod.getPeriod(), MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
-					annualLeaveDeductDays, absenceDeductTime, repositories);
+			MonthlyCalculation calcWork = new MonthlyCalculation();
+			if (isSameBasic){
+				calcWork = basicCalced.get();
+			}
+			else {
+				
+				// 集計準備
+				calcWork.prepareAggregation(
+						companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
+						period, workingConditionItem, weekNo,
+						companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas, repositories);
+				for (val errorInfo : calcWork.errorInfos){
+					if (errorInfo.getResourceId().compareTo("002") == 0) return Optional.empty();
+				}
+				calcWork.year = aggrPeriod.getYear();
+				
+				// 集計中の労働制を確認する
+				if (calcWork.workingSystem == WorkingSystem.FLEX_TIME_WORK){
+					
+					// 年休控除日数と欠勤控除時間があるか確認する
+					if (annualLeaveDeductDays.isPresent() || absenceDeductTime.isPresent()){
+						if (!annualLeaveDeductDays.isPresent()){
+							annualLeaveDeductDays = Optional.of(new AttendanceDaysMonth(0.0));
+						}
+						if (!absenceDeductTime.isPresent()){
+							absenceDeductTime = Optional.of(new AttendanceTimeMonth(0));
+						}
+					}
+				}
+				
+				// 履歴ごとに月別実績を集計する
+				calcWork.aggregate(aggrPeriod.getPeriod(), MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+						annualLeaveDeductDays, absenceDeductTime, repositories);
+			}
 			
 			// データを合算する
 			if (agreementCalc == null){

@@ -239,18 +239,13 @@ module cps002.a.vm {
 
 
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
-                let self = this,
-                    employee = self.currentEmployee();
-                if (employee.cardNo() == "") {
-                    employee.cardNo(self.initStampCard(employeeCode));
-                }
+                let self = this;
+                self.autoUpdateCardNo(employeeCode);
             }); 
             
-            
-
             self.currentEmployee().cardNo.subscribe((cardNo) => {
-                let ce = ko.toJS(self.stampCardEditing),
-                    emp = self.currentEmployee();
+                let ce = ko.toJS(self.stampCardEditing);
+                let emp = self.currentEmployee();
 
                 if (cardNo && cardNo.length < ce.digitsNumber) {
                     switch (ce.method) {
@@ -317,9 +312,35 @@ module cps002.a.vm {
         
         logMouseOver() {
             let self = this;
-            if (self.cardNo() == "") {
-                 debugger;
-                 self.getStampCardAfterLostFocusEmpCode(self.employeeCode());
+            self.autoUpdateCardNo(self.currentEmployee().employeeCode());
+        }
+        
+        autoUpdateCardNo(employeeCode) {
+            let self = this;
+            let employee = self.currentEmployee();
+
+            if (employee.cardNo() != "") {
+                return;
+            }
+            if (!self.currentUseSetting()) {
+                return;
+            }
+            let userSetting = self.currentUseSetting();
+            let maxLengthCardNo = self.stampCardEditing().digitsNumber;
+            switch (userSetting.cardNumberType) {
+                case CardNoValType.SAME_AS_EMP_CODE:
+                    if (employeeCode.length <= maxLengthCardNo) {
+                        employee.cardNo(employeeCode);
+                    }
+                    break;
+                case CardNoValType.CPC_AND_EMPC:
+                    let newCardNo = __viewContext.user.companyCode + employee.employeeCode();
+                    if (newCardNo.length <= maxLengthCardNo) {
+                        employee.cardNo(newCardNo);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
         
@@ -410,13 +431,6 @@ module cps002.a.vm {
             });
         }
         
-        getStampCardAfterLostFocusEmpCode(newEmployeeCode : string) {
-            let self = this;
-            service.getStampCardAfterLostFocusEmp(newEmployeeCode).done((value) => {
-                self.currentEmployee().cardNo(value);
-            });
-        }
-
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
@@ -1128,6 +1142,19 @@ module cps002.a.vm {
         AfterZero = 2,
         PreviousSpace = 3,
         AfterSpace = 4
+    }
+    
+    enum CardNoValType {
+        //頭文字指定 (InitialDesignation)
+        INIT_DESIGNATION = 1,
+        //空白 (Blank)
+        BLANK = 2,
+        //社員コードと同じ (SameAsEmployeeCode)
+        SAME_AS_EMP_CODE = 3,
+        //最大値 (MaxValue)
+        MAXVALUE = 4,
+        //会社コード＋社員コード (CompanyCodeAndEmployeeCode)
+        CPC_AND_EMPC = 5 
     }
 
     enum POSITION {

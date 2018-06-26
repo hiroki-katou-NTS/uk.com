@@ -234,9 +234,18 @@
 	width: 131px;}
 	
 .italic-text{
-	 font-style: italic;
+	/*  font-style: italic; */
 	 font-weight: bold;
+	 background-color: black !important;
+	 color: white !important;
 }
+
+.nts-grid tr td.ui-iggrid-selectedcell.ui-state-hover {
+	/*  font-style: italic; */
+	 background-color: #007fff !important;
+	 color: black !important;
+}
+
 .image-icon{
 	background: url('../a/image/icon.png');
 	display: block;
