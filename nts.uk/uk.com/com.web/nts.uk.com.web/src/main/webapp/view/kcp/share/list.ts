@@ -363,6 +363,17 @@ module kcp.share.list {
                     name: self.getItemNameForList(),
                     rows: self.maxRows
                 };
+                const searchBoxOptions = {
+                    searchMode: 'filter',
+                    targetKey: self.targetKey,
+                    comId: self.componentGridId,
+                    items: self.itemList(),
+                    selected: self.selectedCodes(),
+                    selectedKey: self.targetKey,
+                    fields: ['name', 'code'],
+                    mode: 'igGrid'
+                };
+                $('#search-box-kcp').ntsSearchBox(searchBoxOptions);
                 $('#grid-list-all-kcp').ntsGridList(options);
             });
         }
