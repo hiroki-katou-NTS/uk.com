@@ -135,6 +135,7 @@ module nts.uk.at.view.kdm002.b {
              */
             private updateState() {
                 let self = this;
+                let exContent;
                 // 1秒おきに下記を実行
                 nts.uk.deferred.repeat(conf => conf
                     .task(() => {
@@ -144,6 +145,7 @@ module nts.uk.at.view.kdm002.b {
                                 //self.excelContent('');
                                 self.excelContent.removeAll();
                                 self.imErrorLog.removeAll();
+                                console.log(res.taskDatas);
                                 _.forEach(res.taskDatas, item => {
                                     if (item.key.substring(0, 10) == "ERROR_LIST") {
                                         let error = JSON.parse(item.valueAsString);
@@ -154,18 +156,42 @@ module nts.uk.at.view.kdm002.b {
                                         }
                                         //self.imErrorLog.removeAll();
                                         self.imErrorLog.push(errorContent);
-                                    } else {
-                                        if (item.key.substring(0, 10) == "EXCEL_LIST") {
-                                            let exContent = JSON.parse(item.valueAsString);
-                                              self.excelContent.push(exContent);
-                                        } else {
-                                            // 処理カウント
-                                            if (item.key == 'NUMBER_OF_SUCCESS') {
-                                                self.result(self.resultMessage.replace("{0}", item.valueAsNumber).replace("{1}", self.total()));
-                                            }
-                                        }
+//                                        let exContent = JSON.parse(item.valueAsString);
+//                                              self.excelContent.push(exContent);
+                                    } else if (item.key == 'NUMBER_OF_SUCCESS') {
+                                        // 処理カウント
+                                        self.result(self.resultMessage.replace("{0}", item.valueAsNumber).replace("{1}", self.total()));
                                     }
                                 });
+                                
+                                if (res.succeeded) {
+                                    _.forEach(res.taskDatas, item => {
+                                        if (item.key.substring(0, 10) == "EXCEL_LIST") {
+                                            if (!exContent) {
+                                                exContent = JSON.parse(item.valueAsString);
+                                            }
+                                            if (exContent) {
+                                                if (item.key.substring(12, 24) == "WORKTYPEUSED") {
+                                                    if (exContent.numberOfWorkTypeUsedImport) {
+                                                        exContent.numberOfWorkTypeUsedImport.push.apply(exContent.numberOfWorkTypeUsedImport, JSON.parse(item.valueAsString));
+                                                    } else {
+                                                        exContent.numberOfWorkTypeUsedImport = JSON.parse(item.valueAsString);
+                                                    }
+                                                }
+                                                if (item.key.substring(12, 27) == "PLANNEDVACATION") {
+                                                    if (exContent.plannedVacationListCommand) {
+                                                        exContent.plannedVacationListCommand.push.apply(exContent.plannedVacationListCommand, JSON.parse(item.valueAsString));
+                                                    } else {
+                                                        exContent.plannedVacationListCommand = JSON.parse(item.valueAsString);
+                                                    }
+                                                }
+                                                if(exContent.numberOfWorkTypeUsedImport && exContent.plannedVacationListCommand){
+                                                    self.excelContent.push(exContent);
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
 
                                 if (res.running) {
                                     // 経過時間＝現在時刻－開始時刻
@@ -205,6 +231,7 @@ module nts.uk.at.view.kdm002.b {
                                     windowSize.$dialog.resize();
                                     
                                     self.isError(true);
+                                    self.startExportExcel(true);
                                     self.isComplete(true);
                                     self.status(getText("KDM002_30"));
                                     $('#BTN_ERROR_EXPORT').focus();
