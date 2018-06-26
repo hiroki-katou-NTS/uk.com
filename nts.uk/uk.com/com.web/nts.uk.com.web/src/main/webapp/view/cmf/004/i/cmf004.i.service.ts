@@ -1,4 +1,4 @@
-module nts.uk.com.view.cmf004.i {
+module nts.uk.com.view.cmf004.i.service {
 
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
@@ -9,6 +9,6 @@ module nts.uk.com.view.cmf004.i {
        * send for screen I
       */
     export function performDataRecover(paramRestore): JQueryPromise<any> {
-        return nts.uk.request.ajax('com', paths.obtainRecovery, paramRestore);
+        return nts.uk.request.ajax('com', paths.performDataRecover, paramRestore);
     };
 }
