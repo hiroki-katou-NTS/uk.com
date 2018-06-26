@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.assist.dom.recoverystorage.RecoveryStorageService;
 
 @Stateless
 @Transactional
-public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<PerformDataRecoveryDto, String> {
+public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<PerformDataRecoveryCommand, String> {
 	@Inject
 	private PerformDataRecoveryRepository repoPerformDataRecovery;
 	@Inject
@@ -33,9 +33,9 @@ public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<
 	@Inject
 	private RecoveryStogareAsysnCommandHandler recoveryStogareAsysnCommandHandler;
 
-	public String handle(CommandHandlerContext<PerformDataRecoveryDto> context) {
-		PerformDataRecoveryDto performDataCommand = context.getCommand();
-		String dataRecoveryProcessId = context.getCommand().dataRecoveryProcessId;
+	public String handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
+		PerformDataRecoveryCommand performDataCommand = context.getCommand();
+		String dataRecoveryProcessId = context.getCommand().recoveryProcessingId;
 		String recoveryDate = null;
 		Integer categoryCnt = 0;
 		Integer errorCount = 0;
