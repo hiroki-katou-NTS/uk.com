@@ -36,6 +36,8 @@ import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -109,6 +111,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	@Inject
 	private AttendanceTypeRepository attendanceRepo;
 
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
+
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
 
@@ -126,8 +131,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		List<WorkTimeSetting> workTimeList = workTimeRepo.findByCompanyId(companyId);
 
-		List<String> wplIds = request.getEmployeeList().stream().map(item -> item.getWorkplaceId())
-				.collect(Collectors.toList());
+		List<String> wplIds = new ArrayList<>();
+		for (Employee e : request.getEmployeeList()) {
+			WkpHistImport hist = workplaceAdapter.findWkpBySid(e.getEmployeeId(),
+					GeneralDate.ymd(request.getEndDate().year(), request.getEndDate().month(),
+							request.getEndDate().yearMonth().lastDateInMonth()));
+			e.setWorkplaceId(hist.getWorkplaceId());
+			e.setWorkplaceCode(hist.getWorkplaceCode());
+			wplIds.add(hist.getWorkplaceId());
+		}
 
 		List<WorkplaceConfigInfo> wplConfigInfoList = wplConfigInfoRepo
 				.findByWkpIdsAtTime(AppContexts.user().companyId(), GeneralDate.localDate(LocalDate.now()), wplIds);
@@ -160,14 +172,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 
 		});
-
-		// wplConfigInfoList =
-		// wplConfigInfoList.sort(Comparator.comparing(WorkplaceConfigInfo::get));
-
-		// List<WorkplaceInfo> workplaceInfos =
-		// wplInfoRepo.findByWkpIds(AppContexts.user().companyId(), wplIds);
-
-		// workplaceInfos.sort(Comparator.comparing(WorkplaceInfo::get));
 
 		employeeListAfterSort.forEach(employee -> {
 
@@ -566,11 +570,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						 **/
 
 						List<String> employeeIds = new ArrayList<>();
-						GeneralDate referenceDate = GeneralDate.ymd(closure.getClosureMonth().getProcessingYm().year(),
-								closure.getClosureMonth().getProcessingYm().month(),
-								closureDate.getLastDayOfMonth()
-										? closure.getClosureMonth().getProcessingYm().lastDateInMonth()
-										: closureDate.getClosureDay().v());
+						GeneralDate referenceDate = GeneralDate.ymd(request.getEndDate().year(),
+								request.getEndDate().month(), request.getEndDate().yearMonth().lastDateInMonth());
 						employeeIds.add(employee.getEmployeeId());
 						// build param
 						EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
