@@ -101,11 +101,13 @@ public class TableList extends DomainObject {
 	/**
 	 * 保存日付From
 	 */
+	@Setter
 	private Optional<String> saveDateFrom;
 
 	/**
 	 * 保存日付To
 	 */
+	@Setter
 	private Optional<String> saveDateTo;
 
 	/**
@@ -207,6 +209,7 @@ public class TableList extends DomainObject {
 	/**
 	 * 復旧対象選択
 	 */
+	@Setter
 	private Optional<Integer> selectionTargetForRes;
 
 	/**

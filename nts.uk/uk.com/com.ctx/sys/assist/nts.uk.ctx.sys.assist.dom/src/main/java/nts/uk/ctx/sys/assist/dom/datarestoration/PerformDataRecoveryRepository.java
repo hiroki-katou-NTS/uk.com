@@ -40,5 +40,5 @@ public interface PerformDataRecoveryRepository {
 	
 	void addTargetEmployee(Target domain);
 	
-	void updatePerformDataRecoveryById(String dataRecoveryProcessId);
+	int deleteEmployeeDataRecovery(String dataRecoveryProcessId, List<String> employeeIdList);
 }
