@@ -149,7 +149,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//指定期間内に発生した暫定振出と紐付いた確定振休・暫定振休を取得する		
 		AbsRecInterimOutputPara outputData = this.getInterimAbsMng(sid, adjustDate);
 		//指定期間内に使用した暫定振休を取得する  ドメインモデル「暫定振休管理データ」を取得する
-		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, adjustDate, RemainType.SUBHOLIDAY);
+		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, adjustDate, RemainType.PAUSE);
 		for (InterimRemain interimRemain : lstRemain) {
 			Optional<InterimAbsMng> optAbsMng = recAbsRepo.getAbsById(interimRemain.getRemainManaID());
 			if(optAbsMng.isPresent()) {
@@ -491,17 +491,22 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		AbsRecConfirmOutputPara outputData = new AbsRecConfirmOutputPara(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 		//ドメインモデル「振出管理データ」を取得する
 		List<PayoutManagementData> lstRecconfirm  = confirmRecMngRepo.getByStateAtr(sid, DigestionAtr.UNUSED);
-		lstRecconfirm.stream().forEach(x -> {
-			outputData.getLstRecConfirm().add(x);
+		List<PayoutSubofHDManagement> lstAbsRecConfirm = new ArrayList<>();
+		List<SubstitutionOfHDManagementData> lstAbsConfirm = new ArrayList<>();
+		
+		for (PayoutManagementData x : lstRecconfirm) {
 			//ドメインモデル「振出振休紐付け管理」を取得する
-			List<PayoutSubofHDManagement> lstAbsRecConfirm = confirmRecAbsRepo.getByPayoutId(x.getPayoutId());
+			lstAbsRecConfirm = confirmRecAbsRepo.getByPayoutId(x.getPayoutId());
+			
 			lstAbsRecConfirm.stream().forEach(y -> {
-				outputData.getLstAbsRecConfirm().add(y);
 				//ドメインモデル「振休管理データ」を取得する
 				Optional<SubstitutionOfHDManagementData> absConfirm = comfirmAbsMngRepo.findByID(y.getSubOfHDID());
-				absConfirm.ifPresent(z -> outputData.getLstAbsConfirm().add(z));
+				absConfirm.ifPresent(z -> lstAbsConfirm.add(z));
 			});
-		});
+		}
+		outputData.setLstRecConfirm(lstRecconfirm);
+		outputData.setLstAbsRecConfirm(lstAbsRecConfirm);
+		outputData.setLstAbsConfirm(lstAbsConfirm);
 		return outputData;
 		
 	}
