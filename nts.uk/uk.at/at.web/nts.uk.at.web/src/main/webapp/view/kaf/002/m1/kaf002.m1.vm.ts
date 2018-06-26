@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf002.m1 {
             stampAtrList: KnockoutObservableArray<vmbase.SimpleObject> = ko.observableArray([]);
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             workLocationList: Array<vmbase.IWorkLocation> = [];
-            displayAllLabel: string = nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31'));
+            displayAllLabel: string = nts.uk.resource.getText("KAF002_13", [nts.uk.resource.getText('Com_Out')]);
             displayItemNo: number = this.supFrameNo;
             constructor(){
                 var self = this;
