@@ -1,23 +1,13 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import nts.uk.ctx.sys.assist.dom.datarestoration.*;
+import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
-import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
-import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
-import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
-import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
-import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
-import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import java.util.List;
 
 @Stateless
 public class ServerPreparationService {
@@ -27,12 +17,6 @@ public class ServerPreparationService {
 
 	@Inject
 	private TableListRestorationService tableListRestorationService;
-
-	@Inject
-	private PerformDataRecoveryRepository performDataRecoveryRepository;
-
-	@Inject
-	private ServerPrepareMngRepository serverPrepareMngRepository;
 
 	@Inject
 	private ThresholdConfigurationCheck thresholdConfigurationCheck;
@@ -88,11 +72,11 @@ public class ServerPreparationService {
 		return convertToMessage(serverPrepareMng.getOperatingCondition());
 	}
 
-	public boolean checkNormalFile(ServerPrepareMng serverPrepareMng) {
+	private boolean checkNormalFile(ServerPrepareMng serverPrepareMng) {
 		return serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_FILE_STRUCTURE;
 	}
 
-	public static String convertToMessage(ServerPrepareOperatingCondition condition){
+	private static String convertToMessage(ServerPrepareOperatingCondition condition){
 		switch (condition) {
 		case UPLOAD_FAILED:
 			return "Msg_610";
