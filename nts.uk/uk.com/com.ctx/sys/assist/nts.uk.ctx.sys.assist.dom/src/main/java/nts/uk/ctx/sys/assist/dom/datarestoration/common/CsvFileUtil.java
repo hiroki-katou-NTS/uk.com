@@ -46,7 +46,6 @@ public class CsvFileUtil {
 		}
 	}
 
-
 	public static List<List<String>> getAllRecord(String fileId, String fileName) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
@@ -87,7 +86,7 @@ public class CsvFileUtil {
 		return data;
 	}
 	
-	private static InputStream createInputStreamFromFile(String fileId, String fileName) {
+	static InputStream createInputStreamFromFile(String fileId, String fileName) {
 		String filePath = getCsvStoragePath(fileId) + "//" + fileName + ".csv";
 		try {
 			return new FileInputStream(new File(filePath));
@@ -96,7 +95,7 @@ public class CsvFileUtil {
 		}
 	}
 
-	private static String getCsvStoragePath(String fileId) {
+	static String getCsvStoragePath(String fileId) {
 		String extractDataStoragePath = getExtractDataStoragePath(fileId);
 		File f = new File(extractDataStoragePath);
 		if (f.exists()){
