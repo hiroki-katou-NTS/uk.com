@@ -61,7 +61,10 @@ public class CopySettingItemFinder {
 	
 	private static final String END_DATE_NAME = "終了日";
 	
-	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String selectedEmployeeId, GeneralDate baseDate) {
+	public List<SettingItemDto> getAllCopyItemByCtgCode(CopySettingItemQuery query) {
+		String categoryCd = query.getCategoryCd();
+		String selectedEmployeeId = query.getSelectedEmployeeId();
+		GeneralDate baseDate = query.getBaseDate();
 
 		String companyId = AppContexts.user().companyId();
 		
@@ -84,7 +87,16 @@ public class CopySettingItemFinder {
 			setMaxEndDate(copyItemList);
 		}
 		
-		this.settingItemMap.setTextForItem(copyItemList, selectedEmployeeId, baseDate, perInfoCategory);
+		GeneralDate comboBoxStandardDate = baseDate;
+		List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
+		for (SettingItemDto settingItemDto : copyItemList) {
+			if (standardDateItemCodes.contains(settingItemDto.getItemCode())) {
+				comboBoxStandardDate = (GeneralDate) settingItemDto.getSaveData().getValue();
+				break;
+			}
+		}
+		
+		this.settingItemMap.setTextForItem(copyItemList, selectedEmployeeId, comboBoxStandardDate, perInfoCategory);
 		
 		return copyItemList;
 
