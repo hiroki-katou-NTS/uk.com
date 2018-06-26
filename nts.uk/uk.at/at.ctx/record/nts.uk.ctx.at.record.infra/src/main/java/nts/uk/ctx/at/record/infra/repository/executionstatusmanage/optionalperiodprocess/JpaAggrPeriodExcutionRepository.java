@@ -5,6 +5,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionRepository;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodExcution;
@@ -113,6 +115,18 @@ implements AggrPeriodExcutionRepository{
 	public void deleteExcution(String companyId, String aggrFrameCode, int executionStatus) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<AggrPeriodExcution> findExecutionPeriod(String companyId, GeneralDate start, GeneralDate end) {
+		GeneralDateTime startP = GeneralDateTime.ymdhms(start.year(), start.month(), start.day(), 0, 0, 0);
+		GeneralDateTime endP = GeneralDateTime.ymdhms(end.year(), end.month(), end.day(), 23, 59, 59);
+		String sql = "SELECT e FROM KrcmtAggrPeriodExcution e WHERE e.krcmtAggrPeriodExcutionPK.companyId = :companyId AND e.startDateTime BETWEEN :start AND :end";
+		return this.queryProxy().query(sql, KrcmtAggrPeriodExcution.class)
+				.setParameter("companyId", companyId)
+				.setParameter("start", startP)
+				.setParameter("end", endP)
+				.getList(c -> convertToDomainApe(c));
 	}
 
 }

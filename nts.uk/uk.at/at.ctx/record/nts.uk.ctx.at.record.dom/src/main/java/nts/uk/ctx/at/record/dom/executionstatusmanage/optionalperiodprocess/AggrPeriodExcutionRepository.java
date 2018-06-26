@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+
 public interface AggrPeriodExcutionRepository {
 
 	/**
@@ -43,4 +45,14 @@ public interface AggrPeriodExcutionRepository {
 	 * @return
 	 */
 	List<AggrPeriodExcution> findAll(String companyId);
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	List<AggrPeriodExcution> findExecutionPeriod(String companyId, GeneralDate start, GeneralDate end);
+	
 }
