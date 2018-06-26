@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class DivCheckMasterShareBus {
+public class MasterShareBus {
 
-	public static DivCheckMasterShareContainer open() {
+	public static MasterShareContainer open() {
 		return new ShareContainer();
 	}
 	
-	public interface DivCheckMasterShareContainer {
+	public interface MasterShareContainer {
 		
 		public default void share(String key, Object value) {}
 
@@ -25,7 +25,7 @@ public class DivCheckMasterShareBus {
 		public default void clearShare(String key) {}
 	}
 
-	private static class ShareContainer implements DivCheckMasterShareContainer {
+	private static class ShareContainer implements MasterShareContainer {
 		
 		private Map<String, Object> DATA_CONTAINER;
 		
@@ -46,7 +46,8 @@ public class DivCheckMasterShareBus {
 		@Override
 		@SuppressWarnings("unchecked")
 		public <T> T getShared(String key) {
-			return (T) DATA_CONTAINER.get(key);
+			Object value = DATA_CONTAINER.get(key);
+			return value == null ? null : (T) value;
 		}
 
 		@Override
@@ -58,6 +59,7 @@ public class DivCheckMasterShareBus {
 			share(key, val);
 			return val;
 		}
+		
 		@Override
 		public void clearAll() {
 			DATA_CONTAINER.clear();

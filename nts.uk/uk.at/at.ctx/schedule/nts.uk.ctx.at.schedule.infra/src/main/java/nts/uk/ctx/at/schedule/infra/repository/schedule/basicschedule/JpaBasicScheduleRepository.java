@@ -54,6 +54,7 @@ import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcares
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.workscheduletimezone.JpaWorkScheduleTimeZoneSetMemento;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaBasicScheduleRepository.
@@ -63,6 +64,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 	public final String GET_LIST_DATE_BY_LIST_SID = "SELECT a.kscdpBSchedulePK.date " + "FROM KscdtBasicSchedule a "
 			+ "WHERE a.kscdpBSchedulePK.sId IN :sIds " + "ORDER BY a.kscdpBSchedulePK.date DESC";
+	
+	private String QUERY_BY_SID_PERIOD = "SELECT c FROM KscdtBasicSchedule c"
+			+ " WHERE c.kscdpBSchedulePK.sId = :employeeId"
+			+ " AND c.kscdpBSchedulePK.date >= :startDate"
+			+ " AND c.kscdpBSchedulePK.date <= :endDate";
 
 	/*
 	 * (non-Javadoc)
@@ -849,5 +855,15 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			return null;
 
 		return listDate.get(0);
+	}
+
+	@Override
+	public List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, DatePeriod dateData) {
+		List<BasicSchedule> lstData = this.queryProxy().query(QUERY_BY_SID_PERIOD, KscdtBasicSchedule.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.getList(x -> toDomain(x, this.findAllWorkScheduleTimeZone(employeeId, x.kscdpBSchedulePK.date)));
+		return lstData;
 	}
 }

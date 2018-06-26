@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.service.workingcondition;
+package nts.uk.ctx.at.shared.dom.workingcondition.service;
 
 import java.util.Optional;
 
