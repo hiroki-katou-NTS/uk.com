@@ -247,7 +247,7 @@ public class WithinStatutoryTimeOfDaily {
 						  														  regularAddSetting,
 						  														  holidayAddtionSet,
 						  														  holidayCalcMethodSet,
-						  														  dailyUnit,commonSetting);
+						  														  dailyUnit,commonSetting,coreTimeSetting);
 				
 				
 				

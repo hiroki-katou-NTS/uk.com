@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCal
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
@@ -41,6 +42,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
@@ -51,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
@@ -59,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
+import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -250,7 +254,7 @@ public class TotalWorkingTime {
 																									eachCompanyTimeSet,
 																									integrationOfDaily,
 																									flexPreAppTime,
-																									dailyUnit, statutoryFrameNoList,commonSetting,calcAtrOfDaily);
+																									dailyUnit, statutoryFrameNoList,commonSetting,calcAtrOfDaily,coreTimeSetting);
 		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;
@@ -262,14 +266,62 @@ public class TotalWorkingTime {
 		List<LeaveEarlyTimeOfDaily> leaveEarlyTime = new ArrayList<>();
 		if(coreTimeSetting.isPresent() && coreTimeSetting.get().getTimesheet().isNOT_USE()) {
 			//コアタイム無し（時間帯を使わずに計算）
-			AttendanceTime time =coreTimeSetting.get().getMinWorkTime().minusMinutes(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes());
-			if(time.lessThanOrEqualTo(0))time = new AttendanceTime(0);
-			TimeWithCalculation latetime = TimeWithCalculation.sameTime(time);
-			lateTime.add(new LateTimeOfDaily(calcAtrOfDaily.getLeaveEarlySetting().isLeaveEarly() ? latetime : TimeWithCalculation.sameTime(new AttendanceTime(0)),
-					latetime,
-				  new WorkNo(1),
-				  new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-				  new IntervalExemptionTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0))));
+			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
+			//就業時間の計算
+			AttendanceTime workTime = changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
+																		flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
+																		vacationClass,
+																		oneDay.getTimeVacationAdditionRemainingTime().get(),
+																		StatutoryDivision.Nomal,workType,
+																		oneDay.getPredetermineTimeSetForCalc(),
+																		workTimeCode,
+																		personalCondition,
+																		calcAtrOfDaily.getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+	   																    calcAtrOfDaily.getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
+																		workingSystem,
+																		illegularAddSetting,
+																		flexAddSetting,
+																		regularAddSetting,
+																		holidayAddtionSet,
+																		holidayCalcMethodSet,
+																		CalcMethodOfNoWorkingDay.isCalculateFlexTime,
+																		AutoCalAtrOvertime.CALCULATEMBOSS,
+																		flexCalcMethod.get(),
+																		flexPreAppTime,
+																		coreTimeSetting,
+																		dailyUnit,
+																		commonSetting,
+																		TimeLimitUpperLimitSetting.NOUPPERLIMIT);
+			//計上用のコアタイム無しの遅刻時間計算
+			TimeWithCalculation calcedLateTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(workTime,
+																							 DeductionAtr.Appropriate, 
+																							 coreTimeSetting, 
+																							 holidayCalcMethodSet, 
+																							 commonSetting, 
+																							 calcAtrOfDaily.getLeaveEarlySetting().isLate());
+			//猶予時間の適用（一時的な処理）
+			AttendanceTime test1 = calcedLateTime.getTime().minusMinutes(commonSetting.getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet().getGraceTime().valueAsMinutes());
+			if(test1.lessThan(0)) {
+				test1 = new AttendanceTime(0);
+			}
+			AttendanceTime test2 = calcedLateTime.getCalcTime().minusMinutes(commonSetting.getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet().getGraceTime().valueAsMinutes());
+			if(test2.lessThan(0)) {
+				test2 = new AttendanceTime(0);
+			}
+			calcedLateTime = TimeWithCalculation.createTimeWithCalculation(test1, test2);
+			
+			//コアタイム無しの遅刻時間計算
+			TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(workTime,
+					 																				  DeductionAtr.Deduction, 
+					 																				  coreTimeSetting, 
+					 																				  holidayCalcMethodSet, 
+					 																				  commonSetting, 
+					 																				  calcAtrOfDaily.getLeaveEarlySetting().isLate());					
+			lateTime.add(new LateTimeOfDaily(calcedLateTime,
+											 calcedLateDeductionTime,
+											 new WorkNo(1),
+											 new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+											 new IntervalExemptionTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0))));
 			
 			//こちらのケースは早退は常に0：00
 			leaveEarlyTime.add(LeaveEarlyTimeOfDaily.noLeaveEarlyTimeOfDaily());

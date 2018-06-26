@@ -108,7 +108,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 													 WorkFlexAdditionSet flexAddSetting,
 													 WorkRegularAdditionSet regularAddSetting,
 													 HolidayAddtionSet holidayAddtionSet,TimeLimitUpperLimitSetting flexLimitSetting, AttendanceTime preAppTime,
-													 DailyUnit dailyUnit,WorkTimezoneCommonSet commonSetting) {
+													 DailyUnit dailyUnit,WorkTimezoneCommonSet commonSetting,Optional<CoreTimeSetting> coreTimeSetting) {
 		
 		FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		
@@ -128,7 +128,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				   										  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   										  workingSystem, illegularAddSetting, flexAddSetting, regularAddSetting,
 				   										  holidayAddtionSet,dailyUnit,commonSetting,
-				   										  flexLimitSetting);
+				   										  flexLimitSetting,coreTimeSetting);
 		/*事前申請を上限とする制御*/
 		AttendanceTimeOfExistMinus afterLimitFlexTime = decisionLimit(flexLimitSetting,calcflexTime,preAppTime);
 		
@@ -178,6 +178,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 													 WorkRegularAdditionSet regularAddSetting,
 													 HolidayAddtionSet holidayAddtionSet,DailyUnit dailyUnit,WorkTimezoneCommonSet commonSetting,
 													 TimeLimitUpperLimitSetting flexUpper//こいつは残さないとだめ
+													 ,Optional<CoreTimeSetting> coreTimeSetting
 													 ) {
 		/*法定労働時間の算出*/
 		StatutoryWorkingTime houtei = calcStatutoryTime(workType,flexCalcMethod,predetermineTimeSet,siftCode,personalCondition,holidayAddtionSet);
@@ -199,7 +200,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 																							   regularAddSetting,
 																							   holidayAddtionSet,
 																							   holidayCalcMethodSet,
-																							   dailyUnit,commonSetting
+																							   dailyUnit,commonSetting,coreTimeSetting
 																							   ).valueAsMinutes());
 		/*実働時間の算出(割増時間含む)*/
 		AttendanceTimeOfExistMinus zitudouIncludePremium = new AttendanceTimeOfExistMinus(super.calcWorkTime(PremiumAtr.Premium,
@@ -219,7 +220,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 																											 regularAddSetting,
 																											 holidayAddtionSet,
 																											 holidayCalcMethodSet,
-																											 dailyUnit,commonSetting
+																											 dailyUnit,commonSetting,coreTimeSetting
 																											 ).valueAsMinutes());
 		
 		AttendanceTimeOfExistMinus flexTime = new AttendanceTimeOfExistMinus(0);
@@ -328,7 +329,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 													   regularAddSetting, 
 													   holidayAddtionSet, 
 													   holidayCalcMethodSet,
-													   dailyUnit,commonSetting
+													   dailyUnit,commonSetting,coreTimeSetting
 													   );
 		FlexTime flexTime = this.createWithinWorkTimeSheetAsFlex(calcMethod, 
 																 holidayCalcMethodSet, 
@@ -351,7 +352,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 																 flexUpper,
 																 preFlexTime,
 																 dailyUnit,
-																 commonSetting
+																 commonSetting,coreTimeSetting
 																 );
 		AttendanceTime result = new AttendanceTime(0);
 		if(flexTime.getFlexTime().getTime().greaterThan(0)) {
@@ -361,14 +362,14 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			result = withinTime;
 		}
 		
-		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&coreTimeSetting.isPresent()&&!coreTimeSetting.get().isUseTimeSheet()) {
-			//遅刻時間を就業時間から控除しない場合かつ最低勤務時間よりも就業時間が小さい場合の処理
-			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
-				if(result.lessThan(coreTimeSetting.get().getMinWorkTime())) {
-					result = coreTimeSetting.get().getMinWorkTime();
-				}
-			}
-		}
+//		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&coreTimeSetting.isPresent()&&!coreTimeSetting.get().isUseTimeSheet()) {
+//			//遅刻時間を就業時間から控除しない場合かつ最低勤務時間よりも就業時間が小さい場合の処理
+//			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
+//				if(result.lessThan(coreTimeSetting.get().getMinWorkTime())) {
+//					result = coreTimeSetting.get().getMinWorkTime();
+//				}
+//			}
+//		}
 		return result;
 	}
 }

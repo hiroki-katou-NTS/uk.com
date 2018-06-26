@@ -296,7 +296,7 @@ public class CalculationRangeOfOneDay {
 					workingSystem, breakdownTimeDay, dailyTime, calcSetinIntegre.getOvertimeSetting(), statutorySet, prioritySet
 					,bonusPaySetting,midNightTimeSheet,personalInfo,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, predetermineTimeSetForCalc, 
-					siftCode, personalCondition, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting
+					siftCode, personalCondition, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,coreTimeSetting
 					);
 			if(!outsideWorkTimeSheet.isPresent()) {
 				//outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
@@ -346,7 +346,7 @@ public class CalculationRangeOfOneDay {
 							 regularAddSetting,
 							 flexAddSetting,
 							 illegularAddSetting,
-							 leaveEarly,commonSetting);
+							 leaveEarly,commonSetting,coreTimeSetting);
 		if(!overTimeFrame.isEmpty()) {
 			if(outsideWorkTimeSheet.isPresent()) {
 				if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
@@ -409,7 +409,8 @@ public class CalculationRangeOfOneDay {
 									  VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily, WorkType workType, 
 									  PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
 									  boolean late, WorkingSystem workingSystem, HolidayAddtionSet holidayAddtionSet, WorkRegularAdditionSet regularAddSetting, 
-									  WorkFlexAdditionSet flexAddSetting, WorkDeformedLaborAdditionSet illegularAddSetting, boolean leaveEarly, WorkTimezoneCommonSet commonSetting) {
+									  WorkFlexAdditionSet flexAddSetting, WorkDeformedLaborAdditionSet illegularAddSetting, boolean leaveEarly, WorkTimezoneCommonSet commonSetting
+									  ,Optional<CoreTimeSetting> coreTimeSetting) {
 		
 		if(!this.withinWorkingTimeSheet.isPresent())
 			return Collections.emptyList();
@@ -491,7 +492,7 @@ public class CalculationRangeOfOneDay {
 															illegularAddSetting, 
 															flexAddSetting, 
 															regularAddSetting, 
-															holidayAddtionSet,commonSetting);
+															holidayAddtionSet,commonSetting,coreTimeSetting);
 	}
 
 	/**

@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -94,7 +95,7 @@ public class OutsideWorkTimeSheet {
     		VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
     		PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
     		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,WorkTimezoneCommonSet commonSetting) {
+    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,WorkTimezoneCommonSet commonSetting,Optional<CoreTimeSetting> coreTimeSetting) {
 		
 		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
 		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
@@ -105,7 +106,7 @@ public class OutsideWorkTimeSheet {
 					autoCalculationSet, statutorySet, prioritySet,bonusPaySetting,midNightTimeSheet,
 					personalInfo,true,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, toDay,
-					predetermineTimeSet, siftCode, personalCondition, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting);
+					predetermineTimeSet, siftCode, personalCondition, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,coreTimeSetting);
 
 			/* 0時跨ぎ処理 */
 			OverDayEnd processOverDayEnd = new OverDayEnd();
