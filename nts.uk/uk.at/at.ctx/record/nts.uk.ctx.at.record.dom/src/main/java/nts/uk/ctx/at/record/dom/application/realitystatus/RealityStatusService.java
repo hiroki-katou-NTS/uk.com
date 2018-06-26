@@ -366,11 +366,11 @@ public class RealityStatusService {
 				break;
 			case DAILY:
 				// アルゴリズム「承認状況未確認メール送信上司取得」を実行する
-				listSId.addAll(listSId = this.getEmpUnconfirmByBoss(listEmp, wkp.getWkpId()));
+				listSId.addAll(this.getEmpUnconfirmByBoss(listEmp, wkp.getWkpId()));
 				break;
 			case MONTHLY:
 				// アルゴリズム「承認状況未確認メール送信月次確認者取得」を実行する
-				listSId.addAll(listSId = this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId()));
+				listSId.addAll(this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId()));
 				break;
 			}
 		}

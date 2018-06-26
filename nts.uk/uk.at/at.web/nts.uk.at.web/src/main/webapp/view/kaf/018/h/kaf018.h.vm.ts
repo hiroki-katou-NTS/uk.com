@@ -224,11 +224,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                     }
                     block.invisible();
                     service.sendTestMail(mailType).done(function(result: any) {
-                        if (result.ok) {
-                            info({ messageId: "Msg_792" });
-                        } else {
-                            error({ messageId: "Msg_793" });
-                        }
+                        shareModel.showMsgSendEmail(result);
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
                     }).always(function() {

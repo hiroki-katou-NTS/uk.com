@@ -420,6 +420,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
 		List<String> listError = new ArrayList<>();
 		for (MailTransmissionContentOutput mailTransmission : listMailContent) {
+			if(mailTransmission.getMailAddr() == null){
+				// 送信エラー社員(リスト)と社員名、エラー内容を追加する
+				listError.add(mailTransmission.getSName());
+				continue;
+			}
 			// アルゴリズム「承認状況メール埋込URL取得」を実行する
 			String embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, mailType);
 			try {
@@ -428,7 +433,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						new MailContents(mailTransmission.getSubject() + embeddedURL, mailTransmission.getText()));
 			} catch (Exception e) {
 				// 送信エラー社員(リスト)と社員名、エラー内容を追加する
-				listError.add(e.getCause().toString());
+				listError.add(mailTransmission.getSName());
 			}
 		}
 		SendMailResultOutput result = new SendMailResultOutput();
