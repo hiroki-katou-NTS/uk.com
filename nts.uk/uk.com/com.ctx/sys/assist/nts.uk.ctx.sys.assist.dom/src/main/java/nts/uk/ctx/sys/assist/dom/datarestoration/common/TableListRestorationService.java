@@ -7,9 +7,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
@@ -24,7 +22,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class TableListRestorationService {
 	private static final String TABLELIST_CSV = "保存対象テーブル一覧";
-	private static final String dateFormat = "yyyy/MM/dd";
 
 	@Inject
 	private ServerPrepareMngRepository serverPrepareMngRepository;
@@ -95,10 +92,9 @@ public class TableListRestorationService {
 					tableListData.setDataRecoveryProcessId(Optional.ofNullable(serverPrepareMng.getDataRecoveryProcessId()));
 					tableList.add(tableListData);
 					tableListRepository.update(tableListData);
-					//tableListRepository.updateByStorageId(tableListData.getDataStorageProcessingId(), serverPrepareMng.getDataRecoveryProcessId());
 				}
 				
-			} catch (NumberFormatException e) {
+			} catch (Exception e) {
 				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.TABLE_LIST_FAULT);
 				serverPrepareMngRepository.update(serverPrepareMng);
 			}
