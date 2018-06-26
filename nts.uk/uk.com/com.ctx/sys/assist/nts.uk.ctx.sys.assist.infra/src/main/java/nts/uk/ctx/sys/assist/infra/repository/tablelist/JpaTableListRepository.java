@@ -19,6 +19,7 @@ import com.google.common.base.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
@@ -258,17 +259,17 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 					query.append(" <= :endDate) ");
 
 					switch (tableList.getRetentionPeriodCls()) {
-					case ANNUAL:
-						params.add(tableList.getSaveDateFrom());
-						params.add(tableList.getSaveDateTo());
+					case DAILY:
+						params.add(tableList.getSaveDateFrom().get());
+						params.add(tableList.getSaveDateTo().get());
 						break;
 					case MONTHLY:
-						params.add(tableList.getSaveDateFrom());
-						params.add(tableList.getSaveDateTo());
+						params.add(Integer.valueOf(tableList.getSaveDateFrom().get().replaceAll("\\/", "")));
+						params.add(Integer.valueOf(tableList.getSaveDateTo().get().replaceAll("\\/", "")));
 						break;
-					case DAILY:
-						params.add(tableList.getSaveDateFrom());
-						params.add(tableList.getSaveDateTo());
+					case ANNUAL:
+						params.add(Integer.valueOf(tableList.getSaveDateFrom().get()));
+						params.add(Integer.valueOf(tableList.getSaveDateTo().get()));
 						break;
 
 					default:
