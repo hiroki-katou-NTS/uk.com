@@ -334,6 +334,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 }
             } else {
                 nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
+                    location.reload();
                     nts.uk.ui.block.clear();   
                 });
             }
