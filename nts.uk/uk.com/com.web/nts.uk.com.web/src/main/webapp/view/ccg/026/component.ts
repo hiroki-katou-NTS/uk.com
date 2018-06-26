@@ -87,15 +87,23 @@ module nts.uk.com.view.ccg026.component {
                     $grid = $element.find('#permision_grid'),
                     $container = $element.find('#container_permision_grid'),
                     requestDone = (data: Array<IPermision>, rechange: boolean = true) => {
+                        //Get
+                        let scrollTop = $(`#${$grid.attr('id')}_scroll`).scrollTop();
+
                         data = _.orderBy(data, ['orderNumber']);
 
                         // fire changeDate for first action
                         if (rechange) {
                             params.changeData(data);
+                        } else {
+                            // change grid dataSource
+                            $grid = $element.find('#permision_grid');
+                            $grid.igGrid("option", "dataSource", data);
+
+                            setTimeout(() => {
+                                $(`#${$grid.attr('id')}_scroll`).scrollTop(scrollTop);
+                            }, 0);
                         }
-                        // change grid dataSource
-                        $grid = $element.find('#permision_grid');
-                        $grid.igGrid("option", "dataSource", data);
                     };
 
                 _.extend(params, {
@@ -212,8 +220,10 @@ module nts.uk.com.view.ccg026.component {
                                             // change
                                             row['available'] = !!input.checked;
 
+                                            $element.data('nts_focus', input.value);
+
                                             // push data to viewModel
-                                            params.changeData(data);
+                                            requestDone(data);
                                         });
                                 });
                         },
@@ -222,7 +232,11 @@ module nts.uk.com.view.ccg026.component {
 
                 if (ko.isObservable(params.changeData)) {
                     (params.changeData as KnockoutObservableArray<any>).subscribe(data => {
-                        requestDone(data, false);
+                        // change grid dataSource
+                        $grid = $element.find('#permision_grid');
+                        if (!_.isEqual($grid.igGrid("option", "dataSource"), data)) {
+                            requestDone(data, false);
+                        }
                     });
                 }
 
