@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 /**
@@ -24,7 +25,11 @@ public interface MonthlyRecordToAttendanceItemConverter {
 	void merge(ItemValue value);
 	
 	void merge(Collection<ItemValue> values);
-		
+
+	IntegrationOfMonthly toDomain();
+	
+	MonthlyRecordToAttendanceItemConverter setData(IntegrationOfMonthly domain);
+	
 	MonthlyRecordToAttendanceItemConverter withAffiliation(AffiliationInfoOfMonthly domain);
 
 	MonthlyRecordToAttendanceItemConverter withAttendanceTime(AttendanceTimeOfMonthly domain);

@@ -45,6 +45,7 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
+import nts.uk.ctx.bs.employee.pub.employee.StatusOfEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -444,53 +445,40 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<String> getListEmpByWkpAndEmpt(List<String> wkpsId, List<String> lstemptsCode, DatePeriod dateperiod) {
 
-		// lấy List workplace history items từ dateperiod and list workplaceId
-		List<AffWorkplaceHistoryItem> lstWkpHisItem = affWkpItemRepo.getAffWkpHistItemByListWkpIdAndDatePeriod(dateperiod, wkpsId);
+		// lấy List sid từ dateperiod and list workplaceId
+		List<String> lstSidFromWorkPlace = affWkpItemRepo.getSidByListWkpIdAndDatePeriod(dateperiod, wkpsId);
 
-		if (lstWkpHisItem.isEmpty()) {
+		if (lstSidFromWorkPlace.isEmpty()) {
 			return Collections.emptyList();
 		}
-		// Lấy list sid từ lstWkpHisItem
-		List<String> lstEmpIdOfWkp = lstWkpHisItem.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
-		// (Thực hiện Lấy List employeement history item từ list employeementId và
-		// period)
+		
+		// (Thực hiện Lấy List sid từ list employeementId và period)
 
-		List<EmploymentHistoryItem> lstEmptHisItem = emptHistItem.getListEmptByListCodeAndDatePeriod(dateperiod,
-				lstemptsCode);
+		List<String> lstSidFromEmpt = emptHistItem.getLstSidByListCodeAndDatePeriod(dateperiod, lstemptsCode);
 
-		if (lstEmptHisItem.isEmpty()) {
+		if (lstSidFromEmpt.isEmpty()) {
 			return Collections.emptyList();
 		}
-		// Lấy list sid từ lstEmptHisItem
-		List<String> lstEmpIdOfEmpt = lstEmptHisItem.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 
 		// lấy list sid chung từ 2 list lstEmpIdOfWkp vs lstEmpIdOfEmpt
-		List<String> generalLstId = lstEmpIdOfWkp.stream().filter(lstEmpIdOfEmpt::contains).collect(Collectors.toList());
+		List<String> generalLstId = lstSidFromWorkPlace.stream().filter(lstSidFromEmpt::contains).collect(Collectors.toList());
 
 		if (generalLstId.isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		// lây list Employee từ list sid và dateperiod
-		List<AffCompanyHist> lstAffComHist = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(generalLstId, dateperiod);
+		// lây list Sid từ list sid và dateperiod
+		List<String> lstSidFromAffComHist = affComHistRepo.getLstSidByLstSidAndPeriod(generalLstId, dateperiod);
 
-		if (lstAffComHist.isEmpty()) {
+		if (lstSidFromAffComHist.isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		List<AffCompanyHistByEmployee> lstAffComHistByEmp = getAffCompanyHistByEmployee(lstAffComHist);
-
-		// List sid from List<AffCompanyHistByEmployee>
-		List<String> lstSidFromAffComHist = lstAffComHistByEmp.stream().map(m -> m.getSId()).collect(Collectors.toList());
-
-		// lây list TempAbsenceHistory từ list sid và dateperiod
-		List<TempAbsenceHistory> lstTempAbsenceHistory =  tempAbsHistRepository.getByListSid(lstSidFromAffComHist , dateperiod );
-		
-		// List sid from List<TempAbsenceHistory>
-	    List<String> lstSidFromTempAbsHis = lstTempAbsenceHistory.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+		// lây list sid từ list sid và dateperiod
+		List<String> lstTempAbsenceHistory =  tempAbsHistRepository.getLstSidByListSidAndDatePeriod(lstSidFromAffComHist , dateperiod );
 		
 		// List sid tồn tại ở lstSidFromAffComHist nhưng không tồn tại ở list lstSidFromTempAbsHis
-		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstSidFromTempAbsHis.contains(i)).collect(Collectors.toList());
+		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstTempAbsenceHistory.contains(i)).collect(Collectors.toList());
 		if (result.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -559,5 +547,17 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		result.setEmployeeCode(emp.getEmployeeCode().v());
 
 		return result;
+	}
+
+	
+	@Override
+	public StatusOfEmployeeExport getStatusOfEmployee(String sid) {
+
+		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sid);
+		if (empOpt.isPresent()) {
+			return new StatusOfEmployeeExport(empOpt.get().getDeletedStatus().value == 0 ? false : true);
+		} else {
+			return null;
+		}
 	}
 }

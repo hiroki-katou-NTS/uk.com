@@ -15,7 +15,7 @@ module cps002.e.vm {
         
         constructor() {
             let self = this, textValue = "";
-            self.cardNoMode = getShared("cardNoMode");
+            self.cardNoMode = getShared("empCodeMode");
 
 
             if (self.cardNoMode) {
@@ -63,7 +63,7 @@ module cps002.e.vm {
 
         returnEmCode() {
             let self = this;
-            setShared("CPS002_PARAM", self.generateEmCode());
+            setShared("CPS002_PARAM_MODE_EMP_CODE", self.generateEmCode());
             close();
         }
 

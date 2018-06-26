@@ -88,6 +88,7 @@ module nts.uk.at.view.kaf002.cm {
             
             register(errorFlag: any, errorMsg: any, checkBoxValue: boolean){
                 var self = this;
+                if (nts.uk.ui.errors.hasError()){return;}
                 if(errorFlag!=0){
                     nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
                 } else {

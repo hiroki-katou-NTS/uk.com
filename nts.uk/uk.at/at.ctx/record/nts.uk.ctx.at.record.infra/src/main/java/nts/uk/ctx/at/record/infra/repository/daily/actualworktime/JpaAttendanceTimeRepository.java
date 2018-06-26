@@ -55,6 +55,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaAttendanceTimeRepository extends JpaRepository implements AttendanceTimeRepository {
 
 	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
+	
+	private static final String FIND_BY_EMPLOYEEID_AND_DATES;
 
 //	static {
 //		StringBuilder builderString = new StringBuilder();
@@ -71,6 +73,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
 		builderString.append("AND a.krcdtDayTimePK.generalDate = :ymd ");
 		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
+		
+		builderString = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
+		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
+		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 
 	@Override
@@ -519,5 +526,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 							.map(x -> x.toDomain()).collect(Collectors.toList()));
 		});
 		return result;
+	}
+
+	@Override
+	public List<AttendanceTimeOfDailyPerformance> find(String employeeId, List<GeneralDate> ymd) {
+		return this.queryProxy().query(FIND_BY_EMPLOYEEID_AND_DATES, KrcdtDayAttendanceTime.class)
+				.setParameter("employeeId", employeeId).setParameter("date", ymd).getList(x -> x.toDomain());
 	}
 }

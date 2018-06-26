@@ -367,8 +367,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				.collect(Collectors.toList());
 		List<AbsRecDetailPara> lstRecDetailData = lstDetailData.stream().filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE)
 				.collect(Collectors.toList());
-		List<AbsRecDetailPara> lstAbsTmp = lstAbsDetailData;
-		List<AbsRecDetailPara> lstRecTmp = lstRecDetailData;
+		List<AbsRecDetailPara> lstAbsTmp = new ArrayList<>(lstAbsDetailData);
+		List<AbsRecDetailPara> lstRecTmp = new ArrayList<>(lstRecDetailData);
 		//「振出振休明細」(振休)をループする
 		for (AbsRecDetailPara absDetailPara : lstAbsDetailData) {
 			UnOffsetOfAbs absData = absDetailPara.getUnOffsetOfAb().get();
@@ -450,9 +450,9 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	@Override
 	public List<AbsRecDetailPara> calDigestionAtr(List<AbsRecDetailPara> lstDetailData, GeneralDate baseDate) {
 		lstDetailData.stream().forEach(x -> {
-			UnUseOfRec recData = x.getUnUseOfRec().get();
 			//ループ中の「振出振休明細．発生消化区分」をチェック
 			if(x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
+				UnUseOfRec recData = x.getUnUseOfRec().get();
 				if(recData.getUnUseDays() <= 0) {
 					//振出の未使用．振休消化区分　←　"消化済"
 					x.getUnUseOfRec().get().setDigestionAtr(DigestionAtr.USED);

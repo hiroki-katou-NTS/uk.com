@@ -13,6 +13,8 @@ public interface StampCardRepository {
 	Optional<StampCard> getByStampCardId(String stampCardId);
 	
 	Optional<StampCard> getByCardNoAndContractCode(String cardNo , String contractCd);
+	
+	Optional<String> getLastCardNo(String contractCode, String startCardNoLetters, int length);
 
 	void add(StampCard domain);
 
