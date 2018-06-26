@@ -125,7 +125,13 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	@SuppressWarnings("unchecked")
 	private <V> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(ErAlAtdItemConditionPubExport atdItemCon, String companyId, String errorAlarmCode) {
 
-		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode, atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr());
+		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(
+				companyId, 
+				errorAlarmCode,
+				atdItemCon.getTargetNO(), 
+				atdItemCon.getConditionAtr(), 
+				atdItemCon.isUseAtr(),
+				atdItemCon.getConditionType());
 		// Set Target
 		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
 			atdItemConDomain.setUncountableTarget(atdItemCon.getUncountableAtdItem());

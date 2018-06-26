@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.ResponseImprovementAdapter;
 import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.CheckResultMonthlyAdapter;
@@ -23,11 +24,8 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingRepository;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySettingRepository;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySettingRepository;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 月次の集計処理
@@ -45,21 +43,6 @@ public class MonthlyAggregateProcessService {
 	
 	@Inject
 	private FixedExtraMonFunAdapter fixedExtraMonFunAdapter;
-	
-	@Inject
-	private PublicHolidaySettingRepository publicHolidaySettingRepo;
-	
-	@Inject 
-	private EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo;
-	
-	@Inject
-	private WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo;
-	
-	@Inject
-	private EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo;
-	
-	@Inject
-	private CompanyMonthDaySettingRepository companyMonthDaySettingRepo;
 	
 	@Inject
 	private ResponseImprovementAdapter responseImprovementAdapter;
@@ -96,29 +79,34 @@ public class MonthlyAggregateProcessService {
 		if(listEmployeeID.isEmpty()) {
 			return Collections.emptyList();
 		}
-		//tab 2
-		listValueExtractAlarm.addAll(this.extractMonthlyFixed(listFixed, period, listEmployeeID));
-		//tab 3
 		List<EmployeeSearchDto> employeesDto = employees.stream().filter(c-> listEmployeeID.contains(c.getId())).collect(Collectors.toList());
+		//tab 2
+		listValueExtractAlarm.addAll(this.extractMonthlyFixed(listFixed, period, employeesDto));
+		//tab 3
+		
 		listValueExtractAlarm.addAll(this.extraResultMonthly(companyID, listExtra, period, employeesDto));
 		
 		return listValueExtractAlarm;
 	}
 	//tab 2
 	private List<ValueExtractAlarm> extractMonthlyFixed(List<FixedExtraMonFunImport> listFixed,
-			DatePeriod period, List<String> employees) {
+			DatePeriod period, List<EmployeeSearchDto> employees) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
 		
-		for(String employee : employees) {
+		for(EmployeeSearchDto employee : employees) {
 			for (YearMonth yearMonth : lstYearMonth) {
 				for(int i = 0;i<listFixed.size();i++) {
 					if(listFixed.get(i).isUseAtr()) {
 //						FixedExtraMonFunImport fixedExtraMon = listFixed.get(i);
 						switch(i) {
 							case 0 :
-								Optional<ValueExtractAlarm> unconfirmed = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmed(employee, yearMonth.v().intValue());
+								Optional<ValueExtractAlarm> unconfirmed = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmed(employee.getId(), yearMonth.v().intValue());
 								if(unconfirmed.isPresent()) {
+									unconfirmed.get().setAlarmValueMessage(listFixed.get(i).getMessage());
+									unconfirmed.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+									String dateString = unconfirmed.get().getAlarmValueDate().substring(0, 7);
+									unconfirmed.get().setAlarmValueDate(dateString);
 									listValueExtractAlarm.add(unconfirmed.get());
 								}
 								
@@ -127,7 +115,7 @@ public class MonthlyAggregateProcessService {
 							case 2 :break;//chua co
 							case 3 :break;//chua co
 							case 4 :
-								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee, yearMonth.v().intValue());
+								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee.getId(), yearMonth.v().intValue());
 								if(agreement.isPresent()) {
 									listValueExtractAlarm.add(agreement.get());
 								}
@@ -157,18 +145,85 @@ public class MonthlyAggregateProcessService {
 				for (EmployeeSearchDto employee : employees) {
 					switch (extra.getTypeCheckItem()) {
 					case 0:
-						checkResultMonthlyAdapter.checkPublicHoliday(companyId, employee.getCode(), employee.getId(),
+						boolean checkPublicHoliday = checkResultMonthlyAdapter.checkPublicHoliday(companyId, employee.getCode(), employee.getId(),
 								employee.getWorkplaceId(), true, yearMonth, extra.getSpecHolidayCheckCon());
+						if(checkPublicHoliday) {
+							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+									employee.getWorkplaceId(),
+									employee.getId(),
+									yearMonth.toString(),
+									TextResource.localize("KAL010_100"),
+									TextResource.localize("KAL010_209"),
+									TextResource.localize("KAL010_210"),
+									extra.getDisplayMessage()
+									);
+							listValueExtractAlarm.add(resultMonthlyValue);
+						}
 						break;
-					case 1:case 2:
-//						checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date, 
-//								yearMonth, yearMonth.year(),extra.getAgreementCheckCon36());
+					case 1:
+						//TODO : chua biet date là gì
+						GeneralDate date = GeneralDate.today();
+						boolean checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date, 
+								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
+						if(checkAgreementError) {
+							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+									employee.getWorkplaceId(),
+									employee.getId(),
+									yearMonth.toString(),
+									TextResource.localize("KAL010_100"),
+									TextResource.localize("KAL010_204"),
+									//TODO : còn thiếu
+									TextResource.localize("KAL010_205"),
+									
+									extra.getDisplayMessage()
+									);
+							listValueExtractAlarm.add(resultMonthlyValue);
+						}
+						break;
+					case 2:
+						//TODO : chua biet date là gì
+						GeneralDate date2 = GeneralDate.today();
+						boolean checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date2, 
+								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
+						if(checkAgreementAlarm) {
+							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+									employee.getWorkplaceId(),
+									employee.getId(),
+									yearMonth.toString(),
+									TextResource.localize("KAL010_100"),
+									TextResource.localize("KAL010_206"),
+									//TODO : còn thiếu
+									TextResource.localize("KAL010_207"),
+									
+									extra.getDisplayMessage()
+									);
+							listValueExtractAlarm.add(resultMonthlyValue);
+						}
+						if(true) {
+							
+						}
+						
 						break;
 					case 4 : 
-//						checkResultMonthlyAdapter.checkPublicHoliday(companyId, employee.getCode(), employee.getId(),
-//								employee.getWorkplaceId(), true, yearMonth, extra.getSpecHolidayCheckCon())
+						//Chưa có, chưa thiết kế	
 						break;
 					default:
+						boolean checkPerTimeMonActualResult = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
+								yearMonth, 1, 1, employee.getId(), extra.getCheckConMonthly());
+						if(checkPerTimeMonActualResult) {
+							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+									employee.getWorkplaceId(),
+									employee.getId(),
+									yearMonth.toString(),
+									TextResource.localize("KAL010_100"),
+									TextResource.localize("KAL010_60"),
+									//TODO : còn thiếu
+									TextResource.localize("KAL010_207"),//fix tạm
+									extra.getDisplayMessage()
+									);
+							listValueExtractAlarm.add(resultMonthlyValue);
+						}
+						
 						break;
 					}
 					
