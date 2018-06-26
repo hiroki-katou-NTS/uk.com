@@ -10,7 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreaterAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.interimremain.KrcmtInterimRemainMng;
@@ -48,7 +48,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		return new InterimRemain(c.remainMngId, 
 				c.sId, 
 				c.ymd, 
-				EnumAdaptor.valueOf(c.createrAtr, CreaterAtr.class), 
+				EnumAdaptor.valueOf(c.createrAtr, CreateAtr.class), 
 				EnumAdaptor.valueOf(c.remainType, RemainType.class),
 				EnumAdaptor.valueOf(c.remainAtr, RemainAtr.class));
 	}
@@ -83,6 +83,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			entity.createrAtr = domain.getCreatorAtr().value;
 			entity.remainType = domain.getRemainType().value;
 			entity.remainAtr = domain.getRemainAtr().value;
+			this.commandProxy().update(entity);
 		}
 		//this.getEntityManager().flush();
 	}

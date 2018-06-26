@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.record.dom.daily;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -22,10 +22,11 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -33,7 +34,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author ken_takasu
  *
  */
-@Value
+@Getter
 public class LateTimeOfDaily {
 	
 	private TimeWithCalculation lateTime;
@@ -42,9 +43,6 @@ public class LateTimeOfDaily {
 	private TimevacationUseTimeOfDaily timePaidUseTime;
 	private IntervalExemptionTime exemptionTime;
 	
-
-
-
 	public LateTimeOfDaily(TimeWithCalculation lateTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
 			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime) {		
 		this.lateTime = lateTime;
@@ -53,6 +51,14 @@ public class LateTimeOfDaily {
 		this.timePaidUseTime = timePaidUseTime;
 		this.exemptionTime = exemptionTime;
 	}	
+
+	/**
+	 * 遅刻時間のみ更新
+	 * @param lateTime
+	 */
+	public void rePlaceLateTime(TimeWithCalculation lateTime) {
+		this.lateTime = lateTime;
+	}
 
 	
 	/**
@@ -66,7 +72,7 @@ public class LateTimeOfDaily {
 	public static LateTimeOfDaily calcLateTime(CalculationRangeOfOneDay oneDay,
 											   WorkNo workNo,
 											   boolean late, //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-											   HolidayCalcMethodSet holidayCalcMethodSet
+											   HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting
 			) {
 					 
 		//勤務Noに一致する遅刻時間をListで取得する
@@ -84,15 +90,16 @@ public class LateTimeOfDaily {
 		                      new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 		  
 		  if(!lateTimeSheetList.isEmpty()) {
-		   //遅刻時間帯を１つの時間帯にする。
-		   forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
-		                                lateTimeSheetList.get(lateTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd(),
-		                                lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getRounding()),
-		               new TimeSpanForCalc(lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
-		                    lateTimeSheetList.get(lateTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd()));
-		  
-		   forRecordTimeSheet.setDeductionTimeSheet(lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
-		  
+		   if(lateTimeSheetList.get(0).getForRecordTimeSheet().isPresent()) {
+			 //遅刻時間帯を１つの時間帯にする。
+			   forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
+			                                lateTimeSheetList.get(lateTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd(),
+			                                lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getRounding()),
+			               new TimeSpanForCalc(lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
+			                    lateTimeSheetList.get(lateTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd()));
+			  
+			   forRecordTimeSheet.setDeductionTimeSheet(lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+		   } 
 		   forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getStart(),
 		                      lateTimeSheetList.get(lateTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd(),
 		                      lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getRounding()),
@@ -109,7 +116,7 @@ public class LateTimeOfDaily {
 //																															  :NotUseAtr.NOT_USE;
 		NotUseAtr notDeductLateLeaveEarly = NotUseAtr.NOT_USE;
 		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
-			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly()) {
+			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
 				notDeductLateLeaveEarly = NotUseAtr.USE;
 			}
 		}

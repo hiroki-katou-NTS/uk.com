@@ -14,7 +14,8 @@ public interface EmployeeGeneralInfoPub {
 	 * @param period
 	 * @return
 	 */
-	EmployeeGeneralInfoDto getPerEmpInfo(List<String> employeeIds, DatePeriod period);
+	EmployeeGeneralInfoDto getPerEmpInfo(List<String> employeeIds, DatePeriod period, boolean checkEmployment,
+			boolean checkClassification, boolean checkJobTitle, boolean checkWorkplace, boolean checkDepartment);
 	
 
 }
