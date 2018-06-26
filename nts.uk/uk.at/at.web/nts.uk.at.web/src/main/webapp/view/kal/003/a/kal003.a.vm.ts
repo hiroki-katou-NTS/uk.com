@@ -232,7 +232,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
 
             if (data.category() == model.CATEGORY.MONTHLY) {
-                let i = -2;
+                let i = -1;
                 data.monAlarmCheckCon().listFixExtraMon(self.tabAlarmcheck.listFixedExtraMonFun());
                 data.monAlarmCheckCon().arbExtraCon(
                     _.map(self.tabCheckAlarm.listExtraResultMonthly(), acc=>{ 
