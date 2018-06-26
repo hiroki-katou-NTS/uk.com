@@ -17,6 +17,7 @@ module nts.uk.ui.koExtentions {
             var value = data.value;
             var name = data.name !== undefined ? ko.unwrap(data.name) : "";
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            let pickOnly = !util.isNullOrUndefined(data.pickOnly) ? ko.unwrap(data.pickOnly) : false;
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
             var ISOFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);
@@ -106,6 +107,11 @@ module nts.uk.ui.koExtentions {
                                 .setDefaultCss(data.defaultClass || ""));
 
             name = nts.uk.resource.getControlName(name);
+            
+            if (pickOnly) {
+                $input.attr("readonly", true);
+                $input.css("cursor", "default");
+            }
             
             $input.on("change", (e) => {
                 var newText = $input.val();

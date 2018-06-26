@@ -35,11 +35,4 @@ public class EmployeeDataMngInfoWebService {
 		return new JavaTypeResult<String>(newCardNo);
 	}
 	
-	@POST
-	@Path("getStampCardAfterLostFocusEmpCd")
-	public JavaTypeResult<String> getStampCardAfterLostFocusEmpCd(String newEmployeeCode) {
-		String newCardNo = employeeFinder.getStampCardAfterLostFocusEmpCd(newEmployeeCode);
-		return new JavaTypeResult<String>(newCardNo);
-	}
-
 }
