@@ -50,7 +50,7 @@ module nts.uk.at.view.kfp001.g.viewmodel {
         private exportCsv(): void {
             let self = this;
             block.invisible();
-            service.exportCsv({}).always(() => {
+            service.exportCsv({ aggrPeriodId: self.params.logId }).always(() => {
                 block.clear();
             });
         }
