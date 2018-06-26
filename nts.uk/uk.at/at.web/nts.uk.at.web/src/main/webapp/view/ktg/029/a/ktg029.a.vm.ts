@@ -210,36 +210,44 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 return;    
             }
             if(self.switchDate()){
-                var month = self.currentMonth().endMonth.getMonth()+1;
-                if(month<10){
-                     month='0'+month; 
+                var strMonth = self.currentMonth().strMonth.getMonth()+1;
+                if(strMonth<10){
+                     strMonth='0'+strMonth; 
                 } 
-                var startMonth = self.currentMonth().strMonth.getDate();
-                if(startMonth<10){
-                     startMonth='0'+startMonth; 
+                var strDay = self.currentMonth().strMonth.getDate();
+                if(strDay<10){
+                     strDay='0'+strDay; 
                 } 
-                var lastMonth = self.currentMonth().endMonth.getDate();
-                if(lastMonth<10){
-                     lastMonth='0'+lastMonth; 
+                var endMonth = self.currentMonth().endMonth.getMonth()+1;
+                if(endMonth<10){
+                     endMonth='0'+endMonth; 
+                }
+                var endDay = self.currentMonth().endMonth.getDate();
+                if(endDay<10){
+                     endDay='0'+endDay; 
                 } 
-                self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
+                self.txtDatePeriod(strMonth+'/'+strDay+getText('KTG029_3')+endMonth+'/'+endDay+getText('KTG029_5'));
                 self.getInfor(code, self.currentMonth().strMonth, self.currentMonth().endMonth);
                 self.btnSwitch(getText('KTG029_7'));
                 self.switchDate(false);
             }else{
-                var month = self.nextMonth().endMonth.getMonth()+1;
-                if(month<10){
-                     month='0'+month; 
+                var strMonth = self.nextMonth().strMonth.getMonth()+1;
+                if(strMonth<10){
+                     strMonth='0'+strMonth; 
+                } 
+                var strDay = self.nextMonth().strMonth.getDate();
+                if(strDay<10){
+                     strDay='0'+strDay; 
+                } 
+                var endMonth = self.nextMonth().endMonth.getMonth()+1;
+                if(endMonth<10){
+                     endMonth='0'+endMonth; 
                 }
-                var startMonth = self.currentMonth().strMonth.getDate();
-                if(startMonth<10){
-                     startMonth='0'+startMonth; 
+                var endDay = self.nextMonth().endMonth.getDate();
+                if(endDay<10){
+                     endDay='0'+endDay; 
                 } 
-                var lastMonth = self.nextMonth().endMonth.getDate();
-                if(lastMonth<10){
-                     lastMonth='0'+lastMonth; 
-                } 
-                self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
+                self.txtDatePeriod(strMonth+'/'+strDay+getText('KTG029_3')+endMonth+'/'+endDay+getText('KTG029_5'));
                 self.getInfor(code, self.nextMonth().strMonth, self.nextMonth().endMonth);
                 self.btnSwitch(getText('KTG029_8'));
                 self.switchDate(true);

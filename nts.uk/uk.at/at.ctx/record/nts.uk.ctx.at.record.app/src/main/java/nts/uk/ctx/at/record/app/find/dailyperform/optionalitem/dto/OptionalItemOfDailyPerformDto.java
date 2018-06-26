@@ -47,7 +47,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
 		optionalItems.stream().forEach(item -> {
 //			if(item.isNeedCorrect()) {
-				item.correctItem(optionalMaster.get(item.getNo()).getOptionalItemAtr());
+				if(optionalMaster.containsKey(item.getNo())) item.correctItem(optionalMaster.get(item.getNo()).getOptionalItemAtr());
 //			}
 		});
 		optionalItems.removeIf(item -> !item.isHaveData());
