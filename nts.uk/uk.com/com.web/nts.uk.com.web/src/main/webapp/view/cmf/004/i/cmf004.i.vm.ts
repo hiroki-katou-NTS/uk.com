@@ -1,4 +1,8 @@
 module nts.uk.com.view.cmf004.i.viewmodel {
+    import getText = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import alertError = nts.uk.ui.dialog;
     export class ScreenModel {
         elapsedTime: KnockoutObservable<string> = ko.observable('');
         //I2_1
@@ -19,7 +23,7 @@ module nts.uk.com.view.cmf004.i.viewmodel {
         recoveryCategoryList: KnockoutObservableArray<any> = ko.observableArray([]);
         recoveryFile: KnockoutObservable<string> = ko.observable('');
         recoverySourceName: KnockoutObservable<string> = ko.observable('');
-        upplementaryExplanation: KnockoutObservable<string> = ko.observable('');
+        supplementaryExplanation: KnockoutObservable<string> = ko.observable('');
         recoveryMethodOptions: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
@@ -40,13 +44,13 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 let recoveryInfo = getShared("CMF004IParams");
                 if (recoveryInfo) {
                     let self = this;
-                    self.recoveryProcessingId = recoveryInfo.dataRecoveryProcessId,
+                    self.recoveryProcessingId = recoveryInfo.recoveryProcessingId,
                         self.employeeList = recoveryInfo.employeeList,
                         self.recoveryCategoryList = recoveryInfo.recoveryCategoryList,
                         self.recoveryFile = recoveryInfo.recoveryFile,
                         self.recoverySourceCode = recoveryInfo.recoverySourceCode,
                         self.recoverySourceName = recoveryInfo.recoverySourceName,
-                        self.upplementaryExplanation = recoveryInfo.upplementaryExplanation,
+                        self.supplementaryExplanation = recoveryInfo.supplementaryExplanation,
                         self.recoveryMethodOptions = recoveryInfo.recoveryMethodOptions
                 }
             }
@@ -58,19 +62,39 @@ module nts.uk.com.view.cmf004.i.viewmodel {
             let dfd = $.Deferred();
             dfd.resolve(self);
             let paramRestore = {
-                recoveryProcessingId: self.recoveryProcessingId(),
-                employeeList: self.employeeList(),
-                recoveryCategoryList: self.recoveryCategoryList(),
-                recoveryFile: self.recoveryFile(),
-                recoverySourceCode: self.recoverySourceCode(),
-                recoverySourceName: self.recoverySourceName(),
-                upplementaryExplanation: self.upplementaryExplanation(),
-                recoveryMethodOptions: self.recoveryMethodOptions()
+                recoveryProcessingId: self.recoveryProcessingId,
+                employeeList: self.employeeList,
+                recoveryCategoryList: self.recoveryCategoryList,
+                recoveryFile: self.recoveryFile,
+                recoverySourceCode: self.recoverySourceCode,
+                recoverySourceName: self.recoverySourceName,
+                supplementaryExplanation: self.supplementaryExplanation,
+                recoveryMethodOptions: self.recoveryMethodOptions
 
             };
             service.performDataRecover(paramRestore).done((res) => {
                 if ((res) && (res != "")) {
-
+                    //// 1秒おきに下記を実行
+                    nts.uk.deferred.repeat(conf => conf
+                        .task(() => {
+                            return service.performDataRecover(res).done(function(res: any) {
+                                // update state on screen
+                                let status;
+                                if (res.taskDatas.length > 0) {
+                                    
+                                }
+                                if (res.succeeded || res.failed) {
+                                    
+                                    //block.clear();
+                                }
+                                if (res.running) {
+                                    // 経過時間＝現在時刻－開始時刻
+                                    
+                                }
+                            });
+                        }).while(infor => {
+                            return infor.pending || infor.running;
+                        }).pause(1000));
                 }
             }).fail((err) => {
             });

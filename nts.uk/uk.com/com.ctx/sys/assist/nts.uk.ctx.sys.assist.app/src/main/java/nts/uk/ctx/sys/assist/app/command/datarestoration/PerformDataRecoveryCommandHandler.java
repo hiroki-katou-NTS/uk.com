@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
@@ -24,7 +25,7 @@ import nts.uk.ctx.sys.assist.dom.recoverystorage.RecoveryStorageService;
 
 @Stateless
 @Transactional
-public class PerformDataRecoveryCommandHandler extends CommandHandler<PerformDataRecoveryCommand> {
+public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<PerformDataRecoveryCommand, String> {
 	@Inject
 	private PerformDataRecoveryRepository repoPerformDataRecovery;
 	@Inject
@@ -33,13 +34,12 @@ public class PerformDataRecoveryCommandHandler extends CommandHandler<PerformDat
 	private RecoveryStorageService recoveryStorageService;
 	@Inject
 	private DataRecoveryMngRepository repoDataRecoveryMng;
+	@Inject
+	private RecoveryStogareAsysnCommandHandler recoveryStogareAsysnCommandHandler;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PerformDataRecoveryCommandHandler.class);
-
-	public void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
+	public String handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
 		PerformDataRecoveryCommand performDataCommand = context.getCommand();
 		String dataRecoveryProcessId = context.getCommand().dataRecoveryProcessId;
-
 		String recoveryDate = null;
 		Integer categoryCnt = 0;
 		Integer errorCount = 0;
@@ -57,6 +57,7 @@ public class PerformDataRecoveryCommandHandler extends CommandHandler<PerformDat
 
 		// ドメインモデル「データ復旧動作管理」の動作状態を「準備中」で登録する
 		// データ復旧の結果
+		recoveryStogareAsysnCommandHandler.handle(context);
 
 		String cid = context.getCommand().cid;
 		String saveSetCode = null;
@@ -69,19 +70,10 @@ public class PerformDataRecoveryCommandHandler extends CommandHandler<PerformDat
 		DataRecoveryResult dataRecoveryResult = new DataRecoveryResult(dataRecoveryProcessId, cid, saveSetCode,
 				practitioner, executionResult, startDateTime, endDateTime, saveForm, saveName);
 		repoDataRecoveryResult.add(dataRecoveryResult);
-		
+
 		// 復旧条件の調整, update recoveryMethod
 		repoPerformDataRecovery.updatePerformDataRecoveryById(context.getCommand().dataRecoveryProcessId);
 
-
-
-		// サーバー復旧処理
-		try {
-			recoveryStorageService.recoveryStorage(dataRecoveryProcessId);
-		} catch (ParseException e) {
-			LOGGER.error("Fail recovery data by " + dataRecoveryProcessId);
-			LOGGER.error(e.toString());
-		}
 		Optional<PerformDataRecovery> otpPerformDataRecovery = repoPerformDataRecovery
 				.getPerformDatRecoverById(context.getCommand().dataRecoveryProcessId);
 		if (otpPerformDataRecovery.isPresent()) {
@@ -89,6 +81,7 @@ public class PerformDataRecoveryCommandHandler extends CommandHandler<PerformDat
 				// 復旧期間の調整
 			}
 		}
+		return dataRecoveryProcessId;
 
 	}
 
