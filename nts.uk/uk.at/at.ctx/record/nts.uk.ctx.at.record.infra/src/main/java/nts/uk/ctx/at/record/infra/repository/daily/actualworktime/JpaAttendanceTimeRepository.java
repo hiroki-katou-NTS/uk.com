@@ -190,7 +190,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		if (entity.isPresent()) {
 			/* 勤怠時間 */
 			entity.get().setData(attendanceTime);
-			this.commandProxy().update(entity);
+			this.commandProxy().update(entity.get());
 			if (attendanceTime.getActualWorkingTimeOfDaily() != null) {
 				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 //					if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
