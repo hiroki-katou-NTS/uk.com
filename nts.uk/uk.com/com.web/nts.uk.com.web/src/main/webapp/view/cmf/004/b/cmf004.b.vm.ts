@@ -429,7 +429,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 recoverySourceCode: self.recoverySourceCode(),
                 recoverySourceName: self.recoverySourceName(),
                 supplementaryExplanation: self.supplementaryExplanation(),
-                recoveryMethodOptions: self.recoveryMethodOptions(),
+                recoveryMethodOptions: self.dataContentConfirm().selectedRecoveryMethod(),
                 recoveryProcessingId: self.recoveryProcessingId
             });
             nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");

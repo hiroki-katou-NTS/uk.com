@@ -73,6 +73,7 @@ module nts.uk.com.view.cmf004.i.viewmodel {
 
             };
             service.performDataRecover(paramRestore).done((res) => {
+                console.log(paramRestore);
                 if ((res) && (res != "")) {
                     //// 1秒おきに下記を実行
                     nts.uk.deferred.repeat(conf => conf

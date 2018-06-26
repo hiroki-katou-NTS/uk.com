@@ -1,19 +1,15 @@
 package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
-import java.text.ParseException;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.app.find.datarestoration.PerformDataRecoveryDto;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
@@ -25,7 +21,7 @@ import nts.uk.ctx.sys.assist.dom.recoverystorage.RecoveryStorageService;
 
 @Stateless
 @Transactional
-public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<PerformDataRecoveryCommand, String> {
+public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<PerformDataRecoveryDto, String> {
 	@Inject
 	private PerformDataRecoveryRepository repoPerformDataRecovery;
 	@Inject
@@ -37,8 +33,8 @@ public class PerformDataRecoveryCommandHandler extends CommandHandlerWithResult<
 	@Inject
 	private RecoveryStogareAsysnCommandHandler recoveryStogareAsysnCommandHandler;
 
-	public String handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
-		PerformDataRecoveryCommand performDataCommand = context.getCommand();
+	public String handle(CommandHandlerContext<PerformDataRecoveryDto> context) {
+		PerformDataRecoveryDto performDataCommand = context.getCommand();
 		String dataRecoveryProcessId = context.getCommand().dataRecoveryProcessId;
 		String recoveryDate = null;
 		Integer categoryCnt = 0;
