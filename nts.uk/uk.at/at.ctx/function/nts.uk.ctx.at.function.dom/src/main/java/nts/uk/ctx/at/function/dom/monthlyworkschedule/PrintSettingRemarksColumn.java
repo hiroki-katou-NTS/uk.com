@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.dom.monthlyworkschedule;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
 
 // TODO: Auto-generated Javadoc
 /**
