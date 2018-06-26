@@ -24,7 +24,6 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.category.Category;
@@ -220,8 +219,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case MONTHLY:
-					saveDateFrom = optManualSetting.getMonthSaveStartDate().toString();
-					saveDateTo = optManualSetting.getMonthSaveEndDate().toString();
+					saveDateFrom = optManualSetting.getMonthSaveStartDate().toString("yyyy/MM");
+					saveDateTo = optManualSetting.getMonthSaveEndDate().toString("yyyy/MM");
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case ANNUAL:
