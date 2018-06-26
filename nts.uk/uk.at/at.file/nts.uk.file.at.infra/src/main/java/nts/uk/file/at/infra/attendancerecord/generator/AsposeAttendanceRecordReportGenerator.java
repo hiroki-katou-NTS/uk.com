@@ -205,7 +205,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
 
 					if (dataSource.getMode() == EXPORT_PDF) {
-						pageSetup.setFitToPagesWide(1);
 						pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
 					}
 
