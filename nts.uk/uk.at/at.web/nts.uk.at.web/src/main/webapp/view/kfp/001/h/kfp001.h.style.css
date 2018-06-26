@@ -2,6 +2,10 @@
 	margin-left: 20px;
 }
 
+#list_headers th {
+	text-align: center;
+}
+
 .linkLabel {
 	text-decoration: none;
 	color: #0D86D1 !important;

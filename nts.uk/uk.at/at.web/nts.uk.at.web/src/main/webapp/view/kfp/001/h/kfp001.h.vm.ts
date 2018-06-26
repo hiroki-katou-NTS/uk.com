@@ -25,13 +25,15 @@ module nts.uk.com.view.kfp001.h.viewmodel {
             dfd = $.Deferred(),
             start = moment.utc(self.periodValue().startDate, "YYYY/MM/DD").format("YYYY-MM-DD"), 
             end = moment.utc(self.periodValue().endDate, "YYYY/MM/DD").format("YYYY-MM-DD");
+            block.invisible();
             service.getLogData(start, end).done((result: Array<any>) => {
                 if (result && result.length > 0) {
                     let list: Array<DataModel> = _.map(result, log => {
-                        return new DataModel(log.id, log.code, log.name, log.executionDt, log.executorCode, log.executorName, log.aggregationStart + getText("KFP001_30") + log.aggregationEnd, log.status, log.targetNum, log.errorNum);
+                        return new DataModel(log.id, log.code, log.name, log.executionDt, log.executorCode, log.executorName, log.aggregationStart, log.aggregationEnd, log.status, log.targetNum, log.errorNum);
                     });
                     self.listData(list);
                 }
+                self.listData.push(new DataModel("sadfasdfasdfsdfsf", "D03", "FFFFFFFFF", "26/06/2018 10:34:15", "sdfadsfasdf", "AA BB", "2017/06/27", "2018/06/26", "Done", 123, 23));
                 self.initIGrid();
                 dfd.resolve();
             }).fail((error) => {
@@ -44,7 +46,8 @@ module nts.uk.com.view.kfp001.h.viewmodel {
         }
         
         search() {
-            
+            let self = this;
+            self.startPage();
         }
         
         private closeDialog() {
@@ -64,7 +67,7 @@ module nts.uk.com.view.kfp001.h.viewmodel {
                     { headerText: getText('KFP001_55'), key: 'executionDateTime', dataType: 'string', width: '180px' },
                     { headerText: getText('KFP001_56'), key: 'executorCode', dataType: 'string', width: '160px' },
                     { headerText: getText('KFP001_57'), key: 'executorName', dataType: 'string', width: '140px' },
-                    { headerText: getText('KFP001_58'), key: 'aggregationPeriod', dataType: 'string', width: '180px' },
+                    { headerText: getText('KFP001_58'), key: 'aggregationPeriod', dataType: 'string', width: '190px' },
                     { headerText: getText('KFP001_47'), key: 'result', dataType: 'string', width: '140px' },
                     { headerText: "", key: 'targetPeopleNum', dataType: 'number', hidden: true },
                     { headerText: getText('KFP001_31'), key: 'dispTargetPeopleNum', dataType: 'string', width: '80px', template: "{{if ${targetPeopleNum} > 0}} <a href=\"javascript:void(0)\" class=\"linkLabel dialogFLink\" logId=\"${logId}\">${dispTargetPeopleNum}</a> {{else}} ${dispTargetPeopleNum} {{/if}}" },
@@ -88,36 +91,18 @@ module nts.uk.com.view.kfp001.h.viewmodel {
 
         openKfp001fDialog(logId: string) {
             let self = this;
-//            block.invisible();
-//            service.getListEmpId(logId, ATR.ALL).done((result: Array<string>) => {
-//                if (result && result.length) {
-//                    let tmp = _.find(self.items(), (x: ItemModel) => x.logId == logId);
-//                    setShared("Kmw006dParams", { logId: logId, listEmpId: result, closure: tmp.column1, targetYm: tmp.column2, executionDt: tmp.column3 });
-                    modal("/view/kfp/001/f/index.xhtml").onClosed(() => {
-                    });
-//                }
-//            }).fail((error) => {
-//                alert(error);
-//            }).always(() => {
-//                block.clear();
-//            });
+            let params = _.find(self.listData(), (x: DataModel) => x.logId == logId);
+            setShared("Kfp001fParams", params);
+            modal("/view/kfp/001/f/index.xhtml").onClosed(() => {
+            });
         }
 
         openKfp001gDialog(logId: string) {
             let self = this;
-//            block.invisible();
-//            service.getListEmpId(logId, atr).done((result: Array<string>) => {
-//                if (result && result.length) {
-//                    let tmp = _.find(self.items(), (x: ItemModel) => x.logId == logId);
-                    setShared("Kfp001gParams", { logId: logId });
-                    modal("/view/kfp/001/g/index.xhtml").onClosed(() => {
-                    });
-//                }
-//            }).fail((error) => {
-//                alert(error);
-//            }).always(() => {
-//                block.clear();
-//            });
+            let params = _.find(self.listData(), (x: DataModel) => x.logId == logId);
+            setShared("Kfp001gParams", params);
+            modal("/view/kfp/001/g/index.xhtml").onClosed(() => {
+            });
         }
 
         bindLinkClick() {
@@ -141,6 +126,8 @@ module nts.uk.com.view.kfp001.h.viewmodel {
         executionDateTime: string;
         executorCode: string;
         executorName: string;
+        start: string;
+        end: string;
         aggregationPeriod: string;
         result: string;
         targetPeopleNum: number;
@@ -148,14 +135,16 @@ module nts.uk.com.view.kfp001.h.viewmodel {
         dispTargetPeopleNum: string;
         dispErrorPeopleNum: string;
         
-        constructor(logId: string, code: string, name: string, execDT: string, execCode: string, execName: string, period: string, result: string, targetNum: number, errorNum: number) {
+        constructor(logId: string, code: string, name: string, execDT: string, execCode: string, execName: string, start: string, end: string, result: string, targetNum: number, errorNum: number) {
             this.logId = logId;
             this.code = code;
             this.name = name;
             this.executionDateTime = execDT;
             this.executorCode = execCode;
             this.executorName = execName;
-            this.aggregationPeriod = period;
+            this.start = start;
+            this.end = end;
+            this.aggregationPeriod = start + getText("KFP001_30") + end;
             this.result = result;
             this.targetPeopleNum = targetNum;
             this.errorPeopleNum = errorNum;

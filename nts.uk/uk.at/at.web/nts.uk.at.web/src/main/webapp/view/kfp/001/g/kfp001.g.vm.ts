@@ -7,18 +7,22 @@ module nts.uk.at.view.kfp001.g.viewmodel {
     export class ScreenModel {
 
         items: KnockoutObservableArray<MonthlyClosureErrorInfor>;
-//        closureIdName: KnockoutObservable<string> = ko.observable("");
-//        dispTargetYm: KnockoutObservable<string> = ko.observable("");
-//        executionDt: KnockoutObservable<string> = ko.observable("");
+        code: KnockoutObservable<string> = ko.observable("");
+        name: KnockoutObservable<string> = ko.observable("");
+        start: KnockoutObservable<string> = ko.observable("");
+        end: KnockoutObservable<string> = ko.observable("");
+        errorNum: KnockoutObservable<string> = ko.observable("");
         currentCode: KnockoutObservable<string> = ko.observable("");
         params: any;
 
         constructor() {
             var self = this;
             self.params = getShared("Kfp001gParams");
-//            self.closureIdName(self.params.closure);
-//            self.dispTargetYm(self.params.targetYm);
-//            self.executionDt(self.params.executionDt);
+            self.code(self.params.code);
+            self.name(self.params.name);
+            self.start(self.params.start);
+            self.end(self.params.end);
+            self.errorNum(self.params.dispErrorPeopleNum);
             self.items = ko.observableArray([]);
         }
 
@@ -26,11 +30,11 @@ module nts.uk.at.view.kfp001.g.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            service.getResults(self.params.logId, self.params.listEmpId).done((result) => {
+            service.getErrorInfos(self.params.logId).done((result) => {
                 let listErr: Array<MonthlyClosureErrorInfor> = [];
                 for (let i = 0; i < result.length; i++) {
                     let item = result[i];
-                    listErr.push(new MonthlyClosureErrorInfor(i + 1, item.employeeCode, item.employeeName, item.errorMessage, item.atr));
+                    listErr.push(new MonthlyClosureErrorInfor(i + 1, item.employeeCode, item.employeeName, item.procDate, item.errorMessage));
                 }
                 self.items(listErr);
                 dfd.resolve();
@@ -61,23 +65,16 @@ module nts.uk.at.view.kfp001.g.viewmodel {
         no: number;
         employeeCode: string;
         employeeName: string;
+        processDate: string;
         errorMessage: string;
-        atr: number;
-        dispAtr: string;
 
-        constructor(no: number, employeeCode: string, employeeName: string, errorMessage: string, atr: number) {
+        constructor(no: number, employeeCode: string, employeeName: string, procDate: string, errorMessage: string) {
             this.no = no;
             this.employeeCode = employeeCode;
             this.employeeName = employeeName;
             this.errorMessage = errorMessage;
-            this.atr = atr;
-            this.dispAtr = atr == ERROR_ALARM_ATR.ALARM ? getText("Enum_MonthlyClosureUpdate_Alarm") : getText("Enum_MonthlyClosureUpdate_Error");
+            this.processDate = procDate;
         }
-    }
-
-    enum ERROR_ALARM_ATR {
-        ALARM = 0,
-        ERROR = 1
     }
 
 }

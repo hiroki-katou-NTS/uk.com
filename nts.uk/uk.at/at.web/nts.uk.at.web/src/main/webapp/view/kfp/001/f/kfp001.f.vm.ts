@@ -8,18 +8,22 @@ module nts.uk.at.view.kfp001.f.viewmodel {
     export class ScreenModel {
 
         items: KnockoutObservableArray<ItemModel>;
-//        closureIdName: KnockoutObservable<string> = ko.observable("");
-//        dispTargetYm: KnockoutObservable<string> = ko.observable("");
-//        executionDt: KnockoutObservable<string> = ko.observable("");
+        code: KnockoutObservable<string> = ko.observable("");
+        name: KnockoutObservable<string> = ko.observable("");
+        start: KnockoutObservable<string> = ko.observable("");
+        end: KnockoutObservable<string> = ko.observable("");
+        targetNum: KnockoutObservable<string> = ko.observable("");
         currentCode: KnockoutObservable<string> = ko.observable("");
         params: any;
 
         constructor() {
             var self = this;
             self.params = getShared("Kfp001fParams");
-//            self.closureIdName(self.params.closure);
-//            self.dispTargetYm(self.params.targetYm);
-//            self.executionDt(self.params.executionDt);
+            self.code(self.params.code);
+            self.name(self.params.name);
+            self.start(self.params.start);
+            self.end(self.params.end);
+            self.targetNum(self.params.dispTargetPeopleNum);
             self.items = ko.observableArray([]);
         }
 
@@ -27,19 +31,20 @@ module nts.uk.at.view.kfp001.f.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-//            service.getResults(self.params.listEmpId).done((result: Array<any>) => {
-                let _a: Array<ItemModel> = [];
-                for (var i = 0; i < 50; i++) {
-                    _a.push(new ItemModel("000000" + i, "Employee " + i));
+            service.getTargets(self.params.logId).done((result: Array<any>) => {
+                if (result && result.length > 0) {
+                    let list: Array<ItemModel> = _.map(result, t => {
+                        return new ItemModel(t.employeeId, t.employeeCode, t.employeeName, t.status);
+                    });
+                    self.items(list);
                 }
-//                self.items(_a);
                 dfd.resolve();
-//            }).fail((error) => {
-//                dfd.reject();
-//                alertError(error);
-//            }).always(() => {
-//                block.clear();
-//            });
+            }).fail((error) => {
+                dfd.reject();
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
             return dfd.promise();
         }
 
@@ -50,14 +55,16 @@ module nts.uk.at.view.kfp001.f.viewmodel {
     }
 
     class ItemModel {
+        employeeId: string;
         employeeCode: string;
         employeeName: string;
         status: string;
 
-        constructor(code: string, name: string) {
+        constructor(id: string, code: string, name: string, status: string) {
+            this.employeeId = id;
             this.employeeCode = code;
             this.employeeName = name;
-            this.status = 'Finished';
+            this.status = status;
         }
     }
 

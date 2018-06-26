@@ -10,43 +10,49 @@
 			<script>
                 var dialogSize = {
                     width : 850,
-                    height : 625
+                    height : 600
                 };
             </script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kmw006.e.style.css" />
-			<com:scriptfile path="kmw006.e.service.js" />
-			<com:scriptfile path="kmw006.e.vm.js" />
-			<com:scriptfile path="kmw006.e.start.js" />
+			<com:stylefile path="kfp001.g.style.css" />
+			<com:scriptfile path="kfp001.g.service.js" />
+			<com:scriptfile path="kfp001.g.vm.js" />
+			<com:scriptfile path="kfp001.g.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area-bottom">
-				<button tabindex="2" id="E3_3" data-bind="click: closeDialog">#{i18n.getText('KMW006_31')}</button>
+				<button tabindex="3" id="G6_2" data-bind="click: closeDialog">#{i18n.getText('KMW006_31')}</button>
 			</div>
 			<div class="contents-area">
 				<div style="padding: 20px">
 					<div class="valign-center control-group">
-						<div style="width: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KMW006_32')}</div>
-						<span class="label" style="padding-right: 30px" data-bind="text: closureIdName"></span>
-						<span class="label" data-bind="text: dispTargetYm"></span>
+						<div style="width: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KFP001_28')}</div>
+						<span class="label" style="padding-right: 30px" data-bind="text: code"></span>
+						<span class="label" data-bind="text: name"></span>
 					</div>
 					<div class="valign-center control-group">
-						<div style="width: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KMW006_34')}</div>
-						<span class="label" data-bind="text: executionDt"></span>
+						<div style="width: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KFP001_29')}</div>
+						<span class="label" data-bind="text: start"></span>
+						<span class="label">#{i18n.getText('KFP001_30')}</span>
+						<span class="label" data-bind="text: end"></span>
 					</div>
 					<div class="valign-center control-group">
-						<button tabindex="1" data-bind="click: exportCsv">#{i18n.getText('KMW006_30')}</button>
+						<div style="width: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KFP001_31')}</div>
+						<span class="label" data-bind="text: errorNum"></span>
 					</div>
-					<table id="single-list" data-bind="ntsGridList: {								
-						height: 384,
+					<div class="valign-center control-group">
+						<button tabindex="1" class="cf pull-right" data-bind="click: exportCsv">#{i18n.getText('KFP001_37')}</button>
+					</div>
+					<table id="single-list" tabindex="2" data-bind="ntsGridList: {								
+						rows: 10,
 						dataSource: items,
 						primaryKey: 'employeeCode',
 						columns: [
 							{ headerText: '#{i18n.getText('KMW006_13')}', key: 'no', width: 50, formatter: _.escape },
 			                { headerText: '#{i18n.getText('KMW006_16')}', key: 'employeeCode', width: 160, formatter: _.escape },
 			                { headerText: '#{i18n.getText('KMW006_17')}', key: 'employeeName', width: 160, formatter: _.escape },
-			                { headerText: '#{i18n.getText('KMW006_39')}', key: 'dispAtr', width: 120, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KMW006_39')}', key: 'processDate', width: 120, formatter: _.escape },
 			                { headerText: '#{i18n.getText('KMW006_40')}', key: 'errorMessage', width: 300, formatter: _.escape }
 			            ], 
 						multiple: false,

@@ -18,7 +18,7 @@
 			<div id="functions-area">
 				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KFP001_6')}</a>
 			</div>
-			<div id="contents-area" style="padding: 25px;">
+			<div class="contents-area" style="padding: 25px;">
 				<div data-bind="ntsPanel:{width: '620px', height: '70px', showIcon: true, visible: true, direction: 'none'}">
 					<div class="flex valign-center control-group">
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KFP001_48')}</div>
@@ -31,32 +31,13 @@
 							startName: '#[KFP001_50]',
 							endName: '#[KFP001_51]',
 							maxRange: 'oneYear'}"/>
-						<button tabindex="3" id="searchBtn" data-bind="click: search">#{i18n.getText('KFP001_52')}</button>
+						<button tabindex="3" id="searchBtn" data-bind="enable: $root.errors.isEmpty, click: search">#{i18n.getText('KFP001_52')}</button>
 					</div>
 					<div class="valign-center control-group">
 						<div class="label">#{i18n.getText('KFP001_53')}</div>
 					</div>
 				</div>
 				<div style="padding-top: 15px;">
-<!-- 					<table id="logTable" tabindex="4" data-bind="ntsGridList: { -->
-<!-- 						rows: 15, -->
-<!-- 						name: '#[KFP001_54]',  -->
-<!-- 						dataSource: listData, -->
-<!-- 						primaryKey: 'code',  -->
-<!-- 						columns: [ -->
-<!-- 			                { headerText: '#{i18n.getText('KFP001_14')}', key: 'code', width: 60, formatter: _.escape }, -->
-<!-- 			                { headerText: '#{i18n.getText('KFP001_16')}', key: 'name', width: 180, formatter: _.escape }, -->
-<!-- 			                { headerText: '#{i18n.getText('KFP001_55')}', key: 'executionDateTime', width: 180, formatter: _.escape }, -->
-<!-- 			                { headerText: '#{i18n.getText('KFP001_56')}', key: 'executorCode', width: 160, formatter: _.escape }, -->
-<!-- 			                { headerText: '#{i18n.getText('KFP001_57')}', key: 'executorName', width: 140, formatter: _.escape }, -->
-<!-- 			                { headerText: '#{i18n.getText('KFP001_58')}', key: 'aggregationPeriod', width: 180, formatter: _.escape }, -->
-<!-- 			                { headerText: '#{i18n.getText('KFP001_47')}', key: 'result', width: 140, formatter: _.escape }, -->
-<!-- 			                { headerText: '#{i18n.getText('KFP001_31')}', key: 'targetPeopleNum', width: 80, formatter: _.escape }, -->
-<!-- 			                { headerText: '#{i18n.getText('KFP001_59')}', key: 'errorPeopleNum', width: 80, formatter: _.escape } -->
-<!-- 			            ],  -->
-<!-- 						multiple: false, -->
-<!-- 						value: selectedData -->
-<!-- 					}"></table> -->
 					<table id="list" tabindex="4"></table>
 				</div>
 			</div>

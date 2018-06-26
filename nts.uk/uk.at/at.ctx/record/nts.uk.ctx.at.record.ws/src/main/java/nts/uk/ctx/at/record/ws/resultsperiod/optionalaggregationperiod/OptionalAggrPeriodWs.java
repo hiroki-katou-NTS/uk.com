@@ -11,6 +11,10 @@ import javax.ws.rs.Produces;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommandHandler;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoDto;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoFinder;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodTargetDto;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodTargetFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodExecLogDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodExecLogFinder;
@@ -28,6 +32,12 @@ public class OptionalAggrPeriodWs {
 	
 	@Inject
 	private OptionalAggrPeriodExecLogFinder logFinder;
+	
+	@Inject
+	private AggrPeriodTargetFinder targetFinder;
+	
+	@Inject
+	private AggrPeriodErrorInfoFinder errorFinder;
 	
 	/**
 	 * Find all.
@@ -75,5 +85,17 @@ public class OptionalAggrPeriodWs {
 	@Path("findbyperiod/{start}/{end}")
 	public List<OptionalAggrPeriodExecLogDto> findByPeriod(@PathParam("start") String start, @PathParam("end") String end) {
 		return this.logFinder.findLog(GeneralDate.fromString(end, "yyyy-MM-dd"), GeneralDate.fromString(end, "yyyy-MM-dd"));
+	}
+	
+	@POST
+	@Path("findtarget/{id}")
+	public List<AggrPeriodTargetDto> findTarget(@PathParam("id") String id) {
+		return this.targetFinder.findAll(id);
+	}
+	
+	@POST
+	@Path("finderrorinfo/{id}")
+	public List<AggrPeriodErrorInfoDto> findErrorInfo(@PathParam("id") String id) {
+		return this.errorFinder.findAll(id);
 	}
 }

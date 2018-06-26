@@ -3,12 +3,13 @@ module nts.uk.at.view.kfp001.g.service {
     import format = nts.uk.text.format;
     
     var paths = {
-        getResults: "at/record/monthlyclosure/getErrInfor",
+        getErrorInfos: "ctx/at/record/optionalaggr/finderrorinfo/{0}",
         exportCsv: "at/record/monthlyclosure/exportLog"
     }
 
-    export function getResults(id: string, atr: Array<string>): JQueryPromise<any> {
-        return ajax("at", paths.getResults, {logId: id, listEmpId: atr});
+    export function getErrorInfos(aggrId: string): JQueryPromise<any> {
+        let _path = format(paths.getErrorInfos, aggrId);
+        return ajax("at", _path);
     }
     
     export function exportCsv(data: any): JQueryPromise<any> {
