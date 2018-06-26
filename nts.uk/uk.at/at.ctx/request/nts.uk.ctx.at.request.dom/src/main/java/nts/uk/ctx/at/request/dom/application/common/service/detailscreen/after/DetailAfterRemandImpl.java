@@ -122,6 +122,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		if(!isSendMail){
 			return new MailSenderResult(new ArrayList<>(), new ArrayList<>());
 		}
+		String applicantID = application.getEmployeeID();
 		String mailTitle = "";
 		String mailBody = "";
 		String cid = AppContexts.user().companyId();
@@ -161,8 +162,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
 				NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
 				if (checkUrl == NotUseAtr.USE) {
-					urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(application.getAppID(),
-							application.getAppType().value, application.getPrePostAtr().value, employee);
+					urlInfo = registerEmbededURL.registerEmbeddedForApp(
+							application.getAppID(), 
+							application.getAppType().value, 
+							application.getPrePostAtr().value, 
+							AppContexts.user().employeeId(), 
+							applicantID);
 				}
 			}
 			if (!Strings.isBlank(urlInfo)) {
@@ -178,7 +183,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					//｛3｝申請種類（名称） - 申請
 					appName,
 					//｛4｝申請者の氏名 - 申請
-					employeeAdapter.getEmployeeName(application.getEmployeeID()),
+					employeeAdapter.getEmployeeName(applicantID),
 					//｛5｝申請日付 - 申請
 					application.getAppDate().toLocalDate().toString(),
 					//｛6｝申請内容 - 申請

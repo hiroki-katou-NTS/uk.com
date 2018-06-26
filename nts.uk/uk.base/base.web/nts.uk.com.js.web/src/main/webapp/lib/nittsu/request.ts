@@ -469,6 +469,20 @@ module nts.uk.request {
             
         }
     }
+    
+    export function jumpFromDialogOrFrame(path: string, data?: any);
+    export function jumpFromDialogOrFrame(webAppId: WebAppId, path: string, data?: any) {
+        let self: nts.uk.ui.windows.ScreenWindow;
+        if(nts.uk.util.isInFrame()){
+            self = nts.uk.ui.windows.getSelf();
+        } else {
+            self = window.parent.nts.uk.ui.windows.getSelf();    
+        }
+        while(!self.isRoot){
+            self = self.parent;
+        }
+        self.globalContext.nts.uk.request.jump(webAppId, path, data);
+    }
 
 
     export function jump(path: string, data?: any);
