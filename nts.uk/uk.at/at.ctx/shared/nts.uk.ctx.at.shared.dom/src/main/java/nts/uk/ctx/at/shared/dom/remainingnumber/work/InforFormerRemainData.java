@@ -42,6 +42,7 @@ public class InforFormerRemainData {
 			return Optional.empty();	
 		}
 		OccurrenceUseDetail outputData = new OccurrenceUseDetail();
+		outputData.setWorkTypeAtr(workTypeClass);
 		//勤務種類別残数情報をチェックする
 		if(inforData.getWorkTypeRemain().isPresent()) {
 			WorkTypeRemainInfor x = inforData.getWorkTypeRemain().get();
