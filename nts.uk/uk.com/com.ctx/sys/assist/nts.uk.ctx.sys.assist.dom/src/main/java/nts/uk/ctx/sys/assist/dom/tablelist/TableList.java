@@ -900,9 +900,4 @@ public class TableList extends DomainObject {
 		this.canNotBeOld = Optional.ofNullable(canNotBeOld);
 		this.supplementaryExplanation = Optional.ofNullable(supplementaryExplanation);
 	}
-	
-
-	
-	
-
 }

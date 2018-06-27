@@ -17,7 +17,7 @@ public class ServerZipFileTempService {
 	private ResultOfSavingRepository repoResultOfSaving;
 	@Inject
 	private ServerPreparationService serverPreparationService;
-	public String handleServerZipFile(String recoveryProcessingId, String storeProcessingId){
+	public ServerPrepareMng handleServerZipFile(String recoveryProcessingId, String storeProcessingId){
 		Optional<ResultOfSaving> optResultOfSaving = repoResultOfSaving.getResultOfSavingById(storeProcessingId);
 		if (optResultOfSaving.isPresent()) {
 			String fileId = optResultOfSaving.get().getFileId();
@@ -29,9 +29,7 @@ public class ServerZipFileTempService {
 					uploadFileName, doNotUpload, password, operatingCondition);
 			repoServerPrepare.add(serverPrepareMng);
 			// サーバー準備処理
-			//String msg = 
-					serverPreparationService.serverPreparationProcessing(serverPrepareMng);
-			//return msg;
+			return serverPreparationService.serverPreparationProcessing(serverPrepareMng);
 		}
 		return null;
 	}
