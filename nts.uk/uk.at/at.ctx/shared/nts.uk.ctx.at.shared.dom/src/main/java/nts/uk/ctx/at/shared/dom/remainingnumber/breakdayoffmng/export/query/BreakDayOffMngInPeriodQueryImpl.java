@@ -327,11 +327,12 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		for (InterimDayOffMng interimDayOffMng : lstDayoffMng) {
 			//アルゴリズム「休出と紐付けをしない代休を取得する」を実行する
 			Optional<InterimRemain> remainData = interimRemainRepo.getById(interimDayOffMng.getDayOffManaId());
-			BreakDayOffDetail outData = this.getNotTypeBreak(interimDayOffMng, remainData.get());
-			if(outData != null) {
-				lstOutput.add(outData);
-			}
-			
+			remainData.ifPresent(x -> {
+				BreakDayOffDetail outData = this.getNotTypeBreak(interimDayOffMng, remainData.get());
+				if(outData != null) {
+					lstOutput.add(outData);
+				}	
+			});
 		}
 		return lstOutput;
 	}
