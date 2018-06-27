@@ -40,9 +40,6 @@ public class PpemtPerInfoCtg extends UkJpaEntity implements Serializable {
 	@Column(name = "ABOLITION_ATR")
 	public int abolitionAtr;
 
-	@Basic(optional = false)
-	@Column(name = "CAN_ABOLITION")
-	public int canAbolition;
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoCtgPK;

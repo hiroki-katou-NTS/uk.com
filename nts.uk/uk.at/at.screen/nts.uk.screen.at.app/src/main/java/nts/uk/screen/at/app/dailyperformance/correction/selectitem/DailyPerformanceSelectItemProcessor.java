@@ -20,8 +20,13 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
@@ -81,6 +86,9 @@ public class DailyPerformanceSelectItemProcessor {
 	
 	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
+	
+	@Inject
+	private OptionalItemRepository optionalItemRepository;
 	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
@@ -175,8 +183,13 @@ public class DailyPerformanceSelectItemProcessor {
 					for (FormatDPCorrectionDto dto : lstFormat) {
 						// chia cot con code name cua AttendanceItemId chinh va
 						// set
-						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
+						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
+						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
+								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
+										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
+										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
+						lstHeader.add(DPHeaderDto.createSimpleHeader(companyId, ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
+								String.valueOf(dto.getColumnWidth()) + PX, mapDP, optionalItemOpt, optionalItemAtrOpt));
 					}
 					result.setLstHeader(lstHeader);
 					// result.setLstSheet(lstSheet);
@@ -217,8 +230,13 @@ public class DailyPerformanceSelectItemProcessor {
 					result.addColumnsToSheet(lstFormat, mapDP, true);
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
-						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
+						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
+						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
+								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
+										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
+										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
+						lstHeader.add(DPHeaderDto.createSimpleHeader(companyId, ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
+								String.valueOf(dto.getColumnWidth()) + PX, mapDP, optionalItemOpt, optionalItemAtrOpt));
 					}
 					result.setLstHeader(lstHeader);
 				}
@@ -492,7 +510,7 @@ public class DailyPerformanceSelectItemProcessor {
 							if(value.equals("")){
 								value = TextResource.localize("KDW003_82");
 							}else{
-								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.valueOf(item.getTypeGroup()).value, new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(), data.getDate(), value));
+								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.valueOf(item.getTypeGroup()).value, new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(), data.getDate(), value, "", null, null));
 								//CodeName codeName = null;
 								value = (codeName == null) ? TextResource.localize("KDW003_81") : codeName.getName();
 							}

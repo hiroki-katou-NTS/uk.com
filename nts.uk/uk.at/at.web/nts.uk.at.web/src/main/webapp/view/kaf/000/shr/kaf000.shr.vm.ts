@@ -305,7 +305,48 @@ module nts.uk.at.view.kaf000.shr{
                 }
             }
             
-            public static openDialogKDL030(data: string): void {
+            public static displayMailResultKAF000(data: ProcessResult): void {
+                let autoSuccessMail = "", autoFailMail = "";
+                data.autoSuccessMail.forEach((value, index) => { 
+                    autoSuccessMail += value;
+                    if(index != data.autoSuccessMail.length-1){
+                        autoSuccessMail += ",";        
+                    }     
+                });
+                data.autoFailMail.forEach((value, index) => { 
+                    autoFailMail += value;
+                    if(index != data.autoFailMail.length-1){
+                        autoFailMail += ",";        
+                    }     
+                });
+                if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                            __viewContext.viewModel.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                                nts.uk.ui.block.clear();  
+                            });
+                        });
+                    });        
+                } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                        __viewContext.viewModel.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                            nts.uk.ui.block.clear(); 
+                        });
+                    });    
+                } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                        __viewContext.viewModel.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                            nts.uk.ui.block.clear();  
+                        });
+                    });    
+                } else {
+                    __viewContext.viewModel.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                        nts.uk.ui.block.clear(); 
+                    });      
+                }
+            }
+            
+            public static openDialogKDL030(data: string, self: any, appID: string): void {
                 let command = {appID: data};
                 setShared("KDL030_PARAM", command);
                 nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {

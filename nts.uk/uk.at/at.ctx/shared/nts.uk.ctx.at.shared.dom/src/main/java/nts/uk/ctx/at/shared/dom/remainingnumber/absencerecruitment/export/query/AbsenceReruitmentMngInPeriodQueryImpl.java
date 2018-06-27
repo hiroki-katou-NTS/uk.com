@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -14,11 +16,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreaterAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
@@ -39,6 +43,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	private PayoutManagementDataRepository confirmRecRepo;
 	@Inject
 	private InterimRemainRepository interimRepo;
+	@Inject
+	private InterimRemainOffMonthProcess createDataService;
 	@Override
 	public AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput) {
 		//アルゴリズム「未相殺の振休(確定)を取得する」を実行する
@@ -199,8 +205,22 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		List<AbsRecDetailPara> lstOutput = new ArrayList<>();
 		//INPUT．モードをチェックする
 		if(paramInput.isMode()) {
-			//TODO 暫定残数管理データを作成する ※暫定残数管理データを作成するアルゴリズムが出来たらリンクする
-			
+			//暫定残数管理データを作成する
+			Map<GeneralDate, DailyInterimRemainMngData> interimData = createDataService.monthInterimRemainData(paramInput.getCid(), paramInput.getSid(), paramInput.getDateData());
+			//メモリ上からドメインモデル「暫定振休管理データ」を取得する
+			if(!interimData.isEmpty()) {				
+				List<DailyInterimRemainMngData> lstRemainMngData = interimData.values().stream().collect(Collectors.toList());
+				for (DailyInterimRemainMngData x : lstRemainMngData) {
+					Optional<InterimAbsMng> optAbsMng = x.getInterimAbsData();
+					optAbsMng.ifPresent(y -> {
+						lstAbsMng.add(y);
+					});
+					List<InterimRemain> lstInterimCreate = x.getRecAbsData();
+					if(!lstInterimCreate.isEmpty()) {
+						lstInterimMng.addAll(lstInterimCreate);
+					}
+				}				
+			}
 		} else {
 			//ドメインモデル「暫定振休管理データ」を取得する
 			lstInterimMng =  interimRepo.getRemainBySidPriod(paramInput.getSid(), paramInput.getDateData(), RemainType.PAUSE);
@@ -260,9 +280,9 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				absMng.getRequeiredDays().v(),
 				unOffsetDays);
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
-		if(remainData.getCreatorAtr() == CreaterAtr.SCHEDULE) {
+		if(remainData.getCreatorAtr() == CreateAtr.SCHEDULE) {
 			dataAtr = MngDataStatus.SCHEDULE;
-		} else if (remainData.getCreatorAtr() == CreaterAtr.RECORD){
+		} else if (remainData.getCreatorAtr() == CreateAtr.RECORD){
 			dataAtr = MngDataStatus.RECORD;
 		}
 		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
@@ -282,7 +302,20 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		List<AbsRecDetailPara> lstOutput = new ArrayList<>();
 		//INPUT．モードをチェックする
 		if(paramInput.isMode()) {
-			//TODO 暫定残数管理データを作成するアルゴリズムが出来たらリンクする
+			//暫定残数管理データを作成する
+			Map<GeneralDate, DailyInterimRemainMngData> interimData = createDataService.monthInterimRemainData(paramInput.getCid(), paramInput.getSid(), paramInput.getDateData());
+			//メモリ上からドメインモデル「暫定振休管理データ」を取得する
+			if(!interimData.isEmpty()) {				
+				List<DailyInterimRemainMngData> lstRemainMngData = interimData.values().stream().collect(Collectors.toList());
+				for (DailyInterimRemainMngData x : lstRemainMngData) {
+					Optional<InterimRecMng> optRecMng = x.getRecData();
+					optRecMng.ifPresent(y -> {
+						lstRecMng.add(y);
+					});
+					List<InterimRemain> lstInterimCreate = x.getRecAbsData();
+					lstInterimMng.addAll(lstInterimCreate);
+				}				
+			}
 			
 		} else {
 			//ドメインモデル「暫定振出管理データ」を取得する
@@ -346,9 +379,9 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				Optional.empty());
 		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
-		if(remainData.getCreatorAtr() == CreaterAtr.SCHEDULE) {
+		if(remainData.getCreatorAtr() == CreateAtr.SCHEDULE) {
 			dataAtr = MngDataStatus.SCHEDULE;
-		} else if (remainData.getCreatorAtr() == CreaterAtr.RECORD){
+		} else if (remainData.getCreatorAtr() == CreateAtr.RECORD){
 			dataAtr = MngDataStatus.RECORD;
 		}
 		AbsRecDetailPara outputData = new AbsRecDetailPara(remainData.getSID(),
