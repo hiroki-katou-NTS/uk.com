@@ -145,8 +145,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 
 				// パラメータ.年休残数をチェックする
 				// (Check số phép còn lại trong param -パラメータ.年休残数)
-				checkEmployeeListId(asyncTask, employeeListResult.get(i), command.getMaxDay(), outputErrorInfoCommand,
-						yearlyHolidaysTimeRemainingImport);
+				checkMaxDayEmployeeList(asyncTask, employeeListResult.get(i), command.getMaxDay(),
+						outputErrorInfoCommand, yearlyHolidaysTimeRemainingImport);
 				if (asyncTask.hasBeenRequestedToCancel()) {
 					asyncTask.finishedAsCancelled();
 					break;
@@ -172,19 +172,14 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
 				excelInforCommand.setName(employeeRecordImport.getBusinessName());
 				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate().toString());
-				// GeneralDate temDate9999 = GeneralDate.fromString("99991231",
-				// "YYYY/MM/DD");
 				excelInforCommand.setDateEnd("9999/12/31".equals(employeeRecordImport.getRetiredDate().toString()) ? ""
 						: employeeRecordImport.getRetiredDate().toString());
-
 				excelInforCommand
 						.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay().toString());
 				excelInforCommand.setDateTargetRemaining(command.getDate().toString());
 				excelInforCommand.setDateAnnualRetirement(
 						yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime());
 				excelInforCommand.setDateAnnualRest(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining());
-				// excelInforCommand.setNumberOfWorkTypeUsedImport(dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports());
-				// excelInforCommand.setPlannedVacationListCommand(plannedVacationList);
 				excelInforList.add(excelInforCommand);
 
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
@@ -215,8 +210,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				asyncTask.finishedAsCancelled();
 				return;
 			}
-
 		}
+		// push list err
 		if (outputErrorInfoCommand.size() > 0) {
 			// エラーがあった場合
 			for (int i = 0; i < outputErrorInfoCommand.size(); i++) {
@@ -344,27 +339,25 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	 * @param employeeCheckMaxDay
 	 * @param employeeListResult
 	 */
-	private void checkEmployeeListId(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask,
-			EmployeeSearchCommand employee, Double maxDay,
-			List<OutputErrorInfoCommand> outputErrorInfoCommand,
+	private void checkMaxDayEmployeeList(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask,
+			EmployeeSearchCommand employee, Double maxDay, List<OutputErrorInfoCommand> outputErrorInfoCommand,
 			List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport) {
-			if (asyncTask.hasBeenRequestedToCancel()) {
-				asyncTask.finishedAsCancelled();
-				return;
-			}
-			if (maxDay != null) {
-					if (yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining().compareTo(maxDay) >= 0) {
-						// 取得した年休残数 ≧ パラメータ.年休残数
-						// パラメータ.処理人数に＋１加算する
-						OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
-						outputErrorInfo.setEmployeeCode(employee.getEmployeeCode());
-						outputErrorInfo.setEmployeeName(employee.getEmployeeName());
-						outputErrorInfo.setErrorMessage(MSG_1316);
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			asyncTask.finishedAsCancelled();
+			return;
+		}
+		if (maxDay != null) {
+			if (yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining().compareTo(maxDay) >= 0) {
+				// 取得した年休残数 ≧ パラメータ.年休残数
+				// パラメータ.処理人数に＋１加算する
+				OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
+				outputErrorInfo.setEmployeeCode(employee.getEmployeeCode());
+				outputErrorInfo.setEmployeeName(employee.getEmployeeName());
+				outputErrorInfo.setErrorMessage(MSG_1316);
 
-						outputErrorInfoCommand.add(outputErrorInfo);
-					}
+				outputErrorInfoCommand.add(outputErrorInfo);
 			}
-		
+		}
 
 	}
 
