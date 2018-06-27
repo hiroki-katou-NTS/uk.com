@@ -127,6 +127,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = attendanceRecExpSetRepo
 				.getAttendanceRecExpSet(companyId, request.getLayout());
 
+		List<Employee> unknownEmployeeList = new ArrayList<>();
 		List<WorkType> workTypeList = workTypeRepo.findByCompanyId(companyId);
 
 		List<WorkTimeSetting> workTimeList = workTimeRepo.findByCompanyId(companyId);
@@ -136,9 +137,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			WkpHistImport hist = workplaceAdapter.findWkpBySid(e.getEmployeeId(),
 					GeneralDate.ymd(request.getEndDate().year(), request.getEndDate().month(),
 							request.getEndDate().yearMonth().lastDateInMonth()));
-			e.setWorkplaceId(hist.getWorkplaceId());
-			e.setWorkplaceCode(hist.getWorkplaceCode());
-			wplIds.add(hist.getWorkplaceId());
+			if (hist == null) {
+				unknownEmployeeList.add(e);
+			} else {
+				e.setWorkplaceId(hist.getWorkplaceId());
+				e.setWorkplaceCode(hist.getWorkplaceCode());
+				wplIds.add(hist.getWorkplaceId());
+			}
 		}
 
 		List<WorkplaceConfigInfo> wplConfigInfoList = wplConfigInfoRepo
@@ -156,11 +161,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 		});
 
-		if (hierarchyList.isEmpty()) {
-			exceptions.addMessage("Msg_1269");
-			exceptions.throwExceptions();
-		}
-
 		hierarchyList.sort(Comparator.comparing(WorkplaceHierarchy::getHierarchyCode));
 
 		wplIds = hierarchyList.stream().map(item -> item.getWorkplaceId()).distinct().collect(Collectors.toList());
@@ -173,6 +173,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		});
 
+		if(!unknownEmployeeList.isEmpty()){
+			employeeListAfterSort.addAll(unknownEmployeeList);
+		}
 		employeeListAfterSort.forEach(employee -> {
 
 			// get Closure
@@ -1083,6 +1086,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		}
 
 		return null;
+	}
+
+	private Boolean findInListEmployee(Employee e, List<Employee> list) {
+		for (Employee item : list) {
+			if (item.getEmployeeId().equals(e.employeeCode))
+				return true;
+		}
+		return false;
 	}
 
 	private String convertMinutesToHours(String minutes) {
