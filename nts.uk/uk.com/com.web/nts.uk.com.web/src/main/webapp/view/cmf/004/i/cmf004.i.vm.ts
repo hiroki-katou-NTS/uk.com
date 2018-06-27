@@ -123,7 +123,16 @@ module nts.uk.com.view.cmf004.i.viewmodel {
         }
 
         operatingCondition() {
+            console.log("Stop follow processing import");
+            clearInterval(self.interval);
+            //Breark Follow Processing
+            breakFollow(){
+                let recoveryProcessingId = self.recoveryProcessingId;
+                service.breakFollowProcessing(recoveryProcessingId).done((res) => {
 
+                }).fail((err) => {
+                });
+            }
         }
 
         // close popup

@@ -341,6 +341,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             if (recoveryPeriod() == PeriodEnum.DAY) {
                 return moment.utc(dateFormat).format("YYYY/MM/DD");
             }
+            if (recoveryPeriod() == PeriodEnum.FULLTIME) {
+                return moment.utc(dateFormat).format("YYYY/MM/DD");
+            }
             if (recoveryPeriod() == PeriodEnum.MONTH) {
                 return nts.uk.time.formatYearMonth(parseInt(dateFormat));
             }
