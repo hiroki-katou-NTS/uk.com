@@ -16858,6 +16858,7 @@ var nts;
                         var textalign = this.editorOption.textalign;
                         var width = this.editorOption.width;
                         var setValOnRequiredError = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
+                        var constraint = !_.isNil(data.constraint) ? ko.unwrap(data.constraint) : undefined;
                         $input.data("setValOnRequiredError", setValOnRequiredError);
                         disable.saveDefaultValue($input, option.defaultValue);
                         if (valueChanging.isChangingValueByApi($input, value)) {
@@ -16890,9 +16891,14 @@ var nts;
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
                             $input.width(width);
-                        // Format value
-                        var formatted = $input.ntsError('hasError') ? value : this.getFormatter(data).format(value);
-                        $input.val(formatted);
+                        if (constraint !== "StampNumber" && constraint !== "EmployeeCode") {
+                            // Format value
+                            var formatted = $input.ntsError('hasError') ? value : this.getFormatter(data).format(value);
+                            $input.val(formatted);
+                        }
+                        else {
+                            $input.val(value);
+                        }
                         //            $input.trigger("validate");
                     };
                     EditorProcessor.prototype.getDefaultOption = function () {
@@ -23106,20 +23112,23 @@ var nts;
                                         return true;
                                     }
                                 });
-                                setDataSource($grid, options, source);
+                                setDataSource($grid, source, options);
                             }, 100);
                         });
                         $grid.on("checknewitem", function (evt) {
                             return false;
                         });
-                        setDataSource($grid, options, options.dataSource);
+                        setDataSource($grid, options.dataSource, options);
                         if (!_.isNil(options.value) && !_.isEmpty(options.value)) {
                             setValue($grid, options.value.constructor === Array ? options.value : [options.value]);
                         }
                     };
-                    function setDataSource($grid, options, sources) {
+                    function setDataSource($grid, sources, options) {
                         if (!sources)
                             return;
+                        if (!options) {
+                            options = $grid.igGrid("option");
+                        }
                         var optionsValue = options.primaryKey !== undefined ? options.primaryKey : options.optionsValue;
                         var gridSource = $grid.igGrid('option', 'dataSource');
                         if (String($grid.attr("filtered")) === "true") {
@@ -23796,7 +23805,9 @@ var nts;
                                     return false;
                                 if (uk.util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target)))
                                     return;
-                                $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index, utils.isFixedColumnCell(selectedCell, utils.getVisibleColumnsMap($(evt.target))));
+                                if (!evt.currentTarget.classList.contains("ui-iggrid-selectedcell")) {
+                                    $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index, utils.isFixedColumnCell(selectedCell, utils.getVisibleColumnsMap($(evt.target))));
+                                }
                                 return false;
                             }
                             else if (utils.disabled($(evt.currentTarget)))
@@ -25022,7 +25033,21 @@ var nts;
                                 cellFormatter.rowStates[rowId] = colState;
                             }
                             var selectedSheet = getSelectedSheet($grid);
-                            if (selectedSheet && !_.includes(selectedSheet.columns, key)) {
+                            var features = $grid.igGrid("option", "features");
+                            var columns;
+                            if (selectedSheet) {
+                                columns = selectedSheet.columns;
+                            }
+                            if (features) {
+                                var colFixFt = feature.find(features, feature.COLUMN_FIX);
+                                if (colFixFt) {
+                                    var fixedCols = _.filter(colFixFt.columnSettings, function (c) { return c.isFixed; }).map(function (c) { return c.columnKey; });
+                                    if (selectedSheet) {
+                                        columns = _.concat(selectedSheet.columns, fixedCols);
+                                    }
+                                }
+                            }
+                            if (selectedSheet && !_.includes(columns, key)) {
                                 var options = $grid.data(internal.GRID_OPTIONS);
                                 var stateFt = feature.find(options.ntsFeatures, feature.CELL_STATE);
                                 if (stateFt) {

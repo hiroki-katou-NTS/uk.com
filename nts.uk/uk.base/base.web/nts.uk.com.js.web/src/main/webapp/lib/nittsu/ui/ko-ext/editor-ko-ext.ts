@@ -173,6 +173,7 @@ module nts.uk.ui.koExtentions {
             var textalign: string = this.editorOption.textalign;
             var width: string = this.editorOption.width;
             var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
+            let constraint = !_.isNil(data.constraint) ? ko.unwrap(data.constraint) : undefined;
             $input.data("setValOnRequiredError", setValOnRequiredError);
             
             disable.saveDefaultValue($input, option.defaultValue);
@@ -205,9 +206,14 @@ module nts.uk.ui.koExtentions {
             $input.css('text-align', textalign);
             if (width.trim() != "")
                 $input.width(width);
-            // Format value
-            var formatted = $input.ntsError('hasError') ? value : this.getFormatter(data).format(value);
-            $input.val(formatted);
+            
+            if (constraint !== "StampNumber" && constraint !== "EmployeeCode") {
+                // Format value
+                var formatted = $input.ntsError('hasError') ? value : this.getFormatter(data).format(value);
+                $input.val(formatted);
+            } else {
+                $input.val(value);
+            }
 //            $input.trigger("validate");
         }
 
