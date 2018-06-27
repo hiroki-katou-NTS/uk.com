@@ -21,7 +21,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         //ScreenB
         startDateString: KnockoutObservable<string> = ko.observable("");
         endDateString: KnockoutObservable<string> = ko.observable("");
-        dataRecoverySelection: KnockoutObservable<DataRecoverySelection> = ko.observable(new DataRecoverySelection(1, 0, {}, [], ""));
+        dataRecoverySelection: KnockoutObservable<DataRecoverySelection> = ko.observable(new DataRecoverySelection(1, 0, {}, [], null));
         //upload file
         fileId: KnockoutObservable<string> = ko.observable(null);
         fileName: KnockoutObservable<string> = ko.observable(null);

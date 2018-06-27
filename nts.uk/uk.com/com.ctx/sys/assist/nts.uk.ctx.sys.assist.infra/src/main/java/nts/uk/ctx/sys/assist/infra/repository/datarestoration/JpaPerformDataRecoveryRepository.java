@@ -13,14 +13,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.assist.dom.category.SystemUsability;
-import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
-import nts.uk.ctx.sys.assist.infra.entity.category.SspmtCategory;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtPerformDataRecovery;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtRestorationTarget;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtTarget;
@@ -28,6 +24,8 @@ import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
 
 @Stateless
 public class JpaPerformDataRecoveryRepository extends JpaRepository implements PerformDataRecoveryRepository {
+
+	private static final String SELECT_TABLE_LIST_BY_DATA_RECOVERY_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId";
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.tableListPk.categoryId =:categoryId AND storageRangeSaved =:storageRangeSaved ORDER BY DESC tableNo";
 
@@ -49,9 +47,12 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static final String SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID = "SELECT st FROM SspmtRestorationTarget st WHERE st.restorationTargetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
 
-	private static final String DELETE_BY_LIST_ID_EMPLOYEE = "DELETE FROM SspmtTarget t WHERE t.targetPk.dataRecoveryProcessId =:dataRecoveryProcessId NOT IN :employeeIdList ";
-	
-	
+	private static final String DELETE_BY_LIST_ID_EMPLOYEE = "DELETE FROM SspmtTarget t WHERE t.targetPk.dataRecoveryProcessId =:dataRecoveryProcessId AND t.targetPk.sid NOT IN :employeeIdList";
+
+	private static final String UPDATE_BY_LIST_CATEGORY_ID = "UPDATE SspmtTableList t SET t.selectionTargetForRes =:selectionTarget  WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.tableListPk.categoryId in :listCheckCate ";
+
+	private static final String UPDATE_DATE_FROM_TO_BY_LIST_CATEGORY_ID = "UPDATE SspmtTableList t SET t.saveDateFrom =:startOfPeriod, t.saveDateTo =:endOfPeriod  WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.tableListPk.categoryId =:checkCate ";
+
 	@Override
 	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
 		List<SspmtTarget> targetData = this.queryProxy()
@@ -221,21 +222,46 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	private static TableList fromDomain(Object[] objectSurfaceItem) {
 
 		return new TableList(objectSurfaceItem[0].toString(), objectSurfaceItem[1].toString(),
-				objectSurfaceItem[2].toString(), objectSurfaceItem[3].toString(),
-				objectSurfaceItem[4].toString(),
-				objectSurfaceItem[5].toString(),
-				Integer.parseInt(objectSurfaceItem[6].toString()), Integer.parseInt(objectSurfaceItem[7].toString()),
-				Integer.parseInt(objectSurfaceItem[8].toString()), objectSurfaceItem[9].toString(),
-				Integer.parseInt(objectSurfaceItem[10].toString()), objectSurfaceItem[11].toString());
+				objectSurfaceItem[2].toString(), objectSurfaceItem[3].toString(), objectSurfaceItem[4].toString(),
+				objectSurfaceItem[5].toString(), Integer.parseInt(objectSurfaceItem[6].toString()),
+				Integer.parseInt(objectSurfaceItem[7].toString()), Integer.parseInt(objectSurfaceItem[8].toString()),
+				objectSurfaceItem[9].toString(), Integer.parseInt(objectSurfaceItem[10].toString()),
+				objectSurfaceItem[11].toString());
 	}
-
-
 
 	@Override
-	public int deleteEmployeeDataRecovery(String dataRecoveryProcessId, List<String> employeeIdList) {
-		return this.getEntityManager().createQuery(DELETE_BY_LIST_ID_EMPLOYEE, SspmtTarget.class).setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
+	public void deleteEmployeeDataRecovery(String dataRecoveryProcessId, List<String> employeeIdList) {
+		this.getEntityManager().createQuery(DELETE_BY_LIST_ID_EMPLOYEE, SspmtTarget.class)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
 				.setParameter("employeeIdList", employeeIdList).executeUpdate();
-				
-		
+
 	}
+
+	@Override
+	public List<TableList> getByDataRecoveryId(String dataRecoveryProcessId) {
+		List<SspmtTableList> listTable = this.getEntityManager()
+				.createQuery(SELECT_TABLE_LIST_BY_DATA_RECOVERY_QUERY_STRING, SspmtTableList.class)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getResultList();
+		return listTable.stream().map(item -> item.toDomain()).collect(Collectors.toList());
+	}
+
+	@Override
+	public void updateCategorySelect(int selectionTarget, String dataRecoveryProcessId, List<String> listCheckCate) {
+		// TODO Auto-generated method stub UPDATE_BY_LIST_CATEGORY_ID
+		this.getEntityManager().createQuery(UPDATE_BY_LIST_CATEGORY_ID, SspmtTarget.class)
+				.setParameter("selectionTarget", selectionTarget)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
+				.setParameter("listCheckCate", listCheckCate).executeUpdate();
+	}
+
+	@Override
+	public void updateCategorySelectByDateFromTo(String startOfPeriod, String endOfPeriod, String dataRecoveryProcessId,
+			String checkCate) {
+		// TODO Auto-generated method stub
+		this.getEntityManager().createQuery(UPDATE_DATE_FROM_TO_BY_LIST_CATEGORY_ID, SspmtTarget.class)
+				.setParameter("startOfPeriod", startOfPeriod).setParameter("endOfPeriod", endOfPeriod)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).setParameter("checkCate", checkCate)
+				.executeUpdate();
+	}
+
 }
