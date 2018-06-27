@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,6 +44,9 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			InterimRemainCreateInfor detailData) {
 		//残数作成元情報を作成する
 		InforFormerRemainData formerRemainData = this.createInforFormerRemainData(cid, sid, baseDate, detailData, dayOffTimeIsUse);
+		if(!formerRemainData.getWorkTypeRemain().isPresent()) {
+			return null;
+		}
 		//残数作成元情報から暫定残数管理データを作成する
 		DailyInterimRemainMngData createDataInterimRemain = this.createDataInterimRemain(formerRemainData);
 		return createDataInterimRemain;
@@ -252,7 +256,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 
 	@Override
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
-		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData();
+		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		//振休
 		outputData = createEachData.createInterimAbsData(inforData, WorkTypeClassification.Pause, outputData);
 		//代休
