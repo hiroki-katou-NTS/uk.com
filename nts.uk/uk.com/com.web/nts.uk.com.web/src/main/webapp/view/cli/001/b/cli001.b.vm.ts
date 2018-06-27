@@ -14,8 +14,8 @@ module cli001.b.viewmodel {
             this.items = ko.observableArray([]);
             this.columns = ko.observableArray([
                 { key: 'userID', hidden: true },
-                { headerText: getText('CLI001_21'), key: 'loginID', width: 100 },
-                { headerText: getText('CLI001_22'), key: 'userName', width: 150 },
+                { headerText: getText('CLI001_21'), key: 'loginID', width: 110 },
+                { headerText: getText('CLI001_22'), key: 'userName', width: 170 },
             ]);
             this.searchInput = ko.observable();
             this.currentId = ko.observable();
