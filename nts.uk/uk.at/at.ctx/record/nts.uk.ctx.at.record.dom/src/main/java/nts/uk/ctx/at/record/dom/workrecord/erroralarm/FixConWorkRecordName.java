@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author tutk
  *
  */
-@StringMaxLength(10)
+@StringMaxLength(20)
 public class FixConWorkRecordName extends StringPrimitiveValue<FixConWorkRecordName> {
 
 	public FixConWorkRecordName(String rawValue) {

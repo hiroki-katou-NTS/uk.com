@@ -50,7 +50,7 @@ public class CheckBeforeRegisterHolidayWork {
 
 		// Create Application
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason());
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
 
 		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
 		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
@@ -138,7 +138,7 @@ public class CheckBeforeRegisterHolidayWork {
 
 		// Create Application
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason());
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
 
 		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
 		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
