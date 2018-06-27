@@ -17,6 +17,10 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorChe
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
 import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
@@ -59,6 +63,16 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	
 	@Inject
 	private CalculationErrorCheckService calculationErrorCheckService;
+	
+	//↓以下任意項目の計算の為に追加
+	@Inject
+	private OptionalItemRepository optionalItemRepository;
+	
+	@Inject
+	private FormulaRepository formulaRepository;
+	
+	@Inject
+	private EmpConditionRepository empConditionRepository;
 
 	
 	@Override
@@ -99,6 +113,19 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 //		//労働制
 //		//雇用コード
 //		//雇用ID
+		
+		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
+		String companyId = AppContexts.user().companyId();
+		//AggregateRoot「任意項目」取得
+		List<OptionalItem> optionalItems = optionalItemRepository.findAll(companyId);
+		companyCommonSetting.setOptionalItems(optionalItems);
+		//任意項目NOのlist作成
+		List<Integer> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList());
+		//計算式を取得
+		companyCommonSetting.setFormulaList(formulaRepository.find(companyId));
+		//適用する雇用条件の取得
+		companyCommonSetting.setEmpCondition(empConditionRepository.findAll(companyId, optionalItemNoList));
+		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
 		
 		for(IntegrationOfDaily nowIntegration:integrationOfDaily) {
 

@@ -45,6 +45,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
         minTimeValueMon: KnockoutObservable<number> = ko.observable(0);
         maxTimeValueMon: KnockoutObservable<number> = ko.observable(0);
+        
+        modeScreen : KnockoutObservable<number> = ko.observable(0);
 
         constructor(isDoNothing) {
             let self = this;
@@ -87,6 +89,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     break;
                 case sharemodel.CATEGORY.MONTHLY:
+                    self.modeScreen(1);
                     //monthly
                     self.listEnumRoleType = ko.observableArray(__viewContext.enums.TypeMonCheckItem);
                     self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
@@ -655,42 +658,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 });
         }
 
-        /**
-         * open dialog for select working time zone
-         */
-        /*
-        btnSettingBA2_2_click() {
-            let self = this;
-
-            block.invisible();
-            let lstSelectedCode = self.getListAttendanceItemCode();
-            windows.setShared("Multiple", true);
-            //all possible items
-            windows.setShared("AllAttendanceObj", self.listAllAttdItem);
-            //selected items
-            windows.setShared("SelectedAttendanceId", lstSelectedCode);
-            windows.sub.modal('/view/kdl/021/a/index.xhtml',
-                    {dialogClass: 'no-close'}).onClosed(function(): any {
-              //get data from share window
-                let listItems = windows.getShared('selectedChildAttendace');
-                if (listItems != null && listItems != undefined) {
-                    self.setListAttendanceItemCode(listItems);
-                    // get name
-                    self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
-                        self.displayAttendanceItemSelections_BA2_3(data);
-                    });
-                    
-                   let group1 = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1();
-                    let listErAlAtdItemCondition = group1.lstErAlAtdItemCon();
-                    let erAlAtdItemCondition = listErAlAtdItemCondition[0];
-                    self.comparisonRange().comparisonOperator(erAlAtdItemCondition.compareOperator());
-                    self.comparisonRange().minValue(erAlAtdItemCondition.compareStartValue());
-                    self.comparisonRange().maxValue(erAlAtdItemCondition.compareEndValue());
-                }
-                block.clear();
-            });
-        }
-        */
+        
         //openSelectAtdItemDialogTarget() {
         btnSettingBA2_2_click() {
             let self = this;
@@ -927,7 +895,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
          */
         btnDecision() {
             let self = this;
-            $('.nts-input').trigger("validate");
+            $('.nts-input').filter(":enabled").trigger("validate");
             if (errors.hasError() === true) {
                 nts.uk.ui.errors.show();
                 return;

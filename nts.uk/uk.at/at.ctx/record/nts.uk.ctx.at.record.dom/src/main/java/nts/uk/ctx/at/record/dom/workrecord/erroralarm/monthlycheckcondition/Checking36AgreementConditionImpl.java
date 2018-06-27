@@ -87,11 +87,11 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 		
 		//月別実績を取得するa
 		//get closureId and closureDate
-		ClosureDate aa = new ClosureDate(31, true);
 		ClosureId closureId = EnumAdaptor.valueOf(1, ClosureId.class);
-		Optional<AttendanceTimeOfMonthly> attdTime =  attdTimeOfMonthlyRepo.find(employeeId, yearMonth,closureId, aa);
+		
+		List<AttendanceTimeOfMonthly> attdTime =  attdTimeOfMonthlyRepo.findByYMAndClosureIdOrderByStartYmd(employeeId, yearMonth, closureId);
 		MonthlyRecordToAttendanceItemConverter monthlyRecord = attendanceItemConvertFactory.createMonthlyConverter();
-		Optional<ItemValue> itemValue = monthlyRecord.withAttendanceTime(attdTime.get()).convert(202);
+		Optional<ItemValue> itemValue = monthlyRecord.withAttendanceTime(attdTime.get(0)).convert(202);
 		
 		
 		
