@@ -126,7 +126,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			StringBuffer outCompressedFileName = new StringBuffer();
 			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
 
-			if (resultState == ResultState.NORMAL_END) {
+			if (resultState == ResultState.ABNORMAL_END) {
 				evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
 				return;
 			}
