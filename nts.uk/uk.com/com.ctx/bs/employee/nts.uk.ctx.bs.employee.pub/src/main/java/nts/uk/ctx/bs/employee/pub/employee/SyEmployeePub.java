@@ -117,4 +117,11 @@ public interface SyEmployeePub {
 	// RequestList377
 	EmployeeBasicExport getEmpBasicBySId(String sId);
 	
+	/**
+	 * RequestList 
+	 * @param sid
+	 * @return status of Employee
+	 */
+	StatusOfEmployeeExport getStatusOfEmployee(String sid);
+	
 }

@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
@@ -36,6 +38,9 @@ public class EmployeeInfoFinder {
 	@Inject
 	private UserSettingRepository userSettingRepo;
 	
+	@Inject
+	private StampCardEditingRepo stamCardEditRepo;
+	
 	private static final String JP_SPACE = "　";
 
 	public String generateEmplCode(String startLetters) {
@@ -56,8 +61,14 @@ public class EmployeeInfoFinder {
 
 	public String generateCardNo(String startLetters) {
 		String contractCode = AppContexts.user().contractCode();
+		String companyId = AppContexts.user().companyId();
 		startLetters = startLetters == null ? "" : startLetters;
-		Optional<String> lastCardNo = stampCardRepo.getLastCardNo(contractCode, startLetters);
+		Optional<StampCardEditing> _stamCardEdit = stamCardEditRepo.get(companyId);
+		if (!_stamCardEdit.isPresent()) {
+			return "";
+		}
+		int maxLengthCardNo = _stamCardEdit.get().getDigitsNumber().v();
+		Optional<String> lastCardNo = stampCardRepo.getLastCardNo(contractCode, startLetters, maxLengthCardNo);
 		if (!lastCardNo.isPresent()) {
 			return "";
 		}
@@ -87,29 +98,6 @@ public class EmployeeInfoFinder {
 		return "";
 	}
 	
-	public String getStampCardAfterLostFocusEmpCd(String newEmployeeCode) {
-		String employeeId = AppContexts.user().employeeId();
-		String companyCode = AppContexts.user().companyCode();
-		Optional<UserSetting> _userSetting = userSettingRepo.getUserSetting(employeeId);
-		if (!_userSetting.isPresent()) {
-			return "";
-		}
-		UserSetting userSetting = _userSetting.get();
-		switch (userSetting.getCardNoValType()) {
-		case BLANK:
-			return "";
-		case SAME_AS_EMP_CODE:
-			return newEmployeeCode;
-		case CPC_AND_EMPC:
-			return companyCode + newEmployeeCode;
-		case MAXVALUE:
-			return "";
-		case INIT_DESIGNATION:
-			return "";
-		}
-		return "";
-	}
-
 	/**
 	 * validate EmpInfo EA修正履歴 - No1159 EA修正履歴 - No1160 EA修正履歴 - No1161 EA修正履歴 -
 	 * No1162

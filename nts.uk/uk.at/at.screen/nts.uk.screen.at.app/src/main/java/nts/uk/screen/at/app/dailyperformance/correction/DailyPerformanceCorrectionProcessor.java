@@ -42,6 +42,9 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByE
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
@@ -53,6 +56,8 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
@@ -169,6 +174,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
+	
+	@Inject
+	private OptionalItemRepository optionalItemRepository;
 	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
@@ -765,7 +773,7 @@ public class DailyPerformanceCorrectionProcessor {
 			if (disableSignMap != null) {
 				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
 						|| x.getReflectState() == ReflectedState_New.REMAND.value)
-						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.ABSENCE_APPLICATION.value;
+						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.OVER_TIME_APPLICATION.value;
 				if (disableSignMap.containsKey(key)) {
 					disableSignMap.put(key, disableSignMap.get(key) || disable);
 				} else {
@@ -1193,6 +1201,7 @@ public class DailyPerformanceCorrectionProcessor {
 	 */
 	public DPControlDisplayItem getItemIdNames(DisplayItem disItem, boolean showButton) {
 		DPControlDisplayItem result = new DPControlDisplayItem();
+		String companyId = AppContexts.user().companyId();
 		result.setFormatCode(disItem.getFormatCode());
 		result.setSettingUnit(disItem.isSettingUnit());
 		List<DPAttendanceItem> lstAttendanceItem = new ArrayList<>();
@@ -1212,11 +1221,17 @@ public class DailyPerformanceCorrectionProcessor {
 		result.createSheets(disItem.getLstSheet());
 		mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.addColumnsToSheet(lstFormat, mapDP, showButton);
+		
+		Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
+		Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
+				: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
+						.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
+						.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
 		for (FormatDPCorrectionDto dto : lstFormat) {
-			lstHeader.add(DPHeaderDto.createSimpleHeader(
+			lstHeader.add(DPHeaderDto.createSimpleHeader(companyId,
 					mergeString(ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
-					String.valueOf(dto.getColumnWidth()) + PX, mapDP));
+					String.valueOf(dto.getColumnWidth()) + PX, mapDP, optionalItemOpt, optionalItemAtrOpt));
 		}
 		
 		lstHeader.add(DPHeaderDto.addHeaderSubmitted());

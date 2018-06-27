@@ -19,15 +19,11 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -370,7 +366,7 @@ public class HolidayWorkTimeSheet{
 		int totalFrameTime =  useTimeAtr.isTime()
 								?afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getTime().v()).collect(Collectors.summingInt(tc -> tc))
 								:afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
-		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
+		if(new AttendanceTime(totalFrameTime).greaterThanOrEqualTo(periodTime)) {
 			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
 		}
 		else {
@@ -387,7 +383,7 @@ public class HolidayWorkTimeSheet{
 		AttendanceTime transRestAbleTime = restTransAbleTime;
 		for(HolidayWorkFrameTime holidayWorkFrameTime : afterCalcUpperTimeList) {
 
-			transAbleTime = calcTransferTime(useTimeAtr, holidayWorkFrameTime, transAbleTime, transRestAbleTime);
+			transAbleTime = calcTransferTime(useTimeAtr, holidayWorkFrameTime, transRestAbleTime);
 			//振替
 			val overTime = useTimeAtr.isTime()?holidayWorkFrameTime.getHolidayWorkTime().get().getTime().minusMinutes(transAbleTime.valueAsMinutes())
 											  :holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().minusMinutes(transAbleTime.valueAsMinutes());
@@ -407,14 +403,14 @@ public class HolidayWorkTimeSheet{
 	 * @param transRestAbleTime
 	 * @return
 	 */
-	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkFrameTime, AttendanceTime transAbleTime, AttendanceTime transRestAbleTime) {
+	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkFrameTime,AttendanceTime transRestAbleTime) {
 		if(useTimeAtr.isTime()) {
 			return holidayWorkFrameTime.getHolidayWorkTime().get().getTime().greaterThanOrEqualTo(transRestAbleTime)
 																		  ?transRestAbleTime
 																		  :holidayWorkFrameTime.getHolidayWorkTime().get().getTime();
 		}
 		else {
-			return transAbleTime = holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().greaterThanOrEqualTo(transRestAbleTime)
+			return holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().greaterThanOrEqualTo(transRestAbleTime)
 					  													  ?transRestAbleTime
 					  													  :holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime();
 		}

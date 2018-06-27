@@ -9,11 +9,9 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.shr.com.i18n.TextResource;
@@ -85,9 +83,13 @@ public class DPHeaderDto {
 		this.group = new ArrayList<>();
 	}
 
-	public static DPHeaderDto createSimpleHeader(String key, String width, Map<Integer, DPAttendanceItem> mapDP) {
+	public static DPHeaderDto createSimpleHeader(String companyId, String key, String width,
+			Map<Integer, DPAttendanceItem> mapDP, Map<Integer, Integer> optionalItemOpt,
+			Map<Integer, OptionalItemAtr> optionalItemAtr) {
 		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, "", false, "", false, false);
+		// optionalRepo.findByListNos(companyId, optionalitemNos)
 		DPAttendanceItem item = mapDP.get(Integer.parseInt(getCode(key)));
+		setOptionalItemAtr(item, optionalItemOpt, optionalItemAtr);
 		int attendanceAtr = item.getAttendanceAtr();
 		if (attendanceAtr == DailyAttendanceAtr.Code.value) {
 			List<DPHeaderDto> groups = new ArrayList<>();
@@ -139,6 +141,21 @@ public class DPHeaderDto {
 		return dto;
 	}
 
+	private static void setOptionalItemAtr(DPAttendanceItem item, Map<Integer, Integer> optionalItemOpt,
+			Map<Integer, OptionalItemAtr> optionalItemAtr){
+		Integer itemNo = optionalItemOpt.get(item.getId());
+		if(itemNo != null){
+			OptionalItemAtr atr = optionalItemAtr.get(itemNo);
+			if(atr != null && atr.value == OptionalItemAtr.TIME.value){
+				item.setAttendanceAtr(DailyAttendanceAtr.Time.value);
+			}else if(atr != null && atr.value == OptionalItemAtr.NUMBER.value){
+				item.setAttendanceAtr(DailyAttendanceAtr.NumberOfTime.value);
+			}else if(atr != null && atr.value == OptionalItemAtr.AMOUNT.value){
+				item.setAttendanceAtr(DailyAttendanceAtr.AmountOfMoney.value);
+			}
+		}
+	}
+	
 	public static DPHeaderDto addHeaderApplication() {
 		return new DPHeaderDto(TextResource.localize("KDW003_63"), "Application", "String", "90px", "", false, "Button",
 				false, false);
@@ -148,10 +165,10 @@ public class DPHeaderDto {
 		return new DPHeaderDto(TextResource.localize("KDW003_62"), "Submitted", "String", "90px", "", false, "Label",
 				false, false);
 	}
-	
+
 	public static DPHeaderDto addHeaderApplicationList() {
-		return new DPHeaderDto(TextResource.localize("KDW003_110"), "ApplicationList", "String", "90px", "", false, "ButtonList",
-				false, false);
+		return new DPHeaderDto(TextResource.localize("KDW003_110"), "ApplicationList", "String", "90px", "", false,
+				"ButtonList", false, false);
 	}
 
 	private static String getCode(String key) {
@@ -185,12 +202,12 @@ public class DPHeaderDto {
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_33"), "employeeName", "String", "190px", "", false,
 				"Label", true, true));
 		lstHeader.add(new DPHeaderDto("", "picture-person", "String", "35px", "", false, "Image", true, true));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("承認"), "approval", "boolean", "35px", "", false,
-				"Checkbox", true, true));
+		lstHeader.add(new DPHeaderDto(TextResource.localize("承認"), "approval", "boolean", "35px", "", false, "Checkbox",
+				true, true));
 		return lstHeader;
 	}
 
-	private static String getPrimitiveName(DPAttendanceItem item){
+	private static String getPrimitiveName(DPAttendanceItem item) {
 		if (item.getTypeGroup() != null) {
 			switch (item.getTypeGroup()) {
 			case 1:
