@@ -195,6 +195,9 @@ module nts.uk.com.view.cmf003.f {
                     self.status(self.getStatusEnum(5));
                     $('#F3_3').focus();
                     
+                    // stop auto request to server
+                    clearInterval(self.interval);
+                    
                     // delete dataStorageMng of process when interrupt
                     let dataStorageMng = new DataStorageMng(self.storeProcessingId, 0, 0, 0, 0, 0);
                     service.deleteDataStorageMng(dataStorageMng).done(function(res: any) {
