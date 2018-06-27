@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,7 +27,7 @@ public interface FlowWorkSettingRepository {
 	 * @param domain the domain
 	 */
 	void add(FlowWorkSetting domain);
-	
+
 	/**
 	 * Update.
 	 *
@@ -41,4 +42,13 @@ public interface FlowWorkSettingRepository {
 	 * @param workTimeCode the work time code
 	 */
 	void remove(String companyId, String workTimeCode);
+
+	/**
+	 * Find by C id.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<FlowWorkSetting> findByCId(String companyId);
+
 }

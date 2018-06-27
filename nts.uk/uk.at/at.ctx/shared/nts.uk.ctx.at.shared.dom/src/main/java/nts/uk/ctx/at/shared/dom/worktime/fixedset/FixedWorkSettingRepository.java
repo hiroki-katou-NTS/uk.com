@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,4 +42,12 @@ public interface FixedWorkSettingRepository {
 	 * @return the optional
 	 */
 	Optional<FixedWorkSetting> findByKey(String companyId, String workTimeCode);
+	
+	/**
+	 * Find by C id.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<FixedWorkSetting> findByCId(String companyId);
 }
