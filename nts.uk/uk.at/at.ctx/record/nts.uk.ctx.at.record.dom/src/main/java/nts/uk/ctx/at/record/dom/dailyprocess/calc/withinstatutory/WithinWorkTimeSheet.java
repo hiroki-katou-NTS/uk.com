@@ -713,7 +713,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
 			   HolidayCalcMethodSet holidayCalcMethodSet, DailyUnit dailyUnit, Optional<WorkTimezoneCommonSet> commonSetting,
-			   WorkingConditionItem conditionItem,ManageReGetClass recordReget,Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+			   WorkingConditionItem conditionItem,ManageReGetClass recordReget,Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
 		return calcWorkTime(
 					premiumAtr,
 					calcActualTime,
@@ -733,7 +733,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				    holidayCalcMethodSet,
 				    dailyUnit,commonSetting,
 				    conditionItem,
-				    predetermineTimeSetByPersonInfo);
+				    predetermineTimeSetByPersonInfo,coreTimeSetting);
 	}
 	
 	
@@ -875,7 +875,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													  DeductionAtr deductionAtr,
 													  Optional<CoreTimeSetting> coreTimeSetting,
 													  HolidayCalcMethodSet holidayCalcMethodSet,
-													  WorkTimezoneCommonSet commonSetting,
+													  Optional<WorkTimezoneCommonSet> commonSetting,
 													  boolean late  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 													  ){
 		
@@ -900,7 +900,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param commonSetting
 	 * @return
 	 */
-	public AttendanceTime calcLateTime(AttendanceTime workTime,DeductionAtr deductionAtr,Optional<CoreTimeSetting> coreTimeSetting,HolidayCalcMethodSet holidayCalcMethodSet,WorkTimezoneCommonSet commonSetting) {
+	public AttendanceTime calcLateTime(AttendanceTime workTime,DeductionAtr deductionAtr,Optional<CoreTimeSetting> coreTimeSetting,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
 		//パラメータ「控除区分」＝”控除”　かつ　控除しない
 		if(deductionAtr.isDeduction()&&!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
 			return new AttendanceTime(0);

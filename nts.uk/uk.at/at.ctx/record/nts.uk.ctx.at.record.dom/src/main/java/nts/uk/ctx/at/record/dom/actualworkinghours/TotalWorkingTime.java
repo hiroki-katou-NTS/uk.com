@@ -281,7 +281,7 @@ public class TotalWorkingTime {
 																									eachCompanyTimeSet,
 																									flexPreAppTime,
 																									conditionItem,
-																									predetermineTimeSetByPersonInfo,coreTimeSetting);
+																									predetermineTimeSetByPersonInfo,recordClass.getCoreTimeSetting());
 		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;
@@ -291,59 +291,50 @@ public class TotalWorkingTime {
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
 		//日別実績の早退時間
 		List<LeaveEarlyTimeOfDaily> leaveEarlyTime = new ArrayList<>();
-		if(coreTimeSetting.isPresent() && coreTimeSetting.get().getTimesheet().isNOT_USE()) {
+		if(recordClass.getCoreTimeSetting().isPresent() && recordClass.getCoreTimeSetting().get().getTimesheet().isNOT_USE()) {
 			//コアタイム無し（時間帯を使わずに計算）
-			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
+			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
 			//就業時間の計算
 			AttendanceTime workTime = changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
-																		flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
+																		recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 																		vacationClass,
-																		oneDay.getTimeVacationAdditionRemainingTime().get(),
+																		recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
 																		StatutoryDivision.Nomal,workType,
-																		oneDay.getPredetermineTimeSetForCalc(),
+																		recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 																		workTimeCode,
-																		personalCondition,
-																		calcAtrOfDaily.getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-	   																    calcAtrOfDaily.getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-																		workingSystem,
-																		illegularAddSetting,
-																		flexAddSetting,
-																		regularAddSetting,
-																		holidayAddtionSet,
-																		holidayCalcMethodSet,
+																		recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+																		recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
+																		recordClass.getPersonalInfo().getWorkingSystem(),
+																		recordClass.getWorkDeformedLaborAdditionSet(),
+																		recordClass.getWorkFlexAdditionSet(),
+																		recordClass.getWorkRegularAdditionSet(),
+																		recordClass.getHolidayAddtionSet().get(),
+																		recordClass.getHolidayCalcMethodSet(),
 																		CalcMethodOfNoWorkingDay.isCalculateFlexTime,
 																		AutoCalAtrOvertime.CALCULATEMBOSS,
 																		flexCalcMethod.get(),
 																		flexPreAppTime,
-																		coreTimeSetting,
-																		dailyUnit,
-																		commonSetting,
-																		TimeLimitUpperLimitSetting.NOUPPERLIMIT);
+																		recordClass.getCoreTimeSetting(),
+																		recordClass.getDailyUnit(),
+																		recordClass.getWorkTimezoneCommonSet(),
+																		TimeLimitUpperLimitSetting.NOUPPERLIMIT,
+																		conditionItem,
+																		predetermineTimeSetByPersonInfo);
 			//計上用のコアタイム無しの遅刻時間計算
 			TimeWithCalculation calcedLateTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(workTime,
 																							 DeductionAtr.Appropriate, 
-																							 coreTimeSetting, 
-																							 holidayCalcMethodSet, 
-																							 commonSetting, 
-																							 calcAtrOfDaily.getLeaveEarlySetting().isLate());
-			//猶予時間の適用（一時的な処理）
-			AttendanceTime test1 = calcedLateTime.getTime().minusMinutes(commonSetting.getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet().getGraceTime().valueAsMinutes());
-			if(test1.lessThan(0)) {
-				test1 = new AttendanceTime(0);
-			}
-			AttendanceTime test2 = calcedLateTime.getCalcTime().minusMinutes(commonSetting.getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet().getGraceTime().valueAsMinutes());
-			if(test2.lessThan(0)) {
-				test2 = new AttendanceTime(0);
-			}
-			calcedLateTime = TimeWithCalculation.createTimeWithCalculation(test1, test2);
+																							 recordClass.getCoreTimeSetting(), 
+																							 recordClass.getHolidayCalcMethodSet(), 
+																							 recordClass.getWorkTimezoneCommonSet(), 
+																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate());
 			
 			//コアタイム無しの遅刻時間計算
 			TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(workTime,
 					 																				  DeductionAtr.Deduction, 
-					 																				  coreTimeSetting, 
-					 																				  holidayCalcMethodSet, 
-					 																				  commonSetting, 
-					 																				  calcAtrOfDaily.getLeaveEarlySetting().isLate());					
+					 																				  recordClass.getCoreTimeSetting(), 
+					 																				  recordClass.getHolidayCalcMethodSet(), 
+					 																				  recordClass.getWorkTimezoneCommonSet(), 
+					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate());					
 			lateTime.add(new LateTimeOfDaily(calcedLateTime,
 											 calcedLateDeductionTime,
 											 new WorkNo(1),
@@ -359,8 +350,8 @@ public class TotalWorkingTime {
 				//早退（時間帯から計算）
 				for(TimeLeavingWork work : recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getTimeLeavingWorks())
 					leaveEarlyTime.add(LeaveEarlyTimeOfDaily.calcLeaveEarlyTime(recordClass.getCalculationRangeOfOneDay(), work.getWorkNo(),recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),recordClass.getHolidayCalcMethodSet(),recordClass.getWorkTimezoneCommonSet()));
-			}
 		}
+		
 		//日別実績の休憩時間
 		val breakTime = BreakTimeOfDaily.calcTotalBreakTime(recordClass.getCalculationRangeOfOneDay(),recordClass.getBreakCount(),recordClass.getCalculatable());
 
