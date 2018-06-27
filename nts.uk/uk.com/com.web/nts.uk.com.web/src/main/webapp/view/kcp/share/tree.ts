@@ -464,7 +464,7 @@ module kcp.share.tree {
                     if (self.isMultiSelect) {
                         self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
                     }
-                    else if(self.isShowNoSelectRow && _.isEmpty(self.selectedWorkplaceIds()) {
+                    else if(self.isShowNoSelectRow && _.isEmpty(self.selectedWorkplaceIds())) {
                         self.selectedWorkplaceIds('');
                     }
                     break;
