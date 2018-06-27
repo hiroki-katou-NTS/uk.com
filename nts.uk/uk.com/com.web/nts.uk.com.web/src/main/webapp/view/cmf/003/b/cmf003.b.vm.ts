@@ -194,8 +194,8 @@ module nts.uk.com.view.cmf003.b {
 
                 this.columnCategorys = ko.observableArray([
                     { headerText: '', key: 'categoryId', width: 100, hidden: true },
-                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 260 },
-                    { headerText: getText('CMF003_31'), formatter: timeStore, key: 'timeStore', width: 70 },
+                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 230 },
+                    { headerText: getText('CMF003_31'), formatter: timeStore, key: 'timeStore', width: 100 },
                     { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storageRangeSaved', width: 120 }
                 ]);
 
