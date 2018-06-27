@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DayoffTranferInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.TranferTimeInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
@@ -17,7 +19,8 @@ public interface InterimRemainOffDateCreateData {
 	 * @param detailData
 	 * @return
 	 */
-	public DailyInterimRemainMngData createData(String cid, String sid, GeneralDate baseDate, boolean dayOffTimeIsUse, InterimRemainCreateInfor detailData);
+	public DailyInterimRemainMngData createData(String cid, String sid, GeneralDate baseDate, boolean dayOffTimeIsUse, InterimRemainCreateInfor detailData
+			, CompanyHolidayMngSetting comHolidaySetting, EmploymentHolidayMngSetting employmentHolidaySetting);
 	/**
 	 * 残数作成元情報を作成する
 	 * @param sid
@@ -25,7 +28,8 @@ public interface InterimRemainOffDateCreateData {
 	 * @param detailData
 	 * @return
 	 */
-	public InforFormerRemainData createInforFormerRemainData(String cid, String sid, GeneralDate baseDate, InterimRemainCreateInfor detailData, boolean dayOffTimeIsUse);
+	public InforFormerRemainData createInforFormerRemainData(String cid, String sid, GeneralDate baseDate, InterimRemainCreateInfor detailData, 
+			boolean dayOffTimeIsUse, CompanyHolidayMngSetting comHolidaySetting, EmploymentHolidayMngSetting employmentHolidaySetting);
 	/**
 	 * 実績から残数作成元情報を設定する
 	 * @param recordData
