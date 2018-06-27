@@ -46,10 +46,10 @@ module nts.uk.at.view.kdl009.a {
                 service.getEmployee(self.kdl009Data).done(function(data: any) {
                     if(data.employeeBasicInfo.length > 1) {
                         self.selectedCode.subscribe(function(value) {
-                            let itemName = _.find(data.employeeBasicInfo, ['employeeCode', value]);
-                            self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemName.businessName]));
+                            let itemSelected = _.find(data.employeeBasicInfo, ['employeeCode', value]);
+                            self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemSelected.businessName]));
                             
-                            service.getAcquisitionNumberRestDays(value, data.baseDate).done(function(data) {
+                            service.getAcquisitionNumberRestDays(itemSelected.employeeId, data.baseDate).done(function(data) {
                                 self.bindTimeData(data);
                                 self.bindSummaryData(data);
                             }).fail(function(res) {
