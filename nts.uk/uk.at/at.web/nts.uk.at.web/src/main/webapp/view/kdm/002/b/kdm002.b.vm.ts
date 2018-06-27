@@ -227,7 +227,7 @@ module nts.uk.at.view.kdm002.b {
                             }
 
                             if (res.succeeded || res.failed || res.cancelled) {
-                                if (self.imErrorLog().length == 0) {
+                                if (self.excelContent().length > 0) {
                                     if (res.succeeded) {
                                         self.status(getText("KDM002_29"));
                                         self.startExportExcel(true);
