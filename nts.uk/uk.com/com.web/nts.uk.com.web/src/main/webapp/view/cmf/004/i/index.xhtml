@@ -32,14 +32,14 @@
                         <td id="I2_3" class="bg-yellow" width='150px'><label>#{i18n.getText('CMF004_202')}</label></td>
                         <td width='400px'>
                             <label id="I2_6" data-bind="text : statusProcess"/>
-                            <label id="I2_7" data-bind="text : numberCategory"/>
+                            <label id="I2_7" data-bind="text : numberCategory"/>/<label id="I2_7" data-bind="text : numberTotalCategory"/> カテゴリ
                             <label id="I2_8" data-bind="text : employeeProcess"/>
                             <label id="I2_9" data-bind="text : datetimeProcess"/>
                         </td>
                     </tr>
                     <tr>
                         <td id="I2_4" class="bg-yellow" width='150px'><label>#{i18n.getText('CMF004_203')}</label></td>
-                        <td width='400px'><label id="I2_10" data-bind="text : numberError"/></td>
+                        <td width='400px'><label id="I2_10" data-bind="text : numberError"/>件</td>
                     </tr>
                 </table>
                 <label class="label" id="I3_1">#{i18n.getText('CMF004_204')}</label>
@@ -50,7 +50,7 @@
                         </td>
                         <td width='400px'>
                             <label id="I4_4" data-bind="text : code"/>
-                            <label id="I4_5" data-bind="text : elapsedTime"/>
+                            <label id="I4_5" data-bind="text : recoverySourceName"/>
                         </td>
                     </tr>
                     <tr>

@@ -5,12 +5,12 @@ import java.text.ParseException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.assist.dom.recoverystorage.RecoveryStorageService;
 
 @Stateless
-public class RecoveryStogareAsysnCommandHandler extends AsyncCommandHandler<PerformDataRecoveryCommand> {
+public class RecoveryStogareAsysnCommandHandler extends CommandHandler<PerformDataRecoveryCommand> {
 	@Inject
 	private RecoveryStorageService recoveryStorageService;
 

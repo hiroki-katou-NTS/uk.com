@@ -27,12 +27,12 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static final String SELECT_TABLE_LIST_BY_DATA_RECOVERY_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId";
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.tableListPk.categoryId =:categoryId AND storageRangeSaved =:storageRangeSaved ORDER BY DESC tableNo";
-
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.tableListPk.categoryId =:categoryId AND t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.storageRangeSaved =:storageRangeSaved ORDER BY t.tableListPk.tableNo DESC ";
+	
 	private static final String SELECT_ALL_TARGET = "SELECT t FROM SspmtTarget t WHERE  t.targetPk.dataRecoveryProcessId =:dataRecoveryProcessId ";
 
-	private static final String SELECT_INTERNAL_FILE_NAME = "SELECT t FROM SspmtTableList t WHERE  t.targetPk.dataRecoveryProcessId =:dataRecoveryProcessId AND t.internalFileName =:internalFileName ";
-
+	private static final String SELECT_INTERNAL_FILE_NAME = "SELECT t FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.internalFileName =:internalFileName ";
+	
 	private static final StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
 
 	private static final StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
@@ -81,9 +81,10 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public List<TableList> getByStorageRangeSaved(String categoryId, int storageRangeSaved) {
+	public List<TableList> getByStorageRangeSaved(String categoryId,String dataRecoveryProcessId , int storageRangeSaved) {
 		List<SspmtTableList> listTable = this.getEntityManager()
 				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class).setParameter("categoryId", categoryId)
+				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
 				.setParameter("storageRangeSaved", storageRangeSaved).getResultList();
 
 		return listTable.stream().map(SspmtTableList::toDomain).collect(Collectors.toList());
@@ -123,15 +124,15 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 				i++;
 				if (i != 0) {
 					if (!Objects.isNull(namePhysicalCid) && filed.getKey().equals(namePhysicalCid)) {
-						whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(cidCurrent);
+						whereClause.append(" AND ").append(filed.getKey()).append(" = '").append(cidCurrent).append("'");
 					} else {
-						whereClause.append(" AND ").append(filed.getKey()).append(" = ").append(filed.getValue());
+						whereClause.append(" AND ").append(filed.getKey()).append(" = '").append(filed.getValue()).append("'");
 					}
 				} else {
 					if (!Objects.isNull(namePhysicalCid) && filed.getKey().equals(namePhysicalCid)) {
-						whereClause.append(filed.getKey()).append(" = ").append(namePhysicalCid);
+						whereClause.append(filed.getKey()).append(" = '").append(namePhysicalCid).append("'");
 					} else {
-						whereClause.append(filed.getKey()).append(" = ").append(filed.getValue());
+						whereClause.append(filed.getKey()).append(" = '").append(filed.getValue()).append("'");
 					}
 				}
 			}
@@ -164,7 +165,11 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		EntityManager em = this.getEntityManager();
 		for (Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
 			cloumns.add(entry.getKey());
-			values.add(entry.getValue());
+			if (entry.getValue().isEmpty()) {
+				values.add("null");
+			} else {
+				values.add("'" + entry.getValue() + "'");
+			}
 
 		}
 		INSERT_BY_TABLE.append(" " + cloumns);
