@@ -106,7 +106,7 @@ module nts.uk.com.view.cmf003.c {
                 if (self.currentCateSelected().length == 0) {
                     alertError({ messageId: "Msg_577" });
                 } else {
-                    setShared("CMF003_C_CATEGORIES", ko.toJSON(self.currentCateSelected()));
+                    setShared("CMF003_C_CATEGORIES", JSON.stringify(self.currentCateSelected()));
                     setShared("CMF003_C_SYSTEMTYPE", self.currentItem);
                     close();
                 }
