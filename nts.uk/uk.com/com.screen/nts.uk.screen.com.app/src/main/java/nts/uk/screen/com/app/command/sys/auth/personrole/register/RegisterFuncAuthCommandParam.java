@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.roles.auth.functionauth.register;
+package nts.uk.screen.com.app.command.sys.auth.personrole.register;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.roles.auth.functionauth.delete;
+package nts.uk.screen.com.app.command.sys.auth.personrole.delete;
 
 import java.util.List;
 
