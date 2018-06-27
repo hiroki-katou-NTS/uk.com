@@ -474,7 +474,7 @@ public class TotalWorkingTime {
 			//事前休出申請超過
 			case PRE_HOLIDAYWORK_APP_EXCESS:
 				if(this.getExcessOfStatutoryTimeOfDaily() != null)
-					this.getExcessOfStatutoryTimeOfDaily().checkHolidayWorkTimeExcess(employeeId, targetDate,"休出時間",attendanceItemDictionary, new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value));
+					this.getExcessOfStatutoryTimeOfDaily().checkPreHolidayWorkTimeExcess(employeeId, targetDate,"休出時間",attendanceItemDictionary, new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value));
 			//事前フレ申請超過
 			case PRE_FLEX_APP_EXCESS:
 				if(this.getExcessOfStatutoryTimeOfDaily() != null) 

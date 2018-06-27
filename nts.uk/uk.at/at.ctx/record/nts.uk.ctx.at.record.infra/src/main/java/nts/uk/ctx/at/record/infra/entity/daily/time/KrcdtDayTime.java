@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -1348,77 +1349,78 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						&& !totalWork.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet().isEmpty()) {
 						val holTimeSheet = totalWork.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet(); 
 						Optional<HolidayWorkFrameTimeSheet> sheet = Optional.empty();
-						sheet = getTimeSheet(holTimeSheet, 1);	
-						if(sheet.isPresent()){
+						
+						allClear();
+						sheet = getTimeSheet(holTimeSheet, 1);
+						sheet.ifPresent(tc -> {
 							/*休日出勤1開始時刻*/
-							this.holiWork1StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork1StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤1終了時刻*/
-							this.holiWork1EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork1EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 2);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤2開始時刻*/
-							this.holiWork2StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork2StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤2終了時刻*/
-							this.holiWork2EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
-						sheet = getTimeSheet(holTimeSheet, 4);
-						if(sheet.isPresent()){
+							this.holiWork2EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
+						sheet = getTimeSheet(holTimeSheet, 3);
+						sheet.ifPresent(tc -> {
 							/*休日出勤3開始時刻*/
-							this.holiWork3StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork3StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤3終了時刻*/
-						this.holiWork3EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork3EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 4);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤4開始時刻*/
-							this.holiWork4StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
-						/*休日出勤4終了時刻*/
-							this.holiWork4EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork4StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
+							/*休日出勤4終了時刻*/
+							this.holiWork4EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 5);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤5開始時刻*/
-							this.holiWork5StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
-						/*休日出勤5終了時刻*/
-							this.holiWork5EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork5StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
+							/*休日出勤5終了時刻*/
+							this.holiWork5EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 6);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤6開始時刻*/
-							this.holiWork6StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork6StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤6終了時刻*/
-							this.holiWork6EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}	
-						if(sheet.isPresent()){
-							sheet = getTimeSheet(holTimeSheet, 7);
+							this.holiWork6EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
+						sheet = getTimeSheet(holTimeSheet, 7);
+						sheet.ifPresent(tc -> {
 							/*休日出勤7開始時刻*/
-							this.holiWork7StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork7StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤7終了時刻*/
-							this.holiWork7EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork7EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 8);
-						if(sheet.isPresent()){
-						/*休日出勤8開始時刻*/
-							this.holiWork8StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+						sheet.ifPresent(tc -> {
+							/*休日出勤8開始時刻*/
+							this.holiWork8StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤8終了時刻*/
-							this.holiWork8EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork8EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 9);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤9開始時刻*/
-							this.holiWork9StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork9StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤9終了時刻*/
-							this.holiWork9EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork9EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 10);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤10開始時刻*/
-							this.holiWork10StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork10StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤10終了時刻*/
-							this.holiWork10EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
-					}
+							this.holiWork10EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 				/*----------------------日別実績の休出時間帯------------------------------*/
 					
 					
@@ -1516,16 +1518,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					this.overTime9  = 0;
 					this.overTime10 = 0;
 					//振替時間
-					this.transTime1 = 0;
-					this.transTime2 = 0;
-					this.transTime3 = 0;
-					this.transTime4 = 0;
-					this.transTime5 = 0;
-					this.transTime6 = 0;
-					this.transTime7 = 0;
-					this.transTime8 = 0;
-					this.transTime9 = 0;
-					this.transTime10= 0;
+					this.transOverTime1 = 0;
+					this.transOverTime2 = 0;
+					this.transOverTime3 = 0;
+					this.transOverTime4 = 0;
+					this.transOverTime5 = 0;
+					this.transOverTime6 = 0;
+					this.transOverTime7 = 0;
+					this.transOverTime8 = 0;
+					this.transOverTime9 = 0;
+					this.transOverTime10 = 0;
 					//計算残業時間
 					this.calcOverTime1 = 0;
 					this.calcOverTime2 = 0;
@@ -1734,63 +1736,75 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 							&& totalWork.getExcessOfStatutoryTimeOfDaily() != null
 							&& totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
 							&& !totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet().isEmpty()) {
-						TimeSpanForCalc span;
+						Optional<TimeSpanForCalc> span;
+						allClear();
 						val overTimeSheet = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet();
-						if(overTimeSheet.size() > 0) {
-							span = getTimeSpan(overTimeSheet, 0);
-							this.overTime1StrClc = span == null ? 0 : span.startValue();
-							this.overTime1EndClc = span == null ? 0: span.endValue();
-						}
-						if(overTimeSheet.size() > 1) {
-							span = getTimeSpan(overTimeSheet, 1);
-							this.overTime2StrClc = span == null ? 0 : span.startValue();
-							this.overTime2EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 2) {
-							span = getTimeSpan(overTimeSheet, 2);
-							this.overTime3StrClc = span == null ? 0 : span.startValue();
-							this.overTime3EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 3) {
-							span = getTimeSpan(overTimeSheet, 3);
-							this.overTime4StrClc = span == null ? 0 : span.startValue();
-							this.overTime4EndClc = span == null ? 0 : span.endValue();
-						}	
-						if(overTimeSheet.size() > 4) {
-							span = getTimeSpan(overTimeSheet, 4);
-							this.overTime5StrClc = span == null ? 0 : span.startValue();
-							this.overTime5EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 5) {
-							span = getTimeSpan(overTimeSheet, 5);
-							this.overTime6StrClc = span == null ? 0 : span.startValue();
-							this.overTime6EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 6) {
-							span = getTimeSpan(overTimeSheet, 6);
-							this.overTime7StrClc = span == null ? 0 : span.startValue();
-							this.overTime7EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 7) {
-							span = getTimeSpan(overTimeSheet, 7);
-							this.overTime8StrClc = span == null ? 0 : span.startValue();
-							this.overTime8EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 8) {
-							span = getTimeSpan(overTimeSheet, 8);
-							this.overTime9StrClc = span == null ? 0 : span.startValue();
-							this.overTime9EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 9) {
-							span = getTimeSpan(overTimeSheet, 9);
-							this.overTime10StrClc = span == null ? 0 : span.startValue();
-							this.overTime10EndClc = span == null ? 0 : span.endValue();
-						}
+						span = getTimeSpan(overTimeSheet, 1);
+						span.ifPresent( tc -> {
+							this.overTime1StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime1EndClc = tc == null ? 0 : tc.endValue();
+						});
+
+						
+						span = getTimeSpan(overTimeSheet, 2);
+						span.ifPresent( tc -> {
+							this.overTime2StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime2EndClc = tc == null ? 0 : tc.endValue();
+						});
+
+						span = getTimeSpan(overTimeSheet, 3);
+						span.ifPresent( tc -> {
+							this.overTime3StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime3EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 4);
+						span.ifPresent( tc -> {
+							this.overTime4StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime4EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 5);
+						span.ifPresent( tc -> {
+							this.overTime5StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime5EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 6);
+						span.ifPresent( tc -> {
+							this.overTime6StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime6EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 7);
+						span.ifPresent( tc -> {
+							this.overTime7StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime7EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 8);
+						span.ifPresent( tc -> {
+							this.overTime8StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime8EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 9);
+						span.ifPresent( tc -> {
+							this.overTime9StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime9EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 10);
+						span.ifPresent( tc -> {
+							this.overTime10StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime10EndClc = tc == null ? 0 : tc.endValue();
+						});
 					}
 					/*----------------------日別実績の残業時間帯------------------------------*/
 					
 				}
 			}
+		}
 		}
 	}
 	
@@ -1853,12 +1867,55 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			
 	}
 	
-	private TimeSpanForCalc getTimeSpan(List<OverTimeFrameTimeSheet> overTimeSheet, int sheetNo) {
-		return overTimeSheet.get(sheetNo).getTimeSpan();
+	private Optional<TimeSpanForCalc> getTimeSpan(List<OverTimeFrameTimeSheet> overTimeSheet, int sheetNo) {
+		 return decisionConnectSpan(overTimeSheet.stream()
+ 				 								 .filter(tc -> tc.getFrameNo().v().intValue() == sheetNo)
+ 				 								 .map(tc -> tc.getTimeSpan())
+ 				 								 .collect(Collectors.toList()));
+	}
+
+	private void allClear() {
+		this.overTime1StrClc = 0;
+		this.overTime1EndClc = 0;
+		this.overTime2StrClc = 0;
+		this.overTime2EndClc = 0;
+		this.overTime3StrClc = 0;
+		this.overTime3EndClc = 0;
+		this.overTime4StrClc = 0;
+		this.overTime4EndClc = 0;
+		this.overTime5StrClc = 0;
+		this.overTime5EndClc = 0;
+		this.overTime6StrClc = 0;
+		this.overTime6EndClc = 0;
+		this.overTime7StrClc = 0;
+		this.overTime7EndClc = 0;
+		this.overTime8StrClc = 0;
+		this.overTime8EndClc = 0;
+		this.overTime9StrClc = 0;
+		this.overTime9EndClc = 0;
+		this.overTime10StrClc = 0;
+		this.overTime10EndClc = 0;
+	}
+	private Optional<TimeSpanForCalc> decisionConnectSpan(List<TimeSpanForCalc> collect) {
+		if(collect.isEmpty()) return Optional.empty();
+		if(collect.size() == 1) return Optional.of(collect.get(0));
+		return Optional.of(createConnectSpan(collect));
+	}
+	
+	public TimeSpanForCalc createConnectSpan(List<TimeSpanForCalc> collect) {
+		TimeSpanForCalc connectSpan = collect.get(0);
+		for(TimeSpanForCalc nowTimeSpan : collect) {
+			if(!connectSpan.equals(nowTimeSpan) && connectSpan.endValue().intValue() == nowTimeSpan.getStart().valueAsMinutes()) {
+				connectSpan = new TimeSpanForCalc(connectSpan.getStart(), nowTimeSpan.getEnd());
+			}
+		}
+		return connectSpan;
 	}
 	
 	private Optional<HolidayWorkFrameTimeSheet> getTimeSheet(List<HolidayWorkFrameTimeSheet> domain, int sheetNo) {
-		return domain.stream().filter(tc -> tc.getHolidayWorkTimeSheetNo().v() == sheetNo).findFirst();
+		return domain.stream()
+					 .filter(tc -> tc.getHolidayWorkTimeSheetNo().v().intValue() == sheetNo)
+					 .findFirst();
 	}
 	
 	private Optional<HolidayWorkMidNightTime> getHolidayMidNightWork(HolidayMidnightWork domain, StaturoryAtrOfHolidayWork statutoryAttr) {

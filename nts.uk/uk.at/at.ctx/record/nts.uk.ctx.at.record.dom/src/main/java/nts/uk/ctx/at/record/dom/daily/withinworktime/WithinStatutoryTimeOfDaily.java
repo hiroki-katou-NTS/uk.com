@@ -204,7 +204,8 @@ public class WithinStatutoryTimeOfDaily {
 			   												   HolidayCalcMethodSet holidayCalcMethodSet,
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
-			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
+			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr,//就業時間帯からとってきた勤務区分
+			   												   Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
 			   												   PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			   												   Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime, DailyUnit dailyUnit,
@@ -212,7 +213,8 @@ public class WithinStatutoryTimeOfDaily {
 			   												   WorkingConditionItem conditionItem,
 			   												Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo
 			   												   ) {
-		if(conditionItem.getLaborSystem().isFlexTimeWork() 
+//		if(conditionItem.getLaborSystem().isFlexTimeWork() 
+		if(true
 			&& (!workTimeDailyAtr.isPresent() || workTimeDailyAtr.get().isFlex())) {
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)withinTimeSheet;
 			return changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,

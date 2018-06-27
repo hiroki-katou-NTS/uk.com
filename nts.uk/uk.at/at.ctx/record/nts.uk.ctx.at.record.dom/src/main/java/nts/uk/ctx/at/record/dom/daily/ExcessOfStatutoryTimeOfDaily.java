@@ -226,7 +226,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getOverTimeWork().isPresent())
-			returnErrorItem = this.getOverTimeWork().get().checkOverTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
+			returnErrorItem = this.getOverTimeWork().get().checkPreOverTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	/**
@@ -253,7 +253,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getOverTimeWork().isPresent())
-			returnErrorItem = this.getOverTimeWork().get().checkFlexTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
+			returnErrorItem = this.getOverTimeWork().get().checkPreFlexTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	
