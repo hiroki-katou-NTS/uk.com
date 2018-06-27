@@ -126,7 +126,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			StringBuffer outCompressedFileName = new StringBuffer();
 			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
 
-			if (resultState == ResultState.NORMAL_END) {
+			if (resultState == ResultState.ABNORMAL_END) {
 				evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
 				return;
 			}
@@ -170,11 +170,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		List<String> categoryIds = targetCategories.stream().map(x -> {
 			return x.getCategoryId();
 		}).collect(Collectors.toList());
-
-		// update domain 「データ保存動作管理」 Data storage operation management
-		if(!repoDataSto.update(storeProcessingId, categoryIds.size(), 0, OperatingCondition.SAVING)) {
-			return ResultState.INTERRUPTION;
-		}
 
 		List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
 		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);

@@ -28,11 +28,7 @@ public class TableItemValidation {
 			List<String> csvHeader = getActualCsvHeader(fileId, tableListItem.getInternalFileName());
 			if (csvHeader.isEmpty()) return true;
 			List<String> tableColumn = tableColumnRepository.getTableColumnName(tableListItem.getTableEnglishName());
-			//TODO
-			// CSV ko co EXCLUS_VER
-			// Entity va DB khong mapping voi nhau
-			if (tableColumn.isEmpty() || csvHeader.isEmpty() || !tableColumn.containsAll(csvHeader)) return true; 
-			//if (tableColumn.isEmpty() || csvHeader.isEmpty() || !tableColumn.containsAll(csvHeader) || !csvHeader.containsAll(tableColumn)) return true; 
+			if (tableColumn.isEmpty() || csvHeader.isEmpty() || !tableColumn.containsAll(csvHeader) || !csvHeader.containsAll(tableColumn)) return true; 
 		}
 		return false;
 	}

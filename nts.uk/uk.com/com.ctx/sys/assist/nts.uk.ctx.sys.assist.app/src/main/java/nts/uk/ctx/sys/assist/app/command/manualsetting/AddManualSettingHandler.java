@@ -58,7 +58,10 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 		dataStorageMngRepo.add(dataStorageMng);
 		try {
 			// ドメインモデル「データ保存動作管理」を登録する
-			dataStorageMngRepo.update(storeProcessingId, OperatingCondition.INPREPARATION);
+			if(!dataStorageMngRepo.update(storeProcessingId,  manualSetCmd.getCategory().size(), 0, OperatingCondition.SAVING)) {
+				return;
+			}
+			
 			List<TargetCategoryCommand> lstcategories = manualSetCmd.getCategory();
 			List<TargetCategory> targetCategory = lstcategories.stream().map(item -> {
 				return new TargetCategory(storeProcessingId, item.getCategoryId());

@@ -7,6 +7,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface EmployeeGeneralInfoAdapter {
 
-	EmployeeGeneralInfoImport getEmployeeGeneralInfo(List<String> employeeIds, DatePeriod period);
+	EmployeeGeneralInfoImport getEmployeeGeneralInfo(List<String> employeeIds, DatePeriod period,boolean checkEmployment,
+			boolean checkClassification, boolean checkJobTitle, boolean checkWorkplace, boolean checkDepartment);
 	
 }

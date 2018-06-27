@@ -28,7 +28,7 @@
 													filename: $vm.fileName,
 													accept: ['.zip'],			
 													aslink: true,
-													enable: true,
+													enable: selectedUploadCls() == 1,
 													required: true,
 													immediateUpload: true,
 													uploadFinished: function(fileInfo){$vm.finished(fileInfo)}}">
@@ -37,7 +37,7 @@
 			<div class="div-line" style="margin-bottom: 20px;">
 				<!--B4_1 保存ファイル指定-->
 				<div
-					data-bind="ntsRadioButton: {checked: selectedSaveFileCls, 
+					data-bind="ntsRadioButton: {checked: selectedUploadCls, 
 																	enable: true, 
 																	option: $vm.options()[1], 
 																	optionValue: 'value', 
@@ -50,9 +50,9 @@
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_33')}</div>
 				<!--B4_4-->
 				<div class="ntsControl">
-					<div id="daterangepicker"
+					<div id="daterangepicker_b4_3"
 						data-bind="ntsDateRangePicker: {required: false,
-																enable: true,
+																enable: selectedUploadCls() == 2,
 																name: '#[CMF004_34]',
 																showNextPrevious: false,
 																value: executePeriodInput,
@@ -62,7 +62,7 @@
 				</div>
 				<!--B4_7-->
 					<div class="large flex" style="margin-left: 10px;">
-						<button data-bind="click: function(){$vm.searchDataRecovery()}">#{i18n.getText('CMF004_45')}</button>
+						<button data-bind="click: function(){$vm.searchDataRecovery()}, enable: selectedUploadCls() == 2">#{i18n.getText('CMF004_45')}</button>
 					</div>
 			</div>
 
@@ -81,6 +81,7 @@
 													items: recoveryFileList,
 													selected: selectedRecoveryFile,
 													selectedKey: 'storeProcessingId',
+													enable: selectedUploadCls() == 2,
 													fields: ['saveSetCode','saveSetName'],
 													mode: 'igGrid'}"
 							tabindex="5" />
@@ -107,13 +108,13 @@
 										multiple: false,
 										value: selectedRecoveryFile,
 										rows: 10,
-										enable: true}"/>
+										enable: selectedUploadCls() == 2}"/>
 			</div>
 			<div class="halign-center" style="width: 760px; margin-top: 20px;">
 				<!--B7_1 処理を選びなおすボタン-->
 				<button class="large" tabindex="6">#{i18n.getText('CMF004_43')}</button>
 				<!--B7_2 次へボタン-->
-				<button class="x-large proceed" data-bind="click: function(){$vm.nextToScreenE()}" tabindex="7">#{i18n.getText('CMF004_44')}</button>
+				<button class="x-large proceed" data-bind="click: function(){$vm.nextToScreenE()}, enable: selectedUploadCls() == 2 &amp;&amp; selectedRecoveryFile()" tabindex="7">#{i18n.getText('CMF004_44')}</button>
 			</div>
 		</div>
 	</ui:composition>
