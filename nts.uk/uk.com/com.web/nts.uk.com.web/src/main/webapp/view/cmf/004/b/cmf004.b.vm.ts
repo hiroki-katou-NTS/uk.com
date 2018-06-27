@@ -209,7 +209,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 saveSetCode: data[i].code,
                                 saveSetName: data[i].name,
                                 supplementaryExplanation: data[i].suppleExplanation,
-                                storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD hh:mm:ss'),
+                                storageStartDate: (data[i].saveStartDatetime),
                                 executeCategory: (data[i].saveForm) == 0 ? getText('CMF004_300') : getText('CMF004_301'),
                                 targetNumber: data[i].targetNumberPeople + "人",
                                 saveFileName: data[i].saveFileName + ".zip",
@@ -315,9 +315,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             let _listCategory = _.filter(selectedCategory, x => { return x.isRecover() == true; });
             let _itemList: Array<CategoryInfo> = [];
             _.forEach(_listCategory, (x, i) => {
-                let startDate = self.formatDate(x.recoveryPeriod, x.startOfPeriod());
-                let endDate = self.formatDate(x.recoveryPeriod, x.endOfPeriod());
-                _itemList.push(new CategoryInfo(i + 1, x.isRecover(), x.categoryId(), x.categoryName(), x.recoveryPeriod(), startDate, endDate, x.recoveryMethod(), x.iscanNotBeOld()));
+                _itemList.push(new CategoryInfo(i + 1, x.isRecover(), x.categoryId(), x.categoryName(), x.recoveryPeriod(), x.startOfPeriod(), x.endOfPeriod(), x.recoveryMethod(), x.iscanNotBeOld()));
             });
             return _itemList;
         }
@@ -386,23 +384,23 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         nextToScreenG(): void {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            for(let checkRow of self.changeDataRecoveryPeriod().changeDataCategoryList()){
-                if(checkRow.isRecover()){
-                    if(checkRow.startOfPeriod() > checkRow.endOfPeriod()){
+            for(let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())){
+                if(checkRow.isRecover){
+                    if(checkRow.startOfPeriod > checkRow.endOfPeriod){
                         $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1320'});
                     }
                     
                 }
+                
                 let oldData =  _.find(self.categoryListOld, x =>{
-                    return x.categoryId = checkRow.categoryId();
+                    return x.categoryId == checkRow.categoryId;
                 });
-                if(oldData.startOfPeriod < checkRow.startOfPeriod()){
-                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
+                if(oldData.startOfPeriod < checkRow.startOfPeriod){
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
                     }
-                //Todo : cho ben cmf003fix
-//                if(oldData.endOfPeriod > checkRow.endOfPeriod() ){
-//                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
-//                    }
+                if(oldData.endOfPeriod > checkRow.endOfPeriod ){
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
+                    }
             } 
             
            

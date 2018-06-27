@@ -66,9 +66,9 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 employeeList: self.employeeList,
                 recoveryCategoryList: self.recoveryCategoryList,
                 recoveryFile: self.recoveryFile,
-                recoverySourceCode: self.recoverySourceCode,
-                recoverySourceName: self.recoverySourceName,
-                supplementaryExplanation: self.supplementaryExplanation,
+                //recoverySourceCode: self.recoverySourceCode,
+                //recoverySourceName: self.recoverySourceName,
+                //supplementaryExplanation: self.supplementaryExplanation,
                 recoveryMethodOptions: self.recoveryMethodOptions
 
             };

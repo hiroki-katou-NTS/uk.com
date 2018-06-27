@@ -14,10 +14,13 @@ import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.assist.dom.category.SystemUsability;
+import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
+import nts.uk.ctx.sys.assist.infra.entity.category.SspmtCategory;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtPerformDataRecovery;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtRestorationTarget;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtTarget;
@@ -46,6 +49,9 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static final String SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID = "SELECT st FROM SspmtRestorationTarget st WHERE st.restorationTargetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
 
+	private static final String DELETE_BY_LIST_ID_EMPLOYEE = "DELETE FROM SspmtTarget t WHERE t.targetPk.dataRecoveryProcessId =:dataRecoveryProcessId NOT IN :employeeIdList ";
+	
+	
 	@Override
 	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
 		List<SspmtTarget> targetData = this.queryProxy()
@@ -223,9 +229,13 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 				Integer.parseInt(objectSurfaceItem[10].toString()), objectSurfaceItem[11].toString());
 	}
 
-	@Override
-	public void updatePerformDataRecoveryById(String dataRecoveryProcessId) {
-		// TODO Auto-generated method stub
 
+
+	@Override
+	public int deleteEmployeeDataRecovery(String dataRecoveryProcessId, List<String> employeeIdList) {
+		return this.getEntityManager().createQuery(DELETE_BY_LIST_ID_EMPLOYEE, SspmtTarget.class).setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
+				.setParameter("employeeIdList", employeeIdList).executeUpdate();
+				
+		
 	}
 }

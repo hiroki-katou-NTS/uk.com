@@ -5,7 +5,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.PerformDataRecoveryCommand;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.PerformDataRecoveryCommandHandler;
 
@@ -17,7 +16,7 @@ public class PerformDataRecoveryWebService {
 	
 	@POST
 	@Path("performDataRecover")
-	public void setPerformDataRecovery(CommandHandlerContext<PerformDataRecoveryCommand> command) {
-		this.performDataRecover.handle(command);
+	public String setPerformDataRecovery(PerformDataRecoveryCommand command) {
+		return this.performDataRecover.handle(command);
 	}
 }

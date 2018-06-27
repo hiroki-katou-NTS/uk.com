@@ -69,11 +69,9 @@ module nts.uk.com.view.cmf004.d {
                                 }
                                 if (res.running) {
                                     // 経過時間＝現在時刻－開始時刻
+                                    let startTime = self.timeStart;
                                     let timeNow = new Date();
-                                    let over = (timeNow.getSeconds() + timeNow.getMinutes() * 60 + timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
-                                    let time = new Date(null);
-                                    time.setSeconds(over); // specify value for SECONDS here
-                                    let result = time.toISOString().substr(11, 8);
+                                    let result = moment.utc(moment(timeNow, "HH:mm:ss").diff(moment(startTime, "HH:mm:ss"))).format("HH:mm:ss");
                                     self.timeLabel(result);
                                     if (status) {
                                         self.convertToDisplayStatus(status);
