@@ -171,11 +171,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			return x.getCategoryId();
 		}).collect(Collectors.toList());
 
-		// update domain 「データ保存動作管理」 Data storage operation management
-		if(!repoDataSto.update(storeProcessingId, categoryIds.size(), 0, OperatingCondition.SAVING)) {
-			return ResultState.INTERRUPTION;
-		}
-
 		List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
 		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
 		int countCategoryFieldMts = categoryFieldMts.stream()
