@@ -295,7 +295,7 @@ module cps002.a.vm {
             let self = this,
                 currentCopyEmployeeId = self.copyEmployee().employeeId,
                 categorySelectedCode = self.categorySelectedCode(),
-                baseDate = nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd');
+                baseDate = self.currentEmployee().hireDate();
 
             if (currentCopyEmployeeId != "" && categorySelectedCode) {
                 service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {

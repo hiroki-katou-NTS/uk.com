@@ -21,12 +21,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaEmploymentHistoryRepository extends JpaRepository implements EmploymentHistoryRepository {
 
-	private final String QUERY_BYEMPLOYEEID = "SELECT ep FROM BsymtEmploymentHist ep"
+	private static final String QUERY_BYEMPLOYEEID = "SELECT ep FROM BsymtEmploymentHist ep"
 			+ " WHERE ep.sid = :sid and ep.companyId = :cid ORDER BY ep.strDate";
 
-	private final String QUERY_BYEMPLOYEEID_DESC = QUERY_BYEMPLOYEEID + " DESC";
+	private static final String QUERY_BYEMPLOYEEID_DESC = QUERY_BYEMPLOYEEID + " DESC";
 
-	private final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h"
+	private static final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h"
 			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
 
 	private static final String SELECT_BY_LISTSID = "SELECT a FROM BsymtEmploymentHist a"

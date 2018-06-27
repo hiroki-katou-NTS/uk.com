@@ -5,14 +5,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.copysetting.item.UpdatePerInfoItemDefCopy;
 import nts.uk.ctx.pereg.app.command.copysetting.item.UpdatePerInfoItemDefCopyCommandHandler;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemDto;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemQuery;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 
 /**
@@ -30,11 +29,9 @@ public class EmpCopySettingItemWebService {
 	private UpdatePerInfoItemDefCopyCommandHandler updatePerInfoItemDefCopyCommandHandler;
 
 	@POST
-	@Path("getAll/{employeeId}/{categoryCd}/{baseDate}")
-	public List<SettingItemDto> getAllCopyItemByCtgCode(@PathParam("categoryCd") String categoryCd,
-			@PathParam("employeeId") String selectedEmployeeId, @PathParam("baseDate") String baseDate) {
-		return this.finder.getAllCopyItemByCtgCode(categoryCd, selectedEmployeeId,
-				GeneralDate.fromString(baseDate, "yyyyMMdd"));
+	@Path("getAll")
+	public List<SettingItemDto> getAllCopyItemByCtgCode(CopySettingItemQuery query) {
+		return this.finder.getAllCopyItemByCtgCode(query);
 	}
 
 	@POST
