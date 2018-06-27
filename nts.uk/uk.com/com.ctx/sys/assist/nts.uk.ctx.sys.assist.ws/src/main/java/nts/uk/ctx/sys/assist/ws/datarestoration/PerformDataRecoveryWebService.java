@@ -13,10 +13,11 @@ import nts.uk.ctx.sys.assist.app.command.datarestoration.PerformDataRecoveryComm
 public class PerformDataRecoveryWebService {
 	@Inject
 	private PerformDataRecoveryCommandHandler performDataRecover;
-	
+
 	@POST
 	@Path("performDataRecover")
 	public String setPerformDataRecovery(PerformDataRecoveryCommand command) {
-		return this.performDataRecover.handle(command);
+		this.performDataRecover.handle(command);
+		return command.recoveryProcessingId;
 	}
 }

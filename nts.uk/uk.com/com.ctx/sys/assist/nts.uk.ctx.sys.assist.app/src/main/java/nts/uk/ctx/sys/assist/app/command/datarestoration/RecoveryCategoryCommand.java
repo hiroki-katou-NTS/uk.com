@@ -9,4 +9,6 @@ public class RecoveryCategoryCommand {
 	public String categoryId;
 	public String endOfPeriod;
 	public String startOfPeriod;
+	public String tableNo;
+	public String dataStorageProcessingId;
 }

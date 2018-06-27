@@ -36,6 +36,14 @@ public class SurfaceItemDto {
 	 */
 	private String categoryId;
 	/**
+	 * テーブルNo
+	 */
+	private int tableNo;
+	/**
+	 * データ保存処理ID
+	 */
+	private String dataStorageProcessingId;
+	/**
 	 * カテゴリ名
 	 */
 	private String categoryName;
@@ -61,9 +69,11 @@ public class SurfaceItemDto {
 	private int storageRangeSaved;
 
 	public static SurfaceItemDto fromDomain(TableList domain) {
-		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode().orElse(""), domain.getSaveSetName(),
-				domain.getSupplementaryExplanation().orElse(""), domain.getAnotherComCls().value, domain.getCategoryId(),
-				domain.getCategoryName(), domain.getRetentionPeriodCls().value, domain.getSaveDateFrom().orElse(null),
-				domain.getSaveDateTo().orElse(null), domain.getCanNotBeOld().orElse(0), domain.getStorageRangeSaved().value);
+		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode().orElse(""),
+				domain.getSaveSetName(), domain.getSupplementaryExplanation().orElse(""),
+				domain.getAnotherComCls().value, domain.getCategoryId(), domain.getTableNo(),
+				domain.getDataStorageProcessingId(), domain.getCategoryName(), domain.getRetentionPeriodCls().value,
+				domain.getSaveDateFrom().orElse(null), domain.getSaveDateTo().orElse(null),
+				domain.getCanNotBeOld().orElse(0), domain.getStorageRangeSaved().value);
 	}
 }
