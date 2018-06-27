@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 
 /**
@@ -42,15 +43,19 @@ public class CompensatoryLeaveWs extends WebService {
 	@Inject
 	private CompensatoryLeaveFinder compensatoryLeaveFinder;
 
+	/** The save compensatory leave command handler. */
 	@Inject
 	private SaveCompensatoryLeaveCommandHandler saveCompensatoryLeaveCommandHandler;
 	
+	/** The save employment compensatory command handler. */
 	@Inject
 	private SaveEmploymentCompensatoryCommandHandler saveEmploymentCompensatoryCommandHandler;
 	
+	/** The compensatory leave employment finder. */
 	@Inject
 	private CompensatoryLeaveEmploymentFinder compensatoryLeaveEmploymentFinder;
 	
+	/** The delete employment compensatory command handler. */
 	@Inject
 	private DeleteEmploymentCompensatoryCommandHandler deleteEmploymentCompensatoryCommandHandler;
 	
@@ -109,6 +114,17 @@ public class CompensatoryLeaveWs extends WebService {
 	public List<EnumConstant> getExpirationTimeEnum() {
 		return EnumAdaptor.convertToValueNameList(ExpirationTime.class);
 	}
+	
+	/**
+	 * Gets the deadl check month.
+	 *
+	 * @return the deadl check month
+	 */
+	@POST
+	@Path("enum/deadlcheckmonth")
+	public List<EnumConstant> getDeadlCheckMonth() {
+		return EnumAdaptor.convertToValueNameList(DeadlCheckMonth.class);
+	}
 
 	/**
 	 * Gets the time vacation digestive unit enum.
@@ -157,6 +173,7 @@ public class CompensatoryLeaveWs extends WebService {
 	/**
 	 * Save employment setting.
 	 *
+	 * @param command the command
 	 * @return the list
 	 */
 	@POST
@@ -168,6 +185,7 @@ public class CompensatoryLeaveWs extends WebService {
 	/**
 	 * Gets the employment setting.
 	 *
+	 * @param employmentCode the employment code
 	 * @return the employment setting
 	 */
 	@POST

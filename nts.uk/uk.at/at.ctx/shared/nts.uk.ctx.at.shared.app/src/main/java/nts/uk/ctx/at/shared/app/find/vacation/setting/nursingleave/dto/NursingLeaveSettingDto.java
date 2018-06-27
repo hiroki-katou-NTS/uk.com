@@ -29,12 +29,9 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
     /** The nursing number person. */
     public Integer nursingNumberPerson;
 
-    /** The work type codes. */
-    public List<String> workTypeCodes;
+    public Integer specialHolidayFrame;
     
-    /** The work type. */
-    @Setter
-    public String workType;
+    public Integer absenceWorkDay;
 
     /*
      * (non-Javadoc)
@@ -98,14 +95,13 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-     * NursingVacationSettingSetMemento#setWorkTypeCodes(java.util.List)
-     */
-    @Override
-    public void setWorkTypeCodes(List<String> workTypeCodes) {
-        this.workTypeCodes = workTypeCodes;
-    }
+	@Override
+	public void setSpecialHolidayFrame(Integer specialHolidayFrame) {
+		this.specialHolidayFrame = specialHolidayFrame;
+	}
+
+	@Override
+	public void setWorkAbsence(Integer workAbsence) {
+		this.absenceWorkDay = workAbsence;
+	}
 }

@@ -41,6 +41,11 @@ public class KclmtAcquisitionEmp extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @Column(name = "PREEMP_PERMIT_ATR")
     private Integer preempPermitAtr;
+    
+    /** The deadl check month. */
+    @Basic(optional = false)
+    @Column(name = "DEADL_CHECK_MONTH")
+    private Integer deadlCheckMonth;
 
     /**
      * Instantiates a new kclmt acquisition emp.

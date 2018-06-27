@@ -25,4 +25,12 @@ public interface CompensatoryAcquisitionUseGetMemento {
      * @return the preemption permit
      */
     ApplyPermission getPreemptionPermit();
+    
+    
+    /**
+     * Gets the deadl check month.
+     *
+     * @return the deadl check month
+     */
+    DeadlCheckMonth getDeadlCheckMonth();
 }

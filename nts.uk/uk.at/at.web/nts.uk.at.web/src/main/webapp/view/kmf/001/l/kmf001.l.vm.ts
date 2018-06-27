@@ -15,6 +15,9 @@ module nts.uk.pr.view.kmf001.l {
             childNursingSetting: KnockoutObservable<NursingSettingModel>;
             backupChildNursingSetting: KnockoutObservable<NursingSettingModel>;
             
+            nursingLeaveSpecialHolidayList: KnockoutObservableArray<ItemModel>;
+            nursingLeaveWorkAbsenceList: KnockoutObservableArray<ItemModel>;
+            
             constructor() {
                 let self = this;
                 self.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
@@ -30,6 +33,9 @@ module nts.uk.pr.view.kmf001.l {
                 self.childNursingSetting = ko.observable(new NursingSettingModel(self));
                 self.backupChildNursingSetting = ko.observable(null);
                 
+                self.nursingLeaveSpecialHolidayList = ko.observableArray([]);
+                self.nursingLeaveWorkAbsenceList = ko.observableArray([]);
+                
                 self.nursingSetting().selectedManageNursing.subscribe(function(v) {
                     if(v == 0){
                         // 子の看護
@@ -37,7 +43,6 @@ module nts.uk.pr.view.kmf001.l {
                         $('#nursing-day').ntsError('clear');
                         $('#nursing-number-leave-day').ntsError('clear');
                         $('#nursing-number-person').ntsError('clear');
-                        $('#work-type-code-nursing').ntsError('clear');
                     }
                 });
                 
@@ -48,7 +53,6 @@ module nts.uk.pr.view.kmf001.l {
                         $('#child-nursing-day').ntsError('clear');
                         $('#child-nursing-number-leave-day').ntsError('clear');
                         $('#child-nursing-number-person').ntsError('clear');
-                        $('#work-type-code-child-nursing').ntsError('clear');
                     }
                 });
             }
@@ -91,14 +95,35 @@ module nts.uk.pr.view.kmf001.l {
             private loadSetting(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.findSetting().done(function(res: any) {
-                    if (res) {
-                        self.initUI(res);
-                    }
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                service.findAllSpecialHoliday().done(function(allSpecialSetting: Array<any>) {
+                    var specialSettingList: ItemModel[] = [];
+                    allSpecialSetting.forEach(specialHolidayItem => {
+                        let item = new ItemModel(specialHolidayItem.specialHdFrameNo, specialHolidayItem.specialHdFrameName);
+                        specialSettingList.push(item);
+                    });
+                    self.nursingLeaveSpecialHolidayList(specialSettingList);
+                    
+                    service.findAllAbsenceFrame().done(function(allAbsenceSetting: Array<any>) {
+                        var absenceSettingList: ItemModel[] = [];
+                        allAbsenceSetting.forEach(absenceFrameItem => {
+                            let item = new ItemModel(absenceFrameItem.absenceFrameNo, absenceFrameItem.absenceFrameName);
+                            absenceSettingList.push(item);
+                        });
+                        self.nursingLeaveWorkAbsenceList(absenceSettingList);
+                        
+                        service.findSetting().done(function(res: any) {
+                            if (res) {
+                                self.initUI(res);
+                            }
+                        dfd.resolve();
+                        }).fail(function(res) {
+                            nts.uk.ui.dialog.alertError(res.message);
+                        });
+                        
+                    });
+                    
                 });
+                
                 return dfd.promise();
             }
             
@@ -151,9 +176,9 @@ module nts.uk.pr.view.kmf001.l {
                     $('#nursing-number-leave-day').ntsEditor('validate');
                     $('#nursing-number-person').ntsEditor('validate');
                     
-                    if (!self.nursingSetting().workTypeCodes() || self.nursingSetting().workTypeCodes().length == 0) {
-                        $('#work-type-code-nursing').ntsError('set', {messageId:"Msg_152"});
-                    }
+//                    if (!self.nursingSetting().workTypeCodes() || self.nursingSetting().workTypeCodes().length == 0) {
+//                        $('#work-type-code-nursing').ntsError('set', {messageId:"Msg_152"});
+//                    }
                 }
                 if (self.childNursingSetting().enableNursing()) {
                     $('#child-nursing-month').ntsEditor('validate');
@@ -161,10 +186,10 @@ module nts.uk.pr.view.kmf001.l {
                     $('#child-nursing-number-leave-day').ntsEditor('validate');
                     $('#child-nursing-number-person').ntsEditor('validate');
                     
-                    if (!self.childNursingSetting().workTypeCodes()
-                            || self.childNursingSetting().workTypeCodes().length == 0) {
-                        $('#work-type-code-child-nursing').ntsError('set', {messageId:"Msg_152"});
-                    }
+//                    if (!self.childNursingSetting().workTypeCodes()
+//                            || self.childNursingSetting().workTypeCodes().length == 0) {
+//                        $('#work-type-code-child-nursing').ntsError('set', {messageId:"Msg_152"});
+//                    }
                 }
                 if ($('.nts-input').ntsError('hasError')) {
                     return false;
@@ -185,7 +210,6 @@ module nts.uk.pr.view.kmf001.l {
                 $('#child-nursing-day').ntsError('clear');
                 $('#child-nursing-number-leave-day').ntsError('clear');
                 $('#child-nursing-number-person').ntsError('clear');
-                $('#work-type-code-child-nursing').ntsError('clear');
             }
             
             // find enumeration ManageDistinct
@@ -210,7 +234,8 @@ module nts.uk.pr.view.kmf001.l {
                 object.startMonthDay = ob().monthDay();
                 object.nursingNumberLeaveDay = ob().nursingNumberLeaveDay();
                 object.nursingNumberPerson = ob().nursingNumberPerson();
-                object.workTypeCodes = ob().workTypeCodes();
+                object.specialHolidayFrame = ob().nursingLeaveSpecialHoliday();
+                object.absenceWork = ob().nursingLeaveWorkAbsence();
                 
                 return object;
             }
@@ -220,8 +245,8 @@ module nts.uk.pr.view.kmf001.l {
                 ob().monthDay(object.startMonthDay);
                 ob().nursingNumberLeaveDay(object.nursingNumberLeaveDay);
                 ob().nursingNumberPerson(object.nursingNumberPerson);
-                ob().workTypeCodes(object.workTypeCodes);
-                ob().typeCode(object.workType);
+                ob().nursingLeaveSpecialHoliday(object.specialHolidayFrame);
+                ob().nursingLeaveWorkAbsence(object.absenceWorkDay);
             }
             
         }
@@ -233,8 +258,9 @@ module nts.uk.pr.view.kmf001.l {
             monthDay: KnockoutObservable<number>;
             nursingNumberLeaveDay: KnockoutObservable<number>;
             nursingNumberPerson: KnockoutObservable<number>;
-            workTypeCodes: KnockoutObservableArray<string>;
-            typeCode: KnockoutObservable<string>;
+            
+            nursingLeaveSpecialHoliday: KnockoutObservable<number>;
+            nursingLeaveWorkAbsence: KnockoutObservable<number>;
             
             parent: ScreenModel;
             
@@ -248,36 +274,18 @@ module nts.uk.pr.view.kmf001.l {
                 self.monthDay = ko.observable(null);
                 self.nursingNumberLeaveDay = ko.observable(null);
                 self.nursingNumberPerson = ko.observable(null);
-                self.workTypeCodes = ko.observableArray([]);
-                self.typeCode = ko.observable('');
-                
-
+                self.nursingLeaveSpecialHoliday = ko.observable(0);
+                self.nursingLeaveWorkAbsence = ko.observable(0);
             }
-            
-            private openDialog() {
-                let self = this;
-                service.findWorkTypeCodes().done(function(res) {
-                    
-                    nts.uk.ui.windows.setShared('KDL002_Multiple', true);
-                    nts.uk.ui.windows.setShared('KDL002_AllItemObj', res);
-                    nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.workTypeCodes());
-                    nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(() => {
-                        let data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                        if (!data) {
-                            return;
-                        }
-                        self.workTypeCodes(data.map(item => item.code));
-                        self.typeCode(data.map(item => item.code + '.' + item.name).join("、"));
-                        if (self.parent.nursingSetting().workTypeCodes()
-                                && self.parent.nursingSetting().workTypeCodes().length > 0) {
-                            $('#work-type-code-nursing').ntsError('clear');
-                        }
-                        if (self.parent.childNursingSetting().workTypeCodes()
-                                && self.parent.childNursingSetting().workTypeCodes().length > 0) {
-                            $('#work-type-code-child-nursing').ntsError('clear');
-                        }
-                    });
-                });
+        }
+        
+        class ItemModel {
+            code: string;
+            name: string;
+        
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
             }
         }
     }
