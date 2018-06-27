@@ -46,8 +46,6 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         employeeID: KnockoutObservable<string> = ko.observable('');
 
-        version: KnockoutObservable<number> = ko.observable(0);
-
         displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
 
         appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
@@ -63,7 +61,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     applicationReason: self.reason(),
                     prePostAtr: self.prePostSelectedCode(),
                     enteredPersonSID: self.employeeID(),
-                    appVersion: self.version(),
+                    appVersion: self.version,
                 }
             }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             returnCmd.absCmd.changeWorkHoursType = returnCmd.absCmd.changeWorkHoursType ? 1 : 0;
@@ -102,7 +100,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             block.invisible();
             service.update(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
-                    location.reload();
+                    self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
+                        self.startPage(self.appID());
+                    });
                 });
 
             }).fail((error) => {
@@ -204,7 +204,6 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.employeeName(data.employeeName || null);
                 self.employeeID(data.employeeID || null);
-                self.version(data.application.version || 0);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
                 self.recWk().setWkTypes(data.recWkTypes || []);

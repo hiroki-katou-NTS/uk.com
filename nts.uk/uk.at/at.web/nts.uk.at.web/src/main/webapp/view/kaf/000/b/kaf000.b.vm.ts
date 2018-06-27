@@ -330,7 +330,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 }
             } else {
                 nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
-                    nts.uk.ui.block.clear();   
+                    self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                               nts.uk.ui.block.clear();        
+                    });
                 });
             }
         }
@@ -454,7 +456,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             shipmentCmd = {
                 absAppID: vm.absWk().appID(),
                 recAppID: vm.recWk().appID(),
-                appVersion: vm.version(),
+                appVersion: vm.version,
                 memo: memo ? memo : ""
             }
 
