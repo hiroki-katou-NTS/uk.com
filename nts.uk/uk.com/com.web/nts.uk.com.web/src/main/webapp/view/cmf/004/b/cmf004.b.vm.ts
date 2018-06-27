@@ -2,7 +2,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import alertError = nts.uk.ui.dialog;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         stepList: Array<NtsWizardStep> = [
             { content: '.step-1' },
@@ -51,7 +51,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         kcp005ComponentOptionScreenH: any;
         selectedEmployeeCodeScreenH: KnockoutObservableArray<string> = ko.observableArray([]);
         employeeListScreenH: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
-        
+
         categoryListOld: Array<any> = [];
         recoveryProcessingId: string = nts.uk.util.randomId();
         constructor() {
@@ -129,12 +129,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     fileId: fileInfo.id,
                     fileName: fileInfo.originalName
                 });
-                nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(()=>{
+                nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                     setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
-                    nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(()=>{
-                        if (getShared("CMF004_E_PARAMS")){
+                    nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
+                        if (getShared("CMF004_E_PARAMS")) {
                             let recoveryInfo = getShared("CMF004_E_PARAMS");
-                            if(recoveryInfo){
+                            if (recoveryInfo) {
                                 let self = this;
                                 self.recoveryProcessingId = recoveryInfo.processingId;
                                 self.initScreenE();
@@ -191,7 +191,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 }
             });
         }
-        
+
         searchDataRecovery(): void {
             let self = this;
             self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
@@ -356,20 +356,22 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         nextToScreenE(): void {
             let self = this;
-             let paramObtainRecovery = {
+            self.recoveryProcessingId = nts.uk.util.randomId();
+            let paramObtainRecovery = {
                 storeProcessingId: self.dataRecoverySelection().selectedRecoveryFile(),
                 dataRecoveryProcessId: self.recoveryProcessingId
             };
             service.obtainRecovery(paramObtainRecovery).done((res) => {
-                if (res != null) {
-                    if (res != ""){
-                       dialog.alertError({ messageId: res });
-                   }else{
-                     self.initScreenE();
-                    $('#data-recovery-wizard').ntsWizard("next");  
-                   }
+                if (res) {
+                    if (res.status) {
+                        self.initScreenE();
+                        $('#data-recovery-wizard').ntsWizard("next");
+                    } else {
+                        dialog.alertError({ messageId: res.message });
+                    }
                 }
             }).fail((err) => {
+                dialog.alertError(err);
             });
         }
 
@@ -384,28 +386,28 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         nextToScreenG(): void {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            for(let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())){
-                if(checkRow.isRecover){
-                    if(checkRow.startOfPeriod > checkRow.endOfPeriod){
-                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1320'});
+            for (let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())) {
+                if (checkRow.isRecover) {
+                    if (checkRow.startOfPeriod > checkRow.endOfPeriod) {
+                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1320' });
                     }
-                    
+
                 }
-                
-                let oldData =  _.find(self.categoryListOld, x =>{
+
+                let oldData = _.find(self.categoryListOld, x => {
                     return x.categoryId == checkRow.categoryId;
                 });
-                if(oldData.startOfPeriod < checkRow.startOfPeriod){
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
-                    }
-                if(oldData.endOfPeriod > checkRow.endOfPeriod ){
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319'});
-                    }
-            } 
-            
-           
-            
-            
+                if (oldData.startOfPeriod < checkRow.startOfPeriod) {
+                    $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319' });
+                }
+                if (oldData.endOfPeriod > checkRow.endOfPeriod) {
+                    $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319' });
+                }
+            }
+
+
+
+
             if (!nts.uk.ui.errors.hasError()) {
                 self.initScreenG();
                 $('#data-recovery-wizard').ntsWizard("next");
@@ -432,9 +434,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             });
             nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
         }
-        
-        
-        
+
+
+
 
         backToPreviousScreen(): void {
             $('#data-recovery-wizard').ntsWizard("prev");
