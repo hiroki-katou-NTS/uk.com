@@ -100,7 +100,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             block.invisible();
             service.update(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
-                    location.reload();
+                    self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
+                        self.startPage(self.appID());
+                    });
                 });
 
             }).fail((error) => {
