@@ -22,7 +22,7 @@
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod
                 <!-- monthly -->
                 nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
-                nts.uk.shr.com.primitive.sample.CommonAmount
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MinMaxInteger
             </com:ValidatorScript>
             <com:EnumScript>
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem 
@@ -669,7 +669,8 @@
                                                 ]}">
                                                     </div>
                                                     <br />
-                                                    <br />
+                                                    <div style="height: 7px"></div>
+                                                    <div class='clearfix'></div>
                                                 </com:ko>
                                                 <com:ko bind="haveSelect() === true" tag="if">
                                                 	<br />
@@ -699,7 +700,8 @@
                                                 enable: true,
                                                 columns: [
                                                     { prop: 'localizedName', length: 16 }
-                                                ]}">
+                                                ],
+                                                width: '270px'}">
                                                     </div>
                                                 </com:ko>
 
@@ -737,7 +739,7 @@
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsNumberEditor: {value: value ,required: required,enable : enable}, attr: { id: inputId}" />
+                                                            <input style="width: 50px;" data-bind="ntsNumberEditor: {value: value ,required: required,enable : enable, constraint: 'MinMaxInteger'}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
                                                             <input style="width: 50px;" data-bind="ntsTimeEditor: {value: value ,required: required,mode : 'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />
