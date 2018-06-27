@@ -11,13 +11,10 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -32,9 +29,6 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	private Finally<BreakClassification> breakAtr;
 	private final DeductionClassification deductionAtr;
 	
-//	private final DedcutionClassification deductionClassification;
-//	private final BreakClassification breakClassification;
-
 	/**
 	 * 控除項目の時間帯作成
 	 * @param timeSpan
@@ -254,7 +248,13 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			/*休憩と休憩　→　育児と育児の重複と同じにする(後ろにある時間の開始を前の終了に合わせる)*/
 			else if(this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreak()) {
 				map.add(this);
-				//map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
+				if(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).isPresent()) {
+					map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
+				}
+				else {
+					map.add(compareTimeSheet.replaceTimeSpan(new TimeSpanForCalc(this.timeSheet.getStart(),this.timeSheet.getStart())));
+				}
+				
 				return map;
 			}
 		}

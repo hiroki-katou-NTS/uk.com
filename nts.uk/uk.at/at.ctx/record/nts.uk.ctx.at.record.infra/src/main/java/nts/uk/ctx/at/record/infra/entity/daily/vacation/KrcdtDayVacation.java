@@ -119,38 +119,65 @@ public class KrcdtDayVacation extends UkJpaEntity implements Serializable {
 		this.tdvShortageTime = 0;
 		//年休
 		if(domain.getAnnual() != null) {
-			this.annualleaveTime = domain.getAnnual() == null ? 0 : domain.getAnnual().getUseTime().valueAsMinutes();
-			this.annualleaveTdvTime = domain.getAnnual() == null ? 0 : domain.getAnnual().getDigestionUseTime().valueAsMinutes();
+			this.annualleaveTime = domain.getAnnual() == null && domain.getAnnual().getUseTime() == null 
+					       			? 0 
+					       			: domain.getAnnual().getUseTime().valueAsMinutes();
+			
+			this.annualleaveTdvTime = domain.getAnnual() == null && domain.getAnnual().getDigestionUseTime() == null 
+									   ? 0 
+									   : domain.getAnnual().getDigestionUseTime().valueAsMinutes();
 		}
 
 		//代休
 		if(domain.getSubstitute() != null) {
-			this.compensatoryLeaveTime = domain.getSubstitute() == null ? 0 : domain.getSubstitute().getUseTime().valueAsMinutes();
-			this.compensatoryLeaveTdvTime = domain.getSubstitute() == null ? 0 : domain.getSubstitute().getDigestionUseTime().valueAsMinutes();
+			this.compensatoryLeaveTime = domain.getSubstitute() == null && domain.getSubstitute().getUseTime() == null  
+										  ? 0 
+										  : domain.getSubstitute().getUseTime().valueAsMinutes();
+			
+			this.compensatoryLeaveTdvTime = domain.getSubstitute() == null && domain.getSubstitute().getDigestionUseTime() == null
+											? 0 
+											: domain.getSubstitute().getDigestionUseTime().valueAsMinutes();
 		}
 		
 		//特別休暇
 		if(domain.getSpecialHoliday() != null) {
-			this.specialHolidayTime = domain.getSpecialHoliday() == null ? 0 : domain.getSpecialHoliday().getUseTime().valueAsMinutes();
-			this.specialHolidayTdvTime = domain.getSpecialHoliday() == null ? 0 : domain.getSpecialHoliday().getDigestionUseTime().valueAsMinutes();
+			this.specialHolidayTime = domain.getSpecialHoliday() == null && domain.getSpecialHoliday().getUseTime() == null
+									  ? 0 
+									  : domain.getSpecialHoliday().getUseTime().valueAsMinutes();
+			this.specialHolidayTdvTime = domain.getSpecialHoliday() == null && domain.getSpecialHoliday().getDigestionUseTime() == null  
+										  ? 0 
+										  : domain.getSpecialHoliday().getDigestionUseTime().valueAsMinutes();
 		}
 		//超過有休
 		if(domain.getOverSalary() != null) {
-			this.excessSalaryiesTime = domain.getOverSalary() == null ? 0 : domain.getOverSalary().getUseTime().valueAsMinutes();
-			this.excessSalaryiesTdvTime = domain.getOverSalary() == null ? 0 : domain.getOverSalary().getDigestionUseTime().valueAsMinutes();
+			this.excessSalaryiesTime = domain.getOverSalary() == null && domain.getOverSalary().getUseTime() == null 
+									   ? 0 
+									   : domain.getOverSalary().getUseTime().valueAsMinutes();
+			this.excessSalaryiesTdvTime = domain.getOverSalary() == null && domain.getOverSalary().getDigestionUseTime()  == null
+										  ? 0 
+										  : domain.getOverSalary().getDigestionUseTime().valueAsMinutes();
 		}
 		//積立
 		if(domain.getYearlyReserved() != null) {
-			this.retentionYearlyTime = domain.getYearlyReserved() == null ? 0 : domain.getYearlyReserved().getUseTime().valueAsMinutes(); 
+			this.retentionYearlyTime = domain.getYearlyReserved() == null && domain.getYearlyReserved().getUseTime() == null 
+									   ? 0 
+									   : domain.getYearlyReserved().getUseTime().valueAsMinutes(); 
 		}
 		//欠勤
 		if(domain.getAbsence() != null) {
-			this.absenceTime = domain.getAbsence() == null ? 0 : domain.getAbsence().getUseTime().valueAsMinutes(); 
+			this.absenceTime = domain.getAbsence() == null && domain.getAbsence().getUseTime() == null
+								? 0 
+								: domain.getAbsence().getUseTime().valueAsMinutes(); 
 		}
 		//時間消化休暇
 		if(domain.getTimeDigest() != null) {
-			this.tdvTime = domain.getTimeDigest() == null ? 0 : domain.getTimeDigest().getUseTime().valueAsMinutes();
-			this.tdvShortageTime = domain.getTimeDigest() == null ? 0 : domain.getTimeDigest().getLeakageTime().valueAsMinutes();;
+			this.tdvTime = domain.getTimeDigest() == null && domain.getTimeDigest().getUseTime() == null  
+					   	    ? 0 
+					   	    : domain.getTimeDigest().getUseTime().valueAsMinutes();
+			
+			this.tdvShortageTime = domain.getTimeDigest() == null && domain.getTimeDigest().getLeakageTime() == null 
+								    ? 0 
+								    : domain.getTimeDigest().getLeakageTime().valueAsMinutes();
 		}
 	}
 }

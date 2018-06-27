@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.DailyWorkTypeListImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.NumberOfWorkTypeUsedImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.YearlyHolidaysTimeRemainingImport;
 import nts.uk.ctx.at.request.dom.application.remainingnumer.ExcelInforCommand;
 import nts.uk.ctx.at.request.dom.application.remainingnumer.PlannedVacationListCommand;
@@ -54,7 +55,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 
 	@Inject
 	private VacationHistoryRepository vacationHistoryRepository;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<CheckFuncDataCommand> context) {
 		val asyncTask = context.asAsync();
@@ -73,7 +74,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return;
 		}
 		// アルゴリズム「社員ID、期間をもとに期間内に年休付与日がある社員を抽出する」を実行する
-		// RequestList 要求No304. 
+		// RequestList 要求No304.
 		List<String> employeeList = employeeSearchCommand.stream().map(f -> f.getEmployeeId())
 				.collect(Collectors.toList());
 		if (asyncTask.hasBeenRequestedToCancel()) {
@@ -87,7 +88,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return;
 		}
 		// パラメータ.社員Listと取得した年休付与がある社員ID(List)を比較する
-		checkEmployeeListId(asyncTask, employeeSearchCommand, employeeIdRq304, employeeListResult, outputErrorInfoCommand);
+		checkEmployeeListId(asyncTask, employeeSearchCommand, employeeIdRq304, employeeListResult,
+				outputErrorInfoCommand);
 		if (asyncTask.hasBeenRequestedToCancel()) {
 			asyncTask.finishedAsCancelled();
 			return;
@@ -95,10 +97,9 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		List<PlannedVacationListCommand> plannedVacationList = new ArrayList<>();
 		if (outputErrorInfoCommand.isEmpty()) {
 			// 計画休暇一覧を取得する
-			plannedVacationList = getPlannedVacationList(asyncTask, command.getDate(),
-				outputErrorInfoCommand);
+			plannedVacationList = getPlannedVacationList(asyncTask, command.getDate(), outputErrorInfoCommand);
 		}
-		
+
 		if (asyncTask.hasBeenRequestedToCancel()) {
 			asyncTask.finishedAsCancelled();
 			return;
@@ -111,9 +112,9 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 						.add("employeeName", outputErrorInfoCommand.get(i).getEmployeeName())
 						.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
 				setter.setData(ERROR_LIST + i, value);
-				setter.updateData(NUMBER_OF_SUCCESS, i+1);
-				setter.updateData(NUMBER_OF_ERROR, i+1);
-				
+				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+				setter.updateData(NUMBER_OF_ERROR, i + 1);
+
 				if (asyncTask.hasBeenRequestedToCancel()) {
 					asyncTask.finishedAsCancelled();
 					return;
@@ -135,18 +136,20 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 
 				if (employeeRecordImport == null) {
 					// 取得失敗
-					//パラメータ.処理人数に＋１加算する
+					// パラメータ.処理人数に＋１加算する
 					setter.updateData(NUMBER_OF_SUCCESS, i + 1);
 					continue;
 				}
 				// 取得成功
 				// RequestList 要求No327 - アルゴリズム「指定年月日時点の年休残数を取得」を実行する
-				//(Thực hiện thuật toán 「指定年月日時点の年休残数を取得-lấy số phép còn lại tại thời điểm xác định」)
+				// (Thực hiện thuật toán 「指定年月日時点の年休残数を取得-lấy số phép còn lại
+				// tại thời điểm xác định」)
 				List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport = annualBreakManageAdapter
-						.getYearHolidayTimeAnnualRemaining(employeeSearchCommand.get(i).getEmployeeId(), command.getDate());
+						.getYearHolidayTimeAnnualRemaining(employeeSearchCommand.get(i).getEmployeeId(),
+								command.getDate());
 				if (yearlyHolidaysTimeRemainingImport.isEmpty()) {
-					//取得失敗
-					//パラメータ.処理人数に＋１加算する
+					// 取得失敗
+					// パラメータ.処理人数に＋１加算する
 					setter.updateData(NUMBER_OF_SUCCESS, i + 1);
 					continue;
 				}
@@ -154,14 +157,14 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					asyncTask.finishedAsCancelled();
 					break;
 				}
-				
+
 				// パラメータ.年休残数をチェックする
-				//(Check số phép còn lại trong param -パラメータ.年休残数)
+				// (Check số phép còn lại trong param -パラメータ.年休残数)
 				if (command.getMaxDay() != null) {
 					for (YearlyHolidaysTimeRemainingImport yearlyHolidaysTimeRemaining : yearlyHolidaysTimeRemainingImport) {
 						if (yearlyHolidaysTimeRemaining.getAnnualRemaining().compareTo(command.getMaxDay()) >= 0) {
-							//取得した年休残数　≧　パラメータ.年休残数
-							//パラメータ.処理人数に＋１加算する
+							// 取得した年休残数 ≧ パラメータ.年休残数
+							// パラメータ.処理人数に＋１加算する
 							setter.updateData(NUMBER_OF_SUCCESS, i + 1);
 							return;
 						}
@@ -173,11 +176,14 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				}
 				// 取得成功
 				// RequestList 要求No328
-				List<String> workTypeCode = plannedVacationList.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
-				Optional<DailyWorkTypeListImport> dailyWorkTypeListImport = this.annualBreakManageAdapter.getDailyWorkTypeUsed(employeeSearchCommand.get(i).getEmployeeId(), workTypeCode, command.getStartTime(), command.getEndTime());
-				if(!dailyWorkTypeListImport.isPresent()){
-					//取得失敗
-					//パラメータ.処理人数に＋１加算する
+				List<String> workTypeCode = plannedVacationList.stream().map(x -> x.getWorkTypeCode())
+						.collect(Collectors.toList());
+				Optional<DailyWorkTypeListImport> dailyWorkTypeListImport = this.annualBreakManageAdapter
+						.getDailyWorkTypeUsed(employeeSearchCommand.get(i).getEmployeeId(), workTypeCode,
+								command.getStartTime(), command.getEndTime());
+				if (!dailyWorkTypeListImport.isPresent()) {
+					// 取得失敗
+					// パラメータ.処理人数に＋１加算する
 					setter.updateData(NUMBER_OF_SUCCESS, i + 1);
 					continue;
 				}
@@ -185,41 +191,56 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					asyncTask.finishedAsCancelled();
 					break;
 				}
-				//取得した情報をもとにExcel 出力情報Listに設定する
+				// 取得した情報をもとにExcel 出力情報Listに設定する
 				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
 				excelInforCommand.setName(employeeRecordImport.getBusinessName());
 				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate().toString());
-				//GeneralDate temDate9999 = GeneralDate.fromString("99991231", "YYYY/MM/DD");
-				excelInforCommand.setDateEnd("9999/12/31".equals(employeeRecordImport.getRetiredDate().toString()) ?
-					"" : employeeRecordImport.getRetiredDate().toString());
-				
-				excelInforCommand.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay().toString());
+				// GeneralDate temDate9999 = GeneralDate.fromString("99991231",
+				// "YYYY/MM/DD");
+				excelInforCommand.setDateEnd("9999/12/31".equals(employeeRecordImport.getRetiredDate().toString()) ? ""
+						: employeeRecordImport.getRetiredDate().toString());
+
+				excelInforCommand
+						.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay().toString());
 				excelInforCommand.setDateTargetRemaining(command.getDate().toString());
-				excelInforCommand.setDateAnnualRetirement(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime());
+				excelInforCommand.setDateAnnualRetirement(
+						yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime());
 				excelInforCommand.setDateAnnualRest(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining());
-				excelInforCommand.setNumberOfWorkTypeUsedImport(dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports());
-				excelInforCommand.setPlannedVacationListCommand(plannedVacationList);
+				// excelInforCommand.setNumberOfWorkTypeUsedImport(dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports());
+				// excelInforCommand.setPlannedVacationListCommand(plannedVacationList);
 				excelInforList.add(excelInforCommand);
-				
+
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
-				
+
 				ObjectMapper mapper = new ObjectMapper();
 				try {
+					for (int j = 0; j <= plannedVacationList.size(); j += 10) {
+						List<NumberOfWorkTypeUsedImport> listNumberOfWorkTypeUsedImport = dailyWorkTypeListImport.get()
+								.getNumberOfWorkTypeUsedExports().stream().skip(j).limit(10)
+								.collect(Collectors.toList());
+						String workTypeUsedJsonString = mapper.writeValueAsString(listNumberOfWorkTypeUsedImport);
+						setter.setData(i + ",WORKTYPEUSED," + j, workTypeUsedJsonString);
+
+						List<PlannedVacationListCommand> listPlannedVacationListCommand = plannedVacationList.stream()
+								.skip(j).limit(10).collect(Collectors.toList());
+						String plannedVacationJsonString = mapper.writeValueAsString(listPlannedVacationListCommand);
+						setter.setData(i + ",PLANNEDVACATION," + j, plannedVacationJsonString);
+					}
 					String jsonInString = mapper.writeValueAsString(excelInforCommand);
-					setter.setData("EXCEL_LIST"  + i, jsonInString);
+					setter.setData(i + ",EXCEL_LIST", jsonInString);
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
-			
+
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
 				return;
 			}
 
 		}
-		//delay a moment.
+		// delay a moment.
 		try {
 			TimeUnit.SECONDS.sleep(1);
 		} catch (InterruptedException e) {
@@ -234,7 +255,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	 * @param maxDay
 	 * @return
 	 */
-	private List<PlannedVacationListCommand> getPlannedVacationList(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask, GeneralDate confirmDate,
+	private List<PlannedVacationListCommand> getPlannedVacationList(
+			AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask, GeneralDate confirmDate,
 			List<OutputErrorInfoCommand> outputErrorInfoCommand) {
 		List<PlannedVacationListCommand> plannedVacationListCommand = new ArrayList<>();
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -244,9 +266,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return plannedVacationListCommand;
 		}
 		// ドメインモデル「計画休暇のルールの履歴」を取得する (Lấy domain 「計画休暇のルールの履歴」)
-		List<PlanVacationHistory> planVacationHistory = vacationHistoryRepository.findHistoryByBaseDate(companyId, confirmDate);
-				//iVactionHistoryRulesService
-				//.getPlanVacationHistoryByDate(companyId, date);
+		List<PlanVacationHistory> planVacationHistory = vacationHistoryRepository.findHistoryByBaseDate(companyId,
+				confirmDate);
+		// iVactionHistoryRulesService
+		// .getPlanVacationHistoryByDate(companyId, date);
 		if (asyncTask.hasBeenRequestedToCancel()) {
 			asyncTask.finishedAsCancelled();
 			return plannedVacationListCommand;
@@ -267,13 +290,15 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				return plannedVacationListCommand;
 			}
 			// ドメインモデル「計画休暇を取得できる上限日数」を取得する (Lấy domain 「計画休暇を取得できる上限日数」)
-			List<PlanVacationHistory> planVacationHistoryMaxDay = vacationHistoryRepository.findHistory(companyId, element.identifier());
+			List<PlanVacationHistory> planVacationHistoryMaxDay = vacationHistoryRepository.findHistory(companyId,
+					element.identifier());
 			// ドメインモデル「勤務種類」を取得する (lấy domain 「勤務種類」)
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
 				return plannedVacationListCommand;
 			}
-			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(), element.getWorkTypeCode());
+			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(),
+					element.getWorkTypeCode());
 			if (workType.isPresent()) {
 				PlannedVacationListCommand plannedVacation = new PlannedVacationListCommand();
 				plannedVacation.setWorkTypeCode(workType.get().getWorkTypeCode().toString());
@@ -293,9 +318,9 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	 * @param outputErrorInfoCommand
 	 * @param employeeSearchCommand
 	 */
-	private void checkEmployeeListId(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask, List<EmployeeSearchCommand> employeeSearchCommand, List<AnnualBreakManageImport> employeeIdRq304,
-			List<EmployeeSearchCommand> employeeListResult, List<OutputErrorInfoCommand> outputErrorInfoCommand
-			) {
+	private void checkEmployeeListId(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask,
+			List<EmployeeSearchCommand> employeeSearchCommand, List<AnnualBreakManageImport> employeeIdRq304,
+			List<EmployeeSearchCommand> employeeListResult, List<OutputErrorInfoCommand> outputErrorInfoCommand) {
 		for (EmployeeSearchCommand employee : employeeSearchCommand) {
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
@@ -305,8 +330,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					.filter(x -> employee.getEmployeeId().equals(x.getEmployeeId())).findFirst();
 			if (findEmployeeById.isPresent()) {
 				// 社員が両方に存在する場合
-				employeeListResult.add(employee);				
-				
+				employeeListResult.add(employee);
+
 			} else {
 				// パラメータ.社員Listにのみ存在する社員の場合
 				OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();

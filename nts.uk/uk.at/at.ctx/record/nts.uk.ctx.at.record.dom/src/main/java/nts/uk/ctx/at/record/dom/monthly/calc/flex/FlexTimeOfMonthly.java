@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -205,7 +206,7 @@ public class FlexTimeOfMonthly {
 			
 				// 処理日の職場コードを取得する
 				String workplaceId = "empty";
-				val affWorkplaceOpt = repositories.getAffWorkplace().findBySid(employeeId, procDate);
+				val affWorkplaceOpt = employeeSets.getWorkplace(procDate);
 				if (affWorkplaceOpt.isPresent()){
 					workplaceId = affWorkplaceOpt.get().getWorkplaceId();
 				}
@@ -217,10 +218,14 @@ public class FlexTimeOfMonthly {
 					employmentCd = employmentOpt.get().getEmploymentCode();
 				}
 			
+				ConcurrentStopwatches.start("12222.3:日別実績の集計：");
+				
 				// 日別実績を集計する　（フレックス時間勤務用）
 				val flexTimeDaily = aggregateTotalWorkingTime.aggregateDailyForFlex(attendanceTimeOfDaily,
 						companyId, workplaceId, employmentCd, workingSystem, aggregateAtr,
 						this.flexAggrSet, this.monthlyAggrSetOfFlexOpt);
+
+				ConcurrentStopwatches.stop("12222.3:日別実績の集計：");
 				
 				// フレックス時間への集計結果を取得する
 				for (val timeSeriesWork : flexTimeDaily.getTimeSeriesWorks().values()){
@@ -247,33 +252,45 @@ public class FlexTimeOfMonthly {
 				
 				// 週別実績を集計する
 				{
+					ConcurrentStopwatches.start("12222.4:週別実績の集計：");
+					
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
 					weekCalc.aggregate(companyId, employeeId, yearMonth, weekAggrPeriod,
 							workingSystem, aggregateAtr,
 							null, null, aggregateTotalWorkingTime,
 							WeekStart.TighteningStartDate, new AttendanceTimeMonth(0),
-							attendanceTimeOfDailyMap, repositories);
+							attendanceTimeOfDailyMap, companySets, repositories);
 					resultWeeks.add(newWeek);
+
+					ConcurrentStopwatches.stop("12222.4:週別実績の集計：");
 					
 					// 集計区分を確認する
 					if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
 					
+						ConcurrentStopwatches.start("12222.5:時間外超過の集計：");
+						
 						// 時間外超過の集計
 						newWeek.getExcessOutside().aggregate(
-								companySets.getOutsideOverTimeSet(), weekCalc, repositories);
+								companySets.getOutsideOverTimeSet(), weekCalc, companySets);
+						
+						ConcurrentStopwatches.stop("12222.5:時間外超過の集計：");
 					}
 				}
 			}
 			
 			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
-			
+
+				ConcurrentStopwatches.start("12222.6:超過時間割り当て：");
+				
 				// 時間外超過の時、フレックス超過時間を割り当てる
 				excessOutsideWorkMng.assignFlexExcessTime(datePeriod, flexAggregateMethod,
 						procDate, this.flexAggrSet, aggregateTotalWorkingTime, this.flexTime,
 						settingsByFlex.getPrescribedWorkingTimeMonth(),
 						settingsByFlex.getStatutoryWorkingTimeMonth(),
 						repositories);
+				
+				ConcurrentStopwatches.stop("12222.6:超過時間割り当て：");
 			}
 			
 			procDate = procDate.addDays(1);
