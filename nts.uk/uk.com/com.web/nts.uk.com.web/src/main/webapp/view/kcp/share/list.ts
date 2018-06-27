@@ -226,6 +226,7 @@ module kcp.share.list {
         isHasButtonSelectAll: boolean;
         gridStyle: GridStyle;
         listType: ListType;
+        selectType: SelectType;
         componentGridId: string;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         searchOption: any;
@@ -282,6 +283,7 @@ module kcp.share.list {
             self.isMultipleSelect = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             self.maxRows = data.maxRows ? data.maxRows : 12;
+            self.selectType = data.selectType;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
@@ -330,8 +332,7 @@ module kcp.share.list {
             if (self.listType == ListType.EMPLOYEE) {
                 self.initEmployeeSubscription(data);
                 self.initComponent(data, data.employeeInputList(), $input).done(function() {
-                    // Set default value when init component.
-                    _.defer(() => self.initSelectedValue(data, self.itemList()));
+                    self.loadNtsGridList();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -340,12 +341,41 @@ module kcp.share.list {
             // Find data list.
             this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
                 self.initComponent(data, dataList, $input).done(function() {
-                    // Set default value when init component.
-                    _.defer(() => self.initSelectedValue(data, self.itemList()));
+                    self.loadNtsGridList();
                     dfd.resolve();
                 });
             });
             return dfd.promise();
+        }
+
+        private loadNtsGridList(): void {
+            let self = this;
+            _.defer(() => {
+                // Set default value when init component.
+                self.initSelectedValue();
+                const options = {
+                    width: self.gridStyle.totalColumnSize,
+                    dataSource: self.itemList(),
+                    primaryKey: self.targetKey,
+                    columns: self.listComponentColumn,
+                    multiple: self.isMultipleSelect,
+                    value: self.selectedCodes(),
+                    name: self.getItemNameForList(),
+                    rows: self.maxRows
+                };
+                const searchBoxOptions = {
+                    searchMode: 'filter',
+                    targetKey: self.targetKey,
+                    comId: self.componentGridId,
+                    items: self.itemList(),
+                    selected: self.selectedCodes(),
+                    selectedKey: self.targetKey,
+                    fields: ['name', 'code'],
+                    mode: 'igGrid'
+                };
+                $('#search-box-kcp').ntsSearchBox(searchBoxOptions);
+                $('#grid-list-all-kcp').ntsGridList(options);
+            });
         }
 
         private initClosureSubscription(subscriptions: Array<KnockoutSubscription>): void {
@@ -634,11 +664,11 @@ module kcp.share.list {
         /**
          * Init default selected value.
          */
-        private initSelectedValue(data: ComponentOption, dataList: Array<UnitModel>) {
+        private initSelectedValue() {
             var self = this;
-            switch(data.selectType) {
+            switch(self.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
-                    if(data.isShowNoSelectRow && _.isEmpty(data.selectedCode())) {
+                    if(self.isShowNoSelectRow && _.isEmpty(self.selectedCodes())) {
                         self.selectedCodes("");
                     }
                     return;
@@ -646,16 +676,16 @@ module kcp.share.list {
                     if (!self.isMultipleSelect){
                         return;
                     }
-                    self.selectedCodes(dataList.map(item => self.listType == ListType.JOB_TITLE ? item.id : item.code));
+                    self.selectedCodes(self.itemList().map(item => self.listType == ListType.JOB_TITLE ? item.id : item.code));
                     return;
                 case SelectType.SELECT_FIRST_ITEM:
-                    self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+                    self.selectedCodes(_.isEmpty(self.itemList()) ? null : self.selectData(self.itemList()[0]));
                     return;
                 case SelectType.NO_SELECT:
-                    self.selectedCodes(data.isMultiSelect ? [] : null);
+                    self.selectedCodes(self.isMultipleSelect ? [] : null);
                     return;
                 default:
-                    self.selectedCodes(data.isMultiSelect ? [] : null);
+                    self.selectedCodes(self.isMultipleSelect ? [] : null);
             }
         }
         
@@ -680,11 +710,12 @@ module kcp.share.list {
         /**
          * Select data for multiple or not
          */
-        private selectData(option: ComponentOption, data: UnitModel) :any {
-            if (this.isMultipleSelect) {
-                return option.listType == ListType.JOB_TITLE ? [data.id] : [data.code];
+        private selectData(data: UnitModel): any {
+            let self = this;
+            if (self.isMultipleSelect) {
+                return self.listType == ListType.JOB_TITLE ? [data.id] : [data.code];
             }
-            if (option.listType == ListType.JOB_TITLE) {
+            if (self.listType == ListType.JOB_TITLE) {
                 return data.id;
             }
             return data.code;
