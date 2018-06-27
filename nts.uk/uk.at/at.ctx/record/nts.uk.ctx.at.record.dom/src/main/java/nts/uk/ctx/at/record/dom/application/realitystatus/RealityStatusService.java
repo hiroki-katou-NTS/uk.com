@@ -446,7 +446,7 @@ public class RealityStatusService {
 		// 社員ID（リスト）
 		for (RealityStatusEmployeeImport emp : listEmp) {
 			// アルゴリズム「承認状況未確認チェック上司」を実行する
-			if (this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(), emp.getEndDate())) {
+			if (!this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(), emp.getEndDate())) {
 				// 上司社員ID（リスト）を未確認者（リスト）にセット
 				listEmpUnconfirm.add(emp.getSId());
 			}
