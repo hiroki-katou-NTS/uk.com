@@ -319,6 +319,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             });
                         }
                     });
+                    if(data.reflectAppId != ''){
+                        service.reflectAppSingle(data.reflectAppId).done(function(verNew){
+                            self.version = verNew;
+                    });
+                    }
+                    
                 } else {
                     nts.uk.ui.block.clear();
                 }

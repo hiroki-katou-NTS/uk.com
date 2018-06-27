@@ -1498,7 +1498,8 @@ module cmm045.a.viewmodel {
                 block.clear();
                 return;
             }
-            service.approvalListApp(lstApp).done(function() {
+            service.approvalListApp(lstApp).done(function(data) {
+                service.reflectListApp(data);
                 nts.uk.ui.dialog.info({ messageId: "Msg_220" });
                 self.filter();
                 block.clear();
