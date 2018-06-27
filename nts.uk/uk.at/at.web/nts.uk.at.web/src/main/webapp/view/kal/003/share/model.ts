@@ -590,13 +590,13 @@ module nts.uk.at.view.kal003.share.model {
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
                 this.extractType(data.compareOperator);
                 this.numberDayDiffHoliday1=ko.observable(data.numberDayDiffHoliday1 || 0);
-                this.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2 || null); 
+                this.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2 || 0); 
                 this.setupScrible();  
             }else{
                 this.errorAlarmCheckID=ko.observable("");
 //                this.operator=ko.observable(0);
                 this.numberDayDiffHoliday1=ko.observable(0);
-                this.numberDayDiffHoliday2=ko.observable(null);
+                this.numberDayDiffHoliday2=ko.observable(0);
                 this.setupScrible();
             }
         }
@@ -612,7 +612,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.inputs()[1].required(true);
                 } else {
                     self.inputs()[1].enable(false);
-                    self.inputs()[1].value(null);
+                    self.inputs()[1].value(0);
                     self.inputs()[1].required(false);
                 }
             });  
@@ -952,7 +952,7 @@ module nts.uk.at.view.kal003.share.model {
                 
                 if(param.noinit !== true){
                     self.group1=ko.observable(param ? new ErAlConditionsAttendanceItem(param.group1) : null);    
-                    self.extractType(param.group1.lstErAlAtdItemCon[0].compareOperator);
+                    self.extractType(param.group1.lstErAlAtdItemCon.length ==0? 0 : param.group1.lstErAlAtdItemCon[0].compareOperator);
                     self.getTextAttdName(undefined);
                     self.setupScrible();
                 }
@@ -1022,7 +1022,7 @@ module nts.uk.at.view.kal003.share.model {
                 } else {
                     self.inputs()[1].enable(false);
                     self.inputs()[1].required(false);
-                    self.inputs()[1].value(0);
+                    self.inputs()[1].value(null);
                 }
             });  
         }
@@ -1281,7 +1281,7 @@ module nts.uk.at.view.kal003.share.model {
                 let compareOp = self.compareOperator();
                 let case1 = self.displayLeftCompare();
                 let case2 = self.displayTarget();
-                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                if(compareOp === 6 || compareOp === 7){
                     return case1;
                 } else {
                     return case2;
@@ -1291,17 +1291,19 @@ module nts.uk.at.view.kal003.share.model {
                 let compareOp = self.compareOperator();
                 let case1 = self.displayRightCompare();
                 let case2 = self.displayTarget();
-                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                if(compareOp === 6 || compareOp === 7){
                     return case1;
-                } else {
+                } else if(compareOp === 8 || compareOp === 9){
                     return case2;
+                } else {
+                    return "";
                 }
             });
             self.displayCenter = ko.computed(() => {
                 let compareOp = self.compareOperator();
                 let case1 = self.displayLeftCompare();
                 let case2 = self.displayTarget();
-                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                if(compareOp === 6 || compareOp === 7){
                     return case2;
                 } else {
                     return case1;
@@ -1338,7 +1340,7 @@ module nts.uk.at.view.kal003.share.model {
             return x;
         }
 
-        setTextDisplay() {
+        setTextDisplay(modeX) {
             let self = this;
             if (self.useAtr()) {
                 self.setDisplayTarget();
@@ -1358,21 +1360,27 @@ module nts.uk.at.view.kal003.share.model {
             switch (self.compareOperator()) {
                 case 0:
                     self.displayLeftOperator("＝");
+                    self.displayRightOperator("");
                     break;
                 case 1:
                     self.displayLeftOperator("≠");
+                    self.displayRightOperator("");
                     break;
                 case 2:
                     self.displayLeftOperator("＞");
+                    self.displayRightOperator("");
                     break;
                 case 3:
                     self.displayLeftOperator("≧");
+                    self.displayRightOperator("");
                     break;
                 case 4:
                     self.displayLeftOperator("＜");
+                    self.displayRightOperator("");
                     break;
                 case 5:
                     self.displayLeftOperator("≦");
+                    self.displayRightOperator("");
                     break;
                 case 6:
                     self.displayLeftOperator("＜");
@@ -1405,8 +1413,13 @@ module nts.uk.at.view.kal003.share.model {
                 let rawEndValue = self.compareEndValue();
                 let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue : nts.uk.time.parseTime(rawStartValue, true).format();
                 let textDisplayRightCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue : nts.uk.time.parseTime(rawEndValue, true).format();
-                self.displayLeftCompare(textDisplayLeftCompare);
-                self.displayRightCompare(textDisplayRightCompare);
+                if(self.compareOperator() > 7){
+                    self.displayLeftCompare(textDisplayLeftCompare + ", " + textDisplayRightCompare);
+                    self.displayRightCompare("");    
+                } else {
+                    self.displayLeftCompare(textDisplayLeftCompare);
+                    self.displayRightCompare(textDisplayRightCompare);    
+                }
             } else {
                 // Compare with single value
                 if (self.conditionType() === 0) {
@@ -1430,7 +1443,7 @@ module nts.uk.at.view.kal003.share.model {
             }
         }
 
-        setDisplayTarget() {
+        setDisplayTarget(modeX) {
             let self = this;
             //self.displayTarget("");
             if (self.conditionAtr() === 2) {
@@ -1481,7 +1494,7 @@ module nts.uk.at.view.kal003.share.model {
                     //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
                     self.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
                         let addText = _.map(lstItems, (item) => {
-                                return item.attendanceItemName
+                                return item.attendanceItemName;
                             }).join("-");  
                         self.displayTarget(addText);
                     })
@@ -1510,7 +1523,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.compareEndValue(output.compareEndValue);
                     self.compareOperator(output.compareOperator);
                 }
-                self.setTextDisplay();
+                self.setTextDisplay(modeX);
             });
         }
 
