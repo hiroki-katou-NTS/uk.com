@@ -20,15 +20,15 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -62,9 +62,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
-import nts.uk.screen.com.app.find.systemresource.SystemResourceFinder;
-import nts.uk.screen.com.app.systemresource.dto.SystemResourceDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -126,9 +125,6 @@ public class ComboBoxRetrieveFactory {
 	@Inject
 	private YearServicePerRepository yearServiceRepo;
 	
-	@Inject
-	private SystemResourceFinder systemResourceFinder;
-
 	private static Map<String, Class<?>> enumMap;
 	static {
 		Map<String, Class<?>> aMap = new HashMap<>();
@@ -166,7 +162,7 @@ public class ComboBoxRetrieveFactory {
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
 
-	private final String JP_SPACE = "　";
+	private static final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode) {
@@ -393,19 +389,16 @@ public class ComboBoxRetrieveFactory {
 	}
 	
 	private List<ComboBoxObject> specialWithE00008(List<EnumConstant> enumConstants) {
-		List<SystemResourceDto> resourceList = systemResourceFinder.findList();
 
 		List<ComboBoxObject> comboBoxList = new ArrayList<>();
 		for (EnumConstant enumElement : enumConstants) {
 			int value = enumElement.getValue();
 			String customText = "";
-			Optional<SystemResourceDto> resourceDto;
 			if (value == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
-				resourceDto = resourceList.stream().filter(x -> x.getResourceId().equals("Com_Workplace")).findFirst();
-				customText = resourceDto.isPresent() ? resourceDto.get().getResourceContent() : "職場";
+				customText = TextResource.localize("Com_Workplace");
 			} else if (value == WorkScheduleMasterReferenceAtr.CLASSIFICATION.value) {
-				resourceDto = resourceList.stream().filter(x -> x.getResourceId().equals("Com_Class")).findFirst();
-				customText = resourceDto.isPresent() ? resourceDto.get().getResourceContent() : "分類";
+				customText = TextResource.localize("Com_Class");
+				;
 			}
 			comboBoxList.add(new ComboBoxObject(value + "", customText));
 		}

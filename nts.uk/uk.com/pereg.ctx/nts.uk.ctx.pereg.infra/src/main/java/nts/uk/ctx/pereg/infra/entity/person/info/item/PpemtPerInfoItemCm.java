@@ -103,6 +103,10 @@ public class PpemtPerInfoItemCm extends UkJpaEntity implements Serializable {
 	
 	@Column(name ="RESOURCE_ID")
 	public String resourceId;
+	
+	@Basic(optional = false)
+	@Column(name = "CAN_ABOLITION")
+	public int canAbolition;
 
 	@Override
 	protected Object getKey() {
@@ -116,7 +120,7 @@ public class PpemtPerInfoItemCm extends UkJpaEntity implements Serializable {
 			BigDecimal numericItemMin, BigDecimal numericItemMax, BigDecimal numericItemAmountAtr,
 			BigDecimal numericItemMinusAtr, BigDecimal numericItemDecimalPart, BigDecimal numericItemIntegerPart,
 			BigDecimal selectionItemRefType, String selectionItemRefCode, String relatedCategoryCode,
-			String resourceId) {
+			String resourceId, int canAbolition) {
 		super();
 		this.ppemtPerInfoItemCmPK = ppemtPerInfoItemCmPK;
 		this.itemParentCd = itemParentCd;
@@ -143,6 +147,7 @@ public class PpemtPerInfoItemCm extends UkJpaEntity implements Serializable {
 		this.selectionItemRefCode = selectionItemRefCode;
 		this.relatedCategoryCode = relatedCategoryCode;
 		this.resourceId = resourceId;
+		this.canAbolition = canAbolition;
 	}
 
 }

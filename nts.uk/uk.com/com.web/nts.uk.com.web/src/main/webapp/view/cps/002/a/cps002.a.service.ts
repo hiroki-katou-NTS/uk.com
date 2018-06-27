@@ -14,7 +14,7 @@ module cps002.a.service {
         getLastRegHistory: 'ctx/pereg/empreghistory/getLastRegHistory',
         validateEmpInfo: 'ctx/pereg/addemployee/validateEmpInfo',
         getCopySetting: 'ctx/pereg/copysetting/setting/getCopySetting',
-        getAllCopySettingItem: 'ctx/pereg/copysetting/item/getAll/{0}/{1}/{2}',
+        getAllCopySettingItem: 'ctx/pereg/copysetting/item/getAll',
         getAllInitValueCtgSetting: 'ctx/pereg/initsetting/category/findAllBySetId/{0}',
         getAllInitValueItemSetting: 'ctx/pereg/initsetting/item/findInit',
         getLayoutByCreateType: 'ctx/pereg/layout/getByCreateType',
@@ -161,7 +161,12 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(format(paths.getAllCopySettingItem, employeeId, categoryCd, baseDate))
+        let query = {
+            "categoryCd": categoryCd,
+            "selectedEmployeeId": employeeId,
+            "baseDate": baseDate
+        };
+        nts.uk.request.ajax(paths.getAllCopySettingItem, query)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
