@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRecordData{
 	@Inject
 	private AttendanceTimeRepository attendanceRespo;
-	
+	@Inject
 	private WorkInformationRepository workRespo;
 	@Override
 	public List<RecordRemainCreateInfor> lstRecordRemainData(String cid, String sid, DatePeriod dateData) {

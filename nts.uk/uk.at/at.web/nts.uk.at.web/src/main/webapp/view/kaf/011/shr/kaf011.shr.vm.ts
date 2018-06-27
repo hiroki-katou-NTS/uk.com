@@ -267,7 +267,7 @@ module nts.uk.at.view.kaf011.shr {
                     service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
                         vm.recWk().setWkTypes(data.recWkTypes || []);
                         vm.absWk().setWkTypes(data.absWkTypes || []);
-                        vm.kaf000_a.start("", 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
+                        vm.kaf000_a.start(vm.employeeID(), 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
                         });
                     }).always(() => {
                         block.clear();

@@ -206,7 +206,7 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("getAppDataByDate")
 	public AppDateDataDto getAppDataByDate(AppDateParam param){
-		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID());
+		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID(),param.getEmployeeID());
 	}
 	
 	/**
@@ -238,6 +238,7 @@ class AppDateParam {
 	private String appDate;
 	private Boolean isStartup;
 	private String appID;
+	private String employeeID;
 }
 
 
