@@ -49,7 +49,10 @@ public class ValidatorDataDaily {
 	private static final Integer[] INPUT_CHECK = { 759, 760, 761, 762, 763, 764, 765, 766, 157, 159, 163, 165, 171, 169,
 			177, 175, 183, 181, 189, 187, 195, 193, 199, 201, 205, 207, 211, 213 };
 	
-	static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length-1).boxed().collect(Collectors.toMap(x -> INPUT_CHECK[x], x -> x%2 == 0 ? INPUT_CHECK[x+1] : INPUT_CHECK[x-1]));
+	static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length).boxed().collect(Collectors.toMap(x -> INPUT_CHECK[x], x -> x%2 == 0 ? INPUT_CHECK[x+1] : INPUT_CHECK[x-1]));
+	
+	private static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
+	static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
 	//Arrays.stream(INPUT_CHECK).
 	
 	// 育児と介護の時刻が両方入力されていないかチェックする

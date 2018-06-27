@@ -71,16 +71,16 @@ public class KrcdtDayShorttime extends UkJpaEntity implements Serializable{
 	@Column(name ="COUNT")
 	public Integer count;
 	
-	@ManyToOne
-	@JoinColumns(value = {
-			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
-			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 //	@ManyToOne
 //	@JoinColumns(value = {
 //			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 //			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-//	public KrcdtDayTime krcdtDayTime;
+//	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+	@ManyToOne
+	@JoinColumns(value = {
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDayTime krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.ac.workplace;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,11 +12,16 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -69,6 +73,15 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 						x.getBirthDay(), Objects.isNull(x.getPMailAddr()) ? "" : x.getPMailAddr().v() , x.getEmployeeCode(),
 						x.getEntryDate(), x.getRetiredDate(), Objects.isNull(x.getCompanyMailAddr()) ? "" : x.getCompanyMailAddr().v()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public WorkPlaceHistBySIDImport findWpkBySIDandPeriod(String sID, DatePeriod datePeriod) {
+		WkpByEmpExport wkp = wkpPub.getLstHistByEmpAndPeriod(sID, datePeriod.start(), datePeriod.end());
+		List<WkpInfo> lstWkpInfo = wkp.getLstWkpInfo().stream()
+				.map(c-> new WkpInfo(c.getDatePeriod(), c.getWpkID(), c.getWpkCD(), c.getWpkName()))
+				.collect(Collectors.toList());
+		return new WorkPlaceHistBySIDImport(wkp.getEmployeeID(), lstWkpInfo);
 	}
 
 }

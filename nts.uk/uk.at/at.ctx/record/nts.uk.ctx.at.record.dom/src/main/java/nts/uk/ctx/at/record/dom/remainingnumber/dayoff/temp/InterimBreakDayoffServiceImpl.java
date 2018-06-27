@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreaterAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
@@ -134,7 +134,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 						dayoffGuid,
 						employeeId,
 						targetWorkInfo.getYmd(),
-						CreaterAtr.RECORD,
+						CreateAtr.RECORD,
 						RemainType.SUBHOLIDAY,
 						RemainAtr.SINGLE);
 				InterimDayOffMng dayoffMng = new InterimDayOffMng(
@@ -184,7 +184,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 				DesignatedTime designatedTime = null;
 				if (isTarget){
 					val designatedTimeOpt = this.getDesignatedTime.get(companyId, workTimeCd);
-					if (designatedTimeOpt.isPresent()) designatedTime = designatedTimeOpt.get();
+					if (designatedTimeOpt.isPresent()) designatedTime = designatedTimeOpt.get().getDesignatedTime();
 				}
 				if (designatedTime == null) isTarget = false;
 				
@@ -202,7 +202,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 							breakGuid,
 							employeeId,
 							targetWorkInfo.getYmd(),
-							CreaterAtr.RECORD,
+							CreateAtr.RECORD,
 							RemainType.BREAK,
 							RemainAtr.SINGLE);
 					InterimBreakMng breakMng = new InterimBreakMng(
