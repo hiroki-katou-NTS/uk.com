@@ -42,6 +42,17 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	private OutputItemMonthlyWorkScheduleDeleteHandler outputItemMonthlyWorkScheduleDeleteHandler;
 
 	/**
+	 * Find employment authority.
+	 *
+	 * @return the boolean
+	 */
+	@Path("find/employment/authority")
+	@POST
+	public Boolean findEmploymentAuthority() {
+		return this.outputItemMonthlyWorkScheduleFinder.findEmploymentAuthority();
+	}
+
+	/**
 	 * Find.
 	 *
 	 * @return the map

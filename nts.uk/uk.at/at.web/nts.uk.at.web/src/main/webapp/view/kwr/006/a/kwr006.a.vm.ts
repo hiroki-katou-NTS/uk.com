@@ -292,11 +292,7 @@ module nts.uk.at.view.kwr006.a {
             }
 
             private loadAuthorityOfEmploymentForm(): JQueryPromise<boolean> {
-                let self = this;
-                let dfd = $.Deferred<boolean>();
-                //TODO: load co ra thi return true, load dialog C. Khong ra thi return false, ban msg_1141
-                dfd.resolve(true);
-                return dfd.promise();
+                return service.getExistAuthority();
             }
 
             private loadPeriod(): JQueryPromise<void> {
