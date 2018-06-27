@@ -82,7 +82,7 @@ public class EmployeeInfoFinder {
 		int maxLengthCardNo = _stamCardEdit.get().getDigitsNumber().v();
 		Optional<String> lastCardNo = stampCardRepo.getLastCardNo(contractCode, startLetters, maxLengthCardNo);
 		if (!lastCardNo.isPresent()) {
-			return "";
+			throw new BusinessException("Msg_505");
 		}
 		return generateCode(lastCardNo.get());
 	}
