@@ -2222,13 +2222,13 @@ public class AttendanceItemIdContainer implements ItemConst {
 	
 	public static Map<ItemValue, Integer> mapOptionalItemsToNos(Collection<ItemValue> items) {
 		return toFilterStream(items).collect(Collectors.toMap(i -> i, i -> {
-			return Integer.parseInt(i.path().replace(i.path().replace(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
+			return Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
 		}));
 	}
 	
 	public static Map<Integer, Integer> mapOptionalItemIdsToNos(Collection<ItemValue> items) {
 		return toFilterStream(items).collect(Collectors.toMap(i -> i.getItemId(), i -> {
-			return Integer.parseInt(i.path().replace(i.path().replace(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
+			return Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
 		}));
 	}
 	

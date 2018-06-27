@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.pubimp.generalinfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,24 +65,30 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 	private AffWorkplaceHistoryItemRepository workplaceHistItemRepo;
 
 	@Override
-	public EmployeeGeneralInfoDto getPerEmpInfo(List<String> employeeIds, DatePeriod period) {
+	public EmployeeGeneralInfoDto getPerEmpInfo(List<String> employeeIds, DatePeriod period, boolean checkEmployment,
+			boolean checkClassification, boolean checkJobTitle, boolean checkWorkplace, boolean checkDepartment) {
 
 		// employment - 雇用
-		List<ExEmploymentHistoryDto> employmentDto = getEmploymentDto(employeeIds, period);
+		List<ExEmploymentHistoryDto> employmentDto = getEmploymentDto(checkEmployment, employeeIds, period);
 
 		// classification - 分類
-		List<ExClassificationHistoryDto> classificationDto = getClassificationDto(employeeIds, period);
+		List<ExClassificationHistoryDto> classificationDto = getClassificationDto(checkClassification, employeeIds,
+				period);
 
 		// job-title - 職位
-		List<ExJobTitleHistoryDto> jobTitleDto = getJobTitleDto(employeeIds, period);
+		List<ExJobTitleHistoryDto> jobTitleDto = getJobTitleDto(checkJobTitle, employeeIds, period);
 
 		// work-place 職場
-		List<ExWorkPlaceHistoryDto> workplaceDtoList = getWorkplaceDto(employeeIds, period);
+		List<ExWorkPlaceHistoryDto> workplaceDtoList = getWorkplaceDto(checkWorkplace, employeeIds, period);
 
 		return new EmployeeGeneralInfoDto(employmentDto, classificationDto, jobTitleDto, workplaceDtoList);
 	}
 
-	private List<ExEmploymentHistoryDto> getEmploymentDto(List<String> employeeIds, DatePeriod period) {
+	private List<ExEmploymentHistoryDto> getEmploymentDto(boolean checkEmployment, List<String> employeeIds,
+			DatePeriod period) {
+		if (!checkEmployment) {
+			return Collections.emptyList();
+		}
 		List<EmploymentHistory> employmentHistoryList = employmentHistoryRepo.getByListSid(employeeIds, period);
 		List<String> historyIds = new ArrayList<>();
 		employmentHistoryList.forEach(eh -> historyIds.addAll(eh.getHistoryIds()));
@@ -102,7 +109,11 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 		return resultList;
 	}
 
-	private List<ExClassificationHistoryDto> getClassificationDto(List<String> employeeIds, DatePeriod period) {
+	private List<ExClassificationHistoryDto> getClassificationDto(boolean checkClassification, List<String> employeeIds,
+			DatePeriod period) {
+		if (!checkClassification) {
+			return Collections.emptyList();
+		}
 		List<AffClassHistory> classHitoryList = affClassHistRepo.getByEmployeeListWithPeriod(employeeIds, period);
 
 		List<String> historyIds = new ArrayList<>();
@@ -123,7 +134,11 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 		return resultList;
 	}
 
-	private List<ExJobTitleHistoryDto> getJobTitleDto(List<String> employeeIds, DatePeriod period) {
+	private List<ExJobTitleHistoryDto> getJobTitleDto(boolean checkJobTitle, List<String> employeeIds,
+			DatePeriod period) {
+		if (!checkJobTitle) {
+			return Collections.emptyList();
+		}
 		List<AffJobTitleHistory> jobTitleHistoryList = affJobTitleRepo.getByEmployeeListPeriod(employeeIds, period);
 
 		List<String> historyIds = new ArrayList<>();
@@ -144,7 +159,11 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 		return resultList;
 	}
 
-	private List<ExWorkPlaceHistoryDto> getWorkplaceDto(List<String> employeeIds, DatePeriod period) {
+	private List<ExWorkPlaceHistoryDto> getWorkplaceDto(boolean checkWorkplace, List<String> employeeIds,
+			DatePeriod period) {
+		if (!checkWorkplace) {
+			return Collections.emptyList();
+		}
 		List<AffWorkplaceHistory> workplaceHistoryList = workplaceHistoryRepo.findByEmployeesWithPeriod(employeeIds,
 				period);
 		List<String> historyIds = new ArrayList<>();

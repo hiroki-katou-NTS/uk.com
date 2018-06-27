@@ -185,7 +185,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	}
 	@Override
 	public BreakDayOffInterimMngData getMngDataToInterimData(String sid, DatePeriod dateData) {
-		BreakDayOffInterimMngData outPutData = new BreakDayOffInterimMngData();
+		BreakDayOffInterimMngData outPutData = new BreakDayOffInterimMngData(Collections.emptyList(),Collections.emptyList(),Collections.emptyList());
 		// ドメインモデル「暫定休出管理データ」を取得する
 		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(sid, dateData, RemainType.BREAK);
 		getRemainBySidPriod.stream().forEach(x -> {
@@ -464,20 +464,24 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//未消化の確定休出と紐付いた確定代休を取得する
 		//ドメインモデル「休出管理データ」を取得する
 		List<LeaveManagementData> lstBreakData = leaveManaDataRepo.getBySidWithsubHDAtr(companyId, sid, DigestionAtr.UNUSED.value);
-		lstBreakData.stream().forEach(x -> {
-			outputData.getBreakMngData().add(x);
+		List<LeaveComDayOffManagement> breakTypingMng = new ArrayList<>();
+		List<CompensatoryDayOffManaData> dayOffData  = new ArrayList<>();
+		for (LeaveManagementData x : lstBreakData) {
 			//ドメインモデル「休出代休紐付け管理」を取得する
-			List<LeaveComDayOffManagement> breakTypingMng =  typingConfirmMng.getByLeaveID(x.getID());			
+			breakTypingMng =  typingConfirmMng.getByLeaveID(x.getID());			
 			breakTypingMng.stream().forEach(y -> {
-				outputData.getTypingMngData().add(y);
 				//ドメインモデル「代休管理データ」を取得する
 				Optional<CompensatoryDayOffManaData> optDayoffMng = leaveDayOffRepo.getBycomdayOffId(y.getComDayOffID());
 				optDayoffMng.ifPresent(z -> {
-					outputData.getDayOffData().add(z);
+					dayOffData.add(z);
 				});
 				
 			});
-		});
+		}
+		outputData.setBreakMngData(lstBreakData);
+		outputData.setTypingMngData(breakTypingMng);
+		outputData.setDayOffData(dayOffData);
+		
 		//ドメインモデル「代休管理データ」を取得する
 		List<CompensatoryDayOffManaData> lstDayOffMngByUnOffsetDays =  leaveDayOffRepo.getBySidWithReDay(companyId, sid);
 		if(!lstDayOffMngByUnOffsetDays.isEmpty()) {

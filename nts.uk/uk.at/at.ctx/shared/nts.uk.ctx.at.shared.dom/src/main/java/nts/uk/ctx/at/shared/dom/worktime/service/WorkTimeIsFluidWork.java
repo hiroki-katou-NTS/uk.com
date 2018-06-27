@@ -11,5 +11,11 @@ public interface WorkTimeIsFluidWork {
 	 * @return
 	 */
 	public boolean checkWorkTimeIsFluidWork(String workTimeCode);
-
+	/**
+	 * 所定時間を取得
+	 * @param workTimeCode
+	 * @param workTypeCode
+	 * @return
+	 */
+	public Integer getTimeByWorkTimeTypeCode(String workTimeCode, String workTypeCode);
 }
