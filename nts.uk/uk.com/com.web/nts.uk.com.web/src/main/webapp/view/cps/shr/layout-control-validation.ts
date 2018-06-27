@@ -117,6 +117,7 @@ module nts.layout {
         }
 
         find = (categoryCode: string, subscribeCode): IFindData => {
+             
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
@@ -133,6 +134,7 @@ module nts.layout {
         };
 
         finds = (categoryCode: string, subscribesCode: Array<string> = undefined): Array<IFindData> => {
+             
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (!!subscribesCode ? subscribesCode.indexOf(x.itemCode) > -1 : true));
@@ -201,6 +203,7 @@ module nts.layout {
         finder: IFinder = undefined;
         constructor(private lstCls: Array<any>) {
             let self = this;
+             
             self.finder = new constraint(lstCls);
 
             setTimeout(() => {
@@ -664,7 +667,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00193',
                         workTime: 'IS00194',
                         firstTimes: {
@@ -677,7 +680,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00202',
                         workTime: 'IS00203',
                         firstTimes: {
@@ -690,7 +693,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00211',
                         workTime: 'IS00212',
                         firstTimes: {
@@ -703,7 +706,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00220',
                         workTime: 'IS00221',
                         firstTimes: {
@@ -716,7 +719,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00229',
                         workTime: 'IS00230',
                         firstTimes: {
@@ -729,7 +732,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00238',
                         workTime: 'IS00239',
                         firstTimes: {
@@ -742,7 +745,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00184',
                         workTime: 'IS00185',
                         firstTimes: {
@@ -892,6 +895,7 @@ module nts.layout {
                     }
 
                     if (!workTime) {
+                         
                         workType.ctrl.on('click', () => {
                             setShared("KDL002_Multiple", false, true);
                             setShared("KDL002_SelectedItemId", workType.data.value(), true);
@@ -906,37 +910,77 @@ module nts.layout {
                             });
                         });
                     } else {
+
                         validateEditable(group, workTime.data.value, mt);
 
                         workType.ctrl.on('click', () => {
-                            setShared('parentCodes', {
-                                workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
-                                selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
-                                workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
-                            }, true);
+                             
+                            if (['IS00130', 'IS00131', 'IS00139', 'IS00140'].indexOf(workType.data.itemCode) > - 1) {
+                                setShared('parentCodes', {
+                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                }, true);
 
-                            modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                                let childData: IChildData = getShared('childData');
+                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                    let childData: IChildData = getShared('childData');
 
-                                if (childData) {
-                                    setData(workType, childData.selectedWorkTypeCode);
+                                    if (childData) {
+                                        setData(workType, childData.selectedWorkTypeCode);
 
-                                    setData(workTime, childData.selectedWorkTimeCode);
+                                        setData(workTime, childData.selectedWorkTimeCode);
 
-                                    firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
-                                    firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
 
-                                    secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
-                                    secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
 
-                                    validateEditable(group, workTime.data.value);
-                                }
-                            });
+                                        validateEditable(group, workTime.data.value);
+                                    }
+                                });
+                            } else {
+                                setShared("KDL002_Multiple", false, true);
+                                setShared("KDL002_SelectedItemId", workType.data.value(), true);
+                                setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                                    let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                                    if (childData[0]) {
+                                        setData(workType, childData[0].code);
+                                    }
+                                });
+                            }
                         });
 
-                        // handle click event of workType
-                        workTime.ctrl.on('click', () => workType.ctrl.trigger('click'));
+                        // handle click event of workTime
+                        workTime.ctrl.on('click', () => {
+                             
+                            setShared("kml001multiSelectMode", false);
+                            setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
+                            setShared("kml001isSelection", true);
+                            setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+
+                            modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                let childData: Array<any> = getShared('kml001selectedTimes');
+                                    if (childData[0]) {
+                                        let data: any = childData[0];
+                                        setData(workTime, data.selectedWorkTimeCode);
+
+                                        firstTimes && setData(firstTimes.start, data.first && data.first.start);
+                                        firstTimes && setData(firstTimes.end, data.first && data.first.end);
+
+                                        secondTimes && setData(secondTimes.start, data.second && data.second.start);
+                                        secondTimes && setData(secondTimes.end, data.second && data.second.end);
+
+                                        validateEditable(group, workTime.data.value);
+                                    }
+                            });
+
+
+                        });
                     }
                 });
             });
