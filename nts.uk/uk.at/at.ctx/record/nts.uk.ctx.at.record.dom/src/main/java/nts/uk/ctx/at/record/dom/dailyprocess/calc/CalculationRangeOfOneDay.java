@@ -301,7 +301,7 @@ public class CalculationRangeOfOneDay {
 					,bonusPaySetting,midNightTimeSheet,personalInfo,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, predetermineTimeSetForCalc, 
 					siftCode,  leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,
-					conditionItem,predetermineTimeSetByPersonInfo
+					conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting
 					);
 			if(!outsideWorkTimeSheet.isPresent()) {
 				//outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
@@ -352,7 +352,7 @@ public class CalculationRangeOfOneDay {
 							 illegularAddSetting,
 							 leaveEarly,commonSetting,
 							 conditionItem,
-							 predetermineTimeSetByPersonInfo);
+							 predetermineTimeSetByPersonInfo,coreTimeSetting);
 		if(!overTimeFrame.isEmpty()) {
 			if(outsideWorkTimeSheet.isPresent()) {
 				if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
@@ -416,7 +416,7 @@ public class CalculationRangeOfOneDay {
 									  PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, 
 									  boolean late, WorkingSystem workingSystem, HolidayAddtionSet holidayAddtionSet, WorkRegularAdditionSet regularAddSetting, 
 									  WorkFlexAdditionSet flexAddSetting, WorkDeformedLaborAdditionSet illegularAddSetting, boolean leaveEarly, Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
-									  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+									  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
 		
 		if(!this.withinWorkingTimeSheet.isPresent())
 			return Collections.emptyList();
@@ -498,7 +498,7 @@ public class CalculationRangeOfOneDay {
 															flexAddSetting, 
 															regularAddSetting, 
 															holidayAddtionSet,commonSetting,conditionItem,
-															predetermineTimeSetByPersonInfo
+															predetermineTimeSetByPersonInfo,coreTimeSetting
 															);
 	}
 

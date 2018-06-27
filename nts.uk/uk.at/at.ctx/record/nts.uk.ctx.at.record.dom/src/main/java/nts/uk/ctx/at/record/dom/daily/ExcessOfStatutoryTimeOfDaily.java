@@ -53,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -104,7 +105,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
 			   														 AttendanceTime flexPreAppTime,
 			   														 WorkingConditionItem conditionItem,
-			   														Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+			   														Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
 		//残業時間
 		val overTime = calculationOverTime(recordReget,calcMethod,
 										   workType,flexCalcMethod,
@@ -114,7 +115,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 				   						   			  ? Optional.empty()
 				   							   		  :recordReget.getSubHolTransferSetList().stream().filter(tc -> tc.getOriginAtr().isOverTime()).findFirst(),
 										   eachCompanyTimeSet.stream().filter(tc -> tc.getOccurrenceType().isOverTime()).findFirst(),
-										   flexPreAppTime,conditionItem,predetermineTimeSetByPersonInfo);
+										   flexPreAppTime,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting);
 		//休出時間
 		val workHolidayTime = calculationHolidayTime(recordReget,recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getRestTime(),workType,
 				   									 recordReget.getSubHolTransferSetList() == null
@@ -147,7 +148,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 													   AttendanceTime flexPreAppTime,
 													   WorkingConditionItem conditionItem,
-													   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+													   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
 		if(oneDay.getCalculationRangeOfOneDay() != null && oneDay.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().isPresent()) {
 			if(oneDay.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
 				return OverTimeOfDaily.calculationTime(oneDay,
@@ -160,7 +161,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   eachCompanyTimeSet,
 													   flexPreAppTime,
 													   conditionItem,
-													   predetermineTimeSetByPersonInfo);
+													   predetermineTimeSetByPersonInfo,coreTimeSetting);
 			}
 		}
 		//残業時間帯が存在せず、時間を求められない場合

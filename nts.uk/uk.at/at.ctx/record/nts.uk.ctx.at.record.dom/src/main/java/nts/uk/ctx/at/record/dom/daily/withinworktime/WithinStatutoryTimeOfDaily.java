@@ -262,7 +262,7 @@ public class WithinStatutoryTimeOfDaily {
 						  														  holidayCalcMethodSet,
 						  														  dailyUnit,commonSetting,
 						  														  conditionItem,
-						  														  predetermineTimeSetByPersonInfo);
+						  														  predetermineTimeSetByPersonInfo,coreTimeSetting);
 		}
 	}
 	
