@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ServerZipfileValidateStatus{
+public class ServerZipfileValidateStatusDto{
 	public boolean status;
 	public String message;
 }

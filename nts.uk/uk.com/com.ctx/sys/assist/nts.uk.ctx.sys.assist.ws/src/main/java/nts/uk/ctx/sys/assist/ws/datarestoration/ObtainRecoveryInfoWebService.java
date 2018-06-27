@@ -7,7 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.sys.assist.app.command.datarestoration.ObtainRecoveryInfoCommand;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.ObtainRecoveryInfoCommandHandler;
-import nts.uk.ctx.sys.assist.app.command.datarestoration.ServerZipfileValidateStatus;
+import nts.uk.ctx.sys.assist.app.command.datarestoration.ServerZipfileValidateStatusDto;
 @Path("ctx/sys/assist/datarestoration")
 @Produces("application/json")
 public class ObtainRecoveryInfoWebService {
@@ -16,7 +16,7 @@ public class ObtainRecoveryInfoWebService {
 
 	@POST
 	@Path("obtainRecovery")
-	public ServerZipfileValidateStatus ObtainRecoveryInfo(ObtainRecoveryInfoCommand command) {
+	public ServerZipfileValidateStatusDto ObtainRecoveryInfo(ObtainRecoveryInfoCommand command) {
 		return this.obtainRecoveryInfo.handle(command);
 	}
 }
