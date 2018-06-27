@@ -69,15 +69,15 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		ServerPrepareMng serverPrepareMng = new ServerPrepareMng(processId, null, null, null, 0, null,
 				ServerPrepareOperatingCondition.UPLOADING.value);
 		serverPrepareMngRepository.add(serverPrepareMng);
-		setter.setData(STATUS, convertToStatus(0, serverPrepareMng));
+		setter.setData(STATUS, convertToStatus(serverPrepareMng));
 		serverPrepareMng = serverUploadProcessingService.serverUploadProcessing(serverPrepareMng, fileId, fileName,
 				password); 
-		setter.updateData(STATUS, convertToStatus(0, serverPrepareMng));
+		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		if (serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.UPLOAD_COMPLETED) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTING);
-			setter.updateData(STATUS, convertToStatus(1, serverPrepareMng));
+			setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 			serverPrepareMng = dataExtractionService.extractData(serverPrepareMng);
-			setter.updateData(STATUS, convertToStatus(1, serverPrepareMng));
+			setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 			if (checkNormalFile(serverPrepareMng)) {
 				PerformDataRecovery performDataRecovery = new PerformDataRecovery(
 						serverPrepareMng.getDataRecoveryProcessId(), AppContexts.user().companyId(),
@@ -86,20 +86,20 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 				List<Object> restoreTableResult = tableListRestorationService.restoreTableList(serverPrepareMng);
 				serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(0);
 				List<TableList> tableList = (List<TableList>) (restoreTableResult.get(1));
-				setter.updateData(STATUS, convertToStatus(2, serverPrepareMng));
+				setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 				if (checkNormalFile(serverPrepareMng)) {
 					// アルゴリズム「調査保存チェック」を実行する
 					if (!tableList.isEmpty()) {
 						if (tableList.get(0).getSurveyPreservation() == NotUseAtr.USE){
 							serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY);
-						setter.updateData(STATUS, convertToStatus(1, serverPrepareMng));
+						setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 						}
 					}
 					if (checkNormalFile(serverPrepareMng)) {
 						// アルゴリズム「テーブル一覧の復元」を実行する
 						serverPrepareMng = thresholdConfigurationCheck.checkFileConfiguration(serverPrepareMng,
 								tableList);
-						setter.updateData(STATUS, convertToStatus(2, serverPrepareMng));
+						setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 
 						if (checkNormalFile(serverPrepareMng)) {
 							// アルゴリズム「別会社判定処理」を実行する
@@ -109,17 +109,17 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 							serverPrepareMng = (ServerPrepareMng) sperateCompanyResult.get(0);
 							performDataRecovery = (PerformDataRecovery) sperateCompanyResult.get(1);
 							tableList = (List<TableList>) (sperateCompanyResult.get(2));
-							setter.updateData(STATUS, convertToStatus(2, serverPrepareMng));
+							setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 							if (checkNormalFile(serverPrepareMng)) {
 								serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECKING_TABLE_ITEMS);
 								// アルゴリズム「テーブル項目チェック」を実行する
 								serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
-								setter.updateData(STATUS, convertToStatus(2, serverPrepareMng));
+								setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 								if (checkNormalFile(serverPrepareMng)) {
 									// アルゴリズム「対象社員の復元」を実行する
 									employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery,
 											tableList);
-									setter.updateData(STATUS, convertToStatus(2, serverPrepareMng));
+									setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 								}
 							}
 
@@ -130,7 +130,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		}
 	}
 
-	private String convertToStatus(int processNum, ServerPrepareMng serverPrepareMng) {
+	private String convertToStatus(ServerPrepareMng serverPrepareMng) {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		try {
 			return ow.writeValueAsString( procesingStatus(serverPrepareMng.getOperatingCondition()));
