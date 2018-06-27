@@ -1266,8 +1266,8 @@ module nts.uk.at.view.kal003.share.model {
                 self.countableSubAtdItems=ko.observableArray([]);
                 self.conditionType=ko.observable(0);
                 self.singleAtdItem=ko.observable(0);
-                self.compareStartValue=ko.observable(0);
-                self.compareEndValue=ko.observable(0);
+                self.compareStartValue=ko.observable(null);
+                self.compareEndValue=ko.observable(null);
                 self.compareOperator=ko.observable(0);
                 self.displayLeftCompare=ko.observable("");
                 self.displayLeftOperator=ko.observable("");
@@ -1492,12 +1492,10 @@ module nts.uk.at.view.kal003.share.model {
 
         public openAtdItemConditionDialog(modeX: number) {
             let self = this;
-            if (self.compareStartValue() == null) self.compareStartValue(0);
-            if (self.compareEndValue() == null) self.compareEndValue(0);
             let param = ko.mapping.toJS(self);
 
             nts.uk.ui.windows.setShared("KDW007BParams", {mode: modeX, data: param}, true);
-            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml").onClosed(() => {
                 let output = getShared("KDW007BResult");
                 if (output) {
                     self.targetNO(output.targetNO);
