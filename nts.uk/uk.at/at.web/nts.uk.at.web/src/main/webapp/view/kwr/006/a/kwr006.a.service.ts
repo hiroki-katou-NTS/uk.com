@@ -3,7 +3,8 @@ module nts.uk.at.view.kwr006.a {
         var paths = {
             exportSchedule: "screen/at/monthlyschedule/export",
             getPeriod: "at/function/annualworkschedule/get/period",
-            getExistAuthority: "at/function/monthlyworkschedule/find/employment/authority"
+            getExistAuthority: "at/function/monthlyworkschedule/find/employment/authority",
+            findAllOutputItemMonthlyWorkSchedule: "at/function/monthlyworkschedule/findall"
         }
         export function saveCharacteristic(data: model.MonthlyWorkScheduleConditionDto): JQueryPromise<void> {
             return nts.uk.characteristics.save("MonthlyWorkScheduleCondition" +
@@ -29,7 +30,16 @@ module nts.uk.at.view.kwr006.a {
             return nts.uk.request.ajax(paths.getExistAuthority);
         }
 
+        export function findAllOutputItemMonthlyWorkSchedule(): JQueryPromise<Array<model.OutputItemMonthlyWorkScheduleDto>> {
+            return nts.uk.request.ajax(paths.findAllOutputItemMonthlyWorkSchedule);
+        }
+
         export module model {
+
+            export interface OutputItemMonthlyWorkScheduleDto {
+                itemCode: string;
+                itemName: string;
+            }
 
             export interface MonthlyWorkScheduleQuery {
                 startYearMonth: number;

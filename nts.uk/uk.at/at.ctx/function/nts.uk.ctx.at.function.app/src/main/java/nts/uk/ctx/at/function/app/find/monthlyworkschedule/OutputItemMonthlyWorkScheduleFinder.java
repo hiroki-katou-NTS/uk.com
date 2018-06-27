@@ -116,6 +116,16 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		return false;
 	}
 
+	public List<OutputItemMonthlyWorkScheduleDto> findAll() {
+		return this.outputItemMonthlyWorkScheduleRepository.findByCid(AppContexts.user().companyId()).stream()
+				.map(item -> {
+					OutputItemMonthlyWorkScheduleDto dto = new OutputItemMonthlyWorkScheduleDto();
+					dto.setItemCode(item.getItemCode().v());
+					dto.setItemName(item.getItemName().v());
+					return dto;
+				}).collect(Collectors.toList());
+	}
+
 	/**
 	 * Find by cid.
 	 *
