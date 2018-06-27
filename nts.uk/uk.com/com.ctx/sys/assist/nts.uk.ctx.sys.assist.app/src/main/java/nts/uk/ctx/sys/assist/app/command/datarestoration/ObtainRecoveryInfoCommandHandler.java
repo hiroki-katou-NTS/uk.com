@@ -1,50 +1,49 @@
 package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
-import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
-import nts.uk.ctx.sys.assist.dom.datarestoration.common.ServerPreparationService;
-import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
-import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
+import nts.uk.ctx.sys.assist.dom.datarestoration.ServerZipFileTempService;
 
 @Stateless
-@Transactional
-public class ObtainRecoveryInfoCommandHandler extends CommandHandlerWithResult<ObtainRecoveryInfoCommand, String> {
+public class ObtainRecoveryInfoCommandHandler extends CommandHandlerWithResult<ObtainRecoveryInfoCommand, ServerZipfileValidateStatusDto> {
 	@Inject
-	private ServerPrepareMngRepository repoServerPrepare;
-	@Inject
-	private ResultOfSavingRepository repoResultOfSaving;
-	@Inject
-	private ServerPreparationService serverPreparationService;
+	private ServerZipFileTempService serverZipFileTempService;
 
-	protected String handle(CommandHandlerContext<ObtainRecoveryInfoCommand> context) {
-		ObtainRecoveryInfoCommand obtainRecoveryInfoCommand = context.getCommand();
-		Optional<ResultOfSaving> optResultOfSaving = repoResultOfSaving
-				.getResultOfSavingById(obtainRecoveryInfoCommand.getStoreProcessingId());
-		if (optResultOfSaving.isPresent()) {
-			String dataRecoveryProcessId = obtainRecoveryInfoCommand.getDataRecoveryProcessId();
-			String dataStoreProcessId = obtainRecoveryInfoCommand.getStoreProcessingId();
-			String fileId = optResultOfSaving.get().getFileId();
-			String uploadFileName = optResultOfSaving.get().getSaveFileName().v();
-			Integer doNotUpload = 0;
-			String password = optResultOfSaving.get().getCompressedPassword().v();
-			Integer operatingCondition = 13;
-			ServerPrepareMng serverPrepareMng = new ServerPrepareMng(dataRecoveryProcessId, dataStoreProcessId, fileId,
-					uploadFileName, doNotUpload, password, operatingCondition);
-			repoServerPrepare.add(serverPrepareMng);
-			// サーバー準備処理
-			String msg = serverPreparationService.serverPreparationProcessing(serverPrepareMng);
-			return msg;
-		}
-		return null;
+	protected ServerZipfileValidateStatusDto handle(CommandHandlerContext<ObtainRecoveryInfoCommand> context) {
+		ServerPrepareMng serverPrepareMng = serverZipFileTempService.handleServerZipFile(context.getCommand().getDataRecoveryProcessId(), context.getCommand().getStoreProcessingId());
+		return convertToStatus(serverPrepareMng.getOperatingCondition());
 	}
 
+	private static ServerZipfileValidateStatusDto convertToStatus(ServerPrepareOperatingCondition condition){
+		switch (condition) {
+		case UPLOAD_FAILED:
+			return new ServerZipfileValidateStatusDto(false, "Msg_610");
+		case PASSWORD_DIFFERENCE:
+			return new ServerZipfileValidateStatusDto(false, "Msg_606");
+		case EXTRACTION_FAILED:
+			return new ServerZipfileValidateStatusDto(false, "Msg_607");
+		case TABLE_LIST_FAULT:
+			return new ServerZipfileValidateStatusDto(false, "Msg_608");
+		case CAN_NOT_SAVE_SURVEY:
+			return new ServerZipfileValidateStatusDto(false, "Msg_605");
+		case FILE_CONFIG_ERROR:
+			return new ServerZipfileValidateStatusDto(false, "Msg_608");
+		case NO_SEPARATE_COMPANY:
+			return new ServerZipfileValidateStatusDto(false, "Msg_631");
+		case TABLE_ITEM_DIFFERENCE:
+			return new ServerZipfileValidateStatusDto(false, "Msg_609");
+		case EM_LIST_ABNORMALITY:
+			return new ServerZipfileValidateStatusDto(false, "Msg_670");
+		case CHECK_COMPLETED:
+			return new ServerZipfileValidateStatusDto(true, "");
+		default:
+			return new ServerZipfileValidateStatusDto(false, "");
+		}
+	}
 }
+

@@ -1,24 +1,19 @@
 package nts.uk.ctx.sys.assist.infra.repository.tablelist;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.metamodel.EntityType;
-
-import org.eclipse.persistence.internal.jpa.EJBQueryImpl;
-import org.eclipse.persistence.queries.DatabaseQuery;
 
 import com.google.common.base.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
@@ -30,6 +25,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaTableListRepository extends JpaRepository implements TableListRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE t.tableListPk.dataStorageProcessingId =:storeProcessingId";
+	private static final String SELECT_COLUMN_NAME_MSSQL = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?tableName";
+
 	private static final String COMPANY_CD = "0";
 	private static final String EMPLOYEE_CD = "5";
 	private static final String YEAR = "6";
@@ -45,44 +42,6 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	@Override
 	public void update(TableList domain) {
 		this.commandProxy().update(SspmtTableList.toEntity(domain));
-	}
-
-	@Override
-	public Class<?> getTypeForTableName(String tableName) {
-		for (EntityType<?> entityType : this.getEntityManager().getMetamodel().getEntities()) {
-			Table table = entityType.getJavaType().getAnnotation(Table.class);
-			if (table != null && table.name().equals(tableName)) {
-				return entityType.getJavaType();
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public String getFieldForColumnName(Class<?> tableType, String columnName) {
-		for (Field field : tableType.getSuperclass().getDeclaredFields()) {
-			Column column = field.getDeclaredAnnotation(Column.class);
-			if (column != null && column.name().equals(columnName)) {			
-				return field.getName();
-			}
-		}
-		
-		for (Field field : tableType.getDeclaredFields()) {
-			if (field.isAnnotationPresent(EmbeddedId.class)) {
-				Class<?> pk = field.getType();
-				for (Field fieldPk : pk.getDeclaredFields()) {
-					Column columnPk = fieldPk.getDeclaredAnnotation(Column.class);
-					if (columnPk != null && columnPk.name().equals(columnName)) {
-						return field.getName() + "." + fieldPk.getName();
-					}
-				}
-			}
-			Column column = field.getDeclaredAnnotation(Column.class);
-			if (column != null && column.name().equals(columnName)) {
-				return field.getName();
-			}
-		}
-		return "";
 	}
 
 	@Override
@@ -102,60 +61,104 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	}
 
 	@Override
-	public List<?> getDataDynamic(TableList tableList, Class<?> tableExport ) {
+	public List<List<String>> getDataDynamic(TableList tableList) {
 		StringBuffer query = new StringBuffer("");
 
 		// Select
-		query.append("SELECT t");
+		query.append("SELECT ");
+		String fieldAcqCid = tableList.getFieldAcqCid().orElse("");
+		if (!Strings.isNullOrEmpty(fieldAcqCid)) {
+			query.append(" t.").append(fieldAcqCid).append(" AS H_CID, ");
+		} else {
+			query.append(" '' AS H_CID, ");
+		}
+
+		String fieldAcqEmployeeId = tableList.getFieldAcqEmployeeId().orElse("");
+		if (!Strings.isNullOrEmpty(fieldAcqEmployeeId)) {
+			query.append(" t.").append(fieldAcqEmployeeId).append(" AS H_SID, ");
+		} else {
+			query.append(" '' AS H_SID, ");
+		}
+
+		String fieldAcqDateTime = tableList.getFieldAcqDateTime().orElse("");
+		if (!Strings.isNullOrEmpty(fieldAcqDateTime)) {
+			query.append(" t.").append(fieldAcqDateTime).append(" AS H_DATE, ");
+		} else {
+			query.append(" '' AS H_DATE, ");
+		}
+
+		String fieldAcqStartDate = tableList.getFieldAcqStartDate().orElse("");
+		if (!Strings.isNullOrEmpty(fieldAcqStartDate)) {
+			query.append(" t.").append(fieldAcqStartDate).append(" AS H_DATE_START, ");
+		} else {
+			query.append(" '' AS H_DATE_START, ");
+		}
+
+		String fieldAcqEndDate = tableList.getFieldAcqEndDate().orElse("");
+		if (!Strings.isNullOrEmpty(fieldAcqEndDate)) {
+			query.append(" t.").append(fieldAcqEndDate).append(" AS H_DATE_END, ");
+		} else {
+			query.append(" '' AS H_DATE_END, ");
+		}
+
+		// All Column
+		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
+		for (int i = 0; i < columns.size(); i++) {
+			query.append(" t.").append(columns.get(i));
+			if (i < columns.size() - 1) {
+				query.append(",");
+			}
+		}
 
 		// From
-		query.append(" FROM ").append(tableExport.getSimpleName()).append(" t");
-		Class<?> tableParent = null;
+		query.append(" FROM ").append(tableList.getTableEnglishName()).append(" t");
 		if (tableList.getHasParentTblFlg() == NotUseAtr.USE && tableList.getParentTblName().isPresent()) {
-			tableParent = this.getTypeForTableName(tableList.getParentTblName().get());
 			// アルゴリズム「親テーブルをJOINする」を実行する
-			query.append(" INNER JOIN ").append(tableParent.getSimpleName()).append(" p ON ");
+			query.append(" INNER JOIN ").append(tableList.getParentTblName().get()).append(" p ON ");
 
 			String[] parentFields = { tableList.getFieldParent1().orElse(""), tableList.getFieldParent2().orElse(""),
-					tableList.getFieldParent3().orElse(""), tableList.getFieldParent4().orElse(""), tableList.getFieldParent5().orElse(""),
-					tableList.getFieldParent6().orElse(""), tableList.getFieldParent7().orElse(""), tableList.getFieldParent8().orElse(""),
+					tableList.getFieldParent3().orElse(""), tableList.getFieldParent4().orElse(""),
+					tableList.getFieldParent5().orElse(""), tableList.getFieldParent6().orElse(""),
+					tableList.getFieldParent7().orElse(""), tableList.getFieldParent8().orElse(""),
 					tableList.getFieldParent9().orElse(""), tableList.getFieldParent10().orElse("") };
 
-			String[] childFields = { tableList.getFieldChild1().orElse(""), tableList.getFieldChild2().orElse(""), tableList.getFieldChild3().orElse(""),
-					tableList.getFieldChild4().orElse(""), tableList.getFieldChild5().orElse(""), tableList.getFieldChild6().orElse(""),
-					tableList.getFieldChild7().orElse(""), tableList.getFieldChild8().orElse(""), tableList.getFieldChild9().orElse(""),
-					tableList.getFieldChild10().orElse("") };
+			String[] childFields = { tableList.getFieldChild1().orElse(""), tableList.getFieldChild2().orElse(""),
+					tableList.getFieldChild3().orElse(""), tableList.getFieldChild4().orElse(""),
+					tableList.getFieldChild5().orElse(""), tableList.getFieldChild6().orElse(""),
+					tableList.getFieldChild7().orElse(""), tableList.getFieldChild8().orElse(""),
+					tableList.getFieldChild9().orElse(""), tableList.getFieldChild10().orElse("") };
 
 			boolean isFirstOnStatement = true;
 			for (int i = 0; i < parentFields.length; i++) {
-				String onStatement = getOnStatement(tableParent, parentFields[i], tableExport, childFields[i]);
-				if (!Strings.isNullOrEmpty(onStatement)) {
+				if (!Strings.isNullOrEmpty(parentFields[i]) && !Strings.isNullOrEmpty(childFields[i])) {
 					if (!isFirstOnStatement) {
 						query.append(" AND ");
 					}
 					isFirstOnStatement = false;
-					query.append(onStatement);
+					query.append("p." + parentFields[i] + "=" + "t." + childFields[i]);
 				}
 			}
 		}
 
 		String[] fieldKeyQuerys = { tableList.getFieldKeyQuery1().orElse(""), tableList.getFieldKeyQuery2().orElse(""),
-				tableList.getFieldKeyQuery3().orElse(""), tableList.getFieldKeyQuery4().orElse(""), tableList.getFieldKeyQuery5().orElse(""),
-				tableList.getFieldKeyQuery6().orElse(""), tableList.getFieldKeyQuery7().orElse(""), tableList.getFieldKeyQuery8().orElse(""),
+				tableList.getFieldKeyQuery3().orElse(""), tableList.getFieldKeyQuery4().orElse(""),
+				tableList.getFieldKeyQuery5().orElse(""), tableList.getFieldKeyQuery6().orElse(""),
+				tableList.getFieldKeyQuery7().orElse(""), tableList.getFieldKeyQuery8().orElse(""),
 				tableList.getFieldKeyQuery9().orElse(""), tableList.getFieldKeyQuery10().orElse("") };
-		String[] clsKeyQuerys = { tableList.getClsKeyQuery1().orElse(""), tableList.getClsKeyQuery2().orElse(""), tableList.getClsKeyQuery3().orElse(""),
-				tableList.getClsKeyQuery4().orElse(""), tableList.getClsKeyQuery5().orElse(""), tableList.getClsKeyQuery6().orElse(""),
-				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""), tableList.getClsKeyQuery9().orElse(""),
-				tableList.getClsKeyQuery10().orElse("") };
+		String[] clsKeyQuerys = { tableList.getClsKeyQuery1().orElse(""), tableList.getClsKeyQuery2().orElse(""),
+				tableList.getClsKeyQuery3().orElse(""), tableList.getClsKeyQuery4().orElse(""),
+				tableList.getClsKeyQuery5().orElse(""), tableList.getClsKeyQuery6().orElse(""),
+				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""),
+				tableList.getClsKeyQuery9().orElse(""), tableList.getClsKeyQuery10().orElse("") };
 
 		for (int i = 0; i < clsKeyQuerys.length; i++) {
 			if (clsKeyQuerys[i] == EMPLOYEE_CD) {
 				if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
-					query.append(" INNER JOIN SspmtTargetEmployees e ON e.targetEmployeesPk.Sid = p.");
-					query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[i]));
+					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = p.");
+					query.append(fieldKeyQuerys[i]);
 				} else {
-					query.append(" INNER JOIN SspmtTargetEmployees e ON e.targetEmployeesPk.Sid = t.");
-					query.append(this.getFieldForColumnName(tableExport, fieldKeyQuerys[i]));
+					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = t.");
+					query.append(fieldKeyQuerys[i]);
 				}
 			}
 		}
@@ -168,7 +171,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		List<Integer> yearMonthIndexs = new ArrayList<Integer>();
 		List<Integer> yearMonthDayIndexs = new ArrayList<Integer>();
 		for (int i = 0; i < clsKeyQuerys.length; i++) {
-			if (clsKeyQuerys[i] == null)
+			if (clsKeyQuerys[i] == "")
 				continue;
 			switch (clsKeyQuerys[i]) {
 			case COMPANY_CD:
@@ -191,7 +194,8 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				break;
 			}
 		}
-		List<Object> params = new ArrayList<>();
+
+		Map<String, Object> params = new HashMap<>();
 		if (companyCdIndexs.size() > 0) {
 			query.append(" AND ( ");
 			boolean isFirstOrStatement = true;
@@ -200,16 +204,15 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 					query.append(" OR ");
 				}
 				isFirstOrStatement = false;
-				String companyCdField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
-				if (!Strings.isNullOrEmpty(companyCdField)) {
+				if (columns.contains(fieldKeyQuerys[index])) {
 					query.append(" t.");
-					query.append(companyCdField);
+					query.append(fieldKeyQuerys[index]);
 				} else {
 					query.append(" p.");
-					query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
+					query.append(fieldKeyQuerys[index]);
 				}
-				query.append(" = :companyId ");
-				params.add(AppContexts.user().companyId());
+				query.append(" = ?companyId ");
+				params.put("companyId", AppContexts.user().companyId());
 			}
 			query.append(" ) ");
 		}
@@ -240,41 +243,42 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 						query.append(" OR ");
 					}
 					isFirstOrStatement = false;
-					String startDateField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
-					if (!Strings.isNullOrEmpty(startDateField)) {
+					// Start Date
+					if (columns.contains(fieldKeyQuerys[index])) {
 						query.append(" (t.");
-						query.append(startDateField);
+						query.append(fieldKeyQuerys[index]);
 					} else {
 						query.append(" (p.");
-						query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
+						query.append(fieldKeyQuerys[index]);
 					}
 
-					query.append(" >= :startDate ");
+					query.append(" >= ?startDate ");
 					query.append(" AND ");
 
-					String endDateField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
-					if (!Strings.isNullOrEmpty(endDateField)) {
+					// End Date
+					if (columns.contains(fieldKeyQuerys[index])) {
 						query.append(" t.");
-						query.append(endDateField);
+						query.append(fieldKeyQuerys[index]);
 					} else {
 						query.append(" p.");
-						query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
+						query.append(fieldKeyQuerys[index]);
 					}
 
-					query.append(" <= :endDate) ");
+					query.append(" <= ?endDate) ");
 
 					switch (tableList.getRetentionPeriodCls()) {
 					case DAILY:
-						params.add(tableList.getSaveDateFrom().get());
-						params.add(tableList.getSaveDateTo().get());
+						params.put("startDate", tableList.getSaveDateFrom().get());
+						params.put("endDate", tableList.getSaveDateTo().get());
 						break;
 					case MONTHLY:
-						params.add(Integer.valueOf(tableList.getSaveDateFrom().get().replaceAll("\\/", "")));
-						params.add(Integer.valueOf(tableList.getSaveDateTo().get().replaceAll("\\/", "")));
+						params.put("startDate",
+								Integer.valueOf(tableList.getSaveDateFrom().get().replaceAll("\\/", "")));
+						params.put("endDate", Integer.valueOf(tableList.getSaveDateTo().get().replaceAll("\\/", "")));
 						break;
 					case ANNUAL:
-						params.add(Integer.valueOf(tableList.getSaveDateFrom().get()));
-						params.add(Integer.valueOf(tableList.getSaveDateTo().get()));
+						params.put("startDate", Integer.valueOf(tableList.getSaveDateFrom().get()));
+						params.put("endDate", Integer.valueOf(tableList.getSaveDateTo().get()));
 						break;
 
 					default:
@@ -286,45 +290,32 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		}
 
 		// 抽出条件キー固定
-		String extractCondKeyFix = tableList.getDefaultCondKeyQuery() == null ? "" : tableList.getDefaultCondKeyQuery().orElse("");
+		query.append(tableList.getDefaultCondKeyQuery().orElse(""));
 
-		TypedQueryWrapper<?> queryWrapper = this.queryProxy().query(query.toString(), tableExport);
-		DatabaseQuery databaseQuery = queryWrapper.getQuery().unwrap(EJBQueryImpl.class).getDatabaseQuery();
-		StringBuffer sql = new StringBuffer(databaseQuery.getSQLString() + " " + extractCondKeyFix);
-		int paramIndex = 1;
-		char[] chs = sql.toString().toCharArray();
-		for (int i = 0; i < chs.length; i++) {
-			if (chs[i] == '?') {
-				sql.insert(i + paramIndex, paramIndex);
-				paramIndex++;
+		Query queryString = getEntityManager().createNativeQuery(query.toString());
+		for (Entry<String, Object> entry : params.entrySet()) {
+			queryString.setParameter(entry.getKey(), entry.getValue());
+		}
+		List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
+		return listTemp.stream().map(objects -> {
+			List<String> record = new ArrayList<String>();
+			for (Object field : objects) {
+				record.add(field != null ? String.valueOf(field) : "");
 			}
-		}
-
-		Query queryString = getEntityManager().createNativeQuery(sql.toString(), tableExport);
-		queryString.setParameter(1, 1);
-		queryString.setParameter(2, 1);
-		for (int i = 0; i < params.size(); i++) {
-			queryString.setParameter(3 + i, params.get(i));
-		}
-
-		return queryString.getResultList();
-	}
-
-	private String getOnStatement(Class<?> parentTable, String parentColumn, Class<?> childTable, String childColumn) {
-		if (!Strings.isNullOrEmpty(parentColumn) && !Strings.isNullOrEmpty(childColumn)) {
-			String parentColumnJpa = this.getFieldForColumnName(parentTable, parentColumn);
-			String childColumnJpa = this.getFieldForColumnName(childTable, childColumn);
-			return "p." + parentColumnJpa + "=" + "t." + childColumnJpa;
-		}
-		return "";
+			return record;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
-	public void updateByStorageId(String storageId, String recoveryId) {
-		this.getEntityManager().createQuery(UPDATE_BY_STORAGE_ID).setParameter("recoveryId", recoveryId).setParameter("storageId", storageId).executeUpdate();		
-	}
-	@Override
-	public void updateOldDataFieldByStorageId(String storageId, int recoveryId) {
-		this.getEntityManager().createQuery(UPDATE_BY_STORAGE_ID).setParameter("recoveryId", recoveryId).setParameter("storageId", storageId).executeUpdate();		
+	public List<String> getAllColumnName(String tableName) {
+		List<?> columns = this.getEntityManager().createNativeQuery(SELECT_COLUMN_NAME_MSSQL)
+				.setParameter("tableName", tableName).getResultList();
+		if (columns == null || columns.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return columns.stream().map(item -> {
+			return String.valueOf(item);
+		}).collect(Collectors.toList());
+
 	}
 }

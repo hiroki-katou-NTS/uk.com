@@ -3,7 +3,6 @@
  */
 package nts.uk.ctx.sys.assist.dom.storage;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,10 +13,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-
-import com.google.common.base.Strings;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
@@ -127,15 +122,16 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId);
 			repoResultSaving.add(data);
 
-			// ドメインモデル「データ保存動作管理」を登録する
-			repoDataSto.update(storeProcessingId, OperatingCondition.INPREPARATION);
-
 			// アルゴリズム「対象テーブルの選定と条件設定」を実行
 			StringBuffer outCompressedFileName = new StringBuffer();
 			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
 
-			if (resultState != ResultState.NORMAL_END) {
+			if (resultState == ResultState.NORMAL_END) {
 				evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
+				return;
+			}
+			else if (resultState == ResultState.INTERRUPTION) {
+				evaluateInterruption(storeProcessingId, manualSetting.getEmployees().size());
 				return;
 			}
 
@@ -162,6 +158,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			generatorContext.dispose();
 			evaluateAbnormalEnd(storeProcessingId, 0);
 		}
 	}
@@ -175,7 +172,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}).collect(Collectors.toList());
 
 		// update domain 「データ保存動作管理」 Data storage operation management
-		repoDataSto.update(storeProcessingId, categoryIds.size(), 0, OperatingCondition.SAVING);
+		if(!repoDataSto.update(storeProcessingId, categoryIds.size(), 0, OperatingCondition.SAVING)) {
+			return ResultState.INTERRUPTION;
+		}
 
 		List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
 		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
@@ -344,7 +343,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					// ドメインモデル「データ保存動作管理」を更新する
 					if (!tableList.getCategoryId().equals(categoryId)) {
 						categoryId = tableList.getCategoryId();
-						repoDataSto.increaseCategoryCount(storeProcessingId);
+						if(!repoDataSto.increaseCategoryCount(storeProcessingId)){
+							return ResultState.INTERRUPTION;
+						}
 					}
 				}
 
@@ -520,49 +521,19 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			if (dataStorageMng.isPresent() && dataStorageMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
 				return ResultState.INTERRUPTION;
 			}
-
-			Class<?> tableExport = repoTableList.getTypeForTableName(tableList.getTableEnglishName());
-			List<?> listObject = repoTableList.getDataDynamic(tableList, tableExport);
+		
+			List<List<String>> listObject = repoTableList.getDataDynamic(tableList);
 
 			// Add Table to CSV Auto
-			List<String> headerCsv3 = this.getTextHeaderCsv3(tableExport);
+			List<String> headerCsv3 = this.getTextHeaderCsv3(tableList.getTableEnglishName());
 			List<Map<String, Object>> dataSourceCsv3 = new ArrayList<>();
-			for (Object object : listObject) {
+			for (List<String> record : listObject) {
 				Map<String, Object> rowCsv = new HashMap<>();
-
-				for (String key : headerCsv3) {
-					String header = key;
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(0))
-							&& tableList.getFieldAcqCid().isPresent()) {
-						header = tableList.getFieldAcqCid().get();
-					}
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(1))
-							&& tableList.getFieldAcqEmployeeId().isPresent()) {
-						header = tableList.getFieldAcqEmployeeId().get();
-					}
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(2))
-							&& tableList.getFieldAcqDateTime().isPresent()) {
-						header = tableList.getFieldAcqDateTime().get();
-					}
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(3))
-							&& tableList.getFieldAcqStartDate().isPresent()) {
-						header = tableList.getFieldAcqStartDate().get();
-					}
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(4))
-							&& tableList.getFieldAcqEndDate().isPresent()) {
-						header = tableList.getFieldAcqEndDate().get();
-					}
-					String fieldName = repoTableList.getFieldForColumnName(object.getClass(), header);
-					Object resultObj = null;
-					if (!Strings.isNullOrEmpty(fieldName)) {
-						resultObj = object;
-						for (String name : fieldName.split("\\.")) {
-							resultObj = getValueByPropertyName(resultObj, name);
-						}
-					}
-					rowCsv.put(key, resultObj);
+				int i = 0;
+				for (String columnName : headerCsv3) {
+					rowCsv.put(columnName, record.get(i));
+					i++;
 				}
-
 				dataSourceCsv3.add(rowCsv);
 			}
 
@@ -633,28 +604,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return ResultState.INTERRUPTION;
 	}
 
-	private Object getValueByPropertyName(Object object, String fieldName) {
-		try {
-			Field[] fieldSuperclasses = object.getClass().getSuperclass().getDeclaredFields();
-			for (Field field : fieldSuperclasses) {
-				if (field.getName().equals(fieldName)) {
-					field.setAccessible(true);
-					return field.get(object);
-				}
-			}
-			Field[] fields = object.getClass().getDeclaredFields();
-			for (Field field : fields) {
-				if (field.getName().equals(fieldName)) {
-					field.setAccessible(true);
-					return field.get(object);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	private List<String> getTextHeaderCsv1() {
 		List<String> lstHeader = new ArrayList<>();
 		for (String nameId : LST_NAME_ID_HEADER_TABLE) {
@@ -671,31 +620,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return lstHeader;
 	}
 
-	private List<String> getTextHeaderCsv3(Class<?> type) {
-		List<String> columnCommons = new ArrayList<>();
-		for (Field field : type.getSuperclass().getDeclaredFields()) {
-			Column column = field.getDeclaredAnnotation(Column.class);
-			if (column != null)
-				columnCommons.add(column.name());
-		}
-
-		List<String> columnNames = new ArrayList<>();
-		for (Field field : type.getDeclaredFields()) {
-			if (field.isAnnotationPresent(EmbeddedId.class)) {
-				Class<?> pk = field.getType();
-				for (Field fieldPk : pk.getDeclaredFields()) {
-					Column columnPk = fieldPk.getDeclaredAnnotation(Column.class);
-					if (columnPk != null)
-						columnNames.add(columnPk.name());
-				}
-			}
-			Column column = field.getDeclaredAnnotation(Column.class);
-			if (column != null)
-				columnNames.add(column.name());
-		}
-
+	private List<String> getTextHeaderCsv3(String tableName) {
+		List<String> columnNames = repoTableList.getAllColumnName(tableName);
 		List<String> columnFix = new ArrayList<>(LST_NAME_ID_HEADER_TABLE_CSV3);
-		columnFix.addAll(columnCommons);
 		columnFix.addAll(columnNames);
 		return columnFix;
 	}

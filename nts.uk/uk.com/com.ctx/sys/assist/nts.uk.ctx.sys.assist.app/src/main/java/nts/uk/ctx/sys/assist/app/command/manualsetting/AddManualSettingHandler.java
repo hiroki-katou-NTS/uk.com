@@ -39,54 +39,59 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 	private ManualSetOfDataSaveService manualSetOfDataSaveService;
 	@Inject
 	private DataStorageMngRepository dataStorageMngRepo;
-	
 	@Inject
 	private TargetCategoryRepository repoTargetCat;
-	
 	@Inject
 	private SysEmployeeStorageAdapter sysEmployeeStorageAdapter;
-	
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<ManualSettingCommand> context) {
-		
-		String companyId = AppContexts.user().companyId();
 
+		String companyId = AppContexts.user().companyId();
 		String employeeIDLogin = AppContexts.user().employeeId();
 		ManualSettingCommand manualSetCmd = context.getCommand();
 		String storeProcessingId = manualSetCmd.getStoreProcessingId();
-	    List<TargetCategoryCommand> lstcategories = manualSetCmd.getCategory();
-	    List<TargetCategory> targetCategory = lstcategories.stream().map(item -> {
-	    	return new TargetCategory(storeProcessingId, item.getCategoryId());
-	    }).collect(Collectors.toList());
-	    repoTargetCat.add(targetCategory);
-	    
-		List<TargetEmployees> listTargetEmp = null;
-		
-		ManualSetOfDataSave domain = manualSetCmd.toDomain(companyId, storeProcessingId, employeeIDLogin);
-		manualSetOfDataSaveRepo.addManualSetting(domain);
-		
-		// ドメインモデル「データ保存動作管理」に登録する
-		DataStorageMng dataStorageMng = new DataStorageMng(storeProcessingId, NotUseAtr.NOT_USE, 0, 0,
-				0, OperatingCondition.INPREPARATION);
-		dataStorageMngRepo.add(dataStorageMng);
-		// 画面の保存対象社員から「社員指定の有無」を判定する 
-		if (manualSetCmd.getPresenceOfEmployee() == 1) {
-			// 指定社員の有無＝「する」
-			listTargetEmp = domain.getEmployees();
-			targetEmployeesRepo.addAll(listTargetEmp);
-		}
 
-		if (manualSetCmd.getPresenceOfEmployee() == 0) {
-			// 指定社員の有無＝「しない」の場合」
-			List<TargetEmployees>  lstEmplAll = sysEmployeeStorageAdapter.getListEmployeeByCompanyId(companyId);
-			lstEmplAll.stream().map(x -> {
-				x.setStoreProcessingId(storeProcessingId);
-				return x;
+		// ドメインモデル「データ保存動作管理」に登録する
+		DataStorageMng dataStorageMng = new DataStorageMng(storeProcessingId, NotUseAtr.NOT_USE, 0, 0, 0,
+				OperatingCondition.INPREPARATION);
+		dataStorageMngRepo.add(dataStorageMng);
+		try {
+			// ドメインモデル「データ保存動作管理」を登録する
+			dataStorageMngRepo.update(storeProcessingId, OperatingCondition.INPREPARATION);
+			List<TargetCategoryCommand> lstcategories = manualSetCmd.getCategory();
+			List<TargetCategory> targetCategory = lstcategories.stream().map(item -> {
+				return new TargetCategory(storeProcessingId, item.getCategoryId());
 			}).collect(Collectors.toList());
-			targetEmployeesRepo.addAll(lstEmplAll);
+			repoTargetCat.add(targetCategory);
+
+			List<TargetEmployees> listTargetEmp = null;
+
+			ManualSetOfDataSave domain = manualSetCmd.toDomain(companyId, storeProcessingId, employeeIDLogin);
+			manualSetOfDataSaveRepo.addManualSetting(domain);
+
+			// 画面の保存対象社員から「社員指定の有無」を判定する
+			if (manualSetCmd.getPresenceOfEmployee() == 1) {
+				// 指定社員の有無＝「する」
+				listTargetEmp = domain.getEmployees();
+				targetEmployeesRepo.addAll(listTargetEmp);
+			}
+
+			if (manualSetCmd.getPresenceOfEmployee() == 0) {
+				// 指定社員の有無＝「しない」の場合」
+				List<TargetEmployees> lstEmplAll = sysEmployeeStorageAdapter.getListEmployeeByCompanyId(companyId);
+				lstEmplAll.stream().map(x -> {
+					x.setStoreProcessingId(storeProcessingId);
+					return x;
+				}).collect(Collectors.toList());
+				targetEmployeesRepo.addAll(lstEmplAll);
+			}
+
+			manualSetOfDataSaveService.start(domain);
+		} catch (Exception e) {
+			e.printStackTrace();
+			// ドメインモデル「データ保存動作管理」を更新する
+			dataStorageMngRepo.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
 		}
-		
-		manualSetOfDataSaveService.start(domain);
 	}
 }

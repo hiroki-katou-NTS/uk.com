@@ -1,6 +1,9 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
 import java.util.Optional;
+
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+
 import java.util.List;
 
 /**
@@ -25,13 +28,13 @@ public interface DataStorageMngRepository {
 	 * @param categoryCount
 	 * @param categoryTotalCount
 	 */
-	void update(String storeProcessingId, int categoryTotalCount, int categoryCount,
+	boolean update(String storeProcessingId, int categoryTotalCount, int categoryCount,
 			OperatingCondition operatingCondition);
-	void update(String storeProcessingId, OperatingCondition operatingCondition);
+	boolean update(String storeProcessingId, OperatingCondition operatingCondition);
 	
-	void increaseCategoryCount(String storeProcessingId);
+	boolean increaseCategoryCount(String storeProcessingId);
 	
-	void update(DataStorageMng domain);
+	void update(String storeProcessingId, NotUseAtr doNotInterrupt);
 	
 	void remove(String storeProcessingId);
 
