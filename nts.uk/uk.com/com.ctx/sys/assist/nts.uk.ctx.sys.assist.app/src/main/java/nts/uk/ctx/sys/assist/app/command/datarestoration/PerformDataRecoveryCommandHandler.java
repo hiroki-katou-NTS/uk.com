@@ -11,6 +11,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
@@ -39,7 +41,7 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 	public void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
 		PerformDataRecoveryCommand performDataCommand = context.getCommand();
 		String dataRecoveryProcessId = performDataCommand.recoveryProcessingId;
-		String recoveryDate = "";
+		String recoveryDate = GeneralDateTime.now().toString("yyyy/MM/dd");
 		int categoryCnt = 0;
 		int errorCount = 0;
 		int categoryTotalCount = performDataCommand.recoveryCategoryList.size();
@@ -117,7 +119,12 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 		}
 
 		// Server I : ThuyetTd
-		recoveryStogareAsysnCommandHandler.handle(context);
+		try {
+			recoveryStogareAsysnCommandHandler.handle(context);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 
 		/*
 		 * String cid = AppContexts.user().companyId(); String saveSetCode =
