@@ -430,7 +430,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			try {
 				// アルゴリズム「メールを送信する」を実行する
 				mailsender.sendFromAdmin(mailTransmission.getMailAddr(),
-						new MailContents(mailTransmission.getSubject() + embeddedURL, mailTransmission.getText()));
+						new MailContents(mailTransmission.getSubject(), mailTransmission.getText() + embeddedURL));
 			} catch (Exception e) {
 				// 送信エラー社員(リスト)と社員名、エラー内容を追加する
 				listError.add(mailTransmission.getSName());
