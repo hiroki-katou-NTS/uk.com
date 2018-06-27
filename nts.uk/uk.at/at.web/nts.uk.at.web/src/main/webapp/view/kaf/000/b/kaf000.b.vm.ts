@@ -324,7 +324,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 }
             } else {
                 nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
-                    nts.uk.ui.block.clear();   
+                    self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                               nts.uk.ui.block.clear();        
+                    });
                 });
             }
         }
