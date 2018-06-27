@@ -4,15 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet_;
 
 /**
  * The Class JpaFlowWorkSettingRepository.
@@ -86,5 +96,34 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 		// save to memento
 		domain.saveToMemento(new JpaFlowWorkSettingSetMemento(entity));
 		return entity;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository#
+	 * findByCId(java.lang.String)
+	 */
+	@Override
+	public List<FlowWorkSetting> findByCId(String companyId) {
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<KshmtFlowWorkSet> query = builder.createQuery(KshmtFlowWorkSet.class);
+		Root<KshmtFlowWorkSet> root = query.from(KshmtFlowWorkSet.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		predicateList.add(builder.equal(
+				root.get(KshmtFlowWorkSet_.kshmtFlowWorkSetPK).get(KshmtFlowWorkSetPK_.cid),
+				companyId));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		List<KshmtFlowWorkSet> result = em.createQuery(query).getResultList();
+
+		return result.stream()
+				.map(entity -> new FlowWorkSetting(new JpaFlowWorkSettingGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 }

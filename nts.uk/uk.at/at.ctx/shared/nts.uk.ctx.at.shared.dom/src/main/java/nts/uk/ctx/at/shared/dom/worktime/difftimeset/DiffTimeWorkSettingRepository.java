@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
+import java.util.List;
 import java.util.Optional;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface DiffTimeWorkSettingRepository.
  */
@@ -42,4 +42,12 @@ public interface DiffTimeWorkSettingRepository {
 	 * @param workTimeCode the work time code
 	 */
 	void remove(String companyId, String workTimeCode);
+	
+	/**
+	 * Find by C id.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<DiffTimeWorkSetting> findByCId(String companyId);
 }
