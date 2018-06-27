@@ -38,7 +38,7 @@ module nts.uk.com.view.cmf004.i.viewmodel {
             let self = this;
             self.timeStart = new Date();
 
-            
+
 
             if (getShared("CMF004IParams")) {
                 let recoveryInfo = getShared("CMF004IParams");
@@ -108,8 +108,8 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 //init I4_1
                 self.code(self.recoverySourceCode);
                 self.saveName(self.recoverySourceName);
-                self.recoveryName('保存セット名称 A_2016/06/15 13:15:20.zip');
-                
+                self.recoveryName(self.recoverySourceName + '.zip');
+
                 // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
                 // 完了, 中断終了, 異常終了
                 if ((recoveryProcessing.operatingCondition == 3) || (recoveryProcessing.operatingCondition == 1) || (recoveryProcessing.operatingCondition == 5)) {
@@ -122,30 +122,30 @@ module nts.uk.com.view.cmf004.i.viewmodel {
             });
         }
 
-        operatingCondition(){
-            
+        operatingCondition() {
+
         }
 
         // close popup
         close(): void {
             nts.uk.ui.windows.close();
         }
-        
+
         public getStatusEnum(value): string {
-                if (value && value === 0) {
-                    return getText('Enum_OperatingCondition_INPROGRESS');
-                } else if (value && value === 1) {
-                    return getText('Enum_OperatingCondition_INTERRUPTION_END');
-                } else if (value && value === 2) {
-                    return getText('Enum_OperatingCondition_DELETING');
-                } else if (value && value === 3) {
-                    return getText('Enum_OperatingCondition_DONE');
-                } else if (value && value === 4) {
-                    return getText('Enum_OperatingCondition_INPREPARATION');
-                } else if (value && value === 5) {
-                    return getText('Enum_OperatingCondition_ABNORMAL_TERMINATION');
-                } 
+            if (value && value === 0) {
+                return getText('Enum_OperatingCondition_INPROGRESS');
+            } else if (value && value === 1) {
+                return getText('Enum_OperatingCondition_INTERRUPTION_END');
+            } else if (value && value === 2) {
+                return getText('Enum_OperatingCondition_DELETING');
+            } else if (value && value === 3) {
+                return getText('Enum_OperatingCondition_DONE');
+            } else if (value && value === 4) {
+                return getText('Enum_OperatingCondition_INPREPARATION');
+            } else if (value && value === 5) {
+                return getText('Enum_OperatingCondition_ABNORMAL_TERMINATION');
             }
+        }
     }
 }
 
