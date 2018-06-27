@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -57,6 +58,7 @@ import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
@@ -77,6 +79,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 1日の計算範囲
@@ -327,6 +330,20 @@ public class CalculationRangeOfOneDay {
 			}
 		}
 		List<OverTimeFrameTimeSheetForCalc> paramList = new ArrayList<>();
+		if(!this.withinWorkingTimeSheet.isPresent()) {
+			this.withinWorkingTimeSheet = Finally.of(new WithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
+																									 new TimeZoneRounding(new TimeWithDayAttr(0), new TimeWithDayAttr(0), null), 
+																									 new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
+																									 Collections.emptyList(), 
+																									 Collections.emptyList(), 
+																									 Collections.emptyList(), 
+																									 Optional.empty(), 
+																									 Collections.emptyList(), 
+																									 Optional.empty(), 
+																									 Optional.empty())),
+																			 Optional.empty(),
+																			 Optional.empty()));
+		}
 		if(this.outsideWorkTimeSheet.isPresent()
 			&& this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
 			paramList = this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets();
