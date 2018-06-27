@@ -15,6 +15,8 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCESetting;
+import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
 import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
 import nts.uk.ctx.pereg.dom.usesetting.UserSettingRepository;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
@@ -41,17 +43,27 @@ public class EmployeeInfoFinder {
 	@Inject
 	private StampCardEditingRepo stamCardEditRepo;
 	
+	@Inject
+	private IEmployeeCESettingRepository empCESettingRepo;
+	
 	private static final String JP_SPACE = "　";
 
 	public String generateEmplCode(String startLetters) {
 		String companyId = AppContexts.user().companyId();
+
+		Optional<EmployeeCESetting> _employeeCESetting = empCESettingRepo.getByComId(companyId);
+		if (!_employeeCESetting.isPresent()) {
+			return "";
+		}
+		int employeeCodeLength = _employeeCESetting.get().getDigitNumb().v();
+
+		Optional<String> lastEmployeeCode = employeeRepository.findLastEml(companyId, startLetters, employeeCodeLength);
 		
-		Optional<String> lastEmployeeCode = employeeRepository.findLastEml(companyId, startLetters);
 		if (!lastEmployeeCode.isPresent()) {
 			throw new BusinessException("Msg_505");
 		}
 		String returnString = generateCode(lastEmployeeCode.get());
-		
+
 		int maxLength = 6;
 		while (returnString.length() < maxLength) {
 			returnString += " ";
