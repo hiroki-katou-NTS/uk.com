@@ -225,13 +225,11 @@ module nts.uk.com.view.cmf003.b {
                 self.dayStartDateString.subscribe(function(value) {
                     self.dayValue().startDate = value;
                     self.dayValue.valueHasMutated();
-                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.dayEndDateString.subscribe(function(value) {
                     self.dayValue().endDate = value;
                     self.dayValue.valueHasMutated();
-                    $('.datepickerE').ntsError('clear');
                 });
 
                 //Date Ranger Picker : type month
@@ -244,13 +242,11 @@ module nts.uk.com.view.cmf003.b {
                 self.monthStartDateString.subscribe(function(value) {
                     self.monthValue().startDate = value;
                     self.monthValue.valueHasMutated();
-                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.monthEndDateString.subscribe(function(value) {
                     self.monthValue().endDate = value;
                     self.monthValue.valueHasMutated();
-                    $('.datepickerE').ntsError('clear');
                 });
 
                 //Date Ranger Picker : type year
@@ -263,14 +259,31 @@ module nts.uk.com.view.cmf003.b {
                 self.yearStartDateString.subscribe(function(value) {
                     self.yearValue().startDate = value;
                     self.yearValue.valueHasMutated();
-                    $('.datepickerE').ntsError('clear');
                 });
 
                 self.yearEndDateString.subscribe(function(value) {
                     self.yearValue().endDate = value;
                     self.yearValue.valueHasMutated();
-                    $('.datepickerE').ntsError('clear');
                 });
+                
+                self.dayValue.subscribe(function(value) {
+                    nts.uk.ui.errors.clearAll();
+                    $(".form-B").trigger("validate");
+                    $(".form-B .ntsDatepicker").trigger("validate");
+                });
+                
+                self.monthValue.subscribe(function(value) {
+                    nts.uk.ui.errors.clearAll();
+                    $(".form-B").trigger("validate");
+                    $(".form-B .ntsDatepicker").trigger("validate");
+                });
+                
+                self.yearValue.subscribe(function(value) {
+                    nts.uk.ui.errors.clearAll();
+                    $(".form-B").trigger("validate");
+                    $(".form-B .ntsDatepicker").trigger("validate");
+                });
+                
                 //Defaut D4_7
                 self.dateDefaut = ko.observable("2018/04/19");
 
@@ -603,21 +616,20 @@ module nts.uk.com.view.cmf003.b {
             }
 
             private setTargetEmployee(): void {
-                var self = this;
+                let self = this;
+                let tempEmployee;
 
-                self.targetEmployee.removeAll();
-                for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
-                    for (var j = 0; j < self.employeeList().length; j++) {
-                        if (self.employeeList()[j].code == self.selectedEmployeeCode()[i]) {
-                            self.targetEmployee.push(self.employeeList()[j]);
-                        }
-                    }
-                }
+                tempEmployee = _.filter(self.employeeList(), function(o) {
+                    return _.includes(self.selectedEmployeeCode(), o.code); 
+                });
+                
+                tempEmployee = _.sortBy(tempEmployee, ["code"]);
+                self.targetEmployee(tempEmployee);
             }
 
             private validateB(): boolean {
                 $(".form-B").trigger("validate");
-                $(".ntsDatepicker").trigger("validate");
+                $(".form-B .ntsDatepicker").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return false;
                 }
