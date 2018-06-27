@@ -663,7 +663,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						midNightTimeSheet,
 						personalInfo,
 						Optional.empty(),
-						holidayCalcMethodSet,
+						regularAddSetting.getVacationCalcMethodSet(),
 						dailyUnit,
 						breakTimeList,
 						vacation, 

@@ -450,7 +450,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	    			dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(), 
   	             									 new TimeZoneRounding(lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart()
 //  	                                    																						:duplicateTimeSheet.getTimeSheet().getStart(),
-  	             											 																	:predetermineTimeForSet.getTimeSheets(AttendanceHolidayAttr.FULL_TIME, workNo).get().getStart(),
+  	             											 																	:predetermineTimeForSet.getTimeSheets(workType.getAttendanceHolidayAttr(), workNo).get().getStart(),
   	                      							 duplicateTimeSheet.getTimeSheet().getEnd(),
   	                      							 duplicateTimeSheet.getTimeSheet().getRounding()));
   	   			}
@@ -478,7 +478,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	  	              							 new TimeZoneRounding(dupTimeSheet.getTimezone().getStart(),
   	  	                       										  LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd()
 //  	  	                                     																				         :dupTimeSheet.getTimezone().getEnd(),
-  	  	                       												  															 :predetermineTimeForSet.getTimeSheets(AttendanceHolidayAttr.FULL_TIME, workNo).get().getEnd(),
+  	  	                       												  															 :predetermineTimeForSet.getTimeSheets(workType.getAttendanceHolidayAttr(), workNo).get().getEnd(),
   	  	                       					 dupTimeSheet.getTimezone().getRounding()));
   	  	    		}
   	  		}
