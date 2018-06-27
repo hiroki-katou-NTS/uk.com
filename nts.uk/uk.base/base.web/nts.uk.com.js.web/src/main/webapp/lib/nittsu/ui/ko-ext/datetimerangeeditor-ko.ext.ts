@@ -58,9 +58,19 @@ module nts.uk.ui.koExtentions {
         
         validate(start, end): boolean {
             let self = this;
-            self.$root.find(".datetimepairrange-container").ntsError('clearKibanError');
+            self.$root.find(".control-container").ntsError('clearKibanError');
             let mStart = moment(start, self.format);
             let mEnd = moment(end, self.format);
+            if(!mEnd.isValid()){
+                self.$end.find(".datetimepair-container")
+                        .ntsError('set', "end date is not valid", 'Not defined code', false);
+                return false;
+            }
+            if(!mStart.isValid()){
+                self.$start.find(".datetimepair-container")
+                        .ntsError('set', "start date is not valid", 'Not defined code', false);
+                return false;
+            }
             if(mEnd.isBefore(mStart)){
                 self.$root.find(".datetimepairrange-container")
                         .ntsError('set', "end is smaller than start value", 'Not defined code', false);
@@ -82,7 +92,7 @@ module nts.uk.ui.koExtentions {
                     let endVal = self.endValueBind();
                     if(self.validate(val, endVal)){
                         allBindData.value().start(val);
-                        allBindData.value.valueHasMutated();        
+//                        allBindData.value.valueHasMutated();        
                     }
                 },
                 owner: this  
@@ -96,7 +106,7 @@ module nts.uk.ui.koExtentions {
                     let startVal = self.startValueBind();
                     if(self.validate(startVal, val)){
                         allBindData.value().end(val);
-                        allBindData.value.valueHasMutated();        
+//                        allBindData.value.valueHasMutated();        
                     }
                 },
                 owner: this  
@@ -114,10 +124,10 @@ module nts.uk.ui.koExtentions {
             
             self.initVal(allBindData);
             
-            let $container = $("<div>", { "class": "datetimerange-editor datetimepairrange-container" }),
-                this.$start = $("<div>", { "class": "start-datetime-editor datetimepairrange-component" }),
+            let $container = $("<div>", { "class": "datetimerange-editor datetimepairrange-container ntsControl control-container" }),
+                this.$start = $("<div>", { "class": "start-datetime-editor datetimepairrange-component ntsControl" }),
                 $seperator = $("<div>", { "class": "seperator datetimepairrange-component" }),
-                this.$end = $("<div>", { "class": "end-datetime-editor datetimepairrange-component" });  
+                this.$end = $("<div>", { "class": "end-datetime-editor datetimepairrange-component ntsControl" });  
             $container.append(this.$start);
             $container.append($seperator);
             $container.append(this.$end);

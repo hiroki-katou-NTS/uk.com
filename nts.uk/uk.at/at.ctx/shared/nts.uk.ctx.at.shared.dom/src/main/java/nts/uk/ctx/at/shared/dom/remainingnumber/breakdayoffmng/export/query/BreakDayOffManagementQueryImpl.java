@@ -161,52 +161,59 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		BreakDayOffInterimMngData outPutData = this.getMngDataToInterimData(sid, dateData);
 		//指定期間内に使用した暫定代休を取得する  ドメインモデル「暫定代休管理データ」を取得する
 		List<InterimRemain> lstDayOffInterimMng = remainRepo.getRemainBySidPriod(sid, dateData, RemainType.SUBHOLIDAY);
+		List<InterimDayOffMng> lstDayOffMng = new ArrayList<>(outPutData.getLstDayOffMng());
 		lstDayOffInterimMng.stream().forEach(x -> {
 			Optional<InterimDayOffMng> optDayOffMng = breakDayOffRepo.getDayoffById(x.getRemainManaID());
 			optDayOffMng.ifPresent(y -> {
-				outPutData.getLstDayOffMng().add(y);	
+				lstDayOffMng.add(y);	
 			});
 		});
+		outPutData.setLstDayOffMng(lstDayOffMng);
 		//未消化の確定休出に紐付いた暫定代休を取得する
+		List<InterimBreakDayOffMng> lstBreakDayOffMng = new ArrayList<>(outPutData.getLstBreakDayOffMng());
+		List<InterimDayOffMng> lstDayOffMngIn = new ArrayList<>(outPutData.getLstDayOffMng());
 		breakMngConfirmData.stream().forEach(z -> {
 			//ドメインモデル「暫定休出代休紐付け管理」を取得する
 			List<InterimBreakDayOffMng> breakDayMng = breakDayOffRepo.getBreakDayOffMng(z.getID(), true, DataManagementAtr.CONFIRM);
 			breakDayMng.stream().forEach(a -> {
-				outPutData.getLstBreakDayOffMng().add(a);
+				lstBreakDayOffMng.add(a);
 				//ドメインモデル「暫定代休管理データ」を取得する
 				Optional<InterimDayOffMng> optDayOffMng = breakDayOffRepo.getDayoffById(a.getDayOffManaId());
 				optDayOffMng.ifPresent(b -> {
-					outPutData.getLstDayOffMng().add(b);
+					lstDayOffMngIn.add(b);
 				});
 			});
-			
 		});
+		outPutData.setLstBreakDayOffMng(lstBreakDayOffMng);
+		outPutData.setLstDayOffMng(lstDayOffMngIn);
 		return outPutData;
 	}
 	@Override
 	public BreakDayOffInterimMngData getMngDataToInterimData(String sid, DatePeriod dateData) {
-		BreakDayOffInterimMngData outPutData = new BreakDayOffInterimMngData();
 		// ドメインモデル「暫定休出管理データ」を取得する
 		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(sid, dateData, RemainType.BREAK);
+		List<InterimBreakMng> lstBreakMng = new ArrayList<>();
+		List<InterimDayOffMng> lstDayOffMng = new ArrayList<>();
+		List<InterimBreakDayOffMng> lstBreakDayOffMng = new ArrayList<>();
 		getRemainBySidPriod.stream().forEach(x -> {
 			Optional<InterimBreakMng> getBreakMng = breakDayOffRepo.getBreakManaBybreakMngId(x.getRemainManaID());
 			getBreakMng.ifPresent(a -> {
-				outPutData.lstBreakMng.add(a);
+				lstBreakMng.add(a);
 				//ドメインモデル「暫定休出代休紐付け管理」を取得する
 				List<InterimBreakDayOffMng> breakDayMng = breakDayOffRepo.getBreakDayOffMng(a.getBreakMngId(), true, DataManagementAtr.INTERIM);
 				breakDayMng.stream()
 					.forEach(b -> {
-						outPutData.lstBreakDayOffMng.add(b);
+						lstBreakDayOffMng.add(b);
 						//ドメインモデル「暫定代休管理データ」を取得する
 						Optional<InterimDayOffMng> optDayOffMng = breakDayOffRepo.getDayoffById(b.getDayOffManaId());
 						optDayOffMng.ifPresent(c -> {
-							outPutData.lstDayOffMng.add(c);
+							lstDayOffMng.add(c);
 						});
 					});
 			});
 		});
 		
-		return outPutData;
+		return new BreakDayOffInterimMngData(lstBreakMng, lstDayOffMng, lstBreakDayOffMng);
 	}
 
 	@Override
@@ -464,24 +471,30 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//未消化の確定休出と紐付いた確定代休を取得する
 		//ドメインモデル「休出管理データ」を取得する
 		List<LeaveManagementData> lstBreakData = leaveManaDataRepo.getBySidWithsubHDAtr(companyId, sid, DigestionAtr.UNUSED.value);
-		lstBreakData.stream().forEach(x -> {
-			outputData.getBreakMngData().add(x);
+		List<LeaveComDayOffManagement> breakTypingMng = new ArrayList<>();
+		List<CompensatoryDayOffManaData> dayOffData  = new ArrayList<>();
+		for (LeaveManagementData x : lstBreakData) {
 			//ドメインモデル「休出代休紐付け管理」を取得する
-			List<LeaveComDayOffManagement> breakTypingMng =  typingConfirmMng.getByLeaveID(x.getID());			
+			breakTypingMng =  typingConfirmMng.getByLeaveID(x.getID());			
 			breakTypingMng.stream().forEach(y -> {
-				outputData.getTypingMngData().add(y);
 				//ドメインモデル「代休管理データ」を取得する
 				Optional<CompensatoryDayOffManaData> optDayoffMng = leaveDayOffRepo.getBycomdayOffId(y.getComDayOffID());
 				optDayoffMng.ifPresent(z -> {
-					outputData.getDayOffData().add(z);
+					dayOffData.add(z);
 				});
 				
 			});
-		});
+		}
+		outputData.setBreakMngData(lstBreakData);
+		outputData.setTypingMngData(breakTypingMng);
+		outputData.setDayOffData(dayOffData);
+		
 		//ドメインモデル「代休管理データ」を取得する
 		List<CompensatoryDayOffManaData> lstDayOffMngByUnOffsetDays =  leaveDayOffRepo.getBySidWithReDay(companyId, sid);
+		List<CompensatoryDayOffManaData> dayOffDataGet = new ArrayList<>(outputData.getDayOffData());
 		if(!lstDayOffMngByUnOffsetDays.isEmpty()) {
-			outputData.getDayOffData().addAll(lstDayOffMngByUnOffsetDays);
+			dayOffDataGet.addAll(lstDayOffMngByUnOffsetDays);
+			outputData.setDayOffData(dayOffDataGet);
 		}
 		return outputData;
 	}

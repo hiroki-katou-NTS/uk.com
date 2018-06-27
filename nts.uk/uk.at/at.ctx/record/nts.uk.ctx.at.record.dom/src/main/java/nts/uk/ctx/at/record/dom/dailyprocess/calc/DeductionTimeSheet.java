@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.eclipse.persistence.internal.identitymaps.FullIdentityMap;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -27,13 +24,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
@@ -151,7 +144,9 @@ public class DeductionTimeSheet {
 		/* 育児時間帯を取得 */
 
 		/* ソート処理 */
-		sheetList.stream().sorted((first, second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart()));
+		sheetList = sheetList.stream()
+							 .sorted((first, second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart()))
+							 .collect(Collectors.toList());
 		/* 計算範囲による絞り込み */
 		List<TimeSheetOfDeductionItem> reNewSheetList = refineCalcRange(sheetList, oneDayRange,
 				CommonSet.getCalculateMethod(), attendanceLeaveWork);

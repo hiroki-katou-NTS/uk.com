@@ -126,6 +126,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition() ;
+				boolean checkErrorFixed = false;
+				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
+					if(fixedExtraMonFun.isUseAtr()) {
+						checkErrorFixed = true;
+						break;
+					}
+				}
+				
+				if(checkErrorFixed == false && command.getMonAlarmCheckCon().getArbExtraCon().size() ==0 ) {
+					throw new BusinessException("Msg_832"); 
+				}
+				
 				//update list mon
 				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
 						.getMonAlarmCheckConDto().getListEralCheckIDOld();
@@ -253,6 +265,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				break;
 			case MONTHLY:
+				boolean checkErrorFixed = false;
+				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
+					if(fixedExtraMonFun.isUseAtr()) {
+						checkErrorFixed = true;
+						break;
+					}
+				}
+				
+				if(checkErrorFixed == false && command.getMonAlarmCheckCon().getArbExtraCon().size() ==0 ) {
+					throw new BusinessException("Msg_832"); 
+				}
+				
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
 				for(ExtraResultMonthlyDomainEventDto item:command.getMonAlarmCheckCon().getArbExtraCon()) {
 					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
