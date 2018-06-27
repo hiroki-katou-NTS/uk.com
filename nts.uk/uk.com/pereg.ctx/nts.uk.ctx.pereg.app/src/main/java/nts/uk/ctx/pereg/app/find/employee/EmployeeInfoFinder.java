@@ -62,13 +62,8 @@ public class EmployeeInfoFinder {
 		if (!lastEmployeeCode.isPresent()) {
 			throw new BusinessException("Msg_505");
 		}
-		String returnString = generateCode(lastEmployeeCode.get());
+		return generateCode(lastEmployeeCode.get());
 
-		int maxLength = 6;
-		while (returnString.length() < maxLength) {
-			returnString += " ";
-		}
-		return returnString;
 	}
 
 	public String generateCardNo(String startLetters) {
