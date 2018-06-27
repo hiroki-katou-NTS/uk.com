@@ -163,16 +163,16 @@ module nts.uk.at.view.kdl001.a {
             }
         }
         export class TimeItem {
-            code: string;
-            name: string;
-            time1: Time;
-            time2: Time;
+            selectedWorkTimeCode: string;
+            selectedWorkTimeName: string;
+            first: Time;
+            second: Time;
             constructor(data?) {
                 if (data) {
-                    this.code = data.code;
-                    this.name = data.name;
-                    this.time1 = new Time(data.firstStartTime, data.firstEndTime);
-                    this.time2 = new Time(data.secondStartTime, data.secondEndTime);
+                    this.selectedWorkTimeCode = data.code;
+                    this.selectedWorkTimeName = data.name;
+                    this.first = new Time(data.firstStartTime, data.firstEndTime);
+                    this.second = new Time(data.secondStartTime, data.secondEndTime);
                 }
             }
         }
