@@ -213,8 +213,8 @@ public class WithinStatutoryTimeOfDaily {
 			   												   WorkingConditionItem conditionItem,
 			   												Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo
 			   												   ) {
-//		if(conditionItem.getLaborSystem().isFlexTimeWork() 
-		if(true
+		if(conditionItem.getLaborSystem().isFlexTimeWork() 
+//		if(true
 			&& (!workTimeDailyAtr.isPresent() || workTimeDailyAtr.get().isFlex())) {
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)withinTimeSheet;
 			return changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,

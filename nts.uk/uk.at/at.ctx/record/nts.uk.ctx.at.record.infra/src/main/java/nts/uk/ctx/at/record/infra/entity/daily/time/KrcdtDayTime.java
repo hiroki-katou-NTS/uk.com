@@ -1283,16 +1283,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						this.preAppTime9 = !frame9.getBeforeApplicationTime().isPresent() || frame9.getBeforeApplicationTime().get() == null ? 0 : frame9.getBeforeApplicationTime().get().valueAsMinutes();
 						this.preAppTime10 = !frame10.getBeforeApplicationTime().isPresent() || frame10.getBeforeApplicationTime().get() == null ? 0 : frame10.getBeforeApplicationTime().get().valueAsMinutes();	
 						/*休日出勤乖離時間*/
-						this.divergenceTime1 = !frame1.getHolidayWorkTime().isPresent() || frame1.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame1.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime2 = !frame2.getHolidayWorkTime().isPresent() || frame2.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame2.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime3 = !frame3.getHolidayWorkTime().isPresent() || frame3.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame3.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime4 = !frame4.getHolidayWorkTime().isPresent() || frame4.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame4.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime5 = !frame5.getHolidayWorkTime().isPresent() || frame5.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame5.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime6 = !frame6.getHolidayWorkTime().isPresent() || frame6.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame6.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime7 = !frame7.getHolidayWorkTime().isPresent() || frame7.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame7.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime8 = !frame8.getHolidayWorkTime().isPresent() || frame8.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame8.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime9 = !frame9.getHolidayWorkTime().isPresent() || frame9.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame9.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime10 = !frame10.getHolidayWorkTime().isPresent() || frame10.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame10.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime1 = !frame1.getHolidayWorkTime().isPresent() || frame1.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame1.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime2 = !frame2.getHolidayWorkTime().isPresent() || frame2.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame2.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime3 = !frame3.getHolidayWorkTime().isPresent() || frame3.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame3.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime4 = !frame4.getHolidayWorkTime().isPresent() || frame4.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame4.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime5 = !frame5.getHolidayWorkTime().isPresent() || frame5.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame5.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime6 = !frame6.getHolidayWorkTime().isPresent() || frame6.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame6.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime7 = !frame7.getHolidayWorkTime().isPresent() || frame7.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame7.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime8 = !frame8.getHolidayWorkTime().isPresent() || frame8.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame8.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime9 = !frame9.getHolidayWorkTime().isPresent() || frame9.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame9.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime10 = !frame10.getHolidayWorkTime().isPresent() || frame10.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame10.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
 						/*振替乖離時間*/
 						this.divHoliTransTime1 = !frame1.getTransferTime().isPresent() || frame1.getTransferTime().get().getDivergenceTime() == null ? 0 : frame1.getTransferTime().get().getDivergenceTime().valueAsMinutes();
 						this.divHoliTransTime2 = !frame2.getTransferTime().isPresent() || frame2.getTransferTime().get().getDivergenceTime() == null ? 0 : frame2.getTransferTime().get().getDivergenceTime().valueAsMinutes();
@@ -1350,7 +1350,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						val holTimeSheet = totalWork.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet(); 
 						Optional<HolidayWorkFrameTimeSheet> sheet = Optional.empty();
 						
-						allClear();
+						allClearHolidayWorkTS();
 						sheet = getTimeSheet(holTimeSheet, 1);
 						sheet.ifPresent(tc -> {
 							/*休日出勤1開始時刻*/
@@ -1421,6 +1421,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 							/*休日出勤10終了時刻*/
 							this.holiWork10EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
 						});
+					}
 				/*----------------------日別実績の休出時間帯------------------------------*/
 					
 					
@@ -1486,7 +1487,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						this.workTime = withinDomain.getWorkTime() == null ? 0 : withinDomain.getWorkTime().valueAsMinutes();
 						/*実働就業時間*/
 //						this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
-						this.actWorkTime = withinDomain.getActualWorkTime() == null ? 0 : withinDomain.getActualWorkTime().valueAsMinutes();
+						this.pefomWorkTime = withinDomain.getActualWorkTime() == null ? 0 : withinDomain.getActualWorkTime().valueAsMinutes();
 						/*所定内割増時間*/
 						this.prsIncldPrmimTime = withinDomain.getWithinPrescribedPremiumTime() == null ? 0 : withinDomain.getWithinPrescribedPremiumTime().valueAsMinutes();
 						if(withinDomain.getWithinStatutoryMidNightTime() != null){
@@ -1737,7 +1738,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 							&& totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
 							&& !totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet().isEmpty()) {
 						Optional<TimeSpanForCalc> span;
-						allClear();
+						allClearOverTimeTS();
 						val overTimeSheet = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet();
 						span = getTimeSpan(overTimeSheet, 1);
 						span.ifPresent( tc -> {
@@ -1804,7 +1805,6 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					
 				}
 			}
-		}
 		}
 	}
 	
@@ -1874,7 +1874,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
  				 								 .collect(Collectors.toList()));
 	}
 
-	private void allClear() {
+	private void allClearOverTimeTS() {
 		this.overTime1StrClc = 0;
 		this.overTime1EndClc = 0;
 		this.overTime2StrClc = 0;
@@ -1896,6 +1896,29 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		this.overTime10StrClc = 0;
 		this.overTime10EndClc = 0;
 	}
+	private void allClearHolidayWorkTS() {
+		this.holiWork1StrClc = 0;
+		this.holiWork1EndClc = 0;
+		this.holiWork2StrClc = 0;
+		this.holiWork2EndClc = 0;
+		this.holiWork3StrClc = 0;
+		this.holiWork3EndClc = 0;
+		this.holiWork4StrClc = 0;
+		this.holiWork4EndClc = 0;
+		this.holiWork5StrClc = 0;
+		this.holiWork5EndClc = 0;
+		this.holiWork6StrClc = 0;
+		this.holiWork6EndClc = 0;
+		this.holiWork7StrClc = 0;
+		this.holiWork7EndClc = 0;
+		this.holiWork8StrClc = 0;
+		this.holiWork8EndClc = 0;
+		this.holiWork9StrClc = 0;
+		this.holiWork9EndClc = 0;
+		this.holiWork10StrClc = 0;
+		this.holiWork10EndClc = 0;
+	}
+	
 	private Optional<TimeSpanForCalc> decisionConnectSpan(List<TimeSpanForCalc> collect) {
 		if(collect.isEmpty()) return Optional.empty();
 		if(collect.size() == 1) return Optional.of(collect.get(0));
