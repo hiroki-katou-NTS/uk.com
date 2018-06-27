@@ -122,15 +122,16 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId);
 			repoResultSaving.add(data);
 
-			// ドメインモデル「データ保存動作管理」を登録する
-			repoDataSto.update(storeProcessingId, OperatingCondition.INPREPARATION);
-
 			// アルゴリズム「対象テーブルの選定と条件設定」を実行
 			StringBuffer outCompressedFileName = new StringBuffer();
 			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
 
-			if (resultState != ResultState.NORMAL_END) {
+			if (resultState == ResultState.NORMAL_END) {
 				evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
+				return;
+			}
+			else if (resultState == ResultState.INTERRUPTION) {
+				evaluateInterruption(storeProcessingId, manualSetting.getEmployees().size());
 				return;
 			}
 
@@ -157,6 +158,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			generatorContext.dispose();
 			evaluateAbnormalEnd(storeProcessingId, 0);
 		}
 	}
@@ -170,7 +172,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}).collect(Collectors.toList());
 
 		// update domain 「データ保存動作管理」 Data storage operation management
-		repoDataSto.update(storeProcessingId, categoryIds.size(), 0, OperatingCondition.SAVING);
+		if(!repoDataSto.update(storeProcessingId, categoryIds.size(), 0, OperatingCondition.SAVING)) {
+			return ResultState.INTERRUPTION;
+		}
 
 		List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
 		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
@@ -339,7 +343,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					// ドメインモデル「データ保存動作管理」を更新する
 					if (!tableList.getCategoryId().equals(categoryId)) {
 						categoryId = tableList.getCategoryId();
-						repoDataSto.increaseCategoryCount(storeProcessingId);
+						if(!repoDataSto.increaseCategoryCount(storeProcessingId)){
+							return ResultState.INTERRUPTION;
+						}
 					}
 				}
 

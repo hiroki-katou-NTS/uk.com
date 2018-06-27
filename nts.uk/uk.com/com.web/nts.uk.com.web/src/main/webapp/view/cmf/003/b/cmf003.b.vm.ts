@@ -653,7 +653,7 @@ module nts.uk.com.view.cmf003.b {
                 setShared("CMF003_B_SYSTEMTYPE", self.systemtypeFromC);
 
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
-                    let categoryFromC = getShared('CMF003_C_CATEGORIES');
+                    let categoryFromC = JSON.parse(getShared('CMF003_C_CATEGORIES'));
                     let systemtypeFromC = getShared('CMF003_C_SYSTEMTYPE');
 
                     if (systemtypeFromC) {
@@ -662,11 +662,7 @@ module nts.uk.com.view.cmf003.b {
                     }
 
                     if (categoryFromC && (categoryFromC.length > 0)) {
-                        self.categorys.removeAll();
-                        for (let i = 0; i < categoryFromC.length; i++) {
-                            self.categorys.push(categoryFromC[i]);
-                        }
-
+                        self.categorys(categoryFromC);
                         self.setRangePickerRequire();
                     }
 

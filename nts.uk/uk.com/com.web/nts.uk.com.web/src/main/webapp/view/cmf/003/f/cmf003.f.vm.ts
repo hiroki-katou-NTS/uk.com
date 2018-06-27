@@ -191,10 +191,16 @@ module nts.uk.com.view.cmf003.f {
                 
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                 .ifYes(() => {
-                    service.setInterruptSaving(dataStorageMng).done(function(res: any) {
-                        console.log("interrupt success");
+                    self.dialogMode("error_interrupt");
+                    self.status(self.getStatusEnum(5));
+                    $('#F3_3').focus();
+                    
+                    // delete dataStorageMng of process when interrupt
+                    let dataStorageMng = new DataStorageMng(self.storeProcessingId, 0, 0, 0, 0, 0);
+                    service.deleteDataStorageMng(dataStorageMng).done(function(res: any) {
+                        console.log("delete success");
                     }).fail(function(res: any) {
-                        console.log("interrupt fail");
+                        console.log("delete fails");
                     });
                 })
                 .ifNo(() => {

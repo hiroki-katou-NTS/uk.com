@@ -11,7 +11,7 @@ module nts.uk.com.view.cmf003.c {
             categoriesDefault: KnockoutObservableArray<ItemCategory>;
             categoriesSelected: KnockoutObservableArray<ItemCategory>;
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            currentCateSelected: KnockoutObservableArray<any>;
+            currentCateSelected: KnockoutObservableArray<ItemSystemType>;
 
             // systemType
             systemTypes: KnockoutObservableArray<number>;
@@ -106,7 +106,7 @@ module nts.uk.com.view.cmf003.c {
                 if (self.currentCateSelected().length == 0) {
                     alertError({ messageId: "Msg_577" });
                 } else {
-                    setShared("CMF003_C_CATEGORIES", self.currentCateSelected());
+                    setShared("CMF003_C_CATEGORIES", JSON.stringify(self.currentCateSelected()));
                     setShared("CMF003_C_SYSTEMTYPE", self.currentItem);
                     close();
                 }
