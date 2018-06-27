@@ -9,10 +9,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentCreateEvent;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -61,6 +63,10 @@ public class EmpSaveCommandHandler extends CommandHandler<EmpSaveCommand> {
 
 		// Create
 		this.repository.insert(employment);
+		
+		// Event::雇用が新規作成された
+		val employmentCreatEvent = new EmploymentCreateEvent(employment.getCompanyId(), employment.getEmploymentCode());
+		employmentCreatEvent.toBePublished();
 	}
 
 }
