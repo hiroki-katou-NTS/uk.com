@@ -93,7 +93,7 @@
 									optionsValue: 'id',
 									value: currentReason,
 									optionsText: 'content',
-									enable: true,
+									enable: editable,
 									columns: [
 										{ prop: 'content', length: 19 },
 									]}"></span>	
@@ -107,7 +107,8 @@
 							<span>
 								<textarea id = "appReason" class="cm-memo" data-bind="ntsMultilineEditor: { 
 									name: '#[KAF002_11]',
-									value: application().contentReason }" />
+									value: application().contentReason,
+									enable: editable }" />
 							</span>
 						</div>
 					</div>

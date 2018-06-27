@@ -13,6 +13,8 @@ module nts.uk.at.view.kaf002.m2 {
             workLocationList: Array<vmbase.IWorkLocation> = [];
             displayAllLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KAF002_56")); 
             displayItemNo: number = this.supFrameNo;
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 var self = this;
                 self.extendsMode.subscribe((v)=>{ 
@@ -22,8 +24,10 @@ module nts.uk.at.view.kaf002.m2 {
                 });        
             }
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>){
-                var self = this;    
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>, editable: any, screenMode: any){
+                var self = this;   
+                self.screenMode(screenMode);
+                self.editable(editable); 
                 self.workLocationList = listWorkLocation;
                 self.supFrameNo = data.supFrameDispNO;
                 self.refreshData();
