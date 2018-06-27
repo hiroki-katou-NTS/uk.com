@@ -698,10 +698,24 @@ module nts.uk.at.view.kal003.b.viewmodel {
             switch (self.category()) {
                 case sharemodel.CATEGORY.DAILY:
                     let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
+                    let attdAtr = 0;
+                    if(self.workRecordExtractingCondition().checkItem() == 0){
+                        //時間
+                        attdAtr = 5;
+                    }else if(self.workRecordExtractingCondition().checkItem() == 1){
+                        //回数
+                        attdAtr = 2;
+                    }else if(self.workRecordExtractingCondition().checkItem() == 2){
+                        //金額
+                        attdAtr = 3;
+                    }else if(self.workRecordExtractingCondition().checkItem() == 3){
+                        //時刻
+                        attdAtr = 6;
+                    }
                     //fixbug select item 111
-                    self.getListItemByAtr(self.workRecordExtractingCondition().checkItem()).done((lstItem) => {
+                    self.getListItemByAtr(attdAtr).done((lstItem) => {
                         let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-                        if (self.workRecordExtractingCondition().checkItem() === 2) {
+                        if (self.workRecordExtractingCondition().checkItem() === 3) {
                             //Open dialog KDL021
                             nts.uk.ui.windows.setShared('Multiple', false);
                             nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
@@ -851,7 +865,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         fillTextDisplayTarget(defered, currentAtdItemCondition) {
             let self = this;
             self.displayAttendanceItemSelections_BA2_3("");
-            if (self.workRecordExtractingCondition().checkItem() === 2) {
+            if (self.workRecordExtractingCondition().checkItem() === 3) {
                 if (currentAtdItemCondition.uncountableAtdItem()) {
                     service.getAttendanceItemByCodes([currentAtdItemCondition.uncountableAtdItem()]).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {

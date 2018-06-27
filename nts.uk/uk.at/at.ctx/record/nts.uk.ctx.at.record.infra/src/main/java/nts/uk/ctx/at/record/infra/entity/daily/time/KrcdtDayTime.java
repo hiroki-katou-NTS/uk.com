@@ -11,7 +11,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.val;
@@ -67,6 +70,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendance
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
+import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -1029,6 +1033,12 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	protected Object getKey() {
 		return this.krcdtDayTimePK;
 	}
+	
+	@OneToOne(cascade = CascadeType.REMOVE)
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDayPremiumTime krcdtDayPremiumTime;
 	
 //	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
 //	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;

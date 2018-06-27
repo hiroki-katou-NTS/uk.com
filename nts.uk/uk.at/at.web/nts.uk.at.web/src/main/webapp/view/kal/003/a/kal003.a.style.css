@@ -37,6 +37,11 @@ div[class="tab-content-1"] {
 	padding: 0px !important;
 }
 
+div[class="tab-content-6"] {
+	padding: 0px !important;
+	padding-bottom: 10px !important;
+}
+
 .tab-content-1 button {
 	width: 80px;
 	margin: 0px 20px;
