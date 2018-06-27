@@ -74,6 +74,28 @@ public class EmployeeInfoFinder {
 		}
 		return generateCode(lastCardNo.get());
 	}
+	
+	public String initEmplCode() {
+		String employeeId = AppContexts.user().employeeId();
+		
+		Optional<UserSetting> _userSetting = userSettingRepo.getUserSetting(employeeId);
+		
+		if (!_userSetting.isPresent()) {
+			return "";
+		}
+		UserSetting userSetting = _userSetting.get();
+		
+		switch (userSetting.getEmpCodeValType()) {
+		case INIT_DESIGNATION:
+			return generateEmplCode(userSetting.getEmpCodeLetter().v());
+		case MAXVALUE:
+			return generateEmplCode("");
+		case BLANK:
+			return "";
+		}
+		
+		return "";
+	}
 
 	public String initCardNo(String newEmployeeCode) {
 		String employeeId = AppContexts.user().employeeId();
