@@ -108,6 +108,14 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 self.dataRecoverySelection().executePeriodInput.valueHasMutated();
             });
 
+            //New code
+            self.dataRecoverySelection().selectedUploadCls.subscribe(value => {
+                if (value == 1) {
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            //End new code
+
             self.dataContentConfirm().dataContentcategoryList.subscribe(value => {
                 self.setWidthScrollHeader('.contentE', value);
             });
@@ -194,32 +202,36 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         searchDataRecovery(): void {
             let self = this;
-            self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
-            self.endDateString(moment.utc().format("YYYY/MM/DD"));
-            let paramSearch = {
-                startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
-                endDate: moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD hh:mm:ss").add(1, "d").add(-1, "s").toISOString()
-            };
-            self.dataRecoverySelection().recoveryFileList.removeAll();
-            service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
-                if (data && data.length) {
-                    for (let i = 0; i < data.length; i++) {
-                        let itemTarget =
-                            {
-                                saveSetCode: data[i].code,
-                                saveSetName: data[i].name,
-                                supplementaryExplanation: data[i].suppleExplanation,
-                                storageStartDate: (data[i].saveStartDatetime),
-                                executeCategory: (data[i].saveForm) == 0 ? getText('CMF004_300') : getText('CMF004_301'),
-                                targetNumber: data[i].targetNumberPeople + "人",
-                                saveFileName: data[i].saveFileName + ".zip",
-                                fileId: data[i].fileId,
-                                storeProcessingId: data[i].storeProcessingId
-                            };
-                        self.dataRecoverySelection().recoveryFileList.push(itemTarget);
+            $("#daterangepicker_b4_3 .ntsDatepicker").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
+                self.endDateString(moment.utc().format("YYYY/MM/DD"));
+                let paramSearch = {
+                    startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
+                    endDate: moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD hh:mm:ss").add(1, "d").add(-1, "s").toISOString()
+                };
+                self.dataRecoverySelection().recoveryFileList.removeAll();
+                service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
+                    if (data && data.length) {
+                        for (let i = 0; i < data.length; i++) {
+                            let itemTarget =
+                                {
+                                    saveSetCode: data[i].code,
+                                    saveSetName: data[i].name,
+                                    supplementaryExplanation: data[i].suppleExplanation,
+                                    storageStartDate: (data[i].saveStartDatetime),
+                                    executeCategory: (data[i].saveForm) == 0 ? getText('CMF004_300') : getText('CMF004_301'),
+                                    targetNumber: data[i].targetNumberPeople + "人",
+                                    saveFileName: data[i].saveFileName + ".zip",
+                                    fileId: data[i].fileId,
+                                    storeProcessingId: data[i].storeProcessingId
+                                };
+                            self.dataRecoverySelection().recoveryFileList.push(itemTarget);
+                        }
                     }
-                }
-            });
+                    self.dataRecoverySelection().selectedRecoveryFile("");
+                });
+            }
         }
 
         /**
