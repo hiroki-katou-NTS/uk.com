@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -32,6 +34,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		if(!occUseDetail.isPresent()) {
 			return mngData;
 		}
+		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
 		OccurrenceUseDetail useDetail = occUseDetail.get();
 		String mngId = IdentifierUtil.randomUniqueId();
 		InterimRemain ramainData = new InterimRemain(mngId, 
@@ -40,10 +43,11 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 				inforData.getWorkTypeRemain().get().getCreateData(), 
 				RemainType.ANNUAL,
 				RemainAtr.SINGLE);
-		mngData.getRecAbsData().add(ramainData);
+		recAbsData.add(ramainData);
 		TmpAnnualHolidayMng annualMng = new TmpAnnualHolidayMng(mngId, 
 				inforData.getWorkTypeRemain().get().getWorkTypeCode(), 
 				new UseDay(useDetail.getDays()));
+		mngData.setRecAbsData(recAbsData);
 		mngData.setAnnualHolidayData(Optional.of(annualMng));
 		return mngData;
 	}
@@ -56,6 +60,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		if(!occUseDetail.isPresent()) {
 			return mngData;
 		}
+		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
 		String mngId = IdentifierUtil.randomUniqueId();
 		InterimRemain ramainData = new InterimRemain(mngId, 
 				inforData.getSid(),
@@ -63,9 +68,10 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 				inforData.getWorkTypeRemain().get().getCreateData(), 
 				RemainType.FUNDINGANNUAL,
 				RemainAtr.SINGLE);
-		mngData.getRecAbsData().add(ramainData);
+		recAbsData.add(ramainData);
 		TmpResereLeaveMng resereData = new TmpResereLeaveMng(mngId, new UseDay(occUseDetail.get().getDays()));
 		mngData.setResereData(Optional.of(resereData));
+		mngData.setRecAbsData(recAbsData);
 		return mngData;
 	}
 	@Override
@@ -73,6 +79,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			DailyInterimRemainMngData mngData) {
 		//残数作成元情報のアルゴリズム「分類を指定して発生使用明細を取得する」を実行する
 		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(inforData, workTypeClass);
+		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
 		if(occUseDetail.isPresent()) {
 			String mngId = IdentifierUtil.randomUniqueId();
 			InterimRemain mngDataRemain = new InterimRemain(mngId,
@@ -85,9 +92,9 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 					new RequiredDay(occUseDetail.get().getDays()),
 					new UnOffsetDay(occUseDetail.get().getDays()));
 			mngData.setInterimAbsData(Optional.of(absData));
-			mngData.getRecAbsData().add(mngDataRemain);
+			recAbsData.add(mngDataRemain);
+			mngData.setRecAbsData(recAbsData);
 		}
-		
 		return mngData;
 	}
 
@@ -96,6 +103,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
 		//残数作成元情報のアルゴリズム「分類を指定して発生使用明細を取得する」を実行する
 		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(inforData, workTypeClass);
+		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
 		if(occUseDetail.isPresent()) {
 			if(!occUseDetail.get().isUseAtr()) {
 				String mngId = IdentifierUtil.randomUniqueId();
@@ -106,10 +114,11 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 						new UnOffsetTime(0), 
 						new UnOffsetDay(occUseDetail.get().getDays()));
 				mngData.setDayOffData(Optional.of(dayoffMng));
-				mngData.getRecAbsData().add(mngDataRemain);
+				recAbsData.add(mngDataRemain);
 			} else {
 				//TODO 2018.06.20 chua lam trong giai doan nay
 			}
+			mngData.setRecAbsData(recAbsData);
 		}
 		return mngData;
 	}
