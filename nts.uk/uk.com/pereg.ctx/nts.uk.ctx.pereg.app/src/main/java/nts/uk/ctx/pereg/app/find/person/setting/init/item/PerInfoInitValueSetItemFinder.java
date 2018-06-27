@@ -68,11 +68,17 @@ public class PerInfoInitValueSetItemFinder {
 		if (item.isEmpty())
 			return ctgState;
 		String ctgCode = item.get(0).getCtgCode();
-		List<String> itemList = this.createItemTimePointOfCS00020();
+		List<String> itemList = new ArrayList<>();
+		if (ctgCode.equals("CS00020")) {
+			itemList.addAll(this.createItemTimePointOfCS00020());
+
+		} else {
+			itemList.addAll(this.createItemTimePointOfCS00070());
+		}
 		List<ItemRequiredBackGroud> itemRequired = new ArrayList<>();
 		List<ItemDto> itemDto = new ArrayList<>();
 		if (item != null) {
-			if (ctgCode.equals("CS00020")) {
+			if (ctgCode.equals("CS00020") || ctgCode.equals("CS00070")) {
 				item = item.stream().filter(c -> {
 					return !itemList.contains(c.getItemCode());
 				}).collect(Collectors.toList());
@@ -127,22 +133,22 @@ public class PerInfoInitValueSetItemFinder {
 			}).collect(Collectors.toList());
 
 		}
-		
+
 		if (ctgCode.equals("CS00003")) {
 			items = items.stream().filter(c -> {
 				return !c.getItemCode().equals("IS00020");
 			}).collect(Collectors.toList());
 
 		}
-		if (ctgCode.equals("CS00020")) {
+		if (ctgCode.equals("CS00020") || ctgCode.equals("CS00070")) {
 			itemDto = items.stream().map(item -> {
 
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(item);
 				boolean isEven = itemEven.contains(item.getItemCode());
 				boolean isOld = itemOld.contains(item.getItemCode());
 				String selectionId = item.getSelectionItemId();
-				this.setCompareItemCode(item, itemFilter, itemParents, dto, selectionId, isOld, isEven);
-				if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld) {
+				this.setCompareItemCode(item, itemFilter, itemParents, dto, selectionId, isOld, isEven, ctgCode);
+				if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld || item.getItemName().equals("開始日")) {
 					dto.setDisableCombox(true);
 				}
 				return getInitItemDto(dto, personEmployeeType, ctgCode);
@@ -211,7 +217,7 @@ public class PerInfoInitValueSetItemFinder {
 		}
 		List<PerInfoInitValueSetItemDetail> filteredItems = null;
 
-		if (ctgCode.equals("CS00020")) {
+		if (ctgCode.equals("CS00020") || ctgCode.equals("CS00070")) {
 			filteredItems = items.stream().filter(x -> {
 				return !itemList.contains(x.getItemCode());
 			}).collect(Collectors.toList());
@@ -236,17 +242,26 @@ public class PerInfoInitValueSetItemFinder {
 	public List<String> createItemTimePointOfCS00020() {
 		return this.toList("IS00133", "IS00134", "IS00136", "IS00137", "IS00142", "IS00143", "IS00145", "IS00146",
 				"IS00160", "IS00161", "IS00163", "IS00164", "IS00169", "IS00170", "IS00172", "IS00173", "IS00178",
-				"IS00179", "IS00181", "IS00182", "IS00151", "IS00152", "IS00154", "IS00155", "IS00196", "IS00197",
-				"IS00199", "IS00200", "IS00205", "IS00206", "IS00208", "IS00209", "IS00214", "IS00215", "IS00217",
-				"IS00218", "IS00223", "IS00224", "IS00226", "IS00227", "IS00232", "IS00233", "IS00235", "IS00236",
-				"IS00214", "IS00215", "IS00217", "IS00218", "IS00241", "IS00242", "IS00244", "IS00245", "IS00187",
-				"IS00188", "IS00190", "IS00191");
+				"IS00179", "IS00181", "IS00182", "IS00151", "IS00152", "IS00154", "IS00155");
+	}
+
+	private List<String> createItemTimePointOfCS00070() {
+		return this.toList("IS00196", "IS00197", "IS00199", "IS00200", "IS00205", "IS00206", "IS00208", "IS00209",
+				"IS00214", "IS00215", "IS00217", "IS00218", "IS00223", "IS00224", "IS00226", "IS00227", "IS00232",
+				"IS00233", "IS00235", "IS00236", "IS00214", "IS00215", "IS00217", "IS00218", "IS00241", "IS00242",
+				"IS00244", "IS00245", "IS00187", "IS00188", "IS00190", "IS00191");
 	}
 
 	private void setCompareItemCode(PerInfoInitValueSetItemDetail item, List<PerInfoInitValueSetItemDetail> itemFilter,
 			List<String> itemParents, PerInfoInitValueSettingItemDto dto, String selectionId, boolean isOld,
-			boolean isEven) {
-		List<String> itemLst = this.createItemTimePointOfCS00020();
+			boolean isEven, String ctgCode) {
+		List<String> itemLst = new ArrayList<>();
+		if (ctgCode == "CS00020") {
+			itemLst.addAll(this.createItemTimePointOfCS00020());
+
+		} else {
+			itemLst.addAll(this.createItemTimePointOfCS00070());
+		}
 		List<PerInfoInitValueSetItemDetail> itemParent = new ArrayList<>();
 		itemParents.stream().forEach(i -> {
 			List<PerInfoInitValueSetItemDetail> itemParentFilter = itemFilter.stream().filter(c -> {
