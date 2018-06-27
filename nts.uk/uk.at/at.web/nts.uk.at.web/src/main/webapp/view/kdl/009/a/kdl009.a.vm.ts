@@ -129,7 +129,7 @@ module nts.uk.at.view.kdl009.a {
             
             bindTimeData(data: any) {
                 var self = this;
-                var greneraGigesHisData = data.absRecGenerationDigestionHis.greneraGigesHis;
+                var greneraGigesHisData = data.absRecGenerationDigestionHis != null ? data.absRecGenerationDigestionHis.greneraGigesHis : null;
                 var issueDate = "";
                 var holidayDate = "";
                 var expirationDate = "";
