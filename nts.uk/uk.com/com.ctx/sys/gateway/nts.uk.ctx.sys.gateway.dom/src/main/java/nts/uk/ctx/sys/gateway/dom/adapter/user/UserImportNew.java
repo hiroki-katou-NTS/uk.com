@@ -14,7 +14,6 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserImportNew {
 
 	/** The user id. */
@@ -48,11 +47,11 @@ public class UserImportNew {
 			 String contractCode, GeneralDate expirationDate, Integer passStatus) {
 		super();
 		this.userId = userId;
-		this.password = password;
-		this.loginId = loginId;
-		this.mailAddress = mailAddress;
 		this.userName = userName;
+		this.mailAddress = mailAddress;
+		this.loginId = loginId;
 		this.associatePersonId = associatePersonId;
+		this.password = password;
 		this.contractCode = contractCode;
 		this.expirationDate = expirationDate;
 		this.passStatus = passStatus;
