@@ -23,6 +23,8 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatMonthly;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
+import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
+import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormat;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatRepository;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
@@ -83,6 +85,10 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	@Inject
 	private BusinessTypeFormatMonthlyRepository businessTypeFormatMonthlyRepository;
 
+	/** The permission of employment form repository. */
+	@Inject
+	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
+
 	/** The Constant AUTHORITY. */
 	// SettingUnitType.AUTHORITY.value
 	private static final int AUTHORITY = 0;
@@ -90,6 +96,35 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	/** The Constant BUSINESS_TYPE. */
 	// SettingUnitType.BUSINESS_TYPE.value
 	private static final int BUSINESS_TYPE = 1;
+
+	/** The Constant FUNCTION_NO. */
+	private static final int FUNCTION_NO = 6;
+
+	/**
+	 * Find employment authority.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean findEmploymentAuthority() {
+		String companyId = AppContexts.user().companyId();
+		String roleId = AppContexts.user().roles().forAttendance();
+		Optional<PermissionOfEmploymentForm> optPermissionOfEmploymentForm = this.permissionOfEmploymentFormRepository
+				.find(companyId, roleId, FUNCTION_NO);
+		if (optPermissionOfEmploymentForm.isPresent()) {
+			return optPermissionOfEmploymentForm.get().isAvailable();
+		}
+		return false;
+	}
+
+	public List<OutputItemMonthlyWorkScheduleDto> findAll() {
+		return this.outputItemMonthlyWorkScheduleRepository.findByCid(AppContexts.user().companyId()).stream()
+				.map(item -> {
+					OutputItemMonthlyWorkScheduleDto dto = new OutputItemMonthlyWorkScheduleDto();
+					dto.setItemCode(item.getItemCode().v());
+					dto.setItemName(item.getItemName().v());
+					return dto;
+				}).collect(Collectors.toList());
+	}
 
 	/**
 	 * Find by cid.

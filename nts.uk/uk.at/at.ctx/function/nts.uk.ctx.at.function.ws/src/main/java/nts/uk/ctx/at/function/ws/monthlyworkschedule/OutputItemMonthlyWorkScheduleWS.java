@@ -18,6 +18,7 @@ import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyW
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleSaveHandler;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyDataInforReturnDto;
+import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 
@@ -42,6 +43,17 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	private OutputItemMonthlyWorkScheduleDeleteHandler outputItemMonthlyWorkScheduleDeleteHandler;
 
 	/**
+	 * Find employment authority.
+	 *
+	 * @return the boolean
+	 */
+	@Path("find/employment/authority")
+	@POST
+	public Boolean findEmploymentAuthority() {
+		return this.outputItemMonthlyWorkScheduleFinder.findEmploymentAuthority();
+	}
+
+	/**
 	 * Find.
 	 *
 	 * @return the map
@@ -50,6 +62,17 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	@POST
 	public Map<String, Object> find() {
 		return this.outputItemMonthlyWorkScheduleFinder.findByCid();
+	}
+
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	@Path("findall")
+	@POST
+	public List<OutputItemMonthlyWorkScheduleDto> findAll() {
+		return this.outputItemMonthlyWorkScheduleFinder.findAll();
 	}
 
 	/**

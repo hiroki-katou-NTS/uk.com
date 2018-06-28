@@ -1,8 +1,10 @@
 module nts.uk.at.view.kwr006.a {
     export module service {
         var paths = {
-           exportSchedule: "screen/at/monthlyschedule/export",
-           getPeriod: "at/function/annualworkschedule/get/period"
+            exportSchedule: "screen/at/monthlyschedule/export",
+            getPeriod: "at/function/annualworkschedule/get/period",
+            getExistAuthority: "at/function/monthlyworkschedule/find/employment/authority",
+            findAllOutputItemMonthlyWorkSchedule: "at/function/monthlyworkschedule/findall"
         }
         export function saveCharacteristic(data: model.MonthlyWorkScheduleConditionDto): JQueryPromise<void> {
             return nts.uk.characteristics.save("MonthlyWorkScheduleCondition" +
@@ -24,7 +26,20 @@ module nts.uk.at.view.kwr006.a {
             return nts.uk.request.ajax(paths.getPeriod);
         }
 
+        export function getExistAuthority(): JQueryPromise<boolean> {
+            return nts.uk.request.ajax(paths.getExistAuthority);
+        }
+
+        export function findAllOutputItemMonthlyWorkSchedule(): JQueryPromise<Array<model.OutputItemMonthlyWorkScheduleDto>> {
+            return nts.uk.request.ajax(paths.findAllOutputItemMonthlyWorkSchedule);
+        }
+
         export module model {
+
+            export interface OutputItemMonthlyWorkScheduleDto {
+                itemCode: string;
+                itemName: string;
+            }
 
             export interface MonthlyWorkScheduleQuery {
                 startYearMonth: number;
@@ -33,7 +48,7 @@ module nts.uk.at.view.kwr006.a {
                 condition: MonthlyWorkScheduleConditionDto;
                 fileType: number;
             }
-            
+
             export interface MonthlyWorkScheduleConditionDto {
                 companyId: string;
                 userId: string;
@@ -41,7 +56,7 @@ module nts.uk.at.view.kwr006.a {
                 pageBreakIndicator: number;
                 totalOutputSetting: WorkScheduleSettingTotalOutputDto;
             }
-            
+
             export interface WorkScheduleSettingTotalOutputDto {
                 details: boolean;
                 personalTotal: boolean;
@@ -50,7 +65,7 @@ module nts.uk.at.view.kwr006.a {
                 cumulativeWorkplace: boolean;
                 workplaceHierarchyTotal: TotalWorkplaceHierachyDto;
             }
-    
+
             export interface TotalWorkplaceHierachyDto {
                 firstLevel: boolean;
                 secondLevel: boolean;
@@ -63,7 +78,7 @@ module nts.uk.at.view.kwr006.a {
                 ninthLevel: boolean;
             }
         }
-        
+
     }
 
 }
