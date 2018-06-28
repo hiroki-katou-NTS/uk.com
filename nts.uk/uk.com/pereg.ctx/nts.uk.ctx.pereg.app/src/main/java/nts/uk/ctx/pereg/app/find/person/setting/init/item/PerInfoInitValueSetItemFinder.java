@@ -328,6 +328,7 @@ public class PerInfoInitValueSetItemFinder {
 		item.stream().forEach(c -> {
 			boolean checkDisable = c.getItemName().equals("終了日")
 					&& (ctg != null ? (ctg.getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false) : false);
+			boolean checkDisableStart = c.getItemName().equals("開始日") && c.getCtgCode().equals("CS00070");
 			itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired()));
 			ItemRequiredBackGroud itemNamebackGroud = new ItemRequiredBackGroud();
 			ItemRequiredBackGroud disablebackGroud = new ItemRequiredBackGroud();
@@ -336,7 +337,7 @@ public class PerInfoInitValueSetItemFinder {
 			disablebackGroud.setColumnKey("disabled");
 			disablebackGroud.setRowId(c.getPerInfoItemDefId());
 
-			if (checkDisable) {
+			if (checkDisable || checkDisableStart) {
 				disablebackGroud.setState(toList("ntsgrid-disable"));
 				if (c.getIsRequired() == IsRequired.REQUIRED.value) {
 					itemNamebackGroud.setState(toList("requiredCell"));
