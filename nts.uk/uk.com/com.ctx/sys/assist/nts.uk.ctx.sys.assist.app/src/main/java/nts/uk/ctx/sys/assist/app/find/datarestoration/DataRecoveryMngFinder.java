@@ -1,9 +1,10 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.assist.app.find.datastoragemng.DataStorageMngDto;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 
@@ -13,10 +14,10 @@ public class DataRecoveryMngFinder {
     private DataRecoveryMngRepository finder;
 	
 	public DataRecoveryMngDto getDataRecoveryMngById(String recoveryProcessingId){
-    	if(finder.getDataRecoveryMngById(recoveryProcessingId).isPresent()) {
-    		return DataRecoveryMngDto.fromDomain(finder.getDataRecoveryMngById(recoveryProcessingId).get());
-    	} else {
-    		return null;
-    	}
+		Optional<DataRecoveryMng> dataRecoveryMngDto = finder.getDataRecoveryMngById(recoveryProcessingId);
+		if (dataRecoveryMngDto.isPresent()){
+			return DataRecoveryMngDto.fromDomain(dataRecoveryMngDto.get());
+		}
+		return null;
     }
 }

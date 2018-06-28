@@ -30,7 +30,10 @@ module nts.uk.com.view.cmf004.i.viewmodel {
         supplementaryExplanation: KnockoutObservable<string> = ko.observable('');
         recoveryMethodOptions: KnockoutObservable<string> = ko.observable('');
 
-        //
+        //status follow
+        isEnding: KnockoutObservable<boolean> = ko.observable(false);
+        
+        //time start
         timeStart: any;
         // interval 1000ms request to server
         interval: any;
@@ -110,11 +113,12 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 self.saveName(self.recoverySourceName);
                 self.recoveryName(self.recoverySourceName + '.zip');
 
-                // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
                 // 完了, 中断終了, 異常終了
                 if ((recoveryProcessing.operatingCondition == 3) || (recoveryProcessing.operatingCondition == 1) || (recoveryProcessing.operatingCondition == 5)) {
                     // stop auto request to server
                     clearInterval(self.interval);
+                        self.dialogMode("done");
+                            self.isEnding(true);
                 }
 
             }).fail(function(res: any) {
@@ -122,17 +126,20 @@ module nts.uk.com.view.cmf004.i.viewmodel {
             });
         }
 
-        operatingCondition() {
-            console.log("Stop follow processing import");
+        // breakFollow popup
+        public breakFollow(): void {
+            let self = this;
+            // stop auto request to server
             clearInterval(self.interval);
-            //Breark Follow Processing
-            breakFollow(){
-                let recoveryProcessingId = self.recoveryProcessingId;
-                service.breakFollowProcessing(recoveryProcessingId).done((res) => {
-
-                }).fail((err) => {
-                });
+            //update status end 
+            let paramBreakFollowProcessing = {
+                dataRecoveryProcessId: self.recoveryProcessingId
             }
+            service.breakFollowProcessing(paramBreakFollowProcessing).done(function(res: any) {
+                self.isEnding(true);
+            }).fail(function(res: any) {
+                console.log("followProsessing fail");
+            });
         }
 
         // close popup

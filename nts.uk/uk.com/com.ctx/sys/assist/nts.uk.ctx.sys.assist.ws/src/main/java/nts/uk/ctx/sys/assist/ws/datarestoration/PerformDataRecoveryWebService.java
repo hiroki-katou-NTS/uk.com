@@ -16,8 +16,8 @@ public class PerformDataRecoveryWebService {
 
 	@POST
 	@Path("performDataRecover")
-	public String setPerformDataRecovery(PerformDataRecoveryCommand command) {
+	public void setPerformDataRecovery(PerformDataRecoveryCommand command) {
 		this.performDataRecover.handle(command);
-		return command.recoveryProcessingId;
+		return ;
 	}
 }

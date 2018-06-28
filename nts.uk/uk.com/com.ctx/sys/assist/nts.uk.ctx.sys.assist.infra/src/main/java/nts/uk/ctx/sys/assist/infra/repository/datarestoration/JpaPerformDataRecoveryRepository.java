@@ -121,7 +121,6 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		int i = 0;
 		for (Map.Entry<String, String> filed : filedWhere.entrySet()) {
 			if (!filed.getValue().isEmpty()) {
-				i++;
 				if (i != 0) {
 					if (!Objects.isNull(namePhysicalCid) && filed.getKey().equals(namePhysicalCid)) {
 						whereClause.append(" AND ").append(filed.getKey()).append(" = '").append(cidCurrent).append("'");
@@ -135,6 +134,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 						whereClause.append(filed.getKey()).append(" = '").append(filed.getValue()).append("'");
 					}
 				}
+				i++;
 			}
 		}
 		return whereClause;
