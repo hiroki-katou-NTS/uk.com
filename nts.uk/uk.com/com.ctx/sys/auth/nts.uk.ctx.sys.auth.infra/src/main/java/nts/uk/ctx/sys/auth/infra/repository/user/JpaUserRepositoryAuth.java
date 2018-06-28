@@ -140,8 +140,8 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.setParameter("expirationDate", expirationDate).getSingle(c -> c.toDomain());
 	}
 	private final String SELECT_USER_DATE = "SELECT c From SacmtUser c"
-			+"WHERE c.sacmtUserPK.userID = :userID"
-			+ "AND c.expirationDate >= :systemDate" ;
+			+" WHERE c.sacmtUserPK.userID = :userID"
+			+ " AND c.expirationDate >= :systemDate" ;
 		
 	@Override
 	public Optional<User> getByUserIDAndDate(String userID, GeneralDate systemDate) {
