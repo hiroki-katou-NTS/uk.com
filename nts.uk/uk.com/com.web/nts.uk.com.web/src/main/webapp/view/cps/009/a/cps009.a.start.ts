@@ -32,7 +32,7 @@ $(function() {
     });
 
     $(document).on('click', '.clear-btn', function(evt) {
-        let vm: any:  __viewContext["viewModel"],
+        let vm: any = __viewContext["viewModel"],
             dataSourceFilter: Array<any> = $("#item_grid").igGrid("option", "dataSource");
 
         if (dataSourceFilter.length > 0) {
