@@ -114,12 +114,12 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 self.recoveryName(self.recoverySourceName + '.zip');
 
                 // 完了, 中断終了, 異常終了
-//                if ((recoveryProcessing.operatingCondition == 3) || (recoveryProcessing.operatingCondition == 1) || (recoveryProcessing.operatingCondition == 5)) {
-//                    // stop auto request to server
-//                    clearInterval(self.interval);
-//                        self.dialogMode("done");
-//                            self.isEnding(true);
-//                }
+                if ((recoveryProcessing.operatingCondition == 3) || (recoveryProcessing.operatingCondition == 1) || (recoveryProcessing.operatingCondition == 5)) {
+                    // stop auto request to server
+                    clearInterval(self.interval);
+                        self.dialogMode("done");
+                            self.isEnding(true);
+                }
 
             }).fail(function(res: any) {
                 console.log("followProsessing fail");

@@ -120,8 +120,8 @@ public class RecoveryStorageService {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
 					DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
 		} else {
-			/*dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
-					DataRecoveryOperatingCondition.DONE.value);*/
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
+					DataRecoveryOperatingCondition.DONE.value);
 		}
 	}
 
