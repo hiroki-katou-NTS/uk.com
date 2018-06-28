@@ -48,6 +48,7 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.CalcDefaultValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
@@ -197,18 +198,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
 	
 
-	//↓以下任意項目の計算の為に追加
+	//任意項目の計算の為に追加
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
-	
-	@Inject
-	private OptionalItemRepository optionalItemRepository;
-	
-	@Inject
-	private FormulaRepository formulaRepository;
-	
-	@Inject
-	private EmpConditionRepository empConditionRepository;
 	
 	//割増計算用に追加
 	@Inject
@@ -232,7 +224,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, converter);
 		//任意項目の計算
-		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter);
+		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter,companyCommonSetting);
 		//エラーチェック
 //		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
 		IntegrationOfDaily result = calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
@@ -434,7 +426,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		List<WorkTimezoneOtherSubHolTimeSet> subhol = new ArrayList<>();
 		List<OverTimeFrameNo> statutoryOverFrameNoList = new ArrayList<>();
-		HolidayCalcMethodSet holidayCalcMethodSet = HolidayCalcMethodSet.emptyHolidayCalcMethodSet();
+		
 		Optional<FixRestTimezoneSet>fixRestTimeSet = Optional.empty();
 		Optional<FixedWorkCalcSetting>ootsukaFixedWorkSet = Optional.empty();
 		
@@ -464,6 +456,17 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		WorkDeformedLaborAdditionSet illegularAddSetting = workDeformedLaborAdditionSet!=null?(WorkDeformedLaborAdditionSet)workDeformedLaborAdditionSet:null;
 		//時給者の加算設定
 		HourlyPaymentAdditionSet hourlyPaymentAddSetting = hourlyPaymentAdditionSet!=null?(HourlyPaymentAdditionSet)hourlyPaymentAdditionSet:null;
+		
+		HolidayCalcMethodSet holidayCalcMethodSet = HolidayCalcMethodSet.emptyHolidayCalcMethodSet();
+		
+		if(personalInfo.getWorkingSystem().isFlexTimeWork()) {
+			//フレックス勤務の加算設定.休暇の計算方法の設定
+			holidayCalcMethodSet = flexAddSetting!=null?flexAddSetting.getVacationCalcMethodSet():holidayCalcMethodSet;
+		}
+		else if(personalInfo.getWorkingSystem().isRegularWork()) {
+			//通常勤務の加算設定.休暇の計算方法の設定
+			holidayCalcMethodSet = regularAddSetting!=null?regularAddSetting.getVacationCalcMethodSet():holidayCalcMethodSet;
+		}
 		
 		//休暇加算時間設定
 		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
@@ -526,6 +529,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			/*翌日の勤務情報取得 */
 			WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInfo);
 			val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordInfo().getWorkTypeCode().v()).orElse(workType.get());
+			//先に1日埋める
+			List<OverTimeOfTimeZoneSet> useLstTimeZone = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get().getWorkTimezone().getLstOTTimezone();
+			//午前勤務
+			if(workType.get().getAttendanceHolidayAttr().isMorning()) {
+				useLstTimeZone = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.AM)).findFirst().get().getWorkTimezone().getLstOTTimezone();
+			}
+			//午後勤務
+			else if(workType.get().getAttendanceHolidayAttr().isAfternoon()){
+				useLstTimeZone = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.PM)).findFirst().get().getWorkTimezone().getLstOTTimezone();
+			}
 			
 			subhol = flexWorkSetOpt.get().getCommonSetting().getSubHolTimeSet();
 				oneRange.createTimeSheetAsFlex(personalInfo.getWorkingSystem(),oneRange.getPredetermineTimeSetForCalc(),
@@ -536,7 +549,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 														Collections.emptyList()
 														),
 												flexWorkSetOpt.get().getOffdayWorkTime().getLstWorkTimezone(),
-											   flexWorkSetOpt.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
+												useLstTimeZone,
 											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay, workType.get(),tomorrow,
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 												personalInfo.getStatutoryWorkTime(),calcSetinIntegre,LegalOTSetting.OUTSIDE_LEGAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
@@ -725,8 +738,24 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			}
 		}
 		
-		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime,beforeWorkType , subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet,breakCount,
-										coreTimeSetting,commonSet,statutoryOverFrameNoList);
+		return ManageReGetClass.canCalc(oneRange, 
+										integrationOfDaily, 
+										workTime,
+										beforeWorkType , 
+										subhol, 
+										personalInfo ,
+										dailyUnit ,
+										fixRestTimeSet,
+										ootsukaFixedWorkSet,
+										holidayCalcMethodSet,
+										breakCount,
+										coreTimeSetting,
+										regularAddSetting,
+										flexAddSetting,
+										hourlyPaymentAddSetting,
+										illegularAddSetting,
+										commonSet,
+										statutoryOverFrameNoList);
 	}
 
 	/**
@@ -756,13 +785,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																		   HolidayTimesheetCalculationSetting.CalculateAutomatical);
 
 		// 休暇クラス
-		VacationClass vacation = new VacationClass(new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
-				new TimeDigestOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-				new YearlyReservedOfDaily(new AttendanceTime(0)),
-				new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-				new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-				new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-				new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
+		VacationClass vacation = CalcDefaultValue.DEFAULT_VACATION;
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.of(new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
 																													new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay))));
@@ -1093,25 +1116,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 *　任意項目の計算
 	 * @return
 	 */
-	private IntegrationOfDaily calcOptionalItem(IntegrationOfDaily integrationOfDaily,DailyRecordToAttendanceItemConverter converter) {
+	private IntegrationOfDaily calcOptionalItem(IntegrationOfDaily integrationOfDaily,DailyRecordToAttendanceItemConverter converter, ManagePerCompanySet companyCommonSetting) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		// 「所属雇用履歴」を取得する
 		Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt = this.shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, targetDate);
 	    //AggregateRoot「任意項目」取得
-		List<OptionalItem> optionalItems = optionalItemRepository.findAll(companyId);
-		//任意項目NOのlist作成
-		List<Integer> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList());
+		List<OptionalItem> optionalItems = companyCommonSetting.getOptionalItems();
 		//計算式を取得(任意項目NOで後から絞る必要あり)
-		List<Formula> formulaList = formulaRepository.find(companyId);
+		List<Formula> formulaList = companyCommonSetting.getFormulaList();
 		//適用する雇用条件の取得
-		List<EmpCondition> empCondition = empConditionRepository.findAll(companyId, optionalItemNoList);
+		List<EmpCondition> empCondition = companyCommonSetting.getEmpCondition();
 		//項目選択による計算時に必要なので取得
 		converter.setData(integrationOfDaily); 
-		
-		
-		
+			
 		//任意項目の計算
 		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList,
 				empCondition, Optional.of(converter),bsEmploymentHistOpt,integrationOfDaily.getAnyItemValue());

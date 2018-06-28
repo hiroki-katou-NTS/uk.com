@@ -180,7 +180,9 @@ module nts.uk.at.view.kwr001.a {
                                 code: value.employeeCode,
                                 name: value.employeeName,
                             };
-                            employeeSearchs.push(employee);
+                            if (!_.isEmpty(value.workplaceId) && !_.isNil(value.workplaceId)) {
+                                employeeSearchs.push(employee);    
+                            }
                         });
                         self.employeeList(employeeSearchs);
                     }
