@@ -374,7 +374,7 @@ module kcp.share.list {
                     mode: 'igGrid'
                 };
                 $('#search-box-kcp').ntsSearchBox(searchBoxOptions);
-                $('#grid-list-all-kcp').ntsGridList(options);
+                $('#'+self.componentGridId).ntsGridList(options);
             });
         }
 
