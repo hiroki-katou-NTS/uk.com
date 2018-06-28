@@ -527,8 +527,7 @@ module nts.uk.at.view.kwr001.a {
                     }
                 }
                 
-                if (self.checkedA10_7() && !self.checkedA10_10() && !self.checkedA10_11() && !self.checkedA10_12()
-                        && !self.checkedA10_13() && !self.checkedA10_14()) {
+                if (!self.checkCumulativeWorkHierarchy()) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1184" });
                     return false;
                 }
@@ -543,6 +542,56 @@ module nts.uk.at.view.kwr001.a {
                     return false;
                 }
                 
+                return true;
+            }
+            
+            // 職場階層累計をチェック(Check cumulative work hierarchy)
+            private checkCumulativeWorkHierarchy(): boolean {
+                let sum: number = 0;
+                let self = this;
+                if (!self.checkedA10_7()) {
+                    return true;
+                }
+                
+                if (self.checkedA10_10()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_11()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_12()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_13()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_14()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_15()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_16()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_17()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_18()) {
+                    sum += 1;
+                }
+                
+                if (sum == 0 || sum >= 6) {
+                    return false;
+                }
                 return true;
             }
             
