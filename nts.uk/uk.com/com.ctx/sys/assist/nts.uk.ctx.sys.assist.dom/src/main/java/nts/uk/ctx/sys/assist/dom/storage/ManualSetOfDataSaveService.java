@@ -122,22 +122,22 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId);
 			repoResultSaving.add(data);
 
+			// 対象社員のカウント件数を取り保持する
+			List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
+			
 			// アルゴリズム「対象テーブルの選定と条件設定」を実行
 			StringBuffer outCompressedFileName = new StringBuffer();
 			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
 
 			if (resultState == ResultState.ABNORMAL_END) {
-				evaluateAbnormalEnd(storeProcessingId, manualSetting.getEmployees().size());
+				evaluateAbnormalEnd(storeProcessingId, targetEmployees.size());
 				return;
 			}
 			else if (resultState == ResultState.INTERRUPTION) {
-				evaluateInterruption(storeProcessingId, manualSetting.getEmployees().size());
+				evaluateInterruption(storeProcessingId, targetEmployees.size());
 				return;
 			}
-
-			// 対象社員のカウント件数を取り保持する
-			List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
-
+			
 			// アルゴリズム「対象データの保存」を実行
 			resultState = saveTargetData(storeProcessingId, generatorContext, manualSetting, targetEmployees);
 
