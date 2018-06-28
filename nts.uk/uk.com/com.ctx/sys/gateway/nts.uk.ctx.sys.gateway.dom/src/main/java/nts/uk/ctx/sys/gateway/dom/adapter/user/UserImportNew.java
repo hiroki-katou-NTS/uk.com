@@ -4,40 +4,56 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.adapter.user;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
  * The Class UserImport.
  */
 @Getter
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserImportNew {
-	
+
 	/** The user id. */
 	private String userId;
-	
+
 	/** The password. */
 	private String password;
-	
+
 	/** The login id. */
 	private String loginId;
-	
+
 	/** The mail address. */
 	private String mailAddress;
-	
+
 	/** The user name. */
 	private String userName;
-	
+
 	/** The person id. */
 	private String associatePersonId;
-	
+
 	/** The contract code. */
 	private String contractCode;
-	
+
 	/** The expiration date. */
-	private GeneralDate expirationDate;	
-	
-	private Integer passStatus;
+	private GeneralDate expirationDate;
+
+	private int passStatus;
+
+	public UserImportNew(String userId, String password, String loginId, String mailAddress, String userName,
+			String associatePersonId, String contractCode, GeneralDate expirationDate, Integer passStatus) {
+		super();
+		this.userId = userId;
+		this.password = password;
+		this.loginId = loginId;
+		this.mailAddress = mailAddress;
+		this.userName = userName;
+		this.associatePersonId = associatePersonId;
+		this.contractCode = contractCode;
+		this.expirationDate = expirationDate;
+		this.passStatus = passStatus;
+	}
 }
