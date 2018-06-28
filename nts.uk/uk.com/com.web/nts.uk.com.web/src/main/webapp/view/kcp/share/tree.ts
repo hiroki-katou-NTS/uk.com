@@ -295,6 +295,18 @@ module kcp.share.tree {
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
+                    
+                    const searchBoxOptions = {
+                        childField: 'childs',
+                        targetKey: 'workplaceId',
+                        comId: self.getComIdSearchBox(),
+                        items: self.itemList(),
+                        selected: self.selectedWorkplaceIds(),
+                        selectedKey: 'workplaceId',
+                        fields: ['nodeText', 'code'],
+                        mode: 'igGrid'
+                    };
+                    $('#search-box').ntsSearchBox(searchBoxOptions);
 
                     dfd.resolve();
                 })
