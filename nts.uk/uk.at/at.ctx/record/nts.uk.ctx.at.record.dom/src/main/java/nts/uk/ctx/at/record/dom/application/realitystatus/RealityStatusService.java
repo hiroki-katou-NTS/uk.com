@@ -446,7 +446,7 @@ public class RealityStatusService {
 		// 社員ID（リスト）
 		for (RealityStatusEmployeeImport emp : listEmp) {
 			// アルゴリズム「承認状況未確認チェック上司」を実行する
-			if (!this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(), emp.getEndDate())) {
+			if (this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(), emp.getEndDate())) {
 				// 上司社員ID（リスト）を未確認者（リスト）にセット
 				listEmpUnconfirm.add(emp.getSId());
 			}
@@ -476,7 +476,8 @@ public class RealityStatusService {
 				.getApprovalByEmplAndDate(startDate, endDate, sId, cId, 1);
 		// 承認ルートの状況
 		for (ApproveRootStatusForEmpImport appRoot : listAppRootStatus) {
-			if (ApprovalStatusForEmployee.APPROVED.equals(appRoot.getApprovalStatus())) {
+			if (ApprovalStatusForEmployee.UNAPPROVED.equals(appRoot.getApprovalStatus())
+					|| ApprovalStatusForEmployee.DURING_APPROVAL.equals(appRoot.getApprovalStatus())) {
 				// 上司社員ID（リスト）に承認ルートの承認者を追加する
 				listEmpId.add(appRoot.getEmployeeID());
 			}
