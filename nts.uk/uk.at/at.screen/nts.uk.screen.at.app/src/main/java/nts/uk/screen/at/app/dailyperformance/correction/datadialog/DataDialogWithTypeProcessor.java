@@ -36,11 +36,11 @@ public class DataDialogWithTypeProcessor {
 	public CodeNameType getDutyType(String companyId, String workTypeCode, String employmentCode) {
 		List<WorkTypeChangedDto> dtos = repo.findWorkTypeChanged(employmentCode, workTypeCode, companyId);
 		Set<String> workTypeCodes = dtos.stream().map(x -> x.getTypeCode()).collect(Collectors.toSet());
-		if (!workTypeCode.equals("") && workTypeCodes.isEmpty())
-			return CodeNameType.create(TypeLink.DUTY.value, new ArrayList<>())
-					.createError(true);
+//		if (!workTypeCode.equals("") && workTypeCodes.isEmpty())
+//			return CodeNameType.create(TypeLink.DUTY.value, new ArrayList<>())
+//					.createError(true);
 		List<CodeName> codeNames = repo.findWorkType(companyId, workTypeCodes);
-		return CodeNameType.create(TypeLink.DUTY.value, codeNames).createError(workTypeCodes.isEmpty() && !workTypeCode.equals(""));
+		return CodeNameType.create(TypeLink.DUTY.value, codeNames).createError(!workTypeCodes.isEmpty());
 	}
 
 	// 勤務種類
@@ -113,9 +113,9 @@ public class DataDialogWithTypeProcessor {
 						aff == null ? "" : aff.getEmploymentCode());
 				codeName = codeNameType.getCodeNames().stream().filter(x -> x.getCode().equals(param.getSelectCode()))
 						.findFirst();
-				CodeName codeNameTemp = codeName.isPresent() ? codeName.get().createError(codeNameType.getError())
+				CodeName codeNameTemp = codeName.isPresent() ? codeName.get().createError(false)
 						: new CodeName(param.getWorkTypeCode(), TextResource.localize("KDW003_81"), "")
-								.createError(codeNameType.getError());
+								.createError(codeNameType.getError() ? true: false);
 				return codeNameTemp;
 			} else {
 				codeName = this.getDutyTypeAll(companyId).getCodeNames().stream()

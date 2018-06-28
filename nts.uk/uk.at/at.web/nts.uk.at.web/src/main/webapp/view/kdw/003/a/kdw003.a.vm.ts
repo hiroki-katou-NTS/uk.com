@@ -139,6 +139,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         listCareInputError: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheckHolidays: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheck28: KnockoutObservableArray<any> = ko.observableArray([]);
+        listCheckDeviation: any = [];
         employIdLogin: any;
         dialogShow: any;
         //contain data share
@@ -664,9 +665,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.dialogShow.close();
             }
             if(self.workTypeNotFound.length > 0) {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_1293" }).then(function() {
-                    self.showErrorDialog();
-                });
+                self.showErrorDialog();
                 return;
             }
             // insert flex
@@ -679,6 +678,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.listCareInputError([]);
                 self.listCheckHolidays([]);
                 self.listCheck28([]);
+                self.listCheckDeviation = [];
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
                 var dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 let dataChangeProcess: any = [];
@@ -803,6 +803,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                             if (data[3] != undefined) {
                                 self.listCheck28(data[3]);
+                            }
+                            
+                             if (data[4] != undefined) {
+                                self.listCheckDeviation = data[4];
                             }
                             self.showErrorDialog();
                         }
@@ -1206,7 +1210,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.listCareInputError([]);
             self.listCheckHolidays([]);
             self.listCheck28([]);
-            self.workTypeNotFound = [];    
+            self.workTypeNotFound = [];   
+            self.listCheckDeviation = []; 
         }
         
         btnExtraction_Click() {
@@ -1328,6 +1333,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 object.itemName = (item == undefined) ? "" : item.headerText;
                 errorValidateScreeen.push(object);
             });
+            
+            _.each(self.listCheckDeviation, value => {
+                let dateCon = _.find(self.dpData, (item: any) => {
+                    return item.employeeId == value.employeeId && item.date == value.date;
+                });
+                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.valueType, itemName: "", columnKey: value.itemId };
+                let item = _.find(self.optionalHeader, (data) => {
+                    if (data.group != undefined && data.group != null) {
+                        return String(data.group[0].key) === "Code"+value.itemId;
+                    } else {
+                        return data.key != undefined && String(data.key) === "A" + value.itemId;
+                    }
+                })
+                object.itemName = (item == undefined) ? "" : item.headerText;
+                object.message = nts.uk.resource.getMessage("Msg_1298", [object.itemName, value.value])
+                errorValidateScreeen.push(object);
+            });
+            
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
