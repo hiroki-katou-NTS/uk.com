@@ -47,6 +47,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
         maxTimeValueMon: KnockoutObservable<number> = ko.observable(0);
         
         modeScreen : KnockoutObservable<number> = ko.observable(0);
+        
+        
 
         constructor(isDoNothing) {
             let self = this;

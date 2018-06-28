@@ -691,7 +691,7 @@ module nts.uk.at.view.kal003.share.model {
                 }
                 this.listItemID=ko.observableArray(data.listItemID? data.listItemID : null);    
                 this.checkVacation.subscribe((v) => {
-                    if (v == 0 || v == 1 || v == 4) {
+                    if (v == 2 || v == 3 || v == 5 ||v == 6 || v == 7) {
                         this.listItemID([0]);
                     }
                 });
@@ -1568,25 +1568,28 @@ module nts.uk.at.view.kal003.share.model {
         public openAtdItemConditionDialog(modeX: number) {
             let self = this;
             let param = ko.mapping.toJS(self);
-
-            nts.uk.ui.windows.setShared("KDW007BParams", {mode: modeX, data: param}, true);
-            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml").onClosed(() => {
-                let output = getShared("KDW007BResult");
-                if (output) {
-                    self.targetNO(output.targetNO);
-                    self.conditionAtr(output.conditionAtr);
-                    self.useAtr(true);
-                    self.uncountableAtdItem(output.uncountableAtdItem);
-                    self.countableAddAtdItems(output.countableAddAtdItems);
-                    self.countableSubAtdItems(output.countableSubAtdItems);
-                    self.conditionType(output.conditionType);
-                    self.singleAtdItem(output.singleAtdItem);
-                    self.compareStartValue(output.compareStartValue);
-                    self.compareEndValue(output.compareEndValue);
-                    self.compareOperator(output.compareOperator);
-                }
-                self.setTextDisplay(modeX);
-            });
+//            if(modeX ==1){
+//                
+//            }else{
+                nts.uk.ui.windows.setShared("KDW007BParams", {mode: modeX, data: param}, true);
+                nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml").onClosed(() => {
+                    let output = getShared("KDW007BResult");
+                    if (output) {
+                        self.targetNO(output.targetNO);
+                        self.conditionAtr(output.conditionAtr);
+                        self.useAtr(true);
+                        self.uncountableAtdItem(output.uncountableAtdItem);
+                        self.countableAddAtdItems(output.countableAddAtdItems);
+                        self.countableSubAtdItems(output.countableSubAtdItems);
+                        self.conditionType(output.conditionType);
+                        self.singleAtdItem(output.singleAtdItem);
+                        self.compareStartValue(output.compareStartValue);
+                        self.compareEndValue(output.compareEndValue);
+                        self.compareOperator(output.compareOperator);
+                    }
+                    self.setTextDisplay(modeX);
+                });
+//             }
         }
 
         setData(NO, param) {
