@@ -292,7 +292,7 @@ module nts.uk.at.view.kwr001.a {
                             default:
                                 break;
                         }
-                        if (!_.isNull(dataService.setMsgErrClosingPeriod)) {
+                        if (!_.isNil(dataService.setMsgErrClosingPeriod)) {
                             nts.uk.ui.dialog.alertError({ messageId: dataService.msgErrClosingPeriod});
                         }
                         dfd.resolve();
@@ -406,8 +406,8 @@ module nts.uk.at.view.kwr001.a {
                 nts.uk.ui.windows.setShared('KWR001_C', codeChoose, true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
                     $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
-                    let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
-                    self.getDataStartPageService(isExist).done(function(dataService: any) {                       
+                        let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
+                        self.getDataStartPageService(isExist).done(function(dataService: any) {                       
                             self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
                             if (_.isEmpty(dataService.lstOutputItemDailyWorkSchedule)) {
                                 self.selectedCodeA7_3('');
