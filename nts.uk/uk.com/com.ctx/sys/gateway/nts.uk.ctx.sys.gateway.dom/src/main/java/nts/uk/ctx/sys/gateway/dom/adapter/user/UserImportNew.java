@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.adapter.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
