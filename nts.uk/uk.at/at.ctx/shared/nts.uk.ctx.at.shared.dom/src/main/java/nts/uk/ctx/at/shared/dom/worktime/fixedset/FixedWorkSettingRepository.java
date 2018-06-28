@@ -5,7 +5,10 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * The Interface FixedWorkSettingRepository.
@@ -18,14 +21,14 @@ public interface FixedWorkSettingRepository {
 	 * @param domain the domain
 	 */
 	void add(FixedWorkSetting domain);
-	
+
 	/**
 	 * Update.
 	 *
 	 * @param domain the domain
 	 */
 	void update(FixedWorkSetting domain);
-	
+
 	/**
 	 * Removes the.
 	 *
@@ -33,7 +36,7 @@ public interface FixedWorkSettingRepository {
 	 * @param workTimeCode the work time code
 	 */
 	void remove(String companyId, String workTimeCode);
-	
+
 	/**
 	 * Find by key.
 	 *
@@ -42,7 +45,7 @@ public interface FixedWorkSettingRepository {
 	 * @return the optional
 	 */
 	Optional<FixedWorkSetting> findByKey(String companyId, String workTimeCode);
-	
+
 	/**
 	 * Find by C id.
 	 *
@@ -50,4 +53,20 @@ public interface FixedWorkSettingRepository {
 	 * @return the list
 	 */
 	List<FixedWorkSetting> findByCId(String companyId);
+
+	/**
+	 * Gets the fix offday work rest timezones.
+	 *
+	 * @param companyId the company id
+	 * @return the fix offday work rest timezones
+	 */
+	Map<WorkTimeCode, List<DeductionTime>> getFixOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes);
+
+	/**
+	 * Gets the fix half day work rest timezones.
+	 *
+	 * @param companyId the company id
+	 * @return the fix half day work rest timezones
+	 */
+	Map<WorkTimeCode, List<DeductionTime>> getFixHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes);
 }
