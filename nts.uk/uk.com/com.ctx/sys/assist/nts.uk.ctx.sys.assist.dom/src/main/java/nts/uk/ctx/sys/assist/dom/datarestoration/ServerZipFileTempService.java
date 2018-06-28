@@ -30,7 +30,12 @@ public class ServerZipFileTempService {
 					uploadFileName, doNotUpload, password, operatingCondition);
 			repoServerPrepare.add(serverPrepareMng);
 			// サーバー準備処理
-			return serverPreparationService.serverPreparationProcessing(serverPrepareMng);
+			try{
+				serverPrepareMng = serverPreparationService.serverPreparationProcessing(serverPrepareMng);
+			}catch (Exception e) {
+				return serverPrepareMng;
+			}
+			return serverPrepareMng;
 		}
 		return null;
 	}
