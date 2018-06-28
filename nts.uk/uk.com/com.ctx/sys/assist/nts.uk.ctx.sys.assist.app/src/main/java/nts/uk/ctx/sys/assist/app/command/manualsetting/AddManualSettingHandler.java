@@ -17,6 +17,8 @@ import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveService;
 import nts.uk.ctx.sys.assist.dom.storage.OperatingCondition;
+import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
+import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
 import nts.uk.ctx.sys.assist.dom.storage.SysEmployeeStorageAdapter;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategoryRepository;
@@ -43,6 +45,8 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 	private TargetCategoryRepository repoTargetCat;
 	@Inject
 	private SysEmployeeStorageAdapter sysEmployeeStorageAdapter;
+	@Inject
+	private ResultOfSavingRepository repoResultSaving;
 
 	@Override
 	protected void handle(CommandHandlerContext<ManualSettingCommand> context) {
@@ -51,17 +55,18 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 		String employeeIDLogin = AppContexts.user().employeeId();
 		ManualSettingCommand manualSetCmd = context.getCommand();
 		String storeProcessingId = manualSetCmd.getStoreProcessingId();
-
+		int totalTargetEmployees = 0;
 		// ドメインモデル「データ保存動作管理」に登録する
 		DataStorageMng dataStorageMng = new DataStorageMng(storeProcessingId, NotUseAtr.NOT_USE, 0, 0, 0,
 				OperatingCondition.INPREPARATION);
 		dataStorageMngRepo.add(dataStorageMng);
 		try {
 			// ドメインモデル「データ保存動作管理」を登録する
-			if(!dataStorageMngRepo.update(storeProcessingId,  manualSetCmd.getCategory().size(), 0, OperatingCondition.SAVING)) {
+			if (!dataStorageMngRepo.update(storeProcessingId, manualSetCmd.getCategory().size(), 0,
+					OperatingCondition.SAVING)) {
 				return;
 			}
-			
+
 			List<TargetCategoryCommand> lstcategories = manualSetCmd.getCategory();
 			List<TargetCategory> targetCategory = lstcategories.stream().map(item -> {
 				return new TargetCategory(storeProcessingId, item.getCategoryId());
@@ -77,24 +82,25 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 			if (manualSetCmd.getPresenceOfEmployee() == 1) {
 				// 指定社員の有無＝「する」
 				listTargetEmp = domain.getEmployees();
-				targetEmployeesRepo.addAll(listTargetEmp);
 			}
 
 			if (manualSetCmd.getPresenceOfEmployee() == 0) {
 				// 指定社員の有無＝「しない」の場合」
-				List<TargetEmployees> lstEmplAll = sysEmployeeStorageAdapter.getListEmployeeByCompanyId(companyId);
-				lstEmplAll.stream().map(x -> {
+				listTargetEmp = sysEmployeeStorageAdapter.getListEmployeeByCompanyId(companyId);
+				listTargetEmp.stream().map(x -> {
 					x.setStoreProcessingId(storeProcessingId);
 					return x;
 				}).collect(Collectors.toList());
-				targetEmployeesRepo.addAll(lstEmplAll);
 			}
-
+			totalTargetEmployees = listTargetEmp.size();
+			targetEmployeesRepo.addAll(listTargetEmp);
 			manualSetOfDataSaveService.start(domain);
 		} catch (Exception e) {
 			e.printStackTrace();
 			// ドメインモデル「データ保存動作管理」を更新する
 			dataStorageMngRepo.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
+			// ドメインモデル「データ保存の保存結果」を書き出し
+			repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.FAILURE);
 		}
 	}
 }
