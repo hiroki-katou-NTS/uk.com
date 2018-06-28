@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.basic
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.basic.MaxDayForFiscalYear;
 
 /**
- * 介護休暇基本情報
+ * 子の看護・介護休暇基本情報
  * 
  * @author xuan vinh
  *

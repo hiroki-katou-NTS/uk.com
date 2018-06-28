@@ -110,12 +110,14 @@ public class ApplicationPubImpl implements ApplicationPub {
 				if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
 					// アルゴリズム「社員所属職場履歴を取得」を実行する
 					WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeId, systemDate);
-					// アルゴリズム「締切日を取得する」を実行する
-					deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
-							presentClosingPeriodImport.get().getClosureEndDate(), 
-							appDeadline.getDeadline().v(), 
-							wkpHistImport.getWorkplaceId(), 
-							companyID);
+					if(wkpHistImport != null){
+						// アルゴリズム「締切日を取得する」を実行する
+						deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
+								presentClosingPeriodImport.get().getClosureEndDate(), 
+								appDeadline.getDeadline().v(), 
+								wkpHistImport.getWorkplaceId(), 
+								companyID);
+					}
 				} else {
 					// 「申請締切設定」．締切基準が暦日
 					deadline = presentClosingPeriodImport.get().getClosureEndDate().addDays(appDeadline.getDeadline().v());

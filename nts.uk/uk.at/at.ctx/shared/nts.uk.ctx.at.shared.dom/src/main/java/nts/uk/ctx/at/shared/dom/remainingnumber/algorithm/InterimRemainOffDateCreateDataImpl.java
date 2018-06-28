@@ -11,7 +11,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DayoffTranferInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.TranferTimeInfor;
@@ -41,9 +43,10 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	private TempRemainCreateEachData createEachData;
 	@Override
 	public DailyInterimRemainMngData createData(String cid, String sid, GeneralDate baseDate, boolean dayOffTimeIsUse,
-			InterimRemainCreateInfor detailData) {
+			InterimRemainCreateInfor detailData, CompanyHolidayMngSetting comHolidaySetting, EmploymentHolidayMngSetting employmentHolidaySetting) {
 		//残数作成元情報を作成する
-		InforFormerRemainData formerRemainData = this.createInforFormerRemainData(cid, sid, baseDate, detailData, dayOffTimeIsUse);
+		InforFormerRemainData formerRemainData = this.createInforFormerRemainData(cid, sid, baseDate, detailData, dayOffTimeIsUse,
+				comHolidaySetting, employmentHolidaySetting);
 		if(!formerRemainData.getWorkTypeRemain().isPresent()) {
 			return null;
 		}
@@ -54,8 +57,15 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 
 	@Override
 	public InforFormerRemainData createInforFormerRemainData(String cid, String sid, GeneralDate baseDate,
-			InterimRemainCreateInfor detailData, boolean dayOffTimeIsUse) {
-		InforFormerRemainData outputData = new InforFormerRemainData(sid, baseDate, dayOffTimeIsUse, Optional.empty(), Optional.empty(), Optional.empty());		
+			InterimRemainCreateInfor detailData, boolean dayOffTimeIsUse, CompanyHolidayMngSetting comHolidaySetting, EmploymentHolidayMngSetting employmentHolidaySetting) {
+		InforFormerRemainData outputData = new InforFormerRemainData(sid, 
+				baseDate, 
+				dayOffTimeIsUse, 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(),
+				comHolidaySetting,
+				employmentHolidaySetting);		
 		//最新の勤務種類変更を伴う申請を抽出する
 		AppRemainCreateInfor appWithWorkType = this.getAppWithWorkType(detailData.getAppData(), sid, baseDate);
 		if(appWithWorkType == null) {
@@ -267,6 +277,11 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//積立
 		outputData = createEachData.createInterimReserveHoliday(inforData, WorkTypeClassification.YearlyReserved,	outputData);
 		//TODO 　特休
+		//振出
+		outputData = createEachData.createInterimRecData(inforData, WorkTypeClassification.Shooting, outputData);
+		//休出
+		outputData = createEachData.createInterimBreak(inforData, WorkTypeClassification.HolidayWork, outputData);
+		
 		return outputData;
 	}
 
