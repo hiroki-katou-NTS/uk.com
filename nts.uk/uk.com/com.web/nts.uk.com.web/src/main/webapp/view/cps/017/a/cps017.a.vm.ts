@@ -438,13 +438,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
         remove() {
             let self = this,
                 currentItem: Selection = self.selection(),
-                listSelection: Array<Selection> = self.listSelection(),
+                listSelection: Array<Selection> = self.listSelection();
 
-                currentItem.histId(self.historySelection().histId());
+            currentItem.histId(self.historySelection().histId());
             let command = ko.toJS(currentItem);
             let oldIndex = _.findIndex(listSelection, x => x.selectionID == currentItem.selectionID());
             let lastIndex = self.listSelection().length - 1;
-
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.removeDataSelection(command).done(function() {
 

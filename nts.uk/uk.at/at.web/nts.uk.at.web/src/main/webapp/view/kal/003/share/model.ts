@@ -590,13 +590,13 @@ module nts.uk.at.view.kal003.share.model {
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
                 this.extractType(data.compareOperator);
                 this.numberDayDiffHoliday1=ko.observable(data.numberDayDiffHoliday1 || 0);
-                this.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2 || null); 
+                this.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2 || 0); 
                 this.setupScrible();  
             }else{
                 this.errorAlarmCheckID=ko.observable("");
 //                this.operator=ko.observable(0);
                 this.numberDayDiffHoliday1=ko.observable(0);
-                this.numberDayDiffHoliday2=ko.observable(null);
+                this.numberDayDiffHoliday2=ko.observable(0);
                 this.setupScrible();
             }
         }
@@ -612,7 +612,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.inputs()[1].required(true);
                 } else {
                     self.inputs()[1].enable(false);
-                    self.inputs()[1].value(null);
+                    self.inputs()[1].value(0);
                     self.inputs()[1].required(false);
                 }
             });  
@@ -951,8 +951,8 @@ module nts.uk.at.view.kal003.share.model {
                 self.operator=ko.observable(param ? param.operatorBetweenGroups || 0 : 0);
                 
                 if(param.noinit !== true){
-                    self.group1=ko.observable(param ? new ErAlConditionsAttendanceItem(param.group1) : null);    
-                    self.extractType(param.group1.lstErAlAtdItemCon[0].compareOperator);
+                    self.group1=ko.observable(param ? new ErAlConditionsAttendanceItem(param.group1,1) : null);    
+                    self.extractType(param.group1.lstErAlAtdItemCon.length ==0? 0 : param.group1.lstErAlAtdItemCon[0].compareOperator);
                     self.getTextAttdName(undefined);
                     self.setupScrible();
                 }
@@ -1022,7 +1022,7 @@ module nts.uk.at.view.kal003.share.model {
                 } else {
                     self.inputs()[1].enable(false);
                     self.inputs()[1].required(false);
-                    self.inputs()[1].value(0);
+                    self.inputs()[1].value(null);
                 }
             });  
         }
@@ -1130,7 +1130,7 @@ module nts.uk.at.view.kal003.share.model {
                 self.group2UseAtr=ko.observable(param ? param.group2UseAtr || false : false);
                 //self.group1(kal003utils.getDefaultAttdItemGroup3Item());
                 if(param.noinit !== true){
-                    self.group2=ko.observable(param ? new ErAlConditionsAttendanceItem(param.group2) : null);
+                    self.group2=ko.observable(param ? new ErAlConditionsAttendanceItem(param.group2,1) : null);
                 }
                 this.setupScrible();
             } else {
@@ -1208,6 +1208,8 @@ module nts.uk.at.view.kal003.share.model {
         displayTarget: string;
         displayRightCompare: string;
         displayRightOperator: string;
+        inputCheckCondition :number;
+        
     }
 
     export class ErAlAtdItemCondition {
@@ -1232,8 +1234,9 @@ module nts.uk.at.view.kal003.share.model {
         displayTarget: KnockoutObservable<any>;
         displayRightCompare: KnockoutObservable<any>;
         displayRightOperator: KnockoutObservable<any>;
-
-        constructor(NO, param: IErAlAtdItemCondition) {
+        
+        inputCheckCondition :KnockoutObservable<number>;
+        constructor(NO, param: IErAlAtdItemCondition,modeX :number) {
             let self = this;
             if(!nts.uk.util.isNullOrUndefined(param)){
                 self.targetNO=ko.observable(NO);
@@ -1252,7 +1255,8 @@ module nts.uk.at.view.kal003.share.model {
                 self.displayTarget=ko.observable("");
                 self.displayRightCompare=ko.observable("");
                 self.displayRightOperator=ko.observable("");
-                self.setTextDisplay();    
+                self.inputCheckCondition = ko.observable(0);
+                self.setTextDisplay(modeX);    
             }else{
                 self.targetNO=ko.observable(NO);
                 self.conditionAtr=ko.observable(0);
@@ -1262,21 +1266,21 @@ module nts.uk.at.view.kal003.share.model {
                 self.countableSubAtdItems=ko.observableArray([]);
                 self.conditionType=ko.observable(0);
                 self.singleAtdItem=ko.observable(0);
-                self.compareStartValue=ko.observable(0);
-                self.compareEndValue=ko.observable(0);
+                self.compareStartValue=ko.observable(null);
+                self.compareEndValue=ko.observable(null);
                 self.compareOperator=ko.observable(0);
                 self.displayLeftCompare=ko.observable("");
                 self.displayLeftOperator=ko.observable("");
                 self.displayTarget=ko.observable("");
                 self.displayRightCompare=ko.observable("");
                 self.displayRightOperator=ko.observable("");
-                self.setTextDisplay();    
+                self.inputCheckCondition = ko.observable(0);
             }
             self.displayLeft = ko.computed(() => {
                 let compareOp = self.compareOperator();
                 let case1 = self.displayLeftCompare();
                 let case2 = self.displayTarget();
-                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                if(compareOp === 6 || compareOp === 7){
                     return case1;
                 } else {
                     return case2;
@@ -1286,17 +1290,19 @@ module nts.uk.at.view.kal003.share.model {
                 let compareOp = self.compareOperator();
                 let case1 = self.displayRightCompare();
                 let case2 = self.displayTarget();
-                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                if(compareOp === 6 || compareOp === 7){
                     return case1;
-                } else {
+                } else if(compareOp === 8 || compareOp === 9){
                     return case2;
+                } else {
+                    return "";
                 }
             });
             self.displayCenter = ko.computed(() => {
                 let compareOp = self.compareOperator();
                 let case1 = self.displayLeftCompare();
                 let case2 = self.displayTarget();
-                if(compareOp === 6 || compareOp === 7 || compareOp === 8 || compareOp === 9){
+                if(compareOp === 6 || compareOp === 7){
                     return case2;
                 } else {
                     return case1;
@@ -1307,7 +1313,7 @@ module nts.uk.at.view.kal003.share.model {
        
         
         public static  clone(data: any) : ErAlAtdItemCondition{
-            var x = new ErAlAtdItemCondition();
+            var x = new ErAlAtdItemCondition(data.targetNO, null, 1);
             delete data['displayLeft'];
             delete data['displayRight'];
             delete data['displayCenter'];
@@ -1327,15 +1333,17 @@ module nts.uk.at.view.kal003.share.model {
             x.displayTarget(data.displayTarget);
             x.displayRightCompare(data.displayRightCompare);    
             x.displayRightOperator(data.displayRightOperator);
+            x.inputCheckCondition(0);
+            x.setTextDisplay(1);    
 //            x.setTextDisplay=ko.observable(data.setTextDisplay);
            // ko.mapping.fromJS(data, mapping, x);
             return x;
         }
 
-        setTextDisplay() {
+        setTextDisplay(modeX) {
             let self = this;
             if (self.useAtr()) {
-                self.setDisplayTarget();
+                self.setDisplayTarget(modeX);
                 self.setDisplayOperator();
                 self.setDisplayCompare();
             } else {
@@ -1352,21 +1360,27 @@ module nts.uk.at.view.kal003.share.model {
             switch (self.compareOperator()) {
                 case 0:
                     self.displayLeftOperator("＝");
+                    self.displayRightOperator("");
                     break;
                 case 1:
                     self.displayLeftOperator("≠");
+                    self.displayRightOperator("");
                     break;
                 case 2:
                     self.displayLeftOperator("＞");
+                    self.displayRightOperator("");
                     break;
                 case 3:
                     self.displayLeftOperator("≧");
+                    self.displayRightOperator("");
                     break;
                 case 4:
                     self.displayLeftOperator("＜");
+                    self.displayRightOperator("");
                     break;
                 case 5:
                     self.displayLeftOperator("≦");
+                    self.displayRightOperator("");
                     break;
                 case 6:
                     self.displayLeftOperator("＜");
@@ -1399,8 +1413,13 @@ module nts.uk.at.view.kal003.share.model {
                 let rawEndValue = self.compareEndValue();
                 let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue : nts.uk.time.parseTime(rawStartValue, true).format();
                 let textDisplayRightCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue : nts.uk.time.parseTime(rawEndValue, true).format();
-                self.displayLeftCompare(textDisplayLeftCompare);
-                self.displayRightCompare(textDisplayRightCompare);
+                if(self.compareOperator() > 7){
+                    self.displayLeftCompare(textDisplayLeftCompare + ", " + textDisplayRightCompare);
+                    self.displayRightCompare("");    
+                } else {
+                    self.displayLeftCompare(textDisplayLeftCompare);
+                    self.displayRightCompare(textDisplayRightCompare);    
+                }
             } else {
                 // Compare with single value
                 if (self.conditionType() === 0) {
@@ -1424,74 +1443,129 @@ module nts.uk.at.view.kal003.share.model {
             }
         }
 
-        setDisplayTarget() {
+        setDisplayTarget(modeX) {
             let self = this;
-            //self.displayTarget("");
-            if (self.conditionAtr() === 2) {
-                if (self.uncountableAtdItem()) {
-                    //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
-                    self.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
-                        if (lstItems && lstItems.length > 0) {
-                            self.displayTarget(lstItems[0].attendanceItemName);
-                        }
-                    });
+            if(modeX ==1){//monthly
+                if (self.conditionAtr() === 2) {
+                    if (self.uncountableAtdItem()) {
+                        //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                        self.getAttendanceItemMonthlyByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                            if (lstItems && lstItems.length > 0) {
+                                self.displayTarget(lstItems[0].attendanceItemName);
+                            }
+                        });
+                    }
+                } else {
+                    if (self.countableAddAtdItems().length > 0) {
+                        let addText = ""; 
+                        //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
+                        self.getAttendanceItemMonthlyByCodes(self.countableAddAtdItems()).done((lstItems) => {
+    //                        if (lstItems && lstItems.length > 0) {
+    //                            for (let i = 0; i < lstItems.length; i++) {
+    //                                let operator = (i === (lstItems.length - 1)) ? "" : " + ";
+    //                                self.displayTarget(self.displayTarget() + lstItems[i].attendanceItemName + operator);
+    //                            }
+    //                        }
+                            addText += _.map(lstItems, (item) => {
+                                    return item.attendanceItemName;
+                                }).join("+");  
+                        }).then(() => {
+                            if (self.countableSubAtdItems().length > 0) {
+                                //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                                self.getAttendanceItemMonthlyByCodes(self.countableSubAtdItems()).done((lstItems) => {
+    //                                if (lstItems && lstItems.length > 0) {
+    //                                    for (let i = 0; i < lstItems.length; i++) {
+    //                                        let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+    //                                        let beforeOperator = (i === 0) ? " - " : "";
+    //                                        self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+    //                                    }
+    //                                }
+                                    addText += "-" + _.map(lstItems, (item) => {
+                                            return item.attendanceItemName;
+                                        }).join("-");  
+                                    self.displayTarget(addText);
+                                })
+                                
+                            } else {
+                                self.displayTarget(addText);    
+                            }
+                        });
+                    } else if (self.countableSubAtdItems().length > 0) {
+                        //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                        self.getAttendanceItemMonthlyByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                            let addText = _.map(lstItems, (item) => {
+                                    return item.attendanceItemName;
+                                }).join("-");  
+                            self.displayTarget(addText);
+                        })
+                    }
+    
                 }
-            } else {
-                if (self.countableAddAtdItems().length > 0) {
-                    let addText = ""; 
-                    //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
-                    self.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
-//                        if (lstItems && lstItems.length > 0) {
-//                            for (let i = 0; i < lstItems.length; i++) {
-//                                let operator = (i === (lstItems.length - 1)) ? "" : " + ";
-//                                self.displayTarget(self.displayTarget() + lstItems[i].attendanceItemName + operator);
-//                            }
-//                        }
-                        addText += _.map(lstItems, (item) => {
-                                return item.attendanceItemName;
-                            }).join("+");  
-                    }).then(() => {
-                        if (self.countableSubAtdItems().length > 0) {
-                            //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
-                            self.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
-//                                if (lstItems && lstItems.length > 0) {
-//                                    for (let i = 0; i < lstItems.length; i++) {
-//                                        let operator = (i === (lstItems.length - 1)) ? "" : " - ";
-//                                        let beforeOperator = (i === 0) ? " - " : "";
-//                                        self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
-//                                    }
-//                                }
-                                addText += "-" + _.map(lstItems, (item) => {
-                                        return item.attendanceItemName;
-                                    }).join("-");  
-                                self.displayTarget(addText);
-                            })
-                            
-                        } else {
-                            self.displayTarget(addText);    
-                        }
-                    });
-                } else if (self.countableSubAtdItems().length > 0) {
-                    //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
-                    self.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
-                        let addText = _.map(lstItems, (item) => {
-                                return item.attendanceItemName
-                            }).join("-");  
-                        self.displayTarget(addText);
-                    })
+            } else {//daily
+                if (self.conditionAtr() === 2) {
+                    if (self.uncountableAtdItem()) {
+                        //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                        self.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                            if (lstItems && lstItems.length > 0) {
+                                self.displayTarget(lstItems[0].attendanceItemName);
+                            }
+                        });
+                    }
+                } else {
+                    if (self.countableAddAtdItems().length > 0) {
+                        let addText = ""; 
+                        //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
+                        self.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
+    //                        if (lstItems && lstItems.length > 0) {
+    //                            for (let i = 0; i < lstItems.length; i++) {
+    //                                let operator = (i === (lstItems.length - 1)) ? "" : " + ";
+    //                                self.displayTarget(self.displayTarget() + lstItems[i].attendanceItemName + operator);
+    //                            }
+    //                        }
+                            addText += _.map(lstItems, (item) => {
+                                    return item.attendanceItemName;
+                                }).join("+");  
+                        }).then(() => {
+                            if (self.countableSubAtdItems().length > 0) {
+                                //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                                self.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+    //                                if (lstItems && lstItems.length > 0) {
+    //                                    for (let i = 0; i < lstItems.length; i++) {
+    //                                        let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+    //                                        let beforeOperator = (i === 0) ? " - " : "";
+    //                                        self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+    //                                    }
+    //                                }
+                                    addText += "-" + _.map(lstItems, (item) => {
+                                            return item.attendanceItemName;
+                                        }).join("-");  
+                                    self.displayTarget(addText);
+                                })
+                                
+                            } else {
+                                self.displayTarget(addText);    
+                            }
+                        });
+                    } else if (self.countableSubAtdItems().length > 0) {
+                        //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                        self.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                            let addText = _.map(lstItems, (item) => {
+                                    return item.attendanceItemName;
+                                }).join("-");  
+                            self.displayTarget(addText);
+                        })
+                    }
+    
                 }
-
             }
         }
 
         public openAtdItemConditionDialog(modeX: number) {
             let self = this;
-            if (self.compareStartValue() == null) self.compareStartValue(0);
-            if (self.compareEndValue() == null) self.compareEndValue(0);
             let param = ko.mapping.toJS(self);
 
             nts.uk.ui.windows.setShared("KDW007BParams", {mode: modeX, data: param}, true);
-            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml").onClosed(() => {
                 let output = getShared("KDW007BResult");
                 if (output) {
                     self.targetNO(output.targetNO);
@@ -1506,7 +1580,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.compareEndValue(output.compareEndValue);
                     self.compareOperator(output.compareOperator);
                 }
-                self.setTextDisplay();
+                self.setTextDisplay(modeX);
             });
         }
 
@@ -1523,11 +1597,16 @@ module nts.uk.at.view.kal003.share.model {
             self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : 0);
             self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : 0);
             self.compareOperator(param ? param.compareOperator : 0);
-            self.setTextDisplay();
+            self.setTextDisplay(modeX);
         }
         //the same kdw007
         getAttendanceItemByCodes(codes): JQueryPromise<any> {
             return nts.uk.request.ajax("at", "at/record/divergencetime/AttendanceDivergenceName", codes);
+        }
+        
+        //the same kdw007
+        getAttendanceItemMonthlyByCodes(codes): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", "at/record/divergencetime/getMonthlyAttendanceDivergenceName", codes);
         }
     }
     // group condition
@@ -1535,6 +1614,7 @@ module nts.uk.at.view.kal003.share.model {
         atdItemConGroupId: string;
         conditionOperator: number; //0: OR|1: AND
         lstErAlAtdItemCon: Array<IErAlAtdItemCondition>;// max 3
+        modeX :number;
     }
 
     export class ErAlConditionsAttendanceItem {
@@ -1547,11 +1627,21 @@ module nts.uk.at.view.kal003.share.model {
                 self.atdItemConGroupId(param ? param.atdItemConGroupId || '' : '');
                 self.conditionOperator(param ? param.conditionOperator || 0 : 0);
                 if(param.noinit !== true){
-                    self.lstErAlAtdItemCon = ko.observableArray(param 
-                        ? _.map(ko.mapping.toJS(param.lstErAlAtdItemCon),acc =>{ 
-                            let js = ko.mapping.toJS(acc);
-                            return new ErAlAtdItemCondition(js.targetNO, js); 
-                        }) || [] : []);
+                    let data = ko.mapping.toJS(param.lstErAlAtdItemCon);
+                    let mapped = [];
+                    for(var i = 0; i< 3; i++){
+                        let findedNo = _.find(data, function(d){ 
+                            let js = ko.mapping.toJS(d);
+                            return js.targetNO === i; 
+                        });
+                        if(_.isNil(findedNo)){
+                            mapped.push(new ErAlAtdItemCondition(i, null,param.modeX));
+                        } else {
+                            let js = ko.mapping.toJS(findedNo);
+                            mapped.push(new ErAlAtdItemCondition(i, js,param.modeX));    
+                        }
+                    }
+                    self.lstErAlAtdItemCon = ko.observableArray(mapped);
                 }
             }
         }

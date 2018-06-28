@@ -73,9 +73,11 @@ public class AppDataDateFinder {
 	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
-	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID){
+	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID,String employeeID){
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
+		if(employeeID == null){
+			 employeeID = AppContexts.user().employeeId();
+		}
 		GeneralDate appGeneralDate = GeneralDate.fromString(appDate, DATE_FORMAT);
 		AchievementOutput achievementOutput = new AchievementOutput(appGeneralDate, null, null, null, null, null, null);
 		ApprovalRootContentImport_New approvalRootContentImport = null;

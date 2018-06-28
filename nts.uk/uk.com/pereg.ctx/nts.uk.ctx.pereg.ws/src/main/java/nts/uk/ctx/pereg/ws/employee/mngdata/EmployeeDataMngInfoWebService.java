@@ -34,5 +34,5 @@ public class EmployeeDataMngInfoWebService {
 		String newCardNo = employeeFinder.initCardNo(newEmployeeCode);
 		return new JavaTypeResult<String>(newCardNo);
 	}
-
+	
 }

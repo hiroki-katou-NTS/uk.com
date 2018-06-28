@@ -15,6 +15,8 @@ public interface UrlExecInfoRepository
 
     Optional<UrlExecInfo> getUrlExecInfoById(String embeddedId, String cid);
 
+    Optional<UrlExecInfo> getUrlExecInfoByUrlID(String embeddedId);
+    
     void add(UrlExecInfo domain);
 
     void update(UrlExecInfo domain);
