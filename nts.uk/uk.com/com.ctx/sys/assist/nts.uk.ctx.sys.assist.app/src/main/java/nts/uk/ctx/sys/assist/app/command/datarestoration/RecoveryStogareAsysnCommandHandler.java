@@ -7,12 +7,16 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryOperatingCondition;
 import nts.uk.ctx.sys.assist.dom.recoverystorage.RecoveryStorageService;
 
 @Stateless
 public class RecoveryStogareAsysnCommandHandler extends CommandHandler<PerformDataRecoveryCommand> {
 	@Inject
 	private RecoveryStorageService recoveryStorageService;
+	@Inject
+	private DataRecoveryMngRepository repoDataRecoveryMng;
 
 	@Override
 	public void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
@@ -22,7 +26,7 @@ public class RecoveryStogareAsysnCommandHandler extends CommandHandler<PerformDa
 		try {
 			recoveryStorageService.recoveryStorage(dataRecoveryProcessId);
 		} catch (ParseException e) {
-			//Todo
+			repoDataRecoveryMng.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
 		}
 	}
 }

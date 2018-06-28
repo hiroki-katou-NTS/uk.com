@@ -18,6 +18,5 @@ public class PerformDataRecoveryWebService {
 	@Path("performDataRecover")
 	public void setPerformDataRecovery(PerformDataRecoveryCommand command) {
 		this.performDataRecover.handle(command);
-		return ;
 	}
 }
