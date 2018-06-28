@@ -342,10 +342,25 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 }
             } else {
                 nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
-                    location.reload();
-                    nts.uk.ui.block.clear();   
+                    if (!nts.uk.util.isNullOrEmpty(data)) {
+                        self.callReflect(data);
+                    } else {
+                        self.reloadPage();
+                    }
                 });
             }
+        }
+
+       callReflect(data) {
+            let self = this;
+            service.reflectAppSingle(data).always(()=> self.reloadPage(););
+        }
+
+        reloadPage() {
+            let self = this;
+            self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
+                nts.uk.ui.block.clear();
+            });
         }
 
         btnRemand() {
