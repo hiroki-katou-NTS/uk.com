@@ -1499,7 +1499,9 @@ module cmm045.a.viewmodel {
                 return;
             }
             service.approvalListApp(lstApp).done(function(data) {
-                service.reflectListApp(data);
+                if(data.length > 0){
+                    service.reflectListApp(data);
+                }
                 nts.uk.ui.dialog.info({ messageId: "Msg_220" });
                 self.filter();
                 block.clear();

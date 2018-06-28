@@ -6,6 +6,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
@@ -52,8 +54,10 @@ public class AppListApprovalImpl implements AppListApprovalRepository{
 				continue;
 			}
 			//共通アルゴリズム「詳細画面承認後の処理」を実行する(thực hiện xử lý 「詳細画面承認後の処理」) - 8.2
-			ProcessResult a = detailAfAppv.doApproval(companyID, app.getAppID(), employeeID, "");
-			lstRefAppId.add(a.getAppID());
+			ProcessResult result = detailAfAppv.doApproval(companyID, app.getAppID(), employeeID, "");
+			if(Strings.isBlank(result.getReflectAppId())){
+				lstRefAppId.add(result.getReflectAppId());
+			}
 		}
 		return lstRefAppId;
 	}
