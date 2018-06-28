@@ -124,7 +124,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 			// 対象社員のカウント件数を取り保持する
 			List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
-			
+
 			// アルゴリズム「対象テーブルの選定と条件設定」を実行
 			StringBuffer outCompressedFileName = new StringBuffer();
 			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
@@ -132,12 +132,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			if (resultState == ResultState.ABNORMAL_END) {
 				evaluateAbnormalEnd(storeProcessingId, targetEmployees.size());
 				return;
-			}
-			else if (resultState == ResultState.INTERRUPTION) {
+			} else if (resultState == ResultState.INTERRUPTION) {
 				evaluateInterruption(storeProcessingId, targetEmployees.size());
 				return;
 			}
-			
+
 			// アルゴリズム「対象データの保存」を実行
 			resultState = saveTargetData(storeProcessingId, generatorContext, manualSetting, targetEmployees);
 
@@ -301,6 +300,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		// 「テーブル一覧」の調査保存の識別が「する」の場合、ドメインモデル「対象社員」のビジネスネームを全てNULLクリアする
 		if (optManualSetting.getIdentOfSurveyPre() == NotUseAtr.USE) {
 			repoTargetEmp.removeBusinessName(storeProcessingId);
+			targetEmployees = targetEmployees.stream().map(item -> {
+				item.setBusinessname(null);
+				return item;
+			}).collect(Collectors.toList());
 		}
 
 		// 対象社員の内容をcsvファイルに暗号化して書き出す
@@ -338,7 +341,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					// ドメインモデル「データ保存動作管理」を更新する
 					if (!tableList.getCategoryId().equals(categoryId)) {
 						categoryId = tableList.getCategoryId();
-						if(!repoDataSto.increaseCategoryCount(storeProcessingId)){
+						if (!repoDataSto.increaseCategoryCount(storeProcessingId)) {
 							return ResultState.INTERRUPTION;
 						}
 					}
@@ -491,7 +494,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				Map<String, Object> rowCsv2 = new HashMap<>();
 				rowCsv2.put(headerCsv2.get(0), targetEmp.getSid());
 				rowCsv2.put(headerCsv2.get(1), targetEmp.getScd());
-				rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(targetEmp.getBusinessname().v()));
+				rowCsv2.put(headerCsv2.get(2), targetEmp.getBusinessname() != null
+						? CommonKeyCrypt.encrypt(targetEmp.getBusinessname().v()) : "");
 				dataSourceCsv2.add(rowCsv2);
 			}
 
@@ -512,11 +516,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			// ドメインモデル「データ保存動作管理」を取得し「中断終了」を判別
 			Optional<DataStorageMng> dataStorageMng = repoDataSto.getDataStorageMngById(storeProcessingId);
 
-			// heck interrupt
+			// Check interrupt
 			if (dataStorageMng.isPresent() && dataStorageMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
 				return ResultState.INTERRUPTION;
 			}
-		
+
 			List<List<String>> listObject = repoTableList.getDataDynamic(tableList);
 
 			// Add Table to CSV Auto
