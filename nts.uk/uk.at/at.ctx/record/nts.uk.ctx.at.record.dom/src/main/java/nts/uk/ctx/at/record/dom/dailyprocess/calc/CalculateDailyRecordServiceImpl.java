@@ -426,7 +426,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		List<WorkTimezoneOtherSubHolTimeSet> subhol = new ArrayList<>();
 		List<OverTimeFrameNo> statutoryOverFrameNoList = new ArrayList<>();
-		HolidayCalcMethodSet holidayCalcMethodSet = HolidayCalcMethodSet.emptyHolidayCalcMethodSet();
+		
 		Optional<FixRestTimezoneSet>fixRestTimeSet = Optional.empty();
 		Optional<FixedWorkCalcSetting>ootsukaFixedWorkSet = Optional.empty();
 		
@@ -456,6 +456,17 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		WorkDeformedLaborAdditionSet illegularAddSetting = workDeformedLaborAdditionSet!=null?(WorkDeformedLaborAdditionSet)workDeformedLaborAdditionSet:null;
 		//時給者の加算設定
 		HourlyPaymentAdditionSet hourlyPaymentAddSetting = hourlyPaymentAdditionSet!=null?(HourlyPaymentAdditionSet)hourlyPaymentAdditionSet:null;
+		
+		HolidayCalcMethodSet holidayCalcMethodSet = HolidayCalcMethodSet.emptyHolidayCalcMethodSet();
+		
+		if(personalInfo.getWorkingSystem().isFlexTimeWork()) {
+			//フレックス勤務の加算設定.休暇の計算方法の設定
+			holidayCalcMethodSet = flexAddSetting!=null?flexAddSetting.getVacationCalcMethodSet():holidayCalcMethodSet;
+		}
+		else if(personalInfo.getWorkingSystem().isRegularWork()) {
+			//通常勤務の加算設定.休暇の計算方法の設定
+			holidayCalcMethodSet = regularAddSetting!=null?regularAddSetting.getVacationCalcMethodSet():holidayCalcMethodSet;
+		}
 		
 		//休暇加算時間設定
 		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
@@ -518,6 +529,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			/*翌日の勤務情報取得 */
 			WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInfo);
 			val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordInfo().getWorkTypeCode().v()).orElse(workType.get());
+			//先に1日埋める
+			List<OverTimeOfTimeZoneSet> useLstTimeZone = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get().getWorkTimezone().getLstOTTimezone();
+			//午前勤務
+			if(workType.get().getAttendanceHolidayAttr().isMorning()) {
+				useLstTimeZone = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.AM)).findFirst().get().getWorkTimezone().getLstOTTimezone();
+			}
+			//午後勤務
+			else if(workType.get().getAttendanceHolidayAttr().isAfternoon()){
+				useLstTimeZone = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.PM)).findFirst().get().getWorkTimezone().getLstOTTimezone();
+			}
 			
 			subhol = flexWorkSetOpt.get().getCommonSetting().getSubHolTimeSet();
 				oneRange.createTimeSheetAsFlex(personalInfo.getWorkingSystem(),oneRange.getPredetermineTimeSetForCalc(),
@@ -528,7 +549,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 														Collections.emptyList()
 														),
 												flexWorkSetOpt.get().getOffdayWorkTime().getLstWorkTimezone(),
-											   flexWorkSetOpt.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
+												useLstTimeZone,
 											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay, workType.get(),tomorrow,
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 												personalInfo.getStatutoryWorkTime(),calcSetinIntegre,LegalOTSetting.OUTSIDE_LEGAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
@@ -717,8 +738,24 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			}
 		}
 		
-		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime,beforeWorkType , subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet,breakCount,
-										coreTimeSetting,commonSet,statutoryOverFrameNoList);
+		return ManageReGetClass.canCalc(oneRange, 
+										integrationOfDaily, 
+										workTime,
+										beforeWorkType , 
+										subhol, 
+										personalInfo ,
+										dailyUnit ,
+										fixRestTimeSet,
+										ootsukaFixedWorkSet,
+										holidayCalcMethodSet,
+										breakCount,
+										coreTimeSetting,
+										regularAddSetting,
+										flexAddSetting,
+										hourlyPaymentAddSetting,
+										illegularAddSetting,
+										commonSet,
+										statutoryOverFrameNoList);
 	}
 
 	/**
