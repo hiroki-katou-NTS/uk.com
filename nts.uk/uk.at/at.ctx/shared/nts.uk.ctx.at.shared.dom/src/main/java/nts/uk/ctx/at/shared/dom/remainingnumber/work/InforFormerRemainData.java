@@ -32,20 +32,25 @@ public class InforFormerRemainData {
 	/**	代休振替 */
 	private Optional<DayoffTranferInfor> dayOffTranfer;
 	/**
+	 * 会社別休暇管理設定
+	 */
+	private CompanyHolidayMngSetting companyHolidaySetting;
+	/**
+	 * 雇用別休暇管理設定
+	 */
+	private EmploymentHolidayMngSetting employmentHolidaySetting;
+	/**
 	 * 分類を指定して発生使用明細を取得する
 	 * @param inforData
 	 * @param workTypeClass
 	 * @return
 	 */
-	public Optional<OccurrenceUseDetail> getOccurrenceUseDetail(InforFormerRemainData inforData, WorkTypeClassification workTypeClass) {
-		if(inforData == null) {
-			return Optional.empty();	
-		}
+	public Optional<OccurrenceUseDetail> getOccurrenceUseDetail(WorkTypeClassification workTypeClass) {
 		OccurrenceUseDetail outputData = new OccurrenceUseDetail();
 		outputData.setWorkTypeAtr(workTypeClass);
 		//勤務種類別残数情報をチェックする
-		if(inforData.getWorkTypeRemain().isPresent()) {
-			WorkTypeRemainInfor x = inforData.getWorkTypeRemain().get();
+		if(this.getWorkTypeRemain().isPresent()) {
+			WorkTypeRemainInfor x = this.getWorkTypeRemain().get();
 			List<OccurrenceUseDetail> lstOccurrenceUseDetail = x.getOccurrenceDetailData();
 			List<OccurrenceUseDetail> lstTmp = lstOccurrenceUseDetail.stream()
 					.filter(a ->a.getWorkTypeAtr() == workTypeClass && a.isUseAtr() && a.getDays() > 0)
@@ -59,7 +64,5 @@ public class InforFormerRemainData {
 		} else {
 			return Optional.of(outputData);
 		}
-		
-		
 	}
 }
