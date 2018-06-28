@@ -326,8 +326,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         }
                     });
                     if(!nts.uk.util.isNullOrEmpty(data.reflectAppId)){//TH goi xu ly phan anh
-                        service.reflectAppSingle(data.reflectAppId).done(function(verNew){
-                            self.version = verNew;
+                        service.reflectAppSingle([data.reflectAppId]).done(function(){
                             self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
                                 nts.uk.ui.block.clear();        
                             });
