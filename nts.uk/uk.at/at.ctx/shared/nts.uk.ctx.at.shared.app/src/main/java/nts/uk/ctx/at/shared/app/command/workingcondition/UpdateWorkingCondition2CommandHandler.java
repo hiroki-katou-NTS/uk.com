@@ -20,16 +20,17 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
 public class UpdateWorkingCondition2CommandHandler extends CommandHandler<UpdateWorkingCondition2Command>
-	implements PeregUpdateCommandHandler<UpdateWorkingCondition2Command>{
+		implements PeregUpdateCommandHandler<UpdateWorkingCondition2Command> {
+
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
-	
+
 	@Inject
 	private WorkingConditionRepository workingConditionRepository;
-	
+
 	@Inject
 	private UpdateWorkingConditionCommandAssembler updateWorkingConditionCommandAssembler;
-	
+
 	@Override
 	public String targetCategoryCd() {
 		return "CS00070";
@@ -42,28 +43,34 @@ public class UpdateWorkingCondition2CommandHandler extends CommandHandler<Update
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateWorkingCondition2Command> context) {
-		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-			if (command.getStartDate() != null){
-			Optional<WorkingCondition> listHistBySid =  workingConditionRepository.getBySid(companyId, command.getEmployeeId());
-			
-			if (!listHistBySid.isPresent()){
+		UpdateWorkingCondition2Command command = context.getCommand();
+
+		if (command.getStartDate() != null) {
+			Optional<WorkingCondition> listHistBySid = workingConditionRepository.getBySid(companyId,
+					command.getEmployeeId());
+
+			if (!listHistBySid.isPresent()) {
 				throw new RuntimeException("Invalid item to be updated");
 			}
+
 			WorkingCondition workingCond = listHistBySid.get();
-			Optional<DateHistoryItem> itemToBeUpdated = workingCond.getDateHistoryItem().stream().filter(hist->hist.identifier().equals(command.getHistId())).findFirst();
-			if (!itemToBeUpdated.isPresent()){
+
+			Optional<DateHistoryItem> itemToBeUpdated = workingCond.getDateHistoryItem().stream()
+					.filter(hist -> hist.identifier().equals(command.getHistId())).findFirst();
+
+			if (!itemToBeUpdated.isPresent()) {
 				throw new RuntimeException("Invalid item to be updated");
 			}
-			GeneralDate endDate = command.getEndDate() !=null? command.getEndDate() : GeneralDate.max();
+
+			GeneralDate endDate = command.getEndDate() != null ? command.getEndDate() : GeneralDate.max();
 			workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(command.getStartDate(), endDate));
-			
+
 			workingConditionRepository.save(workingCond);
 		}
-		WorkingConditionItem  workingCondItem = updateWorkingConditionCommandAssembler.fromDTO(command);
-		
-		workingConditionItemRepository.update(workingCondItem);
-		
-	}
 
+		WorkingConditionItem workingCondItem = updateWorkingConditionCommandAssembler.fromDTO(command);
+
+		workingConditionItemRepository.update(workingCondItem);
+	}
 }
