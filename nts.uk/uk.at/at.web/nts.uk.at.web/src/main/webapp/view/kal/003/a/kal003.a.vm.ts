@@ -356,7 +356,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
         private selectCondition(data) {
             let self = this;
             if (data) {
-                nts.uk.ui.errors.clearAll();
+                
+//                _.defer(function () { });
+                setTimeout(function() {_.defer(function () { nts.uk.ui.errors.clearAll(); });  }, 500);
                 block.invisible();
                 service.getOneData(self.selectedCategory(), data).done(function(result: any) {
                     if (result) {
