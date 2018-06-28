@@ -31,15 +31,23 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 	@Override
 	public List<LogBasicInformation> findByOperatorsAndDate(String companyId, List<String> listEmployeeId,
 			DatePeriod period) {
-		String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.employeeId IN :employeeId "
-				+ "AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod";
 		GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
 				period.start().day(), 0, 0, 0);
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
 				59, 59);
-		return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
-				.setParameter("employeeId", listEmployeeId).setParameter("startPeriod", start)
-				.setParameter("endPeriod", end).getList(i -> i.toDomain());
+		if (listEmployeeId == null || listEmployeeId.isEmpty()) {
+			String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId"
+					+ "AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod";
+			return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
+					.setParameter("startPeriod", start)
+					.setParameter("endPeriod", end).getList(i -> i.toDomain());
+		} else {
+			String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.employeeId IN :employeeId "
+					+ "AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod";
+			return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
+					.setParameter("employeeId", listEmployeeId).setParameter("startPeriod", start)
+					.setParameter("endPeriod", end).getList(i -> i.toDomain());
+		}
 	}
 
 }
