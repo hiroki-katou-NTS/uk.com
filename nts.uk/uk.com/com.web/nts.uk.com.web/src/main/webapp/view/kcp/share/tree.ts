@@ -304,7 +304,7 @@ module kcp.share.tree {
                         selected: self.selectedWorkplaceIds(),
                         selectedKey: 'workplaceId',
                         fields: ['nodeText', 'code'],
-                        mode: 'igGrid'
+                        mode: 'igTree'
                     };
                     $('#search-box').ntsSearchBox(searchBoxOptions);
 
