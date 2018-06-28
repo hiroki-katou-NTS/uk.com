@@ -117,7 +117,6 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 if ((recoveryProcessing.operatingCondition == 3) || (recoveryProcessing.operatingCondition == 1) || (recoveryProcessing.operatingCondition == 5)) {
                     // stop auto request to server
                     clearInterval(self.interval);
-                        self.dialogMode("done");
                             self.isEnding(true);
                 }
 
