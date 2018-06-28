@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MON_APPROVAL")
-public class KrcmtApprovalStatusMonthlyResult extends UkJpaEntity implements Serializable {
+public class KrcmtApprovalStatusMonResult extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtApprovalStatusMonthlyResultPK krcmtApprovalStatusMonthlyResultPK;
+	public KrcmtApprovalStatusMonResultPK krcmtApprovalStatusMonthlyResultPK;
 	
 	@Column(name = "CLOSING_DATE")
 	public int closingDate;
@@ -33,16 +33,16 @@ public class KrcmtApprovalStatusMonthlyResult extends UkJpaEntity implements Ser
 		return krcmtApprovalStatusMonthlyResultPK;
 	}
 
-	public KrcmtApprovalStatusMonthlyResult(KrcmtApprovalStatusMonthlyResultPK krcmtApprovalStatusMonthlyResultPK,
+	public KrcmtApprovalStatusMonResult(KrcmtApprovalStatusMonResultPK krcmtApprovalStatusMonthlyResultPK,
 			int closingDate) {
 		super();
 		this.krcmtApprovalStatusMonthlyResultPK = krcmtApprovalStatusMonthlyResultPK;
 		this.closingDate = closingDate;
 	}
 	
-	public static KrcmtApprovalStatusMonthlyResult toEntity(ApprovalStatusMonthlyResult domain ) {
-		return new KrcmtApprovalStatusMonthlyResult(
-				new KrcmtApprovalStatusMonthlyResultPK(
+	public static KrcmtApprovalStatusMonResult toEntity(ApprovalStatusMonthlyResult domain ) {
+		return new KrcmtApprovalStatusMonResult(
+				new KrcmtApprovalStatusMonResultPK(
 						domain.getEmployeeId(),
 						domain.getProcessDate().v(), 
 						domain.getClosureId().value, 
@@ -51,7 +51,7 @@ public class KrcmtApprovalStatusMonthlyResult extends UkJpaEntity implements Ser
 				);
 	}
 	
-	public ApprovalStatusMonthlyResult toDomain(KrcmtApprovalStatusMonthlyResult entity) {
+	public ApprovalStatusMonthlyResult toDomain(KrcmtApprovalStatusMonResult entity) {
 		return new ApprovalStatusMonthlyResult(
 				entity.krcmtApprovalStatusMonthlyResultPK.employeeId,
 				new YearMonth(entity.krcmtApprovalStatusMonthlyResultPK.processDate),

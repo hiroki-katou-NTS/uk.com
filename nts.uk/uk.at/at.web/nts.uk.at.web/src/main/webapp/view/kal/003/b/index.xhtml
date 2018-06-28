@@ -663,7 +663,7 @@
                                                 value: listItemID,
                                                 optionsText: 'specialHdFrameName',
                                                 editable: false,
-                                                enable: true,
+                                                enable: checkVacation() !== 1 &amp;&amp; checkVacation() !== 0 &amp;&amp; checkVacation() !== 4,
                                                 columns: [
                                                     { prop: 'specialHdFrameName', length: 16 }
                                                 ]}">
@@ -831,7 +831,7 @@
 	                                                                <com:ko bind="lstErAlAtdItemCon" tag="foreach">
 	                                                              		<tr>
 	                                                                    	<td colspan="3" class="group">
-	                                                                            <table style="border : 1px solid #ccc;border-top: 0px;">
+	                                                                            <table style="border : 1px solid #ccc;border-top: 0px;width: 100%">
 	                                                                    			<tr>
 	                                                                    				<td style="border : 1px solid #ccc; border-top: 0px;"><span class="limited-label" style="width: 160px" data-bind="text: displayLeft"></span></td>
 			                                                                           	<td style="border : 1px solid #ccc; border-top: 0px;"><span class="limited-label" style="width: 50px" data-bind="text: displayLeftOperator"></span></td>
