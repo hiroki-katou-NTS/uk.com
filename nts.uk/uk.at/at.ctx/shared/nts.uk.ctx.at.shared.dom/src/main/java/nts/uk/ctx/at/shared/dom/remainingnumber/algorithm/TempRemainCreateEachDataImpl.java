@@ -192,7 +192,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			}
 		}
 		if(subSetting == null) {
-			return null;
+			return GeneralDate.max();
 		}
 		//アルゴリズム「休暇使用期限から使用期限日を算出する」を実行する
 		if(subSetting.getExpirationDate() == ExpirationTime.END_OF_YEAR) {
@@ -201,12 +201,11 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			return GeneralDate.max();
 		} else {
 			//期限指定のある使用期限日を作成する
-			if(inforData.getEmploymentHolidaySetting() == null) {
-				return null;
+			if(inforData.getEmploymentHolidaySetting() != null) {
+				return useDateService.useDateDeadline(inforData.getEmploymentHolidaySetting().getEmploymentCode(),subSetting.getExpirationDate(), inforData.getYmd());
 			}
-			return useDateService.useDateDeadline(inforData.getEmploymentHolidaySetting().getEmploymentCode(),subSetting.getExpirationDate(), inforData.getYmd());
 		}
-		return null;
+		return GeneralDate.max();
 	}
 
 	@Override
