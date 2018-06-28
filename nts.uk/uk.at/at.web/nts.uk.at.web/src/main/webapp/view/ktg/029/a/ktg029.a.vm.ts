@@ -255,11 +255,11 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
         
         openKAF015Dialog() {
-            let self = this;
+            var self = this;
             window.top.location = window.location.origin + '/nts.uk.at.web/view/kaf/015/a/index.xhtml';
         }
         
-        openCMM045Dialog() {
+        private openCMM045Dialog():void {
             let self = this;
 //          ※URLパラメータ　＝　照会モード
             window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml?a=1';
