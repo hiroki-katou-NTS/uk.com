@@ -47,8 +47,7 @@ public class ExcessOfStatutoryMidNightTime {
 	 * @return
 	 */
 	public int calcOverLimitDivergenceTime() {
-		return this.getTime().getDivergenceTime().valueAsMinutes() 
-				 + this.getTime().getDivergenceTime().valueAsMinutes();
+		return this.getTime().getDivergenceTime().valueAsMinutes();
 	}
 
 	/**
