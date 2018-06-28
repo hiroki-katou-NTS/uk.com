@@ -60,10 +60,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			if (!userOp.isPresent()) {
 				throw new BusinessException("Msg_301");
 			}
-			user = userOp.get();
-			//アルゴリズム「エラーチェック（形式１）」を実行する
-			this.errorCheck(user.getUserId(), RoleType.COMPANY_MANAGER.value, command.getContractCode());
-	
+			
 			// check password
 			String msgErrorId = this.compareHashPassword(userOp.get(), oldPassword);
 			if (!StringUtil.isNullOrEmpty(msgErrorId, true)){

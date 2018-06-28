@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -41,6 +40,7 @@ import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
@@ -68,6 +68,7 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
+import nts.uk.shr.com.enumcommon.Abolition;
 import nts.uk.shr.com.system.config.InstallationType;
 
 /**
@@ -533,7 +534,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			throw new BusinessException("Msg_876");
 		}
 		
-		//
+		//set List WindowsAccountInfor
 		List<WindowsAccountInfo> windows = opWindowAccount.get().getAccountInfos()
 				.stream().filter(item -> item.getHostName().v().equals(hostname)
 						&& item.getUserName().v().equals(username) && item.getUseAtr().equals(UseAtr.Use))
@@ -542,9 +543,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (windows.isEmpty()) {
 			throw new BusinessException("Msg_876");
 		}
-		
 		return opWindowAccount.get();
-		
 	}
 
 	/**
@@ -564,7 +563,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				throw new BusinessException("Msg_316");
 			}
 		}
-		
 		return optUserImport.get();
 	}
 	
@@ -587,9 +585,19 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		} else {
 			if (this.checkAccoutLock(contractCode, userId).v() != null) {
 				//return messageError
-				String error = this.checkAccoutLock(contractCode, userId).v();
-				throw new BusinessException(new RawErrorMessage(error));
+				throw new BusinessException(this.checkAccoutLock(contractCode, userId).v());
 			}
+		}
+	}
+	
+	//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
+	public void errorCheck2(String companyId){
+		
+		//ドメインモデル「会社」の使用区分をチェックする (Check usage classification of domain model "company")
+		CompanyInforImport company = this.companyInformationAdapter.findComById(companyId);
+		
+		if (company.getIsAbolition() == Abolition.NOT_ABOLISH.value){
+			throw new BusinessException("Msg_281");
 		}
 	}
 	
@@ -684,16 +692,18 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 */
 	private LockOutMessage checkAccoutLock(String contractCode, String userId){
 		//ドメインモデル「アカウントロックポリシー」を取得する (Acquire the domain model "account lock policy")
-		AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository
-				.getAccountLockPolicy(new ContractCode(contractCode)).get();
-		if (accountLockPolicy.isUse()) {
-			//ドメインモデル「ロックアウトデータ」を取得する (Acquire domain model "lockout data")
-			Optional<LockOutData> lockoutData = this.lockOutDataRepository.findByUserId(userId);
-			
-			if (lockoutData.isPresent()){
-				//エラーメッセージ（ドメインモデル「アカウントロックポリシー.ロックアウトメッセージ」）を表示する 
-				//(Display error message (domain model "Account lock policy. Lockout message"))
-				return accountLockPolicy.getLockOutMessage();
+		if (this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(contractCode)).isPresent()){
+			AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository
+					.getAccountLockPolicy(new ContractCode(contractCode)).get();
+			if (accountLockPolicy.isUse()) {
+				//ドメインモデル「ロックアウトデータ」を取得する (Acquire domain model "lockout data")
+				Optional<LockOutData> lockoutData = this.lockOutDataRepository.findByUserId(userId);
+				
+				if (lockoutData.isPresent()){
+					//エラーメッセージ（ドメインモデル「アカウントロックポリシー.ロックアウトメッセージ」）を表示する 
+					//(Display error message (domain model "Account lock policy. Lockout message"))
+					return accountLockPolicy.getLockOutMessage();
+				}
 			}
 		}
 		return null;
