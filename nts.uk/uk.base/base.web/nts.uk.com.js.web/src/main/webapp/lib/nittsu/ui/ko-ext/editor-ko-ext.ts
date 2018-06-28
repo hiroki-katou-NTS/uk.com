@@ -234,6 +234,7 @@ module nts.uk.ui.koExtentions {
             let self = this;
             var value: KnockoutObservable<string> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var setWidthByConstraint: boolean = (data.setWidthByConstraint !== undefined) ? ko.unwrap(data.setWidthByConstraint) : false;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
             $input.data("setValOnRequiredError", setValOnRequiredError);
@@ -340,7 +341,10 @@ module nts.uk.ui.koExtentions {
             $input.attr('type', textmode);
             
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            self.setWidthByConstraint(constraintName, $input);
+            var setWidthByConstraint: boolean = (data.setWidthByConstraint !== undefined) ? ko.unwrap(data.setWidthByConstraint) : false;
+            if(setWidthByConstraint){
+                self.setWidthByConstraint(constraintName, $input);
+            }
             
             // このif文は何のため？ ユーザが入力操作をしたときしかtrueにならないか？
             if (!$input.ntsError('hasError') && data.value() !== $input.val()) { 
