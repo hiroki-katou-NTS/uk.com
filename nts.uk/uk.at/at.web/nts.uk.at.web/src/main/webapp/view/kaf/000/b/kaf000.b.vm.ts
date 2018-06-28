@@ -351,11 +351,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
         }
 
-        callReflect(data) {
+       callReflect(data) {
             let self = this;
-            service.reflectAppSingle(data).done(function() {
-                self.reloadPage();
-            });
+            service.reflectAppSingle(data).always(()=> self.reloadPage(););
         }
 
         reloadPage() {
