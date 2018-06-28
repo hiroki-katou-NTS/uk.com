@@ -41,10 +41,11 @@ public class UserImportNew {
 	/** The expiration date. */
 	private GeneralDate expirationDate;
 
+	/** The pass status. */
 	private int passStatus;
 
-	public UserImportNew(String userId, String password, String loginId, String mailAddress, String userName,
-			String associatePersonId, String contractCode, GeneralDate expirationDate, Integer passStatus) {
+	public UserImportNew(String userId, String userName, String mailAddress, String loginId, String associatePersonId, String password,
+			 String contractCode, GeneralDate expirationDate, Integer passStatus) {
 		super();
 		this.userId = userId;
 		this.password = password;
