@@ -60,12 +60,12 @@
 }
 
 .check-box-list {
-	/* width: 90%; */
 	float: right;
 }
 
-.check-box-list > ul {
-	columns: 4;
+.check-box-list > ul > li{
+	display: inline-block;
+	width: 24%;
 }
 
 .td-right {
