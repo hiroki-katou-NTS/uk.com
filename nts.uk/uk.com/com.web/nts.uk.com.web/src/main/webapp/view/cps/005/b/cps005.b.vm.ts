@@ -473,7 +473,7 @@ module nts.uk.com.view.cps005.b {
                         if (!value) {
                             return;
                         }
-                        new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                       service.getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.selectionItem().selectionLst([]);
                                 self.selectionItem().selectionLst(data);
