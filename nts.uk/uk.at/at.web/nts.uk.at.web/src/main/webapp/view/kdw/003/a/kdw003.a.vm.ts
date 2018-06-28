@@ -1186,10 +1186,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.displayNumberZero();
                 
                 //check visable MIGrid
-                if (self.displayFormat()) {
+                if (self.displayFormat() !=0) {
                     self.isVisibleMIGrid(false);
-                } else {
-                    self.isVisibleMIGrid(true);
                 }
                 
                 nts.uk.ui.block.clear();
