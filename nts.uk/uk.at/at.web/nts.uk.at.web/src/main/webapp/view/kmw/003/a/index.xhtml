@@ -57,8 +57,9 @@
 					<!--A1_6 修正履歴ボタン-->					
 					<!--A1_7 印刷ボタン--> 
 					<!--A1_8 ロック解除ボタン--> 
+					<!-- class = "visibility: hidden" -->
 					<com:ko-if bind="showButton().available_A1_8">
-						<button data-bind="{click:unlockProcess}" class = "visibility: hidden">#{i18n.getText('KMW003_31')}</button>
+						<button data-bind="{click:unlockProcess}" >#{i18n.getText('KMW003_31')}</button>
 					</com:ko-if>
 					<!--A1_9 再ロックボタン--> 
 					<com:ko-if bind="showButton().available_A1_9">
