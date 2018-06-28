@@ -129,38 +129,51 @@ module nts.uk.at.view.kdl009.a {
             
             bindTimeData(data: any) {
                 var self = this;
-                var greneraGigesHisData = data.absRecGenerationDigestionHis != null ? data.absRecGenerationDigestionHis.greneraGigesHis : null;
                 var issueDate = "";
                 var holidayDate = "";
                 var expirationDate = "";
-                var occurrenceDays = "";
+                var occurrenceDays1 = "";
+                var occurrenceDays2 = "";
                 var isHalfDay = false;
+                self.dataItems.removeAll();
                 
-                if(greneraGigesHisData != null && greneraGigesHisData.length >= 1) {
-                    _.each(greneraGigesHisData, function (item) {
-                        if(greneraGigesHisData.recHisData != null) {
-                            if(greneraGigesHisData.recHisData.recDate.unknownDate) {
+                if(data.recAbsHistoryOutput.length > 0) {
+                    _.each(data.recAbsHistoryOutput, function (item) {
+                        if(item.recHisData != null) {
+                            if(item.recHisData.recDate.unknownDate) {
                                 issueDate = nts.uk.resource.getText("KDL009_11");
-                            } else if(greneraGigesHisData.recHisData.dataAtr == 3) {
-                                var time = nts.uk.resource.getText("KDL009_13", [greneraGigesHisData.ymdData.dayoffDate]);
-                                issueDate = nts.uk.time.applyFormat("Short_YMDW", time);
                             } else {
-                                issueDate = "";
+                                issueDate = nts.uk.resource.getText("KDL009_13", [item.recHisData.recDate.dayoffDate]);
                             }
                             
-                            if(Number(greneraGigesHisData.recHisData.occurrenceDays) == 0.5) {
-                                occurrenceDays = nts.uk.resource.getText("KDL009_14", [greneraGigesHisData.recHisData.occurrenceDays]);
+                            if(item.recHisData.occurrenceDays == 0.5) {
                                 isHalfDay = true;
-                            } else {
-                                occurrenceDays = "";
+                                occurrenceDays1 = nts.uk.resource.getText("KDL009_14", [item.recHisData.occurrenceDays]);
                             }
                             
-                            expirationDate = nts.uk.time.applyFormat("Short_YMDW", [greneraGigesHisData.recHisData.expirationDate]);
-                            
-                            var temp = new DataItems(issueDate, issueDate, expirationDate, occurrenceDays, isHalfDay);
-                            
-                            self.dataItems.push(temp);
+                            if(item.recHisData.expirationDate != null) {
+                                expirationDate = nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.expirationDate]);
+                            } else {
+                                expirationDate = "";
+                            }
                         }
+                        
+                        if(item.absHisData != null) {
+                            if(item.absHisData.absDate.unknownDate) {
+                                holidayDate = nts.uk.resource.getText("KDL009_11");
+                            } else {
+                                holidayDate = nts.uk.resource.getText("KDL009_13", [item.absHisData.absDate.dayoffDate]);
+                            }
+                            
+                            if(item.absHisData.requeiredDays == 0.5) {
+                                isHalfDay = true;
+                                occurrenceDays2 = nts.uk.resource.getText("KDL009_14", [item.absHisData.requeiredDays]);
+                            }
+                        }
+                        
+                        var temp = new DataItems(issueDate, holidayDate, expirationDate, occurrenceDays1, occurrenceDays2, isHalfDay);
+                            
+                        self.dataItems.push(temp);
                     });                    
                 }
             }
@@ -168,14 +181,14 @@ module nts.uk.at.view.kdl009.a {
             bindSummaryData(data: any) {
                 var self = this;
                 
-                if(data.absRecGenerationDigestionHis != null) {
-                    self.value01(nts.uk.resource.getText("KDL009_14", [data.absRecGenerationDigestionHis.absRemainInfor.carryForwardDays]));
-                    self.value02(nts.uk.resource.getText("KDL009_14", [data.absRecGenerationDigestionHis.absRemainInfor.recordOccurrenceDays]));
-                    self.hint02(nts.uk.resource.getText("KDL009_15", [data.absRecGenerationDigestionHis.absRemainInfor.scheOccurrenceDays]));
-                    self.value03(nts.uk.resource.getText("KDL009_14", [data.absRecGenerationDigestionHis.absRemainInfor.recordUseDays]));
-                    self.hint03(nts.uk.resource.getText("KDL009_15", [data.absRecGenerationDigestionHis.absRemainInfor.scheUseDays]));
-                    self.value04(nts.uk.resource.getText("KDL009_14", [data.absRecGenerationDigestionHis.absRemainInfor.recordOccurrenceDays - data.absRecGenerationDigestionHis.absRemainInfor.recordUseDays]));
-                    self.hint04(nts.uk.resource.getText("KDL009_15", [data.absRecGenerationDigestionHis.absRemainInfor.scheOccurrenceDays - data.absRecGenerationDigestionHis.absRemainInfor.scheUseDays]));
+                if(data.absRemainInfor != null) {
+                    self.value01(nts.uk.resource.getText("KDL009_14", [data.absRemainInfor.carryForwardDays]));
+                    self.value02(nts.uk.resource.getText("KDL009_14", [data.absRemainInfor.recordOccurrenceDays]));
+                    self.hint02(nts.uk.resource.getText("KDL009_15", [data.absRemainInfor.scheOccurrenceDays]));
+                    self.value03(nts.uk.resource.getText("KDL009_14", [data.absRemainInfor.recordUseDays]));
+                    self.hint03(nts.uk.resource.getText("KDL009_15", [data.absRemainInfor.scheUseDays]));
+                    self.value04(nts.uk.resource.getText("KDL009_14", [data.absRemainInfor.recordOccurrenceDays - data.absRemainInfor.recordUseDays]));
+                    self.hint04(nts.uk.resource.getText("KDL009_15", [data.absRemainInfor.scheOccurrenceDays - data.absRemainInfor.scheUseDays]));
                 } else {
                     self.value01(nts.uk.resource.getText("KDL009_14", ["0"]));
                     self.value02(nts.uk.resource.getText("KDL009_14", ["0"]));
@@ -222,14 +235,16 @@ module nts.uk.at.view.kdl009.a {
             issueDate: string;
             holidayDate: string;
             expirationDate: string;
-            occurrenceDays: string;
+            occurrenceDays1: string;
+            occurrenceDays2: string;
             isHalfDay: boolean;
     
-            constructor(issueDate: string, holidayDate: string, expirationDate: string, occurrenceDays: string, isHalfDay: boolean) {
+            constructor(issueDate: string, holidayDate: string, expirationDate: string, occurrenceDays1: string, occurrenceDays2: string, isHalfDay: boolean) {
                 this.issueDate = issueDate;
                 this.holidayDate = holidayDate;
                 this.expirationDate = expirationDate;
-                this.occurrenceDays = occurrenceDays;
+                this.occurrenceDays1 = occurrenceDays1;
+                this.occurrenceDays2 = occurrenceDays2;
                 this.isHalfDay = isHalfDay;
             }
         }

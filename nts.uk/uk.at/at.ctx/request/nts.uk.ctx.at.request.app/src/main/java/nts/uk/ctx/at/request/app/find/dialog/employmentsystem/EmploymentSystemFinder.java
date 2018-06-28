@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.dialog.employmentsystem;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecAbsHistoryOutputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffOutputHisData;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -133,8 +135,40 @@ public class EmploymentSystemFinder {
 		// アルゴリズム「振出振休発生消化履歴の取得」を実行する
 		AbsRecGenerationDigestionHis data = absenceReruitmentManaQuery
 				.generationDigestionHis(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
+
+		List<RecAbsHistoryOutputDto> recAbsHistoryOutput = new ArrayList<>();
 		
-		NumberRestDaysDto result = new NumberRestDaysDto(closingPeriod, data);
+		if(data.getGreneraGigesHis().size() > 0) {
+			for (RecAbsHistoryOutputPara item : data.getGreneraGigesHis()) {
+				CompensatoryDayoffDateDto ymdData = new CompensatoryDayoffDateDto(item.getYmdData().isUnknownDate(), item.getYmdData().getDayoffDate().get());
+				
+				Double useDays = item.getUseDays() != null ? item.getUseDays().get() : 0.0;
+				
+				CompensatoryDayoffDateDto absDate = new CompensatoryDayoffDateDto(item.getAbsHisData() != null ? item.getAbsHisData().get().getAbsDate().isUnknownDate() : true, 
+						item.getAbsHisData() != null ? item.getAbsHisData().get().getAbsDate().getDayoffDate().get() : null);
+				
+				AbsenceHistoryOutputParaDto absHisData = new AbsenceHistoryOutputParaDto(item.getAbsHisData() != null ? item.getAbsHisData().get().getCreateAtr().value : 0, 
+						item.getAbsHisData() != null ? item.getAbsHisData().get().getAbsId() : null,
+						absDate, item.getAbsHisData() != null ? item.getAbsHisData().get().getRequeiredDays() : null, 
+						item.getAbsHisData() != null ? item.getAbsHisData().get().getUnOffsetDays() : null);
+				
+				CompensatoryDayoffDateDto recDate = new CompensatoryDayoffDateDto(item.getRecHisData() != null ? item.getRecHisData().get().getRecDate().isUnknownDate() : true, 
+						item.getRecHisData() != null ? item.getRecHisData().get().getRecDate().getDayoffDate().get() : null);
+				
+				RecruitmentHistoryOutParaDto recHisData = new RecruitmentHistoryOutParaDto(item.getRecHisData() != null ? item.getRecHisData().get().getExpirationDate() : null, 
+						item.getRecHisData() != null ? item.getRecHisData().get().isChkDisappeared() : true,
+						item.getRecHisData() != null ? item.getRecHisData().get().getDataAtr().value : 0, 
+						item.getRecHisData() != null ? item.getRecHisData().get().getRecId() : null, recDate, 
+						item.getRecHisData() != null ? item.getRecHisData().get().getOccurrenceDays() : 0.0,
+						item.getRecHisData() != null ? item.getRecHisData().get().getHolidayAtr() : 0, 
+						item.getRecHisData() != null ? item.getRecHisData().get().getUnUseDays() : null);
+				
+				RecAbsHistoryOutputDto outputDto = new RecAbsHistoryOutputDto(ymdData, useDays, absHisData, recHisData);
+				recAbsHistoryOutput.add(outputDto);
+			}
+		}
+
+		NumberRestDaysDto result = new NumberRestDaysDto(closingPeriod, recAbsHistoryOutput, data.getAbsRemainInfor() != null ? data.getAbsRemainInfor() : null);
 		
 		return result;
 	}
