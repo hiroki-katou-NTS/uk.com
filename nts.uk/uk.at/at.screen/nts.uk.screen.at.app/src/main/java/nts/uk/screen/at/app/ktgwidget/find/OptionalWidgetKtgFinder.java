@@ -201,9 +201,9 @@ public class OptionalWidgetKtgFinder {
 					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APP_DEADLINE_MONTH.value) {
 					//sử lý 07
-					// lỗi null trong class ApplicationPubImpl loiVT dang QA chưa trả lời.(request list 239)
-					//ApplicationDeadlineImport deadlineImport = applicationAdapter.getApplicationDeadline(companyId, this.getClosureId());
-					//dto.setAppDeadlineMonth(new DeadlineOfRequest(deadlineImport.isUseApplicationDeadline(), deadlineImport.getDateDeadline()));
+					// lỗi null trong class ApplicationPubImpl loiVT QA trả lời. http://192.168.50.4:3000/issues/97192
+					ApplicationDeadlineImport deadlineImport = applicationAdapter.getApplicationDeadline(companyId, this.getClosureId());
+					dto.setAppDeadlineMonth(new DeadlineOfRequest(deadlineImport.isUseApplicationDeadline(), deadlineImport.getDateDeadline()));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PRESENCE_DAILY_PER.value) {
 					//sử lý 08
 					dto.setPresenceDailyPer(checksDailyPerformanceErrorRepo.checked(employeeId, startDate, endDate));
