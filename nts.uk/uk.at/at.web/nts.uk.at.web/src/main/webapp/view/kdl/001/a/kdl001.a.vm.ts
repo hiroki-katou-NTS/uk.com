@@ -153,7 +153,7 @@ module nts.uk.at.view.kdl001.a {
 
             getSelectedTimeItems(codes) {
                 let self = this,
-                    timeItems = _.filter(self.selectAbleItemList(), item => { return codes.indexOf(item.code) > 0 }),
+                    timeItems = _.filter(self.selectAbleItemList(), item => { return codes.indexOf(item.code) > -1 }),
                     mappedItems = _.map(timeItems, item => { return new TimeItem(item) })
                 return mappedItems;
             }
@@ -163,16 +163,16 @@ module nts.uk.at.view.kdl001.a {
             }
         }
         export class TimeItem {
-            code: string;
-            name: string;
-            time1: Time;
-            time2: Time;
+            selectedWorkTimeCode: string;
+            selectedWorkTimeName: string;
+            first: Time;
+            second: Time;
             constructor(data?) {
                 if (data) {
-                    this.code = data.code;
-                    this.name = data.name;
-                    this.time1 = new Time(data.firstStartTime, data.firstEndTime);
-                    this.time2 = new Time(data.secondStartTime, data.secondEndTime);
+                    this.selectedWorkTimeCode = data.code;
+                    this.selectedWorkTimeName = data.name;
+                    this.first = new Time(data.firstStartTime, data.firstEndTime);
+                    this.second = new Time(data.secondStartTime, data.secondEndTime);
                 }
             }
         }

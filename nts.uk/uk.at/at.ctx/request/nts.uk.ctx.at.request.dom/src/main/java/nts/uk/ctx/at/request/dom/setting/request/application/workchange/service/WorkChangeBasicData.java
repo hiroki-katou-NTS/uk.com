@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
@@ -46,4 +47,7 @@ public class WorkChangeBasicData {
 	 * 勤務就業ダイアログ用データ取得
 	 */
 	private DataWork workingData;
+	
+	
+	List<EmployeeInfoImport> employees;
 }
