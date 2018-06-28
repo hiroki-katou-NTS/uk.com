@@ -64,9 +64,18 @@
                 </table>
             </div>
             <!-- I5_1 -->
-            <div id="functions-area-bottom">
-                <button id="I5_1" class="large" data-bind="click : breakFollow" tabindex="1">#{i18n.getText('CMF004_207')}</button>
-            </div>
+				<com:ko-if bind="!isEnding()">
+					<div id="functions-area-bottom">
+                		<button id="I5_1" class="large" data-bind="click : breakFollow" tabindex="1">#{i18n.getText('CMF004_207')}</button>
+            		</div>
+				</com:ko-if>
+				<com:ko-if bind="isEnding()">
+					<div id="functions-area-bottom">
+                		<button id="I5_1" class="large" data-bind="click : close" tabindex="1">#{i18n.getText('CMF004_208')}</button>
+            		</div>
+				</com:ko-if>
+
+				
         </div>
     </ui:define>
 </ui:composition>

@@ -24,4 +24,5 @@ public interface DataRecoveryMngRepository {
 	Optional<DataRecoveryMng> getByUploadId(String dataRecoveryProcessId);
 	
 	void updateRecoveryDate(String dataRecoveryProcessId, String date);
+
 }
