@@ -79,7 +79,7 @@ public class RecoveryStorageService {
 		List<Category> listCategory = categoryRepository.findById(dataRecoveryProcessId, SELECTION_TARGET_FOR_RES);
 
 		// update OperatingCondition
-		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, 0);
+		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value);
 
 		// 処理対象のカテゴリを処理する
 
@@ -120,8 +120,8 @@ public class RecoveryStorageService {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
 					DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
 		} else {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
-					DataRecoveryOperatingCondition.DONE.value);
+			/*dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
+					DataRecoveryOperatingCondition.DONE.value);*/
 		}
 	}
 
@@ -366,7 +366,7 @@ public class RecoveryStorageService {
 			Map<String, String> filedWhere = new HashMap<>();
 			List<String> dataRow = targetDataTable.get(i);
 			// データベース復旧処理
-			if (employeeId != null && dataRow.get(1).equals(employeeId)) {
+			if ((employeeId == null ) || (employeeId != null && dataRow.get(1).equals(employeeId))) {
 				// 履歴区分を判別する - Phân loại lịch sử
 				if ((tableList.get().getHistoryCls().value == 0 && tableUse) || !tableUse) {
 
@@ -528,11 +528,18 @@ public class RecoveryStorageService {
 					} else {
 						continue;
 					}
-				} else if (count == 1) {
-					// delete data
+				} else if (count == 1 && tableUse) {
 					performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 							cidCurrent);
 
+				} else if (count == 1 && !tableUse) {
+					try {
+						performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
+								cidCurrent);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					
 				}
 
 				int indexCidOfCsv = targetDataHeader.indexOf(namePhysicalCid);
@@ -545,7 +552,16 @@ public class RecoveryStorageService {
 					}
 				}
 				// insert data
-				performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
+				if(tableUse) {
+					performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
+				} else {
+					try {
+						performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					
+				}
 			}
 		}
 
@@ -704,7 +720,7 @@ public class RecoveryStorageService {
 						.getDataRecoveryMngById(dataRecoveryProcessId);
 				if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition().value == 1) {
 					errorCode = DataRecoveryOperatingCondition.INTERRUPTION_END.value;
-					break;
+					return 5;
 				}
 
 				List<List<String>> targetDataRecovery = CsvFileUtil.getAllRecord(uploadId,
@@ -856,10 +872,10 @@ public class RecoveryStorageService {
 		}
 
 		// 保存期間区分と日付設定を判別
-		if (timeStore == 0 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("-9")
+		if (timeStore == null || timeStore == 0 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("-9")
 				|| timeStore == 1 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("6")
 				|| timeStore == 2 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("7")
-				|| timeStore == 2 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("8")) {
+				|| timeStore == 3 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("8")) {
 			resultsSetting.clear();
 			return resultsSetting;
 		}
@@ -878,9 +894,10 @@ public class RecoveryStorageService {
 			} else if (resultsSetting.size() == 2) {
 				H_Date_Csv = dataRow.get(3);
 			}
+			if(H_Date_Csv.isEmpty() || H_Date_Csv == null) 
+				return false;
 			Date Date_Csv = new SimpleDateFormat("yyyy-MM-dd").parse(H_Date_Csv);
 			Integer Y_Date_Csv = Date_Csv.getYear();
-			Integer M_Date_Csv = Date_Csv.getMonth();
 			if (resultsSetting.get(0).equals("6")) {
 				if (Y_Date_Csv < Integer.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3))
 						|| Y_Date_Csv > Integer
@@ -888,6 +905,7 @@ public class RecoveryStorageService {
 					return false;
 				}
 			} else if (resultsSetting.get(0).equals("7")) {
+				Integer M_Date_Csv = Date_Csv.getMonth();
 				if (Integer.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3)) > Y_Date_Csv
 						|| (Integer
 								.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3)) == Y_Date_Csv
