@@ -899,7 +899,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             $('.nts-input').filter(":enabled").trigger("validate");
             if (errors.hasError() === true) {
-                nts.uk.ui.errors.show();
                 return;
             }
             switch (self.category()) {

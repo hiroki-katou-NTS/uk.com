@@ -1350,7 +1350,7 @@ module nts.uk.at.view.kal003.share.model {
             if (self.useAtr()) {
                 self.setDisplayTarget(modeX);
                 self.setDisplayOperator();
-                self.setDisplayCompare();
+                self.setDisplayCompare(modeX);
             } else {
                 self.displayLeftCompare("");
                 self.displayLeftOperator("");
@@ -1409,7 +1409,7 @@ module nts.uk.at.view.kal003.share.model {
             }
         }
 
-        setDisplayCompare() {
+        setDisplayCompare(modeX) {
             let self = this;
             let conditionAtr = self.conditionAtr();
             if (self.compareOperator() > 5) {
@@ -1437,12 +1437,22 @@ module nts.uk.at.view.kal003.share.model {
                     // If is compare with a attendance item
                     if (self.singleAtdItem()) {
                         //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
-                        self.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
-                            if (lstItems && lstItems.length > 0) {
-                                self.displayLeftCompare(lstItems[0].attendanceItemName);
-                                self.displayRightCompare("");
-                            }
-                        });
+                        if(modeX==1){
+                            self.getAttendanceItemMonthlyByCodes([self.singleAtdItem()]).done((lstItems) => {
+                                if (lstItems && lstItems.length > 0) {
+                                    self.displayLeftCompare(lstItems[0].attendanceItemName);
+                                    self.displayRightCompare("");
+                                }
+                            }); 
+                        }else{
+                            self.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
+                                if (lstItems && lstItems.length > 0) {
+                                    self.displayLeftCompare(lstItems[0].attendanceItemName);
+                                    self.displayRightCompare("");
+                                }
+                            });     
+                        }
+                        
                     }
                 }
             }
@@ -1568,9 +1578,27 @@ module nts.uk.at.view.kal003.share.model {
         public openAtdItemConditionDialog(modeX: number) {
             let self = this;
             let param = ko.mapping.toJS(self);
-//            if(modeX ==1){
-//                
-//            }else{
+            if(modeX ==1){
+                //KAL003C
+                nts.uk.ui.windows.setShared("KAL003CParams", {mode: modeX, data: param}, true);
+                nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml").onClosed(() => {
+                    let output = getShared("KAL003CResult");
+                    if (output) {
+                        self.targetNO(output.targetNO);
+                        self.conditionAtr(output.conditionAtr);
+                        self.useAtr(true);
+                        self.uncountableAtdItem(output.uncountableAtdItem);
+                        self.countableAddAtdItems(output.countableAddAtdItems);
+                        self.countableSubAtdItems(output.countableSubAtdItems);
+                        self.conditionType(output.conditionType);
+                        self.singleAtdItem(output.singleAtdItem);
+                        self.compareStartValue(output.compareStartValue);
+                        self.compareEndValue(output.compareEndValue);
+                        self.compareOperator(output.compareOperator);
+                    }
+                    self.setTextDisplay(modeX);
+                });
+            }else{
                 nts.uk.ui.windows.setShared("KDW007BParams", {mode: modeX, data: param}, true);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml").onClosed(() => {
                     let output = getShared("KDW007BResult");
@@ -1589,7 +1617,7 @@ module nts.uk.at.view.kal003.share.model {
                     }
                     self.setTextDisplay(modeX);
                 });
-//             }
+             }
         }
 
         setData(NO, param) {
