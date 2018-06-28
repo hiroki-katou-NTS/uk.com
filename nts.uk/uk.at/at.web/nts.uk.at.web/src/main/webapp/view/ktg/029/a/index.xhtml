@@ -60,7 +60,7 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: approved"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button class = "approved-no" data-bind="click: $parent.openCMM045Dialog, visible:(approved>0)">
+										<button class = "approved-no" data-bind="click: $parent.openCMM045Dialog.bind($vm), visible:(approved>0)">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
@@ -75,7 +75,7 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: unApproved"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button data-bind="visible:(unApproved>0), click: $parent.openCMM045Dialog">
+										<button data-bind="visible:(unApproved>0), click: $parent.openCMM045Dialog.bind($vm)">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
@@ -90,7 +90,7 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: deniedNo"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button  data-bind="click: $parent.openCMM045Dialog, visible:(deniedNo>0)">
+										<button  data-bind="click: $parent.openCMM045Dialog.bind($vm), visible:(deniedNo>0)">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
@@ -105,7 +105,7 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: remand"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button data-bind="click: $parent.openCMM045Dialog, visible:(remand>0)">
+										<button data-bind="click: $parent.openCMM045Dialog.bind($vm), visible:(remand>0)">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>

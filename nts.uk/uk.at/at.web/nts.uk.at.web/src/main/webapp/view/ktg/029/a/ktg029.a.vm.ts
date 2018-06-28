@@ -258,11 +258,48 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var self = this;
             window.top.location = window.location.origin + '/nts.uk.at.web/view/kaf/015/a/index.xhtml';
         }
+        private conVerDate(date: Date):string {
+            var strDay = date.getDate();
+            if(strDay<10){
+                 strDay='0'+strDay; 
+            } 
+            var strMonth = date.getMonth()+1;
+            if(strMonth<10){
+                 strMonth='0'+strMonth; 
+            } 
+            return date.getFullYear()+'/'+strMonth+'/'+strDay;
+        }
         
         private openCMM045Dialog():void {
-            let self = this;
+            var self = this;
 //          ※URLパラメータ　＝　照会モード
-            window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml?a=1';
+            if(self.switchDate()){
+                var strDate = self.conVerDate(self.nextMonth().strMonth);
+                var endDate = self.conVerDate(self.nextMonth().endMonth);
+            }else{
+                var strDate = self.conVerDate(self.currentMonth().strMonth);
+                var endDate = self.conVerDate(self.currentMonth().endMonth);
+            }
+            let paramSave = {  
+                startDate: strDate,
+                endDate: endDate,
+                appListAtr: 1,
+                appType: -1,
+                unapprovalStatus: true,
+                approvalStatus: true,
+                denialStatus: true,
+                agentApprovalStatus: true,
+                remandStatus: true,
+                cancelStatus: true,
+                appDisplayAtr: 0,
+                listEmployeeId: [],
+                empRefineCondition: ""
+            };
+            nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
+                parent.nts.uk.characteristics.save('AppListExtractCondition', paramSave).done(function() {
+                    window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
+                });    
+            });          
         }
         
         openKDW003Dialog() {
