@@ -102,7 +102,11 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//set info to session
 		context.getCommand().getRequest().changeSessionId();
-		this.setLoggedInfo(user, em, companyCode);
+		if (command.isSignOn()){
+			this.initSession(user);
+		} else {
+			this.setLoggedInfo(user, em, companyCode);
+		}
 		
 		//set role Id for LoginUserContextManager
 		this.setRoleId(user.getUserId());
@@ -111,7 +115,6 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		if (!this.checkAfterLogin(user, oldPassword)){
 			return new CheckChangePassDto(true, null);
 		}
-		
 		return new CheckChangePassDto(false, null);
 	}
 

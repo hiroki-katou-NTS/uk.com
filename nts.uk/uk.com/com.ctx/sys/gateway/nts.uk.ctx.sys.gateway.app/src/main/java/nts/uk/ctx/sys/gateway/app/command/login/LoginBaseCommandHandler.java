@@ -583,13 +583,18 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (companyIds.isEmpty()){
 			throw new BusinessException("Msg_281"); 
 		} else {
-			if (this.checkAccoutLock(contractCode, userId).v() != null) {
+			if (!this.checkAccoutLock(contractCode, userId).v().isEmpty()) {
 				//return messageError
 				throw new BusinessException(this.checkAccoutLock(contractCode, userId).v());
 			}
 		}
 	}
 	
+	/**
+	 * Error check 2.
+	 *
+	 * @param companyId the company id
+	 */
 	//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
 	public void errorCheck2(String companyId){
 		
@@ -706,6 +711,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				}
 			}
 		}
-		return null;
+		return new LockOutMessage(null);
 	}
 }

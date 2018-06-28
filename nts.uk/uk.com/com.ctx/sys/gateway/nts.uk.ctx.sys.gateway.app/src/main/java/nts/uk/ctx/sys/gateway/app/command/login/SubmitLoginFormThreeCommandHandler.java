@@ -95,14 +95,18 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			
 			// check time limit
 			this.checkLimitTime(user);
-			
-			
 		}
 		
-		//set info to session
-		context.getCommand().getRequest().changeSessionId();
-		this.setLoggedInfo(user, em, companyCode);
+		//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
+		this.errorCheck2(companyId);
 		
+		//set info to session
+		command.getRequest().changeSessionId();
+		if (command.isSignOn()){
+			this.initSession(user);
+		} else {
+			this.setLoggedInfo(user, em, companyCode);
+		}
 		//set role Id for LoginUserContextManager
 		this.setRoleId(user.getUserId());
 		
