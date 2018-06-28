@@ -268,9 +268,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         getTextRecovery(recoveryPeriod): string {
             if (recoveryPeriod() === 0) return getText("Enum_TimeStore_FULL_TIME");
-            if (recoveryPeriod() === 1) return getText("Enum_TimeStore_DAILY");
+            if (recoveryPeriod() === 1) return getText("Enum_TimeStore_ANNUAL");
             if (recoveryPeriod() === 2) return getText("Enum_TimeStore_MONTHLY");
-            if (recoveryPeriod() === 3) return getText("Enum_TimeStore_ANNUAL");
+            if (recoveryPeriod() === 3) return getText("Enum_TimeStore_DAILY");
         }
 
         /**
@@ -307,7 +307,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenH(): void {
             let self = this;
-            let _categoryList = self.getRecoveryCategory(self.changeDataRecoveryPeriod().changeDataCategoryList());
+            let _categoryList = (self.getRecoveryCategory(self.changeDataRecoveryPeriod().changeDataCategoryList()));
+            _.forEach(_categoryList, categoryItem =>{
+                let a = categoryItem;
+                categoryItem.startOfPeriod(self.formatDate(categoryItem.recoveryPeriod, categoryItem.startOfPeriod()));
+                categoryItem.endOfPeriod(self.formatDate(categoryItem.recoveryPeriod, categoryItem.endOfPeriod()));
+            });
             let _employeeList = self.getRecoveryEmployee(self.employeeListScreenG(), self.selectedEmployeeCodeScreenG());
             self.employeeListScreenH(_employeeList);
             let _recoveryMethod = self.dataContentConfirm().selectedRecoveryMethod();
@@ -334,6 +339,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         formatDate(recoveryPeriod, dateFormat): string {
             if (recoveryPeriod() == PeriodEnum.DAY) {
+                return moment.utc(dateFormat).format("YYYY/MM/DD");
+            }
+            if (recoveryPeriod() == PeriodEnum.FULLTIME) {
                 return moment.utc(dateFormat).format("YYYY/MM/DD");
             }
             if (recoveryPeriod() == PeriodEnum.MONTH) {
@@ -466,9 +474,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     export enum PeriodEnum {
         FULLTIME = 0, //全期間一律
-        DAY = 1, //日次
+        YEAR = 1, //日次
         MONTH = 2, //月次
-        YEAR = 3  //年次
+        DAY = 3  //年次
     }
 
     export enum RecoveryMethod {

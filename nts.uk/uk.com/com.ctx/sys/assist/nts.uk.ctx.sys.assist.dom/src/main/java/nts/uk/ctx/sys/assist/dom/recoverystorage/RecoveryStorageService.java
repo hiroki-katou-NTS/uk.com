@@ -12,9 +12,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +40,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class RecoveryStorageService {
+	@Resource
+	private SessionContext scContext;
 
 	@Inject
 	private PerformDataRecoveryRepository performDataRecoveryRepository;
@@ -49,7 +55,18 @@ public class RecoveryStorageService {
 	@Inject
 	private DataReEmployeeAdapter empDataMngRepo;
 
-	public static final String SELECTION_TARGET_FOR_RES = "1";
+	private RecoveryStorageService self;
+
+	@PostConstruct
+	public void init() {
+		this.self = scContext.getBusinessObject(RecoveryStorageService.class);
+	}
+
+	public static final int SELECTION_TARGET_FOR_RES = 1;
+
+	public static final String SQL_EXCEPTION = "113";
+
+	public static final String SETTING_EXCEPTION = "5";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecoveryStorageService.class);
 
@@ -69,9 +86,9 @@ public class RecoveryStorageService {
 		for (int i = 0; i < listCategory.size(); i++) {
 
 			List<TableList> tableUse = performDataRecoveryRepository
-					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), StorageRangeSaved.EARCH_EMP.value);
+					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(),dataRecoveryProcessId, StorageRangeSaved.EARCH_EMP.value);
 			List<TableList> tableNotUse = performDataRecoveryRepository
-					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(), StorageRangeSaved.ALL_EMP.value);
+					.getByStorageRangeSaved(listCategory.get(i).getCategoryId().v(),dataRecoveryProcessId, StorageRangeSaved.ALL_EMP.value);
 
 			TableListByCategory tableListByCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
 					tableUse);
@@ -108,9 +125,9 @@ public class RecoveryStorageService {
 		}
 	}
 
-	@Transactional
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public int recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode, String employeeId,
-			List<DataRecoveryTable> targetDataByCate) throws ParseException {
+			List<DataRecoveryTable> targetDataByCate) throws Exception {
 
 		int errorCode = 0;
 		Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
@@ -140,8 +157,12 @@ public class RecoveryStorageService {
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
 			if (resultsSetting.isEmpty()) {
-				errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
-				return errorCode;
+				/*
+				 * errorCode =
+				 * DataRecoveryOperatingCondition.ABNORMAL_TERMINATION. value;
+				 * return errorCode;
+				 */
+				continue;
 			}
 
 			if (tableList.isPresent()) {
@@ -154,21 +175,25 @@ public class RecoveryStorageService {
 
 			// sort target data by date - TO DO
 
-			// 対象社員の日付順の処理
-			errorCode = crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode,
-					dataRecoveryProcessId, dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery,
-					resultsSetting, true);
+			try {
+				// 対象社員の日付順の処理
+				errorCode = crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode,
+						dataRecoveryProcessId, dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery,
+						resultsSetting, true);
+			} catch (Exception e) {
+				LOGGER.error("SQL error rollBack transaction");
+				throw new Exception(SQL_EXCEPTION);
 
-			// phân biệt DELETE/INSERT error và Setting error TO - DO
-			if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
+			}
 
-				throw new RollBackException("113", "RollBack transaction");
-				// roll back
-				// Count up số lượng error
+			// phân biệt DELETE/INSERT error và Setting error
+			if (errorCode == 2) {
+				LOGGER.error("Setting error rollBack transaction");
+				throw new Exception(SETTING_EXCEPTION);
+
 			}
 
 		}
-
 		return errorCode;
 	}
 
@@ -249,90 +274,90 @@ public class RecoveryStorageService {
 		if (tableList.isPresent()) {
 
 			TABLE_NAME = tableList.get().getTableEnglishName();
-			FILED_KEY_UPDATE_1 = tableList.get().getFiledKeyUpdate1().orElse("");
+			FILED_KEY_UPDATE_1 = tableList.get().getFiledKeyUpdate1().orElse(null);
 
-			if (FILED_KEY_UPDATE_1 != null) {
+			if (FILED_KEY_UPDATE_1 != null && !FILED_KEY_UPDATE_1.isEmpty()) {
 				indexUpdate1 = targetDataHeader.indexOf(FILED_KEY_UPDATE_1);
 			}
-			FILED_KEY_UPDATE_2 = tableList.get().getFiledKeyUpdate2().orElse("");
-			if (FILED_KEY_UPDATE_2 != null) {
+			FILED_KEY_UPDATE_2 = tableList.get().getFiledKeyUpdate2().orElse(null);
+			if (FILED_KEY_UPDATE_2 != null && !FILED_KEY_UPDATE_2.isEmpty()) {
 				indexUpdate2 = targetDataHeader.indexOf(FILED_KEY_UPDATE_2);
 			}
-			FILED_KEY_UPDATE_3 = tableList.get().getFiledKeyUpdate3().orElse("");
-			if (FILED_KEY_UPDATE_3 != null) {
+			FILED_KEY_UPDATE_3 = tableList.get().getFiledKeyUpdate3().orElse(null);
+			if (FILED_KEY_UPDATE_3 != null && !FILED_KEY_UPDATE_3.isEmpty()) {
 				indexUpdate3 = targetDataHeader.indexOf(FILED_KEY_UPDATE_3);
 			}
 
-			FILED_KEY_UPDATE_4 = tableList.get().getFiledKeyUpdate4().orElse("");
-			if (FILED_KEY_UPDATE_4 != null) {
+			FILED_KEY_UPDATE_4 = tableList.get().getFiledKeyUpdate4().orElse(null);
+			if (FILED_KEY_UPDATE_4 != null && !FILED_KEY_UPDATE_4.isEmpty()) {
 				indexUpdate4 = targetDataHeader.indexOf(FILED_KEY_UPDATE_4);
 			}
 
-			FILED_KEY_UPDATE_5 = tableList.get().getFiledKeyUpdate5().orElse("");
-			if (FILED_KEY_UPDATE_5 != null) {
+			FILED_KEY_UPDATE_5 = tableList.get().getFiledKeyUpdate5().orElse(null);
+			if (FILED_KEY_UPDATE_5 != null && !FILED_KEY_UPDATE_5.isEmpty()) {
 				indexUpdate5 = targetDataHeader.indexOf(FILED_KEY_UPDATE_5);
 			}
 
-			FILED_KEY_UPDATE_6 = tableList.get().getFiledKeyUpdate6().orElse("");
-			if (FILED_KEY_UPDATE_6 != null) {
+			FILED_KEY_UPDATE_6 = tableList.get().getFiledKeyUpdate6().orElse(null);
+			if (FILED_KEY_UPDATE_6 != null && !FILED_KEY_UPDATE_6.isEmpty()) {
 				indexUpdate6 = targetDataHeader.indexOf(FILED_KEY_UPDATE_6);
 			}
 
-			FILED_KEY_UPDATE_7 = tableList.get().getFiledKeyUpdate7().orElse("");
-			if (FILED_KEY_UPDATE_7 != null) {
+			FILED_KEY_UPDATE_7 = tableList.get().getFiledKeyUpdate7().orElse(null);
+			if (FILED_KEY_UPDATE_7 != null && !FILED_KEY_UPDATE_7.isEmpty()) {
 				indexUpdate7 = targetDataHeader.indexOf(FILED_KEY_UPDATE_7);
 			}
 
-			FILED_KEY_UPDATE_8 = tableList.get().getFiledKeyUpdate8().orElse("");
-			if (FILED_KEY_UPDATE_8 != null) {
+			FILED_KEY_UPDATE_8 = tableList.get().getFiledKeyUpdate8().orElse(null);
+			if (FILED_KEY_UPDATE_8 != null && !FILED_KEY_UPDATE_8.isEmpty()) {
 				indexUpdate8 = targetDataHeader.indexOf(FILED_KEY_UPDATE_8);
 			}
 
-			FILED_KEY_UPDATE_9 = tableList.get().getFiledKeyUpdate9().orElse("");
-			if (FILED_KEY_UPDATE_9 != null) {
+			FILED_KEY_UPDATE_9 = tableList.get().getFiledKeyUpdate9().orElse(null);
+			if (FILED_KEY_UPDATE_9 != null && !FILED_KEY_UPDATE_9.isEmpty()) {
 				indexUpdate9 = targetDataHeader.indexOf(FILED_KEY_UPDATE_9);
 			}
 
-			FILED_KEY_UPDATE_10 = tableList.get().getFiledKeyUpdate10().orElse("");
-			if (FILED_KEY_UPDATE_10 != null) {
+			FILED_KEY_UPDATE_10 = tableList.get().getFiledKeyUpdate10().orElse(null);
+			if (FILED_KEY_UPDATE_10 != null && !FILED_KEY_UPDATE_10.isEmpty()) {
 				indexUpdate10 = targetDataHeader.indexOf(FILED_KEY_UPDATE_10);
 			}
 
-			FILED_KEY_UPDATE_11 = tableList.get().getFiledKeyUpdate11().orElse("");
-			if (FILED_KEY_UPDATE_11 != null) {
+			FILED_KEY_UPDATE_11 = tableList.get().getFiledKeyUpdate11().orElse(null);
+			if (FILED_KEY_UPDATE_11 != null && !FILED_KEY_UPDATE_11.isEmpty()) {
 				indexUpdate11 = targetDataHeader.indexOf(FILED_KEY_UPDATE_11);
 			}
 
-			FILED_KEY_UPDATE_12 = tableList.get().getFiledKeyUpdate12().orElse("");
-			if (FILED_KEY_UPDATE_12 != null) {
+			FILED_KEY_UPDATE_12 = tableList.get().getFiledKeyUpdate12().orElse(null);
+			if (FILED_KEY_UPDATE_12 != null && !FILED_KEY_UPDATE_12.isEmpty()) {
 				indexUpdate12 = targetDataHeader.indexOf(FILED_KEY_UPDATE_12);
 			}
 
-			FILED_KEY_UPDATE_13 = tableList.get().getFiledKeyUpdate13().orElse("");
-			if (FILED_KEY_UPDATE_13 != null) {
+			FILED_KEY_UPDATE_13 = tableList.get().getFiledKeyUpdate13().orElse(null);
+			if (FILED_KEY_UPDATE_13 != null && !FILED_KEY_UPDATE_13.isEmpty()) {
 				indexUpdate13 = targetDataHeader.indexOf(FILED_KEY_UPDATE_13);
 			}
 
-			FILED_KEY_UPDATE_14 = tableList.get().getFiledKeyUpdate14().orElse("");
-			if (FILED_KEY_UPDATE_14 != null)
+			FILED_KEY_UPDATE_14 = tableList.get().getFiledKeyUpdate14().orElse(null);
+			if (FILED_KEY_UPDATE_14 != null && !FILED_KEY_UPDATE_14.isEmpty())
 				indexUpdate14 = targetDataHeader.indexOf(FILED_KEY_UPDATE_14);
-			FILED_KEY_UPDATE_15 = tableList.get().getFiledKeyUpdate15().orElse("");
-			if (FILED_KEY_UPDATE_15 != null)
+			FILED_KEY_UPDATE_15 = tableList.get().getFiledKeyUpdate15().orElse(null);
+			if (FILED_KEY_UPDATE_15 != null && !FILED_KEY_UPDATE_15.isEmpty())
 				indexUpdate15 = targetDataHeader.indexOf(FILED_KEY_UPDATE_15);
-			FILED_KEY_UPDATE_16 = tableList.get().getFiledKeyUpdate16().orElse("");
-			if (FILED_KEY_UPDATE_16 != null)
+			FILED_KEY_UPDATE_16 = tableList.get().getFiledKeyUpdate16().orElse(null);
+			if (FILED_KEY_UPDATE_16 != null && !FILED_KEY_UPDATE_16.isEmpty())
 				indexUpdate16 = targetDataHeader.indexOf(FILED_KEY_UPDATE_16);
-			FILED_KEY_UPDATE_17 = tableList.get().getFiledKeyUpdate17().orElse("");
-			if (FILED_KEY_UPDATE_17 != null)
+			FILED_KEY_UPDATE_17 = tableList.get().getFiledKeyUpdate17().orElse(null);
+			if (FILED_KEY_UPDATE_17 != null && !FILED_KEY_UPDATE_17.isEmpty())
 				indexUpdate17 = targetDataHeader.indexOf(FILED_KEY_UPDATE_17);
-			FILED_KEY_UPDATE_18 = tableList.get().getFiledKeyUpdate18().orElse("");
-			if (FILED_KEY_UPDATE_18 != null)
+			FILED_KEY_UPDATE_18 = tableList.get().getFiledKeyUpdate18().orElse(null);
+			if (FILED_KEY_UPDATE_18 != null && !FILED_KEY_UPDATE_18.isEmpty())
 				indexUpdate18 = targetDataHeader.indexOf(FILED_KEY_UPDATE_18);
-			FILED_KEY_UPDATE_19 = tableList.get().getFiledKeyUpdate19().orElse("");
-			if (FILED_KEY_UPDATE_19 != null)
+			FILED_KEY_UPDATE_19 = tableList.get().getFiledKeyUpdate19().orElse(null);
+			if (FILED_KEY_UPDATE_19 != null && !FILED_KEY_UPDATE_19.isEmpty())
 				indexUpdate19 = targetDataHeader.indexOf(FILED_KEY_UPDATE_19);
-			FILED_KEY_UPDATE_20 = tableList.get().getFiledKeyUpdate20().orElse("");
-			if (FILED_KEY_UPDATE_20 != null)
+			FILED_KEY_UPDATE_20 = tableList.get().getFiledKeyUpdate20().orElse(null);
+			if (FILED_KEY_UPDATE_20 != null && !FILED_KEY_UPDATE_20.isEmpty())
 				indexUpdate20 = targetDataHeader.indexOf(FILED_KEY_UPDATE_20);
 		}
 
@@ -351,12 +376,7 @@ public class RecoveryStorageService {
 						// 保存期間区分を判別 - Phân loại khoảng thời gian save
 						if (tableList.get().getRetentionPeriodCls().value != 0) {
 							if (!checkSettingDate(resultsSetting, tableList, dataRow)) {
-								if (tableUse) {
-									errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
-									return errorCode;
-								} else {
-									continue;
-								}
+								continue;
 							}
 						} else {
 
@@ -370,22 +390,22 @@ public class RecoveryStorageService {
 
 					// update date phục hồi Domain
 					String date = dataRow.get(2);
-					if (date != null)
+					if (date != null && !date.isEmpty())
 						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date);
 				}
 
 				// update date phục hồi Domain
 				if (resultsSetting.get(0).equals("6")) {
 					String date = dataRow.get(2);
-					if (date != null)
+					if (date != null && !date.isEmpty())
 						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date.substring(0, 3));
 				} else if (resultsSetting.get(0).equals("7")) {
 					String date = dataRow.get(2);
-					if (date != null)
+					if (date != null && !date.isEmpty())
 						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date.substring(0, 6));
 				} else if (resultsSetting.get(0).equals("8")) {
 					String date = dataRow.get(2);
-					if (date != null)
+					if (date != null && !date.isEmpty())
 						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date);
 				}
 
@@ -510,14 +530,8 @@ public class RecoveryStorageService {
 					}
 				} else if (count == 1) {
 					// delete data
-					try {
-						performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
-								cidCurrent);
-					} catch (Exception ex) {
-						LOGGER.error("Failed delete data : " + TABLE_NAME);
-						LOGGER.error(ex.toString());
-						throw new RollBackException("113", "rollBack transaction");
-					}
+					performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
+							cidCurrent);
 
 				}
 
@@ -531,14 +545,7 @@ public class RecoveryStorageService {
 					}
 				}
 				// insert data
-				try {
-					performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
-				} catch (Exception ex) {
-					LOGGER.error("Failed insert data: " + TABLE_NAME);
-					LOGGER.error(ex.toString());
-					throw new RollBackException("113", "rollBack transaction");
-				}
-
+				performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
 			}
 		}
 
@@ -550,26 +557,26 @@ public class RecoveryStorageService {
 		String namePhysical = null;
 		if (tableList.isPresent()) {
 
-			if (tableList.get().getClsKeyQuery1().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate1().orElse("");
-			} else if (tableList.get().getClsKeyQuery2().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate2().orElse("");
-			} else if (tableList.get().getClsKeyQuery3().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate3().orElse("");
-			} else if (tableList.get().getClsKeyQuery4().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate4().orElse("");
-			} else if (tableList.get().getClsKeyQuery5().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate5().orElse("");
-			} else if (tableList.get().getClsKeyQuery6().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate6().orElse("");
-			} else if (tableList.get().getClsKeyQuery7().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate7().orElse("");
-			} else if (tableList.get().getClsKeyQuery8().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate8().orElse("");
-			} else if (tableList.get().getClsKeyQuery9().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate9().orElse("");
-			} else if (tableList.get().getClsKeyQuery10().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate10().orElse("");
+			if (tableList.get().getClsKeyQuery1() != null && tableList.get().getClsKeyQuery1().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate1().orElse(null);
+			} else if (tableList.get().getClsKeyQuery2() != null && tableList.get().getClsKeyQuery2().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate2().orElse(null);
+			} else if (tableList.get().getClsKeyQuery3() != null && tableList.get().getClsKeyQuery3().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate3().orElse(null);
+			} else if (tableList.get().getClsKeyQuery4() != null && tableList.get().getClsKeyQuery4().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate4().orElse(null);
+			} else if (tableList.get().getClsKeyQuery5() != null && tableList.get().getClsKeyQuery5().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate5().orElse(null);
+			} else if (tableList.get().getClsKeyQuery6() != null && tableList.get().getClsKeyQuery6().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate6().orElse(null);
+			} else if (tableList.get().getClsKeyQuery7() != null && tableList.get().getClsKeyQuery7().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate7().orElse(null);
+			} else if (tableList.get().getClsKeyQuery8() != null && tableList.get().getClsKeyQuery8().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate8().orElse(null);
+			} else if (tableList.get().getClsKeyQuery9() != null && tableList.get().getClsKeyQuery9().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate9().orElse(null);
+			} else if (tableList.get().getClsKeyQuery10() != null && tableList.get().getClsKeyQuery10().equals("0")) {
+				namePhysical = tableList.get().getFiledKeyUpdate10().orElse(null);
 			}
 		}
 		return namePhysical;
@@ -580,74 +587,79 @@ public class RecoveryStorageService {
 
 		String whereCid = null;
 		String whereSid = null;
-		if (tableList.get().getClsKeyQuery1().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate1().orElse("");
-		} else if (tableList.get().getClsKeyQuery1().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate1().orElse("");
+		if (tableList.get().getClsKeyQuery1() != null && tableList.get().getClsKeyQuery1().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate1().orElse(null);
+		} else if (tableList.get().getClsKeyQuery1() != null && tableList.get().getClsKeyQuery1().equals("5")
+				&& tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate1().orElse(null);
 		}
 
-		if (tableList.get().getClsKeyQuery2().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate2().orElse("");
-		} else if (tableList.get().getClsKeyQuery2().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate2().orElse("");
+		if (tableList.get().getClsKeyQuery2() != null && tableList.get().getClsKeyQuery2().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate2().orElse(null);
+		} else if (tableList.get().getClsKeyQuery2() != null && tableList.get().getClsKeyQuery2().equals("5")
+				&& tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate2().orElse(null);
 		}
 
-		if (tableList.get().getClsKeyQuery3().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate3().orElse("");
-		} else if (tableList.get().getClsKeyQuery3().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate3().orElse("");
+		if (tableList.get().getClsKeyQuery3() != null && tableList.get().getClsKeyQuery3().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate3().orElse(null);
+		} else if (tableList.get().getClsKeyQuery3() != null && tableList.get().getClsKeyQuery3().equals("5")
+				&& tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate3().orElse(null);
 		}
 
-		if (tableList.get().getClsKeyQuery4().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate4().orElse("");
-		} else if (tableList.get().getClsKeyQuery4().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate4().orElse("");
+		if (tableList.get().getClsKeyQuery4() != null && tableList.get().getClsKeyQuery4().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate4().orElse(null);
+		} else if (tableList.get().getClsKeyQuery4() != null && tableList.get().getClsKeyQuery4().equals("5")
+				&& tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate4().orElse(null);
 		}
 
-		if (tableList.get().getClsKeyQuery5().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate5().orElse("");
-		} else if (tableList.get().getClsKeyQuery5().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate5().orElse("");
+		if (tableList.get().getClsKeyQuery5() != null && tableList.get().getClsKeyQuery5().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate5().orElse(null);
+		} else if (tableList.get().getClsKeyQuery5() != null && tableList.get().getClsKeyQuery5().equals("5")
+				&& tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate5().orElse(null);
 		}
 
-		if (tableList.get().getClsKeyQuery6().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate6().orElse("");
-		} else if (tableList.get().getClsKeyQuery6().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate6().orElse("");
+		if (tableList.get().getClsKeyQuery6() != null && tableList.get().getClsKeyQuery6().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate6().orElse(null);
+		} else if (tableList.get().getClsKeyQuery6() != null && tableList.get().getClsKeyQuery6().equals("5")
+				&& tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate6().orElse(null);
 		}
 
-		if (tableList.get().getClsKeyQuery7().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate7().orElse("");
-		} else if (tableList.get().getClsKeyQuery7().equals("5") && !tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate7().orElse("");
+		if (tableList.get().getClsKeyQuery7() != null && tableList.get().getClsKeyQuery7().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate7().orElse(null);
+		} else if (tableList.get().getClsKeyQuery7() != null && tableList.get().getClsKeyQuery7().equals("5")
+				&& !tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate7().orElse(null);
 		}
-		if (tableList.get().getClsKeyQuery8().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate8().orElse("");
-		} else if (tableList.get().getClsKeyQuery8().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate8().orElse("");
-		}
-
-		if (tableList.get().getClsKeyQuery9().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate9().orElse("");
-		} else if (tableList.get().getClsKeyQuery9().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate9().orElse("");
+		if (tableList.get().getClsKeyQuery8() != null && tableList.get().getClsKeyQuery8().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate8().orElse(null);
+		} else if (tableList.get().getClsKeyQuery8() != null && tableList.get().getClsKeyQuery8().equals("5")
+				&& tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate8().orElse(null);
 		}
 
-		if (tableList.get().getClsKeyQuery10().equals("0")) {
-			whereCid = tableList.get().getFiledKeyUpdate10().orElse("");
-		} else if (tableList.get().getClsKeyQuery10().equals("5") && tableNotUse) {
-			whereSid = tableList.get().getFiledKeyUpdate10().orElse("");
+		if (tableList.get().getClsKeyQuery9() != null && tableList.get().getClsKeyQuery9().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate9().orElse(null);
+		} else if (tableList.get().getClsKeyQuery9() != null && tableList.get().getClsKeyQuery9().equals("5")
+				&& tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate9().orElse(null);
+		}
+
+		if (tableList.get().getClsKeyQuery10() != null && tableList.get().getClsKeyQuery10().equals("0")) {
+			whereCid = tableList.get().getFiledKeyUpdate10().orElse(null);
+		} else if (tableList.get().getClsKeyQuery10() != null && tableList.get().getClsKeyQuery10().equals("5")
+				&& tableNotUse) {
+			whereSid = tableList.get().getFiledKeyUpdate10().orElse(null);
 		}
 
 		String cidCurrent = AppContexts.user().companyId();
 		String tableName = tableList.get().getTableEnglishName();
-		try {
-			performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereSid, cidCurrent, employeeId);
-		} catch (Exception ex) {
-			LOGGER.error("Failed delete data employee : " + tableName);
-			LOGGER.error(ex.toString());
-			throw new RollBackException("113", "rollBack transaction");
-		}
+
+		performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereSid, cidCurrent, employeeId);
 
 	}
 
@@ -695,8 +707,8 @@ public class RecoveryStorageService {
 					break;
 				}
 
-				List<List<String>> targetDataRecovery = CsvFileUtil
-						.getAllRecord(tableNotUseByCategory.getTables().get(i).getInternalFileName(), uploadId);
+				List<List<String>> targetDataRecovery = CsvFileUtil.getAllRecord(uploadId,
+						tableNotUseByCategory.getTables().get(i).getInternalFileName());
 
 				// 期間別データ処理
 				Optional<TableList> tableList = performDataRecoveryRepository.getByInternal(
@@ -729,17 +741,19 @@ public class RecoveryStorageService {
 			// Create [対象データ] TargetData
 			Set<String> hashId = new HashSet<>();
 			for (int j = 0; j < tableListByCategory.getTables().size(); j++) {
-				List<List<String>> dataRecovery = CsvFileUtil
-						.getAllRecord(tableListByCategory.getTables().get(j).getInternalFileName(), uploadId);
+				List<List<String>> dataRecovery = CsvFileUtil.getAllRecord(uploadId,
+						tableListByCategory.getTables().get(j).getInternalFileName());
 
 				// -- Tổng hợp ID Nhân viên duy nhất từ List Data
-				for (List<String> dataRow : dataRecovery) {
-					hashId.add(dataRow.get(1));
+				for (int i = 1; i < dataRecovery.size(); i++) {
+					hashId.add(dataRecovery.get(i).get(1));
 				}
 
 				DataRecoveryTable targetData = new DataRecoveryTable(dataRecovery,
 						tableListByCategory.getTables().get(j).getInternalFileName());
-				targetDataByCate.add(targetData);
+				if (dataRecovery.size() > 1) {
+					targetDataByCate.add(targetData);
+				}
 			}
 
 			// 対象社員コード＿ID
@@ -755,25 +769,31 @@ public class RecoveryStorageService {
 			// Foreach 対象社員コード＿ID
 			for (EmployeeDataReInfoImport employeeDataMngInfoImport : employeeInfos) {
 
+
 				// Update current employeeCode
 				dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId,
 						employeeDataMngInfoImport.getEmployeeCode());
 
 				// 対象社員データ処理
-				errorCode = this.recoveryDataByEmployee(dataRecoveryProcessId,
-						employeeDataMngInfoImport.getEmployeeCode(), employeeDataMngInfoImport.getEmployeeId(),
-						targetDataByCate);
-
-				// phan biet error
-				if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
-					return errorCode;
+				try {
+					errorCode = self.recoveryDataByEmployee(dataRecoveryProcessId,
+							employeeDataMngInfoImport.getEmployeeCode(), employeeDataMngInfoImport.getEmployeeId(),
+							targetDataByCate);
+				} catch (Exception e) {
+					errorCode = Integer.valueOf(e.getMessage());
 				}
 
-				Optional<DataRecoveryMng> dataRecovery = dataRecoveryMngRepository
-						.getDataRecoveryMngById(dataRecoveryProcessId);
-				if (dataRecovery.isPresent() && dataRecovery.get().getOperatingCondition().value == 1) {
-					errorCode = DataRecoveryOperatingCondition.INTERRUPTION_END.value;
-					return errorCode;
+				if (errorCode == 5) {
+					break;
+				} else if (errorCode == 113) {
+					continue;
+				} else {
+					Optional<DataRecoveryMng> dataRecovery = dataRecoveryMngRepository
+							.getDataRecoveryMngById(dataRecoveryProcessId);
+					if (dataRecovery.isPresent() && dataRecovery.get().getOperatingCondition().value == 1) {
+						errorCode = DataRecoveryOperatingCondition.INTERRUPTION_END.value;
+						return errorCode;
+					}
 				}
 
 			}
@@ -790,16 +810,16 @@ public class RecoveryStorageService {
 		Integer timeStore = null;
 		int count6 = 0, count7 = 0, count8 = 0;
 		if (tableList.isPresent()) {
-			checkKeyQuery.add(tableList.get().getClsKeyQuery1().orElse(""));
-			checkKeyQuery.add(tableList.get().getClsKeyQuery2().orElse(""));
-			checkKeyQuery.add(tableList.get().getClsKeyQuery3().orElse(""));
-			checkKeyQuery.add(tableList.get().getClsKeyQuery4().orElse(""));
-			checkKeyQuery.add(tableList.get().getClsKeyQuery5().orElse(""));
-			checkKeyQuery.add(tableList.get().getClsKeyQuery6().orElse(""));
-			checkKeyQuery.add(tableList.get().getClsKeyQuery7().orElse(""));
-			checkKeyQuery.add(tableList.get().getClsKeyQuery8().orElse(""));
-			checkKeyQuery.add(tableList.get().getClsKeyQuery9().orElse(""));
-			checkKeyQuery.add(tableList.get().getClsKeyQuery10().orElse(""));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery1().orElse(null));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery2().orElse(null));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery3().orElse(null));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery4().orElse(null));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery5().orElse(null));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery6().orElse(null));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery7().orElse(null));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery8().orElse(null));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery9().orElse(null));
+			checkKeyQuery.add(tableList.get().getClsKeyQuery10().orElse(null));
 			timeStore = tableList.get().getRetentionPeriodCls().value;
 		}
 		for (String keyQuery : checkKeyQuery) {
@@ -824,22 +844,22 @@ public class RecoveryStorageService {
 		} else if (count6 == 0 && count7 != 0 && count8 == 0) {
 			// tháng năm hoặc là phạm vi tháng năm
 			resultsSetting.add("7");
-			if (count6 == 2) {
+			if (count7 == 2) {
 				resultsSetting.add("7");
 			}
 		} else if (count6 == 0 && count7 == 0 && count8 != 0) {
 			// ngày tháng năm hoặc phạm vi ngày tháng năm
 			resultsSetting.add("8");
-			if (count6 == 2) {
+			if (count8 == 2) {
 				resultsSetting.add("8");
 			}
 		}
 
 		// 保存期間区分と日付設定を判別
-		if (timeStore == 0 && !resultsSetting.get(0).equals("-9")
-				|| timeStore == 1 && !resultsSetting.get(0).equals("6")
-				|| timeStore == 2 && !resultsSetting.get(0).equals("7")
-				|| timeStore == 2 && !resultsSetting.get(0).equals("8")) {
+		if (timeStore == 0 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("-9")
+				|| timeStore == 1 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("6")
+				|| timeStore == 2 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("7")
+				|| timeStore == 2 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals("8")) {
 			resultsSetting.clear();
 			return resultsSetting;
 		}
@@ -850,42 +870,49 @@ public class RecoveryStorageService {
 
 	public Boolean checkSettingDate(List<String> resultsSetting, Optional<TableList> tableList, List<String> dataRow)
 			throws ParseException {
-//		if (!resultsSetting.isEmpty()) {
-//			Integer year_Form_Table = tableList.get().getSaveDateFrom().year();
-//			Integer month_From_Table = tableList.get().getSaveDateFrom().month();
-//			Integer year_To_Table = tableList.get().getSaveDateTo().year();
-//			Integer month_To_Table = tableList.get().getSaveDateTo().month();
-//			String H_Date_Csv = null;
-//			if (resultsSetting.size() == 1) {
-//				H_Date_Csv = dataRow.get(2);
-//			} else if (resultsSetting.size() == 2) {
-//				H_Date_Csv = dataRow.get(3);
-//			}
-//			Date Date_Csv = new SimpleDateFormat("yyyy-MM-dd").parse(H_Date_Csv);
-//			Integer Y_Date_Csv = Date_Csv.getYear();
-//			Integer M_Date_Csv = Date_Csv.getMonth();
-//			if (resultsSetting.get(0).equals("6")) {
-//				if (Y_Date_Csv < year_Form_Table || Y_Date_Csv > year_To_Table) {
-//					return false;
-//				}
-//			} else if (resultsSetting.get(0).equals("7")) {
-//				if (year_Form_Table > Y_Date_Csv || (year_Form_Table == Y_Date_Csv && M_Date_Csv < month_From_Table)
-//						|| year_To_Table < Y_Date_Csv
-//						|| (year_Form_Table == Y_Date_Csv && M_Date_Csv > month_To_Table)) {
-//					return false;
-//				}
-//
-//			} else if (resultsSetting.get(0).equals("8")) {
-//				if (Date_Csv.after(tableList.get().getSaveDateFrom().date())
-//						|| Date_Csv.before(tableList.get().getSaveDateFrom().date())) {
-//					return false;
-//				}
-//			}
-//			return true;
-//		} else {
-//			return false;
-//		}
-		return false;
+		if (!resultsSetting.isEmpty()) {
+
+			String H_Date_Csv = null;
+			if (resultsSetting.size() == 1) {
+				H_Date_Csv = dataRow.get(2);
+			} else if (resultsSetting.size() == 2) {
+				H_Date_Csv = dataRow.get(3);
+			}
+			Date Date_Csv = new SimpleDateFormat("yyyy-MM-dd").parse(H_Date_Csv);
+			Integer Y_Date_Csv = Date_Csv.getYear();
+			Integer M_Date_Csv = Date_Csv.getMonth();
+			if (resultsSetting.get(0).equals("6")) {
+				if (Y_Date_Csv < Integer.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3))
+						|| Y_Date_Csv > Integer
+								.parseInt(tableList.get().getSaveDateTo().orElse(null).substring(0, 3))) {
+					return false;
+				}
+			} else if (resultsSetting.get(0).equals("7")) {
+				if (Integer.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3)) > Y_Date_Csv
+						|| (Integer
+								.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3)) == Y_Date_Csv
+								&& M_Date_Csv < Integer
+										.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(4)))
+						|| Integer.parseInt(tableList.get().getSaveDateTo().orElse(null).substring(0, 3)) < Y_Date_Csv
+						|| (Integer.parseInt(tableList.get().getSaveDateTo().orElse(null).substring(0, 3)) == Y_Date_Csv
+								&& M_Date_Csv > Integer
+										.parseInt(tableList.get().getSaveDateTo().orElse(null).substring(4)))) {
+					return false;
+				}
+
+			} else if (resultsSetting.get(0).equals("8")) {
+				Date Date_From_Table = new SimpleDateFormat("yyyy-MM-dd")
+						.parse(tableList.get().getSaveDateFrom().orElse(null));
+				Date Date_To_Table = new SimpleDateFormat("yyyy-MM-dd")
+						.parse(tableList.get().getSaveDateTo().orElse(null));
+				if (Date_Csv.after(Date_From_Table) || Date_Csv.before(Date_To_Table)) {
+					return false;
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public int exDataTabeRangeDate(String fileNameCsv, List<List<String>> targetDataRecovery,

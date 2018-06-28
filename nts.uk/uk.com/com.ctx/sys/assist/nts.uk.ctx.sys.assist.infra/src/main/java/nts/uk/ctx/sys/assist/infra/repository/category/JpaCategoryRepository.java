@@ -49,7 +49,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.categoryId IN :lstCID ";
 	
-	private static final String SELECT_BY_ID = "SELECT f FROM SspmtCategory f WHERE f.categoryId IN ( SELECT t.tableListPk.categoryId FROM SspmtTableList t WHERE  t.dataStorageProcessingId =:storeProcessingId AND selectionTargetForRes =:selectionTargetForRes )";
+	private static final String SELECT_BY_ID = "SELECT f FROM SspmtCategory f WHERE f.categoryId IN ( SELECT t.tableListPk.categoryId FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:storeProcessingId AND t.selectionTargetForRes =:selectionTargetForRes )";
 	
 
 	@Override
@@ -205,7 +205,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	}
 
 	@Override
-	public List<Category> findById(String storeProcessingId, String selectionTargetForRes) {
+	public List<Category> findById(String storeProcessingId, int selectionTargetForRes) {
 		return this.queryProxy().query(SELECT_BY_ID, SspmtCategory.class)
 				.setParameter("storeProcessingId", storeProcessingId)
 				.setParameter("selectionTargetForRes", selectionTargetForRes)
