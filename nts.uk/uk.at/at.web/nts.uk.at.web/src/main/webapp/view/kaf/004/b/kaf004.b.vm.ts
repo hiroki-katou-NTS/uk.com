@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     const employmentRootAtr: number = 1; // EmploymentRootAtr: Application
     const applicationType: number = 9; // Application Type: Stamp Application
-    
+
     export class ScreenModel {
         dateType: string = 'YYYY/MM/DD';
         // date editor
@@ -43,7 +43,9 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         fixtime2: KnockoutObservable<string> = ko.observable("10:30 ~ 11:00     14:00 ~ 17:00");
         //DisplayOrder
         displayOrder: KnockoutObservable<number> = ko.observable(0);
-                
+
+        appCommonSetting: KnockoutObservable<AppComonSetting> = ko.observable(new AppComonSetting());
+
         constructor() {
             var self = this;
             //Show Screen
@@ -56,20 +58,18 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     employmentRootAtr,
                     applicationType,
                     moment.utc().format(self.dateType)).done(() => {
-                        nts.uk.ui.block.clear();    
+                        nts.uk.ui.block.clear();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
             });
-            self.date.subscribe(value => {
-                nts.uk.ui.block.invisible();
-                self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false,self.employeeID)
-                .done(()=>{
-                    nts.uk.ui.block.clear();         
-                }).fail(()=>{
-                    nts.uk.ui.block.clear();    
-                });
+            self.appCommonSetting().generalDate.subscribe(value => {
+                if (!$("#inputdate").ntsError("hasError")) {
+                    nts.uk.ui.block.invisible();
+                    self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false, self.employeeID).always(() => { nts.uk.ui.block.clear(); });
+                }
             });
+
         }
 
         startPage(): JQueryPromise<any> {
@@ -81,13 +81,13 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                 self.checkBoxValue(data.appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true : false);
                 self.ListTypeReason.removeAll();
                 _.forEach(data.listApplicationReasonDto, data => {
-                    let reasonTmp: TypeReason = {reasonID: data.reasonID, reasonTemp: data.reasonTemp};
-                    self.ListTypeReason.push(reasonTmp); 
-                    if(data.defaultFlg == 1){
+                    let reasonTmp: TypeReason = { reasonID: data.reasonID, reasonTemp: data.reasonTemp };
+                    self.ListTypeReason.push(reasonTmp);
+                    if (data.defaultFlg == 1) {
                         self.selectedCode(data.reasonID);
-                    }          
+                    }
                 });
-                
+                self.appCommonSetting(new AppComonSetting(data.appCommonSettingDto));
                 self.displayOrder(data.workManagementMultiple.useATR);
                 self.applicantName(data.applicantName);
                 self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
@@ -97,13 +97,13 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                 dfd.resolve(data);
             }).fail(function(res) {
                 if (res.messageId == 'Msg_426') {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function () {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
                         nts.uk.ui.block.clear();
                     });
-                }else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { 
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
                         nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
-                        nts.uk.ui.block.clear();  
+                        nts.uk.ui.block.clear();
                     });
                 }
                 dfd.reject(res);
@@ -117,44 +117,44 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             var self = this;
             let errorFlag = self.kaf000_a2.errorFlag;
             let errorMsg = self.kaf000_a2.errorMsg;
-            if(errorFlag!=0){
-                nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
+            if (errorFlag != 0) {
+                nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function() { nts.uk.ui.block.clear(); });
             } else {
                 if (!nts.uk.ui.errors.hasError()) {
-                   /**  0: 事前の受付制限
-                        1: 事後の受付制限
+                    /**  0: 事前の受付制限
+                         1: 事後の受付制限
                     */ 
                     let prePostAtr = 1;
-                    if (self.showScreen == 'B'){
+                    if (self.showScreen == 'B') {
                         //[画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻>=早退時刻 (#Msg_381#)
-                        if((self.late1() && self.early1() && self.lateTime1() >= self.earlyTime1())
-                            || (self.late2() && self.early2() && self.lateTime2() >= self.earlyTime2())){
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_381"});
+                        if ((self.late1() && self.early1() && self.lateTime1() >= self.earlyTime1())
+                            || (self.late2() && self.early2() && self.lateTime2() >= self.earlyTime2())) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_381" });
                             return;
                         }
                         //[画面Bのみ]遅刻、早退、遅刻2、早退2のチェックがある遅刻時刻、早退時刻は入力必須(#Msg_470#)
-                        if(self.late1() 
-                            && self.early1() 
-                            && self.late2() 
+                        if (self.late1()
+                            && self.early1()
+                            && self.late2()
                             && self.early2()
-                            && (self.lateTime1() == null || self.earlyTime1() == null)){
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_470"});
-                            return;                            
+                            && (self.lateTime1() == null || self.earlyTime1() == null)) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_470" });
+                            return;
                         }
-                            
+
                         prePostAtr = 0;
                     }
                     nts.uk.ui.block.invisible();
                     let txtReasonTmp = self.selectedCode();
-                    if(!nts.uk.text.isNullOrEmpty(self.selectedCode())){
-                        let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
+                    if (!nts.uk.text.isNullOrEmpty(self.selectedCode())) {
+                        let reasonText = _.find(self.ListTypeReason(), function(data) { return data.reasonID == self.selectedCode() });
                         txtReasonTmp = reasonText.reasonTemp;
                     }
-                    if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.appreason() : self.appreason(),"#appReason")){
+                    if (!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.appreason() : self.appreason(), "#appReason")) {
                         return;
                     }
                     let lateOrLeaveEarly: LateOrLeaveEarly = {
-                        prePostAtr: prePostAtr, 
+                        prePostAtr: prePostAtr,
                         applicationDate: self.date(),
                         sendMail: self.checkBoxValue(),
                         late1: self.late1() ? 1 : 0,
@@ -170,23 +170,46 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     };
                     service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            if(data.autoSendMail){
-                                appcommon.CommonProcess.displayMailResult(data);    
+                            if (data.autoSendMail) {
+                                appcommon.CommonProcess.displayMailResult(data);
                             } else {
-                                if(self.checkBoxValue()){
-                                    appcommon.CommonProcess.openDialogKDL030(data.appID);    
+                                if (self.checkBoxValue()) {
+                                    appcommon.CommonProcess.openDialogKDL030(data.appID);
                                 } else {
                                     location.reload();
-                                }   
+                                }
                             }
                         });
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});  
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
                     });
-    
+
                 }
             }
         }
+    }
+
+    class AppComonSetting {
+        appTypeDiscreteSetting = ko.observable(null);
+        generalDate = ko.observable(null);
+        constructor(data?) {
+            if (data) {
+                //this.generalDate(data.generalDate);
+                this.appTypeDiscreteSetting(new AppTypeDiscreteSetting(data.appTypeDiscreteSettingDtos[0]));
+            }
+
+        }
+    }
+    class AppTypeDiscreteSetting {
+        displayReasonFlg = ko.observable(0);
+        typicalReasonDisplayFlg = ko.observable(0);
+        constructor(data) {
+            if (data) {
+                this.displayReasonFlg(data.displayReasonFlg);
+                this.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
+            }
+        }
+
     }
 
     interface TypeReason {
