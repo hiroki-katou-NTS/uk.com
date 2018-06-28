@@ -64,7 +64,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             let dfd = $.Deferred();
             
             //Call approval list
-            self.getAppDataDate(appType, standardDate, true).done(function(data) {
+            self.getAppDataDate(appType, standardDate, true,sid).done(function(data) {
                 dfd.resolve(data); 
             }).fail((res)=>{
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
@@ -75,13 +75,14 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             return dfd.promise();
         }
         
-        getAppDataDate(appType: number, appDate: string, isStartup: boolean): JQueryPromise<any> {
+        getAppDataDate(appType: number, appDate: string, isStartup: boolean, employeeID: string): JQueryPromise<any> {
             var self = this;
             let dfd = $.Deferred<any>();
             nts.uk.at.view.kaf000.a.service.getAppDataDate({
                 appTypeValue: appType,
                 appDate: appDate,
-                isStartup: isStartup
+                isStartup: isStartup,
+                employeeID: employeeID
             }).done((data)=>{
                 $('#listApproverRootState').ntsError('clear');
                 if(!nts.uk.util.isNullOrEmpty(data.errorFlag)){

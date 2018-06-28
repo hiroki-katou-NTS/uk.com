@@ -60,7 +60,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     appReasonText: self.appReasonSelectedID(),
                     applicationReason: self.reason(),
                     prePostAtr: self.prePostSelectedCode(),
-                    enteredPersonSID: self.employeeID(),
+                    employeeID: self.employeeID(),
                     appVersion: self.version,
                 }
             }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;

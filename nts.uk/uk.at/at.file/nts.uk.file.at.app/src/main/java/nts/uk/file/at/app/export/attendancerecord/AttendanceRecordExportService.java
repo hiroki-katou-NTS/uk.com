@@ -36,6 +36,8 @@ import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -109,6 +111,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	@Inject
 	private AttendanceTypeRepository attendanceRepo;
 
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
+
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
 
@@ -126,8 +131,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		List<WorkTimeSetting> workTimeList = workTimeRepo.findByCompanyId(companyId);
 
-		List<String> wplIds = request.getEmployeeList().stream().map(item -> item.getWorkplaceId())
-				.collect(Collectors.toList());
+		List<String> wplIds = new ArrayList<>();
+		for (Employee e : request.getEmployeeList()) {
+			WkpHistImport hist = workplaceAdapter.findWkpBySid(e.getEmployeeId(),
+					GeneralDate.ymd(request.getEndDate().year(), request.getEndDate().month(),
+							request.getEndDate().yearMonth().lastDateInMonth()));
+			e.setWorkplaceId(hist.getWorkplaceId());
+			e.setWorkplaceCode(hist.getWorkplaceCode());
+			wplIds.add(hist.getWorkplaceId());
+		}
 
 		List<WorkplaceConfigInfo> wplConfigInfoList = wplConfigInfoRepo
 				.findByWkpIdsAtTime(AppContexts.user().companyId(), GeneralDate.localDate(LocalDate.now()), wplIds);
@@ -160,14 +172,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 
 		});
-
-		// wplConfigInfoList =
-		// wplConfigInfoList.sort(Comparator.comparing(WorkplaceConfigInfo::get));
-
-		// List<WorkplaceInfo> workplaceInfos =
-		// wplInfoRepo.findByWkpIds(AppContexts.user().companyId(), wplIds);
-
-		// workplaceInfos.sort(Comparator.comparing(WorkplaceInfo::get));
 
 		employeeListAfterSort.forEach(employee -> {
 
@@ -236,7 +240,36 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					YearMonth endYearMonth = closureDate.getLastDayOfMonth() ? request.getEndDate().yearMonth()
 							: request.getEndDate().yearMonth().previousMonth();
 					YearMonth yearMonth = startYearMonth;
+					List<Integer> singleId = new ArrayList<>();
+					List<Integer> monthlyId = new ArrayList<>();
 
+					singleId.addAll(singleIdUpper);
+					singleId.addAll(singleIdLower);
+					calculateUpperDaily.forEach(item -> {
+						if (item.getAddedItem() != null)
+							singleId.addAll(item.getAddedItem());
+						if (item.getSubtractedItem() != null)
+							singleId.addAll(item.getSubtractedItem());
+					});
+					calculateLowerDaily.forEach(item -> {
+						if (item.getAddedItem() != null)
+							singleId.addAll(item.getAddedItem());
+						if (item.getSubtractedItem() != null)
+							singleId.addAll(item.getSubtractedItem());
+					});
+
+					calculateUpperMonthly.forEach(item -> {
+						if (item.getAddedItem() != null)
+							monthlyId.addAll(item.getAddedItem());
+						if (item.getSubtractedItem() != null)
+							monthlyId.addAll(item.getSubtractedItem());
+					});
+					calculateLowerMonthly.forEach(item -> {
+						if (item.getAddedItem() != null)
+							monthlyId.addAll(item.getAddedItem());
+						if (item.getSubtractedItem() != null)
+							monthlyId.addAll(item.getSubtractedItem());
+					});
 					while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
 
 						GeneralDate startDateByClosure;
@@ -270,20 +303,31 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							// return result upper-daily-singleItems
 							AttendanceItemValueService.AttendanceItemValueResult valueSingleUpper = null;
 							GeneralDate closureDateTemp = startDateByClosure;
+
+							AttendanceItemValueResult itemValueResult = AttendanceItemValueResult.builder()
+									.employeeId(null).workingDate(null).attendanceItems(new ArrayList<ItemValue>())
+									.build();
+
+							if (!singleIdUpper.isEmpty() || !singleIdLower.isEmpty()) {
+								itemValueResult = attendanceService.getValueOf(employee.getEmployeeId(),
+										startDateByClosure, singleId);
+							}
 							if (!singleIdUpper.isEmpty()) {
 								valueSingleUpper = AttendanceItemValueResult.builder()
 										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
 										.attendanceItems(new ArrayList<ItemValue>()).build();
-								for (Integer item : singleIdUpper) {
-									valueSingleUpper.getAttendanceItems()
-											.add(attendanceService
-													.getValueOf(employee.getEmployeeId(), startDateByClosure, item)
-													.isPresent()
-															? attendanceService.getValueOf(employee.getEmployeeId(),
-																	startDateByClosure, item).get()
-															: new ItemValue());
+								for (Integer id : singleIdUpper) {
+									ItemValue value = new ItemValue();
+									for (ItemValue item : itemValueResult.getAttendanceItems()) {
+										if (item.getItemId() == id) {
+											value = item;
+											break;
+										}
 
+									}
+									valueSingleUpper.getAttendanceItems().add(value);
 								}
+
 							} else {
 								valueSingleUpper = AttendanceItemValueResult.builder()
 										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
@@ -308,24 +352,41 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								});
 							}
 							// return result upper-daily-calculateItems
-							calculateUpperDaily.forEach(item -> {
+							for (CalculateAttendanceRecord item : calculateUpperDaily) {
 								// get add item
 								AttendanceItemValueService.AttendanceItemValueResult addValueCalUpper = AttendanceItemValueResult
-										.builder().attendanceItems(new ArrayList<>()).build();
-								if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
-									addValueCalUpper = attendanceService.getValueOf(employee.getEmployeeId(),
-											closureDateTemp, item.getAddedItem());
+										.builder().employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
+									for (Integer id : item.getAddedItem()) {
+										ItemValue value = new ItemValue();
+										for (ItemValue e : itemValueResult.getAttendanceItems()) {
+											if (e.getItemId() == id) {
+												value = e;
+												break;
+											}
 
-								}
+										}
+										addValueCalUpper.getAttendanceItems().add(value);
+									}
 
 								// get sub item
 								AttendanceItemValueService.AttendanceItemValueResult subValueCalUpper = AttendanceItemValueResult
-										.builder().attendanceItems(new ArrayList<>()).build();
+										.builder().employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
+									for (Integer id : item.getSubtractedItem()) {
+										ItemValue value = new ItemValue();
+										for (ItemValue e : itemValueResult.getAttendanceItems()) {
+											if (e.getItemId() == id) {
+												value = e;
+												break;
+											}
 
-								if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
-									subValueCalUpper = attendanceService.getValueOf(employee.getEmployeeId(),
-											closureDateTemp, item.getSubtractedItem());
-								}
+										}
+										subValueCalUpper.getAttendanceItems().add(value);
+									}
+
 								// get result upper calculate
 								String result = "";
 								if (!addValueCalUpper.getAttendanceItems().isEmpty()
@@ -336,25 +397,29 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 										employee.getEmployeeName(), closureDateTemp, "", result));
 
-							});
+							}
 
 							// return result lower-daily-singleItems
-							AttendanceItemValueService.AttendanceItemValueResult valueSingleLower = null;
+							AttendanceItemValueService.AttendanceItemValueResult valueSingleLower = AttendanceItemValueResult
+									.builder().employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+									.attendanceItems(new ArrayList<ItemValue>()).build();
 							if (!singleIdLower.isEmpty()) {
-
+								//
 								valueSingleLower = AttendanceItemValueResult.builder()
 										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
 										.attendanceItems(new ArrayList<ItemValue>()).build();
-								for (Integer item : singleIdLower) {
-									valueSingleLower.getAttendanceItems()
-											.add(attendanceService
-													.getValueOf(employee.getEmployeeId(), startDateByClosure, item)
-													.isPresent()
-															? attendanceService.getValueOf(employee.getEmployeeId(),
-																	startDateByClosure, item).get()
-															: new ItemValue());
+								for (Integer id : singleIdLower) {
+									ItemValue value = new ItemValue();
+									for (ItemValue item : itemValueResult.getAttendanceItems()) {
+										if (item.getItemId() == id) {
+											value = item;
+											break;
+										}
 
+									}
+									valueSingleLower.getAttendanceItems().add(value);
 								}
+
 							} else {
 								valueSingleLower = AttendanceItemValueResult.builder()
 										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
@@ -377,22 +442,39 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 								});
 
-							calculateLowerDaily.forEach(item -> {
+							for (CalculateAttendanceRecord item : calculateLowerDaily) {
 								// get add item
 								AttendanceItemValueService.AttendanceItemValueResult addValueCalUpper = AttendanceItemValueResult
 										.builder().attendanceItems(new ArrayList<>()).build();
-								if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
-									addValueCalUpper = attendanceService.getValueOf(employee.getEmployeeId(),
-											closureDateTemp, item.getAddedItem());
-								}
+								if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
+									for (Integer id : item.getAddedItem()) {
+										ItemValue value = new ItemValue();
+										for (ItemValue e : itemValueResult.getAttendanceItems()) {
+											if (e.getItemId() == id) {
+												value = e;
+												break;
+											}
+
+										}
+										addValueCalUpper.getAttendanceItems().add(value);
+									}
 
 								// get sub item
 								AttendanceItemValueService.AttendanceItemValueResult subValueCalUpper = AttendanceItemValueResult
 										.builder().attendanceItems(new ArrayList<>()).build();
-								if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
-									subValueCalUpper = attendanceService.getValueOf(employee.getEmployeeId(),
-											closureDateTemp, item.getSubtractedItem());
-								}
+								if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
+									for (Integer id : item.getSubtractedItem()) {
+										ItemValue value = new ItemValue();
+										for (ItemValue e : itemValueResult.getAttendanceItems()) {
+											if (e.getItemId() == id) {
+												value = e;
+												break;
+											}
+
+										}
+										subValueCalUpper.getAttendanceItems().add(value);
+									}
+
 								// get result lower calculate
 								String result = "";
 								if (!addValueCalUpper.getAttendanceItems().isEmpty()
@@ -402,7 +484,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								}
 								lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 										employee.getEmployeeName(), closureDateTemp, "", result));
-							});
+							}
 
 							AttendanceRecordReportDailyData dailyData = new AttendanceRecordReportDailyData();
 							dailyData.setDate(String.valueOf(startDateByClosure.day()));
@@ -465,23 +547,49 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						// return result upper-monthly-Items
 						List<String> upperResult = new ArrayList<>();
 						List<String> lowerResult = new ArrayList<>();
+						AttendanceItemValueService.MonthlyAttendanceItemValueResult itemValueResult = MonthlyAttendanceItemValueResult
+								.builder().attendanceItems(new ArrayList<>()).build();
+
+						if (!calculateUpperMonthly.isEmpty() || !calculateLowerMonthly.isEmpty()) {
+							itemValueResult = attendanceService.getMonthlyValueOf(employee.getEmployeeId(),
+									closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1),
+									closure.getClosureId().value, closureDate.getClosureDay().v(),
+									closureDate.getLastDayOfMonth(), monthlyId);
+						}
+
 						for (CalculateAttendanceRecord item : calculateUpperMonthly) {
 							AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyUpperAddResult = MonthlyAttendanceItemValueResult
 									.builder().attendanceItems(new ArrayList<>()).build();
 							AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyUpperSubResult = MonthlyAttendanceItemValueResult
 									.builder().attendanceItems(new ArrayList<>()).build();
 							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
-								monthlyUpperAddResult = attendanceService.getMonthlyValueOf(employee.getEmployeeId(),
-										closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1),
-										closure.getClosureId().value, closureDate.getClosureDay().v(),
-										closureDate.getLastDayOfMonth(), item.getAddedItem());
+								for (Integer id : item.getAddedItem()) {
+									ItemValue value = new ItemValue();
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (id == e.getItemId()) {
+											value = e;
+											break;
+										}
+
+									}
+									monthlyUpperAddResult.getAttendanceItems().add(value);
+								}
 							}
+
 							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
-								monthlyUpperSubResult = attendanceService.getMonthlyValueOf(employee.getEmployeeId(),
-										closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1),
-										closure.getClosureId().value, closureDate.getClosureDay().v(),
-										closureDate.getLastDayOfMonth(), item.getSubtractedItem());
+								for (Integer id : item.getSubtractedItem()) {
+									ItemValue value = new ItemValue();
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (id == e.getItemId()) {
+											value = e;
+											break;
+										}
+
+									}
+									monthlyUpperSubResult.getAttendanceItems().add(value);
+								}
 							}
+
 							String result = "";
 							if (!monthlyUpperAddResult.getAttendanceItems().isEmpty()
 									|| !monthlyUpperSubResult.getAttendanceItems().isEmpty()) {
@@ -495,24 +603,38 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						for (CalculateAttendanceRecord item : calculateLowerMonthly) {
 							AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyLowerAddResult = MonthlyAttendanceItemValueResult
 									.builder().attendanceItems(new ArrayList<>()).build();
-							;
+
 							AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyLowerSubResult = MonthlyAttendanceItemValueResult
 									.builder().attendanceItems(new ArrayList<>()).build();
-							;
+
 							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
-								monthlyLowerAddResult = attendanceService.getMonthlyValueOf(employee.getEmployeeId(),
-										closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1),
-										closure.getClosureId().value, closureDate.getClosureDay().v(),
-										closureDate.getLastDayOfMonth(), item.getAddedItem());
+								for (Integer id : item.getAddedItem()) {
+									ItemValue value = new ItemValue();
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (id == e.getItemId()) {
+											value = e;
+											break;
+										}
+
+									}
+									monthlyLowerAddResult.getAttendanceItems().add(value);
+								}
 							}
 
 							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
-								monthlyLowerSubResult = attendanceService.getMonthlyValueOf(employee.getEmployeeId(),
-										closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1),
-										closure.getClosureId().value, closureDate.getClosureDay().v(),
-										closureDate.getLastDayOfMonth(), item.getSubtractedItem());
+								for (Integer id : item.getSubtractedItem()) {
+									ItemValue value = new ItemValue();
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (id == e.getItemId()) {
+											value = e;
+											break;
+										}
 
+									}
+									monthlyLowerSubResult.getAttendanceItems().add(value);
+								}
 							}
+
 							String result = new String("");
 							if (!monthlyLowerAddResult.getAttendanceItems().isEmpty()
 									|| !monthlyLowerSubResult.getAttendanceItems().isEmpty()) {
@@ -566,11 +688,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						 **/
 
 						List<String> employeeIds = new ArrayList<>();
-						GeneralDate referenceDate = GeneralDate.ymd(closure.getClosureMonth().getProcessingYm().year(),
-								closure.getClosureMonth().getProcessingYm().month(),
-								closureDate.getLastDayOfMonth()
-										? closure.getClosureMonth().getProcessingYm().lastDateInMonth()
-										: closureDate.getClosureDay().v());
+						GeneralDate referenceDate = GeneralDate.ymd(request.getEndDate().year(),
+								request.getEndDate().month(), request.getEndDate().yearMonth().lastDateInMonth());
 						employeeIds.add(employee.getEmployeeId());
 						// build param
 						EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
