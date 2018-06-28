@@ -270,35 +270,40 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             if(self.checked()){
                 window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
             }else{
-               nts.uk.ui.windows.sub.modal('/view/kdw/003/b/index.xhtml');
+               parent.nts.uk.ui.windows.sub.modal('at','/view/kdw/003/b/index.xhtml');
             }
         }
         
         openKDL033Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kdl/033/a/index.xhtml').onClosed(function(): any {
+//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/033/a/index.xhtml').onClosed(function(): any {
 //            });
 
         }
         
         openKDL029Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml').onClosed(function(): any {
+//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/029/a/index.xhtml').onClosed(function(): any {
 //            });
 
         }
         
         openKDL009Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kdl/009/a/index.xhtml').onClosed(function(): any {
+//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/009/a/index.xhtml').onClosed(function(): any {
 //            });
 
         }
         
         openKDL017Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kdl/017/a/index.xhtml').onClosed(function(): any {
+//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/017/a/index.xhtml').onClosed(function(): any {
 //            });
+
+        }
+        openKDL020Dialog() {
+            let self = this;
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/020/a/index.xhtml');
 
         }
     }
