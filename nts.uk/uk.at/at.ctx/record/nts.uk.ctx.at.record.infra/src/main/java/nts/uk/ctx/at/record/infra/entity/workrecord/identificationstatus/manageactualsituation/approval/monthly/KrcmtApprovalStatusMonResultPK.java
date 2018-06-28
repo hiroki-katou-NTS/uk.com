@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class KrcmtApprovalStatusMonthlyResultPK implements Serializable{/**
+public class KrcmtApprovalStatusMonResultPK implements Serializable{/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;

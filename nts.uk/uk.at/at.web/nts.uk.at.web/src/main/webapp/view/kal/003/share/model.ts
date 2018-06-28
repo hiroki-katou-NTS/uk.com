@@ -1063,7 +1063,7 @@ module nts.uk.at.view.kal003.share.model {
             if(itemIds.length === 0){
                 return;
             }
-            self.group1().lstErAlAtdItemCon()[0].getAttendanceItemByCodes(itemIds).done((lstItems) => {
+            self.group1().lstErAlAtdItemCon()[0].getAttendanceItemMonthlyByCodes(itemIds).done((lstItems) => {
                 self.convertToText(lstItems, countableAddAtdItems, countableSubAtdItems);
             });
 //            viewmodel.getListItemByAtrDailyAndMonthly(self.typeCheckItem() ,1).done((lstItem) => {
