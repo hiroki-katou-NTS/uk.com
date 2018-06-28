@@ -323,16 +323,19 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
                         if (data.autoSendMail) {
                             appcommon.CommonProcess.displayMailResultKAF000(data);
-                        } else {
+                        }
+                    });
+                    if(!nts.uk.util.isNullOrEmpty(data.reflectAppId)){//TH goi xu ly phan anh
+                        service.reflectAppSingle(data.reflectAppId).done(function(verNew){
+                            self.version = verNew;
                             self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
                                 nts.uk.ui.block.clear();        
                             });
-                        }
-                    });
-                    if(data.reflectAppId != ''){
-                        service.reflectAppSingle(data.reflectAppId).done(function(verNew){
-                            self.version = verNew;
-                    });
+                        });
+                    }else{
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                                nts.uk.ui.block.clear();        
+                            });
                     }
                     
                 } else {
