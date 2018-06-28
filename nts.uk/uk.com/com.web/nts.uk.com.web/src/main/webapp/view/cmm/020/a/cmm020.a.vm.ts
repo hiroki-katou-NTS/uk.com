@@ -77,6 +77,7 @@ module nts.uk.com.view.cmm020.a {
                                 self.activeUpdate(indexOfEraSelected > LAST_INDEX_ERA_NAME_SYTEM);
                                 self.activeDelete(indexOfEraSelected == self.dataSource().length - 1);
                             }
+                            self.isFocus(true);
                         };
                     }
                 });
@@ -98,6 +99,7 @@ module nts.uk.com.view.cmm020.a {
                 //                listEraName.push(new model.EraItem("code6", "D", "222", "2018/3/28", false));
 
                 self.loadEraNameList(null);
+//                $("#single-list").animate({scrollTop: $("#single-list").height()}, 800);
                 dfd.resolve();
 
                 return dfd.promise();
