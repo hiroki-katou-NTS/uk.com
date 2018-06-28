@@ -173,7 +173,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		});
 
-		if(!unknownEmployeeList.isEmpty()){
+		if (!unknownEmployeeList.isEmpty()) {
 			employeeListAfterSort.addAll(unknownEmployeeList);
 		}
 		employeeListAfterSort.forEach(employee -> {
@@ -362,15 +362,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 										.attendanceItems(new ArrayList<ItemValue>()).build();
 								if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
 									for (Integer id : item.getAddedItem()) {
-										ItemValue value = new ItemValue();
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												value = e;
+												addValueCalUpper.getAttendanceItems().add(e);
 												break;
 											}
 
 										}
-										addValueCalUpper.getAttendanceItems().add(value);
+
 									}
 
 								// get sub item
@@ -379,15 +378,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 										.attendanceItems(new ArrayList<ItemValue>()).build();
 								if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
 									for (Integer id : item.getSubtractedItem()) {
-										ItemValue value = new ItemValue();
+
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												value = e;
+												subValueCalUpper.getAttendanceItems().add(e);
 												break;
 											}
 
 										}
-										subValueCalUpper.getAttendanceItems().add(value);
+
 									}
 
 								// get result upper calculate
@@ -451,15 +450,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 										.builder().attendanceItems(new ArrayList<>()).build();
 								if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
 									for (Integer id : item.getAddedItem()) {
-										ItemValue value = new ItemValue();
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												value = e;
+												addValueCalUpper.getAttendanceItems().add(e);
 												break;
 											}
 
 										}
-										addValueCalUpper.getAttendanceItems().add(value);
 									}
 
 								// get sub item
@@ -467,15 +464,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 										.builder().attendanceItems(new ArrayList<>()).build();
 								if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
 									for (Integer id : item.getSubtractedItem()) {
-										ItemValue value = new ItemValue();
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												value = e;
+												subValueCalUpper.getAttendanceItems().add(e);
 												break;
 											}
 
 										}
-										subValueCalUpper.getAttendanceItems().add(value);
+										
 									}
 
 								// get result lower calculate
@@ -567,29 +563,27 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									.builder().attendanceItems(new ArrayList<>()).build();
 							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
 								for (Integer id : item.getAddedItem()) {
-									ItemValue value = new ItemValue();
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											value = e;
+											monthlyUpperAddResult.getAttendanceItems().add(e);
 											break;
 										}
 
 									}
-									monthlyUpperAddResult.getAttendanceItems().add(value);
+									
 								}
 							}
 
 							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
 								for (Integer id : item.getSubtractedItem()) {
-									ItemValue value = new ItemValue();
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											value = e;
+											monthlyUpperSubResult.getAttendanceItems().add(e);
 											break;
 										}
 
 									}
-									monthlyUpperSubResult.getAttendanceItems().add(value);
+									
 								}
 							}
 
@@ -612,29 +606,27 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
 								for (Integer id : item.getAddedItem()) {
-									ItemValue value = new ItemValue();
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											value = e;
+											monthlyLowerAddResult.getAttendanceItems().add(e);
 											break;
 										}
 
 									}
-									monthlyLowerAddResult.getAttendanceItems().add(value);
+									
 								}
 							}
 
 							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
 								for (Integer id : item.getSubtractedItem()) {
-									ItemValue value = new ItemValue();
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											value = e;
+											monthlyLowerSubResult.getAttendanceItems().add(e);
 											break;
 										}
 
 									}
-									monthlyLowerSubResult.getAttendanceItems().add(value);
+									
 								}
 							}
 
