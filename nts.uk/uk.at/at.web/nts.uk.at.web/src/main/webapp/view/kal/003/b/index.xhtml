@@ -663,7 +663,7 @@
                                                 value: listItemID,
                                                 optionsText: 'specialHdFrameName',
                                                 editable: false,
-                                                enable: true,
+                                                enable: checkVacation() !== 1 &amp;&amp; checkVacation() !== 3 &amp;&amp; checkVacation() !== 5,
                                                 columns: [
                                                     { prop: 'specialHdFrameName', length: 16 }
                                                 ]}">

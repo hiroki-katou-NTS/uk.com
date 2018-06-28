@@ -98,6 +98,12 @@ module nts.uk.at.view.kal003.a.tab {
             }
             let workRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId() - 1];
             if (workRecordExtractingCondition) {
+                if (workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon.length == 0) {
+                    workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon([shareutils.getDefaultCondition(0), shareutils.getDefaultCondition(1), shareutils.getDefaultCondition(2)]);
+                }
+                if (workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon.length == 0) {
+                    workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon([shareutils.getDefaultCondition(0), shareutils.getDefaultCondition(1), shareutils.getDefaultCondition(2)]);
+                }
                 self.showDialogKal003B(workRecordExtractingCondition, rowId());
             }
         }

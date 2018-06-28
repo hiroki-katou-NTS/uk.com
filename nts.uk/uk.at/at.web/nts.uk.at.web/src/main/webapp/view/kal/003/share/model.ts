@@ -690,6 +690,11 @@ module nts.uk.at.view.kal003.share.model {
                     this.setupScrible();
                 }
                 this.listItemID=ko.observableArray(data.listItemID? data.listItemID : null);    
+                this.checkVacation.subscribe((v) => {
+                    if (v == 1 || v == 3 || v == 5) {
+                        this.listItemID([0]);
+                    }
+                });
             }else{
                 this.errorAlarmCheckID=ko.observable("");
 //                this.operator=ko.observable(0);
