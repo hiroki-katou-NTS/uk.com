@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
 
 /**
@@ -31,5 +32,5 @@ public interface InterimRemainOffPeriodCreateData {
 	 * @param sid
 	 * @return
 	 */
-	public List<EmploymentHolidayMngSetting> lstEmpHolidayMngSetting(String cid, List<PeriodDateAndEmployment> lstEmployment);
+	public List<EmploymentHolidayMngSetting> lstEmpHolidayMngSetting(String cid, List<AffPeriodEmpCodeImport> lstEmployment);
 }

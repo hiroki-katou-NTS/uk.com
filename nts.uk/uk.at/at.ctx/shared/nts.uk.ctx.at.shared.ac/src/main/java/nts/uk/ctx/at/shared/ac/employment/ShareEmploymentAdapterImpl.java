@@ -12,12 +12,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShareEmploymentAdapterImpl.
@@ -54,5 +58,21 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 		}
 		return Optional.empty();
 	}
+
+	@Override
+	public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> sids, DatePeriod datePeriod) {
+		List<SharedSidPeriodDateEmploymentImport> lstEmpHist = employment.getEmpHistBySidAndPeriod(sids, datePeriod)
+				.stream()
+				.map(x -> {
+					List<AffPeriodEmpCodeImport> lstEmpCode = x.getAffPeriodEmpCodeExports().stream()
+							.map(y -> {
+								return new AffPeriodEmpCodeImport(y.getPeriod(), y.getEmploymentCode());
+							}).collect(Collectors.toList());
+					return new SharedSidPeriodDateEmploymentImport(x.getEmployeeId(), lstEmpCode);
+				}).collect(Collectors.toList());
+				
+		return lstEmpHist;
+	}
+	
 	
 }

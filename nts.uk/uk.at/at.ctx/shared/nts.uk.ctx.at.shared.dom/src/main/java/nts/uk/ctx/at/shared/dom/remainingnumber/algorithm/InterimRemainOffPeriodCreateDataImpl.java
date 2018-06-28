@@ -12,6 +12,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -34,6 +37,8 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 	private EmpSubstVacationRepository empSubsRepos;
 	@Inject
 	private CompensLeaveEmSetRepository empLeaveSetRepos;
+	@Inject
+	private ShareEmploymentAdapter employmentService;
 	@Override
 	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainDataMng(
 			InterimRemainCreateDataInputPara inputParam) {
@@ -42,21 +47,27 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 		Optional<ComSubstVacation> comSetting = subRepos.findById(inputParam.getCid());
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting, leaveComSetting);
-		//TODO アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する
+		//アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する
+		List<String> lstEmployee = new ArrayList<>();
+		lstEmployee.add(inputParam.getSid());
+		List<SharedSidPeriodDateEmploymentImport> emloymentHist = employmentService.getEmpHistBySidAndPeriod(lstEmployee, inputParam.getDateData());
+		List<AffPeriodEmpCodeImport> lstEmployment = new ArrayList<>();
+		//所属雇用履歴を設定する
+		if(!emloymentHist.isEmpty()) {
+			lstEmployment = emloymentHist.get(0).getAffPeriodEmpCodeExports();
+		}
 		
-		//TODO 所属雇用履歴を設定する
-		List<PeriodDateAndEmployment> lstEmployment = new ArrayList<>();
 		List<EmploymentHolidayMngSetting> lstEmplSetting = this.lstEmpHolidayMngSetting(inputParam.getCid(), lstEmployment);
 		for(int i = 0; inputParam.getDateData().start().compareTo(inputParam.getDateData().end()) + i <= 0; i++){			
 			GeneralDate loopDate = inputParam.getDateData().start().addDays(i);
-			List<PeriodDateAndEmployment> lstDateEmployment = lstEmployment.stream()
-					.filter(x -> x.getDateData().start().beforeOrEquals(loopDate) && x.getDateData().end().afterOrEquals(loopDate))
+			List<AffPeriodEmpCodeImport> lstDateEmployment = lstEmployment.stream()
+					.filter(x -> x.getPeriod().start().beforeOrEquals(loopDate) && x.getPeriod().end().afterOrEquals(loopDate))
 					.collect(Collectors.toList());
 			EmploymentHolidayMngSetting employmentHolidaySetting = new EmploymentHolidayMngSetting();
 			if(!lstDateEmployment.isEmpty()) {
-				PeriodDateAndEmployment dateEmployment = lstDateEmployment.get(0);
+				AffPeriodEmpCodeImport dateEmployment = lstDateEmployment.get(0);
 				List<EmploymentHolidayMngSetting> lstEmploymentSetting = lstEmplSetting.stream()
-						.filter(y -> y.getEmploymentCode().equals(dateEmployment.getEmployment()))
+						.filter(y -> y.getEmploymentCode().equals(dateEmployment.getEmploymentCode()))
 						.collect(Collectors.toList());
 				if(!lstEmploymentSetting.isEmpty()) {
 					employmentHolidaySetting = lstEmploymentSetting.get(0);
@@ -113,15 +124,15 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 	}
 
 	@Override
-	public List<EmploymentHolidayMngSetting> lstEmpHolidayMngSetting(String cid, List<PeriodDateAndEmployment> lstEmployment) {
+	public List<EmploymentHolidayMngSetting> lstEmpHolidayMngSetting(String cid, List<AffPeriodEmpCodeImport> lstEmployment) {
 		List<EmploymentHolidayMngSetting> lstEmplSetting = new ArrayList<>();
 		//雇用別休暇管理設定(List)を作成する
-		for (PeriodDateAndEmployment emplData : lstEmployment) {
+		for (AffPeriodEmpCodeImport emplData : lstEmployment) {
 			//ドメインモデル「雇用振休管理設定」を取得する
-			Optional<EmpSubstVacation> optEmpSubData = empSubsRepos.findById(cid, emplData.getEmployment());
+			Optional<EmpSubstVacation> optEmpSubData = empSubsRepos.findById(cid, emplData.getEmploymentCode());
 			//ドメインモデル「雇用代休管理設定」を取得する
-			CompensatoryLeaveEmSetting empSetting = empLeaveSetRepos.find(cid, emplData.getEmployment());
-			EmploymentHolidayMngSetting employmentSetting = new EmploymentHolidayMngSetting(emplData.getEmployment(), optEmpSubData, empSetting);
+			CompensatoryLeaveEmSetting empSetting = empLeaveSetRepos.find(cid, emplData.getEmploymentCode());
+			EmploymentHolidayMngSetting employmentSetting = new EmploymentHolidayMngSetting(emplData.getEmploymentCode(), optEmpSubData, empSetting);
 			lstEmplSetting.add(employmentSetting);
 		}
 		return lstEmplSetting;
