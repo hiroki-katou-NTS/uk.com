@@ -55,7 +55,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResu
 		Application_New application = applicationRepository.findByID(companyID, command.getAppID()).get();
 		application.setAppReason(new AppReason(appReason));
 		application.setVersion(version);
-		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(application,
+		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(application,command.getActualCancel(),
 				command.getEarly1(), command.getEarlyTime1(), command.getLate1(), command.getLateTime1(),
 				command.getEarly2(), command.getEarlyTime2(), command.getLate2(), command.getLateTime2());
 		domainLateOrLeaveEarly.setVersion(version);

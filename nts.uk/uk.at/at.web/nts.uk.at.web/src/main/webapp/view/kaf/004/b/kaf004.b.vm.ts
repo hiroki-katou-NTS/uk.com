@@ -123,7 +123,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                 if (!nts.uk.ui.errors.hasError()) {
                     /**  0: 事前の受付制限
                          1: 事後の受付制限
-                    */ 
+                    */
                     let prePostAtr = 1;
                     if (self.showScreen == 'B') {
                         //[画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻>=早退時刻 (#Msg_381#)
@@ -166,7 +166,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         early2: self.early2() ? 1 : 0,
                         earlyTime2: self.earlyTime2(),
                         reasonTemp: txtReasonTmp,
-                        appReason: self.appreason()
+                        appReason: self.appreason(),
+                        actualCancel: self.showScreen == 'C' ? 1 : 0
                     };
                     service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -233,5 +234,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         appReason: string;
         prePostAtr: number;
         appApprovalPhaseCmds: Array<any>;
+        actualCancel: number
     }
 }

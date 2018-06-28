@@ -19,7 +19,7 @@ public class UpdateLateOrLeaveEarlyCommand {
 	private int prePostAtr;
 
 	/** 実績取消区分 */
-	private int actualCancelAtr;
+	private int actualCancel;
 
 	/** 早退1 */
 	private int early1;

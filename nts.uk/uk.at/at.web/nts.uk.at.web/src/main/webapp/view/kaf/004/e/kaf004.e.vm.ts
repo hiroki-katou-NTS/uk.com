@@ -151,13 +151,14 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     earlyTime2: self.earlyTime2(),
                     reasonTemp: txtReasonTmp,
                     appReason: self.appreason(),
-                    appApprovalPhaseCmds: self.approvalList
+                    appApprovalPhaseCmds: self.approvalList,
+                    actualCancel: self.actualCancelType() == '取消する' ? 1 : 0
                 };
                 nts.uk.ui.block.invisible();
                 service.updateLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        if(data.autoSendMail){
-                            appcommon.CommonProcess.displayMailResult(data);  
+                        if (data.autoSendMail) {
+                            appcommon.CommonProcess.displayMailResult(data);
                         } else {
                             location.reload();
                         }
@@ -182,7 +183,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         reasonID: string;
         reasonTemp: string;
     }
-    
+
     class AppComonSetting {
         appTypeDiscreteSetting = ko.observable(null);
         generalDate = ko.observable(null);
@@ -223,5 +224,6 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         reasonTemp: string;
         appReason: string;
         appApprovalPhaseCmds: Array<any>;
+        actualCancel:number;
     }
 }
