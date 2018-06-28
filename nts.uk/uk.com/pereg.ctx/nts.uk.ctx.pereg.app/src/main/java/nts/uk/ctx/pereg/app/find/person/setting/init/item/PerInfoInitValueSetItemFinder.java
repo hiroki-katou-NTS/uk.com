@@ -148,8 +148,16 @@ public class PerInfoInitValueSetItemFinder {
 				boolean isOld = itemOld.contains(item.getItemCode());
 				String selectionId = item.getSelectionItemId();
 				this.setCompareItemCode(item, itemFilter, itemParents, dto, selectionId, isOld, isEven, ctgCode);
-				if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld || item.getItemName().equals("開始日")) {
-					dto.setDisableCombox(true);
+				if (ctgCode.equals("CS00070")) {
+					if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld
+							|| item.getItemName().equals("開始日")) {
+						dto.setDisableCombox(true);
+					}
+				} else {
+
+					if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld) {
+						dto.setDisableCombox(true);
+					}
 				}
 				return getInitItemDto(dto, personEmployeeType, ctgCode);
 			}).collect(Collectors.toList());
