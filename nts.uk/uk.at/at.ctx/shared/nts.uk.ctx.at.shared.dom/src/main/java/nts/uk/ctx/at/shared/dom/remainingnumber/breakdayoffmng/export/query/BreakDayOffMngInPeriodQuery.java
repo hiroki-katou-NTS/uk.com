@@ -80,7 +80,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param remainData
 	 * @return
 	 */
-	BreakDayOffDetail getNotTypeBreak(InterimDayOffMng detailData, InterimRemain remainData);
+	BreakDayOffDetail getNotTypeBreak(InterimDayOffMng detailData, InterimRemain interimData);
 	/**
 	 * 4.未使用の休出(暫定)を取得する
 	 * @param inputParam

@@ -14,5 +14,9 @@ public class AddAppWorkChangeCommand {
 	 * 申請
 	 */
 	CreateApplicationCommand application;
+	
+	
+	
+	String employeeID;
 
 }

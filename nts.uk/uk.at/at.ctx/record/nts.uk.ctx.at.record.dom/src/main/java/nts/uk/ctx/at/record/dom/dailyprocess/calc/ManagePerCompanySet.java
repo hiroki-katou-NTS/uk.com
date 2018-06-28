@@ -1,14 +1,19 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
@@ -51,6 +56,19 @@ public class ManagePerCompanySet {
 	
 	@Setter
 	MasterShareContainer shareContainer;
+	
+	//任意項目
+	@Setter
+	List<OptionalItem> optionalItems;
+	
+	// 任意項目計算式
+	@Setter
+	List<Formula> formulaList;
+	
+	//適用する雇用条件
+	@Setter
+	List<EmpCondition> empCondition;
+	
 
 	public ManagePerCompanySet(Map<String, AggregateRoot> holidayAddition,
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
@@ -65,5 +83,8 @@ public class ManagePerCompanySet {
 		this.compensatoryLeaveComSet = compensatoryLeaveComSet;
 		this.divergenceTime = divergenceTime;
 		this.errorAlarm = errorAlarm;
+		this.optionalItems = new ArrayList<>();
+		this.formulaList = new ArrayList<>();
+		this.empCondition = new ArrayList<>();
 	}
 }
