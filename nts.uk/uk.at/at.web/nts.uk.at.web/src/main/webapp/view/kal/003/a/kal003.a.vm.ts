@@ -356,9 +356,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
         private selectCondition(data) {
             let self = this;
             if (data) {
-                
-//                _.defer(function () { });
-                setTimeout(function() {_.defer(function () { nts.uk.ui.errors.clearAll(); });  }, 500);
                 block.invisible();
                 service.getOneData(self.selectedCategory(), data).done(function(result: any) {
                     if (result) {
@@ -437,7 +434,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
                             }
                         }
-
+                            
                         self.screenMode(model.SCREEN_MODE.UPDATE);
 //                        $("#A3_4").focus();
                         setTimeout(function() { $("#A3_4").focus(); }, 500);
@@ -445,6 +442,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 }).fail(function(error) {
                     alertError(error);
                 }).always(() => {
+                    nts.uk.ui.errors.clearAll();
                     block.clear();
                 });
             }else{
