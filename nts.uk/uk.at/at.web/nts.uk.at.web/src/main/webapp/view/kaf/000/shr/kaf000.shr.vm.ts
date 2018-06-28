@@ -325,10 +325,8 @@ module nts.uk.at.view.kaf000.shr{
                     });        
                 } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] });
-                    });    
                 } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] });
-                    });    
                 }
             }
             
