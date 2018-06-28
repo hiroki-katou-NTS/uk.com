@@ -60,8 +60,8 @@ public class LateDecisionClock {
 				decisionClock = calｃRange.get().getStart();
 			} else {
 				// 猶予時間帯の作成                                                                                                   ↓明日はこれを修正する所から
-				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSheet.get().getStart(),
-																	 predetermineTimeSheet.get().getStart().forwardByMinutes(lateGraceTime.getGraceTime().valueAsMinutes()));
+				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(calｃRange.get().getStart(),
+																	 calｃRange.get().getStart().forwardByMinutes(lateGraceTime.getGraceTime().valueAsMinutes()));
 				// 重複している控除分をずらす
 				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());
 				for(TimeZoneRounding breakTime:breakTimeSheetList) {
