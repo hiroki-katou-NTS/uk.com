@@ -234,8 +234,8 @@ public class ApplicationWebservice extends WebService {
 	
 	@POST
 	@Path("reflect-app")
-	public Integer reflectApp(String command){
-		return relect.handle(command);
+	public void reflectApp(List<String> command){
+		relect.handle(command);
 	}
 
 }

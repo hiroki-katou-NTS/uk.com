@@ -101,7 +101,7 @@ module nts.uk.at.view.kaf000.b.service {
         return nts.uk.request.ajax("at", paths.getAppByListID, listAppID);
     }
     
-    export function reflectAppSingle(appID: string): JQueryPromise<any> {
+    export function reflectAppSingle(appID: Array<string>): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.reflectAppSingle, appID);
     }
 }
