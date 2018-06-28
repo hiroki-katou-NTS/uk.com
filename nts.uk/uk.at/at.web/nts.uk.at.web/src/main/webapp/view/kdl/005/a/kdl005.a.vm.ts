@@ -45,10 +45,10 @@ module nts.uk.at.view.kdl005.a {
                 
                 if(self.kdl005Data.employeeBasicInfo.length > 1) {
                     self.selectedCode.subscribe(function(value) {
-                        let itemName = _.find(self.kdl005Data.employeeBasicInfo, ['employeeCode', value]);
-                        self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemName.businessName]));
+                        let itemData = _.find(self.kdl005Data.employeeBasicInfo, ['employeeCode', value]);
+                        self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemData.businessName]));
                         
-                        service.getDetailsConfirm(value, self.kdl005Data.baseDate).done(function(data) {
+                        service.getDetailsConfirm(itemData.employeeId, self.kdl005Data.baseDate).done(function(data) {
                             self.bindTimeData(data);
                             self.bindSummaryData(data);
                         }).fail(function(res) {
@@ -90,12 +90,16 @@ module nts.uk.at.view.kdl005.a {
                 } else if(self.kdl005Data.employeeBasicInfo.length == 1) {
                     self.employeeInfo(nts.uk.resource.getText("KDL009_25", [self.kdl005Data.employeeBasicInfo[0].employeeCode, self.kdl005Data.employeeBasicInfo[0].businessName]));
                     
-                    service.getDetailsConfirm(self.kdl005Data.employeeBasicInfo[0].employeeCode, self.kdl005Data.baseDate).done(function(data) {
+                    service.getDetailsConfirm(self.kdl005Data.employeeBasicInfo[0].employeeId, self.kdl005Data.baseDate).done(function(data) {
                         self.bindTimeData(data);
                         self.bindSummaryData(data);
                     }).fail(function(res) {
                           
                     });
+                    
+                    $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
+                } else {
+                    self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                     
                     $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
                 }
@@ -112,21 +116,20 @@ module nts.uk.at.view.kdl005.a {
             
             bindTimeData(data: any) {
                 var self = this;
-                var lstHistory = data.breakDayOffOutputHisData != null ? data.breakDayOffOutputHisData.lstHistory : null;
                 var leaveDate = "";
                 var dayOffDate = "";
                 var duedateHoliday = "";
                 var occurrenceDays1 = "";
                 var occurrenceDays2 = "";
                 var isHalfDay = false;
+                self.dataItems.removeAll();
                 
-                if(lstHistory != null && lstHistory.length >= 1) {
-                    _.each(lstHistory, function (item) {
+                if(data.lstHistory != null && data.lstHistory.length >= 1) {
+                    _.each(data.lstHistory, function (item) {
                         if(item.breakHis != null) {
                             if(!item.breakHis.chkDisappeared) {
                                 if(item.breakHis.mngAtr == 0 || item.breakHis.mngAtr == 4) {
-                                    var time = nts.uk.resource.getText("KDL005_19", [item.breakHis.breakDate.dayoffDate]);
-                                    leaveDate = nts.uk.time.applyFormat("Short_YMDW", time);
+                                    leaveDate = nts.uk.resource.getText("KDL005_19", [item.breakHis.breakDate.dayoffDate]);
                                 } else {
                                     leaveDate = nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.breakDate.dayoffDate]);
                                 }
@@ -150,8 +153,7 @@ module nts.uk.at.view.kdl005.a {
                         
                         if(item.dayOffHis != null) {
                             if(item.dayOffHis.createAtr == 0 || item.dayOffHis.createAtr == 4) {
-                                var time = nts.uk.resource.getText("KDL005_19", [item.dayOffHis.dayOffDate.dayoffDate]);
-                                dayOffDate = nts.uk.time.applyFormat("Short_YMDW", time);
+                                dayOffDate = nts.uk.resource.getText("KDL005_19", [item.dayOffHis.dayOffDate.dayoffDate]);
                             } else {
                                 dayOffDate = nts.uk.time.applyFormat("Short_YMDW", [item.dayOffHis.dayOffDate.dayoffDate]);
                             }
@@ -174,14 +176,14 @@ module nts.uk.at.view.kdl005.a {
             bindSummaryData(data: any) {
                 var self = this;
                 
-                if(data.absRecGenerationDigestionHis != null) {
-                    self.value01(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.carryForwardDays]));
-                    self.value02(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.recordOccurrenceDays]));
-                    self.hint02(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.scheOccurrenceDays]));
-                    self.value03(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.recordUseDays]));
-                    self.hint03(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.scheUseDays]));
-                    self.value04(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.recordOccurrenceDays - data.absRecGenerationDigestionHis.absRemainInfor.recordUseDays]));
-                    self.hint04(nts.uk.resource.getText("KDL005_27", [data.absRecGenerationDigestionHis.absRemainInfor.scheOccurrenceDays - data.absRecGenerationDigestionHis.absRemainInfor.scheUseDays]));
+                if(data.totalInfor != null) {
+                    self.value01(nts.uk.resource.getText("KDL005_27", [data.totalInfor.carryForwardDays]));
+                    self.value02(nts.uk.resource.getText("KDL005_27", [data.totalInfor.recordOccurrenceDays]));
+                    self.hint02(nts.uk.resource.getText("KDL005_27", [data.totalInfor.scheOccurrenceDays]));
+                    self.value03(nts.uk.resource.getText("KDL005_27", [data.totalInfor.recordUseDays]));
+                    self.hint03(nts.uk.resource.getText("KDL005_27", [data.totalInfor.scheUseDays]));
+                    self.value04(nts.uk.resource.getText("KDL005_27", [data.totalInfor.recordOccurrenceDays - data.totalInfor.recordUseDays]));
+                    self.hint04(nts.uk.resource.getText("KDL005_27", [data.totalInfor.scheOccurrenceDays - data.totalInfor.scheUseDays]));
                 } else {
                     self.value01(nts.uk.resource.getText("KDL005_27", ["0"]));
                     self.value02(nts.uk.resource.getText("KDL005_27", ["0"]));

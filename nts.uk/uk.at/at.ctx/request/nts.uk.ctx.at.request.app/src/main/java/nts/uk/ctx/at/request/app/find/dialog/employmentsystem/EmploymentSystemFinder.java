@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecAbsHistoryOutputPara;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffOutputHisData;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -85,7 +86,38 @@ public class EmploymentSystemFinder {
 		// アルゴリズム「休出代休発生消化履歴の取得」を実行する
 		BreakDayOffOutputHisData data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
 		
-		DetailConfirmDto result = new DetailConfirmDto(closingPeriod, data);
+		List<BreakDayOffHistoryDto> lstHistory = new ArrayList<>();
+		
+		if(data != null && data.getLstHistory().size() > 0) {
+			for (BreakDayOffHistory item : data.getLstHistory()) {
+				ComDayoffDateDto hisDate = new ComDayoffDateDto(item.getHisDate().isUnknownDate(), item.getHisDate().getDayoffDate().get());
+				
+				ComDayoffDateDto breakDate = new ComDayoffDateDto(item.getBreakHis() != null ? item.getBreakHis().get().getBreakDate().isUnknownDate() : true, 
+						item.getBreakHis() != null ? item.getBreakHis().get().getBreakDate().getDayoffDate().get() : null);
+				
+				BreakHistoryDataDto breakHis = new BreakHistoryDataDto(item.getBreakHis() != null ? item.getBreakHis().get().getBreakMngId() : null, breakDate,
+						item.getBreakHis() != null ? item.getBreakHis().get().getExpirationDate() : null,
+						item.getBreakHis() != null ? item.getBreakHis().get().isChkDisappeared() : true,
+						item.getBreakHis() != null ? item.getBreakHis().get().getMngAtr().value : 0,
+						item.getBreakHis() != null ? item.getBreakHis().get().getOccurrenceDays() : 0.0,
+						item.getBreakHis() != null ? item.getBreakHis().get().getUnUseDays() : 0.0);
+				
+				ComDayoffDateDto dayOffDate = new ComDayoffDateDto(item.getDayOffHis() != null ? item.getDayOffHis().get().getDayOffDate().isUnknownDate() : true, 
+						item.getDayOffHis() != null ? item.getDayOffHis().get().getDayOffDate().getDayoffDate().get() : null);
+				
+				DayOffHistoryDataDto dayOffHis = new DayOffHistoryDataDto(item.getDayOffHis() != null ? item.getDayOffHis().get().getCreateAtr().value : 0,
+						item.getDayOffHis() != null ? item.getDayOffHis().get().getDayOffId() : null, dayOffDate,
+						item.getDayOffHis() != null ? item.getDayOffHis().get().getRequeiredDays() : 0.0,
+						item.getDayOffHis() != null ? item.getDayOffHis().get().getUnOffsetDays() : 0.0);
+				
+				Double useDays  = item.getUseDays() != null ? item.getUseDays() : 0.0;
+				
+				BreakDayOffHistoryDto outputDto = new BreakDayOffHistoryDto(hisDate, breakHis, dayOffHis, useDays);
+				lstHistory.add(outputDto);
+			}
+		}
+		
+		DetailConfirmDto result = new DetailConfirmDto(closingPeriod, lstHistory, data != null ? data.getTotalInfor() : null);
 		
 		return result;
 	}
@@ -138,7 +170,7 @@ public class EmploymentSystemFinder {
 
 		List<RecAbsHistoryOutputDto> recAbsHistoryOutput = new ArrayList<>();
 		
-		if(data.getGreneraGigesHis().size() > 0) {
+		if(data != null && data.getGreneraGigesHis().size() > 0) {
 			for (RecAbsHistoryOutputPara item : data.getGreneraGigesHis()) {
 				CompensatoryDayoffDateDto ymdData = new CompensatoryDayoffDateDto(item.getYmdData().isUnknownDate(), item.getYmdData().getDayoffDate().get());
 				
@@ -149,8 +181,8 @@ public class EmploymentSystemFinder {
 				
 				AbsenceHistoryOutputParaDto absHisData = new AbsenceHistoryOutputParaDto(item.getAbsHisData() != null ? item.getAbsHisData().get().getCreateAtr().value : 0, 
 						item.getAbsHisData() != null ? item.getAbsHisData().get().getAbsId() : null,
-						absDate, item.getAbsHisData() != null ? item.getAbsHisData().get().getRequeiredDays() : null, 
-						item.getAbsHisData() != null ? item.getAbsHisData().get().getUnOffsetDays() : null);
+						absDate, item.getAbsHisData() != null ? item.getAbsHisData().get().getRequeiredDays() : 0.0, 
+						item.getAbsHisData() != null ? item.getAbsHisData().get().getUnOffsetDays() : 0.0);
 				
 				CompensatoryDayoffDateDto recDate = new CompensatoryDayoffDateDto(item.getRecHisData() != null ? item.getRecHisData().get().getRecDate().isUnknownDate() : true, 
 						item.getRecHisData() != null ? item.getRecHisData().get().getRecDate().getDayoffDate().get() : null);
@@ -161,14 +193,14 @@ public class EmploymentSystemFinder {
 						item.getRecHisData() != null ? item.getRecHisData().get().getRecId() : null, recDate, 
 						item.getRecHisData() != null ? item.getRecHisData().get().getOccurrenceDays() : 0.0,
 						item.getRecHisData() != null ? item.getRecHisData().get().getHolidayAtr() : 0, 
-						item.getRecHisData() != null ? item.getRecHisData().get().getUnUseDays() : null);
+						item.getRecHisData() != null ? item.getRecHisData().get().getUnUseDays() : 0.0);
 				
 				RecAbsHistoryOutputDto outputDto = new RecAbsHistoryOutputDto(ymdData, useDays, absHisData, recHisData);
 				recAbsHistoryOutput.add(outputDto);
 			}
 		}
 
-		NumberRestDaysDto result = new NumberRestDaysDto(closingPeriod, recAbsHistoryOutput, data.getAbsRemainInfor() != null ? data.getAbsRemainInfor() : null);
+		NumberRestDaysDto result = new NumberRestDaysDto(closingPeriod, recAbsHistoryOutput, data != null ? data.getAbsRemainInfor() : null);
 		
 		return result;
 	}
