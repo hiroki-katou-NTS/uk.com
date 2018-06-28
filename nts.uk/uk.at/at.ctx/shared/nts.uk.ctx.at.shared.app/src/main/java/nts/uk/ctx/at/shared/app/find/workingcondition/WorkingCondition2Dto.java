@@ -12,27 +12,402 @@ import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Setter
-public class WorkingCondition2Dto extends WorkingConditionDto {	
+public class WorkingCondition2Dto extends PeregDomainDto {	
 	
 	/**
 	 * 期間 - 
 	 */
 	@PeregItem("IS00780")
-	private String period2;
+	private String period;
 
 	/**
 	 * 開始日
 	 */
 	@PeregItem("IS00781")
-	private GeneralDate startDate2;
+	private GeneralDate startDate;
 
 	/**
 	 * 終了日
 	 */
 	@PeregItem("IS00782")
-	private GeneralDate endDate2;
+	private GeneralDate endDate;
+	
+
+	/**
+	 * 日曜勤務設定
+	 */
+	// @PeregItem("IS00183")
+
+	/**
+	 * 日勤種CD 曜日別勤務.日曜日.勤務種類コード
+	 */
+	@PeregItem("IS00184")
+	private String sundayWorkTypeCode;
+
+	/**
+	 * 日就時CD 曜日別勤務.日曜日.就業時間帯コード
+	 */
+	@PeregItem("IS00185")
+	private String sundayWorkTimeCode;
+
+	/**
+	 * 日曜出勤時勤務時間1
+	 */
+	@PeregItem("IS00186")
+	private String sunday1;
+
+	/**
+	 * 日開始1 曜日別勤務.日曜日.勤務時間帯.開始 ※回数=1
+	 */
+	@PeregItem("IS00187")
+	private Integer sundayStartTime1;
+
+	/**
+	 * 日終了1 曜日別勤務.日曜日.勤務時間帯.終了 ※回数=1
+	 */
+	@PeregItem("IS00188")
+	private Integer sundayEndTime1;
+
+	/**
+	 * 日曜出勤時勤務時間2
+	 */
+	@PeregItem("IS00189")
+	private String sunday2;
+
+	/**
+	 * 日開始2 曜日別勤務.日曜日.勤務時間帯.開始 ※回数=2
+	 */
+	@PeregItem("IS00190")
+	private Integer sundayStartTime2;
+
+	/**
+	 * 日終了2 曜日別勤務.日曜日.勤務時間帯.終了 ※回数=2
+	 */
+	@PeregItem("IS00191")
+	private Integer sundayEndTime2;
+
+	/**
+	 * 月曜勤務設定
+	 */
+	// @PeregItem("IS00192")
+
+	/**
+	 * 月勤種CD 曜日別勤務.月曜日.勤務種類コード
+	 */
+	@PeregItem("IS00193")
+	private String mondayWorkTypeCode;
+
+	/**
+	 * 月就時CD 曜日別勤務.月曜日.就業時間帯コード
+	 */
+	@PeregItem("IS00194")
+	private String mondayWorkTimeCode;
+
+	/**
+	 * 月曜出勤時勤務時間1
+	 */
+	@PeregItem("IS00195")
+	private String monday1;
+
+	/**
+	 * 月開始1 曜日別勤務.月曜日.勤務時間帯.開始 ※回数=1
+	 */
+	@PeregItem("IS00196")
+	private Integer mondayStartTime1;
+
+	/**
+	 * 月終了1 曜日別勤務.月曜日.勤務時間帯.終了 ※回数=1
+	 */
+	@PeregItem("IS00197")
+	private Integer mondayEndTime1;
+
+	/**
+	 * 月曜出勤時勤務時間2
+	 */
+	@PeregItem("IS00198")
+	private String monday2;
+
+	/**
+	 * 月開始2 曜日別勤務.月曜日.勤務時間帯.開始 ※回数=2
+	 */
+	@PeregItem("IS00199")
+	private Integer mondayStartTime2;
+
+	/**
+	 * 月終了2 曜日別勤務.月曜日.勤務時間帯.終了 ※回数=2
+	 */
+	@PeregItem("IS00200")
+	private Integer mondayEndTime2;
+
+	/**
+	 * 火曜勤務設定
+	 */
+	// @PeregItem("IS00201")
+
+	/**
+	 * 火勤種CD 曜日別勤務.火曜日.勤務種類コード
+	 */
+	@PeregItem("IS00202")
+	private String tuesdayWorkTypeCode;
+
+	/**
+	 * 火就時CD 曜日別勤務.火曜日.就業時間帯コード
+	 */
+	@PeregItem("IS00203")
+	private String tuesdayWorkTimeCode;
+
+	/**
+	 * 火曜出勤時勤務時間1
+	 */
+	@PeregItem("IS00204")
+	private String tuesday1;
+
+	/**
+	 * 火開始1 曜日別勤務.火曜日.勤務時間帯.開始 ※回数=1
+	 */
+	@PeregItem("IS00205")
+	private Integer tuesdayStartTime1;
+
+	/**
+	 * 火終了1 曜日別勤務.火曜日.勤務時間帯.終了 ※回数=1
+	 */
+	@PeregItem("IS00206")
+	private Integer tuesdayEndTime1;
+
+	/**
+	 * 火曜出勤時勤務時間2
+	 */
+	@PeregItem("IS00207")
+	private String tuesday2;
+
+	/**
+	 * 火開始2 曜日別勤務.火曜日.勤務時間帯.開始 ※回数=2
+	 */
+	@PeregItem("IS00208")
+	private Integer tuesdayStartTime2;
+
+	/**
+	 * 火終了2 曜日別勤務.火曜日.勤務時間帯.終了 ※回数=2
+	 */
+	@PeregItem("IS00209")
+	private Integer tuesdayEndTime2;
+
+	/**
+	 * 水曜勤務設定
+	 */
+	// @PeregItem("IS00210")
+
+	/**
+	 * 水勤種CD 曜日別勤務.水曜日.勤務種類コード
+	 */
+	@PeregItem("IS00211")
+	private String wednesdayWorkTypeCode;
+
+	/**
+	 * 水就時CD 曜日別勤務.水曜日.就業時間帯コード
+	 */
+	@PeregItem("IS00212")
+	private String wednesdayWorkTimeCode;
+
+	/**
+	 * 水曜出勤時勤務時間1
+	 */
+	@PeregItem("IS00213")
+	private String wednesday1;
+
+	/**
+	 * 水開始1 曜日別勤務.水曜日.勤務時間帯.開始 ※回数=1
+	 */
+	@PeregItem("IS00214")
+	private Integer wednesdayStartTime1;
+
+	/**
+	 * 水終了1 曜日別勤務.水曜日.勤務時間帯.終了 ※回数=1
+	 */
+	@PeregItem("IS00215")
+	private Integer wednesdayEndTime1;
+
+	/**
+	 * 水曜出勤時勤務時間2
+	 */
+	@PeregItem("IS00216")
+	private String wednesday2;
+
+	/**
+	 * 水開始2 曜日別勤務.水曜日.勤務時間帯.開始 ※回数=2
+	 */
+	@PeregItem("IS00217")
+	private Integer wednesdayStartTime2;
+
+	/**
+	 * 水終了2 曜日別勤務.水曜日.勤務時間帯.終了 ※回数=2
+	 */
+	@PeregItem("IS00218")
+	private Integer wednesdayEndTime2;
+
+	/**
+	 * 木曜勤務設定
+	 */
+	// @PeregItem("IS00219")
+
+	/**
+	 * 木勤種CD 曜日別勤務.木曜日.勤務種類コード
+	 */
+	@PeregItem("IS00220")
+	private String thursdayWorkTypeCode;
+
+	/**
+	 * 木就時CD 曜日別勤務.木曜日.就業時間帯コード
+	 */
+	@PeregItem("IS00221")
+	private String thursdayWorkTimeCode;
+
+	/**
+	 * 木曜出勤時勤務時間1
+	 */
+	@PeregItem("IS00222")
+	private String thursday1;
+
+	/**
+	 * 木開始1 曜日別勤務.木曜日.勤務時間帯.開始 ※回数=1
+	 */
+	@PeregItem("IS00223")
+	private Integer thursdayStartTime1;
+
+	/**
+	 * 木終了1 曜日別勤務.木曜日.勤務時間帯.終了 ※回数=1
+	 */
+	@PeregItem("IS00224")
+	private Integer thursdayEndTime1;
+
+	/**
+	 * 木曜出勤時勤務時間2
+	 */
+	@PeregItem("IS00225")
+	private String thursday2;
+
+	/**
+	 * 木開始2 曜日別勤務.木曜日.勤務時間帯.開始 ※回数=2
+	 */
+	@PeregItem("IS00226")
+	private Integer thursdayStartTime2;
+
+	/**
+	 * 木終了2 曜日別勤務.木曜日.勤務時間帯.終了 ※回数=2
+	 */
+	@PeregItem("IS00227")
+	private Integer thursdayEndTime2;
+
+	/**
+	 * 金曜勤務設定
+	 */
+	// @PeregItem("IS00228")
+
+	/**
+	 * 金勤種CD 曜日別勤務.金曜日.勤務種類コード
+	 */
+	@PeregItem("IS00229")
+	private String fridayWorkTypeCode;
+
+	/**
+	 * 金就時CD 曜日別勤務.金曜日.就業時間帯コード
+	 */
+	@PeregItem("IS00230")
+	private String fridayWorkTimeCode;
+
+	/**
+	 * 金曜出勤時勤務時間1
+	 *
+	 */
+	@PeregItem("IS00231")
+	private String friday1;
+
+	/**
+	 * 金開始1 曜日別勤務.金曜日.勤務時間帯.開始 ※回数=1
+	 */
+	@PeregItem("IS00232")
+	private Integer fridayStartTime1;
+
+	/**
+	 * 金終了1 曜日別勤務.金曜日.勤務時間帯.終了 ※回数=1
+	 */
+	@PeregItem("IS00233")
+	private Integer fridayEndTime1;
+
+	/**
+	 * 金曜出勤時勤務時間2
+	 */
+	@PeregItem("IS00234")
+	private String friday2;
+
+	/**
+	 * 金開始2 曜日別勤務.金曜日.勤務時間帯.開始 ※回数=2
+	 */
+	@PeregItem("IS00235")
+	private Integer fridayStartTime2;
+
+	/**
+	 * 金終了2 曜日別勤務.金曜日.勤務時間帯.終了 ※回数=2
+	 */
+	@PeregItem("IS00236")
+	private Integer fridayEndTime2;
+
+	/**
+	 * 土曜勤務設定
+	 */
+	// @PeregItem("IS00237")
+
+	/**
+	 * 土勤種CD 曜日別勤務.土曜日.勤務種類コード
+	 */
+	@PeregItem("IS00238")
+	private String saturdayWorkTypeCode;
+
+	/**
+	 * 土就時CD 曜日別勤務.土曜日.就業時間帯コード
+	 */
+	@PeregItem("IS00239")
+	private String saturdayWorkTimeCode;
+
+	/**
+	 * 土曜出勤時勤務時間1
+	 */
+	@PeregItem("IS00240")
+	private String saturday1;
+
+	/**
+	 * 土開始1 曜日別勤務.土曜日.勤務時間帯.開始 ※回数=1
+	 */
+	@PeregItem("IS00241")
+	private Integer saturdayStartTime1;
+
+	/**
+	 * 土終了1 曜日別勤務.土曜日.勤務時間帯.終了 ※回数=1
+	 */
+	@PeregItem("IS00242")
+	private Integer saturdayEndTime1;
+
+	/**
+	 * 土曜出勤時勤務時間2
+	 */
+	@PeregItem("IS00243")
+	private String saturday2;
+
+	/**
+	 * 土開始2 曜日別勤務.土曜日.勤務時間帯.開始 ※回数=2
+	 */
+	@PeregItem("IS00244")
+	private Integer saturdayStartTime2;
+
+	/**
+	 * 土終了2 曜日別勤務.土曜日.勤務時間帯.終了 ※回数=2
+	 */
+	@PeregItem("IS00245")
+	private Integer saturdayEndTime2;
+
 	
 	public WorkingCondition2Dto(String recordId) {
 		super(recordId);
@@ -44,56 +419,10 @@ public class WorkingCondition2Dto extends WorkingConditionDto {
 		WorkingCondition2Dto dto = new WorkingCondition2Dto(dateHistoryItem.identifier());
 
 		dto.setRecordId(dateHistoryItem.identifier());
-		dto.setStartDate2(dateHistoryItem.start());
-		dto.setEndDate2(dateHistoryItem.end());
-
-		if (workingConditionItem.getHourlyPaymentAtr() != null) {
-			dto.setHourlyPaymentAtr(workingConditionItem.getHourlyPaymentAtr().value);
-		}
-
-		workingConditionItem.getTimeApply().ifPresent(wci -> {
-			dto.setTimeApply(wci.v());
-		});
-
-		dto.setScheduleManagementAtr(workingConditionItem.getScheduleManagementAtr().value);
-
-		// 予定作成方法
-		workingConditionItem.getMonthlyPattern().ifPresent(mp -> {
-			dto.setMonthlyPattern(mp.v());
-		});
-
-		setScheduleMethod(dto, workingConditionItem.getScheduleMethod().get());
-
-		PersonalWorkCategory workCategory = workingConditionItem.getWorkCategory();
+		dto.setStartDate(dateHistoryItem.start());
+		dto.setEndDate(dateHistoryItem.end());
 
 		// 休日出勤時
-		setHolidayTime(dto, workCategory.getHolidayTime());
-
-		// 平日時
-		setWeekDay(dto, workCategory.getWeekdayTime());
-
-		// 休日出勤時
-		setWorkInHoliday(dto, workCategory.getHolidayWork());
-
-		// 公休出勤時
-		workCategory.getPublicHolidayWork().ifPresent(phw -> {
-			setWorkInPublicHoliday(dto, phw);
-		});
-
-		// 法内休出時
-		workCategory.getInLawBreakTime().ifPresent(ilbt -> {
-			setInLawBreakTime(dto, ilbt);
-		});
-
-		// 法外休出時
-		workCategory.getOutsideLawBreakTime().ifPresent(olbt -> {
-			setOutsideLawBreakTime(dto, olbt);
-		});
-
-		// 祝日出勤時
-		workCategory.getHolidayAttendanceTime().ifPresent(at -> {
-			setHolidayAttendanceTime(dto, at);
-		});
 
 		PersonalDayOfWeek workDayOfWeek = workingConditionItem.getWorkDayOfWeek();
 
@@ -118,184 +447,12 @@ public class WorkingCondition2Dto extends WorkingConditionDto {
 		// 土曜日
 		workDayOfWeek.getSaturday().ifPresent(sat -> setSaturday(dto, sat));
 
-		dto.setAutoIntervalSetAtr(workingConditionItem.getAutoIntervalSetAtr().value);
-		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr().value);
-
-		workingConditionItem.getHolidayAddTimeSet().ifPresent(hat -> {
-			Optional.of(hat.getOneDay()).ifPresent(od -> dto.setOneDay(od.v()));
-
-			Optional.of(hat.getMorning()).ifPresent(od -> dto.setMorning(od.v()));
-
-			Optional.of(hat.getAfternoon()).ifPresent(od -> dto.setAfternoon(od.v()));
-		});
-
-		dto.setLaborSystem(workingConditionItem.getLaborSystem().value);
-		dto.setContractTime(workingConditionItem.getContractTime().v());
-		dto.setAutoStampSetAtr(workingConditionItem.getAutoStampSetAtr().value);
 
 		return dto;
 	}
 
-	private static void setScheduleMethod(WorkingCondition2Dto dto, ScheduleMethod scheduleMethod) {
-		dto.setBasicCreateMethod(scheduleMethod.getBasicCreateMethod().value);
 
-		scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
-			dto.setReferenceBasicWork(wsb.getReferenceBasicWork().value);
-			dto.setReferenceBusinessDayCalendar(wsb.getReferenceBusinessDayCalendar().value);
-		});
 
-		// cần xem lại thuật toán thực thi đoạn mã này
-		switch (scheduleMethod.getBasicCreateMethod()) {
-		case BUSINESS_DAY_CALENDAR:
-			scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
-				dto.setReferenceType(wsb.getReferenceWorkingHours().value);
-			});
-			break;
-		case MONTHLY_PATTERN:
-			scheduleMethod.getMonthlyPatternWorkScheduleCre().ifPresent(mps -> {
-				dto.setReferenceType(mps.getReferenceType().value);
-			});
-			break;
-		default:
-		case PERSONAL_DAY_OF_WEEK:
-			break;
-		}
-	}
-
-	private static void setHolidayTime(WorkingCondition2Dto dto, SingleDaySchedule holidayTime) {
-		Optional.ofNullable(holidayTime).ifPresent(ht -> {
-			dto.setHolidayWorkTypeCode(ht.getWorkTypeCode().v());
-		});
-	}
-
-	private static void setWeekDay(WorkingCondition2Dto dto, SingleDaySchedule weekDay) {
-		Optional.of(weekDay).ifPresent(wd -> {
-			dto.setWeekdayWorkTypeCode(wd.getWorkTypeCode().v());
-
-			wd.getWorkTimeCode().ifPresent(wt -> dto.setWeekdayWorkTimeCode(wt.v()));
-
-			Optional<TimeZone> timeZone1 = wd.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
-					.findFirst();
-			Optional<TimeZone> timeZone2 = wd.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
-					.findFirst();
-
-			timeZone1.ifPresent(tz -> {
-				dto.setWeekDayStartTime1(tz.getStart().v());
-				dto.setWeekDayEndTime1(tz.getEnd().v());
-			});
-
-			timeZone2.ifPresent(tz -> {
-				dto.setWeekDayStartTime2(tz.getStart().v());
-				dto.setWeekDayEndTime2(tz.getEnd().v());
-			});
-		});
-	}
-
-	private static void setWorkInHoliday(WorkingCondition2Dto dto, SingleDaySchedule workInHoliday) {
-		dto.setWorkInHolidayWorkTypeCode(workInHoliday.getWorkTypeCode().v());
-
-		workInHoliday.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInHolidayWorkTimeCode(wtc.v()));
-
-		Optional<TimeZone> timeZone1 = workInHoliday.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-
-		Optional<TimeZone> timeZone2 = workInHoliday.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-
-		timeZone1.ifPresent(tz -> {
-			dto.setWorkInHolidayStartTime1(tz.getStart().v());
-			dto.setWorkInHolidayEndTime1(tz.getEnd().v());
-		});
-
-		timeZone2.ifPresent(tz -> {
-			dto.setWorkInHolidayStartTime2(tz.getStart().v());
-			dto.setWorkInHolidayEndTime2(tz.getEnd().v());
-		});
-	}
-
-	private static void setWorkInPublicHoliday(WorkingCondition2Dto dto, SingleDaySchedule workInPublicHoliday) {
-		dto.setWorkInPublicHolidayWorkTypeCode(workInPublicHoliday.getWorkTypeCode().v());
-
-		workInPublicHoliday.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInPublicHolidayWorkTimeCode(wtc.v()));
-
-		Optional<TimeZone> timeZone1 = workInPublicHoliday.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = workInPublicHoliday.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-
-		timeZone1.ifPresent(tz -> {
-			dto.setWorkInPublicHolidayStartTime1(tz.getStart().v());
-			dto.setWorkInPublicHolidayEndTime1(tz.getEnd().v());
-		});
-
-		timeZone2.ifPresent(tz -> {
-			dto.setWorkInPublicHolidayStartTime2(tz.getStart().v());
-			dto.setWorkInPublicHolidayEndTime2(tz.getEnd().v());
-		});
-	}
-
-	private static void setInLawBreakTime(WorkingCondition2Dto dto, SingleDaySchedule inLawBreakTime) {
-		dto.setInLawBreakTimeWorkTypeCode(inLawBreakTime.getWorkTypeCode().v());
-
-		inLawBreakTime.getWorkTimeCode().ifPresent(wtc -> dto.setInLawBreakTimeWorkTimeCode(wtc.v()));
-
-		Optional<TimeZone> timeZone1 = inLawBreakTime.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = inLawBreakTime.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-
-		timeZone1.ifPresent(tz -> {
-			dto.setInLawBreakTimeStartTime1(tz.getStart().v());
-			dto.setInLawBreakTimeEndTime1(tz.getEnd().v());
-		});
-
-		timeZone2.ifPresent(tz -> {
-			dto.setInLawBreakTimeStartTime2(tz.getStart().v());
-			dto.setInLawBreakTimeEndTime2(tz.getEnd().v());
-		});
-	}
-
-	private static void setOutsideLawBreakTime(WorkingCondition2Dto dto, SingleDaySchedule outsideLawBreakTime) {
-		dto.setOutsideLawBreakTimeWorkTypeCode(outsideLawBreakTime.getWorkTypeCode().v());
-
-		outsideLawBreakTime.getWorkTimeCode().ifPresent(wtc -> dto.setOutsideLawBreakTimeWorkTimeCode(wtc.v()));
-
-		Optional<TimeZone> timeZone1 = outsideLawBreakTime.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = outsideLawBreakTime.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-
-		timeZone1.ifPresent(tz -> {
-			dto.setOutsideLawBreakTimeStartTime1(tz.getStart().v());
-			dto.setOutsideLawBreakTimeEndTime1(tz.getEnd().v());
-		});
-
-		timeZone2.ifPresent(tz -> {
-			dto.setOutsideLawBreakTimeStartTime2(tz.getStart().v());
-			dto.setOutsideLawBreakTimeEndTime2(tz.getEnd().v());
-		});
-	}
-
-	private static void setHolidayAttendanceTime(WorkingCondition2Dto dto, SingleDaySchedule holidayAttendanceTime) {
-		dto.setHolidayAttendanceTimeWorkTypeCode(holidayAttendanceTime.getWorkTypeCode().v());
-
-		holidayAttendanceTime.getWorkTimeCode().ifPresent(wtc -> dto.setHolidayAttendanceTimeWorkTimeCode(wtc.v()));
-
-		Optional<TimeZone> timeZone1 = holidayAttendanceTime.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = holidayAttendanceTime.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-
-		timeZone1.ifPresent(tz -> {
-			dto.setHolidayAttendanceTimeStartTime1(tz.getStart().v());
-			dto.setHolidayAttendanceTimeEndTime1(tz.getEnd().v());
-		});
-
-		timeZone2.ifPresent(tz -> {
-			dto.setHolidayAttendanceTimeStartTime2(tz.getStart().v());
-			dto.setHolidayAttendanceTimeEndTime2(tz.getEnd().v());
-		});
-	}
 
 	private static void setSunday(WorkingCondition2Dto dto, SingleDaySchedule sunday) {
 		dto.setSundayWorkTypeCode(sunday.getWorkTypeCode().v());

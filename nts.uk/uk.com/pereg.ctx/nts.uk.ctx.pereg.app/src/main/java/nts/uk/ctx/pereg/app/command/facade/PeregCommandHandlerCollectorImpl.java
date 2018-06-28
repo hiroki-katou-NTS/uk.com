@@ -93,11 +93,8 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.Ad
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.DeleteShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
-import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingCondition2Command;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
-import nts.uk.ctx.at.shared.app.command.workingcondition.DeleteWorkingCondition2Command;
 import nts.uk.ctx.at.shared.app.command.workingcondition.DeleteWorkingConditionCommand;
-import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingCondition2Command;
 import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingConditionCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.DeleteAffClassificationCommand;
@@ -255,10 +252,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00068	特別休暇２０付与残数
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant20Command>>(){},
 			//CS00069 打刻カード番号
-			new TypeLiteral<PeregAddCommandHandler<AddStampCardCommand>>(){},
-			//CS00070 労働条件2
-			new TypeLiteral<PeregAddCommandHandler<AddWorkingCondition2Command>>(){}
-			);
+			new TypeLiteral<PeregAddCommandHandler<AddStampCardCommand>>(){});
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
 			//CS00001	社員データ管理
@@ -336,10 +330,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00058	特別休暇２０情報
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave20informationCommand>>(){},
 			//CS00069 打刻カード番号
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateStampCardCommand>>(){},
-			//CS00070 労働条件2
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>(){}
-			);
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateStampCardCommand>>(){});
 	
 	
 	/** Delete handlers */
@@ -373,10 +364,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00035	その他休暇情報
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>(){},
 			//CS00069 打刻カード番号
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteStampCardCommand>>(){},
-			//CS00070 労働条件2
-			new TypeLiteral<PeregUpdateCommandHandler<DeleteWorkingCondition2Command>>(){}
-			);
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteStampCardCommand>>(){});
 	
 	@Override
 	public Set<PeregAddCommandHandler<?>> collectAddHandlers() {
