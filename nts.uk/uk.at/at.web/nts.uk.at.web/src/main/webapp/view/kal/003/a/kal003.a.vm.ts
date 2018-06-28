@@ -214,6 +214,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.dailyAlarmCheckCondition().conditionToExtractDaily(self.selectedDataCondition());
                 data.dailyAlarmCheckCondition().addApplication(self.tabDailyErrorAlarm.addApplication());
                 data.dailyAlarmCheckCondition().listErrorAlarmCode(self.tabDailyErrorAlarm.currentCodeList());
+                self.tabCheckCondition.listWorkRecordExtractingConditions().forEach((x: model.WorkRecordExtractingCondition) => {
+                    if (_.isEmpty(x.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon())) {
+                        let e: model.ErAlAtdItemCondition = shareutils.getDefaultCondition(0);
+                        e.compareStartValue(0);
+                        x.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon([e]);
+                    }
+                });
                 data.dailyAlarmCheckCondition().listExtractConditionWorkRecork(self.tabCheckCondition.listWorkRecordExtractingConditions());
                 data.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord(self.tabFixedCondition.listFixedConditionWorkRecord());
                 data.dailyAlarmCheckCondition().listExtractConditionWorkRecork().forEach((x: model.WorkRecordExtractingCondition) => {
