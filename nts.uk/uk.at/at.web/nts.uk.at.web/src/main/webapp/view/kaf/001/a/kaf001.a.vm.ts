@@ -2,6 +2,8 @@ module nts.uk.com.view.kaf001.a.viewmodel {
     import block  = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
     import jump   = nts.uk.request.jump;
+    import getText = nts.uk.resource.getText;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         //_____CCG001________
         ccg001ComponentOption : GroupOption;
@@ -22,6 +24,9 @@ module nts.uk.com.view.kaf001.a.viewmodel {
         isVisiableEarlyLeaveCanceApp  : KnockoutObservable<boolean>             = ko.observable(false);
         isVisiableComplementLeaveApp  : KnockoutObservable<boolean>             = ko.observable(false);
         isVisiableStampApp            : KnockoutObservable<boolean>             = ko.observable(false);
+        //app Name
+        appNameDis: KnockoutObservable<ObjNameDis> = ko.observable(null);
+        otName: string = '';
         constructor() {
             let self = this;
 
@@ -95,7 +100,7 @@ module nts.uk.com.view.kaf001.a.viewmodel {
             self.employeeList(employeeSearchs);
             self.kcp005ComponentOption = {
                 isShowAlreadySet: false,
-                isMultiSelect: true,
+                isMultiSelect: false,
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeList,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -115,11 +120,64 @@ module nts.uk.com.view.kaf001.a.viewmodel {
             let dfd = $.Deferred();
             block.invisible();
             self.getAllProxyApplicationSetting();
+            self.getNameDisplay();
             block.clear();
             dfd.resolve();
             return dfd.promise();
         }
-
+        //hoatt
+        getNameDisplay(){
+            let self = this;
+            service.getListNameDis().done(function(data){
+                let obj: ObjNameDis = new ObjNameDis('','','','','','','','','',''); 
+                _.each(data, function(app){
+                    switch (app.appType) {
+                        case 0: {
+                            obj.overTime = getText('KAF001_12', [app.dispName]);
+                            self.otName = app.dispName;
+                            break;
+                        }
+                        case 1: {
+                            obj.absence = getText('KAF001_12', [app.dispName]);
+                            break;
+                        }
+                        case 2: {
+                            obj.workChange = getText('KAF001_12', [app.dispName]);
+                            break;
+                        }
+                        case 3: {
+                            obj.businessTrip = getText('KAF001_12', [app.dispName]);
+                            break;
+                        }
+                        case 4: {
+                            obj.goBack = getText('KAF001_12', [app.dispName]);
+                            break;
+                        }
+                        case 6: {
+                            obj.holiday = getText('KAF001_12', [app.dispName]);
+                            break;
+                        }
+                        case 8: {
+                            obj.annualHd = getText('KAF001_12', [app.dispName]);
+                            break;
+                        }
+                        case 9: {
+                            obj.earlyLeaveCancel = getText('KAF001_12', [app.dispName]);
+                            break;
+                        }
+                        case 10: {
+                            obj.complt = getText('KAF001_12', [app.dispName]);
+                            break;
+                        }
+                        case 11: {
+                            obj.stamp = getText('KAF001_12', [app.dispName]);
+                            break;
+                        }
+                    }
+                });
+                self.appNameDis(obj);
+            });
+        }
         getAllProxyApplicationSetting() {
             let self = this;
             service.getAllProxyApplicationSetting().done((result) => {
@@ -179,25 +237,35 @@ module nts.uk.com.view.kaf001.a.viewmodel {
             block.invisible();
             let self = this;
             let employeeIds : Array<string> = [];
-            _.each(self.selectedEmployeeCode(), x => {
-                let employee = _.find(self.selectedEmployee(), x1 => { return x1.employeeCode === x });
-                if (employee) {
-                    employeeIds.push(employee.employeeId);
-                }
-            })
+//            _.each(self.selectedEmployeeCode(), x => {
+//                let employee = _.find(self.selectedEmployee(), x1 => { return x1.employeeCode === x });
+//                if (employee) {
+//                    employeeIds.push(employee.employeeId);
+//                }
+//            })
+            //Chuyen multi -> single
+            let employee = _.find(self.selectedEmployee(), x1 => { return x1.employeeCode === self.selectedEmployeeCode()});
+            if (employee) {
+                employeeIds.push(employee.employeeId);
+            }
             if (employeeIds.length > 0) {
                 let paramFind = {
                     employeeIds: employeeIds,
                     applicationType: applicationType
                 }
                 service.selectApplicationByType(paramFind).done(() => {
+                    let transfer = {
+                       uiType: 0,
+                       employeeIDs: employeeIds
+                    };
                     switch (applicationType) {
                         case ApplicationType.OVER_TIME_APPLICATION: {
-                            jump("at", "/view/kaf/005/a/index.xhtml?overworkatr=2", { employeeIds: employeeIds });
+                            //open dialog B
+                            jump("at", "/view/kaf/001/b/index.xhtml", { employeeIds: employeeIds, name: self.otName});
                             break;
                         }
                         case ApplicationType.ABSENCE_APPLICATION: {
-                            jump("at", "/view/kaf/006/a/index.xhtml", { employeeIds: employeeIds });
+                            jump("at", "/view/kaf/006/a/index.xhtml", transfer);
                             break;
                         }
                         case ApplicationType.WORK_CHANGE_APPLICATION: {
@@ -213,7 +281,7 @@ module nts.uk.com.view.kaf001.a.viewmodel {
                             break;
                         }
                         case ApplicationType.BREAK_TIME_APPLICATION: {
-                            jump("at", "/view/kaf/010/a/index.xhtml", { employeeIds: employeeIds });
+                            jump("at", "/view/kaf/010/a/index.xhtml", transfer);
                             break;
                         }
                         case ApplicationType.ANNUAL_HOLIDAY_APPLICATION: {
@@ -341,5 +409,31 @@ module nts.uk.com.view.kaf001.a.viewmodel {
     export interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
+    }
+    export class ObjNameDis{
+        overTime: string;//A2_2
+        absence: string;//A2_3
+        workChange: string;//A2_4
+        businessTrip: string;//A2_5
+        goBack: string;//A2_6
+        holiday: string;//A2_7
+        annualHd: string;//A2_8
+        earlyLeaveCancel: string;//A2_9
+        complt: string;//A2_10
+        stamp: string;//A2_11
+        constructor(overTime: string,absence: string,workChange: string,
+            businessTrip: string, goBack: string, holiday: string, 
+            annualHd: string, earlyLeaveCancel: string,complt: string,stamp: string){
+            this.overTime = overTime;
+            this.absence = absence;
+            this.workChange = workChange;
+            this.businessTrip = businessTrip;
+            this.goBack = goBack;
+            this.holiday = holiday;
+            this.annualHd =  annualHd;
+            this.earlyLeaveCancel = earlyLeaveCancel;
+            this.complt = complt;
+            this.stamp = stamp;
+        }
     }
 }
