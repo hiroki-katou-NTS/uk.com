@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+							<script>
+				                var dialogSize = {
+				                    width : 900,
+				                    height : 700
+				                };
+            				</script>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="cmf003.c.service.js" />
+				<com:scriptfile path="cmf003.c.vm.js" />
+				<com:scriptfile path="cmf003.c.start.js" />
+				<com:stylefile path="cmf003.c.style.css" />
+				
+			</ui:define>
+
+			<ui:define name="content">
+				<div id="inline" >
+					<div class="one" 
+						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF003_58')}</div>
+					<div class="two"  id="combo-box" tabindex="1"
+						data-bind="ntsComboBox: {
+									options: systemTypes,
+									value: selectedCode,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									optionsText: 'name',
+									enable: (currentCateSelected().length == 0), 
+									selectFirstIfNull: true,
+									name: '#{i18n.getText('CMF003_59')}'
+									}"></div>
+	
+				</div>
+				<div id = "labelLeft"  data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_60')}</div>
+				<div id = "labelRight" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF003_61')}</div>
+				<div   id="swap-list" tabindex="2"
+					data-bind="ntsSwapList: {
+								showSearchBox: { showLeft : true},
+								height: 455,
+								dataSource: categoriesDefault,
+								primaryKey: 'categoryId',
+								columns: columns,
+								value: currentCateSelected,
+								searchCriterion: ['categoryId'],
+								draggable: true,
+								multipleDrag: { left: true, right: false },
+								innerDrag: { left: false, right: true },
+								outerDrag: { left: true, right: true } 
+							}"></div>
+	
+				<button id="btnLeft" tabindex="4" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CMF003_71')}</button>
+				<button id = "btnRight" tabindex="5" data-bind="click : closeUp" >#{i18n.getText('CMF003_72')}</button>
+			</ui:define>
+	</ui:composition>
+   	</body>
+</html>

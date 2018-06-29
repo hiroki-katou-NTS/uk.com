@@ -26,7 +26,6 @@ import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
@@ -168,7 +167,7 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 						x.getPName(),
 						x.getEntryDate(),
 						x.getRetiredDate(),
-						x.getCompanyMailAddr() != null ? x.getCompanyMailAddr().v() : "ledat010994@gmail.com"
+						null
 					)).collect(Collectors.toList());
 		return data;
 	}

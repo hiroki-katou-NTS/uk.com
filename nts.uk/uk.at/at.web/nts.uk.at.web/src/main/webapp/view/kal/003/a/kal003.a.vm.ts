@@ -214,6 +214,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.dailyAlarmCheckCondition().conditionToExtractDaily(self.selectedDataCondition());
                 data.dailyAlarmCheckCondition().addApplication(self.tabDailyErrorAlarm.addApplication());
                 data.dailyAlarmCheckCondition().listErrorAlarmCode(self.tabDailyErrorAlarm.currentCodeList());
+                self.tabCheckCondition.listWorkRecordExtractingConditions().forEach((x: model.WorkRecordExtractingCondition) => {
+                    if (_.isEmpty(x.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon())) {
+                        let e: model.ErAlAtdItemCondition = shareutils.getDefaultCondition(0);
+                        e.compareStartValue(0);
+                        x.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon([e]);
+                    }
+                });
                 data.dailyAlarmCheckCondition().listExtractConditionWorkRecork(self.tabCheckCondition.listWorkRecordExtractingConditions());
                 data.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord(self.tabFixedCondition.listFixedConditionWorkRecord());
                 data.dailyAlarmCheckCondition().listExtractConditionWorkRecork().forEach((x: model.WorkRecordExtractingCondition) => {
@@ -356,7 +363,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
         private selectCondition(data) {
             let self = this;
             if (data) {
-                nts.uk.ui.errors.clearAll();
                 block.invisible();
                 service.getOneData(self.selectedCategory(), data).done(function(result: any) {
                     if (result) {
@@ -435,7 +441,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
                             }
                         }
-
+                            
                         self.screenMode(model.SCREEN_MODE.UPDATE);
 //                        $("#A3_4").focus();
                         setTimeout(function() { $("#A3_4").focus(); }, 500);
@@ -443,6 +449,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 }).fail(function(error) {
                     alertError(error);
                 }).always(() => {
+                    nts.uk.ui.errors.clearAll();
                     block.clear();
                 });
             }else{

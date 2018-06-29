@@ -51,7 +51,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	@Override
 	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam) {
 		//アルゴリズム「未相殺の代休(確定)を取得する」を実行する
-		List<BreakDayOffDetail> lstDetailData = this.getConfirmDayOffDetail(inputParam.getSid());
+		List<BreakDayOffDetail> lstDetailData = this.getConfirmDayOffDetail(inputParam.getCid(), inputParam.getSid());
 		//アルゴリズム「未使用の休出(確定)を取得する」を実行する
 		List<BreakDayOffDetail> lstBreakData = this.getConfirmBreakDetail(inputParam.getSid());
 		if(!lstBreakData.isEmpty()) {
@@ -95,10 +95,10 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
-	public List<BreakDayOffDetail> getConfirmDayOffDetail(String sid) {
+	public List<BreakDayOffDetail> getConfirmDayOffDetail(String cid, String sid) {
 		List<BreakDayOffDetail> lstOutputData = new ArrayList<>();
 		//アルゴリズム「確定代休から未相殺の代休を取得する」を実行する
-		List<CompensatoryDayOffManaData> lstDayOffConfirmData = this.lstConfirmDayOffData(sid);
+		List<CompensatoryDayOffManaData> lstDayOffConfirmData = this.lstConfirmDayOffData(cid, sid);
 		for (CompensatoryDayOffManaData dayOffConfirmData : lstDayOffConfirmData) {
 			//1-3.暫定休出と紐付けをしない確定代休を取得する
 			BreakDayOffDetail dataDetail = this.getConfirmDayOffData(dayOffConfirmData, sid);
@@ -110,9 +110,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
-	public List<CompensatoryDayOffManaData> lstConfirmDayOffData(String sid) {
+	public List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid) {
 		//ドメインモデル「代休管理データ」
-		String cid = AppContexts.user().companyId();
 		List<CompensatoryDayOffManaData> lstDayOffConfirm =  dayOffConfirmRepo.getBySid(cid, sid);
 		
 		return lstDayOffConfirm.stream().filter(x -> x.getRemainDays().v() > 0 || x.getRemainTimes().v() > 0)
@@ -296,51 +295,55 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				dayOffData.ifPresent(y -> lstDayoffMng.add(y));
 			});
 		}
+		
 		if(inputParam.isReplaceChk()
 				&& !inputParam.getInterimMng().isEmpty()
-				&& inputParam.getDayOffMng().isPresent()) {
+				&& !inputParam.getDayOffMng().isEmpty()) {
+			List<InterimDayOffMng> lstDayOffTmp = new ArrayList<>(lstDayoffMng);
+			List<InterimRemain> lstInterimDataTmp = new ArrayList<>(lstInterimData);
 			//INPUT．上書き用の暫定管理データをドメインモデル「暫定代休管理データ」に追加する
-			InterimDayOffMng dayOffInput = inputParam.getDayOffMng().get();
-			List<InterimRemain> lstInterimInput = inputParam.getInterimMng()
-					.stream()
-					.filter(z -> z.getRemainManaID().equals(dayOffInput.getDayOffManaId()))
+			for (InterimDayOffMng dayOffInput : inputParam.getDayOffMng()) {
+				List<InterimRemain> lstInterimInput = inputParam.getInterimMng()
+						.stream()
+						.filter(z -> z.getRemainManaID().equals(dayOffInput.getDayOffManaId()))
+						.collect(Collectors.toList());
+				if(!lstInterimInput.isEmpty()) {
+					InterimRemain interimData = lstInterimInput.get(0);
+					List<InterimRemain> lstTmp = lstInterimDataTmp.stream().filter(a -> a.getYmd().equals(interimData.getYmd()))
 					.collect(Collectors.toList());
-			if(!lstInterimInput.isEmpty()) {
-				InterimRemain interimData = lstInterimInput.get(0);
-				List<InterimRemain> lstTmp = lstInterimData.stream().filter(a -> a.getYmd().equals(interimData.getYmd()))
-				.collect(Collectors.toList());
-				if(!lstTmp.isEmpty()) {
-					InterimRemain tmpData = lstTmp.get(0);
-					lstInterimData.remove(tmpData);
-					List<InterimDayOffMng> lstTmpDayoff = lstDayoffMng.stream()
-							.filter(b -> b.getDayOffManaId().equals(tmpData.getRemainManaID())).collect(Collectors.toList());
-					if(!lstTmpDayoff.isEmpty()) {
-						InterimDayOffMng tmpDayoff = lstTmpDayoff.get(0);
-						lstDayoffMng.remove(tmpDayoff);
+					if(!lstTmp.isEmpty()) {
+						InterimRemain tmpData = lstTmp.get(0);
+						lstInterimData.remove(tmpData);
+						List<InterimDayOffMng> lstTmpDayoff = lstDayOffTmp.stream()
+								.filter(b -> b.getDayOffManaId().equals(tmpData.getRemainManaID())).collect(Collectors.toList());
+						if(!lstTmpDayoff.isEmpty()) {
+							InterimDayOffMng tmpDayoff = lstTmpDayoff.get(0);
+							lstDayoffMng.remove(tmpDayoff);
+						}
 					}
+					lstInterimData.add(interimData);
 				}
-				lstInterimData.add(interimData);
+				lstDayoffMng.add(dayOffInput);
 			}
-			lstDayoffMng.add(dayOffInput);
+			
 		}
 		//取得した件数をチェックする
 		for (InterimDayOffMng interimDayOffMng : lstDayoffMng) {
 			//アルゴリズム「休出と紐付けをしない代休を取得する」を実行する
-			Optional<InterimRemain> remainData = interimRemainRepo.getById(interimDayOffMng.getDayOffManaId());
-			remainData.ifPresent(x -> {
-				BreakDayOffDetail outData = this.getNotTypeBreak(interimDayOffMng, remainData.get());
-				if(outData != null) {
-					lstOutput.add(outData);
-				}	
-			});
+			InterimRemain interimData = lstInterimData.stream()
+					.filter(x -> x.getRemainManaID().equals(x.getRemainManaID()))
+					.collect(Collectors.toList())
+					.get(0);
+			BreakDayOffDetail outData = this.getNotTypeBreak(interimDayOffMng, interimData);
+			lstOutput.add(outData);
 		}
 		return lstOutput;
 	}
 
 	@Override
-	public BreakDayOffDetail getNotTypeBreak(InterimDayOffMng detailData, InterimRemain remainData) {
+	public BreakDayOffDetail getNotTypeBreak(InterimDayOffMng detailData, InterimRemain interimData) {
 		//ドメインモデル「暫定休出代休紐付け管理」を取得する
-		List<InterimBreakDayOffMng> lstDayOff = breakDayOffInterimRepo.getBreakDayOffMng(remainData.getRemainManaID(), false, DataManagementAtr.INTERIM);
+		List<InterimBreakDayOffMng> lstDayOff = breakDayOffInterimRepo.getBreakDayOffMng(detailData.getDayOffManaId(), false, DataManagementAtr.INTERIM);
 		//未相殺日数と未相殺時間を設定する
 		double unOffsetDays = detailData.getRequiredDay().v();
 		Integer unOffsetTimes = detailData.getRequiredTime().v();
@@ -350,18 +353,24 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		}
 
 		//「代休の未相殺」．未相殺日数=未相殺日数,  「代休の未相殺」．未相殺時間=未相殺時間 
-		UnOffSetOfDayOff dayOffData = new UnOffSetOfDayOff(detailData.getDayOffManaId(), 
-				detailData.getRequiredTime().v(), detailData.getRequiredDay().v(), unOffsetTimes, unOffsetDays);
+		UnOffSetOfDayOff dayOffDataMng = new UnOffSetOfDayOff(detailData.getDayOffManaId(), 
+				detailData.getRequiredTime().v(),
+				detailData.getRequiredDay().v(),
+				unOffsetTimes,
+				unOffsetDays);
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
-		if(remainData.getCreatorAtr() == CreateAtr.SCHEDULE) {
+		if(interimData.getCreatorAtr() == CreateAtr.SCHEDULE) {
 			dataAtr = MngDataStatus.SCHEDULE;
-		} else if (remainData.getCreatorAtr() == CreateAtr.RECORD){
+		} else if (interimData.getCreatorAtr() == CreateAtr.RECORD){
 			dataAtr = MngDataStatus.RECORD;
 		}
-		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
-		BreakDayOffDetail dataOutput = new BreakDayOffDetail(remainData.getSID(), 
+		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(interimData.getYmd()));
+		BreakDayOffDetail dataOutput = new BreakDayOffDetail(interimData.getSID(), 
 				dataAtr, 
-				date, OccurrenceDigClass.DIGESTION, Optional.empty(), Optional.of(dayOffData));
+				date, 
+				OccurrenceDigClass.DIGESTION, 
+				Optional.empty(), 
+				Optional.of(dayOffDataMng));
 		return dataOutput;
 	}
 
@@ -399,36 +408,43 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		//INPUT．上書きフラグをチェックする
 		if(inputParam.isReplaceChk()
 				&& inputParam.getInterimMng().isEmpty()
-				&& inputParam.getBreakMng().isPresent()) {
+				&& !inputParam.getBreakMng().isEmpty()) {
+			List<InterimRemain> lstInterimDataTmp = new ArrayList<>(lstInterimData);
+			List<InterimBreakMng> lstBreakMngTmp =  new ArrayList<>(lstBreakMng);
 			//INPUT．上書き用の暫定管理データをドメインモデル「暫定休出管理データ」に追加する
-			InterimBreakMng breakReplace = inputParam.getBreakMng().get();
-			List<InterimRemain> lstRemainReplace = inputParam.getInterimMng().stream()
-					.filter(x -> x.getRemainManaID().equals(breakReplace.getBreakMngId()))
-					.collect(Collectors.toList());
-			if(!lstRemainReplace.isEmpty()) {
-				InterimRemain remainReplace = lstRemainReplace.get(0);
-				List<InterimRemain> lstRemainData = lstInterimData.stream()
-						.filter(z -> z.getYmd().equals(remainReplace.getYmd()))
+			for (InterimBreakMng breakReplace : inputParam.getBreakMng()) {
+				List<InterimRemain> lstRemainReplace = inputParam.getInterimMng().stream()
+						.filter(x -> x.getRemainManaID().equals(breakReplace.getBreakMngId()))
 						.collect(Collectors.toList());
-				if(!lstRemainData.isEmpty()) {
-					InterimRemain remainData = lstRemainData.get(0);
-					List<InterimBreakMng> lstBreakData = lstBreakMng.stream()
-							.filter(a -> a.getBreakMngId().equals(remainData.getRemainManaID()))
+				if(!lstRemainReplace.isEmpty()) {
+					InterimRemain remainReplace = lstRemainReplace.get(0);
+					List<InterimRemain> lstRemainData = lstInterimDataTmp.stream()
+							.filter(z -> z.getYmd().equals(remainReplace.getYmd()))
 							.collect(Collectors.toList());
-					if(!lstBreakData.isEmpty()) {
-						InterimBreakMng breakData = lstBreakData.get(0);
-						lstBreakMng.remove(breakData);
+					if(!lstRemainData.isEmpty()) {
+						InterimRemain remainData = lstRemainData.get(0);
+						List<InterimBreakMng> lstBreakData = lstBreakMngTmp.stream()
+								.filter(a -> a.getBreakMngId().equals(remainData.getRemainManaID()))
+								.collect(Collectors.toList());
+						if(!lstBreakData.isEmpty()) {
+							InterimBreakMng breakData = lstBreakData.get(0);
+							lstBreakMng.remove(breakData);
+						}
+						lstInterimData.remove(remainData);
 					}
-					lstInterimData.remove(remainData);
+					lstInterimData.add(remainReplace);
 				}
-				lstInterimData.add(remainReplace);
+				lstBreakMng.add(breakReplace);
 			}
-			lstBreakMng.add(breakReplace);
+			
 		}		
 		for (InterimBreakMng breakMng : lstBreakMng) {
 			//アルゴリズム「代休と紐付けをしない休出を取得する」を実行する
-			Optional<InterimRemain> remainData = interimRemainRepo.getById(breakMng.getBreakMngId());
-			BreakDayOffDetail dataDetail = this.getNotTypeDayOff(breakMng, remainData.get());
+			InterimRemain remainData = lstInterimData.stream()
+					.filter(a -> a.getRemainManaID().equals(breakMng.getBreakMngId()))
+					.collect(Collectors.toList())
+					.get(0);
+			BreakDayOffDetail dataDetail = this.getNotTypeDayOff(breakMng, remainData);
 			if(dataDetail != null) {
 				lstOutput.add(dataDetail);
 			}

@@ -17,6 +17,7 @@ module nts.uk.at.view.kaf000.b.service {
         holidayShipmentApprove: "at/request/application/holidayshipment/approve",
         holidayShipmentDeny: "at/request/application/holidayshipment/deny",
         holidayShipmentRelease: "at/request/application/holidayshipment/release",
+        reflectAppSingle: "at/request/application/reflect-app"
     }
 
     export function getAppDataDate(command): JQueryPromise<any> {
@@ -98,5 +99,9 @@ module nts.uk.at.view.kaf000.b.service {
     
     export function getAppByListID(listAppID: Array<string>): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getAppByListID, listAppID);
+    }
+    
+    export function reflectAppSingle(appID: Array<string>): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.reflectAppSingle, appID);
     }
 }
