@@ -39,7 +39,7 @@ public interface InterimBreakDayOffMngRepository {
 	 * ・使用期限日≦INPUT.期間.終了年月日
 	 * @return
 	 */
-	List<InterimBreakMng> getByPeriod(List<String> mngId, Double unUseDays, DatePeriod dateData);
+	List<InterimBreakMng> getByPeriod(List<String> mngId, double unUseDays, DatePeriod dateData);
 	
 	/**
 	 * 暫定休出管理データ 　を追加および更新

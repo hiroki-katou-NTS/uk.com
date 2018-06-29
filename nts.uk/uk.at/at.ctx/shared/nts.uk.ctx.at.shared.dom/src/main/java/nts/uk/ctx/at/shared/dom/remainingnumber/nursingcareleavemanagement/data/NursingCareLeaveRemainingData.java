@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.basic
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.basic.NumOfUseDay;
 
 /**
- * 介護休暇付与残数データ
+ * 子の看護・介護休暇付与残数データ
  * 
  * @author xuan vinh
  *
@@ -17,9 +16,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.basic
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class NursingCareLeaveRemainingData extends AggregateRoot {
+public abstract class NursingCareLeaveRemainingData extends AggregateRoot {
 
 	// 社員ID
 	private String sId;
@@ -28,12 +26,12 @@ public class NursingCareLeaveRemainingData extends AggregateRoot {
 
 	// 使用日数
 	private NumOfUseDay numOfUsedDay;
-
-	public static NursingCareLeaveRemainingData getChildCareHDRemaining(String empId, Double usedDay) {
-		return new NursingCareLeaveRemainingData(empId, LeaveType.CHILD_CARE_LEAVE, new NumOfUseDay(usedDay));
+	
+	public NursingCareLeaveRemainingData(String sId, LeaveType leaveType, NumOfUseDay numOfUsedDay) {
+		super();
+		this.sId = sId;
+		this.leaveType = leaveType;
+		this.numOfUsedDay = numOfUsedDay;
 	}
-
-	public static NursingCareLeaveRemainingData getCareHDRemaining(String empId, Double usedDay) {
-		return new NursingCareLeaveRemainingData(empId, LeaveType.LEAVE_FOR_CARE, new NumOfUseDay(usedDay));
-	}
+	
 }

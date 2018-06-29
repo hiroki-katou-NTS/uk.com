@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.pubimp.application.lateorleaveearly;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
@@ -32,6 +35,9 @@ public class LateOrLeaveEarlyPubImpl implements LateOrLeaveEarlyPub {
 			GeneralDate endDate) {
 		String companyID = AppContexts.user().companyId();
 		List<Application_New> listApp = applicationRepository.getListLateOrLeaveEarly(companyID, employeeID, startDate, endDate);
+		if(CollectionUtil.isEmpty(listApp)){
+			return Collections.emptyList();
+		}
 		List<String> listAppID = listApp.stream().map(x -> x.getAppID()).collect(Collectors.toList());
 		return lateOrLeaveEarlyRepository.findByActualCancelAtr(listAppID, 1).stream()
 				.map(x -> {

@@ -29,7 +29,7 @@ __viewContext.ready(function() {
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
-                employeeIDs: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID]
+                employeeID: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID
             }
         );
 		break;
@@ -41,7 +41,7 @@ __viewContext.ready(function() {
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
-                employeeIDs: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID]
+                employeeID: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID
             }
         );
 		break;

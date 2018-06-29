@@ -57,7 +57,6 @@ module nts.custom.component {
                             items: gridlist.options,
                             selected: gridlist.value,
                             placeHolder: '名称で検索…',
-                            searchText: '絞り込み',
                             selectedKey: 'maintenanceLayoutID', 
                             fields: ['layoutName'], 
                             mode: 'igGrid'
