@@ -25,11 +25,13 @@ module kdl009.test {
                 
                 nts.uk.ui.windows.setShared('KDL009_DATA', param);
                 
-                if(param.employeeIds.length > 1) {
-                    nts.uk.ui.windows.sub.modal("/view/kdl/009/a/multi.xhtml");
-                } else {
-                    nts.uk.ui.windows.sub.modal("/view/kdl/009/a/single.xhtml");
-                }
+                service.getEmployee(param).done(function(data: any) {
+                    if(data.employeeBasicInfo.length > 1) {
+                        nts.uk.ui.windows.sub.modal("/view/kdl/009/a/multi.xhtml");
+                    } else {
+                        nts.uk.ui.windows.sub.modal("/view/kdl/009/a/single.xhtml");
+                    }
+                });                
             }
         }
         
