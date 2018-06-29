@@ -61,7 +61,7 @@ public class ServerPreparationService {
 							serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
 							if (checkNormalFile(serverPrepareMng)) {
 								// アルゴリズム「対象社員の復元」を実行する
-								employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery,
+								serverPrepareMng = employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery,
 										tableList);
 							}
 						}

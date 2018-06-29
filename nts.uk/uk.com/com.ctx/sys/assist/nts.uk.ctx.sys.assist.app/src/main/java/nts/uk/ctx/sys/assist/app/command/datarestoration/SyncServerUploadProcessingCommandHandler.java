@@ -117,7 +117,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 								setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 								if (checkNormalFile(serverPrepareMng)) {
 									// アルゴリズム「対象社員の復元」を実行する
-									employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery,
+									serverPrepareMng = employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery,
 											tableList);
 									setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 								}

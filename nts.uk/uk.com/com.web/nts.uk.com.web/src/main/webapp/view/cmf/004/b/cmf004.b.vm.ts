@@ -3,6 +3,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import dialog = nts.uk.ui.dialog;
+    import block     = nts.uk.ui.block;
     export class ScreenModel {
         stepList: Array<NtsWizardStep> = [
             { content: '.step-1' },
@@ -172,7 +173,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenB(): void {
             let self = this;
-
+            block.invisible();
             self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
             self.endDateString(moment.utc().format("YYYY/MM/DD"));
             let paramSearch = {
@@ -197,6 +198,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                         self.dataRecoverySelection().recoveryFileList.push(itemTarget);
                     }
                 }
+            }).always(() =>{
+                block.clear();
             });
         }
 
