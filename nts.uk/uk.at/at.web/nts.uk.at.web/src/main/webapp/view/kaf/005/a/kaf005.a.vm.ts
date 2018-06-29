@@ -55,6 +55,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: KnockoutObservable<string> = ko.observable('');
         employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
+        employeeList :KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+        selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+        employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+        totalEmployee: KnockoutObservable<string> = ko.observable(null);
         heightOvertimeHours: KnockoutObservable<number> = ko.observable(null);
         
         overtimeAtr: KnockoutObservable<number> = ko.observable(null);
@@ -139,7 +143,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.timeEnd1(transferData.endTime);
                 self.appDate(transferData.appDate);
                 self.multilContent(transferData.applicationReason);
-                self.employeeIDs(transferData.employeeIDs); 
+                self.employeeIDs(transferData.employeeIDs);
+                self.employeeID(transferData.employeeID); 
                 self.uiType(transferData.uiType); 
             }
                     
@@ -176,6 +181,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 timeStart1: self.timeStart1(),
                 timeEnd1: self.timeEnd1(),
                 reasonContent: self.multilContent(),
+                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                 employeeIDs: self.employeeIDs()
             }).done((data) => {
                 self.initData(data);
@@ -203,7 +209,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             overtimeAtr: self.overtimeAtr()    
                         }).done((data) =>{
                             self.findBychangeAppDateData(data);
-                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
+                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID());
                             self.convertAppOvertimeReferDto(data);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
@@ -358,6 +364,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.workTypeChangeFlg(data.workTypeChangeFlg);
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
+            self.convertAppOvertimeReferDto(data);
+            // list employeeID
+            if(!nts.uk.util.isNullOrEmpty(data.employees)){
+                self.employeeFlag(true);
+                for(let i= 0; i < data.employees.length; i++){
+                    self.employeeList.push(new common.EmployeeOT(data.employees[i].employeeIDs,data.employees[i].employeeName));
+                }
+                let total = data.employees.length;
+                self.totalEmployee(nts.uk.resource.getText("KAF005_184",total.toString()));
+            }
             // 休憩時間
             for (let i = 1; i < 11; i++) {
                 self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i, null, null, null,""));
@@ -539,7 +555,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }
             }
             let overtime: common.AppOverTime = {
-                applicationDate: self.appDate(),
+                applicationDate: new Date(self.appDate()),
                 prePostAtr: self.prePostSelected(),
                 applicantSID: self.employeeID(),
                 applicationReason: appReason,

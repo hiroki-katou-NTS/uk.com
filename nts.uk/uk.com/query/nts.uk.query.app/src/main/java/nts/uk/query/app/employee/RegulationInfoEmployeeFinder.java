@@ -13,6 +13,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
+import nts.uk.query.model.employee.CCG001SystemType;
 import nts.uk.query.model.employee.EmployeeAuthAdapter;
 import nts.uk.query.model.employee.EmployeeReferenceRange;
 import nts.uk.query.model.employee.EmployeeRoleImported;
@@ -199,6 +201,7 @@ public class RegulationInfoEmployeeFinder {
 		// check param referenceRange
 		switch (EmployeeReferenceRange.valueOf(queryDto.getReferenceRange())) {
 		case ONLY_MYSELF:
+			isSearchOnlyMe = true;
 			break;
 		case ALL_EMPLOYEE:
 			if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
@@ -267,7 +270,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = this.empDataMngInfoAdapter.findNotDeletedBySCode(AppContexts.user().companyId(),
 				sCd);
 
-		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
 	}
 
 	/**
@@ -282,7 +285,7 @@ public class RegulationInfoEmployeeFinder {
 
 		List<String> sIds = this.empDataMngInfoAdapter.findByListPersonId(AppContexts.user().companyId(), pIds);
 
-		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
 	}
 
 	/**
@@ -295,7 +298,7 @@ public class RegulationInfoEmployeeFinder {
 	public List<String> searchByEntryDate(DatePeriod period, Integer systemType) {
 		List<String> sIds = this.empHisRepo.findEmployeeByEntryDate(AppContexts.user().companyId(), period);
 
-		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
 	}
 
 	/**
@@ -308,7 +311,7 @@ public class RegulationInfoEmployeeFinder {
 	public List<String> searchByRetirementDate(DatePeriod period, Integer systemType) {
 		List<String> sIds = this.empHisRepo.findEmployeeByRetirementDate(AppContexts.user().companyId(), period);
 
-		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
 	}
 
 	/**
@@ -344,5 +347,37 @@ public class RegulationInfoEmployeeFinder {
 				.workplaceCode(model.getWorkplaceCode().orElse(""))
 				.workplaceName(model.getWorkplaceName().orElse(""))
 				.build();
+	}
+	
+	// ・ロール種類：
+	// ※パラメータ「システム区分」＝「個人情報」の場合
+	// →「ロール種類」＝「個人情報」
+	// ※パラメータ「システム区分」＝「就業」の場合
+	// →「ロール種類」＝「就業」
+	// ※パラメータ「システム区分」＝「給与」の場合
+	// →「ロール種類」＝「給与」
+	// ※パラメータ「システム区分」＝「人事」の場合
+	// →「ロール種類」＝「人事」
+	/**
+	 * Convert from.
+	 *
+	 * @param systemType the system type
+	 * @return the role type
+	 */
+	private RoleType roleTypeFrom(CCG001SystemType systemType) {
+		switch (systemType) {
+		case PERSONAL_INFORMATION:
+			return RoleType.PERSONAL_INFO;
+		case EMPLOYMENT:
+			return RoleType.EMPLOYMENT;
+		case SALARY:
+			return RoleType.SALARY;
+		case HUMAN_RESOURCES:
+			return RoleType.HUMAN_RESOURCE;
+		case ADMINISTRATOR:
+			// TODO: Confirm.
+		default:
+			throw new RuntimeException();
+		}
 	}
 }

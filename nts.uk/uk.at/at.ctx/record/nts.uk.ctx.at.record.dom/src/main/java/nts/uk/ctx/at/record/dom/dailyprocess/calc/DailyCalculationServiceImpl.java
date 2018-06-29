@@ -1,12 +1,18 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
@@ -21,6 +27,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -78,7 +86,6 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 			Optional<ExecutionLog> executionLog) {
 		
 		ProcessState status = ProcessState.SUCCESS;
-
 		// 実行状態　初期設定
 		//*****（未）　setDataのID名を、画面PGでの表示値用セションID名と合わせる必要があるので、画面PGの修正と調整要。
 		//*****（未）　表示させるエラーが出た時は、HasErrorに任意のタイミングでメッセージを入れて返せばいいｊはず。画面側のエラー表示仕様の確認も要。
@@ -112,39 +119,57 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		
 		
 		// 社員分ループ
-		int calculatedCount = 0;
-		for (val employeeId : employeeIds) {
+
+		/** start 並列処理、PARALLELSTREAM */
+		StateHolder stateHolder = new StateHolder(employeeIds.size());
 		
+		employeeIds.parallelStream().forEach(employeeId -> {
 			// 社員の日別実績を計算
-			status = this.dailyCalculationEmployeeService.calculate(asyncContext,
+			if(stateHolder.isInterrupt()){
+				return;
+			}
+			ProcessState cStatus = this.dailyCalculationEmployeeService.calculate(asyncContext,
 					employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr,companyCommonSetting);
 
+			stateHolder.add(cStatus);
 			// 状態確認
-			if (status == ProcessState.SUCCESS){
-				
-				// ログ情報更新（実行内容の完了状態）
-				// ※　成功時、社員別ログ情報（社員別完了状態）を更新する
-				//*****（未）　処理が不完全で、日別作成以外で使えない状態になっている。
-				//*****（未）　ステータスは、何を設定するかが規定されていない。未処理は、1っぽい。
-				//this.targetPersonRepository.update(employeeId, empCalAndSumExecLogID, 0);
-				
-				calculatedCount++;
-				dataSetter.updateData("dailyCalculateCount", calculatedCount);
+			if (cStatus == ProcessState.SUCCESS){
+				dataSetter.updateData("dailyCalculateCount", stateHolder.count());
 			}
-			if (status == ProcessState.INTERRUPTION){
-				
-				// 中断処理
+			if (cStatus == ProcessState.INTERRUPTION){
 				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
-				break;
 			}
-		}
-		if (status == ProcessState.INTERRUPTION) return status;
+		});
+		/** end 並列処理、PARALLELSTREAM */
+		
+		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
 		
 		// 完了処理
 		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
 				ExecutionStatus.DONE.value);
 		dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.DONE.nameId);
+		Stopwatches.printAll();
+		Stopwatches.STOPWATCHES.clear();
+		return ProcessState.SUCCESS;
+	}
+	
+	class StateHolder {
+		private BlockingQueue<ProcessState> status;
 		
-		return status;
+		StateHolder(int max){
+			status = new ArrayBlockingQueue<ProcessState>(max);
+		}
+		
+		void add(ProcessState status){
+			this.status.add(status);
+		}
+		
+		int count(){
+			return this.status.size();
+		}
+		
+		boolean isInterrupt(){
+			return this.status.stream().filter(s -> s == ProcessState.INTERRUPTION).findFirst().isPresent();
+		}
 	}
 }

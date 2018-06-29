@@ -27,7 +27,7 @@ module nts.uk.com.view.cps005.b {
                 let self = this,
                     dfd = $.Deferred();
                 block.invisible();
-                new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
+                service.getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
                     self.currentItemData(new ItemDataModel(data));
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
@@ -48,7 +48,7 @@ module nts.uk.com.view.cps005.b {
                     dfd = $.Deferred();
                 self.currentItemData().personInfoItemList([]);
                 self.currentItemData().selectionItemLst([]);
-                new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
+                service.getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                         self.currentItemData().selectionItemLst(data.selectionItemLst);
@@ -89,14 +89,14 @@ module nts.uk.com.view.cps005.b {
                     if (newItemDef.singleItem.decimalPart === null) {
                         newItemDef.singleItem.decimalPart = 0;
                     }
-                    new service.Service().updateItemDef(newItemDef).done(function(data: string) {
+                    service.updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
-                                info({ messageId: data}).then(() => {
-                                    self.reloadData();
-                                    self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
-                                    self.currentItemData().perInfoItemSelectCode.valueHasMutated();
-                                    block.clear();
-                                });
+                            info({ messageId: data }).then(() => {
+                                self.reloadData();
+                                self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
+                                self.currentItemData().perInfoItemSelectCode.valueHasMutated();
+                                block.clear();
+                            });
                         } else {
                             info({ messageId: "Msg_15" }).then(() => {
                                 self.reloadData();
@@ -129,7 +129,7 @@ module nts.uk.com.view.cps005.b {
                     if (newItemDef.singleItem.decimalPart === null) {
                         newItemDef.singleItem.decimalPart = 0;
                     }
-                    new service.Service().addItemDef(newItemDef).done(function(data: string) {
+                    service.addItemDef(newItemDef).done(function(data: string) {
 
                         info({ messageId: "Msg_15" }).then(() => {
 
@@ -165,7 +165,7 @@ module nts.uk.com.view.cps005.b {
                 if (!self.currentItemData().perInfoItemSelectCode()) return;
                 let indexItemDelete = _.findIndex(self.currentItemData().personInfoItemList(), function(item) { return item.id == removeModel.perInfoItemDefId; });
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    new service.Service().removeItemDef(removeModel).done(function(data: string) {
+                    service.removeItemDef(removeModel).done(function(data: string) {
                         if (data) {
                             info({ messageId: data }).then(() => { block.clear(); });
                             block.clear();
@@ -208,10 +208,10 @@ module nts.uk.com.view.cps005.b {
             }
 
             checkRequired(newItemDef: any): boolean {
-                if(newItemDef.itemName == ""){
+                if (newItemDef.itemName == "") {
                     $("#item-name-control").focus();
                     block.clear();
-                    return true;    
+                    return true;
                 }
 
                 if (newItemDef.singleItem.dataType === 1) {
@@ -311,11 +311,11 @@ module nts.uk.com.view.cps005.b {
                 self.personInfoItemList(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                 self.dataTypeEnum = params.dataTypeEnum || new Array();
                 self.dataTypeEnumFilter = _.filter(params.dataTypeEnum, function(c) {
-                    return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5 || c.value == 6);
+                    return [1, 2, 3, 4, 5, 6].indexOf(c.value) > -1;
                 });
                 self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
-                self.stringItemTypeEnumFilter =  _.filter(params.stringItemTypeEnum, function(c) {
-                    return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5);
+                self.stringItemTypeEnumFilter = _.filter(params.stringItemTypeEnum, function(c) {
+                    return [1, 2, 3, 4, 5].indexOf(c.value) > -1;
                 });
                 self.stringItemDataTypeEnum = params.stringItemDataTypeEnum || new Array();
                 self.stringItemDataTypeEnum.reverse();
@@ -327,7 +327,7 @@ module nts.uk.com.view.cps005.b {
                 self.perInfoItemSelectCode.subscribe(newItemId => {
                     nts.uk.ui.errors.clearAll();
                     if (textUK.isNullOrEmpty(newItemId)) return;
-                    new service.Service().getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: IPersonInfoItem) {
+                    service.getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: IPersonInfoItem) {
                         nts.uk.ui.errors.clearAll();
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
@@ -346,8 +346,20 @@ module nts.uk.com.view.cps005.b {
                             self.currentItemSelected().selectionItem().selectionItemId(data.itemTypeState.dataTypeState.typeCode || undefined);
                         }
 
-                        self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
-                        self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
+
+                        if (self.currentItemSelected().fixedAtr() == 1) {
+                            self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemTypeFixed(); }).localizedName);
+                            if( [DataTypeValue.SELECTION_RADIO, DataTypeValue.SELECTION_BUTTON].indexOf(self.currentItemSelected().dataTypeFixed()) > -1  ){
+                                self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == DataTypeValue.SELECTION; }).localizedName);
+                            }else{
+                                self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataTypeFixed(); }).localizedName);
+                            }
+                            
+                        } else {
+                            self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
+                            self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
+                        }
+
                         self.currentItemSelected().stringItem().stringItemDataTypeText(_.find(self.stringItemDataTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemDataType(); }).localizedName);
                         self.currentItemSelected().numericItem().numericItemAmountText(_.find(self.numericItemAmountAtrEnum, function(o) { return o.code == self.currentItemSelected().numericItem().numericItemAmount(); }).name);
                         self.currentItemSelected().numericItem().numericItemMinusText(_.find(self.numericItemMinusAtrEnum, function(o) { return o.code == self.currentItemSelected().numericItem().numericItemMinus(); }).name);
@@ -369,6 +381,7 @@ module nts.uk.com.view.cps005.b {
         fixedAtr: KnockoutObservable<number> = ko.observable(0);
         itemType: KnockoutObservable<number> = ko.observable(2);
         dataType: KnockoutObservable<number> = ko.observable(1);
+        dataTypeFixed: KnockoutObservable<number> = ko.observable(1);;
         stringItem: KnockoutObservable<StringItemModel> = ko.observable(new StringItemModel(null));
         numericItem: KnockoutObservable<NumericItemModel> = ko.observable(new NumericItemModel(null));
         dateItem: KnockoutObservable<DateItemModel> = ko.observable(new DateItemModel(null));
@@ -378,10 +391,11 @@ module nts.uk.com.view.cps005.b {
         dataTypeText: KnockoutObservable<string> = ko.observable("");
         selectionItemName: string;
         selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        enable:  KnockoutObservable<boolean> = ko.observable(true);
+        enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IPersonInfoItem) {
-            let self = this;
-
+            let self = this,
+                vm : any = __viewContext['screenModelB'],
+                dataTypeEnum: Array<any> = vm == undefined? []: vm.currentItemData() == null? []:(vm.currentItemData().dataTypeEnum);
             if (data) {
                 self.id = data.id || "";
                 self.itemName(data.itemName || "");
@@ -392,8 +406,9 @@ module nts.uk.com.view.cps005.b {
                 let dataTypeState = data.itemTypeState.dataTypeState;
                 if (!dataTypeState) return;
                 if (self.itemType() == 2) {
-                    self.dataType(dataTypeState.dataTypeValue || 1);
-                    switch (self.dataType()) {
+                    self.dataType(dataTypeState.dataTypeValue);
+                    self.dataTypeFixed(dataTypeState.dataTypeValue);
+                    switch (dataTypeState.dataTypeValue) {
                         case 1:
                             self.stringItem(new StringItemModel(dataTypeState));
                             break;
@@ -412,21 +427,19 @@ module nts.uk.com.view.cps005.b {
                         case 6:
                             self.selectionItem(new SelectionItemModel(dataTypeState));
                             break;
+                        case 7:
+                            self.dataTypeText(_.find(dataTypeEnum, function(o) { return o.value == dataTypeState.dataTypeValue; }).localizedName);
+                            break;
+                        case 8:
+                            self.dataTypeText(_.find(dataTypeEnum, function(o) { return o.value == dataTypeState.dataTypeValue; }).localizedName);
+                            break;
+
                     }
                 }
             }
 
             self.dataType.subscribe(function(value) {
                 if (value === (data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1)) return;
-                if (__viewContext['screenModelB'].isUpdate) {
-                    new service.Service().checkItemData(data.id).done(function(obj: boolean) {
-                        if (obj) {
-                            alertError({ messageId: "Msg_233" }).then(() => {
-                                self.dataType(data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1);
-                            });
-                        }
-                    });
-                }
                 self.stringItem(new StringItemModel(null));
                 self.numericItem(new NumericItemModel(null));
                 self.dateItem(new DateItemModel(null));
@@ -437,7 +450,7 @@ module nts.uk.com.view.cps005.b {
                 if (value === 6) {
                     self.selectionItem().selectionItemRefType(2);
                     if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
-                        new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
+                        service.getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
                             __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                                 if (data.length > 0) {
                                     self.selectionItem().selectionLst([]);
@@ -460,7 +473,7 @@ module nts.uk.com.view.cps005.b {
                         if (!value) {
                             return;
                         }
-                        new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                       service.getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.selectionItem().selectionLst([]);
                                 self.selectionItem().selectionLst(data);
@@ -546,16 +559,19 @@ module nts.uk.com.view.cps005.b {
 
     export class StringItemModel {
         stringItemType: KnockoutObservable<number> = ko.observable(1);
+        stringItemTypeFixed: KnockoutObservable<number> = ko.observable(1);
         stringItemTypeText: KnockoutObservable<string> = ko.observable("");
         stringItemLength: KnockoutObservable<number> = ko.observable(null);
         stringItemDataType: KnockoutObservable<number> = ko.observable(2);
         stringItemDataTypeText: KnockoutObservable<string> = ko.observable("");
         constructor(data: IStringItem) {
             let self = this;
-            if (!data) return;
-            self.stringItemType(data.stringItemType || 1);
-            self.stringItemLength(data.stringItemLength || null);
-            self.stringItemDataType(data.stringItemDataType || 2);
+            if (data) {
+                self.stringItemType(data.stringItemType || 1);
+                self.stringItemTypeFixed(data.stringItemType || 1);
+                self.stringItemLength(data.stringItemLength || null);
+                self.stringItemDataType(data.stringItemDataType || null);
+            }
         }
     }
     export class NumericItemModel {
@@ -660,6 +676,7 @@ module nts.uk.com.view.cps005.b {
             self.timeItemMax(data.max);
         }
     }
+
     export class TimePointItemModel {
         timePointItemMin: KnockoutObservable<number> = ko.observable();
         timePointItemMax: KnockoutObservable<number> = ko.observable();
@@ -681,6 +698,7 @@ module nts.uk.com.view.cps005.b {
             self.dateItemType(data.dateItemType || 1);
         }
     }
+
     export class SelectionItemModel {
         selectionItemRefType: KnockoutObservable<number> = ko.observable(0);
         selectionItemRefTypeText: KnockoutObservable<string> = ko.observable("");
@@ -722,7 +740,7 @@ module nts.uk.com.view.cps005.b {
             if (self.selectionItemId() === undefined || self.selectionItemId() === "") {
                 if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
 
-                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
+                    service.getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
                         __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.selectionLst.removeAll();
@@ -741,7 +759,7 @@ module nts.uk.com.view.cps005.b {
                 }
             } else {
 
-                new service.Service().getAllSelByHistory(ko.toJS(self.selectionItemId),
+                service.getAllSelByHistory(ko.toJS(self.selectionItemId),
                     __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                         if (data.length > 0) {
                             self.selectionLst.removeAll();
@@ -762,7 +780,7 @@ module nts.uk.com.view.cps005.b {
                 if (!value) {
                     return;
                 }
-                new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                service.getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                     if (data.length > 0) {
                         self.selectionLst.removeAll();
                         self.selectionLst(data);
@@ -926,7 +944,7 @@ module nts.uk.com.view.cps005.b {
         id: string;
         itemName: string;
         isFixed: number;
-        enable : boolean;
+        enable: boolean;
         itemTypeState: IItemTypeState;
     }
 
@@ -973,7 +991,6 @@ module nts.uk.com.view.cps005.b {
         selectionLst: Array<any>;
         selectionId: string;
         selectionItemName?: string;
-
     }
 
     export enum ISFIXED {
@@ -982,6 +999,21 @@ module nts.uk.com.view.cps005.b {
 
         // 1:固定(Fixed)
         FIXED = 1
+    }
+
+    export enum DataTypeValue {
+        STRING = 1,
+        NUMBERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6,
+        SELECTION_RADIO = 7,
+        SELECTION_BUTTON = 8,
+        READONLY = 9,
+        RELATED_CATEGORY = 10,
+        NUMBERIC_BUTTON = 11,
+        READONLY_BUTTON = 12
     }
 
 }

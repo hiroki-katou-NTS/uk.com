@@ -322,11 +322,11 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(loginID)).findAny()
 				.map(x -> { 
 					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
-						return null; 
+						return ""; 
 					} else { 
 						return x.getOutGoingMails().get(0).getEmailAddress(); 
 					} 
-				}).orElse(null);
+				}).orElse("");
 		String loginName = employeeAdaptor.getEmployeeName(loginID);
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		for(String employeeID : listDestination){
@@ -334,11 +334,11 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			String approverMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
 					.map(x -> { 
 						if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
-							return null; 
+							return ""; 
 						} else { 
 							return x.getOutGoingMails().get(0).getEmailAddress(); 
 						} 
-					}).orElse(null);
+					}).orElse("");
 			if(Strings.isBlank(approverMail)){
 				failList.add(employeeName);
 				continue;
@@ -355,14 +355,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 						employeeID);
 			};
 			Optional<AppDispName> opAppDispName = appDispNameRepository.getDisplay(application.getAppType().value);
-			if(!opAppDispName.isPresent()){
+			if(!opAppDispName.isPresent() || opAppDispName.get().getDispName()==null){
 				throw new RuntimeException("no setting AppDispName 申請表示名");
 			}
 			AppDispName appDispName = opAppDispName.get();
 			String appContent = applicationContentService.getApplicationContent(application);
+			String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName, 
-					text,
+					newText,
 					application.getAppDate().toLocalDate().toString(), 
 					appDispName.getDispName().toString(),
 					applicantName, 
@@ -372,9 +373,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 					loginMail);
 			String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
 			String mailBody = mailContentToSend;
-			if(Strings.isNotBlank(URL)){
-				mailBody += "/n" + URL;
-			}
 			try {
 				mailsender.sendFromAdmin(approverMail, new MailContents(mailTitle, mailBody));
 				successList.add(employeeName);
@@ -397,21 +395,21 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(loginID)).findAny()
 				.map(x -> { 
 					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
-						return null; 
+						return ""; 
 					} else {
 						return x.getOutGoingMails().get(0).getEmailAddress(); 
 					} 
-				}).orElse(null);
+				}).orElse("");
 		String loginName = employeeAdaptor.getEmployeeName(loginID);
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		String applicantMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
 				.map(x -> { 
 					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
-						return null; 
+						return ""; 
 					} else { 
 						return x.getOutGoingMails().get(0).getEmailAddress(); 
 					} 
-				}).orElse(null);
+				}).orElse("");
 		if(Strings.isBlank(applicantMail)){
 			failList.add(employeeName);
 			return new MailResult(successList, failList);
@@ -428,14 +426,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 					employeeID);
 		};
 		Optional<AppDispName> opAppDispName = appDispNameRepository.getDisplay(application.getAppType().value);
-		if(!opAppDispName.isPresent()){
+		if(!opAppDispName.isPresent() || opAppDispName.get().getDispName()==null){
 			throw new RuntimeException("no setting AppDispName 申請表示名");
 		}
 		AppDispName appDispName = opAppDispName.get();
 		String appContent = applicationContentService.getApplicationContent(application);
+		String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 		String mailContentToSend = I18NText.getText("Msg_703",
 				loginName, 
-				text,
+				newText,
 				application.getAppDate().toLocalDate().toString(), 
 				appDispName.getDispName().toString(),
 				applicantName, 
@@ -445,9 +444,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				loginMail);
 		String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
 		String mailBody = mailContentToSend;
-		if(Strings.isNotBlank(URL)){
-			mailBody += "/n" + URL;
-		}
 		try {
 			mailsender.sendFromAdmin(applicantMail, new MailContents(mailTitle, mailBody));
 			successList.add(employeeName);

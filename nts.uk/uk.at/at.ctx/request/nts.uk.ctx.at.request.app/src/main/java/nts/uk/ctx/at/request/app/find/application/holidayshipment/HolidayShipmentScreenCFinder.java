@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShi
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
@@ -32,18 +33,14 @@ public class HolidayShipmentScreenCFinder {
 	@Inject
 	private ApplicationReasonRepository appResonRepo;
 
-	String companyID, employeeID;
-
-	GeneralDate baseDate;
-
-	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
-	final static String DATE_FORMAT = "yyyy/MM/dd";
-
 	public HolidayShipmentDto startPage(String sid, GeneralDate baseDate, int uiType) {
-		companyID = AppContexts.user().companyId();
-		employeeID = AppContexts.user().employeeId();
+		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		AppCommonSettingOutput appCommonSettingOutput = aFinder.getAppCommonSet(companyID, employeeID, baseDate);
 		// アルゴリズム「起動前共通処理（新規）」を実行する
-		HolidayShipmentDto output = aFinder.commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
+		HolidayShipmentDto output = aFinder.commonProcessBeforeStart(appType, companyID, employeeID, baseDate,
+				appCommonSettingOutput);
 		// アルゴリズム「事前事後区分の判断」を実行する
 		output.setPreOrPostType(
 				otherCommonAlgorithm.judgmentPrePostAtr(appType, baseDate, uiType == 0 ? true : false).value);

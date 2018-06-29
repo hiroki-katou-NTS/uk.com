@@ -11,6 +11,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**
@@ -115,7 +116,8 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @param isJustEarlyLeave　ジャスト早退を計算するか
 	 * @return 調整後の日別実績の出退勤クラス
 	 */
-	public TimeLeavingOfDailyPerformance calcJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave) {
+	public TimeLeavingOfDailyPerformance calcJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave,JustCorrectionAtr justCorrectionAtr) {
+		if(justCorrectionAtr.isNotUse()) return this;
 		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
 		for(TimeLeavingWork attendanceLeave : timeLeavingWorks) {
 			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));

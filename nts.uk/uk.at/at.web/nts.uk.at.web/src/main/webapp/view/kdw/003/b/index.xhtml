@@ -10,7 +10,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 950,
+					width : 1190,
 					height : 530
 				};
 			</script>
@@ -23,14 +23,14 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="functions-area">
+				<button data-bind="click: exportCSV, disable: isDisableExportCSV">#{i18n.getText('KDW003_115')}</button>
+				<button id="dialogClose" data-bind="click: closeDialog">#{i18n.getText('KDW003_38')}</button>
+			</div>
 			<div id="contents-area">
 				<table id="grid"></table>
 			</div>
-			<div id="functions-area-bottom">
-				<button 
-					data-bind="click: closeDialog">#{i18n.getText('KDW003_38')}</button>
-			</div>
-			
+
 		</ui:define>
 
 	</ui:composition>

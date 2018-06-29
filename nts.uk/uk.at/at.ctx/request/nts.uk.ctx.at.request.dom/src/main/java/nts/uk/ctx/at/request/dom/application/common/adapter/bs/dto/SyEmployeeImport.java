@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 public class SyEmployeeImport {
 	private String pid;
 
-	private String pname;
+	private String businessName;
 
 	private GeneralDate entryDate;
 

@@ -11,5 +11,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface CalculateDailyRecordServiceCenter{
 
+	//計算
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily);
+	
+	//エラーチェック
+	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList);
 }

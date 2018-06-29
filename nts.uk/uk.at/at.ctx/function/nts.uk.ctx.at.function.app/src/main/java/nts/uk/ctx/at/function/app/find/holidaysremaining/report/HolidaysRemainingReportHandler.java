@@ -59,11 +59,26 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 			employeeInformationAdapter.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds,
 					GeneralDate.localDate(endDate), true, false, true, true, false, false)).forEach(emp -> {
+						String wpCode = "";
+						String wpName = "";
+						String empmentName = "";
+						String positionName = "";
+						if (emp.getWorkplace() != null){
+							wpCode = emp.getWorkplace().getWorkplaceCode();
+							wpName = emp.getWorkplace().getWorkplaceName();
+							
+						}
+						if (emp.getEmployment() != null){
+							empmentName = emp.getEmployment().getEmploymentName();
+						}
+						if (emp.getPosition() != null){
+							positionName = emp.getPosition().getPositionName();
+						}
+						
 						employees.put(emp.getEmployeeId(),
 								new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
-										empNameMap.get(emp.getEmployeeId()), emp.getWorkplace().getWorkplaceCode(),
-										emp.getWorkplace().getWorkplaceName(), emp.getEmployment().getEmploymentName(),
-										emp.getPosition().getPositionName()));
+										empNameMap.get(emp.getEmployeeId()), wpCode,
+										wpName, empmentName, positionName));
 					});
 
 			HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(

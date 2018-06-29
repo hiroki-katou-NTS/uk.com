@@ -54,5 +54,9 @@ public class SubstitutionOfHDManagementData extends AggregateRoot {
 		this.remainDays = new ManagementDataRemainUnit(remainNumber);
 	}
 	
+	public void setRemainsDayToFree(Double remainNumber){
+		this.remainDays = new ManagementDataRemainUnit(this.remainDays.v() + remainNumber);
+	}
+	
 	
 }

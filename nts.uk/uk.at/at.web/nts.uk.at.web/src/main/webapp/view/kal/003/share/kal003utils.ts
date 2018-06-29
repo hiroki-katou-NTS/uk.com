@@ -194,10 +194,10 @@ module nts.uk.at.view.kal003.share {
             return workRecordExtractingCondition;
         }
         //monthly
-        export function convertTransferDataToExtraResultMonthly(vmodel: model.ExtraResultMonthly): any {
+        export function convertTransferDataToExtraResultMonthly(vmodel: model.ExtraResultMonthly, sortBy: number): any {
             let convertExtraResultMonthly = {};
             convertExtraResultMonthly["errorAlarmCheckID"] = vmodel.errorAlarmCheckID();
-            convertExtraResultMonthly["sortBy"] = vmodel.sortBy();
+            convertExtraResultMonthly["sortBy"] = sortBy;
             convertExtraResultMonthly["nameAlarmExtraCon"] = vmodel.nameAlarmExtraCon();
             convertExtraResultMonthly["useAtr"] = vmodel.useAtr();
             convertExtraResultMonthly["typeCheckItem"] = vmodel.typeCheckItem();
@@ -298,6 +298,9 @@ module nts.uk.at.view.kal003.share {
             let lstErAlAtdItemConNew = [];
             for(let i = 0;i<3;i++){
                 let value = lstErAlAtdItemCon[i];
+                if(_.isNil(value)){
+                    value = getDefaultAttdItemGroup1Item()[0];                        
+                }
                 let erAlAtdItemCon = {};
                 erAlAtdItemCon["targetNO"] = i;
                 erAlAtdItemCon["conditionAtr"] = value.conditionAtr(); 

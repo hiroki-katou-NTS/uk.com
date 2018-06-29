@@ -11,11 +11,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
-import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.GoBackOutCorrectionClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.CorrectionResult;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
@@ -34,9 +33,6 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 public class GoingOutStampLeakageChecking {
 
 	@Inject
-	private OutingTimeOfDailyPerformanceRepository outingTimeOfDailyPerformanceRepository;
-
-	@Inject
 	private StampReflectionManagementRepository stampReflectionManagementRepository;
 
 	@Inject
@@ -45,11 +41,10 @@ public class GoingOutStampLeakageChecking {
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
 
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	public void goingOutStampLeakageChecking(String companID, String employeeID, GeneralDate processingDate,
+	public List<EmployeeDailyPerError> goingOutStampLeakageChecking(String companyID, String employeeID, GeneralDate processingDate,
 			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
+		
+		List<EmployeeDailyPerError> employeeDailyPerErrorList = new ArrayList<>();
 
 		// Optional<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance =
 		// this.outingTimeOfDailyPerformanceRepository
@@ -88,13 +83,19 @@ public class GoingOutStampLeakageChecking {
 					}
 
 					// 外出に打刻漏れ補正する
-					CorrectionResult correctionResult = stampLeakageCorrect(companID, employeeID, processingDate,
+					CorrectionResult correctionResult = stampLeakageCorrect(companyID, employeeID, processingDate,
 							outingTimeSheet);
 					if (correctionResult == CorrectionResult.FAILURE) {
-						if (!attendanceItemIDList.isEmpty()) {
-							createEmployeeDailyPerError.createEmployeeDailyPerError(companID, employeeID, processingDate,
-									new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
-						}
+						if (!attendanceItemIDList.isEmpty()){
+							EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyID,
+									employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"),
+									attendanceItemIDList);
+							employeeDailyPerErrorList.add(employeeDailyPerError);
+						}						
+//						if (!attendanceItemIDList.isEmpty()) {
+//							createEmployeeDailyPerError.createEmployeeDailyPerError(companID, employeeID, processingDate,
+//									new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+//						}
 					}
 				}
 
@@ -126,19 +127,25 @@ public class GoingOutStampLeakageChecking {
 					}
 
 					// 戻りに打刻漏れ補正する
-					CorrectionResult returnCorrectionResult = returnStampLeakageCorrect(companID, employeeID,
+					CorrectionResult returnCorrectionResult = returnStampLeakageCorrect(companyID, employeeID,
 							processingDate, outingTimeSheet);
 					if (returnCorrectionResult == CorrectionResult.FAILURE) {
-						if (!newAttendanceItemIDList.isEmpty()) {
-							createEmployeeDailyPerError.createEmployeeDailyPerError(companID, employeeID, processingDate,
-									new ErrorAlarmWorkRecordCode("S001"), newAttendanceItemIDList);
+						if (!newAttendanceItemIDList.isEmpty()){
+							EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyID,
+									employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"),
+									newAttendanceItemIDList);
+							employeeDailyPerErrorList.add(employeeDailyPerError);
 						}
+//						if (!newAttendanceItemIDList.isEmpty()) {
+//							createEmployeeDailyPerError.createEmployeeDailyPerError(companID, employeeID, processingDate,
+//									new ErrorAlarmWorkRecordCode("S001"), newAttendanceItemIDList);
+//						}
 					}
 				}
 
 			}
 		}
-
+		return employeeDailyPerErrorList;
 	}
 
 	private CorrectionResult stampLeakageCorrect(String companyId, String employeeID, GeneralDate processingDate,

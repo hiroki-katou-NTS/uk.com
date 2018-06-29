@@ -60,3 +60,6 @@ table#table-group2conditionmon tbody tr td:nth-child(3n), table#table-group1cond
     text-align: center !important;
 }
 
+#checkCondition *{
+	vertical-align: middle;
+}

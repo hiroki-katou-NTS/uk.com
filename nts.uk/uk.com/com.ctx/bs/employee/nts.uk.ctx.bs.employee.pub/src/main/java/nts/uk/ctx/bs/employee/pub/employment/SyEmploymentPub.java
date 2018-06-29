@@ -1,10 +1,9 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.employment;
 
-import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,9 +49,18 @@ public interface SyEmploymentPub {
 	 * @param period
 	 * @return
 	 */
-	//RequestList 264
+	//RequestList264
 	List<EmploymentHisExport> findByListSidAndPeriod(List<String> sids , DatePeriod datePeriod);
 	
-	
+	/**
+	 * Gets the emp hist by sid and period.
+	 *
+	 * @param sids the sids
+	 * @param datePeriod the date period
+	 * @return the emp hist by sid and period
+	 */
+	// RequestList31-3
+	// 社員ID（List）と指定期間から社員の雇用履歴を取得
+	List<AffPeriodEmpCdHistExport> getEmpHistBySidAndPeriod(List<String> sids , DatePeriod datePeriod);
 	
 }

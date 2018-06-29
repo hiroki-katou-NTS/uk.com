@@ -320,12 +320,24 @@ module nts.custombinding {
                         border-left: 1px solid #aaa;
                     }
 
-                    .layout-control .item-control td div,
-                    .layout-control .item-controls td div {
+                    .layout-control .item-control td>div,
+                    .layout-control .item-controls td>div {
                         background-color: rgb(217, 217, 217);
                         height: 31px;
                         width: 100%;
                         display: block;
+                    }
+
+                    .layout-control .item-control td>div.nts-datepicker-wrapper,
+                    .layout-control .item-controls td>div.nts-datepicker-wrapper {                        
+                        background-color: #fff;
+                    }
+
+                    .layout-control .item-control td>div .ui-state-default,
+                    .layout-control .item-controls td>div .ui-state-default,
+                    .layout-control .item-control td>div .ui-state-default:hover,
+                    .layout-control .item-controls td>div .ui-state-default:hover {
+                        border: none;
                     }
                 
                     .layout-control .item-control td,
@@ -847,7 +859,8 @@ module nts.custombinding {
                                     ALPHANUMERIC: 3,
                                     NUMERIC: 4,
                                     KANA: 5,
-                                    CARDNO: 6
+                                    CARDNO: 6,
+                                    EMPLOYEE_CODE: 7
                                 },
                                 CAT_TYPE: {  
                                     SINGLE : 1,
@@ -873,7 +886,7 @@ module nts.custombinding {
                                 }
                             } -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                            <!-- ko if: [STRING_TYPE.NUMERIC, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                            <!-- ko if: [STRING_TYPE.NUMERIC, STRING_TYPE.CARDNO, STRING_TYPE.EMPLOYEE_CODE].indexOf(item.stringItemType) > -1 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
                             <input data-bind=" ntsTextEditor: {
                                     name: itemName,
                                     value: value,
@@ -1559,6 +1572,12 @@ module nts.custombinding {
                                     case ITEM_STRING_TYPE.CARDNO:
                                         constraint.itemCode = 'StampNumber';
                                         constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
+                                        constraint.charType = 'AnyHalfWidth';
+                                        break;
+                                    case ITEM_STRING_TYPE.EMPLOYEE_CODE:
+                                        constraint.itemCode = 'EmployeeCode';
+                                        constraint.charType = 'AnyHalfWidth';
+                                        break;
                                     case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                         constraint.charType = 'AnyHalfWidth';
                                         break;
@@ -1826,6 +1845,7 @@ module nts.custombinding {
                     def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
                     def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
                     def.required = _.has(def, "required") && def.required || !!item.isRequired;
+                    //def.required = _.has(def, "required") ? (ko.isObservable(def.required) ? def.required : ko.observable(def.required)) : ko.observable(!!item.isRequired);
 
                     def.resourceId = _.has(def, "resourceId") && def.resourceId || undefined;
 
@@ -1872,7 +1892,7 @@ module nts.custombinding {
                                     def.textValue(selected.optionText);
                                 } else {
                                     def.value(undefined);
-                                    def.textValue(`${v}&nbsp;&nbsp;&nbsp;${text('CPS001_107')}`);
+                                    def.textValue(text('CPS001_107'));
                                 }
                             } else {
                                 def.textValue('');
@@ -2022,9 +2042,12 @@ module nts.custombinding {
                                 }
                             });
                         });
-
+                        
+                        // filter group input has record id
+                        // or no record id but has data
+                        // or has record id and delete flag is true
                         inputs = _(inputs).filter(f => {
-                            return f.items.filter(m => !!m.value).length > 0 || (f.recordId && f.delete);
+                            return f.recordId || (!f.recordId && f.items.filter(m => !!m.value).length > 0) || (f.recordId && f.delete);
                         }).value();
 
                         // change value
@@ -2117,6 +2140,11 @@ module nts.custombinding {
                                 // fix stampcard validate
                                 if ([ITEM_STRING_TYPE.CARDNO].indexOf((x.item || {}).stringItemType) > -1) {
                                     constraint = 'StampNumber';
+                                }
+
+                                //EmployeeCode
+                                if ([ITEM_STRING_TYPE.EMPLOYEE_CODE].indexOf((x.item || {}).stringItemType) > -1) {
+                                    constraint = 'EmployeeCode';
                                 }
 
                                 return _.extend(x, {
@@ -2259,6 +2287,11 @@ module nts.custombinding {
                         // fix stampcard validate
                         if ([ITEM_STRING_TYPE.CARDNO].indexOf((col.item || {}).stringItemType) > -1) {
                             constraint = 'StampNumber';
+                        }
+
+                        //EmployeeCode
+                        if ([ITEM_STRING_TYPE.EMPLOYEE_CODE].indexOf((col.item || {}).stringItemType) > -1) {
+                            constraint = 'EmployeeCode';
                         }
 
                         return _.extend(col, {
@@ -3036,7 +3069,9 @@ module nts.custombinding {
         // 5:全角カタカナ(Kana)
         KANA = 5,
         // 6: カードNO
-        CARDNO = 6
+        CARDNO = 6,
+        // 7: 社員コード
+        EMPLOYEE_CODE = 7
     }
 
     // define ITEM_SELECT_TYPE

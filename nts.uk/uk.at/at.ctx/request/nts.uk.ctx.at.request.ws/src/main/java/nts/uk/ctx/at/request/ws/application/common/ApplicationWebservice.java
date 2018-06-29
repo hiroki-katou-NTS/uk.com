@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import lombok.Getter;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
@@ -78,7 +79,8 @@ public class ApplicationWebservice extends WebService {
 	@Inject
 	private UpdateApplicationDeadlineCommandHandler update;
 
-	
+	@Inject
+	private ReflectAplicationCommmandHandler relect;
 	
 	/**
 	 * approve application
@@ -194,7 +196,7 @@ public class ApplicationWebservice extends WebService {
 	
 	@POST
 	@Path("getAppInfoForRemandByAppId")
-	public ApplicationRemandDto getAppInfoByAppIdForRemand(String appID){
+	public ApplicationRemandDto getAppInfoByAppIdForRemand(List<String> appID){
 		return this.finderApp.getAppByIdForRemand(appID);
 	}
 	@POST
@@ -206,7 +208,7 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("getAppDataByDate")
 	public AppDateDataDto getAppDataByDate(AppDateParam param){
-		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID());
+		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID(),param.getEmployeeID());
 	}
 	
 	/**
@@ -229,6 +231,12 @@ public class ApplicationWebservice extends WebService {
 	public void update(List<ApplicationDeadlineCommand> command){
 		this.update.handle(command);
 	}
+	
+	@POST
+	@Path("reflect-app")
+	public void reflectApp(List<String> command){
+		relect.handle(command);
+	}
 
 }
 
@@ -238,6 +246,7 @@ class AppDateParam {
 	private String appDate;
 	private Boolean isStartup;
 	private String appID;
+	private String employeeID;
 }
 
 

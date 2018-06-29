@@ -52,7 +52,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
@@ -113,6 +112,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -926,7 +926,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						day, affiliationInforOfDailyPerfor.getWplID());
 
 				// 加給設定を日別実績に反映する
-				Optional<BonusPaySetting> bonusPaySetting = this.reflectBonusSetting(companyId, employeeID, day, null);
+				Optional<BonusPaySetting> bonusPaySetting = this.reflectBonusSetting(companyId, employeeID, day, null, affiliationInforOfDailyPerfor.getWplID());
 				if (bonusPaySetting.isPresent()) {
 					affiliationInforOfDailyPerfor = new AffiliationInforOfDailyPerfor(
 							affiliationInforOfDailyPerfor.getEmploymentCode(),
@@ -938,7 +938,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 				// 計算区分を日別実績に反映する
 				CalAttrOfDailyPerformance calAttrOfDailyPerformance = this.reflectCalAttOfDaiPer(companyId, employeeID,
-						day);
+						day, affiliationInforOfDailyPerfor);
 
 				// end -----
 				// 1日半日出勤・1日休日系の判定
@@ -1130,11 +1130,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	 * 計算区分を日別実績に反映する
 	 */
 	@Override
-	public CalAttrOfDailyPerformance reflectCalAttOfDaiPer(String companyId, String employeeId, GeneralDate day) {
+	public CalAttrOfDailyPerformance reflectCalAttOfDaiPer(String companyId, String employeeId, GeneralDate day, AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
 
 		// 自動計算設定の取得(get auto calculation setting)
 		BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService.getAutoCalculationSetting(companyId,
-				employeeId, day);
+				employeeId, day, affiliationInforOfDailyPerfor.getWplID(), affiliationInforOfDailyPerfor.getJobTitleID());
 
 		AutoCalSetting flexExcessTime = new AutoCalSetting(
 				baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getUpLimitORtSet(),
@@ -1167,8 +1167,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getCalAtr()));
 
 		// //遅刻早退: 遅刻早退の自動計算設定
-		AutoCalOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalOfLeaveEarlySetting(LeaveAttr.USE,
-				LeaveAttr.USE);
+		AutoCalcOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalcOfLeaveEarlySetting(true,
+				true);
 		// 乖離時間: 乖離時間の自動計算設定
 		AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(
 				DivergenceTimeAttr.USE);
@@ -1541,7 +1541,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	 * @return
 	 */
 	private Optional<BonusPaySetting> reflectBonusSetting(String companyId, String employeeId, GeneralDate day,
-			String workTimeCode) {
+			String workTimeCode, String workPlaceID) {
 
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
 
@@ -1554,11 +1554,18 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			Optional<PersonalBonusPaySetting> personalBonusPaySetting = this.pSBonusPaySettingRepository
 					.getPersonalBonusPaySetting(employeeId);
 			if (!personalBonusPaySetting.isPresent()) {
-				// 所属職場履歴を取得
-				Optional<AffWorkPlaceSidImport> workPlace = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
-				// ドメインモデル「職場加給設定」を取得
-				Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = this.wPBonusPaySettingRepository
-						.getWPBPSetting(new WorkplaceId(workPlace.get().getWorkplaceId()));
+				// 職場の加給設定を取得する
+				List<String> workPlaceIds = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId, workPlaceID, day);
+				
+				Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = Optional.empty();
+				for(String wPId : workPlaceIds){
+					workplaceBonusPaySetting = this.wPBonusPaySettingRepository
+							.getWPBPSetting(new WorkplaceId(wPId));
+					if (workplaceBonusPaySetting.isPresent()) {
+						break;
+					}
+				}
+				
 				if (!workplaceBonusPaySetting.isPresent()) {
 					Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository
 							.getSetting(companyId);

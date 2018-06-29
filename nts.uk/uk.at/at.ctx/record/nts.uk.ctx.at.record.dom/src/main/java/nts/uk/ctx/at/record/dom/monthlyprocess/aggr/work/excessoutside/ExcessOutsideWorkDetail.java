@@ -357,10 +357,12 @@ public class ExcessOutsideWorkDetail {
 			return new AttendanceTimeMonth(holidayWorkTimeDetail.getTransferTime().get().getCalcTime().v());
 		}
 		
-		// フレックス超過時間
+		// フレックス超過時間　（フレックス時間のプラス分）
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value){
 			if (!this.flexExcessTime.containsKey(procDate)) return notExistTime;
-			return new AttendanceTimeMonth(this.flexExcessTime.get(procDate).getFlexTime().getFlexTime().getTime().v());
+			Integer flexExcessMinutes = this.flexExcessTime.get(procDate).getFlexTime().getFlexTime().getTime().v();
+			if (flexExcessMinutes <= 0) flexExcessMinutes = 0;
+			return new AttendanceTimeMonth(flexExcessMinutes);
 		}
 		
 		// 所定内割増時間

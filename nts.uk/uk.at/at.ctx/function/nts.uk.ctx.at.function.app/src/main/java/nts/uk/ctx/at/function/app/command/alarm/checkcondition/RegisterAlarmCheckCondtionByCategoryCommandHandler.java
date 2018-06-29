@@ -126,9 +126,41 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition() ;
-				//add list mon
+				boolean checkErrorFixed = false;
+				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
+					if(fixedExtraMonFun.isUseAtr()) {
+						checkErrorFixed = true;
+						break;
+					}
+				}
+				boolean checkArbExtraCon = false;
+				if(command.getMonAlarmCheckCon().getArbExtraCon().size() >0) {
+					for(ExtraResultMonthlyDomainEventDto dto : command.getMonAlarmCheckCon().getArbExtraCon() ) {
+						if(dto.isUseAtr()) {
+							checkArbExtraCon = true;
+							break;
+						}
+					}
+				}
+				
+				
+				if(checkErrorFixed == false && checkArbExtraCon == false) {
+					throw new BusinessException("Msg_832"); 
+				}
+				
+				//update list mon
 				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
 						.getMonAlarmCheckConDto().getListEralCheckIDOld();
+				for(int i = 0;i<command.getMonAlarmCheckCon().getArbExtraCon().size();i++) {
+					if(command.getMonAlarmCheckCon().getArbExtraCon().get(i).getErrorAlarmCheckID().equals("")) {
+						command.getMonAlarmCheckCon().getArbExtraCon().get(i).setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
+					}
+				}
+				
+				extractionCondition = command.getMonAlarmCheckCon() == null ? null
+						: new MonAlarmCheckCon(IdentifierUtil.randomUniqueId(),
+								command.getMonAlarmCheckCon().getArbExtraCon().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
+								);					
 				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckCon.getMonAlarmCheckConID(),true,false,false,command.getMonAlarmCheckCon().getArbExtraCon(),listEralCheckIDOld);
 				event.toBePublished();
 		
@@ -156,6 +188,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 															x.getCode(), x.getUseAtr(), x.getPeriod(), 
 															x.getErrorAlarm(), x.getMessageDisp())
 				).collect(Collectors.toList());
+				List<Integer> useList = listError.stream().map(x -> x.getUseAtr().value).collect(Collectors.toList());
 				for(AgreeConditionError item : listError){
 					if(item.getId() != null){
 						Optional<AgreeConditionError> oldOption = conErrRep.findById(item.getId(), item.getCode().v(), 
@@ -178,7 +211,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 								x.getCategory(), x.getCode(), 
 								x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp())
 				).collect(Collectors.toList());
-				if(listOt.isEmpty()){
+				boolean check = useList.contains(1);
+				if(!check && listOt.isEmpty()){
 					throw new BusinessException("Msg_832"); 
 				}
 				if(listOt.size() > 10){
@@ -241,6 +275,27 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				break;
 			case MONTHLY:
+				boolean checkErrorFixed = false;
+				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
+					if(fixedExtraMonFun.isUseAtr()) {
+						checkErrorFixed = true;
+						break;
+					}
+				}
+				
+				boolean checkArbExtraCon = false;
+				if(command.getMonAlarmCheckCon().getArbExtraCon().size() >0) {
+					for(ExtraResultMonthlyDomainEventDto dto : command.getMonAlarmCheckCon().getArbExtraCon() ) {
+						if(dto.isUseAtr()) {
+							checkArbExtraCon = true;
+							break;
+						}
+					}
+				}
+				if(checkErrorFixed == false && checkArbExtraCon == false) {
+					throw new BusinessException("Msg_832"); 
+				}
+				
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
 				for(ExtraResultMonthlyDomainEventDto item:command.getMonAlarmCheckCon().getArbExtraCon()) {
 					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
@@ -270,8 +325,12 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			case AGREEMENT:
 				// update agree conditon ot
 				List<AgreeCondOtCommand> listOt = new ArrayList<>();
+				List<AgreeConditionErrorCommand> listError = new ArrayList<>();
+				listError = command.getCondAgree36().getListCondError();
 				listOt = command.getCondAgree36().getListCondOt();
-				if(listOt.isEmpty()){
+				List<Integer> useList = listError.stream().map(x -> x.getUseAtr()).collect(Collectors.toList());
+				boolean check = useList.contains(1);
+				if(!check && listOt.isEmpty()){
 					throw new BusinessException("Msg_832"); 
 				}
 				if(listOt.size() > 10){

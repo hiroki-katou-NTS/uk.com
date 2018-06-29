@@ -22,6 +22,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         listWkpActive: any;
         listWorkplaceId: Array<string>;
         listEmpCd: Array<string>;
+        multiSelectedWorkplaceId: Array<any>;
+        inputContent: any;
 
         person: number;
         daily: number;
@@ -56,6 +58,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 self.isConfirmData = params.isConfirmData;
                 let listWorkplace = params.listWorkplace;
                 self.listEmpCd = params.listEmployeeCode;
+                self.inputContent = params.inputContent;
 
                 let listWorkplaceId = [];
                 _.each(listWorkplace, function(item) {
@@ -140,12 +143,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                         listEmpCd: self.listEmpCd
                     };
                     service.exeSendUnconfirmedMail(obj).done(function(result: any) {
-                        if (result.ok) {
-                            info({ messageId: "Msg_792" });
-                        }
-                        else {
-                            error({ messageId: "Msg_793" });
-                        }
+                        shareModel.showMsgSendEmail(result);
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
                     }).always(function() {
@@ -181,8 +179,17 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 listWkp: self.listWkpActive,
                 selectedWplIndex: index(),
                 listEmployeeCode: self.listEmpCd,
+                inputContent: self.inputContent
             };
             nts.uk.request.jump('/view/kaf/018/f/index.xhtml', params);
+        }
+
+        goBackA() {
+            var self = this;
+            let params = {
+                inputContent: self.inputContent
+            };
+            nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);
         }
     }
 

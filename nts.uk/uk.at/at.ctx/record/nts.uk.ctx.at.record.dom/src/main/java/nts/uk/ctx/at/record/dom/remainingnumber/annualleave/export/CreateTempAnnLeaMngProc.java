@@ -14,8 +14,12 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ScheduleRecordAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -42,12 +46,19 @@ public class CreateTempAnnLeaMngProc {
 	/** 月別実績の勤怠時間 */
 	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
 	
+	/** 会社ID */
+	private String companyId;
 	/** 社員ID */
 	private String employeeId;
 	/** 期間 */
 	private DatePeriod period;
 	/** モード */
 	private TempAnnualLeaveMngMode mode;
+	
+	/** 月別集計で必要な会社別設定 */
+	private MonAggrCompanySettings companySets;
+	/** 月の計算中の日別実績データ */
+	private MonthlyCalculatingDailys monthlyCalculatingDailys;
 	
 	/** 日別実績の勤務情報リスト */
 	private Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailys;
@@ -56,7 +67,7 @@ public class CreateTempAnnLeaMngProc {
 	/** 暫定年休管理データリスト */
 	private List<TempAnnualLeaveManagement> tempAnnualLeaveMngs;
 	/** 勤務種類リスト */
-	private Map<WorkTypeCode, WorkType> workTypeMap;
+	private Map<String, WorkType> workTypeMap;
 	/** 休暇加算設定 */
 	private VacationAddSet vacationAddSet;
 	
@@ -74,8 +85,32 @@ public class CreateTempAnnLeaMngProc {
 		this.workTypeRepo = workTypeRepo;
 		this.getVacationAddSet = getVacationAddSet;
 		this.attendanceTimeOfMonthlyRepo = attendanceTimeOfMonthlyRepo;
+		
+		this.workInfoOfDailys = new HashMap<>();
+		this.basicSchedules = new HashMap<>();
+		this.tempAnnualLeaveMngs = new ArrayList<>();
+		this.workTypeMap = new HashMap<>();
 	}
 	
+	/**
+	 * 勤務種類の取得
+	 * @param workTypeCode 勤務種類コード
+	 * @return 勤務種類
+	 */
+	private WorkType getWorkType(String workTypeCode){
+		
+		if (this.workTypeMap.containsKey(workTypeCode)) return this.workTypeMap.get(workTypeCode);
+		
+		val workTypeOpt = this.workTypeRepo.findByPK(this.companyId, workTypeCode);
+		if (workTypeOpt.isPresent()){
+			this.workTypeMap.put(workTypeCode, workTypeOpt.get());
+		}
+		else {
+			this.workTypeMap.put(workTypeCode, null);
+		}
+		return this.workTypeMap.get(workTypeCode);
+	}
+
 	/**
 	 * 暫定年休管理データを作成する
 	 * @param companyId 会社ID
@@ -84,26 +119,58 @@ public class CreateTempAnnLeaMngProc {
 	 * @param mode モード
 	 * @return 暫定年休管理データリスト
 	 */
-	public List<TempAnnualLeaveManagement> algorithm(String companyId, String employeeId, DatePeriod period,
+	public List<TempAnnualLeaveManagement> algorithm(
+			String companyId,
+			String employeeId,
+			DatePeriod period,
 			TempAnnualLeaveMngMode mode) {
+
+		return this.algorithm(companyId, employeeId, period, mode, Optional.empty(), Optional.empty());
+	}
+	
+	/**
+	 * 暫定年休管理データを作成する
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param period 期間
+	 * @param mode モード
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param monthlyCalcDailys 月の計算中の日別実績データ
+	 * @return 暫定年休管理データリスト
+	 */
+	public List<TempAnnualLeaveManagement> algorithm(
+			String companyId,
+			String employeeId,
+			DatePeriod period,
+			TempAnnualLeaveMngMode mode,
+			Optional<MonAggrCompanySettings> companySets,
+			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 		
+		this.companyId = companyId;
 		this.employeeId = employeeId;
 		this.period = period;
 		this.mode = mode;
 		
-		this.workInfoOfDailys = new HashMap<>();
-		this.basicSchedules = new HashMap<>();
-		this.tempAnnualLeaveMngs = new ArrayList<>();
-
-		// 休暇加算設定　取得
-		this.vacationAddSet = this.getVacationAddSet.get(companyId);
+		this.companySets = null;
+		this.monthlyCalculatingDailys = null;
+		if (companySets.isPresent()) this.companySets = companySets.get();
+		if (monthlyCalcDailys.isPresent()) this.monthlyCalculatingDailys = monthlyCalcDailys.get();
 		
-		// 勤務情報　取得
-		val workTypes = this.workTypeRepo.findByCompanyId(companyId);
-		this.workTypeMap = new HashMap<>();
-		for (val workType : workTypes){
-			val workTypeCode = workType.getWorkTypeCode();
-			this.workTypeMap.putIfAbsent(workTypeCode, workType);
+		if (this.companySets != null){
+			
+			// 休暇加算設定　取得
+			this.vacationAddSet = this.companySets.getVacationAddSet();
+
+			// 勤務種類　取得
+			this.workTypeMap = this.companySets.getAllWorkTypeMap();
+		}
+		else {
+			
+			// 休暇加算設定　取得
+			this.vacationAddSet = this.getVacationAddSet.get(companyId);
+
+			// 勤務種類　取得
+			this.workTypeMap = new HashMap<>();
 		}
 		
 		// 暫定データ作成用の勤務予定・勤務実績・申請を取得
@@ -139,42 +206,37 @@ public class CreateTempAnnLeaMngProc {
 	 */
 	private void getSourceDataForCreate(){
 	
-		List<WorkInfoOfDailyPerformance> acquiredWorkInfos = new ArrayList<>();
-		List<BasicScheduleSidDto> acquiredBasicSchedules = new ArrayList<>();
+		// 「日別実績の勤務情報」を取得する　→　取得した「日別実績の勤務情報」を返す
+		if (this.monthlyCalculatingDailys != null) {
+			this.workInfoOfDailys = this.monthlyCalculatingDailys.getWorkInfoOfDailyMap();
+		}
+		else {
+			val acquiredWorkInfos = this.workInformationRepo.findByPeriodOrderByYmd(this.employeeId, this.period);
+			for (val acquiredWorkInfo : acquiredWorkInfos){
+				val ymd = acquiredWorkInfo.getYmd();
+				this.workInfoOfDailys.putIfAbsent(ymd, acquiredWorkInfo);
+			}
+		}
 		
 		// 「モード」をチェックする
-		if (this.mode == TempAnnualLeaveMngMode.MONTHLY){
-			
-			// 「日別実績の勤務情報」を取得する
-			acquiredWorkInfos = this.workInformationRepo.findByPeriodOrderByYmd(this.employeeId, this.period);
-		}
 		if (this.mode == TempAnnualLeaveMngMode.OTHER){
 
-			// 社員．期間に未反映の申請を取得する
+			// 社員．期間に未反映の申請を取得する　→　取得した「申請」を返す
 			//*****（未）　RequestList依頼待ち。requestコンテキストの処理を呼んで、データを貰う。
-			
-			// 「日別実績の勤務情報」を取得する
-			acquiredWorkInfos = this.workInformationRepo.findByPeriodOrderByYmd(this.employeeId, this.period);
 		
-			// 「勤務予定基本情報」を取得する
+			// 「勤務予定基本情報」を取得する　→　取得した「勤務予定基本情報」を返す
 			//*****（未）　RequestList#141の完成待ち。仮に、今ある他の機能で代替。
 			GeneralDate procDate = this.period.start();
 			while (procDate.beforeOrEquals(this.period.end())){
 				val basicScheduleSidOpt = this.basicScheduleAdapter.findAllBasicSchedule(
 						this.employeeId, procDate);
-				if (basicScheduleSidOpt.isPresent()) acquiredBasicSchedules.add(basicScheduleSidOpt.get());
+				if (basicScheduleSidOpt.isPresent()){
+					val basicScheduleSid = basicScheduleSidOpt.get();
+					val ymd = basicScheduleSid.getDate();
+					this.basicSchedules.putIfAbsent(ymd, basicScheduleSid);
+				}
 				procDate = procDate.addDays(1);
 			}
-		}
-
-		// 取得した「勤務予定基本情報」「日別実績の勤務情報」「申請」を返す
-		for (val acquiredWorkInfo : acquiredWorkInfos){
-			val ymd = acquiredWorkInfo.getYmd();
-			this.workInfoOfDailys.putIfAbsent(ymd, acquiredWorkInfo);
-		}
-		for (val acquiredBasicSchedule : acquiredBasicSchedules){
-			val ymd = acquiredBasicSchedule.getDate();
-			this.basicSchedules.putIfAbsent(ymd, acquiredBasicSchedule);
 		}
 	}
 	
@@ -213,8 +275,9 @@ public class CreateTempAnnLeaMngProc {
 	
 		// 勤務種類から年休の日数を取得
 		val workTypeCode = workInfo.getRecordInfo().getWorkTypeCode();
-		if (!this.workTypeMap.containsKey(workTypeCode)) return;
-		val workType = this.workTypeMap.get(workTypeCode);
+		if (workTypeCode == null) return;
+		val workType = this.getWorkType(workTypeCode.v());
+		if (workType == null) return;
 		val workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, this.vacationAddSet, Optional.empty());
 		
 		val ymd = workInfo.getYmd();
@@ -241,8 +304,8 @@ public class CreateTempAnnLeaMngProc {
 		
 		// 勤務種類から年休の日数を取得
 		val workTypeCode = new WorkTypeCode(basicSchedule.getWorkTypeCode());
-		if (!this.workTypeMap.containsKey(workTypeCode)) return;
-		val workType = this.workTypeMap.get(workTypeCode);
+		val workType = this.getWorkType(workTypeCode.v());
+		if (workType == null) return;
 		val workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, this.vacationAddSet, Optional.empty());
 		
 		val ymd = basicSchedule.getDate();

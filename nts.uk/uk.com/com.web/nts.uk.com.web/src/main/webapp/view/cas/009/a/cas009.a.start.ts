@@ -1,7 +1,6 @@
 module cas009.a {
-    __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
-        screenModel.startPage();
-        __viewContext.bind(screenModel);
+    __viewContext.ready(() => {
+        __viewContext["viewModel"] = new viewmodel.ScreenModel();
+        __viewContext.bind(__viewContext["viewModel"]);
     });
 }

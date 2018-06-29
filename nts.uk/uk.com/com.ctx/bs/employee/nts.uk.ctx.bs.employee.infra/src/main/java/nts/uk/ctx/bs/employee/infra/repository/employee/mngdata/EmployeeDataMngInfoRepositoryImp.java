@@ -44,8 +44,14 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"WHERE e.companyId = :cId AND e.employeeCode = :sCd ");
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
+	
+	private static final String SELECT_BY_COM_ID_AND_BASEDATE = "SELECT e.companyId, e.employeeCode, e.bsymtEmployeeDataMngInfoPk.sId, e.bsymtEmployeeDataMngInfoPk.pId  , ps.businessName , ps.personName"
+			+ " FROM BsymtEmployeeDataMngInfo e "
+			+ " INNER JOIN BsymtAffCompanyHist h ON e.bsymtEmployeeDataMngInfoPk.pId = h.bsymtAffCompanyHistPk.pId "
+			+ " INNER JOIN BpsmtPerson ps ON  e.bsymtEmployeeDataMngInfoPk.pId = ps.bpsmtPersonPk.pId "
+			+ " WHERE e.companyId = :companyId AND h.startDate <= :baseDate AND h.endDate >= :baseDate ";
 
-	private final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
+	private static final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
 			+ " WHERE c.companyId = :companyId AND c.delStatus = 0 AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
 			+ " ORDER BY c.employeeCode DESC";
 
@@ -76,32 +82,31 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	// duongtv start code
 	/** The select by list emp code. */
-	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
+	public static final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
 			+ " AND e.employeeCode IN :listEmployeeCode ";
 
 	/** The select by list emp id. */
-	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
+	public static final String SELECT_BY_LIST_EMP_ID = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
 			+ " AND e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ORDER BY e.employeeCode ASC";
 
 	// duongtv end code
 
 	/** The select by list empId. */
-	public final String SELECT_BY_LIST_EMPID = SELECT_NO_PARAM + " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
+	public static final String SELECT_BY_LIST_EMPID = SELECT_NO_PARAM + " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
 
 	/** The select by cid and pid. */
 
-	public final String SELECT_BY_CID_PID = SELECT_NO_PARAM
+	public static final String SELECT_BY_CID_PID = SELECT_NO_PARAM
 			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.pId = :pid ";
 
 	/** The select by cid and sid. */
-	public final String SELECT_BY_CID_SID = SELECT_NO_PARAM
+	public static final String SELECT_BY_CID_SID = SELECT_NO_PARAM
 			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.sId = :sid ";
 
 	/** The select by cid and sid. */
-	public final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
-	
-	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
+	public static final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
+	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -166,6 +171,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return queryProxy().query(SELECT_BY_COM_ID, BsymtEmployeeDataMngInfo.class).setParameter("companyId", cId)
 				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
 	}
+	
+	
 
 	private EmployeeDataMngInfo toDomain(BsymtEmployeeDataMngInfo entity) {
 		return EmployeeDataMngInfo.createFromJavaType(entity.companyId, entity.bsymtEmployeeDataMngInfoPk.pId,
@@ -252,10 +259,15 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public List<EmployeeSimpleInfo> findByIds(List<String> lstId) {
-		List<EmployeeSimpleInfo> emps = queryProxy().query(SELECT_INFO_BY_IDS, Object[].class)
-				.setParameter("lstId", lstId)
-				.getList(m -> new EmployeeSimpleInfo(m[0].toString(), m[1].toString(), m[2].toString()));
-		
+		List<EmployeeSimpleInfo> emps = new ArrayList<EmployeeSimpleInfo>();
+
+		CollectionUtil.split(lstId, 1000, ids -> {
+			List<EmployeeSimpleInfo> _emps = queryProxy().query(SELECT_INFO_BY_IDS, Object[].class)
+					.setParameter("lstId", ids)
+					.getList(m -> new EmployeeSimpleInfo(m[0].toString(), m[1].toString(), m[2].toString()));
+			emps.addAll(_emps);
+		});
+
 		return emps;
 	}
 
@@ -393,10 +405,12 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	// sonnlb code start
 	@Override
-	public Optional<String> findLastEml(String companyId, String startLetters) {
+	public Optional<String> findLastEml(String companyId, String startLetters, int length) {
 		List<String> lastEmployeeCode = this.queryProxy().query(GET_LAST_EMPLOYEE, String.class)
 				.setParameter("companyId", companyId)
-				.setParameter("emlCode", StringUtils.isEmpty(startLetters) ? "" : startLetters).getList();
+				.setParameter("emlCode", StringUtils.isEmpty(startLetters) ? "" : startLetters)
+				.getList().stream()
+				.filter(emCode -> emCode.length() == length).collect(Collectors.toList());
 		if (!lastEmployeeCode.isEmpty()) {
 			return Optional.of(lastEmployeeCode.get(0));
 		}
@@ -430,10 +444,19 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public List<EmployeeDataMngInfo> getAllByCid(String cid) {
-		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy()
-				.query(GET_ALL, BsymtEmployeeDataMngInfo.class).setParameter("cid", cid).getList();
+		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy().query(GET_ALL, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cid", cid).getList();
 
 		return toListEmployeeDataMngInfo(listEntity);
+	}
+
+	@Override
+	public List<Object[]> findByCompanyIdAndBaseDate(String cid, GeneralDate baseDate) {
+		
+		return queryProxy().query(SELECT_BY_COM_ID_AND_BASEDATE, Object[].class)
+				.setParameter("companyId", cid)
+				.setParameter("baseDate", baseDate)
+				.getList();
 	}
 
 	// laitv code end

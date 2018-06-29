@@ -40,7 +40,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, ProcessResult> {
 	
-	private final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Inject
 	private AppStampNewDomainService applicationStampNewDomainService;
@@ -102,7 +102,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 										x.getStampFrameNo(), 
 										EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
 										Optional.ofNullable(x.getSupportCard()), 
-										Optional.ofNullable(x.getSupportLocationCD()), 
+										Optional.ofNullable(x.getSupportLocation()), 
 										Optional.ofNullable(x.getStartTime()).map(p -> new TimeWithDayAttr(p)), 
 										Optional.ofNullable(x.getStartLocation()), 
 										Optional.ofNullable(x.getEndTime()).map(p -> new TimeWithDayAttr(p)), 
@@ -151,7 +151,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 										x.getStampFrameNo(), 
 										EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
 										Optional.ofNullable(x.getSupportCard()), 
-										Optional.ofNullable(x.getSupportLocationCD()), 
+										Optional.ofNullable(x.getSupportLocation()), 
 										Optional.ofNullable(x.getStartTime()).map(p -> new TimeWithDayAttr(p)), 
 										Optional.ofNullable(x.getStartLocation()), 
 										Optional.ofNullable(x.getEndTime()).map(p -> new TimeWithDayAttr(p)), 

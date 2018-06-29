@@ -30,6 +30,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public class TotalTimesFromDailyRecord {
 
+	/** 会社ID */
+	private String companyId;
 	/** 出勤状態リスト */
 	private AttendanceStatusList attendanceStatusList;
 	/** 勤務情報リスト */
@@ -38,6 +40,8 @@ public class TotalTimesFromDailyRecord {
 	private Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap;
 	/** 勤務種類リスト */
 	private Map<String, WorkType> workTypeMap;
+	/** 勤務種類リポジトリ */
+	private WorkTypeRepository workTypeRepo;
 
 	/**
 	 * コンストラクタ
@@ -57,56 +61,79 @@ public class TotalTimesFromDailyRecord {
 			TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepo,
 			WorkInformationRepository workInfoOfDailyRepo,
 			WorkTypeRepository workTypeRepo){
-		
+
+		this.companyId = companyId;
 		this.attendanceStatusList = new AttendanceStatusList(
 				employeeId, dailysPeriod, attendanceTimeOfDailyRepo, timeLeavingOfDailyRepo);
 		this.workInfoList = new WorkInfoList(employeeId, dailysPeriod, workInfoOfDailyRepo);
+		this.workTypeMap = new HashMap<>();
 		this.setData(
 				attendanceTimeOfDailyRepo.findByPeriodOrderByYmd(employeeId, dailysPeriod),
-				workTypeRepo.findByCompanyId(companyId));
+				workTypeRepo);
 	}
 
 	/**
 	 * コンストラクタ
+	 * @param companyId 会社ID
 	 * @param dailysPeriod 日別実績の期間
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
 	 * @param timeLeavingOfDailys 日別実績の出退勤リスト
 	 * @param workInfoOfDailys 日別実績の勤務情報リスト
-	 * @param workTypeList 勤務種類リスト
+	 * @param workTypeMap 勤務種類リスト
+	 * @param workTypeRepo 勤務種類リポジトリ
 	 */
 	public TotalTimesFromDailyRecord(
+			String companyId,
 			DatePeriod dailysPeriod,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
 			List<TimeLeavingOfDailyPerformance> timeLeavingOfDailys,
 			List<WorkInfoOfDailyPerformance> workInfoOfDailys,
-			List<WorkType> workTypeList){
+			Map<String, WorkType> workTypeMap,
+			WorkTypeRepository workTypeRepo){
 		
+		this.companyId = companyId;
 		this.attendanceStatusList = new AttendanceStatusList(attendanceTimeOfDailys, timeLeavingOfDailys);
 		this.workInfoList = new WorkInfoList(workInfoOfDailys);
-		this.setData(attendanceTimeOfDailys, workTypeList);
+		this.workTypeMap = workTypeMap;
+		this.setData(attendanceTimeOfDailys, workTypeRepo);
 	}
 	
 	/**
 	 * データ設定
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
-	 * @param workTypeList 勤務種類リスト
+	 * @param workTypeRepo 勤務種類リポジトリ
 	 */
 	private void setData(
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
-			List<WorkType> workTypeList){
+			WorkTypeRepository workTypeRepo){
 		
 		this.attendanceTimeOfDailyMap = new HashMap<>();
-		this.workTypeMap = new HashMap<>();
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
 			val ymd = attendanceTimeOfDaily.getYmd();
 			this.attendanceTimeOfDailyMap.putIfAbsent(ymd, attendanceTimeOfDaily);
 		}
-		for (val workType : workTypeList){
-			val workTypeCode = workType.getWorkTypeCode();
-			this.workTypeMap.putIfAbsent(workTypeCode.v(), workType);
-		}
+		this.workTypeRepo = workTypeRepo;
 	}
 
+	/**
+	 * 勤務種類の取得
+	 * @param workTypeCode 勤務種類コード
+	 * @return 勤務種類
+	 */
+	private WorkType getWorkType(String workTypeCode){
+		
+		if (this.workTypeMap.containsKey(workTypeCode)) return this.workTypeMap.get(workTypeCode);
+		
+		val workTypeOpt = this.workTypeRepo.findByPK(this.companyId, workTypeCode);
+		if (workTypeOpt.isPresent()){
+			this.workTypeMap.put(workTypeCode, workTypeOpt.get());
+		}
+		else {
+			this.workTypeMap.put(workTypeCode, null);
+		}
+		return this.workTypeMap.get(workTypeCode);
+	}
+	
 	/**
 	 * 回数集計結果情報を取得する
 	 * @param totalTimesList 回数集計
@@ -157,8 +184,8 @@ public class TotalTimesFromDailyRecord {
 			// 勤務種類が取得できない日は、集計しない
 			if (workInfo.getWorkTypeCode() == null) continue;
 			String workTypeCd = workInfo.getWorkTypeCode().v();
-			if (!this.workTypeMap.containsKey(workTypeCd)) continue;
-			val workType = this.workTypeMap.get(workTypeCd);
+			val workType = this.getWorkType(workTypeCd);
+			if (workType == null) continue;
 
 			// 就業時間帯を確認する
 			String workTimeCd = "";
@@ -258,21 +285,14 @@ public class TotalTimesFromDailyRecord {
 				}
 
 				// 回数を取得
-				double count = 0.0;
-				if (workType.isOneDay()){
-					// 1日出勤系なら、1.0日を加算
-					if (workType.isAttendanceOrShootingOrHolidayWork(workType.getDailyWork().getOneDay())){
-						count += 1.0;
-					}
-				}
-				else {
-					// 午前出勤系・午後出勤系なら、それぞれ0.5日を加算
-					if (workType.isAttendanceOrShootingOrHolidayWork(workType.getDailyWork().getMorning())){
-						count += 0.5;
-					}
-					if (workType.isAttendanceOrShootingOrHolidayWork(workType.getDailyWork().getAfternoon())){
-						count += 0.5;
-					}
+				double count = 1.0;
+				switch (workType.getAttendanceHolidayAttr()){
+				case MORNING:
+				case AFTERNOON:
+					count += 0.5;
+					break;
+				default:
+					break;
 				}
 				switch (totalTimes.getCountAtr()){
 				case ONEDAY:

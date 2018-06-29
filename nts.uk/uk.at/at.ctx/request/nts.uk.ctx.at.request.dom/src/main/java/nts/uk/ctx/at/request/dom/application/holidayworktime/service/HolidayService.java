@@ -9,10 +9,19 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 public interface HolidayService {
+	/**
+	 * 4_a.勤務種類を取得する（法定内外休日）
+	 * @param companyID
+	 * @param employeeID
+	 * @param appEmploymentSettings
+	 * @param appDate
+	 * @param personalLablorCodition
+	 * @return
+	 */
+	public WorkTypeHolidayWork getWorkTypeForLeaverApp(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<WorkingConditionItem> personalLablorCodition,Integer paramholidayCls);
 	
 	 /**
 	 * 4.勤務種類を取得する

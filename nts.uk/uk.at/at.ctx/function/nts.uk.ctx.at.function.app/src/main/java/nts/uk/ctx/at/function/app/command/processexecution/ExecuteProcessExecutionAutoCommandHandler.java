@@ -62,8 +62,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeServic
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus.DivCheckMasterShareContainer;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
@@ -342,12 +342,11 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		// ドメインモデル「更新処理自動実行管理」を更新する
 		if (!this.isAbnormalTermEachTask(procExecLog) && (processExecutionLogManage.getOverallStatus() == null
 				|| !processExecutionLogManage.getOverallStatus().isPresent())) {
-			processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
 			processExecutionLogManage.setOverallStatus(EndStatus.SUCCESS);
-		} else {
-			processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
+		} else if(this.isAbnormalTermEachTask(procExecLog)) {
 			processExecutionLogManage.setOverallStatus(EndStatus.ABNORMAL_END);
 		}
+		processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
 		this.processExecLogManaRepo.update(processExecutionLogManage);
 
 		List<ExecutionTaskLog> taskLogList = this.execTaskLogRepo.getAllByCidExecCdExecId(companyId, execItemCd,
@@ -402,7 +401,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		if (execSetting != null) {
 			//execSetting.setNextExecDateTime();
 			String scheduleId = execSetting.getScheduleId();
-			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
+			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
 			execSetting.setNextExecDateTime(nextFireTime);
 			this.execSettingRepo.update(execSetting);
 		}
@@ -2685,7 +2684,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		} else {
 			try {
 				ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
-				DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
+				MasterShareContainer shareContainer = MasterShareBus.open();
 				companyCommonSetting.setShareContainer(shareContainer);
 				processState = this.dailyCalculationEmployeeService.calculate(asyContext, employeeId, period,
 						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
@@ -2926,7 +2925,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		
 		try {
 			ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
-			DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
+			MasterShareContainer shareContainer = MasterShareBus.open();
 			companyCommonSetting.setShareContainer(shareContainer);
 			// 社員の日別実績を計算
 			 ProcessState2 = this.dailyCalculationEmployeeService.calculate(asyncContext, empId, period,

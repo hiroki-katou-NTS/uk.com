@@ -52,6 +52,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRe
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ColumnSetting;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellStateDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPControlDisplayItem;
@@ -199,7 +200,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				}).collect(Collectors.toList());
 				screenDto.setLstEmployee(lstEmployeeDto);
 			}
-            screenDto.setLoginUser(employeeId);
+			screenDto.setLoginUser(employeeId);
 			// screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(),
 			// employeeId, new DateRange(
 			// screenDto.getSelectedActualTime().getEndDate(),
@@ -255,7 +256,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			GeneralDate endDate) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
 		query.setBaseDate(GeneralDate.today());
-		query.setReferenceRange(EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value);
+		query.setReferenceRange(EmployeeReferenceRange.DEPARTMENT_ONLY.value);
 		query.setFilterByEmployment(false);
 		query.setEmploymentCodes(Collections.emptyList());
 		// query.setFilterByDepartment(false);
@@ -400,7 +401,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
 			throw new BusinessException("Msg_1261");
 		}
-		
+
 		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {
 			MPSheetDto sh = new MPSheetDto(c.getSheetNo(), c.getSheetName());
 			for (PAttendanceItem attend : c.getDisplayItems()) {
@@ -449,7 +450,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		/**
 		 * Get Data
 		 */
-		
+
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<String> listEmployeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 				.collect(Collectors.toList());
@@ -472,20 +473,26 @@ public class MonthlyPerformanceCorrectionProcessor {
 		Map<String, MonthlyPerformaceLockStatus> lockStatusMap = param.getLstLockStatus().stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
 		String employeeIdLogin = AppContexts.user().employeeId();
+
+		List<EditStateOfMonthlyPerformanceDto> editStateOfMonthlyPerformanceDtos = this.repo
+				.findEditStateOfMonthlyPer(new YearMonth(screenDto.getProcessDate()), listEmployeeIds, attdanceIds);
+
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
-			//lock check box1 identify 
-			if(!employeeIdLogin.equals(employeeId)){
+			// lock check box1 identify
+			if (!employeeIdLogin.equals(employeeId)) {
 				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
 			}
 			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) ? ""
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
-       
+
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
 					employeeId, "", false, false, false, "");
 			// Setting data for dynamic column
 			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
+			
+			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream().filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			if (null != rowData) {
 				if (null != rowData.getItems()) {
 					rowData.getItems().forEach(item -> {
@@ -495,7 +502,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 						String attendanceKey = mergeString(ADD_CHARACTER, "" + item.getItemId());
 						PAttendanceItem pA = param.getLstAtdItemUnique().get(item.getItemId());
 						List<String> cellStatus = new ArrayList<>();
-						int attendanceAtr = item.getValueType().value;
 
 						if (pA.getAttendanceAtr() == 1) {
 							int minute = 0;
@@ -523,6 +529,15 @@ public class MonthlyPerformanceCorrectionProcessor {
 						}
 						// Cell Data
 						lstCellState.add(new MPCellStateDto(employeeId, attendanceKey, cellStatus));
+
+						Optional<EditStateOfMonthlyPerformanceDto> dto = newList.stream().filter(item2 -> item2.getAttendanceItemId().equals(item.getItemId())).findFirst();
+						if (dto.isPresent()) {
+							if (dto.get().getStateOfEdit() == 0) {
+								screenDto.setStateCell(attendanceKey, employeeId, HAND_CORRECTION_MYSELF);
+							} else {
+								screenDto.setStateCell(attendanceKey, employeeId, HAND_CORRECTION_OTHER);
+							}
+						}
 					});
 				}
 			}

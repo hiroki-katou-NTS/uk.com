@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.request.ws.application.holidayshipment;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +62,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("start")
 	public HolidayShipmentDto startPage(StartScreenAParam param) {
-		return this.screenAFinder.startPageA(param.getSID(), param.getAppDate(), param.getUiType());
+		return this.screenAFinder.startPageA(param.getSIDs(), param.getAppDate(), param.getUiType());
 	}
 
 	@POST
@@ -115,8 +116,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("approve")
-	public void approve(HolidayShipmentCommand command) {
-		this.approveHandler.handle(command);
+	public JavaTypeResult<List<String>> approve(HolidayShipmentCommand command) {
+		return new JavaTypeResult<List<String>>(this.approveHandler.handle(command));
 	}
 
 	@POST
@@ -133,7 +134,7 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("start_c")
-	public HolidayShipmentDto startPageC(StartScreenAParam param) {
+	public HolidayShipmentDto startPageC(StartScreenCParam param) {
 		return this.screenCFinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
 	}
 
@@ -153,7 +154,7 @@ public class HolidayShipmentWebService extends WebService {
 
 @Value
 class StartScreenAParam {
-	private String sID;
+	private List<String> sIDs;
 	private GeneralDate appDate;
 	private int uiType;
 }
@@ -161,6 +162,13 @@ class StartScreenAParam {
 @Value
 class StartScreenBParam {
 	private String appID;
+}
+
+@Value
+class StartScreenCParam {
+	private String sID;
+	private GeneralDate appDate;
+	private int uiType;
 }
 
 @Value

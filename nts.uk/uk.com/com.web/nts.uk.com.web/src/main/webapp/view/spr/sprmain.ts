@@ -29,7 +29,7 @@ __viewContext.ready(function() {
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
-                employeeIDs: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID]
+                employeeID: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID
             }
         );
 		break;
@@ -41,7 +41,7 @@ __viewContext.ready(function() {
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
-                employeeIDs: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID]
+                employeeID: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID
             }
         );
 		break;
@@ -139,34 +139,34 @@ __viewContext.ready(function() {
         nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;
 	case 6:
-        let paramSave = {
-            startDate: '',
-            /**期間終了日付*/
-            endDate: '',
-            /**申請一覧区分*/
-            appListAtr: 1,
-            /**申請種類*/
-            appType: -1,
-            /**承認状況＿未承認*/
-            unapprovalStatus: true,
-            /**承認状況＿承認済*/
-            approvalStatus: true,
-            /**承認状況＿否認*/
-            denialStatus: true,
-            /**承認状況＿代行承認済*/
-            agentApprovalStatus: true,
-            /**承認状況＿差戻*/
-            remandStatus: true,
-            /**承認状況＿取消*/
-            cancelStatus: true,
-            /**申請表示対象*/
-            appDisplayAtr: 0,
-            /**社員IDリスト*/
-            listEmployeeId: [],
-            /**社員絞込条件*/
-            empRefineCondition: ""        
-        }
-        nts.uk.characteristics.save('AppListExtractCondition', paramSave);
+//        let paramSave = {
+//            startDate: '',
+//            /**期間終了日付*/
+//            endDate: '',
+//            /**申請一覧区分*/
+//            appListAtr: 1,
+//            /**申請種類*/
+//            appType: -1,
+//            /**承認状況＿未承認*/
+//            unapprovalStatus: true,
+//            /**承認状況＿承認済*/
+//            approvalStatus: true,
+//            /**承認状況＿否認*/
+//            denialStatus: true,
+//            /**承認状況＿代行承認済*/
+//            agentApprovalStatus: true,
+//            /**承認状況＿差戻*/
+//            remandStatus: true,
+//            /**承認状況＿取消*/
+//            cancelStatus: true,
+//            /**申請表示対象*/
+//            appDisplayAtr: 0,
+//            /**社員IDリスト*/
+//            listEmployeeId: [],
+//            /**社員絞込条件*/
+//            empRefineCondition: ""        
+//        }
+//        nts.uk.characteristics.save('AppListExtractCondition', paramSave);
         nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [applicationID], 'currentApp': applicationID });
 		break;
 	default:
