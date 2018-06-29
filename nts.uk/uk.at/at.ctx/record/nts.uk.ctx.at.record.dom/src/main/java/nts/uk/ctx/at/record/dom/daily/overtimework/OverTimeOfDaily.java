@@ -61,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -237,7 +238,7 @@ public class OverTimeOfDaily {
 												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,  
 												  AttendanceTime flexPreAppTime,
 												  WorkingConditionItem conditionItem,
-												  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+												  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
 		val overTimeSheet = recordReGet.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get();
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
@@ -274,7 +275,7 @@ public class OverTimeOfDaily {
 					recordReGet.getHolidayAddtionSet().get(),
 					recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),flexPreAppTime,
 					recordReGet.getDailyUnit(),recordReGet.getWorkTimezoneCommonSet(),conditionItem,
-					predetermineTimeSetByPersonInfo);
+					predetermineTimeSetByPersonInfo,coreTimeSetting);
 		}
 
 		val overTimeWork = new AttendanceTime(0);
@@ -373,7 +374,7 @@ public class OverTimeOfDaily {
 	}
 
 	/**
-	 *　深夜時間のチェック＆エラーゲット 
+	 *　実績深夜時間のチェック＆エラーゲット 
 	 * @return
 	 */
 	public List<EmployeeDailyPerError> checkNightTimeExcess(String employeeId,

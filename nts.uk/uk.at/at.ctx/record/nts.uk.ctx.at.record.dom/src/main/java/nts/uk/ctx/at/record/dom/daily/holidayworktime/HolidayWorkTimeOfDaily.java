@@ -40,6 +40,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class HolidayWorkTimeOfDaily {
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;
 	private List<HolidayWorkFrameTime> holidayWorkFrameTime;
+	//休出深夜
 	private Finally<HolidayMidnightWork> holidayMidNightWork;
 	private AttendanceTime holidayTimeSpentAtWork;
 	
@@ -202,7 +203,7 @@ public class HolidayWorkTimeOfDaily {
 	}
 	
 	/**
-	 *　深夜時間のチェック＆エラーゲット 
+	 *　実績の休出深夜超過
 	 * @return
 	 */
 	public List<EmployeeDailyPerError> checkNightTimeExcess(String employeeId,
