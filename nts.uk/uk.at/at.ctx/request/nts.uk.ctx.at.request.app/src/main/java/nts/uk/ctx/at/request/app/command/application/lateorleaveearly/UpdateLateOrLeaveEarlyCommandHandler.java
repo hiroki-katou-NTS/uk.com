@@ -36,7 +36,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResu
 	private DetailBeforeUpdate detailBeforeProcessRegisterService;
 
 	@Inject
-	DetailAfterUpdate afterProcessDetailSerivce;
+	private DetailAfterUpdate afterProcessDetailSerivce;
 
 	@Inject
 	private ApplicationRepository_New applicationRepository;

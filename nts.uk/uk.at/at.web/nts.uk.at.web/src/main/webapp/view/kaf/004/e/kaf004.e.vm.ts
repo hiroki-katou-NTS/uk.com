@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         lateTime1: KnockoutObservable<number> = ko.observable(0);
         lateTime2: KnockoutObservable<number> = ko.observable(0);
         //check send mail
-        sendMail: KnockoutObservable<boolean> = ko.observable(true);
+        isSendMail: KnockoutObservable<boolean> = ko.observable(true);
         //check late
         late1: KnockoutObservable<boolean> = ko.observable(false);
         late2: KnockoutObservable<boolean> = ko.observable(false);
@@ -140,7 +140,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     appID: self.appID(),
                     appDate: self.date(),
                     postAtr: self.postAtr(),
-                    sendMail: self.sendMail(),
+                    sendMail: self.isSendMail(),
                     late1: self.late1() ? 1 : 0,
                     lateTime1: self.lateTime1(),
                     early1: self.early1() ? 1 : 0,
