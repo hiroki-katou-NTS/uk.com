@@ -64,7 +64,7 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	 * lang.Integer)
 	 */
 	@Override
-	// ロールIDから参�可能な職場リストを取得す�
+	// ロールIDから参�可能な職場リストを取得す�
 	public WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType) {
 
 		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceId(systemType);
@@ -87,7 +87,7 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		List<Role> lstRole = roleRepo.findById(roleId);
 		if (!lstRole.isEmpty()) {
 			return lstRole.stream().map(role -> {
-				return new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v());
+				return new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v(), role.getCompanyId());
 			}).collect(Collectors.toList());
 		}
 		return null;
