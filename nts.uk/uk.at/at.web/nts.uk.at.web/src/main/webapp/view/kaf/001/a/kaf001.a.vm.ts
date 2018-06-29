@@ -1,4 +1,4 @@
-module nts.uk.com.view.kaf001.a.viewmodel {
+module kaf001.a.viewmodel {
     import block  = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
     import jump   = nts.uk.request.jump;
@@ -26,7 +26,6 @@ module nts.uk.com.view.kaf001.a.viewmodel {
         isVisiableStampApp            : KnockoutObservable<boolean>             = ko.observable(false);
         //app Name
         appNameDis: KnockoutObservable<ObjNameDis> = ko.observable(null);
-        otName: string = '';
         constructor() {
             let self = this;
 
@@ -113,6 +112,7 @@ module nts.uk.com.view.kaf001.a.viewmodel {
                 maxWidth: 450,
                 maxRows: 20
             };
+            self.start();
         }
 
         start(): JQueryPromise<any> {
@@ -134,7 +134,6 @@ module nts.uk.com.view.kaf001.a.viewmodel {
                     switch (app.appType) {
                         case 0: {
                             obj.overTime = getText('KAF001_12', [app.dispName]);
-                            self.otName = app.dispName;
                             break;
                         }
                         case 1: {
@@ -261,7 +260,7 @@ module nts.uk.com.view.kaf001.a.viewmodel {
                     switch (applicationType) {
                         case ApplicationType.OVER_TIME_APPLICATION: {
                             //open dialog B
-                            jump("at", "/view/kaf/001/b/index.xhtml", { employeeIds: employeeIds, name: self.otName});
+                            jump("at", "/view/kaf/001/b/index.xhtml", { employeeIds: employeeIds});
                             break;
                         }
                         case ApplicationType.ABSENCE_APPLICATION: {

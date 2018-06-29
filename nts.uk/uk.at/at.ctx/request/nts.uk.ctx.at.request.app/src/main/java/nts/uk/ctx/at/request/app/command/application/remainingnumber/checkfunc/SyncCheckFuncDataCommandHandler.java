@@ -96,10 +96,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return;
 		}
 		List<PlannedVacationListCommand> plannedVacationList = new ArrayList<>();
-		if (outputErrorInfoCommand.isEmpty()) {
-			// 計画休暇一覧を取得する
-			plannedVacationList = getPlannedVacationList(asyncTask, command.getDate(), outputErrorInfoCommand);
-		}
+		// 計画休暇一覧を取得する
+		plannedVacationList = getPlannedVacationList(asyncTask, command.getDate(), outputErrorInfoCommand);
 
 		if (asyncTask.hasBeenRequestedToCancel()) {
 			asyncTask.finishedAsCancelled();
@@ -145,8 +143,9 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 
 				// パラメータ.年休残数をチェックする
 				// (Check số phép còn lại trong param -パラメータ.年休残数)
-				checkMaxDayEmployeeList(asyncTask, employeeListResult.get(i), command.getMaxDay(),
-						outputErrorInfoCommand, yearlyHolidaysTimeRemainingImport);
+				if(!checkMaxDayEmployeeList(asyncTask, employeeListResult.get(i), command.getMaxDay(),
+						outputErrorInfoCommand, yearlyHolidaysTimeRemainingImport)) continue;
+
 				if (asyncTask.hasBeenRequestedToCancel()) {
 					asyncTask.finishedAsCancelled();
 					break;
@@ -339,13 +338,9 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	 * @param employeeCheckMaxDay
 	 * @param employeeListResult
 	 */
-	private void checkMaxDayEmployeeList(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask,
+	private boolean checkMaxDayEmployeeList(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask,
 			EmployeeSearchCommand employee, Double maxDay, List<OutputErrorInfoCommand> outputErrorInfoCommand,
 			List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport) {
-		if (asyncTask.hasBeenRequestedToCancel()) {
-			asyncTask.finishedAsCancelled();
-			return;
-		}
 		if (maxDay != null) {
 			if (yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining().compareTo(maxDay) >= 0) {
 				// 取得した年休残数 ≧ パラメータ.年休残数
@@ -356,9 +351,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				outputErrorInfo.setErrorMessage(MSG_1316);
 
 				outputErrorInfoCommand.add(outputErrorInfo);
+				return false;
 			}
 		}
-
+		return true;
 	}
 
 }

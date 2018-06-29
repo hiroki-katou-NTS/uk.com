@@ -150,13 +150,14 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				for (LeaveEarlyTimeOfDaily leaveEarlyTime : attendanceTime.getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getLeaveEarlyTimeOfDaily()) {
 					/* 早退時間 */
-					this.commandProxy().insert(KrcdtDayLeaveEarlyTime.create(attendanceTime.getEmployeeId(),
+					//updateでもデータが無ければInsertされるため
+					this.commandProxy().update(KrcdtDayLeaveEarlyTime.create(attendanceTime.getEmployeeId(),
 							attendanceTime.getYmd(), leaveEarlyTime));
 				}
 				for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getLateTimeOfDaily()) {
 					/* 遅刻時間 */
-					this.commandProxy().insert(
+					this.commandProxy().update(
 							KrcdtDayLateTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), lateTime));
 				}
 //				/* 所定時間内時間 */

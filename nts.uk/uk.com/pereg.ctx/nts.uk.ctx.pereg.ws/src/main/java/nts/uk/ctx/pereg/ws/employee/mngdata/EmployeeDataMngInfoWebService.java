@@ -29,6 +29,12 @@ public class EmployeeDataMngInfoWebService {
 	}
 	
 	@POST
+	@Path("getInitEmplCode")
+	public JavaTypeResult<String> getInitEmplCode() {
+		return new JavaTypeResult<String>(this.employeeFinder.initEmplCode());
+	}
+	
+	@POST
 	@Path("getInitCardNo")
 	public JavaTypeResult<String> getInitCardNo(String newEmployeeCode) {
 		String newCardNo = employeeFinder.initCardNo(newEmployeeCode);

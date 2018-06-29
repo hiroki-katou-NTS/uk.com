@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam;
 
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -7,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author keisuke_hoshina
  *
  */
+@Getter
 public class DailyExcessTotalTimeExpParam {
 	//残業時間
 	AttendanceTime overTime;
