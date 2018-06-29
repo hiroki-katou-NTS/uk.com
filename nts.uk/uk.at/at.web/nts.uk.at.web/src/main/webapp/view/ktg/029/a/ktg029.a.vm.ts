@@ -271,6 +271,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
         
         private openCMM045Dialog():void {
+            parent.nts.uk.ui.block.grayout();
             var self = this;
 //          ※URLパラメータ　＝　照会モード
             if(self.switchDate()){
@@ -297,6 +298,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             };
             nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
                 parent.nts.uk.characteristics.save('AppListExtractCondition', paramSave).done(function() {
+                    parent.nts.uk.ui.block.clear();
                     window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
                 });    
             });          
