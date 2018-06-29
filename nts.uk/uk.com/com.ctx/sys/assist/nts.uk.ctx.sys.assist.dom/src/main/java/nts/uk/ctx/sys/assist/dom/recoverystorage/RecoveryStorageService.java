@@ -15,7 +15,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
@@ -38,7 +38,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.common.CsvFileUtil;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
 
-@Stateless
+@Stateful
 public class RecoveryStorageService {
 	@Resource
 	private SessionContext scContext;
@@ -82,7 +82,7 @@ public class RecoveryStorageService {
 		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value);
 
 		// 処理対象のカテゴリを処理する
-
+		int index = 0;
 		for (int i = 0; i < listCategory.size(); i++) {
 
 			List<TableList> tableUse = performDataRecoveryRepository
@@ -95,7 +95,7 @@ public class RecoveryStorageService {
 			TableListByCategory tableNotUseCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
 					tableNotUse);
 
-			int index = 0;
+			
 			int errorCode;
 			// カテゴリ単位の復旧
 			errorCode = exCurrentCategory(tableListByCategory, tableNotUseCategory, uploadId, dataRecoveryProcessId);
@@ -104,7 +104,7 @@ public class RecoveryStorageService {
 			errorCodeFinal = errorCode;
 			if (errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
 				index++;
-				dataRecoveryMngRepository.updateTotalNumOfProcesses(dataRecoveryProcessId, index);
+				dataRecoveryMngRepository.updateCategoryCnt(dataRecoveryProcessId, index);	
 			} else if (errorCode == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
 				break;
 			} else if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
@@ -191,7 +191,8 @@ public class RecoveryStorageService {
 		}
 		return errorCode;
 	}
-
+	
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public int crudDataByTable(List<List<String>> targetDataTable, String employeeId, String employeeCode,
 			String dataRecoveryProcessId, String fileNameCsv, Optional<TableList> tableList,
 			Optional<PerformDataRecovery> performDataRecovery, List<String> resultsSetting, Boolean tableUse)
@@ -673,13 +674,14 @@ public class RecoveryStorageService {
 		performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid, whereSid, cidCurrent, employeeId);
 
 	}
-
+	
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public int exCurrentCategory(TableListByCategory tableListByCategory, TableListByCategory tableNotUseByCategory,
 			String uploadId, String dataRecoveryProcessId) throws ParseException {
 
 		int errorCode = 0;
 		// カテゴリの中の社員単位の処理
-		//errorCode = exTableUse(tableListByCategory, dataRecoveryProcessId, uploadId);
+		errorCode = exTableUse(tableListByCategory, dataRecoveryProcessId, uploadId);
 
 		if (errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
 			// の処理対象社員コードをクリアする
@@ -699,7 +701,8 @@ public class RecoveryStorageService {
 		}
 		return errorCode;
 	}
-
+	
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public int exTableNotUse(TableListByCategory tableNotUseByCategory, String dataRecoveryProcessId, String uploadId)
 			throws ParseException {
 
@@ -928,7 +931,8 @@ public class RecoveryStorageService {
 			return false;
 		}
 	}
-
+	
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public int exDataTabeRangeDate(String fileNameCsv, List<List<String>> targetDataRecovery,
 			Optional<TableList> tableList, String dataRecoveryProcessId) throws ParseException {
 
