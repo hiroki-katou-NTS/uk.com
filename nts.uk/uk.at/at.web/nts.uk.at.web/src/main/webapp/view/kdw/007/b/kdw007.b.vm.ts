@@ -293,6 +293,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
                     //Open dialog KDL021
                     nts.uk.ui.windows.setShared('Multiple', false);
+                    nts.uk.ui.windows.setShared('MonthlyMode', self.mode == 1);
                     nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                     nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.uncountableAtdItem()]);
                     nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
@@ -329,7 +330,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             self.getListItemByAtr().done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 nts.uk.ui.windows.setShared('Multiple', false);
-                // example wait
+                nts.uk.ui.windows.setShared('MonthlyMode', self.mode == 1);
                 nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.singleAtdItem()]);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
