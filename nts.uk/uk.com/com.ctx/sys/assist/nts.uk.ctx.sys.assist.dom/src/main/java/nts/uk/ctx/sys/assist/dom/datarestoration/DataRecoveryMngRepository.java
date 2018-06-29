@@ -17,7 +17,7 @@ public interface DataRecoveryMngRepository {
 	
 	void updateByOperatingCondition(String dataRecoveryProcessId, int operatingCondition);
 	
-	void updateTotalNumOfProcesses(String dataRecoveryProcessId, int totalNumOfProcesses);
+	void updateCategoryCnt(String dataRecoveryProcessId, int totalCategoryCnt);
 	
 	void updateProcessTargetEmpCode(String dataRecoveryProcessId, String processTargetEmpCode);
 	
