@@ -51,6 +51,8 @@ module nts.uk.ui.koExtentions {
         startValueBind: KnockoutComputed<string>;
         endValueBind: KnockoutComputed<string>;
         format: string = "YYYY/MM/DD H:mm:ss";
+        rangeUnit: string;
+        maxRange: number;
         
         constructor($root: JQuery) {
             this.$root = $root;
@@ -76,11 +78,21 @@ module nts.uk.ui.koExtentions {
                         .ntsError('set', "end is smaller than start value", 'Not defined code', false);
                 return false;
             }
+            if(self.maxRange > 0){
+                let maxEnd = mStart.add(self.maxRange, self.rangeUnit);
+                if(maxEnd.isBefore(mEnd)){
+                    self.$root.find(".datetimepairrange-container")
+                            .ntsError('set', "Max range is " + self.maxRange + " " + self.rangeUnit, 'Not defined code', false);
+                    return false;
+                }
+            }
             return true;
         }
         
         initVal(allBindData){
             let self = this;
+            self.rangeUnit = _.isNil(allBindData.rangeUnit) ? "years" : ko.unwrap(allBindData.rangeUnit);
+            self.maxRange = _.isNil(allBindData.maxRange) ? 0 : ko.unwrap(allBindData.maxRange);
             self.startValueBind = ko.observable();
             self.endValueBind = ko.observable();
             self.startValue = ko.computed({

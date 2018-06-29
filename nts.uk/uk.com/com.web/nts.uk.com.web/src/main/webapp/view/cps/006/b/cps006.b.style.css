@@ -71,3 +71,7 @@
 .currency:after {
 	content: '¥';
 }
+
+input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
+	width: 220px !important;
+}
