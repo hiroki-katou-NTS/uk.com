@@ -63,6 +63,7 @@ import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
+import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
@@ -2226,7 +2227,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 
 		// 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,
-				this.bindDiffTime, this.diffTimeWorkTime, divergence);
+				this.bindDiffTime, this.diffTimeWorkTime, divergence,this.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : this.krcdtDayPremiumTime.toDomain());
 		// 日別実績の勤怠時間
 		return new AttendanceTimeOfDailyPerformance(this.krcdtDayTimePK == null ? null : this.krcdtDayTimePK.employeeID, this.krcdtDayTimePK.generalDate,
 				shedule, actual,
