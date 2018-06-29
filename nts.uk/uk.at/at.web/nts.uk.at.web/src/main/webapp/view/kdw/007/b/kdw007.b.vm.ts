@@ -113,61 +113,6 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             self.fillTextDisplayTarget();
             self.fillTextDisplayComparison();
 
-            // validate
-            caic.compareStartValue.subscribe(v => {
-                let s = ko.toJS(caic.compareStartValue),
-                    e = ko.toJS(caic.compareEndValue),
-                    t = ko.toJS(caic.compareOperator);
-
-                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-
-                setTimeout(() => {
-                    switch (t) {
-                        case 0:
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                            break;
-                        case 6:
-                            if (s > e || s == e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                        case 7:
-                            if (s > e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                        case 8:
-                            if (s > e || s == e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                        case 9:
-                            if (s > e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                    }
-                }, 25);
-            });
-
-            caic.compareEndValue.subscribe(v => caic.compareStartValue.valueHasMutated());
         }
 
         fillTextDisplayTarget() {
