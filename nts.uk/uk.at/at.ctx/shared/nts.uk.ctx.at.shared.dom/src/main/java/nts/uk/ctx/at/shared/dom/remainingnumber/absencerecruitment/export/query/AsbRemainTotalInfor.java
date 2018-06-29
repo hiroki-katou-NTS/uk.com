@@ -11,14 +11,14 @@ import lombok.Setter;
 @Getter
 public class AsbRemainTotalInfor {
 	/**繰越日数	 */
-	private Double carryForwardDays;
+	private double carryForwardDays;
 	/**	実績使用日数 */
-	private Double recordUseDays;
+	private double recordUseDays;
 	/**	実績発生日数 */
-	private Double recordOccurrenceDays;
+	private double recordOccurrenceDays;
 	/**	予定使用日数 */
-	private Double scheUseDays;
+	private double scheUseDays;
 	/**	予定発生日数 */
-	private Double scheOccurrenceDays;
+	private double scheOccurrenceDays;
 	
 }

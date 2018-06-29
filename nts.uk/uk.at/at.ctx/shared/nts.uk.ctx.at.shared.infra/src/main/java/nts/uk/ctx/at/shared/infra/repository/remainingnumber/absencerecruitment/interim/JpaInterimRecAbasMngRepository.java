@@ -113,7 +113,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	@Override
-	public List<InterimRecMng> getRecByIdPeriod(List<String> recId, Double unUseDays, DatePeriod dateData) {
+	public List<InterimRecMng> getRecByIdPeriod(List<String> recId, double unUseDays, DatePeriod dateData) {
 		if(recId.isEmpty()) {
 			return Collections.emptyList();
 		}

@@ -42,9 +42,9 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	@Override
 	public AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput) {
 		//アルゴリズム「未相殺の振休(確定)を取得する」を実行する
-		List<AbsRecDetailPara> lstAbsRec = this.getAbsOfUnOffset(paramInput.getSid());		
+		List<AbsRecDetailPara> lstAbsRec = this.getAbsOfUnOffset(paramInput.getCid(), paramInput.getSid());		
 		//アルゴリズム「未使用の振出(確定)を取得する」を実行する
-		lstAbsRec = this.getUnUseDaysConfirmRec(paramInput.getSid(), lstAbsRec);
+		lstAbsRec = this.getUnUseDaysConfirmRec(paramInput.getCid(), paramInput.getSid(), lstAbsRec);
 		//繰越数を計算する
 		double carryForwardDays = this.calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec);
 		//アルゴリズム「未相殺の振休(暫定)を取得する」を実行する
@@ -78,10 +78,10 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	}
 
 	@Override
-	public List<AbsRecDetailPara> getAbsOfUnOffset(String sid) {
+	public List<AbsRecDetailPara> getAbsOfUnOffset(String cid, String sid) {
 		List<AbsRecDetailPara> lstOutput = new ArrayList<>();
 		//アルゴリズム「確定振休から未相殺の振休を取得する」を実行する
-		List<SubstitutionOfHDManagementData> lstUnOffsetDays = this.getAbsOfUnOffsetFromConfirm(sid);
+		List<SubstitutionOfHDManagementData> lstUnOffsetDays = this.getAbsOfUnOffsetFromConfirm(cid, sid);
 		//未相殺のドメインモデル「振休管理データ」(Output)の件数をチェックする
 		for (SubstitutionOfHDManagementData x : lstUnOffsetDays) {
 			//アルゴリズム「暫定振出と紐付けをしない確定振休を取得する」を実行する
@@ -93,8 +93,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		return lstOutput;
 	}
 	@Override
-	public List<SubstitutionOfHDManagementData> getAbsOfUnOffsetFromConfirm(String sid) {
-		String cid = AppContexts.user().companyId();
+	public List<SubstitutionOfHDManagementData> getAbsOfUnOffsetFromConfirm(String cid, String sid) {
 		// ドメインモデル「振休管理データ」
 		List<SubstitutionOfHDManagementData> lstAbsConfirmData = confirmAbsMngRepo.getBysiD(cid, sid);		
 		return lstAbsConfirmData.stream().filter(x -> x.getRemainDays().v() > 0).collect(Collectors.toList());
@@ -126,9 +125,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	}
 
 	@Override
-	public List<AbsRecDetailPara> getUnUseDaysConfirmRec(String sid, List<AbsRecDetailPara> lstDataDetail) {
+	public List<AbsRecDetailPara> getUnUseDaysConfirmRec(String cid, String sid, List<AbsRecDetailPara> lstDataDetail) {
 		//2-1.確定振出から未使用の振出を取得する
-		String cid = AppContexts.user().companyId();
 		List<PayoutManagementData> lstConfirmRec = confirmRecRepo.getSidWithCod(cid, sid, DigestionAtr.UNUSED.value)
 				.stream().filter(x -> x.getUnUsedDays().v() > 0)
 				.collect(Collectors.toList());
