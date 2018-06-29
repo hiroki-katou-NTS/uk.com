@@ -133,8 +133,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						break;
 					}
 				}
+				boolean checkArbExtraCon = false;
+				if(command.getMonAlarmCheckCon().getArbExtraCon().size() >0) {
+					for(ExtraResultMonthlyDomainEventDto dto : command.getMonAlarmCheckCon().getArbExtraCon() ) {
+						if(dto.isUseAtr()) {
+							checkArbExtraCon = true;
+							break;
+						}
+					}
+				}
 				
-				if(checkErrorFixed == false && command.getMonAlarmCheckCon().getArbExtraCon().size() ==0 ) {
+				
+				if(checkErrorFixed == false && checkArbExtraCon == false) {
 					throw new BusinessException("Msg_832"); 
 				}
 				
@@ -273,7 +283,16 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					}
 				}
 				
-				if(checkErrorFixed == false && command.getMonAlarmCheckCon().getArbExtraCon().size() ==0 ) {
+				boolean checkArbExtraCon = false;
+				if(command.getMonAlarmCheckCon().getArbExtraCon().size() >0) {
+					for(ExtraResultMonthlyDomainEventDto dto : command.getMonAlarmCheckCon().getArbExtraCon() ) {
+						if(dto.isUseAtr()) {
+							checkArbExtraCon = true;
+							break;
+						}
+					}
+				}
+				if(checkErrorFixed == false && checkArbExtraCon == false) {
 					throw new BusinessException("Msg_832"); 
 				}
 				

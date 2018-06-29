@@ -452,7 +452,7 @@ module nts.uk.at.view.kaf011.shr {
                     reason: vm.reason(),
                     appReasonSelectedID: vm.appReasonSelectedID(),
                     absApp: ko.mapping.toJS(vm.absWk()),
-                    version: vm.version()
+                    version: vm.version
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/kaf/011/c/index.xhtml').onClosed(function(): any {

@@ -81,8 +81,8 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		outputInfor.setLstVacationTimeInfor(this.getLstVacationTimeInfor());
 		outputInfor.setSid(workInfor.getEmployeeId());
 		outputInfor.setYmd(workInfor.getYmd());
-		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode().v());
-		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode().v()));
+		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "000" : workInfor.getRecordInfo().getWorkTypeCode().v());
+		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode() == null ? "000" : workInfor.getRecordInfo().getSiftCode().v()));
 		return outputInfor;
 	}
 	/**
