@@ -407,7 +407,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		}
 		//INPUT．上書きフラグをチェックする
 		if(inputParam.isReplaceChk()
-				&& inputParam.getInterimMng().isEmpty()
+				&& !inputParam.getInterimMng().isEmpty()
 				&& !inputParam.getBreakMng().isEmpty()) {
 			List<InterimRemain> lstInterimDataTmp = new ArrayList<>(lstInterimData);
 			List<InterimBreakMng> lstBreakMngTmp =  new ArrayList<>(lstBreakMng);
