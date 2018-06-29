@@ -217,8 +217,12 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case ANNUAL:
-					saveDateFrom = optManualSetting.getStartYear().v().toString();
-					saveDateTo = optManualSetting.getEndYear().v().toString();
+					if (optManualSetting.getStartYear().isPresent()) {
+						saveDateFrom = optManualSetting.getStartYear().get().v().toString();
+					}
+					if (optManualSetting.getEndYear().isPresent()) {
+						saveDateTo = optManualSetting.getEndYear().get().v().toString();
+					}
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				default:
