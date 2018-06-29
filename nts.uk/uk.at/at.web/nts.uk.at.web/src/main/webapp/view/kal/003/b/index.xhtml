@@ -663,7 +663,7 @@
                                                 value: listItemID,
                                                 optionsText: 'specialHdFrameName',
                                                 editable: false,
-                                                enable: checkVacation() !== 1 &amp;&amp; checkVacation() !== 0 &amp;&amp; checkVacation() !== 4,
+                                                enable: checkVacation() !== 2 &amp;&amp; checkVacation() !== 3 &amp;&amp; checkVacation() !== 5 &amp;&amp; checkVacation() !== 6 &amp;&amp; checkVacation() !== 7,
                                                 columns: [
                                                     { prop: 'specialHdFrameName', length: 16 }
                                                 ]}">
@@ -711,6 +711,14 @@
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <input style="width: 50px;" data-bind="ntsNumberEditor: {
                                                         value: value ,
+                                                        option : 
+                                                        new nts.uk.ui.option.NumberEditorOption({
+																									grouplength: 2,
+																									decimallength: 1,
+																									placeholder: 'Placeholder for number editor',
+																									width: '',
+																									textalign: 'right'
+																								}),
                                                         required: required,
                                                         enable : enable,
                                                         constraint: 'MonthlyDays'
@@ -726,10 +734,10 @@
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input style="width: 50px;margin-left: 15px;" data-bind="ntsNumberEditor: {value: value ,required: required,enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_103')}
+                                                            <input style="width: 50px;margin-left: 15px;" data-bind="ntsNumberEditor: {name :'#[KAL003_80]',value: value ,required: required,enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_103')}
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: {value: value ,required: required,mode:'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_105')}
+                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: {name :'#[KAL003_83]', value: value ,required: required,mode:'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_105')}
                                                         </com:ko>
                                                     </com:ko>
                                                     <span data-bind="text : textLabel"></span>
@@ -739,10 +747,10 @@
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsNumberEditor: {value: value ,required: required,enable : enable, constraint: 'MinMaxInteger'}, attr: { id: inputId}" />
+                                                            <input style="width: 50px;" data-bind="ntsNumberEditor: {name :'#[KAL003_92]',  value: value ,required: required,enable : enable, constraint: 'MinMaxInteger'}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: {value: value ,required: required,mode : 'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />
+                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: {name :'#[KAL003_104]', value: value ,required: required,mode : 'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />
                                                         </com:ko>
                                                     </com:ko>
                                                     <span  data-bind="text : textLabel"></span>

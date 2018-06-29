@@ -434,8 +434,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
                         if (item.category() == model.CATEGORY.MONTHLY) {
                             //tab extraResult
-                            let orderList = _.orderBy(item.monAlarmCheckCon().arbExtraCon(), ['sortBy'], ['asc']);
-                            self.tabCheckAlarm.listExtraResultMonthly(orderList);
+                            let list = ko.toJS(item.monAlarmCheckCon().arbExtraCon());
+                            let orderList = _.orderBy(list, ['sortBy'], ['asc']);
+                            let listNew = [];
+                            for(let i = 0; i < orderList.length; i++){
+                                 listNew.push(ko.mapping.fromJS(orderList[i]));    
+                            }
+                            self.tabCheckAlarm.listExtraResultMonthly(listNew); 
                             //tab fix
                             if (item.monAlarmCheckCon().listFixExtraMon().length > 0) {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
