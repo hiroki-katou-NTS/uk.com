@@ -78,11 +78,6 @@ module nts.uk.com.view.cmm020.a {
                                 self.activeDelete(indexOfEraSelected == self.dataSource().length - 1);
                             }
                             self.setValueCurrentEraShow(currentEra);
-//                            self.isFocus(true);
-                            //                            setTimeout($("#single-list").focus(), 100);
-//                            setTimeout(function() {
-//                                self.isFocus(true);
-//                            }, 100);
                         };
                     }
                 });
@@ -104,7 +99,6 @@ module nts.uk.com.view.cmm020.a {
                 //                listEraName.push(new model.EraItem("code6", "D", "222", "2018/3/28", false));
 
                 self.loadEraNameList(null);
-                //                $("#single-list").animate({scrollTop: $("#single-list").height()}, 800);
                 dfd.resolve();
 
                 return dfd.promise();
@@ -166,6 +160,7 @@ module nts.uk.com.view.cmm020.a {
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                         blockUI.clear();
                                         self.loadEraNameList(null);
+                                        location.reload();
                                     });
                                 });
                             } else {
@@ -192,6 +187,7 @@ module nts.uk.com.view.cmm020.a {
                                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                                 blockUI.clear();
                                                 self.loadEraNameList(self.currentCode());
+                                                location.reload();
                                             });
                                         });
                                     }
@@ -202,6 +198,7 @@ module nts.uk.com.view.cmm020.a {
                                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                             blockUI.clear();
                                             self.loadEraNameList(null);
+                                            location.reload();
                                         });
                                     });
                                 }
@@ -229,6 +226,7 @@ module nts.uk.com.view.cmm020.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             blockUI.clear();
                             self.loadEraNameList(null);
+                            location.reload();
                         });
                     });
 
