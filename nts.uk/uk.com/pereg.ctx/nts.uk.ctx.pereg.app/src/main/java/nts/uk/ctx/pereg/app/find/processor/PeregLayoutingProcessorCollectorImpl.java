@@ -34,7 +34,7 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialle
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave7informationDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave8informationDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave9informationDto;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.nursingcareleave.info.CareLeaveInfoDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.nursingcareleave.CareLeaveInfoDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto1;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto10;

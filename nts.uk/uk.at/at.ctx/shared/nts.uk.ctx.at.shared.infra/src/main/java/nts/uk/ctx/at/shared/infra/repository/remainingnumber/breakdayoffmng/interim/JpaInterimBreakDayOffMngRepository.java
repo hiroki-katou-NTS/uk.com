@@ -118,7 +118,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	}
 	
 	@Override
-	public List<InterimBreakMng> getByPeriod(List<String> mngId, Double unUseDays, DatePeriod dateData) {
+	public List<InterimBreakMng> getByPeriod(List<String> mngId, double unUseDays, DatePeriod dateData) {
 		if(mngId.isEmpty()) {
 			return Collections.emptyList();
 		}

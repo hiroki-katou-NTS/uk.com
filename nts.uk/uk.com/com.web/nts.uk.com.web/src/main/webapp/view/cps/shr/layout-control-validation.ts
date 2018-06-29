@@ -1268,7 +1268,7 @@ module nts.layout {
                                 isMultiple: false,
                                 selectedSystemType: 5,
                                 isrestrictionOfReferenceRange: false,
-                                isRequire: data.required
+                                showNoSelection: !data.required
                             }, true);
                         } else {
                             setShared('inputCDL008', null);
@@ -1286,7 +1286,7 @@ module nts.layout {
                             isMultiple: false,
                             selectedSystemType: 5,
                             isrestrictionOfReferenceRange: false,
-                            isRequire: data.required
+                            showNoSelection: !data.required
                         }, true);
                     } else {
                         setShared('inputCDL008', null);
