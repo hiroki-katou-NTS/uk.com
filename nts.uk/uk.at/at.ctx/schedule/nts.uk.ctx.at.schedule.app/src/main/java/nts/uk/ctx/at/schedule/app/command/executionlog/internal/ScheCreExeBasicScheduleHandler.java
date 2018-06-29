@@ -90,19 +90,25 @@ public class ScheCreExeBasicScheduleHandler {
 	 * Update all data to command save.
 	 *
 	 * @param command
-	 *            the command
 	 * @param employeeId
-	 *            the employee id
 	 * @param worktypeDto
-	 *            the worktype code
 	 * @param workTimeCode
-	 *            the work time code
+	 * @param empGeneralInfo
+	 * @param listWorkType
+	 * @param listWorkTimeSetting
+	 * @param listBusTypeOfEmpHis
+	 * @param allData
+	 * @param listFixedWorkSetting
+	 * @param listFlowWorkSetting
+	 * @param listDiffTimeWorkSetting
 	 */
 	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, String employeeId,
 			WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo,
-			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData) {
 
 		// get short work time
+		// アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する
 		Optional<ShortWorkTimeDto> optionalShortTime = this.getShortWorkTime(employeeId, command.getToDate());
 
 		// add command save
@@ -165,8 +171,8 @@ public class ScheCreExeBasicScheduleHandler {
 			this.basicScheduleRepository.delete(employeeId, command.getToDate());
 		}
 
-		// save command
-		this.saveBasicSchedule(commandSave);
+		// add to list basicSchedule to insert/update all
+		allData.add(commandSave.toDomain());
 	}
 
 	/**
@@ -262,7 +268,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param BasicScheduleResetCommand,
 	 *            GeneralDate
 	 */
-	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate) {
+	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate, List<BasicSchedule> allData) {
 		// add command save
 		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
 		commandSave.setWorktypeCode(command.getWorkTypeCode());
@@ -274,7 +280,7 @@ public class ScheCreExeBasicScheduleHandler {
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
 		// save command
-		this.saveBasicSchedule(commandSave);
+		allData.add(commandSave.toDomain());
 	}
 
 	/**

@@ -753,7 +753,7 @@ public class ScheCreExeWorkTimeHandler {
 			// fix bug #87723
 			// for case not
 			// setting work time
-			return null;
+			return Optional.empty();
 		}
 
 		// check not exist data work

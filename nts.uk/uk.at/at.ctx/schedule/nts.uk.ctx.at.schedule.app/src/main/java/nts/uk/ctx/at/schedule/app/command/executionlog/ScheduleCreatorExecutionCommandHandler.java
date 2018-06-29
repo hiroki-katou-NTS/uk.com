@@ -268,7 +268,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	// スケジュールを再設定する
 	private void resetSchedule(BasicScheduleResetCommand command,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod dateAfterCorrection) {
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod dateAfterCorrection,
+			List<BasicSchedule> allData) {
 
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -285,13 +286,12 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
 					toDate);
 			if (optionalBasicSchedule.isPresent()) {
-
 				command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
 				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTypeCode());
 
 				if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value
 						|| optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED) {
-					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate);
+					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate, allData);
 				}
 			}
 			toDate = this.nextDay(toDate);
@@ -348,7 +348,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			DatePeriod dateAfterCorrection, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData) {
 
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -390,14 +390,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					// アルゴリズム「営業日カレンダーで勤務予定を作成する」を実行する
 					this.createWorkScheduleByBusinessDayCalenda(command, workingConditionItem.get(), empGeneralInfo,
 							mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
-							listBusTypeOfEmpHis);
+							listBusTypeOfEmpHis, allData);
 				} else if (workingConditionItem.get().getScheduleMethod().get()
 						.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN) {
 					// アルゴリズム「月間パターンで勤務予定を作成する」を実行する
 					// create schedule by monthly pattern
 					this.scheCreExeMonthlyPatternHandler.createScheduleWithMonthlyPattern(command,
 							workingConditionItem.get(), empGeneralInfo, mapEmploymentStatus, listWorkingConItem,
-							listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis);
+							listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis, allData);
 				} else {
 					// アルゴリズム「個人曜日別で勤務予定を作成する」を実行する
 					// TODO
@@ -424,7 +424,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData) {
 		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
 		// EA No1689
 		List<EmploymentInfoImported> listEmploymentInfo = mapEmploymentStatus.get(workingConditionItem.getEmployeeId());
@@ -447,7 +447,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 			if (optionalBasicSchedule.isPresent()) {
 				BasicSchedule basicSchedule = optionalBasicSchedule.get();
-
+				// checked2018
 				// 登録前削除区分をTrue（削除する）とする
 				command.setIsDeleteBeforInsert(true); // FIX BUG #87113
 				// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
@@ -455,7 +455,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
 					this.createWorkScheduleByRecreate(command, basicSchedule, workingConditionItem, optEmploymentInfo,
 							empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
-							listBusTypeOfEmpHis);
+							listBusTypeOfEmpHis, allData);
 				}
 			} else {
 				// EA No1841
@@ -469,12 +469,13 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				}
 
 				// 登録前削除区分をTrue（削除する）とする
+				// checked2018
 				command.setIsDeleteBeforInsert(false); // FIX BUG #87113
 
 				// not exist data basic schedule
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem, empGeneralInfo,
-						mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
-						listBusTypeOfEmpHis);
+						mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis,
+						allData);
 			}
 		}
 	}
@@ -494,7 +495,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			WorkCondItemDto workingConditionItem, Optional<EmploymentInfoImported> optEmploymentInfo,
 			EmployeeGeneralInfoImported empGeneralInfo, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem, List<WorkType> listWorkType,
-			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
+			List<BasicSchedule> allData) {
 		// 入力パラメータ「再作成区分」を判断 - check parameter ReCreateAtr onlyUnconfirm
 		// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
 		// (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
@@ -504,8 +506,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
 					optEmploymentInfo, workingConditionItem, empGeneralInfo, listBusTypeOfEmpHis)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem, empGeneralInfo,
-						mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
-						listBusTypeOfEmpHis);
+						mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis,
+						allData);
 			}
 		}
 	}
@@ -554,23 +556,28 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// EA No1828
 		List<WorkCondItemDto> listWorkingConItem = this.acquireWorkingConditionInformation(employeeIds,
 				dateBeforeCorrection);
-
+		List<WorkType> listWorkType = new ArrayList<>();
+		List<WorkTimeSetting> listWorkTimeSetting = new ArrayList<>();
+		
 		// EA No2017
 		// マスタ情報を取得する
-		// ドメインモデル「勤務種類」を取得する
-		List<WorkType> listWorkType = this.workTypeRepository.findNotDeprecateByCompanyId(companyId);
-		// ドメインモデル「就業時間帯の設定」を取得する
-		List<WorkTimeSetting> listWorkTimeSetting = this.workTimeSettingRepository.findActiveItems(companyId);
+		this.acquireMasterInformation(companyId, listWorkType, listWorkTimeSetting);
 		// 勤務種別情報を取得する
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
 		// ドメインモデル「社員の勤務種別」を取得する
 		List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
 				.findByCidSidBaseDate(companyId, employeeIds, dateBeforeCorrection);
 
+		// find all data BasicSchedule
+		List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findAllBetweenDate(employeeIds,
+				scheduleExecutionLog.getPeriod().start(), scheduleExecutionLog.getPeriod().end());
+
 		// get info by context
 		val asyncTask = context.asAsync();
 
 		for (ScheduleCreator scheduleCreator : scheduleCreators) {
+
+			List<BasicSchedule> allData = new ArrayList<>();
 
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
@@ -599,15 +606,18 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				commandReset.setTargetStartDate(scheduleExecutionLog.getPeriod().start());
 				commandReset.setTargetEndDate(scheduleExecutionLog.getPeriod().end());
 				// スケジュールを再設定する (Thiết lập lại schedule)
-				this.resetSchedule(commandReset, context, dateAfterCorrection);
+				this.resetSchedule(commandReset, context, dateAfterCorrection, allData);
 			} else {
 				// 入力パラメータ「作成方法区分」を判断-check parameter CreateMethodAtr
 				if (command.getContent().getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
 					this.createScheduleBasedPerson(command, scheduleCreator, scheduleExecutionLog, context,
 							dateAfterCorrection, empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType,
-							listWorkTimeSetting, listBusTypeOfEmpHis);
+							listWorkTimeSetting, listBusTypeOfEmpHis, allData);
 				}
 			}
+			// insert/update 1person-1month-1commit
+			this.insertUpdateAllBasicSchedule(listBasicSchedule, allData);
+
 			scheduleCreator.updateToCreated();
 			this.scheduleCreatorRepository.update(scheduleCreator);
 		}
@@ -620,6 +630,29 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					+ scheduleExecutionLog.getExecutionId());
 			this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 		}
+	}
+
+	private void insertUpdateAllBasicSchedule(List<BasicSchedule> listBasicSchedule, List<BasicSchedule> allData) {
+		List<BasicSchedule> listUpdates = new ArrayList<>();
+		List<BasicSchedule> listInsert = new ArrayList<>();
+		allData.forEach(x -> {
+			Optional<BasicSchedule> opt = listBasicSchedule.stream()
+					.filter(y -> (y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate())))
+					.findFirst();
+			if (opt.isPresent()) {
+				listUpdates.add(x);
+			} else {
+				listInsert.add(x);
+			}
+		});
+
+		if (listInsert.size() > 0) {
+			this.basicScheduleRepository.insertAll(listInsert);
+		}
+		if (listUpdates.size() > 0) {
+			this.basicScheduleRepository.updateAll(listUpdates);
+		}
+
 	}
 
 	/**
@@ -721,4 +754,22 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		return listWorkCondItemDto;
 	}
 
+	/**
+	 * マスタ情報を取得する
+	 * 
+	 * @param companyId
+	 * @param listWorkType
+	 * @param listWorkTimeSetting
+	 * @param mapFixedWorkSetting
+	 * @param listFlowWorkSetting
+	 * @param listDiffTimeWorkSetting
+	 */
+	private void acquireMasterInformation(String companyId, List<WorkType> listWorkType,
+			List<WorkTimeSetting> listWorkTimeSetting) {
+		// ドメインモデル「勤務種類」を取得する
+		listWorkType.addAll(this.workTypeRepository.findNotDeprecateByCompanyId(companyId));
+		// ドメインモデル「就業時間帯の設定」を取得する
+		listWorkTimeSetting.addAll(this.workTimeSettingRepository.findActiveItems(companyId));
+	}
+	
 }
