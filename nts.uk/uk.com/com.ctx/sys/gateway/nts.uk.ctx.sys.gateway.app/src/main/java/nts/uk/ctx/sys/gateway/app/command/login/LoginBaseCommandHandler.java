@@ -601,7 +601,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		//ドメインモデル「会社」の使用区分をチェックする (Check usage classification of domain model "company")
 		CompanyInforImport company = this.companyInformationAdapter.findComById(companyId);
 		
-		if (company.getIsAbolition() == Abolition.NOT_ABOLISH.value){
+		if (company.getIsAbolition() == Abolition.ABOLISH.value){
 			throw new BusinessException("Msg_281");
 		}
 	}
