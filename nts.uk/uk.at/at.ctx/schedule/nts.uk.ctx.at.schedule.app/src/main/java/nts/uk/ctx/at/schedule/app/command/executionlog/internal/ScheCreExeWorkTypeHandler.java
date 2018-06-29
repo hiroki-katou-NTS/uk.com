@@ -17,6 +17,7 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.WorkCondItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -74,7 +75,7 @@ public class ScheCreExeWorkTypeHandler {
 	public void createWorkSchedule(ScheduleCreatorExecutionCommand command, WorkCondItemDto workingConditionItem,
 			EmployeeGeneralInfoImported empGeneralInfo, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem, List<WorkType> listWorkType,
-			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData) {
 
 		// 登録前削除区分をTrue（削除する）とする
 		// command.setIsDeleteBeforInsert(true); FIX BUG #87113
@@ -112,7 +113,7 @@ public class ScheCreExeWorkTypeHandler {
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
 						optionalWorkTime == null ? null : optionalWorkTime.get(), empGeneralInfo, listWorkType,
-						listWorkTimeSetting, listBusTypeOfEmpHis);
+						listWorkTimeSetting, listBusTypeOfEmpHis, allData);
 			}
 
 		}
