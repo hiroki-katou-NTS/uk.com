@@ -306,10 +306,39 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         openKDW003Dialog() {
             var self = this;
-            if(self.checked()){
-                window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            if(self.switchDate()){
+                var strDate = self.conVerDate(self.nextMonth().strMonth);
+                var endDate = self.conVerDate(self.nextMonth().endMonth);
             }else{
-               parent.nts.uk.ui.windows.sub.modal('at','/view/kdw/003/b/index.xhtml');
+                var strDate = self.conVerDate(self.currentMonth().strMonth);
+                var endDate = self.conVerDate(self.currentMonth().endMonth);
+            }
+            if(self.checked()){
+                let initParam = {
+                    screenMode: 0, 
+                    lstEmployee: employeeIds,
+                    errorRefStartAtr: true,
+                    transitionDesScreen: '/view/cmm/008/a/index.xhtml'
+                };
+                let extractionParam = {
+                    displayFormat: 0,
+                    startDate: strDate,
+                    endDate: endDate,
+                    lstExtractedEmployee: employeeIds,
+                    individualTarget: __viewContext.user.employeeId
+                };
+                parent.nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
+            }else{
+                let user =__viewContext.user;
+                let param = {
+                    dateRange: {startDate: moment(strDate), endDate: moment(endDate)},
+                    lstEmployee: [{id: user.employeeId, employeeCode : user.employeeCode}]
+                };
+                parent.nts.uk.ui.windows.setShared("paramToGetError", param);
+                parent.nts.uk.ui.windows.setShared("errorValidate", []);
+                parent.nts.uk.ui.windows.sub.modal('at','/view/kdw/003/b/index.xhtml');
             }
         }
         
