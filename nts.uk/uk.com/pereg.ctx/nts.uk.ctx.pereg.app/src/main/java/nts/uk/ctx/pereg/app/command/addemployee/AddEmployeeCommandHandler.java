@@ -24,6 +24,13 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommandAssembler;
+import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingCondition2Command;
+import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingCondition2CommandHandler;
+import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingConditionCommandAssembler;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
@@ -34,6 +41,8 @@ import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
@@ -52,6 +61,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	@Inject
 	private AddWorkingConditionCommandAssembler wkCodAs;
+	
+	@Inject
+	private UpdateWorkingConditionCommandAssembler updateWkBs;
 
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemRepo;
@@ -64,6 +76,13 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	
 	@Inject
 	private EmpRegHistoryRepository empHisRepo;
+	
+	@Inject
+	private WorkingConditionRepository workingConditionRepository;
+	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+	
 	
 	private static List<String> historyCategoryCodeList = Arrays.asList("CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
 			"CS00019", "CS00020", "CS00021");
@@ -139,9 +158,47 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		addAvatar(personId, command.getAvatarId());
 		
 		updateEmployeeRegHist(companyId, employeeId);
+		
+		updateCtgWorkingCond2(inputs,employeeId, personId);
 
 		return employeeId;
 
+	}
+
+	private void updateCtgWorkingCond2(List<ItemsByCategory> inputs, String employeeId, String personId) {
+		Optional<ItemsByCategory> wkCodOpt = inputs.stream().filter(ctg -> ctg.getCategoryCd().equals("CS00070"))
+				.findFirst();
+		if (wkCodOpt.isPresent()) {
+			UpdateWorkingCondition2Command wkCod = (UpdateWorkingCondition2Command) wkCodOpt.get()
+					.createCommandForSystemDomain(personId, employeeId, UpdateWorkingCondition2Command.class);
+			
+			Optional<WorkingCondition> listHistBySid = workingConditionRepository.getBySid(AppContexts.user().companyId(),employeeId);
+			
+			if (!listHistBySid.isPresent()) {
+				throw new RuntimeException("Invalid item to be updated");
+			}
+			
+			WorkingCondition workingCond = listHistBySid.get();
+
+			Optional<DateHistoryItem> itemToBeUpdated = workingCond.getDateHistoryItem().stream()
+					.filter(hist -> hist.identifier().equals(listHistBySid.get().dateHistoryItem.get(0).identifier())).findFirst();
+
+			if (!itemToBeUpdated.isPresent()) {
+				throw new RuntimeException("Invalid item to be updated");
+			}
+
+			GeneralDate endDate = wkCod.getEndDate() != null ? wkCod.getEndDate() : GeneralDate.max();
+			workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(wkCod.getStartDate(), endDate));
+
+			workingConditionRepository.save(workingCond);
+			
+			WorkingConditionItem workingCondItem = updateWkBs.fromDTO2(wkCod);
+
+			workingConditionItemRepository.update(workingCondItem);
+			
+			
+		}
+		
 	}
 
 	private void checkRequiredInputs(List<ItemsByCategory> inputs, String employeeId, String personId,
