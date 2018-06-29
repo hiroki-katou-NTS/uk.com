@@ -32,7 +32,7 @@
                         <td id="I2_3" class="bg-yellow" width='150px'><label>#{i18n.getText('CMF004_202')}</label></td>
                         <td width='400px'>
                             <label id="I2_6" data-bind="text : statusProcess"/>
-                            <label id="I2_7" data-bind="text : numberCategory"/>/<label id="I2_7" data-bind="text : numberTotalCategory"/> カテゴリ
+                            <label id="I2_7" data-bind="text : numberCategory"/>/<label data-bind="text : numberTotalCategory"/> カテゴリ
                             <label id="I2_8" data-bind="text : employeeProcess"/>
                             <label id="I2_9" data-bind="text : datetimeProcess"/>
                         </td>
@@ -64,18 +64,14 @@
                 </table>
             </div>
             <!-- I5_1 -->
+            <div tabindex="1" id="functions-area-bottom">
 				<com:ko-if bind="!isEnding()">
-					<div tabindex="1" id="functions-area-bottom">
                 		<button id="I5_1" class="large" data-bind="click : breakFollow" tabindex="1">#{i18n.getText('CMF004_207')}</button>
-            		</div>
 				</com:ko-if>
 				<com:ko-if bind="isEnding()">
-					<div tabindex="2" id="functions-area-bottom">
                 		<button id="I5_2" class="large" data-bind="click : close" tabindex="1">#{i18n.getText('CMF004_208')}</button>
-            		</div>
 				</com:ko-if>
-
-				
+            </div>
         </div>
     </ui:define>
 </ui:composition>
