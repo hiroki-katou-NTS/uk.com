@@ -1653,6 +1653,7 @@ module nts.custombinding {
                         .filter((x: any) => _.has(x, "item") && !_.isEqual(x.item, {}))
                         .map((x: any) => primitiveConst(x))
                         .filter((x: any) => exceptConsts.indexOf(x.itemCode) == -1)
+                        .filter((x: any) => ['EmployeeCode'].indexOf(x.itemCode) == -1)
                         .value();
 
                     if (constraints && constraints.length) {
