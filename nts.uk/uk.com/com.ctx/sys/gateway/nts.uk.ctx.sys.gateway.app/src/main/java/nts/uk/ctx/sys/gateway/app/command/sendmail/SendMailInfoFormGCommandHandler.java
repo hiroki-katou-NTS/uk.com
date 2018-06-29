@@ -27,7 +27,8 @@ import nts.uk.shr.com.url.RegisterEmbededURL;
  */
 @Stateless
 @Transactional
-public class SendMailInfoFormGCommandHandler extends CommandHandlerWithResult<SendMailInfoFormGCommand, SendMailReturnDto> {
+public class SendMailInfoFormGCommandHandler
+		extends CommandHandlerWithResult<SendMailInfoFormGCommand, SendMailReturnDto> {
 
 	/** The user adapter. */
 	@Inject
@@ -40,7 +41,7 @@ public class SendMailInfoFormGCommandHandler extends CommandHandlerWithResult<Se
 	/** The register embeded URL. */
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
-	
+
 	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
 
@@ -55,18 +56,18 @@ public class SendMailInfoFormGCommandHandler extends CommandHandlerWithResult<Se
 	protected SendMailReturnDto handle(CommandHandlerContext<SendMailInfoFormGCommand> context) {
 		// get command
 		SendMailInfoFormGCommand command = context.getCommand();
-		
+
 		String companyId = command.getContractCode() + "-" + command.getCompanyCode();
 
 		// Get EmployeeInfo
 		EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId, command.getEmployeeCode());
 
 		if (employee != null) {
-			//get userInfo
+			// get userInfo
 			Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
-			
-			if (user.isPresent()){
-				//check mail present
+
+			if (user.isPresent()) {
+				// check mail present
 				if (user.get().getMailAddress().isEmpty()) {
 					throw new BusinessException("Msg_1129");
 				} else {
@@ -99,7 +100,7 @@ public class SendMailInfoFormGCommandHandler extends CommandHandlerWithResult<Se
 		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 1, 24, employeeId,
 				command.getContractCode(), loginId, employeeCD, new ArrayList<>());
 		// sendMail
-		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") +" \n" + url);
+		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") + " \n" + url);
 
 		try {
 			mailSender.sendFromAdmin(mailto, contents);

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 /**
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class TmpResereLeaveMng extends AggregateRoot{
 	/**
 	 * 暫定積立年休管理データID

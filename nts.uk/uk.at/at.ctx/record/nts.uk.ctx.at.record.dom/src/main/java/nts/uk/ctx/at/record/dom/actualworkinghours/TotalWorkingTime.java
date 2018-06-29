@@ -497,6 +497,7 @@ public class TotalWorkingTime {
 			case REST_TIME_EXCESS:
 				if(this.getExcessOfStatutoryTimeOfDaily() != null)
 					returnErrorItem.addAll(this.getExcessOfStatutoryTimeOfDaily().checkHolidayWorkTimeExcess(employeeId, targetDate,"休出時間", attendanceItemDictionary,new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value)));
+				break;
 			//フレ超過
 			case FLEX_OVER_TIME:
 				if(this.getExcessOfStatutoryTimeOfDaily() != null) 
@@ -508,6 +509,7 @@ public class TotalWorkingTime {
 					returnErrorItem.addAll(this.getWithinStatutoryTimeOfDaily().checkWithinMidNightExcess(employeeId, targetDate,"内深夜時間",attendanceItemDictionary,new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value)));
 				if(this.getExcessOfStatutoryTimeOfDaily() != null)
 					returnErrorItem.addAll(this.getExcessOfStatutoryTimeOfDaily().checkMidNightExcess(employeeId, targetDate,"外深夜時間", attendanceItemDictionary,new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value)));
+				break;
 			//事前残業申請超過
 			case PRE_OVERTIME_APP_EXCESS:
 				if(this.getExcessOfStatutoryTimeOfDaily() != null) 
@@ -516,7 +518,8 @@ public class TotalWorkingTime {
 			//事前休出申請超過
 			case PRE_HOLIDAYWORK_APP_EXCESS:
 				if(this.getExcessOfStatutoryTimeOfDaily() != null)
-					this.getExcessOfStatutoryTimeOfDaily().checkPreHolidayWorkTimeExcess(employeeId, targetDate,"休出時間",attendanceItemDictionary, new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value));
+					returnErrorItem.addAll(this.getExcessOfStatutoryTimeOfDaily().checkPreHolidayWorkTimeExcess(employeeId, targetDate,"休出時間",attendanceItemDictionary, new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value)));
+				break;
 			//事前フレ申請超過
 			case PRE_FLEX_APP_EXCESS:
 				if(this.getExcessOfStatutoryTimeOfDaily() != null) 

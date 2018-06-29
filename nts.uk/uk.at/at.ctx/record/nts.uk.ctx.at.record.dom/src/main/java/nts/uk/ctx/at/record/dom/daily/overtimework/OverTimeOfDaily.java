@@ -374,7 +374,7 @@ public class OverTimeOfDaily {
 	}
 
 	/**
-	 *　深夜時間のチェック＆エラーゲット 
+	 *　実績深夜時間のチェック＆エラーゲット 
 	 * @return
 	 */
 	public List<EmployeeDailyPerError> checkNightTimeExcess(String employeeId,
