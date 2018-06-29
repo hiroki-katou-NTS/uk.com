@@ -84,3 +84,7 @@ label.label4w4d {
 .nameAlarm{
 	width: 170px !important;
 }
+
+div .tab-content-5 .nts-fixed-table .nts-fixed-body-container{
+	border-bottom-width:0px;
+}
