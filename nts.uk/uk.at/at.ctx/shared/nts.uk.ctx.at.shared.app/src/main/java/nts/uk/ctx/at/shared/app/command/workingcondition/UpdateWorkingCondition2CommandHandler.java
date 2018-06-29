@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -69,7 +68,7 @@ public class UpdateWorkingCondition2CommandHandler extends CommandHandler<Update
 			workingConditionRepository.save(workingCond);
 		}
 
-		WorkingConditionItem workingCondItem = updateWorkingConditionCommandAssembler.fromDTO(command);
+		WorkingConditionItem workingCondItem = updateWorkingConditionCommandAssembler.fromDTO2(command);
 
 		workingConditionItemRepository.update(workingCondItem);
 	}

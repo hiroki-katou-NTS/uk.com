@@ -197,6 +197,84 @@ public class UpdateWorkingConditionCommandAssembler {
 		return workingCond;
 	}
 	
+	public WorkingConditionItem fromDTO2(UpdateWorkingCondition2Command command){
+		List<TimeZone> listTimeZone = new ArrayList<>();
+		// ---------------------- PersonalDayOfWeek
+		/** The monday. */
+		// 月曜日
+		listTimeZone = WorkingConditionCommandUtils.getTimeZone(command.getMondayStartTime1(),
+				command.getMondayEndTime1(), command.getMondayStartTime2(), command.getMondayEndTime2());
+		SingleDaySchedule mondaySchedule = new SingleDaySchedule(command.getMondayWorkTypeCode(), listTimeZone,
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getMondayWorkTimeCode()));
+
+		/** The tuesday. */
+		// 火曜日
+		listTimeZone = WorkingConditionCommandUtils.getTimeZone(command.getTuesdayStartTime1(),
+				command.getTuesdayEndTime1(), command.getTuesdayStartTime2(), command.getTuesdayEndTime2());
+		SingleDaySchedule tuesdaySchedule = new SingleDaySchedule(command.getTuesdayWorkTypeCode(), listTimeZone,
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getTuesdayWorkTimeCode()));
+
+		/** The wednesday. */
+		// 水曜日
+		listTimeZone = WorkingConditionCommandUtils.getTimeZone(command.getWednesdayStartTime1(),
+				command.getWednesdayEndTime1(), command.getWednesdayStartTime2(), command.getWednesdayEndTime2());
+		SingleDaySchedule wedSchedule = new SingleDaySchedule(command.getWednesdayWorkTypeCode(), listTimeZone,
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getWednesdayWorkTimeCode()));
+
+		/** The thursday. */
+		// 木曜日
+		listTimeZone = WorkingConditionCommandUtils.getTimeZone(command.getThursdayStartTime1(),
+				command.getThursdayEndTime1(), command.getThursdayStartTime2(), command.getThursdayEndTime2());
+		SingleDaySchedule thurSchedule = new SingleDaySchedule(command.getThursdayWorkTypeCode(), listTimeZone,
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getThursdayWorkTimeCode()));
+
+		/** The friday. */
+		// 金曜日
+		listTimeZone = WorkingConditionCommandUtils.getTimeZone(command.getFridayStartTime1(),
+				command.getFridayEndTime1(), command.getFridayStartTime2(), command.getFridayEndTime2());
+		SingleDaySchedule friSchedule = new SingleDaySchedule(command.getFridayWorkTypeCode(), listTimeZone,
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getFridayWorkTimeCode()));
+
+		/** The saturday. */
+		// 土曜日
+		listTimeZone = WorkingConditionCommandUtils.getTimeZone(command.getSaturdayStartTime1(),
+				command.getSaturdayEndTime1(), command.getSaturdayStartTime2(), command.getSaturdayEndTime2());
+		SingleDaySchedule satSchedule = new SingleDaySchedule(command.getSaturdayWorkTypeCode(), listTimeZone,
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getSaturdayWorkTimeCode()));
+
+		/** The sunday. */
+		// 日曜日
+		listTimeZone = WorkingConditionCommandUtils.getTimeZone(command.getSundayStartTime1(),
+				command.getSundayEndTime1(), command.getSundayStartTime2(), command.getSundayEndTime2());
+		SingleDaySchedule sunSchedule = new SingleDaySchedule(command.getSundayWorkTypeCode(), listTimeZone,
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getSundayWorkTimeCode()));
+
+		PersonalDayOfWeek workDayOfWeek = new PersonalDayOfWeek(
+				WorkingConditionCommandUtils.getOptionalSingleDay(mondaySchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(tuesdaySchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(wedSchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(thurSchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(friSchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(satSchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(sunSchedule));
+		// -------------------------
+
+		
+		
+		WorkingConditionItem workingCond = new WorkingConditionItem(command.getHistId(), null,
+				workDayOfWeek, null,
+				null,
+				null,
+				command.getEmployeeId(),
+				null,
+				null,
+				null,
+				null, null, null,
+				null,
+				null);
+		return workingCond;
+	}
+	
 	
 
 }
