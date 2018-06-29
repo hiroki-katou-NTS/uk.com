@@ -187,7 +187,6 @@ module nts.uk.com.view.cmm020.a {
                                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                                 blockUI.clear();
                                                 self.loadEraNameList(self.currentCode());
-                                                location.reload();
                                             });
                                         });
                                     }
@@ -198,7 +197,6 @@ module nts.uk.com.view.cmm020.a {
                                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                             blockUI.clear();
                                             self.loadEraNameList(null);
-                                            location.reload();
                                         });
                                     });
                                 }
