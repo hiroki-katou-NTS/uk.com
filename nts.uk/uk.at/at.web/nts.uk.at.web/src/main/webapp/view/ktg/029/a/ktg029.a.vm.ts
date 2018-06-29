@@ -342,8 +342,15 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
         openKDL020Dialog() {
             let self = this;
-            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/020/a/index.xhtml');
-
+            if(self.switchDate()){
+                var endDate = self.nextMonth().endMonth;
+            }else{
+                var endDate = self.currentMonth().endMonth;
+            }
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            parent.nts.uk.ui.windows.setShared('KDL020A_PARAM', { baseDate: endDate, employeeIds:  employeeIds});
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/020/a/index.xhtml').onClosed(function(): any {});
         }
     }
     export class period{
