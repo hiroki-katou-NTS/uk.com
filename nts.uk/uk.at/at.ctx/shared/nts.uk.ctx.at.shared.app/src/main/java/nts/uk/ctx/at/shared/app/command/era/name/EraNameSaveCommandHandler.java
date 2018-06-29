@@ -16,14 +16,22 @@ import nts.uk.ctx.at.shared.dom.era.name.EraNameDomRepository;
 import nts.uk.ctx.at.shared.dom.era.name.SymbolName;
 import nts.uk.ctx.at.shared.dom.era.name.SystemType;
 
+/**
+ * The Class EraNameSaveCommandHandler.
+ */
 @Stateless
 public class EraNameSaveCommandHandler extends CommandHandler<EraNameSaveCommand> {
 	
+	/** The Constant LAST_END_DATE. */
 	private static final GeneralDate LAST_END_DATE = GeneralDate.localDate(LocalDate.of(9999, Month.DECEMBER, 31));
 	
+	/** The repo. */
 	@Inject
 	private EraNameDomRepository repo;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<EraNameSaveCommand> context) {
 		

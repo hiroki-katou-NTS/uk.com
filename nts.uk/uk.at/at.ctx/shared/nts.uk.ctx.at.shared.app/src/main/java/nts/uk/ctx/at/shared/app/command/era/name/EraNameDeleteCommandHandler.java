@@ -13,13 +13,21 @@ import nts.uk.ctx.at.shared.dom.era.name.EraNameDom;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDomRepository;
 import nts.uk.ctx.at.shared.dom.era.name.SystemType;
 
+/**
+ * The Class EraNameDeleteCommandHandler.
+ */
 @Stateless
 public class EraNameDeleteCommandHandler extends CommandHandler<EraNameDeleteCommand>{
 	
+	/** The last end date. */
 	private final GeneralDate LAST_END_DATE = GeneralDate.localDate(LocalDate.of(9999, Month.DECEMBER, 31));
 	
+	/** The repo. */
 	@Inject EraNameDomRepository repo;
 	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<EraNameDeleteCommand> context) {
 		
