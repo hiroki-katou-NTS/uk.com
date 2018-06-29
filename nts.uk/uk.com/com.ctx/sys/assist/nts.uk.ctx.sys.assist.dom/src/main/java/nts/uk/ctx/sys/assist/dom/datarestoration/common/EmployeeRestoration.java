@@ -30,8 +30,7 @@ public class EmployeeRestoration {
 	// アルゴリズム「対象社員の復元」を実行する
 	public ServerPrepareMng restoreTargerEmployee(ServerPrepareMng serverPrepareMng,
 			PerformDataRecovery performDataRecovery, List<TableList> tableList) {
-		List<List<String>> targetEmployee = CsvFileUtil.getAllRecord(serverPrepareMng.getFileId().get(),
-				serverPrepareMng.getUploadFileName().get());
+		List<List<String>> targetEmployee = CsvFileUtil.getAllRecord(serverPrepareMng.getFileId().get(),TARGET_CSV);
 		if (!targetEmployee.isEmpty()) {
 			try {
 				for (List<String> employeeInfo : targetEmployee.subList(1, targetEmployee.size())) {
