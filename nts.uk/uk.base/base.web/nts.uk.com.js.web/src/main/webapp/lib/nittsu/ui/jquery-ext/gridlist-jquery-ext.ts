@@ -69,9 +69,18 @@ module nts.uk.ui.jqueryExtentions {
                 case 'unsetupSelecting':
                     return unsetupSelecting($grid);
                 case 'getSelected':
+                case 'getSelectedValue':
                     return getSelected($grid);
                 case 'setSelected':
                     return setSelected($grid, param);
+                case 'setSelectedValue':
+                    return setSelectedValue($grid, param);
+                case 'setDataSource':
+                    $grid.data("initValue", null);
+                    $grid.data("selectionDisables", null);
+                    return setDataSource($grid, param);
+                case 'getDataSource':
+                    return getDataSource($grid);
                 case 'deselectAll':
                     return deselectAll($grid);
                 case 'setupDeleteButton':
@@ -661,7 +670,7 @@ module nts.uk.ui.jqueryExtentions {
                         }
                     });
                     
-                    setDataSource($grid, options, source); 
+                    setDataSource($grid, source, options); 
                 }, 100);
             });
             
@@ -669,14 +678,17 @@ module nts.uk.ui.jqueryExtentions {
                 return false;
             });
             
-            setDataSource($grid, options, options.dataSource);
+            setDataSource($grid, options.dataSource, options);
             if (!_.isNil(options.value) && !_.isEmpty(options.value)) {
                 setValue($grid, options.value.constructor === Array ? options.value : [ options.value ]);
             }
         };
         
-        function setDataSource($grid: JQuery, options: any, sources: any) {
+        function setDataSource($grid: JQuery, sources: any, options?: any) {
             if (!sources) return;
+            if (!options) {
+                options = $grid.igGrid("option");
+            }
             let optionsValue: string = options.primaryKey !== undefined ? options.primaryKey : options.optionsValue;
             let gridSource = $grid.igGrid('option', 'dataSource');
             
@@ -717,6 +729,10 @@ module nts.uk.ui.jqueryExtentions {
             }
         }
         
+        function getDataSource($grid: JQuery) {
+            return $grid.igGrid("option", "dataSource");
+        }
+        
         function setValue($grid: JQuery, value: any) {
             if (!value) return;
             let sources = $grid.igGrid("option", "dataSource");
@@ -750,6 +766,17 @@ module nts.uk.ui.jqueryExtentions {
                 if (!disables || !initVal || _.intersection(disables, initVal).length === 0) { 
                     _.defer(() => { $grid.trigger("selectChange"); });
                 }
+            }
+        }
+        
+        function setSelectedValue($grid: JQuery, value: any) {
+            let multiple = $grid.igGridSelection('option', 'multipleSelection');
+            if (multiple) {
+                let initVal = $grid.data("initValue");
+                let disables = $grid.data("selectionDisables");
+                setValue($grid, _.union(_.intersection(disables, initVal), value));
+            } else {
+                setValue($grid, value);
             }
         }
     }

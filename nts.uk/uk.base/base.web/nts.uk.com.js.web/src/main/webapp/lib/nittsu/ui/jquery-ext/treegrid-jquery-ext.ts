@@ -8,6 +8,11 @@ module nts.uk.ui.jqueryExtentions {
             let HEADER_HEIGHT = 24;
             let self = this;
             let $treegrid = $(self);
+            
+            if (typeof options === "string") {
+                return delegateMethod($treegrid, options, arguments[1]);    
+            }
+            
             let dataSource: Array<any> = options.dataSource;
             let optionsValue = options.primaryKey !== undefined ? options.primaryKey : options.optionsValue;
             let optionsText = options.primaryText !== undefined ? options.primaryText : options.optionsText;
@@ -20,6 +25,7 @@ module nts.uk.ui.jqueryExtentions {
             let rows = options.rows;
             let virtualization = !util.isNullOrUndefined(options.virtualization) ? options.virtualization : false;
             let virtualizationMode = !util.isNullOrUndefined(options.virtualizationMode) ? options.virtualizationMode : "";
+            let multiple = !_.isNil(options.multiple) ? options.multiple : false;
             
             // Default.
             let showCheckBox = options.showCheckBox !== undefined ? options.showCheckBox : true;
@@ -45,7 +51,7 @@ module nts.uk.ui.jqueryExtentions {
             let features = [];
             features.push({
                 name: "Selection",
-                multipleSelection: true,
+                multipleSelection: multiple,
                 activation: true,
                 rowSelectionChanged: function(evt: any, ui: any) {
 //                    let selectedRows: Array<any> = ui.selectedRows;
@@ -189,6 +195,24 @@ module nts.uk.ui.jqueryExtentions {
                     ui.ig.tree.grid.expandTo(selectedValue, $treegrid);
                 }
             }
+        }
+        
+        function delegateMethod($grid: JQuery, action: string, param: any) {
+            switch(action) {
+                case "getDataSource":
+                    return $grid.igTreeGrid("option", "dataSource");
+                case "setDataSource":
+                    return setDataSource($grid, param);
+                case "getSelected":
+                    return $grid.ntsTreeView("getSelected");
+                case "setSelected":
+                    return selectRows($grid, param);
+            }
+        }
+        
+        function setDataSource($grid: JQuery, sources: any) {
+            if (_.isNil(sources)) return;
+            $grid.igTreeGrid("option", "dataSource", sources);
         }
     }
 }
