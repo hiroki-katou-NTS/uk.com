@@ -3,14 +3,14 @@ package nts.uk.ctx.at.request.dom.application.approvalstatus.service.output;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 
 @AllArgsConstructor
-@Value
+@Getter
+@Setter
 public class MailTransmissionContentResultOutput {
-	@Setter
 	List<MailTransmissionContentOutput> listMailTransmisContent;
 	ApprovalStatusMailTemp mailDomain;
 }
