@@ -72,7 +72,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	@Override
 	public void addSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, long columnIndex,
 			long position, long exportArt, boolean useAtr, SingleAttendanceRecord singleAttendanceRecord) {
-		// TODO Auto-generated method stub
+		// No Code
 
 	}
 

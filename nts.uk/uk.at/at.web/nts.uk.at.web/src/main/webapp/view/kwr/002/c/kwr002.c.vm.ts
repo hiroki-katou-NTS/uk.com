@@ -59,7 +59,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.sealName6 = ko.observable('');
             self.currentCode = ko.observable(0);
 
-            console.log(self.attendanceCode());
+//            console.log(self.attendanceCode());
 
             this.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KWR002_86'), key: 'attendanceItemId', width: 100 },
