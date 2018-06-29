@@ -2206,7 +2206,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(this.totalAttTime),
 				new AttendanceTime(this.totalCalcTime), new AttendanceTime(this.actWorkTime),
 				within, 
-				new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(this.ileglMidntOverTime + this.illegHoliWorkMidn), new AttendanceTime(this.calcIleglMidNOverTime + this.calcIllegHoliWorkMidn)),new AttendanceTime(0)),Optional.of(overTime),Optional.of(holidayWork)), 
+				new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(outPrsMidnTime), new AttendanceTime(calcOutPrsMidnTime)),new AttendanceTime(preOutPrsMidnTime)),Optional.of(overTime),Optional.of(holidayWork)), 
 				lateTime, 
 				leaveEarly,
 				breakTime,
