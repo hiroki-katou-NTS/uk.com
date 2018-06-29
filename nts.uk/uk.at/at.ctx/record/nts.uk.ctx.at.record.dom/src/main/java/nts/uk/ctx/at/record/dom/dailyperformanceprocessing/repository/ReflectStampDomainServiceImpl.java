@@ -70,36 +70,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	private BasicScheduleAdapter basicScheduleAdapter;
 
 	@Inject
-	private LackOfStampingAlgorithm lackOfStamping;
-
-	@Inject
-	private StampIncorrectOrderAlgorithm stampIncorrectOrderAlgorithm;
-
-	@Inject
-	private DoubleStampAlgorithm doubleStampAlgorithm;
-
-	@Inject
-	private MissingOfTemporaryStampChecking missingOfTemporaryStampChecking;
-
-	@Inject
-	private TemporaryStampOrderChecking temporaryStampOrderChecking;
-
-	@Inject
-	private TemporaryDoubleStampChecking temporaryDoubleStampChecking;
-
-	@Inject
-	private GoingOutStampLeakageChecking goingOutStampLeakageChecking;
-
-	@Inject
-	private GoingOutStampOrderChecking goingOutStampOrderChecking;
-
-	@Inject
-	private BreakTimeStampLeakageChecking breakTimeStampLeakageChecking;
-
-	@Inject
-	private BreakTimeStampIncorrectOrderChecking breakTimeStampIncorrectOrderChecking;
-
-	@Inject
 	private ReflectEmbossingDomainService ReflectEmbossingDomainService;
 
 	@Inject
@@ -108,17 +78,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	@Inject
 	private WorkingConditionItemService workingConditionItemService;
 
-	@Inject
-	private ExitStampCheck exitStampCheck;
-
-	@Inject
-	private ExitStampIncorrectOrderCheck exitStampIncorrectOrderCheck;
-
-	@Inject
-	private PClogOnOffLackOfStamp pClogOnOffLackOfStamp;
-
-	@Inject
-	private PCLogOnOffIncorrectOrderCheck pCLogOnOffIncorrectOrderCheck;
 
 	@Inject
 	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
@@ -127,7 +86,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	private ReflectShortWorkingTimeDomainService reflectShortWorkingTimeDomainService;
 
 	@Inject
+	//エラーアラームを呼び出すためのサービス
 	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
+	
 	
 	@Override
 	public ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
@@ -193,11 +154,12 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			reflectStamp.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
 
 			// エラーチェック
-			List<EmployeeDailyPerError> employeeDailyPerErrorList = this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
-					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
-					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance,
-					reflectStamp.getAttendanceLeavingGateOfDaily(), reflectStamp.getPcLogOnInfoOfDaily());
-			reflectStamp.setEmployeeDailyPerErrorList(employeeDailyPerErrorList);
+ 			//List<EmployeeDailyPerError> employeeDailyPerErrorList = calculateDailyRecordServiceCenter.errorCheck(integrationList); 
+//					this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+//					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
+//					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance,
+//					reflectStamp.getAttendanceLeavingGateOfDaily(), reflectStamp.getPcLogOnInfoOfDaily());
+//			reflectStamp.setEmployeeDailyPerErrorList(employeeDailyPerErrorList);
 		}
 		return reflectStamp;
 	}
@@ -500,86 +462,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		stampReflectRangeOutput.setStampRange(temporary);
 	}
 
-	/*
-	 * エラーチェック
-	 */
-	private List<EmployeeDailyPerError> errorCheck(String companyID, String employeeID, GeneralDate processingDate,
-			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
-			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
-			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance,
-			TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance,
-			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance,
-			AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily, PCLogOnInfoOfDaily pcLogOnInfoOfDaily) {
-		
-		List<EmployeeDailyPerError> dailyPerErrors = new ArrayList<>();
 
-		// 出勤系打刻漏れをチェックする
-		dailyPerErrors.add(this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
-				timeLeavingOfDailyPerformance));
-
-		// 出勤系打刻順序不正をチェックする
-		dailyPerErrors.add(this.stampIncorrectOrderAlgorithm.stampIncorrectOrder(companyID, employeeID, processingDate,
-				timeLeavingOfDailyPerformance));
-
-		// 出勤系二重打刻をチェックする
-		dailyPerErrors.add(this.doubleStampAlgorithm.doubleStamp(companyID, employeeID, processingDate, timeLeavingOfDailyPerformance));
-
-		// TODO: ドメインモデル「臨時勤務管理」を取得する
-		// get data from domain : 臨時勤務管理, this domain, now haven't created
-		// fake data :
-		UseAtr useAtr = UseAtr.USE;
-		if (useAtr == UseAtr.USE) {
-
-			// 臨時系打刻漏れをチェックする
-			dailyPerErrors.add(missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyID, employeeID, processingDate,
-					temporaryTimeOfDailyPerformance));
-
-			// 臨時系打刻順序不正をチェックする
-			dailyPerErrors.add(temporaryStampOrderChecking.temporaryStampOrderChecking(employeeID, companyID, processingDate,
-					temporaryTimeOfDailyPerformance));
-
-			// 臨時系二重打刻をチェックする
-			dailyPerErrors.add(temporaryDoubleStampChecking.temporaryDoubleStampChecking(companyID, employeeID, processingDate,
-					temporaryTimeOfDailyPerformance));
-		}
-		// 外出系打刻漏れをチェックする
-		dailyPerErrors.addAll(goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyID, employeeID, processingDate,
-				outingTimeOfDailyPerformance));
-
-		// 外出系打刻順序不正をチェックする
-		dailyPerErrors.addAll(goingOutStampOrderChecking.goingOutStampOrderChecking(companyID, employeeID, processingDate,
-				outingTimeOfDailyPerformance, timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance));
-
-		// 休憩系打刻漏れをチェックする
-		dailyPerErrors.add(breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyID, employeeID, processingDate,
-				breakTimeOfDailyPerformance));
-
-		// 休憩系打刻順序不正をチェックする
-		dailyPerErrors.addAll(breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(companyID, employeeID, processingDate,
-				breakTimeOfDailyPerformance));
-		UseAtr useAtr2 = UseAtr.USE;
-		if (useAtr2 == UseAtr.USE) {
-			// 入退門の打刻漏れをチェックする
-			dailyPerErrors.add(exitStampCheck.exitStampCheck(companyID, employeeID, processingDate, attendanceLeavingGateOfDaily,
-					workInfoOfDailyPerformance));
-			// 入退門の打刻順序不正をチェックする
-			dailyPerErrors.addAll(exitStampIncorrectOrderCheck.exitStampIncorrectOrderCheck(companyID, employeeID, processingDate,
-					attendanceLeavingGateOfDaily, timeLeavingOfDailyPerformance));
-		}
-
-		UseAtr useAtr3 = UseAtr.USE;
-		if (useAtr3 == UseAtr.USE) {
-			// PCログオンログオフの打刻漏れをチェックする
-			dailyPerErrors.add(this.pClogOnOffLackOfStamp.pClogOnOffLackOfStamp(companyID, employeeID, processingDate, pcLogOnInfoOfDaily,
-					workInfoOfDailyPerformance));
-
-			// PCログオンログオフの打刻順序不正をチェックする
-			dailyPerErrors.add(this.pCLogOnOffIncorrectOrderCheck.pCLogOnOffIncorrectOrderCheck(companyID, employeeID, processingDate,
-					pcLogOnInfoOfDaily, timeLeavingOfDailyPerformance));
-		}
-		
-		return dailyPerErrors;
-	}
 
 	/*
 	 * 打刻反映範囲のListから一番早い時刻を取得
@@ -602,8 +485,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				earliestTime = new TimeWithDayAttr(stampReflect.getStartTime().v());
 			}
 		}
-		;
-
 		return earliestTime;
 	}
 
