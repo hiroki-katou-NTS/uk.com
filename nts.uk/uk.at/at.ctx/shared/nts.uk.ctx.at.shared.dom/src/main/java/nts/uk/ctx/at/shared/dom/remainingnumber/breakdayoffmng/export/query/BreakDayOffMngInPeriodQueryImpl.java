@@ -51,7 +51,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	@Override
 	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam) {
 		//アルゴリズム「未相殺の代休(確定)を取得する」を実行する
-		List<BreakDayOffDetail> lstDetailData = this.getConfirmDayOffDetail(inputParam.getSid());
+		List<BreakDayOffDetail> lstDetailData = this.getConfirmDayOffDetail(inputParam.getCid(), inputParam.getSid());
 		//アルゴリズム「未使用の休出(確定)を取得する」を実行する
 		List<BreakDayOffDetail> lstBreakData = this.getConfirmBreakDetail(inputParam.getSid());
 		if(!lstBreakData.isEmpty()) {
@@ -95,10 +95,10 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
-	public List<BreakDayOffDetail> getConfirmDayOffDetail(String sid) {
+	public List<BreakDayOffDetail> getConfirmDayOffDetail(String cid, String sid) {
 		List<BreakDayOffDetail> lstOutputData = new ArrayList<>();
 		//アルゴリズム「確定代休から未相殺の代休を取得する」を実行する
-		List<CompensatoryDayOffManaData> lstDayOffConfirmData = this.lstConfirmDayOffData(sid);
+		List<CompensatoryDayOffManaData> lstDayOffConfirmData = this.lstConfirmDayOffData(cid, sid);
 		for (CompensatoryDayOffManaData dayOffConfirmData : lstDayOffConfirmData) {
 			//1-3.暫定休出と紐付けをしない確定代休を取得する
 			BreakDayOffDetail dataDetail = this.getConfirmDayOffData(dayOffConfirmData, sid);
@@ -110,9 +110,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
-	public List<CompensatoryDayOffManaData> lstConfirmDayOffData(String sid) {
+	public List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid) {
 		//ドメインモデル「代休管理データ」
-		String cid = AppContexts.user().companyId();
 		List<CompensatoryDayOffManaData> lstDayOffConfirm =  dayOffConfirmRepo.getBySid(cid, sid);
 		
 		return lstDayOffConfirm.stream().filter(x -> x.getRemainDays().v() > 0 || x.getRemainTimes().v() > 0)

@@ -19,13 +19,13 @@ public class InterimRemainAggregateOutputData {
 	 * */
 	private YearMonth ym;
 	/**月初残数	 */
-	private Double monthStartRemain;
+	private double monthStartRemain;
 	/**	月度内発生数 */
-	private Double monthOccurrence;
+	private double monthOccurrence;
 	/** 月度内使用数 */
-	private Double monthUse;
+	private double monthUse;
 	/** 月度内消滅数 */
-	private Double monthExtinction;
+	private double monthExtinction;
 	/**	月末残数 */
-	private Double monthEndRemain;
+	private double monthEndRemain;
 }
