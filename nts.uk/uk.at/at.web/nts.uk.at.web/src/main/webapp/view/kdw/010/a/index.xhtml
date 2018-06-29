@@ -17,8 +17,8 @@
 			<com:scriptfile path="kdw010.a.service.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div class="header-content">
-				<button class="proceed" data-bind="hasFocus:true">#{i18n.getText('KDW010_2')}</button>
+			<div class="header-content" id="functions-area">
+				<button class="proceed" data-bind="hasFocus:true,click:registration">#{i18n.getText('KDW010_2')}</button>
 			</div>
 
 			<div class="contents-area">
@@ -68,13 +68,13 @@
 
 							<td><input tabindex="5" class="nts-input"
 								data-bind="ntsTextEditor:{
-                                         value: targetWorkTypeName,
+                                         value: joinNameTargetWorkType,
                                          required: true,
                                          enable: enableState,
                                          readonly:true,
                                          option: {width: '180px'}}" />
 
-								<button data-bind="enable:enableState">#{i18n.getText('KDW010_6')}</button></td>
+								<button data-bind="enable:enableState,click:function(data){openKDL002Dialog(targetType),data}">#{i18n.getText('KDW010_6')}</button></td>
 						</tr>
 						<tr class="spacer"></tr>
 						<tr class="row">
@@ -84,20 +84,27 @@
 
 							<td><input tabindex="5" class="nts-input"
 								data-bind="ntsTextEditor:{
-                                         value: ignoreWorkTypeName,
+                                         value: joinNameIgnoreWorkType,
                                          required: true,
                                          enable: enableState,
                                          readonly:true,
                                          option: {width: '180px'}}" />
 
-								<button data-bind="enable:enableState">#{i18n.getText('KDW010_6')}</button></td>
+								<button data-bind="enable:enableState, click:function(data){openKDL002Dialog(ignoreType),data}">#{i18n.getText('KDW010_6')}</button></td>
 						</tr>
 						<tr class="spacer"></tr>
 						<tr class="row">
 							<td>
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW010_8')}</div>
 							</td>
-							<td><textarea id="input-text" rows="6" cols="31" data-bind="value:displayMessege,enable:enableState"></textarea>
+							<td><textarea rows="6" cols="31" id="input-text"
+								data-bind="ntsMultilineEditor:{
+									value:displayMessege,
+									constraint:'DisplayMessage',
+									required:true,
+									enable:enableState
+								}" />
+							 
 							</td>
 						</tr>
 					</table>
