@@ -748,18 +748,14 @@ public class ScheCreExeWorkTimeHandler {
 
 		}
 
-		// check work time code null
-		if (StringUtil.isNullOrEmpty(worktimeCode, true)) {
-			// fix bug #87723
-			// for case not
-			// setting work time
-			return Optional.empty();
-		}
-
 		// check not exist data work
 		// EA No2020
 		// 就業時間帯一覧から変換した就業時間帯コードと一致する情報を取得する
 		final String workTimeCode = worktimeCode;
+		//if worktimeCode = null, it mean day off, haven't error
+		if (worktimeCode == null) {
+			return Optional.empty();
+		}
 		Optional<WorkTimeSetting> workTimeSetting = listWorkTimeSetting.stream()
 				.filter(x -> (x.getCompanyId().equals(command.getBaseGetter().getCompanyId())
 						&& x.getWorktimeCode().toString().equals(workTimeCode)))

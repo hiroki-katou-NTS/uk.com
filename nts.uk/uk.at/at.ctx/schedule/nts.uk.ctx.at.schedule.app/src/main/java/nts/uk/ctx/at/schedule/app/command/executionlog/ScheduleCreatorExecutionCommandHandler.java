@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,6 +47,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
@@ -63,6 +65,15 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -146,6 +157,15 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 	@Inject
 	private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
+
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+
+	@Inject
+	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -348,7 +368,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			DatePeriod dateAfterCorrection, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData) {
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -390,14 +412,16 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					// アルゴリズム「営業日カレンダーで勤務予定を作成する」を実行する
 					this.createWorkScheduleByBusinessDayCalenda(command, workingConditionItem.get(), empGeneralInfo,
 							mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
-							listBusTypeOfEmpHis, allData);
+							listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
+							mapDiffTimeWorkSetting);
 				} else if (workingConditionItem.get().getScheduleMethod().get()
 						.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN) {
 					// アルゴリズム「月間パターンで勤務予定を作成する」を実行する
 					// create schedule by monthly pattern
 					this.scheCreExeMonthlyPatternHandler.createScheduleWithMonthlyPattern(command,
 							workingConditionItem.get(), empGeneralInfo, mapEmploymentStatus, listWorkingConItem,
-							listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis, allData);
+							listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting,
+							mapFlowWorkSetting, mapDiffTimeWorkSetting);
 				} else {
 					// アルゴリズム「個人曜日別で勤務予定を作成する」を実行する
 					// TODO
@@ -424,7 +448,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData) {
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
 		// EA No1689
 		List<EmploymentInfoImported> listEmploymentInfo = mapEmploymentStatus.get(workingConditionItem.getEmployeeId());
@@ -455,7 +481,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
 					this.createWorkScheduleByRecreate(command, basicSchedule, workingConditionItem, optEmploymentInfo,
 							empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
-							listBusTypeOfEmpHis, allData);
+							listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
+							mapDiffTimeWorkSetting);
 				}
 			} else {
 				// EA No1841
@@ -475,7 +502,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				// not exist data basic schedule
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem, empGeneralInfo,
 						mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis,
-						allData);
+						allData, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 			}
 		}
 	}
@@ -496,7 +523,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			EmployeeGeneralInfoImported empGeneralInfo, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem, List<WorkType> listWorkType,
 			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
-			List<BasicSchedule> allData) {
+			List<BasicSchedule> allData, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		// 入力パラメータ「再作成区分」を判断 - check parameter ReCreateAtr onlyUnconfirm
 		// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
 		// (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
@@ -507,7 +536,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					optEmploymentInfo, workingConditionItem, empGeneralInfo, listBusTypeOfEmpHis)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem, empGeneralInfo,
 						mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis,
-						allData);
+						allData, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 			}
 		}
 	}
@@ -558,10 +587,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				dateBeforeCorrection);
 		List<WorkType> listWorkType = new ArrayList<>();
 		List<WorkTimeSetting> listWorkTimeSetting = new ArrayList<>();
-		
+		Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting = new HashMap<>();
+		Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting = new HashMap<>();
+		Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting = new HashMap<>();
+
 		// EA No2017
 		// マスタ情報を取得する
-		this.acquireMasterInformation(companyId, listWorkType, listWorkTimeSetting);
+		this.acquireMasterInformation(companyId, listWorkType, listWorkTimeSetting, mapFixedWorkSetting,
+				mapFlowWorkSetting, mapDiffTimeWorkSetting);
 		// 勤務種別情報を取得する
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
 		// ドメインモデル「社員の勤務種別」を取得する
@@ -569,8 +602,10 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				.findByCidSidBaseDate(companyId, employeeIds, dateBeforeCorrection);
 
 		// find all data BasicSchedule
-		List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findAllBetweenDate(employeeIds,
-				scheduleExecutionLog.getPeriod().start(), scheduleExecutionLog.getPeriod().end());
+		// List<BasicSchedule> listBasicSchedule =
+		// this.basicScheduleRepository.findAllBetweenDate(employeeIds,
+		// scheduleExecutionLog.getPeriod().start(),
+		// scheduleExecutionLog.getPeriod().end());
 
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -612,11 +647,13 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				if (command.getContent().getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
 					this.createScheduleBasedPerson(command, scheduleCreator, scheduleExecutionLog, context,
 							dateAfterCorrection, empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType,
-							listWorkTimeSetting, listBusTypeOfEmpHis, allData);
+							listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
+							mapDiffTimeWorkSetting);
 				}
 			}
-			// insert/update 1person-1month-1commit
-			this.insertUpdateAllBasicSchedule(listBasicSchedule, allData);
+			// insert 1person-1month-1commit
+			// this.insertAllBasicSchedule(listBasicSchedule, allData);
+			this.basicScheduleRepository.insertAll(allData);
 
 			scheduleCreator.updateToCreated();
 			this.scheduleCreatorRepository.update(scheduleCreator);
@@ -632,28 +669,30 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		}
 	}
 
-	private void insertUpdateAllBasicSchedule(List<BasicSchedule> listBasicSchedule, List<BasicSchedule> allData) {
-		List<BasicSchedule> listUpdates = new ArrayList<>();
-		List<BasicSchedule> listInsert = new ArrayList<>();
-		allData.forEach(x -> {
-			Optional<BasicSchedule> opt = listBasicSchedule.stream()
-					.filter(y -> (y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate())))
-					.findFirst();
-			if (opt.isPresent()) {
-				listUpdates.add(x);
-			} else {
-				listInsert.add(x);
-			}
-		});
-
-		if (listInsert.size() > 0) {
-			this.basicScheduleRepository.insertAll(listInsert);
-		}
-		if (listUpdates.size() > 0) {
-			this.basicScheduleRepository.updateAll(listUpdates);
-		}
-
-	}
+	// private void insertUpdateAllBasicSchedule(List<BasicSchedule>
+	// listBasicSchedule, List<BasicSchedule> allData) {
+	// List<BasicSchedule> listUpdates = new ArrayList<>();
+	// List<BasicSchedule> listInsert = new ArrayList<>();
+	// allData.forEach(x -> {
+	// Optional<BasicSchedule> opt = listBasicSchedule.stream()
+	// .filter(y -> (y.getEmployeeId().equals(x.getEmployeeId()) &&
+	// y.getDate().equals(x.getDate())))
+	// .findFirst();
+	// if (opt.isPresent()) {
+	// listUpdates.add(x);
+	// } else {
+	// listInsert.add(x);
+	// }
+	// });
+	//
+	// if (listInsert.size() > 0) {
+	// this.basicScheduleRepository.insertAll(listInsert);
+	// }
+	// if (listUpdates.size() > 0) {
+	// this.basicScheduleRepository.updateAll(listUpdates);
+	// }
+	//
+	// }
 
 	/**
 	 * 実行ログ作成処理
@@ -765,11 +804,67 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param listDiffTimeWorkSetting
 	 */
 	private void acquireMasterInformation(String companyId, List<WorkType> listWorkType,
-			List<WorkTimeSetting> listWorkTimeSetting) {
+			List<WorkTimeSetting> listWorkTimeSetting, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		// ドメインモデル「勤務種類」を取得する
 		listWorkType.addAll(this.workTypeRepository.findNotDeprecateByCompanyId(companyId));
 		// ドメインモデル「就業時間帯の設定」を取得する
 		listWorkTimeSetting.addAll(this.workTimeSettingRepository.findActiveItems(companyId));
+		// EA修正履歴 No2103
+		List<String> listWorkTimeCodeFix = new ArrayList<>();
+		List<String> listWorkTimeCodeFlow = new ArrayList<>();
+		List<String> listWorkTimeCodeDiff = new ArrayList<>();
+		listWorkTimeSetting.forEach(workTime -> {
+			WorkTimeDivision workTimeDivision = workTime.getWorkTimeDivision();
+			if (workTimeDivision.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK) {
+				if (workTimeDivision.getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
+					listWorkTimeCodeFix.add(workTime.getWorktimeCode().v());
+				} else if (workTimeDivision.getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
+					listWorkTimeCodeFlow.add(workTime.getWorktimeCode().v());
+				} else {
+					listWorkTimeCodeDiff.add(workTime.getWorktimeCode().v());
+				}
+			}
+		});
+		// ドメインモデル「固定勤務設定」を取得する
+		Map<WorkTimeCode, List<DeductionTime>> mapFixOffdayWorkRestTimezones = this.fixedWorkSettingRepository
+				.getFixOffdayWorkRestTimezones(companyId, listWorkTimeCodeFix);
+		Map<WorkTimeCode, List<DeductionTime>> mapFixHalfDayWorkRestTimezones = this.fixedWorkSettingRepository
+				.getFixHalfDayWorkRestTimezones(companyId, listWorkTimeCodeFix);
+		this.setDataForMap(mapFixedWorkSetting, mapFixOffdayWorkRestTimezones, mapFixHalfDayWorkRestTimezones);
+		// ドメインモデル「流動勤務設定」を取得する
+		Map<WorkTimeCode, List<DeductionTime>> mapFlowOffdayWorkRestTimezones = this.flowWorkSettingRepository
+				.getFlowOffdayWorkRestTimezones(companyId, listWorkTimeCodeFlow);
+		Map<WorkTimeCode, List<DeductionTime>> mapFlowHalfDayWorkRestTimezones = this.flowWorkSettingRepository
+				.getFlowHalfDayWorkRestTimezones(companyId, listWorkTimeCodeFlow);
+		this.setDataForMap(mapFlowWorkSetting, mapFlowOffdayWorkRestTimezones, mapFlowHalfDayWorkRestTimezones);
+		// ドメインモデル「時差勤務設定」を取得する
+		Map<WorkTimeCode, List<DiffTimeDeductTimezone>> mapDiffOffdayWorkRT = this.diffTimeWorkSettingRepository
+				.getDiffOffdayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
+		Map<WorkTimeCode, List<DiffTimeDeductTimezone>> mapDiffHalfDayWorkRT = this.diffTimeWorkSettingRepository
+				.getDiffHalfDayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
+		Map<WorkTimeCode, List<DeductionTime>> mapDiffOffdayWorkRestTimezones = mapDiffOffdayWorkRT.entrySet().stream()
+				.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().stream().map(items -> {
+					return (DeductionTime) items;
+				}).collect(Collectors.toList())));
+		Map<WorkTimeCode, List<DeductionTime>> mapDiffHalfDayWorkRestTimezones = mapDiffHalfDayWorkRT.entrySet()
+				.stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().stream().map(items -> {
+					return (DeductionTime) items;
+				}).collect(Collectors.toList())));
+		this.setDataForMap(mapDiffTimeWorkSetting, mapDiffOffdayWorkRestTimezones, mapDiffHalfDayWorkRestTimezones);
 	}
-	
+
+	private void setDataForMap(Map<String, WorkRestTimeZoneDto> map, Map<WorkTimeCode, List<DeductionTime>> map1,
+			Map<WorkTimeCode, List<DeductionTime>> map2) {
+		if (map1.size() >= map2.size()) {
+			map1.forEach((key, value) -> {
+				map.put(key.v(), new WorkRestTimeZoneDto(value, map2.get(key)));
+			});
+		} else {
+			map2.forEach((key, value) -> {
+				map.put(key.v(), new WorkRestTimeZoneDto(map1.get(key), value));
+			});
+		}
+	}
 }

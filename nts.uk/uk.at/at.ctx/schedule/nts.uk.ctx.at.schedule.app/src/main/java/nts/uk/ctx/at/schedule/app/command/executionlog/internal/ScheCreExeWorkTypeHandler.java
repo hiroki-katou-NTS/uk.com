@@ -17,6 +17,7 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.WorkCondItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
@@ -75,7 +76,10 @@ public class ScheCreExeWorkTypeHandler {
 	public void createWorkSchedule(ScheduleCreatorExecutionCommand command, WorkCondItemDto workingConditionItem,
 			EmployeeGeneralInfoImported empGeneralInfo, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem, List<WorkType> listWorkType,
-			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData) {
+			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
+			List<BasicSchedule> allData, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 
 		// 登録前削除区分をTrue（削除する）とする
 		// command.setIsDeleteBeforInsert(true); FIX BUG #87113
@@ -108,12 +112,13 @@ public class ScheCreExeWorkTypeHandler {
 			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter,
 					empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkTimeSetting);
 
-			if (optionalWorkTime == null || optionalWorkTime.isPresent()) {
+			if (optionalWorkTime.isPresent()) {
 				// update all basic schedule
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
 						optionalWorkTime == null ? null : optionalWorkTime.get(), empGeneralInfo, listWorkType,
-						listWorkTimeSetting, listBusTypeOfEmpHis, allData);
+						listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
+						mapDiffTimeWorkSetting);
 			}
 
 		}
