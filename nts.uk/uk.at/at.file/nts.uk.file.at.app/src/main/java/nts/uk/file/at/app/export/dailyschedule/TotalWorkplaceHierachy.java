@@ -78,7 +78,7 @@ public class TotalWorkplaceHierachy {
 		case FIRST_LEVEL:
 			return firstLevel != null && firstLevel;
 		case SECOND_LEVEL:
-			return secondLevel != null && firstLevel;
+			return secondLevel != null && secondLevel;
 		case THIRD_LEVEL:
 			return thirdLevel != null && thirdLevel;
 		case FOURTH_LEVEL:
