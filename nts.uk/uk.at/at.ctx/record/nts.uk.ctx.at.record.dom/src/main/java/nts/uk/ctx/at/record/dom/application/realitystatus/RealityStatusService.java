@@ -362,15 +362,15 @@ public class RealityStatusService {
 			switch (type) {
 			case PERSON:
 				// アルゴリズム「承認状況未確認メール送信本人取得」を実行する
-				listSId = this.getEmpUnconfirmByPerson(listEmp, wkp.getWkpId());
+				listSId.addAll(this.getEmpUnconfirmByPerson(listEmp, wkp.getWkpId()));
 				break;
 			case DAILY:
 				// アルゴリズム「承認状況未確認メール送信上司取得」を実行する
-				listSId = this.getEmpUnconfirmByBoss(listEmp, wkp.getWkpId());
+				listSId.addAll(this.getEmpUnconfirmByBoss(listEmp, wkp.getWkpId()));
 				break;
 			case MONTHLY:
 				// アルゴリズム「承認状況未確認メール送信月次確認者取得」を実行する
-				listSId = this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId());
+				listSId.addAll(this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId()));
 				break;
 			}
 		}
@@ -446,9 +446,11 @@ public class RealityStatusService {
 		// 社員ID（リスト）
 		for (RealityStatusEmployeeImport emp : listEmp) {
 			// アルゴリズム「承認状況未確認チェック上司」を実行する
-			if (this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(), emp.getEndDate())) {
+			List<String> listUnconfirmBoss = this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(),
+					emp.getEndDate());
+			if (listUnconfirmBoss.size() > 0) {
 				// 上司社員ID（リスト）を未確認者（リスト）にセット
-				listEmpUnconfirm.add(emp.getSId());
+				listEmpUnconfirm.addAll(listUnconfirmBoss);
 			}
 		}
 		return listEmpUnconfirm;
@@ -467,7 +469,7 @@ public class RealityStatusService {
 	 *            社員ID.期間(終了日)
 	 * @return 結果（あり/なし)
 	 */
-	private boolean checkUnconfirmBoss(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate) {
+	private List<String> checkUnconfirmBoss(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate) {
 		String cId = AppContexts.user().companyId();
 		List<String> listEmpId = new ArrayList<>();
 		// imported（ワークフロー）「承認ルート状況」を取得する
@@ -476,13 +478,14 @@ public class RealityStatusService {
 				.getApprovalByEmplAndDate(startDate, endDate, sId, cId, 1);
 		// 承認ルートの状況
 		for (ApproveRootStatusForEmpImport appRoot : listAppRootStatus) {
-			if (ApprovalStatusForEmployee.APPROVED.equals(appRoot.getApprovalStatus())) {
+			if (ApprovalStatusForEmployee.UNAPPROVED.equals(appRoot.getApprovalStatus())
+					|| ApprovalStatusForEmployee.DURING_APPROVAL.equals(appRoot.getApprovalStatus())) {
 				// 上司社員ID（リスト）に承認ルートの承認者を追加する
 				listEmpId.add(appRoot.getEmployeeID());
 			}
 		}
 		// 上司社員ID（リスト）の存在状態を確認
-		return listEmpId.size() != 0;
+		return listEmpId;
 	}
 
 	/**

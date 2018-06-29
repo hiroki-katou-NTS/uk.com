@@ -38,14 +38,14 @@
 		                   <div data-bind="ntsCheckBox: {checked: useAtr}"></div>
 		               </td>
 		               <td style ="text-align: center;">
-	                       <span data-bind="text: rowId"></span>
+	                       <span data-bind="text: sortBy"></span>
 	                   </td>
 	                   <td>
-	                       <input data-bind="ntsTextEditor: {value: nameAlarmExtraCon , required: true, constraint: 'NameAlarmExtractionCondition', name: '#[KAL003_12]', 
+	                       <input class="nameAlarm" data-bind="ntsTextEditor: {value: nameAlarmExtraCon , required: true, constraint: 'NameAlarmExtractionCondition', name: '#[KAL003_12]', 
 		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 				                textmode: 'text',
 				                placeholder: '',
-				                width: '160px',
+				                width: '150px',
 				                textalign: 'left'
 				            }))}" />
 	                   </td>

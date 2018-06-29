@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kaf001.b.start.js" />
+				<com:scriptfile path="kaf001.b.vm.js" />
+				<com:stylefile path="kaf001.b.main.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+				<div style="width: 380px;">
+					<div class="label">#{i18n.getText('KAF001_11')}</div>
+					<!-- B2-普通残業申請 -->
+					<div><button class="caret-right" data-bind="text: b2, click: function(){ openOverTime(1); }"></button></div>
+					<!-- B3-早出残業申請 -->
+					<div><button class="caret-right" data-bind="text: b3, click: function(){ openOverTime(0); }"></button></div>
+					<!-- B4-早出・普通残業申請 -->
+					<div><button class="caret-right" data-bind="text: b4, click: function(){ openOverTime(2); }"></button></div>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

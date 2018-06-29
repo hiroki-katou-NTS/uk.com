@@ -11,7 +11,7 @@ public class ApplicationCommand {
 
 	private int prePostAtr;
 
-	private String enteredPersonSID;
+	private String employeeID;
 
 	private Long appVersion;
 
