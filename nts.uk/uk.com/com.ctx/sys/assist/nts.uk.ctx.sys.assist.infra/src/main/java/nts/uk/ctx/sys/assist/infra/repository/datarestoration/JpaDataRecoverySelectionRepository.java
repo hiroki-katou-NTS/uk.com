@@ -43,16 +43,15 @@ public class JpaDataRecoverySelectionRepository extends JpaRepository implements
 		List<DataRecoverySelection> result = new ArrayList<>();
 		if (!targetData.isEmpty()) {
 			for (val object : targetData) {
-				String code = object[0].toString();
-				String name = object[1].toString();
-				String suppleExplanation = object[2].toString();
-				GeneralDateTime saveStartDatetime = GeneralDateTime.fromString(object[3].toString(),
-						"yyyy/MM/dd HH:mm:ss");
-				Integer saveForm = Integer.parseInt(object[4].toString());
-				Integer targetNumberPeople = Integer.parseInt(object[5].toString());
-				String saveFileName = object[6].toString();
-				String fileId = object[7].toString();
-				String storeProcessingId = object[8].toString();
+				String code = (String)object[0];
+				String name = (String)object[1];
+				String suppleExplanation = (String)object[2];
+				GeneralDateTime saveStartDatetime = object[3]==null?null: GeneralDateTime.fromString(object[3].toString(),"yyyy/MM/dd HH:mm:ss");
+				Integer saveForm =  object[4]==null?null:Integer.parseInt(object[4].toString());
+				Integer targetNumberPeople = object[5]==null?null:Integer.parseInt(object[5].toString());
+				String saveFileName = (String)object[6];
+				String fileId = (String)object[7];
+				String storeProcessingId = (String)object[8];
 				result.add(new DataRecoverySelection(code, name, suppleExplanation, saveStartDatetime, saveForm,
 						targetNumberPeople, saveFileName, fileId, storeProcessingId));
 			}
