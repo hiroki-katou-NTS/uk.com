@@ -157,7 +157,7 @@ module nts.uk.pr.view.ccg007.b {
                     blockUI.clear();
                 }).fail(function(res:any) {
                     //Return Dialog Error
-                    if (!nts.uk.util.isNullOrEmpty(res.parameterIds){
+                    if (!nts.uk.util.isNullOrEmpty(res.parameterIds)){
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                     } else {
                        nts.uk.ui.dialog.alertError(res.messageId);
