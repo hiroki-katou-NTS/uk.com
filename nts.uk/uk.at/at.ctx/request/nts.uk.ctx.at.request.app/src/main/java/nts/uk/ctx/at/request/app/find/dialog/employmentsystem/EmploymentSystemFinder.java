@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -84,12 +85,12 @@ public class EmploymentSystemFinder {
 		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
 		
 		// アルゴリズム「休出代休発生消化履歴の取得」を実行する
-		BreakDayOffOutputHisData data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
+		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
 		
 		List<BreakDayOffHistoryDto> lstHistory = new ArrayList<>();
 		
-		if(data != null && data.getLstHistory().size() > 0) {
-			for (BreakDayOffHistory item : data.getLstHistory()) {
+		if(data.isPresent() && data.get().getLstHistory().size() > 0) {
+			for (BreakDayOffHistory item : data.get().getLstHistory()) {
 				ComDayoffDateDto hisDate = new ComDayoffDateDto(item.getHisDate().isUnknownDate(), item.getHisDate().getDayoffDate().get());
 				
 				ComDayoffDateDto breakDate = new ComDayoffDateDto(item.getBreakHis() != null ? item.getBreakHis().get().getBreakDate().isUnknownDate() : true, 
@@ -117,7 +118,7 @@ public class EmploymentSystemFinder {
 			}
 		}
 		
-		DetailConfirmDto result = new DetailConfirmDto(closingPeriod, lstHistory, data != null ? data.getTotalInfor() : null);
+		DetailConfirmDto result = new DetailConfirmDto(closingPeriod, lstHistory, data.isPresent() ? data.get().getTotalInfor() : null);
 		
 		return result;
 	}
@@ -165,13 +166,13 @@ public class EmploymentSystemFinder {
 		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
 		
 		// アルゴリズム「振出振休発生消化履歴の取得」を実行する
-		AbsRecGenerationDigestionHis data = absenceReruitmentManaQuery
+		Optional<AbsRecGenerationDigestionHis> data = absenceReruitmentManaQuery
 				.generationDigestionHis(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
 
 		List<RecAbsHistoryOutputDto> recAbsHistoryOutput = new ArrayList<>();
 		
-		if(data != null && data.getGreneraGigesHis().size() > 0) {
-			for (RecAbsHistoryOutputPara item : data.getGreneraGigesHis()) {
+		if(data.isPresent() && data.get().getGreneraGigesHis().size() > 0) {
+			for (RecAbsHistoryOutputPara item : data.get().getGreneraGigesHis()) {
 				CompensatoryDayoffDateDto ymdData = new CompensatoryDayoffDateDto(item.getYmdData().isUnknownDate(), item.getYmdData().getDayoffDate().get());
 				
 				Double useDays = item.getUseDays() != null ? item.getUseDays().get() : 0.0;
@@ -200,7 +201,7 @@ public class EmploymentSystemFinder {
 			}
 		}
 
-		NumberRestDaysDto result = new NumberRestDaysDto(closingPeriod, recAbsHistoryOutput, data != null ? data.getAbsRemainInfor() : null);
+		NumberRestDaysDto result = new NumberRestDaysDto(closingPeriod, recAbsHistoryOutput, data.isPresent() ? data.get().getAbsRemainInfor() : null);
 		
 		return result;
 	}

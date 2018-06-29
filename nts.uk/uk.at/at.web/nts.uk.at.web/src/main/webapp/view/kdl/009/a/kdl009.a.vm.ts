@@ -59,7 +59,7 @@ module nts.uk.at.view.kdl009.a {
                             
                         self.bindEmpList(data.employeeBasicInfo);
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 320, width: 650 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
                     } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
@@ -70,11 +70,11 @@ module nts.uk.at.view.kdl009.a {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                         });
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
                     } else {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
                         
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_918" });
                     }
@@ -143,7 +143,7 @@ module nts.uk.at.view.kdl009.a {
                             if(item.recHisData.recDate.unknownDate) {
                                 issueDate = nts.uk.resource.getText("KDL009_11");
                             } else {
-                                issueDate = nts.uk.resource.getText("KDL009_13", [item.recHisData.recDate.dayoffDate]);
+                                issueDate = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate])]);
                             }
                             
                             if(item.recHisData.occurrenceDays == 0.5) {
@@ -162,7 +162,7 @@ module nts.uk.at.view.kdl009.a {
                             if(item.absHisData.absDate.unknownDate) {
                                 holidayDate = nts.uk.resource.getText("KDL009_11");
                             } else {
-                                holidayDate = nts.uk.resource.getText("KDL009_13", [item.absHisData.absDate.dayoffDate]);
+                                holidayDate = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate])]);
                             }
                             
                             if(item.absHisData.requeiredDays == 0.5) {

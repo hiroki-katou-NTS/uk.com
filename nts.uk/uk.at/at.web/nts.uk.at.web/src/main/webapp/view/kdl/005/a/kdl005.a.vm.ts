@@ -86,7 +86,7 @@ module nts.uk.at.view.kdl005.a {
                     
                     $('#component-items-list').ntsListComponent(self.listComponentOption);
                     
-                    $("#date-fixed-table").ntsFixedTable({ height: 320, width: 650 });
+                    $("#date-fixed-table").ntsFixedTable({ height: 320 });
                 } else if(self.kdl005Data.employeeBasicInfo.length == 1) {
                     self.employeeInfo(nts.uk.resource.getText("KDL009_25", [self.kdl005Data.employeeBasicInfo[0].employeeCode, self.kdl005Data.employeeBasicInfo[0].businessName]));
                     
@@ -97,11 +97,11 @@ module nts.uk.at.view.kdl005.a {
                           
                     });
                     
-                    $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
+                    $("#date-fixed-table").ntsFixedTable({ height: 320 });
                 } else {
                     self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                     
-                    $("#date-fixed-table").ntsFixedTable({ height: 320, width: 700 });
+                    $("#date-fixed-table").ntsFixedTable({ height: 320 });
                 }
             }
             
@@ -129,7 +129,7 @@ module nts.uk.at.view.kdl005.a {
                         if(item.breakHis != null) {
                             if(!item.breakHis.chkDisappeared) {
                                 if(item.breakHis.mngAtr == 0 || item.breakHis.mngAtr == 4) {
-                                    leaveDate = nts.uk.resource.getText("KDL005_19", [item.breakHis.breakDate.dayoffDate]);
+                                    leaveDate = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.breakDate.dayoffDate])]);
                                 } else {
                                     leaveDate = nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.breakDate.dayoffDate]);
                                 }
@@ -145,7 +145,7 @@ module nts.uk.at.view.kdl005.a {
                             }
                             
                             if(item.breakHis.expirationDate != null) {
-                                duedateHoliday = nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.expirationDate]);
+                                duedateHoliday = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.expirationDate])]);
                             } else {
                                 duedateHoliday = "";
                             }
