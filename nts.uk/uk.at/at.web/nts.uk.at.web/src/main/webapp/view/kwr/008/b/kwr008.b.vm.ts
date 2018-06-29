@@ -180,6 +180,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     }
                 });
 
+                
+
+            }).always(function() {
+                dfd.resolve(self);
                 //get parameter from B
                 let KWR008BParam = nts.uk.ui.windows.getShared("KWR008_B_Param");
                 if (KWR008BParam && KWR008BParam.selectedCd) {
@@ -188,9 +192,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 } else { //case no param
                     self.checkListItemOutput();
                 }
-
-            }).always(function() {
-                dfd.resolve(self);
                 block.clear();
             });
 
