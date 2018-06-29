@@ -1,9 +1,9 @@
-module nts.uk.at.view.kwr001.d {
+module nts.uk.com.view.cli001.a {
     __viewContext.ready(function() {
-        var screenModel = new d.viewmodel.ScreenModel();
+        var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            $('#combo-box-scrD').focus(); 
+            _.defer(() => screenModel.setInitialFocus());
         });
     });
 }
