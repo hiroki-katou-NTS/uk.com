@@ -67,7 +67,7 @@ module nts.uk.com.view.cmm020.a {
                         let currentEra = self.dataSource().filter(e => e.eraId === codeChanged)[0];
                         if (!_.isEmpty(currentEra)) {
                             self.eraSelected(currentEra);
-                            self.setValueCurrentEraShow(currentEra);
+                            
                             //check era is system value, set active btn update and delete
                             var indexOfEraSelected = self.dataSource().indexOf(currentEra);
                             if (currentEra.systemType == 1) {
@@ -77,7 +77,12 @@ module nts.uk.com.view.cmm020.a {
                                 self.activeUpdate(indexOfEraSelected > LAST_INDEX_ERA_NAME_SYTEM);
                                 self.activeDelete(indexOfEraSelected == self.dataSource().length - 1);
                             }
-                            self.isFocus(true);
+                            self.setValueCurrentEraShow(currentEra);
+//                            self.isFocus(true);
+                            //                            setTimeout($("#single-list").focus(), 100);
+//                            setTimeout(function() {
+//                                self.isFocus(true);
+//                            }, 100);
                         };
                     }
                 });
@@ -99,7 +104,7 @@ module nts.uk.com.view.cmm020.a {
                 //                listEraName.push(new model.EraItem("code6", "D", "222", "2018/3/28", false));
 
                 self.loadEraNameList(null);
-//                $("#single-list").animate({scrollTop: $("#single-list").height()}, 800);
+                //                $("#single-list").animate({scrollTop: $("#single-list").height()}, 800);
                 dfd.resolve();
 
                 return dfd.promise();
