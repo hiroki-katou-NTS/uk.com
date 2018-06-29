@@ -1982,6 +1982,12 @@ public class ProgramsManager {
 	/** CCG009 */
 	public static final Program CCG009A = new Program(WebAppId.COM, ProgramIdConsts.CCG009A, "CCG009_1",
 			"/view/ccg/009/index.xhtml");
+	
+	/** CLI001 */
+	public static final Program CLI001A = new Program(WebAppId.COM, ProgramIdConsts.CLI001A, "CLI001_1",
+			"/view/cli/001/a/index.xhtml");
+	public static final Program CLI001B = new Program(WebAppId.COM, ProgramIdConsts.CLI001B, "CLI001_2",
+			"/view/cli/001/b/index.xhtml");
 
 	/** KTG031 */
 	public static final Program KTG031A = new Program(WebAppId.COM, ProgramIdConsts.KTG031A, "KTG031_1",
