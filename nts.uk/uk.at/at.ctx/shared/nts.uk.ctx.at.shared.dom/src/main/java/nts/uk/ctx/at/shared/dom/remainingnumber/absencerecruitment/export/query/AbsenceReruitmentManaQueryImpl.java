@@ -149,13 +149,15 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//指定期間内に発生した暫定振出と紐付いた確定振休・暫定振休を取得する		
 		AbsRecInterimOutputPara outputData = this.getInterimAbsMng(sid, adjustDate);
 		//指定期間内に使用した暫定振休を取得する  ドメインモデル「暫定振休管理データ」を取得する
-		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, adjustDate, RemainType.SUBHOLIDAY);
+		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, adjustDate, RemainType.PAUSE);
+		List<InterimAbsMng> interimAbsMngInfor = new ArrayList<>(outputData.getInterimAbsMngInfor());
 		for (InterimRemain interimRemain : lstRemain) {
 			Optional<InterimAbsMng> optAbsMng = recAbsRepo.getAbsById(interimRemain.getRemainManaID());
 			if(optAbsMng.isPresent()) {
-				outputData.getInterimAbsMngInfor().add(optAbsMng.get());
+				interimAbsMngInfor.add(optAbsMng.get());
 			}
 		}
+		outputData.setInterimAbsMngInfor(interimAbsMngInfor);
 		//未消化の確定振出に紐付いた暫定振休を取得する
 		outputData = this.getNotInterimAbsMng(sid, adjustDate, outputData, confirmData);
 		return outputData;
@@ -196,19 +198,23 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//振出管理データをチェックする
 		List<String> lstConfirmRecId = confirmData.lstRecConfirm.stream().map(x -> x.getPayoutId())
 				.collect(Collectors.toList());
+		List<InterimRecAbsMng> interimRecAbsMngInfor = new ArrayList<>(absRecData.getInterimRecAbsMngInfor());
 		if(!lstConfirmRecId.isEmpty()) {
 			//ドメインモデル「暫定振出振休紐付け管理」を取得する
 			List<InterimRecAbsMng> lstRecMngData = recAbsRepo.getRecByIdsMngAtr(lstConfirmRecId, DataManagementAtr.CONFIRM);
 			if(!lstRecMngData.isEmpty()) {
+				List<InterimAbsMng> interimAbsMngInfor = new ArrayList<>(absRecData.getInterimAbsMngInfor());
 				//ドメインモデル「暫定振休管理データ」を取得する
 				lstRecMngData.stream().forEach(x -> {
-					absRecData.getInterimRecAbsMngInfor().add(x);
+					interimRecAbsMngInfor.add(x);
 					Optional<InterimAbsMng> optAbsData = recAbsRepo.getAbsById(x.getAbsenceMngId());
 					optAbsData.ifPresent(y -> {
-						absRecData.getInterimAbsMngInfor().add(y);
+						interimAbsMngInfor.add(y);
 					});
 				});
+				absRecData.setInterimAbsMngInfor(interimAbsMngInfor);
 			}
+			absRecData.setInterimRecAbsMngInfor(interimRecAbsMngInfor);
 		}
 		return absRecData;
 	}
@@ -481,8 +487,10 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		AbsRecConfirmOutputPara outPutData = this.getUndigestedConfirm(sid);
 		//未相殺の確定振休を取得する
 		List<SubstitutionOfHDManagementData> getByRemainDays = comfirmAbsMngRepo.getByRemainDays(sid, 0);
+		List<SubstitutionOfHDManagementData> lstAbsConfirm = new ArrayList<>(outPutData.getLstAbsConfirm());
 		if(!getByRemainDays.isEmpty()) {
-			outPutData.getLstAbsConfirm().addAll(getByRemainDays);
+			lstAbsConfirm.addAll(getByRemainDays);
+			outPutData.setLstAbsConfirm(lstAbsConfirm);
 		}
 		return outPutData;
 	}
@@ -491,17 +499,22 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		AbsRecConfirmOutputPara outputData = new AbsRecConfirmOutputPara(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 		//ドメインモデル「振出管理データ」を取得する
 		List<PayoutManagementData> lstRecconfirm  = confirmRecMngRepo.getByStateAtr(sid, DigestionAtr.UNUSED);
-		lstRecconfirm.stream().forEach(x -> {
-			outputData.getLstRecConfirm().add(x);
+		List<PayoutSubofHDManagement> lstAbsRecConfirm = new ArrayList<>();
+		List<SubstitutionOfHDManagementData> lstAbsConfirm = new ArrayList<>();
+		
+		for (PayoutManagementData x : lstRecconfirm) {
 			//ドメインモデル「振出振休紐付け管理」を取得する
-			List<PayoutSubofHDManagement> lstAbsRecConfirm = confirmRecAbsRepo.getByPayoutId(x.getPayoutId());
+			lstAbsRecConfirm = confirmRecAbsRepo.getByPayoutId(x.getPayoutId());
+			
 			lstAbsRecConfirm.stream().forEach(y -> {
-				outputData.getLstAbsRecConfirm().add(y);
 				//ドメインモデル「振休管理データ」を取得する
 				Optional<SubstitutionOfHDManagementData> absConfirm = comfirmAbsMngRepo.findByID(y.getSubOfHDID());
-				absConfirm.ifPresent(z -> outputData.getLstAbsConfirm().add(z));
+				absConfirm.ifPresent(z -> lstAbsConfirm.add(z));
 			});
-		});
+		}
+		outputData.setLstRecConfirm(lstRecconfirm);
+		outputData.setLstAbsRecConfirm(lstAbsRecConfirm);
+		outputData.setLstAbsConfirm(lstAbsConfirm);
 		return outputData;
 		
 	}

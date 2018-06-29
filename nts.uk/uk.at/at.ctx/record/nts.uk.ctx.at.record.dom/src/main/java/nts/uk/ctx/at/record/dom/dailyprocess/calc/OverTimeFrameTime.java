@@ -123,7 +123,10 @@ public class OverTimeFrameTime {
 	 * @return
 	 */
 	public int calcPreOverLimitDivergenceTime() {
-		return calcOverLimitDivergenceTime() - this.BeforeApplicationTime.valueAsMinutes();
+		if(this.BeforeApplicationTime != null) {
+			return calcOverLimitDivergenceTime() - this.BeforeApplicationTime.valueAsMinutes();
+		}
+		return calcOverLimitDivergenceTime();
 	}
 
 	/**

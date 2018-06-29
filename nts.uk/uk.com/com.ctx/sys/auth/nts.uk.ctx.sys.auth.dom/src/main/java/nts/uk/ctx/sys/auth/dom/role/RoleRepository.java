@@ -87,6 +87,17 @@ public interface RoleRepository {
 	List<Role> findByType(String companyId, int roleType);
 	
 	/**
+	 * get by role type and filter
+	 * 
+	 * @param companyId
+	 * @param roleType
+	 * @param isInchargeOnly
+	 * @param isGeneralOnly
+	 * @return
+	 */
+	List<Role> findByTypeAndRoleAtr(String companyId, int roleType, int roleAtr);
+	
+	/**
 	 * find by role type, RoleAtr
 	 * 
 	 * @param companyId

@@ -49,7 +49,8 @@ public class OvertimeWebService extends WebService{
 				param.getTimeStart1(),
 				param.getTimeEnd1(),
 				param.getReasonContent(),
-				param.getEmployeeIDs());
+				param.getEmployeeIDs(),
+				param.getEmployeeID());
 	}
 	
 	@POST
@@ -132,6 +133,7 @@ class Param{
 	private Integer timeEnd1;
 	private String reasonContent;
 	private List<String> employeeIDs;
+	private String employeeID;
 }
 @Value
 class RecordWorkParam {
