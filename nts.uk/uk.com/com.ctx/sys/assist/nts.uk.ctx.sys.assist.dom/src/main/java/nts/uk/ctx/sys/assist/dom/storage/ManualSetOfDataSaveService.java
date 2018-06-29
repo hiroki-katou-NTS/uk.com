@@ -192,9 +192,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			int storageRangeSaved = 0;
 			TimeStore retentionPeriodCls = null;
 			int anotherComCls = 0;
-			String screenRetentionPeriod = "";
-			String saveDateFrom = "";
-			String saveDateTo = "";
+			String screenRetentionPeriod = null;
+			String saveDateFrom = null;
+			String saveDateTo = null;
 			int surveyPreservation = optManualSetting.getIdentOfSurveyPre().value;
 			Optional<Category> category = categorys.stream()
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
