@@ -19,15 +19,15 @@ public class RemainDaysOfSpecialHoliday {
 	/**
 	 * 使用数
 	 */
-	private Double useDays;
+	private double useDays;
 	/**
 	 * 付与前明細: 残数
 	 */
-	private Double beforeRemainDays;
+	private double beforeRemainDays;
 	/**
 	 * 付与前明細: 付与数
 	 */
-	private Double beforeGrantDays;
+	private double beforeGrantDays;
 	/**
 	 * 付与後明細: 残数
 	 */
