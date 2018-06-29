@@ -582,11 +582,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		
 		if (companyIds.isEmpty()){
 			throw new BusinessException("Msg_281"); 
-		} else {
-			if (!this.checkAccoutLock(contractCode, userId).v().isEmpty()) {
-				//return messageError
-				throw new BusinessException(this.checkAccoutLock(contractCode, userId).v());
-			}
+		} 
+		
+		if (!this.checkAccoutLock(contractCode, userId).v().isEmpty()) {
+			//return messageError
+			throw new BusinessException(this.checkAccoutLock(contractCode, userId).v());
 		}
 	}
 	
@@ -596,7 +596,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param companyId the company id
 	 */
 	//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
-	public void errorCheck2(String companyId){
+	public void errorCheck2(String companyId, String contractCode, String userId){
 		
 		//ドメインモデル「会社」の使用区分をチェックする (Check usage classification of domain model "company")
 		CompanyInforImport company = this.companyInformationAdapter.findComById(companyId);
@@ -604,6 +604,12 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (company.getIsAbolition() == Abolition.ABOLISH.value){
 			throw new BusinessException("Msg_281");
 		}
+		
+		if (!this.checkAccoutLock(contractCode, userId).v().isEmpty()) {
+			//return messageError
+			throw new BusinessException(this.checkAccoutLock(contractCode, userId).v());
+		}
+		
 	}
 	
 	/**

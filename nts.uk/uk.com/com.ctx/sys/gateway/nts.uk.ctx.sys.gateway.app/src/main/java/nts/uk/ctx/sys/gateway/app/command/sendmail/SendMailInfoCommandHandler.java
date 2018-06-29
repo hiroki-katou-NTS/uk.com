@@ -90,7 +90,7 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") +" \n" + url);
 
 		try {
-//			mailSender.sendFromAdmin(mailto, contents);
+			mailSender.sendFromAdmin(mailto, contents);
 			SendMailReturnDto dto = new SendMailReturnDto(url);
 			return dto;
 		} catch (SendMailFailedException e) {

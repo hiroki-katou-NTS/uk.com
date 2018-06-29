@@ -98,7 +98,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		}
 		
 		//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
-		this.errorCheck2(companyId);
+		this.errorCheck2(companyId, contractCode, user.getUserId());
 		
 		//set info to session
 		context.getCommand().getRequest().changeSessionId();
