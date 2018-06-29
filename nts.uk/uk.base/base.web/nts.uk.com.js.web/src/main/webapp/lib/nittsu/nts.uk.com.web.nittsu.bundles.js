@@ -3924,7 +3924,15 @@ var nts;
                     //            } 
                 };
                 var startP = function () {
-                    _.defer(function () { return _start.call(__viewContext); });
+                    _.defer(function () {
+                        if (uk.request.location.current.rawUrl.indexOf("view/common/error/sessiontimeout") === -1
+                            && uk.request.location.current.rawUrl.indexOf("/view/ccg/007") === -1) {
+                            loadEmployeeCodeConstraints().always(function () { return _start.call(__viewContext); });
+                        }
+                        else {
+                            _start.call(__viewContext);
+                        }
+                    });
                     var onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
                     // Menu
                     if (!onSamplePage) {
@@ -3946,6 +3954,56 @@ var nts;
                             ui.menu.request();
                         }
                     }
+                };
+                var loadEmployeeCodeConstraints = function () {
+                    var self = this, dfd = $.Deferred();
+                    uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (res) {
+                        var formatOption = {
+                            autofill: true
+                        };
+                        if (res.ceMethodAttr === 0) {
+                            formatOption.filldirection = "left";
+                            formatOption.fillcharacter = "0";
+                        }
+                        else if (res.ceMethodAttr === 1) {
+                            formatOption.filldirection = "right";
+                            formatOption.fillcharacter = "0";
+                        }
+                        else if (res.ceMethodAttr === 2) {
+                            formatOption.filldirection = "left";
+                            formatOption.fillcharacter = " ";
+                        }
+                        else {
+                            formatOption.filldirection = "right";
+                            formatOption.fillcharacter = " ";
+                        }
+                        // if not have primitive, create new
+                        if (!__viewContext.primitiveValueConstraints) {
+                            __viewContext.primitiveValueConstraints = {
+                                EmployeeCode: {
+                                    valueType: "String",
+                                    charType: "AlphaNumeric",
+                                    maxLength: res.numberOfDigits,
+                                    formatOption: formatOption
+                                }
+                            };
+                        }
+                        else {
+                            // extend primitive constraint
+                            _.extend(__viewContext.primitiveValueConstraints, {
+                                EmployeeCode: {
+                                    valueType: "String",
+                                    charType: "AlphaNumeric",
+                                    maxLength: res.numberOfDigits,
+                                    formatOption: formatOption
+                                }
+                            });
+                        }
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        dfd.reject();
+                    });
+                    return dfd.promise();
                 };
                 $(function () {
                     __viewContext.noHeader = (__viewContext.noHeader === true) || $("body").hasClass("no-header");
@@ -4662,7 +4720,7 @@ var nts;
                             result.success(inputText);
                             return result;
                         }
-                        result = checkCharType.call(self, inputText.trim(), self.charType);
+                        result = checkCharType.call(self, _.trim(inputText, ' '), self.charType);
                         if (!result.isValid)
                             return result;
                         if (self.constraint && !util.isNullOrUndefined(self.constraint.maxLength)
@@ -16756,6 +16814,7 @@ var nts;
                         var textalign = this.editorOption.textalign;
                         var width = this.editorOption.width;
                         var setValOnRequiredError = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
+                        var constraint = !_.isNil(data.constraint) ? ko.unwrap(data.constraint) : undefined;
                         $input.data("setValOnRequiredError", setValOnRequiredError);
                         disable.saveDefaultValue($input, option.defaultValue);
                         if (valueChanging.isChangingValueByApi($input, value)) {
@@ -16788,9 +16847,14 @@ var nts;
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
                             $input.width(width);
-                        // Format value
-                        var formatted = $input.ntsError('hasError') ? value : this.getFormatter(data).format(value);
-                        $input.val(formatted);
+                        if (constraint !== "StampNumber" && constraint !== "EmployeeCode") {
+                            // Format value
+                            var formatted = $input.ntsError('hasError') ? value : this.getFormatter(data).format(value);
+                            $input.val(formatted);
+                        }
+                        else {
+                            $input.val(value);
+                        }
                         //            $input.trigger("validate");
                     };
                     EditorProcessor.prototype.getDefaultOption = function () {
@@ -16816,6 +16880,7 @@ var nts;
                         var self = this;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var setWidthByConstraint = (data.setWidthByConstraint !== undefined) ? ko.unwrap(data.setWidthByConstraint) : false;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var setValOnRequiredError = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
                         $input.data("setValOnRequiredError", setValOnRequiredError);
@@ -16911,7 +16976,10 @@ var nts;
                         var textmode = this.editorOption.textmode;
                         $input.attr('type', textmode);
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        self.setWidthByConstraint(constraintName, $input);
+                        var setWidthByConstraint = (data.setWidthByConstraint !== undefined) ? ko.unwrap(data.setWidthByConstraint) : false;
+                        if (setWidthByConstraint) {
+                            self.setWidthByConstraint(constraintName, $input);
+                        }
                         // このif文は何のため？ ユーザが入力操作をしたときしかtrueにならないか？
                         if (!$input.ntsError('hasError') && data.value() !== $input.val()) {
                             valueChanging.markUserChange($input);
@@ -16924,9 +16992,8 @@ var nts;
                     TextEditorProcessor.prototype.getFormatter = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
-                        var formatOption = this.$input.data("editorFormatOption");
-                        if (formatOption) {
-                            $.extend(this.editorOption, formatOption);
+                        if (constraint && constraint.formatOption) {
+                            $.extend(this.editorOption, constraint.formatOption);
                         }
                         this.editorOption.autofill = (constraint && constraint.isZeroPadded) ? constraint.isZeroPadded : this.editorOption.autofill;
                         return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
@@ -16956,71 +17023,11 @@ var nts;
                     TextEditorProcessor.prototype.setWidthByConstraint = function (constraintName, $input) {
                         var self = this;
                         var characterWidth = 9;
-                        self.loadConstraints(constraintName, $input).done(function () {
-                            var constraint = validation.getConstraint(constraintName);
-                            if (constraint && constraint.maxLength && !$input.is("textarea")) {
-                                var autoWidth = constraint.maxLength * characterWidth;
-                                $input.width(autoWidth);
-                            }
-                        });
-                    };
-                    TextEditorProcessor.prototype.loadConstraints = function (name, $input) {
-                        var self = this, dfd = $.Deferred();
-                        if (name !== "EmployeeCode") {
-                            dfd.resolve();
-                            return dfd.promise();
+                        var constraint = validation.getConstraint(constraintName);
+                        if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                            var autoWidth = constraint.maxLength * characterWidth;
+                            $input.width(autoWidth);
                         }
-                        if (!$input.data('_nts_load_setting')) {
-                            uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (res) {
-                                // if not have primitive, create new
-                                if (!__viewContext.primitiveValueConstraints) {
-                                    __viewContext.primitiveValueConstraints = {
-                                        EmployeeCode: {
-                                            valueType: "String",
-                                            charType: "AlphaNumeric",
-                                            maxLength: res.numberOfDigits
-                                        }
-                                    };
-                                }
-                                else {
-                                    // extend primitive constraint
-                                    _.extend(__viewContext.primitiveValueConstraints, {
-                                        EmployeeCode: {
-                                            valueType: "String",
-                                            charType: "AlphaNumeric",
-                                            maxLength: res.numberOfDigits
-                                        }
-                                    });
-                                }
-                                var formatOption = {
-                                    autofill: true
-                                };
-                                if (res.ceMethodAttr === 0) {
-                                    formatOption.filldirection = "left";
-                                    formatOption.fillcharacter = "0";
-                                }
-                                else if (res.ceMethodAttr === 1) {
-                                    formatOption.filldirection = "right";
-                                    formatOption.fillcharacter = "0";
-                                }
-                                else if (res.ceMethodAttr === 2) {
-                                    formatOption.filldirection = "left";
-                                    formatOption.fillcharacter = " ";
-                                }
-                                else {
-                                    formatOption.filldirection = "right";
-                                    formatOption.fillcharacter = " ";
-                                }
-                                $input
-                                    .data('_nts_load_setting', true)
-                                    .data("editorFormatOption", formatOption);
-                                dfd.resolve();
-                            }).fail(function (res) {
-                                $input.data('_nts_load_setting', false);
-                                dfd.reject();
-                            });
-                        }
-                        return dfd.promise();
                     };
                     return TextEditorProcessor;
                 }(EditorProcessor));
@@ -17464,51 +17471,17 @@ var nts;
                                 }
                             }
                             else {
-                                getConstraintText(primitive).done(function (constraintText) {
-                                    if (!__viewContext.primitiveValueConstraints[primitive]) {
-                                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
-                                    }
-                                    else {
-                                        constraint.innerHTML = constraintText;
-                                    }
-                                });
+                                if (!__viewContext.primitiveValueConstraints[primitive]) {
+                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                }
+                                else {
+                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                }
                             }
                         }
                     };
                     return NtsFormLabelBindingHandler;
                 }());
-                var getConstraintText = function (constraint) {
-                    var dfd = $.Deferred();
-                    if (constraint === "EmployeeCode") {
-                        uk.request.ajax("com", "/bs/employee/setting/code/find").done(function (res) {
-                            // if not have primitive, create new
-                            if (!__viewContext.primitiveValueConstraints) {
-                                __viewContext.primitiveValueConstraints = {
-                                    EmployeeCode: {
-                                        valueType: "String",
-                                        charType: "AlphaNumeric",
-                                        maxLength: res.numberOfDigits
-                                    }
-                                };
-                            }
-                            else {
-                                // extend primitive constraint
-                                _.extend(__viewContext.primitiveValueConstraints, {
-                                    EmployeeCode: {
-                                        valueType: "String",
-                                        charType: "AlphaNumeric",
-                                        maxLength: res.numberOfDigits
-                                    }
-                                });
-                            }
-                            dfd.resolve(uk.util.getConstraintMes(constraint));
-                        });
-                    }
-                    else {
-                        dfd.resolve(uk.util.getConstraintMes(constraint));
-                    }
-                    return dfd.promise();
-                };
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -30919,10 +30892,20 @@ var nts;
                                 .ntsError('set', "end is smaller than start value", 'Not defined code', false);
                             return false;
                         }
+                        if (self.maxRange > 0) {
+                            var maxEnd = mStart.add(self.maxRange, self.rangeUnit);
+                            if (maxEnd.isBefore(mEnd)) {
+                                self.$root.find(".datetimepairrange-container")
+                                    .ntsError('set', "Max range is " + self.maxRange + " " + self.rangeUnit, 'Not defined code', false);
+                                return false;
+                            }
+                        }
                         return true;
                     };
                     EditorConstructSite.prototype.initVal = function (allBindData) {
                         var self = this;
+                        self.rangeUnit = _.isNil(allBindData.rangeUnit) ? "years" : ko.unwrap(allBindData.rangeUnit);
+                        self.maxRange = _.isNil(allBindData.maxRange) ? 0 : ko.unwrap(allBindData.maxRange);
                         self.startValueBind = ko.observable();
                         self.endValueBind = ko.observable();
                         self.startValue = ko.computed({
