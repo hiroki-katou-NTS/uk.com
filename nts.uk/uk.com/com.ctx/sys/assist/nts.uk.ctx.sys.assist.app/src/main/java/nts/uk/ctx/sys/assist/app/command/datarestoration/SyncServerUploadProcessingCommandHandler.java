@@ -117,7 +117,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 								setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 								if (checkNormalFile(serverPrepareMng)) {
 									// アルゴリズム「対象社員の復元」を実行する
-									employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery,
+									serverPrepareMng = employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery,
 											tableList);
 									setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 								}
@@ -152,7 +152,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		case UPLOAD_FAILED:
 			return new ServerPrepareDto(1, 2, condition.value, I18NText.getText(condition.nameId), "Msg_610");
 		case UPLOAD_FINISHED:
-			return new ServerPrepareDto(1, 2, condition.value, I18NText.getText(condition.nameId), "");
+			return new ServerPrepareDto(1, 1, condition.value, I18NText.getText(condition.nameId), "");
 		case EXTRACTING:
 			return new ServerPrepareDto(2, 0, condition.value, I18NText.getText(condition.nameId), "");
 		case PASSWORD_DIFFERENCE:

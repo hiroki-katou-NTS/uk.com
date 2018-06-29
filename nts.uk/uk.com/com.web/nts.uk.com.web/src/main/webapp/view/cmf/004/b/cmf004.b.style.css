@@ -69,3 +69,7 @@
 .fixed-flex-layout > .fixed-flex-layout-left {
 	margin-right: 15px;
 }
+
+#kcp005component{
+	width: 460px;
+}

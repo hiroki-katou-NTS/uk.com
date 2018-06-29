@@ -57,10 +57,10 @@
                 </tr>
                 </thead>
                 <tbody data-bind="foreach: dataContentcategoryList">
-                <tr>
+                <tr id="E4_2">
                     <td class="halign-right row-number"><label data-bind="text: rowNumber"/></td>
-                    <td class="halign-center">
-                        <div id="E5_2" data-bind="ntsCheckBox: { checked: isRecover, enable: iscanNotBeOld}"/>
+                    <td class="halign-center row-checkbox">
+                        <div tabindex="1" id="E5_2" data-bind="ntsCheckBox: { checked: isRecover, enable: iscanNotBeOld}"/>
                     </td>
                     <td><label data-bind="text: categoryName"/></td>
                     <td><label data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td>
@@ -75,7 +75,7 @@
             <!--E6_1 復旧方法-->
             <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_91')}</div>
             <!--E6_2 全件復旧-->
-            <div class="div-column-2" style="margin-left: 37px;" data-bind="ntsRadioButton: {checked: selectedRecoveryMethod,
+            <div tabindex="2" class="div-column-2" style="margin-left: 37px;" data-bind="ntsRadioButton: {checked: selectedRecoveryMethod,
 												enable: true, 
 												option: $vm.recoveryMethodOptions()[1],
 												optionValue: 'value',
@@ -87,7 +87,7 @@
         <div class="div-line">
             <div class="div-column-1"/>
             <!--E6_3 選択範囲復旧-->
-            <div class="div-column-2" style="margin-left: 120px;" data-bind="ntsRadioButton: {checked: selectedRecoveryMethod,
+            <div tabindex="3" class="div-column-2" style="margin-left: 120px;" data-bind="ntsRadioButton: {checked: selectedRecoveryMethod,
 												enable: true, 
 												option: $vm.recoveryMethodOptions()[0],
 												optionValue: 'value',
@@ -103,9 +103,9 @@
     </div>
     <div class="halign-center" style="width: 760px; margin-top: 20px;">
         <!--E7_2 データ復旧選択へ(Chọn phục hồi data)-->
-        <button class="large" data-bind="click: backToPreviousScreen">#{i18n.getText('CMF004_97')}</button>
+        <button tabindex="4" class="large" data-bind="click: backToPreviousScreen">#{i18n.getText('CMF004_97')}</button>
         <!--E7_3 次へボタン-->
-        <button class="x-large proceed" data-bind="click: nextToScreenF">#{i18n.getText('CMF004_98')}</button>
+        <button tabindex="5" class="x-large proceed" data-bind="click: nextToScreenF">#{i18n.getText('CMF004_98')}</button>
     </div>
 </ui:composition>
 </body>

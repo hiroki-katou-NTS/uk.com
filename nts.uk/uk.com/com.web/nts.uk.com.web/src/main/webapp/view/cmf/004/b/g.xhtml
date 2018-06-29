@@ -24,13 +24,13 @@
         <div class="div-line push-left">
             <!-- KCP005 -->
             <!-- G4_1 社員リスト -->
-            <div id="kcp005component" style="margin-top: 20px;"/>
+            <div tabindex="1" id="kcp005component" style="margin-top: 20px;"/>
         </div>
         <div class="halign-center" style="width: 760px;">
             <!--G5_1 復旧期間設定へ-->
-            <button class="large" data-bind="click: backToPreviousScreen">#{i18n.getText('CMF004_142')}</button>
+            <button tabindex="2" class="large" data-bind="click: backToPreviousScreen">#{i18n.getText('CMF004_142')}</button>
             <!--G5_2 次へボタン-->
-            <button class="x-large proceed" data-bind="click: nextToScreenH">#{i18n.getText('CMF004_143')}</button>
+            <button tabindex="3" class="x-large proceed" data-bind="click: nextToScreenH">#{i18n.getText('CMF004_143')}</button>
         </div>
     </div>
 </ui:composition>
