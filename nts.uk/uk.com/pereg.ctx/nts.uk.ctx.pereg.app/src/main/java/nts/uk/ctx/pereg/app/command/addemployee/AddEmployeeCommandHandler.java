@@ -63,9 +63,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private AddWorkingConditionCommandAssembler wkCodAs;
 	
 	@Inject
-	private UpdateWorkingConditionCommandAssembler updateWkBs;
-
-	@Inject
 	private PerInfoItemDefRepositoty perInfoItemRepo;
 	
 	@Inject
@@ -76,12 +73,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	
 	@Inject
 	private EmpRegHistoryRepository empHisRepo;
-	
-	@Inject
-	private WorkingConditionRepository workingConditionRepository;
-	
-	@Inject
-	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	
 	private static List<String> historyCategoryCodeList = Arrays.asList("CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
@@ -159,47 +150,11 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		
 		updateEmployeeRegHist(companyId, employeeId);
 		
-		updateCtgWorkingCond2(inputs,employeeId, personId);
-
 		return employeeId;
 
 	}
 
-	private void updateCtgWorkingCond2(List<ItemsByCategory> inputs, String employeeId, String personId) {
-		Optional<ItemsByCategory> wkCodOpt = inputs.stream().filter(ctg -> ctg.getCategoryCd().equals("CS00070"))
-				.findFirst();
-		if (wkCodOpt.isPresent()) {
-			UpdateWorkingCondition2Command wkCod = (UpdateWorkingCondition2Command) wkCodOpt.get()
-					.createCommandForSystemDomain(personId, employeeId, UpdateWorkingCondition2Command.class);
-			
-			Optional<WorkingCondition> listHistBySid = workingConditionRepository.getBySid(AppContexts.user().companyId(),employeeId);
-			
-			if (!listHistBySid.isPresent()) {
-				throw new RuntimeException("Invalid item to be updated");
-			}
-			
-			WorkingCondition workingCond = listHistBySid.get();
 
-			Optional<DateHistoryItem> itemToBeUpdated = workingCond.getDateHistoryItem().stream()
-					.filter(hist -> hist.identifier().equals(listHistBySid.get().dateHistoryItem.get(0).identifier())).findFirst();
-
-			if (!itemToBeUpdated.isPresent()) {
-				throw new RuntimeException("Invalid item to be updated");
-			}
-
-			GeneralDate endDate = wkCod.getEndDate() != null ? wkCod.getEndDate() : GeneralDate.max();
-			workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(wkCod.getStartDate(), endDate));
-
-			workingConditionRepository.save(workingCond);
-			
-			WorkingConditionItem workingCondItem = updateWkBs.fromDTO2(wkCod);
-
-			workingConditionItemRepository.update(workingCondItem);
-			
-			
-		}
-		
-	}
 
 	private void checkRequiredInputs(List<ItemsByCategory> inputs, String employeeId, String personId,
 			String companyId) {
