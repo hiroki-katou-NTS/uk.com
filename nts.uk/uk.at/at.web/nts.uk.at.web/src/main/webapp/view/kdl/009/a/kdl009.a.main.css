@@ -14,6 +14,10 @@ table.fixed-table th {
     padding: 3px !important;
 }
 
+table#date-fixed-table tr {
+    height: 26px;
+}
+
 table#date-fixed-table td {
     padding: 3px;
 }
