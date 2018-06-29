@@ -734,7 +734,7 @@
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input style="width: 50px;margin-left: 15px;" data-bind="ntsNumberEditor: {name :'#[KAL003_80]',value: value ,required: required,enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_103')}
+                                                            <input style="width: 50px;margin-left: 15px;" data-bind="ntsNumberEditor: {name :'#[KAL003_80]',value: value ,required: required,enable : enable, constraint: 'MinMaxInteger'}, attr: { id: inputId}" />#{i18n.getText('KAL003_103')}
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
                                                             <input style="width: 50px;" data-bind="ntsTimeEditor: {name :'#[KAL003_83]', value: value ,required: required,mode:'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_105')}
