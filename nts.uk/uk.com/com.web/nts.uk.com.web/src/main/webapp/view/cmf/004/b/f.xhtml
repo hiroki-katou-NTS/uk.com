@@ -51,7 +51,7 @@
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: changeDataCategoryList">
-                    <tr data-bind="attr: { 'data-id': rowNumber }">
+                    <tr id="F5_5" data-bind="attr: { 'data-id': rowNumber }">
                         <td class="halign-right row-number"><label data-bind="text: rowNumber"/></td>
                         <td class="halign-center">
                             <div data-bind="ntsCheckBox: { checked: isRecover }"/>
@@ -61,31 +61,31 @@
                         <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.FULLTIME">
                         </com:ko-if>
                         <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.DAY">
-                            <td class="halign-center date-period">
+                            <td class="halign-center date-period start-date">
                                 <div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'YYYY/MM/DD'}"
                                      tabindex="2"/>
                             </td>
-                            <td class="halign-center date-period">
+                            <td class="halign-center date-period end-date">
                                 <div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod, dateFormat: 'YYYY/MM/DD'}"
                                      tabindex="3"/>
                             </td>
                         </com:ko-if>
                         <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.MONTH">
-                            <td class="halign-center date-period">
+                            <td class="halign-center date-period start-date">
                                 <div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}"
                                      tabindex="2"/>
                             </td>
-                            <td class="halign-center date-period">
+                            <td class="halign-center date-period end-date">
                                 <div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}"
                                      tabindex="3"/>
                             </td>
                         </com:ko-if>
                         <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.YEAR">
-                            <td class="halign-center date-period">
+                            <td class="halign-center date-period start-date">
                                 <div data-bind="ntsDatePicker: {name: '#[CMF004_119]', value: startOfPeriod, dateFormat: 'YYYY', valueFormat: 'YYYY'}"
                                      tabindex="2"/>
                             </td>
-                            <td class="halign-center date-period">
+                            <td class="halign-center date-period end-date">
                                 <div data-bind="ntsDatePicker: {name: '#[CMF004_120]', value: endOfPeriod,  dateFormat: 'YYYY', valueFormat: 'YYYY'}"
                                      tabindex="3"/>
                             </td>

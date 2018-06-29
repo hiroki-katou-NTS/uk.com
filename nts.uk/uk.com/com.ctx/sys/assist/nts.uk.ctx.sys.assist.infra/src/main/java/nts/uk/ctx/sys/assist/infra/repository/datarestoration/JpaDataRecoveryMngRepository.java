@@ -3,6 +3,10 @@ package nts.uk.ctx.sys.assist.infra.repository.datarestoration;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
@@ -11,7 +15,10 @@ import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoveryMng;
 
 @Stateless
 public class JpaDataRecoveryMngRepository extends JpaRepository implements DataRecoveryMngRepository {
-
+	
+	@PersistenceContext
+	private EntityManager em;
+	
 	@Override
 	public Optional<DataRecoveryMng> getDataRecoveryMngById(String dataRecoveryProcessId) {
 		return Optional
@@ -34,6 +41,7 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void updateByOperatingCondition(String dataRecoveryProcessId, int operatingCondition) {
 		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId,
 				SspmtDataRecoveryMng.class);
@@ -41,6 +49,7 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 			x.operatingCondition = operatingCondition;
 			this.commandProxy().update(x);
 		});
+		em.flush();
 	}
 
 	@Override

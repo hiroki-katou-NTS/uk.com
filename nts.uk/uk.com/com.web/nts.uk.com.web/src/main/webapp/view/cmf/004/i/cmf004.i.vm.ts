@@ -111,14 +111,14 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 //init I4_1
                 self.code(self.recoverySourceCode);
                 self.saveName(self.recoverySourceName);
-                self.recoveryName(self.recoverySourceName + '.zip');
+                self.recoveryName(self.recoveryFile);
 
                 // 完了, 中断終了, 異常終了
                 if ((recoveryProcessing.operatingCondition == 3) || (recoveryProcessing.operatingCondition == 1) || (recoveryProcessing.operatingCondition == 5)) {
                     // stop auto request to server
                     clearInterval(self.interval);
-                        self.dialogMode("done");
                             self.isEnding(true);
+                    $('#I5_2').focus();
                 }
 
             }).fail(function(res: any) {
@@ -137,6 +137,7 @@ module nts.uk.com.view.cmf004.i.viewmodel {
             }
             service.breakFollowProcessing(paramBreakFollowProcessing).done(function(res: any) {
                 self.isEnding(true);
+                $('#I5_2').focus();
             }).fail(function(res: any) {
                 console.log("followProsessing fail");
             });

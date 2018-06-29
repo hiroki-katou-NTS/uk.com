@@ -65,13 +65,13 @@
             </div>
             <!-- I5_1 -->
 				<com:ko-if bind="!isEnding()">
-					<div id="functions-area-bottom">
+					<div tabindex="1" id="functions-area-bottom">
                 		<button id="I5_1" class="large" data-bind="click : breakFollow" tabindex="1">#{i18n.getText('CMF004_207')}</button>
             		</div>
 				</com:ko-if>
 				<com:ko-if bind="isEnding()">
-					<div id="functions-area-bottom">
-                		<button id="I5_1" class="large" data-bind="click : close" tabindex="1">#{i18n.getText('CMF004_208')}</button>
+					<div tabindex="2" id="functions-area-bottom">
+                		<button id="I5_2" class="large" data-bind="click : close" tabindex="1">#{i18n.getText('CMF004_208')}</button>
             		</div>
 				</com:ko-if>
 

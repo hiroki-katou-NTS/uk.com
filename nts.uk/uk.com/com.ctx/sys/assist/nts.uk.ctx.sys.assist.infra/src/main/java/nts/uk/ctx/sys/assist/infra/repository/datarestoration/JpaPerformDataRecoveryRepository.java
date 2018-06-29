@@ -10,7 +10,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
@@ -32,12 +36,6 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	private static final String SELECT_ALL_TARGET = "SELECT t FROM SspmtTarget t WHERE  t.targetPk.dataRecoveryProcessId =:dataRecoveryProcessId ";
 
 	private static final String SELECT_INTERNAL_FILE_NAME = "SELECT t FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.internalFileName =:internalFileName ";
-	
-	private static final StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
-
-	private static final StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
-
-	private static final StringBuilder INSERT_BY_TABLE = new StringBuilder("INSERT INTO ");
 
 	private static final String SELECT_ALL_TABLE_LIST_QUERY_STRING = "SELECT f FROM SspmtTableList f";
 
@@ -52,7 +50,10 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	private static final String UPDATE_BY_LIST_CATEGORY_ID = "UPDATE SspmtTableList t SET t.selectionTargetForRes =:selectionTarget  WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.tableListPk.categoryId in :listCheckCate ";
 
 	private static final String UPDATE_DATE_FROM_TO_BY_LIST_CATEGORY_ID = "UPDATE SspmtTableList t SET t.saveDateFrom =:startOfPeriod, t.saveDateTo =:endOfPeriod  WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.tableListPk.categoryId =:checkCate ";
-
+	
+	@PersistenceContext(unitName = "UK")
+    private EntityManager entityManager;
+	
 	@Override
 	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
 		List<SspmtTarget> targetData = this.queryProxy()
@@ -106,12 +107,15 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
+		
 		if (tableName != null) {
+			StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
 			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE ");
 			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
-			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
+			return (Integer) entityManager.createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
 		}
 		return 0;
 	}
@@ -141,22 +145,27 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 
 		EntityManager em = this.getEntityManager();
 
 		if (tableName != null) {
+			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
 			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
 			DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
 
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 			query.executeUpdate();
+			this.getEntityManager().flush();
 		}
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void insertDataTable(HashMap<String, String> dataInsertDb, String tableName) {
+		StringBuilder INSERT_BY_TABLE = new StringBuilder("INSERT INTO ");
 		if (tableName != null) {
 			INSERT_BY_TABLE.append(tableName);
 		}
@@ -177,6 +186,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		INSERT_BY_TABLE.append(values);
 		Query query = em.createNativeQuery(INSERT_BY_TABLE.toString());
 		query.executeUpdate();
+		this.getEntityManager().flush();
 
 	}
 
@@ -199,9 +209,11 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
 		EntityManager em = this.getEntityManager();
 		if (tableName != null) {
+			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
 			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
 			int count = 0;
 			if (!Objects.isNull(whereCid)) {
