@@ -90,7 +90,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 dfd = $.Deferred();
             let data: any = getShared('KDL020A_PARAM');
             self.baseDate(data.baseDate);
-
+            //edit param
             let startParam = {
                 selectMode: self.isMultiSelect() ? 1 : 0,
                 baseDate: self.baseDate(),
