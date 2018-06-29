@@ -18,7 +18,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<table class="widget-table">
+				<table class="widget-table first">
 					<tr>
 						<td class="textPeriod" data-bind="text: txtDatePeriod"></td>
 						<td><button class="small" data-bind="click:switchMonth, text: btnSwitch"></button></td>
@@ -30,8 +30,8 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: overTime"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button class = "overtime-work-no" data-bind="visible:(overTime>0)">
-											<i data-bind="click: $parent.openKAF015Dialog, ntsIcon: { no: 144 }"></i>
+										<button class = "overtime-work-no" data-bind="click: $parent.openKAF015Dialog, visible:(overTime>0)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -45,8 +45,8 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: holidayInstruction"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button class = "instruction-hd-no" data-bind="visible:(holidayInstruction>0)">
-											<i data-bind="click: $parent.openKAF015Dialog, ntsIcon: { no: 144 }"></i>
+										<button class = "instruction-hd-no" data-bind="click: $parent.openKAF015Dialog, visible:(holidayInstruction>0)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -60,8 +60,8 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: approved"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button class = "approved-no" data-bind="visible:(approved>0)">
-											<i data-bind="click: $parent.openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										<button class = "approved-no" data-bind="click: $parent.openCMM045Dialog.bind($vm), visible:(approved>0)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -75,8 +75,8 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: unApproved"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button data-bind="visible:(unApproved>0)">
-											<i data-bind="click: $parent.openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="visible:(unApproved>0), click: $parent.openCMM045Dialog.bind($vm)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -90,8 +90,8 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: deniedNo"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button  data-bind="visible:(deniedNo>0)">
-											<i data-bind="click: $parent.openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										<button  data-bind="click: $parent.openCMM045Dialog.bind($vm), visible:(deniedNo>0)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -105,8 +105,8 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: remand"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button data-bind="visible:(remand>0)">
-											<i data-bind="click: $parent.openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="click: $parent.openCMM045Dialog.bind($vm), visible:(remand>0)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -129,8 +129,8 @@
 										<span data-bind="visible:!presenceDailyPer">#{i18n.getText('KTG029_63')}</span>
 									</td>
 									<td class="go-button">
-										<button data-bind="visible: presenceDailyPer">
-											<i data-bind="click: $parent.openKDW003Dialog.bind($parent), ntsIcon: { no: 144 }"></i>
+										<button data-bind="click: $parent.openKDW003Dialog.bind($parent), visible: presenceDailyPer">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -138,9 +138,10 @@
 						</td>
 					</tr>
 					<tr data-bind="with: dataRecord()">
-						<td class="tab" colspan="2" data-bind="visible: ($parent.displayPresenceDailyPer &amp;&amp; presenceDailyPer)">
-							<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KTG029_61')}</div>
+						<td class="tab" data-bind="visible: ($parent.displayPresenceDailyPer &amp;&amp; presenceDailyPer)">
+							<div data-bind="ntsCheckBox: { checked: $parent.checked }">#{i18n.getText('KTG029_61')}</div>
 						</td>
+						<td data-bind="visible: ($parent.displayPresenceDailyPer &amp;&amp; presenceDailyPer)"></td>
 					</tr>
 					<!-- A11 -->
 					<tr data-bind="visible: displayWorkRecord">
@@ -150,8 +151,8 @@
 								<tr>
 									<td></td>
 									<td class="go-button">
-										<button>
-											<i data-bind="click: openKDL033Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="click: openKDL033Dialog">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -191,8 +192,8 @@
 								<tr>
 									<td></td>
 									<td class="go-button">
-										<button>
-											<i data-bind="click: openKDL033Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="click: openKDL020Dialog">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -203,7 +204,7 @@
 					<!-- A17_1 -->
 					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab">#{i18n.getText('KTG029_40')}</td>
-						<td data-bind="with:dataRecord()"><span data-bind="text: yearlyHoliday.nextTime.substr(-8)"></span> <span data-bind="text: yearlyHoliday.grantedDaysNo"></span>#{i18n.getText('KTG029_41')}</td>
+						<td data-bind="with:dataRecord()"><span data-bind="text: yearlyHoliday.nextTime"></span> <span data-bind="text: yearlyHoliday.grantedDaysNo"></span>#{i18n.getText('KTG029_41')}</td>
 					</tr>
 					<!-- A17_2 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
@@ -215,15 +216,19 @@
 						<td data-bind="visible: !yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_43')}</td>
 						<td data-bind="visible: !yearlyHoliday.calculationMethod">#{i18n.getText('KTG029_44')}<span data-bind="text: yearlyHoliday.nextTimeInfo.remaining"></span>#{i18n.getText('KTG029_45')}</td>
 					</tr>
+				</table>
+				<table class="widget-table fix">
 					<!-- A17_4 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 						<td data-bind="visible: !yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_46')}</td>
 						<td data-bind="visible: !yearlyHoliday.calculationMethod">#{i18n.getText('KTG029_47')}<span data-bind="text: yearlyHoliday.nextTimeInfo.timeYearLimit"></span>#{i18n.getText('KTG029_48')}</td>
 					</tr>
+				</table>
+				<table class="widget-table">
 					<!-- A17_5 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 						<td data-bind="visible: yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_49')}</td>
-						<td data-bind="visible: yearlyHoliday.calculationMethod"><span data-bind="text: yearlyHoliday.nextGrantDate.substr(-8)"></span></td>
+						<td data-bind="visible: yearlyHoliday.calculationMethod"><span data-bind="text: yearlyHoliday.nextGrantDate"></span></td>
 					</tr>
 					<!-- A17_6 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
@@ -235,11 +240,15 @@
 						<td data-bind="visible: yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_51')}</td>
 						<td data-bind="visible: yearlyHoliday.calculationMethod">#{i18n.getText('KTG029_44')}<span data-bind="text: yearlyHoliday.nextGrantDateInfo.remaining"></span>#{i18n.getText('KTG029_45')}</td>
 					</tr>
+				</table>
+				<table class="widget-table fix">
 					<!-- A17_8 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 						<td data-bind="visible: yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_52')}</td>
 						<td data-bind="visible: yearlyHoliday.calculationMethod">#{i18n.getText('KTG029_47')}<span data-bind="text: yearlyHoliday.nextGrantDateInfo.timeYearLimit"></span>#{i18n.getText('KTG029_48')}</td>
 					</tr>
+				</table>
+				<table class="widget-table">
 					<!-- A17_9 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 						<td data-bind="visible: yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_53')}</td>
@@ -250,6 +259,8 @@
 						<td data-bind="visible: yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_54')}</td>
 						<td data-bind="visible: yearlyHoliday.calculationMethod">#{i18n.getText('KTG029_44')}<span data-bind="text: yearlyHoliday.afterGrantDateInfo.remaining"></span>#{i18n.getText('KTG029_45')}</td>
 					</tr>
+				</table>
+				<table class="widget-table fix">
 					<!-- A17_11 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 						<td data-bind="visible: yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_55')}</td>
@@ -259,6 +270,8 @@
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 						<td data-bind="visible: yearlyHoliday.calculationMethod" class="tab" colspan="2">#{i18n.getText('KTG029_56')}</td>
 					</tr>
+				</table>
+				<table class="widget-table">
 					<!-- A17_13 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 						<td data-bind="visible: (yearlyHoliday.calculationMethod &amp;&amp; yearlyHoliday.useSimultaneousGrant)" class="tab" >#{i18n.getText('KTG029_57')}</td>
@@ -269,6 +282,9 @@
 						<td data-bind="visible: (yearlyHoliday.calculationMethod &amp;&amp; !yearlyHoliday.useSimultaneousGrant)" class="tab" >#{i18n.getText('KTG029_59')}</td>
 						<td data-bind="visible: (yearlyHoliday.calculationMethod &amp;&amp; !yearlyHoliday.useSimultaneousGrant)"><span data-bind="text: yearlyHoliday.workingDays"></span>#{i18n.getText('KTG029_60')}</td>
 					</tr>
+				
+				</table>
+				<table class="widget-table">
 					<!-- A18 -->
 					<tr data-bind="visible: displayYearRemainNo">
 						<td>#{i18n.getText('KTG029_24')}</td>
@@ -277,8 +293,8 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: reservedYearsRemainNo"></span>#{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
-										<button data-bind="visible: (reservedYearsRemainNo>0)">
-											<i data-bind="click: $parent.openKDL029Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="click: $parent.openKDL029Dialog, visible: (reservedYearsRemainNo>0)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -288,7 +304,7 @@
 					<!-- A20 -->
 					<tr data-bind="visible: displayRemainAlternationNo">
 						<td>#{i18n.getText('KTG029_26')}</td>
-						<td data-bind="with:dataRecord()"><span data-bind="text: remainAlternationNo"></span></td>
+						<td data-bind="with:dataRecord()"><span data-bind="text: remainAlternationNoDay"></span>#{i18n.getText('KTG029_60')} <span data-bind="text: remainAlternationNo"></span></td>
 					</tr>
 					<!-- A21 -->
 					<tr data-bind="visible: displayRemainsLeft">
@@ -298,8 +314,8 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: remainsLeft"></span>#{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
-										<button data-bind="visible: (remainsLeft>0)">
-											<i data-bind="click: $parent.openKDL009Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="click: $parent.openKDL009Dialog, visible: (remainsLeft>0)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -334,8 +350,8 @@
 								<tr data-bind="with:dataRecord()">
 									<td data-bind="text: extraRest"></td>
 									<td class="go-button">
-										<button data-bind="visible: (extraRest>0)">
-											<i data-bind="click: $parent.openKDL017Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="click: $parent.openKDL017Dialog, visible: (extraRest>0)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
