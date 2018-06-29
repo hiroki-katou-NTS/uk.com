@@ -287,7 +287,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 	}
 	
 	/**
-	 * 所定外深夜時間超過
+	 * 実績所定外深夜時間超過
 	 */
 	public List<EmployeeDailyPerError> checkMidNightExcess(String employeeId,
 			   											   GeneralDate targetDate,
@@ -344,23 +344,20 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param diffHolidayWorkTime 手修正前後の残業時間の差
 	 * @param diffOverTime 手修正前後の休出時間の差
 	 */
-	public void reCalcMidNightTime(int diffOverTime, int diffHolidayWorkTime) {
-		AttendanceTime overMidTime = new AttendanceTime(0);
-		AttendanceTime holidayMidTime = new AttendanceTime(0);
+	public void reCalcMidNightTime() {
+		ExcessOverTimeWorkMidNightTime overMidTime = new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)));
+		TimeDivergenceWithCalculation holidayMidTime = TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
 		if(this.getOverTimeWork().isPresent()
 			&& this.getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().isPresent()) {
-			overMidTime = this.getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().get().getTime().getTime();
+			overMidTime = this.getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().get();
 		}
 		if(this.getWorkHolidayTime().isPresent()
 			&& this.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
 			holidayMidTime = this.getWorkHolidayTime().get().getHolidayMidNightWork().get().calcAllMidTime();
 		}
-		int totalMidTime = overMidTime.valueAsMinutes() + holidayMidTime.valueAsMinutes() + diffOverTime + diffHolidayWorkTime;
-		this.excessOfStatutoryMidNightTime = new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(totalMidTime >= 0? totalMidTime:0),
-																																							  this.excessOfStatutoryMidNightTime.getTime().getCalcTime()),
+		this.excessOfStatutoryMidNightTime = new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overMidTime.getTime().getTime().addMinutes(holidayMidTime.getTime().valueAsMinutes()),
+																																	   overMidTime.getTime().getCalcTime().addMinutes(holidayMidTime.getCalcTime().valueAsMinutes())),
 																			   this.excessOfStatutoryMidNightTime.getBeforeApplicationTime());
-		
-//		this.excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(this.overTimeWork, this.workHolidayTime);
 	}
 	
 	/**

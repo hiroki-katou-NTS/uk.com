@@ -25,8 +25,7 @@ public class FlexTime {
 	 * @return
 	 */
 	public int calcOverLimitDivergenceTime() {
-		return this.getFlexTime().getDivergenceTime().valueAsMinutes() 
-				 + this.getFlexTime().getDivergenceTime().valueAsMinutes();
+		return this.getFlexTime().getDivergenceTime().valueAsMinutes();
 	}
 
 	/**
