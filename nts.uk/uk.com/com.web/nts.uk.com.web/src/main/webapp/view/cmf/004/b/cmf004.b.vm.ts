@@ -300,6 +300,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     self.employeeListScreenG(employeeData);
                 }
             })
+ 
         }
 
         /**
@@ -393,6 +394,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             }).fail((err) => {
                 dialog.alertError(err);
             });
+            $("#E4_2:first-child .row-checkbox #E5_2:first-child").focus();
         }
 
         nextToScreenF(): void {
@@ -401,6 +403,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             nts.uk.ui.errors.clearAll();
             let checkItemE = _.filter(self.dataContentConfirm().dataContentcategoryList(), x => { return x.isRecover() == true; }).length;
             (checkItemE == 0) ? $('#E5_2').ntsError('set', { messageId: "Msg_1256" }) : $('#data-recovery-wizard').ntsWizard("next");
+            $("#F5_5:first-child .start-date input:first-child").focus();
         }
 
         nextToScreenG(): void {
@@ -409,19 +412,17 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             for (let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())) {
                 if (checkRow.isRecover) {
                     if (checkRow.startOfPeriod > checkRow.endOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber() + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1320' });
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1320', messageParams: [checkRow.rowNumber] });
                     }
-
-                }
-
-                let oldData = _.find(self.categoryListOld, x => {
-                    return x.categoryId == checkRow.categoryId;
-                });
-                if (oldData.startOfPeriod < checkRow.startOfPeriod) {
-                    $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319' });
-                }
-                if (oldData.endOfPeriod > checkRow.endOfPeriod) {
-                    $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319' });
+                    let oldData = _.find(self.categoryListOld, x => {
+                        return x.categoryId == checkRow.categoryId;
+                    });
+                    if (oldData.startOfPeriod < checkRow.startOfPeriod) {
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
+                    }
+                    if (oldData.endOfPeriod > checkRow.endOfPeriod) {
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
+                    }
                 }
             }
 
@@ -432,12 +433,15 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 self.initScreenG();
                 $('#data-recovery-wizard').ntsWizard("next");
             }
+            
+            $('#kcp005component').focus();
         }
 
         nextToScreenH(): void {
             let self = this;
             self.initScreenH();
             $('#data-recovery-wizard').ntsWizard("next");
+            $('#H9_2').focus();
         }
 
         restoreData_click(): void {
