@@ -120,8 +120,8 @@ public class RecoveryStorageService {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
 					DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
 		} else {
-			/*dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
-					DataRecoveryOperatingCondition.DONE.value);*/
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
+					DataRecoveryOperatingCondition.DONE.value);
 		}
 	}
 
@@ -157,11 +157,6 @@ public class RecoveryStorageService {
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
 			if (resultsSetting.isEmpty()) {
-				/*
-				 * errorCode =
-				 * DataRecoveryOperatingCondition.ABNORMAL_TERMINATION. value;
-				 * return errorCode;
-				 */
 				continue;
 			}
 
@@ -682,9 +677,9 @@ public class RecoveryStorageService {
 	public int exCurrentCategory(TableListByCategory tableListByCategory, TableListByCategory tableNotUseByCategory,
 			String uploadId, String dataRecoveryProcessId) throws ParseException {
 
-		int errorCode;
+		int errorCode = 0;
 		// カテゴリの中の社員単位の処理
-		errorCode = exTableUse(tableListByCategory, dataRecoveryProcessId, uploadId);
+		//errorCode = exTableUse(tableListByCategory, dataRecoveryProcessId, uploadId);
 
 		if (errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
 			// の処理対象社員コードをクリアする
@@ -897,7 +892,7 @@ public class RecoveryStorageService {
 			if(H_Date_Csv.isEmpty() || H_Date_Csv == null) 
 				return false;
 			Date Date_Csv = new SimpleDateFormat("yyyy-MM-dd").parse(H_Date_Csv);
-			Integer Y_Date_Csv = Date_Csv.getYear();
+			Integer Y_Date_Csv = Integer.parseInt(H_Date_Csv.substring(0, 4));
 			if (resultsSetting.get(0).equals("6")) {
 				if (Y_Date_Csv < Integer.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3))
 						|| Y_Date_Csv > Integer
@@ -905,7 +900,7 @@ public class RecoveryStorageService {
 					return false;
 				}
 			} else if (resultsSetting.get(0).equals("7")) {
-				Integer M_Date_Csv = Date_Csv.getMonth();
+				Integer M_Date_Csv = Integer.parseInt(H_Date_Csv.substring(5, 7));
 				if (Integer.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3)) > Y_Date_Csv
 						|| (Integer
 								.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3)) == Y_Date_Csv
@@ -919,11 +914,12 @@ public class RecoveryStorageService {
 				}
 
 			} else if (resultsSetting.get(0).equals("8")) {
-				Date Date_From_Table = new SimpleDateFormat("yyyy-MM-dd")
-						.parse(tableList.get().getSaveDateFrom().orElse(null));
-				Date Date_To_Table = new SimpleDateFormat("yyyy-MM-dd")
-						.parse(tableList.get().getSaveDateTo().orElse(null));
-				if (Date_Csv.after(Date_From_Table) || Date_Csv.before(Date_To_Table)) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+				String from = tableList.get().getSaveDateFrom().orElse(null);
+				Date Date_From_Table = formatter.parse(from);
+				String to = tableList.get().getSaveDateTo().orElse(null);
+				Date Date_To_Table = formatter.parse(to);
+				if (!Date_Csv.after(Date_From_Table) || !Date_Csv.before(Date_To_Table)) {
 					return false;
 				}
 			}
