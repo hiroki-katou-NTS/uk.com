@@ -43,7 +43,7 @@ public class CheckPairDeviationReason {
 
 	@Inject
 	private DetermineLeakage determineLeakage;
-	
+
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
 
@@ -51,9 +51,9 @@ public class CheckPairDeviationReason {
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
 	static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length - 1).boxed()
 			.collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x / 3 + 1));
-	private static String ERROR ="D0";
+	private static String ERROR = "D0";
 	private static Map<String, Integer> ERROR_NO_MAP = IntStream.range(0, 19).boxed()
-				.collect(Collectors.toMap(x -> ERROR + String.format("%03d", (x+1)), x -> x/2 + 1));
+			.collect(Collectors.toMap(x -> ERROR + String.format("%03d", (x + 1)), x -> x / 2 + 1));
 
 	// 乖離理由が選択、入力されているかチェックする
 	public List<DPItemValueRC> checkInputDeviationReason(List<DailyRecordWorkCommand> commands) {
@@ -61,13 +61,16 @@ public class CheckPairDeviationReason {
 		List<DPItemValueRC> resultErrorAll = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		List<String> employeeIds = commands.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
-		List<GeneralDate> dates = commands.stream().map(x -> x.getWorkDate()).sorted((x, y) -> x.compareTo(y)).collect(Collectors.toList());
-		if(employeeIds.isEmpty()) return Collections.emptyList(); 
-		List<EmployeeDailyPerError> employeeError = employeeDailyPerErrorRepository.finds(employeeIds, new DatePeriod(dates.get(0), dates.get(dates.size()-1)));
-		if(employeeError.isEmpty()) return Collections.emptyList();
-		
+		List<GeneralDate> dates = commands.stream().map(x -> x.getWorkDate()).sorted((x, y) -> x.compareTo(y))
+				.collect(Collectors.toList());
+		if (employeeIds.isEmpty())
+			return Collections.emptyList();
+		List<EmployeeDailyPerError> employeeError = employeeDailyPerErrorRepository.finds(employeeIds,
+				new DatePeriod(dates.get(0), dates.get(dates.size() - 1)));
+		// if(!employeeError.isEmpty()) return Collections.emptyList();
+
 		List<DivergenceTime> divergenceTime = divergenceTimeRepository.getDivTimeListByUseSet(companyId);
-		for(DailyRecordWorkCommand command: commands){
+		for (DailyRecordWorkCommand command : commands) {
 			resultErrorAll.addAll(checkReasonInput(command, employeeError, divergenceTime, textResource));
 		}
 		return resultErrorAll;
@@ -76,8 +79,10 @@ public class CheckPairDeviationReason {
 	public List<DPItemValueRC> checkReasonInput(DailyRecordWorkCommand command,
 			List<EmployeeDailyPerError> employeeError, List<DivergenceTime> divergenceTime, String textResource) {
 		Map<Integer, String> itemCommonMap = new HashMap<>();
-		List<EmployeeDailyPerError> errorRow = employeeError.stream().filter(
-				x -> x.getEmployeeID().equals(command.getEmployeeId()) && x.getDate().equals(command.getWorkDate()) && ERROR_NO_MAP.containsKey(x.getErrorAlarmWorkRecordCode().v()))
+		List<EmployeeDailyPerError> errorRow = employeeError.stream()
+				.filter(x -> x.getEmployeeID().equals(command.getEmployeeId())
+						&& x.getDate().equals(command.getWorkDate())
+						&& ERROR_NO_MAP.containsKey(x.getErrorAlarmWorkRecordCode().v()))
 				.collect(Collectors.toList());
 		List<ItemValue> items = command.itemValues();
 		List<DPItemValueRC> resultError = new ArrayList<>();
@@ -87,7 +92,7 @@ public class CheckPairDeviationReason {
 		GeneralDate date = command.getWorkDate();
 
 		// 乖離時間をチェックする
-		
+
 		Map<Integer, DivergenceTime> divergenceTimeNoMap = divergenceTime.stream()
 				.collect(Collectors.toMap(x -> x.getDivergenceTimeNo(), x -> x));
 		if (divergenceTimeNoMap.isEmpty())
@@ -98,10 +103,11 @@ public class CheckPairDeviationReason {
 						&& divergenceTimeNoMap.containsKey(DEVIATION_REASON_MAP.get(x.getItemId())))
 				.collect(Collectors.toMap(x -> x.getItemId(), x -> x.getValue()));
 		itemCommonMap.putAll(itemReasonUiMap);
-		
+
 		List<Integer> nos = IntStream.range(0, DEVIATION_REASON.length).boxed()
-				.filter(x -> itemReasonUiMap.containsKey(DEVIATION_REASON[x])).map(x -> DEVIATION_REASON_MAP.get(DEVIATION_REASON[x])).collect(Collectors.toList());
-		
+				.filter(x -> itemReasonUiMap.containsKey(DEVIATION_REASON[x]))
+				.map(x -> DEVIATION_REASON_MAP.get(DEVIATION_REASON[x])).collect(Collectors.toList());
+
 		List<Integer> itemReasonServer = DEVIATION_REASON_MAP.entrySet().stream()
 				.filter(x -> !itemReasonUiMap.containsKey(x.getKey()) && nos.contains(x.getValue()))
 				.map(x -> x.getKey()).collect(Collectors.toList());
@@ -123,19 +129,19 @@ public class CheckPairDeviationReason {
 
 		Map<Integer, Map<Integer, String>> groupNoAll = new HashMap<>();
 		for (Map.Entry<Integer, String> m : itemCommonMap.entrySet()) {
-			Integer key =  m.getKey();
+			Integer key = m.getKey();
 			String value = m.getValue();
 			Map<Integer, String> group = new HashMap<>();
 			if (groupNoAll.containsKey(DEVIATION_REASON_MAP.get(key))) {
-				 group = groupNoAll.get(DEVIATION_REASON_MAP.get(key));
-				 group.put(key, value);
-				 groupNoAll.put(DEVIATION_REASON_MAP.get(key), group);
+				group = groupNoAll.get(DEVIATION_REASON_MAP.get(key));
+				group.put(key, value);
+				groupNoAll.put(DEVIATION_REASON_MAP.get(key), group);
 			} else {
 				group.put(key, value);
 				groupNoAll.put(DEVIATION_REASON_MAP.get(key), group);
 			}
 		}
-		
+
 		// check
 		groupNoAll.forEach((key, value) -> {
 			if (value != null && !value.isEmpty()) {
@@ -145,16 +151,19 @@ public class CheckPairDeviationReason {
 				int keyReason = keyValueSort.get(2);
 				DiverdenceReasonCode dCode = new DiverdenceReasonCode(value.get(keyCode));
 				DivergenceReason dReason = new DivergenceReason(value.get(keyReason));
-				
-				List<String> errorCodes = errorRow.stream().filter(x -> ERROR_NO_MAP.get(x) == key).map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
-				
-				JudgmentResult result = determineLeakage.checkInputMissing(sid, date, key, dCode, dReason, errorCodes);
-				if (result != null && result.value == JudgmentResult.ERROR.value) {
-					if (itemReasonUiMap.containsKey(keyCode)) {
-						resultError.add(new DPItemValueRC("", sid, date, keyCode, "乖離時間" + key, textResource));
-					}
-					if(itemReasonUiMap.containsKey(keyReason)){
-						resultError.add(new DPItemValueRC("", sid, date, keyReason,  "乖離時間" + key, textResource));
+
+				List<String> errorCodes = errorRow.stream().filter(x -> ERROR_NO_MAP.get(x) == key)
+						.map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
+				if (errorCodes.isEmpty()) {
+					JudgmentResult result = determineLeakage.checkInputMissing(sid, date, key, dCode, dReason,
+							errorCodes);
+					if (result != null && result.value == JudgmentResult.ERROR.value) {
+						if (itemReasonUiMap.containsKey(keyCode)) {
+							resultError.add(new DPItemValueRC("", sid, date, keyCode, "乖離時間" + key, textResource));
+						}
+						if (itemReasonUiMap.containsKey(keyReason)) {
+							resultError.add(new DPItemValueRC("", sid, date, keyReason, "乖離時間" + key, textResource));
+						}
 					}
 				}
 			}
