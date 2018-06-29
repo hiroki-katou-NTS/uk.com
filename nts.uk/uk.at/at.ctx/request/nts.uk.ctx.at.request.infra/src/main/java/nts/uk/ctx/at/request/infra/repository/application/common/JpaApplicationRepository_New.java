@@ -102,7 +102,6 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	public void update(Application_New application) {
 		KrqdtApplication_New krqdtApplication = this.queryProxy()
 			.find(new KrqdpApplicationPK_New(application.getCompanyID(), application.getAppID()), KrqdtApplication_New.class).get();
-		krqdtApplication.version = application.getVersion();
 		krqdtApplication.reversionReason = application.getReversionReason().v();
 		krqdtApplication.appReason = application.getAppReason().v();
 		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
@@ -115,7 +114,6 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	public void updateWithVersion(Application_New application) {
 		KrqdtApplication_New krqdtApplication = this.queryProxy()
 			.find(new KrqdpApplicationPK_New(application.getCompanyID(), application.getAppID()), KrqdtApplication_New.class).get();
-		krqdtApplication.version = application.getVersion();
 		krqdtApplication.reversionReason = application.getReversionReason().v();
 		krqdtApplication.appReason = application.getAppReason().v();
 		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
