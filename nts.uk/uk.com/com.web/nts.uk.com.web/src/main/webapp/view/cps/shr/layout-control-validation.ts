@@ -117,7 +117,7 @@ module nts.layout {
         }
 
         find = (categoryCode: string, subscribeCode): IFindData => {
-             
+
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
@@ -134,7 +134,7 @@ module nts.layout {
         };
 
         finds = (categoryCode: string, subscribesCode: Array<string> = undefined): Array<IFindData> => {
-             
+
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (!!subscribesCode ? subscribesCode.indexOf(x.itemCode) > -1 : true));
@@ -203,7 +203,7 @@ module nts.layout {
         finder: IFinder = undefined;
         constructor(private lstCls: Array<any>) {
             let self = this;
-             
+
             self.finder = new constraint(lstCls);
 
             setTimeout(() => {
@@ -895,7 +895,7 @@ module nts.layout {
                     }
 
                     if (!workTime) {
-                         
+
                         workType.ctrl.on('click', () => {
                             setShared("KDL002_Multiple", false, true);
                             setShared("KDL002_SelectedItemId", workType.data.value(), true);
@@ -914,8 +914,8 @@ module nts.layout {
                         validateEditable(group, workTime.data.value, mt);
 
                         workType.ctrl.on('click', () => {
-                             
-                            if (['IS00130', 'IS00131', 'IS00139', 'IS00140'].indexOf(workType.data.itemCode) > - 1) {
+
+                            if (['IS00130', 'IS00139'].indexOf(workType.data.itemCode) > - 1) {
                                 setShared('parentCodes', {
                                     workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
                                     selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
@@ -942,6 +942,7 @@ module nts.layout {
                                 });
                             } else {
                                 setShared("KDL002_Multiple", false, true);
+                                setShared('kdl002isSelection', true, true);
                                 setShared("KDL002_SelectedItemId", workType.data.value(), true);
                                 setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
@@ -957,15 +958,42 @@ module nts.layout {
 
                         // handle click event of workTime
                         workTime.ctrl.on('click', () => {
-                             
-                            setShared("kml001multiSelectMode", false);
-                            setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
-                            setShared("kml001isSelection", true);
-                            setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+                            if (['IS00131', 'IS00140'].indexOf(workTime.data.itemCode) > - 1) {
+                                setShared('parentCodes', {
+                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                }, true);
 
-                            modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
-                                let childData: Array<any> = getShared('kml001selectedTimes');
-                                    if (childData[0]) {
+                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                    let childData: IChildData = getShared('childData');
+
+                                    if (childData) {
+                                        setData(workType, childData.selectedWorkTypeCode);
+
+                                        setData(workTime, childData.selectedWorkTimeCode);
+
+                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+
+                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+
+                                        validateEditable(group, workTime.data.value);
+                                    }
+                                });
+                            } else {
+
+
+                                setShared("kml001multiSelectMode", false);
+                                setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
+                                setShared("kml001isSelection", true);
+                                setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                    let childData: Array<any> = getShared('kml001selectedTimes');
+                                    if (childData.length > 0) {
                                         let data: any = childData[0];
                                         setData(workTime, data.selectedWorkTimeCode);
 
@@ -977,9 +1005,8 @@ module nts.layout {
 
                                         validateEditable(group, workTime.data.value);
                                     }
-                            });
-
-
+                                });
+                            }
                         });
                     }
                 });
@@ -1512,7 +1539,7 @@ module nts.layout {
                         v394 = ko.toJS($(CS00037_IS00394.id).val()),
                         v396 = ko.toJS($(CS00037_IS00396.id).val()),
                         v397 = ko.toJS($(CS00037_IS00397.id).val());
-
+        
                     // change require of control
                     if (v390 || v391 || v393 || v394 || v396 || v397) {
                         CS00037_IS00385.data.required(true);
@@ -1533,7 +1560,7 @@ module nts.layout {
                         CS00037_IS00396.data.required(false);
                         CS00037_IS00397.data.required(false);
                     }
-
+        
                     // validate again;
                     $(CS00037_IS00390.id).trigger('change');
                     $(CS00037_IS00391.id).trigger('change');
@@ -1541,30 +1568,30 @@ module nts.layout {
                     $(CS00037_IS00394.id).trigger('change');
                     $(CS00037_IS00396.id).trigger('change');
                     $(CS00037_IS00397.id).trigger('change');
-
+        
                 };
-
-
+        
+        
             $(CS00037_IS00390.id).on('change', () => {
                 validate();
             }).trigger('change');
-
+        
             $(CS00037_IS00391.id).on('change', () => {
                 validate();
             }).trigger('change');
-
+        
             $(CS00037_IS00393.id).on('change', () => {
                 validate();
             }).trigger('change');
-
+        
             $(CS00037_IS00394.id).on('change', () => {
                 validate();
             }).trigger('change');
-
+        
             $(CS00037_IS00396.id).on('change', () => {
                 validate();
             }).trigger('change');
-
+        
             $(CS00037_IS00397.id).on('change', () => {
                 validate();
             }).trigger('change');
