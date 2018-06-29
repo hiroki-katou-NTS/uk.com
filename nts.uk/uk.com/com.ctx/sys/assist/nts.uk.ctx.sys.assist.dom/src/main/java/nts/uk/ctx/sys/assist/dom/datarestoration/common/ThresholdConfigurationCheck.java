@@ -23,8 +23,8 @@ public class ThresholdConfigurationCheck {
 			if (f.exists()){
 				List<String> listFileName = Arrays.asList(f.list());
 				if (tableList.size() == listFileName.size() -2){
-					for(int i = 0; i < tableList.size(); i++){
-						String tableJapanName = tableList.get(i).getInternalFileName();
+					for(TableList tableListItem: tableList){
+						String tableJapanName = tableListItem.getInternalFileName();
 						if(!listFileName.contains(tableJapanName + EXTENSION)){
 							fileConfigError = true;
 							break;
@@ -32,7 +32,6 @@ public class ThresholdConfigurationCheck {
 					}
 				} else fileConfigError = true;
 			} else fileConfigError = true;
-			
 		}
 		if (fileConfigError){
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.FILE_CONFIG_ERROR);

@@ -27,7 +27,6 @@ public class DataExtractionService {
 	// アルゴリズム「ファイル解凍処理」を実行する
 	public ServerPrepareMng extractData(ServerPrepareMng serverPrepareMng) {
 		String fileId = serverPrepareMng.getFileId().get();
-		serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTING);
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
 		String password = serverPrepareMng.getPassword().isPresent() ? serverPrepareMng.getPassword().get().v() : "";
