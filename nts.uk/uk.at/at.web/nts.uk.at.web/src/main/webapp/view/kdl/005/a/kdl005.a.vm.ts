@@ -153,9 +153,17 @@ module nts.uk.at.view.kdl005.a {
                         
                         if(item.dayOffHis != null) {
                             if(item.dayOffHis.createAtr == 0 || item.dayOffHis.createAtr == 4) {
-                                dayOffDate = nts.uk.resource.getText("KDL005_19", [item.dayOffHis.dayOffDate.dayoffDate]);
+                                if(item.dayOffHis.dayOffDate.dayoffDate != null) {
+                                    dayOffDate = nts.uk.resource.getText("KDL005_19", [item.dayOffHis.dayOffDate.dayoffDate]);
+                                } else {
+                                    dayOffDate = "";
+                                }
                             } else {
-                                dayOffDate = nts.uk.time.applyFormat("Short_YMDW", [item.dayOffHis.dayOffDate.dayoffDate]);
+                                if(item.dayOffHis.dayOffDate.dayoffDate != null) {
+                                    dayOffDate = nts.uk.time.applyFormat("Short_YMDW", [item.dayOffHis.dayOffDate.dayoffDate]);
+                                } else {
+                                    dayOffDate = "";
+                                }
                             }
                             
                             if(Number(item.dayOffHis.requeiredDays) == 0 || Number(item.dayOffHis.requeiredDays) == 1) {
@@ -177,13 +185,15 @@ module nts.uk.at.view.kdl005.a {
                 var self = this;
                 
                 if(data.totalInfor != null) {
-                    self.value01(nts.uk.resource.getText("KDL005_27", [data.totalInfor.carryForwardDays]));
-                    self.value02(nts.uk.resource.getText("KDL005_27", [data.totalInfor.recordOccurrenceDays]));
-                    self.hint02(nts.uk.resource.getText("KDL005_27", [data.totalInfor.scheOccurrenceDays]));
-                    self.value03(nts.uk.resource.getText("KDL005_27", [data.totalInfor.recordUseDays]));
-                    self.hint03(nts.uk.resource.getText("KDL005_27", [data.totalInfor.scheUseDays]));
-                    self.value04(nts.uk.resource.getText("KDL005_27", [data.totalInfor.recordOccurrenceDays - data.totalInfor.recordUseDays]));
-                    self.hint04(nts.uk.resource.getText("KDL005_27", [data.totalInfor.scheOccurrenceDays - data.totalInfor.scheUseDays]));
+                    self.value01(data.totalInfor.carryForwardDays + nts.uk.resource.getText("KDL005_27"));
+                    self.value02(data.totalInfor.recordOccurrenceDays + nts.uk.resource.getText("KDL005_27"));
+                    self.hint02(data.totalInfor.scheOccurrenceDays + nts.uk.resource.getText("KDL005_27"));
+                    self.value03(data.totalInfor.recordUseDays + nts.uk.resource.getText("KDL005_27"));
+                    self.hint03(data.totalInfor.scheUseDays + nts.uk.resource.getText("KDL005_27"));
+                    var ramaining01 = data.totalInfor.recordOccurrenceDays - data.totalInfor.recordUseDays;
+                    var ramaining02 = data.totalInfor.scheOccurrenceDays - data.totalInfor.scheUseDays;
+                    self.value04(ramaining01 + nts.uk.resource.getText("KDL005_27"));
+                    self.hint04(ramaining02 + nts.uk.resource.getText("KDL005_27"));
                 } else {
                     self.value01(nts.uk.resource.getText("KDL005_27", ["0"]));
                     self.value02(nts.uk.resource.getText("KDL005_27", ["0"]));
