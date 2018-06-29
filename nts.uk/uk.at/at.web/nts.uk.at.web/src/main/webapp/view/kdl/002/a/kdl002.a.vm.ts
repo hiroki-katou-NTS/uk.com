@@ -41,13 +41,17 @@ module kdl002.a.viewmodel {
             if (self.posibleItems.length > 0) {
                 service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.ItemModel>) {
                     let lstItemOrder = self.sortbyList(lstItem);
+                    let lstItemMapping = [];
                     if(self.isSelection){
-                        lstItemOrder.push(new model.ItemModel("", "選択なし", ""));
+                        lstItemMapping.push(new model.ItemModel("", "選択なし", ""));
                     }
                     $("input").focus();
-                    let lstItemMapping =  _.map(lstItemOrder , item => {
-                        return new model.ItemModel(item.workTypeCode, item.name, item.memo);
-                    });
+                    if (!nts.uk.util.isNullOrEmpty(lstItemOrder)) {
+                        for (let i = 0; i < lstItemOrder.length; i++) {
+                            lstItemMapping.push(new model.ItemModel(lstItemOrder[i].workTypeCode, lstItemOrder[i].name, lstItemOrder[i].memo));
+                        }
+                    }
+                    
                     self.items(lstItemMapping);
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
