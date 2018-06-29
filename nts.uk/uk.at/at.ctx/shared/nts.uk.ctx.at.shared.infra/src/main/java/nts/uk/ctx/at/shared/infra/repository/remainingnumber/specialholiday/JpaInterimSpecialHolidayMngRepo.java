@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import lombok.experimental.var;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ScheduleRecordAtr;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcmtInterimSpeHoliday;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcmtInterimSpeHolidayPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements InterimSpecialHolidayMngRepository{
@@ -21,6 +23,8 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 			+ " AND c.pk.ymd >= :startDate"
 			+ " AND c.pk.ymd <= :endDate"
 			+ " ORDER BY c.pk.ymd ASC";
+	private String DELETE_BY_ID = "DELETE FROM KrcmtInterimSpeHoliday c"
+			+ " WHERE c.pk.specialHolidayId = :specialHolidayId";
 	@Override
 	public List<InterimSpecialHolidayMng> findBySidPeriod(String sId, DatePeriod dateData) {
 		return this.queryProxy().query(QUERY_BY_SID_PERIOD, KrcmtInterimSpeHoliday.class)
@@ -30,10 +34,36 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 				.getList(c -> toDomain(c));
 	}
 	private InterimSpecialHolidayMng toDomain(KrcmtInterimSpeHoliday c) {
-		return new InterimSpecialHolidayMng(c.pk.sid, c.pk.ymd, c.pk.specialHolidayCode, 
+		return new InterimSpecialHolidayMng(
+				c.pk.specialHolidayId,
+				c.pk.specialHolidayCode, 
 				EnumAdaptor.valueOf(c.scheRecordAtr, ScheduleRecordAtr.class), 
 				new UseTime(c.useTimes), 
 				new UseDay(c.useDays));
+	}
+	@Override
+	public void persistAndUpdateInterimSpecialHoliday(InterimSpecialHolidayMng domain) {
+		KrcmtInterimSpeHolidayPK key = new KrcmtInterimSpeHolidayPK(domain.getSpecialHolidayId(), domain.getSpecialHolidayCode());
+		KrcmtInterimSpeHoliday entity = this.getEntityManager().find(KrcmtInterimSpeHoliday.class, key);
+		if(entity == null) {
+			entity = new KrcmtInterimSpeHoliday();
+			entity.pk.specialHolidayId = domain.getSpecialHolidayId();
+			entity.pk.specialHolidayCode = domain.getSpecialHolidayCode();
+			entity.scheRecordAtr = domain.getScheRecordAtr().value;
+			entity.useDays = domain.getUseDays().v();
+			entity.useTimes = domain.getUseTimes().v();
+			this.getEntityManager().persist(entity);
+		} else {
+			entity.scheRecordAtr = domain.getScheRecordAtr().value;
+			entity.useDays = domain.getUseDays().v();
+			entity.useTimes = domain.getUseTimes().v();
+			this.commandProxy().update(entity);
+		}
+		
+	}
+	@Override
+	public void deleteSpecialHoliday(String specialId) {
+		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("specialHolidayId", specialId).executeUpdate();	
 	}
 
 }

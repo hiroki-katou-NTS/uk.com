@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
@@ -33,6 +35,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	private SpecialHolidayRepository holidayRepo;
 	@Inject
 	private InterimSpecialHolidayMngExport interimSpeHolidayExport;
+	@Inject
+	private InterimRemainRepository interimMngRepo;
 	@Override
 	public InPeriodOfSpecialLeave complileInPeriodOfSpecialLeave(String cid, String sid, DatePeriod complileDate,
 			boolean mode, GeneralDate baseDate, int specialLeaveCode, boolean mngAtr) {
@@ -144,13 +148,16 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		double outPutData = 0;
 		//INPUT.ドメインモデル「特別休暇暫定データ」一覧をループする
 		for (InterimSpecialHolidayMng speHolidayData : specialHolidayData) {
-			//ループ中のドメインモデル「特別休暇暫定データ」．年月日とINPUT．年月日を比較する
-			if(speHolidayData.getYmd().beforeOrEquals(baseDate)) {
-				//使用数 += ループ中のドメインモデル「特別休暇暫定データ」．特休使用
-				outPutData += speHolidayData.getUseDays().v();
+			Optional<InterimRemain> optInterimMng = interimMngRepo.getById(speHolidayData.getSpecialHolidayId());
+			if(optInterimMng.isPresent()) {
+				InterimRemain interimMng = optInterimMng.get();
+				//ループ中のドメインモデル「特別休暇暫定データ」．年月日とINPUT．年月日を比較する
+				if(interimMng.getYmd().beforeOrEquals(baseDate)) {
+					//使用数 += ループ中のドメインモデル「特別休暇暫定データ」．特休使用
+					outPutData += speHolidayData.getUseDays().v();
+				}	
 			}
 		}
-		
 		return outPutData;
 	}
 
@@ -164,13 +171,18 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		List<UseDaysOfPeriodSpeHoliday> lstUseDaysOfPeriod = new ArrayList<UseDaysOfPeriodSpeHoliday>();
 		//INPUT．特別休暇暫定データ一覧をループする
 		for (InterimSpecialHolidayMng speHolidayData : specialHolidayData) {
+			Optional<InterimRemain> optInterimMng = interimMngRepo.getById(speHolidayData.getSpecialHolidayId());
+			if(!optInterimMng.isPresent()) {
+				continue;
+			}
+			InterimRemain interimMng = optInterimMng.get();
 			//相殺できるINPUT．特別休暇付与残数データを取得する
 			//・「特別休暇付与残数データ」．付与日<= ループ中の「特別休暇暫定データ」．年月日 <= 「特別休暇付与残数データ」．期限日
-			List<SpecialLeaveGrantRemainingData> tmp = specialLeaverData.stream().filter(x -> x.getGrantDate().beforeOrEquals(speHolidayData.getYmd())
-					&& speHolidayData.getYmd().beforeOrEquals(x.getDeadlineDate())).collect(Collectors.toList());
+			List<SpecialLeaveGrantRemainingData> tmp = specialLeaverData.stream().filter(x -> x.getGrantDate().beforeOrEquals(interimMng.getYmd())
+					&& interimMng.getYmd().beforeOrEquals(x.getDeadlineDate())).collect(Collectors.toList());
 			if(tmp.isEmpty()) {
 				//ループ中の「特別休暇暫定データ」を「特別休暇期間外の使用」に追加する
-				UseDaysOfPeriodSpeHoliday useDaysOPeriod = new UseDaysOfPeriodSpeHoliday(speHolidayData.getYmd(), speHolidayData.getUseDays().v(), speHolidayData.getUseTimes().v());
+				UseDaysOfPeriodSpeHoliday useDaysOPeriod = new UseDaysOfPeriodSpeHoliday(interimMng.getYmd(), speHolidayData.getUseDays().v(), speHolidayData.getUseTimes().v());
 				lstUseDaysOfPeriod.add(useDaysOPeriod); //them nhung ko dung lam gi
 			} else {
 				double remainDays = speHolidayData.getUseDays().v();

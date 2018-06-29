@@ -12,4 +12,14 @@ public interface InterimSpecialHolidayMngRepository {
 	 * @return
 	 */
 	List<InterimSpecialHolidayMng> findBySidPeriod(String sId, DatePeriod dateData);
+	/**
+	 * 更新か追加
+	 * @param domain
+	 */
+	void persistAndUpdateInterimSpecialHoliday(InterimSpecialHolidayMng domain);
+	/**
+	 * 削除 by ID
+	 * @param specialId
+	 */
+	void deleteSpecialHoliday(String specialId);
 }
