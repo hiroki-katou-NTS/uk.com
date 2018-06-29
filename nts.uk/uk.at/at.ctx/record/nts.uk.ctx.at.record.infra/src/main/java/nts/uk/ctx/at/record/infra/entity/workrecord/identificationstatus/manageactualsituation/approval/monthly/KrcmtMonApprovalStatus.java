@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MON_APPROVAL")
-public class KrcmtApprovalStatusMonResult extends UkJpaEntity implements Serializable {
+public class KrcmtMonApprovalStatus extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtApprovalStatusMonResultPK krcmtApprovalStatusMonthlyResultPK;
+	public KrcmtMonApprovalStatusPK krcmtApprovalStatusMonthlyResultPK;
 	
 	@Column(name = "CLOSING_DATE")
 	public int closingDate;
@@ -33,16 +33,16 @@ public class KrcmtApprovalStatusMonResult extends UkJpaEntity implements Seriali
 		return krcmtApprovalStatusMonthlyResultPK;
 	}
 
-	public KrcmtApprovalStatusMonResult(KrcmtApprovalStatusMonResultPK krcmtApprovalStatusMonthlyResultPK,
+	public KrcmtMonApprovalStatus(KrcmtMonApprovalStatusPK krcmtApprovalStatusMonthlyResultPK,
 			int closingDate) {
 		super();
 		this.krcmtApprovalStatusMonthlyResultPK = krcmtApprovalStatusMonthlyResultPK;
 		this.closingDate = closingDate;
 	}
 	
-	public static KrcmtApprovalStatusMonResult toEntity(ApprovalStatusMonthlyResult domain ) {
-		return new KrcmtApprovalStatusMonResult(
-				new KrcmtApprovalStatusMonResultPK(
+	public static KrcmtMonApprovalStatus toEntity(ApprovalStatusMonthlyResult domain ) {
+		return new KrcmtMonApprovalStatus(
+				new KrcmtMonApprovalStatusPK(
 						domain.getEmployeeId(),
 						domain.getProcessDate().v(), 
 						domain.getClosureId().value, 
@@ -51,7 +51,7 @@ public class KrcmtApprovalStatusMonResult extends UkJpaEntity implements Seriali
 				);
 	}
 	
-	public ApprovalStatusMonthlyResult toDomain(KrcmtApprovalStatusMonResult entity) {
+	public ApprovalStatusMonthlyResult toDomain(KrcmtMonApprovalStatus entity) {
 		return new ApprovalStatusMonthlyResult(
 				entity.krcmtApprovalStatusMonthlyResultPK.employeeId,
 				new YearMonth(entity.krcmtApprovalStatusMonthlyResultPK.processDate),
