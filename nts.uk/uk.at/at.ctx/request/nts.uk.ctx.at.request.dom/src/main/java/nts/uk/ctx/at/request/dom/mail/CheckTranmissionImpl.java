@@ -86,7 +86,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 						applicantID);
 			}
 		}
-		String mailContent = mailBody + "\n" + urlInfo;
+		String mailContent1 = mailBody + "\n" + urlInfo;
 		//※同一メール送信者に複数のメールが送られないよう
 		//　一旦メール送信した先へのメールは送信しない。
 		//list sID da gui
@@ -104,7 +104,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				throw new BusinessException("Msg_1309");
 			}
 			try {
-				mailSender.sendFromAdmin(mailApplicant.get(0).getEmailAddress(), new MailContents(titleMail, mailContent));
+				mailSender.sendFromAdmin(mailApplicant.get(0).getEmailAddress(), new MailContents(titleMail, mailContent1));
 				successList.add(applicantID);
 			} catch (Exception ex) {
 				throw new BusinessException("Msg_1057");
@@ -129,6 +129,19 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				}
 			} else {
 				try {
+					if (urlEmbedded.isPresent()) {
+						int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+						NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+						if (checkUrl == NotUseAtr.USE) {
+							urlInfo = registerEmbededURL.registerEmbeddedForApp(
+									application.getAppID(), 
+									application.getAppType().value, 
+									application.getPrePostAtr().value, 
+									AppContexts.user().employeeId(), 
+									employeeToSendId);
+						}
+					}
+					String mailContent = mailBody + "\n" + urlInfo;
 					mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailContent));
 					successList.add(employeeToSendId);
 				} catch (Exception ex) {
