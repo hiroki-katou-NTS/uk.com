@@ -314,7 +314,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		if (!listApp.isEmpty()) {
 			for (Application_New app : listApp) {
 				// 申請承認内容(リスト）
-				ApprovalRootContentImport_New approvalRoot = this.approvalStateAdapter.getApprovalRootContent(sId,
+				ApprovalRootContentImport_New approvalRoot = this.approvalStateAdapter.getApprovalRootContent(companyId,
 						app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false);
 				listAppSttAcquisitionAppl.add(new ApplicationApprContent(app, approvalRoot));
 			}
@@ -697,7 +697,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public List<String> getAppSttSendingUnapprovedMail(List<UnApprovalSendMail> listAppSttApp) {
 		List<String> listWorksp = new ArrayList<>();
-		this.confirmApprovalStatusMailSender();
+		// EA修正履歴 2125
+		// this.confirmApprovalStatusMailSender();
 		// 職場一覧のメール送信欄のチェックがONの件数
 		if (listAppSttApp.stream().filter(x -> x.isChecked()).count() == 0) {
 			throw new BusinessException("Msg_794");
