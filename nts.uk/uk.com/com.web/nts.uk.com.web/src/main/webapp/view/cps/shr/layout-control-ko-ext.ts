@@ -2042,7 +2042,7 @@ module nts.custombinding {
                                 }
                             });
                         });
-                        
+
                         // filter group input has record id
                         // or no record id but has data
                         // or has record id and delete flag is true
@@ -2050,6 +2050,37 @@ module nts.custombinding {
                             return f.recordId || (!f.recordId && f.items.filter(m => !!m.value).length > 0) || (f.recordId && f.delete);
                         }).value();
 
+                        // fix CS00070
+                        if (location.href.indexOf('/view/cps/002/') > -1) {
+                            let cs00020 = _.find(inputs, f => f.categoryCd == 'CS00020'),
+                                cs00070 = _.find(inputs, f => f.categoryCd == 'CS00070');
+
+                            if (cs00020) {
+                                if (cs00070) {
+                                    let items = _.filter(cs00070.items, t => ['IS00780', 'IS00781', 'IS00782'].indexOf(t.itemCode) == -1);
+                                    cs00020.items = _.concat(cs00020.items, items);
+                                }
+                            } else if (cs00070) {
+                                cs00070.categoryCd = 'CS00020';
+                                _.each(cs00070.items, t => {
+                                    switch (t.itemCode) {
+                                        default:
+                                            break;
+                                        case 'IS00780':
+                                            t.itemCode = 'IS00118';
+                                            break;
+                                        case 'IS00781':
+                                            t.itemCode = 'IS00119';
+                                            break;
+                                        case 'IS00782':
+                                            t.itemCode = 'IS00120';
+                                            break;
+                                    }
+                                });
+                            }
+
+                            inputs = _(inputs).filter(f => f.categoryCd != 'CS00070').value();
+                        }
                         // change value
                         opts.sortable.outData(inputs);
                     }
