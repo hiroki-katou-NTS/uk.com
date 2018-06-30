@@ -88,4 +88,14 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 			this.commandProxy().update(x);
 		});
 	}
+
+	@Override
+	public void updateErrorCount(String dataRecoveryProcessId, int errorCount) {
+		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId,
+				SspmtDataRecoveryMng.class);
+		entity.ifPresent(x -> {
+			x.errorCount = errorCount;
+			this.commandProxy().update(x);
+		});
+	}
 }

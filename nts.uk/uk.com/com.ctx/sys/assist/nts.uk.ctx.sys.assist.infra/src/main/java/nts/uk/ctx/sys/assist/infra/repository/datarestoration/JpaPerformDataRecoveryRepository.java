@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
@@ -51,8 +49,8 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static final String UPDATE_DATE_FROM_TO_BY_LIST_CATEGORY_ID = "UPDATE SspmtTableList t SET t.saveDateFrom =:startOfPeriod, t.saveDateTo =:endOfPeriod  WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.tableListPk.categoryId =:checkCate ";
 	
-	@PersistenceContext(unitName = "UK")
-    private EntityManager entityManager;
+	/*@PersistenceContext(unitName = "UK")
+    private EntityManager entityManager;*/
 	
 	@Override
 	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
@@ -107,7 +105,6 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
 	public int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 		
@@ -115,7 +112,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 			StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
 			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE ");
 			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
-			return (Integer) entityManager.createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
+			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
 		}
 		return 0;
 	}
@@ -145,7 +142,6 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
 	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 
@@ -158,14 +154,12 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 			query.executeUpdate();
-			this.getEntityManager().flush();
 		}
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
 	public void insertDataTable(HashMap<String, String> dataInsertDb, String tableName) {
-		StringBuilder INSERT_BY_TABLE = new StringBuilder("INSERT INTO ");
+		StringBuilder INSERT_BY_TABLE = new StringBuilder(" INSERT INTO ");
 		if (tableName != null) {
 			INSERT_BY_TABLE.append(tableName);
 		}
@@ -184,9 +178,9 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		INSERT_BY_TABLE.append(" " + cloumns);
 		INSERT_BY_TABLE.append(" VALUES ");
 		INSERT_BY_TABLE.append(values);
-		Query query = em.createNativeQuery(INSERT_BY_TABLE.toString());
+		String test = INSERT_BY_TABLE.toString();
+		Query query = em.createNativeQuery(test.replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
 		query.executeUpdate();
-		this.getEntityManager().flush();
 
 	}
 
@@ -217,14 +211,14 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
 			int count = 0;
 			if (!Objects.isNull(whereCid)) {
-				DELETE_BY_TABLE_SQL.append(whereCid).append(" = ").append(cid);
+				DELETE_BY_TABLE_SQL.append(whereCid).append(" = '").append(cid).append("'");
 				count++;
 			}
 			if (!Objects.isNull(whereCid) && !Objects.isNull(employeeId)) {
 				if (count != 0) {
-					DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = ").append(employeeId);
+					DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = '").append(employeeId).append("'");
 				} else {
-					DELETE_BY_TABLE_SQL.append(whereSid).append(" = ").append(employeeId);
+					DELETE_BY_TABLE_SQL.append(whereSid).append(" = '").append(employeeId).append("'");
 				}
 			}
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
