@@ -86,16 +86,25 @@ module nts.uk.com.view.ccg026.component {
                 let $element = $(componentInfo.element),
                     $grid = $element.find('#permision_grid'),
                     $container = $element.find('#container_permision_grid'),
-                    requestDone = (data: Array<IPermision>, rechange: boolean = true) => {
+                    requestDone = (data: Array<IPermision>, rechange: CHANGED = CHANGED.LOAD_AND_CHANGE) => {
                         //Get
                         let scrollTop = $(`#${$grid.attr('id')}_scroll`).scrollTop();
 
                         data = _.orderBy(data, ['orderNumber']);
 
                         // fire changeDate for first action
-                        if (rechange) {
+                        if (rechange == CHANGED.CHANGE) {
                             params.changeData(data);
+                        } else if (rechange == CHANGED.LOAD) {
+                            // change grid dataSource
+                            $grid = $element.find('#permision_grid');
+                            $grid.igGrid("option", "dataSource", data);
+
+                            setTimeout(() => {
+                                $(`#${$grid.attr('id')}_scroll`).scrollTop(scrollTop);
+                            }, 0);
                         } else {
+                            params.changeData(data);
                             // change grid dataSource
                             $grid = $element.find('#permision_grid');
                             $grid.igGrid("option", "dataSource", data);
@@ -149,13 +158,17 @@ module nts.uk.com.view.ccg026.component {
                     if (!_.isEmpty(roleId) && !_.isEqual(oldData, compare)) {
                         switch (v) {
                             case ROLE_TYPE.COMPANY_MANAGER:
-                                fetch.com_mngr(roleId).done(requestDone);
+                                fetch.com_mngr(roleId).done(data => {
+                                    requestDone(data, CHANGED.LOAD_AND_CHANGE);
+                                });
                                 break;
                             case ROLE_TYPE.PERSONAL_INFO:
-                                fetch.person_info(roleId).done(requestDone);
+                                fetch.person_info(roleId).done(data => {
+                                    requestDone(data, CHANGED.LOAD_AND_CHANGE);
+                                });
                                 break;
                             default:
-                                requestDone([]);
+                                requestDone([], CHANGED.LOAD_AND_CHANGE);
                                 break;
                         }
 
@@ -223,7 +236,7 @@ module nts.uk.com.view.ccg026.component {
                                             $element.data('nts_focus', input.value);
 
                                             // push data to viewModel
-                                            requestDone(data);
+                                            requestDone(data, CHANGED.CHANGE);
                                         });
                                 });
                         },
@@ -232,11 +245,7 @@ module nts.uk.com.view.ccg026.component {
 
                 if (ko.isObservable(params.changeData)) {
                     (params.changeData as KnockoutObservableArray<any>).subscribe(data => {
-                        // change grid dataSource
-                        $grid = $element.find('#permision_grid');
-                        if (!_.isEqual($grid.igGrid("option", "dataSource"), data)) {
-                            requestDone(data, false);
-                        }
+                        requestDone(data, CHANGED.LOAD);
                     });
                 }
 
@@ -244,6 +253,12 @@ module nts.uk.com.view.ccg026.component {
             }
         }
     });
+
+    export enum CHANGED {
+        LOAD = 0,
+        CHANGE = 1,
+        LOAD_AND_CHANGE = 2
+    }
 
     export interface IPermision {
         available: boolean;
