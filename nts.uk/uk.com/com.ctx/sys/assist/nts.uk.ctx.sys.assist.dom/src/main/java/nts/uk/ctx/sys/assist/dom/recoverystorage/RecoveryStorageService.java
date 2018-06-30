@@ -823,7 +823,7 @@ public class RecoveryStorageService {
 				//  check interruption [中断]
 				Optional<DataRecoveryMng> dataRecovery = dataRecoveryMngRepository
 						.getDataRecoveryMngById(dataRecoveryProcessId);
-				if (dataRecovery.isPresent() && dataRecovery.get().getOperatingCondition().value == 1) {
+				if (dataRecovery.isPresent() && dataRecovery.get().getOperatingCondition().value == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
 					errorCode = DataRecoveryOperatingCondition.INTERRUPTION_END.value;
 					return errorCode;
 				}
