@@ -70,6 +70,6 @@ public class UpdateWorkingCondition2CommandHandler extends CommandHandler<Update
 
 		WorkingConditionItem workingCondItem = updateWorkingConditionCommandAssembler.fromDTO2(command);
 
-		workingConditionItemRepository.update(workingCondItem);
+		workingConditionItemRepository.updateWorkCond2(workingCondItem);
 	}
 }
