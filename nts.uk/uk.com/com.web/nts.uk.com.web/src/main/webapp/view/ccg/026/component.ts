@@ -98,7 +98,7 @@ module nts.uk.com.view.ccg026.component {
                         } else if (rechange == CHANGED.LOAD) {
                             // change grid dataSource
                             $grid = $element.find('#permision_grid');
-                            $grid.igGrid("option", "dataSource", data);
+                            $grid.igGrid("option", "dataSource", ko.toJS(data));
 
                             setTimeout(() => {
                                 $(`#${$grid.attr('id')}_scroll`).scrollTop(scrollTop);
@@ -107,11 +107,7 @@ module nts.uk.com.view.ccg026.component {
                             params.changeData(data);
                             // change grid dataSource
                             $grid = $element.find('#permision_grid');
-                            $grid.igGrid("option", "dataSource", data);
-
-                            setTimeout(() => {
-                                $(`#${$grid.attr('id')}_scroll`).scrollTop(scrollTop);
-                            }, 0);
+                            $grid.igGrid("option", "dataSource", ko.toJS(data));
                         }
                     };
 
@@ -171,9 +167,9 @@ module nts.uk.com.view.ccg026.component {
                                 requestDone([], CHANGED.LOAD_AND_CHANGE);
                                 break;
                         }
-
-                        $element.data('OLD_DATA', compare);
                     }
+
+                    $element.data('OLD_DATA', compare);
                 });
                 params.roleType.valueHasMutated();
 
@@ -244,8 +240,11 @@ module nts.uk.com.view.ccg026.component {
                     });
 
                 if (ko.isObservable(params.changeData)) {
-                    (params.changeData as KnockoutObservableArray<any>).subscribe(data => {
-                        requestDone(data, CHANGED.LOAD);
+                    (params.changeData as KnockoutObservableArray<any>).subscribe(data => {// change grid dataSource
+                        $grid = $element.find('#permision_grid');
+                        if (!_.isEqual($grid.igGrid("option", "dataSource"), data)) {
+                            requestDone(data, CHANGED.LOAD);
+                        }
                     });
                 }
 
