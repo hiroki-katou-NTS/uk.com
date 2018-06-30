@@ -228,6 +228,8 @@ module nts.layout {
 
                 self.card_no();
 
+                self.CS00070Validate();
+
                 // self.annLeaGrantRemnNum();
 
                 validate.initCheckError(lstCls);
@@ -1961,6 +1963,33 @@ module nts.layout {
                         }
                     });
                 }
+            }
+        }
+
+        CS00070Validate() {
+            let self = this,
+                finder: IFinder = self.finder,
+                CS00020IS00119: IFindData = finder.find('CS00020', 'IS00119'),
+                CS00020IS00120: IFindData = finder.find('CS00020', 'IS00120'),
+                CS00070IS00781: IFindData = finder.find('CS00070', 'IS00781'),
+                CS00070IS00782: IFindData = finder.find('CS00070', 'IS00782');
+
+            if (CS00020IS00119 && CS00070IS00781) {
+                CS00070IS00781.data.editable(false);
+                CS00020IS00119.data.value.subscribe(v => {
+                    CS00070IS00781.data.value(v);
+                });
+
+                CS00020IS00119.data.value.valueHasMutated();
+            }
+
+            if (CS00020IS00120 && CS00070IS00782) {
+                CS00070IS00782.data.editable(false);
+                CS00020IS00120.data.value.subscribe(v => {
+                    CS00070IS00782.data.value(v);
+                });
+
+                CS00020IS00119.data.value.valueHasMutated();
             }
         }
     }
