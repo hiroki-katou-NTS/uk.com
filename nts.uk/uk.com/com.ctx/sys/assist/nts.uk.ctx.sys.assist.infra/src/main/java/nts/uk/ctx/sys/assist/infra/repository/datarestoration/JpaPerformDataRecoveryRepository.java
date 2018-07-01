@@ -203,7 +203,6 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
 	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
 		EntityManager em = this.getEntityManager();
 		if (tableName != null) {
