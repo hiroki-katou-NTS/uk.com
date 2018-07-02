@@ -900,6 +900,7 @@ module nts.layout {
 
                         workType.ctrl.on('click', () => {
                             setShared("KDL002_Multiple", false, true);
+                            setShared('kdl002isSelection', false, true);
                             setShared("KDL002_SelectedItemId", workType.data.value(), true);
                             setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
