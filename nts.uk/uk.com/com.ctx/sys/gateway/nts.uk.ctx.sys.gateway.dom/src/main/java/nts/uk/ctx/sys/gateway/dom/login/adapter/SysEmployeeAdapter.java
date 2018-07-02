@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.StatusOfEmployeeImport;
 
 /**
  * The Interface SysEmployeeAdapter.
@@ -40,4 +41,12 @@ public interface SysEmployeeAdapter {
 	 * @return the sdata mng info
 	 */
 	Optional<EmployeeDataMngInfoImport> getSdataMngInfo(String sid);
+	
+	/**
+	 * Gets the status of employee.
+	 *
+	 * @param sid the sid
+	 * @return the status of employee
+	 */
+	StatusOfEmployeeImport getStatusOfEmployee(String sid);
 }

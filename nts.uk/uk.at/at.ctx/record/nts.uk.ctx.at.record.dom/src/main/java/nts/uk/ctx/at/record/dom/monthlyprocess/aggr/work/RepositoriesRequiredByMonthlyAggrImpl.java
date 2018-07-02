@@ -50,6 +50,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -145,6 +153,30 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 週・月の法定労働時間の取得*/
 	@Inject
 	private MonthlyStatutoryWorkingHours monthlyStatutoryWorkingHours;
+	/** 社員別通常勤務労働時間 */
+	@Inject
+	private ShainRegularWorkTimeRepository shainRegularWorkTime;
+	/** 社員別変形労働労働時間 */
+	@Inject
+	private ShainTransLaborTimeRepository shainTransLaborTime;
+	/** 職場別通常勤務労働時間 */
+	@Inject
+	private WkpRegularLaborTimeRepository wkpRegularLaborTime;
+	/** 職場別変形労働労働時間 */
+	@Inject
+	private WkpTransLaborTimeRepository wkpTransLaborTime;
+	/** 雇用別通常勤務労働時間 */
+	@Inject
+	private EmpRegularWorkTimeRepository empRegularWorkTime;
+	/** 雇用別変形労働労働時間 */
+	@Inject
+	private EmpTransWorkTimeRepository empTransWorkTime;
+	/** 会社別通常勤務労働時間 */
+	@Inject
+	private ComRegularLaborTimeRepository comRegularLaborTime;
+	/** 会社別変形労働労働時間 */
+	@Inject
+	private ComTransLaborTimeRepository comTransLaborTime;
 	
 	/** 月別実績の勤怠時間 */
 	@Inject

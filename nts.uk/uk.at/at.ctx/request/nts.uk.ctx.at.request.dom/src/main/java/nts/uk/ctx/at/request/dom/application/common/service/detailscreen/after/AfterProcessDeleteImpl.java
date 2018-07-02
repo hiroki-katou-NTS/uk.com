@@ -71,7 +71,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		/*if (converList != null) {
 			//TODO Hien thi thong tin 392
 		}*/
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID);
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
 	}
 
 }

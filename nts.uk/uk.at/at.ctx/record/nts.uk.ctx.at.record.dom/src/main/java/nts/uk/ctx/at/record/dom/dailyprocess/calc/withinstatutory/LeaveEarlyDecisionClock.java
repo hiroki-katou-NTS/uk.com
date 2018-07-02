@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -54,8 +52,8 @@ public class LeaveEarlyDecisionClock {
 				decisionClock = calｃRange.get().getEnd();
 			} else {
 				// 猶予時間帯の作成
-				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSheet.get().getEnd().forwardByMinutes(leaveEarlyGraceTime.getGraceTime().minute()),
-																	 predetermineTimeSheet.get().getEnd());
+				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(calｃRange.get().getEnd().backByMinutes(leaveEarlyGraceTime.getGraceTime().valueAsMinutes()),
+																	 calｃRange.get().getEnd());
 				
 				// 重複している控除分をずらす
 				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());

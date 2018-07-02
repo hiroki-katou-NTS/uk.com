@@ -51,6 +51,10 @@ module nts.uk.at.view.kaf005.b {
             //Approval 
             approvalSource: Array<common.AppApprovalPhase> = [];
             employeeID: KnockoutObservable<string> = ko.observable('');
+            employeeList: KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+            selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+            employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+            totalEmployee: KnockoutObservable<string> = ko.observable(null);
             //休出時間
             restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
             //残業時間
