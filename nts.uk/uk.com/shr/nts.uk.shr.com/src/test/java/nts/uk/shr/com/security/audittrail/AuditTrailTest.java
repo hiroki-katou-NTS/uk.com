@@ -4,6 +4,8 @@ import static mockit.Deencapsulation.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import lombok.val;
@@ -28,6 +30,18 @@ public class AuditTrailTest {
 		
 		@Override
 		public UserInfo findByEmployeeId(String employeeId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<UserInfo> findByEmployeeId(List<String> employeeIds) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<UserInfo> findByUserId(List<String> userIds) {
 			// TODO Auto-generated method stub
 			return null;
 		}

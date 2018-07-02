@@ -6,6 +6,7 @@ import javax.enterprise.inject.spi.CDI;
 
 import lombok.val;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 
 public class DataCorrectionContext {
 
@@ -17,13 +18,15 @@ public class DataCorrectionContext {
 	
 	private Serializable parameter;
 	
+	private boolean isAborted;
+	
 	private DataCorrectionContext(CorrectionProcessorId processorId, String operationId) {
 		this.processorId = processorId;
 		this.operationId = operationId;
 		this.parameter = null;
 	}
 	
-	public static void transactinBeginning(CorrectionProcessorId processorId) {
+	public static void transactionBegun(CorrectionProcessorId processorId) {
 		contextThreadLocal.set(new DataCorrectionContext(
 				processorId,
 				IdentifierUtil.randomUniqueId()));
@@ -34,10 +37,19 @@ public class DataCorrectionContext {
 		context.parameter = parameter;
 	}
 	
-	public static void transactionCommited() {
+	/**
+	 * Exceptionをthrowして止めるのではない場合、これを明示的に呼び、transactionFinishingの処理を抑制する必要がある。
+	 */
+	public static void transactionAborted() {
+		getCurrentContext().isAborted = true;
+	}
+	
+	public static void transactionFinishing() {
 		val context = getCurrentContext();
-		val agent = CDI.current().select(CorrectionLoggingAgent.class).get();
-		agent.requestProcess(context.operationId, context.processorId, context.parameter);
+		if (!context.isAborted) {
+			val agent = CDI.current().select(CorrectionLoggingAgent.class).get();
+			agent.requestProcess(context.operationId, context.processorId, context.parameter);
+		}
 		
 		contextThreadLocal.set(null);
 	}
