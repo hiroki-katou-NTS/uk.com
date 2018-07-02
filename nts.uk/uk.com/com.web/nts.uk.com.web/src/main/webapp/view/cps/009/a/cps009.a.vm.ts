@@ -1281,7 +1281,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                                         self.selectionName(null);
                                         self.selectedCode(null);
                                     } else {
-                                        self.selectionName(childData[0].code + " " + childData[0].name);
+                                        self.selectionName(childData[0].code + "　"+　childData[0].name);
                                         self.selectedCode(childData[0].code);
                                     }
                                 }
@@ -1330,7 +1330,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
                 }
                 self.selectedCode(childData.selectedWorkTypeCode);
-                vm[itemWorkTime.indexItem - 1].selectionName(childData.selectedWorkTimeCode + childData.selectedWorkTimeName);
+                vm[itemWorkTime.indexItem - 1].selectionName(childData.selectedWorkTimeCode + "　"+childData.selectedWorkTimeName);
                 vm[itemWorkTime.indexItem - 1].selectedCode(childData.selectedWorkTimeCode);
 
                 let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
@@ -1349,11 +1349,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (childData.selectedWorkTimeCode == "") {
                     self.selectionName(null)
                 } else {
-                    self.selectionName(childData.selectedWorkTimeCode + childData.selectedWorkTimeName);
+                    self.selectionName(childData.selectedWorkTimeCode + "　"+　 childData.selectedWorkTimeName);
                 }
                 self.selectedCode(childData.selectedWorkTimeCode);
                 if (isKdl003) {
-                    vm[itemWorkType.indexItem - 1].selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
+                    vm[itemWorkType.indexItem - 1].selectionName(childData.selectedWorkTypeCode + "　"+ childData.selectedWorkTypeName);
                     vm[itemWorkType.indexItem - 1].selectedCode(childData.selectedWorkTypeCode);
                 }
                 let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };

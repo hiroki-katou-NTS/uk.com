@@ -952,7 +952,7 @@ module nts.layout {
                                 modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
                                     let childData: Array<any> = getShared('KDL002_SelectedNewItem');
 
-                                    if (childData[0]) {
+                                    if (childData.length > 0) {
                                         setData(workType, childData[0].code);
                                     }
                                 });
