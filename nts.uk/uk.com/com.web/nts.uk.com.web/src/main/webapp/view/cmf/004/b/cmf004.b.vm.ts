@@ -46,6 +46,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         selectedEmployeeCodeScreenG: KnockoutObservableArray<string> = ko.observableArray([]);
         employeeListScreenG: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         //Screen H
+        buton_I_enable: KnockoutObservable<string> = ko.observable(true);
         recoveryMethodDescription1: KnockoutObservable<string> = ko.observable("");
         recoveryMethodDescription2: KnockoutObservable<string> = ko.observable("");
         dataRecoverySummary: KnockoutObservable<DataRecoverySummary> = ko.observable(new DataRecoverySummary([], 0, [], []));
@@ -205,6 +206,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         searchDataRecovery(): void {
             let self = this;
+            block.invisible();
             $("#daterangepicker_b4_3 .ntsDatepicker").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
@@ -233,7 +235,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                         }
                     }
                     self.dataRecoverySelection().selectedRecoveryFile("");
-                });
+                }).always(() =>{
+                block.clear();
+            });
             }
         }
 
@@ -242,7 +246,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenE(): void {
             let self = this;
-
+            block.invisible();
             //Get Data TableList for Screen E
             service.findTableList(self.recoveryProcessingId).done(function(data: Array<any>) {
                 let listCategory: Array<CategoryInfo> = [];
@@ -266,6 +270,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     self.supplementaryExplanation(data[0].supplementaryExplanation);
                 }
 
+            }).always(() =>{
+                block.clear();
             });
         }
 
@@ -281,6 +287,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenF(): void {
             let self = this;
+            
             let _listCategory = _.filter(self.dataContentConfirm().dataContentcategoryList(), x => { return x.isRecover() == true; });
             let _itemList: Array<CategoryInfo> = [];
             _.forEach(_listCategory, (x, i) => {
@@ -292,6 +299,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         initScreenG(): void {
             let self = this;
+            block.invisible();
             //Get Data PerformDataRecover for Screen KCP 005
             service.findPerformDataRecover(self.recoveryProcessingId).done(function(data: any) {
                 if (data.targets) {
@@ -302,7 +310,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     });
                     self.employeeListScreenG(employeeData);
                 }
-            })
+            }).always(() =>{
+                block.clear();
+            });
  
         }
 
@@ -459,7 +469,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 recoveryMethodOptions: self.dataContentConfirm().selectedRecoveryMethod(),
                 recoveryProcessingId: self.recoveryProcessingId
             });
-            nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml").onClosed(() => {
+                            self.buton_I_enable(false);
+                        });
         }
 
 

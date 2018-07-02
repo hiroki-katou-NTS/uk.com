@@ -14,6 +14,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoveryMng;
 
 @Stateless
+@Transactional(value = TxType.REQUIRES_NEW)
 public class JpaDataRecoveryMngRepository extends JpaRepository implements DataRecoveryMngRepository {
 	
 	@PersistenceContext
@@ -41,7 +42,6 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
 	public void updateByOperatingCondition(String dataRecoveryProcessId, int operatingCondition) {
 		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId,
 				SspmtDataRecoveryMng.class);
@@ -53,13 +53,14 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 	}
 
 	@Override
-	public void updateTotalNumOfProcesses(String dataRecoveryProcessId, int totalNumOfProcesses) {
+	public void updateCategoryCnt(String dataRecoveryProcessId, int totalCategoryCnt) {
 		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId,
 				SspmtDataRecoveryMng.class);
 		entity.ifPresent(x -> {
-			x.totalNumOfProcesses = totalNumOfProcesses;
+			x.categoryCnt = totalCategoryCnt;
 			this.commandProxy().update(x);
 		});
+		em.flush();
 	}
 
 	@Override
@@ -84,6 +85,16 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 				SspmtDataRecoveryMng.class);
 		entity.ifPresent(x -> {
 			x.recoveryDate = date;
+			this.commandProxy().update(x);
+		});
+	}
+
+	@Override
+	public void updateErrorCount(String dataRecoveryProcessId, int errorCount) {
+		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId,
+				SspmtDataRecoveryMng.class);
+		entity.ifPresent(x -> {
+			x.errorCount = errorCount;
 			this.commandProxy().update(x);
 		});
 	}

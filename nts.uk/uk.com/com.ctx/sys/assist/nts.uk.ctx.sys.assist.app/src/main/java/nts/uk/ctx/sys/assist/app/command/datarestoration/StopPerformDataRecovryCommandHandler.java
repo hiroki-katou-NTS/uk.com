@@ -16,7 +16,7 @@ public class StopPerformDataRecovryCommandHandler extends CommandHandler<StopPer
 	protected void handle(CommandHandlerContext<StopPerformDataRecovryCommand> context) {
 		StopPerformDataRecovryCommand updateCommand = context.getCommand();
 		String dataRecoveryProcessId = updateCommand.getDataRecoveryProcessId();
-		int operatingCondition = 3;
+		int operatingCondition = 1;
 		repoDataRecoveryMng.updateByOperatingCondition(dataRecoveryProcessId, operatingCondition);
 	}
 
