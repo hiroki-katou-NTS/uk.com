@@ -24,7 +24,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String SPECIAL_CTG_CODE = "CO";
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = String.join(" ","SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,",
 			 "ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
-			 "co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr",
+			 "co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, co.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr",
 			 "FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
 			 "ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
 			 "INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
@@ -36,7 +36,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder,"
-			+ " co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr"
+			+ " co.addItemObjCls, co.initValMasterObjCls, co.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr"
 			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
 			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
@@ -367,16 +367,14 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private PpemtPerInfoCtg createPerInfoCtgFromDomain(PersonInfoCategory perInfoCtg) {
 		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
 		return new PpemtPerInfoCtg(perInfoCtgPK, perInfoCtg.getCompanyId(), perInfoCtg.getCategoryCode().v(),
-				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value,
-				perInfoCtg.isCanAbolition() == true ? 1 : 0);
+				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value);
 
 	}
 
 	private PpemtPerInfoCtg createPerInfoCtgFromDomainWithCid(PersonInfoCategory perInfoCtg, String companyId) {
 		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(IdentifierUtil.randomUniqueId());
 		return new PpemtPerInfoCtg(perInfoCtgPK, companyId, perInfoCtg.getCategoryCode().v(),
-				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value,
-				perInfoCtg.isCanAbolition() == true ? 1 : 0);
+				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value);
 
 	}
 
@@ -389,7 +387,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				perInfoCtg.getAddItemCls() == null ? 1 : perInfoCtg.getAddItemCls().value,
 				perInfoCtg.getInitValMasterCls() == null ? 1 : perInfoCtg.getInitValMasterCls().value,
 				perInfoCtg.getSalaryUseAtr().value, perInfoCtg.getPersonnelUseAtr().value,
-				perInfoCtg.getEmploymentUseAtr().value);
+				perInfoCtg.getEmploymentUseAtr().value, perInfoCtg.isCanAbolition() == true ? 1 : 0);
 	}
 
 	private PpemtPerInfoCtgOrder createPerInfoCtgOrderFromDomain(String perInfoCtgId, String companyId, int disOrder) {

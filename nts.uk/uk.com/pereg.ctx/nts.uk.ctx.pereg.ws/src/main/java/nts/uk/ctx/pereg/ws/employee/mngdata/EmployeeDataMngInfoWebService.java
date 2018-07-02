@@ -29,17 +29,16 @@ public class EmployeeDataMngInfoWebService {
 	}
 	
 	@POST
+	@Path("getInitEmplCode")
+	public JavaTypeResult<String> getInitEmplCode() {
+		return new JavaTypeResult<String>(this.employeeFinder.initEmplCode());
+	}
+	
+	@POST
 	@Path("getInitCardNo")
 	public JavaTypeResult<String> getInitCardNo(String newEmployeeCode) {
 		String newCardNo = employeeFinder.initCardNo(newEmployeeCode);
 		return new JavaTypeResult<String>(newCardNo);
 	}
 	
-	@POST
-	@Path("getStampCardAfterLostFocusEmpCd")
-	public JavaTypeResult<String> getStampCardAfterLostFocusEmpCd(String newEmployeeCode) {
-		String newCardNo = employeeFinder.getStampCardAfterLostFocusEmpCd(newEmployeeCode);
-		return new JavaTypeResult<String>(newCardNo);
-	}
-
 }

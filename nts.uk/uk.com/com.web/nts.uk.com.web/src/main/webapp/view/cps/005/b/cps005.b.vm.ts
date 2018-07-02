@@ -349,7 +349,12 @@ module nts.uk.com.view.cps005.b {
 
                         if (self.currentItemSelected().fixedAtr() == 1) {
                             self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemTypeFixed(); }).localizedName);
-                            self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataTypeFixed(); }).localizedName);
+                            if( [DataTypeValue.SELECTION_RADIO, DataTypeValue.SELECTION_BUTTON].indexOf(self.currentItemSelected().dataTypeFixed()) > -1  ){
+                                self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == DataTypeValue.SELECTION; }).localizedName);
+                            }else{
+                                self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataTypeFixed(); }).localizedName);
+                            }
+                            
                         } else {
                             self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
                             self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
@@ -468,7 +473,7 @@ module nts.uk.com.view.cps005.b {
                         if (!value) {
                             return;
                         }
-                        new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                       service.getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.selectionItem().selectionLst([]);
                                 self.selectionItem().selectionLst(data);

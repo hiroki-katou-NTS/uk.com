@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

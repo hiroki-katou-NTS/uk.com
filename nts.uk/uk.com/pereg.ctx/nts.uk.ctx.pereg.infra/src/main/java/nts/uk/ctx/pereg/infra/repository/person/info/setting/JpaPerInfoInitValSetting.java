@@ -14,10 +14,10 @@ import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonIn
 @Stateless
 public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoInitValueSettingRepository {
 
-	private final String SEL_ALL = " SELECT c FROM PpemtPersonInitValueSetting c" + " WHERE c.companyId = :companyId"
+	private static final String SEL_ALL = " SELECT c FROM PpemtPersonInitValueSetting c" + " WHERE c.companyId = :companyId"
 			+ " ORDER BY c.settingCode";
 
-	private final String SEL_ALL_HAS_CHILD = "SELECT DISTINCT iv"
+	private static final String SEL_ALL_HAS_CHILD = "SELECT DISTINCT iv"
 			+ " FROM PpemtPersonInitValueSetting iv"
 			+ " INNER JOIN PpemtPersonInitValueSettingCtg ic" 
 			+ " ON iv.initValueSettingPk.settingId  = ic.settingCtgPk.settingId"
@@ -30,21 +30,21 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 			+ " WHERE iv.companyId = :companyId" 
 			+ " AND pi.ppemtPerInfoItemPK.perInfoItemDefId IS NOT NULL ORDER BY iv.settingCode ASC";
 
-	private final String SEL_BY_SET_ID = " SELECT c FROM PpemtPersonInitValueSetting c"
+	private static final String SEL_BY_SET_ID = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.initValueSettingPk.settingId = :settingId";
 
-	private final String SEL_A_INIT_VAL_SET = " SELECT c FROM PpemtPersonInitValueSetting c"
+	private static final String SEL_A_INIT_VAL_SET = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.companyId = :companyId" + " AND c.settingCode = :setCode";
 
-	private final String SEL_A_INIT_VAL_SET_1 = " SELECT c FROM PpemtPersonInitValueSetting c"
+	private static final String SEL_A_INIT_VAL_SET_1 = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.companyId = :companyId" + " AND c.settingCode = :settingCode"
 			+ " AND c.initValueSettingPk.settingId = :settingId ";
 
-	private final String DELETE_BY_SETTINGCD_SETTINGID = " DELETE FROM PpemtPersonInitValueSetting c"
+	private static final String DELETE_BY_SETTINGCD_SETTINGID = " DELETE FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.initValueSettingPk.settingId =:settingId AND c.settingCode =:settingCode"
 			+ " AND c.companyId =:companyId";
 	
-	private final String UPDATE_NAME_BY_SETTING_ID = " UPDATE PpemtPersonInitValueSetting c SET c.settingName =:settingName"
+	private static final String UPDATE_NAME_BY_SETTING_ID = " UPDATE PpemtPersonInitValueSetting c SET c.settingName =:settingName"
 			+ " WHERE c.initValueSettingPk.settingId =:settingId";
 
 	private static PerInfoInitValueSetting toDomain(PpemtPersonInitValueSetting entity) {

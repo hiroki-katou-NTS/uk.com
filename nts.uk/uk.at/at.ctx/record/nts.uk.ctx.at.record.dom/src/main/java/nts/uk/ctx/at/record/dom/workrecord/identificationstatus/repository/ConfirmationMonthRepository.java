@@ -17,4 +17,5 @@ public interface ConfirmationMonthRepository {
 	void delete(String companyId, String employeeId, int closureId, int closureDay, int processYM);
 	
 	List<ConfirmationMonth> findBySidAndYM(String employeeId, int processYM);
+	
 }

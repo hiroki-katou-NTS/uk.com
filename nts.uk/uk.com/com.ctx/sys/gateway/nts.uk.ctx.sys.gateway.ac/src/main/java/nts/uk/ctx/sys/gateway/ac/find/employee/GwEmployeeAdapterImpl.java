@@ -74,4 +74,14 @@ public class GwEmployeeAdapterImpl implements EmployeeInfoAdapter {
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter#getEmpInfoByPid(java.lang.String)
+	 */
+	@Override
+	public List<EmployeeInfoDtoImport> getEmpInfoByPid(String pid){
+		return this.employeePub.getEmpInfoByPid(pid).stream().map(f -> {
+			return new EmployeeInfoDtoImport(f.getCompanyId(), f.getEmployeeCode(), f.getEmployeeId(), f.getPId());
+		}).collect(Collectors.toList());
+	}
 }

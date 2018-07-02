@@ -19,8 +19,7 @@ public class HolidayWorkMidNightTime {
 	 * @return
 	 */
 	public int calcOverLimitDivergenceTime() {
-		return this.getTime().getDivergenceTime().valueAsMinutes() 
-				 + this.getTime().getDivergenceTime().valueAsMinutes();
+		return this.getTime().getDivergenceTime().valueAsMinutes();
 	}
 
 	/**

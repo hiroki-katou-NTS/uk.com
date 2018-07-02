@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 
 /**
  * 指定時間を取得
@@ -16,5 +17,5 @@ public interface GetDesignatedTime {
 	 * @param workTimeCode 就業時間帯コード
 	 * @return 指定時間設定
 	 */
-	Optional<DesignatedTime> get(String companyId, String workTimeCode);
+	Optional<SubHolTransferSet> get(String companyId, String workTimeCode);
 }

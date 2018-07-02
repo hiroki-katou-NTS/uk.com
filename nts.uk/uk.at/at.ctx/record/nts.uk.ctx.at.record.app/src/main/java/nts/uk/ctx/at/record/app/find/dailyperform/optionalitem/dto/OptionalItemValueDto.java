@@ -231,7 +231,7 @@ public class OptionalItemValueDto implements ItemConst {
 			ItemAndV amount = new ItemAndV(OptionalItemAtr.AMOUNT, amountOrDef);
 			ItemAndV time = new ItemAndV(OptionalItemAtr.TIME, timeOrDef);
 			ItemAndV number = new ItemAndV(OptionalItemAtr.NUMBER, countOrDef);
-			ItemAndV maxed = Collections.max(Arrays.asList(amount, time, number), (c1, c2) -> c1.value.compareTo(c2.value));
+			ItemAndV maxed = Collections.max(Arrays.asList(amount, time, number), (c1, c2) -> c1.compareTo(c2));
 			this.itemAttr = maxed.attr;
 			this.value = maxed.value;
 		}
@@ -261,23 +261,31 @@ public class OptionalItemValueDto implements ItemConst {
 			ItemAndV amount = new ItemAndV(OptionalItemAtr.AMOUNT, amountOrDef);
 			ItemAndV time = new ItemAndV(OptionalItemAtr.TIME, timeOrDef);
 			ItemAndV number = new ItemAndV(OptionalItemAtr.NUMBER, countOrDef);
-			ItemAndV maxed = Collections.max(Arrays.asList(amount, time, number), (c1, c2) -> c1.value.compareTo(c2.value));
+			ItemAndV maxed = Collections.max(Arrays.asList(amount, time, number), (c1, c2) -> c1.compareTo(c2));
 			this.itemAttr = maxed.attr;
 			this.value = maxed.value;
 		}
 		itemMapped();
 	}
 
-	private class ItemAndV {
+	private class ItemAndV implements Comparable<ItemAndV>{
 		
 		private OptionalItemAtr attr;
 		
 		private String value;
+		
+		private Double positiveVal;
 
 		public ItemAndV(OptionalItemAtr attr, String value) {
 			super();
 			this.attr = attr;
 			this.value = value;
+			this.positiveVal = Math.abs(Double.valueOf(value));
+		}
+
+		@Override
+		public int compareTo(ItemAndV target) {
+			return this.positiveVal.compareTo(target.positiveVal);
 		}
 	}
 }

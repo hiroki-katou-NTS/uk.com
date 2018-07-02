@@ -24,7 +24,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         listEmpCd: Array<string>;
         multiSelectedWorkplaceId: Array<any>;
         inputContent: any;
-        
+
         person: number;
         daily: number;
         monthly: number;
@@ -59,7 +59,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 let listWorkplace = params.listWorkplace;
                 self.listEmpCd = params.listEmployeeCode;
                 self.inputContent = params.inputContent;
-                
+
                 let listWorkplaceId = [];
                 _.each(listWorkplace, function(item) {
                     listWorkplaceId.push(item.code)
@@ -143,12 +143,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                         listEmpCd: self.listEmpCd
                     };
                     service.exeSendUnconfirmedMail(obj).done(function(result: any) {
-                        if (result.ok) {
-                            info({ messageId: "Msg_792" });
-                        }
-                        else {
-                            error({ messageId: "Msg_793" });
-                        }
+                        shareModel.showMsgSendEmail(result);
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
                     }).always(function() {

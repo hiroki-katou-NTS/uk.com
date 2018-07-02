@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -24,9 +25,16 @@ import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerform
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
@@ -38,6 +46,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -137,6 +147,19 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
 	
+	//ドメインサービス：計算用ストアド実行用
+	@Inject
+	private AdTimeAndAnyItemAdUpService adTimeAndAnyItemAdUpService; 
+	
+	//↓以下任意項目の計算の為に追加
+	@Inject
+	private OptionalItemRepository optionalItemRepository;
+	
+	@Inject
+	private FormulaRepository formulaRepository;
+	
+	@Inject
+	private EmpConditionRepository empConditionRepository;
 	
 	/**
 	 * 社員の日別実績を計算
@@ -171,7 +194,19 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		companyCommonSetting.setPersonInfo(Optional.of(nowCondition.get().getValue()));
 		EmploymentCode nowEmpCode = new EmploymentCode("");
 		
-
+		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
+		String companyId = AppContexts.user().companyId();
+		//AggregateRoot「任意項目」取得
+		List<OptionalItem> optionalItems = optionalItemRepository.findAll(companyId);
+		companyCommonSetting.setOptionalItems(optionalItems);
+		//任意項目NOのlist作成
+		List<Integer> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList());
+		//計算式を取得
+		companyCommonSetting.setFormulaList(formulaRepository.find(companyId));
+		//適用する雇用条件の取得
+		companyCommonSetting.setEmpCondition(empConditionRepository.findAll(companyId, optionalItemNoList));
+		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
+			
 		// 取得データ分ループ
 		for (IntegrationOfDaily integrationOfDaily : integrationOfDailys) {
 			
@@ -227,9 +262,12 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
 				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
 						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get());
+				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
 				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 			}
+			
+			
+			
 		}
 		return status;
 	}
@@ -239,25 +277,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	private void registAttendanceTime(AttendanceTimeOfDailyPerformance attendanceTime){
-
-		//*****（未）　この中で、必要なデータ更新処理を書く。下は、仮実装なので、正確な内容は別途確認する事。
-
-		// キー値確認
-		val employeeId = attendanceTime.getEmployeeId();
-		val ymd = attendanceTime.getYmd();
-		//if (this.attendanceTimeRepository.find(employeeId, ymd).isPresent()){
-//		if(attendanceTime != null)
-			
-			// 更新
-			this.attendanceTimeRepository.update(attendanceTime);
-//		}
-//		else {
-//			//log.info("更新なんてされずにスルーされます");
-//			// 追加
-//			//*****（未）　親のフローにより、読み込めないデータは計算しないはずなので、この処理は不要かもしれない。find確認自体不要かも。
-//			//this.attendanceTimeRepository.add(attendanceTime);
-//		}
+	private void registAttendanceTime(AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
+		adTimeAndAnyItemAdUpService.addAndUpdate(attendanceTime, anyItem);	
 	}
 	
 	/**
