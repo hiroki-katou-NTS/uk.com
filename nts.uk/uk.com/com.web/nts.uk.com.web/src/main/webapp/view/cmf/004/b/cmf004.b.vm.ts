@@ -474,9 +474,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                         });
         }
 
-
-
-
         backToPreviousScreen(): void {
             $('#data-recovery-wizard').ntsWizard("prev");
             nts.uk.ui.errors.clearAll();

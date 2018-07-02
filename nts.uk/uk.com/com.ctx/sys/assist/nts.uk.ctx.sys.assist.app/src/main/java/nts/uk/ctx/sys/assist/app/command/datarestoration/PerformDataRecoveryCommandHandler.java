@@ -26,7 +26,7 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 	public void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
 		PerformDataRecoveryCommand performDataCommand = context.getCommand();
 		String dataRecoveryProcessId = performDataCommand.recoveryProcessingId;
-		String recoveryDate = GeneralDateTime.now().toString("yyyy/MM/dd");
+		String recoveryDate = GeneralDateTime.now().toString("yyyy-MM-dd");
 		int categoryCnt = 0;
 		int errorCount = 0;
 		int categoryTotalCount = performDataCommand.recoveryCategoryList.size();
