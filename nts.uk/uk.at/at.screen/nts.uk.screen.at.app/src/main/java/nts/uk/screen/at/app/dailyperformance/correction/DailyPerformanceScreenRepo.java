@@ -91,6 +91,11 @@ public interface DailyPerformanceScreenRepo {
 
 	/** Get list workplace of login user */
 	Map<String, String> getListWorkplace(String employeeId, DateRange dateRange);
+	
+	/** Get list workplace all employee */
+	Map<String, String> getListWorkplaceAllEmp(List<String> employeeId, GeneralDate date);
+	
+	List<String> getListEmpInDepartment(String employeeId, DateRange dateRange);
 
 	/** 
 	 * Get list WorkInfoOfDailyPerformance DTO

@@ -144,6 +144,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE;
 
 	private final static String SEL_WORKPLACE;
+	
+	private final static String FIND_EMP_WORKPLACE;
+	
+	private final static String SEL_WORKPLACE_ALL;
 
 	private final static String SEL_CLASSIFICATION = "SELECT c FROM BsymtClassification c WHERE c.bsymtClassificationPK.cid = :companyId";
 
@@ -294,15 +298,27 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT w FROM BsymtAffiWorkplaceHistItem w JOIN ");
-		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId");
+		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId ");
 		builderString.append("WHERE a.sid = :sId ");
 		builderString.append("AND a.strDate <= :baseDate ");
 		builderString.append("AND a.endDate >= :baseDate ");
 		builderString.append("AND w.sid = a.sid ");
-		// builderString.append("AND w.bsymtWorkplaceHist.strD <= :baseDate ");
-		// builderString.append("AND w.bsymtWorkplaceHist.endD >= :baseDate");
 		SEL_WORKPLACE = builderString.toString();
-
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT w FROM BsymtAffiWorkplaceHistItem w JOIN ");
+		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId ");
+		builderString.append("WHERE a.sid IN :sIds ");
+		builderString.append("AND a.strDate <= :baseDate ");
+		builderString.append("AND a.endDate >= :baseDate ");
+		builderString.append("AND w.sid = a.sid ");
+		SEL_WORKPLACE_ALL = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT w.sid FROM BsymtAffiWorkplaceHistItem w");
+		builderString.append(" WHERE w.workPlaceId IN :workPlaceId ");
+		FIND_EMP_WORKPLACE = builderString.toString();
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT s FROM BsymtEmployeeDataMngInfo s ");
 		// builderString.append("JOIN KmnmtAffiliClassificationHist c ");
@@ -632,6 +648,36 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
 				});
 		return lstWkp;
+	}
+	
+	@Override
+	public Map<String, String> getListWorkplaceAllEmp(List<String> employeeId, GeneralDate dateRange) {
+		if (employeeId.isEmpty())
+			return Collections.emptyMap();
+		Map<String, String> lstWkp = new HashMap<>();
+		List<BsymtAffiWorkplaceHistItem> bsymtAffiWorkplaceHistItem = this.queryProxy()
+				.query(SEL_WORKPLACE_ALL, BsymtAffiWorkplaceHistItem.class).setParameter("sIds", employeeId)
+				.setParameter("baseDate", dateRange).getList();
+		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
+				.collect(Collectors.toList());
+
+		String query = "SELECT w FROM BsymtWorkplaceInfo w WHERE w.bsymtWorkplaceInfoPK.wkpid IN :wkpId AND w.bsymtWorkplaceHist.strD <= :baseDate AND w.bsymtWorkplaceHist.endD >= :baseDate";
+		this.queryProxy().query(query, BsymtWorkplaceInfo.class).setParameter("wkpId", workPlaceIds)
+				.setParameter("baseDate", dateRange).getList().stream().forEach(w -> {
+					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
+				});
+		return lstWkp;
+	}
+	
+	@Override
+	public List<String> getListEmpInDepartment(String employeeId, DateRange dateRange) {
+		List<BsymtAffiWorkplaceHistItem> bsymtAffiWorkplaceHistItem = this.queryProxy()
+				.query(SEL_WORKPLACE, BsymtAffiWorkplaceHistItem.class).setParameter("sId", employeeId)
+				.setParameter("baseDate", dateRange.getEndDate()).getList();
+		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
+				.collect(Collectors.toList());
+		if(workPlaceIds.isEmpty()) return Collections.emptyList();
+		return this.queryProxy().query(FIND_EMP_WORKPLACE, String.class).setParameter("workPlaceId", workPlaceIds).getList();
 	}
 
 	@Override

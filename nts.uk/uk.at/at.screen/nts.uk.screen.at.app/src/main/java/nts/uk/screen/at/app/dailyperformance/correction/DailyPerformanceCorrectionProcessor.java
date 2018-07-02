@@ -299,6 +299,8 @@ public class DailyPerformanceCorrectionProcessor {
 		// アルゴリズム「対象者を抽出する」を実行する | Execute "Extract subject"
 		//List<EmployeeInfoFunAdapterDto> employeeInfoAdapter = changeEmployeeIds.isEmpty() ? Collections.emptyList() :  employeeInfoFunAdapter.getListPersonInfor(changeEmployeeIds);
 		//screenDto.setLstEmployee(converEmployeeList(employeeInfoAdapter));
+		//get All Workplace employee
+		//Map<String, String> wplNameMap = repo.getListWorkplaceAllEmp(changeEmployeeIds, screenDto.getDateRange().getEndDate());
 		screenDto.setLstEmployee(repo.getListEmployee(changeEmployeeIds));
 		// only get detail infomation employee when mode 2, 3 extract
 		if(displayFormat == 0){
@@ -1338,8 +1340,9 @@ public class DailyPerformanceCorrectionProcessor {
 		String employeeIdLogin = AppContexts.user().employeeId();
 		if (mode == ScreenMode.NORMAL.value) {
 			if(employeeIds.isEmpty()){
-				 List<RegulationInfoEmployeeQueryR> regulationRs= regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
-				 return regulationRs.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
+				 //List<RegulationInfoEmployeeQueryR> regulationRs= regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
+				 List<String> listEmp =  repo.getListEmpInDepartment(employeeIdLogin, new DateRange(range.getStartDate(), range.getEndDate()));
+				 return narrowEmployeeAdapter.findByEmpId(listEmp, 3);
 			}else{
 				// No 338
 				// RoleType 3:就業 EMPLOYMENT

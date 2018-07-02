@@ -457,6 +457,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         processMapData(data) {
             var self = this;
+            let startTime: number = performance.now();
             console.log(data);
             if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
                 localStorage.removeItem(window.location.href + '/dpGrid');
@@ -510,14 +511,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.employIdLogin = __viewContext.user.employeeId;
             self.selectedEmployee(_.isEmpty(self.shareObject()) ? self.employIdLogin : (self.shareObject().displayFormat == 0 ? self.shareObject().individualTarget : (self.lstEmployee().length == 0 ? "" : self.lstEmployee()[0].id)));
             self.extractionData();
+            console.log("khoi tao Object: "+ (performance.now() - startTime));
             self.loadGrid();
-            
+            console.log("thoi gian load grid: "+ (performance.now() - startTime));
             //  self.extraction();
             self.initCcg001();
             self.loadCcg001();
+            console.log("thoi gian load ccg: "+ (performance.now() - startTime));
             // no20
             self.dPErrorDto(data.dperrorDto);
-            self.displayNumberZero();
+            //self.displayNumberZero();
+              console.log("thoi gian load 0: "+ (performance.now() - startTime));
             //set SPR
             if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0) {
                 if (data.showQuestionSPR == SPRCheck.SHOW_CONFIRM) {
@@ -892,7 +896,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     });
                  dataSourceRow = dataRowTemp;
                 }
-                self.dailyPerfomanceData()
                 dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 dataSourceNew = _.map(_.cloneDeep(dataSource), (value) => {
                     let val = _.find(dataSourceRow, (item) => {
@@ -901,7 +904,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return val != undefined ? val : value;
                 })
                 //get source old 
-                self.dailyPerfomanceData();
                 _.each(self.dailyPerfomanceData(), (valueT, index) =>{
                     let dataTemp  =  _.find(data.lstData , valueRow =>{
                         return valueT.id == valueRow.id;
@@ -1187,7 +1189,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.dPErrorDto(data.dperrorDto);
                 // flex
                 self.processFlex(data);
-                self.displayNumberZero();
+               // self.displayNumberZero();
                 
                 //check visable MIGrid
                 if (self.displayFormat() !=0) {
@@ -1649,19 +1651,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (sign == undefined) self.fixColGrid.push({ columnKey: 'approval', isFixed: true });
             }
             self.loadHeader(self.displayFormat());
-            let start = performance.now();
-            self.dailyPerfomanceData(self.dpData);
-            console.log("tg load filter :" + (performance.now() - start));
+            self.dailyPerfomanceData(_.cloneDeep(self.dpData));
         }
 
         extraction() {
             var self = this;
-            let start = performance.now();
             self.destroyGrid();
-            console.log("destroy grid :" + (start - performance.now()));
-            start = performance.now();
             self.extractionData();
-            console.log("calc load extractionData :" + (start - performance.now()));
             self.loadGrid();
         }
 
@@ -1757,7 +1753,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         formatDate(lstData) {
             var self = this;
-            let start = performance.now();
+            let checkZero: boolean = self.displayWhenZero()
             let data = lstData.map((data) => {
                 var object = {
                     id: "_" + data.id,
@@ -1774,10 +1770,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dateDetail: moment(data.date, "YYYY/MM/DD"),
                     typeGroup: data.typeGroup
                 }
-                _.each(data.cellDatas, function(item) { object[item.columnKey] = item.value });
+                _.each(data.cellDatas, function(item) {
+                    object[item.columnKey] = !checkZero && (item.value == "0" || item.value == "0:00") ? "" : item.value;
+                });
                 return object;
             });
-            console.log("calc load source :" + (start - performance.now()));
             return data;
         }
 
