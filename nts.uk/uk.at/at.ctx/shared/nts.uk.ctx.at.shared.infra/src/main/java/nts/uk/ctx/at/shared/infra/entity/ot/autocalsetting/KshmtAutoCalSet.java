@@ -99,5 +99,20 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	/** The late night time atr. */
 	@Column(name = "LATE_NIGHT_TIME_ATR")
 	private int lateNightTimeAtr;
+	
+	@Column(name = "RAISING_CALC_ATR")
+	private boolean raisingCalcAtr;
+	
+	@Column(name = "SPECIFIC_RAISING_CALC_ATR")
+	private boolean specificRaisingCalcAtr;
+	
+	@Column(name = "LEAVE_EARLY")
+	private boolean leaveEarly;
+	
+	@Column(name = "LEAVE_Late")
+	private boolean leaveLate;
+	
+	@Column(name = "DIVERGENCE")
+	private int divergence;
 
 }
