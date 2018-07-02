@@ -61,7 +61,9 @@ module nts.uk.com.view.cmf004.d {
                                         } else {
                                             self.isSuccess(false);
                                             if (status.processingStatus == 1) {
-                                                dialog.alertError({ messageId: status.messageId });
+                                                dialog.alertError({ messageId: status.messageId }).then(() =>{
+                                                    $('#D3_1').focus();
+                                                }); 
                                             }
                                         }
                                     }
