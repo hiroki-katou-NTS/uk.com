@@ -503,6 +503,8 @@ module nts.uk.at.view.kwr001.a {
                             };
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(){
+                            }).fail(function(error){
+                                nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                             }).always(function() {
                                nts.uk.ui.block.clear(); 
                             });
