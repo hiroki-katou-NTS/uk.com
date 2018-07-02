@@ -7,7 +7,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.application.realitystatus.EmpPerformanceDto;
 import nts.uk.ctx.at.record.app.find.application.realitystatus.EmpPerformanceParam;
@@ -33,8 +32,8 @@ public class RealityStatusWebService extends WebService {
 
 	@POST
 	@Path("checkSendUnconfirmedMail")
-	public JavaTypeResult<String> checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
-		return new JavaTypeResult<String>(realityStatusFinder.checkSendUnconfirmedMail(listWkp));
+	public void checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
+		realityStatusFinder.checkSendUnconfirmedMail(listWkp);
 	}
 
 	@POST

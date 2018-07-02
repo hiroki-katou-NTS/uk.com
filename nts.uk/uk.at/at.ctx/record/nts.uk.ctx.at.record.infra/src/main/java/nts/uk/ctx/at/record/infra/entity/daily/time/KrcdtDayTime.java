@@ -2042,7 +2042,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		val within =  WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(this.workTime),
 				   																  new AttendanceTime(this.actWorkTime),
 				   																  new AttendanceTime(this.prsIncldPrmimTime),
-				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(this.prsIncldMidnTime))),
+				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(this.prsIncldMidnTime),
+				   																		  																				  new AttendanceTime(this.calcPrsIncldMidnTime))),
 				   																  new AttendanceTime(this.vactnAddTime));
 		/*日別実績の残業時間*/
 		List<OverTimeFrameTime> list = new ArrayList<>();
