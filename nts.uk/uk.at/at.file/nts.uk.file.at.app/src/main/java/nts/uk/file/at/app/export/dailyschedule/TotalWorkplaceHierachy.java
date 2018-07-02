@@ -62,7 +62,7 @@ public class TotalWorkplaceHierachy {
 	private Boolean seventhLevel;
 	
 	// 8階層
-	private Boolean eightLevel;
+	private Boolean eighthLevel;
 	
 	// 9階層
 	private Boolean ninthLevel;
@@ -90,7 +90,7 @@ public class TotalWorkplaceHierachy {
 		case SEVENTH_LEVEL:
 			return seventhLevel != null && seventhLevel;
 		case EIGHTH_LEVEL:
-			return eightLevel != null && eightLevel;
+			return eighthLevel != null && eighthLevel;
 		case NINTH_LEVEL:
 			return ninthLevel != null && ninthLevel;
 		default:
