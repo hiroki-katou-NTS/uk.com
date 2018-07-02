@@ -7,7 +7,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegisterOvertime;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
@@ -16,11 +15,13 @@ import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeComm
 import nts.uk.ctx.at.request.app.command.application.overtime.UpdateOvertimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.UpdateOvertimeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamGetOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCaculationOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkParam;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
@@ -42,7 +43,7 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("getOvertimeByUI")
-	public OverTimeDto getOvertimeByUIType(Param param) {
+	public OverTimeDto getOvertimeByUIType(ParamGetOvertime param) {
 		return this.overtimeFinder.getOvertimeByUIType(param.getUrl(),
 				param.getAppDate(),
 				param.getUiType(),
@@ -122,27 +123,4 @@ public class OvertimeWebService extends WebService{
 				param.getStartTimeRest(),
 				param.getEndTimeRest());
 	}
-}
-
-@Value
-class Param{
-	private String url;
-	private String appDate;
-	private int uiType;
-	private Integer timeStart1;
-	private Integer timeEnd1;
-	private String reasonContent;
-	private List<String> employeeIDs;
-	private String employeeID;
-}
-@Value
-class RecordWorkParam {
-	public String employeeID; 
-	public String appDate;
-	public String siftCD;
-	public int prePostAtr;
-	public List<CaculationTime> overtimeHours;
-	private String workTypeCode;
-	private Integer startTimeRest;
-	private Integer endTimeRest;
 }

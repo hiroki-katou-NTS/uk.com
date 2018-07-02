@@ -100,14 +100,14 @@ public class RealityStatusService {
 	/**
 	 * 承認状況未確認メール送信
 	 */
-	public String checkSendUnconfirmedMail(List<WkpIdMailCheckOutput> listWkp) {
-		// アルゴリズム「承認状況送信者メール確認」を実行する
-		String email = approvalStatusRequestAdapter.confirmApprovalStatusMailSender();
+	public void checkSendUnconfirmedMail(List<WkpIdMailCheckOutput> listWkp) {
+		// EA修正履歴 2127
+		/*// アルゴリズム「承認状況送信者メール確認」を実行する
+		String email = approvalStatusRequestAdapter.confirmApprovalStatusMailSender();*/
 		// アルゴリズム「承認状況未確認メール送信実行チェック」を実行する
 		if (listWkp.stream().filter(x -> x.isCheckOn()).count() == 0) {
 			throw new BusinessException("Msg_794");
 		}
-		return email;
 	}
 
 	/**
