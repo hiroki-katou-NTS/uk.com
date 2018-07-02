@@ -308,11 +308,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								closureDate.getClosureDay().v());
 					}
 					DatePeriod period = new DatePeriod(startByClosure, endByClosure);
-					itemValueResultList = attendanceService.getValueOf(employeeTempIdList, period, singleId);
+					itemValueResultList = attendanceService.getValueOf(employeeTempIdList, period,
+							singleId.stream().distinct().collect(Collectors.toList()));
 					YearMonthPeriod periodMonthly = new YearMonthPeriod(request.getStartDate().yearMonth(),
 							request.getEndDate().yearMonth());
 					itemValueResultMonthlyList = attendanceService.getMonthlyValueOf(employeeTempIdList, periodMonthly,
-							monthlyId);
+							monthlyId.stream().distinct().collect(Collectors.toList()));
 					while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
 
 						GeneralDate startDateByClosure;
@@ -610,7 +611,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							// Get montnly result
 							for (MonthlyAttendanceItemValueResult item : itemValueResultMonthlyList) {
 								if (item.getYearMonth()
-										.equals(closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1))) {
+										.equals(closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1))
+										&& item.getClouseDate() == closureDate.getClosureDay().v()) {
 									itemValueResult = item;
 									break;
 								}
