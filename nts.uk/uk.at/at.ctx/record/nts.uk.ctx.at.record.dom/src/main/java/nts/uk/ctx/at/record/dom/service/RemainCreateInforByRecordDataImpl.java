@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRecordData{
 	@Inject
 	private AttendanceTimeRepository attendanceRespo;
-	
+	@Inject
 	private WorkInformationRepository workRespo;
 	@Override
 	public List<RecordRemainCreateInfor> lstRecordRemainData(String cid, String sid, DatePeriod dateData) {
@@ -82,8 +81,8 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		outputInfor.setLstVacationTimeInfor(this.getLstVacationTimeInfor());
 		outputInfor.setSid(workInfor.getEmployeeId());
 		outputInfor.setYmd(workInfor.getYmd());
-		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode().v());
-		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode().v()));
+		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "000" : workInfor.getRecordInfo().getWorkTypeCode().v());
+		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode() == null ? "000" : workInfor.getRecordInfo().getSiftCode().v()));
 		return outputInfor;
 	}
 	/**

@@ -46,7 +46,6 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	@Inject
 	private RecruitmentAppRepository recRepo;
 
-
 	@Override
 	protected void handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
 
@@ -55,7 +54,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		String appReason = command.getAppCmd().getApplicationReason();
 		int comType = command.getComType();
 		// アルゴリズム「振休振出申請の更新登録」を実行する
-		updateApp(command,companyID,appReason,comType);
+		updateApp(command, companyID, appReason, comType);
 
 	}
 
@@ -64,7 +63,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	 *            from client
 	 * @return application after update
 	 */
-	private Application_New updateAbsDomain(SaveHolidayShipmentCommand command,String companyID,String appReason) {
+	private Application_New updateAbsDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
 		AbsenceLeaveAppCommand appCmd = command.getAbsCmd();
 
 		Optional<Application_New> appLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
@@ -100,7 +99,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	 *            from client
 	 * @return application after update
 	 */
-	private Application_New updateRecDomain(SaveHolidayShipmentCommand command,String companyID,String appReason) {
+	private Application_New updateRecDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
 		RecruitmentAppCommand appCmd = command.getRecCmd();
 
 		Optional<Application_New> absAppLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
@@ -162,20 +161,21 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		return false;
 	}
 
-	private void updateApp(SaveHolidayShipmentCommand command,String companyID,String appReason,int comType) {
+	private void updateApp(SaveHolidayShipmentCommand command, String companyID, String appReason, int comType) {
 		// アルゴリズム「登録前エラーチェック（更新）」を実行する
-		errorCheckBeforeRegister(command,companyID,appReason,comType);
+		errorCheckBeforeRegister(command, companyID, appReason, comType);
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		RecruitmentAppCommand recCmd = command.getRecCmd();
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		String employeeID = command.getAppCmd().getEmployeeID();
 		if (isSaveRec(comType)) {
 			// アルゴリズム「登録前共通処理（更新）」を実行する
-			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(), recCmd.getAppDate(),
-					EmploymentRootAtr.APPLICATION.value, appType, command.getAppCmd().getPrePostAtr(),
-					recCmd.getAppID(), command.getAppCmd().getAppVersion());
+			preRegisComonProcessing(companyID, employeeID, recCmd.getAppDate(), EmploymentRootAtr.APPLICATION.value,
+					appType, command.getAppCmd().getPrePostAtr(), recCmd.getAppID(),
+					command.getAppCmd().getAppVersion());
 
 			// ドメイン「振出申請」を1件更新する
-			Application_New recApp = updateRecDomain(command,companyID,appReason);
+			Application_New recApp = updateRecDomain(command, companyID, appReason);
 			// アルゴリズム「詳細画面登録後の処理」を実行する
 			if (recApp != null) {
 				this.detailAfterUpdate.processAfterDetailScreenRegistration(recApp);
@@ -184,11 +184,11 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 		if (isSaveAbs(comType)) {
 			// アルゴリズム「登録前共通処理（更新）」を実行する
-			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(), absCmd.getAppDate(),
-					EmploymentRootAtr.APPLICATION.value, appType, command.getAppCmd().getPrePostAtr(),
-					absCmd.getAppID(), command.getAppCmd().getAppVersion());
+			preRegisComonProcessing(companyID, employeeID, absCmd.getAppDate(), EmploymentRootAtr.APPLICATION.value,
+					appType, command.getAppCmd().getPrePostAtr(), absCmd.getAppID(),
+					command.getAppCmd().getAppVersion());
 			// ドメイン「振休申請」を1件更新する
-			Application_New absApp = updateAbsDomain(command,companyID,appReason);
+			Application_New absApp = updateAbsDomain(command, companyID, appReason);
 			// アルゴリズム「詳細画面登録後の処理」を実行する
 			if (absApp != null) {
 				this.detailAfterUpdate.processAfterDetailScreenRegistration(absApp);
@@ -197,7 +197,8 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 	}
 
-	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command,String companyID,String appReason,int comType) {
+	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, String appReason,
+			int comType) {
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		// アルゴリズム「事前条件チェック」を実行する
 		appReason = saveHanler.preconditionCheck(command, companyID, appType, comType);
