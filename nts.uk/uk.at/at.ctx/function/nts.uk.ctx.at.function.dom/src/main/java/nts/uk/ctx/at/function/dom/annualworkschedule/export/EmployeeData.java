@@ -15,4 +15,13 @@ public class EmployeeData {
 	 * Map<帳表に出力する項目.コード, AnnualWorkScheduleData>
 	 */
 	private Map<String, AnnualWorkScheduleData> annualWorkSchedule;
+
+	public boolean hasDataItem() {
+		for (Map.Entry<String, AnnualWorkScheduleData> item : this.annualWorkSchedule.entrySet()) {
+			if (item.getValue().hasItemData()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

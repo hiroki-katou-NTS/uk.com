@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.annualworkschedule.export;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,21 +19,28 @@ public class ExportData {
 	 */
 	Map<String, EmployeeData> employees;
 	/**
-	* 36協定時間を超過した月数を出力する
-	*/
+	 * 36協定時間を超過した月数を出力する
+	 */
 	private boolean outNumExceedTime36Agr;
 	PageBreakIndicator pageBreak;
-	
+	/**
+	 * 対象の社員IDをエラーリスト
+	 */
+	List<String> employeeIdsError;
+
 	public boolean hasDataItemOutput() {
-		if (this.employees == null || this.employees.isEmpty()) {
+		if (this.employeeIds.isEmpty() || this.employees == null || this.employees.isEmpty()) {
 			return false;
 		}
+		return true;
+	}
+
+	public void storeEmployeeError() {
+		this.employeeIdsError = new ArrayList<>();
 		for (Map.Entry<String, EmployeeData> emp : this.employees.entrySet()) {
-			for (Map.Entry<String, AnnualWorkScheduleData> item : emp.getValue().getAnnualWorkSchedule().entrySet()) {
-				if (item.getValue().hasItemData())
-					return true;
+			if (!emp.getValue().hasDataItem()) {
+				this.employeeIdsError.add(emp.getKey());
 			}
 		}
-		return false;
 	}
 }
