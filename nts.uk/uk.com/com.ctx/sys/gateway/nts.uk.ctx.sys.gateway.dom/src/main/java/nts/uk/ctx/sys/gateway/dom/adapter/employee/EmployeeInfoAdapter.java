@@ -30,4 +30,12 @@ public interface EmployeeInfoAdapter {
 	 * @return the employee info
 	 */
 	EmployeeInfoDtoImport getEmployeeInfo(String companyId, String employeeCode);
+	
+	/**
+	 * Gets the emp info by pid.
+	 *
+	 * @param pid the pid
+	 * @return the emp info by pid
+	 */
+	List<EmployeeInfoDtoImport> getEmpInfoByPid(String pid);
 }

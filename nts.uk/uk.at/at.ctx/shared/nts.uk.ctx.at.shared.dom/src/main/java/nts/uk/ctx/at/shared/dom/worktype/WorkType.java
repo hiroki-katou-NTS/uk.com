@@ -68,10 +68,9 @@ public class WorkType extends AggregateRoot {
 		WorkTypeClassification moringType = this.dailyWork.getMorning();
 		WorkTypeClassification afternoonType = this.dailyWork.getAfternoon();
 		if (this.dailyWork.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon) {
-			if ((moringType == afternoonType && (moringType != WorkTypeClassification.Absence || moringType == WorkTypeClassification.SpecialHoliday))
+			if ((moringType == afternoonType && moringType != WorkTypeClassification.Absence && moringType != WorkTypeClassification.SpecialHoliday)
 					|| (moringType == WorkTypeClassification.Pause && afternoonType == WorkTypeClassification.Shooting)
-					|| (moringType == WorkTypeClassification.Shooting
-							&& afternoonType == WorkTypeClassification.Pause)) {
+					|| (moringType == WorkTypeClassification.Shooting && afternoonType == WorkTypeClassification.Pause)) {
 				throw new BusinessException("Msg_395");
 			}
 		}

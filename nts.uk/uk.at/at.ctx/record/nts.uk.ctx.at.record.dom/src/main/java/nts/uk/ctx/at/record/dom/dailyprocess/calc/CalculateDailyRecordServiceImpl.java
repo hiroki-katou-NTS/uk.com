@@ -869,6 +869,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		   List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);  
 		   DailyRecordToAttendanceItemConverter afterDailyRecordDto = converter.setData(recordReGetClass.getIntegrationOfDaily()); 
 		   afterDailyRecordDto.merge(itemValueList);
+		   
+		   
+		   
 		   //手修正された項目の値を計算前に戻す   
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 		   
