@@ -108,10 +108,10 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				|| specialHolidayData.isEmpty()) {
 			return specialLeaverData;
 		}
-		Double interimSpeUseDays = (double) 0;
-		Double beforeGrantUseDays = (double) 0;
-		Double carryForwardDays =  (double) 0;
-		Double grantDays =  (double) 0;
+		double interimSpeUseDays = 0;
+		double beforeGrantUseDays = 0;
+		double carryForwardDays = 0;
+		double grantDays = 0;
 		for (SpecialLeaveGrantRemainingData speLeaverData : specialLeaverData) {
 			//指定日までの使用数を求める
 			interimSpeUseDays += this.getInterimSpeUseDays(specialHolidayData, speLeaverData.getGrantDate().addDays(-1)); 
@@ -123,10 +123,10 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		carryForwardDays +=  grantDays + beforeGrantUseDays < 0 ? 0 : beforeGrantUseDays - upLimiDays;
 		//繰越上限を超えたかチェックする		
 		if(carryForwardDays > 0) {
-			Double remainDays = carryForwardDays;
+			double remainDays = carryForwardDays;
 			//古い日付順から、付与済の「特別休暇付与残数データ」．「明細」．残数から繰越超えた値を引く
 			for (SpecialLeaveGrantRemainingData speLeaverData : specialLeaverData) {
-				Double remainLeaverDays = speLeaverData.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
+				double remainLeaverDays = speLeaverData.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
 				remainDays -= remainLeaverDays;
 				if(remainDays > 0) {
 					speLeaverData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain((double) 0));
@@ -140,8 +140,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	}
 
 	@Override
-	public Double getInterimSpeUseDays(List<InterimSpecialHolidayMng> specialHolidayData, GeneralDate baseDate) {
-		Double outPutData = (double) 0;
+	public double getInterimSpeUseDays(List<InterimSpecialHolidayMng> specialHolidayData, GeneralDate baseDate) {
+		double outPutData = 0;
 		//INPUT.ドメインモデル「特別休暇暫定データ」一覧をループする
 		for (InterimSpecialHolidayMng speHolidayData : specialHolidayData) {
 			//ループ中のドメインモデル「特別休暇暫定データ」．年月日とINPUT．年月日を比較する
@@ -173,7 +173,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				UseDaysOfPeriodSpeHoliday useDaysOPeriod = new UseDaysOfPeriodSpeHoliday(speHolidayData.getYmd(), speHolidayData.getUseDays().v(), speHolidayData.getUseTimes().v());
 				lstUseDaysOfPeriod.add(useDaysOPeriod); //them nhung ko dung lam gi
 			} else {
-				Double remainDays = speHolidayData.getUseDays().v();
+				double remainDays = speHolidayData.getUseDays().v();
 				//付与日の古い特別休暇付与残数データから特休使用を引く
 				//・相殺できるINPUT．特別休暇付与残数データ一覧が一つのみの場合：
 				//特休使用を該当管理データから引く。
@@ -186,7 +186,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				for (SpecialLeaveGrantRemainingData tmpLstData : tmp) {
 					specialLeaverData.remove(tmpLstData);
 					//付与日が古い特別休暇付与残数データに特休使用を計上する
-					Double useDays = tmpLstData.getDetails().getUsedNumber().getDayNumberOfUse().v() + speHolidayData.getUseDays().v();
+					double useDays = tmpLstData.getDetails().getUsedNumber().getDayNumberOfUse().v() + speHolidayData.getUseDays().v();
 					tmpLstData.getDetails().getUsedNumber().setDayNumberOfUse(new DayNumberOfUse(useDays));
 					
 					remainDays -= tmpLstData.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
@@ -207,8 +207,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	}
 
 	@Override
-	public Double askUseDays(List<InterimSpecialHolidayMng> specialHolidayData) {
-		Double outputData = (double) 0;
+	public double askUseDays(List<InterimSpecialHolidayMng> specialHolidayData) {
+		double outputData = 0;
 		if(specialHolidayData.isEmpty()) {
 			return outputData;
 		}
@@ -222,13 +222,13 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 
 	@Override
 	public InPeriodOfSpecialLeave sumRemainData(SpecialLeaveGrantDetails lstSpecialLeaverData,
-			Double useDays, GeneralDate baseDate) {
+			double useDays, GeneralDate baseDate) {
 		//付与前明細．残数と付与数=0（初期化）
-		Double beforeRemainDays = (double) 0;
-		Double beforeGrantDays = (double) 0;
+		double beforeRemainDays =  0;
+		double beforeGrantDays =  0;
 		//付与後明細．残数と付与数=0（初期化）
-		Double afterRemainDays = (double) 0;
-		Double afterGrantDays = (double) 0;
+		double afterRemainDays =  0;
+		double afterGrantDays =  0;
 		/*for (SpecialLeaveGrantDetails leaveData : lstSpecialLeaverData) {
 			//期限切れかチェックする
 			if(leaveData.getDeadlineDate().afterOrEquals(baseDate)) {

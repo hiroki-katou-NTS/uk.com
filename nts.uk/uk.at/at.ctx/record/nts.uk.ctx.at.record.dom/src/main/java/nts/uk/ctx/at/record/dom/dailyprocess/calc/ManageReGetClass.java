@@ -215,6 +215,58 @@ public class ManageReGetClass {
 	}
 	
 	/**
+	 * 計算処理に入ることができないと判断できた時Factory Method
+	 * @param personalInfo2 
+	 */
+	public static ManageReGetClass cantCalc2(Optional<WorkType> workType,
+											 IntegrationOfDaily integration,
+											 DailyCalculationPersonalInformation personalInfo,
+											 HolidayCalcMethodSet holidayCalcMethodSet, 
+											 WorkRegularAdditionSet workRegularAdditionSet,
+											 WorkFlexAdditionSet workFlexAdditionSet, 
+											 HourlyPaymentAdditionSet hourlyPaymentAdditionSet,
+											 WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet
+			) {
+		return new ManageReGetClass(new CalculationRangeOfOneDay(Finally.of(new FlexWithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
+																																			  new TimeZoneRounding(new TimeWithDayAttr(0), new TimeWithDayAttr(0), null), 
+																																			  new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
+																																			  Collections.emptyList(), 
+																																			  Collections.emptyList(), 
+																																			  Collections.emptyList(), 
+																																			  Optional.empty(), 
+																																			  Collections.emptyList(), 
+																																			  Optional.empty(), 
+																																			  Optional.empty())), 
+																										Optional.empty())),
+																 Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())), 
+																 null, 
+																 integration.getAttendanceLeave().orElse(null), 
+																 null, 
+																 Finally.of(new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))), 
+																 integration.getWorkInformation()), 
+									integration,
+									Optional.empty(),
+									workType, 
+									Collections.emptyList(), 
+									personalInfo,
+									null,
+									Optional.empty(),
+									Optional.empty(),
+									holidayCalcMethodSet,
+									false,
+									0,
+									Optional.empty(),
+									workRegularAdditionSet,
+									workFlexAdditionSet,
+									hourlyPaymentAdditionSet,
+									workDeformedLaborAdditionSet,
+									Optional.empty(),
+									Collections.emptyList());
+				
+	}
+	
+		
+	/**
 	 * 計算処理に入ることができると判断できた時Factory Method
 	 */
 	public static ManageReGetClass canCalc(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
