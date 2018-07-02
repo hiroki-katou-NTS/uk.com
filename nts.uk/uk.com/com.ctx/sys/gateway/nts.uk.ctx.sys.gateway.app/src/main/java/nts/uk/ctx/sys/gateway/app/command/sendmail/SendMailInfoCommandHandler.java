@@ -50,17 +50,19 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 	protected SendMailReturnDto handle(CommandHandlerContext<SendMailInfoCommand> context) {
 		// get command
 		SendMailInfoCommand command = context.getCommand();
-
-		// Get RequestList 222
-		Optional<UserImportNew> user = this.userAdapter.findUserByContractAndLoginIdNew(command.getContractCode(),
-				command.getLoginId());
-
-		if (user.isPresent()) {
-			if (user.get().getMailAddress().isEmpty()) {
-				throw new BusinessException("Msg_1129");
-			} else {
-				// Send Mail アルゴリズム「メール送信実行」を実行する
-				return this.sendMail(user.get().getMailAddress(), command);
+		
+		if (!command.getLoginId().isEmpty()){
+			// Get RequestList 222
+			Optional<UserImportNew> user = this.userAdapter.findUserByContractAndLoginIdNew(command.getContractCode(),
+					command.getLoginId());
+	
+			if (user.isPresent()) {
+				if (user.get().getMailAddress().isEmpty()) {
+					throw new BusinessException("Msg_1129");
+				} else {
+					// Send Mail アルゴリズム「メール送信実行」を実行する
+					return this.sendMail(user.get().getMailAddress(), command);
+				}
 			}
 		}
 		

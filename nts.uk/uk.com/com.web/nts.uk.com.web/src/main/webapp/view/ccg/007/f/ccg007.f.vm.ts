@@ -53,9 +53,11 @@ module nts.uk.pr.view.ccg007.f {
                         nts.uk.ui.dialog.info({ messageId: "Msg_207" }).then(() => {
                             blockUI.invisible();
                             self.OpenDialogH(data.url);
-                            blockUI.clear();
                         });
+                    } else {
+                        self.closeDialog();
                     }
+                    blockUI.clear();
                 }).fail(function(res) {
                     //Return Dialog Error
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });

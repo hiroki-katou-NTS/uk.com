@@ -59,23 +59,25 @@ public class SendMailInfoFormGCommandHandler
 
 		String companyId = command.getContractCode() + "-" + command.getCompanyCode();
 
-		// Get EmployeeInfo
-		EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId, command.getEmployeeCode());
-
-		if (employee != null) {
-			// get userInfo
-			Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
-
-			if (user.isPresent()) {
-				// check mail present
-				if (user.get().getMailAddress().isEmpty()) {
-					throw new BusinessException("Msg_1129");
-				} else {
-					// Send Mail アルゴリズム「メール送信実行」を実行する
-					return this.sendMail(user.get().getMailAddress(), user.get().getLoginId(), command);
+		if (!command.getEmployeeCode().isEmpty()){
+			// Get EmployeeInfo
+			EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId, command.getEmployeeCode());
+	
+			if (employee != null) {
+				// get userInfo
+				Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
+	
+				if (user.isPresent()) {
+					// check mail present
+					if (user.get().getMailAddress().isEmpty()) {
+						throw new BusinessException("Msg_1129");
+					} else {
+						// Send Mail アルゴリズム「メール送信実行」を実行する
+						return this.sendMail(user.get().getMailAddress(), user.get().getLoginId(), command);
+					}
 				}
+				return new SendMailReturnDto(null);
 			}
-			return new SendMailReturnDto(null);
 		}
 		return new SendMailReturnDto(null);
 	}
