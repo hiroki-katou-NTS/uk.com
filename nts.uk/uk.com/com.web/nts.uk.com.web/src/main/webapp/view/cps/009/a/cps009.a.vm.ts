@@ -1271,14 +1271,19 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         if (isWorkType) {
                             setShared("KDL002_Multiple", false, true);
                             setShared("KDL002_SelectedItemId", self.selectedCode(), true);
+                            setShared('kdl002isSelection', true, true);
                             setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
 
                             modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
                                 let childData: Array<any> = getShared('KDL002_SelectedNewItem');
-
-                                if (childData[0]) {
-                                    self.selectionName(childData[0].code + " " + childData[0].name);
-                                    self.selectedCode(childData[0].code);
+                                if (childData.length > 0) {
+                                    if (childData[0].code == "") {
+                                        self.selectionName(null);
+                                        self.selectedCode(null);
+                                    } else {
+                                        self.selectionName(childData[0].code + " " + childData[0].name);
+                                        self.selectedCode(childData[0].code);
+                                    }
                                 }
                             });
 
@@ -1290,7 +1295,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
                                 let childData: Array<any> = getShared('kml001selectedTimes');
-                                console.log(childData[0]);
                                 self.setValueOfCS00020(childData[0], isWorkType, isWorkTime,
                                     workType, workTime,
                                     itemWorkTime, itemWorkType, false);
@@ -1320,7 +1324,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     if (obj.itemCode === workType.firstTimes.start || obj.itemCode === workType.firstTimes.end || obj.itemCode === workType.secondTimes.start || obj.itemCode === workType.secondTimes.end)
                     { return obj; }
                 });
-                self.selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
+                if (childData.selectedWorkTypeCode == "") {
+                    self.selectionName(null)
+                } else {
+                    self.selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
+                }
                 self.selectedCode(childData.selectedWorkTypeCode);
                 vm[itemWorkTime.indexItem - 1].selectionName(childData.selectedWorkTimeCode + childData.selectedWorkTimeName);
                 vm[itemWorkTime.indexItem - 1].selectedCode(childData.selectedWorkTimeCode);
@@ -1338,7 +1346,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         return obj;
                     }
                 });
-                self.selectionName(childData.selectedWorkTimeCode + childData.selectedWorkTimeName);
+                if (childData.selectedWorkTimeCode == "") {
+                    self.selectionName(null)
+                } else {
+                    self.selectionName(childData.selectedWorkTimeCode + childData.selectedWorkTimeName);
+                }
                 self.selectedCode(childData.selectedWorkTimeCode);
                 if (isKdl003) {
                     vm[itemWorkType.indexItem - 1].selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
