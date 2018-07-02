@@ -362,15 +362,15 @@ public class RealityStatusService {
 			switch (type) {
 			case PERSON:
 				// アルゴリズム「承認状況未確認メール送信本人取得」を実行する
-				listSId = this.getEmpUnconfirmByPerson(listEmp, wkp.getWkpId());
+				listSId.addAll(this.getEmpUnconfirmByPerson(listEmp, wkp.getWkpId()));
 				break;
 			case DAILY:
 				// アルゴリズム「承認状況未確認メール送信上司取得」を実行する
-				listSId = this.getEmpUnconfirmByBoss(listEmp, wkp.getWkpId());
+				listSId.addAll(this.getEmpUnconfirmByBoss(listEmp, wkp.getWkpId()));
 				break;
 			case MONTHLY:
 				// アルゴリズム「承認状況未確認メール送信月次確認者取得」を実行する
-				listSId = this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId());
+				listSId.addAll(this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId()));
 				break;
 			}
 		}
@@ -476,7 +476,8 @@ public class RealityStatusService {
 				.getApprovalByEmplAndDate(startDate, endDate, sId, cId, 1);
 		// 承認ルートの状況
 		for (ApproveRootStatusForEmpImport appRoot : listAppRootStatus) {
-			if (ApprovalStatusForEmployee.APPROVED.equals(appRoot.getApprovalStatus())) {
+			if (ApprovalStatusForEmployee.UNAPPROVED.equals(appRoot.getApprovalStatus())
+					|| ApprovalStatusForEmployee.DURING_APPROVAL.equals(appRoot.getApprovalStatus())) {
 				// 上司社員ID（リスト）に承認ルートの承認者を追加する
 				listEmpId.add(appRoot.getEmployeeID());
 			}
