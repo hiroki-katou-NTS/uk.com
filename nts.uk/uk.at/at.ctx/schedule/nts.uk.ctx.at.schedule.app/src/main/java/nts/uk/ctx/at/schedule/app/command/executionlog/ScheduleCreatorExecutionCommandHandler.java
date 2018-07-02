@@ -851,31 +851,40 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			}
 		});
 		// ドメインモデル「固定勤務設定」を取得する
-		Map<WorkTimeCode, List<DeductionTime>> mapFixOffdayWorkRestTimezones = this.fixedWorkSettingRepository
-				.getFixOffdayWorkRestTimezones(companyId, listWorkTimeCodeFix);
-		Map<WorkTimeCode, List<DeductionTime>> mapFixHalfDayWorkRestTimezones = this.fixedWorkSettingRepository
-				.getFixHalfDayWorkRestTimezones(companyId, listWorkTimeCodeFix);
-		this.setDataForMap(mapFixedWorkSetting, mapFixOffdayWorkRestTimezones, mapFixHalfDayWorkRestTimezones);
+		if (!listWorkTimeCodeFix.isEmpty()) {
+			Map<WorkTimeCode, List<DeductionTime>> mapFixOffdayWorkRestTimezones = this.fixedWorkSettingRepository
+					.getFixOffdayWorkRestTimezones(companyId, listWorkTimeCodeFix);
+			Map<WorkTimeCode, List<DeductionTime>> mapFixHalfDayWorkRestTimezones = this.fixedWorkSettingRepository
+					.getFixHalfDayWorkRestTimezones(companyId, listWorkTimeCodeFix);
+			this.setDataForMap(mapFixedWorkSetting, mapFixOffdayWorkRestTimezones, mapFixHalfDayWorkRestTimezones);
+		}
+
 		// ドメインモデル「流動勤務設定」を取得する
-		Map<WorkTimeCode, List<DeductionTime>> mapFlowOffdayWorkRestTimezones = this.flowWorkSettingRepository
-				.getFlowOffdayWorkRestTimezones(companyId, listWorkTimeCodeFlow);
-		Map<WorkTimeCode, List<DeductionTime>> mapFlowHalfDayWorkRestTimezones = this.flowWorkSettingRepository
-				.getFlowHalfDayWorkRestTimezones(companyId, listWorkTimeCodeFlow);
-		this.setDataForMap(mapFlowWorkSetting, mapFlowOffdayWorkRestTimezones, mapFlowHalfDayWorkRestTimezones);
+		if (!listWorkTimeCodeFlow.isEmpty()) {
+			Map<WorkTimeCode, List<DeductionTime>> mapFlowOffdayWorkRestTimezones = this.flowWorkSettingRepository
+					.getFlowOffdayWorkRestTimezones(companyId, listWorkTimeCodeFlow);
+			Map<WorkTimeCode, List<DeductionTime>> mapFlowHalfDayWorkRestTimezones = this.flowWorkSettingRepository
+					.getFlowHalfDayWorkRestTimezones(companyId, listWorkTimeCodeFlow);
+			this.setDataForMap(mapFlowWorkSetting, mapFlowOffdayWorkRestTimezones, mapFlowHalfDayWorkRestTimezones);
+		}
+
 		// ドメインモデル「時差勤務設定」を取得する
-		Map<WorkTimeCode, List<DiffTimeDeductTimezone>> mapDiffOffdayWorkRT = this.diffTimeWorkSettingRepository
-				.getDiffOffdayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
-		Map<WorkTimeCode, List<DiffTimeDeductTimezone>> mapDiffHalfDayWorkRT = this.diffTimeWorkSettingRepository
-				.getDiffHalfDayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
-		Map<WorkTimeCode, List<DeductionTime>> mapDiffOffdayWorkRestTimezones = mapDiffOffdayWorkRT.entrySet().stream()
-				.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().stream().map(items -> {
-					return (DeductionTime) items;
-				}).collect(Collectors.toList())));
-		Map<WorkTimeCode, List<DeductionTime>> mapDiffHalfDayWorkRestTimezones = mapDiffHalfDayWorkRT.entrySet()
-				.stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().stream().map(items -> {
-					return (DeductionTime) items;
-				}).collect(Collectors.toList())));
-		this.setDataForMap(mapDiffTimeWorkSetting, mapDiffOffdayWorkRestTimezones, mapDiffHalfDayWorkRestTimezones);
+		if (!listWorkTimeCodeDiff.isEmpty()) {
+			Map<WorkTimeCode, List<DiffTimeDeductTimezone>> mapDiffOffdayWorkRT = this.diffTimeWorkSettingRepository
+					.getDiffOffdayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
+			Map<WorkTimeCode, List<DiffTimeDeductTimezone>> mapDiffHalfDayWorkRT = this.diffTimeWorkSettingRepository
+					.getDiffHalfDayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
+			Map<WorkTimeCode, List<DeductionTime>> mapDiffOffdayWorkRestTimezones = mapDiffOffdayWorkRT.entrySet()
+					.stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().stream().map(items -> {
+						return (DeductionTime) items;
+					}).collect(Collectors.toList())));
+			Map<WorkTimeCode, List<DeductionTime>> mapDiffHalfDayWorkRestTimezones = mapDiffHalfDayWorkRT.entrySet()
+					.stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().stream().map(items -> {
+						return (DeductionTime) items;
+					}).collect(Collectors.toList())));
+			this.setDataForMap(mapDiffTimeWorkSetting, mapDiffOffdayWorkRestTimezones, mapDiffHalfDayWorkRestTimezones);
+		}
+		
 	}
 
 	private void setDataForMap(Map<String, WorkRestTimeZoneDto> map, Map<WorkTimeCode, List<DeductionTime>> map1,
