@@ -30,7 +30,7 @@
             <!--G5_1 復旧期間設定へ-->
             <button tabindex="2" class="large" data-bind="click: backToPreviousScreen">#{i18n.getText('CMF004_142')}</button>
             <!--G5_2 次へボタン-->
-            <button tabindex="3" class="x-large proceed" data-bind="click: nextToScreenH">#{i18n.getText('CMF004_143')}</button>
+            <button tabindex="3" class="x-large proceed" data-bind="click: nextToScreenH,enable: selectedEmployeeCodeScreenG().length != 0">#{i18n.getText('CMF004_143')}</button>
         </div>
     </div>
 </ui:composition>

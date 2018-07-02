@@ -395,6 +395,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 storeProcessingId: self.dataRecoverySelection().selectedRecoveryFile(),
                 dataRecoveryProcessId: self.recoveryProcessingId
             };
+            
             service.obtainRecovery(paramObtainRecovery).done((res) => {
                 if (res) {
                     if (res.status) {
@@ -407,7 +408,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             }).fail((err) => {
                 dialog.alertError(err);
             });
-            $("#E4_2:first-child .row-checkbox #E5_2:first-child").focus();
+            $("#E4_2:first-child .row-checkbox .ntsCheckBox-label:first-child input[type=checkbox]:first-child").focus();
         }
 
         nextToScreenF(): void {
@@ -473,9 +474,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                             self.buton_I_enable(false);
                         });
         }
-
-
-
 
         backToPreviousScreen(): void {
             $('#data-recovery-wizard').ntsWizard("prev");

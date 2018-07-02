@@ -57,6 +57,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 	private EmployeeRestoration employeeRestoration;
 
 	private static final String STATUS = "status";
+	
 
 	@Override
 	protected void handle(CommandHandlerContext<SyncServerUploadProcessingCommand> context) {
@@ -66,81 +67,80 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		String fileId = context.getCommand().getFileId();
 		String fileName = context.getCommand().getFileName();
 		String password = context.getCommand().getPassword();
+		final int FIRST_LINE = 0;
 		ServerPrepareMng serverPrepareMng = new ServerPrepareMng(processId, null, null, null, 0, null,
 				ServerPrepareOperatingCondition.UPLOADING.value);
 		serverPrepareMngRepository.add(serverPrepareMng);
 		setter.setData(STATUS, convertToStatus(serverPrepareMng));
 		serverPrepareMng = serverUploadProcessingService.serverUploadProcessing(serverPrepareMng, fileId, fileName,
-				password); 
+				password);
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
-		if (serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.UPLOAD_COMPLETED) {
-			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTING);
-			setter.updateData(STATUS, convertToStatus(serverPrepareMng));
-			serverPrepareMng = dataExtractionService.extractData(serverPrepareMng);
-			setter.updateData(STATUS, convertToStatus(serverPrepareMng));
-			if (checkNormalFile(serverPrepareMng)) {
-				PerformDataRecovery performDataRecovery = new PerformDataRecovery(
-						serverPrepareMng.getDataRecoveryProcessId(), AppContexts.user().companyId(),
-						serverPrepareMng.getFileId().get(), serverPrepareMng.getUploadFileName().get());
-				// アルゴリズム「テーブル一覧の復元」を実行する
-				List<Object> restoreTableResult = tableListRestorationService.restoreTableList(serverPrepareMng);
-				serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(0);
-				List<TableList> tableList = (List<TableList>) (restoreTableResult.get(1));
-				setter.updateData(STATUS, convertToStatus(serverPrepareMng));
-				if (checkNormalFile(serverPrepareMng)) {
-					// アルゴリズム「調査保存チェック」を実行する
-					if (!tableList.isEmpty()) {
-						if (tableList.get(0).getSurveyPreservation() == NotUseAtr.USE){
-							serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY);
-						setter.updateData(STATUS, convertToStatus(serverPrepareMng));
-						}
-					}
-					if (checkNormalFile(serverPrepareMng)) {
-						// アルゴリズム「テーブル一覧の復元」を実行する
-						serverPrepareMng = thresholdConfigurationCheck.checkFileConfiguration(serverPrepareMng,
-								tableList);
-						setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+		if (!checkNormalFile(serverPrepareMng))
+			return;
+		serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTING);
+		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+		serverPrepareMng = dataExtractionService.extractData(serverPrepareMng);
+		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+		if (!checkNormalFile(serverPrepareMng))
+			return;
+		PerformDataRecovery performDataRecovery = new PerformDataRecovery(serverPrepareMng.getDataRecoveryProcessId(),
+				AppContexts.user().companyId(), serverPrepareMng.getFileId().orElse(""),
+				serverPrepareMng.getUploadFileName().orElse(""));
+		// アルゴリズム「テーブル一覧の復元」を実行する
+		List<Object> restoreTableResult = tableListRestorationService.restoreTableList(serverPrepareMng);
+		serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(0);
+		List<TableList> tableList = (List<TableList>) (restoreTableResult.get(1));
+		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+		if (!checkNormalFile(serverPrepareMng))
+			return;
+		// アルゴリズム「調査保存チェック」を実行する=
 
-						if (checkNormalFile(serverPrepareMng)) {
-							// アルゴリズム「別会社判定処理」を実行する
-							List<Object> sperateCompanyResult = companyDeterminationProcess
-									.sperateCompanyDeterminationProcess(serverPrepareMng, performDataRecovery,
-											tableList);
-							serverPrepareMng = (ServerPrepareMng) sperateCompanyResult.get(0);
-							performDataRecovery = (PerformDataRecovery) sperateCompanyResult.get(1);
-							tableList = (List<TableList>) (sperateCompanyResult.get(2));
-							setter.updateData(STATUS, convertToStatus(serverPrepareMng));
-							if (checkNormalFile(serverPrepareMng)) {
-								serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECKING_TABLE_ITEMS);
-								// アルゴリズム「テーブル項目チェック」を実行する
-								serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
-								setter.updateData(STATUS, convertToStatus(serverPrepareMng));
-								if (checkNormalFile(serverPrepareMng)) {
-									// アルゴリズム「対象社員の復元」を実行する
-									serverPrepareMng = employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery,
-											tableList);
-									setter.updateData(STATUS, convertToStatus(serverPrepareMng));
-								}
-							}
-
-						}
-					}
-				}
-			}
+		if (tableList.get(FIRST_LINE).getSurveyPreservation() == NotUseAtr.USE) {
+			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY);
+			setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+			return;
 		}
+		if (!checkNormalFile(serverPrepareMng))
+			return;
+
+		// アルゴリズム「テーブル一覧の復元」を実行する
+		serverPrepareMng = thresholdConfigurationCheck.checkFileConfiguration(serverPrepareMng, tableList);
+		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+		if (!checkNormalFile(serverPrepareMng))
+			return;
+		// アルゴリズム「別会社判定処理」を実行する
+		List<Object> sperateCompanyResult = companyDeterminationProcess
+				.sperateCompanyDeterminationProcess(serverPrepareMng, performDataRecovery, tableList);
+		serverPrepareMng = (ServerPrepareMng) sperateCompanyResult.get(0);
+		performDataRecovery = (PerformDataRecovery) sperateCompanyResult.get(1);
+		tableList = (List<TableList>) (sperateCompanyResult.get(2));
+		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+		if (!checkNormalFile(serverPrepareMng))
+			return;
+		serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECKING_TABLE_ITEMS);
+		// アルゴリズム「テーブル項目チェック」を実行する
+		serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
+		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+		if (!checkNormalFile(serverPrepareMng))
+			return;
+		// アルゴリズム「対象社員の復元」を実行する
+		serverPrepareMng = employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery, tableList);
+		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 	}
 
 	private String convertToStatus(ServerPrepareMng serverPrepareMng) {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		try {
-			return ow.writeValueAsString( procesingStatus(serverPrepareMng.getOperatingCondition()));
+			return ow.writeValueAsString(procesingStatus(serverPrepareMng.getOperatingCondition()));
 		} catch (JsonProcessingException e) {
 			return null;
 		}
 	}
 
 	public boolean checkNormalFile(ServerPrepareMng serverPrepareMng) {
-		return serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_FILE_STRUCTURE || serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_TABLE_ITEMS;
+		return serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_FILE_STRUCTURE
+				|| serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_TABLE_ITEMS
+				|| serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.UPLOAD_COMPLETED;
 	}
 
 	public ServerPrepareDto procesingStatus(ServerPrepareOperatingCondition condition) {

@@ -3,7 +3,7 @@
 }
 .div-table {
   display: table;         
-  width: 280px; 
+  width: 350px; 
   border: 0,
   background-color: #eee;          
   border-spacing: 5px; 
@@ -18,7 +18,7 @@
 .div-table-row-1 {
   display: table-row;
   width: 250px;
-  height:10px;
+  height:20px;
   clear: both;
 }
 .div-table-col {
@@ -26,5 +26,12 @@
   margin-top :auto;
   display: table-column;         
   width: 120px;   
+  height: 37px;
+}
+.div-table-col-big {
+  float: left; 
+  margin-top :auto;
+  display: table-column;         
+  width: 200px;   
   height: 37px;
 }

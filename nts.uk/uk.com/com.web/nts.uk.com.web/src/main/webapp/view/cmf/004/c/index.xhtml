@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 380, height: 350 };</script>
+			<script>var dialogSize = { width: 400, height: 350 };</script>
 			<com:ValidatorScript>
                     nts.uk.ctx.sys.assist.dom.storage.FileCompressionPassword
             </com:ValidatorScript>
@@ -25,10 +25,10 @@
 							<div style="vertical-align: middle" data-bind="ntsFormLabel: {}"
 								id="C1_1" class="label-left inner">#{i18n.getText('CMF004_50')}</div>
 						</div>
-						<div class="div-table-col">
-							<div class="flex valign-center fixed-height outer"
+						<div class="div-table-col-big">
+							<div class="flex valign-center fixed-height outer "
 								style="height: 37px;">
-								<div style="display: inline; width: 180px;" data-bind="text: fileName"
+								<div style="display: inline; width: 200px; word-wrap: break-word;" data-bind="text: fileName"
 									id="C1_2" class="label-left cell">
 									</div>
 							</div>

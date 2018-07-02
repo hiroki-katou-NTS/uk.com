@@ -96,7 +96,14 @@
         <!--H9_1 対象社員選択へ-->
         <button class="large" data-bind="click: backToPreviousScreen,enable: buton_I_enable">#{i18n.getText('CMF004_191')}</button>
         <!--H9_2 データ復旧-->
-        <button id="H9_2" class="x-large proceed" data-bind="click: restoreData_click,enable: buton_I_enable">#{i18n.getText('CMF004_192')}</button>
+<!--         <button id="H9_2" class="x-large proceed" data-bind="click: restoreData_click, enable: buton_I_enable &amp;&amp; selectedEmployeeCodeScreenH().length != 0">#{i18n.getText('CMF004_192')}</button> -->
+    
+    			<com:ko-if bind="buton_I_enable()">
+                		<button id="H9_2" class="x-large proceed" data-bind="click: restoreData_click, enable: selectedEmployeeCodeScreenH().length != 0">#{i18n.getText('CMF004_192')}</button>
+				</com:ko-if>
+				<com:ko-if bind="!buton_I_enable()">
+                		<button id="H9_2" class="x-large proceed" data-bind="enable: false">#{i18n.getText('CMF004_192')}</button>
+				</com:ko-if>
     </div>
 </ui:composition>
 </body>

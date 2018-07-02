@@ -26,40 +26,38 @@ public class EmployeeRestoration {
 	@Inject
 	private ResultOfSavingRepository resultOfSavingRepository;
 	private static final String TARGET_CSV = "対象社員";
+	private static final int FIRST_LINE = 0;
 
 	// アルゴリズム「対象社員の復元」を実行する
 	public ServerPrepareMng restoreTargerEmployee(ServerPrepareMng serverPrepareMng,
 			PerformDataRecovery performDataRecovery, List<TableList> tableList) {
-		List<List<String>> targetEmployee = CsvFileUtil.getAllRecord(serverPrepareMng.getFileId().get(),TARGET_CSV);
-		if (!targetEmployee.isEmpty()) {
-			try {
-				for (List<String> employeeInfo : targetEmployee.subList(1, targetEmployee.size())) {
-					performDataRecoveryRepository.addTargetEmployee(
-							new Target(serverPrepareMng.getDataRecoveryProcessId(), employeeInfo.get(0),
-									employeeInfo.get(1), CommonKeyCrypt.decrypt(employeeInfo.get(2))));
-				}
-				int numOfPeopleRestore = 0;
-				int numPeopleSave = targetEmployee.size() - 1;
-				Optional<String> saveProcessId = Optional.empty();
-				if (!tableList.isEmpty()) {
-					Optional<ResultOfSaving> savingInfo = resultOfSavingRepository
-							.getResultOfSavingById(tableList.get(0).getDataStorageProcessingId());
-					if (savingInfo.isPresent()) {
-						numOfPeopleRestore = savingInfo.get().getTargetNumberPeople();
-						saveProcessId = Optional.ofNullable(savingInfo.get().getStoreProcessingId());
-					}
-					performDataRecovery.setSaveProcessId(saveProcessId);
-				}
-				performDataRecovery.setNumPeopleBeRestore(numOfPeopleRestore);
-				performDataRecovery.setNumPeopleSave(numPeopleSave);
-				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECK_COMPLETED);
-				performDataRecoveryRepository.add(performDataRecovery);
-			} catch (Exception e) {
-				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
-				return serverPrepareMng;
-			}
-		} else {
+		List<List<String>> targetEmployee = CsvFileUtil.getAllRecord(serverPrepareMng.getFileId().get(), TARGET_CSV);
+		if (targetEmployee.isEmpty()) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
+			return serverPrepareMng;
+		}
+		try {
+			for (List<String> employeeInfo : targetEmployee.subList(1, targetEmployee.size())) {
+				performDataRecoveryRepository.addTargetEmployee(new Target(serverPrepareMng.getDataRecoveryProcessId(),
+						employeeInfo.get(0), employeeInfo.get(1), CommonKeyCrypt.decrypt(employeeInfo.get(2))));
+			}
+			int numOfPeopleRestore = 0;
+			int numPeopleSave = targetEmployee.size() - 1;
+			Optional<String> saveProcessId = Optional.empty();
+			Optional<ResultOfSaving> savingInfo = resultOfSavingRepository
+					.getResultOfSavingById(tableList.get(FIRST_LINE).getDataStorageProcessingId());
+			if (savingInfo.isPresent()) {
+				numOfPeopleRestore = savingInfo.get().getTargetNumberPeople();
+				saveProcessId = Optional.ofNullable(savingInfo.get().getStoreProcessingId());
+			}
+			performDataRecovery.setSaveProcessId(saveProcessId);
+			performDataRecovery.setNumPeopleBeRestore(numOfPeopleRestore);
+			performDataRecovery.setNumPeopleSave(numPeopleSave);
+			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECK_COMPLETED);
+			performDataRecoveryRepository.add(performDataRecovery);
+		} catch (Exception e) {
+			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
+			return serverPrepareMng;
 		}
 		return serverPrepareMng;
 	}
