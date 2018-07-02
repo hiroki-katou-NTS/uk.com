@@ -42,7 +42,7 @@ public class ObtainRecoveryInfoCommandHandler extends CommandHandlerWithResult<O
 		case CHECK_COMPLETED:
 			return new ServerZipfileValidateStatusDto(true, "");
 		default:
-			return new ServerZipfileValidateStatusDto(false, "");
+			return new ServerZipfileValidateStatusDto(true, "");
 		}
 	}
 }
