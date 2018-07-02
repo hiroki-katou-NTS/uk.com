@@ -636,8 +636,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.filterByWorkplace = self.showWorkplace;
                 param.filterByClassification = self.showClassification;
                 param.filterByJobTitle = self.showJobTitle;
-                // only consider show worktype if sytemType = employment
-                param.filterByWorktype = self.systemType == ConfigEnumSystemType.EMPLOYMENT ? self.showWorktype : false;
+                param.filterByWorktype = self.showWorktype;
                 param.filterByClosure = self.showClosure && self.selectedClosure() != ConfigEnumClosure.CLOSURE_ALL;
 
                 // filter status of employment
@@ -653,9 +652,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.classificationCodes = self.showClassification ? self.selectedCodeClassification() : [];
                 self.queryParam.jobTitleCodes = self.showJobTitle ? self.selectedCodeJobtitle() : [];
                 self.queryParam.workplaceCodes = self.showWorkplace ? self.selectedCodeWorkplace() : [];
-                // only consider list worktype if sytemType = employment
-                self.queryParam.worktypeCodes = self.systemType ==
-                    ConfigEnumSystemType.EMPLOYMENT && self.showWorktype ? self.selectedWorkTypeCode() : [];
+                self.queryParam.worktypeCodes = self.showWorktype ? self.selectedWorkTypeCode() : [];
                 self.queryParam.closureIds = self.showClosure ? [self.selectedClosure()] : [];
             }
 
@@ -666,25 +663,25 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
 
                 /** Common properties */
-                self.showEmployeeSelection = nts.uk.util.isNullOrUndefined(options.showEmployeeSelection) ? false : options.showEmployeeSelection;
+                self.showEmployeeSelection = _.isNil(options.showEmployeeSelection) ? false : options.showEmployeeSelection;
                 self.systemType = options.systemType;
-                self.showQuickSearchTab = nts.uk.util.isNullOrUndefined(options.showQuickSearchTab) ? true : options.showQuickSearchTab;
-                self.showAdvancedSearchTab = nts.uk.util.isNullOrUndefined(options.showAdvancedSearchTab) ? false : options.showAdvancedSearchTab;
+                self.showQuickSearchTab = _.isNil(options.showQuickSearchTab) ? true : options.showQuickSearchTab;
+                self.showAdvancedSearchTab = _.isNil(options.showAdvancedSearchTab) ? false : options.showAdvancedSearchTab;
                 // showBaseDate and showPeriod can not hide at the same time
                 const isBaseDateAndPeriodHidden = !options.showBaseDate && !options.showPeriod;
-                self.showBaseDate = nts.uk.util.isNullOrUndefined(options.showBaseDate) ? true : (isBaseDateAndPeriodHidden ? true : options.showBaseDate);
-                self.showAllClosure = nts.uk.util.isNullOrUndefined(options.showAllClosure) ? false : options.showAllClosure;
-                self.showPeriod = nts.uk.util.isNullOrUndefined(options.showPeriod) ? false : options.showPeriod;
+                self.showBaseDate = _.isNil(options.showBaseDate) ? true : (isBaseDateAndPeriodHidden ? true : options.showBaseDate);
+                self.showAllClosure = _.isNil(options.showAllClosure) ? false : options.showAllClosure;
+                self.showPeriod = _.isNil(options.showPeriod) ? false : options.showPeriod;
                 self.showClosure = self.showPeriod; // specs update ver3.1
                 // if ShowPeriod = false then period accuracy must be false too. 
-                self.showPeriodYM = nts.uk.util.isNullOrUndefined(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
-                self.isTab2Lazy = nts.uk.util.isNullOrUndefined(options.isTab2Lazy) ? true : options.isTab2Lazy;
+                self.showPeriodYM = _.isNil(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
+                self.isTab2Lazy = _.isNil(options.isTab2Lazy) ? true : options.isTab2Lazy;
 
                 /** Required parameter */
-                self.inputBaseDate(nts.uk.util.isNullOrUndefined(options.baseDate) ? moment().toISOString() : options.baseDate);
-                self.inputPeriodStart(nts.uk.util.isNullOrUndefined(options.periodStartDate) ? moment().toISOString() : (options.periodFormatYM ?
+                self.inputBaseDate(_.isNil(options.baseDate) ? moment().toISOString() : options.baseDate);
+                self.inputPeriodStart(_.isNil(options.periodStartDate) ? moment().toISOString() : (options.periodFormatYM ?
                     moment.utc(options.periodStartDate).startOf('month').toISOString() : moment.utc(options.periodStartDate).startOf('day').toISOString()));
-                self.inputPeriodEnd(nts.uk.util.isNullOrUndefined(options.periodEndDate) ? moment().toISOString() : (options.periodFormatYM ?
+                self.inputPeriodEnd(_.isNil(options.periodEndDate) ? moment().toISOString() : (options.periodFormatYM ?
                     moment.utc(options.periodEndDate).startOf('month').toISOString() : moment.utc(options.periodEndDate).startOf('day').toISOString()));
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
@@ -692,21 +689,21 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedRetirement(options.retirement);
 
                 /** Quick search tab options */
-                self.showAllReferableEmployee = nts.uk.util.isNullOrUndefined(options.showAllReferableEmployee) ? true : options.showAllReferableEmployee;
+                self.showAllReferableEmployee = _.isNil(options.showAllReferableEmployee) ? true : options.showAllReferableEmployee;
                 self.showOnlyMe = true;
-                self.showSameWorkplace = nts.uk.util.isNullOrUndefined(options.showSameWorkplace) ? true : options.showSameWorkplace;
-                self.showSameWorkplaceAndChild = nts.uk.util.isNullOrUndefined(options.showSameWorkplaceAndChild) ? true : options.showSameWorkplaceAndChild;
+                self.showSameWorkplace = _.isNil(options.showSameWorkplace) ? true : options.showSameWorkplace;
+                self.showSameWorkplaceAndChild = _.isNil(options.showSameWorkplaceAndChild) ? true : options.showSameWorkplaceAndChild;
 
                 /** Advanced search properties */
-                self.showEmployment = nts.uk.util.isNullOrUndefined(options.showEmployment) ? true : options.showEmployment;
-                self.showWorkplace = nts.uk.util.isNullOrUndefined(options.showWorkplace) ? true : options.showWorkplace;
-                self.showClassification = nts.uk.util.isNullOrUndefined(options.showClassification) ? true : options.showClassification;
-                self.showJobTitle = nts.uk.util.isNullOrUndefined(options.showJobTitle) ? true : options.showJobTitle;
-                self.showWorktype = nts.uk.util.isNullOrUndefined(options.showWorktype) ? true : options.showWorktype;
-                self.isMultiple = nts.uk.util.isNullOrUndefined(options.isMutipleCheck) ? true : options.isMutipleCheck;
+                self.showEmployment = _.isNil(options.showEmployment) ? true : options.showEmployment;
+                self.showWorkplace = _.isNil(options.showWorkplace) ? true : options.showWorkplace;
+                self.showClassification = _.isNil(options.showClassification) ? true : options.showClassification;
+                self.showJobTitle = _.isNil(options.showJobTitle) ? true : options.showJobTitle;
+                self.showWorktype = self.systemType == ConfigEnumSystemType.EMPLOYMENT ? options.showWorktype : false;
+                self.isMultiple = _.isNil(options.isMutipleCheck) ? true : options.isMutipleCheck;
 
                 /** Optional properties */
-                self.isInDialog = nts.uk.util.isNullOrUndefined(options.isInDialog) ? false : options.isInDialog;
+                self.isInDialog = _.isNil(options.isInDialog) ? false : options.isInDialog;
 
                 // return data function
                 self.returnDataFromCcg001 = options.returnDataFromCcg001;
