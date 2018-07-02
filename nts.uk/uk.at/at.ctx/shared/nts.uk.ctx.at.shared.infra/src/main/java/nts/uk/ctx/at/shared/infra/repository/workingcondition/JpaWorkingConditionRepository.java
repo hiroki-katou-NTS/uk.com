@@ -373,10 +373,9 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		
 		return result.parallelStream()
 				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
-				.keySet().parallelStream()
-				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(result)))
+				.values().parallelStream()
+				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
 				.collect(Collectors.toList());
-
 	}
 
 }
