@@ -7,7 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.Value;
+import lombok.Data;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
@@ -39,7 +39,7 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getHolidayWorkByUI")
 	public AppHolidayWorkDto getOvertimeByUIType(Param param) {
-		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType());
+		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID());
 	}
 	@POST
 	@Path("findChangeAppDate")
@@ -64,7 +64,7 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("create")
 	public ProcessResult createHolidayWork(CreateHolidayWorkCommand command){
-		return createHolidayWorkCommandHandler.handle(command); 
+		return createHolidayWorkCommandHandler.handle(command);
 	}
 	@POST
 	@Path("checkBeforeRegister")
@@ -84,7 +84,7 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("update")
 	public ProcessResult updateHolidayWork(UpdateHolidayWorkCommand command){
-		return updateHolidayWorkCommandHandle.handle(command); 
+		return updateHolidayWorkCommandHandle.handle(command);
 	}
 	@POST
 	@Path("getRecordWork")
@@ -93,12 +93,15 @@ public class HolidayWorkWebService extends WebService{
 	}
 	
 }
-@Value
+@Data
 class Param{
 	private String appDate;
 	private int uiType;
+	private List<String> lstEmployee;
+	private Integer payoutType;
+	private String employeeID;
 }
-@Value
+@Data
 class RecordWorkParam {
 	public String employeeID; 
 	public String appDate;

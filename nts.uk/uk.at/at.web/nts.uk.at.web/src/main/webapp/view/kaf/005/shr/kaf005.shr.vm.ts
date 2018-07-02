@@ -149,6 +149,14 @@ module nts.uk.at.view.kaf005.share {
                 this.approveAcceptedCmds = approveAcceptedCmds;
             }
         }
+        export class EmployeeOT{
+            id: string;
+            name: string;
+            constructor(id: string, name: string){
+                this.id = id;
+                this.name = name;
+            }    
+        }
         /**
          * 
          */

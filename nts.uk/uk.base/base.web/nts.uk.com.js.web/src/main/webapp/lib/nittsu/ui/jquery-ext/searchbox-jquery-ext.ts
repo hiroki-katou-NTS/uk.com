@@ -94,5 +94,210 @@ module nts.uk.ui.jqueryExtentions {
             });
             return $control;
         }
+        
+        $.fn.ntsSearchBox = function(options) {
+            let self = this;
+            let $container = $(self);
+            
+            if (typeof options === "string") {
+                return delegateMethod($container, options, arguments[1]);
+            }
+            
+            let minusWidth = 0;
+            let fields = options.fields;
+            let searchText = (options.searchText !== undefined) ? options.searchText : "検索";
+            let placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : "コード・名称で検索・・・"; 
+            
+            let searchMode = (options.searchMode !== undefined) ? options.searchMode : "highlight";
+            let label = (options.label !== undefined) ? options.label : "";
+            let enable = options.enable;
+            let dataSource = options.items;
+            let childField = null;
+            if (options.childField) {
+                childField = options.childField;
+            }
+            let targetMode = options.mode;
+            if (targetMode === "listbox") {
+                targetMode = "igGrid";    
+            }
+            
+            let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+            $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
+            $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");  
+            $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>"); 
+            
+            if (!nts.uk.util.isNullOrEmpty(label)) {
+                var $formLabel = $("<div>", { text: label });
+                $formLabel.prependTo($container);
+                (<any>ko).bindingHandlers["ntsFormLabel"].init($formLabel[0], function() {
+                    return {};　
+                });
+                minusWidth += $formLabel.outerWidth(true);
+            }
+            
+            let $button = $container.find("button.search-btn");
+            let $input = $container.find("input.ntsSearchBox");
+            minusWidth += $button.outerWidth(true);
+            if (searchMode === "filter") {
+                $container.append("<button class='clear-btn ntsSearchBox_Component'>"+ nts.uk.ui.toBeResource.clear +"</button>"); 
+                let $clearButton = $container.find("button.clear-btn");  
+                minusWidth +=  $clearButton.outerWidth(true);
+                $clearButton.click(function(evt: Event, ui: any) {
+                    let component = $("#" + options.comId);    
+                    if(component.hasClass("listbox-wrapper")){
+                        component = $("#" + options.comId).find(".ntsListBox");     
+                    }
+                    let srh: koExtentions.SearchPub= $container.data("searchObject");
+                    $input.val("");
+                    component.igGrid("option", "dataSource", srh.seachBox.getDataSource());  
+                    component.igGrid("dataBind"); 
+                    $container.data("searchKey", null);    
+                    component.attr("filtered", "false");     
+                    _.defer(function() {
+                        component.trigger("selectChange");    
+                    });     
+                });      
+                
+            }
+            
+            $input.attr("placeholder", placeHolder);
+            $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
+            $input.outerWidth($container.outerWidth(true) - minusWidth);　
+            
+            let primaryKey = options.targetKey;
+            let searchObject = new koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
+            $container.data("searchObject", searchObject);
+            
+            let search = function (searchKey: string){
+                if (targetMode) {
+                    let selectedItems, isMulti;
+                    let component = $("#" + options.comId);   
+                    if (targetMode == 'igGrid') {
+                        if(component.hasClass("listbox-wrapper")){
+                            component = $("#" + options.comId).find(".ntsListBox");     
+                        }
+                        selectedItems = component.ntsGridList("getSelected");
+                        isMulti = component.igGridSelection('option', 'multipleSelection');
+                    } else if (targetMode == 'igTree') {
+                        selectedItems = component.ntsTreeView("getSelected");
+                        isMulti = component.igTreeGridSelection('option', 'multipleSelection');
+                    } else if (targetMode == 'igTreeDrag') {
+                        selectedItems = component.ntsTreeDrag("getSelected");  
+                        isMulti = component.ntsTreeDrag('option', 'isMulti') ;  
+                    }
+                    
+                    let srh: koExtentions.SearchPub = $container.data("searchObject");
+                    let result = srh.search(searchKey, selectedItems);
+                    if(nts.uk.util.isNullOrEmpty(result.options)){
+                        let mes = '';
+                        if(searchMode === "highlight"){
+                            mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
+                        } else {
+                            mes = nts.uk.ui.toBeResource.targetNotFound;    
+                        }
+                        nts.uk.ui.dialog.alert(mes).then(() => { 
+                            $input.focus(); 
+                            $input.select();
+                        });
+                        return false;        
+                    }
+                    
+                    let selectedProperties = _.map(result.selectItems, primaryKey);
+                    
+                    if (targetMode === 'igGrid') {  
+                        component.ntsGridList("setSelected", selectedProperties);
+                        if(searchMode === "filter"){
+                            $container.data("filteredSrouce", result.options); 
+                            component.attr("filtered", "true");   
+                            //selected(selectedValue);
+                            //selected.valueHasMutated();
+                            let source = _.filter(options.items, function (item: any){
+                                             return _.find(result.options, function (itemFilterd: any){
+                                            return itemFilterd[primaryKey] === item[primaryKey];        
+                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+                                             return oldItem[primaryKey] === item[primaryKey];        
+                                            }) === undefined;            
+                            });
+                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
+                            component.igGrid("dataBind");  
+                            
+//                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+                                component.trigger("selectionchanged");        
+//                            }
+                        } else {
+                            component.trigger("selectionchanged");    
+                        }
+                    } else if (targetMode == 'igTree') {
+                        component.ntsTreeView("setSelected", selectedProperties);
+                        component.trigger("selectionchanged");
+                        //selected(selectedValue);
+                    } else if(targetMode == 'igTreeDrag'){
+                        component.ntsTreeDrag("setSelected", selectedProperties);
+                    }
+                    _.defer(function() {
+                        component.trigger("selectChange");    
+                    });
+                    
+                    $container.data("searchKey", searchKey);  
+                }
+                return true;    
+            } 
+            
+            var nextSearch = function() {
+                let searchKey = $input.val();
+                if(nts.uk.util.isNullOrEmpty(searchKey)) {
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD")).then(() => { 
+                        $input.focus(); 
+//                        $input.select();
+                    });
+                    return false;        
+                }
+                return search(searchKey);    
+            }
+            $input.keydown(function(event) {
+                if (event.which == 13) {
+                    event.preventDefault();
+                    let result = nextSearch();
+                    _.defer(() => {
+                        if(result){
+                            $input.focus();         
+                        }                
+                    });
+                }
+            });
+            $button.click(function() {
+                nextSearch();    
+            });
+            
+            $container.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
+            
+            if(enable === false){
+                $container.find(".ntsSearchBox_Component").attr('disabled', 'disabled');        
+            }
+        };
+        
+        function delegateMethod($searchBox: JQuery, action: string, param?: any) {
+            switch(action) {
+                case "setDataSource":
+                    setDataSource($searchBox, param);
+                    break;
+                case "setEnable":
+                    setEnable($searchBox, param);
+                    break;
+            }
+        }
+        
+        function setDataSource($searchBox: JQuery, dataSource: any) {
+            let srhX: koExtentions.SearchPub= $searchBox.data("searchObject");
+            srhX.setDataSource(dataSource);
+        }
+        
+        function setEnable($searchBox: JQuery, enable: boolean) {
+            if (enable === false) {
+                $searchBox.find(".ntsSearchBox_Component").attr('disabled', 'disabled');        
+            } else {
+                $searchBox.find(".ntsSearchBox_Component").removeAttr('disabled');           
+            }
+        }
     }
 }

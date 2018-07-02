@@ -8,7 +8,7 @@ module nts.uk.at.view.ksu007.a {
                 self.applyKCP005ContentSearch([]);
                 // Load employee list component
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
-                    $('#dateRangePickerPeriod').find('input').first().focus();
+                    $('#employeeSearch').focus();
                     if(self.employeeList().length <= 0){
                         $('#ccg001-btn-search-drawer').trigger('click');  
                     }
