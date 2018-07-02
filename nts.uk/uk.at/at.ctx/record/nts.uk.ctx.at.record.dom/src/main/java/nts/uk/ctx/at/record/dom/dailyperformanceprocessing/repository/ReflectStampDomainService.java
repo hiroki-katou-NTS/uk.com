@@ -1,6 +1,11 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -14,8 +19,13 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
  */
 public interface ReflectStampDomainService {
 
-	ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
+//	ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
+//			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
+//			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
+//			ExecutionType reCreateAttr);
+	public ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr);
+			ExecutionType reCreateAttr,
+			Optional<CalAttrOfDailyPerformance> calcOfDaily ,Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily ,Optional<WorkTypeOfDailyPerformance> workTypeOfDaily);
 }
