@@ -18,6 +18,8 @@ import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWo
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamGetHolidayWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkParamHoliday;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
@@ -38,7 +40,7 @@ public class HolidayWorkWebService extends WebService{
 	
 	@POST
 	@Path("getHolidayWorkByUI")
-	public AppHolidayWorkDto getOvertimeByUIType(Param param) {
+	public AppHolidayWorkDto getOvertimeByUIType(ParamGetHolidayWork param) {
 		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID());
 	}
 	@POST
@@ -88,24 +90,8 @@ public class HolidayWorkWebService extends WebService{
 	}
 	@POST
 	@Path("getRecordWork")
-	public RecordWorkDto getRecordWork(RecordWorkParam param) {
+	public RecordWorkDto getRecordWork(RecordWorkParamHoliday param) {
 		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours());
 	}
 	
-}
-@Data
-class Param{
-	private String appDate;
-	private int uiType;
-	private List<String> lstEmployee;
-	private Integer payoutType;
-	private String employeeID;
-}
-@Data
-class RecordWorkParam {
-	public String employeeID; 
-	public String appDate;
-	public String siftCD;
-	public int prePostAtr;
-	public List<CaculationTime> breakTimeHours;
 }
