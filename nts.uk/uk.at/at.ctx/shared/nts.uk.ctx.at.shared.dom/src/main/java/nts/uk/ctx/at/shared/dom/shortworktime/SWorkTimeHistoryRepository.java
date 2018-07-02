@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.shortworktime;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface SWorkTimeHistoryRepository.
@@ -42,4 +45,14 @@ public interface SWorkTimeHistoryRepository {
 	void update(String sid, DateHistoryItem histItem);
 	
 	void delete(String sid, String histId);
+	
+	/**
+	 * Find by emp and period.
+	 *
+	 * @param empIdList the emp id list
+	 * @param date the date
+	 * @return the map
+	 */
+	Map<String, ShortWorkTimeHistory> findByEmpAndPeriod(List<String> empIdList, DatePeriod date);
+	
 }

@@ -42,6 +42,8 @@ public interface BasicScheduleRepository {
 	 * @param bSchedule
 	 */
 	void insert(BasicSchedule bSchedule);
+	
+	void insertAll(List<BasicSchedule> listBSchedule);
 
 	/**
 	 * update Basic Schedule
@@ -49,6 +51,9 @@ public interface BasicScheduleRepository {
 	 * @param bSchedule
 	 */
 	void update(BasicSchedule bSchedule);
+	
+	void updateAll(List<BasicSchedule> listBSchedule);
+
 
 	/**
 	 * Change work type code and work time code ( code for Du Do)
@@ -118,4 +123,13 @@ public interface BasicScheduleRepository {
 	 * @return
 	 */
 	List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, DatePeriod dateData);
+	
+	/**
+	 * 
+	 * @param sId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
 }

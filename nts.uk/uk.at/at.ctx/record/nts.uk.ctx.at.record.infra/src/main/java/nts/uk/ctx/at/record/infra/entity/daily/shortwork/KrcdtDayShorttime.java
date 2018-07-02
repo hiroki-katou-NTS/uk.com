@@ -133,7 +133,7 @@ public class KrcdtDayShorttime extends UkJpaEntity implements Serializable{
 						val workTimes = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getWorkTimes();
 						if(recordTime.getTotalTime() != null) {
 							this.toRecordTotalTime = recordTime.getTotalTime().getTime() == null ? 0 : recordTime.getTotalTime().getTime().valueAsMinutes();
-							this.calToRecordTotalTime = recordTime.getTotalTime().getCalcTime() == null ? 0 : recordTime.getTotalTime().getTime().valueAsMinutes();
+							this.calToRecordTotalTime = recordTime.getTotalTime().getCalcTime() == null ? 0 : recordTime.getTotalTime().getCalcTime().valueAsMinutes();
 						}
 						
 						if(recordTime.getWithinStatutoryTotalTime() != null) {

@@ -7,6 +7,8 @@ package nts.uk.ctx.sys.gateway.dom.adapter.user;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 
 /**
  * The Interface UserAdapter.
@@ -115,4 +117,13 @@ public interface UserAdapter {
 	 * @return the optional
 	 */
 	Optional<UserImportNew> findUserByContractAndLoginIdNew(String contractCode, String loginId);
+	
+	/**
+	 * Gets the by user I dand date.
+	 *
+	 * @param userId the user id
+	 * @param systemDate the system date
+	 * @return the by user I dand date
+	 */
+	Optional<UserImportNew> getByUserIDandDate(String userId , GeneralDate systemDate);
 }

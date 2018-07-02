@@ -15,6 +15,8 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCESetting;
+import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
 import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
 import nts.uk.ctx.pereg.dom.usesetting.UserSettingRepository;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
@@ -41,22 +43,27 @@ public class EmployeeInfoFinder {
 	@Inject
 	private StampCardEditingRepo stamCardEditRepo;
 	
+	@Inject
+	private IEmployeeCESettingRepository empCESettingRepo;
+	
 	private static final String JP_SPACE = "　";
 
 	public String generateEmplCode(String startLetters) {
 		String companyId = AppContexts.user().companyId();
+
+		Optional<EmployeeCESetting> _employeeCESetting = empCESettingRepo.getByComId(companyId);
+		if (!_employeeCESetting.isPresent()) {
+			return "";
+		}
+		int employeeCodeLength = _employeeCESetting.get().getDigitNumb().v();
+
+		Optional<String> lastEmployeeCode = employeeRepository.findLastEml(companyId, startLetters, employeeCodeLength);
 		
-		Optional<String> lastEmployeeCode = employeeRepository.findLastEml(companyId, startLetters);
 		if (!lastEmployeeCode.isPresent()) {
 			throw new BusinessException("Msg_505");
 		}
-		String returnString = generateCode(lastEmployeeCode.get());
-		
-		int maxLength = 6;
-		while (returnString.length() < maxLength) {
-			returnString += " ";
-		}
-		return returnString;
+		return generateCode(lastEmployeeCode.get());
+
 	}
 
 	public String generateCardNo(String startLetters) {
@@ -70,9 +77,31 @@ public class EmployeeInfoFinder {
 		int maxLengthCardNo = _stamCardEdit.get().getDigitsNumber().v();
 		Optional<String> lastCardNo = stampCardRepo.getLastCardNo(contractCode, startLetters, maxLengthCardNo);
 		if (!lastCardNo.isPresent()) {
-			return "";
+			throw new BusinessException("Msg_505");
 		}
 		return generateCode(lastCardNo.get());
+	}
+	
+	public String initEmplCode() {
+		String employeeId = AppContexts.user().employeeId();
+		
+		Optional<UserSetting> _userSetting = userSettingRepo.getUserSetting(employeeId);
+		
+		if (!_userSetting.isPresent()) {
+			return "";
+		}
+		UserSetting userSetting = _userSetting.get();
+		
+		switch (userSetting.getEmpCodeValType()) {
+		case INIT_DESIGNATION:
+			return generateEmplCode(userSetting.getEmpCodeLetter().v());
+		case MAXVALUE:
+			return generateEmplCode("");
+		case BLANK:
+			return "";
+		}
+		
+		return "";
 	}
 
 	public String initCardNo(String newEmployeeCode) {

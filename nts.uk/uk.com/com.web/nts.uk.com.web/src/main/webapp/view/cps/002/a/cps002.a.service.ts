@@ -5,6 +5,7 @@ module cps002.a.service {
     import block = nts.uk.ui.block;
 
     let paths: any = {
+        getInitEmployeeCode: 'ctx/pereg/employee/mngdata/getInitEmplCode',
         getEmployeeCode: 'ctx/pereg/employee/mngdata/getGenerateEmplCode',
         getCardNumber: 'ctx/pereg/employee/mngdata/getInitCardNo',
         getStamCardEditing: 'record/stamp/stampcardedit/find',
@@ -85,8 +86,11 @@ module cps002.a.service {
                 _.defer(() => block.clear());
             });
         return dfd.promise();
-
-
+    }
+    
+    export function getInitEmployeeCode() {
+        _.defer(() => block.invisible());
+        return nts.uk.request.ajax("com", paths.getInitEmployeeCode);
     }
 
     export function getInitCardNumber(newEmployeeCode) {

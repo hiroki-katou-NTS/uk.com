@@ -68,7 +68,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	private String DELETE_ABS_BY_ID = "DELETE FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String QUERY_REC_BY_IDS_ATR = "SELECT c FROM KrcmtInterimRecAbs "
+	private String QUERY_REC_BY_IDS_ATR = "SELECT c FROM KrcmtInterimRecAbs c "
 			+ " WHERE c.recAbsPk.recruitmentMngId IN :recruitmentMngId"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
 	@Override
@@ -113,7 +113,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	@Override
-	public List<InterimRecMng> getRecByIdPeriod(List<String> recId, Double unUseDays, DatePeriod dateData) {
+	public List<InterimRecMng> getRecByIdPeriod(List<String> recId, double unUseDays, DatePeriod dateData) {
 		if(recId.isEmpty()) {
 			return Collections.emptyList();
 		}

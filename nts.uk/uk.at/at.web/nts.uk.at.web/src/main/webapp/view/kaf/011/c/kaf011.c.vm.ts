@@ -52,9 +52,6 @@ module nts.uk.at.view.kaf011.c.screenModel {
         constructor() {
             let self = this;
 
-
-
-
         }
 
         start(): JQueryPromise<any> {

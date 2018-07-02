@@ -21,6 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
@@ -30,7 +31,9 @@ import nts.uk.ctx.at.request.dom.application.Changeable;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
@@ -135,23 +138,34 @@ public class AppOvertimeFinder {
 	private AppOvertimeSettingRepository appOvertimeSettingRepository;
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	@Inject
+	private AtEmployeeAdapter atEmployeeAdapter;
 	/**
 	 * @param url
 	 * @param appDate
 	 * @param uiType
 	 * @return
 	 */
-	public OverTimeDto getOvertimeByUIType(String url,String appDate,int uiType,Integer timeStart1,Integer timeEnd1,String reasonContent,List<String> employeeIDs){
+	public OverTimeDto getOvertimeByUIType(String url,String appDate,int uiType,Integer timeStart1,Integer timeEnd1,String reasonContent,List<String> employeeIDs,String employeeID){
 		
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto_New applicationDto = new ApplicationDto_New();
 		List<OvertimeInputDto> overTimeInputs = new ArrayList<>();
 		String companyID = AppContexts.user().companyId();
-		String employeeID = "";
-		if(CollectionUtil.isEmpty(employeeIDs)){
+		if(CollectionUtil.isEmpty(employeeIDs) && employeeID == null){
 			 employeeID = AppContexts.user().employeeId();
-		}else if(employeeIDs.size() == 1){
+		}else if(!CollectionUtil.isEmpty(employeeIDs)){
 			employeeID = employeeIDs.get(0);
+			List<EmployeeInfoImport> employees = this.atEmployeeAdapter.getByListSID(employeeIDs);
+			if(!CollectionUtil.isEmpty(employees)){
+				List<EmployeeOvertimeDto> employeeOTs = new ArrayList<>();
+				for(EmployeeInfoImport emp : employees){
+					EmployeeOvertimeDto employeeOT = new EmployeeOvertimeDto(emp.getSid(), emp.getBussinessName());
+					employeeOTs.add(employeeOT);
+				}
+				result.setEmployees(employeeOTs);
+			}
 		}
 		
 		int rootAtr = 1;
@@ -890,8 +904,8 @@ public class AppOvertimeFinder {
 			// 6.計算処理 :
 			DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation
 					.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT),
-							result.getWorkType() == null? null : result.getWorkType().getWorkTypeCode(),
-							result.getSiftType()== null ? null : result.getSiftType().getSiftCode(),
+							result.getWorkType() == null ? null : result.getWorkType().getWorkTypeCode(),
+							result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(),
 							result.getWorkClockFrom1(), result.getWorkClockTo1(), null, null);
 			Map<Integer, TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 			List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,
@@ -900,7 +914,7 @@ public class AppOvertimeFinder {
 			// 01-18_実績の内容を表示し直す : chưa xử lí
 			if (approvalFunctionSetting != null) {
 				AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(result.getApplication().getPrePostAtr(), 
-						result.getSiftType()== null ? null : result.getSiftType().getSiftCode(),
+						result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(),
 						companyID, employeeID, appDate, approvalFunctionSetting, overTimeHours, overtimeInputCaculations);
 				result.setAppOvertimeReference(appOvertimeReference);
 			}
