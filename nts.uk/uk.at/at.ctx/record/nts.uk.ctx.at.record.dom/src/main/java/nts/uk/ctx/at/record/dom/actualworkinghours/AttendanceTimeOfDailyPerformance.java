@@ -289,7 +289,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 									||recordOneDay.getWorkInformationOfDaily() == null
 									||recordOneDay.getWorkInformationOfDaily().getRecordInfo() == null
 									||recordOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null 
-									|| workType.getDailyWork().isHolidayWork())
+									|| workType.getDailyWork().isHolidayWork()
+									|| recordOneDay.getPredetermineTimeSetForCalc() == null)
 									?new AttendanceTime(0)
 									:recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
 		//予定勤務種類が設定されてなかったら、実績の所定労働のみ埋めて返す

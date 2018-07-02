@@ -72,25 +72,35 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 self.fillTextDisplayTarget();
                 self.fillTextDisplayComparison();
             });
-
             caic.compareOperator.subscribe((value) => {
                 if (value > 5) {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
-                        { code: 1, name: "勤怠項目", enable: false },
-                        { code: 2, name: "入力チェック", enable: true }
+                        { code: 1, name: "勤怠項目", enable: false }
                     ]);
 
                     caic.conditionType(0);
                 } else {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
-                        { code: 1, name: "勤怠項目", enable: true },
-                        { code: 2, name: "入力チェック", enable: true }
+                        { code: 1, name: "勤怠項目", enable: true }
                     ]);
                 }
                 self.validateRange();
             });
+            
+            if (param.data.compareOperator > 5) {
+                self.enumConditionType([
+                    { code: 0, name: "固定値", enable: true },
+                    { code: 1, name: "勤怠項目", enable: false }
+                ]);
+            } else {
+                self.enumConditionType([
+                    { code: 0, name: "固定値", enable: true },
+                    { code: 1, name: "勤怠項目", enable: true }
+                ]);
+            }    
+//            caic.compareOperator.valueHasMutated();
 
             caic.conditionType.subscribe((value) => {
                 if (value === 0) {
@@ -348,7 +358,7 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 caic = ko.toJS(self.currentAtdItemCondition);
 
             $('.value-input').ntsError('clear');
-            //$(".value-input").trigger("validate");
+            $(".value-input").filter(":enabled").trigger("validate");
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
                 setTimeout(() => {
@@ -370,7 +380,7 @@ module nts.uk.at.view.kal003.c.viewmodel {
         returnData() {
             let self = this;
 
-            $(".need-check").trigger("validate");
+            $(".need-check").filter(":enabled").trigger("validate");
             self.validateRange();
 
             if (!nts.uk.ui.errors.hasError()) {
@@ -387,7 +397,9 @@ module nts.uk.at.view.kal003.c.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
+            let self = this;
             var dfd = $.Deferred();
+            
             dfd.resolve();
             return dfd.promise();
         }
