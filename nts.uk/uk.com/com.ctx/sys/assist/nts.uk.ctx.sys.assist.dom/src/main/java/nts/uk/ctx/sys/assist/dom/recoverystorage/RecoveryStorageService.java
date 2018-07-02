@@ -74,6 +74,16 @@ public class RecoveryStorageService {
 
 	public static final String SETTING_EXCEPTION = "5";
 
+	public static final String INDEX_CID_CSV = "0";
+
+	public static final String INDEX_SID_CSV = "5";
+
+	public static final String YEAR = "6";
+
+	public static final String YEAR_MONTH = "7";
+
+	public static final String YEAR_MONTH_DAY = "8";
+
 	public static final Integer HEADER_CSV = 0;
 
 	public static final Integer INDEX_SID = 1;
@@ -83,9 +93,12 @@ public class RecoveryStorageService {
 	public void recoveryStorage(String dataRecoveryProcessId) throws ParseException {
 
 		int errorCode = 0;
+		String uploadId = null;
 		Optional<PerformDataRecovery> performRecoveries = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
-		String uploadId = performRecoveries.get().getUploadfileId();
+		if (performRecoveries.isPresent()) {
+			uploadId = performRecoveries.get().getUploadfileId();
+		}
 		List<Category> listCategory = categoryRepository.findById(dataRecoveryProcessId, SELECTION_TARGET_FOR_RES);
 
 		// update OperatingCondition
@@ -119,28 +132,26 @@ public class RecoveryStorageService {
 			}
 
 		}
-		if(errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,DataRecoveryOperatingCondition.DONE.value);
-		} else {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, errorCode);
+		if (errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
+			errorCode = DataRecoveryOperatingCondition.DONE.value;
 		}
-		
-		
+
+		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, errorCode);
+
 	}
 
 	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = { Exception.class })
 	public int recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode, String employeeId,
-			List<DataRecoveryTable> targetDataByCate) throws Exception {
+			List<DataRecoveryTable> targetDataByCate, List<Target> listTarget) throws Exception {
 
 		int errorCode = 0;
 		Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 
-		// Xác định phương pháp phục hồi [復旧方法]
+		// Check recovery method [復旧方法]
 		if (performDataRecovery.isPresent()
 				&& performDataRecovery.get().getRecoveryMethod().value == RecoveryMethod.RESTORE_SELECTED_RANGE.value) {
-			// check employeeId in Target of PreformDataRecovery
-			List<Target> listTarget = performDataRecoveryRepository.findByDataRecoveryId(dataRecoveryProcessId);
+
 			Optional<Target> isExist = listTarget.stream().filter(x -> {
 				return employeeId.equals(x.getSid());
 			}).findFirst();
@@ -151,7 +162,7 @@ public class RecoveryStorageService {
 
 		}
 
-		// Data current đối tượng [カレント対象データ]
+		//  current target Data [カレント対象データ]
 		for (DataRecoveryTable dataRecoveryTable : targetDataByCate) {
 
 			Optional<TableList> tableList = performDataRecoveryRepository
@@ -165,7 +176,7 @@ public class RecoveryStorageService {
 				return errorCode;
 			}
 
-			// 履歴区分の判別する - check phân loại lịch sử
+			// 履歴区分の判別する - check history division
 			if (tableList.isPresent() && tableList.get().getHistoryCls().value == HistoryDiviSion.HAVE_HISTORY.value) {
 				try {
 					deleteEmployeeHistory(tableList, employeeId, true);
@@ -174,7 +185,7 @@ public class RecoveryStorageService {
 					throw new Exception(SQL_EXCEPTION);
 				}
 			}
-			
+
 			try {
 				// 対象社員の日付順の処理
 				errorCode = crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode,
@@ -201,162 +212,50 @@ public class RecoveryStorageService {
 			String dataRecoveryProcessId, String fileNameCsv, Optional<TableList> tableList,
 			Optional<PerformDataRecovery> performDataRecovery, List<String> resultsSetting, Boolean tableUse)
 			throws ParseException {
-		
-		int errorCode = 0;
-		List<String> targetDataHeader = targetDataTable.get(HEADER_CSV);
-		Integer indexUpdate1 = null, indexUpdate2 = null,indexUpdate3 = null,indexUpdate4 = null,indexUpdate5 = null,indexUpdate6 = null;
-		Integer indexUpdate7 = null, indexUpdate8 = null, indexUpdate9 = null, indexUpdate10 = null, indexUpdate11 = null, indexUpdate12 = null;
-		Integer indexUpdate13 = null, indexUpdate14 = null, indexUpdate15 = null, indexUpdate16 = null, indexUpdate17 = null, indexUpdate18 = null, indexUpdate19 = null, indexUpdate20 = null;
-		String cidTable = null;
-		String FILED_KEY_UPDATE_1 = null, FILED_KEY_UPDATE_2 = null, FILED_KEY_UPDATE_3 = null, FILED_KEY_UPDATE_4 = null, FILED_KEY_UPDATE_5 = null, FILED_KEY_UPDATE_6 = null;
-		String FILED_KEY_UPDATE_7 = null, FILED_KEY_UPDATE_8 = null, FILED_KEY_UPDATE_9 = null, FILED_KEY_UPDATE_10 = null, FILED_KEY_UPDATE_11 = null, FILED_KEY_UPDATE_12 = null;
-		String FILED_KEY_UPDATE_13 = null, FILED_KEY_UPDATE_14 = null, FILED_KEY_UPDATE_15 = null, FILED_KEY_UPDATE_16 = null, FILED_KEY_UPDATE_17 = null, FILED_KEY_UPDATE_18 = null, FILED_KEY_UPDATE_19 = null, FILED_KEY_UPDATE_20 = null;
-		String V_FILED_KEY_UPDATE_1 = null, V_FILED_KEY_UPDATE_2 = null, V_FILED_KEY_UPDATE_3 = null, V_FILED_KEY_UPDATE_4 = null, V_FILED_KEY_UPDATE_5 = null;
-		String V_FILED_KEY_UPDATE_6 = null, V_FILED_KEY_UPDATE_7 = null, V_FILED_KEY_UPDATE_8 = null, V_FILED_KEY_UPDATE_9 = null, V_FILED_KEY_UPDATE_10 = null;
-		String V_FILED_KEY_UPDATE_11 = null, V_FILED_KEY_UPDATE_12 = null, V_FILED_KEY_UPDATE_13 = null, V_FILED_KEY_UPDATE_14 = null, V_FILED_KEY_UPDATE_15 = null;
-		String V_FILED_KEY_UPDATE_16 = null, V_FILED_KEY_UPDATE_17 = null, V_FILED_KEY_UPDATE_18 = null, V_FILED_KEY_UPDATE_19 = null, V_FILED_KEY_UPDATE_20 = null;
-		String TABLE_NAME = null;
 
+		int errorCode = 0, indexCidOfCsv = 0;
+		List<String> targetDataHeader = targetDataTable.get(HEADER_CSV);
+		String V_FILED_KEY_UPDATE = null, TABLE_NAME = null, date = null, dateSub = null, cidTable = null;
+
+		HashMap<Integer, String> indexAndFiled = new HashMap<>();
 		// search data by employee
 
 		if (tableList.isPresent()) {
-
 			TABLE_NAME = tableList.get().getTableEnglishName();
-			FILED_KEY_UPDATE_1 = tableList.get().getFiledKeyUpdate1().get();
-
-			if (FILED_KEY_UPDATE_1 != null && !FILED_KEY_UPDATE_1.isEmpty()) {
-				indexUpdate1 = targetDataHeader.indexOf(FILED_KEY_UPDATE_1);
-			}
-			FILED_KEY_UPDATE_2 = tableList.get().getFiledKeyUpdate2().get();
-			if (FILED_KEY_UPDATE_2 != null && !FILED_KEY_UPDATE_2.isEmpty()) {
-				indexUpdate2 = targetDataHeader.indexOf(FILED_KEY_UPDATE_2);
-			}
-			FILED_KEY_UPDATE_3 = tableList.get().getFiledKeyUpdate3().get();
-			if (FILED_KEY_UPDATE_3 != null && !FILED_KEY_UPDATE_3.isEmpty()) {
-				indexUpdate3 = targetDataHeader.indexOf(FILED_KEY_UPDATE_3);
-			}
-
-			FILED_KEY_UPDATE_4 = tableList.get().getFiledKeyUpdate4().get();
-			if (FILED_KEY_UPDATE_4 != null && !FILED_KEY_UPDATE_4.isEmpty()) {
-				indexUpdate4 = targetDataHeader.indexOf(FILED_KEY_UPDATE_4);
-			}
-
-			FILED_KEY_UPDATE_5 = tableList.get().getFiledKeyUpdate5().get();
-			if (FILED_KEY_UPDATE_5 != null && !FILED_KEY_UPDATE_5.isEmpty()) {
-				indexUpdate5 = targetDataHeader.indexOf(FILED_KEY_UPDATE_5);
-			}
-
-			FILED_KEY_UPDATE_6 = tableList.get().getFiledKeyUpdate6().get();
-			if (FILED_KEY_UPDATE_6 != null && !FILED_KEY_UPDATE_6.isEmpty()) {
-				indexUpdate6 = targetDataHeader.indexOf(FILED_KEY_UPDATE_6);
-			}
-
-			FILED_KEY_UPDATE_7 = tableList.get().getFiledKeyUpdate7().get();
-			if (FILED_KEY_UPDATE_7 != null && !FILED_KEY_UPDATE_7.isEmpty()) {
-				indexUpdate7 = targetDataHeader.indexOf(FILED_KEY_UPDATE_7);
-			}
-
-			FILED_KEY_UPDATE_8 = tableList.get().getFiledKeyUpdate8().get();
-			if (FILED_KEY_UPDATE_8 != null && !FILED_KEY_UPDATE_8.isEmpty()) {
-				indexUpdate8 = targetDataHeader.indexOf(FILED_KEY_UPDATE_8);
-			}
-
-			FILED_KEY_UPDATE_9 = tableList.get().getFiledKeyUpdate9().get();
-			if (FILED_KEY_UPDATE_9 != null && !FILED_KEY_UPDATE_9.isEmpty()) {
-				indexUpdate9 = targetDataHeader.indexOf(FILED_KEY_UPDATE_9);
-			}
-
-			FILED_KEY_UPDATE_10 = tableList.get().getFiledKeyUpdate10().get();
-			if (FILED_KEY_UPDATE_10 != null && !FILED_KEY_UPDATE_10.isEmpty()) {
-				indexUpdate10 = targetDataHeader.indexOf(FILED_KEY_UPDATE_10);
-			}
-
-			FILED_KEY_UPDATE_11 = tableList.get().getFiledKeyUpdate11().get();
-			if (FILED_KEY_UPDATE_11 != null && !FILED_KEY_UPDATE_11.isEmpty()) {
-				indexUpdate11 = targetDataHeader.indexOf(FILED_KEY_UPDATE_11);
-			}
-
-			FILED_KEY_UPDATE_12 = tableList.get().getFiledKeyUpdate12().get();
-			if (FILED_KEY_UPDATE_12 != null && !FILED_KEY_UPDATE_12.isEmpty()) {
-				indexUpdate12 = targetDataHeader.indexOf(FILED_KEY_UPDATE_12);
-			}
-
-			FILED_KEY_UPDATE_13 = tableList.get().getFiledKeyUpdate13().get();
-			if (FILED_KEY_UPDATE_13 != null && !FILED_KEY_UPDATE_13.isEmpty()) {
-				indexUpdate13 = targetDataHeader.indexOf(FILED_KEY_UPDATE_13);
-			}
-
-			FILED_KEY_UPDATE_14 = tableList.get().getFiledKeyUpdate14().get();
-			if (FILED_KEY_UPDATE_14 != null && !FILED_KEY_UPDATE_14.isEmpty())
-				indexUpdate14 = targetDataHeader.indexOf(FILED_KEY_UPDATE_14);
-			FILED_KEY_UPDATE_15 = tableList.get().getFiledKeyUpdate15().get();
-			if (FILED_KEY_UPDATE_15 != null && !FILED_KEY_UPDATE_15.isEmpty())
-				indexUpdate15 = targetDataHeader.indexOf(FILED_KEY_UPDATE_15);
-			FILED_KEY_UPDATE_16 = tableList.get().getFiledKeyUpdate16().get();
-			if (FILED_KEY_UPDATE_16 != null && !FILED_KEY_UPDATE_16.isEmpty())
-				indexUpdate16 = targetDataHeader.indexOf(FILED_KEY_UPDATE_16);
-			FILED_KEY_UPDATE_17 = tableList.get().getFiledKeyUpdate17().get();
-			if (FILED_KEY_UPDATE_17 != null && !FILED_KEY_UPDATE_17.isEmpty())
-				indexUpdate17 = targetDataHeader.indexOf(FILED_KEY_UPDATE_17);
-			FILED_KEY_UPDATE_18 = tableList.get().getFiledKeyUpdate18().get();
-			if (FILED_KEY_UPDATE_18 != null && !FILED_KEY_UPDATE_18.isEmpty())
-				indexUpdate18 = targetDataHeader.indexOf(FILED_KEY_UPDATE_18);
-			FILED_KEY_UPDATE_19 = tableList.get().getFiledKeyUpdate19().get();
-			if (FILED_KEY_UPDATE_19 != null && !FILED_KEY_UPDATE_19.isEmpty())
-				indexUpdate19 = targetDataHeader.indexOf(FILED_KEY_UPDATE_19);
-			FILED_KEY_UPDATE_20 = tableList.get().getFiledKeyUpdate20().get();
-			if (FILED_KEY_UPDATE_20 != null && !FILED_KEY_UPDATE_20.isEmpty())
-				indexUpdate20 = targetDataHeader.indexOf(FILED_KEY_UPDATE_20);
+			indexAndFiled = indexMapFiledCsv(targetDataHeader, tableList);
 		}
+
 		List<List<String>> dataTableCus = new ArrayList<>();
-		for (List<String> list : targetDataTable) {
-			dataTableCus.add(list);
-		}
-		dataTableCus.remove(0);
-		Collections.sort(dataTableCus, new Comparator<List<String>>() {
-			DateFormat f = new SimpleDateFormat("yyyy-MM-dd");// or your
-			@Override
-			public int compare(List<String> o1, List<String> o2) {
-				try {
-					if (o1.get(2) == null || o1.get(2).isEmpty()) {
-						return (o2.get(2) == null) ? 0 : -1;
-					}
-					if (o2.get(2) == null || o2.get(2).isEmpty()) {
-						return 1;
-					}
-					return f.parse(o1.get(2)).compareTo(f.parse(o2.get(2)));
-				} catch (ParseException e) {
-					throw new IllegalArgumentException(e);
-				}
-			}
-		});
-		
+
+		// sort date of targetData
+		dataTableCus = sortByDate(targetDataTable);
+
 		for (int i = 0; i < dataTableCus.size(); i++) {
-			
 			Map<String, String> filedWhere = new HashMap<>();
 			List<String> dataRow = dataTableCus.get(i);
 			// データベース復旧処理
 			if ((employeeId == null) || (employeeId != null && dataRow.get(INDEX_SID).equals(employeeId))) {
-				// 履歴区分を判別する - Phân loại lịch sử
-				if ((tableList.get().getHistoryCls().value == HistoryDiviSion.NO_HISTORY.value && tableUse) || !tableUse) {
+				// 履歴区分を判別する - check history division
+				if ((tableList.get().getHistoryCls().value == HistoryDiviSion.NO_HISTORY.value && tableUse)
+						|| !tableUse) {
 
-					// 復旧方法 - Phương pháp phục hồi
-					if (performDataRecovery.isPresent() && performDataRecovery.get().getRecoveryMethod().value == RecoveryMethod.RESTORE_SELECTED_RANGE.value) {
+					// 復旧方法 - check recovery method
+					if (performDataRecovery.isPresent() && performDataRecovery.get()
+							.getRecoveryMethod().value == RecoveryMethod.RESTORE_SELECTED_RANGE.value) {
 
 						// 保存期間区分を判別 - Phân loại khoảng thời gian save
 						if (tableList.get().getRetentionPeriodCls().value != TimeStore.FULL_TIME.value) {
 							if (!checkSettingDate(resultsSetting, tableList, dataRow)) {
-								if(!tableUse) {
+								if (!tableUse) {
 									errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
 									return errorCode;
 								} else {
 									continue;
 								}
-								
+
 							}
 						} else {
-
-							// update date phục hồi Domain
+							// update recovery date
 							dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, null);
 
 						}
@@ -364,131 +263,36 @@ public class RecoveryStorageService {
 
 				} else {
 
-					// update date phục hồi Domain
-					String date = dataRow.get(2);
+					// update recovery date
+					date = dataRow.get(2);
 					if (date != null && !date.isEmpty())
 						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date.substring(0, 10));
 				}
-				
-				// update date phục hồi Domain
-				String date = null;
-				if(resultsSetting.size() == 1) {
+
+				// update recovery date
+
+				if (resultsSetting.size() == 1) {
 					date = dataRow.get(2);
-				} else if(resultsSetting.size() == 2){
+				} else if (resultsSetting.size() == 2) {
 					date = dataRow.get(3);
 				}
-				if (resultsSetting.get(0).equals("6")) {
-					if (date != null && !date.isEmpty())
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date.substring(0, 3));
-				} else if (resultsSetting.get(0).equals("7")) {
-					if (date != null && !date.isEmpty())
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date.substring(0, 6));
-				} else if (resultsSetting.get(0).equals("8")) {
-					if (date != null && !date.isEmpty())
-						dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, date.substring(0, 10));
-				}
-				
-				if (indexUpdate1 != null) {
-					V_FILED_KEY_UPDATE_1 = dataRow.get(indexUpdate1);
-					filedWhere.put(FILED_KEY_UPDATE_1, V_FILED_KEY_UPDATE_1);
+				if (resultsSetting.get(0).equals(YEAR) && date != null && !date.isEmpty()) {
+					dateSub = date.substring(0, 3);
+				} else if (resultsSetting.get(0).equals(YEAR_MONTH) && date != null && !date.isEmpty()) {
+					dateSub = date.substring(0, 6);
+				} else if (resultsSetting.get(0).equals(YEAR_MONTH_DAY) && date != null && !date.isEmpty()) {
+					dateSub = date.substring(0, 10);
 				}
 
-				if (indexUpdate2 != null) {
-					V_FILED_KEY_UPDATE_2 = dataRow.get(indexUpdate2);
-					filedWhere.put(FILED_KEY_UPDATE_2, V_FILED_KEY_UPDATE_2);
+				dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, dateSub);
+
+				// create filed where for query
+				for (Map.Entry<Integer, String> entry : indexAndFiled.entrySet()) {
+					V_FILED_KEY_UPDATE = dataRow.get(entry.getKey());
+					filedWhere.put(entry.getValue(), V_FILED_KEY_UPDATE);
 				}
 
-				if (indexUpdate3 != null) {
-					V_FILED_KEY_UPDATE_3 = dataRow.get(indexUpdate3);
-					filedWhere.put(FILED_KEY_UPDATE_3, V_FILED_KEY_UPDATE_3);
-				}
-
-				if (indexUpdate4 != null) {
-					V_FILED_KEY_UPDATE_4 = dataRow.get(indexUpdate4);
-					filedWhere.put(FILED_KEY_UPDATE_4, V_FILED_KEY_UPDATE_4);
-				}
-
-				if (indexUpdate5 != null) {
-					V_FILED_KEY_UPDATE_5 = dataRow.get(indexUpdate5);
-					filedWhere.put(FILED_KEY_UPDATE_5, V_FILED_KEY_UPDATE_5);
-				}
-
-				if (indexUpdate6 != null) {
-					V_FILED_KEY_UPDATE_6 = dataRow.get(indexUpdate6);
-					filedWhere.put(FILED_KEY_UPDATE_6, V_FILED_KEY_UPDATE_6);
-				}
-
-				if (indexUpdate7 != null) {
-					V_FILED_KEY_UPDATE_7 = dataRow.get(indexUpdate7);
-					filedWhere.put(FILED_KEY_UPDATE_7, V_FILED_KEY_UPDATE_7);
-				}
-
-				if (indexUpdate8 != null) {
-					V_FILED_KEY_UPDATE_8 = dataRow.get(indexUpdate8);
-					filedWhere.put(FILED_KEY_UPDATE_8, V_FILED_KEY_UPDATE_8);
-				}
-
-				if (indexUpdate9 != null) {
-					V_FILED_KEY_UPDATE_9 = dataRow.get(indexUpdate9);
-					filedWhere.put(FILED_KEY_UPDATE_9, V_FILED_KEY_UPDATE_9);
-				}
-
-				if (indexUpdate10 != null) {
-					V_FILED_KEY_UPDATE_10 = dataRow.get(indexUpdate10);
-					filedWhere.put(FILED_KEY_UPDATE_10, V_FILED_KEY_UPDATE_10);
-				}
-
-				if (indexUpdate11 != null) {
-					V_FILED_KEY_UPDATE_11 = dataRow.get(indexUpdate11);
-					filedWhere.put(FILED_KEY_UPDATE_11, V_FILED_KEY_UPDATE_11);
-				}
-
-				if (indexUpdate12 != null) {
-					V_FILED_KEY_UPDATE_12 = dataRow.get(indexUpdate12);
-					filedWhere.put(FILED_KEY_UPDATE_12, V_FILED_KEY_UPDATE_12);
-				}
-
-				if (indexUpdate13 != null) {
-					V_FILED_KEY_UPDATE_13 = dataRow.get(indexUpdate13);
-					filedWhere.put(FILED_KEY_UPDATE_13, V_FILED_KEY_UPDATE_13);
-				}
-
-				if (indexUpdate14 != null) {
-					V_FILED_KEY_UPDATE_14 = dataRow.get(indexUpdate14);
-					filedWhere.put(FILED_KEY_UPDATE_14, V_FILED_KEY_UPDATE_14);
-				}
-
-				if (indexUpdate15 != null) {
-					V_FILED_KEY_UPDATE_15 = dataRow.get(indexUpdate15);
-					filedWhere.put(FILED_KEY_UPDATE_15, V_FILED_KEY_UPDATE_15);
-				}
-
-				if (indexUpdate16 != null) {
-					V_FILED_KEY_UPDATE_16 = dataRow.get(indexUpdate16);
-					filedWhere.put(FILED_KEY_UPDATE_16, V_FILED_KEY_UPDATE_16);
-				}
-
-				if (indexUpdate17 != null) {
-					V_FILED_KEY_UPDATE_17 = dataRow.get(indexUpdate17);
-					filedWhere.put(FILED_KEY_UPDATE_17, V_FILED_KEY_UPDATE_17);
-				}
-
-				if (indexUpdate18 != null) {
-					V_FILED_KEY_UPDATE_18 = dataRow.get(indexUpdate18);
-					filedWhere.put(FILED_KEY_UPDATE_18, V_FILED_KEY_UPDATE_18);
-				}
-
-				if (indexUpdate19 != null) {
-					V_FILED_KEY_UPDATE_19 = dataRow.get(indexUpdate19);
-					filedWhere.put(FILED_KEY_UPDATE_19, V_FILED_KEY_UPDATE_19);
-				}
-
-				if (indexUpdate20 != null) {
-					V_FILED_KEY_UPDATE_20 = dataRow.get(indexUpdate20);
-					filedWhere.put(FILED_KEY_UPDATE_20, V_FILED_KEY_UPDATE_20);
-				}
-
-				// 対象データの会社IDをパラメータの会社IDに入れ替える - Thay thế CID
+				// 対象データの会社IDをパラメータの会社IDに入れ替える - swap CID
 				cidTable = dataRow.get(0);
 				String cidCurrent = AppContexts.user().companyId();
 				if (!cidTable.equals(cidCurrent)) {
@@ -500,13 +304,11 @@ public class RecoveryStorageService {
 				int count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME,
 						namePhysicalCid, cidCurrent);
 
-				if (count == 2) {
-					if (tableUse) {
-						errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
-						return errorCode;
-					} else {
-						continue;
-					}
+				if (count == 2 && tableUse) {
+					errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
+					return errorCode;
+				} else if (count == 2 && !tableUse) {
+					continue;
 				} else if (count == 1 && tableUse) {
 					performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 							cidCurrent);
@@ -521,7 +323,7 @@ public class RecoveryStorageService {
 
 				}
 
-				int indexCidOfCsv = targetDataHeader.indexOf(namePhysicalCid);
+				indexCidOfCsv = targetDataHeader.indexOf(namePhysicalCid);
 				HashMap<String, String> dataInsertDb = new HashMap<>();
 				for (int j = 5; j < dataRow.size(); j++) {
 					if (j == indexCidOfCsv) {
@@ -553,34 +355,34 @@ public class RecoveryStorageService {
 		if (tableList.isPresent()) {
 
 			if (tableList.get().getClsKeyQuery1().get() != null
-					&& tableList.get().getClsKeyQuery1().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery1().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate1().get();
 			} else if (tableList.get().getClsKeyQuery2().get() != null
-					&& tableList.get().getClsKeyQuery2().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery2().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate2().get();
 			} else if (tableList.get().getClsKeyQuery3().get() != null
-					&& tableList.get().getClsKeyQuery3().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery3().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate3().get();
 			} else if (tableList.get().getClsKeyQuery4().get() != null
-					&& tableList.get().getClsKeyQuery4().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery4().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate4().get();
 			} else if (tableList.get().getClsKeyQuery5().get() != null
-					&& tableList.get().getClsKeyQuery5().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery5().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate5().get();
 			} else if (tableList.get().getClsKeyQuery6().get() != null
-					&& tableList.get().getClsKeyQuery6().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery6().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate6().get();
 			} else if (tableList.get().getClsKeyQuery7().get() != null
-					&& tableList.get().getClsKeyQuery7().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery7().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate7().get();
 			} else if (tableList.get().getClsKeyQuery8().get() != null
-					&& tableList.get().getClsKeyQuery8().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery8().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate8().get();
 			} else if (tableList.get().getClsKeyQuery9().get() != null
-					&& tableList.get().getClsKeyQuery9().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery9().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate9().get();
 			} else if (tableList.get().getClsKeyQuery10().get() != null
-					&& tableList.get().getClsKeyQuery10().get().equals("0")) {
+					&& tableList.get().getClsKeyQuery10().get().equals(INDEX_CID_CSV)) {
 				namePhysical = tableList.get().getFiledKeyUpdate10().get();
 			}
 		}
@@ -592,72 +394,82 @@ public class RecoveryStorageService {
 
 		String whereCid = null;
 		String whereSid = null;
-		if (tableList.get().getClsKeyQuery1().get() != null && tableList.get().getClsKeyQuery1().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery1().get() != null
+				&& tableList.get().getClsKeyQuery1().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate1().get();
 		} else if (tableList.get().getClsKeyQuery1().get() != null
-				&& tableList.get().getClsKeyQuery1().get().equals("5") && tableNotUse) {
+				&& tableList.get().getClsKeyQuery1().get().equals(INDEX_SID_CSV) && tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate1().get();
 		}
 
-		if (tableList.get().getClsKeyQuery2().get() != null && tableList.get().getClsKeyQuery2().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery2().get() != null
+				&& tableList.get().getClsKeyQuery2().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate2().get();
 		} else if (tableList.get().getClsKeyQuery2().get() != null
-				&& tableList.get().getClsKeyQuery2().get().equals("5") && tableNotUse) {
+				&& tableList.get().getClsKeyQuery2().get().equals(INDEX_SID_CSV) && tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate2().get();
 		}
 
-		if (tableList.get().getClsKeyQuery3().get() != null && tableList.get().getClsKeyQuery3().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery3().get() != null
+				&& tableList.get().getClsKeyQuery3().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate3().get();
 		} else if (tableList.get().getClsKeyQuery3().get() != null
-				&& tableList.get().getClsKeyQuery3().get().equals("5") && tableNotUse) {
+				&& tableList.get().getClsKeyQuery3().get().equals(INDEX_SID_CSV) && tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate3().get();
 		}
 
-		if (tableList.get().getClsKeyQuery4().get() != null && tableList.get().getClsKeyQuery4().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery4().get() != null
+				&& tableList.get().getClsKeyQuery4().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate4().get();
 		} else if (tableList.get().getClsKeyQuery4().get() != null
-				&& tableList.get().getClsKeyQuery4().get().equals("5") && tableNotUse) {
+				&& tableList.get().getClsKeyQuery4().get().equals(INDEX_SID_CSV) && tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate4().get();
 		}
 
-		if (tableList.get().getClsKeyQuery5().get() != null && tableList.get().getClsKeyQuery5().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery5().get() != null
+				&& tableList.get().getClsKeyQuery5().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate5().get();
 		} else if (tableList.get().getClsKeyQuery5().get() != null
-				&& tableList.get().getClsKeyQuery5().get().equals("5") && tableNotUse) {
+				&& tableList.get().getClsKeyQuery5().get().equals(INDEX_SID_CSV) && tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate5().get();
 		}
 
-		if (tableList.get().getClsKeyQuery6().get() != null && tableList.get().getClsKeyQuery6().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery6().get() != null
+				&& tableList.get().getClsKeyQuery6().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate6().get();
 		} else if (tableList.get().getClsKeyQuery6().get() != null
-				&& tableList.get().getClsKeyQuery6().get().equals("5") && tableNotUse) {
+				&& tableList.get().getClsKeyQuery6().get().equals(INDEX_SID_CSV) && tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate6().get();
 		}
 
-		if (tableList.get().getClsKeyQuery7().get() != null && tableList.get().getClsKeyQuery7().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery7().get() != null
+				&& tableList.get().getClsKeyQuery7().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate7().get();
 		} else if (tableList.get().getClsKeyQuery7().get() != null
-				&& tableList.get().getClsKeyQuery7().get().equals("5") && !tableNotUse) {
+				&& tableList.get().getClsKeyQuery7().get().equals(INDEX_SID_CSV) && !tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate7().get();
 		}
-		if (tableList.get().getClsKeyQuery8().get() != null && tableList.get().getClsKeyQuery8().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery8().get() != null
+				&& tableList.get().getClsKeyQuery8().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate8().get();
 		} else if (tableList.get().getClsKeyQuery8().get() != null
-				&& tableList.get().getClsKeyQuery8().get().equals("5") && tableNotUse) {
+				&& tableList.get().getClsKeyQuery8().get().equals(INDEX_SID_CSV) && tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate8().get();
 		}
 
-		if (tableList.get().getClsKeyQuery9().get() != null && tableList.get().getClsKeyQuery9().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery9().get() != null
+				&& tableList.get().getClsKeyQuery9().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate9().get();
 		} else if (tableList.get().getClsKeyQuery9().get() != null
-				&& tableList.get().getClsKeyQuery9().get().equals("5") && tableNotUse) {
+				&& tableList.get().getClsKeyQuery9().get().equals(INDEX_SID_CSV) && tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate9().get();
 		}
 
-		if (tableList.get().getClsKeyQuery10().get() != null && tableList.get().getClsKeyQuery10().get().equals("0")) {
+		if (tableList.get().getClsKeyQuery10().get() != null
+				&& tableList.get().getClsKeyQuery10().get().equals(INDEX_CID_CSV)) {
 			whereCid = tableList.get().getFiledKeyUpdate10().get();
 		} else if (tableList.get().getClsKeyQuery10().get() != null
-				&& tableList.get().getClsKeyQuery10().get().equals("5") && tableNotUse) {
+				&& tableList.get().getClsKeyQuery10().get().equals(INDEX_SID_CSV) && tableNotUse) {
 			whereSid = tableList.get().getFiledKeyUpdate10().get();
 		}
 
@@ -703,15 +515,15 @@ public class RecoveryStorageService {
 				// Get trạng thái domain データ復旧動作管理
 				Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository
 						.getDataRecoveryMngById(dataRecoveryProcessId);
-				if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition().value == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
-					return DataRecoveryOperatingCondition.INTERRUPTION_END.value; 	
+				if (dataRecoveryMng.isPresent() && dataRecoveryMng.get()
+						.getOperatingCondition().value == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
+					return DataRecoveryOperatingCondition.INTERRUPTION_END.value;
 				}
 
 				List<List<String>> targetDataRecovery = CsvFileUtil.getAllRecord(uploadId,
 						tableNotUseByCategory.getTables().get(i).getInternalFileName());
-				
-				// sort date TO-DO
-				
+
+
 				// 期間別データ処理
 				Optional<TableList> tableList = performDataRecoveryRepository.getByInternal(
 						tableNotUseByCategory.getTables().get(i).getInternalFileName(), dataRecoveryProcessId);
@@ -740,22 +552,22 @@ public class RecoveryStorageService {
 		// カテゴリ単位の復旧
 		if (tableListByCategory.getTables().size() > 0) {
 
-			// -- Get List data từ file CSV
+			// -- Get List data from  CSV file
 			// Create [対象データ] TargetData
 			Set<String> hashId = new HashSet<>();
 			for (int j = 0; j < tableListByCategory.getTables().size(); j++) {
 				List<List<String>> dataRecovery = CsvFileUtil.getAllRecord(uploadId,
 						tableListByCategory.getTables().get(j).getInternalFileName());
 
-				// -- Tổng hợp ID Nhân viên duy nhất từ List Data
+				// -- get employeeID unique from list data CSV
 				for (int i = 1; i < dataRecovery.size(); i++) {
 					if (!dataRecovery.get(i).get(INDEX_SID).isEmpty())
 						hashId.add(dataRecovery.get(i).get(INDEX_SID));
 				}
 
-				DataRecoveryTable targetData = new DataRecoveryTable(dataRecovery,
-						tableListByCategory.getTables().get(j).getInternalFileName());
 				if (dataRecovery.size() > 1) {
+					DataRecoveryTable targetData = new DataRecoveryTable(dataRecovery,
+							tableListByCategory.getTables().get(j).getInternalFileName());
 					targetDataByCate.add(targetData);
 				}
 			}
@@ -770,6 +582,9 @@ public class RecoveryStorageService {
 				});
 			}
 
+			// check employeeId in Target of PreformDataRecovery
+			List<Target> listTarget = performDataRecoveryRepository.findByDataRecoveryId(dataRecoveryProcessId);
+
 			// Foreach 対象社員コード＿ID
 			for (EmployeeDataReInfoImport employeeDataMngInfoImport : employeeInfos) {
 
@@ -781,7 +596,7 @@ public class RecoveryStorageService {
 				try {
 					errorCode = self.recoveryDataByEmployee(dataRecoveryProcessId,
 							employeeDataMngInfoImport.getEmployeeCode(), employeeDataMngInfoImport.getEmployeeId(),
-							targetDataByCate);
+							targetDataByCate, listTarget);
 				} catch (Exception e) {
 					errorCode = Integer.valueOf(e.getMessage());
 				}
@@ -893,21 +708,17 @@ public class RecoveryStorageService {
 			Integer Y_Date_Csv = Integer.parseInt(H_Date_Csv.substring(0, 4));
 			if (resultsSetting.get(0).equals("6")) {
 				if (Y_Date_Csv < Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3))
-						|| Y_Date_Csv > Integer
-								.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3))) {
+						|| Y_Date_Csv > Integer.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3))) {
 					return false;
 				}
 			} else if (resultsSetting.get(0).equals("7")) {
 				Integer M_Date_Csv = Integer.parseInt(H_Date_Csv.substring(5, 7));
 				if (Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3)) > Y_Date_Csv
-						|| (Integer
-								.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3)) == Y_Date_Csv
-								&& M_Date_Csv < Integer
-										.parseInt(tableList.get().getSaveDateFrom().get().substring(4)))
+						|| (Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3)) == Y_Date_Csv
+								&& M_Date_Csv < Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(4)))
 						|| Integer.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3)) < Y_Date_Csv
 						|| (Integer.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3)) == Y_Date_Csv
-								&& M_Date_Csv > Integer
-										.parseInt(tableList.get().getSaveDateTo().get().substring(4)))) {
+								&& M_Date_Csv > Integer.parseInt(tableList.get().getSaveDateTo().get().substring(4)))) {
 					return false;
 				}
 
@@ -959,6 +770,172 @@ public class RecoveryStorageService {
 		}
 		return errorCode;
 
+	}
+
+	private List<List<String>> sortByDate(List<List<String>> targetDataTable) {
+		List<List<String>> dataTableCus = new ArrayList<>();
+		for (List<String> list : targetDataTable) {
+			dataTableCus.add(list);
+		}
+		dataTableCus.remove(0);
+		Collections.sort(dataTableCus, new Comparator<List<String>>() {
+			DateFormat f = new SimpleDateFormat("yyyy-MM-dd");// or your
+
+			@Override
+			public int compare(List<String> o1, List<String> o2) {
+				try {
+					if (o1.get(2) == null || o1.get(2).isEmpty()) {
+						return (o2.get(2) == null) ? 0 : -1;
+					}
+					if (o2.get(2) == null || o2.get(2).isEmpty()) {
+						return 1;
+					}
+					return f.parse(o1.get(2)).compareTo(f.parse(o2.get(2)));
+				} catch (ParseException e) {
+					throw new IllegalArgumentException(e);
+				}
+			}
+		});
+		return dataTableCus;
+	}
+
+	private HashMap<Integer, String> indexMapFiledCsv(List<String> targetDataHeader, Optional<TableList> tableList) {
+
+		HashMap<Integer, String> indexfiledUpdate = new HashMap<>();
+		Integer indexUpdate1 = null, indexUpdate2 = null, indexUpdate3 = null, indexUpdate4 = null, indexUpdate5 = null,
+				indexUpdate6 = null;
+		Integer indexUpdate7 = null, indexUpdate8 = null, indexUpdate9 = null, indexUpdate10 = null,
+				indexUpdate11 = null, indexUpdate12 = null;
+		Integer indexUpdate13 = null, indexUpdate14 = null, indexUpdate15 = null, indexUpdate16 = null,
+				indexUpdate17 = null, indexUpdate18 = null, indexUpdate19 = null, indexUpdate20 = null;
+
+		String FILED_KEY_UPDATE_1 = null, FILED_KEY_UPDATE_2 = null, FILED_KEY_UPDATE_3 = null,
+				FILED_KEY_UPDATE_4 = null, FILED_KEY_UPDATE_5 = null, FILED_KEY_UPDATE_6 = null;
+		String FILED_KEY_UPDATE_7 = null, FILED_KEY_UPDATE_8 = null, FILED_KEY_UPDATE_9 = null,
+				FILED_KEY_UPDATE_10 = null, FILED_KEY_UPDATE_11 = null, FILED_KEY_UPDATE_12 = null;
+		String FILED_KEY_UPDATE_13 = null, FILED_KEY_UPDATE_14 = null, FILED_KEY_UPDATE_15 = null,
+				FILED_KEY_UPDATE_16 = null, FILED_KEY_UPDATE_17 = null, FILED_KEY_UPDATE_18 = null,
+				FILED_KEY_UPDATE_19 = null, FILED_KEY_UPDATE_20 = null;
+
+		FILED_KEY_UPDATE_1 = tableList.get().getFiledKeyUpdate1().get();
+		if (FILED_KEY_UPDATE_1 != null && !FILED_KEY_UPDATE_1.isEmpty()) {
+			indexUpdate1 = targetDataHeader.indexOf(FILED_KEY_UPDATE_1);
+			indexfiledUpdate.put(indexUpdate1, FILED_KEY_UPDATE_1);
+		}
+		FILED_KEY_UPDATE_2 = tableList.get().getFiledKeyUpdate2().get();
+		if (FILED_KEY_UPDATE_2 != null && !FILED_KEY_UPDATE_2.isEmpty()) {
+			indexUpdate2 = targetDataHeader.indexOf(FILED_KEY_UPDATE_2);
+			indexfiledUpdate.put(indexUpdate2, FILED_KEY_UPDATE_2);
+		}
+		FILED_KEY_UPDATE_3 = tableList.get().getFiledKeyUpdate3().get();
+		if (FILED_KEY_UPDATE_3 != null && !FILED_KEY_UPDATE_3.isEmpty()) {
+			indexUpdate3 = targetDataHeader.indexOf(FILED_KEY_UPDATE_3);
+			indexfiledUpdate.put(indexUpdate3, FILED_KEY_UPDATE_3);
+		}
+
+		FILED_KEY_UPDATE_4 = tableList.get().getFiledKeyUpdate4().get();
+		if (FILED_KEY_UPDATE_4 != null && !FILED_KEY_UPDATE_4.isEmpty()) {
+			indexUpdate4 = targetDataHeader.indexOf(FILED_KEY_UPDATE_4);
+			indexfiledUpdate.put(indexUpdate4, FILED_KEY_UPDATE_4);
+		}
+
+		FILED_KEY_UPDATE_5 = tableList.get().getFiledKeyUpdate5().get();
+		if (FILED_KEY_UPDATE_5 != null && !FILED_KEY_UPDATE_5.isEmpty()) {
+			indexUpdate5 = targetDataHeader.indexOf(FILED_KEY_UPDATE_5);
+			indexfiledUpdate.put(indexUpdate5, FILED_KEY_UPDATE_5);
+		}
+
+		FILED_KEY_UPDATE_6 = tableList.get().getFiledKeyUpdate6().get();
+		if (FILED_KEY_UPDATE_6 != null && !FILED_KEY_UPDATE_6.isEmpty()) {
+			indexUpdate6 = targetDataHeader.indexOf(FILED_KEY_UPDATE_6);
+			indexfiledUpdate.put(indexUpdate6, FILED_KEY_UPDATE_6);
+		}
+
+		FILED_KEY_UPDATE_7 = tableList.get().getFiledKeyUpdate7().get();
+		if (FILED_KEY_UPDATE_7 != null && !FILED_KEY_UPDATE_7.isEmpty()) {
+			indexUpdate7 = targetDataHeader.indexOf(FILED_KEY_UPDATE_7);
+			indexfiledUpdate.put(indexUpdate7, FILED_KEY_UPDATE_7);
+		}
+
+		FILED_KEY_UPDATE_8 = tableList.get().getFiledKeyUpdate8().get();
+		if (FILED_KEY_UPDATE_8 != null && !FILED_KEY_UPDATE_8.isEmpty()) {
+			indexUpdate8 = targetDataHeader.indexOf(FILED_KEY_UPDATE_8);
+			indexfiledUpdate.put(indexUpdate8, FILED_KEY_UPDATE_8);
+		}
+
+		FILED_KEY_UPDATE_9 = tableList.get().getFiledKeyUpdate9().get();
+		if (FILED_KEY_UPDATE_9 != null && !FILED_KEY_UPDATE_9.isEmpty()) {
+			indexUpdate9 = targetDataHeader.indexOf(FILED_KEY_UPDATE_9);
+			indexfiledUpdate.put(indexUpdate9, FILED_KEY_UPDATE_9);
+		}
+
+		FILED_KEY_UPDATE_10 = tableList.get().getFiledKeyUpdate10().get();
+		if (FILED_KEY_UPDATE_10 != null && !FILED_KEY_UPDATE_10.isEmpty()) {
+			indexUpdate10 = targetDataHeader.indexOf(FILED_KEY_UPDATE_10);
+			indexfiledUpdate.put(indexUpdate10, FILED_KEY_UPDATE_10);
+		}
+
+		FILED_KEY_UPDATE_11 = tableList.get().getFiledKeyUpdate11().get();
+		if (FILED_KEY_UPDATE_11 != null && !FILED_KEY_UPDATE_11.isEmpty()) {
+			indexUpdate11 = targetDataHeader.indexOf(FILED_KEY_UPDATE_11);
+			indexfiledUpdate.put(indexUpdate11, FILED_KEY_UPDATE_11);
+		}
+
+		FILED_KEY_UPDATE_12 = tableList.get().getFiledKeyUpdate12().get();
+		if (FILED_KEY_UPDATE_12 != null && !FILED_KEY_UPDATE_12.isEmpty()) {
+			indexUpdate12 = targetDataHeader.indexOf(FILED_KEY_UPDATE_12);
+			indexfiledUpdate.put(indexUpdate12, FILED_KEY_UPDATE_12);
+		}
+
+		FILED_KEY_UPDATE_13 = tableList.get().getFiledKeyUpdate13().get();
+		if (FILED_KEY_UPDATE_13 != null && !FILED_KEY_UPDATE_13.isEmpty()) {
+			indexUpdate13 = targetDataHeader.indexOf(FILED_KEY_UPDATE_13);
+			indexfiledUpdate.put(indexUpdate13, FILED_KEY_UPDATE_13);
+		}
+
+		FILED_KEY_UPDATE_14 = tableList.get().getFiledKeyUpdate14().get();
+		if (FILED_KEY_UPDATE_14 != null && !FILED_KEY_UPDATE_14.isEmpty()) {
+			indexUpdate14 = targetDataHeader.indexOf(FILED_KEY_UPDATE_14);
+			indexfiledUpdate.put(indexUpdate14, FILED_KEY_UPDATE_14);
+		}
+
+		FILED_KEY_UPDATE_15 = tableList.get().getFiledKeyUpdate15().get();
+		if (FILED_KEY_UPDATE_15 != null && !FILED_KEY_UPDATE_15.isEmpty()) {
+			indexUpdate15 = targetDataHeader.indexOf(FILED_KEY_UPDATE_15);
+			indexfiledUpdate.put(indexUpdate15, FILED_KEY_UPDATE_15);
+		}
+
+		FILED_KEY_UPDATE_16 = tableList.get().getFiledKeyUpdate16().get();
+		if (FILED_KEY_UPDATE_16 != null && !FILED_KEY_UPDATE_16.isEmpty()) {
+			indexUpdate16 = targetDataHeader.indexOf(FILED_KEY_UPDATE_16);
+			indexfiledUpdate.put(indexUpdate16, FILED_KEY_UPDATE_16);
+		}
+
+		FILED_KEY_UPDATE_17 = tableList.get().getFiledKeyUpdate17().get();
+		if (FILED_KEY_UPDATE_17 != null && !FILED_KEY_UPDATE_17.isEmpty()) {
+			indexUpdate17 = targetDataHeader.indexOf(FILED_KEY_UPDATE_17);
+			indexfiledUpdate.put(indexUpdate17, FILED_KEY_UPDATE_17);
+		}
+
+		FILED_KEY_UPDATE_18 = tableList.get().getFiledKeyUpdate18().get();
+		if (FILED_KEY_UPDATE_18 != null && !FILED_KEY_UPDATE_18.isEmpty()) {
+			indexUpdate18 = targetDataHeader.indexOf(FILED_KEY_UPDATE_18);
+			indexfiledUpdate.put(indexUpdate18, FILED_KEY_UPDATE_18);
+		}
+
+		FILED_KEY_UPDATE_19 = tableList.get().getFiledKeyUpdate19().get();
+		if (FILED_KEY_UPDATE_19 != null && !FILED_KEY_UPDATE_19.isEmpty()) {
+			indexUpdate19 = targetDataHeader.indexOf(FILED_KEY_UPDATE_19);
+			indexfiledUpdate.put(indexUpdate19, FILED_KEY_UPDATE_19);
+		}
+
+		FILED_KEY_UPDATE_20 = tableList.get().getFiledKeyUpdate20().get();
+		if (FILED_KEY_UPDATE_20 != null && !FILED_KEY_UPDATE_20.isEmpty()) {
+			indexUpdate20 = targetDataHeader.indexOf(FILED_KEY_UPDATE_20);
+			indexfiledUpdate.put(indexUpdate20, FILED_KEY_UPDATE_20);
+		}
+
+		return indexfiledUpdate;
 	}
 
 }
