@@ -147,18 +147,50 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //							attendanceTime.getYmd(), attendanceTime));
 //					/*短時間勤務時間帯*/
 //				}
+//				for (LeaveEarlyTimeOfDaily leaveEarlyTime : attendanceTime.getActualWorkingTimeOfDaily()
+//						.getTotalWorkingTime().getLeaveEarlyTimeOfDaily()) {
+//					/* 早退時間 */
+//					//updateでもデータが無ければInsertされるため
+//					this.commandProxy().update(KrcdtDayLeaveEarlyTime.create(attendanceTime.getEmployeeId(),
+//							attendanceTime.getYmd(), leaveEarlyTime));
+//				}
+//				for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+//						.getLateTimeOfDaily()) {
+//					/* 遅刻時間 */
+//					this.commandProxy().update(
+//							KrcdtDayLateTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), lateTime));
+//				}
 				for (LeaveEarlyTimeOfDaily leaveEarlyTime : attendanceTime.getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getLeaveEarlyTimeOfDaily()) {
+					KrcdtDayLeaveEarlyTime krcdtDayLeaveEarlyTime = this
+							.queryProxy().find(
+									new KrcdtDayLeaveEarlyTimePK(attendanceTime.getEmployeeId(),
+										attendanceTime.getYmd(), leaveEarlyTime.getWorkNo().v()),
+								KrcdtDayLeaveEarlyTime.class)
+							.orElse(null);
 					/* 早退時間 */
-					//updateでもデータが無ければInsertされるため
-					this.commandProxy().update(KrcdtDayLeaveEarlyTime.create(attendanceTime.getEmployeeId(),
-							attendanceTime.getYmd(), leaveEarlyTime));
+					if (krcdtDayLeaveEarlyTime == null) {
+						this.commandProxy().insert(KrcdtDayLeaveEarlyTime.create(attendanceTime.getEmployeeId(),
+								attendanceTime.getYmd(), leaveEarlyTime));
+					} else {
+						krcdtDayLeaveEarlyTime.setData(leaveEarlyTime);
+						this.commandProxy().update(krcdtDayLeaveEarlyTime);
+					}
 				}
 				for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getLateTimeOfDaily()) {
+					KrcdtDayLateTime krcdtDayLateTime = this
+						.queryProxy().find(new KrcdtDayLateTimePK(attendanceTime.getEmployeeId(),
+								attendanceTime.getYmd(), lateTime.getWorkNo().v()), KrcdtDayLateTime.class)
+						.orElse(null);
 					/* 遅刻時間 */
-					this.commandProxy().update(
-							KrcdtDayLateTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), lateTime));
+					if (krcdtDayLateTime == null) {
+						this.commandProxy().insert(KrcdtDayLateTime.create(attendanceTime.getEmployeeId(),
+								attendanceTime.getYmd(), lateTime));
+					} else {
+						krcdtDayLateTime.setData(lateTime);
+						this.commandProxy().update(krcdtDayLateTime);
+					}
 				}
 //				/* 所定時間内時間 */
 //				this.commandProxy().insert(
