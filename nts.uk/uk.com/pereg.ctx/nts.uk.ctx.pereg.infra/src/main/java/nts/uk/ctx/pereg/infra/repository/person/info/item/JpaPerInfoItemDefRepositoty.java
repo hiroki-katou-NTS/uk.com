@@ -265,7 +265,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	
 	private final static String SELECT_CHILD_ITEMS_BY_ITEM_CD_QUERY = String.join(" ",
 			 SELECT_NO_WHERE,
-			"WHERE c.cid =:cid  and ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND ic.itemType = 2 AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ",
+			"WHERE c.cid =:cid  and ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND ic.itemType = 2  AND ic.ppemtPerInfoItemCmPK.categoryCd IN :ctgLst AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ",
 			"ORDER BY io.disporder");
 	
 	private final static String SEL_ITEM_EVENT = String.join(" ",
@@ -936,7 +936,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd, String companyId) {
+	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd, String companyId, List<String> categoryCodeLst) {
 		List<String> itemCodeAll = new ArrayList<>();
 		List<String> itemCodeChilds = this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_ID_QUERY, String.class)
 				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList();
@@ -952,6 +952,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					.setParameter("contractCd", contractCd)
 					.setParameter("itemCdLst", itemCodeAll)
 					.setParameter("cid", companyId)
+					.setParameter("ctgLst", categoryCodeLst)
 					.getList(c -> {return createDomainFromEntity1(c, null);});	
 		}
 		return new ArrayList<>();
