@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp;
 
+import nts.uk.ctx.at.shared.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
 /**
  * The Interface WkpAutoCalSettingSetMemento.
@@ -57,4 +60,25 @@ public interface WkpAutoCalSettingSetMemento {
 	 * @param restTime the new rest time
 	 */
 	void  setRestTime(AutoCalRestTimeSetting restTime);
+
+	/**
+	 * Sets the leave early.
+	 *
+	 * @param leaveEarly the new leave early
+	 */
+	void setLeaveEarly(AutoCalcOfLeaveEarlySetting leaveEarly);
+	
+	/**
+	 * Sets the raising salary.
+	 *
+	 * @param raisingSalary the new raising salary
+	 */
+	void setRaisingSalary(AutoCalRaisingSalarySetting raisingSalary);
+	
+	/**
+	 * Sets the divergence time.
+	 *
+	 * @param divergenceTime the new divergence time
+	 */
+	void setDivergenceTime(AutoCalcSetOfDivergenceTime divergenceTime);
 }

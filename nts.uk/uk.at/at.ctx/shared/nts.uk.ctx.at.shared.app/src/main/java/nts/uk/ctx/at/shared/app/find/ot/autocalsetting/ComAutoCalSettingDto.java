@@ -101,6 +101,13 @@ public class ComAutoCalSettingDto implements ComAutoCalSettingSetMemento{
 		this.restTime = dto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.
+	 * ComAutoCalSettingSetMemento#setLeaveEarly(nts.uk.ctx.at.shared.dom.ot.
+	 * autocalsetting.AutoCalcOfLeaveEarlySetting)
+	 */
 	@Override
 	public void setLeaveEarly(AutoCalcOfLeaveEarlySetting leaveEarly) {
 		AutoCalcOfLeaveEarlySettingDto dto = new AutoCalcOfLeaveEarlySettingDto();
@@ -109,6 +116,13 @@ public class ComAutoCalSettingDto implements ComAutoCalSettingSetMemento{
 		this.leaveEarly = dto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.
+	 * ComAutoCalSettingSetMemento#setRaisingSalary(nts.uk.ctx.at.shared.dom.
+	 * workrule.outsideworktime.AutoCalRaisingSalarySetting)
+	 */
 	@Override
 	public void setRaisingSalary(AutoCalRaisingSalarySetting raisingSalary) {
 		AutoCalRaisingSalarySettingDto dto = new AutoCalRaisingSalarySettingDto();
@@ -117,6 +131,13 @@ public class ComAutoCalSettingDto implements ComAutoCalSettingSetMemento{
 		this.raisingSalary = dto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.
+	 * ComAutoCalSettingSetMemento#setDivergenceTime(nts.uk.ctx.at.shared.dom.
+	 * calculationattribute.AutoCalcSetOfDivergenceTime)
+	 */
 	@Override
 	public void setDivergenceTime(AutoCalcSetOfDivergenceTime divergenceTime) {
 		this.divergenceTime = divergenceTime.getDivergenceTime().value;
