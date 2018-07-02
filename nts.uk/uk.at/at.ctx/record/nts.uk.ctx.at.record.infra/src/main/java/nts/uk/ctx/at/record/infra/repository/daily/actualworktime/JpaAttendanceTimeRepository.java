@@ -101,9 +101,19 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //																			  attendanceTime.getActualWorkingTimeOfDaily().getDivTime()));
 //			}
 			if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
-				//割増
-				this.commandProxy().update(KrcdtDayPremiumTime.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
-																		  attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance()));
+				/* 割増時間  */
+				Optional<KrcdtDayPremiumTime> krcdtDayPremiumTime = this.queryProxy()
+						.find(new KrcdtDayPremiumTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
+								KrcdtDayPremiumTime.class);
+				if(krcdtDayPremiumTime.isPresent()) {
+					//更新
+					krcdtDayPremiumTime.get().setData(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+					this.commandProxy().update(krcdtDayPremiumTime.get());
+				}else {
+					//追加
+					this.commandProxy().insert(KrcdtDayPremiumTime.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), 
+																			  attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance()));
+				}
 			}
 			if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 //				if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
