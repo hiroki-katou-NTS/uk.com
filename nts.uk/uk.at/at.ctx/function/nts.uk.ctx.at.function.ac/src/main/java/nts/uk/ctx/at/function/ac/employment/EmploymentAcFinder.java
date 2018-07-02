@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentHistoryImported;
@@ -28,7 +30,7 @@ public class EmploymentAcFinder implements EmploymentAdapter {
 		List<String> employmentCodes = syEmployeePub.getEmployeeCode(employeeId, baseDate);
 		
 		if (employmentCodes == null || employmentCodes.isEmpty())
-			throw new RuntimeException("Not exist employment code of login employee!");
+			throw new BusinessException("Msg_1143"); 
 		return employmentCodes.get(0);
 	}
 

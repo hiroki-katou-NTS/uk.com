@@ -128,4 +128,14 @@ public class CreateHolidayWorkCommand {
 	 * 計算フラグ
 	 */
 	private int calculateFlag;
+	
+	/**
+	 * 申請ＩＤ（元振休）
+	 */
+	private String leaveAppID;
+	
+	/**
+	 * uiType
+	 */
+	private int uiType;
 }

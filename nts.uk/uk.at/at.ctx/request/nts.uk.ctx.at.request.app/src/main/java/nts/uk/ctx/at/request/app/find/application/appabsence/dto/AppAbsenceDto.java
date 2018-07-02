@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 
@@ -38,6 +39,11 @@ public class AppAbsenceDto {
 	 * employeeName
 	 */
 	private String employeeName;
+	
+	/**
+	 * employees
+	 */
+	private List<EmployeeOvertimeDto> employees;
 	/**
 	 * 休暇種類
 	 */
@@ -167,6 +173,7 @@ public class AppAbsenceDto {
 								app.getAppID(),
 								app.getApplication().getEmployeeID(),
 								"",
+								null,
 								app.getHolidayAppType().value,
 								app.getWorkTypeCode() == null ? null : app.getWorkTypeCode().toString(),
 								"",

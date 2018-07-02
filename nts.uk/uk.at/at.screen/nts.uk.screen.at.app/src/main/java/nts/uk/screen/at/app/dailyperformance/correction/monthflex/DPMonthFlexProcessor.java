@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexInfoDisplayChange;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexShortageDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
@@ -116,7 +117,9 @@ public class DPMonthFlexProcessor {
 				new Day(closingPeriod.get().getClosureDate().getClosureDay()), closingPeriod.get().getProcessingYm());
 
 		// TODO ドメインモデル「社員の月別実績エラー一覧」を取得する
-		
+//		Optional<ErrorFlexMonthDto> errorMonth = repo.getErrorFlexMonth(0, closingPeriod.get().getProcessingYm().v(), param.getEmployeeId(),
+//				closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureDate().getClosureDay().intValue(),
+//				closingPeriod.get().getClosureDate().getLastDayOfMonth().booleanValue() ? 1 : 0);
 		//フレックス情報を表示する
 		itemMonthFlexResults = monthlyModifyQueryProcessor.initScreen(
 				new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), DAFAULT_ITEM,

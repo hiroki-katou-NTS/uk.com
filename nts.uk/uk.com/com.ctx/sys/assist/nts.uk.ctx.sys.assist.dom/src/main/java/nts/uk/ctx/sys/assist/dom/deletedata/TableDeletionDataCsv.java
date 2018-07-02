@@ -30,7 +30,7 @@ public class TableDeletionDataCsv {
 	private String delCode;
 
 	/**
-	 * 保存名称
+	 * 保存する名称
 	 */
 	private String delName;
 
@@ -55,9 +55,24 @@ public class TableDeletionDataCsv {
 	private int timeStore;
 
 	/**
-	 * 復旧保存範囲
+	 * 保存範囲
 	 */
 	private int recoveryStorageRange;
+	
+	/**
+	 * 画面保存期間
+	 */
+	private String retentionPeriod;
+	
+	/**
+	 * 参照年
+	 */
+	private String referenceYear;
+	
+	/**
+	 * 参照月
+	 */
+	private String referenceMonth;
 
 	/**
 	 * 調査用保存
@@ -68,6 +83,11 @@ public class TableDeletionDataCsv {
 	 * 別会社区分
 	 */
 	private int otherCompanyCls;
+	
+	/**
+	 * カテゴリ構成No
+	 */
+	private int categoryConstitutionNo;
 
 	/**
 	 * テーブル日本語名

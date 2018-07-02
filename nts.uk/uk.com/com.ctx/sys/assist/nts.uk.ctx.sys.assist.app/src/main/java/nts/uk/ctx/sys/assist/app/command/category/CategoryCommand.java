@@ -2,8 +2,6 @@ package nts.uk.ctx.sys.assist.app.command.category;
 
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class CategoryCommand
