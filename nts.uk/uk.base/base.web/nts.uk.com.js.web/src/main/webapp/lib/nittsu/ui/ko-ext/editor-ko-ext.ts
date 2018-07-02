@@ -243,6 +243,7 @@ module nts.uk.ui.koExtentions {
             var setWidthByConstraint: boolean = (data.setWidthByConstraint !== undefined) ? ko.unwrap(data.setWidthByConstraint) : false;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var setValOnRequiredError: boolean = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
+            let constraint = !_.isNil(data.constraint) ? ko.unwrap(data.constraint) : undefined;
             $input.data("setValOnRequiredError", setValOnRequiredError);
             
             self.setWidthByConstraint(constraintName, $input);
@@ -291,6 +292,11 @@ module nts.uk.ui.koExtentions {
                         }
                     } else {
                         $input.ntsError('clearKibanError');
+                        if (constraint === "StampNumber" || constraint === "EmployeeCode") {
+                            let formatter = self.getFormatter(data);
+                            let formatted = formatter.format(result.parsedValue);
+                            $input.val(formatted);
+                        }
                     }
                 }
             });
@@ -366,6 +372,7 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
+            this.editorOption = this.editorOption || {};
             if (constraint && constraint.formatOption) {
                 $.extend(this.editorOption, constraint.formatOption);
             }
