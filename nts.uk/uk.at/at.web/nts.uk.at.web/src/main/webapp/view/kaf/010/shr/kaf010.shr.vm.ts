@@ -28,6 +28,14 @@ module nts.uk.at.view.kaf010.share {
                 this.employeeID = ko.observable(employeeID);
             }
         }
+        export class EmployeeOT{
+            id: string;
+            name: string;
+            constructor(id: string, name: string){
+                this.id = id;
+                this.name = name;
+            }    
+        }
         /**
          * 理由
          */

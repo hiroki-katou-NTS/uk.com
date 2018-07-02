@@ -49,7 +49,7 @@ public interface LeaveManaDataRepository {
 	 * @param occurredDays 休出日数
 	 * @param unUsedDays 未使用日数
 	 */
-	void udpateByHolidaySetting(String leaveId, Boolean isCheckedExpired, GeneralDate expiredDate, Double occurredDays, Double unUsedDays);
+	void udpateByHolidaySetting(String leaveId, Boolean isCheckedExpired, GeneralDate expiredDate, double occurredDays, double unUsedDays);
 
 	/**
 	 * Delete domain 休出管理データ
@@ -74,5 +74,5 @@ public interface LeaveManaDataRepository {
 	 * @param subHDAtr 代休消化区分 = subHDAtr
 	 * @return
 	 */
-	List<LeaveManagementData> getByExtinctionPeriod(String sid, DatePeriod tmpDateData, DatePeriod dateData, Double unUseDays, DigestionAtr subHDAtr);
+	List<LeaveManagementData> getByExtinctionPeriod(String sid, DatePeriod tmpDateData, DatePeriod dateData, double unUseDays, DigestionAtr subHDAtr);
 }

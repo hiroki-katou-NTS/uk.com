@@ -69,4 +69,13 @@ public enum NotUseAtr {
 	public boolean isUse() {
 		return USE.equals(this);
 	}
+	
+	/**
+	 * 使用しないであるか判定する
+	 * @return　使用しないである
+	 */
+	public boolean isNotUse() {
+		return NOT_USE.equals(this);
+	}
+	
 }

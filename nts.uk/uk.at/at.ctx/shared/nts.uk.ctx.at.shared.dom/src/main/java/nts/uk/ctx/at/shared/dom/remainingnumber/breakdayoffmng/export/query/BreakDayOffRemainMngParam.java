@@ -36,7 +36,7 @@ public class BreakDayOffRemainMngParam {
 	/**上書き用の暫定休出代休紐付け管理	 */
 	private List<InterimRemain> interimMng;
 	/**	上書き用の暫定休出管理データ */
-	private Optional<InterimBreakMng> breakMng;
+	private List<InterimBreakMng> breakMng;
 	/**	上書き用の  暫定代休管理データ*/
-	private Optional<InterimDayOffMng> dayOffMng;
+	private List<InterimDayOffMng> dayOffMng;
 }

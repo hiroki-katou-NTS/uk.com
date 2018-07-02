@@ -30,7 +30,7 @@ public class AppForLeaveWebService extends WebService{
 	@POST
 	@Path("getAppForLeaveStart")
 	public AppAbsenceDto getAppForLeaveStart(Param param) {
-		return this.appForLeaveFinder.getAppForLeave(param.getAppDate(),param.getEmployeeID());
+		return this.appForLeaveFinder.getAppForLeave(param.getAppDate(),param.getEmployeeID(),param.getEmployeeIDs());
 	}
 	@POST
 	@Path("getAllAppForLeave")
@@ -95,6 +95,7 @@ public class AppForLeaveWebService extends WebService{
 class Param{
 	private String appDate;
 	private String employeeID;
+	private List<String> employeeIDs;
 }
 
 @Value

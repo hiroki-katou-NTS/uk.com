@@ -88,11 +88,11 @@ public class TimeLeavingWork extends DomainObject{
 	public TimeLeavingWork correctJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave) {
 		TimeActualStamp newAttendance = attendanceStamp.get();
 		TimeActualStamp newLeave = leaveStamp.get();
-		if(isJustEarlyLeave) {
-			newAttendance = attendanceStamp.get().moveBackStampTime(1);
-		}
 		if(isJustTimeLateAttendance) {
-			newLeave = leaveStamp.get().moveAheadStampTime(1);
+			newAttendance = attendanceStamp.get().moveAheadStampTime(1);
+		}
+		if(isJustEarlyLeave) {
+			newLeave = leaveStamp.get().moveBackStampTime(1);
 		}
 		return new TimeLeavingWork(this.workNo, newAttendance , newLeave);
 	}

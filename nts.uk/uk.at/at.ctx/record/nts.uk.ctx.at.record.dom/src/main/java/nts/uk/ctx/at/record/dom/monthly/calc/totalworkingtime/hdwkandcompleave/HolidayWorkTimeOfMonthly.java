@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalHolidayWorkTransferOrderOfAggrMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
@@ -23,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -130,6 +133,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * @param excessOutsideTimeSet 時間外超過設定
 	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 * @param autoExceptHolidayWorkFrames 自動的に除く休出枠
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregateForRegAndIrreg(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
@@ -139,6 +144,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			ExcessOutsideTimeSetReg excessOutsideTimeSet,
 			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap,
 			List<RoleOfOpenPeriod> autoExceptHolidayWorkFrames,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計区分を確認する
@@ -148,7 +155,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			
 			// 休出を集計するか確認する
 			isAggregateHolidayWork = this.confirmAggregateHolidayWork(
-					companyId, workInfo, excessOutsideTimeSet, repositories);
+					companyId, workInfo, excessOutsideTimeSet, companySets, repositories);
 		}
 		if (isAggregateHolidayWork){
 			
@@ -157,7 +164,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				
 				// 自動計算して休出時間を集計する
 				this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
-						workInfo, legalHolidayWorkTransferOrder, roleHolidayWorkFrameMap, repositories);
+						workInfo, legalHolidayWorkTransferOrder, roleHolidayWorkFrameMap,
+						companySets, employeeSets, repositories);
 			}
 		}
 	}
@@ -167,6 +175,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * @param companyId 会社ID
 	 * @param workInfo 勤務情報
 	 * @param excessOutsideTimeSet 時間外超過設定
+	 * @param companySets 月別集計で必要な会社別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return true：休出を集計する、false：休出を集計しない
 	 */
@@ -174,12 +183,14 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			String companyId,
 			WorkInformation workInfo,
 			ExcessOutsideTimeSetReg excessOutsideTimeSet,
+			MonAggrCompanySettings companySets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 勤務種類から法定内休日か判断する
-		val workType = repositories.getWorkType().findByPK(companyId, workInfo.getWorkTypeCode().v());
-		if (workType.isPresent()){
-			val workTypeSet = workType.get().getWorkTypeSet();
+		if (workInfo.getWorkTypeCode() == null) return true;
+		val workType = companySets.getWorkTypeMap(workInfo.getWorkTypeCode().v(), repositories);
+		if (workType != null){
+			val workTypeSet = workType.getWorkTypeSet();
 			if (workTypeSet != null){
 				val holidayAtr = workTypeSet.getHolidayAtr();
 				// 法定内休日なら、休出を集計しない
@@ -201,6 +212,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * @param workInfo 勤務情報
 	 * @param legalHolidayWorkTransferOrder 法定内休出振替順
 	 * @param roleHolidayWorkFrameMap 休出枠の役割
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private void aggregateByAutoCalc(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
@@ -208,11 +221,13 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			WorkInformation workInfo,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrder,
 			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 法定内休出にできる時間を計算する
 		AttendanceTime canLegalHolidayWork = this.calcLegalHolidayWork(attendanceTimeOfDaily,
-				companyId, placeId, employmentCd, workingSystem, repositories);
+				companyId, placeId, employmentCd, workingSystem, companySets, employeeSets, repositories);
 		
 		// 「休出枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -233,7 +248,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
-				companyId, workTimeCode, false);
+				companyId, companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), false);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -252,16 +267,26 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * @param placeId 職場ID
 	 * @param employmentCd 雇用コード
 	 * @param workingSystem 労働制
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private AttendanceTime calcLegalHolidayWork(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String placeId, String employmentCd, WorkingSystem workingSystem,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 日の法定労働時間を取得する
-		val dailyUnit = repositories.getDailyStatutoryWorkingHours().getDailyUnit(
-				companyId, employmentCd, attendanceTimeOfDaily.getEmployeeId(),
-				attendanceTimeOfDaily.getYmd(), workingSystem);
+		DailyUnit dailyUnit = DailyUnit.zero();
+		val workTimeSetOpt = companySets.getWorkingTimeSetting(employmentCd,
+				employeeSets.getWorkplacesToRoot(attendanceTimeOfDaily.getYmd()),
+				workingSystem, employeeSets, repositories);
+		if (workTimeSetOpt.isPresent()){
+			if (workTimeSetOpt.get().getDailyTime() != null){
+				dailyUnit = workTimeSetOpt.get().getDailyTime();
+			}
+		}
 		
 		// 法定内休出にできる時間
 		AttendanceTime canLegalHolidayWork = new AttendanceTime(dailyUnit.getDailyTime().v());

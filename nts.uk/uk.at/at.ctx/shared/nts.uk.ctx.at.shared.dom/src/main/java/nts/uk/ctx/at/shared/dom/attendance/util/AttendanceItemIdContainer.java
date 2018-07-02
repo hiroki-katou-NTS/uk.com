@@ -610,16 +610,16 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(312, join(excessHoliday, FRAMES, TRANSFER, joinNS(TIME, NUMBER_1, NUMBER_0)));
 		temp.put(314, join(excessHoliday, FRAMES, TRANSFER, joinNS(CALC, NUMBER_1, NUMBER_0)));
 		
-		temp.put(777, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_1)));
-		temp.put(778, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_2)));
-		temp.put(779, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_3)));
-		temp.put(780, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_4)));
-		temp.put(781, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_5)));
-		temp.put(782, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_6)));
-		temp.put(783, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_7)));
-		temp.put(784, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_8)));
-		temp.put(785, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_9)));
-		temp.put(786, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_1, NUMBER_0)));
+		temp.put(777, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_1)));
+		temp.put(778, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_2)));
+		temp.put(779, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_3)));
+		temp.put(780, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_4)));
+		temp.put(781, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_5)));
+		temp.put(782, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_6)));
+		temp.put(783, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_7)));
+		temp.put(784, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_8)));
+		temp.put(785, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_9)));
+		temp.put(786, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_1, NUMBER_0)));
 		temp.put(790, join(excessHoliday, LATE_NIGHT, LEGAL, DIVERGENCE));
 		temp.put(791, join(excessHoliday, LATE_NIGHT, ILLEGAL, DIVERGENCE));
 		temp.put(792, join(excessHoliday, LATE_NIGHT, PUBLIC_HOLIDAY, DIVERGENCE));
@@ -2222,13 +2222,13 @@ public class AttendanceItemIdContainer implements ItemConst {
 	
 	public static Map<ItemValue, Integer> mapOptionalItemsToNos(Collection<ItemValue> items) {
 		return toFilterStream(items).collect(Collectors.toMap(i -> i, i -> {
-			return Integer.parseInt(i.path().replace(i.path().replace(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
+			return Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
 		}));
 	}
 	
 	public static Map<Integer, Integer> mapOptionalItemIdsToNos(Collection<ItemValue> items) {
 		return toFilterStream(items).collect(Collectors.toMap(i -> i.getItemId(), i -> {
-			return Integer.parseInt(i.path().replace(i.path().replace(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
+			return Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
 		}));
 	}
 	
