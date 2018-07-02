@@ -25,6 +25,9 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
@@ -53,6 +56,9 @@ public class MonthlyAggregateProcessService {
 	@Inject
 	private CheckResultMonthlyAdapter checkResultMonthlyAdapter;
 	
+	@Inject
+	private ClosureService closureService;
+	
 	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees){
 		
 		
@@ -75,6 +81,7 @@ public class MonthlyAggregateProcessService {
 		DatePeriod endDatePerior = new DatePeriod(period.end(),period.end());
 		List<String> listEmployeeID = responseImprovementAdapter.reduceTargetResponseImprovement(employeeIds, endDatePerior, alCheckConByCategory.get().getExtractTargetCondition());
 		
+		
 		//対象者の件数をチェック : 対象者　≦　0
 		if(listEmployeeID.isEmpty()) {
 			return Collections.emptyList();
@@ -95,6 +102,10 @@ public class MonthlyAggregateProcessService {
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
 		
 		for(EmployeeSearchDto employee : employees) {
+			
+			Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+			int closureID= closure.getClosureId().value;
+			ClosureDate closureDate = closure.getClosureHistories().get(0).getClosureDate();
 			for (YearMonth yearMonth : lstYearMonth) {
 				for(int i = 0;i<listFixed.size();i++) {
 					if(listFixed.get(i).isUseAtr()) {
@@ -115,8 +126,12 @@ public class MonthlyAggregateProcessService {
 							case 2 :break;//chua co
 							case 3 :break;//chua co
 							case 4 :
-								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee.getId(), yearMonth.v().intValue());
+								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee.getId(), yearMonth.v().intValue(),closureID,closureDate);
 								if(agreement.isPresent()) {
+									agreement.get().setAlarmValueMessage(listFixed.get(i).getMessage());
+									agreement.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+									String dateAgreement = agreement.get().getAlarmValueDate().substring(0, 7);
+									agreement.get().setAlarmValueDate(dateAgreement);
 									listValueExtractAlarm.add(agreement.get());
 								}
 							break;
@@ -143,6 +158,8 @@ public class MonthlyAggregateProcessService {
 		for (ExtraResultMonthlyDomainEventDto extra : listExtra) {
 			for (YearMonth yearMonth : lstYearMonth) {
 				for (EmployeeSearchDto employee : employees) {
+					
+					
 					switch (extra.getTypeCheckItem()) {
 					case 0:
 						boolean checkPublicHoliday = checkResultMonthlyAdapter.checkPublicHoliday(companyId, employee.getCode(), employee.getId(),
@@ -161,48 +178,49 @@ public class MonthlyAggregateProcessService {
 						}
 						break;
 					case 1:
-						//TODO : chua biet date là gì
-						GeneralDate date = GeneralDate.today();
-						boolean checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date, 
-								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
-						if(checkAgreementError) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									yearMonth.toString(),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_204"),
-									//TODO : còn thiếu
-									TextResource.localize("KAL010_205"),
-									
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
-						}
-						break;
+//						//TODO : chua biet date là gì
+//						GeneralDate date = GeneralDate.today();
+//						boolean checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date, 
+//								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
+//						if(checkAgreementError) {
+//							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+//									employee.getWorkplaceId(),
+//									employee.getId(),
+//									yearMonth.toString(),
+//									TextResource.localize("KAL010_100"),
+//									TextResource.localize("KAL010_204"),
+//									//TODO : còn thiếu
+//									TextResource.localize("KAL010_205"),
+//									
+//									extra.getDisplayMessage()
+//									);
+//							listValueExtractAlarm.add(resultMonthlyValue);
+//						}
+//						break;
 					case 2:
-						//TODO : chua biet date là gì
-						GeneralDate date2 = GeneralDate.today();
-						boolean checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date2, 
-								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
-						if(checkAgreementAlarm) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									yearMonth.toString(),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_206"),
-									//TODO : còn thiếu
-									TextResource.localize("KAL010_207"),
-									
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
-						}
-						if(true) {
-							
-						}
-						
+//						//TODO : chua biet date là gì
+//						GeneralDate date2 = GeneralDate.today();
+//						boolean checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date2, 
+//								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
+//						if(checkAgreementAlarm) {
+//							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+//									employee.getWorkplaceId(),
+//									employee.getId(),
+//									yearMonth.toString(),
+//									TextResource.localize("KAL010_100"),
+//									TextResource.localize("KAL010_206"),
+//									//TODO : còn thiếu
+//									TextResource.localize("KAL010_207"),
+//									
+//									extra.getDisplayMessage()
+//									);
+//							listValueExtractAlarm.add(resultMonthlyValue);
+//						}
+//						if(true) {
+//							
+//						}
+						break;
+					case 3 :
 						break;
 					case 4 : 
 						//Chưa có, chưa thiết kế	
@@ -211,17 +229,50 @@ public class MonthlyAggregateProcessService {
 						boolean checkPerTimeMonActualResult = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
 								yearMonth, 1, 1, employee.getId(), extra.getCheckConMonthly());
 						if(checkPerTimeMonActualResult) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									yearMonth.toString(),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_60"),
-									//TODO : còn thiếu
-									TextResource.localize("KAL010_207"),//fix tạm
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
+							if(extra.getTypeCheckItem() ==8) {
+								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+										employee.getWorkplaceId(),
+										employee.getId(),
+										yearMonth.toString(),
+										TextResource.localize("KAL010_100"),
+										TextResource.localize("KAL010_60"),
+										//TODO : còn thiếu
+										TextResource.localize("KAL010_207"),//fix tạm
+										
+										extra.getDisplayMessage()
+										);
+								listValueExtractAlarm.add(resultMonthlyValue);
+							}else {
+								String nameItem = "";
+								
+								switch(extra.getTypeCheckItem()) {
+								case 4 :
+									nameItem = TextResource.localize("KAL010_47");
+									break;
+								case 5 :
+									nameItem = TextResource.localize("KAL010_113");
+									break;
+								case 6 :
+									nameItem = TextResource.localize("KAL010_50");
+									break;
+								case 7 :
+									nameItem = TextResource.localize("KAL010_51");
+									break;
+								default : break;
+								}
+								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+										employee.getWorkplaceId(),
+										employee.getId(),
+										yearMonth.toString(),
+										TextResource.localize("KAL010_100"),
+										nameItem,
+										//TODO : còn thiếu
+										TextResource.localize("KAL010_207"),//fix tạm
+										
+										extra.getDisplayMessage()
+										);
+								listValueExtractAlarm.add(resultMonthlyValue);
+							}
 						}
 						
 						break;

@@ -80,11 +80,12 @@ public class CheckingPublicHolidayServiceImpl implements CheckingPublicHolidaySe
 			if(publicHolidayMonthSettings==null){
 				return false;
 			}
-			
+			//パラメータ．期間(年月)の月の「月間公休日数」を取得する
 			int inLegalHoliday =-1;
 			for (PublicHolidayMonthSetting publicHolidayMonthSetting : publicHolidayMonthSettings) {
 				if(publicHolidayMonthSetting.getMonth()==yearMonth.month()){
 					inLegalHoliday=	publicHolidayMonthSetting.getInLegalHoliday().v().intValue();
+					break;
 				}
 			}
 			if(inLegalHoliday==-1){
