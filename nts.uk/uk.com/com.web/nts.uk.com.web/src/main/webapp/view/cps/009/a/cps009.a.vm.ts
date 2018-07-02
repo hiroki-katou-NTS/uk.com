@@ -1227,7 +1227,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                 if (isKdl002) {
                     setShared("KDL002_Multiple", false, true);
-                    setShared("KDL002_SelectedItemId", self.selectedCode(), true);
+                    setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
                     setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
 
                     modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -1270,7 +1270,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     } else {
                         if (isWorkType) {
                             setShared("KDL002_Multiple", false, true);
-                            setShared("KDL002_SelectedItemId", self.selectedCode(), true);
+                            setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
                             setShared('kdl002isSelection', true, true);
                             setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
 
@@ -1278,10 +1278,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                                 let childData: Array<any> = getShared('KDL002_SelectedNewItem');
                                 if (childData.length > 0) {
                                     if (childData[0].code == "") {
-                                        self.selectionName(null);
-                                        self.selectedCode(null);
+                                        self.selectionName(undefined);
+                                        self.selectedCode(undefined);
                                     } else {
-                                        self.selectionName(childData[0].code + "　" + 　childData[0].name);
+                                        self.selectionName(childData[0].code + "　" + childData[0].name);
                                         self.selectedCode(childData[0].code);
                                     }
                                 }
@@ -1295,10 +1295,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
                                 let childData: Array<any> = getShared('kml001selectedTimes');
-                                if (childData.length > 0) {
-                                    self.setValueOfCS00020(childData[0], isWorkType, isWorkTime,
-                                        workType, workTime,
-                                        itemWorkTime, itemWorkType, false);
+                                if (childData) {
+                                    if (childData.length > 0) {
+                                        self.setValueOfCS00020(childData[0], isWorkType, isWorkTime,
+                                            workType, workTime,
+                                            itemWorkTime, itemWorkType, false);
+                                    }
                                 }
 
 
@@ -1328,11 +1330,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     { return obj; }
                 });
                 if (childData.selectedWorkTypeCode == "") {
-                    self.selectionName(null)
+                    self.selectionName(undefined);
+                   
                 } else {
                     self.selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
+                    self.selectedCode(childData.selectedWorkTypeCode);
                 }
-                self.selectedCode(childData.selectedWorkTypeCode);
+                
+                 self.selectedCode(childData.selectedWorkTypeCode == "" ? undefined:childData.selectedWorkTypeCode);
+
                 vm[itemWorkTime.indexItem - 1].selectionName(childData.selectedWorkTimeCode + "　" + childData.selectedWorkTimeName);
                 vm[itemWorkTime.indexItem - 1].selectedCode(childData.selectedWorkTimeCode);
 
@@ -1350,11 +1356,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     }
                 });
                 if (childData.selectedWorkTimeCode == "") {
-                    self.selectionName(null)
+                    self.selectionName(undefined);
                 } else {
                     self.selectionName(childData.selectedWorkTimeCode + "　" + childData.selectedWorkTimeName);
                 }
-                self.selectedCode(childData.selectedWorkTimeCode);
+                self.selectedCode(childData.selectedWorkTimeCode == "" ? undefined : childData.selectedWorkTimeCode);
                 if (isKdl003) {
                     vm[itemWorkType.indexItem - 1].selectionName(childData.selectedWorkTypeCode + "　" + childData.selectedWorkTypeName);
                     vm[itemWorkType.indexItem - 1].selectedCode(childData.selectedWorkTypeCode);
