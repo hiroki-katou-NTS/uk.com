@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DataReEmployeeAdapter {
@@ -11,4 +12,6 @@ public interface DataReEmployeeAdapter {
 	 * @return the sdata mng info
 	 */
 	Optional<EmployeeDataReInfoImport> getSdataMngInfo(String sid);
+	
+	public List<EmployeeDataReInfoImport> findByIdsEmployee(List<String> listId) ;
 }
