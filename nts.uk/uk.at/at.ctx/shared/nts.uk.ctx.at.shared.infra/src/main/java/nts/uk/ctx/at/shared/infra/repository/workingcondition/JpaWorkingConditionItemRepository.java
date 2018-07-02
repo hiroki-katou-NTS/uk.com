@@ -296,6 +296,22 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		this.commandProxy().update(entity);
 	}
+	
+	/**
+	 *  Update WorkingConditionItem trong trường hợp category WorkingCondition chia đôi.
+	 */
+	@Override
+	public void updateWorkCond2(WorkingConditionItem item) {
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(item.getHistoryId(),
+				KshmtWorkingCondItem.class);
+
+		KshmtWorkingCondItem entity = optEntity.get();
+
+		item.saveToMemento(new JpaWorkingConditionItem2SetMemento(entity));
+
+		this.commandProxy().update(entity);
+		
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -387,12 +403,18 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 			// equal
 			lstpredicateWhere.add(root.get(KshmtWorkingCondItem_.sid).in(subList));
-			lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.strD),
-					datePeriod.end()));
-			lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
-					datePeriod.start()));
+			
+			lstpredicateWhere.add(criteriaBuilder.not(criteriaBuilder.or(
+					criteriaBuilder.lessThan(root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD), datePeriod.start()),
+					criteriaBuilder.greaterThan(root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.strD), datePeriod.end()))));
+			
+			// TODO: Check & request update EAP with new condition
+//			lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+//					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.strD),
+//					datePeriod.end()));
+//			lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+//					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
+//					datePeriod.start()));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -562,5 +584,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// exclude select
 		return result;
 	}
+
+	
 
 }

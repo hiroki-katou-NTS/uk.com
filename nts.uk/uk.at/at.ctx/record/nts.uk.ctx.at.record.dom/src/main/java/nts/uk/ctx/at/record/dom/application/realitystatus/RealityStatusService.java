@@ -100,14 +100,14 @@ public class RealityStatusService {
 	/**
 	 * 承認状況未確認メール送信
 	 */
-	public String checkSendUnconfirmedMail(List<WkpIdMailCheckOutput> listWkp) {
-		// アルゴリズム「承認状況送信者メール確認」を実行する
-		String email = approvalStatusRequestAdapter.confirmApprovalStatusMailSender();
+	public void checkSendUnconfirmedMail(List<WkpIdMailCheckOutput> listWkp) {
+		// EA修正履歴 2127
+		/*// アルゴリズム「承認状況送信者メール確認」を実行する
+		String email = approvalStatusRequestAdapter.confirmApprovalStatusMailSender();*/
 		// アルゴリズム「承認状況未確認メール送信実行チェック」を実行する
 		if (listWkp.stream().filter(x -> x.isCheckOn()).count() == 0) {
 			throw new BusinessException("Msg_794");
 		}
-		return email;
 	}
 
 	/**
@@ -446,9 +446,11 @@ public class RealityStatusService {
 		// 社員ID（リスト）
 		for (RealityStatusEmployeeImport emp : listEmp) {
 			// アルゴリズム「承認状況未確認チェック上司」を実行する
-			if (this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(), emp.getEndDate())) {
+			List<String> listUnconfirmBoss = this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(),
+					emp.getEndDate());
+			if (listUnconfirmBoss.size() > 0) {
 				// 上司社員ID（リスト）を未確認者（リスト）にセット
-				listEmpUnconfirm.add(emp.getSId());
+				listEmpUnconfirm.addAll(listUnconfirmBoss);
 			}
 		}
 		return listEmpUnconfirm;
@@ -467,7 +469,7 @@ public class RealityStatusService {
 	 *            社員ID.期間(終了日)
 	 * @return 結果（あり/なし)
 	 */
-	private boolean checkUnconfirmBoss(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate) {
+	private List<String> checkUnconfirmBoss(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate) {
 		String cId = AppContexts.user().companyId();
 		List<String> listEmpId = new ArrayList<>();
 		// imported（ワークフロー）「承認ルート状況」を取得する
@@ -483,7 +485,7 @@ public class RealityStatusService {
 			}
 		}
 		// 上司社員ID（リスト）の存在状態を確認
-		return listEmpId.size() != 0;
+		return listEmpId;
 	}
 
 	/**

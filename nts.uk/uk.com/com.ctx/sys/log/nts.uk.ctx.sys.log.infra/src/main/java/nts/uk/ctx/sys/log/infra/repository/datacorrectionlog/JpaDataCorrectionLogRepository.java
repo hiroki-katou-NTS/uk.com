@@ -64,12 +64,34 @@ public class JpaDataCorrectionLogRepository extends JpaRepository implements Dat
 	@Override
 	public List<DataCorrectionLog> findByTargetAndDate(String operationId, List<String> listEmployeeId,
 			DatePeriod period) {
-		String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd";
-		return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
-				.setParameter("operationId", operationId)
-				.setParameter("listEmpId", listEmployeeId)
-				.setParameter("startYmd", period.start())
-				.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+		if (listEmployeeId == null || listEmployeeId.isEmpty()) {
+			if (period.start() == null) {
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId";
+				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+						.setParameter("operationId", operationId).getList(c -> c.toDomainToView());
+			} else {
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd";
+				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+						.setParameter("operationId", operationId)
+						.setParameter("startYmd", period.start())
+						.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+			}
+		} else {
+			if (period.start() == null) {
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId";
+				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+						.setParameter("operationId", operationId)
+						.setParameter("listEmpId", listEmployeeId)
+						.getList(c -> c.toDomainToView());
+			} else {
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd";
+				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+						.setParameter("operationId", operationId)
+						.setParameter("listEmpId", listEmployeeId)
+						.setParameter("startYmd", period.start())
+						.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+			}
+		}
 	}
 
 }
