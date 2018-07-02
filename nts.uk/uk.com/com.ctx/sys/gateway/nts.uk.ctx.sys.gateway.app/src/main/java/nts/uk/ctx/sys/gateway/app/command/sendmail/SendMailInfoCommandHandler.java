@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.sendmail;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -15,7 +16,9 @@ import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.sys.gateway.app.command.sendmail.dto.SendMailReturnDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -38,6 +41,15 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 	/** The register embeded URL. */
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
+	
+	@Inject
+	private SysEmployeeAdapter sysEmployeeAdapter;
+	
+	/** The Constant FIST_COMPANY. */
+	private static final Integer FIST_COMPANY = 0;
+	
+	@Inject
+	private ListCompanyAdapter listCompanyAdapter;
 
 	/*
 	 * (non-Javadoc)
@@ -57,11 +69,16 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 					command.getLoginId());
 	
 			if (user.isPresent()) {
+				List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.get().getUserId(), user.get().getAssociatePersonId());
+				//get Employee
+				Optional<EmployeeImport> employee = this.sysEmployeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
+						user.get().getAssociatePersonId());
+				
 				if (user.get().getMailAddress().isEmpty()) {
 					throw new BusinessException("Msg_1129");
 				} else {
 					// Send Mail アルゴリズム「メール送信実行」を実行する
-					return this.sendMail(user.get().getMailAddress(), command);
+					return this.sendMail(user.get().getMailAddress(), command, employee.get());
 				}
 			}
 		}
@@ -79,15 +96,10 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 	 * @return true, if successful
 	 */
 	// Send Mail アルゴリズム「メール送信実行」を実行する
-	private SendMailReturnDto sendMail(String mailto, SendMailInfoCommand command) {
-
-		// get param input
-		String employeeId = AppContexts.user().employeeId();
-		String employeeCD = AppContexts.user().employeeCode();
-
+	private SendMailReturnDto sendMail(String mailto, SendMailInfoCommand command, EmployeeImport employee) {
 		// get URL from CCG033
-		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 1, 24, employeeId,
-				command.getContractCode(), command.getLoginId(), employeeCD, new ArrayList<>());
+		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 1, 24, employee.getEmployeeId(),
+				command.getContractCode(), command.getLoginId(), employee.getEmployeeCode(), new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") +" \n" + url);
 
