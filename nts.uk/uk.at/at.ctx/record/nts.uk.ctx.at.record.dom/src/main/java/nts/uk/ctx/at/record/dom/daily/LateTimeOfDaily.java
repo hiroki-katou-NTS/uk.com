@@ -76,10 +76,9 @@ public class LateTimeOfDaily {
 			) {
 					 
 		//勤務Noに一致する遅刻時間をListで取得する
-		  List<LateTimeSheet> lateTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()?oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
-		                             .filter(t -> new WorkNo(t.getLateTimeSheet().get().getWorkNo()).equals(workNo))
-		                             .map(t -> t.getLateTimeSheet().get())
-		                             .filter(t -> t.getForDeducationTimeSheet().isPresent())
+		  List<LateTimeSheet> lateTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()?oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame()
+			  						.stream().map(t -> t.getLateTimeSheet().orElse(null))
+		                             .filter(t -> t != null && workNo.compareTo(t.getWorkNo()) == 0 && t.getForDeducationTimeSheet().isPresent())
 		                             .sorted((lateTimeSheet1,lateTimeSheet2) -> lateTimeSheet1.getForDeducationTimeSheet().get().getTimeSheet().getStart()
 		                             .compareTo(lateTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
 		                             .collect(Collectors.toList()):new ArrayList<>();

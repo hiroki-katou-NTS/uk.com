@@ -42,7 +42,8 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 						? CommonKeyCrypt.encrypt(dom.getCompressedPassword().v()) : null,
 				dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(), dom.getDaySaveStartDate(),
 				dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(), dom.getSuppleExplanation(),
-				dom.getEndYear().v().intValue(), dom.getStartYear().v().intValue(), dom.getPresenceOfEmployee().value,
+				dom.getEndYear().isPresent() ? dom.getEndYear().get().v() : null,
+				dom.getStartYear().isPresent() ? dom.getStartYear().get().v() : null, dom.getPresenceOfEmployee().value,
 				dom.getIdentOfSurveyPre().value, dom.getPractitioner());
 	}
 

@@ -67,8 +67,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 caic.conditionType(0);
                 caic.compareOperator(0);
                 caic.singleAtdItem(null);
-                caic.compareStartValue(0);
-                caic.compareEndValue(0);
+                caic.compareStartValue(null);
+                caic.compareEndValue(null);
 
                 self.fillTextDisplayTarget();
                 self.fillTextDisplayComparison();

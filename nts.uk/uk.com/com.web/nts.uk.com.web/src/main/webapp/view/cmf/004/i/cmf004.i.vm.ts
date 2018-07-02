@@ -1,11 +1,6 @@
 module nts.uk.com.view.cmf004.i.viewmodel {
     import getText = nts.uk.resource.getText;
-    import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import alertError = nts.uk.ui.dialog;
-    import block = nts.uk.ui.block;
-    import close = nts.uk.ui.windows.close;
-    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         elapsedTime: KnockoutObservable<string> = ko.observable("00:00:00");
         //I2_1
@@ -40,24 +35,20 @@ module nts.uk.com.view.cmf004.i.viewmodel {
         constructor() {
             let self = this;
             self.timeStart = new Date();
-
-
-
             if (getShared("CMF004IParams")) {
                 let recoveryInfo = getShared("CMF004IParams");
                 if (recoveryInfo) {
                     let self = this;
-                    self.recoveryProcessingId = recoveryInfo.recoveryProcessingId,
-                        self.employeeList = recoveryInfo.employeeList,
-                        self.recoveryCategoryList = recoveryInfo.recoveryCategoryList,
-                        self.recoveryFile = recoveryInfo.recoveryFile,
-                        self.recoverySourceCode = recoveryInfo.recoverySourceCode,
-                        self.recoverySourceName = recoveryInfo.recoverySourceName,
-                        self.supplementaryExplanation = recoveryInfo.supplementaryExplanation,
-                        self.recoveryMethodOptions = recoveryInfo.recoveryMethodOptions
+                    self.recoveryProcessingId = recoveryInfo.recoveryProcessingId;
+                    self.employeeList = recoveryInfo.employeeList;
+                    self.recoveryCategoryList = recoveryInfo.recoveryCategoryList;
+                    self.recoveryFile = recoveryInfo.recoveryFile;
+                    self.recoverySourceCode = recoveryInfo.recoverySourceCode;
+                    self.recoverySourceName = recoveryInfo.recoverySourceName;
+                    self.supplementaryExplanation = recoveryInfo.supplementaryExplanation;
+                    self.recoveryMethodOptions = recoveryInfo.recoveryMethodOptions;
                 }
             }
-
         }
 
         start(): JQueryPromise<any> {
@@ -76,9 +67,7 @@ module nts.uk.com.view.cmf004.i.viewmodel {
 
             };
             console.log(paramRestore);
-            service.performDataRecover(paramRestore).done((res) => {
-
-            }).fail((err) => {
+            service.performDataRecover(paramRestore).done(() => {
             });
             return dfd.promise();
         }
@@ -117,12 +106,10 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 if ((recoveryProcessing.operatingCondition == 3) || (recoveryProcessing.operatingCondition == 1) || (recoveryProcessing.operatingCondition == 5)) {
                     // stop auto request to server
                     clearInterval(self.interval);
-                            self.isEnding(true);
+                    self.isEnding(true);
                     $('#I5_2').focus();
                 }
 
-            }).fail(function(res: any) {
-                console.log("followProsessing fail");
             });
         }
 
@@ -134,12 +121,10 @@ module nts.uk.com.view.cmf004.i.viewmodel {
             //update status end 
             let paramBreakFollowProcessing = {
                 dataRecoveryProcessId: self.recoveryProcessingId
-            }
+            };
             service.breakFollowProcessing(paramBreakFollowProcessing).done(function(res: any) {
                 self.isEnding(true);
                 $('#I5_2').focus();
-            }).fail(function(res: any) {
-                console.log("followProsessing fail");
             });
         }
 

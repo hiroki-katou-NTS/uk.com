@@ -39,14 +39,13 @@
 						data-bind="ntsCheckBox: { checked: isAbolished }" tabindex="5">#{i18n.getText('CPS006_4')}</div>
 					<div id="search" tabindex="6"
 						data-bind="ntsSearchBox: {
-						searchMode: 'filter',
+						searchMode: 'highlight',
 						targetKey: 'id',
 						mode: 'igGrid', 
 						comId: 'category_grid',
 						items: categoryList ,  
 						selectedKey: 'id',
 						placeHolder: '名称で検索…',
-						searchText: '絞り込み',
 						fields: ['categoryName']}" />
 					<table id="category_grid"
 						data-bind="ntsGridList: {	

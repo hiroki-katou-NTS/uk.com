@@ -65,7 +65,7 @@ public interface SpecialLeaveManagementService {
 	 * @param baseDate
 	 * @return
 	 */
-	Double getInterimSpeUseDays(List<InterimSpecialHolidayMng> specialHolidayData, GeneralDate baseDate);
+	double getInterimSpeUseDays(List<InterimSpecialHolidayMng> specialHolidayData, GeneralDate baseDate);
 	/**
 	 * 使用数を管理データから引く
 	 * @param specialLeaverData ・特別休暇付与残数データ一覧
@@ -79,7 +79,7 @@ public interface SpecialLeaveManagementService {
 	 * @param specialHolidayData
 	 * @return
 	 */
-	Double askUseDays(List<InterimSpecialHolidayMng> specialHolidayData);
+	double askUseDays(List<InterimSpecialHolidayMng> specialHolidayData);
 	/**
 	 * 残数情報をまとめる
 	 * @param lstSpecialLeaverData 特別休暇付与残数データ一覧
@@ -87,6 +87,6 @@ public interface SpecialLeaveManagementService {
 	 * @param baseDate ・基準日
 	 * @return
 	 */
-	InPeriodOfSpecialLeave sumRemainData(SpecialLeaveGrantDetails lstSpecialLeaverData, Double useDays, GeneralDate baseDate);
+	InPeriodOfSpecialLeave sumRemainData(SpecialLeaveGrantDetails lstSpecialLeaverData, double useDays, GeneralDate baseDate);
 		
 }

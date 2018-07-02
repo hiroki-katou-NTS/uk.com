@@ -7,6 +7,7 @@ module kdl002.a.viewmodel {
         currentCodeList: KnockoutObservableArray<any>;
         posibleItems: Array<string>;
         dataSoure: Array<model.ItemModel>;
+        isSelection: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             var self = this;
@@ -25,7 +26,7 @@ module kdl002.a.viewmodel {
         //load data
         start() {
             var self = this;
-            
+            self.isSelection = nts.uk.ui.windows.getShared('kdl002isSelection');
             self.isMulti = nts.uk.ui.windows.getShared('KDL002_Multiple');
             //all possible items
             self.posibleItems = nts.uk.ui.windows.getShared('KDL002_AllItemObj');
@@ -40,10 +41,17 @@ module kdl002.a.viewmodel {
             if (self.posibleItems.length > 0) {
                 service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.ItemModel>) {
                     let lstItemOrder = self.sortbyList(lstItem);
+                    let lstItemMapping = [];
+                    if(self.isSelection){
+                        lstItemMapping.push(new model.ItemModel("", "選択なし", ""));
+                    }
                     $("input").focus();
-                    let lstItemMapping =  _.map(lstItemOrder , item => {
-                        return new model.ItemModel(item.workTypeCode, item.name, item.memo);
-                    });
+                    if (!nts.uk.util.isNullOrEmpty(lstItemOrder)) {
+                        for (let i = 0; i < lstItemOrder.length; i++) {
+                            lstItemMapping.push(new model.ItemModel(lstItemOrder[i].workTypeCode, lstItemOrder[i].name, lstItemOrder[i].memo));
+                        }
+                    }
+                    
                     self.items(lstItemMapping);
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
