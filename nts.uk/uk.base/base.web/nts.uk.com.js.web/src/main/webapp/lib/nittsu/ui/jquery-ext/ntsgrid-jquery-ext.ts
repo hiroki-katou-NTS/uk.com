@@ -451,8 +451,10 @@ module nts.uk.ui.jqueryExtentions {
                 if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
                     if ($(evt.currentTarget).find("div[class*='nts-editor-container']").length > 0) return false;
                     if (util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target))) return;
-                    $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index,
-                                    utils.isFixedColumnCell(selectedCell, utils.getVisibleColumnsMap($(evt.target))));
+                    if (!evt.currentTarget.classList.contains("ui-iggrid-selectedcell")) {
+                        $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index,
+                                        utils.isFixedColumnCell(selectedCell, utils.getVisibleColumnsMap($(evt.target))));
+                    }
                     return false;
                 } else if (utils.disabled($(evt.currentTarget))) return false;
                 if (util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target))) return;
@@ -1631,7 +1633,23 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 let selectedSheet = getSelectedSheet($grid);
-                if (selectedSheet && !_.includes(selectedSheet.columns, key)) {
+                let features = $grid.igGrid("option", "features");
+                let columns;
+                if (selectedSheet) {
+                    columns = selectedSheet.columns;
+                }
+                
+                if (features) {
+                    let colFixFt = feature.find(features, feature.COLUMN_FIX);
+                    if (colFixFt) {
+                        let fixedCols = _.filter(colFixFt.columnSettings, c => c.isFixed).map(c => c.columnKey);
+                        if (selectedSheet) {
+                            columns = _.concat(selectedSheet.columns, fixedCols);
+                        }
+                    }   
+                }
+                
+                if (selectedSheet && !_.includes(columns, key)) {
                     let options = $grid.data(internal.GRID_OPTIONS);
                     let stateFt = feature.find(options.ntsFeatures, feature.CELL_STATE);
                     if (stateFt) {
@@ -2359,6 +2377,12 @@ module nts.uk.ui.jqueryExtentions {
                                     $comboContainer.data(internal.COMBO_SELECTED, selectedValue);
                                     
                                     if (data.bounce) {
+                                        let bCell = internal.getCellById(__self.$containedGrid, rowId, data.bounce);
+                                        let cell = { id: utils.parseIntIfNumber(rowId, __self.$containedGrid, utils.getColumnsMap(__self.$containedGrid)), 
+                                                        columnKey: data.bounce, element: bCell ? bCell[0] : bCell };
+                                        if (errors.any(cell)) {
+                                            errors.clear(__self.$containedGrid, cell);
+                                        }
                                         updating.updateCell(__self.$containedGrid, rowId, data.bounce, selectedValue);
                                     }
                                 }, 0);
@@ -2759,7 +2783,13 @@ module nts.uk.ui.jqueryExtentions {
                                 return false;
                             } 
                         });
-                        if (!valueExists) return;
+                        if (!valueExists) {
+                            _.defer(() => {
+                                updatedRow[columnKey] = "";
+                                updating.updateRow($grid, $gridRow.data("id"), updatedRow, undefined, true);
+                            });
+                            return;
+                        }
                     }
                     if (nextColumn.options.dataType === "number") {
                         updatedRow[nextColumn.options.key] = parseInt(res.toString().trim());
@@ -2775,7 +2805,11 @@ module nts.uk.ui.jqueryExtentions {
             
             function identity(key, id, value) {
                 let dfd = $.Deferred();
-                dfd.resolve(value);
+                if (_.isNil(value) || value === "") {
+                    dfd.resolve("-1");
+                } else {
+                    dfd.resolve(value);
+                }
                 return dfd.promise();  
             }
         }

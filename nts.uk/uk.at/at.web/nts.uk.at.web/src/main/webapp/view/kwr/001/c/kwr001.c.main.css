@@ -29,7 +29,7 @@
 
 .C5, .C6 {
 	display: inline-block;
-	width: 40%;
+	width: 41%;
 }
 
 .C5 {
@@ -37,22 +37,14 @@
 }
 
 .C6 {
-	margin-left: 5%;
+	margin-left: 4.5%;
 }
 
 .move-button {
 	margin: 10px !important;
 }
 
-#swap-list_container {
-	display: inline-block;
-	width: 97%;
-}
-
-#up-down {
-	display: inline-block;
-	width: 1%;
-}
+#up-down {}
 
 .C1_4 {
 	margin-left: 10px;
@@ -60,7 +52,7 @@
 
 .C7_13 {
 	text-align: right;
-	width: 93% !important;
+	width: 94% !important;
 }
 
 .C8 {
@@ -68,12 +60,12 @@
 }
 
 .check-box-list {
-	/* width: 90%; */
 	float: right;
 }
 
-.check-box-list > ul {
-	columns: 4;
+.check-box-list > ul > li{
+	display: inline-block;
+	width: 24%;
 }
 
 .td-right {
@@ -91,8 +83,8 @@
 
 /* popup error of kiban team show fail position --> override css */
 #func-notifier-errors {
-    top: 60px;
-    left: 10px;
+    top: 60px !important;
+    left: 56px !important;
 }
 
 #save {
@@ -107,4 +99,43 @@
 
 .btn-control {
 	width: 70px;
+}
+
+.ntsMoveDataArea {
+  width: 102px;
+  display: flex !important;
+  flex-direction:  column;
+  align-items:  center;
+  margin-top: 74px;
+}
+
+.cover-swapList {
+	display: flex;
+}
+
+.upDown-container {
+	display:  flex;
+	flex-direction:  column;
+	justify-content:  center;
+	margin-left: 15px;
+}
+
+button.ntsUpButton, button.ntsDownButton {
+	width: 30px !important;
+}
+
+.copy-screenD {
+	margin-left: 6px !important;
+}
+
+.close-dialog {	
+	margin-left:  0px !important;
+}
+
+#delete {
+	margin-right: 15px !important;
+}
+
+.ntsSwapComponent {
+	vertical-align: top;
 }
