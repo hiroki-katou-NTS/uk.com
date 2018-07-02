@@ -29,22 +29,22 @@ public class OutCndDetailItem extends AggregateRoot {
 	/**
 	 * 会社ID
 	 */
-	private String cid;
+	private Optional<String> cid;
 
 	/**
 	 * 条件設定コード
 	 */
-	private CompanyCndSetCd companyCndSetCd;
+	private Optional<CompanyCndSetCd> companyCndSetCd;
 
 	/**
 	 * ユーザID
 	 */
-	private String userId;
+	private Optional<String> userId;
 
 	/**
 	 * 条件設定コード
 	 */
-	private CompanyCndSetCd conditionSettingCd;
+	private Optional<CompanyCndSetCd> conditionSettingCd;
 
 	/**
 	 * 条件記号
@@ -151,10 +151,10 @@ public class OutCndDetailItem extends AggregateRoot {
 
 		this.categoryId = categoryId;
 		this.categoryItemNo = new CategoryItemNo(categoryItemNo);
-		this.cid = cid;
-		this.companyCndSetCd = new CompanyCndSetCd(companyCndSetCd);
-		this.userId = userId;
-		this.conditionSettingCd = new CompanyCndSetCd(conditionSettingCd);
+		this.cid = Optional.of(cid);
+		this.companyCndSetCd = Optional.of(new CompanyCndSetCd(companyCndSetCd));
+		this.userId = Optional.of(userId);
+		this.conditionSettingCd = Optional.of(new CompanyCndSetCd(conditionSettingCd));
 		this.conditionSymbol = EnumAdaptor.valueOf(conditionSymbol, ConditionSymbol.class);
 		this.searchNum = Optional.of(new SearchNum(searchNum));
 		this.searchNumEndVal = Optional.of(new SearchNum(searchNumEndVal));
