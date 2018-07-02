@@ -113,61 +113,6 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             self.fillTextDisplayTarget();
             self.fillTextDisplayComparison();
 
-            // validate
-            caic.compareStartValue.subscribe(v => {
-                let s = ko.toJS(caic.compareStartValue),
-                    e = ko.toJS(caic.compareEndValue),
-                    t = ko.toJS(caic.compareOperator);
-
-                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-
-                setTimeout(() => {
-                    switch (t) {
-                        case 0:
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                            break;
-                        case 6:
-                            if (s > e || s == e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                        case 7:
-                            if (s > e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                        case 8:
-                            if (s > e || s == e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                        case 9:
-                            if (s > e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                    }
-                }, 25);
-            });
-
-            caic.compareEndValue.subscribe(v => caic.compareStartValue.valueHasMutated());
         }
 
         fillTextDisplayTarget() {
@@ -293,6 +238,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
                     //Open dialog KDL021
                     nts.uk.ui.windows.setShared('Multiple', false);
+                    nts.uk.ui.windows.setShared('MonthlyMode', self.mode == 1);
                     nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                     nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.uncountableAtdItem()]);
                     nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
@@ -329,7 +275,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             self.getListItemByAtr().done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 nts.uk.ui.windows.setShared('Multiple', false);
-                // example wait
+                nts.uk.ui.windows.setShared('MonthlyMode', self.mode == 1);
                 nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.singleAtdItem()]);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
