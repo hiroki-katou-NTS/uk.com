@@ -21,6 +21,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistI
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
@@ -72,7 +73,9 @@ public class ScheCreExeMonthlyPatternHandler {
 			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		// ドメインモデル「月間勤務就業設定」を取得する
 		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
 				workingConditionItem.getMonthlyPattern().get().v(), command.getToDate());
@@ -123,6 +126,7 @@ public class ScheCreExeMonthlyPatternHandler {
 				return;
 			}
 			// 登録前削除区分をTrue（削除する）とする(chuyển 登録前削除区分 = true)
+			// checked2018
 			command.setIsDeleteBeforInsert(true);
 		} else {
 			// EA修正履歴 No1840
@@ -136,6 +140,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			}
 			// need set false if not wrong
 			// 「勤務予定基本情報」 データなし
+			// checked2018
 			command.setIsDeleteBeforInsert(false);
 		}
 
@@ -150,17 +155,17 @@ public class ScheCreExeMonthlyPatternHandler {
 			// 在職状態に対応する「就業時間帯コード」を取得する
 			Optional<String> workTimeOpt = this.getWorkingTimeZoneCode(workMonthlySet, commandWorktypeGetter,
 					mapEmploymentStatus, listWorkingConItem, listWorkTimeSetting);
-			if (workTimeOpt == null || workTimeOpt.isPresent()) {// 取得エラーなし
-				// 休憩予定時間帯を取得する
-				// 勤務予定マスタ情報を取得する
-				// 勤務予定時間帯を取得する
-				// アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する // request list #72
-				// 取得した情報をもとに「勤務予定基本情報」を作成する (create basic schedule)
-				// 予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
-				scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, workingConditionItem.getEmployeeId(),
-						workTypeOpt.get(), workTimeOpt != null ? workTimeOpt.get() : null, empGeneralInfo, listWorkType,
-						listWorkTimeSetting, listBusTypeOfEmpHis);
-			}
+			// 取得エラーなし
+			// 休憩予定時間帯を取得する
+			// 勤務予定マスタ情報を取得する
+			// 勤務予定時間帯を取得する
+			// アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する // request list #72
+			// 取得した情報をもとに「勤務予定基本情報」を作成する (create basic schedule)
+			// 予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
+			scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, workingConditionItem.getEmployeeId(),
+					workTypeOpt.get(), workTimeOpt.isPresent() ? workTimeOpt.get() : null, empGeneralInfo, listWorkType,
+					listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
+					mapDiffTimeWorkSetting);
 		}
 
 	}
@@ -273,9 +278,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			return false;
 		}
 
-		//
 		// 対象日の「月間勤務就業設定」があるかチェックする
-		//
 
 		// 存在しない場合
 		// ドメインモデル「スケジュール作成エラーログ」を登録する

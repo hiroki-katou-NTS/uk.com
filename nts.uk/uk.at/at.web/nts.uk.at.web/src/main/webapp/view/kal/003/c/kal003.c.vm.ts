@@ -77,16 +77,14 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 if (value > 5) {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
-                        { code: 1, name: "勤怠項目", enable: false },
-                        { code: 2, name: "入力チェック", enable: true }
+                        { code: 1, name: "勤怠項目", enable: false }
                     ]);
 
                     caic.conditionType(0);
                 } else {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
-                        { code: 1, name: "勤怠項目", enable: true },
-                        { code: 2, name: "入力チェック", enable: true }
+                        { code: 1, name: "勤怠項目", enable: true }
                     ]);
                 }
                 self.validateRange();
