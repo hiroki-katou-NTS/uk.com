@@ -114,7 +114,8 @@ module nts.uk.at.view.kmk006.a {
                 this.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText("KMK006_14"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: nts.uk.resource.getText("KMK006_15"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-3', title: nts.uk.resource.getText("KMK006_16"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab-3', title: nts.uk.resource.getText("KMK006_16"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-4', title: nts.uk.resource.getText("KMK006_40"), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
 
                 self.multiSelectedWorkplaceId = ko.observable('');
