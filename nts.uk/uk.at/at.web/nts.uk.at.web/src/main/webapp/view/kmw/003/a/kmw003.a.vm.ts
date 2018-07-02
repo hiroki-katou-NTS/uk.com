@@ -446,9 +446,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     nts.uk.ui.block.grayout();
                     service.addAndUpdate(dataUpdate).done((data) => {
                         nts.uk.ui.block.clear();
-                         self.initMode(0);
-                         self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
-                        self.updateDate(self.yearMonth());
+                        if(self.initMode()!=1){
+                        self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
+                        self.updateDate(self.yearMonth());   
+                        }
                     })
                 }
             }
@@ -1160,11 +1161,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             if (self.showHeaderNumber()) {
                 self.optionalHeader.map((header) => {
                     if (header.headerText) {
-                        if (header.group == undefined || header.group == null) {
                             header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
-                        } else {
-                            header.headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length)
-                        }
                     }
                     return header;
                 });
@@ -1256,10 +1253,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
            // self.dataAll().lstData=self.dataState;
            // self.dataAll().lstCellState= self.cellState;
             $("#dpGrid").ntsGrid("destroy");
-            self.dataAll(self.dataBackup);
-            self.reloadGridLock();
+            service.startScreen(self.monthlyParam()).done((data) => {
+                 self.dataAll(data);
+             self.reloadGridLock();
+             nts.uk.ui.dialog.info({ messageId: "Msg_984" });
+                });
            // ko.applyBindings(self,dpGrid);
-            nts.uk.ui.dialog.info({ messageId: "Msg_984" });
+           
         }
         /**
          * Grid setting
