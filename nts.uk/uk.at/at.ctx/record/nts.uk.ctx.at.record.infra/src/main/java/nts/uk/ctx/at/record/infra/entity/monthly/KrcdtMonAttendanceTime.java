@@ -282,6 +282,9 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 				verticalTotal,
 				totalCount,
 				new AttendanceDaysMonth(this.aggregateDays));
+		
+//		//テーブル結合用
+//		return null;
 	}
 	
 	/**

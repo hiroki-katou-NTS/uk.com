@@ -353,4 +353,21 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		return this.getClosurePeriod(
 				closure.getClosureId().value, currentMonth.getProcessingYm());
 	}
+
+	@Override
+	public Closure getClosurByEmployment(String employmentCd) {
+		String companyId = AppContexts.user().companyId();
+		Optional<ClosureEmployment> optClosureEmployment= closureEmploymentRepo.findByEmploymentCD(companyId, employmentCd);
+		if(!optClosureEmployment.isPresent()) {
+			return null;
+		}
+		ClosureEmployment closureEmp = optClosureEmployment.get();
+		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
+		Optional<Closure> optClosure = closureRepository.findById(companyId, closureEmp.getClosureId());
+		if(!optClosure.isPresent()) {
+			return null;
+		}
+		
+		return optClosure.get();
+	}
 }

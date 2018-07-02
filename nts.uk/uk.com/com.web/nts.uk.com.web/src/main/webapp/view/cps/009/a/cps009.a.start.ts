@@ -7,7 +7,7 @@ module nts.uk.com.view.cps009.a {
         var screenModel = new viewmodel.ViewModel();
         __viewContext["viewModel"] = screenModel;
         __viewContext.bind(__viewContext["viewModel"]);
-        
+
         $(document).ready(function() {
             __viewContext["viewModel"].checkBrowse();
         });
@@ -28,34 +28,46 @@ module nts.uk.com.view.cps009.a {
 
 $(function() {
     $(document).on('click', '.search-btn', function(evt) {
-        let dataSourceFilter: Array<any> = $("#item_grid").igGrid("option", "dataSource");
-        __viewContext["viewModel"].isFilter(true);
-        __viewContext["viewModel"].dataSourceFilter = [];
-
-        if (dataSourceFilter.length > 0) {
-            __viewContext["viewModel"].currentItemId(dataSourceFilter[0].perInfoCtgId);
-        } else {
-            __viewContext["viewModel"].currentCategory().itemList([]);
-
-        }
-        __viewContext["viewModel"].dataSourceFilter = dataSourceFilter;
+        processFilter();
     });
 
     $(document).on('click', '.clear-btn', function(evt) {
-        let dataSourceFilter: Array<any> = $("#item_grid").igGrid("option", "dataSource");
+        let vm: any = __viewContext["viewModel"],
+            dataSourceFilter: Array<any> = $("#item_grid").igGrid("option", "dataSource");
 
         if (dataSourceFilter.length > 0) {
-            if (nts.uk.text.isNullOrEmpty(__viewContext["viewModel"].currentItemId())) {
-                __viewContext["viewModel"].currentItemId(dataSourceFilter[0].perInfoCtgId);
+            if (nts.uk.text.isNullOrEmpty(vm.currentItemId())) {
+                vm.currentItemId(dataSourceFilter[0].perInfoCtgId);
             }
         } else {
-            __viewContext["viewModel"].currentCategory().itemList([]);
+            vm.currentCategory().itemList([]);
 
         }
-        __viewContext["viewModel"].isFilter(false);
-        __viewContext["viewModel"].dataSourceFilter = [];
+        vm.isFilter(false);
+        vm.dataSourceFilter = [];
+    })
+
+    $(document).on('keydown', 'input.ntsSearchBox.nts-editor.ntsSearchBox_Component', function(e) {
+        processFilter();
+
     })
 })
+
+
+function processFilter() {
+
+    let vm: any = __viewContext["viewModel"],
+        dataSourceFilter: Array<any> = $("#item_grid").igGrid("option", "dataSource");
+    vm.isFilter(true);
+    vm.dataSourceFilter = [];
+
+    if (dataSourceFilter.length > 0) {
+        vm.currentItemId(dataSourceFilter[0].perInfoCtgId);
+    } else {
+        vm.currentCategory().itemList([]);
+    }
+    vm.dataSourceFilter = dataSourceFilter;
+}
 
 
 

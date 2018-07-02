@@ -33,12 +33,14 @@ module nts.uk.com.view.cps006.a.viewmodel {
         constructor() {
             let self = this;
             self.start(undefined);
+            
             self.id.subscribe(function(value) {
                 $('#ctgName').focus();
                 nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value)) return;
                 self.getDetailCategory(value);
             });
+            
             self.isAbolished.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
                 if (value) {
@@ -46,7 +48,6 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         self.categoryList.removeAll();
                         service.getAllCategory().done(function(data: Array<any>) {
                             if (data.length > 0) {
-
                                 self.categoryList(_.map(data, x => new CategoryInfo({
                                     id: x.id,
                                     categoryCode: x.categoryCode,
@@ -62,9 +63,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
                         service.getAllCategory().done(function(data: Array<any>) {
                             if (data.length > 0) {
-
                                 self.categoryList(data);
-
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                                 $('.search-btn').trigger('click');
                             }
@@ -101,7 +100,6 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                             break;
                                         }
                                     }
-
                                 }
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                             }
@@ -128,8 +126,6 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     if (data.itemLst.length > 0) {
                         self.currentCategory().currentItemId(data.itemLst[0].id);
                     }
-
-                    //self.currentCategory.valueHasMutated();
                 }
             });
         }
@@ -306,6 +302,9 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 id: self.id(),
                 personEmployeeType: self.currentCategory().personEmployeeType
             });
+            if (nts.uk.text.isNullOrEmpty(self.id())) {
+                return;
+            }
             block.invisible();
             nts.uk.ui.windows.sub.modal('/view/cps/006/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 self.getDetailCategory(self.id());
@@ -432,7 +431,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: KnockoutObservable<string>;
         categoryType: KnockoutObservable<number>;
         isAbolition: KnockoutObservable<boolean>;
-        canAbolition:  KnockoutObservable<boolean>;
+        canAbolition: KnockoutObservable<boolean>;
         personEmployeeType: number;
         isExistedItemLst: KnockoutObservable<number>;
         displayIsAbolished: KnockoutObservable<number> = ko.observable(0);
@@ -465,7 +464,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.categoryType(params.categoryType);
             this.isAbolition(params.isAbolition);
             this.canAbolition(params.canAbolition);
-            this.displayIsAbolished(displayIsAbolished == true? 1 : 0);
+            this.displayIsAbolished(displayIsAbolished == true ? 1 : 0);
             this.isExistedItemLst(isExistedItemLst);
             this.personEmployeeType = params.personEmployeeType;
             this.itemList(params.itemList);

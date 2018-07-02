@@ -52,7 +52,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	 * @return
 	 */
 	@Override
-	public List<NextAnnualLeaveGrantExport> acquireNextHolidayGrantDate(String companyId, String employeeId) {
+	public List<NextAnnualLeaveGrantExport> acquireNextHolidayGrantDate(String companyId, String employeeId, Optional<GeneralDate> referenceDate) {
 		// ドメインモデル「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
 		
@@ -60,10 +60,31 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 			return Collections.emptyList();
 		}
 		
+		// 次回年休付与の計算範囲を作成
+		Optional<DatePeriod> period = createCalRangeNextYearHdGrant(referenceDate);
+		
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(companyId, employeeId, Optional.empty(), annualLeaveEmpBasicInfo);
+		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(companyId, employeeId, period, annualLeaveEmpBasicInfo);
 		
 		// 次回年休付与を返す
+		return result;
+	}
+	
+	/**
+	 * 次回年休付与の計算範囲を作成
+	 * 
+	 * @param referenceDate
+	 * @return
+	 */
+	private Optional<DatePeriod> createCalRangeNextYearHdGrant(Optional<GeneralDate> referenceDate) {
+		Optional<DatePeriod> result = Optional.empty();
+		
+		// パラメータ「基準日」が存在するかチェック
+		if(referenceDate.isPresent()) {	
+			// 基準日から1年間の期間を返す
+			result = Optional.of(new DatePeriod(referenceDate.get(), referenceDate.get().addYears(1))) ;
+		}
+		
 		return result;
 	}
 

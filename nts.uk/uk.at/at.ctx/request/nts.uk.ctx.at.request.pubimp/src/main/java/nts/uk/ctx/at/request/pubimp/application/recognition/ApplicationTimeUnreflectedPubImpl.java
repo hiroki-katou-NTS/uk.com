@@ -31,7 +31,7 @@ public class ApplicationTimeUnreflectedPubImpl implements ApplicationTimeUnrefle
 	@Override
 	public List<ApplicationOvertimeExport> acquireTotalApplicationTimeUnreflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AppOverTime> appOt = null;
+		Optional<AppOverTime> appOt = Optional.empty();
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
 		
 		List<Application_New> appNew = applicationRepository_New.getListApp(sId, startDate, endDate);
@@ -43,8 +43,14 @@ public class ApplicationTimeUnreflectedPubImpl implements ApplicationTimeUnrefle
 		
 		// 取得した「残業申請」のフレックス超過時間を、日付別に集計する
 		ApplicationOvertimeExport data = new ApplicationOvertimeExport();
-		data.setDate(appNew.get(0).getAppDate());
-		data.setTotalOtHours(appOt.get().getFlexExessTime());
+		data.setDate(appNew.size() >= 1 ? appNew.get(0).getAppDate() : null);
+		
+		Integer flexExTime = 0;
+		if(appOt.isPresent()) {
+			flexExTime = appOt.get().getFlexExessTime();
+		}
+		
+		data.setTotalOtHours(flexExTime);
 		results.add(data);
 		
 		if(results.size() > 0) {

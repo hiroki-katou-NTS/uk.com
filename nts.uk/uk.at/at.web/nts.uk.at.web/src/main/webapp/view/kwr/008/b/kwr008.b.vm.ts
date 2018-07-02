@@ -167,6 +167,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             block.invisible();
             //fill data B2_2
+            
+            //get list value output format
+            service.getValueOutputFormat().done(data => {
+                let listValOutFormat = [];
+                for(let i of data){
+                    listValOutFormat.push(new model.ItemModel(i.value + '', i.localizedName));
+                }
+                self.valOutFormat(listValOutFormat);
+            });
+            
             service.getOutItemSettingCode().done((data) => {
                 var dataSorted = _.sortBy(data, ['cd']);
                 for (let i = 0, count = data.length; i < count; i++) {
@@ -179,9 +189,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         self.valOutFormat.push(new model.ItemModel(data[i].value + '', data[i].localizedName));
                     }
                 });
-
-
-
             }).always(function() {
                 dfd.resolve(self);
                 //get parameter from B
