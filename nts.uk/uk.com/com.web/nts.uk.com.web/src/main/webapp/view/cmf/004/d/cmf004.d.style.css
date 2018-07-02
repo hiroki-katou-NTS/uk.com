@@ -28,3 +28,11 @@
   width: 150px; 
   margin-top :auto;
   display: table-column;
+}
+.div-table-col-big {
+  float: left; 
+  margin-top :auto;
+  display: table-column;         
+  width: 200px;   
+  height: 37px;
+}

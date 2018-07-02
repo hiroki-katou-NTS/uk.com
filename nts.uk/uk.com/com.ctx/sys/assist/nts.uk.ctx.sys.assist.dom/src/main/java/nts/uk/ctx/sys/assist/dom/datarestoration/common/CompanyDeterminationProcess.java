@@ -19,34 +19,36 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class CompanyDeterminationProcess {
-	
+
 	@Inject
 	private TableListRepository tableListRepository;
-	
+
 	// アルゴリズム「別会社判定処理」を実行する
-	public List<Object> sperateCompanyDeterminationProcess(ServerPrepareMng serverPrepareMng, PerformDataRecovery performDataRecovery, List<TableList> tableList){
-		String cid = tableList.get(0).getFieldAcqCid().orElse("");
+	public List<Object> sperateCompanyDeterminationProcess(ServerPrepareMng serverPrepareMng,
+			PerformDataRecovery performDataRecovery, List<TableList> tableList) {
+		final int FIRST_LINE = 0;
+		String internalFileName = tableList.get(FIRST_LINE).getInternalFileName();
+		// Get CID (17 first chars)
+		String cid = internalFileName.length() > 17 ? internalFileName.substring(0, 17) : "";
 		performDataRecovery.setRecoverFromAnoCom(NotUseAtr.NOT_USE);
-		if (AppContexts.user().companyId().equals(cid)){
+		if (AppContexts.user().companyId().equals(cid)) {
 			performDataRecovery.setRecoverFromAnoCom(NotUseAtr.USE);
 			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
-		} else {
-			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
-			boolean isRecoveryOtherCompanyNoOccur = true;
-			for(int i = 0; i < tableList.size(); i++){
-				//TODO
-				TableList tableListRecord = tableList.get(i);
-				if (tableListRecord.getAnotherComCls() == RecoverFormCompanyOther.IS_RE_OTHER_COMPANY){
-					tableListRecord.setCanNotBeOld(Optional.of(1));
-					isRecoveryOtherCompanyNoOccur = false;
-				} else {
-					tableListRecord.setCanNotBeOld(Optional.of(0));
-				}
-				tableListRepository.update(tableListRecord);
+			return Arrays.asList(serverPrepareMng, performDataRecovery, tableList);
+		}
+		performDataRecovery.setRecoveryMethod(RecoveryMethod.RESTORE_SELECTED_RANGE);
+		boolean isRecoveryOtherCompanyNoOccur = true;
+		for (TableList tableListRecord: tableList) {
+			if (tableListRecord.getAnotherComCls() == RecoverFormCompanyOther.IS_RE_OTHER_COMPANY) {
+				tableListRecord.setCanNotBeOld(Optional.of(1));
+				isRecoveryOtherCompanyNoOccur = false;
+			} else {
+				tableListRecord.setCanNotBeOld(Optional.of(0));
 			}
-			if (isRecoveryOtherCompanyNoOccur) {
-				serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.NO_SEPARATE_COMPANY);
-			}
+			tableListRepository.update(tableListRecord);
+		}
+		if (isRecoveryOtherCompanyNoOccur) {
+			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.NO_SEPARATE_COMPANY);
 		}
 		return Arrays.asList(serverPrepareMng, performDataRecovery, tableList);
 	}
