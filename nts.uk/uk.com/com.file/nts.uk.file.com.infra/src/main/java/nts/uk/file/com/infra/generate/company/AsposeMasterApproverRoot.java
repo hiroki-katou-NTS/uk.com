@@ -596,7 +596,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 		workPlaceCode.setValue(wpInfor.getEId() + " " + wpInfor.getEName());
 		//TH row ten nv o cuoi trang
 		int page = firstRow < 45 ? 1 : (firstRow-3)/42 + 1;
-		int page_end = page * ca42 + 3;
+		int page_end = page * 42 + 3;
 		if(firstRow == page_end - 1){
 			for(int nv = 1; nv <= 12; nv ++){
 				Cell sName = cells.get(firstRow, COLUMN_INDEX[nv]);
