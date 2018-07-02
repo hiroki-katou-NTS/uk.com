@@ -86,8 +86,11 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	@Override
 	public ExportData outputProcess(String cid, String setItemsOutputCd, Year fiscalYear, YearMonth startYm,
 			YearMonth endYm, List<Employee> employees, int printFormat, int breakPage) {
+		// ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
+		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
+
 		// 帳表出力前チェックをする
-		this.checkBeforOutput(startYm, endYm, employees);
+		this.checkBeforOutput(startYm, endYm, employees, setOutItemsWoSc);
 		// ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する -> client
 
 		final int numMonth = (int) startYm.until(endYm, ChronoUnit.MONTHS) + 1;
@@ -99,8 +102,6 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// init map employees data
 		// <<Public>> 社員の情報を取得する
 		exportData.setEmployees(this.getEmployeeInfo(employees, employeeIds, endYmd));
-		// ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
-		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
 		exportData.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
 		HeaderData header = new HeaderData();
 		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
@@ -167,13 +168,20 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	/*
 	 * 帳表出力前チェックをする
 	 */
-	private void checkBeforOutput(YearMonth startYm, YearMonth endYm, List<Employee> employees) {
+	private void checkBeforOutput(YearMonth startYm, YearMonth endYm, List<Employee> employees,
+			SetOutItemsWoSc setOutItemsWoSc) {
 		// 対象期間をチェックする
 		if (startYm.until(endYm, ChronoUnit.MONTHS) + 1 > 12)
 			throw new BusinessException("Msg_883");
 		// 出力対象の社員をチェックする
 		if (employees == null || employees.isEmpty())
 			throw new BusinessException("Msg_884");
+		// 出力項目をチェックする
+		List<ItemOutTblBook> listItemOutTblBook = setOutItemsWoSc.getListItemOutTblBook().stream()
+				.filter(x -> !x.isItem36AgreementTime() && x.isUseClassification()).collect(Collectors.toList());
+		if (listItemOutTblBook.size() == 0) {
+			throw new BusinessException("Msg_880");
+		}
 	}
 
 	/**
