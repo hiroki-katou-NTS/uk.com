@@ -65,6 +65,7 @@ module nts.uk.com.view.cmf004.d {
                                             }
                                         }
                                     }
+                                    $('#D3_1').focus();
                                     block.clear();
                                 }
                                 if (res.running) {
