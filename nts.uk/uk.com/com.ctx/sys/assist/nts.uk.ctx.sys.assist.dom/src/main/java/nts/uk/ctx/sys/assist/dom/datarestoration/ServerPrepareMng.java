@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.file.archive.ExtractStatus;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -70,5 +71,25 @@ public class ServerPrepareMng extends AggregateRoot {
 			this.password          = Optional.of(new FileCompressionPassword(password));
 		}
 		this.operatingCondition    = EnumAdaptor.valueOf(operatingCondition, ServerPrepareOperatingCondition.class);
+	}
+	
+	public ServerPrepareMng setOperatingConditionBy (ExtractStatus extractStatus) {
+		ServerPrepareOperatingCondition operatingCondition = null;
+		switch (extractStatus) {
+		case SUCCESS:
+			operatingCondition = ServerPrepareOperatingCondition.CHECKING_FILE_STRUCTURE;
+			break;
+		case NOT_VALID_FILE:
+			operatingCondition = ServerPrepareOperatingCondition.EXTRACTION_FAILED;
+			break;
+		case NONE_CORRECT_PASSWORD:
+			operatingCondition = ServerPrepareOperatingCondition.PASSWORD_DIFFERENCE;
+			break;
+		case NEED_PASSWORD:
+			operatingCondition = ServerPrepareOperatingCondition.PASSWORD_DIFFERENCE;
+			break;
+		}
+		this.operatingCondition = operatingCondition;
+		return this;
 	}
 }
