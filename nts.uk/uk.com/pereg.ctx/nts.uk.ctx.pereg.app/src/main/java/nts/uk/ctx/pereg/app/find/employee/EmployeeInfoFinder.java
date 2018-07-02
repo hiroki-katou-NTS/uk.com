@@ -10,9 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCESetting;
+import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
 import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
 import nts.uk.ctx.pereg.dom.usesetting.UserSettingRepository;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
@@ -36,32 +40,68 @@ public class EmployeeInfoFinder {
 	@Inject
 	private UserSettingRepository userSettingRepo;
 	
+	@Inject
+	private StampCardEditingRepo stamCardEditRepo;
+	
+	@Inject
+	private IEmployeeCESettingRepository empCESettingRepo;
+	
 	private static final String JP_SPACE = "　";
 
 	public String generateEmplCode(String startLetters) {
 		String companyId = AppContexts.user().companyId();
+
+		Optional<EmployeeCESetting> _employeeCESetting = empCESettingRepo.getByComId(companyId);
+		if (!_employeeCESetting.isPresent()) {
+			return "";
+		}
+		int employeeCodeLength = _employeeCESetting.get().getDigitNumb().v();
+
+		Optional<String> lastEmployeeCode = employeeRepository.findLastEml(companyId, startLetters, employeeCodeLength);
 		
-		Optional<String> lastEmployeeCode = employeeRepository.findLastEml(companyId, startLetters);
 		if (!lastEmployeeCode.isPresent()) {
 			throw new BusinessException("Msg_505");
 		}
-		String returnString = generateCode(lastEmployeeCode.get());
-		
-		int maxLength = 6;
-		while (returnString.length() < maxLength) {
-			returnString += " ";
-		}
-		return returnString;
+		return generateCode(lastEmployeeCode.get());
+
 	}
 
 	public String generateCardNo(String startLetters) {
 		String contractCode = AppContexts.user().contractCode();
+		String companyId = AppContexts.user().companyId();
 		startLetters = startLetters == null ? "" : startLetters;
-		Optional<String> lastCardNo = stampCardRepo.getLastCardNo(contractCode, startLetters);
-		if (!lastCardNo.isPresent()) {
+		Optional<StampCardEditing> _stamCardEdit = stamCardEditRepo.get(companyId);
+		if (!_stamCardEdit.isPresent()) {
 			return "";
 		}
+		int maxLengthCardNo = _stamCardEdit.get().getDigitsNumber().v();
+		Optional<String> lastCardNo = stampCardRepo.getLastCardNo(contractCode, startLetters, maxLengthCardNo);
+		if (!lastCardNo.isPresent()) {
+			throw new BusinessException("Msg_505");
+		}
 		return generateCode(lastCardNo.get());
+	}
+	
+	public String initEmplCode() {
+		String employeeId = AppContexts.user().employeeId();
+		
+		Optional<UserSetting> _userSetting = userSettingRepo.getUserSetting(employeeId);
+		
+		if (!_userSetting.isPresent()) {
+			return "";
+		}
+		UserSetting userSetting = _userSetting.get();
+		
+		switch (userSetting.getEmpCodeValType()) {
+		case INIT_DESIGNATION:
+			return generateEmplCode(userSetting.getEmpCodeLetter().v());
+		case MAXVALUE:
+			return generateEmplCode("");
+		case BLANK:
+			return "";
+		}
+		
+		return "";
 	}
 
 	public String initCardNo(String newEmployeeCode) {
@@ -87,29 +127,6 @@ public class EmployeeInfoFinder {
 		return "";
 	}
 	
-	public String getStampCardAfterLostFocusEmpCd(String newEmployeeCode) {
-		String employeeId = AppContexts.user().employeeId();
-		String companyCode = AppContexts.user().companyCode();
-		Optional<UserSetting> _userSetting = userSettingRepo.getUserSetting(employeeId);
-		if (!_userSetting.isPresent()) {
-			return "";
-		}
-		UserSetting userSetting = _userSetting.get();
-		switch (userSetting.getCardNoValType()) {
-		case BLANK:
-			return "";
-		case SAME_AS_EMP_CODE:
-			return newEmployeeCode;
-		case CPC_AND_EMPC:
-			return companyCode + newEmployeeCode;
-		case MAXVALUE:
-			return "";
-		case INIT_DESIGNATION:
-			return "";
-		}
-		return "";
-	}
-
 	/**
 	 * validate EmpInfo EA修正履歴 - No1159 EA修正履歴 - No1160 EA修正履歴 - No1161 EA修正履歴 -
 	 * No1162

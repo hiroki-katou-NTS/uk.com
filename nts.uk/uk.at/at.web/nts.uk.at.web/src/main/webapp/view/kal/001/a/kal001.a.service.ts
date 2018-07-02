@@ -111,7 +111,7 @@ module nts.uk.at.view.kal001.a.service {
                                                         
                         } else if(p.categoryName=="36協定　年間"){
                             let sDate =p.year() +'/' + p.dateValue().startDate.slice(5, 7) +"/01";
-                            let eDate =(parseInt(p.year()) + 1) +'/' + p.dateValue().endDate.slice(5,7)+"/31" ;
+                            let eDate =(parseInt(p.year()) + 1) +'/' + p.dateValue().endDate.slice(5,7) ;
                             
                             let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
                             eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());                            

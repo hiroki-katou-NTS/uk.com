@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -72,6 +73,24 @@ public class CheckTranmissionImpl implements CheckTransmission {
 			appName = appDispName.get().getDispName().v();
 		}
 		String titleMail = appDate + " " + appName;
+		String urlInfo = "";
+		if (urlEmbedded.isPresent()) {
+			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+			if (checkUrl == NotUseAtr.USE) {
+				urlInfo = registerEmbededURL.registerEmbeddedForApp(
+						application.getAppID(), 
+						application.getAppType().value, 
+						application.getPrePostAtr().value, 
+						AppContexts.user().employeeId(), 
+						applicantID);
+			}
+		}
+		String mailContent1 = mailBody + "\n" + urlInfo;
+		//※同一メール送信者に複数のメールが送られないよう
+		//　一旦メール送信した先へのメールは送信しない。
+		//list sID da gui
+		List<String> lstMailContaint = new ArrayList<>();
 		//2018/06/12　追加
 		//QA#96551
 		//申請者にメール送信かチェックする
@@ -85,18 +104,15 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				throw new BusinessException("Msg_1309");
 			}
 			try {
-				mailSender.sendFromAdmin(mailApplicant.get(0).getEmailAddress(), new MailContents(titleMail, mailBody));
+				mailSender.sendFromAdmin(mailApplicant.get(0).getEmailAddress(), new MailContents(titleMail, mailContent1));
 				successList.add(applicantID);
 			} catch (Exception ex) {
 				throw new BusinessException("Msg_1057");
 			}
+			lstMailContaint.add(applicantID);
 		}
 		//get list mail by list sID : rq419
 		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeIdList, 6);
-		//※同一メール送信者に複数のメールが送られないよう
-		//　一旦メール送信した先へのメールは送信しない。
-		//list sID da gui
-		List<String> lstMailContaint = new ArrayList<>();
 		for(String employeeToSendId: employeeIdList){
 			//check id da duoc gui mail
 			if(lstMailContaint.contains(employeeToSendId)){//trung lap id thi bo qua
@@ -113,7 +129,20 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				}
 			} else {
 				try {
-					mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailBody));
+					if (urlEmbedded.isPresent()) {
+						int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+						NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+						if (checkUrl == NotUseAtr.USE) {
+							urlInfo = registerEmbededURL.registerEmbeddedForApp(
+									application.getAppID(), 
+									application.getAppType().value, 
+									application.getPrePostAtr().value, 
+									AppContexts.user().employeeId(), 
+									employeeToSendId);
+						}
+					}
+					String mailContent = mailBody + "\n" + urlInfo;
+					mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailContent));
 					successList.add(employeeToSendId);
 				} catch (Exception ex) {
 					throw new BusinessException("Msg_1057");

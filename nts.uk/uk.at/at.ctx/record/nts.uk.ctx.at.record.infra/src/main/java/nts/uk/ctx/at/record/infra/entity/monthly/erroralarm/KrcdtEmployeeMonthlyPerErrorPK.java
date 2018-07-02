@@ -19,7 +19,7 @@ public class KrcdtEmployeeMonthlyPerErrorPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "ERROR_TYPE")
-	public Integer ERROR_TYPE;
+	public Integer errorType;
 	
 	// 年月
 	@Column(name = "YM")

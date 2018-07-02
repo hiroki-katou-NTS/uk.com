@@ -63,7 +63,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "TYPE")
+	@Column(name = "CONDITION_TYPE")
 	public int type;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)

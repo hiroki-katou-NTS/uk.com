@@ -61,14 +61,14 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		
 		// 承認を行った承認者一覧に項目があるかチェックする
 		if (CollectionUtil.isEmpty(approverApprovedImport.getListApprover())) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID());
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
 		}
 		
 		// 承認を行った承認者一覧に項目がある ( There is an item in the approver list that made approval )
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする ( Domain model "Application type setting". Check to send mail automatically when newly registered )
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value);
 		if (appTypeDiscreteSettingOp.get().getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID());
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
 		}
 		isAutoSendMail = true;
 		// 「申請種類別設定」．新規登録時に自動でメールを送信するがtrue ( "Setting by application type". Automatically send mail when new registration is true )
@@ -98,6 +98,6 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 			autoSuccessMail = mailResult.getSuccessList();
 			autoFailMail = mailResult.getFailList();
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID());
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
 	}
 }

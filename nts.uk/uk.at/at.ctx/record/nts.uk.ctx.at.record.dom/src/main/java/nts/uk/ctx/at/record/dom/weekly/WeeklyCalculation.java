@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
@@ -115,6 +116,7 @@ public class WeeklyCalculation implements Cloneable {
 	 * @param weekStart 週開始
 	 * @param premiumTimeOfPrevMonLast 前月の最終週の週割増対象時間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param companySets 月別集計で必要な会社別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(
@@ -130,6 +132,7 @@ public class WeeklyCalculation implements Cloneable {
 			WeekStart weekStart,
 			AttendanceTimeMonth premiumTimeOfPrevMonLast,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			MonAggrCompanySettings companySets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE) return;
@@ -166,7 +169,7 @@ public class WeeklyCalculation implements Cloneable {
 				weekPeriod, workingSystem, this.regAndIrgTime, this.flexTime);
 		
 		// 36協定時間
-		this.agreementTime.aggregate(yearMonth, weekPeriod, aggregateAtr, this, repositories);
+		this.agreementTime.aggregate(yearMonth, weekPeriod, aggregateAtr, this, companySets, repositories);
 	}
 	
 	/**

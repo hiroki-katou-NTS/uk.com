@@ -14,7 +14,7 @@ public interface StampCardRepository {
 	
 	Optional<StampCard> getByCardNoAndContractCode(String cardNo , String contractCd);
 	
-	Optional<String> getLastCardNo(String contractCode, String startCardNoLetters);
+	Optional<String> getLastCardNo(String contractCode, String startCardNoLetters, int length);
 
 	void add(StampCard domain);
 

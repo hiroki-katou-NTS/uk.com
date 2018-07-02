@@ -111,6 +111,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 					// アルゴリズム「社員所属職場履歴を取得」を実行する
 					WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeId, systemDate);
 					// アルゴリズム「締切日を取得する」を実行する
+					// nếu wkpHistImport = null thì xem QA http://192.168.50.4:3000/issues/97192
 					deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
 							presentClosingPeriodImport.get().getClosureEndDate(), 
 							appDeadline.getDeadline().v(), 
