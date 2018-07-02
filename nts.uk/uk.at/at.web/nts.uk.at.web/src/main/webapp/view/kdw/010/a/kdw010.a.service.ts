@@ -30,9 +30,9 @@ module nts.uk.at.view.kdw010.a {
             ignoreWorkType: Array<String>;
             useAtr: boolean;
             displayMessage: String;
-            maxContinuousDays: number;
+            maxContinuousDays: String;
             updateMode: boolean;
-            constructor(targetWorkType: Array<String>, ignoreWorkType: Array<String>, useAtr: boolean, displayMessage: String, maxContinuousDays: number, updateMode: boolean) {
+            constructor(targetWorkType: Array<String>, ignoreWorkType: Array<String>, useAtr: boolean, displayMessage: String, maxContinuousDays: String, updateMode: boolean) {
                 this.targetWorkType = targetWorkType;
                 this.ignoreWorkType = ignoreWorkType;
                 this.useAtr = useAtr;

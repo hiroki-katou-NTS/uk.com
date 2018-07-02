@@ -11,7 +11,6 @@ module nts.uk.at.view.kdw010.a {
         export class ScreenModel {
             useSet: KnockoutObservableArray<any>;
             selectUse: KnockoutObservable<number>;
-            maxContinuousDay: KnockoutObservable<number>;
             enableState: KnockoutObservable<boolean>;
             displayMessege: KnockoutObservable<String>;
             listWorkTypeDto: KnockoutObservableArray<model.OtkWorkTypeDto>;
@@ -24,6 +23,7 @@ module nts.uk.at.view.kdw010.a {
             targetWorkTypes: KnockoutObservableArray<model.OtkWorkTypeDto>;
             ignoreWorkTypes: KnockoutObservableArray<model.OtkWorkTypeDto>;
             updateMode: KnockoutObservable<boolean>;
+            maxContinuousDay: any;
 
 
             constructor() {
@@ -32,8 +32,11 @@ module nts.uk.at.view.kdw010.a {
                     { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") },
                     { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
                 ]);
+                self.maxContinuousDay = {
+                    value: ko.observable(0),
+                    enable: ko.observable(true)
+                }
                 self.selectUse = ko.observable(1);
-                self.maxContinuousDay = ko.observable(0);
                 self.enableState = ko.observable(true);
                 self.displayMessege = ko.observable('');
                 self.listWorkTypeDto = ko.observableArray([]);
@@ -70,27 +73,27 @@ module nts.uk.at.view.kdw010.a {
                 var dfd = $.Deferred();
 
                 service.findContinuousHolCheckSet().done(function(continuousHolCheckSetDto: model.ContinuousHolCheckSet) {
-                    if (!_.isEmpty(continuousHolCheckSetDto)) {
+                    if (!nts.uk.util.isNullOrEmpty(continuousHolCheckSetDto) && continuousHolCheckSetDto.targetWorkType != null) {
                         self.updateMode(true);
-                        self.maxContinuousDay(continuousHolCheckSetDto.maxContinuousDays);
+                        self.maxContinuousDay.value(continuousHolCheckSetDto.maxContinuousDays);
                         self.displayMessege(continuousHolCheckSetDto.displayMessage);
                         var useSetNum = continuousHolCheckSetDto.useAtr ? 1 : 0;
                         self.selectUse(useSetNum);
-                        service.findAllWorkTypeDto().done(function(listWorkType: Array<model.OtkWorkTypeDto>) {
-                            if (!_.isEmpty(listWorkType)) {
-                                self.listWorkTypeDto(listWorkType);
-                                //set list targetWorkType
-                                var targetWorkTypes = self.findWorkTypeDtoByCode(continuousHolCheckSetDto.targetWorkType);
-                                self.targetWorkTypes(targetWorkTypes);
-
-                                //set list ignoreWorkType
-                                var ignoreWorkTypes = self.findWorkTypeDtoByCode(continuousHolCheckSetDto.ignoreWorkType);
-                                self.ignoreWorkTypes(ignoreWorkTypes);
-
-                            }
-                            blockUI.clear();
-                        });
                     }
+                    service.findAllWorkTypeDto().done(function(listWorkType: Array<model.OtkWorkTypeDto>) {
+                        if (!_.isEmpty(listWorkType)) {
+                            self.listWorkTypeDto(listWorkType);
+                            //set list targetWorkType
+                            var targetWorkTypes = self.findWorkTypeDtoByCode(continuousHolCheckSetDto.targetWorkType);
+                            self.targetWorkTypes(targetWorkTypes);
+
+                            //set list ignoreWorkType
+                            var ignoreWorkTypes = self.findWorkTypeDtoByCode(continuousHolCheckSetDto.ignoreWorkType);
+                            self.ignoreWorkTypes(ignoreWorkTypes);
+
+                        }
+                    });
+                    blockUI.clear();
                 });
 
                 dfd.resolve();
@@ -149,7 +152,7 @@ module nts.uk.at.view.kdw010.a {
                 _.defer(() => {
                     if (!$('.nts-editor').ntsError("hasError")) {
                         var useAtr = self.selectUse() == 1 ? true : false;
-                        var continuousHolCheckSet: model.ContinuousHolCheckSet = new model.ContinuousHolCheckSet(self.selectedCodeTargetWorkType(), self.selectedCodeIgnoreWorkType(), useAtr, self.displayMessege(), self.maxContinuousDay(), self.updateMode());
+                        var continuousHolCheckSet: model.ContinuousHolCheckSet = new model.ContinuousHolCheckSet(self.selectedCodeTargetWorkType(), self.selectedCodeIgnoreWorkType(), useAtr, self.displayMessege(), self.maxContinuousDay.value(), self.updateMode());
                         service.saveContinuousHolCheckSet(continuousHolCheckSet).done(function() {
                             nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
                         });

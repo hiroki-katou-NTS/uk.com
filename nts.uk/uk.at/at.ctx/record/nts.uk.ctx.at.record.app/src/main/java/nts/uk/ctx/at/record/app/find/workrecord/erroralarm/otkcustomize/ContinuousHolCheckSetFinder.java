@@ -40,7 +40,7 @@ public class ContinuousHolCheckSetFinder {
 			return new ContinuousHolCheckSetDto(
 					domain.getTargetWorkType().stream().map(e -> e.v()).collect(Collectors.toList()),
 					domain.getIgnoreWorkType().stream().map(e -> e.v()).collect(Collectors.toList()), domain.isUseAtr(),
-					domain.getDisplayMessege().v(), domain.getMaxContinuousDays());
+					domain.getDisplayMessege().v(), domain.getMaxContinuousDays().v());
 		}
 		return new ContinuousHolCheckSetDto();
 	}
