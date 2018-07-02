@@ -22,4 +22,17 @@ public class ExportData {
 	*/
 	private boolean outNumExceedTime36Agr;
 	PageBreakIndicator pageBreak;
+	
+	public boolean hasDataItemOutput() {
+		if (this.employees == null || this.employees.isEmpty()) {
+			return false;
+		}
+		for (Map.Entry<String, EmployeeData> emp : this.employees.entrySet()) {
+			for (Map.Entry<String, AnnualWorkScheduleData> item : emp.getValue().getAnnualWorkSchedule().entrySet()) {
+				if (item.getValue().hasItemData())
+					return true;
+			}
+		}
+		return false;
+	}
 }

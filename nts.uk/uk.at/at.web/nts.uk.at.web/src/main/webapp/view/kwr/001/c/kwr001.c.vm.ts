@@ -34,10 +34,10 @@ module nts.uk.at.view.kwr001.c {
             checkedNotCalculated: KnockoutObservable<boolean>;
             checkedExceedByApplication: KnockoutObservable<boolean>;
             
-            // variable global store data from service 
+            // start: variable global store data from service 
             allMainDom: KnockoutObservable<any>;
             outputItemPossibleLst: KnockoutObservableArray<ItemModel>;
-            // variable global store data from service 
+            // end: variable global store data from service 
             
             enableBtnDel: KnockoutObservable<boolean>;
             enableCodeC3_2: KnockoutObservable<boolean>;
@@ -261,7 +261,6 @@ module nts.uk.at.view.kwr001.c {
             */
             private saveData(): JQueryPromise<any> {
                 let self = this;
-                
                 $('.save-error').ntsError('check');
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
@@ -299,7 +298,9 @@ module nts.uk.at.view.kwr001.c {
                     })
                     
                 }).fail(function(err) {
-                    nts.uk.ui.dialog.alertError(err);
+                    if (err.messageId == "Msg_3") {
+                        $("#C3_2").ntsError('set', { messageId: "Msg_3"});
+                    }
                     dfd.reject();
                 })
                 

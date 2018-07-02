@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.company.pub.company.CompanyExport;
 import nts.uk.ctx.bs.company.pub.company.ICompanyPub;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 
 /**
@@ -53,5 +54,17 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 		CompanyInformationImport companyInformationImport = new CompanyInformationImport(companyExport.getCompanyId(),
 				companyExport.getCompanyCode(), companyExport.getCompanyName());
 		return companyInformationImport;
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter#findComById(java.lang.String)
+	 */
+	@Override
+	public CompanyInforImport findComById(String companyId) {
+
+		CompanyExport companyExport = iCompanyPub.getCompanyByCid(companyId);
+		
+		return new CompanyInforImport(companyExport.getCompanyId(),
+				companyExport.getCompanyCode(), companyExport.getCompanyName(), companyExport.getIsAbolition());
 	}
 }
