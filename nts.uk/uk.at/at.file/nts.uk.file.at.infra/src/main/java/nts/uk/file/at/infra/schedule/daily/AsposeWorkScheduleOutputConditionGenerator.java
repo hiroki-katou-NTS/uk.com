@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -393,9 +395,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<AttendanceResultImport> lstAttendanceResultImport = attendaceAdapter.getValueOf(query.getEmployeeId(), new DatePeriod(query.getStartDate(), query.getEndDate()), AttendanceResultImportAdapter.convertList(outputItem.getLstDisplayedAttendance(), x -> x.getAttendanceDisplay()));
 		queryData.setLstAttendanceResultImport(lstAttendanceResultImport);
 		
+		// Extract list employeeId from attendance result list -> List employee won't have those w/o data
+		// From list employeeId above -> Find back their workplace hierachy code
+		//Set<String> lstEmployeeWithData = new HashSet<>();
+		Set<String> lstWorkplaceIdWithData = new HashSet<>();
+		lstWorkplaceIdWithData = lstAttendanceResultImport.stream().map(attendanceData -> {
+			String employeeId = attendanceData.getEmployeeId();
+			WkpHistImport workplaceImport = queryData.getLstWorkplaceImport().stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
+			WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
+			return code.getHierarchyCode().v();
+		}).collect(Collectors.toSet());
+		
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
 		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
-		int lowestEmployeeLevel = checkLowestWorkplaceLevel(lstWorkplace);
+		int lowestEmployeeLevel = checkLowestWorkplaceLevel(lstWorkplaceIdWithData); // Get lowest possible workplace level -> lowestEmployeeLevel
 		TotalWorkplaceHierachy outputSetting = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
 		int highestOutputLevel = outputSetting.getHighestLevelEnabled();
 		if (lowestEmployeeLevel < highestOutputLevel || lstAttendanceResultImport.size() == 0) {
@@ -468,12 +481,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param lstWorkplace the lst workplace
 	 * @return the int
 	 */
-	private int checkLowestWorkplaceLevel(Map<String, WorkplaceInfo> lstWorkplace) {
+	private int checkLowestWorkplaceLevel(Set<String> lstWorkplaceId) {
 		int lowestLevel = 0;
 		
-		for (Map.Entry<String, WorkplaceInfo> entry: lstWorkplace.entrySet()) {
-			String key = entry.getKey();
-			int level = key.length() / 3;
+		for (String workplaceId: lstWorkplaceId) {
+			int level = workplaceId.length() / 3;
 			if (lowestLevel < level) {
 				lowestLevel = level;
 			}
