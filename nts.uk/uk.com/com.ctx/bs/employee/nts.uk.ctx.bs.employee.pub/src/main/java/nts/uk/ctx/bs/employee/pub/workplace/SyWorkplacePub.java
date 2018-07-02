@@ -164,4 +164,14 @@ public interface SyWorkplacePub {
 	
 	// RequestList120 version2
 	List<AffWorkplaceExport> getByLstWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate,GeneralDate endDate);
+	
+	/**
+	 * 社員指定期間所属職場履歴を取得
+	 * RequestList #168
+	 * @param employeeID 社員ID
+	 * @param startDate 開始日
+	 * @param endDate 終了日
+	 * @return
+	 */
+	WkpByEmpExport getLstHistByEmpAndPeriod(String employeeID, GeneralDate startDate, GeneralDate endDate);
 }

@@ -25,6 +25,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyP
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.CheckPairDeviationReason;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandAddHandler;
@@ -250,7 +252,10 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private DailyRecordWorkFinder finder;
 	
-	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE);
+	@Inject
+	private CheckPairDeviationReason checkPairDeviationReason;
+	
+	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
 	private final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
@@ -277,23 +282,29 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		handler(command, false);
 	}
 	
-	public void handleUpdate(List<DailyRecordWorkCommand> command) {
-		handler(command, true);
+	public List<DPItemValueRC> handleUpdate(List<DailyRecordWorkCommand> command) {
+		return handler(command, true);
 	}
 
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
 		handler(Arrays.asList(command), isUpdate);
 	}
 	
-	private <T extends DailyWorkCommonCommand> void handler(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
+	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handler(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
 		registerNotCalcDomain(commands, isUpdate);
 		
 		List<IntegrationOfDaily> calced = calcIfNeed(commands);
 		
+		List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commands);
+		
+		if(!items.isEmpty()){
+			return items;
+		}
 		updateDomainAfterCalc(commands, isUpdate, calced);
 		
 		registerErrorWhenCalc(toMapParam(commands), 
 				calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
+		return items;
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -340,14 +351,15 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 				}
 			});
 			
-			DOMAIN_CHANGED_BY_EVENT.values().stream().flatMap(x -> Arrays.stream(x)).distinct().forEach(layout -> {
-				if(mapped.contains(layout)){
+			DOMAIN_CHANGED_BY_EVENT.entrySet().stream().filter(entry -> mapped.contains(entry.getKey())).map(entry -> entry.getValue())
+				.flatMap(x -> Arrays.stream(x)).distinct().forEach(layout -> {
+//				if(mapped.contains(layout)){
 					FinderFacade cFinder = finder.getFinder(layout);
 					if(cFinder != null){
 						Object updatedD = cFinder.getDomain(command.getEmployeeId(), command.getWorkDate());
 						updateCommandData(command.getCommand(layout), updatedD);
 					}
-				}
+//				}
 			});
 		});
 	}

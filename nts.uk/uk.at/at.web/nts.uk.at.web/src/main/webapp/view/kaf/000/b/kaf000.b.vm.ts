@@ -74,6 +74,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         displayApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
         enableApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReturnReasonPanel: KnockoutObservable<boolean> = ko.observable(false);
+        version: number = 0;
 
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
@@ -122,6 +123,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 appID: self.appID()
             }).done((data) => {
                 self.inputCommandEvent().version = data.applicationDto.version;
+                self.version = data.applicationDto.version;
                 self.dataApplication(data.applicationDto);
                 self.appType(data.applicationDto.applicationType);
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
@@ -320,19 +322,45 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 if (data.processDone) {
                     nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
                         if (data.autoSendMail) {
-                            appcommon.CommonProcess.displayMailResult(data);
-                        } else {
-                            location.reload();
+                            appcommon.CommonProcess.displayMailResultKAF000(data);
                         }
                     });
+                    if(!nts.uk.util.isNullOrEmpty(data.reflectAppId)){//TH goi xu ly phan anh
+                        service.reflectAppSingle([data.reflectAppId]).done(function(){
+                            self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                                nts.uk.ui.block.clear();        
+                            });
+                        });
+                    }else{
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                                nts.uk.ui.block.clear();        
+                            });
+                    }
+                    
                 } else {
                     nts.uk.ui.block.clear();
                 }
             } else {
                 nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
-                    location.reload();
+                    if (!nts.uk.util.isNullOrEmpty(data)) {
+                        self.callReflect(data);
+                    } else {
+                        self.reloadPage();
+                    }
                 });
             }
+        }
+
+       callReflect(data) {
+            let self = this;
+            service.reflectAppSingle(data).always(()=> self.reloadPage());
+        }
+
+        reloadPage() {
+            let self = this;
+            self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
+                nts.uk.ui.block.clear();
+            });
         }
 
         btnRemand() {
@@ -340,7 +368,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let command = { appID: self.getAppId(), version: self.dataApplication().version };
             setShared("KDL034_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml").onClosed(() => {
-                location.reload();
+                self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                    nts.uk.ui.block.clear();        
+                });
             });
         }
 
@@ -407,7 +437,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let command = { appID: self.appID() };
             setShared("KDL030_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                location.reload();
+                self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                    nts.uk.ui.block.clear();       
+                });
             });
         }
         /**
@@ -450,7 +482,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             shipmentCmd = {
                 absAppID: vm.absWk().appID(),
                 recAppID: vm.recWk().appID(),
-                appVersion: vm.version(),
+                appVersion: vm.version,
                 memo: memo ? memo : ""
             }
 
@@ -500,7 +532,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function() {
                 service.cancelApp(cancelCmd, self.appType()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_224" }).then(() => {
-                        location.reload();
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                            nts.uk.ui.block.clear();        
+                        });
                     });
                 }).fail(function(res: any) {
                     self.showError(res);

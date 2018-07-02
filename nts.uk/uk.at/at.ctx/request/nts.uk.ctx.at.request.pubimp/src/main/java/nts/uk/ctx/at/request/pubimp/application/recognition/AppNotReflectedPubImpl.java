@@ -36,8 +36,8 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 	@Override
 	public List<ApplicationOvertimeExport> acquireAppNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AppOverTime> appOt = null;
-		Optional<AppHolidayWork> appHdWork = null;
+		Optional<AppOverTime> appOt = Optional.empty();
+		Optional<AppHolidayWork> appHdWork = Optional.empty();
 		int totalHours = 0;
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
 		
@@ -51,10 +51,22 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 			appHdWork = appHdWorkRepository.getAppHolidayWork(companyId, appNew.get(0).getAppID());
 		}
 		
+		Integer otShiftNight = 0;
+		if(appOt.isPresent()) {
+			otShiftNight = appOt.get().getOverTimeShiftNight();
+		}
+		
+		int hdShiftNight = 0;
+		if(appHdWork.isPresent()) {
+			hdShiftNight = appHdWork.get().getHolidayShiftNight();
+		}
+		
 		// 取得した「残業申請」と「休日出勤申請」の就業時間外深夜時間を、日付別に集計する
-		totalHours = appOt.get().getOverTimeShiftNight() + appHdWork.get().getHolidayShiftNight();
+		totalHours = otShiftNight + hdShiftNight;
+		
 		ApplicationOvertimeExport data = new ApplicationOvertimeExport();
-		data.setDate(appNew.get(0).getAppDate());
+		
+		data.setDate(appNew.size() >= 1 ? appNew.get(0).getAppDate() : null);
 		data.setTotalOtHours(totalHours);
 		results.add(data);
 		

@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.request.ws.application.gobackdirectly;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Data;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckInsertGoBackCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckUpdateGoBackCommandHandler;
@@ -18,7 +21,6 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectSet
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyFinder;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/gobackdirectly")
 @Produces("application/json")
@@ -54,9 +56,8 @@ public class GoBackDirectlyService extends WebService {
 	 */
 	@POST
 	@Path("getGoBackCommonSetting")
-	public GoBackDirectSettingDto getGoBackCommonSetting() {
-		String SID = AppContexts.user().employeeId();
-		return this.goBackDirectlyFinder.getGoBackDirectCommonSetting(SID);
+	public GoBackDirectSettingDto getGoBackCommonSetting(Param param) {
+		return this.goBackDirectlyFinder.getGoBackDirectCommonSetting(param.getEmployeeIDs());
 	}
 
 	/**
@@ -105,4 +106,8 @@ public class GoBackDirectlyService extends WebService {
 		return this.updateGoBackHandler.handle(command);
 	}
 		
+}
+@Data
+class Param{
+	private List<String> employeeIDs;
 }

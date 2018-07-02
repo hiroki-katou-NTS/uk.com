@@ -46,6 +46,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -116,6 +124,22 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	DailyStatutoryWorkingHours getDailyStatutoryWorkingHours();
 	/** 週・月の法定労働時間の取得*/
 	MonthlyStatutoryWorkingHours getMonthlyStatutoryWorkingHours();
+	/** 社員別通常勤務労働時間 */
+	ShainRegularWorkTimeRepository getShainRegularWorkTime();
+	/** 社員別変形労働労働時間 */
+	ShainTransLaborTimeRepository getShainTransLaborTime();
+	/** 職場別通常勤務労働時間 */
+	WkpRegularLaborTimeRepository getWkpRegularLaborTime();
+	/** 職場別変形労働労働時間 */
+	WkpTransLaborTimeRepository getWkpTransLaborTime();
+	/** 雇用別通常勤務労働時間 */
+	EmpRegularWorkTimeRepository getEmpRegularWorkTime();
+	/** 雇用別変形労働労働時間 */
+	EmpTransWorkTimeRepository getEmpTransWorkTime();
+	/** 会社別通常勤務労働時間 */
+	ComRegularLaborTimeRepository getComRegularLaborTime();
+	/** 会社別変形労働労働時間 */
+	ComTransLaborTimeRepository getComTransLaborTime();
 	
 	/** 月別実績の勤怠時間 */
 	AttendanceTimeOfMonthlyRepository getAttendanceTimeOfMonthly();

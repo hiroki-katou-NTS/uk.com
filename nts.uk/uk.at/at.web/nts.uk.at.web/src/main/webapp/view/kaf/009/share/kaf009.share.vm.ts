@@ -123,7 +123,14 @@ module nts.uk.at.view.kaf009.share {
                     self.siftName = ko.observable('');
             }
         }
-        
+        export class EmployeeOT{
+            id: string;
+            name: string;
+            constructor(id: string, name: string){
+                this.id = id;
+                this.name = name;
+            }    
+        }
         
         /**
          * 

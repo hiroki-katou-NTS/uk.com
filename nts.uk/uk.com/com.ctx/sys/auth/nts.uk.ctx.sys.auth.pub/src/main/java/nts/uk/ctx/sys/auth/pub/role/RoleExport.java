@@ -39,5 +39,4 @@ public class RoleExport {
 		this.roleCode = roleCode;
 		this.roleName = roleName;
 	}
-
 }

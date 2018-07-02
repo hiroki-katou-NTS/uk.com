@@ -130,7 +130,7 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		GeneralDate endDate2 = command.getEndDate();
 		
 		val scheduletimeData = new ScheduledJobUserData();
-		scheduletimeData.put("companyId", command.getCompanyId());
+		scheduletimeData.put("companyId", companyId);
 		scheduletimeData.put("execItemCd", command.getExecItemCd());
 		UkJobScheduleOptions options ;
 		UkJobScheduleOptions options2=null ;

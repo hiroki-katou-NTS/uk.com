@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -53,6 +54,8 @@ public class KrcdtMonAggrSpecDays extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonAttendanceTime krcdtMonAttendanceTime;
+//	//テーブル結合用
+//	public KrcdtMonTime krcdtMonTime;
 	
 	/**
 	 * キー取得

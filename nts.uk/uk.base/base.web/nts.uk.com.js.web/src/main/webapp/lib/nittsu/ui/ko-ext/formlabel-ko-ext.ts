@@ -92,50 +92,15 @@ module nts.uk.ui.koExtentions {
                         constraint.innerHTML = util.getConstraintMes(primitive);
                     }
                 } else {
-                    getConstraintText(primitive).done(constraintText => {
-                        if (!__viewContext.primitiveValueConstraints[primitive]) {
-                            constraint.innerHTML = 'UNKNOW_PRIMITIVE';
-                        } else {
-                            constraint.innerHTML = constraintText;
-                        }
-                    });
+                    if (!__viewContext.primitiveValueConstraints[primitive]) {
+                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                    } else {
+                        constraint.innerHTML = util.getConstraintMes(primitive);
+                    }
                 }
             }
         }
     }
-
-    let getConstraintText = (constraint: any) => {
-        let dfd = $.Deferred();
-        if (constraint === "EmployeeCode") {
-            request.ajax("com", "/bs/employee/setting/code/find").done(res => {
-                // if not have primitive, create new
-                if (!__viewContext.primitiveValueConstraints) {
-                    __viewContext.primitiveValueConstraints = {
-                        EmployeeCode: {
-                            valueType: "String",
-                            charType: "AlphaNumeric",
-                            maxLength: res.numberOfDigits
-                        }
-                    };
-                } else {
-                    // extend primitive constraint
-                    _.extend(__viewContext.primitiveValueConstraints, {
-                        EmployeeCode: {
-                            valueType: "String",
-                            charType: "AlphaNumeric",
-                            maxLength: res.numberOfDigits
-                        }
-                    });
-                }
-
-                dfd.resolve(util.getConstraintMes(constraint));
-            });
-        } else {
-            dfd.resolve(util.getConstraintMes(constraint));
-        }
-
-        return dfd.promise();
-    };
 
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
 }

@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import lombok.val;
+import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
@@ -122,8 +123,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		// 前回集計結果　（年休積立年休の集計結果）
 		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
 
-		//Stopwatches.reset("11000:集計期間の判断：" + employeeId);
-		//Stopwatches.start("11000:集計期間の判断：" + employeeId);
+		ConcurrentStopwatches.start("11000:集計期間の判断：");
 		
 		// 集計期間の判断　（実締め毎集計期間だけをすべて取り出す）
 		List<AggrPeriodEachActualClosure> aggrPeriods = new ArrayList<>();
@@ -159,7 +159,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			return status;
 		}
 		
-		//Stopwatches.start("11000:集計期間の判断：" + employeeId);
+		ConcurrentStopwatches.start("11000:集計期間の判断：");
 		
 		for (val aggrPeriod : aggrPeriods){
 			val yearMonth = aggrPeriod.getYearMonth();
@@ -167,8 +167,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			val closureDate = aggrPeriod.getClosureDate();
 			val datePeriod = aggrPeriod.getPeriod();
 			
-			//Stopwatches.reset("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
-			//Stopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
+			//ConcurrentStopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 			
 			// 中断依頼が出されているかチェックする
 			if (asyncContext.hasBeenRequestedToCancel()) {
@@ -269,7 +268,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				this.monDayoffRemRepo.persistAndUpdate(monDayoffRemNum);
 			}
 			
-			//Stopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
+			//ConcurrentStopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 		}
 		return status;
 	}

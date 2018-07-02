@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query
  */
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -35,14 +36,14 @@ public interface AbsenceReruitmentManaQuery {
 	 * @param endMonth
 	 * @return
 	 */
-	Double getTotalOccurrentDay(String employeeId, DatePeriod dateData);
+	double getTotalOccurrentDay(String employeeId, DatePeriod dateData);
 	/**
 	 * 期間内の振休使用数合計を取得
 	 * @param employeeId
 	 * @param dateData
 	 * @return
 	 */
-	Double getUsedDays(String employeeId, DatePeriod dateData);
+	double getUsedDays(String employeeId, DatePeriod dateData);
 	/**
 	 * RequestList450: 振出振休発生消化履歴の取得
 	 * @param cid
@@ -50,21 +51,21 @@ public interface AbsenceReruitmentManaQuery {
 	 * @param baseDate
 	 * @return
 	 */
-	AbsRecGenerationDigestionHis generationDigestionHis(String cid, String sid, GeneralDate baseDate);
+	Optional<AbsRecGenerationDigestionHis> generationDigestionHis(String cid, String sid, GeneralDate baseDate);
 	/**
 	 * 暫定管理データを取得する
 	 * @param sid
 	 * @param baseDate
 	 * @return
 	 */
-	AbsRecInterimOutputPara getAbsRecInterimData(String sid, GeneralDate baseDate, AbsRecConfirmOutputPara confirmData);
+	Optional<AbsRecInterimOutputPara> getAbsRecInterimData(String sid, GeneralDate baseDate, AbsRecConfirmOutputPara confirmData);
 	/**
 	 * 指定期間内に発生した暫定振出と紐付いた確定振休・暫定振休を取得する
 	 * @param sid
 	 * @param dateData
 	 * @return
 	 */
-	AbsRecInterimOutputPara getInterimAbsMng(String sid, DatePeriod dateData);
+	Optional<AbsRecInterimOutputPara> getInterimAbsMng(String sid, DatePeriod dateData);
 	/**
 	 * 未消化の確定振出に紐付いた暫定振休を取得する
 	 * @param sid
@@ -114,14 +115,14 @@ public interface AbsenceReruitmentManaQuery {
 	 * @param sid
 	 * @return
 	 */
-	Double useDays(String sid);
+	double useDays(String sid);
 	/**
 	 * 期間内の振休消滅数合計を取得
 	 * @param sid
 	 * @param dateData
 	 * @return
 	 */
-	Double getMonthExtinctionDays(String sid, DatePeriod dateData);
+	double getMonthExtinctionDays(String sid, DatePeriod dateData);
 	/**
 	 * 確定管理データを取得する
 	 * @param sid
