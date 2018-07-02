@@ -59,6 +59,20 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
             self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
 
+            if (caic.compareOperator() > 5) {
+                self.enumConditionType([
+                    { code: 0, name: "固定値", enable: true },
+                    { code: 1, name: "勤怠項目", enable: false },
+                    { code: 2, name: "入力チェック", enable: true }
+                ]);
+            } else {
+                self.enumConditionType([
+                    { code: 0, name: "固定値", enable: true },
+                    { code: 1, name: "勤怠項目", enable: true },
+                    { code: 2, name: "入力チェック", enable: true }
+                ]);
+            }
+            
             caic.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
                 caic.uncountableAtdItem(null);
@@ -293,7 +307,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 caic = ko.toJS(self.currentAtdItemCondition);
 
             $('.value-input').ntsError('clear');
-            //$(".value-input").trigger("validate");
+            $('.value-input').filter(":enabled").trigger("validate");
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
                 setTimeout(() => {
