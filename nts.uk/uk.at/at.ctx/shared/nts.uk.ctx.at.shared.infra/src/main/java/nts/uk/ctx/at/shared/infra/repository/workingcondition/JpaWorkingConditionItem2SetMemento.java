@@ -27,8 +27,9 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 
 /**
  * The Class JpaWorkingConditionItemSetMemento.
+ * Đối ứng cho task chia đôi Caetgory WorkingCondition
  */
-public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSetMemento {
+public class JpaWorkingConditionItem2SetMemento implements WorkingConditionItemSetMemento {
 
 	/** The entity. */
 	private KshmtWorkingCondItem entity;
@@ -39,7 +40,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkingConditionItemSetMemento(KshmtWorkingCondItem entity) {
+	public JpaWorkingConditionItem2SetMemento(KshmtWorkingCondItem entity) {
 		this.entity = entity;
 	}
 
@@ -210,7 +211,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod) {
 		// Check exist
 		if (!scheduleMethod.isPresent()) {
-			this.entity.setKshmtScheduleMethod(null);
+			//this.entity.setKshmtScheduleMethod(null);
 			return;
 		}
 
@@ -238,9 +239,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setHolidayAddTimeSet(Optional<BreakdownTimeDay> holidayAddTimeSet) {
 		// Check exist
 		if (!holidayAddTimeSet.isPresent()) {
-			this.entity.setHdAddTimeMorning(null);
-			this.entity.setHdAddTimeAfternoon(null);
-			this.entity.setHdAddTimeOneDay(null);
+			//this.entity.setHdAddTimeMorning(null);
+			//this.entity.setHdAddTimeAfternoon(null);
+			//this.entity.setHdAddTimeOneDay(null);
 			return;
 		}
 		if (holidayAddTimeSet.get().getMorning() != null){
@@ -287,9 +288,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
 		if (timeApply.isPresent()){
 			this.entity.setTimeApply(timeApply.get().v());
-		} else {
-			this.entity.setTimeApply(null);
-		}
+		} 
 	}
 
 	/*
@@ -303,9 +302,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
 		if (monthlyPattern.isPresent()){
 			this.entity.setMonthlyPattern(monthlyPattern.get().v());
-		} else {
-			this.entity.setMonthlyPattern(null);
-		}
+		} 
 	}
 
 }
