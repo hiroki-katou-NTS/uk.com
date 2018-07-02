@@ -100,19 +100,59 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	@Column(name = "LATE_NIGHT_TIME_ATR")
 	private int lateNightTimeAtr;
 	
+	/** The raising calc atr. */
 	@Column(name = "RAISING_CALC_ATR")
-	private boolean raisingCalcAtr;
+	private int raisingCalcAtr;
 	
+	/** The specific raising calc atr. */
 	@Column(name = "SPECIFIC_RAISING_CALC_ATR")
-	private boolean specificRaisingCalcAtr;
+	private int specificRaisingCalcAtr;
 	
+	/** The leave early. */
 	@Column(name = "LEAVE_EARLY")
-	private boolean leaveEarly;
+	private int leaveEarly;
 	
-	@Column(name = "LEAVE_Late")
-	private boolean leaveLate;
+	/** The leave late. */
+	@Column(name = "LEAVE_LATE")
+	private int leaveLate;
 	
+	/** The divergence. */
 	@Column(name = "DIVERGENCE")
 	private int divergence;
 
+	/**
+	 * Checks if is leave late.
+	 *
+	 * @return true, if is leave late
+	 */
+	public boolean isLeaveLate(){
+		return this.leaveLate == 0 ? false : true;
+	}
+	
+	/**
+	 * Checks if is leave early.
+	 *
+	 * @return true, if is leave early
+	 */
+	public boolean isLeaveEarly(){
+		return this.leaveEarly == 0 ? false : true;
+	}
+	
+	/**
+	 * Checks if is raising calc atr.
+	 *
+	 * @return true, if is raising calc atr
+	 */
+	public boolean isRaisingCalcAtr(){
+		return this.raisingCalcAtr == 0 ? false : true;
+	}
+	
+	/**
+	 * Checks if is specific raising calc atr.
+	 *
+	 * @return true, if is specific raising calc atr
+	 */
+	public boolean isSpecificRaisingCalcAtr(){
+		return this.specificRaisingCalcAtr == 0 ? false : true;
+	}
 }
