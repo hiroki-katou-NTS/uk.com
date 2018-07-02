@@ -12,7 +12,6 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationDetailDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
