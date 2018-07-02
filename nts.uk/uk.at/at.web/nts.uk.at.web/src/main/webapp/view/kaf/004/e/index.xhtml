@@ -6,8 +6,8 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-	<div   class = "cf" style="display: flex;width: 1190px;">
-		<div>
+	
+		<div style="display: inline-block;">
 			<div class="valign-center control-group">
 				<div class="text_form_label" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_11')}</div>
 				<label   data-bind="text: applicantName"></label>
@@ -114,14 +114,13 @@
 			</div>
 			</com:ko-if>
 		</div>		
-		<div class="right-contents">
-			<div class="panel panel-gray-bg panel-frame004" style="height: 400px !important; margin-left: 100px !important">
+		<div style="display: inline-block; vertical-align: top;">
+			<div class="panel panel-gray-bg panel-frame004" style="height: 150px ; margin-left: 100px ;min-height: 150px">
 				<label>実際の内容 :</label> <BR /> <BR />
 				<label>日付 :</label> <BR /> <BR /> <label>勤務種類
 					:</label> <BR /> <label>就業時間帯 :</label> <BR /> <BR />
 				<label>勤務時間 :</label>
 			</div>
-		</div>
 		</div>
 	</ui:composition>
 </body>
