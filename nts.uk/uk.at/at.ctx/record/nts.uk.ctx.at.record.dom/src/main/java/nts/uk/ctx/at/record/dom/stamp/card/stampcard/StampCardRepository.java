@@ -21,5 +21,7 @@ public interface StampCardRepository {
 	void update(StampCard domain);
 
 	void delete(String stampCardId);
+	
+	void deleteBySid(String sid);
 
 }
