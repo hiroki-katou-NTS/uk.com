@@ -43,14 +43,15 @@ public class ExOutOpMng extends AggregateRoot
     private NotUseAtr doNotInterrupt;
     
     /**
+     * 処理単位
+     */
+     private String proUnit;
+     
+    /**
     * 動作状態
     */
-    private String opCond;
+    private ExIoOperationState opCond;
     
-    /**
-    * 処理単位
-    */
-    private ExIoOperationState proUnit;
-    
+   
     
 }
