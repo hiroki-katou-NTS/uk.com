@@ -222,7 +222,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                     saveSetCode: data[i].code,
                                     saveSetName: data[i].name,
                                     supplementaryExplanation: data[i].suppleExplanation,
-                                    storageStartDate: (data[i].saveStartDatetime),
+                                    storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD hh:mm:ss'),
                                     executeCategory: (data[i].saveForm) == 0 ? getText('CMF004_300') : getText('CMF004_301'),
                                     targetNumber: data[i].targetNumberPeople + "人",
                                     saveFileName: data[i].saveFileName + ".zip",
