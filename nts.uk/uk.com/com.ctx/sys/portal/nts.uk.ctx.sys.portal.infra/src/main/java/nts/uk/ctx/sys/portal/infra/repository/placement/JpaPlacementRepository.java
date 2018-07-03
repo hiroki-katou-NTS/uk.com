@@ -19,9 +19,9 @@ import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacementPK;
 @Stateless
 public class JpaPlacementRepository extends JpaRepository implements PlacementRepository {
 	
-	private final String SELECT_SINGLE = "SELECT c FROM CcgmtPlacement c WHERE c.ccgmtPlacementPK.placementID = :placementID";
-	private final String SELECT_BY_LAYOUT = "SELECT c FROM CcgmtPlacement c WHERE c.layoutID = :layoutID";
-	private final String SELECT_BY_TOPPAGEPART = "SELECT c FROM CcgmtPlacement c WHERE c.topPagePartID = :topPagePartID";
+	private static final String SELECT_SINGLE = "SELECT c FROM CcgmtPlacement c WHERE c.ccgmtPlacementPK.placementID = :placementID";
+	private static final String SELECT_BY_LAYOUT = "SELECT c FROM CcgmtPlacement c WHERE c.layoutID = :layoutID";
+	private static final String SELECT_BY_TOPPAGEPART = "SELECT c FROM CcgmtPlacement c WHERE c.topPagePartID = :topPagePartID";
 
 	@Override
 	public Optional<Placement> find(String placementID) {

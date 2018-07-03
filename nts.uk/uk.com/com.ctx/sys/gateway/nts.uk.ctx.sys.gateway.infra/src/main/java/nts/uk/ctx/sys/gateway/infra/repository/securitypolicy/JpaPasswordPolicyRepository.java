@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstPasswordPolicy;
 public class JpaPasswordPolicyRepository extends JpaRepository implements PasswordPolicyRepository {
 	
 	/** The select by contract code. */
-	private final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstPasswordPolicy c WHERE c.contractCode = :contractCode";
+	private static  final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstPasswordPolicy c WHERE c.contractCode = :contractCode";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository#getPasswordPolicy(nts.uk.ctx.sys.gateway.dom.login.ContractCode)

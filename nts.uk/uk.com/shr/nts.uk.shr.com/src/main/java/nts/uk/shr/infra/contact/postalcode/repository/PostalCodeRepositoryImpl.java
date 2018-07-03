@@ -12,8 +12,8 @@ import nts.uk.shr.infra.contact.postalcode.entity.CismtPostalCodePK;
 
 @Stateless
 public class PostalCodeRepositoryImpl extends JpaRepository implements PostalCodeRepository {
-	private final String SELECT_NO_WHERE = "SELECT c FROM CismtPostalCode c ";
-	private final String SELECT_BY_CD = SELECT_NO_WHERE + "WHERE c.postCode = :postCode AND c.cismtPostalCodePK.contractCd = :contractCd";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM CismtPostalCode c ";
+	private static final String SELECT_BY_CD = SELECT_NO_WHERE + "WHERE c.postCode = :postCode AND c.cismtPostalCodePK.contractCd = :contractCd";
 
 	@Override
 	public Optional<PostalCodeDto> find(String postalId, String contractCode) {

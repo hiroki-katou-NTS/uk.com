@@ -16,7 +16,7 @@ import nts.uk.screen.com.app.repository.company.CompanyQueryRepository;
 @Stateless
 public class JpaCompanyQueryRepository extends JpaRepository implements CompanyQueryRepository {
 	
-	private final String SELECT_NO_WHERE = "SELECT NEW " + CompanyQueryDto.class.getName() + "(c.bcmmtCompanyInforPK.companyId, c.companyCode, c.companyName, c.isAbolition) FROM BcmmtCompanyInfor c ";
+	private static final String SELECT_NO_WHERE = "SELECT NEW " + CompanyQueryDto.class.getName() + "(c.bcmmtCompanyInforPK.companyId, c.companyCode, c.companyName, c.isAbolition) FROM BcmmtCompanyInfor c ";
 	
 	@Override
 	public List<CompanyQueryDto> findAll() {

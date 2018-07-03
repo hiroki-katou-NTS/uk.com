@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstAccountLockPolicy
 public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPolicyRepository {
 	
 	/** The select by contract code. */
-	private final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstAccountLockPolicy c WHERE c.contractCode = :contractCode";
+	private static final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstAccountLockPolicy c WHERE c.contractCode = :contractCode";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository#getAccountLockPolicy(nts.uk.ctx.sys.gateway.dom.login.ContractCode)
