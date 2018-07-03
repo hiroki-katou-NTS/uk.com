@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<com:ValidatorScript>
+			nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AggrFrameCode
+			nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.OptionalAggrName
+		</com:ValidatorScript>
+		<div id="left-content"
+			class="bg-green caret-right caret-background cf"
+			style="width: 290px; height: 335px;" tabindex="5">
+			<div id="LST_001" style="margin-left: 10px; padding: 10px;">
+				<div id="LST_001" style="margin-left: -10px; padding: 10px;">
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+						width: 250,
+						height: 300,
+						dataSource: optionalList,
+						primaryKey: 'aggrFrameCode',
+						columns: columns,
+						multiple: false,
+						value: currentCode
+					}"></table>
+				</div>
+
+
+			</div>
+		</div>
+		<div id="right-content">
+			<div class="control-group" data-bind="with: currentItem">
+				<div id="label1-B4_1" class="label"
+					data-bind="ntsFormLabel: {required: true, constraint:['AggrFrameCode']}">
+					#{i18n.getText('KFP001_14')} <span><input
+						id="code-text-d4-2" style="margin-left: 69px ! important"
+						tabindex="1"
+						data-bind="ntsTextEditor: {value: aggrFrameCode,constraint:'AggrFrameCode', required: true, name: '#[KFP001_15]', enable:'enableText'}" /></span>
+				</div>
+				<hr></hr>
+				<div id="label2-B5_1" class="label"
+					data-bind="ntsFormLabel: {required: true, constraint:['OptionalAggrName']}">
+					#{i18n.getText('KFP001_16')} <span><input
+						id="code-text-d4-2" style="margin-left: 71px ! important"
+						tabindex="2"
+						data-bind="ntsTextEditor: {value: optionalAggrName,constraint:'OptionalAggrName', required: true, name: '#[KFP001_17]', enable:'enableText'}" /></span>
+				</div>
+				<hr></hr>
+				<div id="label2-B5_1" class="label"
+					data-bind="ntsFormLabel: {required: true}">
+					#{i18n.getText('KFP001_18')}</div>
+				<div id="period-input">
+					<div id="start-date-B6-3" style="margin-top: 10px;" tabindex="3"
+						data-bind="ntsDatePicker: {
+											value: startDate, 
+											valueFormat: 'YYYY/MM/DD',
+											required: true,
+											enable: true,
+											acceptJapaneseCalendar: true,
+											name: '#[KFP001_20]'}, 
+											enable:'enableText'">
+					</div>
+					<span style="margin-left: 15px;">~</span>
+					<div id="end-date-B6-4" style="margin-top: 10px;" tabindex="4"
+						data-bind="ntsDatePicker: {
+											value: endDate, 
+											valueFormat: 'YYYY/MM/DD',
+											required: true,
+											enable: true,
+											acceptJapaneseCalendar: true,
+											name: '#[KFP001_21]', 
+											enable:'enableText'}">
+											
+					</div>
+				</div>
+				<hr id="hr-3"></hr>
+
+			</div>
+		</div>
+		<div id="update-mode" style=" margin-left: 340px;">
+			<div id="label-hidden">
+				<div id="label2-B7_1" class="label"
+					data-bind="ntsFormLabel: {required: true}">
+					#{i18n.getText('KFP001_22')}</div>
+				<div id="label-B7_2" class="label" data-bind="text: peopleNo"></div>
+				<span style="margin-left: -12px;">人</span>
+				<button id="button-reference-B7_3"
+					data-bind="click : opendScreenBorJ" tabindex="5">#{i18n.getText('KFP001_24')}</button>
+				<hr style="width: 447px; float: right; margin-top: 10px;"></hr>
+			</div>
+		</div>
+		<button id="next-button-B" class="proceed x-large"
+			data-bind="click : opendScreenBorJ" tabindex="6">#{i18n.getText('KFP001_25')}</button>
+	</ui:composition>
+</body>
+</html>
