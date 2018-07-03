@@ -10,37 +10,80 @@ module nts.uk.com.view.cmf002.l.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;
-        effectDigitLengthItem: KnockoutObservableArray<model.ItemModel>;
-        codeEditingItem: KnockoutObservableArray<model.ItemModel>;
+        //initComponent
+        formatSelection: KnockoutObservable<number>;
+        decimalDigit: KnockoutObservable<number>;
+        decimalPointClassification: KnockoutObservable<number>;
+        decimalFraction: KnockoutObservable<number>;
+        outputMinusAsZero: KnockoutObservable<number>;
+        fixedValueOperation: KnockoutObservable<number>;
+        fixedValueOperationSymbol: KnockoutObservable<number>;
+        fixedCalculationValue: KnockoutObservable<number>;
+        fixedLengthOutput: KnockoutObservable<number>;
+        fixedLengthIntegerDigit: KnockoutObservable<number>;
+        fixedLengthEditingMethod: KnockoutObservable<number>;
+        nullValueReplace: KnockoutObservable<number>;
+        valueOfNullValueReplace: KnockoutObservable<number>;
+        fixedValue: KnockoutObservable<number>;
+        valueOfFixedValue: KnockoutObservable<string>;
+        
+        //L2_1
+        timeSelectedList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getTimeSelected());
+        timeSelectedCode: KnockoutObservable<number> = ko.observable(0);
+        //L4_1
+        decimalSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDecimalSelect());
+        decimalSelectCode: KnockoutObservable<number> = ko.observable(0);
+
+        minorityValue: KnockoutObservable<number>;
+        //L3_3
+        itemListRounding: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRounding());
+        selectedRounding: KnockoutObservable<number> = ko.observable(0);
+
+        //L5_1
+        outputMinusZero: KnockoutObservable<boolean> = ko.observable(true);
+
+        //L6_1
+        separatorSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSeparator());
+        selectedSeparator: KnockoutObservable<number> = ko.observable(0);
+
+        //L7_1
+        fixedValueOperationItem: KnockoutObservableArray<model.ItemModel>;
+        formatSelectionItem: KnockoutObservableArray<model.ItemModel>;
+        //L7_2
+        fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel>;
+        
+        //L8_1
+        fixedLengthOutputItem: KnockoutObservableArray<model.ItemModel>;
+        //L8_3_1
+        fixedLengthEditingMethodItem: KnockoutObservableArray<model.ItemModel>;
+        
+        //L9_1
         nullValueReplaceItem: KnockoutObservableArray<model.ItemModel>;
+        
+        //L10_1
         fixedValueItem: KnockoutObservableArray<model.ItemModel>;
-        codeEditingMethodItem: KnockoutObservableArray<model.ItemModel>;
-        spaceEditingItem: KnockoutObservableArray<model.ItemModel>;
-        codeConvertCode: KnockoutObservable<model.AcceptanceCodeConvert>;
-        dispConvertName: KnockoutObservable<string>;
-        inputMode: boolean;
+        
         constructor() {
             var self = this;
-            self.inputMode = true;
+    
+            self.minorityValue = ko.observable(0);
             self.initComponent();
-            self.validate();
+            
+            self.fixedValueOperation = ko.observable(0);
+            self.fixedValueOperationSymbol = ko.observable(0);
+            self.fixedCalculationValue = ko.observable(0);
+            self.fixedLengthOutput = ko.observable(0);
+            self.fixedLengthIntegerDigit = ko.observable(0);
+            self.fixedLengthEditingMethod = ko.observable(0);
+            self.nullValueReplace = ko.observable(0);
+            self.valueOfNullValueReplace = ko.observable(0);
+            self.fixedValue = ko.observable(0);
+            self.valueOfFixedValue = ko.observable("");
         }
-        
         initComponent() {
             var self = this;
-            self.codeConvertCode = ko.observable(new model.AcceptanceCodeConvert("", "", 0));
-            self.dispConvertName = ko.observable(self.codeConvertCode().convertCode() + self.codeConvertCode().convertName());
-            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, null, null, 0, "", 0, ""));
-            self.effectDigitLengthItem = ko.observableArray([
-                new model.ItemModel(model.FORMAT_SELECTION.DECIMAL, getText('CMF002_165')),
-                new model.ItemModel(model.FORMAT_SELECTION.NO_DECIMAL, getText('CMF002_166'))
-            ]);
-            self.codeEditingItem = ko.observableArray([
-                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
-                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
-            ]);
-            self.nullValueReplaceItem = ko.observableArray([
+            //self.numericDataFormatSetting = ko.observable(new model.NumericDataFormatSetting(0, null, null, null, 0, 0, null, null, 0, null, null, 0, null, 0, ""));
+            self.fixedValueOperationItem = ko.observableArray([
                 new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
                 new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
             ]);
@@ -48,138 +91,45 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                 new model.ItemModel(1, getText('CMF002_149')),
                 new model.ItemModel(0, getText('CMF002_150'))
             ]);
-            self.codeEditingMethodItem = ko.observableArray([
+            self.fixedValueOperationSymbolItem = ko.observableArray([
+                new model.ItemModel(0, '+'),
+                new model.ItemModel(1, '-')
+            ]);
+            
+            self.fixedLengthOutputItem = ko.observableArray([
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
+            ]);
+            
+            self.fixedLengthEditingMethodItem = ko.observableArray([
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, getText('Enum_FixedLengthEditingMethod_ZERO_BEFORE')),
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, getText('Enum_FixedLengthEditingMethod_SPACE_BEFORE')),
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('Enum_FixedLengthEditingMethod_SPACE_AFTER'))
             ]);
-            self.spaceEditingItem = ko.observableArray([
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_NO_OUTPUT_DECIMAL_POINT')),
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_OUTPUT_DECIMAL_POINT'))
+            
+            self.nullValueReplaceItem = ko.observableArray([
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
             ]);
-        }
-        validate() {
-            var self = this;
-            self.characterDataFormatSetting().effectDigitLength.subscribe(function(selectedValue: any) {
-                if (selectedValue == 0) {
-                    $('#J2_2_1').ntsError('clear');
-                    $('#J2_2_3').ntsError('clear');
-                } else {
-                    $('#J2_2_1').ntsError('check');
-                    $('#J2_2_3').ntsError('check');
-                }
-            });
-            self.characterDataFormatSetting().codeEditing.subscribe(function(selectedValue: any) {
-                if (selectedValue == 0) {
-                    $('#J3_2_1').ntsError('clear');
-                } else {
-                    $('#J3_2_1').ntsError('check');
-                }
-            });
-            self.characterDataFormatSetting().nullValueReplace.subscribe(function(selectedValue: any) {
-                if (selectedValue == 0) {
-                    $('#J6_2').ntsError('clear');
-                } else {
-                    $('#J6_2').ntsError('check');
-                }
-            });
-            self.characterDataFormatSetting().fixedValue.subscribe(function(selectedValue: any) {
-                if (selectedValue == 0) {
-                    $('#J7_2').ntsError('clear');
-                    if (self.characterDataFormatSetting().effectDigitLength() == model.FORMAT_SELECTION.DECIMAL) {
-                        $('#J2_2_1').ntsError('check');
-                        $('#J2_2_3').ntsError('check');
-                    }
-                    if (self.characterDataFormatSetting().codeEditing() == model.NOT_USE_ATR.USE) {
-                        $('#J3_2_1').ntsError('check');
-                    }
-                    if (self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE) {
-                        $('#J6_2').ntsError('check');
-                    }
-                } else {
-                    $('#J7_2').ntsError('check');
-                    $('#J2_2_1').ntsError('clear');
-                    $('#J2_2_3').ntsError('clear');
-                    $('#J3_2_1').ntsError('clear');
-                    $('#J6_2').ntsError('clear');
-                }
-            });
+            
+            self.fixedValueItem = ko.observableArray([
+                new model.ItemModel(1, getText('CMF002_149')),
+                new model.ItemModel(0, getText('CMF002_150'))
+            ]);
         }
         start(): JQueryPromise<any> {
             //block.invisible();
             var self = this;
             var dfd = $.Deferred();
             dfd.resolve();
-            //            service.getCharacterDataFormatSetting().done(function(charFormat) {
-            //                if (charFormat) {
-            //                    let characterDataFormatSetting = new model.CharacterDataFormatSetting(charFormat.effectDigitLength, 
-            //                    charFormat.startDigit, charFormat.endDigit, charFormat.codeEditing, charFormat.codeEditDigit, 
-            //                    charFormat.codeEditingMethod, charFormat.spaceEditing, charFormat.codeConvertCode, charFormat.nullValueReplace, 
-            //                    charFormat.valueOfNullValueReplace, charFormat.fixedValue, charFormat.valueOfFixedValue);
-            //                    self.characterDataFormatSetting(characterDataFormatSetting);
-            //                }
-            //                block.clear();
-            //                dfd.resolve();
-            //            }).fail(function(error) {
-            //                alertError(error);
-            //                block.clear();
-            //                dfd.reject();
-            //            });
+
             return dfd.promise();
         }
-        enableEffectDigitLengthCls() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
-        }
-        enableCodeEditingCls() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
-        }
 
-        enableSpaceEditing() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
-        }
-        enableConvertCode() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
-        }
-        enableNullValueReplaceCls() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
-        }
-
-        enableFixedValueCls() {
-            var self = this;
-            return (self.inputMode);
-        }
-        enableEffectDigitLength() {
-            var self = this;
-            return (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE && self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-        }
-        enableCodeEditing() {
-            var self = this;
-            return (self.characterDataFormatSetting().codeEditing() == model.NOT_USE_ATR.USE && self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-        }
-        enableNullValueReplace() {
-            var self = this;
-            return (self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE && self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-        }
-        enableFixedValue() {
-            var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
-        }
-        open002_V2() {
-
-        }
-        saveCharacterSetting() {
-            var self = this;
-            let params = "";
-            setShared("CMF002iOutput", params);
-        }
-        cancelCharacterSetting() {
-
-        }
+        saveCharacterSetting() { }
+        cancelCharacterSetting() { }
     }
+
 }
+
