@@ -27,5 +27,5 @@ public class MonthlyModifyQuery {
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;
 	/** Data */
-	private List<ItemValue> itemValues;
+//	private List<ItemValue> itemValues;
 }
