@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseReposito
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
@@ -188,6 +190,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		}else if(root.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION.value) {
 			appId = root.getApplicationType();
 			appName = EnumAdaptor.valueOf(root.getApplicationType(), ApplicationType.class).nameId;
+		}else if(root.getEmploymentRootAtr()== EmploymentRootAtr.CONFIRMATION.value){
+			appId = 0;
+			appName = EnumAdaptor.valueOf(root.getConfirmationRootType(), ConfirmationRootType.class).nameId;
 		}
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
 		//承認フェーズ, 承認者
@@ -272,7 +277,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		if(opComCommon.isPresent()) {	
 			ApprovalForApplication approvalForApplication = getApproval(0, ROOT_COMMON, opComCommon.get(), companyID);			
 			comApproverRoot.add(approvalForApplication);
-		}	
+		}
+		
+				 
+				 
 		//ApprovalForApplication approvalForApplication = new ApprovalForApplication(0, rootCommon, null, null, null);
 		
 		//Lap de lay du lieu theo app type
@@ -291,6 +299,16 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			}
 			
 		}
+		//lay du lieu theo CONFIRMATION
+		 List<CompanyApprovalRoot>  confirmLst =  lstComs.stream()
+			.filter(x -> x.getEmploymentRootAtr() ==  EmploymentRootAtr.CONFIRMATION).collect(Collectors.toList());
+		
+		 confirmLst.forEach(item->{
+			 ApprovalForApplication approvalForApplication = getApproval(0,item.getConfirmationRootType().nameId, item, companyID);
+			 comApproverRoot.add(approvalForApplication);
+		 });
+		 
+		 
 		if(!CollectionUtil.isEmpty(comApproverRoot)) {
 			Collections.sort(comApproverRoot, Comparator.comparing(ApprovalForApplication:: getAppType));
 		}		

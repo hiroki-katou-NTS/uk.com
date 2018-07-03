@@ -64,12 +64,15 @@ public class LateOrLeaveEarly extends AggregateRoot {
 	public Integer getLateTime1AsMinutes() {
 		return lateTime1 == null ? null : this.lateTime1.valueAsMinutes();
 	}
+
 	public Integer getLateTime2AsMinutes() {
 		return lateTime2 == null ? null : this.lateTime2.valueAsMinutes();
 	}
+
 	public Integer getEarlyTime1AsMinutes() {
 		return earlyTime1 == null ? null : this.earlyTime1.valueAsMinutes();
 	}
+
 	public Integer getEarlyTime2AsMinutes() {
 		return earlyTime2 == null ? null : this.earlyTime2.valueAsMinutes();
 	}
