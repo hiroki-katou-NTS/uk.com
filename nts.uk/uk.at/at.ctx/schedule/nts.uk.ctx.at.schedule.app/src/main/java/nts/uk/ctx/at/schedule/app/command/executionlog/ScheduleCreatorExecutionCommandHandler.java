@@ -364,8 +364,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		
-		command.setToDate(dateInPeriod);
-		
 		// get info by context
 		val asyncTask = context.asAsync();
 
@@ -407,14 +405,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		switch (basicCreateMethod) {
 		case BUSINESS_DAY_CALENDAR:
 			// アルゴリズム「営業日カレンダーで勤務予定を作成する」を実行する
-			this.createWorkScheduleByBusinessDayCalenda(command, workingConditionItem, empGeneralInfo,
+			this.createWorkScheduleByBusinessDayCalenda(command, dateInPeriod, workingConditionItem, empGeneralInfo,
 					mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis,
 					allData, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 			break;
 		case MONTHLY_PATTERN:
 			// アルゴリズム「月間パターンで勤務予定を作成する」を実行する
 			// create schedule by monthly pattern
-			this.scheCreExeMonthlyPatternHandler.createScheduleWithMonthlyPattern(command, workingConditionItem,
+			this.scheCreExeMonthlyPatternHandler.createScheduleWithMonthlyPattern(command, dateInPeriod, workingConditionItem,
 					empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
 					listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 			break;
@@ -500,7 +498,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
-	private void createWorkScheduleByBusinessDayCalenda(ScheduleCreatorExecutionCommand command,
+	private void createWorkScheduleByBusinessDayCalenda(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
 			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
@@ -513,7 +511,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		Optional<EmploymentInfoImported> optEmploymentInfo = Optional.empty();
 		if (listEmploymentInfo != null) {
 			optEmploymentInfo = listEmploymentInfo.stream()
-					.filter(employmentInfo -> employmentInfo.getStandardDate().equals(command.getToDate())).findFirst();
+					.filter(employmentInfo -> employmentInfo.getStandardDate().equals(dateInPeriod)).findFirst();
 		}
 
 		// status employment equal RETIREMENT (退職)
@@ -525,7 +523,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		if (optEmploymentInfo.get().getEmploymentState() != BEFORE_JOINING) {
 			// ドメインモデル「勤務予定基本情報」を取得する(lấy dữ liệu domain 「勤務予定基本情報」)
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
-					.find(workingConditionItem.getEmployeeId(), command.getToDate());
+					.find(workingConditionItem.getEmployeeId(), dateInPeriod);
 
 			if (optionalBasicSchedule.isPresent()) {
 				BasicSchedule basicSchedule = optionalBasicSchedule.get();
@@ -535,7 +533,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
 				// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
 				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
-					this.createWorkScheduleByRecreate(command, basicSchedule, workingConditionItem, optEmploymentInfo,
+					this.createWorkScheduleByRecreate(command, dateInPeriod, basicSchedule, workingConditionItem, optEmploymentInfo,
 							empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
 							listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
 							mapDiffTimeWorkSetting);
@@ -545,7 +543,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
 				BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
 				if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
-						&& !this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command,
+						&& !this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, dateInPeriod,
 								basicSche, optEmploymentInfo, workingConditionItem, empGeneralInfo,
 								listBusTypeOfEmpHis)) {
 					return;
@@ -556,7 +554,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				command.setIsDeleteBeforInsert(false); // FIX BUG #87113
 
 				// not exist data basic schedule
-				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem, empGeneralInfo,
+				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, dateInPeriod, workingConditionItem, empGeneralInfo,
 						mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis,
 						allData, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 			}
@@ -574,7 +572,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
-	private void createWorkScheduleByRecreate(ScheduleCreatorExecutionCommand command, BasicSchedule basicSchedule,
+	private void createWorkScheduleByRecreate(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod, BasicSchedule basicSchedule,
 			WorkCondItemDto workingConditionItem, Optional<EmploymentInfoImported> optEmploymentInfo,
 			EmployeeGeneralInfoImported empGeneralInfo, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem, List<WorkType> listWorkType,
@@ -588,9 +586,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ALL_CASE
 				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
 			// アルゴリズム「スケジュール作成判定処理」を実行する
-			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
+			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSchedule,
 					optEmploymentInfo, workingConditionItem, empGeneralInfo, listBusTypeOfEmpHis)) {
-				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem, empGeneralInfo,
+				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, dateInPeriod, workingConditionItem, empGeneralInfo,
 						mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis,
 						allData, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 			}
