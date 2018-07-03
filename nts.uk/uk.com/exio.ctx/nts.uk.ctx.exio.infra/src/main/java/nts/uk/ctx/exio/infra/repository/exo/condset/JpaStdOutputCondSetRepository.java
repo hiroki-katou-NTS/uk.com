@@ -17,11 +17,19 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtStdOutputCondSet f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutputCondSetPk.cid =:cid AND  f.stdOutputCondSetPk.conditionSetCd =:conditionSetCd ";
-
+	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.stdOutputCondSetPk.cid =:cid ";
+	
 	@Override
 	public List<StdOutputCondSet> getAllStdOutputCondSet() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtStdOutputCondSet.class)
 				.getList(item -> toDomain(item));
+	}
+	
+	@Override
+	public Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid) {
+		return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+				.getSingle(c -> toDomain(c));
 	}
 
 	@Override

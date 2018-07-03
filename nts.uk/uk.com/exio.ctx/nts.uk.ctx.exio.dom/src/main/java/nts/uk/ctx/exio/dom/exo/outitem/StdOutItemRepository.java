@@ -10,6 +10,8 @@ public interface StdOutItemRepository
 {
 
     List<StdOutItem> getAllStdOutItem();
+    
+    Optional<StdOutItem> getStdOutItemByCidAndSetCd(String cid, String condSetCd);
 
     Optional<StdOutItem> getStdOutItemById(String cid, String outItemCd, String condSetCd);
 
