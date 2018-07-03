@@ -34,6 +34,11 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject {
 		this.commonSet = memento.getCommonSet();
 		this.otherClassSets = memento.getOtherClassSet();
 	}
+	
+	public WorkTimezoneLateEarlySet(EmTimezoneLateEarlyCommonSet commonSet,List<OtherEmTimezoneLateEarlySet> otherClassSets) {
+		this.commonSet = commonSet;
+		this.otherClassSets = otherClassSets;
+	}
 
 	/**
 	 * Save to memento.
@@ -55,6 +60,14 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject {
 		}else {
 			return this.otherClassSets.stream().filter(t -> t.getLateEarlyAtr().isEARLY()).collect(Collectors.toList()).get(0);
 		}
+	}
+	
+	/**
+	 * 共通設定をtrueに変更した「就業時間帯の遅刻・早退設定」を返す
+	 * @return
+	 */
+	public WorkTimezoneLateEarlySet changeCommonSet() {
+		return new WorkTimezoneLateEarlySet(new EmTimezoneLateEarlyCommonSet(true),this.otherClassSets);
 	}
 	
 }

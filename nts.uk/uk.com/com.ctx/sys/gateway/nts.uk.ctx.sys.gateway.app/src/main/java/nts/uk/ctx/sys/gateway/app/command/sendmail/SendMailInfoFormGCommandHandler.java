@@ -17,7 +17,6 @@ import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -59,23 +58,26 @@ public class SendMailInfoFormGCommandHandler
 
 		String companyId = command.getContractCode() + "-" + command.getCompanyCode();
 
-		// Get EmployeeInfo
-		EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId, command.getEmployeeCode());
+		if (!command.getEmployeeCode().isEmpty()) {
+			// Get EmployeeInfo
+			EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId,
+					command.getEmployeeCode());
 
-		if (employee != null) {
-			// get userInfo
-			Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
+			if (employee != null) {
+				// get userInfo
+				Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
 
-			if (user.isPresent()) {
-				// check mail present
-				if (user.get().getMailAddress().isEmpty()) {
-					throw new BusinessException("Msg_1129");
-				} else {
-					// Send Mail アルゴリズム「メール送信実行」を実行する
-					return this.sendMail(user.get().getMailAddress(), user.get().getLoginId(), command);
+				if (user.isPresent()) {
+					// check mail present
+					if (user.get().getMailAddress().isEmpty()) {
+						throw new BusinessException("Msg_1129");
+					} else {
+						// Send Mail アルゴリズム「メール送信実行」を実行する
+						return this.sendMail(user.get().getMailAddress(), user.get().getLoginId(), command, employee);
+					}
 				}
+				return new SendMailReturnDto(null);
 			}
-			return new SendMailReturnDto(null);
 		}
 		return new SendMailReturnDto(null);
 	}
@@ -90,15 +92,11 @@ public class SendMailInfoFormGCommandHandler
 	 * @return true, if successful
 	 */
 	// Send Mail アルゴリズム「メール送信実行」を実行する
-	private SendMailReturnDto sendMail(String mailto, String loginId, SendMailInfoFormGCommand command) {
-
-		// get param input
-		String employeeId = AppContexts.user().employeeId();
-		String employeeCD = AppContexts.user().employeeCode();
-
+	private SendMailReturnDto sendMail(String mailto, String loginId, SendMailInfoFormGCommand command,
+			EmployeeInfoDtoImport employee) {
 		// get URL from CCG033
-		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 1, 24, employeeId,
-				command.getContractCode(), loginId, employeeCD, new ArrayList<>());
+		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 3, 24, employee.getEmployeeId(),
+				command.getContractCode(), loginId, employee.getEmployeeCode(), new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") + " \n" + url);
 

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -314,7 +316,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		if (!listApp.isEmpty()) {
 			for (Application_New app : listApp) {
 				// 申請承認内容(リスト）
-				ApprovalRootContentImport_New approvalRoot = this.approvalStateAdapter.getApprovalRootContent(sId,
+				ApprovalRootContentImport_New approvalRoot = this.approvalStateAdapter.getApprovalRootContent(companyId,
 						app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false);
 				listAppSttAcquisitionAppl.add(new ApplicationApprContent(app, approvalRoot));
 			}
@@ -601,15 +603,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					if (appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.APPROVED)
 							|| appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {
 						continue;
+					}
+					// 未承認、差し戻しの場合
+					// アルゴリズム「承認状況未承認メール未承認者取得」を実行する
+					getUnAppPersonAndResult = this.getUnApprovalMailPerson(listAppFrame, appDate);
+					if (getUnAppPersonAndResult.isResult()) {
+						result = true;
 					} else {
-						// 未承認、差し戻しの場合
-						// アルゴリズム「承認状況未承認メール未承認者取得」を実行する
-						getUnAppPersonAndResult = this.getUnApprovalMailPerson(listAppFrame, appDate);
-						if (!getUnAppPersonAndResult.isResult()) {
-							result = true;
-						} else {
-							continue;
-						}
+						continue;
 					}
 				}
 				// 次の承認枠が存在しない場合
@@ -618,7 +619,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					return listUnAppPerson;
 			}
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**
@@ -664,11 +665,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * 承認状況未承認メール本文取得
 	 */
 	private MailTransmissionContentResultOutput getMailTransmissContent(List<UnApprovalPerson> listUnAppPerson) {
-		MailTransmissionContentResultOutput mailTransContentResult = null;
 		List<MailTransmissionContentOutput> listMailTransmissContent = new ArrayList<>();
 		// アルゴリズム「承認状況メール本文取得」を実行する
 		ApprovalStatusMailTemp mailDomain = this
 				.getApprovalStatusMailTemp(ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED.value);
+		MailTransmissionContentResultOutput mailTransContentResult = new MailTransmissionContentResultOutput(
+				Collections.emptyList(), mailDomain);
 		// 未承認者を社員ID順に並び替える
 		// 未承認者（リスト）
 		List<String> listEmpId = new ArrayList<>();
@@ -678,6 +680,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 次の未承認者の社員IDが異なる(EmployeeID chưa approval tiếp theo có khác không)
 		// アルゴリズム「承認状況社員メールアドレス取得」を実行する
 		// imported（就業）「個人社員基本情報」を取得する
+		if (listEmpId.isEmpty())
+			return mailTransContentResult;
 		List<EmployeeEmailImport> listEmailEmployee = this.findEmpMailAddr(listEmpId);
 		for (EmployeeEmailImport emp : listEmailEmployee) {
 			// 件名
@@ -687,7 +691,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			listMailTransmissContent.add(
 					new MailTransmissionContentOutput(emp.getSId(), emp.getSName(), emp.getMailAddr(), subject, text));
 		}
-		mailTransContentResult = new MailTransmissionContentResultOutput(listMailTransmissContent, mailDomain);
+		mailTransContentResult.setListMailTransmisContent(listMailTransmissContent);
 		return mailTransContentResult;
 	}
 
@@ -697,7 +701,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public List<String> getAppSttSendingUnapprovedMail(List<UnApprovalSendMail> listAppSttApp) {
 		List<String> listWorksp = new ArrayList<>();
-		this.confirmApprovalStatusMailSender();
+		// EA修正履歴 2125
+		// this.confirmApprovalStatusMailSender();
 		// 職場一覧のメール送信欄のチェックがONの件数
 		if (listAppSttApp.stream().filter(x -> x.isChecked()).count() == 0) {
 			throw new BusinessException("Msg_794");

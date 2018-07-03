@@ -60,7 +60,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayWork(SingleDaySchedule holidayWork) {
-		this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value);
+		this.toEntity(Optional.of(holidayWork), WorkCategoryAtr.HOLIDAY_WORK.value);
 	}
 
 	/*
@@ -73,7 +73,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayTime(SingleDaySchedule holidayTime) {
-		this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value);
+		this.toEntity(Optional.of(holidayTime), WorkCategoryAtr.HOLIDAY_TIME.value);
 	}
 
 	/*
@@ -86,7 +86,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setWeekdayTime(SingleDaySchedule weekdayTime) {
-		this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value);
+		this.toEntity(Optional.of(weekdayTime), WorkCategoryAtr.WEEKDAY_TIME.value);
 	}
 
 	/*
@@ -98,10 +98,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setPublicHolidayWork(Optional<SingleDaySchedule> publicHolidayWork) {
-		if (publicHolidayWork.isPresent()) {
-			this.toEntity(publicHolidayWork.get(),
-					WorkCategoryAtr.PUBLIC_HOLIDAY_WORK.value);
-		}
+		this.toEntity(publicHolidayWork, WorkCategoryAtr.PUBLIC_HOLIDAY_WORK.value);
 	}
 
 	/*
@@ -113,9 +110,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setInLawBreakTime(Optional<SingleDaySchedule> inLawBreakTime) {
-		if (inLawBreakTime.isPresent()) {
-			this.toEntity(inLawBreakTime.get(), WorkCategoryAtr.INLAW_BREAK_TIME.value);
-		}
+		this.toEntity(inLawBreakTime, WorkCategoryAtr.INLAW_BREAK_TIME.value);
 	}
 
 	/*
@@ -127,10 +122,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setOutsideLawBreakTime(Optional<SingleDaySchedule> outsideLawBreakTime) {
-		if (outsideLawBreakTime.isPresent()) {
-			this.toEntity(outsideLawBreakTime.get(),
-					WorkCategoryAtr.OUTSIDE_LAW_BREAK_TIME.value);
-		}
+		this.toEntity(outsideLawBreakTime, WorkCategoryAtr.OUTSIDE_LAW_BREAK_TIME.value);
 	}
 
 	/*
@@ -142,10 +134,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayAttendanceTime(Optional<SingleDaySchedule> holidayAttendanceTime) {
-		if (holidayAttendanceTime.isPresent()) {
-			this.toEntity(holidayAttendanceTime.get(),
-					WorkCategoryAtr.HOLIDAY_ATTENDANCE_TIME.value);
-		}
+		this.toEntity(holidayAttendanceTime, WorkCategoryAtr.HOLIDAY_ATTENDANCE_TIME.value);
 	}
 
 	/**
@@ -157,17 +146,18 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 *            the work category atr
 	 * @return the kshmt per work category
 	 */
-	private void toEntity(SingleDaySchedule domain, int workCategoryAtr) {
-		// Create primary key
-		KshmtPerWorkCat entity = this.mapSingleDaySchedule.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtPerWorkCat());
-		domain.saveToMemento(new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
-
-		// Put new/updated entity into map
-		this.mapSingleDaySchedule.put(workCategoryAtr, entity);
-
-		// Put back to the entities list
-		this.entities.clear();
-		this.entities.addAll(this.mapSingleDaySchedule.values());
+	private void toEntity(Optional<SingleDaySchedule> domain, int workCategoryAtr) {
+		if(domain.isPresent()) {
+			// Create primary key
+			KshmtPerWorkCat entity = this.mapSingleDaySchedule.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtPerWorkCat());
+			domain.get().saveToMemento(new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
+	
+			// Put new/updated entity into map
+			this.mapSingleDaySchedule.put(workCategoryAtr, entity);
+	
+			// Put back to the entities list
+			this.entities.addAll(this.mapSingleDaySchedule.values());
+		}
 	}
 	
 

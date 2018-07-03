@@ -302,7 +302,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 		}
 		//残業深夜
 		if(this.getOverTimeWork().isPresent()) {
-			returnErrorList.addAll(this.getOverTimeWork().get().checkNightTimeExcess(employeeId,targetDate, searchWord, attendanceItemDictionary, errorCode));
+			returnErrorList.addAll(this.getOverTimeWork().get().checkNightTimeExcess(employeeId,targetDate, "就外残業深夜時間", attendanceItemDictionary, errorCode));
 		}
 		//休出深夜
 		if(this.getWorkHolidayTime().isPresent()) {

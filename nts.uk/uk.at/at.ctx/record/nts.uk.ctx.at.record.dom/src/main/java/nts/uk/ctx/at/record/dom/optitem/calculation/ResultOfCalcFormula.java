@@ -40,14 +40,14 @@ public class ResultOfCalcFormula {
 	 * @param element 計算値
 	 * @return 計算式の結果クラス
 	 */
-	public static ResultOfCalcFormula of(FormulaId id,OptionalItemAtr optionalItemAtr,Integer calcValue) {
+	public static ResultOfCalcFormula of(FormulaId id,OptionalItemAtr optionalItemAtr,double calcValue) {
 		switch(optionalItemAtr) {
 			case NUMBER:
-				return new ResultOfCalcFormula(id, Optional.of(calcValue), Optional.of(0), Optional.of(0));
+				return new ResultOfCalcFormula(id, Optional.of((int)calcValue), Optional.of(0), Optional.of(0));
 			case TIME:
-				return new ResultOfCalcFormula(id, Optional.of(0), Optional.of(calcValue), Optional.of(0));
+				return new ResultOfCalcFormula(id, Optional.of(0), Optional.of((int)calcValue), Optional.of(0));
 			case AMOUNT:
-				return new ResultOfCalcFormula(id, Optional.of(0), Optional.of(0), Optional.of(calcValue));
+				return new ResultOfCalcFormula(id, Optional.of(0), Optional.of(0), Optional.of((int)calcValue));
 			default:
 				throw new RuntimeException("unknown optionalItemAtr:"+optionalItemAtr);
 		}
