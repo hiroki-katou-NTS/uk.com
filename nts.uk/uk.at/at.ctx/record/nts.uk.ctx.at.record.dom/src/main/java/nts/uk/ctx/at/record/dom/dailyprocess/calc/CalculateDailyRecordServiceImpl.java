@@ -286,6 +286,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val workInfo = integrationOfDaily.getWorkInformation();
 		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordInfo().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 	
+		///ここのnullは治す　→　直さないと絶対落ちる
 		if(!workType.isPresent()) return ManageReGetClass.cantCalc(Optional.empty(),integrationOfDaily,null);
 		val beforeWorkType = workType;
 		
@@ -711,13 +712,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				/* 流動勤務 */
 				val flowWorkSetOpt = shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
 															  () -> flowWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
-				break;
+				return ManageReGetClass.cantCalc2(workType,integrationOfDaily,personalInfo,holidayCalcMethodSet,regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting);
 			case DIFFTIME_WORK:
 				/* 時差勤務 */
 				val diffWorkSetOpt = shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
 						  									  () -> diffTimeWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
+				return ManageReGetClass.cantCalc2(workType,integrationOfDaily,personalInfo,holidayCalcMethodSet,regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting);
 				// case Enum_Overtime_Work:
-				break;
 			default:
 				throw new RuntimeException(
 						"unknown workTimeMethodSet" + workTime.get().getWorkTimeDivision().getWorkTimeMethodSet());

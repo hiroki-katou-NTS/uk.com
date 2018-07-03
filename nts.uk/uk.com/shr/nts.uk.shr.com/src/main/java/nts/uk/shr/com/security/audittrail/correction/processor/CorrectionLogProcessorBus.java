@@ -1,4 +1,4 @@
-package nts.uk.shr.com.security.audittrail.correction;
+package nts.uk.shr.com.security.audittrail.correction.processor;
 
 import java.io.Serializable;
 import java.util.HashMap;
