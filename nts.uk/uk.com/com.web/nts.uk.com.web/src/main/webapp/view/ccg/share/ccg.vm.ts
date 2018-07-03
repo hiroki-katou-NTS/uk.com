@@ -210,10 +210,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     return moment.utc(self.inputBaseDate());
                 });
                 self.periodStart = ko.computed(() => {
-                    return moment.utc(self.inputPeriod().startDate);
+                    return moment.utc(self.inputPeriod().startDate, CcgDateFormat.YMD);
                 });
                 self.periodEnd = ko.computed(() => {
-                    return moment.utc(self.inputPeriod().endDate);
+                    return moment.utc(self.inputPeriod().endDate, CcgDateFormat.YMD);
                 });
                 self.statusPeriodStart = ko.computed(() => {
                     return moment.utc(self.inputStatusPeriodStart());
@@ -1901,6 +1901,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
         export class CcgDateFormat {
             static DEFAULT_FORMAT = 'YYYY-MM-DD';
+            static YMD = 'YYYY/MM/DD';
             static YEAR_MONTH = 'YYYYMM';
         }
         
