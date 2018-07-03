@@ -22,13 +22,13 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param sid
 	 * @return
 	 */
-	List<BreakDayOffDetail> getConfirmDayOffDetail(String sid);
+	List<BreakDayOffDetail> getConfirmDayOffDetail(String cid, String sid);
 	/**
 	 * 1-1.確定代休から未相殺の代休を取得する
 	 * @param sid
 	 * @return
 	 */
-	List<CompensatoryDayOffManaData> lstConfirmDayOffData(String sid);
+	List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid);
 	/**
 	 * 1-3.暫定休出と紐付けをしない確定代休を取得する
 	 * @param dayoffConfirmData

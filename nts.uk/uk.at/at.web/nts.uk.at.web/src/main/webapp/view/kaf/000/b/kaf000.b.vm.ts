@@ -353,7 +353,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
        callReflect(data) {
             let self = this;
-            service.reflectAppSingle(data).always(()=> self.reloadPage(););
+            service.reflectAppSingle(data).always(()=> self.reloadPage());
         }
 
         reloadPage() {

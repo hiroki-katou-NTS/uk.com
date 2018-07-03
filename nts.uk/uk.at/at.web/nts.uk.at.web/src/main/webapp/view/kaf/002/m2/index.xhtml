@@ -3,7 +3,7 @@
 		<div class="cell m2-column1">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
 		</div>
-		<div class="cell m2-column2">
+		<div class="cell m2-column2" data-bind="let: { screenEditable: editable }">
 			<div data-bind="foreach: appStampList">
 				<div style="display: ">
 					<div class="panel panel-frame m2-panel">
@@ -18,12 +18,12 @@
 													name: '#[KAF002_20]',
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													enable: checked }" />	
+													enable: checked()&amp;&amp;screenEditable() }" />	
 								</div>
 								<div class="m2-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m2-inline-div" data-bind="with: startLocation">
 										<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
-										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 										<span class="label m2-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m2DisableEdit: !checked() }"></span>
 									</div>
 								</div>					
@@ -40,12 +40,12 @@
 													name: '#[KAF002_20]', 
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													enable: checked }" />	
+													enable: checked()&amp;&amp;screenEditable() }" />	
 								</div>	
 								<div class="m2-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m2-inline-div" data-bind="with: endLocation">
 										<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 										<span class="label m2-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m2DisableEdit: !checked() }"></span>	
 									</div>
 								</div>				

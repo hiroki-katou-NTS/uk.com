@@ -6,10 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
@@ -24,16 +25,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRQDT_APP_LATE_OR_LEAVE")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public KrqdtAppLateOrLeavePK krqdtAppLateOrLeavePK;
-	
-	@Version
-	@Column(name="EXCLUS_VER")
-	public Long version;
 	
 	@Column(name = "ACTUAL_CANCEL_ATR")
 	public int actualCancelAtr;
@@ -80,7 +79,6 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 				.late2(EnumAdaptor.valueOf(this.late2, Select.class))
 				.lateTime2(getLateTime2())
 				.build();
-		lateOrLeaveEarly.setVersion(this.version);
 		return lateOrLeaveEarly;
 	}
 	
@@ -89,7 +87,6 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 					new KrqdtAppLateOrLeavePK(
 							domain.getApplication().getCompanyID(), 
 							domain.getApplication().getAppID()),
-					domain.getVersion(),
 					domain.getActualCancelAtr(),
 					domain.getEarly1().value,
 					domain.getEarlyTime1AsMinutes(),

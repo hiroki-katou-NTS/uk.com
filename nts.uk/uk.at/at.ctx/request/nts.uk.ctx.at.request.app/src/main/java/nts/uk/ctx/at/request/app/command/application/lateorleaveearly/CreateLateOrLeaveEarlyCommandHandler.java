@@ -55,7 +55,8 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResu
 				companyID, EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), 
 				command.getApplicationDate(), ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, employeeID, new AppReason(appReason));
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
-				application, 
+				application,
+				command.getActualCancel(),
 				command.getEarly1(), command.getEarlyTime1(), 
 				command.getLate1(), command.getLateTime1(), 
 				command.getEarly2(), command.getEarlyTime2(), 

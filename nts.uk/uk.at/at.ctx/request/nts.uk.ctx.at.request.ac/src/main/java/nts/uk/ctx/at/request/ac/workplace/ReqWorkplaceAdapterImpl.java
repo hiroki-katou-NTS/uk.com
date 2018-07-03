@@ -20,7 +20,6 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoExport;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**

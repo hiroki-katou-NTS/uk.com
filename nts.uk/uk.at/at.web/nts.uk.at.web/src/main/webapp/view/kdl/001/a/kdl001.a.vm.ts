@@ -4,7 +4,6 @@ module nts.uk.at.view.kdl001.a {
             columns: KnockoutObservableArray<NtsGridListColumn>;
             multiSelectMode: KnockoutObservable<boolean>;
             isSelection: KnockoutObservable<boolean> = ko.observable(false);
-            rootList: Array<IWorkTimeSet>;
             selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
             selectAbleCodeList: KnockoutObservableArray<string>;
             selectedCodeList: KnockoutObservableArray<string>;
@@ -50,16 +49,7 @@ module nts.uk.at.view.kdl001.a {
                 nts.uk.ui.block.invisible();
                 kdl001.a.service.findByCodeList(self.selectAbleCodeList())
                     .done(function(data) {
-                        self.rootList = data;
-                        if (!self.isSelection) {
-                            self.selectAbleItemList(_.clone(self.rootList));
-                        } else {
-                            self.selectAbleItemList.push(new WorkTimeSet());
-                            if (!nts.uk.util.isNullOrEmpty(data)) {
-                                self.selectAbleItemList(self.selectAbleItemList().concat(_.map(data, item => { return new WorkTimeSet(item) })));
-                            }
-
-                        }
+                            self.bindItemList(data);
                         if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
                             if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
                                 self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
@@ -82,12 +72,20 @@ module nts.uk.at.view.kdl001.a {
                     });
                 return dfd.promise();
             }
+            bindItemList(data) {
+                let self = this;
+                self.selectAbleItemList().clear();
+                self.selectAbleItemList.push(new WorkTimeSet());
+                if (!nts.uk.util.isNullOrEmpty(data)) {
+                    self.selectAbleItemList(self.selectAbleItemList().concat(_.map(data, item => { return new WorkTimeSet(item) })));
+                }
+            }
 
             search() {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
-                    codelist: _.map(self.rootList, function(item) { return item.code }),
+                    codelist: _.map(self.selectAbleItemList(), function(item) { return item.code }),
                     startTime: nts.uk.util.isNullOrEmpty(self.startTime()) ? null : self.startTime(),
                     endTime: nts.uk.util.isNullOrEmpty(self.endTime()) ? null : self.endTime()
                 }
@@ -117,13 +115,14 @@ module nts.uk.at.view.kdl001.a {
                 self.endTime('');
                 kdl001.a.service.findByCodeList(self.selectAbleCodeList())
                     .done(function(data) {
-                        self.rootList = data;
-                        self.selectAbleItemList(_.clone(self.rootList));
+                        self.bindItemList(data);
                         if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
                             if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
                                 self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
                             }
-                            self.selectedCode(_.first(self.selectAbleItemList()).code);
+                            if(nts.uk.util.isNullOrEmpty(self.selectedCode())){
+                                self.selectedCode(_.first(self.selectAbleItemList()).code);
+                            }
                         } else {
                             self.selectedCodeList([]);
                             self.selectedCode(null);
