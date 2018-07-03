@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
-import java.security.cert.PKIXRevocationChecker.Option;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -226,7 +225,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				}
 			}
 		}
-		List<SpecialLeaveGrantDetails> lstSpecialLeaveGrantDetails = new ArrayList<>(inPeriodData.getLstSpeLeaveGrantDetails());
+		List<SpecialLeaveGrantDetails> lstSpecialLeaveGrantDetails = new ArrayList<>();
 		//特別休暇付与残数データ一覧を特別休暇パラメータに追加する
 		specialLeaverData.forEach(x -> {
 			SpecialLeaveGrantDetails grantDetail = new SpecialLeaveGrantDetails();
@@ -335,9 +334,10 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		DataMngOfDeleteExpired adjustCarryForward = this.adjustCarryForward(lstDeleteDealine, outputData.getBeforeUseDays(), accumulationMaxDays);
 		//未消化数+=未消化数
 		outputData.setUndigested(outputData.getUndigested() + adjustCarryForward.getUnDigestedDay());
-		InPeriodOfSpecialLeave inPeriodData = new InPeriodOfSpecialLeave();
+		
 		//パラメータ．特別休暇の残数．未消化数=未消化数
-		inPeriodData.getRemainDays().setUnDisgesteDays(outputData.getUndigested());
+		RemainDaysOfSpecialHoliday remainDaysOfSpecialHoliday = new RemainDaysOfSpecialHoliday(null, outputData.getUndigested(), Optional.empty());
+		InPeriodOfSpecialLeave inPeriodData = new InPeriodOfSpecialLeave(new ArrayList<>(), remainDaysOfSpecialHoliday, new ArrayList<>());
 		//使用数を管理データから引く
 		inPeriodData = this.subtractUseDaysFromMngData(lstGrantData, lstInterimData, outputData, inPeriodData, adjustCarryForward.getLimitDays());
 		return inPeriodData;
