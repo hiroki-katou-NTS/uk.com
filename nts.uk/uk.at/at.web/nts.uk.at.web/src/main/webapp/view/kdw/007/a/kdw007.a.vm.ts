@@ -235,7 +235,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             selectedErrorAlarm.code(param && param.code ? param.code : '');
             selectedErrorAlarm.name(param && param.name ? param.name : '');
             selectedErrorAlarm.fixedAtr(param && param.fixedAtr ? param.fixedAtr : 0);
-            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 1);
+            selectedErrorAlarm.useAtr(param && nts.uk.ntsNumber.isNumber(param.useAtr, false) ? param.useAtr : 1);
             selectedErrorAlarm.remarkCancelErrorInput(param && param.remarkCancelErrorInput ? param.remarkCancelErrorInput : 0);
             selectedErrorAlarm.remarkColumnNo(param && param.remarkColumnNo ? param.remarkColumnNo : 833);
             selectedErrorAlarm.typeAtr(param && param.typeAtr ? param.typeAtr : 0);

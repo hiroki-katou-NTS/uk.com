@@ -1,8 +1,11 @@
-package nts.uk.shr.com.security.audittrail.correction;
+package nts.uk.shr.com.security.audittrail.correction.processor;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 
+/**
+ * Define CorrectionLogProcessors here.
+ */
 @RequiredArgsConstructor
 public enum CorrectionProcessorId {
 
