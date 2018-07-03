@@ -17,22 +17,11 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements InterimSpecialHolidayMngRepository{
-	
-	private String QUERY_BY_SID_PERIOD = "SELECT c FROM KrcmtInterimSpeHoliday c"
-			+ " WHERE c.pk.sid = :sid"
-			+ " AND c.pk.ymd >= :startDate"
-			+ " AND c.pk.ymd <= :endDate"
-			+ " ORDER BY c.pk.ymd ASC";
+
 	private String DELETE_BY_ID = "DELETE FROM KrcmtInterimSpeHoliday c"
 			+ " WHERE c.pk.specialHolidayId = :specialHolidayId";
-	@Override
-	public List<InterimSpecialHolidayMng> findBySidPeriod(String sId, DatePeriod dateData) {
-		return this.queryProxy().query(QUERY_BY_SID_PERIOD, KrcmtInterimSpeHoliday.class)
-				.setParameter("sid", sId)
-				.setParameter("startDate", dateData.start())
-				.setParameter("endDate", dateData.end())
-				.getList(c -> toDomain(c));
-	}
+	private String QUERY_BY_ID = "SELECT c FROM KrcmtInterimSpeHoliday c"
+			+ " WHERE c.pk.specialHolidayId = :specialHolidayId";
 	private InterimSpecialHolidayMng toDomain(KrcmtInterimSpeHoliday c) {
 		return new InterimSpecialHolidayMng(
 				c.pk.specialHolidayId,
@@ -64,6 +53,12 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 	@Override
 	public void deleteSpecialHoliday(String specialId) {
 		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("specialHolidayId", specialId).executeUpdate();	
+	}
+	@Override
+	public List<InterimSpecialHolidayMng> findById(String mngId) {
+		return this.queryProxy().query(QUERY_BY_ID, KrcmtInterimSpeHoliday.class)
+				.setParameter("specialHolidayId", mngId)
+				.getList(c -> toDomain(c));
 	}
 
 }

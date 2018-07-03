@@ -6,27 +6,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 /**
- * 特別休暇の残数
+ * 特別休暇上限超過消滅数
  * @author do_dt
  *
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
-public class RemainDaysOfSpecialHoliday {
+@Setter
+public class LimitTimeAndDays {
 	/**
-	 * 付与前明細
+	 * 日数
 	 */
-	private SpecialHolidayRemainInfor grantDetailBefore;
+	private double days;
 	/**
-	 * 未消化数
+	 * 時間
 	 */
-	private double unDisgesteDays;
-	/**
-	 * 付与後明細
-	 */
-	private Optional<SpecialHolidayRemainInfor> grantDetailAfter;
-	
+	private Optional<Integer> times;
 }
