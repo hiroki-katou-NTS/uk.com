@@ -26,7 +26,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             self.initComponent();
             self.validate();
         }
-        
+
         initComponent() {
             var self = this;
             self.codeConvertCode = ko.observable(new model.AcceptanceCodeConvert("", "", 0));
@@ -179,7 +179,19 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             setShared("CMF002iOutput", params);
         }
         cancelCharacterSetting() {
-
+            nts.uk.ui.windows.close();
+        }
+        gotoScreenJ() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/j/index.xhtml");
+        }
+        gotoScreenM() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/m/index.xhtml");
+        }
+        gotoScreenN() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
+        }
+        gotoScreenL() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/l/index.xhtml");
         }
     }
 }

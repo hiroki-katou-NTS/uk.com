@@ -14,7 +14,6 @@
 .div-table-row {
   display: table-row;
   width: 800px;
-  height:70px;
   clear: both;
 }
 .div-table-row-small {
@@ -67,4 +66,9 @@
 .cell-label{
     display: inline;
 } 
-
+div.form-label{
+	height: 30px;
+}
+#master-wrapper {
+    overflow: hidden;
+}
