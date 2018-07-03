@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.outitem;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * 出力項目(定型)

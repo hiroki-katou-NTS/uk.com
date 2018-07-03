@@ -1,27 +1,27 @@
-package nts.uk.ctx.exio.dom.exo.dataformat;
+package nts.uk.ctx.exio.dom.exo.outitem;
 
 /*
  * 項目型
  */
 public enum ItemType {
-	//数値型
+	// 数値型
 	NUMERIC(0, "Enum_ItemType_NUMERIC"),
-	//文字型
+	// 文字型
 	CHARACTER(1, "Enum_ItemType_CHARACTER"),
-	//日付型
+	// 日付型
 	DATE(2, "Enum_ItemType_DATE"),
-	//時間型
+	// 時間型
 	TIME(3, "Enum_ItemType_TIME"),
-	//時刻型
-	INS_TIME(4, "Enum_ItemType_INSTIME"),
-	//在職区分[
+	// 時刻型
+	INS_TIME(4, "Enum_ItemType_INSTANT_TIME"),
+	// 在職区分[
 	AT_WORK_CLS(5, "Enum_ItemType_AT_WORK_CLASSIFICATION");
-	
+
 	/* The value. */
 	public final int value;
 	/* The name id. */
 	public final String nameId;
-	
+
 	private ItemType(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
