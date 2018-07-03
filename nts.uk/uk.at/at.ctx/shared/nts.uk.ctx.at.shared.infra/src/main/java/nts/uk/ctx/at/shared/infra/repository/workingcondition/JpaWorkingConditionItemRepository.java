@@ -296,6 +296,22 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		this.commandProxy().update(entity);
 	}
+	
+	/**
+	 *  Update WorkingConditionItem trong trường hợp category WorkingCondition chia đôi.
+	 */
+	@Override
+	public void updateWorkCond2(WorkingConditionItem item) {
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(item.getHistoryId(),
+				KshmtWorkingCondItem.class);
+
+		KshmtWorkingCondItem entity = optEntity.get();
+
+		item.saveToMemento(new JpaWorkingConditionItem2SetMemento(entity));
+
+		this.commandProxy().update(entity);
+		
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -568,5 +584,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// exclude select
 		return result;
 	}
+
+	
 
 }
