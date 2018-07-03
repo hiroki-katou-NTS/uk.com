@@ -109,7 +109,7 @@ module nts.custom.component {
                                 CAT_TYPE.DUPLI, 
                                 CAT_TYPE.NODUP
                             ].indexOf(combobox.object.categoryType()) > -1 && 
-                            ['CS00003'].indexOf(combobox.object.categoryCode()) == -1,
+                            ['CS00003', 'CS00070'].indexOf(combobox.object.categoryCode()) == -1,
                             showMult: combobox.object.categoryType() == CAT_TYPE.MULTI
                          } -->
                     <!-- ko if: showHist -->
@@ -507,7 +507,7 @@ module nts.custom.component {
                             case IT_CAT_TYPE.NODUPLICATE:
                             case IT_CAT_TYPE.DUPLICATE:
                             case IT_CAT_TYPE.CONTINUWED:
-                                if (['CS00003'].indexOf(cat.categoryCode) == -1) {
+                                if (['CS00003', 'CS00070'].indexOf(cat.categoryCode) == -1) {
                                     params.gridlist.row(8);
                                 } else {
                                     params.gridlist.row(10);

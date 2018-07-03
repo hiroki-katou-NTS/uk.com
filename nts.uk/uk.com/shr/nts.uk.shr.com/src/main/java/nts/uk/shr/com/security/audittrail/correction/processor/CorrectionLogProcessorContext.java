@@ -1,4 +1,4 @@
-package nts.uk.shr.com.security.audittrail.correction;
+package nts.uk.shr.com.security.audittrail.correction.processor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 
-public class DataCorrectionLoggingContext {
+public class CorrectionLogProcessorContext {
 
 	@Getter
 	private final String operationId;
@@ -22,14 +22,14 @@ public class DataCorrectionLoggingContext {
 	@Getter
 	private final List<DataCorrectionLog> corrections;
 
-	private DataCorrectionLoggingContext(String operationId, Object parameter) {
+	private CorrectionLogProcessorContext(String operationId, Object parameter) {
 		this.operationId = operationId;
 		this.parameter = parameter;
 		this.corrections = new ArrayList<>();
 	}
 	
-	public static DataCorrectionLoggingContext newContext(String operationId, Object parameter) {
-		return new DataCorrectionLoggingContext(operationId, parameter);
+	public static CorrectionLogProcessorContext newContext(String operationId, Object parameter) {
+		return new CorrectionLogProcessorContext(operationId, parameter);
 	}
 	
 	@SuppressWarnings("unchecked")

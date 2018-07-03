@@ -1,6 +1,7 @@
 module nts.uk.at.view.ktg029.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
+    export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
     export class ScreenModel {
 
         currentMonth: KnockoutObservable<period>;
@@ -329,7 +330,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                     lstExtractedEmployee: employeeIds,
                     individualTarget: __viewContext.user.employeeId
                 };
-                parent.nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
+                uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, {initParam: initParam, extractionParam: extractionParam});
+                window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
+                
+                //parent.nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
             }else{
                 let user =__viewContext.user;
                 let param = {
