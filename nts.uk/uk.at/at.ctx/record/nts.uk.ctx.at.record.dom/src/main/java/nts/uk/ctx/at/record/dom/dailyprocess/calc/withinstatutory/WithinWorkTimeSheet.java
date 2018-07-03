@@ -395,13 +395,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				AttendanceTime redeterminePremiumTime = (restPredeterminePremiumTime.greaterThan(new AttendanceTime(workTimeFrame.getTimeSheet().getTimeSpan().lengthAsMinutes())))
 														?new AttendanceTime(workTimeFrame.getTimeSheet().timeSpan().lengthAsMinutes())
 														:restPredeterminePremiumTime;
-				val a = workTimeFrame.calcTotalTime();
-				val b = workTimeFrame.calcTotalDeductionTime().valueAsMinutes();
-				val c = redeterminePremiumTime.valueAsMinutes();
-				AttendanceTime indicateTime = a//.addMinutes(b)
-											  .minusMinutes(c);
-														
-														
 														
 				Optional<TimeSpanForCalc> timeSpan = workTimeFrame.createTimeSpan(workTimeFrame.getCalcrange(),new TimeWithDayAttr(redeterminePremiumTime.valueAsMinutes()));
 				if(!timeSpan.isPresent())

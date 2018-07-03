@@ -1,14 +1,24 @@
 package nts.uk.ctx.at.request.dom.mail;
 
 /**
+ * 埋込URL期間区分
  * @author hiep.ld
  *
  */
 public enum PeriodClassification {
+	/** 年 */
 	YEAR (0),
+	
+	/** 月 */
 	MONTH (1),
+	
+	/** 日 */
 	DAY (2),
+	
+	/** 時 */
 	HOUR (3),
+	
+	/** 分 */
 	MINUTE (4);
 	private int value;
 	private PeriodClassification (int rawValue){

@@ -537,7 +537,7 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * 就�??残業�??休�?時間�??�?給時間の合計を求め�?
+	 * 加給時間を計算する(就内・残業・休出時間帯の
 	 */
 	public List<BonusPayTime> calcBonusPayTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
 											   CalAttrOfDailyPerformance calcAtrOfDaily, BonusPayAtr bonusPayAtr) {
@@ -545,16 +545,16 @@ public class CalculationRangeOfOneDay {
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
 		List<BonusPayTime> withinBonusPay = new ArrayList<>();
-		if(withinWorkingTimeSheet.isPresent())
+		if(this.withinWorkingTimeSheet != null && withinWorkingTimeSheet.isPresent())
 			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
 		
-		if(outsideWorkTimeSheet.isPresent())
+		if(this.outsideWorkTimeSheet != null && this.outsideWorkTimeSheet.isPresent())
 		{
-			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
+			if(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
 				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcBonusPayTimeInOverWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
 			}
 			
-			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+			if(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
 				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcBonusPayTimeInHolidayWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
 			}
 		}
