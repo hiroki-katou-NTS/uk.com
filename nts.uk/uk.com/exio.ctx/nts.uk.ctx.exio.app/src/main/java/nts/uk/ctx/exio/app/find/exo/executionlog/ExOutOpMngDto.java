@@ -40,12 +40,13 @@ public class ExOutOpMngDto {
 	/**
 	* 
 	*/
+
+	private String proUnit;
 	private int opCond;
 	/**
 	* 
 	*/
 
-	private String proUnit;
 
 
 	public static ExOutOpMngDto fromDomain(ExOutOpMng domain) {
@@ -54,8 +55,8 @@ public class ExOutOpMngDto {
 				domain.getErrCnt(),
 				domain.getTotalProCnt(),
 				domain.getDoNotInterrupt().value,
-				domain.getProUnit().value,
-				domain.getOpCond()
+				domain.getProUnit(),
+				domain.getOpCond().value
 				);
 	}
 
