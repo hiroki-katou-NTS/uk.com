@@ -39,7 +39,7 @@ public class MasterApproverRootExportService extends ExportService<MasterApprove
 				query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
 		
 		// check condition
-		if (masterApp.getCompanyRootInfor() == null && masterApp.getWorplaceRootInfor().isEmpty()
+		if (masterApp.getComRootInfor() == null && masterApp.getWorplaceRootInfor().isEmpty()
 				&& masterApp.getPersonRootInfor().isEmpty()) {
 			throw new BusinessException("Msg_7");
 		}
