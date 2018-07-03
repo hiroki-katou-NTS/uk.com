@@ -1,5 +1,8 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +27,6 @@ public class SurfaceItemFinder {
 		if (!optTableList.isEmpty()) {
 			return optTableList.stream().map(c -> SurfaceItemDto.fromDomain(c)).collect(Collectors.toList());
 		}
-		return null;
+		return Collections.EMPTY_LIST;
 	}
 }

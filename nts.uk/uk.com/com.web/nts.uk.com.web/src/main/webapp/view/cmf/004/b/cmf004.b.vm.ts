@@ -206,18 +206,16 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         searchDataRecovery(): void {
             let self = this;
-            block.invisible();
             $("#daterangepicker_b4_3 .ntsDatepicker").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
-                self.endDateString(moment.utc().format("YYYY/MM/DD"));
+                block.invisible();
                 let paramSearch = {
                     startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
                     endDate: moment.utc(self.dataRecoverySelection().executePeriodInput().endDate, "YYYY/MM/DD hh:mm:ss").add(1, "d").add(-1, "s").toISOString()
                 };
                 self.dataRecoverySelection().recoveryFileList.removeAll();
                 service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
-                    if (data && data.length) {
+                    if (data && data.length) { 
                         for (let i = 0; i < data.length; i++) {
                             let itemTarget =
                                 {
