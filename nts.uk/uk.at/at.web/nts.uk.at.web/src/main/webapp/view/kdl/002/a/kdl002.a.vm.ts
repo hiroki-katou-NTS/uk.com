@@ -61,7 +61,7 @@ module kdl002.a.viewmodel {
             if (!isSingle) return;
             let noSelectItem = {
                 memo: '',
-                name: nts.uk.resource.getText('KCP001_5'),
+                name: nts.uk.resource.getText('KDL002_9'),
                 workTypeCode: ''
             };
 
