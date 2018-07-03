@@ -11,7 +11,7 @@ public interface ChacDataFmSetRepository
 
     List<ChacDataFmSet> getAllChacDataFmSet();
 
-    Optional<ChacDataFmSet> getChacDataFmSetById();
+    Optional<ChacDataFmSet> getChacDataFmSetById(String cid);
 
     void add(ChacDataFmSet domain);
 
