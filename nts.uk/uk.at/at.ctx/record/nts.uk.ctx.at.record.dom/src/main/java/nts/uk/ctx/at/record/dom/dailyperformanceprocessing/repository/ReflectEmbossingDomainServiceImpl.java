@@ -373,11 +373,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				}
 
 				break;
-			case 8:
-			case 9:// 臨時開始・終了を反映する
-					// todo 開始 , 終了
+			case 7:
+			case 9://  開始 , 終了
 					// 9* ドメインモデル「臨時勤務管理」を取得する (Lấy về domain model "臨時勤務管理")
-					// chưa sử lý (fixed) sửa dụng
 					// 9*
 				boolean isUse = true;
 				// Optional<TemporaryWorkUseManage>
@@ -401,7 +399,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							&& s.getTemporary().getEnd().v().intValue() >= processTimeOutput1.getTimeOfDay().v()
 									.intValue()) {
 						// reflect
-						if (x.getStampAtr().value == 8) {
+						if (x.getStampAtr().value == 7) {
 							// 開始
 							String attendanceClass = "出勤";
 							temporaryPerformance = reflectTimeTemporaryStart(companyId, WorkInfo, attendanceClass,
@@ -493,7 +491,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					}
 				}
 				break;
-			case 12: // PCログオン //PCログオンを反映する
+			case 10: // PCログオン //PCログオンを反映する
 				String confirmReflec = this.confirmReflectRange(x, s);
 				if ("range1".equals(confirmReflec)) {
 					// 入門退門区分 = PCログオン
@@ -534,7 +532,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					}
 				}
 				break;
-			case 13:// PCログオフ
+			case 11:// PCログオフ
 				String confirmRangePcLogoff = this.confirmReflectRangeLeavingTime(x, s);
 				if ("range1".equals(confirmRangePcLogoff)) {
 					// 入門退門区分 = PCログオフ
