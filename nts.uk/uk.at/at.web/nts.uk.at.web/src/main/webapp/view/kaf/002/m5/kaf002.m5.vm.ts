@@ -13,9 +13,13 @@ module nts.uk.at.view.kaf002.m5 {
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             workLocationList: Array<vmbase.IWorkLocation> = [];
             displayItemNo: number = 5;
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>){
-                var self = this;    
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>, editable: any, screenMode: any){
+                var self = this;   
+                self.screenMode(screenMode);
+                self.editable(editable); 
                 self.workLocationList = listWorkLocation;
                 self.supFrameNo = 1;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
