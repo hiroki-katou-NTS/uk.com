@@ -92,8 +92,9 @@ module nts.uk.at.view.kdw010.a {
                             self.ignoreWorkTypes(ignoreWorkTypes);
 
                         }
+                        blockUI.clear();
                     });
-                    blockUI.clear();
+
                 });
 
                 dfd.resolve();
