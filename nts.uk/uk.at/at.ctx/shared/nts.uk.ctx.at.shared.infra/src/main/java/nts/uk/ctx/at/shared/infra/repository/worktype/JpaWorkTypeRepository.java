@@ -50,7 +50,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.closeAtr = :closeAtr" + " ORDER BY a.kshmtWorkTypeSetPK.workTypeCode";
 
-	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+	private static final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
 
 	private static final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE
@@ -96,14 +96,14 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " AND c.deprecateAtr = 0";
 	// findWorkType(java.lang.String, java.lang.Integer, java.util.List,
 	// java.util.List)
-	private static String FIND_WORKTYPE_ALLDAY_AND_HALFDAY;
-	private static String FIND_WORKTYPE_ONEDAY;
-	private static String FIND_WORKTYPE_FOR_SHOTING;
-	private static String FIND_WORKTYPE_FOR_PAUSE;
-	private static String FIND_WORKTYPE_FOR_HOLIDAY_APP_TYPE;
-	private static String FIND_WORKTYPE_BY_LIST_WORKTYPECODES;
-	private static String FIND_WORKTYPE_AllDAY_HALFDAY_BY_CODES;
-	private static String FIND_BY_CODES;
+	private static final String FIND_WORKTYPE_ALLDAY_AND_HALFDAY;
+	private static final String FIND_WORKTYPE_ONEDAY;
+	private static final String FIND_WORKTYPE_FOR_SHOTING;
+	private static final String FIND_WORKTYPE_FOR_PAUSE;
+	private static final String FIND_WORKTYPE_FOR_HOLIDAY_APP_TYPE;
+	private static final String FIND_WORKTYPE_BY_LIST_WORKTYPECODES;
+	private static final String FIND_WORKTYPE_AllDAY_HALFDAY_BY_CODES;
+	private static final String FIND_BY_CODES;
 	static {
 		StringBuilder builder = new StringBuilder();
 		builder.append(SELECT_FROM_WORKTYPE);

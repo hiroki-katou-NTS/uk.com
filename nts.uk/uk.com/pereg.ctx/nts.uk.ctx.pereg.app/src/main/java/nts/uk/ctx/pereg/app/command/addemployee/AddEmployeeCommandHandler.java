@@ -75,10 +75,10 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private EmpRegHistoryRepository empHisRepo;
 	
 	
-	private static List<String> historyCategoryCodeList = Arrays.asList("CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
+	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
 			"CS00019", "CS00020", "CS00021");
 			       
-	private static Map<String, String> startDateItemCodes;
+	private static final Map<String, String> startDateItemCodes;
 	static {
 		Map<String, String> aMap = new HashMap<>();
 		// 分類１
@@ -101,7 +101,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
 	
-	private static Map<String, String> endDateItemCodes;
+	private static final Map<String, String> endDateItemCodes;
 	static {
 		Map<String, String> aMap = new HashMap<>();
 		// 分類１

@@ -12,8 +12,8 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPeriod;
 
 @Stateless
 public class JpaItemPeriodRepository extends JpaRepository implements ItemPeriodRepository {
-	private final String SEL = "SELECT c FROM QcamtItemPeriod c";
-	private final String DEL_1 = SEL
+	private static final String SEL = "SELECT c FROM QcamtItemPeriod c";
+	private static final String DEL_1 = SEL
 			+ " WHERE c.qcamtItemPeriodPK.ccd = :companyCode AND c.qcamtItemPeriodPK.ctgAtr = :ctgAtr AND c.qcamtItemPeriodPK.itemCd = :itemCd";
 
 	@Override

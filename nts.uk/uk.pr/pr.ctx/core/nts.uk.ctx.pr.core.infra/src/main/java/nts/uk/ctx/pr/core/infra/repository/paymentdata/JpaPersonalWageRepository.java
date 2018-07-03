@@ -17,8 +17,8 @@ import nts.uk.ctx.pr.core.infra.entity.personalinfo.wage.PprmtPersonWagePK;
 @Stateless
 public class JpaPersonalWageRepository extends JpaRepository implements PersonalWageRepository {
 
-	private final String SELECT_LIST_BY_YEAR_MONTH = "SELECT c FROM PprmtPersonWage c WHERE c.pprmtPersonWagePK.ccd = :CCD and c.pprmtPersonWagePK.pId IN :PID and c.pprmtPersonWagePK.strYm <= :BASEYM and c.endYm >= :BASEYM";
-	private final String SEL_1 = "SELECT c FROM PprmtPersonWage c WHERE c.pprmtPersonWagePK.ccd = :companyCode and c.pprmtPersonWagePK.pId = :personId and c.pprmtPersonWagePK.strYm <= :baseYearMonth and c.endYm >= :baseYearMonth";
+	private static final String SELECT_LIST_BY_YEAR_MONTH = "SELECT c FROM PprmtPersonWage c WHERE c.pprmtPersonWagePK.ccd = :CCD and c.pprmtPersonWagePK.pId IN :PID and c.pprmtPersonWagePK.strYm <= :BASEYM and c.endYm >= :BASEYM";
+	private static final String SEL_1 = "SELECT c FROM PprmtPersonWage c WHERE c.pprmtPersonWagePK.ccd = :companyCode and c.pprmtPersonWagePK.pId = :personId and c.pprmtPersonWagePK.strYm <= :baseYearMonth and c.endYm >= :baseYearMonth";
 
 
 	@Override

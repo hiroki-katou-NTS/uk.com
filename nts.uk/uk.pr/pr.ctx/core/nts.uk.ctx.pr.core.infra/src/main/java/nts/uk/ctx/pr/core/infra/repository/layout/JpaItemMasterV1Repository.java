@@ -15,11 +15,11 @@ import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItemPK_v1;
 @Stateless
 public class JpaItemMasterV1Repository extends JpaRepository implements ItemMasterV1Repository {
 
-	private final String SELECT_NO_WHERE = "SELECT c FROM QcamtItem c";
-	private final String SELECT_ALL_BY_COMPANY = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode";
-	private final String SELECT_ALL_BY_CATEGORY = SELECT_ALL_BY_COMPANY + " AND c.qcamtItemPK.ctgAtr = :categoryType";
-	private final String SELECT_DETAIL = SELECT_ALL_BY_CATEGORY + " AND c.qcamtItemPK.itemCd = :itemCode";
-	private final String SEL_3 = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
+	private static final  String SELECT_NO_WHERE = "SELECT c FROM QcamtItem c";
+	private static final  String SELECT_ALL_BY_COMPANY = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode";
+	private static final  String SELECT_ALL_BY_CATEGORY = SELECT_ALL_BY_COMPANY + " AND c.qcamtItemPK.ctgAtr = :categoryType";
+	private static final  String SELECT_DETAIL = SELECT_ALL_BY_CATEGORY + " AND c.qcamtItemPK.itemCd = :itemCode";
+	private static final  String SEL_3 = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
 
 	@Override
 	public List<ItemMasterV1> findAll(String companyCode) {

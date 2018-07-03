@@ -14,18 +14,18 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPK;
 
 @Stateless
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
-	private final String SEL = "SELECT c FROM QcamtItem c";
-	private final String SEL_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode ";
-	private final String SEL_1_1 = SEL
+	private static final  String SEL = "SELECT c FROM QcamtItem c";
+	private static final  String SEL_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode ";
+	private static final  String SEL_1_1 = SEL
 			+ " WHERE c.qcamtItemPK.ccd = :companyCode AND c.dispSet =:dispSet AND c.qcamtItemPK.ctgAtr = :ctgAtr";
-	private final String SEL_1_2 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.dispSet =:dispSet ";
-	private final String SEL_3 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
-	private final String SEL_3_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :ctgAtr";
-	private final String SEL_10 = SEL
+	private static final  String SEL_1_2 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.dispSet =:dispSet ";
+	private static final  String SEL_3 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
+	private static final  String SEL_3_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :ctgAtr";
+	private static final  String SEL_10 = SEL
 			+ " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :categoryAtr AND c.fixAtr = :fixAtr AND  c.qcamtItemPK.itemCd IN :itemCodeList ";
-	private final String SEL_11 = SEL
+	private static final  String SEL_11 = SEL
 			+ " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :categoryAtr AND  c.qcamtItemPK.itemCd IN :itemCodeList ";
-	private final String SEL_11_1 = SEL
+	private static final  String SEL_11_1 = SEL
 			+ " WHERE c.qcamtItemPK.ccd = :companyCode AND  c.qcamtItemPK.itemCd IN :itemCodeList ";
 
 	@Override
