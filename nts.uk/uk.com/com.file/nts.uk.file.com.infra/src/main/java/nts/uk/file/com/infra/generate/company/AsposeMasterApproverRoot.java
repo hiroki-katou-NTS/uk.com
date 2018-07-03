@@ -41,8 +41,6 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
 
-	private static final int numberRowOfPage = 45;
-
 	@Override
 	public void generate(FileGeneratorContext generatorContext, MasterApproverRootOutputDataSource dataSource) {
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
@@ -285,7 +283,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			//xd ngat trang ?
 			int numberOfRowMerge = (42 * numberOfPage) - firstRow + 3;
 			//TH khong ngat trang
-			if (numberOfRowMerge <= 0 || sizeOfForm <= 1 || sizeOfForm == numberOfRowMerge) {
+			if (numberOfRowMerge <= 0 || sizeOfForm <= 1) {
 				// in ra name app , time app
 				cells.merge(firstRow, 1, sizeOfForm, 1, true);
 				Cell appName = cells.get(firstRow, COLUMN_INDEX[1]);
@@ -315,18 +313,21 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				Cell a_name = cells.get(firstRow, COLUMN_INDEX[1]);
 				a_name.setValue(app.getAppTypeName());
 				//in trang moi
-				cells.merge(firstRow + numberOfRowMerge, 1, (sizeOfForm - numberOfRowMerge), 1, true);
-				Cell a_name2 = cells.get(firstRow + numberOfRowMerge, COLUMN_INDEX[1]);
-				a_name2.setValue(app.getAppTypeName());
-				
+				if(sizeOfForm > numberOfRowMerge){
+					cells.merge(firstRow + numberOfRowMerge, 1, (sizeOfForm - numberOfRowMerge), 1, true);
+					Cell a_name2 = cells.get(firstRow + numberOfRowMerge, COLUMN_INDEX[1]);
+					a_name2.setValue(app.getAppTypeName());
+				}
 				//---set COLUMN 2
 				cells.merge(firstRow, 2, numberOfRowMerge, 1, true);
 				Cell a_hist = cells.get(firstRow, COLUMN_INDEX[2]);
 				a_hist.setValue(app.getStartDate() + "~" + app.getEndDate());
 				//in trang moi
-				cells.merge(firstRow + numberOfRowMerge, 2, (sizeOfForm - numberOfRowMerge), 1, true);
-				Cell a_hist2 = cells.get(firstRow + numberOfRowMerge, COLUMN_INDEX[2]);
-				a_hist2.setValue(app.getStartDate() + "~" + app.getEndDate());
+				if(sizeOfForm > numberOfRowMerge){
+					cells.merge(firstRow + numberOfRowMerge, 2, (sizeOfForm - numberOfRowMerge), 1, true);
+					Cell a_hist2 = cells.get(firstRow + numberOfRowMerge, COLUMN_INDEX[2]);
+					a_hist2.setValue(app.getStartDate() + "~" + app.getEndDate());
+				}
 				
 				// in ra cac phase
 				List<ApprovalRootMaster> listPhase = lstRootPs.get(i).getLstApproval();
@@ -398,9 +399,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			ApprovalForApplication app = lstAppprove.get(i);
 			int sizeOfForm = this.findMax(app);
 
-			int numberOfPage = (firstRow + sizeOfForm) / numberRowOfPage;
+			int numberOfPage = (firstRow + sizeOfForm - 3) / 42;
 
-			int numberOfRowMerge = (numberRowOfPage * numberOfPage) - firstRow;
+			int numberOfRowMerge = (42 * numberOfPage) - firstRow + 3;
 			if (numberOfRowMerge <= 0) {
 
 				// in ra name app , time app
