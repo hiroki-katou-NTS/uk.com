@@ -38,10 +38,10 @@ import nts.uk.ctx.pr.core.dom.wagetable.reference.WtReferenceRepository;
 public class JpaWtReferenceRepository extends JpaRepository implements WtReferenceRepository {
 
 	/** The comma. */
-	private final String COMMA = " , ";
+	private static final String COMMA = " , ";
 
 	/** The jpa argument prefix. */
-	private final String JPA_ARGUMENT_PREFIX = ":";
+	private static final String JPA_ARGUMENT_PREFIX = ":";
 
 	/** The payday repository. */
 	@Inject
