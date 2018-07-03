@@ -8,7 +8,7 @@ __viewContext.ready(function() {
         switch(success.programID){
             case "ccg007": {
                 // forgot password screen
-                nts.uk.request.jump("com", "/view/ccg/007/"+success.screenID+"/index.xhtml");
+                nts.uk.request.jump("com", "/view/ccg/007/"+success.screenID+"/index.xhtml?id="+urlID);
             }
             case "kaf002": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });    
