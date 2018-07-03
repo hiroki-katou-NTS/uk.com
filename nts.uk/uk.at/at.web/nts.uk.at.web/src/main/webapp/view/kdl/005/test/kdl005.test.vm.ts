@@ -23,15 +23,13 @@ module kdl005.test {
                     baseDate: self.date().split("T")[0].replace('-','').replace('-','')
                 };
                 
-                service.getEmployeeList(param).done(function(data: DataParam) {
-                    nts.uk.ui.windows.setShared('KDL005_DATA', data);
-                    
-                    if(data.employeeBasicInfo.length > 1) {
-                        nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
-                    } else {
-                        nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
-                    }
-                });
+                nts.uk.ui.windows.setShared('KDL005_DATA', param);
+                
+                if(param.employeeIds.length > 1) {
+                    nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+                } else {
+                    nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+                }
             }
         }
         
