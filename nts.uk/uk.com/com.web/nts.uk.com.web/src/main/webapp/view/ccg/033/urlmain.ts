@@ -1,8 +1,7 @@
 __viewContext.ready(function() {
     var url_string = window.location.href;
-    var url = new URL(url_string);
-    var urlID = url.searchParams.get("id");
-    var server_path = nts.uk.text.format("ctx/sys/gateway/url/execution/{0}", urlID); 
+    var urlID = _.split(url_string, '=')[1];
+    var server_path = nts.uk.text.format("/ctx/sys/gateway/url/execution/{0}", urlID); 
     nts.uk.ui.block.invisible();
     nts.uk.request.ajax("com", server_path)
     .done((success) => {   

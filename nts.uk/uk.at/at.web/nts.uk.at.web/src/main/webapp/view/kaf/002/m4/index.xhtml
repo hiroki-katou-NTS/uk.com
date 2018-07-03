@@ -1,4 +1,4 @@
-<div class="table m4-table">
+<div class="table m4-table" data-bind="let: { screenEditable: editable }">
 	<div class="cell m4-column1">
 		<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF002_17')}</div>
 	</div>
@@ -9,7 +9,7 @@
 				optionsValue: 'value',
 				value: appStamp().stampCombinationAtr,
 				optionsText: 'name',
-				enable: true,
+				enable: screenEditable,
 				columns: [
 					{ prop: 'name', length: 10 },
 				]}"></span>	
@@ -20,7 +20,8 @@
 				inputFormat: 'time',
 				mode: 'time',
 				constraint:'TimeDayClock',
-				required: true }" />
+				required: true,
+				enable: screenEditable }" />
 		</div>
 	</div>
 </div>
