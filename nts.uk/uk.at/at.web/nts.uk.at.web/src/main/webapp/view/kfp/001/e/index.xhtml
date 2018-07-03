@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 810, height: 655 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="kfp001.e.style.css" />
+			<com:scriptfile path="kfp001.e.start.js" />
+			<com:scriptfile path="kfp001.e.service.js" />
+			<com:scriptfile path="kfp001.e.vm.js" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="control-group cf">
+					<table class="info-table">
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_24')}</td>
+							<td><span>a</span></td>
+						</tr>
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_25')}</td>
+							<td><span>b</span></td>
+						</tr>
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_26')}</td>
+							<td><span id="elapseTime"></span></td>
+						</tr>
+						<tr>
+							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
+							<td data-bind="css: {disappear: visibleDailiCreate()}" >
+								<span class="process-name">#{i18n.getText('KDW001_9')}</span>
+							</td>
+						</tr>
+
+
+					</table>
+				</div>
+				
+				<div class="control-group cf">
+				<label class="setting-info">#{i18n.getText('KDW001_29')}</label>
+					<table class="info-table">
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_15')}</td>　
+							<td><span>a</span> ～ <span>b</span></td>
+						</tr>
+					</table>
+				</div>
+				
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="3" class="disable-button">#{i18n.getText('KDW001_39')}</button>
+				<button tabindex="4">#{i18n.getText('KDW001_38')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

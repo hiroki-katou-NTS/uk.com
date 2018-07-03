@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
@@ -39,7 +41,7 @@ public class AggrPeriodExcution {
 	private ExecutionAtr executionAtr;
 
 	/** 実行状況 */
-	private ExecutionStatus executionStatus;
+	private Optional<ExecutionStatus> executionStatus;
 
 	/** エラーの有無 */
 	private PresenceOfError presenceOfError;
@@ -58,7 +60,7 @@ public class AggrPeriodExcution {
 	 */
 	public AggrPeriodExcution(String companyId, String executionEmpId, AggrFrameCode aggrFrameCode, String aggrId,
 			GeneralDateTime startDateTime, GeneralDateTime endDateTime, ExecutionAtr executionAtr,
-			ExecutionStatus executionStatus, PresenceOfError presenceOfError) {
+			Optional<ExecutionStatus> executionStatus, PresenceOfError presenceOfError) {
 		super();
 		this.companyId = companyId;
 		this.executionEmpId = executionEmpId;
@@ -85,11 +87,11 @@ public class AggrPeriodExcution {
 	 * @return
 	 */
 	public static AggrPeriodExcution createFromJavaType(String companyId, String executionEmpId, String aggrFrameCode, String aggrId, GeneralDateTime startDateTime,
-			GeneralDateTime endDateTime, int executionAtr, int executionStatus, int presenceOfError){
+			GeneralDateTime endDateTime, int executionAtr, Integer executionStatus, int presenceOfError){
 		
 		return new AggrPeriodExcution(companyId, executionEmpId, new AggrFrameCode(aggrFrameCode), aggrId, startDateTime, endDateTime,
 				EnumAdaptor.valueOf(executionAtr, ExecutionAtr.class),
-				EnumAdaptor.valueOf(executionStatus, ExecutionStatus.class),
+				executionStatus != null ? Optional.of(EnumAdaptor.valueOf(executionStatus, ExecutionStatus.class)) : Optional.empty(),
 				EnumAdaptor.valueOf(presenceOfError, PresenceOfError.class));
 	}
 

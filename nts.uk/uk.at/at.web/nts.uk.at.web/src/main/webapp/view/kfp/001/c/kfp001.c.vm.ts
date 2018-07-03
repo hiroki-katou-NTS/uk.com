@@ -31,6 +31,7 @@ module nts.uk.at.view.kfp001.c {
 
             //close period
             periodStartDate: any;
+            dScreenmodel: any;
 
 
 
@@ -76,6 +77,7 @@ module nts.uk.at.view.kfp001.c {
                 self.baseDate = ko.observable(new Date());
 
                 self.reloadCcg001();
+                self.dScreenmodel = new nts.uk.at.view.kfp001.d.viewmodel.ScreenModel();
 
             }
 
@@ -141,27 +143,32 @@ module nts.uk.at.view.kfp001.c {
                 //                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
             }
 
-             start() {
+            start() {
                 var self = this;
                 $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
+
             }
 
-            
+
             opendScreenBorJ() {
                 let self = this;
                 $("#wizard").ntsWizard("next").done(function() {
                     $('#checkBox1').focus();
                 });
+
                 nts.uk.ui.windows.setShared("KFP001_DATAC", self.selectedEmployee());
+                nts.uk.ui.windows.setShared("KFP001_DATAC_SELECT", self.multiSelectedCode().length);
+                self.dScreenmodel.start();
             }
             navigateView() {
                 $("#wizard").ntsWizard("prev").done(function() {
                     $('#checkBox1').focus();
+
                 });
             }
 
-           
+
         }
 
         //Object for kcp005

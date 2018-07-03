@@ -17,11 +17,13 @@ public class KrcmtAggrPeriodExcutionPK implements Serializable {
 
 	@Column(name = "CID")
 	public String companyId;
-	
+	//実行社員ID
 	@Column(name = "EXECUTION_EMP_ID")
 	public String executionEmpId;
 	
-	@Column(name = "AGGR_FRAME_CODE")
-	public String aggrFrameCode;
+	//ExcuteID
+	@Column(name = "AGGR_ID")
+	public String aggrId;
+
 	
 }

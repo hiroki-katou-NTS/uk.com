@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 public interface AggrPeriodExcutionRepository {
 
@@ -14,14 +16,6 @@ public interface AggrPeriodExcutionRepository {
 	 */
 	List<AggrPeriodExcution> findExecutionStatus(String companyId, String aggrFrameCode, int executionStatus);
 	
-	/**
-	 * Delete Excution by companyId, aggrFrameCode and executionStatus
-	 * @param companyId
-	 * @param aggrFrameCode
-	 * @param executionStatus
-	 */
-	void deleteExcution(String companyId, String aggrFrameCode,int executionStatus);
-
 	/**
 	 * 
 	 * @param companyId
@@ -37,7 +31,7 @@ public interface AggrPeriodExcutionRepository {
 	 * @param aggrFrameCode
 	 * @return
 	 */
-	List<AggrPeriodExcution> findAggrCode(String companyId, String aggrFrameCode);
+	Optional<AggrPeriodExcution> findAggrCode(String companyId, String aggrFrameCode);
 
 	/**
 	 * 
@@ -54,5 +48,32 @@ public interface AggrPeriodExcutionRepository {
 	 * @return
 	 */
 	List<AggrPeriodExcution> findExecutionPeriod(String companyId, GeneralDate start, GeneralDate end);
+
+	/**
+	 * 
+	 * @param excution
+	 */
+	void addExcution(AggrPeriodExcution excution);
+
+	/**
+	 * 
+	 * @param excution
+	 */
+	void updateExcution(AggrPeriodExcution excution);
+	/**
+	 * 
+	 * @param companyId
+	 * @param executionId
+	 * @return
+	 */
+	Optional<AggrPeriodExcution> findBy(String companyId, String aggrId, int status);
+	
+	Optional<AggrPeriodExcution> findByAggr(String companyId,String aggrId);
+	
+	Optional<AggrPeriodExcution> findExecution(String companyId, String executionEmpId, String aggrFrameCode);
+
+	void updateExe(AggrPeriodExcution excutionPeriod, int executionStatus, GeneralDateTime endDateTime);
+	
+	Optional<AggrPeriodExcution> findStatus(String companyId, String aggrFrameCode, int executionStatus);
 	
 }

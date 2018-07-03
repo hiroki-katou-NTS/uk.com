@@ -29,10 +29,6 @@ public class KrcmtOptionalAggrPeriod extends UkJpaEntity implements Serializable
 	
 	@Column(name = "END_DATE")
 	public GeneralDate endDate;
-	
-	@Column(name = "PERSON_NO")
-	public Integer peopleNo;
-
 
 	@Override
 	protected Object getKey() {

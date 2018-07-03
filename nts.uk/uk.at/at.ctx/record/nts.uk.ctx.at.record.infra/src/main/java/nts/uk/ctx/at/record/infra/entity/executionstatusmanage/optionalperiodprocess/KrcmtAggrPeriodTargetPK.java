@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -16,9 +17,9 @@ public class KrcmtAggrPeriodTargetPK implements Serializable{
 private static final long serialVersionUID = 1L;
 	
 	@Column(name = "ANY_PERIOD_AGGR_LOG_ID")
-	public String anyPeriodAggrLogId;
+	public String aggrId;
 	
 	@Column(name = "MEMBER_ID")
-	public String memberId;
+	public String employeeId;
 
 }

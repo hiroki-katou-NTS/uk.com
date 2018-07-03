@@ -9,6 +9,11 @@ import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.Optional
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+/**
+ * 
+ * @author phongtq
+ *
+ */
 public class OptionalAggrPeriodDto {
 
 	private String companyId;
@@ -26,7 +31,6 @@ public class OptionalAggrPeriodDto {
 	private GeneralDate endDate;
 	
 	/** */
-	private Integer peopleNo;
 
 	public static OptionalAggrPeriodDto fromDomain(OptionalAggrPeriod domain){
 		return new OptionalAggrPeriodDto(
@@ -34,8 +38,7 @@ public class OptionalAggrPeriodDto {
 				domain.getAggrFrameCode().v(),
 				domain.getOptionalAggrName().v(),
 				domain.getStartDate(),
-				domain.getEndDate(),
-				domain.getPeopleNo()
+				domain.getEndDate()
 				);
 	}
 }

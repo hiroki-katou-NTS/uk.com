@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,14 +31,34 @@ public class AggrPeriodTargetFinder {
 		List<AggrPeriodTargetDto> result = new ArrayList<>();
 		List<AggrPeriodTarget> listTarget = targetRepo.findAll(aggrPeriodId);
 		for (AggrPeriodTarget a : listTarget) {
-			EmployeeRecordImport empInfo = empAdapter.getPersonInfor(a.getMemberId());
-			AggrPeriodTargetDto dto = new AggrPeriodTargetDto(a.getMemberId(), empInfo.getEmployeeCode(),
+			EmployeeRecordImport empInfo = empAdapter.getPersonInfor(a.getEmployeeId());
+			AggrPeriodTargetDto dto = new AggrPeriodTargetDto(a.getEmployeeId(), empInfo.getEmployeeCode(),
 					empInfo.getPname(), a.getState().name);
 			result.add(dto);
 		}
 		result.sort((AggrPeriodTargetDto c1, AggrPeriodTargetDto c2) -> c1.getEmployeeCode()
 				.compareTo(c2.getEmployeeCode()));
 		return result;
+	}
+
+	public List<PeriodTargetDto> findAllPeriod(String aggrId) {
+		return targetRepo.findAll(aggrId).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Convert To Database Aggr Period Target
+	 * @param target
+	 * @return
+	 */
+	private PeriodTargetDto convertToDbType(AggrPeriodTarget target){
+		List<String> employeeIds = targetRepo.findAll(target.getAggrId()).stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
+		PeriodTargetDto targetDto = new PeriodTargetDto();
+		targetDto.setAggrId(target.getAggrId());
+		targetDto.setEmployeeId(employeeIds);
+		targetDto.setState(target.getState().value);
+		return null;
 	}
 
 }

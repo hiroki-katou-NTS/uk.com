@@ -13,10 +13,10 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.peri
 public class AggrPeriodTarget {
 
 	/** 任意期間集計実行ログID*/
-	private String anyPeriodAggrLogId;
+	private String aggrId;
 	
 	/** 社員ID*/
-	private String memberId;
+	private String employeeId;
 	
 	/** 状態*/
 	private State state;
@@ -27,10 +27,10 @@ public class AggrPeriodTarget {
 	 * @param memberId
 	 * @param state
 	 */
-	public AggrPeriodTarget(String anyPeriodAggrLogId, String memberId, State state) {
+	public AggrPeriodTarget(String aggrId, String employeeId, State state) {
 		super();
-		this.anyPeriodAggrLogId = anyPeriodAggrLogId;
-		this.memberId = memberId;
+		this.aggrId = aggrId;
+		this.employeeId = employeeId;
 		this.state = state;
 	}
 	
@@ -41,8 +41,8 @@ public class AggrPeriodTarget {
 	 * @param state
 	 * @return
 	 */
-	public static AggrPeriodTarget createFromJavaType(String anyPeriodAggrLogId, String memberId, int state){
-		return new AggrPeriodTarget(anyPeriodAggrLogId, memberId, EnumAdaptor.valueOf(state, State.class));
+	public static AggrPeriodTarget createFromJavaType(String anyPeriodAggrLogId, String employeeId, int state){
+		return new AggrPeriodTarget(anyPeriodAggrLogId, employeeId, EnumAdaptor.valueOf(state, State.class));
 	}
 	
 }

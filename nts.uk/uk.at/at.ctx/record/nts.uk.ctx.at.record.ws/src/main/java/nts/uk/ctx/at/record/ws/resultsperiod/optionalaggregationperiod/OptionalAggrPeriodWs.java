@@ -8,17 +8,25 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommand;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandHandler;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandResult;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommand;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoFinder;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodExcutionDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodTargetDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodTargetFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodExecLogDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodExecLogFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodFinder;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.PeriodTargetDto;
 
 @Path("ctx/at/record/optionalaggr/")
 @Produces("application/json")
@@ -31,6 +39,9 @@ public class OptionalAggrPeriodWs {
 	private SaveOptionalAggrPeriodCommandHandler handler;
 	
 	@Inject
+	private AddAggrPeriodCommandHandler executeHandler;
+	
+	@Inject
 	private OptionalAggrPeriodExecLogFinder logFinder;
 	
 	@Inject
@@ -38,6 +49,10 @@ public class OptionalAggrPeriodWs {
 	
 	@Inject
 	private AggrPeriodErrorInfoFinder errorFinder;
+	
+	@Inject
+	private RemoveOptionalAggrPeriodCommandHandler removeHandler;
+
 	
 	/**
 	 * Find all.
@@ -50,6 +65,7 @@ public class OptionalAggrPeriodWs {
 		return this.finder.findAll();
 	}
 	
+
 	/**
 	 * 
 	 */
@@ -66,12 +82,12 @@ public class OptionalAggrPeriodWs {
 	 */
 	@POST
 	@Path("save")
-	public void save(SaveOptionalAggrPeriodCommand command) {
-		this.handler.handle(command);
+	public JavaTypeResult<AddAggrPeriodCommandResult> save(AddAggrPeriodCommand command) {
+		return new JavaTypeResult<AddAggrPeriodCommandResult> (this.executeHandler.handle(command));
 	}
 	
 	/**
-	 * Save.
+	 * Update.
 	 *
 	 * @param command the command
 	 */
@@ -79,6 +95,17 @@ public class OptionalAggrPeriodWs {
 	@Path("update")
 	public void update(SaveOptionalAggrPeriodCommand command) {
 		this.handler.handle(command);
+	}
+	
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("delete")
+	public void delete(RemoveOptionalAggrPeriodCommand command) {
+		this.removeHandler.handle(command);
 	}
 	
 	@POST
@@ -97,5 +124,44 @@ public class OptionalAggrPeriodWs {
 	@Path("finderrorinfo/{id}")
 	public List<AggrPeriodErrorInfoDto> findErrorInfo(@PathParam("id") String id) {
 		return this.errorFinder.findAll(id);
+	}
+	
+	@POST
+	@Path("findbyStatus/{start}/{end}")
+	public List<OptionalAggrPeriodExecLogDto> findByStatus(@PathParam("start") String start, @PathParam("end") String end) {
+		return this.logFinder.findLog(GeneralDate.fromString(end, "yyyy-MM-dd"), GeneralDate.fromString(end, "yyyy-MM-dd"));
+	}
+	
+	@POST
+	@Path("findbyStatus/{start}/{end}")
+	public List<OptionalAggrPeriodExecLogDto> findBySt(@PathParam("start") String start, @PathParam("end") String end) {
+		return this.logFinder.findLog(GeneralDate.fromString(end, "yyyy-MM-dd"), GeneralDate.fromString(end, "yyyy-MM-dd"));
+	}
+	
+	/**
+	 * 
+	 */
+	@POST
+	@Path("findExecAggr/{aggrFrameCode}")
+	public AggrPeriodExcutionDto findExecAggr(@PathParam("aggrFrameCode") String aggrFrameCode) {
+		return this.logFinder.findAggr(aggrFrameCode);
+	}
+
+	@POST
+	@Path("findTargetPeriod/{aggrId}")
+	public List<PeriodTargetDto> findAllPeriod(@PathParam("aggrId") String aggrId) {
+		return this.targetFinder.findAllPeriod(aggrId);
+	}
+	
+	@POST
+	@Path("findStatus/{aggrFrameCode}/{executionStatus}")
+	public AggrPeriodExcutionDto findStatus(@PathParam("aggrFrameCode") String aggrFrameCode,@PathParam("executionStatus") int executionStatus) {
+		return this.logFinder.findStatus(aggrFrameCode, executionStatus);
+	}
+	
+	@POST
+	@Path("findAggrCode/{aggrFrameCode}")
+	public AggrPeriodExcutionDto findAggrCode(@PathParam("aggrFrameCode") String aggrFrameCode) {
+		return this.logFinder.findAll(aggrFrameCode);
 	}
 }

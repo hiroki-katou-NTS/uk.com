@@ -13,7 +13,7 @@ module nts.uk.at.view.ksm011.a.service {
     /**
      *  Get Schedule Function Control
      */
-    export function checkExistedItems(items): JQueryPromise<ScheFuncControlDto> {
+    export function checkExistedItems(items): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkExistedItems,items);
     }
     

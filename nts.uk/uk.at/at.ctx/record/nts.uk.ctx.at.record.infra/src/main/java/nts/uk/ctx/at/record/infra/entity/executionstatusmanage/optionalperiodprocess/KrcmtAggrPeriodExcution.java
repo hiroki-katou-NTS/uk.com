@@ -27,9 +27,10 @@ public class KrcmtAggrPeriodExcution extends UkJpaEntity implements Serializable
 	
 	@EmbeddedId
 	public KrcmtAggrPeriodExcutionPK krcmtAggrPeriodExcutionPK;
+
 	
-	@Column(name = "AGGR_ID")
-	public String aggrId;
+	@Column(name = "AGGR_FRAME_CODE")
+	public String aggrFrameCode;
 	
 	@Column(name = "START_DATE_TIME")
 	public GeneralDateTime startDateTime;

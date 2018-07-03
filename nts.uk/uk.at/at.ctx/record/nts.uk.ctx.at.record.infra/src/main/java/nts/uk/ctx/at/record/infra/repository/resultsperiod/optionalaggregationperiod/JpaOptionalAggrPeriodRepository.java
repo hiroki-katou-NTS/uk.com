@@ -56,7 +56,7 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 				krcmtOptionalAggrPeriod.krcmtOptionalAggrPeriodPK.companyId,
 				krcmtOptionalAggrPeriod.krcmtOptionalAggrPeriodPK.aggrFrameCode,
 				krcmtOptionalAggrPeriod.optionalAggrName, krcmtOptionalAggrPeriod.startDate,
-				krcmtOptionalAggrPeriod.endDate, krcmtOptionalAggrPeriod.peopleNo);
+				krcmtOptionalAggrPeriod.endDate);
 		return optionalAggrPeriod;
 	}
 
@@ -80,7 +80,6 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 		entity.optionalAggrName = optionalAggrPeriod.getOptionalAggrName().v();
 		entity.startDate = optionalAggrPeriod.getStartDate();
 		entity.endDate = optionalAggrPeriod.getEndDate();
-		entity.peopleNo = optionalAggrPeriod.getPeopleNo();
 		return entity;
 	}
 
@@ -95,7 +94,6 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 		period.optionalAggrName = optionalAggrPeriod.getOptionalAggrName().v();
 		period.startDate = optionalAggrPeriod.getStartDate();
 		period.endDate = optionalAggrPeriod.getEndDate();
-		period.peopleNo = optionalAggrPeriod.getPeopleNo();
 		this.commandProxy().update(period);
 	}
 

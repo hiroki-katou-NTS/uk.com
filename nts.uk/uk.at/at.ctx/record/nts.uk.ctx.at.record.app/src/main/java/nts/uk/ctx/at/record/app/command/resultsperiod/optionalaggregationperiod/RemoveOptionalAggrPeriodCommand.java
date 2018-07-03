@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
+@AllArgsConstructor
+@Data
 public class RemoveOptionalAggrPeriodCommand {
 
 	private String aggrFrameCode;

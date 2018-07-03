@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -58,12 +59,12 @@ public class OptionalAggrPeriodExecLogFinder {
 				OptionalAggrPeriodExecLogDto dto = new OptionalAggrPeriodExecLogDto(log.getAggrId(),
 						log.getAggrFrameCode().v(), optAggr.get().getOptionalAggrName().v(), log.getStartDateTime(),
 						log.getExecutionEmpId(), empInfo.getPname(), optAggr.get().getStartDate(),
-						optAggr.get().getEndDate(), log.getExecutionStatus().name, listTarget.size(), listError.size());
+						optAggr.get().getEndDate(), log.getExecutionStatus().get().name, listTarget.size(), listError.size());
 				result.add(dto);
 			} else {
 				OptionalAggrPeriodExecLogDto dto = new OptionalAggrPeriodExecLogDto(log.getAggrId(),
 						log.getAggrFrameCode().v(), TextResource.localize("Msg_1307"), log.getStartDateTime(),
-						log.getExecutionEmpId(), empInfo.getPname(), null, null, log.getExecutionStatus().name,
+						log.getExecutionEmpId(), empInfo.getPname(), null, null, log.getExecutionStatus().get().name,
 						listTarget.size(), listError.size());
 				result.add(dto);
 			}
@@ -72,4 +73,41 @@ public class OptionalAggrPeriodExecLogFinder {
 				.compareTo(c1.getExecutionDt()));
 		return result;
 	}
+	
+	public AggrPeriodExcutionDto findAggr(String aggrFrameCode){
+		String companyId = AppContexts.user().companyId();
+		String executionEmpId = AppContexts.user().employeeId();
+		Optional<AggrPeriodExcution> data = this.logRepo.findExecution(companyId, executionEmpId, aggrFrameCode);
+
+		if (data.isPresent()) {
+			return AggrPeriodExcutionDto.fromDomain(data.get());
+		}
+
+		return null;
+		
+	}
+	
+	public AggrPeriodExcutionDto findStatus(String aggrFrameCode, int executionStatus){
+		String companyId = AppContexts.user().companyId();
+		Optional<AggrPeriodExcution> data = this.logRepo.findStatus(companyId, aggrFrameCode, executionStatus);
+
+		if (data.isPresent()) {
+			return AggrPeriodExcutionDto.fromDomain(data.get());
+		}
+
+		return null;
+		
+	}
+	
+	public AggrPeriodExcutionDto findAll(String aggrFrameCode) {
+		String companyId = AppContexts.user().companyId();
+		Optional<AggrPeriodExcution> data = this.logRepo.findAggrCode(companyId, aggrFrameCode);
+
+		if (data.isPresent()) {
+			return AggrPeriodExcutionDto.fromDomain(data.get());
+		}
+
+		return null;
+	}
+	
 }

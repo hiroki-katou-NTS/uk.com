@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
 
 /**
  * 
@@ -24,5 +26,6 @@ public class OptionalAggrPeriodExecLogDto {
 	private String status;
 	private int targetNum;
 	private int errorNum;
+	
 	
 }

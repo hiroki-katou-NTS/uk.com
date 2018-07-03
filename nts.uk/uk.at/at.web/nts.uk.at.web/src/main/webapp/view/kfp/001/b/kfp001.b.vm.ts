@@ -16,19 +16,30 @@ module nts.uk.at.view.kfp001.b {
             columns: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
             optionalList: KnockoutObservableArray<any>;
+            exeList: KnockoutObservableArray<any>;
             items: KnockoutObservableArray<model.OptionalAggrPeriodDto>;
+            itemsExe: KnockoutObservableArray<model.AggrPeriodExcutionDto>
             currentItem: KnockoutObservable<model.OptionalAggrPeriodDto>
+            currentItemExe: KnockoutObservable<model.AggrPeriodExcutionDto>
 
             //
             enableNEW: KnockoutObservable<boolean>;
             enableDEL: KnockoutObservable<boolean>;
             peopleNo: KnockoutObservable<number>;
+            peopleFromC: KnockoutObservable<number>;
+
+            aggrId: KnockoutObservable<string>;
+
+            mode: KnockoutObservable<boolean>;
+
             constructor() {
                 var self = this;
                 //import cScreenModel, dScreenModel
                 self.cScreenmodel = new nts.uk.at.view.kfp001.c.viewmodel.ScreenModel();
                 self.dScreenmodel = new nts.uk.at.view.kfp001.d.viewmodel.ScreenModel();
                 self.aggrList = ko.observableArray([]);
+
+
 
                 //Init wizard
                 self.stepList = [
@@ -37,32 +48,45 @@ module nts.uk.at.view.kfp001.b {
                     { content: '.step-3' }
                 ];
                 self.activeStep = ko.observable(0);
-
+                self.mode = ko.observable(false);
                 self.activeStep.subscribe(newVal => {
                     if (newVal == 0) {
                         $('#hor-scroll-button-hide').hide();
                         _.defer(() => {
                             $('#hor-scroll-button-hide').show();
                         });
+                        $('#NEW_BTN_B1_2').show();
+                        $('#DELETE_BTN_B1_3').show();
+                    } else {
+                        $('#NEW_BTN_B1_2').hide();
+                        $('#DELETE_BTN_B1_3').hide();
                     }
                 })
 
                 //
                 self.peopleNo = ko.observable(null);
+                self.peopleFromC = ko.observable(null);
                 self.optionalList = ko.observableArray([]);
+                self.exeList = ko.observableArray([]);
                 self.items = ko.observableArray([]);
+                self.itemsExe = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
                     { headerText: 'コード', key: 'aggrFrameCode', width: 60 },
                     { headerText: '名称', key: 'optionalAggrName', width: 100 }
                 ]);
                 self.currentItem = ko.observable(new model.OptionalAggrPeriodDto({}));
+                self.currentItemExe = ko.observable(new model.AggrPeriodExcutionDto({}));
                 self.currentCode = ko.observable();
+                self.aggrId = ko.observable('');
                 self.currentCode.subscribe(function(codeChanged) {
+
                     if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
                         self.currentItem(self.findOptional(codeChanged));
+                        self.currentItemExe(self.findExc(codeChanged))
 
                     }
+                    $('.control-group').find('#code-text-d4-2').focus();
                 });
 
                 //
@@ -82,17 +106,36 @@ module nts.uk.at.view.kfp001.b {
                 $.when(self.getAllOptionalAggrPeriod()).done(function() {
                     if (self.items().length > 0) {
                         self.currentCode(self.items()[0].aggrFrameCode());
-
+                        self.mode(true);
+                        $.when(service.findAggrCode(self.currentCode())).done(function(data) {
+                            service.findTargetPeriod(data.aggrId).done(function(dataTarget) {
+                                self.aggrId = data.aggrId;
+                            })
+                        });
+                        $('#update-mode').show();
                     } else {
                         self.initDataB();
                     }
-                    //                    
+
                     //                    service.findByAggrFrameCode(self.currentItem().aggrFrameCode()).done(function(aggrPeriod_arr: Array<model.IOptionalAggrPeriodDto>) {
-                    //                        if(aggrPeriod_arr){
-                    //                          $('#label-hidden').show();  
-                    //                        }
+                    //
                     //                    })
-                    self.peopleNo(self.items().length);
+
+                    // Bind data to Screen D
+                    
+
+                    ko.computed(() => {
+                        self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
+                        self.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
+                        self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
+                        self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
+                        self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
+                        self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
+                        self.dScreenmodel.startDate(self.currentItem().startDate());
+                        self.dScreenmodel.endDate(self.currentItem().endDate());
+                        self.dScreenmodel.mode(self.mode());
+                        self.dScreenmodel.executionId(null);
+                    });
                     
                     dfd.resolve();
                 }).fail(function() {
@@ -100,11 +143,11 @@ module nts.uk.at.view.kfp001.b {
                 });
                 return dfd.promise();
             }
-
+            // ドメインモデル 「任意集計期間」 を取得する get domain OptionalAggrPeriod by CompanyId            
             getAllOptionalAggrPeriod(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-
+                self.items.removeAll();
                 service.findAllOptionalAggrPeriod().done(function(optionalAggrPeriod_arr: Array<model.IOptionalAggrPeriodDto>) {
                     self.optionalList(optionalAggrPeriod_arr);
                     _.forEach(optionalAggrPeriod_arr, function(optionalAggrPeriodRes: model.IOptionalAggrPeriodDto) {
@@ -112,7 +155,7 @@ module nts.uk.at.view.kfp001.b {
                             aggrFrameCode: optionalAggrPeriodRes.aggrFrameCode,
                             optionalAggrName: optionalAggrPeriodRes.optionalAggrName,
                             startDate: optionalAggrPeriodRes.startDate,
-                            endDate: optionalAggrPeriodRes.endDate
+                            endDate: optionalAggrPeriodRes.endDate,
                         };
                         self.items.push(new model.OptionalAggrPeriodDto(optionalAggr));
                         $('#code-text-d4-2').focus();
@@ -125,9 +168,44 @@ module nts.uk.at.view.kfp001.b {
                 return dfd.promise();
             }
 
-            changedCode(value) {
-                var self = this;
-                self.currentItem(self.findOptional(value));
+            //            getAllExecution(): JQueryPromise<any> {
+            //                var self = this;
+            //                var dfd = $.Deferred();
+            //                service.findExecAggr(self.currentItem().aggrFrameCode()).done(function(execAggr_arr: Array<model.IAggrPeriodExcutionDto>) {
+            //                    _.forEach(execAggr_arr, function(execAggrRes: model.IAggrPeriodExcutionDto) {
+            //                        var execAggr: model.IAggrPeriodExcutionDto = {
+            //                            executionEmpId: execAggrRes.executionEmpId,
+            //                            aggrFrameCode: execAggrRes.aggrFrameCode,
+            //                            aggrId: execAggrRes.aggrId,
+            //                            startDateTime: execAggrRes.startDateTime,
+            //                            endDateTime: execAggrRes.endDateTime,
+            //                            executionAtr: execAggrRes.executionAtr,
+            //                            executionStatus: execAggrRes.executionStatus,
+            //                            presenceOfError: execAggrRes.presenceOfError
+            //                        };
+            //                        self.itemsExe.push(new model.AggrPeriodExcutionDto(execAggr_arr));
+            //                    });
+            //                    dfd.resolve();
+            //                }).fail(function(error) {
+            //                    alert(error.message);
+            //                    dfd.reject(error);
+            //                });
+            //                return dfd.promise();
+            //            }
+
+            findStatus() {
+                let self = this;
+                var dfd = $.Deferred();
+                service.findExecAggr(self.currentItem().aggrFrameCode()).done(function(data) {
+                    if (data.executionStatus == model.ExecutionStatus.Processing) {
+                        nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
+                    } else {
+                        $("#wizard").ntsWizard("next").done(function() {
+                        });
+                    }
+                    dfd.resolve();
+                })
+                return dfd.promise();
             }
 
 
@@ -138,59 +216,85 @@ module nts.uk.at.view.kfp001.b {
                 });
                 return result;
             }
+
+            findExc(value: any): any {
+                let self = this;
+                var result = _.find(self.itemsExe(), function(obj: model.AggrPeriodExcutionDto) {
+                    return obj.aggrFrameCode() == value;
+                });
+                return result;
+            }
             initDataB() {
                 let self = this;
                 var emptyObject: model.IOptionalAggrPeriodDto = {};
-                self.currentItem(new model.OptionalAggrPeriodDto(emptyObject))
-                self.currentCode("");
-                $('#code-text-d4-2').focus();
-                $('#update-mode').hide();
-
+                if (self.items().length >= 100) {
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_1151"));
+                } else {
+                    self.currentItem(new model.OptionalAggrPeriodDto(emptyObject))
+                    self.currentCode("");
+                    self.peopleNo(0);
+                    $('#code-text-d4-2').focus();
+                    $('#update-mode').hide();
+                    self.mode(false);
+                }
             }
-
-            opendScreenB() {
-                nts.uk.request.jump("/view/kfp/001/b/index.xhtml");
-            }
-
-            opendScreenC() {
-                let self = this;
-
-                nts.uk.request.jump("/view/kfp/001/c/index.xhtml");
-            }
-
-            opendScreenD() {
-                let self = this;
-
-                nts.uk.request.jump("/view/kfp/001/d/index.xhtml");
-            }
-
             deleteDataB() {
 
+                let self = this;
+                let dataStatus = [];
+                var index_of_itemDelete = _.findIndex(self.items(), function(item) {
+                    return item.aggrFrameCode() == self.currentCode();
+                });
+                nts.uk.ui.dialog.confirm("Msg_18").ifYes(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_35" });
+                    service.findStatus(self.currentCode(), 3).done(function(dataEx) {
+                        dataStatus = dataEx;
+                    })
+                    if (dataStatus.length > 0) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_1172" });
+                        return;
+                    } else {
+                        $.when(service.deleteOptionalAggr(self.currentCode())).done(function() {
+                            $.when(self.getAllOptionalAggrPeriod()).done(function() {
+                                var optionalAggrId: string = null;
+                                if (self.items().length == 0) {
+                                    self.initDataB();
+                                } else if (self.items().length == 1) {
+                                    optionalAggrId = self.items()[0].aggrFrameCode();
+                                } else if (index_of_itemDelete == self.items().length) {
+                                    optionalAggrId = self.items()[index_of_itemDelete - 1].aggrFrameCode();
+                                } else {
+                                    optionalAggrId = self.items()[index_of_itemDelete].aggrFrameCode();
+                                }
+                                self.currentCode(optionalAggrId);
+                            });
+                        })
+                    }
+                }).ifNo(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_36" });
+                    return;
+                });
             }
             navigateView() {
                 nts.uk.request.jump("/view/kfp/001/a/index.xhtml");
             }
             opendScreenBorJ() {
                 let self = this;
+                var dfd = $.Deferred();
+
                 $("#wizard").ntsWizard("next").done(function() {
-                    self.enableNEW(false);
-                    self.enableDEL(false);
-                    var data = {
-                        aggrFrameCode: self.currentItem().aggrFrameCode(),
-                        optionalAggrName: self.currentItem().optionalAggrName(),
-                        startDate: self.currentItem().startDate(),
-                        endDate: self.currentItem().endDate(),
-                        peopleNo: self.peopleNo()
-                    }
-                    nts.uk.ui.windows.setShared("KFP001_DATA", data);
-                    self.dScreenmodel.start();
                 });
+
             }
 
-
+            targetEmployee() {
+                let self = this;
+                // Call to F
+            }
         }
 
         export module model {
+
             export interface IOptionalAggrPeriodDto {
                 aggrFrameCode?: string;
                 optionalAggrName?: string;
@@ -209,6 +313,54 @@ module nts.uk.at.view.kfp001.b {
                     this.startDate = ko.observable(param.startDate || null);
                     this.endDate = ko.observable(param.endDate || null);
                 }
+            }
+
+            export interface IAggrPeriodExcutionDto {
+                executionEmpId?: string;
+                aggrFrameCode?: string;
+                aggrId?: string;
+                startDateTime?: number;
+                endDateTime?: number;
+                executionAtr?: number;
+                executionStatus?: number;
+                presenceOfError?: number;
+
+            }
+            export class AggrPeriodExcutionDto {
+                executionEmpId: KnockoutObservable<string>;
+                aggrFrameCode: KnockoutObservable<string>;
+                aggrId: KnockoutObservable<string>;
+                startDateTime: KnockoutObservable<number>;
+                endDateTime: KnockoutObservable<number>;
+                executionAtr: KnockoutObservable<number>;
+                executionStatus: KnockoutObservable<number>;
+                presenceOfError: KnockoutObservable<number>;
+                constructor(param: IAggrPeriodExcutionDto) {
+                    this.executionEmpId = ko.observable(param.aggrFrameCode || null);
+                    this.aggrFrameCode = ko.observable(param.aggrFrameCode || null);
+                    this.aggrId = ko.observable(param.aggrId || null);
+                    this.startDateTime = ko.observable(param.startDateTime || null);
+                    this.endDateTime = ko.observable(param.endDateTime || null);
+                    this.executionAtr = ko.observable(param.executionAtr || null);
+                    this.executionStatus = ko.observable(param.executionStatus || null);
+                    this.presenceOfError = ko.observable(param.presenceOfError || null);
+                }
+            }
+
+
+            export enum ExecutionStatus {
+                // 0:完了
+                Done = 0,
+                // 1:完了（エラーあり）
+                DoneWitdError = 1,
+                // 2:中断終了
+                EndOfInterruption = 2,
+                // 3:処理中 
+                Processing = 3,
+                // 4:中断開始
+                StartOfInterruption = 4,
+                // 5:実行中止
+                StopExecution = 5
             }
         }
     }
