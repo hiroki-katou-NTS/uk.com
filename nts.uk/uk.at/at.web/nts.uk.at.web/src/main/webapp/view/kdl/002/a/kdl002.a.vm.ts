@@ -1,6 +1,6 @@
 module kdl002.a.viewmodel {
     export class ScreenModel {
-
+        isShowNoSelectRow:boolean;
         isMulti: boolean;
         items: KnockoutObservableArray<model.ItemModel>;
         columns: KnockoutObservableArray<any>;
@@ -10,6 +10,7 @@ module kdl002.a.viewmodel {
 
         constructor() {
             var self = this;
+            self.isShowNoSelectRow = false;
             self.isMulti = true;
             self.items = ko.observableArray([]);
             //header
@@ -18,7 +19,7 @@ module kdl002.a.viewmodel {
                 { headerText: nts.uk.resource.getText("KDL002_4"), prop: 'name', width: 200 ,formatter: _.escape},
                 { headerText: nts.uk.resource.getText("KDL002_5"), prop: 'memo', width: 230 ,formatter: _.escape}
             ]);
-            self.currentCodeList = ko.observableArray([]);;
+            self.currentCodeList = ko.observableArray([]);
             self.posibleItems = [];
             self.start();
         }
@@ -26,11 +27,13 @@ module kdl002.a.viewmodel {
         start() {
             var self = this;
             
+            self.isShowNoSelectRow = nts.uk.ui.windows.getShared('KDL002_isShowNoSelectRow');
             self.isMulti = nts.uk.ui.windows.getShared('KDL002_Multiple');
             //all possible items
             self.posibleItems = nts.uk.ui.windows.getShared('KDL002_AllItemObj');
             //selected items
             var selectCode = nts.uk.ui.windows.getShared('KDL002_SelectedItemId');
+            
             self.currentCodeList(selectCode);
             //set source
             if(self.posibleItems == null || self.posibleItems === undefined){
@@ -44,11 +47,27 @@ module kdl002.a.viewmodel {
                     let lstItemMapping =  _.map(lstItemOrder , item => {
                         return new model.ItemModel(item.workTypeCode, item.name, item.memo);
                     });
+                    self.initNotSelectItem(!self.isMulti, lstItemMapping);
                     self.items(lstItemMapping);
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
+            }
+        }
 
+        
+        initNotSelectItem(isSingle: boolean, data: any) {
+            let self = this;
+            if (!isSingle) return;
+            let noSelectItem = {
+                memo: '',
+                name: nts.uk.resource.getText('KCP001_5'),
+                workTypeCode: ''
+            };
+
+            // Check is show no select row.
+            if (self.isShowNoSelectRow) {
+                data.unshift(noSelectItem);
             }
         }
         /**
