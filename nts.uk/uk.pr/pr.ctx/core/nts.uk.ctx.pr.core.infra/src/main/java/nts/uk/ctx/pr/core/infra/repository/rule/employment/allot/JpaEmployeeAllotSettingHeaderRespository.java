@@ -17,8 +17,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaEmployeeAllotSettingHeaderRespository extends JpaRepository
 		implements EmployeeAllotSettingHeaderRespository {
 
-	private final String SEL_1 = "SELECT c FROM QstmtStmtAllotHEm c WHERE c.QstmtStmtAllotHEmPK.companyCode = :companyCode ";
-	private final String MAX_END = "SELECT MAX(d.endYm) FROM QstmtStmtAllotHEm d"
+	private final static String SEL_1 = "SELECT c FROM QstmtStmtAllotHEm c WHERE c.QstmtStmtAllotHEmPK.companyCode = :companyCode ";
+	private final static String MAX_END = "SELECT MAX(d.endYm) FROM QstmtStmtAllotHEm d"
 			+ " WHERE d.QstmtStmtAllotHEmPK.companyCode = :companyCode";
 
 	@Override
