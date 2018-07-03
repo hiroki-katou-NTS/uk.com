@@ -26,10 +26,10 @@
 }
 
 #data-recovery-wizard>.steps {
-	width: 200px;
+	width: 250px;
 }
 
-#data-recovery-wizard .push-left {
+#data-recovery-wizard .push-left { 
 	margin-left: 90px;
 }
 
