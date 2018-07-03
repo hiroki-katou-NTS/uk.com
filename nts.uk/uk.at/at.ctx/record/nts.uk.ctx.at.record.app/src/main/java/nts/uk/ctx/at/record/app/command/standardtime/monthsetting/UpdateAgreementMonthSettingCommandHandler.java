@@ -14,8 +14,8 @@ import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSetDomainService;
-import nts.uk.ctx.at.shared.app.service.workingcondition.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 
 /**
  * 

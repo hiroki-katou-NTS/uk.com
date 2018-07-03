@@ -56,9 +56,11 @@ public class ApplicationListFinder {
 		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
 		ApprovalListDisplaySetting appDisplaySet = null;
 		ApprovalListDisplaySetDto displaySet = null;
+		Integer isDisPreP = null;
 		if(requestSet.isPresent()){
 			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
 			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
+			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtr().value;
 		}
 		//URパラメータが存在する-(Check param)
 		if(StringUtil.isNullOrEmpty(condition.getStartDate(), false) || StringUtil.isNullOrEmpty(condition.getEndDate(), false)){
@@ -102,7 +104,7 @@ public class ApplicationListFinder {
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(lstHdAppSet.get());
 		List<AppInfor> lstAppType = this.findListApp(lstApp.getLstMasterInfo(), param.isSpr(), param.getExtractCondition());
-		return new ApplicationListDto(condition.getStartDate(), condition.getEndDate(), displaySet, lstApp.getLstMasterInfo(),this.sortById(lstAppDto),
+		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(), displaySet, lstApp.getLstMasterInfo(),this.sortById(lstAppDto),
 				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
 				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto, lstApp.getLstAppCompltLeaveSync());
 	}

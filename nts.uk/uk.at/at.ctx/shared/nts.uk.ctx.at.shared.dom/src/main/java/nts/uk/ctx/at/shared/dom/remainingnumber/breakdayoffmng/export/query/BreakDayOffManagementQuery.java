@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -35,14 +36,14 @@ public interface BreakDayOffManagementQuery {
 	 * @param dateData
 	 * @return
 	 */
-	public Double getTotalOccurrenceDays(String employeeId, DatePeriod dateData);
+	public double getTotalOccurrenceDays(String employeeId, DatePeriod dateData);
 	/**
 	 * 期間内の代休使用数合計を取得
 	 * @param employeeId
 	 * @param dateData
 	 * @return
 	 */
-	public Double getTotalUseDays(String employeeId, DatePeriod dateData);
+	public double getTotalUseDays(String employeeId, DatePeriod dateData);
 	/**
 	 * 当月の代休残数を集計する
 	 * @param employeeId
@@ -52,7 +53,7 @@ public interface BreakDayOffManagementQuery {
 	/**
 	 * RequestList449 休出代休発生消化履歴の取得
 	 */
-	public BreakDayOffOutputHisData getBreakDayOffData(String cid, String sid, GeneralDate baseDate);
+	public Optional<BreakDayOffOutputHisData> getBreakDayOffData(String cid, String sid, GeneralDate baseDate);
 	/**
 	 * 暫定管理データを取得する
 	 * @param sid
@@ -99,19 +100,19 @@ public interface BreakDayOffManagementQuery {
 	 * @param sid
 	 * @return
 	 */
-	public Double getDayOffRemainOfBeginMonth(String cid, String sid);
+	public double getDayOffRemainOfBeginMonth(String cid, String sid);
 	/**
 	 * 期間内の代休消滅数合計を取得
 	 * @param sid
 	 * @param dateData
 	 * @return
 	 */
-	public Double totalExtinctionRemainOfInPeriod(String sid, DatePeriod dateData);
+	public double totalExtinctionRemainOfInPeriod(String sid, DatePeriod dateData);
 	/**
 	 * 確定管理データを取得する
 	 * @param sid
 	 * @param baseDate
 	 * @return
 	 */
-	public BreakDayOffConfirmMngData getConfirMngData(String sid, GeneralDate baseDate);
+	public BreakDayOffConfirmMngData getConfirMngData(String cid, String sid, GeneralDate baseDate);
 }

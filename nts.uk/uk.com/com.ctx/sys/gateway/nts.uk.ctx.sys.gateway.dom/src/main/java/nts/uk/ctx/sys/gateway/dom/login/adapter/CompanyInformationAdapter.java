@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.gateway.dom.login.adapter;
 
 import java.util.List;
 
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 
 /**
@@ -27,4 +28,12 @@ public interface CompanyInformationAdapter {
 	 * @return the company information import
 	 */
 	CompanyInformationImport findById(String companyId);
+	
+	/**
+	 * Find com by id.
+	 *
+	 * @param companyId the company id
+	 * @return the company infor import
+	 */
+	CompanyInforImport findComById(String companyId);
 }

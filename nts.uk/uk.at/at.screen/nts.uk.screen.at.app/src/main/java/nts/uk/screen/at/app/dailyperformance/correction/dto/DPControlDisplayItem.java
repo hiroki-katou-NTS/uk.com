@@ -5,6 +5,7 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,6 +43,8 @@ public class DPControlDisplayItem {
 	private List<EnumCodeName> comboItemReason;
 	
 	private List<Integer> itemIds;
+	
+	Map<Integer, DPAttendanceItem> mapDPAttendance;
 
 	public DPControlDisplayItem() {
 		super();
@@ -49,6 +52,7 @@ public class DPControlDisplayItem {
 		this.lstHeader = new ArrayList<>();
 		this.columnSettings = new ArrayList<>();
 		this.itemIds = new ArrayList<>();
+		this.mapDPAttendance = new HashMap<>();
 	}
 	
 	private boolean isExistHeader(DPHeaderDto header) {

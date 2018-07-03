@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCa
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -34,6 +36,12 @@ public class MonAggrEmployeeSettings {
 	private List<BsEmploymentHistoryImport> employments;
 	/** 所属職場履歴 */
 	private List<AffWorkPlaceSidImport> workplaces;
+	/** 上位職場履歴 */
+	private Map<String, List<String>> workPlacesToRoot;
+	/** 社員別通常勤務労働時間 */
+	private Optional<WorkingTimeSetting> regLaborTime;
+	/** 社員別変形労働労働時間 */
+	private Optional<WorkingTimeSetting> irgLaborTime;
 	/** 通常勤務社員別月別実績集計設定 */
 	private Optional<ShaRegulaMonthActCalSet> shaRegSetOpt;
 	/** 変形労働社員別月別実績集計設定 */
@@ -41,6 +49,9 @@ public class MonAggrEmployeeSettings {
 	/** フレックス社員別月別実績集計設定 */
 	private Optional<ShaFlexMonthActCalSet> shaFlexSetOpt;
 	
+	/** 集計開始日を締め開始日とする */
+	@Setter
+	private boolean noCheckStartDate;
 	/** エラー情報 */
 	private Map<String, ErrMessageContent> errorInfos;
 	
@@ -49,9 +60,14 @@ public class MonAggrEmployeeSettings {
 		this.employee = null;
 		this.employments = new ArrayList<>();
 		this.workplaces = new ArrayList<>();
+		this.workPlacesToRoot = new HashMap<>();
+		this.regLaborTime = Optional.empty();
+		this.irgLaborTime = Optional.empty();
 		this.shaRegSetOpt = Optional.empty();
 		this.shaIrgSetOpt = Optional.empty();
 		this.shaFlexSetOpt = Optional.empty();
+		
+		this.noCheckStartDate = true;
 		this.errorInfos = new HashMap<>();
 	}
 	
@@ -105,11 +121,26 @@ public class MonAggrEmployeeSettings {
 			if (workplaceOpt.isPresent()){
 				domain.workplaces.add(workplaceOpt.get());
 				wkpCriteria = workplaceOpt.get().getDateRange().end();
+				
+				// 終了日時点の上位職場履歴
+				val workplacesToRoot = repositories.getAffWorkplace().findAffiliatedWorkPlaceIdsToRoot(
+						companyId, employeeId, wkpCriteria);
+				domain.workPlacesToRoot.put(workplaceOpt.get().getWorkplaceId(), workplacesToRoot);
+				
+				// 次の履歴へ
 				if (wkpCriteria.afterOrEquals(GeneralDate.max())) break;
 				wkpCriteria = wkpCriteria.addDays(1);
 			}
 			else break;
 		}
+		
+		// 社員別通常勤務労働時間
+		val regWorkTime = repositories.getShainRegularWorkTime().find(companyId, employeeId);
+		if (regWorkTime.isPresent()) domain.regLaborTime = Optional.of(regWorkTime.get().getWorkingTimeSet());
+		
+		// 社員別変形労働労働時間
+		val irgWorkTime = repositories.getShainTransLaborTime().find(companyId, employeeId);
+		if (irgWorkTime.isPresent()) domain.irgLaborTime = Optional.of(irgWorkTime.get().getWorkingTimeSet());
 		
 		// 通常勤務社員別月別実績集計設定
 		domain.shaRegSetOpt = repositories.getShaRegSetRepo().find(companyId, employeeId);
@@ -139,5 +170,18 @@ public class MonAggrEmployeeSettings {
 	 */
 	public Optional<AffWorkPlaceSidImport> getWorkplace(GeneralDate ymd){
 		return this.workplaces.stream().filter(c -> c.getDateRange().contains(ymd)).findFirst();
+	}
+	
+	/**
+	 * 所属職場履歴の取得
+	 * @param ymd 年月日
+	 * @return 所属職場履歴
+	 */
+	public List<String> getWorkplacesToRoot(GeneralDate ymd){
+		val workplaceOpt = this.workplaces.stream().filter(c -> c.getDateRange().contains(ymd)).findFirst();
+		if (!workplaceOpt.isPresent()) return new ArrayList<>();
+		val workplaceId = workplaceOpt.get().getWorkplaceId();
+		if (!this.workPlacesToRoot.containsKey(workplaceId)) return new ArrayList<>();
+		return this.workPlacesToRoot.get(workplaceId);
 	}
 }

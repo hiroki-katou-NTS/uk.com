@@ -29,12 +29,8 @@
 	margin-top: 5px !important;
 }
 
-button.search-btn, button.clear-btn {
-	width: 50px !important;
-}
-
-input.ntsSearchBox {
-	width: 150px !important;
+input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
+	width: 225px !important;
 }
 
 #category_grid_container {
