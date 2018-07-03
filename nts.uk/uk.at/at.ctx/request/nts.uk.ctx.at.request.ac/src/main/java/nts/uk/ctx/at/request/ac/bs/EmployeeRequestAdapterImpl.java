@@ -173,7 +173,7 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 						x.getPName(),
 						x.getEntryDate(),
 						x.getRetiredDate(),
-						x.getCompanyMailAddr() != null ? x.getCompanyMailAddr().v() : "ledat010994@gmail.com"
+						null
 					)).collect(Collectors.toList());
 		return data;
 	}

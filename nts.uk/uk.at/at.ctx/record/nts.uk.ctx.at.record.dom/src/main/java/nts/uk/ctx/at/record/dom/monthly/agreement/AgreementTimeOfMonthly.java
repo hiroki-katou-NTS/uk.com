@@ -47,7 +47,7 @@ public class AgreementTimeOfMonthly {
 		this.status = AgreementTimeStatusOfMonthly.NORMAL;
 	}
 	
-	/**
+	/**	
 	 * ファクトリー
 	 * @param agreementTime 36協定時間
 	 * @param limitErrorTime 限度エラー時間

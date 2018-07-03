@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.Column;
+
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -32,7 +34,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecOpeFuncDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
@@ -48,7 +49,9 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -163,7 +166,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	Optional<ActualLockDto> findAutualLockById(String companyId, int closureId);
 	
-	Optional<WorkFixedDto> findWorkFixed(int closureId, int yearMonth);
+	List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth);
 	
 	OperationOfDailyPerformanceDto findOperationOfDailyPerformance();
 	
@@ -198,7 +201,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes);
 	
-	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
+	Map<String, List<EnumConstant>> findErAlApplicationByCidAndListErrCd(String companyId, List<String> errorCode);
 	
 	List<EnumConstant> findApplicationCall(String companyId);
 	
@@ -213,4 +216,10 @@ public interface DailyPerformanceScreenRepo {
 	Map<String, List<AffComHistItemAtScreen>>getAffCompanyHistoryOfEmployee(String cid, List<String> employeeIds);
 	
 	String findWorkConditionLastest(List<String> hists, String employeeId);
+	
+	List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 
+	
+	Integer getLimitFexMonth();
+	
+	Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId, Integer closureId, Integer closeDay, Integer isLastDay);
  }

@@ -24,7 +24,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
@@ -45,6 +49,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferDto;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportDto;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportService;
+import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferFinder;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
@@ -95,6 +103,15 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DPLoadRowProcessor loadRowProcessor;
+	
+	@Inject
+	private DailyPerformErrorReferExportService dailyPerformErrorExportService;
+
+	@Inject
+	private DailyPerformErrorReferFinder dailyPerforErrorReferFinder;
+	
+	@Inject
+	private AttendanceItemNameDomainService attendanceItemNameDomainService;
 	
 	@POST
 	@Path("startScreen")
@@ -150,7 +167,7 @@ public class DailyPerformanceCorrectionWebService {
 					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
 							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
 				}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
-						month.getClosureDate(), Collections.emptyList()));
+						month.getClosureDate()));
 			}
 		}
 		
@@ -179,6 +196,7 @@ public class DailyPerformanceCorrectionWebService {
 		List<DPItemValue> itemErrors = new ArrayList<>();
 		List<DPItemValue> itemInputErors = new ArrayList<>();
 		List<DPItemValue> itemInputError28 = new ArrayList<>();
+		List<DPItemValue> itemInputDeviation = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {
 			List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
 					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
@@ -191,7 +209,7 @@ public class DailyPerformanceCorrectionWebService {
 				itemInputErors.addAll(itemInputs);
 			}
 			
-			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInputItem28(itemCovert);
+			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInput28And1(itemCovert);
 			itemInputError28.addAll(itemInputs28);
 			
 		});
@@ -208,9 +226,11 @@ public class DailyPerformanceCorrectionWebService {
 								x.getKey().getValue(), itemCovert));
 						//dailyModifyCommandFacade.handleUpdate();
 				});
-				dailyModifyCommandFacade.handleUpdate(querys);
+			List<DPItemValueRC> itemErrorResults = dailyModifyCommandFacade.handleUpdate(querys);
+			itemInputDeviation = itemErrorResults.stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
+					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
 				// insert cell edit
-				dailyModifyCommandFacade.handleEditCell(itemValueChild);
+				//dailyModifyCommandFacade.handleEditCell(itemValueChild);
 				//resultError.put(1, itemInputErors);
 				//return resultError;
 		}else{
@@ -220,6 +240,9 @@ public class DailyPerformanceCorrectionWebService {
 			//return resultError;
 		}
 		
+		if(!itemInputDeviation.isEmpty()){
+			resultError.put(TypeError.DEVIATION_REASON.value, itemInputDeviation);
+		}
 		// insert sign
 		dailyModifyCommandFacade.insertSign(dataParent.getDataCheckSign());
 		
@@ -264,4 +287,29 @@ public class DailyPerformanceCorrectionWebService {
 	public DailyPerformanceCorrectionDto reloadRow(DPPramLoadRow param) {
 		return loadRowProcessor.reloadGrid(param);
 	}
+	
+	@POST
+	@Path("exportCsv")
+	public ExportServiceResult exportCsvErrorInfor(List<DailyPerformErrorReferExportDto> command) {
+		return this.dailyPerformErrorExportService.start(command);
+	}
+
+	@POST
+	@Path("getErrAndAppTypeCd")
+	public DailyPerformErrorReferDto findByCidAndListErrCd(List<String> listErrorCode) {
+		return this.dailyPerforErrorReferFinder.findByCidAndListErrCd(listErrorCode);
+	}
+	
+	/**
+	 * typeOfAttendanceItem = 0 to case is monthly
+	 * 
+	 * @param dailyAttendanceItemIds
+	 * @return
+	 */
+	@POST
+	@Path("getNameMonthlyAttItem")
+	public List<AttendanceItemName> getNameOfMonthlyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
+		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(dailyAttendanceItemIds, 0);
+	}
+
 }

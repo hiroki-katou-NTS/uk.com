@@ -172,7 +172,11 @@ module nts.uk.pr.view.ccg007.c {
                     blockUI.clear();
                 }).fail(function(res:any) {
                     //Return Dialog Error
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    if (!nts.uk.util.isNullOrEmpty(res.parameterIds)){
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    } else {
+                       nts.uk.ui.dialog.alertError(res.messageId);
+                    }
                     blockUI.clear();
                 });
             }
@@ -183,8 +187,10 @@ module nts.uk.pr.view.ccg007.c {
                 
                 //set LoginId to dialog
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    loginId: self.employeeCode(),
-                    contractCode : self.contractCode()
+                    form1: false,
+                    employeeCode: self.employeeCode(),
+                    contractCode : self.contractCode(),
+                    companyCode: self.companyCode()
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/ccg/007/e/index.xhtml',{

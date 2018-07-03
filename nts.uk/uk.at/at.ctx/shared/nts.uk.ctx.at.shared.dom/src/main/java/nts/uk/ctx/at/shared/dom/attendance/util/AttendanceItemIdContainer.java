@@ -610,16 +610,16 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(312, join(excessHoliday, FRAMES, TRANSFER, joinNS(TIME, NUMBER_1, NUMBER_0)));
 		temp.put(314, join(excessHoliday, FRAMES, TRANSFER, joinNS(CALC, NUMBER_1, NUMBER_0)));
 		
-		temp.put(777, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_1)));
-		temp.put(778, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_2)));
-		temp.put(779, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_3)));
-		temp.put(780, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_4)));
-		temp.put(781, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_5)));
-		temp.put(782, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_6)));
-		temp.put(783, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_7)));
-		temp.put(784, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_8)));
-		temp.put(785, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_9)));
-		temp.put(786, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_1, NUMBER_0)));
+		temp.put(777, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_1)));
+		temp.put(778, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_2)));
+		temp.put(779, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_3)));
+		temp.put(780, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_4)));
+		temp.put(781, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_5)));
+		temp.put(782, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_6)));
+		temp.put(783, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_7)));
+		temp.put(784, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_8)));
+		temp.put(785, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_9)));
+		temp.put(786, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_1, NUMBER_0)));
 		temp.put(790, join(excessHoliday, LATE_NIGHT, LEGAL, DIVERGENCE));
 		temp.put(791, join(excessHoliday, LATE_NIGHT, ILLEGAL, DIVERGENCE));
 		temp.put(792, join(excessHoliday, LATE_NIGHT, PUBLIC_HOLIDAY, DIVERGENCE));
@@ -2212,19 +2212,33 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return temp;
 	}
 
-	private static String join(String... arrays) {
-		return StringUtils.join(arrays, DEFAULT_SEPERATOR);
-	}
-	
-	private static String joinNS(String... arrays) {
-		return StringUtils.join(arrays);
-	}
-
 	public static boolean isHaveOptionalItems(Collection<ItemValue> items) {
-		return items.stream().filter(i -> DAY_ITEM_ID_CONTAINER.get(i.getItemId()).contains(OPTIONAL_ITEM_VALUE))
-				.findFirst().isPresent();
+		return toFilterStream(items).findFirst().isPresent();
 	}
 	
+	public static List<ItemValue> filterOptionalItems(Collection<ItemValue> items) {
+		return toFilterStream(items).collect(Collectors.toList());
+	}
+	
+	public static Map<ItemValue, Integer> mapOptionalItemsToNos(Collection<ItemValue> items) {
+		return toFilterStream(items).collect(Collectors.toMap(i -> i, i -> {
+			return Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
+		}));
+	}
+	
+	public static Map<Integer, Integer> mapOptionalItemIdsToNos(Collection<ItemValue> items) {
+		return toFilterStream(items).collect(Collectors.toMap(i -> i.getItemId(), i -> {
+			return Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
+		}));
+	}
+	
+	public static Map<ItemValue, Integer> mapOptionalItemsFromIdToNos(Collection<Integer> items, AttendanceItemType type) {
+		return mapOptionalItemsToNos(getIds(items, type));
+	}
+	
+	public static Map<Integer, Integer> optionalItemIdsToNos(Collection<Integer> items, AttendanceItemType type) {
+		return mapOptionalItemIdsToNos(getIds(items, type));
+	}
 	
 	public static String getPath(int key, AttendanceItemType type) {
 		if (type == AttendanceItemType.MONTHLY_ITEM) {
@@ -2237,16 +2251,9 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return ENUM_CONTAINER.get(key);
 	}
 
-	// public static List<Entry<String, Integer>> getIds(List<Integer> values) {
-	// return getIdMapStream(values).collect(Collectors.toList());
-	// }
-
 	public static List<ItemValue> getIds(Collection<Integer> values, AttendanceItemType type) {
 		return getIdMapStream(values, type).collect(Collectors.toList());
 	}
-	// public static List<Entry<String, Integer>> getIds(Set<Integer> values) {
-	// return getIdMapStream(values).collect(Collectors.toList());
-	// }
 
 	public static List<ItemValue> getIds(AttendanceItemType type) {
 		return getFullPair(type).collect(Collectors.toList());
@@ -2262,18 +2269,26 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return values.stream().filter(c -> source.get(c) != null).map(c -> ItemValue.build(source.get(c), c));
 	}
 
-	// public static Stream<Entry<String, Integer>> getIdMapStream(Set<Integer>
-	// values) {
-	// if (values == null || values.isEmpty()) {
-	// return getIdMapStream();
-	// }
-	// return getIdMapStream().filter(c -> values.contains(c.getValue()));
-	// }
-
 	public static Stream<ItemValue> getFullPair(AttendanceItemType type) {
 		if (type == AttendanceItemType.MONTHLY_ITEM) {
 			return MONTHLY_ITEM_ID_CONTAINER.entrySet().stream().map(c -> ItemValue.build(c.getValue(), c.getKey()));
 		}
 		return DAY_ITEM_ID_CONTAINER.entrySet().stream().map(c -> ItemValue.build(c.getValue(), c.getKey()));
+	}
+
+	private static Stream<ItemValue> toFilterStream(Collection<ItemValue> items) {
+		return items.stream().filter(i -> isOptionalItem(i));
+	}
+
+	private static boolean isOptionalItem(ItemValue i) {
+		return DAY_ITEM_ID_CONTAINER.get(i.getItemId()).contains(OPTIONAL_ITEM_VALUE);
+	}
+
+	private static String join(String... arrays) {
+		return StringUtils.join(arrays, DEFAULT_SEPERATOR);
+	}
+	
+	private static String joinNS(String... arrays) {
+		return StringUtils.join(arrays);
 	}
 }

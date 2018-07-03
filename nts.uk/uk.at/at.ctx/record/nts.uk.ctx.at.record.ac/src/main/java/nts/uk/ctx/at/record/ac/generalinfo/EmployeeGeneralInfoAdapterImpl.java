@@ -27,8 +27,9 @@ public class EmployeeGeneralInfoAdapterImpl implements EmployeeGeneralInfoAdapte
 	private EmployeeGeneralInfoPub employeeGeneralInfoPub;
 
 	@Override
-	public EmployeeGeneralInfoImport getEmployeeGeneralInfo(List<String> employeeIds, DatePeriod period) {
-		EmployeeGeneralInfoDto dto = this.employeeGeneralInfoPub.getPerEmpInfo(employeeIds, period);
+	public EmployeeGeneralInfoImport getEmployeeGeneralInfo(List<String> employeeIds, DatePeriod period,boolean checkEmployment,
+			boolean checkClassification, boolean checkJobTitle, boolean checkWorkplace, boolean checkDepartment) {
+		EmployeeGeneralInfoDto dto = this.employeeGeneralInfoPub.getPerEmpInfo(employeeIds, period,true,true,true,true,true);
 		
 		List<ExEmploymentHistoryImport> employmentHistoryImports = dto.getEmploymentDto().stream()
 				.map(employmentHistory -> new ExEmploymentHistoryImport(employmentHistory.getEmployeeId(),

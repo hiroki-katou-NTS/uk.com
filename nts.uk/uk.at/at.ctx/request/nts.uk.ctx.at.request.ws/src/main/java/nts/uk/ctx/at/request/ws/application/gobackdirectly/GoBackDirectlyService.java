@@ -17,8 +17,8 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectDet
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectSettingDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyFinder;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamGetAppGoBack;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/gobackdirectly")
 @Produces("application/json")
@@ -54,9 +54,8 @@ public class GoBackDirectlyService extends WebService {
 	 */
 	@POST
 	@Path("getGoBackCommonSetting")
-	public GoBackDirectSettingDto getGoBackCommonSetting() {
-		String SID = AppContexts.user().employeeId();
-		return this.goBackDirectlyFinder.getGoBackDirectCommonSetting(SID);
+	public GoBackDirectSettingDto getGoBackCommonSetting(ParamGetAppGoBack param) {
+		return this.goBackDirectlyFinder.getGoBackDirectCommonSetting(param.getEmployeeIDs());
 	}
 
 	/**
@@ -106,3 +105,4 @@ public class GoBackDirectlyService extends WebService {
 	}
 		
 }
+

@@ -70,7 +70,7 @@ public class RegisterLayoutFinder {
 	@Inject 
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 	
-	private final String END_DATE_NAME = "終了日";
+	private static final String END_DATE_NAME = "終了日";
 	
 	/**
 	 * get Layout Dto by create type

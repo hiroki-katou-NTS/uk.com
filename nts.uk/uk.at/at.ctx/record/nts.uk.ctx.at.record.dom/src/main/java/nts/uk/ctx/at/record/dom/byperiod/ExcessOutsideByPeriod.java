@@ -7,7 +7,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
@@ -66,17 +66,15 @@ public class ExcessOutsideByPeriod implements Cloneable {
 	 * 集計処理
 	 * @param outsideOTSetOpt 時間外超過設定
 	 * @param weeklyCalculation 週別の計算
-	 * @param repositories 月次集計が必要とするリポジトリ
+	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void aggregate(
 			OutsideOTSetting outsideOTSet,
 			WeeklyCalculation weeklyCalculation,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrCompanySettings companySets){
 		
 		// 丸め設定取得
-		RoundingSetOfMonthly roundingSet = new RoundingSetOfMonthly(weeklyCalculation.getCompanyId());
-		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(weeklyCalculation.getCompanyId());
-		if (roundingSetOpt.isPresent()) roundingSet = roundingSetOpt.get();
+		RoundingSetOfMonthly roundingSet = companySets.getRoundingSet();
 		
 		// 「時間外超過の内訳項目」を取得する
 		List<OutsideOTBRDItem> outsideOTBDItems = outsideOTSet.getBreakdownItems();

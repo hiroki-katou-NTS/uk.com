@@ -8,10 +8,16 @@ public class AppContextsConfig {
 	
 	public static final String KEY_PROGRAM_ID = "programId";
 	
+	public static final String REQUEST_WEBAPI = "requestedWebAPI";
+	
 	public static final String WINS_ACCOUNT = "windowsAccount";
 
 	public static void setProgramId(String programId) {
 		RequestContextProvider.get().put(KEY_PROGRAM_ID, programId);
+	}
+	
+	public static void setRequestedWebAPI(RequestInfo webApi) {
+		RequestContextProvider.get().put(REQUEST_WEBAPI, webApi);
 	}
 	
 	public static void setWindowsAccount(WindowsAccount account) {

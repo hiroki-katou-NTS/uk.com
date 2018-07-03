@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnum
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * @author sonnlb
  *
@@ -16,7 +18,7 @@ public interface AnnualHolidayManagementAdapter {
 	 * @param sId
 	 * @return
 	 */
-	List<NextAnnualLeaveGrantImport> acquireNextHolidayGrantDate(String cId, String sId);
+	List<NextAnnualLeaveGrantImport> acquireNextHolidayGrantDate(String cId, String sId, GeneralDate baseDate);
 
 	/**
 	 * RequestList323 

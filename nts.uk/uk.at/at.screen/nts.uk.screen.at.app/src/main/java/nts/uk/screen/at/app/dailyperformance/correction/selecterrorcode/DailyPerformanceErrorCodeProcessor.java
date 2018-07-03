@@ -44,6 +44,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
@@ -151,8 +152,9 @@ public class DailyPerformanceErrorCodeProcessor {
 				showButton = false;
 			}
 		}
+		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
 		DisplayItem disItem = dailyProcessor.getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId,
-				showButton);
+				showButton, dailyPerformanceDto);
 		List<DailyModifyResult> results = new ArrayList<>();
 		results = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor)
 				.call();
@@ -160,10 +162,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
-		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getLstAttendanceItem() != null
-				? dPControlDisplayItem.getLstAttendanceItem().stream()
-						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x))
-				: new HashMap<>();
+		Map<Integer, DPAttendanceItem> mapDP =  dPControlDisplayItem.getMapDPAttendance();
 		if (screenDto.getLstEmployee().size() > 0) {
 			/// ドメインモデル「社員の日別実績エラー一覧」をすべて取得する +
 			/// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
@@ -258,14 +257,14 @@ public class DailyPerformanceErrorCodeProcessor {
 				dailyProcessor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
 				boolean lock = dailyProcessor.checkLockAndSetState(employeeAndDateRange, data);
 				if (lock) {
-					dailyProcessor.lockCell(screenDto, data);
+					dailyProcessor.lockCell(screenDto, data, true);
 				}
 				if (resultOfOneRow != null) {
 					itemValueMap = resultOfOneRow.getItems().stream()
 							.collect(Collectors.toMap(x -> dailyProcessor.mergeString(String.valueOf(x.getItemId()),
 									"|", data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				}
-				dailyProcessor.processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapDP,
+				dailyProcessor.processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem,
 						mapGetName, codeNameReasonMap, itemValueMap, data, lock, dailyRecEditSetsMap, null);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()

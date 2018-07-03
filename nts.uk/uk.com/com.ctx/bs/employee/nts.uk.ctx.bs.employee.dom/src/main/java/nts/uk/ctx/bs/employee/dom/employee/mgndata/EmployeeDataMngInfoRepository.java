@@ -36,6 +36,8 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> findByPersonId(String pid);
 
 	List<EmployeeDataMngInfo> findByCompanyId(String cid);
+	
+	List<Object[]> findByCompanyIdAndBaseDate(String cid, GeneralDate baseDate);
 
 	Optional<EmployeeDataMngInfo> findByEmpId(String sId);
 
@@ -106,7 +108,7 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return return Optional<Value> if can get data Optional<empty> if it doesn't
 	 *         match startLetters
 	 */
-	Optional<String> findLastEml(String companyId, String startLetters);
+	Optional<String> findLastEml(String companyId, String startLetters, int length);
 	
 	/**
 	 * Get all Employee By CompanyId, Order by Scd ASC

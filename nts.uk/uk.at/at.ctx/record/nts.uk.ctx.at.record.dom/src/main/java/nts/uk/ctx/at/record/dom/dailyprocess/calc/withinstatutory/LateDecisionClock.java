@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,15 +8,12 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -63,9 +59,9 @@ public class LateDecisionClock {
 				// 猶予時間が0：00の場合、所定時間の開始時刻を判断時刻にする
 				decisionClock = calｃRange.get().getStart();
 			} else {
-				// 猶予時間帯の作成
-				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSheet.get().getStart(),
-																	 predetermineTimeSheet.get().getStart().backByMinutes(lateGraceTime.getGraceTime().minute()));
+				// 猶予時間帯の作成                                                                                                   ↓明日はこれを修正する所から
+				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(calｃRange.get().getStart(),
+																	 calｃRange.get().getStart().forwardByMinutes(lateGraceTime.getGraceTime().valueAsMinutes()));
 				// 重複している控除分をずらす
 				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());
 				for(TimeZoneRounding breakTime:breakTimeSheetList) {

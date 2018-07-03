@@ -80,24 +80,19 @@ module kcp009.viewmodel {
                 if (data.systemReference == SystemType.EMPLOYMENT) {
                     // Set Organization Designation if System Reference is Employment
                     self.organizationDesignation(nts.uk.resource.getText("Com_Workplace"));
-                    // Set Organization name
-                    self.organizationName((data.employeeInputList().length > 0) ? data.employeeInputList()[0].workplaceName : null);
                 } else {
                     // Set Organization Designation if System Reference is others
                     self.organizationDesignation(nts.uk.resource.getText("Com_Department"));
-
-                    // Set Organization name
-                    self.organizationName((data.employeeInputList().length > 0) ? data.employeeInputList()[0].depName : null);
                 }
-            } else {
-                self.organizationDesignation(null);
-                self.organizationName(null);
             }
 
-            // SelectedItem Subscribe
-            self.selectedItem.subscribe(function(value: string) {
-                self.bindEmployee(value);
-            });
+            if (_.isEmpty($input.contents())) {
+                // SelectedItem Subscribe
+                self.selectedItem.subscribe(function(value: string) {
+                    self.bindEmployee(value);
+                });
+            }
+
             // Selected OrdinalNumber
             self.selectedOrdinalNumber = ko.computed(function() {
                 var currentItem = self.empList().filter((item) => {

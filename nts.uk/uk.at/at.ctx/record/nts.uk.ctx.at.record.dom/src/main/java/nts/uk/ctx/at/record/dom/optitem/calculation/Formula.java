@@ -174,7 +174,7 @@ public class Formula extends AggregateRoot {
 											List<ResultOfCalcFormula> resultCalcFormula,
 											Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
 											Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
-		int calcValue = 0;
+		double calcValue = 0;
 		if(this.getCalcAtr().isFormulaSetting()) {
 			if(this.calcFormulaSetting.getFormulaSetting().isPresent()) {
 				//計算式による計算
@@ -196,6 +196,54 @@ public class Formula extends AggregateRoot {
 		else {
 			throw new RuntimeException("unknown FormulaSetting"+ this.getCalcAtr());
 		}
-		return ResultOfCalcFormula.of(formulaId,this.formulaAtr, calcValue);
+		
+		//丸め処理
+		calcValue = calcRounding(calcValue,performanceAtr);
+			
+//		return ResultOfCalcFormula.of(formulaId,this.formulaAtr, calcValue);
+		return ResultOfCalcFormula.of(formulaId,optionalItem.getOptionalItemAtr(), calcValue);
 	}
+	
+	
+	public double calcRounding(double calcValue,PerformanceAtr performanceAtr){
+		if(performanceAtr.isDailyPerformance()) {
+			if(this.dailyRounding.isPresent()) {
+				double result = calcValue;
+				switch(this.formulaAtr) {
+				case TIME:
+					result = this.dailyRounding.get().getTimeRounding().round((int)calcValue);
+					return result;
+				case NUMBER:
+					result = this.dailyRounding.get().getNumberRounding().round(calcValue);
+					return result;
+				case AMOUNT:
+					result = this.dailyRounding.get().getAmountRounding().round(calcValue);
+					return result;
+				default:
+					throw new RuntimeException("unknown optionalItemAtr:" + this.formulaAtr);			
+				}
+			}
+			return calcValue;
+		}else{
+			if(this.monthlyRounding.isPresent()) {
+				double result = calcValue;
+				switch(this.formulaAtr) {
+				case TIME:
+					result = this.monthlyRounding.get().getTimeRounding().round((int)calcValue);
+					return result;
+				case NUMBER:
+					result = this.monthlyRounding.get().getNumberRounding().round(calcValue);
+					return result;
+				case AMOUNT:
+					result = this.monthlyRounding.get().getAmountRounding().round(calcValue);
+					return result;
+				default:
+					throw new RuntimeException("unknown optionalItemAtr:" + this.formulaAtr);
+					
+				}
+			}
+			return calcValue;
+		}
+	}
+	
 }
