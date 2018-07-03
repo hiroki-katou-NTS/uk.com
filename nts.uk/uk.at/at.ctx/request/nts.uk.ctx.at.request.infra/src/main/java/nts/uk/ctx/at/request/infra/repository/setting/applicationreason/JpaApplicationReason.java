@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepo
 import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ReasonTemp;
 import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReason;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
@@ -29,6 +31,11 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 
 	
 	private static final String FINDBYREASONID = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.reasonID = :reasonID";
+	
+	private static final String FINDBYDEFAULT = FINDBYAPPTYPE + " AND c.defaultFlg = :defaultFlg";
+	
+	private static final String DELETEREASON = "DELETE FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyIdm "
+			+ "AND c.krqstAppReasonPK.appType = :appType AND c.krqstAppReasonPK.appType = :reasonID ";
 
 	/**
 	 * get reason by companyid
@@ -90,6 +97,65 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 				.setParameter("companyId", companyId)
 				.setParameter("reasonID", reasonID)
 				.getSingle(c->toDomain(c));
+	}
+	/**
+	 * convert from domain to entity
+	 * @param domain
+	 * @return
+	 * @author yennth
+	 */
+	private static KrqstAppReason toEntity(ApplicationReason domain){
+		val entity = new KrqstAppReason();
+		entity.krqstAppReasonPK.appType = domain.appType.value;
+		entity.krqstAppReasonPK.companyId = domain.companyId;
+		entity.dispOrder = domain.dispOrder;
+		entity.krqstAppReasonPK.reasonID = domain.reasonID;
+		entity.defaultFlg = domain.defaultFlg.value;
+		entity.reasonTemp = domain.reasonTemp.v();
+		return entity;
+	}
+	
+	/**
+	 * update a list application reason
+	 * @author yennth
+	 */
+	@Override
+	public void updateReason(List<ApplicationReason> listUpdate) {
+		int appType = 0;
+		String companyId = AppContexts.user().companyId(); 
+		if(!listUpdate.isEmpty()){
+			appType = listUpdate.get(0).appType.value;
+			// tìm object dưới DB mà có default là 1 để chuyển thành 0
+			KrqstAppReason findDefault = this.queryProxy().query(FINDBYDEFAULT, KrqstAppReason.class)
+					.setParameter("companyId", companyId)
+					.setParameter("appType", appType)
+					.setParameter("defaultFlg", 1).getSingleOrNull();
+			if(findDefault != null){
+				findDefault.setDefaultFlg(0);
+				this.commandProxy().update(this.toDomain(findDefault));
+				// update list nhận được
+				for(ApplicationReason obj: listUpdate){
+					this.commandProxy().update(obj);
+				}
+			}
+		}
+	}
+	/**
+	 * insert a item
+	 * @author yennth
+	 */
+	@Override
+	public void insertReason(ApplicationReason insert) {
+		this.commandProxy().insert(insert);
+	}
+
+	@Override
+	public void deleteReason(String companyId, int appType, String reasonID) {
+		this.getEntityManager().createQuery(DELETEREASON)
+		.setParameter("companyId", companyId)
+		.setParameter("appType", appType)
+		.setParameter("reasonID", reasonID)
+		.executeUpdate();
 	}
 
 }

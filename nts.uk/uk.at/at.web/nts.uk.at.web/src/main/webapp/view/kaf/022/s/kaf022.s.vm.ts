@@ -64,6 +64,21 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         checkUpdateMode() {
             let self = this;
         }
+        
+        createNew(){
+            let self = this;
+            let data = {
+                /** 理由ID */
+                reasonID: '',
+                /** 表示順 */
+                displayOrder: 0,
+                /** 定型理由*/
+                reasonTemp: '',
+                /** 既定*/
+                defaultFlg: 0,
+            }
+            self.selectedReason(new ApplicationReason(data));    
+        }
 
         /** update or insert data when click button register **/
         register() {
