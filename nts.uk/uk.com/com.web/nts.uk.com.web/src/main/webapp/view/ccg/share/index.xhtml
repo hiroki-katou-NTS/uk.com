@@ -23,8 +23,8 @@
 							<div class="ccg001-cell">
 								<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
 							</div>
-							<div class="ccg001-cell">
-								<div id="cbb-closure" tabindex="2" style="vertical-align: middle; margin-left: 4px;"
+							<div class="ccg001-cell mid">
+								<div id="cbb-closure" tabindex="2" style="margin-left: 4px;"
 									data-bind="ntsComboBox: {
 										name: '#[CCG001_28]',
 										options: closureList,
@@ -42,37 +42,26 @@
 					</com:ko>
 					<com:ko tag="if" bind="showPeriod">
 						<div class="control-group ccg001-control-group">
-							<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
-							<com:ko tag="ifnot" bind="showPeriodYM">
-								<div id="inp-period-startYMD" tabindex="3"
-									data-bind="ntsDatePicker: {
-										name: '#[CCG001_30]',
-										dateFormat: 'YYYY/MM/DD',
-										value: inputPeriodStart,
-										required: true }"></div>
-								<label>～</label>
-								<div id="inp-period-endYMD" tabindex="3"
-									data-bind="ntsDatePicker: {
-										name: '#[CCG001_31]',
-										dateFormat: 'YYYY/MM/DD',
-										value: inputPeriodEnd,
-										required: true }"></div>
-							</com:ko>
-							<com:ko tag="if" bind="showPeriodYM">
-								<div id="inp-period-startYM" tabindex="3"
-									data-bind="ntsDatePicker: {
-										name: '#[CCG001_30]',
-										dateFormat: 'YYYY/MM',
-										value: inputPeriodStart,
-										required: true }"></div>
-								<label>～</label>
-								<div id="inp-period-endYM" tabindex="3"
-									data-bind="ntsDatePicker: {
-										name: '#[CCG001_31]',
-										dateFormat: 'YYYY/MM',
-										value: inputPeriodEnd,
-										required: true }"></div>
-							</com:ko>
+							<div class="ccg001-cell">
+								<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
+							</div>
+							<div class="ccg001-cell mid">
+								<com:ko tag="ifnot" bind="showPeriodYM">
+									<div id="ccg001-daterange-ymd" tabindex="3" data-bind="ntsDateRangePicker: {
+										required: true,
+										enable: true,
+										showNextPrevious: true,
+										value: inputPeriod}"/>
+								</com:ko>
+								<com:ko tag="if" bind="showPeriodYM">
+									<div id="ccg001-daterange-ym" tabindex="3" data-bind="ntsDateRangePicker: {
+										type: 'yearmonth',
+										required: true,
+										enable: true,
+										showNextPrevious: true,
+										value: inputPeriod}"/>
+								</com:ko>
+							</div>
 						</div>
 					</com:ko>
 				</div>
