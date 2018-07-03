@@ -148,7 +148,7 @@ public class RecoveryStorageService {
 		}
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
 	public int recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode, String employeeId,
 			List<DataRecoveryTable> targetDataByCate, List<Target> listTarget) throws Exception {
 
@@ -205,13 +205,14 @@ public class RecoveryStorageService {
 						dataRecoveryProcessId, dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery,
 						resultsSetting, true);
 			} catch (Exception e) {
+				// DELETE/INSERT error
 				LOGGER.error("SQL error rollBack transaction");
 				throw new Exception(SQL_EXCEPTION);
 
 			}
 
-			// phân biệt DELETE/INSERT error và Setting error
-			if (errorCode == 2) {
+			//  Setting error
+			if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
 				LOGGER.error("Setting error rollBack transaction");
 				throw new Exception(SETTING_EXCEPTION);
 
@@ -221,7 +222,7 @@ public class RecoveryStorageService {
 		return errorCode;
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+	
 	public int crudDataByTable(List<List<String>> targetDataTable, String employeeId, String employeeCode,
 			String dataRecoveryProcessId, String fileNameCsv, Optional<TableList> tableList,
 			Optional<PerformDataRecovery> performDataRecovery, List<String> resultsSetting, Boolean tableUse)
@@ -415,7 +416,7 @@ public class RecoveryStorageService {
 
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+	
 	public int exCurrentCategory(TableListByCategory tableListByCategory, TableListByCategory tableNotUseByCategory,
 			String uploadId, String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -437,7 +438,7 @@ public class RecoveryStorageService {
 		return errorCode;
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+	
 	public int exTableNotUse(TableListByCategory tableNotUseByCategory, String dataRecoveryProcessId, String uploadId)
 			throws ParseException, NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
