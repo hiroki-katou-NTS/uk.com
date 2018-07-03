@@ -108,7 +108,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		
 		if (tableName != null) {
 			StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
-			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE ");
+			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
 			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
 			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
 		}
@@ -117,23 +117,16 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private StringBuilder makeWhereClause(Map<String, String> filedWhere, String namePhysicalCid, String cidCurrent) {
 		StringBuilder whereClause = new StringBuilder();
-		int i = 0;
 		for (Map.Entry<String, String> filed : filedWhere.entrySet()) {
 			if (!filed.getValue().isEmpty()) {
-				if (i != 0) {
-					if (!Objects.isNull(namePhysicalCid) && filed.getKey().equals(namePhysicalCid)) {
-						whereClause.append(" AND ").append(filed.getKey()).append(" = '").append(cidCurrent).append("'");
-					} else {
-						whereClause.append(" AND ").append(filed.getKey()).append(" = '").append(filed.getValue()).append("'");
-					}
+
+				if (!Objects.isNull(namePhysicalCid) && filed.getKey().equals(namePhysicalCid)) {
+					whereClause.append(" AND ").append(filed.getKey()).append(" = '").append(cidCurrent).append("'");
 				} else {
-					if (!Objects.isNull(namePhysicalCid) && filed.getKey().equals(namePhysicalCid)) {
-						whereClause.append(filed.getKey()).append(" = '").append(namePhysicalCid).append("'");
-					} else {
-						whereClause.append(filed.getKey()).append(" = '").append(filed.getValue()).append("'");
-					}
+					whereClause.append(" AND ").append(filed.getKey()).append(" = '").append(filed.getValue())
+							.append("'");
 				}
-				i++;
+
 			}
 		}
 		return whereClause;
@@ -147,7 +140,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 		if (tableName != null) {
 			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
-			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
+			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
 			DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
 
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
