@@ -182,6 +182,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 for (let i = 0, count = data.length; i < count; i++) {
                     self.listStandardImportSetting.push(new SetOutputSettingCode(dataSorted[i]));
                 }
+
+                //get list value output format
+                service.getValueOutputFormat().done(data => {
+                    for (let i = 0, count = data.length; i < count; i++) {
+                        self.valOutFormat.push(new model.ItemModel(data[i].value + '', data[i].localizedName));
+                    }
+                });
             }).always(function() {
                 dfd.resolve(self);
                 //get parameter from B
@@ -505,16 +512,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         }
 
         isValidate(itemOut) {
-            if (itemOut.length < 2) {
-                return false;
-            }
-            let itemOutWithout36 = _.without(itemOut, itemOut[0]);
-            let itemOutUseClass: any = _.filter(itemOutWithout36, v => { return v.useClass(); });
-
-            if (!itemOutUseClass || itemOutUseClass.length == 0) {
-                return false;
-            }
-            return true;
+            let itemOutUseClass: any = _.filter(itemOut, v => { return v.useClass(); });
+            return itemOutUseClass.length > 0;
         }
 
         //do delete
