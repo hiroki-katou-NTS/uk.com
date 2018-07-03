@@ -148,7 +148,7 @@ public class RecoveryStorageService {
 		}
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
 	public int recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode, String employeeId,
 			List<DataRecoveryTable> targetDataByCate, List<Target> listTarget) throws Exception {
 
@@ -205,13 +205,14 @@ public class RecoveryStorageService {
 						dataRecoveryProcessId, dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery,
 						resultsSetting, true);
 			} catch (Exception e) {
+				// DELETE/INSERT error
 				LOGGER.error("SQL error rollBack transaction");
 				throw new Exception(SQL_EXCEPTION);
 
 			}
 
-			// phân biệt DELETE/INSERT error và Setting error
-			if (errorCode == 2) {
+			//  Setting error
+			if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
 				LOGGER.error("Setting error rollBack transaction");
 				throw new Exception(SETTING_EXCEPTION);
 
@@ -221,7 +222,7 @@ public class RecoveryStorageService {
 		return errorCode;
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+	
 	public int crudDataByTable(List<List<String>> targetDataTable, String employeeId, String employeeCode,
 			String dataRecoveryProcessId, String fileNameCsv, Optional<TableList> tableList,
 			Optional<PerformDataRecovery> performDataRecovery, List<String> resultsSetting, Boolean tableUse)
@@ -261,8 +262,7 @@ public class RecoveryStorageService {
 						if (tableList.get().getRetentionPeriodCls().value != TimeStore.FULL_TIME.value) {
 							if (!checkSettingDate(resultsSetting, tableList, dataRow)) {
 								if (!tableUse) {
-									errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
-									return errorCode;
+									return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
 								} else {
 									continue;
 								}
@@ -315,8 +315,7 @@ public class RecoveryStorageService {
 						namePhysicalCid, cidCurrent);
 
 				if (count > 1 && tableUse) {
-					errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
-					return errorCode;
+					return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
 				} else if (count > 1 && !tableUse) {
 					continue;
 				} else if (count == 1) {
@@ -324,7 +323,7 @@ public class RecoveryStorageService {
 						performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 								cidCurrent);
 					} catch (Exception e) {
-						LOGGER.info("Error delete data for table not use" + TABLE_NAME);
+						LOGGER.info("Error delete data for table " + TABLE_NAME);
 						if (tableUse)
 							throw e;
 					}
@@ -339,7 +338,7 @@ public class RecoveryStorageService {
 				try {
 					performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
 				} catch (Exception e) {
-					LOGGER.info("Error insert data for table not use" + TABLE_NAME);
+					LOGGER.info("Error insert data for table " + TABLE_NAME);
 					if (tableUse)
 						throw e;
 				}
@@ -348,32 +347,26 @@ public class RecoveryStorageService {
 		return errorCode;
 	}
 
-	public String findNamePhysicalCid(Optional<TableList> tableList) {
+	@SuppressWarnings("unchecked")
+	public String findNamePhysicalCid(Optional<TableList> tableList) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		String namePhysical = null;
 		if (tableList.isPresent()) {
-
-			if (tableList.get().getClsKeyQuery1() != null && tableList.get().getClsKeyQuery1().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate1().orElse(null);
-			} else if (tableList.get().getClsKeyQuery2() != null && tableList.get().getClsKeyQuery2().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate2().orElse(null);
-			} else if (tableList.get().getClsKeyQuery3() != null && tableList.get().getClsKeyQuery3().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate3().orElse(null);
-			} else if (tableList.get().getClsKeyQuery4() != null && tableList.get().getClsKeyQuery4().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate4().orElse(null);
-			} else if (tableList.get().getClsKeyQuery5() != null && tableList.get().getClsKeyQuery5().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate5().orElse(null);
-			} else if (tableList.get().getClsKeyQuery6() != null && tableList.get().getClsKeyQuery6().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate6().orElse(null);
-			} else if (tableList.get().getClsKeyQuery7() != null && tableList.get().getClsKeyQuery7().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate7().orElse(null);
-			} else if (tableList.get().getClsKeyQuery8() != null && tableList.get().getClsKeyQuery8().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate8().orElse(null);
-			} else if (tableList.get().getClsKeyQuery9() != null && tableList.get().getClsKeyQuery9().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate9().orElse(null);
-			} else if (tableList.get().getClsKeyQuery10() != null && tableList.get().getClsKeyQuery10().equals("0")) {
-				namePhysical = tableList.get().getFiledKeyUpdate10().orElse(null);
+			
+			Optional<Object> keyQuery = Optional.empty();
+			Optional<Object> filedKey = Optional.empty();
+			for (int i = 1; i < 11; i++) {
+				Method m1 = TableList.class.getMethod(GET_CLS_KEY_QUERY + i);
+				keyQuery = (Optional<Object>) m1.invoke(tableList.get());
+				Method m2 = TableList.class.getMethod(GET_FILED_KEY_UPDATE + i);
+				filedKey = (Optional<Object>) m2.invoke(tableList.get());
+				if (keyQuery.isPresent()) {
+					if (keyQuery.get().equals(INDEX_CID_CSV)) {
+						namePhysical = (String) filedKey.get();
+					}
+				}
 			}
+			
 		}
 		return namePhysical;
 	}
@@ -415,7 +408,7 @@ public class RecoveryStorageService {
 
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+	
 	public int exCurrentCategory(TableListByCategory tableListByCategory, TableListByCategory tableNotUseByCategory,
 			String uploadId, String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -437,7 +430,7 @@ public class RecoveryStorageService {
 		return errorCode;
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+	
 	public int exTableNotUse(TableListByCategory tableNotUseByCategory, String dataRecoveryProcessId, String uploadId)
 			throws ParseException, NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
