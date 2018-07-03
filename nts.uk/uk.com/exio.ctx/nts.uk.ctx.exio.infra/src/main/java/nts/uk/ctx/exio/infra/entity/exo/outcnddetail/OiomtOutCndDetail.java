@@ -43,7 +43,7 @@ public class OiomtOutCndDetail extends UkJpaEntity implements Serializable
     @OneToOne
     @JoinColumns({ 
     	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "COMPANY_CND_SET_CD", referencedColumnName = "COMPANY_CND_SET_CD", insertable = false, updatable = false),
+		@JoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD", insertable = false, updatable = false),
 		})
     public OiomtOutCndDetailItem oiomtOutCndDetailItem;
     
@@ -54,11 +54,11 @@ public class OiomtOutCndDetail extends UkJpaEntity implements Serializable
     }
 
     public OutCndDetail toDomain() {
-        return new OutCndDetail(this.outCndDetailPk.cid, this.outCndDetailPk.companyCndSetCd, this.exterOutCdnSql);
+        return new OutCndDetail(this.outCndDetailPk.cid, this.outCndDetailPk.conditionSettingCd, this.exterOutCdnSql);
     }
 
-	public OiomtOutCndDetail(String cid,String companyCndSetCd, String exterOutCdnSql) {
-		this.outCndDetailPk = new  OiomtOutCndDetailPk(cid, companyCndSetCd);
+	public OiomtOutCndDetail(String cid,String conditionSettingCd, String exterOutCdnSql) {
+		this.outCndDetailPk = new  OiomtOutCndDetailPk(cid, conditionSettingCd);
 		this.exterOutCdnSql = exterOutCdnSql;
 		
 	}

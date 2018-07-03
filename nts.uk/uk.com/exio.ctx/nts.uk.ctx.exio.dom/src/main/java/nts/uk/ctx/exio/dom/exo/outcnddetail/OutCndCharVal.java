@@ -5,14 +5,14 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(20)
-public class SearchChar extends StringPrimitiveValue<PrimitiveValue<String>> {
+public class OutCndCharVal extends StringPrimitiveValue<PrimitiveValue<String>> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public SearchChar(String rawValue) {
+	public OutCndCharVal(String rawValue) {
 		super(rawValue);
 	}
 
