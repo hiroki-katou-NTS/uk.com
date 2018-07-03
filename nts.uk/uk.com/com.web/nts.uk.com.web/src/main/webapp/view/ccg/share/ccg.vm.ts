@@ -24,6 +24,9 @@ module nts.uk.com.view.ccg.share.ccg {
         export class ListGroupScreenModel {
             /** Domain characteristic */
             employeeRangeSelection: EmployeeRangeSelection;
+            comEmployment: any;
+            comClassification: any;
+            comJobTitle: any;
 
             /** Common properties */
             showEmployeeSelection: boolean; // 検索タイプ
@@ -1154,7 +1157,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showEmployment) {
-                    $('#employmentList').ntsListComponent(self.employments).done(() => dfd.resolve());
+                    if (_.isNil(self.comEmployment)) {
+                        $('#employmentList').ntsListComponent(self.employments).done(emp => {
+                            self.comEmployment = emp;
+                            dfd.resolve();
+                        });
+                    } else {
+                        self.comEmployment.reload();
+                        dfd.resolve();
+                    }
                 } else {
                     dfd.resolve();
                 }
@@ -1168,7 +1179,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showClassification) {
-                    $('#classificationList').ntsListComponent(self.classifications).done(() => dfd.resolve());
+                    if (_.isNil(self.comClassification)) {
+                        $('#classificationList').ntsListComponent(self.classifications).done(emp => {
+                            self.comClassification = emp;
+                            dfd.resolve();
+                        });
+                    } else {
+                        self.comClassification.reload();
+                        dfd.resolve();
+                    }
                 } else {
                     dfd.resolve();
                 }
@@ -1182,7 +1201,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showJobTitle) {
-                    $('#jobtitleList').ntsListComponent(self.jobtitles).done(() => dfd.resolve());
+                    if (_.isNil(self.comJobTitle)) {
+                        $('#jobtitleList').ntsListComponent(self.jobtitles).done(emp => {
+                            self.comJobTitle = emp;
+                            dfd.resolve();
+                        });
+                    } else {
+                        self.comJobTitle.reload();
+                        dfd.resolve();
+                    }
                 } else {
                     dfd.resolve();
                 }
