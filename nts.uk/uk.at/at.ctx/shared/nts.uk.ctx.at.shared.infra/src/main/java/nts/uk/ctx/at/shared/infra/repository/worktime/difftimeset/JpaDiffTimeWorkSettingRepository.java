@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
@@ -31,9 +32,6 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTim
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHolRestTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHolRestTimePK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHolRestTime_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet_;
-import nts.uk.ctx.at.shared.infra.repository.worktime.fixedset.JpaFixRestHalfdayTzGetMemento;
 
 /**
  * The Class JpaDiffTimeWorkSettingRepository.
@@ -165,12 +163,11 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
+		query.orderBy(builder.asc(root.get(KshmtDtHolRestTime_.startTime)));
+		
 		List<KshmtDtHolRestTime> result = em.createQuery(query).getResultList();
 
-		List<KshmtDtHolRestTime> kshmtDtHolRestTimes = result.stream()
-				.sorted((item1, item2) -> item1.getStartTime() - item2.getEndTime()).collect(Collectors.toList());
-
-		Map<WorkTimeCode, List<KshmtDtHolRestTime>> mapResttimes = kshmtDtHolRestTimes.stream().collect(
+		Map<WorkTimeCode, List<KshmtDtHolRestTime>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtDtHolRestTimePK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<DiffTimeDeductTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors
@@ -200,13 +197,13 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 				.in(workTimeCodes));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
+		
+		// order by closure id asc
+		query.orderBy(builder.asc(root.get(KshmtDtHalfRestTime_.startTime)));
 
 		List<KshmtDtHalfRestTime> result = em.createQuery(query).getResultList();
 
-		List<KshmtDtHalfRestTime> KshmtDtHalfRestTimes = result.stream()
-				.sorted((item1, item2) -> item1.getStartTime() - item2.getEndTime()).collect(Collectors.toList());
-
-		Map<WorkTimeCode, List<KshmtDtHalfRestTime>> mapResttimes = KshmtDtHalfRestTimes.stream().collect(
+		Map<WorkTimeCode, List<KshmtDtHalfRestTime>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtDtHalfRestTimePK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<DiffTimeDeductTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors
