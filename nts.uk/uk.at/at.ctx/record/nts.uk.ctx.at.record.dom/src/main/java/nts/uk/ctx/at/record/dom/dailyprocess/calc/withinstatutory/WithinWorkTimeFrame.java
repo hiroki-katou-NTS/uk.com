@@ -451,6 +451,9 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	   				TimeWithDayAttr test1 = predetermineTimeForSet.getTimeSheets(workType.getAttendanceHolidayAttr(), workNo).get().getStart();
   	   				if(coreTimeSetting.isPresent()&&coreTimeSetting.get().isUseTimeSheet()) {	   				
   	   					test1 = getDecisionCoreTimeSheet(predetermineTimeForSet,coreTimeSetting.get(),workType).getStartTime();
+  	   					if(test1.greaterThan(dupTimeSheet.getTimezone().getStart())) {
+  	   						test1 = dupTimeSheet.getTimezone().getStart();
+  	   					}
   	   				}
   	   				//遅刻時間帯の終了時刻を開始時刻にする
   	    			dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(), 
@@ -482,6 +485,9 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	  	  			TimeWithDayAttr test2 = predetermineTimeForSet.getTimeSheets(workType.getAttendanceHolidayAttr(), workNo).get().getEnd();
   	  	  			if(coreTimeSetting.isPresent()&&coreTimeSetting.get().isUseTimeSheet()) {	   				
 	   					test2 = getDecisionCoreTimeSheet(predetermineTimeForSet,coreTimeSetting.get(),workType).getEndTime();
+	   					if(test2.lessThan(dupTimeSheet.getTimezone().getEnd())) {
+	   						test2 = dupTimeSheet.getTimezone().getEnd();
+	   					}
 	   				}
   	  	     		//早退時間帯の開始時刻を終了時刻にする
   	  	     		dupTimeSheet = new EmTimeZoneSet(new EmTimeFrameNo(workNo), 

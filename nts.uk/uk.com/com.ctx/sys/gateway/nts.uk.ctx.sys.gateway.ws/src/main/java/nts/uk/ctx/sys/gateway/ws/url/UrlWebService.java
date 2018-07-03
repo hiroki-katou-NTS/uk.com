@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.ws.url;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -11,7 +13,6 @@ import javax.ws.rs.Produces;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommandHandler;
@@ -67,7 +68,8 @@ public class UrlWebService {
 	@POST
 	@Path("execution/{urlID}")
 	@Produces("application/json")
-	public JavaTypeResult<String> executionURL(@PathParam("urlID") String urlID) {
+	public UrlResult executionURL(@PathParam("urlID") String urlID) {
+		List<String> result = new ArrayList<>();
 		GeneralDateTime systemDateTime = GeneralDateTime.now();
 		
 		// URLパラメータの存在チェック
@@ -104,8 +106,10 @@ public class UrlWebService {
 		// to do
 		
 		// ドメインモデル「埋込URL実行情報」の「プログラムID」及び「遷移先の画面ID」に該当する画面へ遷移する
-		String appID = urlExecInfoExport.getTaskIncre().get(0).getTaskIncreValue();
-		return new JavaTypeResult<String>(appID);
+		urlExecInfoExport.getTaskIncre().forEach(x -> {
+			result.add(x.getTaskIncreValue());
+		});
+		return new UrlResult(urlExecInfoExport.getProgramId().toLowerCase(), urlExecInfoExport.getScreenId().toLowerCase(), result);
 	}
 	
 	private Contract executionContractSet(String contractCD){

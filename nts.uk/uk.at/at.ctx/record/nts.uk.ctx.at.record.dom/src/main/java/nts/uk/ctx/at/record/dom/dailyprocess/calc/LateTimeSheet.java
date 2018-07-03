@@ -198,6 +198,9 @@ public class LateTimeSheet{
 				TimeWithDayAttr end = calcRange.get().getStart();
 				if(calcRange.get().getEnd().greaterThan(calcRange.get().getStart())) {
 					end = attendance.greaterThan(calcRange.get().getEnd())?calcRange.get().getEnd():attendance;
+				}else {
+					//計算範囲の開始と終了が逆転している場合（遅刻していない場合）は時間帯を作成しない
+					return Optional.empty();
 				}
 				
 				LateLeaveEarlyTimeSheet lateLeaveEarlytimeSheet = new LateLeaveEarlyTimeSheet(
