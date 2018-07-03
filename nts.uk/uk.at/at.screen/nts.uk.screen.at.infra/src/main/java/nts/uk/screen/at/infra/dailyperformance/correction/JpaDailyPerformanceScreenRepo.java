@@ -823,7 +823,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
 							i.displayNumber.intValue(), i.userCanSet.intValue() == 1 ? true : false,
 							i.nameLineFeedPosition.intValue(), i.dailyAttendanceAtr.intValue(),
-							i.typeOfMaster != null ? i.typeOfMaster.intValue() : null);
+							i.typeOfMaster != null ? i.typeOfMaster.intValue() : null, i.primitiveValue == null ? null : i.primitiveValue.intValue());
 				}).collect(Collectors.toList());
 	}
 

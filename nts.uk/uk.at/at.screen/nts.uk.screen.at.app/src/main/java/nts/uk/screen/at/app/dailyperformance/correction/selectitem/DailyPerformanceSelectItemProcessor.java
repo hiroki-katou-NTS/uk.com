@@ -175,7 +175,7 @@ public class DailyPerformanceSelectItemProcessor {
 										.map(x -> new DPAttendanceItem(x.getId(),
 												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
-												x.getTypeGroup()))
+												x.getTypeGroup(), x.getPrimitive()))
 										.collect(Collectors.toList());
 						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
 						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
@@ -223,7 +223,7 @@ public class DailyPerformanceSelectItemProcessor {
 										.map(x -> new DPAttendanceItem(x.getId(),
 												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
-												x.getTypeGroup()))
+												x.getTypeGroup(), x.getPrimitive()))
 										.collect(Collectors.toList());
 						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
 						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()

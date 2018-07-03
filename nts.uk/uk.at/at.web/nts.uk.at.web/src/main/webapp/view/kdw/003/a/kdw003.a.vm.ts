@@ -56,7 +56,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         //data grid
         displayFormatOptions: KnockoutObservableArray<any>;
         displayFormat: KnockoutObservable<number> = ko.observable(null);
-        headersGrid: KnockoutObservableArray<any>;
+        headersGrid: any = [];
         columnSettings: KnockoutObservableArray<any> = ko.observableArray([]);
         sheetsGrid: KnockoutObservableArray<any> = ko.observableArray([]);
         fixColGrid: KnockoutObservableArray<any>;
@@ -195,7 +195,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.initLegendButton();
             self.initDateRanger();
             self.initDisplayFormat();
-            self.headersGrid = ko.observableArray(self.employeeModeHeader);
+            self.headersGrid = self.employeeModeHeader;
             self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
             // show/hide header number
             self.showHeaderNumber.subscribe((val) => {
@@ -580,6 +580,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 //update
             }
+           //  alert("thoi gian load ALL: "+ (performance.now() - startTime));
         }
 
         convertMinute(value): string {
@@ -1627,7 +1628,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         extractionData() {
             var self = this;
-            self.headersGrid([]);
+            self.headersGrid = [];
             self.fixColGrid([]);
             if (self.displayFormat() == 0) {
                 self.fixColGrid(self.employeeModeFixCol);
@@ -1731,7 +1732,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         setHeaderColor() {
             var self = this;
             self.headerColors([]);
-            _.forEach(self.headersGrid(), (header) => {
+            _.forEach(self.headersGrid, (header) => {
                 if (header.color) {
                     self.headerColors.push({
                         key: header.key,
@@ -1998,9 +1999,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.setHeaderColor();
             self.setColorWeekend();
             //console.log(self.formatDate(self.dailyPerfomanceData()));
-            let start = performance.now();
-            let dataSource = self.formatDate(self.dailyPerfomanceData());
-            
+            let dataSource = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
+            let startTime = performance.now();
             $("#dpGrid").ntsGrid({
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',
@@ -2031,7 +2031,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 enter: self.selectedDirection() == 0 ? 'below' : 'right',  
                 autoFitWindow: false,
                 preventEditInError: false,
-                columns: self.headersGrid(),
+                columns: self.headersGrid,
                 hidePrimaryKey: true,
                 userId: self.employIdLogin,
                 getUserId: function(primaryKey) {
@@ -2104,7 +2104,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 ]
             });
-//            console.log("load grid ALL" + (performance.now() - start));
+           // alert("load grid detail:" + (performance.now() - startTime));
         }
         
         loadMIGrid(data: any): void {
@@ -2396,16 +2396,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         } else {
 
                             if (header.constraint.cDisplayType == "Primitive") {
-                                delete header.group[0].constraint.cDisplayType
+                                if(header.group == undefined || header.group.length == 0){
+                                    delete header.constraint.cDisplayType;
+                                }else{
+                                  delete header.group[0].constraint.cDisplayType;
+                                  delete header.constraint;
+                                  delete header.group[1].constraint;
+                                }
                             } else if (header.constraint.cDisplayType == "Combo") {
                                 header.group[0].constraint["min"] = 0;
                                 header.group[0].constraint["max"] = Number(header.group[0].constraint.primitiveValue);
                                 header.group[0].constraint["cDisplayType"] = header.group[0].constraint.cdisplayType;
                                 delete header.group[0].constraint.cdisplayType
                                 delete header.group[0].constraint.primitiveValue;
+                                delete header.constraint;
+                                delete header.group[1].constraint;
                             }
-                            delete header.constraint;
-                            delete header.group[1].constraint;
                         }
                     }
                     if (header.constraint != undefined) delete header.constraint.cdisplayType;
@@ -2442,7 +2448,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 tempList.push(header);
             });
-            return self.headersGrid(tempList);
+            self.headersGrid = tempList;
+            return self.headersGrid;
         }
 
         pushDataEdit(evt, ui): InfoCellEdit {
