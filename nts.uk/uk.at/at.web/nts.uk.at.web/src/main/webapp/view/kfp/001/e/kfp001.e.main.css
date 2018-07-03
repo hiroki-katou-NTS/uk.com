@@ -1,22 +1,18 @@
-#button-1D {
-	margin-top: 197px;
-	margin-left: 279px;
-}
+#contents-area {padding: 10px 20px; overflow: hidden;}
 
-#screenView {
-	margin-left: 60px;
-	margin-top: 40px;
-}
+table.info-table {border-collapse: collapse; min-width:550px;}
+table.info-table td {border: 1px solid #CCC; padding:2px 7px;}
+table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
 
-#label-D {
-	margin-left: 50px;
-	margin-top: 30px;
-}
+.process-name {display:inline-block; width: 150px;}
+.process-count {display:inline-block; width: 80px;}
+.process-status {display:inline-block; width: 55px;}
+.process-error {display:inline-block; width: 60px;}
 
-#label1-D3_2, #label1-D3_3, #label1-D4_2, #label1-D5_2 {
-	margin-left: 50px;
-}
+.setting-info {display:inline-block; margin-bottom: 3px;}
 
-#label1-D4_4 {
-	margin-left: 30px;
-}
+.log-selection {min-height: 35px;}
+
+.place-holder {width: 762px; height: 255px; background-color: #F3F3F3;}
+
+.disable-button {background-color:#bebebe;}

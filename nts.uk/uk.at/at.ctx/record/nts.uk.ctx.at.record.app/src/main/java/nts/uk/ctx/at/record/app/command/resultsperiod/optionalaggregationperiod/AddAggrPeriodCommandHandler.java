@@ -33,14 +33,15 @@ public class AddAggrPeriodCommandHandler
 	protected AddAggrPeriodCommandResult handle(CommandHandlerContext<AddAggrPeriodCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		String executionEmpId = AppContexts.user().employeeId();
-		GeneralDateTime startDateTime = GeneralDateTime.now();
 		GeneralDateTime endDateTime = GeneralDateTime.now();
+		GeneralDateTime startDateTime = GeneralDateTime.now();
 
 		AddAggrPeriodCommand command = context.getCommand();
 		OptionalAggrPeriod optionalAggrPeriod = command.getAggrPeriodCommand().toDomain(companyId);
 		String optionalAggrPeriodID = IdentifierUtil.randomUniqueId();
 
-		if (!command.isMode()) {
+		if (command.getMode() == 0) {
+			
 			List<OptionalAggrPeriod> aggrList = repository.findAll(companyId);
 			if (aggrList.size() <= 99) {
 
@@ -65,16 +66,19 @@ public class AddAggrPeriodCommandHandler
 			List<AggrPeriodTarget> periodTarget = command.getTargetCommand().toDomain(optionalAggrPeriodID);
 
 			// Add Aggr Period Target
-			targetRepository.updateTarget(periodTarget);
+			targetRepository.addTarget(periodTarget);
 
 			AggrPeriodExcution periodExcution = command.getExecutionCommand().toDomain(companyId, executionEmpId,
 					optionalAggrPeriodID, startDateTime, endDateTime);
 
 			// Add Aggr Period Excution
-			excutionrRepository.updateExcution(periodExcution);
+			excutionrRepository.addExcution(periodExcution);
 
 		}
 		AddAggrPeriodCommandResult aggrPeriodCommandResult = new AddAggrPeriodCommandResult();
+		aggrPeriodCommandResult.setAnyPeriodAggrLogId(optionalAggrPeriodID);
+		aggrPeriodCommandResult.setStartDateTime(startDateTime);
+		aggrPeriodCommandResult.setEndDateTime(endDateTime);
 		return aggrPeriodCommandResult;
 	}
 

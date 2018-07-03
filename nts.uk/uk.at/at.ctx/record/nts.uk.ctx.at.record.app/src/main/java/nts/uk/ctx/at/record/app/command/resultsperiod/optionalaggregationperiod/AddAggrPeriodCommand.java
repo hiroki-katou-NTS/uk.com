@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class AddAggrPeriodCommand{
 
-	private boolean mode;
+	private int mode;
 	
 	private SaveOptionalAggrPeriodCommand aggrPeriodCommand;
 	

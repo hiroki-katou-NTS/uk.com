@@ -7,7 +7,7 @@ module nts.uk.at.view.kfp001.d {
             startDate: KnockoutObservable<string>;
             endDate: KnockoutObservable<string>;
             peopleNo: KnockoutObservable<number>;
-            mode: KnockoutObservable<boolean>;
+            mode: KnockoutObservable<number>;
             listEmp: KnockoutObservableArray<any>;
             executionId: KnockoutObservable<string>;
             listSelect: KnockoutObservableArray<any>;
@@ -20,7 +20,7 @@ module nts.uk.at.view.kfp001.d {
                 self.startDate = ko.observable('');
                 self.endDate = ko.observable('');
                 self.peopleNo = ko.observable(0);
-                self.mode = ko.observable(false);
+                self.mode = ko.observable(0);
                 self.listEmp = ko.observableArray([]);
                 self.listSelect = ko.observableArray([]);
                 self.executionId = ko.observable('');
@@ -50,7 +50,6 @@ module nts.uk.at.view.kfp001.d {
                 }
 
                 let executionDto = {
-                    aggrId: 0,
                     aggrFrameCode: self.aggrFrameCode(),
                     executionAtr: 1,
                     executionStatus: 0,
@@ -61,6 +60,7 @@ module nts.uk.at.view.kfp001.d {
                     optionalAggrName: self.optionalAggrName(),
                     startDate: moment(self.startDate()).utc(),
                     endDate: moment(self.endDate()).utc(),
+                    peopleNo: self.peopleNo()
                 }
                 var addAggrPeriodCommand = {
                     mode: self.mode(),
@@ -71,6 +71,10 @@ module nts.uk.at.view.kfp001.d {
                 }
 
                 service.addOptionalAggrPeriod(addAggrPeriodCommand).done(function(data) {
+                    self.mode(1);
+                    nts.uk.ui.windows.setShared("KFP001_DATAD", data);
+                    nts.uk.ui.windows.setShared("KFP001_DATAE", addAggrPeriodCommand);
+                    nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(function() {

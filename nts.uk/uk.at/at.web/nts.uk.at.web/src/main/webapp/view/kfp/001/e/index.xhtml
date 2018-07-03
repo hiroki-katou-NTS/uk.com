@@ -11,7 +11,7 @@
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
-			<com:stylefile path="kfp001.e.style.css" />
+			<com:stylefile path="kfp001.e.main.css" />
 			<com:scriptfile path="kfp001.e.start.js" />
 			<com:scriptfile path="kfp001.e.service.js" />
 			<com:scriptfile path="kfp001.e.vm.js" />
@@ -24,11 +24,11 @@
 					<table class="info-table">
 						<tr>
 							<td class="fix-width">#{i18n.getText('KDW001_24')}</td>
-							<td><span>a</span></td>
+							<td><span data-bind="text: startTime"></span></td>
 						</tr>
 						<tr>
 							<td class="fix-width">#{i18n.getText('KDW001_25')}</td>
-							<td><span>b</span></td>
+							<td><span data-bind="text: endTime"></span></td>
 						</tr>
 						<tr>
 							<td class="fix-width">#{i18n.getText('KDW001_26')}</td>
@@ -36,9 +36,7 @@
 						</tr>
 						<tr>
 							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
-							<td data-bind="css: {disappear: visibleDailiCreate()}" >
-								<span class="process-name">#{i18n.getText('KDW001_9')}</span>
-							</td>
+							<td><span class="process-count"><span data-bind="text: aggCreateCount">0</span> / <span data-bind="text: peopleNo">0</span>人</span></td>
 						</tr>
 
 
@@ -50,15 +48,15 @@
 					<table class="info-table">
 						<tr>
 							<td class="fix-width">#{i18n.getText('KDW001_15')}</td>　
-							<td><span>a</span> ～ <span>b</span></td>
+							<td><span data-bind="text: startDate"></span> ～ <span data-bind="text: endDate"></span></td>
 						</tr>
 					</table>
 				</div>
 				
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="3" class="disable-button">#{i18n.getText('KDW001_39')}</button>
-				<button tabindex="4">#{i18n.getText('KDW001_38')}</button>
+				<button tabindex="3" class="disable-button" data-bind="click: cancelTask,enable : enableCancelTask">#{i18n.getText('KDW001_39')}</button>
+				<button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

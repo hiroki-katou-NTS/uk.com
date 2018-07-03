@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
@@ -20,7 +21,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author phongtq
- *
+ * 任意期間集計Mgrクラス
  */
 @Stateless
 public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDomainService {
@@ -58,10 +59,15 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 		// 中断 : 1
 		AggProcessState status = AggProcessState.SUCCESS;
 
+		int i = 0;
+		val dataSetter = asyn.getDataSetter();
+		dataSetter.setData("aggCreateCount", i);
 		// 社員の件数分ループ
 		List<AggrPeriodTarget> periodTargets = targetRepo.findAll(excuteId);
 		for (AggrPeriodTarget periodTarget : periodTargets) {
-			status = aggrPeriod.checkAggrPeriod(companyId, periodTarget.getEmployeeId().toString(), periodTime);
+			status = aggrPeriod.checkAggrPeriod(companyId, periodTarget.getEmployeeId().toString(), periodTime, asyn);
+			i++;
+			dataSetter.updateData("aggCreateCount", i);
 			if (status.value == ExecutionStatus.STOP_EXECUTION.value) {
 				asyn.finishedAsCancelled();
 			}
@@ -85,5 +91,6 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 				}
 			}
 		}
+		dataSetter.setData("aggCreateStatus", "完了");
 	}
 }

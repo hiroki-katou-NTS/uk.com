@@ -30,7 +30,9 @@ module nts.uk.at.view.kfp001.b {
 
             aggrId: KnockoutObservable<string>;
 
-            mode: KnockoutObservable<boolean>;
+            mode: KnockoutObservable<number>;
+            
+            enableText: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
@@ -48,7 +50,7 @@ module nts.uk.at.view.kfp001.b {
                     { content: '.step-3' }
                 ];
                 self.activeStep = ko.observable(0);
-                self.mode = ko.observable(false);
+                self.mode = ko.observable(0);
                 self.activeStep.subscribe(newVal => {
                     if (newVal == 0) {
                         $('#hor-scroll-button-hide').hide();
@@ -84,6 +86,8 @@ module nts.uk.at.view.kfp001.b {
                     if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
                         self.currentItem(self.findOptional(codeChanged));
                         self.currentItemExe(self.findExc(codeChanged))
+                        self.enableText(false);
+                        self.mode(1);
 
                     }
                     $('.control-group').find('#code-text-d4-2').focus();
@@ -92,6 +96,7 @@ module nts.uk.at.view.kfp001.b {
                 //
                 self.enableNEW = ko.observable(true);
                 self.enableDEL = ko.observable(true);
+                self.enableText = ko.observable(true);
 
                 //                self.aggrFrameCode = ko.observable("D01");
                 //                self.optionalAggrName = ko.observable("THANH DEP ZAI");
@@ -106,7 +111,8 @@ module nts.uk.at.view.kfp001.b {
                 $.when(self.getAllOptionalAggrPeriod()).done(function() {
                     if (self.items().length > 0) {
                         self.currentCode(self.items()[0].aggrFrameCode());
-                        self.mode(true);
+                        self.mode(1);
+                        self.enableText(false);
                         $.when(service.findAggrCode(self.currentCode())).done(function(data) {
                             service.findTargetPeriod(data.aggrId).done(function(dataTarget) {
                                 self.aggrId = data.aggrId;
@@ -135,6 +141,7 @@ module nts.uk.at.view.kfp001.b {
                         self.dScreenmodel.endDate(self.currentItem().endDate());
                         self.dScreenmodel.mode(self.mode());
                         self.dScreenmodel.executionId(null);
+
                     });
                     
                     dfd.resolve();
@@ -235,7 +242,7 @@ module nts.uk.at.view.kfp001.b {
                     self.peopleNo(0);
                     $('#code-text-d4-2').focus();
                     $('#update-mode').hide();
-                    self.mode(false);
+                    self.mode(0);
                 }
             }
             deleteDataB() {

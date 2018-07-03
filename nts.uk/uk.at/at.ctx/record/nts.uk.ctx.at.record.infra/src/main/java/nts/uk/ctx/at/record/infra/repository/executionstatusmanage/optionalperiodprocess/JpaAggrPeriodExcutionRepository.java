@@ -10,11 +10,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionRepository;
-import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTarget;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodExcution;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodExcutionPK;
-import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodTarget;
-import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodTargetPK;
 
 /**
  * 
@@ -74,7 +71,8 @@ implements AggrPeriodExcutionRepository{
 	builderString = new StringBuilder();
 	builderString.append("SELECT e");
 	builderString.append(" FROM KrcmtAggrPeriodExcution e");
-	builderString.append(" WHERE e.krcmtAggrPeriodExcutionPK.aggrId = :aggrId");
+	builderString.append(" WHERE e.krcmtAggrPeriodExcutionPK.companyId = :companyId");
+	builderString.append(" AND e.krcmtAggrPeriodExcutionPK.aggrId = :aggrId");
 	FIND_EXECUTION = builderString.toString(); 
 	
 	builderString = new StringBuilder();
@@ -199,7 +197,7 @@ implements AggrPeriodExcutionRepository{
 	public Optional<AggrPeriodExcution> findBy(String companyId, String aggrId, int status) {
 		Optional<KrcmtAggrPeriodExcution> result = this.queryProxy().query(FIND_EXECUTION_INFOR, KrcmtAggrPeriodExcution.class)
 				.setParameter("companyId", companyId)
-				.setParameter("executionEmpId", aggrId)
+				.setParameter("aggrId", aggrId)
 				.getSingle();
 		if(!result.isPresent()) return Optional.empty();
 		result.get().executionStatus = status;
@@ -211,7 +209,7 @@ implements AggrPeriodExcutionRepository{
 	public Optional<AggrPeriodExcution> findByAggr(String companyId, String aggrId) {
 		return this.queryProxy().query(FIND_EXECUTION, KrcmtAggrPeriodExcution.class)
 				.setParameter("companyId", companyId)
-				.setParameter("executionEmpId", aggrId )
+				.setParameter("aggrId", aggrId )
 				.getSingle(c -> convertToDomainApe(c));
 	}
 	@Override

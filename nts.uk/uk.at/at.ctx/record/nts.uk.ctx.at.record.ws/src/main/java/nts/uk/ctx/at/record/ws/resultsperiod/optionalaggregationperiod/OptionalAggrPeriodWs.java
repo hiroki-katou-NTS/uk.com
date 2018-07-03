@@ -10,10 +10,13 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.arc.task.AsyncTaskInfo;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandResult;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodCommand;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommand;
@@ -55,8 +58,12 @@ public class OptionalAggrPeriodWs {
 	
 	@Inject
 	private RemoveOptionalAggrPeriodCommandHandler removeHandler;
-
+	
+	@Inject
 	private AggrPeriodErrorInfoExportService exportService;
+	
+	@Inject
+	private ExecuteAggrPeriodCommandHandler executeAggrHandler;
 	
 	/**
 	 * Find all.
@@ -171,6 +178,12 @@ public class OptionalAggrPeriodWs {
 	@Path("exportcsv")
 	public ExportServiceResult generate(AggrPeriodErrorQuery query) {
 		return this.exportService.start(query);
+	}
+	
+	@POST
+	@Path("executeAggr/{excuteId}")
+	public AsyncTaskInfo executeAggr(@PathParam("excuteId") String excuteId) {
+		return this.executeAggrHandler.handle(excuteId);
 	}
 	
 }
