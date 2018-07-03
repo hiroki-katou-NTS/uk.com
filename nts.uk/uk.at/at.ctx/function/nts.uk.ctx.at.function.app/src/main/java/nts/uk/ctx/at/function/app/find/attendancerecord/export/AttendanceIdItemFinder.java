@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
-import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -25,7 +25,7 @@ public class AttendanceIdItemFinder {
 
 	/** The at name. */
 	@Inject
-	private DailyAttendanceItemNameDomainService atName;
+	private AttendanceItemNameDomainService atName;
 
 	/**
 	 * Gets the attendance item.
@@ -49,12 +49,12 @@ public class AttendanceIdItemFinder {
 		});
 
 		// get attendanceName
-		List<DailyAttendanceItem> dailyAttendanceItems = atName.getNameOfDailyAttendanceItem(
-				attendanceItemList.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList()));
+		List<AttendanceItemName> dailyAttendanceItems = atName.getNameOfAttendanceItem(
+				attendanceItemList.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList()),attendanceType);
 
 		// map attendanceId,attendanceName,ScreenUseItem
 		attendanceItemList.forEach(attendanceItem -> {
-			for (DailyAttendanceItem attendanceName : dailyAttendanceItems) {
+			for (AttendanceItemName attendanceName : dailyAttendanceItems) {
 				if (attendanceItem.getAttendanceItemId() == attendanceName.getAttendanceItemId())
 					attendanceItem.setAttendanceItemName(attendanceName.getAttendanceItemName());
 			}

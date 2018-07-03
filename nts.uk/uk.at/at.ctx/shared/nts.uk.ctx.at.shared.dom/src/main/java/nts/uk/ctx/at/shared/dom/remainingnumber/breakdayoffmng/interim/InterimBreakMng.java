@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -15,8 +16,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTi
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
-public class InterimBreakMng extends AggregateRoot{
+public class InterimBreakMng extends AggregateRoot{	
 	/**	暫定休出管理データID */
 	private String breakMngId;
 	/**	１日相当時間 */

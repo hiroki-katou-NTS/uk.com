@@ -13,9 +13,14 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus.DivCheckMasterShareContainer;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
@@ -56,6 +61,18 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private CalculateDailyRecordService calculate;
 	
+	@Inject
+	private CalculationErrorCheckService calculationErrorCheckService;
+	
+	//↓以下任意項目の計算の為に追加
+	@Inject
+	private OptionalItemRepository optionalItemRepository;
+	
+	@Inject
+	private FormulaRepository formulaRepository;
+	
+	@Inject
+	private EmpConditionRepository empConditionRepository;
 
 	
 	@Override
@@ -63,7 +80,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		
 		if(integrationOfDaily.isEmpty()) return integrationOfDaily;
 		//会社共通の設定を
-		DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
+		MasterShareContainer shareContainer = MasterShareBus.open();
 		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
 														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
 														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
@@ -96,6 +113,19 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 //		//労働制
 //		//雇用コード
 //		//雇用ID
+		
+		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
+		String companyId = AppContexts.user().companyId();
+		//AggregateRoot「任意項目」取得
+		List<OptionalItem> optionalItems = optionalItemRepository.findAll(companyId);
+		companyCommonSetting.setOptionalItems(optionalItems);
+		//任意項目NOのlist作成
+		List<Integer> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList());
+		//計算式を取得
+		companyCommonSetting.setFormulaList(formulaRepository.find(companyId));
+		//適用する雇用条件の取得
+		companyCommonSetting.setEmpCondition(empConditionRepository.findAll(companyId, optionalItemNoList));
+		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
 		
 		for(IntegrationOfDaily nowIntegration:integrationOfDaily) {
 
@@ -206,4 +236,60 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		val sortedIntegration = integrationOfDaily.stream().sorted((first,second) -> first.getAffiliationInfor().getYmd().compareTo(second.getAffiliationInfor().getYmd())).collect(Collectors.toList());
 		return new DatePeriod(sortedIntegration.get(0).getAffiliationInfor().getYmd(), sortedIntegration.get(sortedIntegration.size() - 1).getAffiliationInfor().getYmd());
 	}
+	
+	/**
+	 * エラーチェック(外部から呼ぶ用)
+	 * @param integrationList
+	 * @return
+	 */
+	@Override
+	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList){
+		if(integrationList.isEmpty()) return integrationList;
+		//会社共通の設定を
+		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
+														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
+														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
+														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
+														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
+														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()));
+
+		//社員毎の期間取得
+		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(integrationList);
+		
+		List<GeneralDate> sortedymd = integrationList.stream()
+								  					 	.sorted((first,second) -> first.getAffiliationInfor().getYmd().compareTo(second.getAffiliationInfor().getYmd()))
+								  					 	.map(tc -> tc.getAffiliationInfor().getYmd())
+								  					 	.collect(Collectors.toList());
+		
+		val maxGeneralDate = sortedymd.get(0);
+		val minGeneralDate = sortedymd.get(sortedymd.size() - 1);
+		//労働制マスタ取得
+		val masterData = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(integraListByRecordAndEmpId,maxGeneralDate,minGeneralDate);
+		List<IntegrationOfDaily> returnList = new ArrayList<>();
+		for(IntegrationOfDaily integration : integrationList) {
+
+			//nowIntegrationの労働制取得
+			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(integration.getAffiliationInfor().getYmd(),integration.getAffiliationInfor().getEmployeeId());
+			if(nowWorkingItem.isPresent()) {
+				companyCommonSetting.setPersonInfo(Optional.of(nowWorkingItem.get().getValue()));
+				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),
+																		integration.getAffiliationInfor().getEmploymentCode().toString(),
+																		integration.getAffiliationInfor().getEmployeeId(),
+																		integration.getAffiliationInfor().getYmd(),
+																		nowWorkingItem.get().getValue().getLaborSystem());
+				if(dailyUnit == null) {
+					returnList.add(integration);
+				}
+				else {
+					companyCommonSetting.setDailyUnit(dailyUnit);
+					returnList.add(calculationErrorCheckService.errorCheck(integration, companyCommonSetting));
+				}
+			}
+			else {
+				returnList.add(integration);
+			}
+		}
+		return returnList;
+	}
+
 }

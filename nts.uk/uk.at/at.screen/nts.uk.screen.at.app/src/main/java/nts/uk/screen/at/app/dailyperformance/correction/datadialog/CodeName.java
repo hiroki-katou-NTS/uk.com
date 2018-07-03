@@ -2,9 +2,11 @@ package nts.uk.screen.at.app.dailyperformance.correction.datadialog;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CodeName {
   
     private String code;
@@ -13,7 +15,7 @@ public class CodeName {
 	
 	private String id;
 	
-	private boolean errorFind;
+	private int errorFind;
 	
 	public CodeName(String code, String name, String id) {
 		super();
@@ -22,7 +24,7 @@ public class CodeName {
 		this.id = id;
 	}
 	
-	public CodeName createError(boolean error){
+	public CodeName createError(int error){
 		this.errorFind = error;
 		return this;
 	}

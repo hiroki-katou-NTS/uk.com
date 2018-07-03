@@ -57,6 +57,8 @@ public class CreateLateOrLeaveEarlyCommand {
 	/** 申請理由 appReason */
 	private String appReason;
 	
+	private int actualCancel; 
+	
 	public GeneralDate getApplicationDate() {
 	return GeneralDate.fromString(this.applicationDate, "yyyy/MM/dd");
 	}

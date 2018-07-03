@@ -28,30 +28,37 @@
 				<div tabindex="-1" id="contents-area">
 					<div id="ccgcomponent"></div>
 					<div class="employeeInfoSearch">
-						<div class="selectionEmployee" tabindex="-1">
-							<div id="employeeSearch" tabindex="-1"></div>
+						<div class="selectionEmployee" tabindex="-1" id="employeeList">
+							<div id="employeeSearch" tabindex="2"></div>
 						</div>
 						<div class="employeeAction">
 							<div class="periodCovered" tabindex="-1">
 								<div class="labelRangeDate" tabindex="-1" 
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU007_2')}
 								</div>
-								<div tabindex="4" id="dateRangePickerPeriod" 
-									data-bind="ntsDateRangePicker: { required: true, showNextPrevious: false, 
+								<div tabindex="3" id="dateRangePickerPeriod" 
+									data-bind="ntsDateRangePicker: { required: true, showNextPrevious: true, 	
 									startName:'#[KSU007_4]', endName: '#[KSU007_5]', value: periodDate, maxRange: 'oneMonth'}">
 								</div>
 							</div>
 							<div class="employeeWorkSetting">
-								<div class="labelWork" tabindex="-1" 
+								<div class="labelWork" tabindex="-1"
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU007_6')}
 								</div>
 								<div class="infoButtonSetting" tabindex="-1" >
-									<button class="buttonWorkSetting" tabindex="5" data-bind="click: openDialogKDL003">#{i18n.getText('KSU007_7')}</button>
+									<button class="buttonWorkSetting" tabindex="4" data-bind="click: openDialogKDL003">#{i18n.getText('KSU007_7')}</button>
 									<div class="infoKDL003" tabindex="-1" >
-										<div class="lableInfo" tabindex="-1" data-bind="text: workTypeInfo"><label></label></div>
-										<div class="lableInfo" tabindex="-1" data-bind="text: workTimeInfo"><label></label></div>
+										<div class="workInfo">
+											<div class="lableInfo"><label>#{i18n.getText('KSU007_24')}</label></div>
+											<div class="lableInfo-work" tabindex="-1" data-bind="text: workTypeInfo"><label></label></div>
+										</div>
+										<div class="workInfo">
+											<div class="lableInfo"><label>#{i18n.getText('KSU007_25')}</label></div>
+											<div class="lableInfo-work" tabindex="-1" data-bind="text: workTimeInfo"><label></label></div>
+										</div>
 									</div>
 								</div>
+								
 							</div>
 						</div>
 					</div>

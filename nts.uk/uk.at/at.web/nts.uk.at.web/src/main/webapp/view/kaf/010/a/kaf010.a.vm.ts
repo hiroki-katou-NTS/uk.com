@@ -19,6 +19,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
+        employeeList :KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+        selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+        employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+        totalEmployee: KnockoutObservable<string> = ko.observable(null);
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
         backSelected1: KnockoutObservable<number> = ko.observable(0);
@@ -31,6 +35,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
         appDate: KnockoutObservable<string> = ko.observable('');
+        enbAppDate: KnockoutObservable<boolean> = ko.observable(true);
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(null);
         timeEnd1: KnockoutObservable<number> = ko.observable(null);
@@ -129,14 +134,26 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //　初期起動時、計算フラグ=1とする。
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
         preWorkContent: common.WorkContent;
-        constructor() {
+        // param 
+        uiType: KnockoutObservable<number> = ko.observable(0);
+        ltsEmployee: KnockoutObservableArray<string> = ko.observableArray([]);
+        leaverAppID: KnockoutObservable<string> = ko.observable(null);
+        payoutType: KnockoutObservable<number> = ko.observable(null);
+        constructor(transferData :any) {
             let self = this;  
-                    
+            if(transferData != null){
+                self.uiType(transferData.uiType);
+                self.ltsEmployee(transferData.employeeIDs);
+                self.payoutType(transferData.payoutType);
+                self.leaverAppID(transferData.appID);
+                self.appDate(transferData.appDate);
+                self.employeeID(transferData.employeeID);
+            }
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 010a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 6, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
+                self.kaf000_a.start(self.employeeID(), 1, 6, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
                     $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
@@ -157,7 +174,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             nts.uk.ui.block.invisible();
             service.getHolidayWorkByUI({
                 appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                uiType: 0
+                lstEmployee: self.ltsEmployee(),
+                payoutType: self.payoutType(),
+                uiType: self.uiType(),
+                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID()
             }).done((data) => {
                 self.initData(data);
                 $("#inputdate").focus();
@@ -178,7 +198,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                             overtimeHours: ko.toJS(self.overtimeHours)    
                         }).done((data) =>{
                             self.findBychangeAppDateData(data);
-                            self.kaf000_a.getAppDataDate(6, moment(value).format(self.DATE_FORMAT), false);
+                            self.kaf000_a.getAppDataDate(6, moment(value).format(self.DATE_FORMAT), false,self.employeeID());
                             //self.convertAppOvertimeReferDto(data);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
@@ -280,6 +300,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+            // list employeeID
+            if(!nts.uk.util.isNullOrEmpty(data.employees)){
+                self.employeeFlag(true);
+                for(let i= 0; i < data.employees.length; i++){
+                    self.employeeList.push(new common.EmployeeOT(data.employees[i].employeeIDs,data.employees[i].employeeName));
+                }
+                let total = data.employees.length;
+                self.totalEmployee(nts.uk.resource.getText("KAF010_184",total.toString()));
+            }
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
             // 休憩時間
@@ -312,7 +341,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             }else{
                 self.heightOvertimeHours(216);
             }
-            
+            if(self.uiType() == 1){
+                self.enbAppDate(false);
+            }
         }
         //登録処理
         registerClick() {
@@ -365,9 +396,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 }
             }
             let overtime: common.AppOverTime = {
-                applicationDate: self.appDate(),
+                applicationDate: new Date(self.appDate()),
                 prePostAtr: self.prePostSelected(),
-                applicantSID: self.employeeID,
+                applicantSID: self.employeeID(),
                 applicationReason: appReason,
                 workTypeCode: self.workTypeCd(),
                 siftTypeCode: self.siftCD(),
@@ -387,6 +418,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.checkBoxValue(),
+                leaveAppID: self.leaverAppID(),
+                uiType: self.uiType(),
                 calculateFlag: self.calculateFlag()
             };
             //登録前エラーチェック
@@ -438,7 +471,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         }
         //登録処理を実行
         registerData(overtime) {
-            var self = this;
+            let self = this;
             service.createOvertime(overtime).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
@@ -572,6 +605,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     workClockTo2: self.timeEnd2(),
                     breakTimes:  ko.toJS(self.breakTimes())
                 }
+            //block screen
+            nts.uk.ui.block.invisible();
             //計算をクリック
             service.getCaculationResult(param).done(function(data){
                self.breakTimes.removeAll();
@@ -607,8 +642,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 }
                 //Check work content Changed
                 self.checkWorkContentChanged();
+                nts.uk.ui.block.clear();
                 dfd.resolve(data);
             }).fail(function(res){
+                nts.uk.ui.block.clear();
                 dfd.reject(res);
             });
             return dfd.promise();

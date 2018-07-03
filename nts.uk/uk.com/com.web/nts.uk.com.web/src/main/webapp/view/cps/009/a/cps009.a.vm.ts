@@ -700,17 +700,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
         dateType?: number;
 
         timepointItemMin?: number;
-
         timepointItemMax?: number;
 
         numericItemMin?: number;
-
         numericItemMax?: number;
 
         stringItemType?: number;
-
         stringItemLength?: number;
-
         stringItemDataType?: number;
         fixedItem: boolean;
         // dung de phan biet category thuoc dang lich su lien tuc thi cot 2
@@ -795,9 +791,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         stringItemLength: number;
         stringItemDataType: number;
 
-        //dùng để xử lý chữ quá dài thì hover vào text sẽ hiển thị full chữ
-        getTitle: KnockoutObservable<string> = ko.observable("");
-
         // phân biệt endate của category lịch sử liên tục để disable
         categoryType: number;
         indexItem: number = 0;
@@ -834,7 +827,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.categoryType = params.categoryType;
             self.indexItem = params.indexItem;
-            self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
@@ -1014,38 +1006,31 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             self.selectedRuleCode.subscribe(value => {
-                if (self.ctgCode() === "CS00020") {
+                if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }
                 nts.uk.ui.errors.clearAll();
             });
 
-
-
         }
-
-        getWidthText(str: string): number {
-            let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove();
-            return width;
-        }
-
 
         createItemTimePointOfCS00020(value: any, itemCode: string) {
-            let self = this,
+            let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList(),
+                self = this,
                 itemSelected: any;
 
             itemSelected = _.filter(self.itemLstTimePoint, { itemCodeParent: itemCode });
             if (itemSelected.length > 0) {
-                itemLst = _.filter(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(i) {
+                itemLst = _.filter(ko.toJS(vm), function(i) {
                     if ((i.itemCode == itemSelected[0].itemCode1) || (i.itemCode == itemSelected[0].itemCode2) || (i.itemCode == itemSelected[0].itemCode3) || (i.itemCode == itemSelected[0].itemCode4)) { return i; }
                 })
                 _.each(itemLst, function(x) {
-                    __viewContext["viewModel"].currentCategory().itemList()[x.indexItem > 0 ? (x.indexItem - 1) : 0].selectedRuleCode(value);
+                    vm[x.indexItem > 0 ? (x.indexItem - 1) : 0].selectedRuleCode(value);
                 });
             }
         }
 
-        clickButtonCS00020() {
+        button() {
             let self = this,
                 groups: Array<IGroupControl> = [
                     {
@@ -1131,7 +1116,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00193',
                         workTime: 'IS00194',
                         firstTimes: {
@@ -1144,7 +1129,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00202',
                         workTime: 'IS00203',
                         firstTimes: {
@@ -1157,7 +1142,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00211',
                         workTime: 'IS00212',
                         firstTimes: {
@@ -1170,7 +1155,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00220',
                         workTime: 'IS00221',
                         firstTimes: {
@@ -1183,7 +1168,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00229',
                         workTime: 'IS00230',
                         firstTimes: {
@@ -1196,7 +1181,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00238',
                         workTime: 'IS00239',
                         firstTimes: {
@@ -1209,7 +1194,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00184',
                         workTime: 'IS00185',
                         firstTimes: {
@@ -1221,19 +1206,28 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             end: 'IS00191'
                         }
                     }
-                ];
-            let isSelfItemWorkType: any = _.find(groups, { workType: self.itemCode() }),
-                isSelfItemWorkTime: any = _.find(groups, { workTime: self.itemCode() }),
+                ],
+                vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList(),
+                workType: any = _.find(groups, { workType: self.itemCode() }),
+                workTime: any = _.find(groups, { workTime: self.itemCode() }),
                 isKdl002: boolean = self.itemCode() == "IS00128" ? true : false,
-                isSelfWorkType: boolean = isSelfItemWorkType !== undefined ? true : false,
-                isSelfWorkTime: boolean = isSelfItemWorkTime !== undefined ? true : false,
-                itemWorkTime: any = _.find(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(obj) { if (isSelfWorkType) { if (obj.itemCode === isSelfItemWorkType.workTime) { return obj; } } }),
-                itemWorkType: any = _.find(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(obj) { if (isSelfWorkTime) { if (obj.itemCode === isSelfItemWorkTime.workType) { return obj; } } });
-            if (self.ctgCode() == "CS00020") {
+                isWorkType: boolean = workType !== undefined ? true : false,
+                isWorkTime: boolean = workTime !== undefined ? true : false,
+                itemWorkTime: any = _.find(ko.toJS(vm), function(obj) {
+                    if (isWorkType)
+                    { if (obj.itemCode === workType.workTime) { return obj; } }
+                }),
+                itemWorkType: any = _.find(ko.toJS(vm), function(obj) {
+                    if (isWorkTime) {
+                        if (obj.itemCode === workTime.workType)
+                        { return obj; }
+                    }
+                });
+            if (self.ctgCode() == "CS00020" || self.ctgCode() == "CS00070") {
 
                 if (isKdl002) {
                     setShared("KDL002_Multiple", false, true);
-                    setShared("KDL002_SelectedItemId", self.selectedCode(), true);
+                    setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
                     setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
 
                     modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -1245,29 +1239,79 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     });
                 } else {
-                    let objShare: any = {};
-                    if (isSelfWorkType) {
-                        objShare = {
-                            workTypeCodes: isSelfItemWorkType && _.map(self.selection(), x => x.optionValue),
-                            selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
-                            workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
-                            selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
-                        };
+
+                    if (['IS00130', 'IS00131', 'IS00139', 'IS00140'].indexOf(self.itemCode()) > - 1) {
+                        let objShare: any = {};
+                        if (isWorkType) {
+                            objShare = {
+                                workTypeCodes: workType && _.map(self.selection(), x => x.optionValue),
+                                selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
+                                workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
+                                selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
+                            };
+                        } else {
+                            objShare = {
+                                workTypeCodes: _.map(itemWorkType != undefined ? itemWorkType.selection : [], x => x.optionValue),
+                                selectedWorkTypeCode: ko.toJS(itemWorkType.selectedCode),
+                                workTimeCodes: workTime && _.map(self.selection(), x => x.optionValue),
+                                selectedWorkTimeCode: self.selectedCode() && ko.toJS(self.selectedCode)
+                            };
+                        }
+
+                        setShared('parentCodes', objShare, true);
+
+                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                            let childData: IChildData = getShared('childData');
+                            self.setValueOfCS00020(childData, isWorkType, isWorkTime,
+                                workType, workTime,
+                                itemWorkTime, itemWorkType, true);
+                        });
+
                     } else {
-                        objShare = {
-                            workTypeCodes: _.map(itemWorkType != undefined ? itemWorkType.selection : [], x => x.optionValue),
-                            selectedWorkTypeCode: ko.toJS(itemWorkType.selectedCode),
-                            workTimeCodes: isSelfItemWorkTime && _.map(self.selection(), x => x.optionValue),
-                            selectedWorkTimeCode: self.selectedCode() && ko.toJS(self.selectedCode)
-                        };
+                        if (isWorkType) {
+                            setShared("KDL002_Multiple", false, true);
+                            setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
+                            setShared('kdl002isSelection', true, true);
+                            setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
+
+                            modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                                let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+                                if (childData.length > 0) {
+                                    if (childData[0].code == "") {
+                                        self.selectionName(undefined);
+                                        self.selectedCode(undefined);
+                                    } else {
+                                        self.selectionName(childData[0].code + "　" + childData[0].name);
+                                        self.selectedCode(childData[0].code);
+                                    }
+                                }
+                            });
+
+                        } else {
+                            setShared("kml001multiSelectMode", false);
+                            setShared("kml001selectedCodeList", _.isNil(ko.toJS(self.selectedCode)) ? [] : [ko.toJS(self.selectedCode)]);
+                            setShared("kml001isSelection", true);
+                            setShared("kml001selectAbleCodeList", _.map(self.selection(), x => x.optionValue), true);
+
+                            modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                let childData: Array<any> = getShared('kml001selectedTimes');
+                                if (childData) {
+                                    if (childData.length > 0) {
+                                        self.setValueOfCS00020(childData[0], isWorkType, isWorkTime,
+                                            workType, workTime,
+                                            itemWorkTime, itemWorkType, false);
+                                    }
+                                }
+
+
+                            });
+
+
+
+
+                        }
+
                     }
-
-                    setShared('parentCodes', objShare, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        let childData: IChildData = getShared('childData');
-                        self.setValueOfCS00020(childData, isSelfWorkType, isSelfWorkTime, isSelfItemWorkType, isSelfItemWorkTime, itemWorkTime, itemWorkType);
-                    });
                 }
             }
             if (self.ctgCode() == "CS00017") {
@@ -1275,16 +1319,28 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
         }
 
-        setValueOfCS00020(childData: IChildData, isSelfWorkType: boolean, isSelfWorkTime: boolean,
-            isSelfItemWorkType: any, isSelfItemWorkTime: any,
-            itemWorkTime: any, itemWorkType: any) {
-            let self = this;
-            if (isSelfWorkType) {
-                let itemChilds: Array<any> = _.filter(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(obj) { if (obj.itemCode === isSelfItemWorkType.firstTimes.start || obj.itemCode === isSelfItemWorkType.firstTimes.end || obj.itemCode === isSelfItemWorkType.secondTimes.start || obj.itemCode === isSelfItemWorkType.secondTimes.end) { return obj; } });
-                self.selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
-                self.selectedCode(childData.selectedWorkTypeCode);
-                __viewContext["viewModel"].currentCategory().itemList()[itemWorkTime.indexItem - 1].selectionName(childData.selectedWorkTimeCode + childData.selectedWorkTimeName);
-                __viewContext["viewModel"].currentCategory().itemList()[itemWorkTime.indexItem - 1].selectedCode(childData.selectedWorkTimeCode);
+        setValueOfCS00020(childData: any, isWorkType: boolean, isWorkTime: boolean,
+            workType: any, workTime: any,
+            itemWorkTime: any, itemWorkType: any, isKdl003: boolean) {
+            let self = this,
+                vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList();;
+            if (isWorkType) {
+                let itemChilds: Array<any> = _.filter(ko.toJS(vm), function(obj) {
+                    if (obj.itemCode === workType.firstTimes.start || obj.itemCode === workType.firstTimes.end || obj.itemCode === workType.secondTimes.start || obj.itemCode === workType.secondTimes.end)
+                    { return obj; }
+                });
+                if (childData.selectedWorkTypeCode == "") {
+                    self.selectionName(undefined);
+                   
+                } else {
+                    self.selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
+                    self.selectedCode(childData.selectedWorkTypeCode);
+                }
+                
+                 self.selectedCode(childData.selectedWorkTypeCode == "" ? undefined:childData.selectedWorkTypeCode);
+
+                vm[itemWorkTime.indexItem - 1].selectionName(childData.selectedWorkTimeCode + "　" + childData.selectedWorkTimeName);
+                vm[itemWorkTime.indexItem - 1].selectedCode(childData.selectedWorkTimeCode);
 
                 let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
                 service.checkStartEnd(params).done(function(data) {
@@ -1293,12 +1349,22 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     });
                 });
             } else {
-                let itemChilds: Array<any> = _.filter(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(obj) { if (obj.itemCode === isSelfItemWorkTime.firstTimes.start || obj.itemCode === isSelfItemWorkTime.firstTimes.end || obj.itemCode === isSelfItemWorkTime.secondTimes.start || obj.itemCode === isSelfItemWorkTime.secondTimes.end) { return obj; } });
-                self.selectionName(childData.selectedWorkTimeCode + childData.selectedWorkTimeName);
-                self.selectedCode(childData.selectedWorkTimeCode);
-                __viewContext["viewModel"].currentCategory().itemList()[itemWorkType.indexItem - 1].selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
-                __viewContext["viewModel"].currentCategory().itemList()[itemWorkType.indexItem - 1].selectedCode(childData.selectedWorkTypeCode);
 
+                let itemChilds: Array<any> = _.filter(ko.toJS(vm), function(obj) {
+                    if (obj.itemCode === workTime.firstTimes.start || obj.itemCode === workTime.firstTimes.end || obj.itemCode === workTime.secondTimes.start || obj.itemCode === workTime.secondTimes.end) {
+                        return obj;
+                    }
+                });
+                if (childData.selectedWorkTimeCode == "") {
+                    self.selectionName(undefined);
+                } else {
+                    self.selectionName(childData.selectedWorkTimeCode + "　" + childData.selectedWorkTimeName);
+                }
+                self.selectedCode(childData.selectedWorkTimeCode == "" ? undefined : childData.selectedWorkTimeCode);
+                if (isKdl003) {
+                    vm[itemWorkType.indexItem - 1].selectionName(childData.selectedWorkTypeCode + "　" + childData.selectedWorkTypeName);
+                    vm[itemWorkType.indexItem - 1].selectedCode(childData.selectedWorkTypeCode);
+                }
                 let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
                 service.checkStartEnd(params).done(function(data) {
                     service.checkMutiTime(params).done(function(data1) {
@@ -1309,15 +1375,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         setData(childData: IChildData, itemChilds: Array<any>, checkStartEnd: boolean, mutiTime: boolean) {
+            let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList();
             for (let i: number = 0; i < itemChilds.length; i++) {
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end);
+                vm[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
+                vm[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
+                vm[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                vm[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                vm[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
+                vm[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
+                vm[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start);
+                vm[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end);
                 i = i + 3;
             }
 
@@ -1348,6 +1415,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 }
             });
         }
+
+
 
     }
 
@@ -1443,7 +1512,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         end: number;
     }
 
-    interface ICheckParam {
+    export interface ICheckParam {
         workTimeCode?: string;
     }
 }

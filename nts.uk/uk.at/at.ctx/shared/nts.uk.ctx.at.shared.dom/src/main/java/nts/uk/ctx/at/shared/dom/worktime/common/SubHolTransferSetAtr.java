@@ -10,12 +10,14 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 // 代休振替設定区分
 public enum SubHolTransferSetAtr {
 
-	/** The specified time sub hol. */
-	// 指定した時間を代休とする
+	/** The specified time sub hol.
+	 *  指定した時間を代休とする
+	 */
 	SPECIFIED_TIME_SUB_HOL(0, "Enum_SubHolTransferSetAtr_specifiedTimeSubHol", "指定した時間を代休とする"),
 
-	/** The certain time exc sub hol. */
-	// 一定時間を超えたら代休とする
+	/** The certain time exc sub hol. 
+	 *  一定時間を超えたら代休とする
+	 */
 	CERTAIN_TIME_EXC_SUB_HOL(1, "Enum_SubHolTransferSetAtr_certainTimeExcSubHol", "一定時間を超えたら代休とする");
 
 	/** The value. */
