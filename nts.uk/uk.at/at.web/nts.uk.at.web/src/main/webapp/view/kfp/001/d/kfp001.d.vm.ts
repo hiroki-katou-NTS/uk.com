@@ -11,6 +11,7 @@ module nts.uk.at.view.kfp001.d {
             listEmp: KnockoutObservableArray<any>;
             executionId: KnockoutObservable<string>;
             listSelect: KnockoutObservableArray<any>;
+            listSelectedEmpId : KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
@@ -23,14 +24,19 @@ module nts.uk.at.view.kfp001.d {
                 self.listEmp = ko.observableArray([]);
                 self.listSelect = ko.observableArray([]);
                 self.executionId = ko.observable('');
+                self.listSelectedEmpId = ko.observableArray([]); 
             }
             start() {
+               
 
             }
 
             addData() {
                 let self = this;
-                let listEmployeeId = _.filter(self.listEmp(), (v) => _.includes(self.listSelect(), v.employeeCode))
+                let listEmployeeId = _.map(_.filter(self.listEmp(), (v) => _.includes(self.listSelect(), v.employeeCode)), (item) => {
+                return item.employeeId;    
+                });
+                self.listSelectedEmpId(listEmployeeId);
 
                 let listEmployee = [];
                 _.forEach(self.listEmp(), function(item) {
@@ -39,7 +45,7 @@ module nts.uk.at.view.kfp001.d {
 
                 let targetDto = {
                     executionEmpId: self.executionId(),
-                    employeeId: listEmployee,
+                    employeeId: self.listSelectedEmpId(),
                     state: 0
                 }
 
