@@ -29,7 +29,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
 
         constructor() {
             let self = this;
-            
+            let domainmode = 1;
             self.initScreen();
         }
         
@@ -45,7 +45,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             
             //アルゴリズム「外部出力取得設定一覧」を実行する
             //TODO: Tạo domain ngoài
-            service.getOutputConditionSetting(conditionSetCodeParam).done((itemList: Array<IConditionSet>) =>{
+            service.getCndSet().done((itemList: Array<IConditionSet>) =>{
                 if (itemList && itemList.length > 0) {
                     self.conditionSettingList(itemList);
                    
@@ -190,7 +190,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         outputItemCode: string;
         outputItemName: string;
     }
-
+    
+    public addNew(){
+        
+    }
+    
+    public register(){
+        
+    }
     export class OutputItem {
         outputItemCode: KnockoutObservable<string> = ko.observable('');
         outputItemname: KnockoutObservable<string> = ko.observable('');

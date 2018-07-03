@@ -14,7 +14,7 @@ public interface StdOutputCondSetRepository
     Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid);
 
     Optional<StdOutputCondSet> getStdOutputCondSetById(String cid, String conditionSetCd);
-
+    
     void add(StdOutputCondSet domain);
 
     void update(StdOutputCondSet domain);
