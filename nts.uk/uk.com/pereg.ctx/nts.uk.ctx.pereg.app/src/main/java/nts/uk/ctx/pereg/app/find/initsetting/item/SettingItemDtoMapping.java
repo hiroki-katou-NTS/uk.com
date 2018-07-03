@@ -103,10 +103,8 @@ public class SettingItemDtoMapping {
 				.filter(item -> String.valueOf(item.getItemParentCd()).equals(itemCd)).collect(Collectors.toList());
 
 		for (SettingItemDto childItem : childItems) {
-
-			if (!StringUtils.isEmpty(childItem.getSaveData().getValue().toString())) {
+			if ( !(childItem.getSaveData().getValue() == null) && !StringUtils.isEmpty(childItem.getSaveData().getValue().toString())) {
 				if (itemValue.equals("")) {
-
 					itemValue = childItem.getSaveData().getValue().toString();
 				} else {
 					itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue,

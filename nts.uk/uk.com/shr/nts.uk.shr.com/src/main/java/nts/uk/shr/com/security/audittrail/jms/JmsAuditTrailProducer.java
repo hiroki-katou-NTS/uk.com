@@ -14,7 +14,7 @@ import javax.jms.Session;
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.uk.shr.com.security.audittrail.correction.CorrectionLoggingAgent;
-import nts.uk.shr.com.security.audittrail.correction.CorrectionProcessorId;
+import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 
 //@ApplicationScoped
 public class JmsAuditTrailProducer implements CorrectionLoggingAgent {
