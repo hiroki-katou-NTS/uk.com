@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -34,9 +33,9 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		InPeriodOfSpecialLeave specialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(cid, sid,
 				complileDate, mode, baseDate, specialLeaveCode, mngAtr);
 		if(specialLeave == null) return null;
-//		return new SpecialVacationImported(GeneralDate.today(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+		return new SpecialVacationImported(GeneralDate.today(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 //		return new SpecialVacationImported(specialLeave.getLstSpeLeaveGrantDetails().getGrantDate(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-		return new SpecialVacationImported(specialLeave.getLstSpeLeaveGrantDetails().getGrantDate(), 0.0, specialLeave.getRemainDays().getUseDays(),specialLeave.getRemainDays().getBeforeGrantDays(), 0.0, 0.0, 0.0, 0.0);
+//		return new SpecialVacationImported(specialLeave.getLstSpeLeaveGrantDetails().getGrantDate(), 0.0, specialLeave.getRemainDays().getUseDays(),specialLeave.getRemainDays().getBeforeGrantDays(), 0.0, 0.0, 0.0, 0.0);
 	}
 
 	@Override
