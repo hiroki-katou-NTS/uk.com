@@ -39,6 +39,6 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
 			applicationRepository.updateWithVersion(application);
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID);
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, "");
 	}
 }

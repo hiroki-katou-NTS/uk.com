@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 public interface IFactoryHolidayWork {
 	// 申請
 		Application_New buildApplication(String appID, GeneralDate applicationDate, int prePostAtr, String appReasonID,
-				String applicationReason);
+				String applicationReason,String employeeID);
 
 		// 残業申請
 		AppHolidayWork buildHolidayWork(String companyID, String appID, String workTypeCode, String siftCode,

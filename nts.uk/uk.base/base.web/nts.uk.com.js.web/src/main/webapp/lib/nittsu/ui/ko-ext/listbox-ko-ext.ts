@@ -179,6 +179,44 @@ module nts.uk.ui.koExtentions {
             container.data("multiple", isMultiSelect);
             $("#" + gridId + "_container").find("#" + gridId + "_headers").closest("tr").hide();
             $("#" + gridId + "_container").height($("#" + gridId + "_container").height() - gridHeaderHeight);
+
+            
+            // add validate event
+            $element
+                .on('validate', () => {
+                    let $container = $(`#${$element.attr('id')}_grid`);
+
+                    if ($element.data('nts_validate')) {
+                        if (ko.toJS(data.required) && _.isEmpty(ko.toJS(data.value)) && $container.data("enable")) {
+                            $element
+                                .addClass('error')
+                                .ntsError("set", nts.uk.resource.getMessage("FND_E_REQ_SELECT", [ko.toJS(data.name)]), "FND_E_REQ_SELECT");
+                        } else {
+                            $element.removeClass('error')
+                                .ntsError("clear");
+                        }
+                    } else {
+                        $element.data('nts_validate', true);
+                    }
+                });
+
+            $element.prepend($('<style>', {
+                type: 'text/css',
+                text: `
+                    #${$element.attr('id')}.error {
+                        border-color: #ff6666;
+                    }
+
+                    table[id='${$element.attr('id')}_grid'] .ui-iggrid-tablebody tr,
+                    table[id='${$element.attr('id')}_grid'] .ui-iggrid-tablebody tr:hover {
+                        outline: none;
+                    }
+
+                    table[id='${$element.attr('id')}_grid'] .ui-iggrid-tablebody tr,
+                    table[id='${$element.attr('id')}_grid'] .ui-iggrid-tablebody tr:hover {
+                        cursor: pointer;
+                    }`
+            }));
         }
 
         /**
@@ -304,6 +342,9 @@ module nts.uk.ui.koExtentions {
             }
             container.data("ui-changed", false);
             container.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
+            
+            // add validate event
+            $(element).trigger('validate');
         }
     }
     

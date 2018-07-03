@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+/**
+ * 残数集計情報
+ * @author do_dt
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter

@@ -16,12 +16,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         showTypeAtr: KnockoutObservable<number> = ko.observable(0);
         listUseAtr: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
-            { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") }
+            { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") },
+            { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") }
         ]);
         listRemarkCancelErrorInput: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: nts.uk.resource.getText("KDW007_110") },
-            { code: '1', name: nts.uk.resource.getText("KDW007_109") }
+            { code: '1', name: nts.uk.resource.getText("KDW007_109") },
+            { code: '0', name: nts.uk.resource.getText("KDW007_110") }
         ]);
         listRemarkColumnNo: KnockoutObservableArray<any> = ko.observableArray([]);
         listTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
@@ -58,20 +58,24 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         // Tab 5
         lstApplicationType = ko.observableArray([
-            { code: 0, name: "残業申請" },
-            { code: 1, name: "休暇申請" },
-            { code: 2, name: "勤務変更申請" },
-            { code: 3, name: "出張申請" },
-            { code: 4, name: "直行直帰申請" },
-            { code: 6, name: "休出時間申請" },
-            { code: 7, name: "打刻申請" },
-            { code: 8, name: "時間年休申請" },
-            { code: 9, name: "遅刻早退取消申請" },
-            { code: 10, name: "振休振出申請" },
-            { code: 11, name: "打刻申請（NR形式）" },
-            { code: 12, name: "連続出張申請" },
-            { code: 13, name: "出張申請オフィスヘルパー" },
-            { code: 14, name: "３６協定時間申請" }
+            { code: 0, name: "残業申請（早出）" },
+            { code: 1, name: "残業申請（通常）" },
+            { code: 2, name: "残業申請（早出・通常）" },
+            { code: 3, name: "休暇申請" },
+            { code: 4, name: "勤務変更申請" },
+            { code: 5, name: "出張申請" },
+            { code: 6, name: "直行直帰申請" },
+            { code: 7, name: "休出時間申請" },
+            { code: 8, name: "打刻申請（外出許可）" },
+            { code: 9, name: "打刻申請（出退勤漏れ）" },
+            { code: 10, name: "打刻申請（打刻取消）" },
+            { code: 11, name: "打刻申請（レコーダイメージ）" },
+            { code: 12, name: "打刻申請（その他）" },
+            { code: 13, name: "時間年休申請" },
+            { code: 14, name: "遅刻早退取消申請" },
+            { code: 15, name: "振休振出申請" },
+            { code: 16, name: "連続出張申請" },
+            { code: 17, name: "３６協定時間申請" }
         ]);
         appTypeGridlistColumns = ko.observableArray([
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
@@ -231,7 +235,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             selectedErrorAlarm.code(param && param.code ? param.code : '');
             selectedErrorAlarm.name(param && param.name ? param.name : '');
             selectedErrorAlarm.fixedAtr(param && param.fixedAtr ? param.fixedAtr : 0);
-            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 1);
+            selectedErrorAlarm.useAtr(param && nts.uk.ntsNumber.isNumber(param.useAtr, false) ? param.useAtr : 1);
             selectedErrorAlarm.remarkCancelErrorInput(param && param.remarkCancelErrorInput ? param.remarkCancelErrorInput : 0);
             selectedErrorAlarm.remarkColumnNo(param && param.remarkColumnNo ? param.remarkColumnNo : 833);
             selectedErrorAlarm.typeAtr(param && param.typeAtr ? param.typeAtr : 0);
@@ -1102,8 +1106,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.countableSubAtdItems = param && param.countableSubAtdItems ? ko.observableArray(param.countableSubAtdItems) : ko.observableArray([]);
             self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(0);
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
-            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
-            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
+            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(null);
+            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(null);
             self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
             self.inputCheckCondition = param && param.inputCheckCondition ? ko.observable(param.inputCheckCondition) : ko.observable(0);
             self.displayLeftCompare = ko.observable("");
@@ -1295,8 +1299,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.conditionType(param ? param.conditionType : 0);
             self.singleAtdItem(param ? param.singleAtdItem : null);
-            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : 0);
-            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : 0);
+            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : null);
+            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : null);
             self.compareOperator(param ? param.compareOperator : 0);
             self.setTextDisplay();
         }

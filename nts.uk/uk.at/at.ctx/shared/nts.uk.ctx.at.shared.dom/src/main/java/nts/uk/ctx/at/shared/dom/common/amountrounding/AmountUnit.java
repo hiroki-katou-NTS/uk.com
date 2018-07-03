@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.common.amountrounding;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 /**
  * The Enum Unit.
  */
@@ -71,4 +74,30 @@ public enum AmountUnit {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 丸めを行う金額位置を取得する
+	 * @return
+	 */
+	public int asAmount() {
+		switch (this) {
+		case ONE_YEN: return 0;
+		case TEN_YEN: return -1;
+		case ONE_HUNDRED_YEN: return -2;
+		case ONE_THOUSAND_YEN: return -3;
+		default: throw new RuntimeException("invalid value: " + this);
+		}
+	}
+	
+
+	public double asRoundingSet() {
+		switch (this) {
+		case ONE_YEN: return 0.1;
+		case TEN_YEN: return 1;
+		case ONE_HUNDRED_YEN: return 10;
+		case ONE_THOUSAND_YEN: return 100;
+		default: throw new RuntimeException("invalid value: " + this);
+		}
+	}
+	
 }

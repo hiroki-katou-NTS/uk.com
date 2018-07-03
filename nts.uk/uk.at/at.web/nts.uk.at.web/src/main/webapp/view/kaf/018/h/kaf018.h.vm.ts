@@ -224,7 +224,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                     }
                     block.invisible();
                     service.sendTestMail(mailType).done(function(result: any) {
-                        console.log(result);
+                        shareModel.showMsgSendEmail(result);
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
                     }).always(function() {

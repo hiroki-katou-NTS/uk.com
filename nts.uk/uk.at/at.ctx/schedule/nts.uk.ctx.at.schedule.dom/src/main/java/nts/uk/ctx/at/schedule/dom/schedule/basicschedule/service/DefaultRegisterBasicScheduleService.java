@@ -40,6 +40,12 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+/**
+ * 登録ボタン押下時処理
+ * 
+ * @author sonnh1
+ *
+ */
 @Stateless
 public class DefaultRegisterBasicScheduleService implements RegisterBasicScheduleService {
 	@Inject

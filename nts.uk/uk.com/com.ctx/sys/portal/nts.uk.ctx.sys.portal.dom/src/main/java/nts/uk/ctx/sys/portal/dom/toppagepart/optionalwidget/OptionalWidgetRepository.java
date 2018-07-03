@@ -7,6 +7,11 @@ public interface OptionalWidgetRepository {
 
 	List<OptionalWidget> findByCompanyId(String companyId);
 
+	/**
+	 *  insert into Top page part, 
+	 *  insert into Optional Widget, 
+	 *  insert into Widget display items
+	 */
 	void add(OptionalWidget widget);
 
 	void update(OptionalWidget widget);

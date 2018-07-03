@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
@@ -24,9 +26,16 @@ import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerform
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
@@ -38,6 +47,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -137,6 +148,19 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
 	
+	//ドメインサービス：計算用ストアド実行用
+	@Inject
+	private AdTimeAndAnyItemAdUpService adTimeAndAnyItemAdUpService; 
+	
+	//↓以下任意項目の計算の為に追加
+	@Inject
+	private OptionalItemRepository optionalItemRepository;
+	
+	@Inject
+	private FormulaRepository formulaRepository;
+	
+	@Inject
+	private EmpConditionRepository empConditionRepository;
 	
 	/**
 	 * 社員の日別実績を計算
@@ -160,7 +184,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		//*****（未）　期間分をまとめて取得するリポジトリメソッド等をここで使い、読み込んだデータは、最終的にIntegrationへ入れる。
 		//*****（未）　データがない日も含めて、毎日ごとに処理するなら、下のループをデータ単位→日単位に変え、Integrationへの取得はループ内で行う。
 		List<IntegrationOfDaily> integrationOfDailys = createIntegrationOfDaily(employeeId,datePeriod);
-
+		Map<GeneralDate,IntegrationOfDaily> mapIntegration = convertMap(integrationOfDailys);
 		/*労働条件取得*/
 		Map<String,DatePeriod> id = new HashMap<>();
 		id.put(employeeId, datePeriod);
@@ -171,9 +195,22 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		companyCommonSetting.setPersonInfo(Optional.of(nowCondition.get().getValue()));
 		EmploymentCode nowEmpCode = new EmploymentCode("");
 		
-
+		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
+		String companyId = AppContexts.user().companyId();
+		//AggregateRoot「任意項目」取得
+		List<OptionalItem> optionalItems = optionalItemRepository.findAll(companyId);
+		companyCommonSetting.setOptionalItems(optionalItems);
+		//任意項目NOのlist作成
+		List<Integer> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList());
+		//計算式を取得
+		companyCommonSetting.setFormulaList(formulaRepository.find(companyId));
+		//適用する雇用条件の取得
+		companyCommonSetting.setEmpCondition(empConditionRepository.findAll(companyId, optionalItemNoList));
+		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
+			
+		
 		// 取得データ分ループ
-		for (IntegrationOfDaily integrationOfDaily : integrationOfDailys) {
+		for (Map.Entry<GeneralDate,IntegrationOfDaily> entity:mapIntegration.entrySet()) {
 			
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.hasBeenRequestedToCancel()) {
@@ -181,17 +218,17 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				return ProcessState.INTERRUPTION;
 			}
 			
-			if(!nowCondition.get().getKey().contains(integrationOfDaily.getAffiliationInfor().getYmd())) {
+			if(!nowCondition.get().getKey().contains(entity.getValue().getAffiliationInfor().getYmd())) {
 				//労働条件
 				/*社員毎に取得するデータ(労働条件)*/
-				nowCondition = personalInfo.getItemAtDate(integrationOfDaily.getAffiliationInfor().getYmd());
+				nowCondition = personalInfo.getItemAtDate(entity.getValue().getAffiliationInfor().getYmd());
 				if(!nowCondition.isPresent()) continue;
 				//↑で取得したデータのセット
 				companyCommonSetting.setPersonInfo(Optional.of(nowCondition.get().getValue()));
 			}
 			//社員、日付毎に取得した法定労働時間
-			if(!integrationOfDaily.getAffiliationInfor().getEmploymentCode().equals(nowEmpCode)) {
-				nowEmpCode = integrationOfDaily.getAffiliationInfor().getEmploymentCode(); 
+			if(!entity.getValue().getAffiliationInfor().getEmploymentCode().equals(nowEmpCode)) {
+				nowEmpCode = entity.getValue().getAffiliationInfor().getEmploymentCode(); 
 				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),nowEmpCode.toString(), employeeId, datePeriod.start(), nowCondition.get().getValue().getLaborSystem());
 				companyCommonSetting.setDailyUnit(dailyUnit);
 			}
@@ -209,7 +246,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			String employmentCd = "dummy";
 			
 			// 計算処理　（勤務情報を取得して計算）
-			val value = this.calculateDailtRecordService.calculate(integrationOfDaily,companyCommonSetting);
+			val value = this.calculateDailtRecordService.calculate(entity.getValue(),
+																   companyCommonSetting,
+																   findAndGetWorkInfo(employeeId, mapIntegration,entity.getValue().getAffiliationInfor().getYmd().addDays(-1)),
+																   findAndGetWorkInfo(employeeId, mapIntegration,entity.getValue().getAffiliationInfor().getYmd().addDays(1)));
 			/*
 			// 状態確認
 			//*****（未）　IntegrationOfDailyの中に、boolean error;を置いて、処理内でのエラー有無を返し、ここで、エラー処理につなぐ。
@@ -227,9 +267,12 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
 				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
 						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get());
+				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
 				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 			}
+			
+			
+			
 		}
 		return status;
 	}
@@ -239,25 +282,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	private void registAttendanceTime(AttendanceTimeOfDailyPerformance attendanceTime){
-
-		//*****（未）　この中で、必要なデータ更新処理を書く。下は、仮実装なので、正確な内容は別途確認する事。
-
-		// キー値確認
-		val employeeId = attendanceTime.getEmployeeId();
-		val ymd = attendanceTime.getYmd();
-		//if (this.attendanceTimeRepository.find(employeeId, ymd).isPresent()){
-//		if(attendanceTime != null)
-			
-			// 更新
-			this.attendanceTimeRepository.update(attendanceTime);
-//		}
-//		else {
-//			//log.info("更新なんてされずにスルーされます");
-//			// 追加
-//			//*****（未）　親のフローにより、読み込めないデータは計算しないはずなので、この処理は不要かもしれない。find確認自体不要かも。
-//			//this.attendanceTimeRepository.add(attendanceTime);
-//		}
+	private void registAttendanceTime(AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
+		adTimeAndAnyItemAdUpService.addAndUpdate(attendanceTime, anyItem);	
 	}
 	
 	/**
@@ -307,5 +333,34 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					));
 		}
 		return returnList;
+	}
+	
+	/**
+	 * List→Mapへの変換クラス
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @return integrationOfDailyのMap
+	 */
+	private Map<GeneralDate, IntegrationOfDaily> convertMap(List<IntegrationOfDaily> integrationOfDaily) {
+		Map<GeneralDate, IntegrationOfDaily> map = new HashMap<>();
+		integrationOfDaily.forEach(tc ->{
+			map.put(tc.getAffiliationInfor().getYmd(), tc);
+		});
+		return map;
+	}
+	
+	/**
+	 * 前日翌日(parameterによってどっちにするか決める)の勤務情報を取得する
+	 * @param empId
+	 * @param mapIntegration
+	 * @param addDays　取得したい日(-1or+1した日を渡す)
+	 * @return addDaysの勤務情報
+	 */
+	private Optional<WorkInfoOfDailyPerformance> findAndGetWorkInfo(String empId, Map<GeneralDate, IntegrationOfDaily> mapIntegration, GeneralDate addDays) {
+		if(mapIntegration.containsKey(addDays)) {
+			return Optional.of(mapIntegration.get(addDays).getWorkInformation());
+		}
+		else {
+			return workInformationRepository.find(empId, addDays);
+		}
 	}
 }
