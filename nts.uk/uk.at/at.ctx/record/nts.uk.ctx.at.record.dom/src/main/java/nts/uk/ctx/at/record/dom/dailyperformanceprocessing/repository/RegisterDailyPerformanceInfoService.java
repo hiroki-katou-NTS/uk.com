@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.NCalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
@@ -56,7 +57,7 @@ public class RegisterDailyPerformanceInfoService {
 	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
 
 	@Inject
-	private NCalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
+	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
 
 	@Inject
 	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
