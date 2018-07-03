@@ -33,7 +33,6 @@ module nts.uk.com.view.kfp001.h.viewmodel {
                     });
                     self.listData(list);
                 }
-                self.listData.push(new DataModel("sadfasdfasdfsdfsf", "D03", "FFFFFFFFF", "26/06/2018 10:34:15", "sdfadsfasdf", "AA BB", "2017/06/27", "2018/06/26", "Done", 123, 23));
                 self.initIGrid();
                 dfd.resolve();
             }).fail((error) => {

@@ -14,7 +14,7 @@
                 };
             </script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kfp001.g.style.css" />
+<!-- 			<com:stylefile path="kfp001.g.style.css" /> -->
 			<com:scriptfile path="kfp001.g.service.js" />
 			<com:scriptfile path="kfp001.g.vm.js" />
 			<com:scriptfile path="kfp001.g.start.js" />
@@ -41,19 +41,20 @@
 						<div style="width: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KFP001_31')}</div>
 						<span class="label" data-bind="text: errorNum"></span>
 					</div>
-					<div class="valign-center control-group">
-						<button tabindex="1" class="cf pull-right" data-bind="click: exportCsv">#{i18n.getText('KFP001_37')}</button>
+					<div class="valign-center control-group cf">
+						<button tabindex="1" class="pull-right" data-bind="click: exportCsv">#{i18n.getText('KFP001_37')}</button>
 					</div>
 					<table id="single-list" tabindex="2" data-bind="ntsGridList: {								
 						rows: 10,
 						dataSource: items,
+						name: '#[KFP001_38]',
 						primaryKey: 'employeeCode',
 						columns: [
-							{ headerText: '#{i18n.getText('KMW006_13')}', key: 'no', width: 50, formatter: _.escape },
-			                { headerText: '#{i18n.getText('KMW006_16')}', key: 'employeeCode', width: 160, formatter: _.escape },
-			                { headerText: '#{i18n.getText('KMW006_17')}', key: 'employeeName', width: 160, formatter: _.escape },
-			                { headerText: '#{i18n.getText('KMW006_39')}', key: 'processDate', width: 120, formatter: _.escape },
-			                { headerText: '#{i18n.getText('KMW006_40')}', key: 'errorMessage', width: 300, formatter: _.escape }
+							{ headerText: '#{i18n.getText('KFP001_39')}', key: 'no', width: 50, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KFP001_40')}', key: 'employeeCode', width: 160, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KFP001_41')}', key: 'employeeName', width: 160, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KFP001_42')}', key: 'processDate', width: 120, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KFP001_43')}', key: 'errorMessage', width: 300, formatter: _.escape }
 			            ], 
 						multiple: false,
 						value: currentCode

@@ -4,7 +4,7 @@ module nts.uk.at.view.kfp001.g.service {
     
     var paths = {
         getErrorInfos: "ctx/at/record/optionalaggr/finderrorinfo/{0}",
-        exportCsv: "at/record/monthlyclosure/exportLog"
+        exportCsv: "ctx/at/record/optionalaggr/exportcsv"
     }
 
     export function getErrorInfos(aggrId: string): JQueryPromise<any> {

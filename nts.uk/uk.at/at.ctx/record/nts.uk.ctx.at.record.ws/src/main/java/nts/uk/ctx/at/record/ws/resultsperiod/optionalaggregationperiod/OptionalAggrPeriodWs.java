@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandHandler;
@@ -27,6 +28,8 @@ import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.Opt
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodExecLogFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.PeriodTargetDto;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorInfoExportService;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorQuery;
 
 @Path("ctx/at/record/optionalaggr/")
 @Produces("application/json")
@@ -53,6 +56,7 @@ public class OptionalAggrPeriodWs {
 	@Inject
 	private RemoveOptionalAggrPeriodCommandHandler removeHandler;
 
+	private AggrPeriodErrorInfoExportService exportService;
 	
 	/**
 	 * Find all.
@@ -164,4 +168,9 @@ public class OptionalAggrPeriodWs {
 	public AggrPeriodExcutionDto findAggrCode(@PathParam("aggrFrameCode") String aggrFrameCode) {
 		return this.logFinder.findAll(aggrFrameCode);
 	}
+	@Path("exportcsv")
+	public ExportServiceResult generate(AggrPeriodErrorQuery query) {
+		return this.exportService.start(query);
+	}
+	
 }
