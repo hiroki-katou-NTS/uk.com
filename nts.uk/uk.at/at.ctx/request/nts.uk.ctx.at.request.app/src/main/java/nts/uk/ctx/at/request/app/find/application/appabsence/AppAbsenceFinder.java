@@ -688,7 +688,7 @@ public class AppAbsenceFinder {
 		List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
 		for (ApplicationReason applicationReason : applicationReasons) {
 			ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
-					applicationReason.getReasonTemp(), applicationReason.getDefaultFlg().value);
+					applicationReason.getReasonTemp().v(), applicationReason.getDefaultFlg().value);
 			applicationReasonDtos.add(applicationReasonDto);
 		}
 		result.setApplicationReasonDtos(applicationReasonDtos);

@@ -1651,6 +1651,22 @@ module nts.uk.at.view.kmf022 {
                 self.loadData();
                 return dfd.promise();
             }
+
+            // open s dialog
+            openSDialog(): void{
+                let self = this;    
+                nts.uk.ui.block.grayout();
+//                nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
+                nts.uk.ui.windows.sub.modal('/view/kaf/022/s/index.xhtml').onClosed(function(): any {
+//                    let data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                })
+                    nts.uk.ui.block.clear();
+//                    .always(() => {
+//                    nts.uk.ui.errors.clearAll();
+//                    
+//                });
+            }
+            
             loadData(): void {
                 let self = this;
                 nts.uk.ui.block.grayout();

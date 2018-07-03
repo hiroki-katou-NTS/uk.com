@@ -47,7 +47,7 @@ public class ApplicationReasonDto {
 				domain.getAppType().value, 
 				domain.getReasonID(),
 				domain.getDispOrder(), 
-				domain.getReasonTemp(), 
+				domain.getReasonTemp().v(), 
 				domain.getDefaultFlg().value);
 	}
 

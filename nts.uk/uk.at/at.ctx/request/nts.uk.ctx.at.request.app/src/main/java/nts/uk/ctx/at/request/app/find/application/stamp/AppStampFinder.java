@@ -78,7 +78,7 @@ public class AppStampFinder {
 							x.getAppType().value,
 							x.getReasonID(),
 							x.getDispOrder(),
-							x.getReasonTemp(),
+							x.getReasonTemp().v(),
 							x.getDefaultFlg().value))
 					.collect(Collectors.toList()));
 		appStampNewPreDto.companyID = companyID;
