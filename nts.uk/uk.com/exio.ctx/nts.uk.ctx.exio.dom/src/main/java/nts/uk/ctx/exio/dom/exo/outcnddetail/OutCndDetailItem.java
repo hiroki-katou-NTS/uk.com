@@ -32,11 +32,6 @@ public class OutCndDetailItem extends AggregateRoot {
 	private Optional<String> cid;
 
 	/**
-	 * 条件設定コード
-	 */
-	private Optional<CompanyCndSetCd> companyCndSetCd;
-
-	/**
 	 * ユーザID
 	 */
 	private Optional<String> userId;
@@ -44,7 +39,7 @@ public class OutCndDetailItem extends AggregateRoot {
 	/**
 	 * 条件設定コード
 	 */
-	private Optional<CompanyCndSetCd> conditionSettingCd;
+	private Optional<ConditionSettingCd> conditionSettingCd;
 
 	/**
 	 * 条件記号
@@ -54,32 +49,32 @@ public class OutCndDetailItem extends AggregateRoot {
 	/**
 	 * 検索数値
 	 */
-	private Optional<SearchNum> searchNum;
+	private Optional<OutCndNumVal> searchNum;
 
 	/**
 	 * 検索数値終了値
 	 */
-	private Optional<SearchNum> searchNumEndVal;
+	private Optional<OutCndNumVal> searchNumEndVal;
 
 	/**
 	 * 検索数値開始値
 	 */
-	private Optional<SearchNum> searchNumStartVal;
+	private Optional<OutCndNumVal> searchNumStartVal;
 
 	/**
 	 * 検索文字
 	 */
-	private Optional<SearchChar> searchChar;
+	private Optional<OutCndCharVal> searchChar;
 
 	/**
 	 * 検索文字終了値
 	 */
-	private Optional<SearchChar> searchCharEndVal;
+	private Optional<OutCndCharVal> searchCharEndVal;
 
 	/**
 	 * 検索文字開始値
 	 */
-	private Optional<SearchChar> searchCharStartVal;
+	private Optional<OutCndCharVal> searchCharStartVal;
 
 	/**
 	 * 検索日付
@@ -99,37 +94,36 @@ public class OutCndDetailItem extends AggregateRoot {
 	/**
 	 * 検索時刻
 	 */
-	private Optional<SearchClock> searchClock;
+	private Optional<AttendanceClock> searchClock;
 
 	/**
 	 * 検索時刻終了値
 	 */
-	private Optional<SearchClock> searchClockEndVal;
+	private Optional<AttendanceClock> searchClockEndVal;
 
 	/**
 	 * 検索時刻開始値
 	 */
-	private Optional<SearchClock> searchClockStartVal;
+	private Optional<AttendanceClock> searchClockStartVal;
 
 	/**
 	 * 検索時間
 	 */
-	private Optional<SearchTime> searchTime;
+	private Optional<AttendanceTime> searchTime;
 
 	/**
 	 * 検索時間終了値
 	 */
-	private Optional<SearchTime> searchTimeEndVal;
+	private Optional<AttendanceTime> searchTimeEndVal;
 
 	/**
 	 * 検索時間開始値
 	 */
-	private Optional<SearchTime> searchTimeStartVal;
+	private Optional<AttendanceTime> searchTimeStartVal;
 
 	public OutCndDetailItem(String categoryId,
 			int categoryItemNo,
 			String cid,
-			String companyCndSetCd,
 			String userId,
 			String conditionSettingCd,
 			int conditionSymbol,
@@ -142,35 +136,34 @@ public class OutCndDetailItem extends AggregateRoot {
 			GeneralDate searchDate,
 			GeneralDate searchDateEnd,
 			GeneralDate searchDateStart,
-			int searchClock,
-			int searchClockEndVal,
-			int searchClockStartVal,
-			int searchTime,
-			int searchTimeEndVal,
-			int searchTimeStartVal) {
+			Integer searchClock,
+			Integer searchClockEndVal,
+			Integer searchClockStartVal,
+			Integer searchTime,
+			Integer searchTimeEndVal,
+			Integer searchTimeStartVal) {
 
 		this.categoryId = categoryId;
 		this.categoryItemNo = new CategoryItemNo(categoryItemNo);
 		this.cid = Optional.of(cid);
-		this.companyCndSetCd = Optional.of(new CompanyCndSetCd(companyCndSetCd));
 		this.userId = Optional.of(userId);
-		this.conditionSettingCd = Optional.of(new CompanyCndSetCd(conditionSettingCd));
+		this.conditionSettingCd = Optional.of(new ConditionSettingCd(conditionSettingCd));
 		this.conditionSymbol = EnumAdaptor.valueOf(conditionSymbol, ConditionSymbol.class);
-		this.searchNum = Optional.of(new SearchNum(searchNum));
-		this.searchNumEndVal = Optional.of(new SearchNum(searchNumEndVal));
-		this.searchNumStartVal = Optional.of(new SearchNum(searchNumStartVal)) ;
-		this.searchChar = Optional.of(new SearchChar(searchChar));
-		this.searchCharEndVal = Optional.of(new SearchChar(searchCharEndVal));
-		this.searchCharStartVal = Optional.of(new SearchChar(searchCharStartVal));
+		this.searchNum = Optional.of(new OutCndNumVal(searchNum));
+		this.searchNumEndVal = Optional.of(new OutCndNumVal(searchNumEndVal));
+		this.searchNumStartVal = Optional.of(new OutCndNumVal(searchNumStartVal)) ;
+		this.searchChar = Optional.of(new OutCndCharVal(searchChar));
+		this.searchCharEndVal = Optional.of(new OutCndCharVal(searchCharEndVal));
+		this.searchCharStartVal = Optional.of(new OutCndCharVal(searchCharStartVal));
 		this.searchDate = Optional.of(searchDate);
 		this.searchDateEnd = Optional.of(searchDateEnd);
 		this.searchDateStart = Optional.of(searchDateStart);
-		this.searchClock = Optional.of(new SearchClock(searchClock));
-		this.searchClockEndVal = Optional.of(new SearchClock(searchClockEndVal));
-		this.searchClockStartVal = Optional.of(new SearchClock(searchClockStartVal));
-		this.searchTime = Optional.of(new SearchTime(searchTime));
-		this.searchTimeEndVal = Optional.of(new SearchTime(searchTimeEndVal));
-		this.searchTimeStartVal = Optional.of(new SearchTime(searchTimeStartVal));
+		this.searchClock = Optional.of(new AttendanceClock(searchClock));
+		this.searchClockEndVal = Optional.of(new AttendanceClock(searchClockEndVal));
+		this.searchClockStartVal = Optional.of(new AttendanceClock(searchClockStartVal));
+		this.searchTime = Optional.of(new AttendanceTime(searchTime));
+		this.searchTimeEndVal = Optional.of(new AttendanceTime(searchTimeEndVal));
+		this.searchTimeStartVal = Optional.of(new AttendanceTime(searchTimeStartVal));
 	}
 
 }

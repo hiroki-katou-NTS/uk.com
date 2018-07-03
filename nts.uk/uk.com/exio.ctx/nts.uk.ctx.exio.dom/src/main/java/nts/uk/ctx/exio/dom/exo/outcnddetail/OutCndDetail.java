@@ -19,7 +19,7 @@ public class OutCndDetail extends AggregateRoot {
 	/**
 	 * 条件設定コード
 	 */
-	private CompanyCndSetCd companyCndSetCd;
+	private ConditionSettingCd conditionSettingCd;
 
 	/**
 	 * 条件SQL
@@ -28,9 +28,9 @@ public class OutCndDetail extends AggregateRoot {
 	
 	
 
-	public OutCndDetail(String cid, String companyCndSetCd, String exterOutCdnSql) {
+	public OutCndDetail(String cid, String conditionSettingCd, String exterOutCdnSql) {
 		this.cid = cid;
-		this.companyCndSetCd = new CompanyCndSetCd(companyCndSetCd);
+		this.conditionSettingCd = new ConditionSettingCd(conditionSettingCd);
 		this.exterOutCdnSql = new ExterOutCdnSql(exterOutCdnSql);
 	}
 

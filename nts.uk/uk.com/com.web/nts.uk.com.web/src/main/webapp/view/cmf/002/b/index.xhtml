@@ -19,14 +19,18 @@
 				<!--B1_1 操作選択に戻る-->
 				<a id="B1_1" class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF002_27')}</a>
+				<!--B1_7 画面タイプ名-->
+				<label class="title-left">#{i18n.getText('#CMF002_35')}</label>
 				<!--B1_2 新規-->
-				<button id="B1_2">#{i18n.getText('CMF002_28')}</button>
+				<button id="B1_2" data-bind="click: addNew">#{i18n.getText('CMF002_28')}</button>
 				<!--B1_3 登録-->
-				<button id="B1_3" class="proceed">#{i18n.getText('CMF002_29')}</button>
+				<button id="B1_3" data-bind="click: register" class="proceed">#{i18n.getText('CMF002_29')}</button>
 				<!--B1_5 複製-->
 				<button id="B1_5">#{i18n.getText('CMF002_32')}</button>
 				<!--B1_6 削除-->
 				<button id="B1_6" class="danger">#{i18n.getText('CMF002_33')}</button>
+				<!--B1_8 外部出力-->
+				<label class="title-left">#{i18n.getText('#CMF002_25')}</label>
 			</div>
 
 			<div id="contents-area">

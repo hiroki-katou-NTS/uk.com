@@ -1,5 +1,5 @@
-.control-group td {
-	padding-bottom: 10px;
+#table-header td {
+	padding-bottom: 1px;
 	padding-left: 10px;
 }
 
@@ -9,5 +9,5 @@
 
 .flex-layout {
 	display: flex; 
-	margin: 20px;
+	margin: 5px;
 }

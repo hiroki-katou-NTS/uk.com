@@ -16,7 +16,7 @@ public class JpaChacDataFmSetRepository extends JpaRepository implements ChacDat
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtChacDataFmSet f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.chacDataFmSetPk.cid =:cid";
 
     @Override
     public List<ChacDataFmSet> getAllChacDataFmSet(){
@@ -25,9 +25,10 @@ public class JpaChacDataFmSetRepository extends JpaRepository implements ChacDat
     }
 
     @Override
-    public Optional<ChacDataFmSet> getChacDataFmSetById(){
+    public Optional<ChacDataFmSet> getChacDataFmSetById(String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtChacDataFmSet.class)
-        .getSingle(c->c.toDomain());
+        		.setParameter("cid", cid)
+        		.getSingle(c->c.toDomain());
     }
 
     @Override

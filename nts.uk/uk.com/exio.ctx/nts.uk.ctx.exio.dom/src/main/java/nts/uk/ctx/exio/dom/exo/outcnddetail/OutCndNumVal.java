@@ -9,14 +9,14 @@ import nts.arc.primitive.constraint.DecimalMinValue;
 
 @DecimalMaxValue("9999999999.99")
 @DecimalMinValue("-9999999999.99")
-public class SearchNum extends DecimalPrimitiveValue<PrimitiveValue<BigDecimal>>{
+public class OutCndNumVal extends DecimalPrimitiveValue<PrimitiveValue<BigDecimal>>{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public SearchNum(BigDecimal rawValue) {
+	public OutCndNumVal(BigDecimal rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
