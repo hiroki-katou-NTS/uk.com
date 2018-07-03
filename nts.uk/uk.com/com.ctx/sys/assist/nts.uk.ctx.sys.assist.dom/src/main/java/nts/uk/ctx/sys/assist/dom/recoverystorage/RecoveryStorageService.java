@@ -19,7 +19,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
@@ -45,7 +45,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.common.CsvFileUtil;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
 
-@Stateful
+@Stateless
 public class RecoveryStorageService {
 	@Resource
 	private SessionContext scContext;
@@ -109,17 +109,18 @@ public class RecoveryStorageService {
 				DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value);
 		
 		int errorCode = 0;
+		int numberCateSucess = 0;
 		// 処理対象のカテゴリを処理する
-		for (int i = 0; i < listCategory.size(); i++) {
-
+		for (Category category : listCategory) {
+			
 			List<TableList> tableUse = performDataRecoveryRepository.getByStorageRangeSaved(
-					listCategory.get(i).getCategoryId().v(), dataRecoveryProcessId, StorageRangeSaved.EARCH_EMP.value);
+					category.getCategoryId().v(), dataRecoveryProcessId, StorageRangeSaved.EARCH_EMP.value);
 			List<TableList> tableNotUse = performDataRecoveryRepository.getByStorageRangeSaved(
-					listCategory.get(i).getCategoryId().v(), dataRecoveryProcessId, StorageRangeSaved.ALL_EMP.value);
+					category.getCategoryId().v(), dataRecoveryProcessId, StorageRangeSaved.ALL_EMP.value);
 
-			TableListByCategory tableListByCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
+			TableListByCategory tableListByCategory = new TableListByCategory(category.getCategoryId().v(),
 					tableUse);
-			TableListByCategory tableNotUseCategory = new TableListByCategory(listCategory.get(i).getCategoryId().v(),
+			TableListByCategory tableNotUseCategory = new TableListByCategory(category.getCategoryId().v(),
 					tableNotUse);
 
 			
@@ -132,11 +133,12 @@ public class RecoveryStorageService {
 				break;
 
 			}
-			dataRecoveryMngRepository.updateCategoryCnt(dataRecoveryProcessId, i);
-
+			numberCateSucess++;
+			dataRecoveryMngRepository.updateCategoryCnt(dataRecoveryProcessId, numberCateSucess);
 		}
+		
 
-		if (errorCode == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
+		if (errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
 					DataRecoveryOperatingCondition.DONE.value);
 		} else {
@@ -492,6 +494,7 @@ public class RecoveryStorageService {
 
 				// -- Tổng hợp ID Nhân viên duy nhất từ List Data
 				for (int i = 1; i < dataRecovery.size(); i++) {
+					if(!dataRecovery.get(i).get(1).isEmpty())
 					hashId.add(dataRecovery.get(i).get(1));
 				}
 
