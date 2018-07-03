@@ -98,7 +98,7 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 	// Send Mail アルゴリズム「メール送信実行」を実行する
 	private SendMailReturnDto sendMail(String mailto, SendMailInfoCommand command, EmployeeImport employee) {
 		// get URL from CCG033
-		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 1, 24, employee.getEmployeeId(),
+		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 3, 24, employee.getEmployeeId(),
 				command.getContractCode(), command.getLoginId(), employee.getEmployeeCode(), new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") +" \n" + url);
