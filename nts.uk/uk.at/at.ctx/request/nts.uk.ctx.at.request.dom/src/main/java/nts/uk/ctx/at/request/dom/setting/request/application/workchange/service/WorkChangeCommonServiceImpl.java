@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
@@ -42,8 +43,10 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	WorkManagementMultipleRepository workManagerRepo;	
 	@Inject
 	IDataWorkService dataWorkService;
+	@Inject
+	private AtEmployeeAdapter atEmpAdaptor;
 	@Override
-	public WorkChangeBasicData getSettingData(String companyId, String sId) {		
+	public WorkChangeBasicData getSettingData(String companyId, String sId,List<String> sIds) {		
 		// 1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyId,
 				sId, 1, ApplicationType.WORK_CHANGE_APPLICATION, null);
@@ -65,7 +68,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 				approvalRootPattern.getApprovalRootContentImport());*/
 
 		// アルゴリズム「勤務変更申請基本データ（新規）」を実行する
-		WorkChangeBasicData wcBasicData = getWorkChangeBasicData(companyId);
+		WorkChangeBasicData wcBasicData = getWorkChangeBasicData(companyId,sId);
 		// 申請共通設定
 		wcBasicData.setAppCommonSettingOutput(appCommonSetting);
 
@@ -80,11 +83,13 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting);
 		wcBasicData.setWorkingData(workingData);
 		
+		wcBasicData.setEmployees(atEmpAdaptor.getByListSID(sIds));
+		
 		// 勤務変更申請基本データ
 		return wcBasicData;
 	}
 
-	private WorkChangeBasicData getWorkChangeBasicData(String cid) {
+	private WorkChangeBasicData getWorkChangeBasicData(String cid,String sid) {
 		// アルゴリズム「勤務変更申請基本データ（新規）」を実行する
 		WorkChangeBasicData wcBasicData = new WorkChangeBasicData();
 
@@ -92,9 +97,9 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		wcBasicData.setWorkChangeCommonSetting(workChangeRepository.findWorkChangeSetByID(cid));
 
 		// アルゴリズム「社員IDから社員を取得する」を実行する
-		String employeeName = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
+		String employeeName = employeeAdapter.getEmployeeName(sid);
 		wcBasicData.setEmployeeName(employeeName);
-		wcBasicData.setSID(AppContexts.user().employeeId());
+		wcBasicData.setSID(sid);
 
 		// ドメインモデル「申請定型理由」を取得
 		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(cid,

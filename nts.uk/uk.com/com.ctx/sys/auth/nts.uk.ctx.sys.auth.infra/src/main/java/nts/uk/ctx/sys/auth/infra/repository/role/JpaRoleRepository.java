@@ -5,7 +5,6 @@
 package nts.uk.ctx.sys.auth.infra.repository.role;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +29,15 @@ import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
  */
 @Stateless
 public class JpaRoleRepository extends JpaRepository implements RoleRepository {
-
+	
+	private final static String GET_BY_ROLE_TYPE = "SELECT e FROM SacmtRole e"
+			+ " WHERE e.cid = :companyId AND e.roleType = :roleType"
+			+ " ORDER BY e.assignAtr ASC, e.code ASC ";
+	
+	private final static String GET_BY_ROLE_TYPE_ROLE_ATR = "SELECT e FROM SacmtRole e"
+			+ " WHERE e.cid = :companyId AND e.roleType = :roleType"
+			+ " AND e.assignAtr = :roleAtr ORDER BY e.assignAtr ASC, e.code ASC ";
+	
 	private static final Integer MAX_ELEMENTS = 1000;
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.dom.role.RoleRepository#findById(java.lang.String)
@@ -133,13 +140,20 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	public List<Role> findByType(String companyId, int roleType) {
 		List<Role> result = new ArrayList<>();
 		
-		String query ="SELECT e FROM SacmtRole e WHERE e.cid = :companyId AND e.roleType = :roleType ORDER BY e.assignAtr ASC, e.code ASC ";
-		List<SacmtRole> entities = this.queryProxy().query(query, SacmtRole.class)
+		List<SacmtRole> entities = this.queryProxy().query(GET_BY_ROLE_TYPE, SacmtRole.class)
 				.setParameter("companyId", companyId).setParameter("roleType", roleType).getList();
 		if (entities != null && entities.size() !=0) {
 			return entities.stream().map(x->new Role(new JpaRoleGetMemento(x))).collect(Collectors.toList());
 		}
 		return result;
+	}
+	
+	@Override
+	public List<Role> findByTypeAndRoleAtr(String companyId, int roleType, int roleAtr) {
+		List<SacmtRole> entities = this.queryProxy().query(GET_BY_ROLE_TYPE_ROLE_ATR, SacmtRole.class)
+				.setParameter("companyId", companyId).setParameter("roleType", roleType)
+				.setParameter("roleAtr", roleAtr).getList();
+		return entities.stream().map(x -> new Role(new JpaRoleGetMemento(x))).collect(Collectors.toList());
 	}
 
 	@Override
@@ -152,7 +166,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		}
 		return result;
 	}
-
+	
 	@Override
 	public Optional<Role> findByRoleId(String roleId) {
 		String query ="SELECT e FROM SacmtRole e WHERE e.roleId = :roleId ";
@@ -193,7 +207,5 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		}
 		return result;
 	}
-
-
 
 }

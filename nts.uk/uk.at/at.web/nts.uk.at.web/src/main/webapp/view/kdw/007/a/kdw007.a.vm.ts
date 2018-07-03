@@ -235,7 +235,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             selectedErrorAlarm.code(param && param.code ? param.code : '');
             selectedErrorAlarm.name(param && param.name ? param.name : '');
             selectedErrorAlarm.fixedAtr(param && param.fixedAtr ? param.fixedAtr : 0);
-            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 1);
+            selectedErrorAlarm.useAtr(param && nts.uk.ntsNumber.isNumber(param.useAtr, false) ? param.useAtr : 1);
             selectedErrorAlarm.remarkCancelErrorInput(param && param.remarkCancelErrorInput ? param.remarkCancelErrorInput : 0);
             selectedErrorAlarm.remarkColumnNo(param && param.remarkColumnNo ? param.remarkColumnNo : 833);
             selectedErrorAlarm.typeAtr(param && param.typeAtr ? param.typeAtr : 0);
@@ -1106,8 +1106,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.countableSubAtdItems = param && param.countableSubAtdItems ? ko.observableArray(param.countableSubAtdItems) : ko.observableArray([]);
             self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(0);
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
-            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
-            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
+            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(null);
+            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(null);
             self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
             self.inputCheckCondition = param && param.inputCheckCondition ? ko.observable(param.inputCheckCondition) : ko.observable(0);
             self.displayLeftCompare = ko.observable("");
@@ -1299,8 +1299,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.conditionType(param ? param.conditionType : 0);
             self.singleAtdItem(param ? param.singleAtdItem : null);
-            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : 0);
-            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : 0);
+            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : null);
+            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : null);
             self.compareOperator(param ? param.compareOperator : 0);
             self.setTextDisplay();
         }

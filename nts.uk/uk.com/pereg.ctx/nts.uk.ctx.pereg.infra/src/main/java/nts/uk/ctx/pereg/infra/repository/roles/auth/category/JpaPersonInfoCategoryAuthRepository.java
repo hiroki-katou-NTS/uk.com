@@ -21,7 +21,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
 	
-	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = String.join(" ",
+	private static final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = String.join(" ",
 	"SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, ",
 	"cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,",
 	"CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,",

@@ -77,6 +77,17 @@ public class PersonInformationRoleFinder {
 		return data;
 	}
 	
+	public List<RoleDto> getListRoles(GetRolesParam param) {
+		String companyId = AppContexts.user().companyId();
+		List<Role> data;
+		if (param.getRoleAtr() != null) {
+			data = roleRepo.findByTypeAndRoleAtr(companyId, param.getRoleType(), param.getRoleAtr());
+		} else {
+			data = roleRepo.findByType(companyId, param.getRoleType());
+		}
+		return data.stream().map(c -> RoleDto.fromDomain(c)).collect(Collectors.toList());
+	}
+	
 	public List<RoleDto> getListRoleByRoleTypeAtr(int roleType, int RoleAtr ){
 		String companyId = AppContexts.user().companyId();
 		if(companyId == ""){
