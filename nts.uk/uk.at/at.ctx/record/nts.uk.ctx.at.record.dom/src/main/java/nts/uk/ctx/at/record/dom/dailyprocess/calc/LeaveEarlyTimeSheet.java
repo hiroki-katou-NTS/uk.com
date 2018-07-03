@@ -199,7 +199,11 @@ public class LeaveEarlyTimeSheet {
 				TimeWithDayAttr start = calcRange.get().getEnd();
 				if(calcRange.get().getEnd().greaterThan(calcRange.get().getStart())) {
 					 start = leave.lessThan(calcRange.get().getStart())?calcRange.get().getStart():leave;
+				}else {
+					//計算範囲の開始と終了が逆転している場合（遅刻していない場合）は時間帯を作成しない
+					return Optional.empty();
 				}
+						
 				TimeWithDayAttr end = calcRange.get().getEnd();
 				
 				LateLeaveEarlyTimeSheet timeSheet = new LateLeaveEarlyTimeSheet(
