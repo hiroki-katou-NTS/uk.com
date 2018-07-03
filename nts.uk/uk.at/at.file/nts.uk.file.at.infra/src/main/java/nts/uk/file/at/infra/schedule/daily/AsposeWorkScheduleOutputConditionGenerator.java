@@ -930,10 +930,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						int valueType = totalVal.getValueType();
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 						if (valueTypeEnum.isInteger()) {
-							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.value())));
+							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.getValue())));
 						}
 						if (valueTypeEnum.isDouble()) {
-							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.value())));
+							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
 						}
 					}
 					else {
