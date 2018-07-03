@@ -175,7 +175,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         initScreenB(): void {
             let self = this;
             block.invisible();
-            self.startDateString(moment.utc().subtract(1, "M").format("YYYY/MM/DD"));
+            self.startDateString(moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM/DD"));
             self.endDateString(moment.utc().format("YYYY/MM/DD"));
             let paramSearch = {
                 startDate: moment.utc(self.dataRecoverySelection().executePeriodInput().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
@@ -409,6 +409,10 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 dialog.alertError(err);
             });
             $("#E4_2:first-child .row-checkbox .ntsCheckBox-label:first-child input[type=checkbox]:first-child").focus();
+        }
+            
+        backToScreenA(): void{
+            nts.uk.request.jump("/view/cmf/004/a/index.xhtml");
         }
 
         nextToScreenF(): void {

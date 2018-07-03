@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.ac.datarestoration;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -27,4 +28,10 @@ public class DataReEmployeeAdapterImpl implements DataReEmployeeAdapter {
         }
         return Optional.empty();
     }
+
+	@Override
+	public List<EmployeeDataReInfoImport> findByIdsEmployee(List<String> listId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -201,26 +201,25 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+
 	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
+
 		EntityManager em = this.getEntityManager();
+
 		if (tableName != null) {
 			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
-			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE ");
-			int count = 0;
+			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1  ");
 			if (!Objects.isNull(whereCid)) {
-				DELETE_BY_TABLE_SQL.append(whereCid).append(" = '").append(cid).append("'");
-				count++;
+				DELETE_BY_TABLE_SQL.append(" AND ").append(whereCid).append(" = '").append(cid).append("'");
 			}
-			if (!Objects.isNull(whereCid) && !Objects.isNull(employeeId)) {
-				if (count != 0) {
-					DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = '").append(employeeId).append("'");
-				} else {
-					DELETE_BY_TABLE_SQL.append(whereSid).append(" = '").append(employeeId).append("'");
-				}
+			if (!Objects.isNull(whereSid)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = '").append(employeeId).append("'");
 			}
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
 			query.executeUpdate();
+
 		}
+
 	}
 
 	public void addTargetEmployee(Target domain) {

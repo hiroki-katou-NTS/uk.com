@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
-import java.text.ParseException;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -25,7 +23,7 @@ public class RecoveryStogareAsysnCommandHandler extends CommandHandler<PerformDa
 		// サーバー復旧処理
 		try {
 			recoveryStorageService.recoveryStorage(dataRecoveryProcessId);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			repoDataRecoveryMng.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
 		}
 	}

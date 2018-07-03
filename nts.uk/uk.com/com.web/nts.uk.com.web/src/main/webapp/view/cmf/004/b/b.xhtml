@@ -112,7 +112,7 @@
 			</div>
 			<div class="halign-center" style="width: 760px; margin-top: 20px;">
 				<!--B7_1 処理を選びなおすボタン-->
-				<button class="large" tabindex="6">#{i18n.getText('CMF004_43')}</button>
+				<button class="large" tabindex="6" data-bind="click: function(){$vm.backToScreenA() }" >#{i18n.getText('CMF004_43')}</button>
 				<!--B7_2 次へボタン-->
 				<button class="x-large proceed" data-bind="click: function(){$vm.nextToScreenE()}, enable: selectedRecoveryFile() &amp;&amp; selectedUploadCls() == 2" tabindex="7">#{i18n.getText('CMF004_44')}</button>
 			</div>

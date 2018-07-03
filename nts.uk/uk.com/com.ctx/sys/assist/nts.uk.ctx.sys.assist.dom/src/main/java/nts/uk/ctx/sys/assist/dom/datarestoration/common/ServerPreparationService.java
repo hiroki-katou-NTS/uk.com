@@ -73,6 +73,6 @@ public class ServerPreparationService {
 	}
 
 	private boolean checkNormalFile(ServerPrepareMng serverPrepareMng) {
-		return serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_FILE_STRUCTURE;
+		return serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_FILE_STRUCTURE || serverPrepareMng.getOperatingCondition() ==ServerPrepareOperatingCondition.CHECKING_TABLE_ITEMS || serverPrepareMng.getOperatingCondition() ==ServerPrepareOperatingCondition.EXTRACTING;
 	}
 }
