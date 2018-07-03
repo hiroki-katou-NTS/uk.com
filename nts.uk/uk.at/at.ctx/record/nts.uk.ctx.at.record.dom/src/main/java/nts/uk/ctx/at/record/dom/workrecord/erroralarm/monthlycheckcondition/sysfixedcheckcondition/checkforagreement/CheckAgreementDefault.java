@@ -29,7 +29,7 @@ public class CheckAgreementDefault implements CheckAgreementService {
 		Optional<AttendanceTimeOfMonthly> attdTimeOfMonthly = attendanceTimeOfMonthlyRepo.find(employeeID,new YearMonth(yearMonth),
 				EnumAdaptor.valueOf(closureId, ClosureId.class),
 				closureDate);
-		if(attdTimeOfMonthly.isPresent())
+		if(!attdTimeOfMonthly.isPresent())
 			return Optional.empty();
 		//パラメータ．「36協定エラー状態」をチェックする
 		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();

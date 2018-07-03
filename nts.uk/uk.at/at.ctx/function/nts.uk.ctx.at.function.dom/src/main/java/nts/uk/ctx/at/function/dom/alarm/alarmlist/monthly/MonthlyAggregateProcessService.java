@@ -27,6 +27,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraRes
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -100,12 +101,23 @@ public class MonthlyAggregateProcessService {
 			DatePeriod period, List<EmployeeSearchDto> employees) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
+		GeneralDate lastDateInPeriod = period.end();
+		
+		
 		
 		for(EmployeeSearchDto employee : employees) {
-			
+			//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
 			Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
 			int closureID= closure.getClosureId().value;
-			ClosureDate closureDate = closure.getClosureHistories().get(0).getClosureDate();
+			ClosureDate closureDate = null;
+			for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
+				GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().v())+String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy/MM/DD");
+				GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().v())+"01", "yyyy/MM/DD");
+				if(lastDateInPeriod.beforeOrEquals(endDateYearMonthly) && lastDateInPeriod.afterOrEquals(startDateYearMonthly)){
+					closureDate = ClosureHistory.getClosureDate();
+					break;
+				}
+			}
 			for (YearMonth yearMonth : lstYearMonth) {
 				for(int i = 0;i<listFixed.size();i++) {
 					if(listFixed.get(i).isUseAtr()) {
@@ -155,70 +167,86 @@ public class MonthlyAggregateProcessService {
 			DatePeriod period, List<EmployeeSearchDto> employees) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
+		GeneralDate lastDateInPeriod = period.end();
+		
+		
+		
 		for (ExtraResultMonthlyDomainEventDto extra : listExtra) {
 			for (YearMonth yearMonth : lstYearMonth) {
 				for (EmployeeSearchDto employee : employees) {
 					
+					//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
+					Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+					int closureID= closure.getClosureId().value;
+					ClosureDate closureDate = null;
+					for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
+						GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().v())+String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy/MM/DD");
+						GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().v())+"01", "yyyy/MM/DD");
+						if(lastDateInPeriod.beforeOrEquals(endDateYearMonthly) && lastDateInPeriod.afterOrEquals(startDateYearMonthly)){
+							closureDate = ClosureHistory.getClosureDate();
+							break;
+						}
+					}
+					
+					
 					
 					switch (extra.getTypeCheckItem()) {
 					case 0:
-						boolean checkPublicHoliday = checkResultMonthlyAdapter.checkPublicHoliday(companyId, employee.getCode(), employee.getId(),
-								employee.getWorkplaceId(), true, yearMonth, extra.getSpecHolidayCheckCon());
-						if(checkPublicHoliday) {
+//						boolean checkPublicHoliday = checkResultMonthlyAdapter.checkPublicHoliday(companyId, employee.getCode(), employee.getId(),
+//								employee.getWorkplaceId(), true, yearMonth, extra.getSpecHolidayCheckCon());
+//						if(checkPublicHoliday) {
+//							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+//									employee.getWorkplaceId(),
+//									employee.getId(),
+//									yearMonth.toString(),
+//									TextResource.localize("KAL010_100"),
+//									TextResource.localize("KAL010_209"),
+//									TextResource.localize("KAL010_210"),
+//									extra.getDisplayMessage()
+//									);
+//							listValueExtractAlarm.add(resultMonthlyValue);
+//						}
+						break;
+					case 1:
+						//TODO : chua biet date là gì
+						GeneralDate date = GeneralDate.today();
+						boolean checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
+								yearMonth,closureID,closureDate,extra.getAgreementCheckCon36());
+						if(checkAgreementError) {
 							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 									employee.getWorkplaceId(),
 									employee.getId(),
 									yearMonth.toString(),
 									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_209"),
-									TextResource.localize("KAL010_210"),
+									TextResource.localize("KAL010_204"),
+									//TODO : còn thiếu
+									TextResource.localize("KAL010_205"),
+									
 									extra.getDisplayMessage()
 									);
 							listValueExtractAlarm.add(resultMonthlyValue);
 						}
 						break;
-					case 1:
-//						//TODO : chua biet date là gì
-//						GeneralDate date = GeneralDate.today();
-//						boolean checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date, 
-//								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
-//						if(checkAgreementError) {
-//							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-//									employee.getWorkplaceId(),
-//									employee.getId(),
-//									yearMonth.toString(),
-//									TextResource.localize("KAL010_100"),
-//									TextResource.localize("KAL010_204"),
-//									//TODO : còn thiếu
-//									TextResource.localize("KAL010_205"),
-//									
-//									extra.getDisplayMessage()
-//									);
-//							listValueExtractAlarm.add(resultMonthlyValue);
-//						}
-//						break;
 					case 2:
-//						//TODO : chua biet date là gì
-//						GeneralDate date2 = GeneralDate.today();
-//						boolean checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date2, 
-//								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
-//						if(checkAgreementAlarm) {
-//							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-//									employee.getWorkplaceId(),
-//									employee.getId(),
-//									yearMonth.toString(),
-//									TextResource.localize("KAL010_100"),
-//									TextResource.localize("KAL010_206"),
-//									//TODO : còn thiếu
-//									TextResource.localize("KAL010_207"),
-//									
-//									extra.getDisplayMessage()
-//									);
-//							listValueExtractAlarm.add(resultMonthlyValue);
-//						}
-//						if(true) {
-//							
-//						}
+						boolean checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
+								yearMonth,closureID,closureDate,extra.getAgreementCheckCon36());
+						if(checkAgreementAlarm) {
+							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+									employee.getWorkplaceId(),
+									employee.getId(),
+									yearMonth.toString(),
+									TextResource.localize("KAL010_100"),
+									TextResource.localize("KAL010_206"),
+									//TODO : còn thiếu
+									TextResource.localize("KAL010_207"),
+									
+									extra.getDisplayMessage()
+									);
+							listValueExtractAlarm.add(resultMonthlyValue);
+						}
+						if(true) {
+							
+						}
 						break;
 					case 3 :
 						break;
