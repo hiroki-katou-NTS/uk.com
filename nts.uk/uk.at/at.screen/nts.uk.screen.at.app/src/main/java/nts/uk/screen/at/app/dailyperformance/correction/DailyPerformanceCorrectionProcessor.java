@@ -676,7 +676,7 @@ public class DailyPerformanceCorrectionProcessor {
 								minute = Integer.parseInt(value);
 							}else{
 								if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
-									minute = (Integer.parseInt(value)+ (1 + -Integer.parseInt(value) / MINUTES_OF_DAY) * MINUTES_OF_DAY);
+									minute = 0 - ((Integer.parseInt(value)+ (1 + -Integer.parseInt(value) / MINUTES_OF_DAY) * MINUTES_OF_DAY));
 								} else {
 									minute = Integer.parseInt(value);
 								}
