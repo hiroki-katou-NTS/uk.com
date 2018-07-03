@@ -30,6 +30,10 @@ public class JpaDataRecoverySelectionRepository extends JpaRepository implements
 	public List<DataRecoverySelection> getDataRecoverySelection(String companyId, List<Integer> systemType,
 			GeneralDateTime startDate, GeneralDateTime endDate) {
 
+		List<DataRecoverySelection> result = new ArrayList<>();
+		if (systemType.isEmpty())
+			return result;
+
 		List<Object[]> dataSave = this.queryProxy().query(SELECT_FILE_RECOVERY_SELECTION_SAVE, Object[].class)
 				.setParameter("companyId", companyId).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).setParameter("systemType", systemType).getList();
@@ -40,7 +44,6 @@ public class JpaDataRecoverySelectionRepository extends JpaRepository implements
 		List<Object[]> targetData = new ArrayList<>();
 		targetData.addAll(dataSave);
 		targetData.addAll(dataDelete);
-		List<DataRecoverySelection> result = new ArrayList<>();
 		if (!targetData.isEmpty()) {
 			for (val object : targetData) {
 				String code = (String) object[0];
