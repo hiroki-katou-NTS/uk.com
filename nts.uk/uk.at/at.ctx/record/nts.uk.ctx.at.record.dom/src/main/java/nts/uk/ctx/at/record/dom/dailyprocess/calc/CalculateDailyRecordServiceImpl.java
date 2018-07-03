@@ -174,8 +174,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private GetOfStatutoryWorkTime getOfStatutoryWorkTime;
 	@Inject
-	private WorkInformationRepository workInformationRepository;
-	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
 	@Inject
 	private FlowWorkSettingRepository flowWorkSettingRepository;
@@ -230,7 +228,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//任意項目の計算
 		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter,companyCommonSetting);
 		//エラーチェック
-//		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
 		IntegrationOfDaily result = calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
 		
 		if(isShareContainerNotInit) {
@@ -861,7 +858,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 		   
 		   //手修正後の再計算
-		   //calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting, converter,overTotalTime,holidayWorkTotalTime,attendanceItemIdList,targetDate);
 		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting, converter,attendanceItemIdList,targetDate);
 		   //手修正された項目の値を計算値に戻す(手修正再計算の後Ver)
 		   DailyRecordToAttendanceItemConverter afterReCalcDto = converter.setData(calcResultIntegrationOfDaily); 

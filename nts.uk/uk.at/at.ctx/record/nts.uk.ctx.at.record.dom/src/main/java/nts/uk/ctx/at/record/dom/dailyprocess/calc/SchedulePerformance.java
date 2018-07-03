@@ -85,31 +85,6 @@ public class SchedulePerformance {
 		return copyIntegration;
 	}
 	
-//	/**
-//	 * 休憩設定の変更
-//	 */
-//	public static void changeBreakSet(Optional<FixRestSetting> fixRestSetting ,Optional<FlowWorkRestSetting> flowWorkRestSetting) {
-//		//流動休憩
-//		if() {
-//			flowWorkRestSetting.get().getFlowRestSetting().getFlowFixedRestSetting().changeCalcMethodToSchedule();
-//			flowWorkRestSetting.get().getCommonRestSetting().changeCalcMethodToRecordUntilLeaveWork();
-//		}
-//		//固定休憩
-//		else {
-//			fixRestSetting.get().changeCalcMethodToSchedule();
-//			fixRestSetting.get().changeCalcMethodToSchedule();
-//		}
-//	}
-//	
-//	/**
-//	 * 固定休憩設定にする
-//	 */
-//	public static void create(WorkTimeDivision workTimeDivision, FluRestTime fluRestTime) {
-//		if(workTimeDivision.isfluidorFlex()) {
-//			fluRestTime.changeTrueUseFixedRestTime();
-//		}
-//	}
-//	
 	/**
 	 * 計算区分を変更する
 	 * @return 計算区分変更後の日別実績(WORK)
