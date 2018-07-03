@@ -13,9 +13,9 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.Qpdm
 @Stateless
 public class JpaSystemDayRepository extends JpaRepository implements SystemDayRepository {
 
-	private final String SELECT_ALL = "SELECT c FROM QpdmtSystemDay c";
-	private final String SELECT_ALL_BY_CCD = SELECT_ALL + " WHERE c.qpdmtSystemDayPk.ccd = :companyCode";
-	private final String SELECT_ALL_BY_CCD_AND_PROCESSING_NO = SELECT_ALL_BY_CCD
+	private static final String SELECT_ALL = "SELECT c FROM QpdmtSystemDay c";
+	private static final String SELECT_ALL_BY_CCD = SELECT_ALL + " WHERE c.qpdmtSystemDayPk.ccd = :companyCode";
+	private static final String SELECT_ALL_BY_CCD_AND_PROCESSING_NO = SELECT_ALL_BY_CCD
 			+ " AND c.qpdmtSystemDayPk.processingNo = :processingNo";
 
 	@Override

@@ -11,8 +11,8 @@ import nts.uk.ctx.pr.core.infra.entity.personalinfo.wage.QpwmtPersonalWageName;
 
 @Stateless
 public class JpaPersonalWageNameRepository extends JpaRepository implements PersonalWageNameRepository {
-	private final String SELECT_NO_WHERE = "SELECT c FROM QpwmtPersonalWageName c";
-	private final String SELECT_ALL_PERSONAL = SELECT_NO_WHERE
+	private static final String SELECT_NO_WHERE = "SELECT c FROM QpwmtPersonalWageName c";
+	private static final String SELECT_ALL_PERSONAL = SELECT_NO_WHERE
 			+ " WHERE c.qpwmtPersonalWageNamePK.ccd = :companyCode"
 			+ " AND c.qpwmtPersonalWageNamePK.ctgAtr = :categoryAtr";
 	

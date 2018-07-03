@@ -13,10 +13,10 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotCl;
 public class JpaClassificationAllotSettingRepository extends JpaRepository
 		implements ClassificationAllotSettingRespository {
 
-	private final String SEL_1 = "SELECT c FROM QstmtStmtAllotCl c WHERE c.qstmtStmtAllotClPK.companyCode = :companyCode "
+	private static final String SEL_1 = "SELECT c FROM QstmtStmtAllotCl c WHERE c.qstmtStmtAllotClPK.companyCode = :companyCode "
 			+ " AND ( c.paymentDetailCode != '00'" + " OR c.bonusDetailCode != '00')";;
 
-	private final String SEL_LST001 = "SELECT c FROM QstmtStmtAllotCl c WHERE c.qstmtStmtAllotClPK.companyCode = :companyCode "
+	private static final String SEL_LST001 = "SELECT c FROM QstmtStmtAllotCl c WHERE c.qstmtStmtAllotClPK.companyCode = :companyCode "
 			+" AND (c.qstmtStmtAllotClPK.historyId = :historyId)"
 			+ " AND ( c.paymentDetailCode != '00'" + " OR c.bonusDetailCode != '00')";;
 

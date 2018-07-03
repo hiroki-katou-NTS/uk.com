@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstmtStmtAllotPs;
 @Stateless
 public class JpaPersonalAllotSettingRepository extends JpaRepository implements PersonalAllotSettingRepository {
 
-	private final String SEL_1 = "SELECT c FROM QstmtStmtAllotPs c WHERE c.qstmtStmtAllotPsPK.companyCode = :ccd "
+	private static final String SEL_1 = "SELECT c FROM QstmtStmtAllotPs c WHERE c.qstmtStmtAllotPsPK.companyCode = :ccd "
 			+ "AND c.qstmtStmtAllotPsPK.personId = :pid and c.startDate <= :baseYM and c.endDate >= :baseYM";
 
 	@Override

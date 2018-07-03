@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.Qpdm
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 		implements PaymentDateProcessingMasterRepository {
 
-	private final String SELECT_NOT_WITH_PROCESSINGNO = "SELECT c FROM QpdmtPaydayProcessing c "
+	private static final String SELECT_NOT_WITH_PROCESSINGNO = "SELECT c FROM QpdmtPaydayProcessing c "
 			+ "WHERE c.qpdmtPaydayProcessingPK.ccd = :CCD and c.qpdmtPaydayProcessingPK.payBonusAtr = :payBonusAtr and c.dispAtr = :dispAtr ";
 
 	@Override

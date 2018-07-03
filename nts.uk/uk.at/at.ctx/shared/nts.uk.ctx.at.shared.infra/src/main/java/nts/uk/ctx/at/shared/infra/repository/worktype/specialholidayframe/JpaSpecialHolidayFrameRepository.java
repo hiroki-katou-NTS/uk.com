@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.specialholidayframe.KshmtSpeci
 @Stateless
 public class JpaSpecialHolidayFrameRepository extends JpaRepository implements SpecialHolidayFrameRepository  {
 	
-	private final String SEL_1 = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId AND a.abolishAtr = :abolishAtr ";
-	private final String GET_ALL = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId ";
+	private static final String SEL_1 = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId AND a.abolishAtr = :abolishAtr ";
+	private static final String GET_ALL = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId ";
 	
 	private static SpecialHolidayFrame toDomain(KshmtSpecialHolidayFrame entity) {
 		SpecialHolidayFrame domain = SpecialHolidayFrame.createSimpleFromJavaType(entity.kshmtSpecialHolidayFramePK.companyId,

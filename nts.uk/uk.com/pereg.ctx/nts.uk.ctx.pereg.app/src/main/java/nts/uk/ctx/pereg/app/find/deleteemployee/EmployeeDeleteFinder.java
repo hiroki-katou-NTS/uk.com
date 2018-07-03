@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.find.employee.deletemanagement;
+package nts.uk.ctx.pereg.app.find.deleteemployee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDetailDto;
-import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;

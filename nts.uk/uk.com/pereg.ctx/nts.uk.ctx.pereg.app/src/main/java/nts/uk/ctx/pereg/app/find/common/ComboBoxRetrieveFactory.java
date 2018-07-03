@@ -125,7 +125,7 @@ public class ComboBoxRetrieveFactory {
 	@Inject
 	private YearServicePerRepository yearServiceRepo;
 	
-	private static Map<String, Class<?>> enumMap;
+	private static final Map<String, Class<?>> enumMap;
 	static {
 		Map<String, Class<?>> aMap = new HashMap<>();
 		// 性別

@@ -30,10 +30,9 @@
 
 .sub-input-units {
 	width: 150px !important;
-	margin-left: 1px !important;
-	margin-right: 3px !important;
-	border: 0px !important;
+	border: 0px solid #999999 !important;
 	text-align: right !important;
+
 }
 
 .nts-datepicker-wrapper .ntsDatepicker {
@@ -46,7 +45,7 @@
 
 #date {
 	border: 0px solid #999999 !important;
-	width: 200px !important;
+	width: 205px !important;
 }
 
 #datey {
@@ -56,19 +55,19 @@
 }
 
 #timeItem {
-	width: 200px !important;
+	width: 205px !important;
 }
 
 #timePoint {
-	width: 200px !important;
+	width: 205px !important;
 }
 
 #number {
-	width: 200px !important;
+	width: 205px !important;
 }
 
 #string {
-	width: 200px !important;
+	width: 205px !important;
 }
 
 #content-right {
@@ -223,16 +222,6 @@ table tr td, table tr th {
 	width: 240px !important;
 }
 
-@media all and (-ms-high-contrast: none) , ( -ms-high-contrast : active)
-	{
-	.ntsControl .nts-input {
-		padding: 3px 10px !important;
-	}
-	.ntsControl .nts-input:focus {
-		padding: 5px 10px !important;
-	}
-}
-
 #notdata {
 	min-width: 240px !important;
 	max-width: 240px !important;
@@ -308,9 +297,6 @@ label[for] {
 	top: 578.5px !important;
 }
 
-/* div[role]{
-	top: 578.5px !important;
-} */
 .caret-background caret-right direction-right {
 	margin-top: 90px !important;
 }
@@ -329,4 +315,8 @@ abbr[title] {
 
 .selectionName {
 	width: 180px;
+}
+
+#sub-right>table>tbody{
+	height: 462px !important;
 }
