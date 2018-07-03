@@ -43,66 +43,68 @@ module nts.uk.at.view.kdl005.a {
                     ]
                 };
                 
-                if(self.kdl005Data.employeeBasicInfo.length > 1) {
-                    self.selectedCode.subscribe(function(value) {
-                        let itemData = _.find(self.kdl005Data.employeeBasicInfo, ['employeeCode', value]);
-                        self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemData.businessName]));
+                service.getEmployee(self.kdl005Data).done(function(data: any) {
+                    if(data.employeeBasicInfo.length > 1) {
+                        self.selectedCode.subscribe(function(value) {
+                            let itemData = _.find(data.employeeBasicInfo, ['employeeCode', value]);
+                            self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemData.businessName]));
+                            
+                            service.getDetailsConfirm(itemData.employeeId, self.kdl005Data.baseDate).done(function(data) {
+                                self.bindTimeData(data);
+                                self.bindSummaryData(data);
+                            }).fail(function(res) {
+                                  
+                            });
+                        });  
+                            
+                        self.baseDate = ko.observable(new Date());
+                        self.selectedCode(data.employeeBasicInfo[0].employeeCode);
+                        self.multiSelectedCode = ko.observableArray([]);
+                        self.isShowAlreadySet = ko.observable(false);
+                        self.alreadySettingList = ko.observableArray([
+                            {code: '1', isAlreadySetting: true},
+                            {code: '2', isAlreadySetting: true}
+                        ]);
+                        self.isDialog = ko.observable(false);
+                        self.isShowNoSelectRow = ko.observable(false);
+                        self.isMultiSelect = ko.observable(false);
+                        self.isShowWorkPlaceName = ko.observable(false);
+                        self.isShowSelectAllButton = ko.observable(false);
+                        this.employeeList = ko.observableArray<UnitModel>(_.map(data.employeeBasicInfo,x=>{return {code:x.employeeCode ,name:x.businessName};}));
+                        self.listComponentOption = {
+                            isShowAlreadySet: self.isShowAlreadySet(),
+                            isMultiSelect: self.isMultiSelect(),
+                            listType: ListType.EMPLOYEE,
+                            employeeInputList: self.employeeList,
+                            selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                            selectedCode: self.selectedCode,
+                            isDialog: self.isDialog(),
+                            isShowNoSelectRow: self.isShowNoSelectRow(),
+                            alreadySettingList: self.alreadySettingList,
+                            isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                            isShowSelectAllButton: self.isShowSelectAllButton()
+                        };
                         
-                        service.getDetailsConfirm(itemData.employeeId, self.kdl005Data.baseDate).done(function(data) {
+                        $('#component-items-list').ntsListComponent(self.listComponentOption);
+                        
+                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
+                    } else if(self.kdl005Data.employeeBasicInfo.length == 1) {
+                        self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
+                        
+                        service.getDetailsConfirm(data.employeeBasicInfo[0].employeeId, self.kdl005Data.baseDate).done(function(data) {
                             self.bindTimeData(data);
                             self.bindSummaryData(data);
                         }).fail(function(res) {
                               
                         });
-                    });  
                         
-                    self.baseDate = ko.observable(new Date());
-                    self.selectedCode(self.kdl005Data.employeeBasicInfo[0].employeeCode);
-                    self.multiSelectedCode = ko.observableArray([]);
-                    self.isShowAlreadySet = ko.observable(false);
-                    self.alreadySettingList = ko.observableArray([
-                        {code: '1', isAlreadySetting: true},
-                        {code: '2', isAlreadySetting: true}
-                    ]);
-                    self.isDialog = ko.observable(false);
-                    self.isShowNoSelectRow = ko.observable(false);
-                    self.isMultiSelect = ko.observable(false);
-                    self.isShowWorkPlaceName = ko.observable(false);
-                    self.isShowSelectAllButton = ko.observable(false);
-                    this.employeeList = ko.observableArray<UnitModel>(_.map(self.kdl005Data.employeeBasicInfo,x=>{return {code:x.employeeCode ,name:x.businessName};}));
-                    self.listComponentOption = {
-                        isShowAlreadySet: self.isShowAlreadySet(),
-                        isMultiSelect: self.isMultiSelect(),
-                        listType: ListType.EMPLOYEE,
-                        employeeInputList: self.employeeList,
-                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        selectedCode: self.selectedCode,
-                        isDialog: self.isDialog(),
-                        isShowNoSelectRow: self.isShowNoSelectRow(),
-                        alreadySettingList: self.alreadySettingList,
-                        isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                        isShowSelectAllButton: self.isShowSelectAllButton()
-                    };
-                    
-                    $('#component-items-list').ntsListComponent(self.listComponentOption);
-                    
-                    $("#date-fixed-table").ntsFixedTable({ height: 320 });
-                } else if(self.kdl005Data.employeeBasicInfo.length == 1) {
-                    self.employeeInfo(nts.uk.resource.getText("KDL009_25", [self.kdl005Data.employeeBasicInfo[0].employeeCode, self.kdl005Data.employeeBasicInfo[0].businessName]));
-                    
-                    service.getDetailsConfirm(self.kdl005Data.employeeBasicInfo[0].employeeId, self.kdl005Data.baseDate).done(function(data) {
-                        self.bindTimeData(data);
-                        self.bindSummaryData(data);
-                    }).fail(function(res) {
-                          
-                    });
-                    
-                    $("#date-fixed-table").ntsFixedTable({ height: 320 });
-                } else {
-                    self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
-                    
-                    $("#date-fixed-table").ntsFixedTable({ height: 320 });
-                }
+                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
+                    } else {
+                        self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
+                        
+                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
+                    }
+                });
             }
             
             startPage(): JQueryPromise<any> {
