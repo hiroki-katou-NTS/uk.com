@@ -70,6 +70,9 @@
 	margin-right: 15px;
 }
 
-#kcp005component{
+#kcp005component{ 
 	width: 460px;
+}
+.ntsDatepicker{
+	width:88px !important;
 }
