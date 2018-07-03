@@ -267,7 +267,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	@Override
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
 		//振休
 		outputData = createEachData.createInterimAbsData(inforData, WorkTypeClassification.Pause, outputData);
 		//代休

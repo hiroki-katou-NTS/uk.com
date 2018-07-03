@@ -37,6 +37,9 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	@Inject
 	private AttendanceItemConvertFactory converterFactory;
 	
+	@Inject
+	private DailyRecordCreateErrorAlermService dailyRecordCreateErrorAlermService;
+	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet master) {
 		Stopwatches.start("ERALALL");
@@ -207,18 +210,23 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 												CheckExcessAtr.LEAVE_EARLY);
 			//出勤打刻漏れ
 			case TIME_LEAVING_STAMP_LEAKAGE:
-			//入退門漏れ
+				return dailyRecordCreateErrorAlermService.lackOfTimeLeavingStamping(integrationOfDaily);
+			//入退門漏
 			case ENTRANCE_STAMP_LACKING:
+				return dailyRecordCreateErrorAlermService.lackOfAttendanceGateStamping(integrationOfDaily);
 			//PCログ打刻漏れ
 			case PCLOG_STAMP_LEAKAGE:
+				return dailyRecordCreateErrorAlermService.lackOfAttendancePCLogOnStamping(integrationOfDaily);
 			//打刻順序不正
 			case INCORRECT_STAMP: 
+				return dailyRecordCreateErrorAlermService.stampIncorrectOrderAlgorithm(integrationOfDaily);
 			//休日打刻
 			case HOLIDAY_STAMP:
+				//アルゴリズムが存在しない(2018.07.02)
+				return Collections.emptyList();
 			//二重打刻
 			case DOUBLE_STAMP:
-				
-				
+				return dailyRecordCreateErrorAlermService.doubleStampAlgorithm(integrationOfDaily);
 			//それ以外ルート
 			default:
 				return Collections.emptyList();

@@ -22,11 +22,15 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -47,6 +51,12 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	
 	@Inject
 	private UpdateLogInfoWithNewTransaction updateLogInfoWithNewTransaction; 
+	
+	@Inject
+	private StampReflectionManagementRepository stampReflectionManagementRepository;
+	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
@@ -71,6 +81,13 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 				updateLogInfoWithNewTransaction.updateLogInfo(empCalAndSumExecLogID, 0, ExecutionStatus.PROCESSING.value);
 				
 				EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService.getEmployeeGeneralInfo(emloyeeIds, periodTime);
+				
+				Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
+						.findByCid(companyId);
+				
+				List<WorkingConditionItem> workingConditionItem = this.workingConditionItemRepository
+						.getBySidsAndDatePeriod(emloyeeIds, periodTime);
+
 
 				Stopwatches.start("start create");
 				
@@ -93,7 +110,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 									return;
 								}
 								ProcessState cStatus = createData(asyncContext, periodTime, executionAttr, companyId, empCalAndSumExecLogID,
-										executionLog, dataSetter, employeeGeneralInfoImport, stateHolder, employeeId);
+										executionLog, dataSetter, employeeGeneralInfoImport, stateHolder, employeeId, stampReflectionManagement);
 								
 								stateHolder.add(cStatus);
 								// Count down latch.
@@ -131,9 +148,9 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	private ProcessState createData(AsyncCommandHandlerContext asyncContext, DatePeriod periodTime, ExecutionAttr executionAttr,
 			String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
 			TaskDataSetter dataSetter, EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			StateHolder stateHolder, String employeeId) {
+			StateHolder stateHolder, String employeeId, Optional<StampReflectionManagement> stampReflectionManagement) {
 		ProcessState cStatus = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext, employeeId,
-				periodTime, companyId, empCalAndSumExecLogID, executionLog, false, employeeGeneralInfoImport);
+				periodTime, companyId, empCalAndSumExecLogID, executionLog, false, employeeGeneralInfoImport, stampReflectionManagement);
 		// 状態確認
 		if (cStatus == ProcessState.SUCCESS){
 			updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExecLogID);
