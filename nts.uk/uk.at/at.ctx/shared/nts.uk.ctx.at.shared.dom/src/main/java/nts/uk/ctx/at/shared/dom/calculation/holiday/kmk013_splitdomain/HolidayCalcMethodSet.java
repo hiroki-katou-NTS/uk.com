@@ -80,5 +80,10 @@ public class HolidayCalcMethodSet extends DomainObject{
 		
 	}
 	
+	
+	public HolidayCalcMethodSet changeDeduction() {
+		return new HolidayCalcMethodSet(this.premiumCalcMethodOfHoliday,this.workTimeCalcMethodOfHoliday.changeDeduct());
+	}
+	
 }
 

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -41,10 +42,14 @@ public class MonthlyPatternSettingFinder {
      * @return the list
      */
     public List<MonthlyPatternSettingDto> findAllMonthlyPatternSettingBySid(List<String> employeeIds, List<String> monthlyPatternCodes){
-    	
-    	List<WorkingConditionItem> listResult = this.repositoryWorkingCondItem.getByListSidAndMonthlyPatternNotNull(employeeIds, monthlyPatternCodes);
-    	
-    	if (!listResult.isEmpty()) {
+
+		List<WorkingConditionItem> listResult = this.repositoryWorkingCondItem
+				.getByListSidAndMonthlyPatternNotNull(employeeIds, monthlyPatternCodes).stream()
+				.filter(item -> item.getScheduleMethod().isPresent() ? item.getScheduleMethod().get()
+						.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN : false)
+				.collect(Collectors.toList());
+
+		if (!listResult.isEmpty()) {
     		List<MonthlyPatternSettingDto> list = new ArrayList<>();
     		listResult.stream().forEach(e -> {
     			// new Dto

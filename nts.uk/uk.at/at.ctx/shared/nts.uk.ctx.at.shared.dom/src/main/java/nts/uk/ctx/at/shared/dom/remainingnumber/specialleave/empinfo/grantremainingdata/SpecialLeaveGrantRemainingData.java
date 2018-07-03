@@ -13,12 +13,14 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.SpecialVacationCD;
-
+/**
+ *  特別休暇付与残数データ
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-// 特別休暇付与残数データ
 public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 
 	// 特別休暇ID

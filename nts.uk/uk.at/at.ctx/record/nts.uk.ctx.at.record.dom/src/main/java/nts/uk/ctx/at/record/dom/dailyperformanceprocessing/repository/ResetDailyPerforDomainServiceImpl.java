@@ -155,7 +155,8 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							stampOutput = this.reflectStampDomainService.reflectStampInfo(companyID, employeeID,
 									processingDate,
 									workInfoOfDailyPerformanceUpdate,
-									null, empCalAndSumExecLogID, reCreateAttr);
+									null, empCalAndSumExecLogID, reCreateAttr,
+									Optional.of(calAttrOfDailyPerformance),affiliationInforOfDailyPerfor,Optional.empty());
 						}
 						stampOutput.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);  
 					}
