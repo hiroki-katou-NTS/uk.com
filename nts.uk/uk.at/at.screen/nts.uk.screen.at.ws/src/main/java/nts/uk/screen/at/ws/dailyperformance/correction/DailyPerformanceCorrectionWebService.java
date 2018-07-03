@@ -301,8 +301,14 @@ public class DailyPerformanceCorrectionWebService {
 	 */
 	@POST
 	@Path("getNameMonthlyAttItem")
-	public List<AttendanceItemName> getNameOfMonthlyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
-		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(dailyAttendanceItemIds, 0);
+	public List<AttendanceItemName> getNameOfMonthlyAttendanceItem(List<Integer> monthlyAttendanceItemIds) {
+		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(monthlyAttendanceItemIds, 0);
+	}
+	
+	@POST
+	@Path("getNamedailyAttItem")
+	public List<AttendanceItemName> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
+		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(dailyAttendanceItemIds, 1);
 	}
 
 }
