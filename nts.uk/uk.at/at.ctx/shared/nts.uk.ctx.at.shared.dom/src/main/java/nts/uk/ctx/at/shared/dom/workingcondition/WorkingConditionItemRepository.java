@@ -131,4 +131,12 @@ public interface WorkingConditionItemRepository {
 	 * @return the by sid ,hist id and data Period 
 	 */
 	WorkingConditionWithDataPeriod getBySidAndPeriodOrderByStrDWithDatePeriod(Map<String,DatePeriod> param,GeneralDate max,GeneralDate min);
+	
+	
+	/**
+	 * Update WorkingCondition
+	 * trong trường hợp chia đôi category WorkingCondition
+	 * @param item the item
+	 */
+	void updateWorkCond2(WorkingConditionItem item);
 }

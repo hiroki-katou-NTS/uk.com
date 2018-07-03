@@ -7,8 +7,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.Getter;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
@@ -27,10 +27,12 @@ import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSu
 import nts.uk.ctx.at.request.app.find.application.common.GetDataCheckDetail;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.AppDateParamCommon;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationRemandDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ClosureParam;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
@@ -78,7 +80,8 @@ public class ApplicationWebservice extends WebService {
 	@Inject
 	private UpdateApplicationDeadlineCommandHandler update;
 
-	
+	@Inject
+	private ReflectAplicationCommmandHandler relect;
 	
 	/**
 	 * approve application
@@ -205,7 +208,7 @@ public class ApplicationWebservice extends WebService {
 	
 	@POST
 	@Path("getAppDataByDate")
-	public AppDateDataDto getAppDataByDate(AppDateParam param){
+	public AppDateDataDto getAppDataByDate(AppDateParamCommon param){
 		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID(),param.getEmployeeID());
 	}
 	
@@ -229,20 +232,12 @@ public class ApplicationWebservice extends WebService {
 	public void update(List<ApplicationDeadlineCommand> command){
 		this.update.handle(command);
 	}
+	
+	@POST
+	@Path("reflect-app")
+	public void reflectApp(List<String> command){
+		relect.handle(command);
+	}
 
 }
 
-@Getter
-class AppDateParam {
-	private Integer appTypeValue; 
-	private String appDate;
-	private Boolean isStartup;
-	private String appID;
-	private String employeeID;
-}
-
-
-@Getter
-class ClosureParam {
-	private List<Integer> closureId;
-}

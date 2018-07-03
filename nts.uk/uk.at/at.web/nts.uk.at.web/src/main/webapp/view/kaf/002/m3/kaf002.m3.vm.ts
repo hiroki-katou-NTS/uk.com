@@ -8,12 +8,16 @@ module nts.uk.at.view.kaf002.m3 {
             appStampList: KnockoutObservableArray<vmbase.AppStampCancel> = ko.observableArray([]); 
             supFrameNo: number = 1;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 
             }
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<any>){
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<any>, editable: any, screenMode: any){
                 var self = this;    
+                self.screenMode(screenMode);
+                self.editable(editable);
                 //self.supFrameNo = data.supFrameDispNO;
                 for(let i=1;i<=self.supFrameNo;i++) {
                     self.appStampList.push(new vmbase.AppStampCancel(4,i,0));    

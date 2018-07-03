@@ -398,7 +398,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		int lowestEmployeeLevel = checkLowestWorkplaceLevel(lstWorkplace);
 		TotalWorkplaceHierachy outputSetting = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
 		int highestOutputLevel = outputSetting.getHighestLevelEnabled();
-		if (lowestEmployeeLevel < highestOutputLevel && lstAttendanceResultImport.size() == 0) {
+		if (lowestEmployeeLevel < highestOutputLevel || lstAttendanceResultImport.size() == 0) {
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
 		
@@ -918,10 +918,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						int valueType = totalVal.getValueType();
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 						if (valueTypeEnum.isInteger()) {
-							totalVal.setValue(String.valueOf((int) totalVal.value() + (int) item.value()));
+							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.value())));
 						}
 						if (valueTypeEnum.isDouble()) {
-							totalVal.setValue(String.valueOf((double) totalVal.value() + (double) item.value()));
+							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.value())));
 						}
 					}
 					else {
@@ -2054,6 +2054,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			while (dataIterator.hasNext() && condition.getSettingDetailTotalOutput().isDetails()){
 				DailyPersonalPerformanceData employee = dataIterator.next();
 				
+				List<ActualValue> lstItem = employee.getActualValue();
+				// Skip to next employee when there is no actual value
+				if (lstItem == null || lstItem.isEmpty()) continue;
+				
 				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
 					sheet.getHorizontalPageBreaks().add(currentRow);
 					rowPageTracker.resetRemainingRow();
@@ -2086,7 +2090,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Range employeeRange = cells.createRange(currentRow, 1, dataRowCount, 2);
 				employeeRange.merge();
 				
-				List<ActualValue> lstItem = employee.getActualValue();
+				
 				if (lstItem != null) {
 					// B5_3
 					// Divide list into smaller lists (max 16 items)

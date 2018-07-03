@@ -321,28 +321,12 @@ module nts.uk.at.view.kaf000.shr{
                 });
                 if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                            __viewContext.viewModel.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
-                                nts.uk.ui.block.clear();  
-                            });
-                        });
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] });
                     });        
                 } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
-                        __viewContext.viewModel.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
-                            nts.uk.ui.block.clear(); 
-                        });
-                    });    
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] });
                 } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                        __viewContext.viewModel.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
-                            nts.uk.ui.block.clear();  
-                        });
-                    });    
-                } else {
-                    __viewContext.viewModel.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
-                        nts.uk.ui.block.clear(); 
-                    });      
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] });
                 }
             }
             

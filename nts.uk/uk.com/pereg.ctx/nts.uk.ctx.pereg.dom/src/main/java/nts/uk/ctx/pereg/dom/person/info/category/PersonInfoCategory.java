@@ -187,7 +187,7 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.categoryParentCode = null;
 		this.categoryName = new CategoryName(categoryName);
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
-		this.isFixed = IsFixed.FIXED;
+		this.isFixed = IsFixed.NOT_FIXED;
 		this.addItemCls = AddItemObjCls.ENABLE;
 		this.isAbolition = IsAbolition.NOT_ABOLITION;
 		this.initValMasterCls =InitValMasterObjCls.INIT;

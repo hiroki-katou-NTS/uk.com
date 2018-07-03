@@ -43,7 +43,7 @@ public class AnnualHolidayFinder {
 		String cId = AppContexts.user().companyId();
 		AnnualHolidayDto result = new AnnualHolidayDto();
 		// 210
-		result.setAnnualLeaveGrant(holidayAdapter.acquireNextHolidayGrantDate(cId, sID));
+		result.setAnnualLeaveGrant(holidayAdapter.acquireNextHolidayGrantDate(cId, sID,baseDate));
 		// 323
 		holidayAdapter.getDaysPerYear(cId, sID).ifPresent(x -> result.setAttendNextHoliday(x));
 		// 198
