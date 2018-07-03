@@ -92,7 +92,7 @@ module nts.uk.com.view.cli001.a {
                 }
                 else {
                     $('#tableGrid').focus();
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_1347" })
                         .ifYes(() => {
                             let command = { lstUserId: self.currentCodeList() };
                             service.removeLockOutData(command).done(() => {
