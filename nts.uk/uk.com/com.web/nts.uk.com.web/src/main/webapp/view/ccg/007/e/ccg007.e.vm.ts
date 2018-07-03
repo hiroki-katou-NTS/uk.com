@@ -3,6 +3,7 @@ module nts.uk.pr.view.ccg007.e {
         import blockUI = nts.uk.ui.block;
         import CallerParameter = service.CallerParameter;
         import ChangePasswordCommand = service.ChangePasswordCommand;
+        import EmployeeInforDto = service.EmployeeInforDto;
 
         export class ScreenModel {
             
@@ -35,11 +36,20 @@ module nts.uk.pr.view.ccg007.e {
 
                 // block ui
                 nts.uk.ui.block.invisible();
-                
-                //get userName
-                service.getUserNameByLoginId(self.callerParameter.contractCode, self.callerParameter.loginId).done(function(data) {
-                    self.userName(data.userName);
-                });
+                if (self.callerParameter.form1){
+                    //get userName
+                    service.getUserNameByLoginId(self.callerParameter.contractCode, self.callerParameter.loginId).done(function(data) {
+                        self.userName(data.userName);
+                    });
+                } else {
+                    //add command
+                    let dto: EmployeeInforDto = new EmployeeInforDto(self.callerParameter.contractCode, self.callerParameter.employeeCode, self.callerParameter.companyCode);
+                    
+                    //get userName
+                    service.getUserNameByEmployeeCode(dto).done(function(data) {
+                        self.userName(data.userName);
+                    });
+                }
                 
                 dfd.resolve();
                 

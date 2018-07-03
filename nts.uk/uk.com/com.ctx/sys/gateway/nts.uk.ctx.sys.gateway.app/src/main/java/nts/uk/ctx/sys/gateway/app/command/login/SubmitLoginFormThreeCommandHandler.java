@@ -67,7 +67,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			oldPassword = user.getPassword();
 		} else {
 			String employeeCode = command.getEmployeeCode();
-			String password = command.getPassword();
+			oldPassword = command.getPassword();
 			
 			// check validate input
 			this.checkInput(command);
@@ -88,7 +88,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			user = this.getUser(em.getPersonalId());
 			
 			// check password
-			String msgErrorId = this.compareHashPassword(user, password);
+			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){
 				return new CheckChangePassDto(false, msgErrorId);
 			} 
