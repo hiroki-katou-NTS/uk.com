@@ -88,6 +88,8 @@ public class RecoveryStorageService {
 	public static final String GET_CLS_KEY_QUERY = "getClsKeyQuery";
 
 	public static final String GET_FILED_KEY_UPDATE = "getFiledKeyUpdate";
+	
+	public static final String INDEX_HEADER = "indexUpdate";
 
 	public static final Integer HEADER_CSV = 0;
 
@@ -180,7 +182,8 @@ public class RecoveryStorageService {
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
 			if (resultsSetting.isEmpty()) {
-				continue;
+				errorCode = DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
+				return errorCode;
 			}
 
 			// 履歴区分の判別する - check history division
@@ -222,7 +225,7 @@ public class RecoveryStorageService {
 	public int crudDataByTable(List<List<String>> targetDataTable, String employeeId, String employeeCode,
 			String dataRecoveryProcessId, String fileNameCsv, Optional<TableList> tableList,
 			Optional<PerformDataRecovery> performDataRecovery, List<String> resultsSetting, Boolean tableUse)
-			throws ParseException {
+			throws ParseException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		int errorCode = 0, indexCidOfCsv = 0;
 		List<String> targetDataHeader = targetDataTable.get(HEADER_CSV);
@@ -732,142 +735,25 @@ public class RecoveryStorageService {
 		return dataTableCus;
 	}
 
-	private HashMap<Integer, String> indexMapFiledCsv(List<String> targetDataHeader, Optional<TableList> tableList) {
+	@SuppressWarnings("unchecked")
+	private HashMap<Integer, String> indexMapFiledCsv(List<String> targetDataHeader, Optional<TableList> tableList) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		HashMap<Integer, String> indexfiledUpdate = new HashMap<>();
-		Integer indexUpdate1 = null, indexUpdate2 = null, indexUpdate3 = null, indexUpdate4 = null, indexUpdate5 = null,
-				indexUpdate6 = null;
-		Integer indexUpdate7 = null, indexUpdate8 = null, indexUpdate9 = null, indexUpdate10 = null,
-				indexUpdate11 = null, indexUpdate12 = null;
-		Integer indexUpdate13 = null, indexUpdate14 = null, indexUpdate15 = null, indexUpdate16 = null,
-				indexUpdate17 = null, indexUpdate18 = null, indexUpdate19 = null, indexUpdate20 = null;
-
-		String FILED_KEY_UPDATE_1 = null, FILED_KEY_UPDATE_2 = null, FILED_KEY_UPDATE_3 = null,
-				FILED_KEY_UPDATE_4 = null, FILED_KEY_UPDATE_5 = null, FILED_KEY_UPDATE_6 = null;
-		String FILED_KEY_UPDATE_7 = null, FILED_KEY_UPDATE_8 = null, FILED_KEY_UPDATE_9 = null,
-				FILED_KEY_UPDATE_10 = null, FILED_KEY_UPDATE_11 = null, FILED_KEY_UPDATE_12 = null;
-		String FILED_KEY_UPDATE_13 = null, FILED_KEY_UPDATE_14 = null, FILED_KEY_UPDATE_15 = null,
-				FILED_KEY_UPDATE_16 = null, FILED_KEY_UPDATE_17 = null, FILED_KEY_UPDATE_18 = null,
-				FILED_KEY_UPDATE_19 = null, FILED_KEY_UPDATE_20 = null;
-
-		FILED_KEY_UPDATE_1 = tableList.get().getFiledKeyUpdate1().get();
-		if (FILED_KEY_UPDATE_1 != null && !FILED_KEY_UPDATE_1.isEmpty()) {
-			indexUpdate1 = targetDataHeader.indexOf(FILED_KEY_UPDATE_1);
-			indexfiledUpdate.put(indexUpdate1, FILED_KEY_UPDATE_1);
+		String[] whereCid = { "" };
+		Integer index= null;
+		Optional<Object> filedKey = Optional.empty();
+		for (int i = 1; i < 21; i++) {
+			Method m2 = TableList.class.getMethod(GET_FILED_KEY_UPDATE + i);
+			filedKey = (Optional<Object>) m2.invoke(tableList.get());
+			if (filedKey.isPresent()) {
+				whereCid[0] = (String) filedKey.get();
+				if(!whereCid[0].isEmpty()) {
+					index = targetDataHeader.indexOf((String) filedKey.get());
+					indexfiledUpdate.put(index, whereCid[0]);
+				}
+			}
 		}
-		FILED_KEY_UPDATE_2 = tableList.get().getFiledKeyUpdate2().get();
-		if (FILED_KEY_UPDATE_2 != null && !FILED_KEY_UPDATE_2.isEmpty()) {
-			indexUpdate2 = targetDataHeader.indexOf(FILED_KEY_UPDATE_2);
-			indexfiledUpdate.put(indexUpdate2, FILED_KEY_UPDATE_2);
-		}
-		FILED_KEY_UPDATE_3 = tableList.get().getFiledKeyUpdate3().get();
-		if (FILED_KEY_UPDATE_3 != null && !FILED_KEY_UPDATE_3.isEmpty()) {
-			indexUpdate3 = targetDataHeader.indexOf(FILED_KEY_UPDATE_3);
-			indexfiledUpdate.put(indexUpdate3, FILED_KEY_UPDATE_3);
-		}
-
-		FILED_KEY_UPDATE_4 = tableList.get().getFiledKeyUpdate4().get();
-		if (FILED_KEY_UPDATE_4 != null && !FILED_KEY_UPDATE_4.isEmpty()) {
-			indexUpdate4 = targetDataHeader.indexOf(FILED_KEY_UPDATE_4);
-			indexfiledUpdate.put(indexUpdate4, FILED_KEY_UPDATE_4);
-		}
-
-		FILED_KEY_UPDATE_5 = tableList.get().getFiledKeyUpdate5().get();
-		if (FILED_KEY_UPDATE_5 != null && !FILED_KEY_UPDATE_5.isEmpty()) {
-			indexUpdate5 = targetDataHeader.indexOf(FILED_KEY_UPDATE_5);
-			indexfiledUpdate.put(indexUpdate5, FILED_KEY_UPDATE_5);
-		}
-
-		FILED_KEY_UPDATE_6 = tableList.get().getFiledKeyUpdate6().get();
-		if (FILED_KEY_UPDATE_6 != null && !FILED_KEY_UPDATE_6.isEmpty()) {
-			indexUpdate6 = targetDataHeader.indexOf(FILED_KEY_UPDATE_6);
-			indexfiledUpdate.put(indexUpdate6, FILED_KEY_UPDATE_6);
-		}
-
-		FILED_KEY_UPDATE_7 = tableList.get().getFiledKeyUpdate7().get();
-		if (FILED_KEY_UPDATE_7 != null && !FILED_KEY_UPDATE_7.isEmpty()) {
-			indexUpdate7 = targetDataHeader.indexOf(FILED_KEY_UPDATE_7);
-			indexfiledUpdate.put(indexUpdate7, FILED_KEY_UPDATE_7);
-		}
-
-		FILED_KEY_UPDATE_8 = tableList.get().getFiledKeyUpdate8().get();
-		if (FILED_KEY_UPDATE_8 != null && !FILED_KEY_UPDATE_8.isEmpty()) {
-			indexUpdate8 = targetDataHeader.indexOf(FILED_KEY_UPDATE_8);
-			indexfiledUpdate.put(indexUpdate8, FILED_KEY_UPDATE_8);
-		}
-
-		FILED_KEY_UPDATE_9 = tableList.get().getFiledKeyUpdate9().get();
-		if (FILED_KEY_UPDATE_9 != null && !FILED_KEY_UPDATE_9.isEmpty()) {
-			indexUpdate9 = targetDataHeader.indexOf(FILED_KEY_UPDATE_9);
-			indexfiledUpdate.put(indexUpdate9, FILED_KEY_UPDATE_9);
-		}
-
-		FILED_KEY_UPDATE_10 = tableList.get().getFiledKeyUpdate10().get();
-		if (FILED_KEY_UPDATE_10 != null && !FILED_KEY_UPDATE_10.isEmpty()) {
-			indexUpdate10 = targetDataHeader.indexOf(FILED_KEY_UPDATE_10);
-			indexfiledUpdate.put(indexUpdate10, FILED_KEY_UPDATE_10);
-		}
-
-		FILED_KEY_UPDATE_11 = tableList.get().getFiledKeyUpdate11().get();
-		if (FILED_KEY_UPDATE_11 != null && !FILED_KEY_UPDATE_11.isEmpty()) {
-			indexUpdate11 = targetDataHeader.indexOf(FILED_KEY_UPDATE_11);
-			indexfiledUpdate.put(indexUpdate11, FILED_KEY_UPDATE_11);
-		}
-
-		FILED_KEY_UPDATE_12 = tableList.get().getFiledKeyUpdate12().get();
-		if (FILED_KEY_UPDATE_12 != null && !FILED_KEY_UPDATE_12.isEmpty()) {
-			indexUpdate12 = targetDataHeader.indexOf(FILED_KEY_UPDATE_12);
-			indexfiledUpdate.put(indexUpdate12, FILED_KEY_UPDATE_12);
-		}
-
-		FILED_KEY_UPDATE_13 = tableList.get().getFiledKeyUpdate13().get();
-		if (FILED_KEY_UPDATE_13 != null && !FILED_KEY_UPDATE_13.isEmpty()) {
-			indexUpdate13 = targetDataHeader.indexOf(FILED_KEY_UPDATE_13);
-			indexfiledUpdate.put(indexUpdate13, FILED_KEY_UPDATE_13);
-		}
-
-		FILED_KEY_UPDATE_14 = tableList.get().getFiledKeyUpdate14().get();
-		if (FILED_KEY_UPDATE_14 != null && !FILED_KEY_UPDATE_14.isEmpty()) {
-			indexUpdate14 = targetDataHeader.indexOf(FILED_KEY_UPDATE_14);
-			indexfiledUpdate.put(indexUpdate14, FILED_KEY_UPDATE_14);
-		}
-
-		FILED_KEY_UPDATE_15 = tableList.get().getFiledKeyUpdate15().get();
-		if (FILED_KEY_UPDATE_15 != null && !FILED_KEY_UPDATE_15.isEmpty()) {
-			indexUpdate15 = targetDataHeader.indexOf(FILED_KEY_UPDATE_15);
-			indexfiledUpdate.put(indexUpdate15, FILED_KEY_UPDATE_15);
-		}
-
-		FILED_KEY_UPDATE_16 = tableList.get().getFiledKeyUpdate16().get();
-		if (FILED_KEY_UPDATE_16 != null && !FILED_KEY_UPDATE_16.isEmpty()) {
-			indexUpdate16 = targetDataHeader.indexOf(FILED_KEY_UPDATE_16);
-			indexfiledUpdate.put(indexUpdate16, FILED_KEY_UPDATE_16);
-		}
-
-		FILED_KEY_UPDATE_17 = tableList.get().getFiledKeyUpdate17().get();
-		if (FILED_KEY_UPDATE_17 != null && !FILED_KEY_UPDATE_17.isEmpty()) {
-			indexUpdate17 = targetDataHeader.indexOf(FILED_KEY_UPDATE_17);
-			indexfiledUpdate.put(indexUpdate17, FILED_KEY_UPDATE_17);
-		}
-
-		FILED_KEY_UPDATE_18 = tableList.get().getFiledKeyUpdate18().get();
-		if (FILED_KEY_UPDATE_18 != null && !FILED_KEY_UPDATE_18.isEmpty()) {
-			indexUpdate18 = targetDataHeader.indexOf(FILED_KEY_UPDATE_18);
-			indexfiledUpdate.put(indexUpdate18, FILED_KEY_UPDATE_18);
-		}
-
-		FILED_KEY_UPDATE_19 = tableList.get().getFiledKeyUpdate19().get();
-		if (FILED_KEY_UPDATE_19 != null && !FILED_KEY_UPDATE_19.isEmpty()) {
-			indexUpdate19 = targetDataHeader.indexOf(FILED_KEY_UPDATE_19);
-			indexfiledUpdate.put(indexUpdate19, FILED_KEY_UPDATE_19);
-		}
-
-		FILED_KEY_UPDATE_20 = tableList.get().getFiledKeyUpdate20().get();
-		if (FILED_KEY_UPDATE_20 != null && !FILED_KEY_UPDATE_20.isEmpty()) {
-			indexUpdate20 = targetDataHeader.indexOf(FILED_KEY_UPDATE_20);
-			indexfiledUpdate.put(indexUpdate20, FILED_KEY_UPDATE_20);
-		}
-
+		
 		return indexfiledUpdate;
 	}
 }
