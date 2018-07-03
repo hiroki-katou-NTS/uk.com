@@ -48,10 +48,10 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
     }
     
     public static OiomtOutCndDetail toEntity(OutCndDetail domain){
-    	return new OiomtOutCndDetail(domain.getCid(), domain.getCompanyCndSetCd().v(), domain.getExterOutCdnSql().v());
+    	return new OiomtOutCndDetail(domain.getCid(), domain.getConditionSettingCd().v(), domain.getExterOutCdnSql().v());
     }
     
     public static OutCndDetail toDomain(OiomtOutCndDetail entity){
-    	return new OutCndDetail(entity.outCndDetailPk.cid, entity.outCndDetailPk.companyCndSetCd, entity.exterOutCdnSql);
+    	return new OutCndDetail(entity.outCndDetailPk.cid, entity.outCndDetailPk.conditionSettingCd, entity.exterOutCdnSql);
     }
 }

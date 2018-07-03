@@ -19,7 +19,7 @@ public class OutCndDetailDto{
     /**
     * 条件設定コード
     */
-    private String companyCndSetCd;
+    private String conditionSettingCd;
     
     /**
     * 条件SQL
@@ -29,6 +29,6 @@ public class OutCndDetailDto{
     
     public static OutCndDetailDto fromDomain(OutCndDetail domain)
     {
-        return new OutCndDetailDto(domain.getCid(), domain.getCompanyCndSetCd().v(), domain.getExterOutCdnSql().v());
+        return new OutCndDetailDto(domain.getCid(), domain.getConditionSettingCd().v(), domain.getExterOutCdnSql().v());
     }
 }

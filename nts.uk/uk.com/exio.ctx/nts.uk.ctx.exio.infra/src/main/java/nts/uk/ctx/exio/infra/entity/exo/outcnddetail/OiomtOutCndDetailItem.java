@@ -39,13 +39,6 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable
     public String cid;
     
     /**
-    * 条件設定コード
-    */
-    @Basic(optional = true)
-    @Column(name = "COMPANY_CND_SET_CD")
-    public String companyCndSetCd;
-    
-    /**
     * ユーザID
     */
     @Basic(optional = true)
@@ -177,7 +170,7 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable
         return outCndDetailItemPk;
     }
 
-	public OiomtOutCndDetailItem(String categoryId,int categoryItemNo, String cid, String companyCndSetCd,
+	public OiomtOutCndDetailItem(String categoryId,int categoryItemNo, String cid, 
 			String userId, String conditionSettingCd, int conditionSymbol, BigDecimal searchNum, BigDecimal searchNumEndVal,
 			BigDecimal searchNumStartVal, String searchChar, String searchCharEndVal, String searchCharStartVal,
 			GeneralDate searchDate, GeneralDate searchDateEnd, GeneralDate searchDateStart, int searchClock,
@@ -185,7 +178,6 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable
 			int searchTimeStartVal) {
 		this.outCndDetailItemPk = new OiomtOutCndDetailItemPk(categoryId, categoryItemNo);
 		this.cid = cid;
-		this.companyCndSetCd = companyCndSetCd;
 		this.userId = userId;
 		this.conditionSettingCd = conditionSettingCd;
 		this.conditionSymbol = conditionSymbol;

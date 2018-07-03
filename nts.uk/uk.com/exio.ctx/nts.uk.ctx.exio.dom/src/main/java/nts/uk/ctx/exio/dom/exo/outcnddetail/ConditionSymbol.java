@@ -34,10 +34,10 @@ public enum ConditionSymbol {
 	LESS_OR_EQUAL(7, "Enum_ConditionSymbol_LESS_OR_EQUAL"),
 	
 	//同じ(複数)
-	IN(7, "Enum_ConditionSymbol_IN"),
+	IN(8, "Enum_ConditionSymbol_IN"),
 
 	//同じでない(複数)
-	NOT_IN(7, "Enum_ConditionSymbol_NOT_IN");
+	NOT_IN(9, "Enum_ConditionSymbol_NOT_IN");
 	
 
 	/** The value. */

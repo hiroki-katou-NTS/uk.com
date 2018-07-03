@@ -30,11 +30,6 @@ public class OutCndDetailItemDto {
 	private String cid;
 
 	/**
-	 * 条件設定コード
-	 */
-	private String companyCndSetCd;
-
-	/**
 	 * ユーザID
 	 */
 	private String userId;
@@ -125,7 +120,7 @@ public class OutCndDetailItemDto {
 	private int searchTimeStartVal;
 
 	public static OutCndDetailItemDto fromDomain(OutCndDetailItem domain) {
-		return new OutCndDetailItemDto(domain.getCategoryId(), domain.getCategoryItemNo().v(), domain.getCid().get(), domain.getCompanyCndSetCd().get().v(), domain.getUserId().get(),
+		return new OutCndDetailItemDto(domain.getCategoryId(), domain.getCategoryItemNo().v(), domain.getCid().get(), domain.getUserId().get(),
 				domain.getConditionSettingCd().get().v(), domain.getConditionSymbol().value, domain.getSearchNum().get().v(), domain.getSearchNumEndVal().get().v(), domain.getSearchNumStartVal().get().v(), domain.getSearchChar().get().v(),
 				domain.getSearchCharEndVal().get().v(), domain.getSearchCharStartVal().get().v(), domain.getSearchDate().get(), domain.getSearchDateEnd().get(), domain.getSearchDateStart().get(), domain.getSearchClock().get().v(),
 				domain.getSearchClockEndVal().get().v(), domain.getSearchClockStartVal().get().v(), domain.getSearchTime().get().v(), domain.getSearchTimeEndVal().get().v(), domain.getSearchTimeStartVal().get().v());
