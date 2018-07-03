@@ -129,6 +129,9 @@ module nts.uk.at.view.kmk006.a {
                 normalOTTime: AutoCalOvertimeSettingDto;
                 flexOTTime: AutoCalFlexOvertimeSettingDto;
                 restTime: AutoCalRestTimeSettingDto;
+                leaveEarly: AutoCalcOfLeaveEarlySettingDto;
+                raisingSalary: AutoCalRaisingSalarySettingDto;
+                divergenceTime: number;
             }
 
             export interface WkpAutoCalSettingDto {
@@ -136,6 +139,9 @@ module nts.uk.at.view.kmk006.a {
                 normalOTTime: AutoCalOvertimeSettingDto;
                 flexOTTime: AutoCalFlexOvertimeSettingDto;
                 restTime: AutoCalRestTimeSettingDto;
+                leaveEarly: AutoCalcOfLeaveEarlySettingDto;
+                raisingSalary: AutoCalRaisingSalarySettingDto;
+                divergenceTime: number;
             }
 
             export interface JobAutoCalSettingDto {
@@ -143,12 +149,18 @@ module nts.uk.at.view.kmk006.a {
                 normalOTTime: AutoCalOvertimeSettingDto;
                 flexOTTime: AutoCalFlexOvertimeSettingDto;
                 restTime: AutoCalRestTimeSettingDto;
+                leaveEarly: AutoCalcOfLeaveEarlySettingDto;
+                raisingSalary: AutoCalRaisingSalarySettingDto;
+                divergenceTime: number;                
             }
 
             export interface ComAutoCalSettingDto {
                 normalOTTime: AutoCalOvertimeSettingDto;
                 flexOTTime: AutoCalFlexOvertimeSettingDto;
                 restTime: AutoCalRestTimeSettingDto;
+                leaveEarly: AutoCalcOfLeaveEarlySettingDto;
+                raisingSalary: AutoCalRaisingSalarySettingDto;
+                divergenceTime: number;
             }
 
             export interface AutoCalFlexOvertimeSettingDto {
@@ -172,8 +184,16 @@ module nts.uk.at.view.kmk006.a {
                 upLimitOtSet: number;
                 calAtr: number;
             }
-
             
+            export interface AutoCalcOfLeaveEarlySettingDto {
+                late: boolean;
+                leaveEarly: boolean;
+            }
+
+            export interface AutoCalRaisingSalarySettingDto {
+                specificRaisingSalaryCalcAtr: boolean;
+                raisingSalaryCalcAtr: boolean;
+            }
 
             export class Enum {
                 value: number;

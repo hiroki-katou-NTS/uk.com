@@ -29,6 +29,7 @@ module nts.uk.at.view.kmk006.a {
             autoCalAtrOvertimeEnumWithoutTimeRecorder: Array<Enum>;
             selectedTab: KnockoutObservable<string>;
             timeLimitUpperLimitEnum: Array<Enum>;
+            autoCalcSetOfDivergenceTime: Array<Enum>;
             itemComAutoCalModel: ComAutoCalSettingModel;
             itemWkpAutoCalModel: WkpAutoCalSettingModel;
             itemJobAutoCalModel: JobAutoCalSettingModel;
@@ -53,6 +54,22 @@ module nts.uk.at.view.kmk006.a {
             valueEnumResResAtr: KnockoutObservable<number>;
             valueEnumResLatLi: KnockoutObservable<number>;
             valueEnumResLatAtr: KnockoutObservable<number>;
+            
+            // define value for autoCalcOfLeaveEarlySetting
+            autoCalcOfLeaveLateSetting: Array<any>;
+            autoCalcOfLeaveLate: KnockoutObservable<boolean>;
+            autoCalcOfLeaveEarlySetting: Array<any>;
+            autoCalcOfLeaveEarly: KnockoutObservable<boolean>;
+            
+            // define value for autoCalRaisingSalarySetting
+            autoCalRaisingSalarySetting: Array<any>;
+            raisingSalaryCalcAtr: KnockoutObservable<boolean>;
+            autoCalSpecificRaisingSalarySetting: Array<any>;
+            specificRaisingSalaryCalcAtr: KnockoutObservable<boolean>;
+            
+            // define value for autoCalcSetOfDivergenceTime
+            autoCalcSetOfDivergenceTime: Array<any>;
+            divergenceTime: KnockoutObservable<boolean>;
 
             jobListOptions: any;
             jobTotalListOptions: any;
@@ -117,6 +134,14 @@ module nts.uk.at.view.kmk006.a {
                     { id: 'tab-3', title: nts.uk.resource.getText("KMK006_16"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-4', title: nts.uk.resource.getText("KMK006_40"), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
+                
+                self.initDataSource();
+                
+                self.autoCalcOfLeaveLate = ko.observable(false);
+                self.autoCalcOfLeaveEarly = ko.observable(false);
+                self.raisingSalaryCalcAtr = ko.observable(false);
+                self.specificRaisingSalaryCalcAtr = ko.observable(false);
+                self.divergenceTime = ko.observable(false);
 
                 self.multiSelectedWorkplaceId = ko.observable('');
                 self.totalSelectedWorkplaceId = ko.observable('');
@@ -158,7 +183,7 @@ module nts.uk.at.view.kmk006.a {
                 self.autoCalAtrOvertimeEnum = [];
                 self.autoCalAtrOvertimeEnumWithoutTimeRecorder = [];
 
-                self.timeLimitUpperLimitEnum = [];
+                self.timeLimitUpperLimitEnum = [];                
                 self.valueEnumNorEarLi = ko.observable(2);
                 self.valueEnumNorEarAtr = ko.observable(2);
                 self.valueEnumNorEarMidLi = ko.observable(2);
@@ -398,6 +423,38 @@ module nts.uk.at.view.kmk006.a {
                     });
 
                 return dfd.promise();
+            }
+            
+            /**
+             * Initial data source 
+             */
+            public initDataSource(): void {
+                let self = this;
+                
+                self.autoCalcOfLeaveLateSetting = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];
+                
+                self.autoCalcOfLeaveEarlySetting = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];
+                
+                self.autoCalRaisingSalarySetting = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];
+                
+                self.autoCalSpecificRaisingSalarySetting = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];
+                
+                self.autoCalcSetOfDivergenceTime = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];
             }
 
             //load workPlace-job already setting
@@ -712,7 +769,10 @@ module nts.uk.at.view.kmk006.a {
                 var dto: ComAutoCalSettingDto = {
                     normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
                     flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemComAutoCalModel.restTime.toDto()
+                    restTime: self.itemComAutoCalModel.restTime.toDto(),
+                    leaveEarly: self.itemComAutoCalModel.restTime.toDto(),
+                    raisingSalary: self.itemComAutoCalModel.restTime.toDto(),
+                    divergenceTime: self.itemComAutoCalModel.restTime.toDto()
                 };
                 self.itemComAutoCalModel.updateData(self.itemComAutoCalModel.toDto());
                 service.saveComAutoCal(dto).done(function() {
@@ -751,7 +811,10 @@ module nts.uk.at.view.kmk006.a {
                     jobId: jobId,
                     normalOTTime: self.itemJobAutoCalModel.normalOTTime.toDto(),
                     flexOTTime: self.itemJobAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemJobAutoCalModel.restTime.toDto()
+                    restTime: self.itemJobAutoCalModel.restTime.toDto(),
+                    leaveEarly: self.itemComAutoCalModel.restTime.toDto(),
+                    raisingSalary: self.itemComAutoCalModel.restTime.toDto(),
+                    divergenceTime: self.itemComAutoCalModel.restTime.toDto()
                 };
 
                 self.itemJobAutoCalModel.updateData(self.itemJobAutoCalModel.toDto());
@@ -798,7 +861,10 @@ module nts.uk.at.view.kmk006.a {
                     wkpId: wkpId,
                     normalOTTime: self.itemWkpAutoCalModel.normalOTTime.toDto(),
                     flexOTTime: self.itemWkpAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemWkpAutoCalModel.restTime.toDto()
+                    restTime: self.itemWkpAutoCalModel.restTime.toDto(),
+                    leaveEarly: self.itemComAutoCalModel.restTime.toDto(),
+                    raisingSalary: self.itemComAutoCalModel.restTime.toDto(),
+                    divergenceTime: self.itemComAutoCalModel.restTime.toDto()
                 };
 
                 self.itemWkpAutoCalModel.updateData(self.itemWkpAutoCalModel.toDto());
@@ -856,7 +922,10 @@ module nts.uk.at.view.kmk006.a {
                     jobId: jobId,
                     normalOTTime: self.itemWkpJobAutoCalModel.normalOTTime.toDto(),
                     flexOTTime: self.itemWkpJobAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemWkpJobAutoCalModel.restTime.toDto()
+                    restTime: self.itemWkpJobAutoCalModel.restTime.toDto(),
+                    leaveEarly: self.itemComAutoCalModel.restTime.toDto(),
+                    raisingSalary: self.itemComAutoCalModel.restTime.toDto(),
+                    divergenceTime: self.itemComAutoCalModel.restTime.toDto()
                 };
 
                 self.itemWkpJobAutoCalModel.updateData(self.itemWkpJobAutoCalModel.toDto());
