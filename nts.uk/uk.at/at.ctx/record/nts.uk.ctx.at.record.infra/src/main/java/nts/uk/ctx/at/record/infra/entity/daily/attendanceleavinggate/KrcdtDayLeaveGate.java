@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The persistent class for the KRCDT_DAY_LEAVE_GATE database table.
@@ -27,7 +28,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Table(name = "KRCDT_DAY_LEAVE_GATE")
 // @NamedQuery(name="KrcdtDayLeaveGate.findAll", query="SELECT k FROM
 // KrcdtDayLeaveGate k")
-public class KrcdtDayLeaveGate implements Serializable {
+public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -115,5 +116,10 @@ public class KrcdtDayLeaveGate implements Serializable {
 
 	private StampSourceInfo toWorkLocationCD(Integer stampSource) {
 		return stampSource == null ? null : EnumAdaptor.valueOf(stampSource, StampSourceInfo.class);
+	}
+
+	@Override
+	protected Object getKey() {
+		return this.id;
 	}
 }

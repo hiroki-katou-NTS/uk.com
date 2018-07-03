@@ -139,7 +139,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 			TimeLeavingOfDailyPerformance timeLeave, String employeeID, GeneralDate day) {
 		/** 自動打刻セットする */
 		timeLeave = reflectService.createStamp(companyId, workInfo, workConditionRepo.getBySidAndStandardDate(employeeID, day),
-				timeLeave, employeeID, day);
+				timeLeave, employeeID, day, null);
 		if(timeLeave != null) {
 			timeLeave.setWorkTimes(new WorkTimes(countTime(timeLeave)));
 			this.timeLeaveRepo.update(timeLeave);
