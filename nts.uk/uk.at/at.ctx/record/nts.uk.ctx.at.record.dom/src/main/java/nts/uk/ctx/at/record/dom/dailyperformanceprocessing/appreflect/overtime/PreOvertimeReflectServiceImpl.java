@@ -121,7 +121,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo()),null);
+			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo()),null,Optional.empty(),Optional.empty());
 			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
 			return true;
 	

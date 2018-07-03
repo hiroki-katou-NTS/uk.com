@@ -35,5 +35,15 @@ public class DeductLeaveEarly extends DomainObject{
 	}
 	
 	private static final int TRUE_CONST = 1;
+	
+	
+	/**
+	 * 控除区分を「控除する」に変更するだけ
+	 * @return
+	 */
+	public DeductLeaveEarly changeDeduct() {
+		int test = this.enableSetPerWorkHour?1:0;
+		return new DeductLeaveEarly(1,test);
+	}
 }
 
