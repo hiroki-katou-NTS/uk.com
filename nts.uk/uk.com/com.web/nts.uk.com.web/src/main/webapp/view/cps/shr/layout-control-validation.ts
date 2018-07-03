@@ -901,7 +901,7 @@ module nts.layout {
                         workType.ctrl.on('click', () => {
                             setShared("KDL002_Multiple", false, true);
                             setShared('kdl002isSelection', false, true);
-                            setShared("KDL002_SelectedItemId", workType.data.value(), true);
+                            setShared("KDL002_SelectedItemId", _.isNil(workType.data.value())? []: [workType.data.value()], true);
                             setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                             modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -946,7 +946,7 @@ module nts.layout {
                             } else {
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', true, true);
-                                setShared("KDL002_SelectedItemId", workType.data.value(), true);
+                                setShared("KDL002_SelectedItemId", _.isNil(workType.data.value())? []: [workType.data.value()], true);
                                 setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                 modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -996,17 +996,19 @@ module nts.layout {
 
                                 modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
                                     let childData: Array<any> = getShared('kml001selectedTimes');
-                                    if (childData.length > 0) {
-                                        let data: any = childData[0];
-                                        setData(workTime, data.selectedWorkTimeCode);
+                                    if (childData) {
+                                        if (childData.length > 0) {
+                                            let data: any = childData[0];
+                                            setData(workTime, data.selectedWorkTimeCode);
 
-                                        firstTimes && setData(firstTimes.start, data.first && data.first.start);
-                                        firstTimes && setData(firstTimes.end, data.first && data.first.end);
+                                            firstTimes && setData(firstTimes.start, data.first && data.first.start);
+                                            firstTimes && setData(firstTimes.end, data.first && data.first.end);
 
-                                        secondTimes && setData(secondTimes.start, data.second && data.second.start);
-                                        secondTimes && setData(secondTimes.end, data.second && data.second.end);
+                                            secondTimes && setData(secondTimes.start, data.second && data.second.start);
+                                            secondTimes && setData(secondTimes.end, data.second && data.second.end);
 
-                                        validateEditable(group, workTime.data.value);
+                                            validateEditable(group, workTime.data.value);
+                                        }
                                     }
                                 });
                             }
@@ -1329,7 +1331,7 @@ module nts.layout {
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
 
-                    if (!empId) {
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
 
@@ -1354,7 +1356,7 @@ module nts.layout {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00084.data);
 
-                    if (!empId) {
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
 
@@ -1380,7 +1382,7 @@ module nts.layout {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00085.data);
 
-                    if (!empId) {
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
 
@@ -1975,7 +1977,7 @@ module nts.layout {
                 CS00070IS00781: IFindData = finder.find('CS00070', 'IS00781'),
                 CS00070IS00782: IFindData = finder.find('CS00070', 'IS00782');
 
-            
+
 
             if (CS00070IS00781) {
                 CS00070IS00781.data.editable(false);

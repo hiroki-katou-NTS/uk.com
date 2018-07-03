@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.function.dom.holidaysremaining.report;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.YearMonth;
 
 @Getter
 @Setter
@@ -13,8 +16,9 @@ public class HolidaysRemainingEmployee {
 	private String workplaceName;
 	private String employmentName;
 	private String jobTitle;
+	private Optional<YearMonth> currentMonth;
 	public HolidaysRemainingEmployee(String employeeId, String employeeCode, String employeeName, String workplaceCode,
-			String workplaceName, String employmentName, String jobTitle) {
+			String workplaceName, String employmentName, String jobTitle, Optional<YearMonth> currentMonth) {
 		super();
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
@@ -23,5 +27,6 @@ public class HolidaysRemainingEmployee {
 		this.workplaceName = workplaceName;
 		this.employmentName = employmentName;
 		this.jobTitle = jobTitle;
+		this.currentMonth = currentMonth;
 	}
 }

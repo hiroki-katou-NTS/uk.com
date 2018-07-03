@@ -1,6 +1,7 @@
 module nts.uk.at.view.kwr001.c {
     
     import service = nts.uk.at.view.kwr001.c.service;
+    import blockUI = nts.uk.ui.block;
     
     export module viewmodel {
         export class ScreenModel {
@@ -250,6 +251,7 @@ module nts.uk.at.view.kwr001.c {
                         self.items(arrTemp);
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR001_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR001_D').nameCopy);
+                        self.saveData();
                     } else {
                         self.currentCodeList(self.storeCurrentCodeBeforeCopy());
                     }
@@ -265,7 +267,7 @@ module nts.uk.at.view.kwr001.c {
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }
-                
+                blockUI.grayout();
                 let dfd = $.Deferred();
                 let command: any = {};
                 command.itemCode = self.C3_2_value();
@@ -294,10 +296,12 @@ module nts.uk.at.view.kwr001.c {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                            $('#C3_3').focus(); 
                         });
+                        blockUI.clear();
                         dfd.resolve();
                     })
                     
                 }).fail(function(err) {
+                    blockUI.clear();
                     if (err.messageId == "Msg_3") {
                         $("#C3_2").ntsError('set', { messageId: "Msg_3"});
                     }
@@ -355,6 +359,7 @@ module nts.uk.at.view.kwr001.c {
             private removeData(): void {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    blockUI.grayout();
                     service.remove(self.currentCodeList()).done(function() {
                         let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
                             return self.currentCodeList() == value.code;
@@ -373,6 +378,7 @@ module nts.uk.at.view.kwr001.c {
                             self.currentCodeList(self.outputItemList()[indexCurrentCode+1].code);
                         }
                         self.getDataService().done(function(){
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                                 if (_.isEmpty(self.currentCodeList())) {
                                     $('#C3_2').focus();

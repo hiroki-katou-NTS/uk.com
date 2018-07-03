@@ -139,3 +139,7 @@ button.ntsUpButton, button.ntsDownButton {
 .ntsSwapComponent {
 	vertical-align: top;
 }
+
+.ntsUpButton {
+	margin-top: 75px;
+}
