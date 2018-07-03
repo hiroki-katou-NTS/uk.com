@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
-import nts.arc.primitive.constraint.IntegerMinValue;
+import nts.arc.primitive.constraint.HalfIntegerRange;
+
 
 /* 連続休暇チェック日数 */
-@IntegerMinValue(0)
-@IntegerMaxValue(99)
+@HalfIntegerRange(min = 0, max = 99)
 public class ContinuousVacationDays extends IntegerPrimitiveValue<ContinuousVacationDays> {
 
 	/**

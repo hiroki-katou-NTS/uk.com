@@ -155,6 +155,7 @@ module nts.uk.at.view.kdw010.a {
                         var useAtr = self.selectUse() == 1 ? true : false;
                         var continuousHolCheckSet: model.ContinuousHolCheckSet = new model.ContinuousHolCheckSet(self.selectedCodeTargetWorkType(), self.selectedCodeIgnoreWorkType(), useAtr, self.displayMessege(), self.maxContinuousDay.value(), self.updateMode());
                         service.saveContinuousHolCheckSet(continuousHolCheckSet).done(function() {
+                            self.updateMode(true);
                             nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
                         });
                     }

@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 /* エラーアラームメッセージ */
-@StringMaxLength(100)
+@StringMaxLength(200)
 public class DisplayMessage extends StringPrimitiveValue<DisplayMessage> {
 
 	private static final long serialVersionUID = 1L;
