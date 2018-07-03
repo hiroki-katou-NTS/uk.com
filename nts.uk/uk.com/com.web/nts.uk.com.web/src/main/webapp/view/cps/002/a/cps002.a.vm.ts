@@ -690,6 +690,29 @@ module cps002.a.vm {
             command.initSettingId = self.currentInitSetting().itemId;
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
+            
+            // list category nghỉ đặc biệt còn lại
+            var listCtg = [{ctgCode :'CS00039'}, {ctgCode :'CS00040'}, {ctgCode :'CS00041'}, {ctgCode :'CS00042'}, {ctgCode :'CS00043'}, {ctgCode :'CS00044'}, {ctgCode :'CS00045'}, {ctgCode :'CS00046'}, {ctgCode :'CS00047'}, {ctgCode :'CS00048'}, 
+                           {ctgCode :'CS00059'}, {ctgCode :'CS00060'}, {ctgCode :'CS00061'}, {ctgCode :'CS00062'}, {ctgCode :'CS00063'}, {ctgCode :'CS00064'}, {ctgCode :'CS00065'}, {ctgCode :'CS00066'}, {ctgCode :'CS00067'}, {ctgCode :'CS00068'}];
+            for (var i = 0; i < command.inputs.length; i++) {
+                if (_.filter(listCtg, function(o) { return o.ctgCode === command.inputs[i].categoryCd; }).length > 0) {
+                    if((command.inputs[i].items[0].value == undefined) 
+                        ||(command.inputs[i].items[1].value == undefined) 
+                        || (command.inputs[i].items[3].value == undefined) 
+                        || (command.inputs[i].items[4].value == undefined) 
+                        || (command.inputs[i].items[5].value == undefined) 
+                        || (command.inputs[i].items[6].value == undefined) 
+                        || (command.inputs[i].items[7].value == undefined) 
+                        || (command.inputs[i].items[8].value == undefined) 
+                        || (command.inputs[i].items[9].value == undefined) 
+                        || (command.inputs[i].items[10].value == undefined)){
+                        _.remove(command.inputs, function(n: any) {
+                            return n.categoryCd == command.inputs[i].categoryCd;
+                        });
+                    }
+                }
+            }
+            
 
             if (!self.isError()) {
 
