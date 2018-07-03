@@ -14,12 +14,16 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecAbsHistoryOutputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffOutputHisData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -37,6 +41,12 @@ public class EmploymentSystemFinder {
 	
 	@Inject
 	AbsenceReruitmentManaQuery absenceReruitmentManaQuery;
+	
+	@Inject
+	CompensLeaveEmSetRepository compensLeaveEmSetRepository;
+	
+	@Inject
+	ShareEmploymentAdapter employeeAdaptor;
 	
 	/** 
 	 * KDL005
@@ -113,7 +123,14 @@ public class EmploymentSystemFinder {
 				
 				Double useDays  = item.getUseDays() != null ? item.getUseDays() : 0.0;
 				
-				BreakDayOffHistoryDto outputDto = new BreakDayOffHistoryDto(hisDate, breakHis, dayOffHis, useDays);
+				Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
+				if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
+					throw new BusinessException("khong co employeeCode");
+				}
+				
+				CompensatoryLeaveEmSetting compensatoryLeaveEmSet = this.compensLeaveEmSetRepository.find(companyId, empHistImport.get().getEmploymentCode());
+				
+				BreakDayOffHistoryDto outputDto = new BreakDayOffHistoryDto(hisDate, breakHis, dayOffHis, useDays, compensatoryLeaveEmSet.getIsManaged().value);
 				lstHistory.add(outputDto);
 			}
 		}

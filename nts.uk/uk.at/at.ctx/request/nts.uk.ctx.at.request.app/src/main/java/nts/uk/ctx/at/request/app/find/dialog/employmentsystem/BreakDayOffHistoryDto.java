@@ -23,6 +23,10 @@ public class BreakDayOffHistoryDto {
 	 * 使用日数
 	 */
 	public Double useDays;
+	/**
+	 * 「雇用の代休管理設定.管理区分」
+	 */
+	public int isManaged;
 }
 
 @AllArgsConstructor

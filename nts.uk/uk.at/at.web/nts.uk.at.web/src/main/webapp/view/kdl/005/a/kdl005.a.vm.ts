@@ -129,9 +129,9 @@ module nts.uk.at.view.kdl005.a {
                         if(item.breakHis != null) {
                             if(!item.breakHis.chkDisappeared) {
                                 if(item.breakHis.mngAtr == 0 || item.breakHis.mngAtr == 4) {
-                                    leaveDate = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.breakDate.dayoffDate])]);
+                                    leaveDate = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_MDW", [item.breakHis.breakDate.dayoffDate])]);
                                 } else {
-                                    leaveDate = nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.breakDate.dayoffDate]);
+                                    leaveDate = nts.uk.time.applyFormat("Short_MDW", [item.breakHis.breakDate.dayoffDate]);
                                 }
                             } else {
                                 leaveDate = "";
@@ -144,8 +144,8 @@ module nts.uk.at.view.kdl005.a {
                                 occurrenceDays1 = item.breakHis.occurrenceDays + nts.uk.resource.getText("KDL005_27");
                             }
                             
-                            if(item.breakHis.expirationDate != null) {
-                                duedateHoliday = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.expirationDate])]);
+                            if(item.breakHis.expirationDate != null && item.isManaged == 1) {
+                                duedateHoliday = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_MDW", [item.breakHis.expirationDate])]);
                             } else {
                                 duedateHoliday = "";
                             }
@@ -160,7 +160,7 @@ module nts.uk.at.view.kdl005.a {
                                 }
                             } else {
                                 if(item.dayOffHis.dayOffDate.dayoffDate != null) {
-                                    dayOffDate = nts.uk.time.applyFormat("Short_YMDW", [item.dayOffHis.dayOffDate.dayoffDate]);
+                                    dayOffDate = nts.uk.time.applyFormat("Short_MDW", [item.dayOffHis.dayOffDate.dayoffDate]);
                                 } else {
                                     dayOffDate = "";
                                 }

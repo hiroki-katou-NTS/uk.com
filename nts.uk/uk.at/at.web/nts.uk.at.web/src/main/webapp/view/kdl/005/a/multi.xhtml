@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 980, height: 740 };</script>
+				<script>var dialogSize = { width: 1000, height: 700 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="kdl005.a.start.js" />
 				<com:scriptfile path="kdl005.a.vm.js" />
@@ -39,9 +39,9 @@
 						<div class="date-fixed-table">
 							<table id="date-fixed-table">
 								<colgroup>
-									<col width="170px"/>
-									<col width="170px"/>
-									<col width="130px"/>
+									<col width="180px"/>
+									<col width="180px"/>
+									<col width="150px"/>
 								</colgroup>
 								<thead>
 									<tr>
@@ -62,7 +62,7 @@
 			 										<span style="float: left; padding-left: 5px;" data-bind="text: dayOffDate"></span> 
 			 										<span style="float: right; padding-right: 5px;" data-bind="text: occurrenceDays2"></span>
 		 										</td>
-			 									<td rowspan="2"><span style="float: left; padding-left: 5px;" data-bind="text: duedateHoliday"></span></td>
+			 									<td rowspan="2"><span style="float: left;" data-bind="text: duedateHoliday"></span></td>
 											</tr>
 											<tr>
 												<td>
@@ -81,7 +81,7 @@
 		 										<span style="float: left; padding-left: 5px;" data-bind="text: dayOffDate"></span> 
 		 										<span style="float: right; padding-right: 5px;" data-bind="text: occurrenceDays2"></span>
 	 										</td>
-		 									<td><span style="float: left; padding-left: 5px;" data-bind="text: duedateHoliday"></span></td>
+		 									<td><span style="float: left;" data-bind="text: duedateHoliday"></span></td>
 										</tr>
 									</com:ko-foreach>
 								</tbody>
