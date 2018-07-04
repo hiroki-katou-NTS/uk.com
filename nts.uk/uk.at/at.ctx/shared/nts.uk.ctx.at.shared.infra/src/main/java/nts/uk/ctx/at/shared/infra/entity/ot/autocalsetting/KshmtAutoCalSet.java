@@ -155,4 +155,40 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	public boolean isSpecificRaisingCalcAtr(){
 		return this.specificRaisingCalcAtr == 0 ? false : true;
 	}
+
+	/**
+	 * Sets the leave early.
+	 *
+	 * @param val the new leave early
+	 */
+	public void setLeaveEarly(boolean val) {
+		this.leaveEarly = val ? 1 : 0;
+	}
+
+	/**
+	 * Sets the leave late.
+	 *
+	 * @param val the new leave late
+	 */
+	public void setLeaveLate(boolean val) {
+		this.leaveLate = val ? 1 : 0;
+	}
+
+	/**
+	 * Sets the raising calc atr.
+	 *
+	 * @param val the new raising calc atr
+	 */
+	public void setRaisingCalcAtr(boolean val) {
+		this.raisingCalcAtr = val ? 1 : 0;
+	}
+
+	/**
+	 * Sets the specific raising calc atr.
+	 *
+	 * @param val the new specific raising calc atr
+	 */
+	public void setSpecificRaisingCalcAtr(boolean val) {
+		this.specificRaisingCalcAtr = val ? 1 : 0;
+	}
 }
