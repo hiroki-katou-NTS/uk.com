@@ -42,10 +42,12 @@ public class ExOutOpMngDto {
 	*/
 
 	private String proUnit;
+	
+	
+	
+	
 	private int opCond;
-	/**
-	* 
-	*/
+	
 
 
 

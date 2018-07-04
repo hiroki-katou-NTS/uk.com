@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.infra.entity.exo.executionlog.OiomtExOutOpMngPk;
 public class JpaExOutOpMngRepository extends JpaRepository implements ExOutOpMngRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExOut OpMng f";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExOutOpMng f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.exOutOpMngPk.exOutProId =:exOutProId ";
 
     @Override
