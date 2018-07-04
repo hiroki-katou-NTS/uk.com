@@ -1542,16 +1542,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					this.calcOverTime9 = 0;
 					this.calcOverTime10= 0;
 					//計算振替時間
-					this.calcTransTime1 = 0;
-					this.calcTransTime2 = 0;
-					this.calcTransTime3 = 0;
-					this.calcTransTime4 = 0;
-					this.calcTransTime5 = 0;
-					this.calcTransTime6 = 0;
-					this.calcTransTime7 = 0;
-					this.calcTransTime8 = 0;
-					this.calcTransTime9 = 0;
-					this.calcTransTime10= 0;
+					this.calcTransOverTime1 = 0;
+					this.calcTransOverTime2 = 0;
+					this.calcTransOverTime3 = 0;
+					this.calcTransOverTime4 = 0;
+					this.calcTransOverTime5 = 0;
+					this.calcTransOverTime6 = 0;
+					this.calcTransOverTime7 = 0;
+					this.calcTransOverTime8 = 0;
+					this.calcTransOverTime9 = 0;
+					this.calcTransOverTime10 = 0;
 					//事前残業申請
 					this.preOverTimeAppTime1 = 0;
 					this.preOverTimeAppTime2 = 0;
@@ -1564,16 +1564,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					this.preOverTimeAppTime9 = 0;
 					this.preOverTimeAppTime10 = 0;
 					//残業乖離時間
-					this.divergenceTime1  = 0;
-					this.divergenceTime2  = 0;
-					this.divergenceTime3  = 0;
-					this.divergenceTime4  = 0;
-					this.divergenceTime5  = 0;
-					this.divergenceTime6  = 0;
-					this.divergenceTime7  = 0;
-					this.divergenceTime8  = 0;
-					this.divergenceTime9  = 0;
-					this.divergenceTime10 = 0;
+					this.divOverTime1  = 0;
+					this.divOverTime2  = 0;
+					this.divOverTime3  = 0;
+					this.divOverTime4  = 0;
+					this.divOverTime5  = 0;
+					this.divOverTime6  = 0;
+					this.divOverTime7  = 0;
+					this.divOverTime8  = 0;
+					this.divOverTime9  = 0;
+					this.divOverTime10 = 0;
 					//振替乖離時間
 					this.divTransOverTime1 = 0;
 					this.divTransOverTime2 = 0;
@@ -1707,27 +1707,27 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 								this.preOverTimeAppTime9 = frame9.getBeforeApplicationTime() == null ? 0 : frame9.getBeforeApplicationTime().valueAsMinutes();
 								this.preOverTimeAppTime10 = frame10.getBeforeApplicationTime() == null ? 0 : frame10.getBeforeApplicationTime().valueAsMinutes();
 								//残業乖離時間
-								this.divergenceTime1  = frame1.getOverTimeWork() == null || frame1.getOverTimeWork().getTime() == null ? 0 : frame1.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-								this.divergenceTime2  = frame2.getOverTimeWork() == null || frame2.getOverTimeWork().getTime() == null ? 0 : frame2.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-								this.divergenceTime3  = frame3.getOverTimeWork() == null || frame3.getOverTimeWork().getTime() == null ? 0 : frame3.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-								this.divergenceTime4  = frame4.getOverTimeWork() == null || frame4.getOverTimeWork().getTime() == null ? 0 : frame4.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-								this.divergenceTime5  = frame5.getOverTimeWork() == null || frame5.getOverTimeWork().getTime() == null ? 0 : frame5.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-								this.divergenceTime6  = frame6.getOverTimeWork() == null || frame6.getOverTimeWork().getTime() == null ? 0 : frame6.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-								this.divergenceTime7  = frame7.getOverTimeWork() == null || frame7.getOverTimeWork().getTime() == null ? 0 : frame7.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-								this.divergenceTime8  = frame8.getOverTimeWork() == null || frame8.getOverTimeWork().getTime() == null ? 0 : frame8.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-								this.divergenceTime9  = frame9.getOverTimeWork() == null || frame9.getOverTimeWork().getTime() == null ? 0 : frame9.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-								this.divergenceTime10 = frame10.getOverTimeWork() == null || frame10.getOverTimeWork().getTime() == null ? 0 : frame10.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime1  = frame1.getOverTimeWork() == null || frame1.getOverTimeWork().getTime() == null ? 0 : frame1.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime2  = frame2.getOverTimeWork() == null || frame2.getOverTimeWork().getTime() == null ? 0 : frame2.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime3  = frame3.getOverTimeWork() == null || frame3.getOverTimeWork().getTime() == null ? 0 : frame3.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime4  = frame4.getOverTimeWork() == null || frame4.getOverTimeWork().getTime() == null ? 0 : frame4.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime5  = frame5.getOverTimeWork() == null || frame5.getOverTimeWork().getTime() == null ? 0 : frame5.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime6  = frame6.getOverTimeWork() == null || frame6.getOverTimeWork().getTime() == null ? 0 : frame6.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime7  = frame7.getOverTimeWork() == null || frame7.getOverTimeWork().getTime() == null ? 0 : frame7.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime8  = frame8.getOverTimeWork() == null || frame8.getOverTimeWork().getTime() == null ? 0 : frame8.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime9  = frame9.getOverTimeWork() == null || frame9.getOverTimeWork().getTime() == null ? 0 : frame9.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime10 = frame10.getOverTimeWork() == null || frame10.getOverTimeWork().getTime() == null ? 0 : frame10.getOverTimeWork().getDivergenceTime().valueAsMinutes();
 								//振替乖離時間
-								this.calcTransOverTime1 = frame1.getTransferTime() == null || frame1.getTransferTime().getTime() == null ? 0 : frame1.getTransferTime().getDivergenceTime().valueAsMinutes();
-								this.calcTransOverTime2 = frame2.getTransferTime() == null || frame2.getTransferTime().getTime() == null ? 0 : frame2.getTransferTime().getDivergenceTime().valueAsMinutes();
-								this.calcTransOverTime3 = frame3.getTransferTime() == null || frame3.getTransferTime().getTime() == null ? 0 : frame3.getTransferTime().getDivergenceTime().valueAsMinutes();
-								this.calcTransOverTime4 = frame4.getTransferTime() == null || frame4.getTransferTime().getTime() == null ? 0 : frame4.getTransferTime().getDivergenceTime().valueAsMinutes();
-								this.calcTransOverTime5 = frame5.getTransferTime() == null || frame5.getTransferTime().getTime() == null ? 0 : frame5.getTransferTime().getDivergenceTime().valueAsMinutes();
-								this.calcTransOverTime6 = frame6.getTransferTime() == null || frame6.getTransferTime().getTime() == null ? 0 : frame6.getTransferTime().getDivergenceTime().valueAsMinutes();
-								this.calcTransOverTime7 = frame7.getTransferTime() == null || frame7.getTransferTime().getTime() == null ? 0 : frame7.getTransferTime().getDivergenceTime().valueAsMinutes();
-								this.calcTransOverTime8 = frame8.getTransferTime() == null || frame8.getTransferTime().getTime() == null ? 0 : frame8.getTransferTime().getDivergenceTime().valueAsMinutes();
-								this.calcTransOverTime9 = frame9.getTransferTime() == null || frame9.getTransferTime().getTime() == null ? 0 : frame9.getTransferTime().getDivergenceTime().valueAsMinutes();
-								this.calcTransOverTime10 = frame10.getTransferTime() == null || frame10.getTransferTime().getTime() == null ? 0 : frame10.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime1 = frame1.getTransferTime() == null || frame1.getTransferTime().getTime() == null ? 0 : frame1.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime2 = frame2.getTransferTime() == null || frame2.getTransferTime().getTime() == null ? 0 : frame2.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime3 = frame3.getTransferTime() == null || frame3.getTransferTime().getTime() == null ? 0 : frame3.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime4 = frame4.getTransferTime() == null || frame4.getTransferTime().getTime() == null ? 0 : frame4.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime5 = frame5.getTransferTime() == null || frame5.getTransferTime().getTime() == null ? 0 : frame5.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime6 = frame6.getTransferTime() == null || frame6.getTransferTime().getTime() == null ? 0 : frame6.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime7 = frame7.getTransferTime() == null || frame7.getTransferTime().getTime() == null ? 0 : frame7.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime8 = frame8.getTransferTime() == null || frame8.getTransferTime().getTime() == null ? 0 : frame8.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime9 = frame9.getTransferTime() == null || frame9.getTransferTime().getTime() == null ? 0 : frame9.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime10 = frame10.getTransferTime() == null || frame10.getTransferTime().getTime() == null ? 0 : frame10.getTransferTime().getDivergenceTime().valueAsMinutes();
 							}
 						}
 					}

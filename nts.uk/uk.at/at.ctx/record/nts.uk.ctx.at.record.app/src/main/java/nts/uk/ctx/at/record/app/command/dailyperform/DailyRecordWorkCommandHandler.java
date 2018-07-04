@@ -255,9 +255,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private CheckPairDeviationReason checkPairDeviationReason;
 	
-	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
+	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
-	private final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
+	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
 		DOMAIN_CHANGED_BY_EVENT.put(DAILY_WORK_INFO_CODE, 
 									getArray(DAILY_ATTENDACE_LEAVE_CODE, 
