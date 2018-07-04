@@ -52,7 +52,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCen
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
@@ -243,11 +242,11 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private CalculateDailyRecordServiceCenter calcService;
 	
-	@Inject 
-	private ErAlCheckService determineErrorAlarmWorkRecordService;
+//	@Inject 
+//	private ErAlCheckService determineErrorAlarmWorkRecordService;
 	
 	@Inject
-	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
+	private EmployeeDailyPerErrorRepository employeeErrorRepo;
 	
 	@Inject
 	private DailyRecordWorkFinder finder;
@@ -332,9 +331,11 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	private void registerErrorWhenCalc(Map<String, List<GeneralDate>> param, List<EmployeeDailyPerError> errors) {
 		//remove data error
-		employeeDailyPerErrorRepository.removeParam(param);
+		employeeErrorRepo.removeParam(param);
 		//insert error;
-		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
+		employeeErrorRepo.insert(errors.stream().filter(e -> e!= null && e.getAttendanceItemList().get(0) != null)
+				.collect(Collectors.toList()));
+//		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
 	}
 
 	@SuppressWarnings({ "unchecked" })
