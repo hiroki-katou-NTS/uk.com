@@ -17,6 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrcmtInterimSpeHoliday extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcmtInterimSpeHolidayPK pk;
+
 	/** 予定実績区分 */
 	@Column(name ="SCHE_RECORD_ATR")	
 	public int scheRecordAtr;

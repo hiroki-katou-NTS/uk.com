@@ -475,16 +475,15 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					listApprovalPhaseAfter, perAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
 			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
-				approvalRootStateRepository.insert(companyID,ApprovalRootState.createFromFirst(
+				approvalRootState = ApprovalRootState.createFromFirst(
 						companyID,
 						appID,  
 						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
 						approvalRootState.getHistoryID(), 
 						standardDate, 
 						employeeID, 
-						approvalRootState),
-						RootType.CONFIRM_WORK_BY_DAY.value);
-				approvalRootState = approvalRootStateRepository.findByID(appID, RootType.CONFIRM_WORK_BY_DAY.value).get();
+						approvalRootState);
+				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -500,16 +499,15 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					listApprovalPhaseAfter, opPerAppRootsOfCommon.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
 			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
-				approvalRootStateRepository.insert(companyID, ApprovalRootState.createFromFirst(
+				approvalRootState = ApprovalRootState.createFromFirst(
 						companyID,
 						appID,  
 						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
 						approvalRootState.getHistoryID(), 
 						standardDate, 
 						employeeID, 
-						approvalRootState),
-						RootType.CONFIRM_WORK_BY_DAY.value);
-				approvalRootState = approvalRootStateRepository.findByID(appID, RootType.CONFIRM_WORK_BY_DAY.value).get();
+						approvalRootState);
+				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -525,16 +523,15 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						listApprovalPhaseAfter, wkpAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
 				if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 					String appID = IdentifierUtil.randomUniqueId();
-					approvalRootStateRepository.insert(companyID, ApprovalRootState.createFromFirst(
+					approvalRootState = ApprovalRootState.createFromFirst(
 							companyID,
 							appID,  
 							EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
 							approvalRootState.getHistoryID(), 
 							standardDate, 
 							employeeID, 
-							approvalRootState),
-							RootType.CONFIRM_WORK_BY_DAY.value);
-					approvalRootState = approvalRootStateRepository.findByID(appID, RootType.CONFIRM_WORK_BY_DAY.value).get();
+							approvalRootState);
+					approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -547,16 +544,15 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						listApprovalPhaseAfter, opWkpAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
 				if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 					String appID = IdentifierUtil.randomUniqueId();
-					approvalRootStateRepository.insert(companyID, ApprovalRootState.createFromFirst(
+					approvalRootState = ApprovalRootState.createFromFirst(
 							companyID,
 							appID,  
 							EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
 							approvalRootState.getHistoryID(), 
 							standardDate, 
 							employeeID, 
-							approvalRootState),
-							RootType.CONFIRM_WORK_BY_DAY.value);
-					approvalRootState = approvalRootStateRepository.findByID(appID, RootType.CONFIRM_WORK_BY_DAY.value).get();
+							approvalRootState);
+					approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -571,16 +567,15 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					listApprovalPhaseAfter, comAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
 			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
-				approvalRootStateRepository.insert(companyID, ApprovalRootState.createFromFirst(
+				approvalRootState = ApprovalRootState.createFromFirst(
 						companyID,
 						appID,  
 						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
 						approvalRootState.getHistoryID(), 
 						standardDate, 
 						employeeID, 
-						approvalRootState),
-						RootType.CONFIRM_WORK_BY_DAY.value);
-				approvalRootState = approvalRootStateRepository.findByID(appID, RootType.CONFIRM_WORK_BY_DAY.value).get();
+						approvalRootState);
+				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -594,16 +589,15 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					listApprovalPhaseAfter, opCompanyAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
 			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
-				approvalRootStateRepository.insert(companyID, ApprovalRootState.createFromFirst(
+				approvalRootState = ApprovalRootState.createFromFirst(
 						companyID,
 						appID,  
 						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
 						approvalRootState.getHistoryID(), 
 						standardDate, 
 						employeeID, 
-						approvalRootState),
-						RootType.CONFIRM_WORK_BY_DAY.value);
-				approvalRootState = approvalRootStateRepository.findByID(appID, RootType.CONFIRM_WORK_BY_DAY.value).get();
+						approvalRootState);
+				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}

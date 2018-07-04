@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDail
 import nts.uk.ctx.at.record.dom.approvalmanagement.domainservice.DeleteApprovalStaOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.calculationattribute.repo.NCalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -70,7 +70,7 @@ public class DeleteWorkInfoOfDaiPerService {
 	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
 	
 	@Inject
-	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
+	private NCalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
 	
 	@Inject
 	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
