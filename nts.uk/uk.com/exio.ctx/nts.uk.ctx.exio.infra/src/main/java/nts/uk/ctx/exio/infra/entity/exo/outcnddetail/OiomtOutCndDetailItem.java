@@ -127,42 +127,42 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "SEARCH_CLOCK")
-    public int searchClock;
+    public Integer searchClock;
     
     /**
     * 検索時刻終了値
     */
     @Basic(optional = true)
     @Column(name = "SEARCH_CLOCK_END_VAL")
-    public int searchClockEndVal;
+    public Integer searchClockEndVal;
     
     /**
     * 検索時刻開始値
     */
     @Basic(optional = true)
     @Column(name = "SEARCH_CLOCK_START_VAL")
-    public int searchClockStartVal;
+    public Integer searchClockStartVal;
     
     /**
     * 検索時間
     */
     @Basic(optional = true)
     @Column(name = "SEARCH_TIME")
-    public int searchTime;
+    public Integer searchTime;
     
     /**
     * 検索時間終了値
     */
     @Basic(optional = true)
     @Column(name = "SEARCH_TIME_END_VAL")
-    public int searchTimeEndVal;
+    public Integer searchTimeEndVal;
     
     /**
     * 検索時間開始値
     */
     @Basic(optional = true)
     @Column(name = "SEARCH_TIME_START_VAL")
-    public int searchTimeStartVal;
+    public Integer searchTimeStartVal;
     
     @Override
     protected Object getKey()
@@ -173,9 +173,9 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable
 	public OiomtOutCndDetailItem(String categoryId,int categoryItemNo, String cid, 
 			String userId, String conditionSettingCd, int conditionSymbol, BigDecimal searchNum, BigDecimal searchNumEndVal,
 			BigDecimal searchNumStartVal, String searchChar, String searchCharEndVal, String searchCharStartVal,
-			GeneralDate searchDate, GeneralDate searchDateEnd, GeneralDate searchDateStart, int searchClock,
-			int searchClockEndVal, int searchClockStartVal, int searchTime, int searchTimeEndVal,
-			int searchTimeStartVal) {
+			GeneralDate searchDate, GeneralDate searchDateEnd, GeneralDate searchDateStart, Integer searchClock,
+			Integer searchClockEndVal, Integer searchClockStartVal, Integer searchTime, Integer searchTimeEndVal,
+			Integer searchTimeStartVal) {
 		this.outCndDetailItemPk = new OiomtOutCndDetailItemPk(categoryId, categoryItemNo);
 		this.cid = cid;
 		this.userId = userId;
