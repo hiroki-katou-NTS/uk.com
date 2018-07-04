@@ -33,27 +33,25 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 	@Inject
 	private ApplicationRepository_New appRepo;
 
-
 	@Override
 	protected String handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
 		SaveHolidayShipmentCommand command = context.getCommand();
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
-		String appReason = "";
-		
+
 		// アルゴリズム「登録前エラーチェック（振休日変更）」を実行する
-		errorCheckBeforeReg(command,absCmd,appReason);
+		String appReason = errorCheckBeforeReg(command, absCmd);
 
 		// アルゴリズム「詳細画面申請データを取得する」を実行する
 		getDetailApp(absCmd.getAppID());
 
 		// アルゴリズム「振休振出申請の取消」を実行する
-		cancelOldAbsApp(command,absCmd);
+		cancelOldAbsApp(command, absCmd);
 		// アルゴリズム「登録前共通処理（新規）」を実行する
-		Application_New commonApp = createNewCommonApp(command,absCmd,appReason);
+		Application_New commonApp = createNewCommonApp(command, absCmd, appReason);
 
 		saveHanler.CmProcessBeforeReg(command, commonApp);
 		// ドメイン「振休申請」を1件登録する
-		createNewAbsApp(commonApp,command);
+		createNewAbsApp(commonApp, command);
 
 		return commonApp.getAppID();
 
@@ -67,7 +65,8 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 		}
 	}
 
-	private Application_New createNewCommonApp(SaveHolidayShipmentCommand command,AbsenceLeaveAppCommand absCmd, String appReason) {
+	private Application_New createNewCommonApp(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd,
+			String appReason) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
@@ -78,14 +77,14 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 		return commonApp;
 	}
 
-	private void createNewAbsApp(Application_New commonApp,SaveHolidayShipmentCommand command) {
+	private void createNewAbsApp(Application_New commonApp, SaveHolidayShipmentCommand command) {
 
 		AbsenceLeaveApp absApp = saveHanler.createNewAbsDomainFromCmd(commonApp.getAppID(), command.getAbsCmd());
 
 		absRepo.insert(absApp);
 	}
 
-	private void cancelOldAbsApp(SaveHolidayShipmentCommand command,AbsenceLeaveAppCommand absCmd) {
+	private void cancelOldAbsApp(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd) {
 		String companyID = AppContexts.user().companyId();
 		HolidayShipmentCommand shipmentCmd = new HolidayShipmentCommand(absCmd.getAppID(), null,
 				command.getAppCmd().getAppVersion(), "");
@@ -93,15 +92,15 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 
 	}
 
-	private void errorCheckBeforeReg(SaveHolidayShipmentCommand command,AbsenceLeaveAppCommand absCmd,String appReason) {
+	private String errorCheckBeforeReg(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		// アルゴリズム「事前条件チェック」を実行する
-		appReason = saveHanler.preconditionCheck(command, companyID, appType, ApplicationCombination.Abs.value);
+		String appReason = saveHanler.preconditionCheck(command, companyID, appType, ApplicationCombination.Abs.value);
 		// アルゴリズム「同日申請存在チェック」を実行する
-		saveHanler.dateCheck(employeeID, null, absCmd.getAppDate(), command,command.getComType());
-
+		saveHanler.dateCheck(employeeID, null, absCmd.getAppDate(), command, command.getComType());
+		return appReason;
 	}
 
 }

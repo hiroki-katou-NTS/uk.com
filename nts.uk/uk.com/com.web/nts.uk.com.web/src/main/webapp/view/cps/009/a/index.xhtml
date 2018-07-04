@@ -192,7 +192,14 @@
 											data-bind="css:{ 
 													requiredCell: isRequired(), 
 													notrequiredCell:!isRequired()}">
-										<span class="months-input limited-label" data-bind="text: itemName" />
+										<span class="months-input limited-label" data-bind='text: itemName,attr: {
+						                                    id: perInfoItemDefId, 
+						                                    nameid: perInfoItemDefId,
+						                                    title: itemName,
+						                                    "data-title": itemName,
+						                                    "data-code": itemCode,
+						                                    "data-category": ctgCode,
+                                							"data-required": isRequired' />
 										</td>
 										<td class="input-units-2">
 											<div id="combo-box"
@@ -490,7 +497,15 @@
 												</com:ko-if> 
 												
 												<com:ko-if bind="(dataType() === 8)">
-													<button  data-bind='click: clickButtonCS00020'>#{i18n.getText('CPS009_37')}</button>
+													<button  data-bind='click: button, attr: {
+						                                    id: perInfoItemDefId, 
+						                                    nameid: perInfoItemDefId,
+						                                    title: itemName,
+						                                    "data-title": itemName,
+						                                    "data-code": itemCode,
+						                                    "data-category": ctgCode,
+                                							"data-required": isRequired,
+                                							"data-defv": selectionName}'>#{i18n.getText('CPS009_37')}</button>
 													<span class="caret-right caret-inline"></span>
 													<span class="limited-label selectionName" data-bind="text: selectionName"></span>
 													

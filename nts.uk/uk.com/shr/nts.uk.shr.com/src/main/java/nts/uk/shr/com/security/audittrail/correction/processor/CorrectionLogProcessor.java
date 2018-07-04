@@ -1,4 +1,4 @@
-package nts.uk.shr.com.security.audittrail.correction;
+package nts.uk.shr.com.security.audittrail.correction.processor;
 
 import javax.inject.Inject;
 
@@ -24,12 +24,13 @@ public abstract class CorrectionLogProcessor {
 	 * Process logging.
 	 * @param parameter parameter object
 	 */
-	protected abstract void buildLogContents(DataCorrectionLoggingContext context);
+	protected abstract void buildLogContents(CorrectionLogProcessorContext context);
 	
 	public void processLoggingForBus(String operationId, Object parameter) {
-		val context = DataCorrectionLoggingContext.newContext(operationId, parameter);
+		val context = CorrectionLogProcessorContext.newContext(operationId, parameter);
 		this.buildLogContents(context);
 		
+		// TODO: write corrections
 		context.getCorrections();
 	}
 }

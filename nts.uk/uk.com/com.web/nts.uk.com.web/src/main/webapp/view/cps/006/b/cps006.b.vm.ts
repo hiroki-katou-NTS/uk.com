@@ -273,9 +273,9 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 case 6:
                     return getText('Enum_DataTypeValue_SELECTION');
                 case 7:
-                    return getText('Enum_DataTypeValue_SELECTION_RADIO');
+                    return getText('Enum_DataTypeValue_SELECTION');
                 case 8:
-                    return getText('Enum_DataTypeValue_SELECTION_BUTTON');
+                    return getText('Enum_DataTypeValue_SELECTION');
                 case 9:
                     return getText('Enum_DataTypeValue_READONLY');
                 case 10:

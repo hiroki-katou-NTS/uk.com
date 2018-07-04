@@ -188,6 +188,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				// 承認者IDリストをクリアする（初期化）(clear thong tin cua list ID nguoi xac nhan)
 				
 				if(approver.getApprovalAtr().equals(ApprovalAtr.PERSON)){
+					if(employeeAdapter.isEmployeeDelete(approver.getEmployeeId())){
+						return;
+					}
 					if(listApprover.stream().filter(x -> x.getEmployeeId().equals(approver.getEmployeeId())).findAny().isPresent()){
 						return;
 					}

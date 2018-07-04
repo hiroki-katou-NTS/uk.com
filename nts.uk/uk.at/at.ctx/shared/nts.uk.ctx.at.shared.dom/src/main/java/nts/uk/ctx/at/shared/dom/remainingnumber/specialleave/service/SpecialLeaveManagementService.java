@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
 import java.util.List;
+import java.util.Map;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
@@ -34,7 +36,7 @@ public interface SpecialLeaveManagementService {
 	 * @param complileDate ・集計開始日 ・集計終了日
 	 * @return 特別休暇付与残数データ
 	 */
-	List<SpecialLeaveGrantRemainingData> getMngData(String cid, String sid, int specialLeaveCode, DatePeriod complileDate);
+	ManagaData getMngData(String cid, String sid, int specialLeaveCode, DatePeriod complileDate);
 	/**
 	 * RequestList373  社員の特別休暇情報を取得する
 	 * @param cid
@@ -45,48 +47,41 @@ public interface SpecialLeaveManagementService {
 	 */
 	InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployee(String cid, String sid, int specialLeaveCode, DatePeriod complileDate);
 	/**
-	 * テーブルに基づいた付与日一覧を求める
-	 * @param sid
-	 * @param dateData
-	 * @return
-	 */
-	List<GeneralDate> askGrantDayOnTable(String sid, DatePeriod dateData, SpecialLeaveBasicInfo specialInfo);
-	/**
-	 * 繰越上限日数まで調整する
-	 * @param specialLeaverData ・特別休暇付与残数データ一覧
-	 * @param specialHolidayData ・特別休暇暫定データ一覧
-	 * @param upLimiDays ・蓄積上限日数
-	 * @return
-	 */
-	List<SpecialLeaveGrantRemainingData> adjustCarryoverDays(List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> specialHolidayData, Integer upLimiDays);
-	/**
-	 * 指定日までの使用数を求める
-	 * @param specialHolidayData
-	 * @param baseDate
-	 * @return
-	 */
-	double getInterimSpeUseDays(List<InterimSpecialHolidayMng> specialHolidayData, GeneralDate baseDate);
-	/**
 	 * 使用数を管理データから引く
 	 * @param specialLeaverData ・特別休暇付与残数データ一覧
 	 * @param specialHolidayData ・特別休暇暫定データ一覧
 	 * @return
 	 */
-	List<SpecialLeaveGrantRemainingData> subtractUseDaysFromMngData(List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> specialHolidayData);
+	InPeriodOfSpecialLeave subtractUseDaysFromMngData(List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> specialHolidayData,
+			OffsetDaysFromInterimDataMng offsetDays, InPeriodOfSpecialLeave inPeriodData, Map<GeneralDate, Double> limitDays);
+
 	
 	/**
-	 * 使用数を求める
-	 * @param specialHolidayData
+	 * 特別休暇暫定データを取得する
+	 * @param cid
+	 * @param sid
+	 * @param dateData
+	 * @param mode
 	 * @return
 	 */
-	double askUseDays(List<InterimSpecialHolidayMng> specialHolidayData);
+	List<InterimSpecialHolidayMng> specialHolidayData(String cid, String sid, DatePeriod dateData, boolean mode);
+	/**
+	 * 管理データと暫定データの相殺
+	 * @param cid
+	 * @param sid
+	 * @param dateData ・INPUT．集計開始日・INPUT．集計終了日
+	 * @param baseDate 基準日
+	 * @param lstGrantData 取得した特別休暇付与残数データ一覧
+	 * @param lstInterimData 取得した特別休暇暫定データ一覧
+	 * @param accumulationMaxDays 蓄積上限日数
+	 * @return
+	 */
+	InPeriodOfSpecialLeave getOffsetDay(String cid, String sid, DatePeriod dateData, GeneralDate baseDate,
+			List<SpecialLeaveGrantRemainingData> lstGrantData, List<InterimSpecialHolidayMng> lstInterimData, double accumulationMaxDays);
 	/**
 	 * 残数情報をまとめる
-	 * @param lstSpecialLeaverData 特別休暇付与残数データ一覧
-	 * @param useDays ・使用数
-	 * @param baseDate ・基準日
+	 * @param inPeriodData
 	 * @return
 	 */
-	InPeriodOfSpecialLeave sumRemainData(SpecialLeaveGrantDetails lstSpecialLeaverData, double useDays, GeneralDate baseDate);
-		
+	InPeriodOfSpecialLeave sumRemainData(InPeriodOfSpecialLeave inPeriodData);
 }

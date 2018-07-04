@@ -30,7 +30,10 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	
 	private static final String SELECT_AGENT_BY_APPROVER_DATE;
 	
-	private static final String SELECT_AGENT_BY_TYPE;
+	private static final String SELECT_AGENT_BY_TYPE1;
+	private static final String SELECT_AGENT_BY_TYPE2;
+	private static final String SELECT_AGENT_BY_TYPE3;
+	private static final String SELECT_AGENT_BY_TYPE4;
 	
 	private static final String SELECT_AGENT_BY_SID_DATE;
 	static {
@@ -98,10 +101,37 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
-		builderString.append(" AND e.agentSid:agentType = :employeeId");
+		builderString.append(" AND e.agentSid1 = :employeeId");
 		builderString.append(" AND e.startDate <= :endDate");
 		builderString.append(" AND e.endDate >= :startDate");
-		SELECT_AGENT_BY_TYPE = builderString.toString();
+		SELECT_AGENT_BY_TYPE1 = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
+		builderString.append(" AND e.agentSid2 = :employeeId");
+		builderString.append(" AND e.startDate <= :endDate");
+		builderString.append(" AND e.endDate >= :startDate");
+		SELECT_AGENT_BY_TYPE2 = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
+		builderString.append(" AND e.agentSid3 = :employeeId");
+		builderString.append(" AND e.startDate <= :endDate");
+		builderString.append(" AND e.endDate >= :startDate");
+		SELECT_AGENT_BY_TYPE3 = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
+		builderString.append(" AND e.agentSid4 = :employeeId");
+		builderString.append(" AND e.startDate <= :endDate");
+		builderString.append(" AND e.endDate >= :startDate");
+		SELECT_AGENT_BY_TYPE4 = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -291,25 +321,51 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 			GeneralDate endDate, Integer agentType) {
 		List<AgentInfoOutput> resultList = new ArrayList<>();
 		listApprover.forEach(x -> {
-			List<AgentInfoOutput> findList = this.queryProxy().query(SELECT_AGENT_BY_TYPE, CmmmtAgent.class)
-			.setParameter("companyId", companyID)
-			.setParameter("employeeId", x)
-			.setParameter("agentType", agentType)
-			.setParameter("startDate", startDate)
-			.setParameter("endDate", endDate)
-			.getList(c -> {
-				switch (agentType) {
-				case 1:
+			switch (agentType) {
+			case 1:
+				List<AgentInfoOutput> findList1 = this.queryProxy().query(SELECT_AGENT_BY_TYPE1, CmmmtAgent.class)
+				.setParameter("companyId", companyID)
+				.setParameter("employeeId", x)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> { 
 					return new AgentInfoOutput(x, c.agentSid1, c.startDate, c.endDate);
-				case 2:
+				});
+				resultList.addAll(findList1);
+				break;
+			case 2:
+				List<AgentInfoOutput> findList2 = this.queryProxy().query(SELECT_AGENT_BY_TYPE2, CmmmtAgent.class)
+				.setParameter("companyId", companyID)
+				.setParameter("employeeId", x)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> { 
 					return new AgentInfoOutput(x, c.agentSid2, c.startDate, c.endDate);
-				case 3:
+				});
+				resultList.addAll(findList2);
+				break;
+			case 3:
+				List<AgentInfoOutput> findList3 = this.queryProxy().query(SELECT_AGENT_BY_TYPE3, CmmmtAgent.class)
+				.setParameter("companyId", companyID)
+				.setParameter("employeeId", x)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> { 
 					return new AgentInfoOutput(x, c.agentSid3, c.startDate, c.endDate);
-				default:
+				});
+				resultList.addAll(findList3);
+				break;
+			default:
+				List<AgentInfoOutput> findList4 = this.queryProxy().query(SELECT_AGENT_BY_TYPE4, CmmmtAgent.class)
+				.setParameter("companyId", companyID)
+				.setParameter("employeeId", x)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> { 
 					return new AgentInfoOutput(x, c.agentSid4, c.startDate, c.endDate);
-				}
-			});
-			resultList.addAll(findList);
+				});
+				resultList.addAll(findList4);
+			}
 		});
 		return resultList;
 	}

@@ -261,7 +261,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
 					ReflectStampOutput stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeId, day,
 							workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
-							reCreateAttr);
+							reCreateAttr,Optional.empty(),Optional.empty(),Optional.empty());
 //					this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
 //							stampOutput, null, workInfoOfDailyPerformance,
 //							null, null, null, null);
@@ -302,7 +302,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
 					ReflectStampOutput stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeId, day,
 							workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
-							reCreateAttr);
+							reCreateAttr,Optional.empty(),Optional.empty(),Optional.empty());
 //					this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
 //							stampOutput, null, workInfoOfDailyPerformance,
 //							null, null, null, null);
@@ -950,7 +950,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					// check tay
 					stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
 							workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,
-							reCreateAttr);
+							reCreateAttr,Optional.of(calAttrOfDailyPerformance),Optional.of(affiliationInforOfDailyPerfor),Optional.empty());
 				}
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeID, day,
 						stampOutput, affiliationInforOfDailyPerfor, workInfoOfDailyPerformanceUpdate,

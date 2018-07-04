@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveNumberInfo;
 
 /**
  * parameter : 特別休暇の付与明細
@@ -45,6 +44,6 @@ public class SpecialLeaveGrantDetails {
 	/**
 	 * 明細
 	 */
-	private SpecialLeaveNumberInfo details;
+	private SpecialLeaveNumberInfoService details;
 	
 }
