@@ -28,7 +28,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarksContentChoice;
 
 /**
  * The Class OutputItemDailyWorkScheduleWS.
- * @author HoangDD
+ * @author NWS-HoangDD
  */
 @Path("at/function/dailyworkschedule")
 @Produces(MediaType.APPLICATION_JSON)
