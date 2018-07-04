@@ -408,6 +408,11 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<WorkScheduleBreakSaveCommand>();
 		List<DeductionTime> timeZones = businessDayCal.getTimezones();
+		
+		if (timeZones == null) {
+			timeZones = new ArrayList<>();
+		}
+		
 		for (int i = 0; i < timeZones.size(); i++) {
 			WorkScheduleBreakSaveCommand wBreakSaveCommand = new WorkScheduleBreakSaveCommand();
 			wBreakSaveCommand.setScheduleBreakCnt(i + 1);
