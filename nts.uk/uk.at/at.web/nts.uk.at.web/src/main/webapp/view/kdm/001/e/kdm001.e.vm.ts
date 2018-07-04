@@ -142,7 +142,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                     return false;
                 }
                 if (parseFloat(self.numberDay()) !== (self.currentList()[0].remainDays + self.currentList()[1].remainDays)){
-                    $('#multi-list').ntsError('set', { messageId: "Msg_731" });
+                    $('#multi-list').ntsError('set', { messageId: "Msg_739" });
                     return false;
                 }
             }
