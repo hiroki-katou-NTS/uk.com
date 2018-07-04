@@ -30,6 +30,8 @@ import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
+import nts.uk.shr.com.url.UrlExecInfo;
 
 /**
  * The Class ChangePasswordWebService.
@@ -58,6 +60,9 @@ public class ChangePasswordWebService extends WebService{
 	/** The employee code setting adapter. */
 	@Inject
 	private SysEmployeeCodeSettingAdapter employeeCodeSettingAdapter;
+	
+	@Inject
+	private UrlExecInfoRepository urlExecInfoRepository;
 	/**
 	 * Channge pass word.
 	 *
@@ -82,21 +87,23 @@ public class ChangePasswordWebService extends WebService{
 	}
 	
 	/**
-	 * Gets the user name by login id.
+	 * Gets the user name by url.
 	 *
-	 * @param contractCode the contract code
-	 * @param loginId the login id
-	 * @return the user name by login id
+	 * @param embeddedId the embedded id
+	 * @return the user name by url
 	 */
 	@POST
-	@Path("getUserNameByLoginId/{contractCode}/{loginId}")
-	public LoginInforDto getUserNameByLoginId(@PathParam("contractCode") String contractCode, @PathParam("loginId") String loginId) {
-		Optional<UserImport> user = this.userAdapter.findUserByContractAndLoginId(contractCode, loginId);
+	@Path("getUserNameByURL/{embeddedId}")
+	public LoginInforDto getUserNameByUrl(@PathParam("embeddedId") String embeddedId) {
+		//get URLExec
+		Optional<UrlExecInfo> urlExec = this.urlExecInfoRepository.getUrlExecInfoByUrlID(embeddedId);
 		
-		if (user.isPresent()){
-			return new LoginInforDto(loginId, user.get().getUserName(), user.get().getUserId());
+		if (urlExec.isPresent()){
+			//get User
+			Optional<UserImport> user = this.userAdapter.findUserByContractAndLoginId(urlExec.get().getContractCd(), urlExec.get().getLoginId());
+			return new LoginInforDto(urlExec.get().getLoginId(), user.get().getUserName(), user.get().getUserId(), user.get().getContractCode());
 		}
-		return new LoginInforDto(null, null, null);
+		return new LoginInforDto();
 	}
 	
 	/**
@@ -118,9 +125,9 @@ public class ChangePasswordWebService extends WebService{
 		
 		Optional<UserImportNew> user = userAdapter.findUserByAssociateId(em.getPersonalId());
 		if (user.isPresent()){
-			return new LoginInforDto(infor.getEmployeeCode(), user.get().getUserName(), user.get().getUserId());
+			return new LoginInforDto(infor.getEmployeeCode(), user.get().getUserName(), user.get().getUserId(), user.get().getContractCode());
 		}
-		return new LoginInforDto(null, null, null);
+		return new LoginInforDto();
 	}
 	
 	/**

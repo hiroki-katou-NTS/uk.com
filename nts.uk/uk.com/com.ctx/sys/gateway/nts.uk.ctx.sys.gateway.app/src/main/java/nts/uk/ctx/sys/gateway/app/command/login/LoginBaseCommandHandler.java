@@ -441,6 +441,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the string
 	 */
 	protected String compareHashPassword(UserImportNew user, String password) {
+//		String pass = PasswordHash.generate("abc@123","8bf0d2f8-6a2e-481b-8ba0-721f7b3a709e");
 		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
 			// アルゴリズム「ロックアウト」を実行する ※２次対応
 			this.lockOutExecuted(user);
@@ -606,10 +607,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (company.getIsAbolition() == Abolition.ABOLISH.value){
 			throw new BusinessException("Msg_281");
 		}
-		
-		if (!this.checkAccoutLock(contractCode, userId).v().isEmpty()) {
+		String message = this.checkAccoutLock(contractCode, userId).v();
+		if (!message.isEmpty()) {
 			//return messageError
-			throw new BusinessException(this.checkAccoutLock(contractCode, userId).v());
+			throw new BusinessException(message);
 		}
 		
 	}

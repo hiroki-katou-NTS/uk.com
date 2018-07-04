@@ -38,7 +38,7 @@ module nts.uk.pr.view.ccg007.b {
                         .done(function(data: any) {
                             if (data.onpre) {
                                 nts.uk.characteristics.remove("contractInfo");
-                                nts.uk.characteristics.save("contractInfo", { contractCode: defaultContractCode, contractPassword: null });
+                                nts.uk.characteristics.save("contractInfo", { contractCode: defaultContractCode, contractPassword: self.contractPassword() });
                                 self.contractCode(defaultContractCode);
                                 self.contractPassword(null);
                                 //シングルサインオン（Active DirectorySSO）かをチェックする
