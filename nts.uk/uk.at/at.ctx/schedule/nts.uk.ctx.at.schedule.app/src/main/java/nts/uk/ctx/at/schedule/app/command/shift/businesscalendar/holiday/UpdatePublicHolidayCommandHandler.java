@@ -29,7 +29,7 @@ public class UpdatePublicHolidayCommandHandler extends CommandHandler<UpdatePubl
 	@Inject
 	private PublicHolidayRepository publicHolidayRepository;
 	
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdatePublicHolidayCommand> context) {
