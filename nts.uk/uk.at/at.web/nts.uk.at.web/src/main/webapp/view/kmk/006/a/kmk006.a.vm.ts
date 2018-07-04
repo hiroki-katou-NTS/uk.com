@@ -31,7 +31,6 @@ module nts.uk.at.view.kmk006.a {
             autoCalAtrOvertimeEnumWithoutTimeRecorder: Array<Enum>;
             selectedTab: KnockoutObservable<string>;
             timeLimitUpperLimitEnum: Array<Enum>;
-            autoCalcSetOfDivergenceTime: Array<Enum>;
             itemComAutoCalModel: ComAutoCalSettingModel;
             itemWkpAutoCalModel: WkpAutoCalSettingModel;
             itemJobAutoCalModel: JobAutoCalSettingModel;
@@ -71,7 +70,7 @@ module nts.uk.at.view.kmk006.a {
             
             // define value for autoCalcSetOfDivergenceTime
             autoCalcSetOfDivergenceTime: Array<any>;
-            divergenceTime: KnockoutObservable<boolean>;
+            divergenceTime: KnockoutObservable<number>;
 
             jobListOptions: any;
             jobTotalListOptions: any;
@@ -143,7 +142,7 @@ module nts.uk.at.view.kmk006.a {
                 self.autoCalcOfLeaveEarly = ko.observable(false);
                 self.raisingSalaryCalcAtr = ko.observable(false);
                 self.specificRaisingSalaryCalcAtr = ko.observable(false);
-                self.divergenceTime = ko.observable(false);
+                self.divergenceTime = ko.observable(0);
 
                 self.multiSelectedWorkplaceId = ko.observable('');
                 self.totalSelectedWorkplaceId = ko.observable('');
@@ -454,8 +453,8 @@ module nts.uk.at.view.kmk006.a {
                 ];
                 
                 self.autoCalcSetOfDivergenceTime = [
-                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
-                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                    { code: 1, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: 0, name: nts.uk.resource.getText("KMK006_42") }
                 ];
             }
 
@@ -1194,8 +1193,7 @@ module nts.uk.at.view.kmk006.a {
             restTime: AutoCalRestTimeSettingModel;
             leaveEarly: AutoCalcOfLeaveEarlySettingModel;
             raisingSalary: AutoCalRaisingSalarySettingModel;
-            autoCalcSetOfDivergenceTime: Array<any>;
-            divergenceTime: KnockoutObservable<boolean>;
+            divergenceTime: KnockoutObservable<number>;
 
             constructor() {
                 this.normalOTTime = new AutoCalOvertimeSettingModel();
@@ -1203,11 +1201,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime = new AutoCalRestTimeSettingModel();
                 this.leaveEarly = new AutoCalcOfLeaveEarlySettingModel();
                 this.raisingSalary = new AutoCalRaisingSalarySettingModel();
-                this.divergenceTime = ko.observable(false);
-                this.autoCalcSetOfDivergenceTime = [
-                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
-                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
-                ];
+                this.divergenceTime = ko.observable(0);
 
             }
         }
@@ -1255,7 +1249,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(false);
+                this.divergenceTime(0);
             }
         }
 
@@ -1297,7 +1291,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(false);
+                this.divergenceTime(0);
             }
         }
 
@@ -1340,7 +1334,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(false);
+                this.divergenceTime(0);
             }
         }
 
@@ -1377,7 +1371,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(false);
+                this.divergenceTime(0);
             }
         }
         //        AutoCalOvertimeSettingDto
@@ -1489,21 +1483,11 @@ module nts.uk.at.view.kmk006.a {
         
         // AutoCalRaisingSalarySettingDto
         export class AutoCalRaisingSalarySettingModel{
-            autoCalRaisingSalarySetting: Array<any>;
             raisingSalaryCalcAtr: KnockoutObservable<boolean>;
-            autoCalSpecificRaisingSalarySetting: Array<any>;
             specificRaisingSalaryCalcAtr: KnockoutObservable<boolean>;    
             
             constructor(){
-                this.autoCalRaisingSalarySetting = [
-                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
-                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
-                ];     
                 this.raisingSalaryCalcAtr = ko.observable(false);
-                this.autoCalSpecificRaisingSalarySetting = [
-                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
-                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
-                ];
                 this.specificRaisingSalaryCalcAtr = ko.observable(false);
             }
             
@@ -1527,20 +1511,10 @@ module nts.uk.at.view.kmk006.a {
         
         // AutoCalcOfLeaveEarlySettingDto
         export class AutoCalcOfLeaveEarlySettingModel{
-            autoCalcOfLeaveLateSetting: Array<any>;
             autoCalcOfLeaveLate: KnockoutObservable<boolean>;
-            autoCalcOfLeaveEarlySetting: Array<any>;
             autoCalcOfLeaveEarly: KnockoutObservable<boolean>;            
             constructor(){
-                this.autoCalcOfLeaveLateSetting = [
-                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
-                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
-                ];
                 this.autoCalcOfLeaveLate = ko.observable(false);
-                this.autoCalcOfLeaveEarlySetting = [
-                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
-                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
-                ];
                 this.autoCalcOfLeaveEarly = ko.observable(false);    
             }
             
