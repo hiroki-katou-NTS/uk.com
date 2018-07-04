@@ -43,7 +43,7 @@ module nts.uk.at.view.kdl005.a {
                     ]
                 };
                 
-                service.getEmployee(self.kdl005Data).done(function(data: any) {
+                service.getEmployeeList(self.kdl005Data).done(function(data: any) {
                     if(data.employeeBasicInfo.length > 1) {
                         self.selectedCode.subscribe(function(value) {
                             let itemData = _.find(data.employeeBasicInfo, ['employeeCode', value]);
