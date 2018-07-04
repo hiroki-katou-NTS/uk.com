@@ -625,7 +625,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             _.each(self.employeeList(), function(emp){
                 lstid.push(emp.id);
             });
-            setShared('KDL020A_PARAM', { baseDate: self.displayEndDateFlg() ? moment(self.dateValue().startDate).toDate() : moment(self.appDate()).toDate(), 
+            setShared('KDL020A_PARAM', { baseDate: moment(new Date()).toDate(), 
                                             employeeIds: lstid.length > 0 ? lstid : [self.employeeID()] } );
             modal('/view/kdl/020/a/index.xhtml')
         }
@@ -641,7 +641,14 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 $("#inputdate").trigger("validate");
             }
             if (nts.uk.ui.errors.hasError()) { return; }
-            alert("Open dialog kdl029....");
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.id);
+            });
+            let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYYMMDD")}
+            setShared('KDL029_PARAM', param);
+            modal("/view/kdl/029/a/index.xhtml");
         }
         /**
          * when click button A1_3: 代休参照ボタン
@@ -660,7 +667,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 lstid.push(emp.id);
             });
             let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
-                        baseDate: self.displayEndDateFlg() ? moment(self.dateValue().startDate).format("YYYYMMDD") : moment(self.appDate()).format("YYYYMMDD")}
+                        baseDate: moment(new Date()).format("YYYYMMDD")}
             setShared('KDL005_DATA', data);
             if(data.employeeIds.length > 1) {
                 modal("/view/kdl/005/a/multi.xhtml");

@@ -44,9 +44,13 @@ module nts.uk.at.view.kdl029.a.screenModel {
                 { code: '3', name: 'Park Shin Hye', id: 'HCM' },
                 { code: '4', name: 'Vladimir Nabokov', id: 'HN' }
             ]);
-            self.employeeIDList(nts.uk.ui.windows.getShared('employeeIDList'));
-            self.multiSelect(nts.uk.ui.windows.getShared('multiSelect'));
-            self.inputDate(nts.uk.ui.windows.getShared('inputDate'));
+            let param = nts.uk.ui.windows.getShared('KDL029_PARAM');
+            self.employeeIDList(param.employeeIds);
+            self.multiSelect(false);
+            self.inputDate(param.baseDate);
+//            self.employeeIDList(nts.uk.ui.windows.getShared('employeeIDList'));
+//            self.multiSelect(nts.uk.ui.windows.getShared('multiSelect'));
+//            self.inputDate(nts.uk.ui.windows.getShared('inputDate'));
             self.listComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: self.multiSelect(),
