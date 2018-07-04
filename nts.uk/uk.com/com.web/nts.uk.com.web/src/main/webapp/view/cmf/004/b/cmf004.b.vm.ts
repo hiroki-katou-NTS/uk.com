@@ -3,7 +3,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import dialog = nts.uk.ui.dialog;
-    import block     = nts.uk.ui.block;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
         stepList: Array<NtsWizardStep> = [
             { content: '.step-1' },
@@ -199,7 +199,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                         self.dataRecoverySelection().recoveryFileList.push(itemTarget);
                     }
                 }
-            }).always(() =>{
+            }).always(() => {
                 block.clear();
             });
         }
@@ -215,7 +215,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 };
                 self.dataRecoverySelection().recoveryFileList.removeAll();
                 service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
-                    if (data && data.length) { 
+                    if (data && data.length) {
                         for (let i = 0; i < data.length; i++) {
                             let itemTarget =
                                 {
@@ -233,9 +233,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                         }
                     }
                     self.dataRecoverySelection().selectedRecoveryFile("");
-                }).always(() =>{
-                block.clear();
-            });
+                }).always(() => {
+                    block.clear();
+                });
             }
         }
 
@@ -268,7 +268,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     self.supplementaryExplanation(data[0].supplementaryExplanation);
                 }
 
-            }).always(() =>{
+            }).always(() => {
                 block.clear();
             });
         }
@@ -285,7 +285,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenF(): void {
             let self = this;
-            
+
             let _listCategory = _.filter(self.dataContentConfirm().dataContentcategoryList(), x => { return x.isRecover() == true; });
             let _itemList: Array<CategoryInfo> = [];
             _.forEach(_listCategory, (x, i) => {
@@ -308,10 +308,10 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     });
                     self.employeeListScreenG(employeeData);
                 }
-            }).always(() =>{
+            }).always(() => {
                 block.clear();
             });
- 
+
         }
 
         /**
@@ -320,7 +320,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         initScreenH(): void {
             let self = this;
             let _categoryList = (self.getRecoveryCategory(self.changeDataRecoveryPeriod().changeDataCategoryList()));
-            _.forEach(_categoryList, categoryItem =>{
+            _.forEach(_categoryList, categoryItem => {
                 let a = categoryItem;
                 categoryItem.startOfPeriod(self.formatDate(categoryItem.recoveryPeriod, categoryItem.startOfPeriod()));
                 categoryItem.endOfPeriod(self.formatDate(categoryItem.recoveryPeriod, categoryItem.endOfPeriod()));
@@ -406,13 +406,13 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             }).fail((err) => {
                 dialog.alertError(err);
                 block.clear();
-            }).always((err) =>{
+            }).always((err) => {
                 block.clear();
-           });
+            });
             $("#E4_2:first-child .row-checkbox .ntsCheckBox-label:first-child input[type=checkbox]:first-child").focus();
         }
-            
-        backToScreenA(): void{
+
+        backToScreenA(): void {
             nts.uk.request.jump("/view/cmf/004/a/index.xhtml");
         }
 
@@ -421,8 +421,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             self.initScreenF();
             nts.uk.ui.errors.clearAll();
             let checkItemE = _.filter(self.dataContentConfirm().dataContentcategoryList(), x => { return x.isRecover() == true; }).length;
-            (checkItemE == 0) ? $('#E5_2').ntsError('set', { messageId: "Msg_1256" }) : $('#data-recovery-wizard').ntsWizard("next");
-            $("#F5_5:first-child .start-date input:first-child").focus();
+            if (checkItemE == 0) {
+                dialog.alertError({ messageId: "Msg_1256" });
+            } else {
+                $('#data-recovery-wizard').ntsWizard("next");
+                $("#F5_5:first-child .start-date input:first-child").focus();
+            } 
         }
 
         nextToScreenG(): void {
@@ -452,7 +456,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 self.initScreenG();
                 $('#data-recovery-wizard').ntsWizard("next");
             }
-            
+
             $('#kcp005component').focus();
         }
 
@@ -476,8 +480,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 recoveryProcessingId: self.recoveryProcessingId
             });
             nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml").onClosed(() => {
-                            self.buton_I_enable(false);
-                        });
+                self.buton_I_enable(false);
+            });
         }
 
         backToPreviousScreen(): void {
