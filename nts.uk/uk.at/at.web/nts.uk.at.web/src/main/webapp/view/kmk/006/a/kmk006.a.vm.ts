@@ -7,7 +7,9 @@ module nts.uk.at.view.kmk006.a {
     import JobAutoCalSettingDto = service.model.JobAutoCalSettingDto;
     import WkpAutoCalSettingDto = service.model.WkpAutoCalSettingDto;
     import WkpJobAutoCalSettingDto = service.model.WkpJobAutoCalSettingDto;
-    
+    import AutoCalcOfLeaveEarlySettingDto = service.model.AutoCalcOfLeaveEarlySettingDto;
+    import AutoCalRaisingSalarySettingDto = service.model.AutoCalRaisingSalarySettingDto;
+
     // Import Setting Dto
     import AutoCalOvertimeSettingDto = service.model.AutoCalOvertimeSettingDto;
     import AutoCalRestTimeSettingDto = service.model.AutoCalRestTimeSettingDto;
@@ -709,7 +711,7 @@ module nts.uk.at.view.kmk006.a {
                 return dfd.promise();
             }
 
-            private reLoadListEnum(list: any): void {
+            private reLoadListEnum(list: BaseAutoCalSettingModel): void {
                 var self = this;
                 self.valueEnumNorEarLi(list.normalOTTime.earlyOtTime.upLimitOtSet());
                 self.valueEnumNorEarAtr(list.normalOTTime.earlyOtTime.calAtr());
@@ -729,6 +731,11 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumResResAtr(list.restTime.restTime.calAtr());                
                 self.valueEnumResLatLi(list.restTime.lateNightTime.upLimitOtSet());
                 self.valueEnumResLatAtr(list.restTime.lateNightTime.calAtr());
+                self.autoCalcOfLeaveLate(list.leaveEarly.autoCalcOfLeaveLate());
+                self.autoCalcOfLeaveEarly(list.leaveEarly.autoCalcOfLeaveEarly());
+                self.raisingSalaryCalcAtr(list.raisingSalary.raisingSalaryCalcAtr());
+                self.specificRaisingSalaryCalcAtr(list.raisingSalary.specificRaisingSalaryCalcAtr());
+                self.divergenceTime(list.divergenceTime());
             }
 
             private saveListEnum(list: any): void {
@@ -751,6 +758,11 @@ module nts.uk.at.view.kmk006.a {
                 list.restTime.restTime.calAtr(self.valueEnumResResAtr());
                 list.restTime.lateNightTime.upLimitOtSet(self.valueEnumResLatLi());
                 list.restTime.lateNightTime.calAtr(self.valueEnumResLatAtr());
+                list.leaveEarly.autoCalcOfLeaveLate(self.autoCalcOfLeaveLate());
+                list.leaveEarly.autoCalcOfLeaveEarly(self.autoCalcOfLeaveEarly());
+                list.raisingSalary.raisingSalaryCalcAtr(self.raisingSalaryCalcAtr());
+                list.raisingSalary.specificRaisingSalaryCalcAtr(self.specificRaisingSalaryCalcAtr());
+                list.divergenceTime(self.divergenceTime());
             }
 
             /**
@@ -766,15 +778,7 @@ module nts.uk.at.view.kmk006.a {
                 // save enum
                 self.saveListEnum(self.itemComAutoCalModel);
                 
-                var dto: ComAutoCalSettingDto = {
-                    normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
-                    flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemComAutoCalModel.restTime.toDto(),
-                    leaveEarly: self.itemComAutoCalModel.restTime.toDto(),
-                    raisingSalary: self.itemComAutoCalModel.restTime.toDto(),
-                    divergenceTime: self.itemComAutoCalModel.restTime.toDto()
-                };
-                self.itemComAutoCalModel.updateData(self.itemComAutoCalModel.toDto());
+                var dto: ComAutoCalSettingDto = self.itemComAutoCalModel.toDto();
                 service.saveComAutoCal(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -807,17 +811,8 @@ module nts.uk.at.view.kmk006.a {
                 self.saveListEnum(self.itemJobAutoCalModel);
                 var jobId = self.selectedCurrentJob();
 
-                var dto: JobAutoCalSettingDto = {
-                    jobId: jobId,
-                    normalOTTime: self.itemJobAutoCalModel.normalOTTime.toDto(),
-                    flexOTTime: self.itemJobAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemJobAutoCalModel.restTime.toDto(),
-                    leaveEarly: self.itemComAutoCalModel.restTime.toDto(),
-                    raisingSalary: self.itemComAutoCalModel.restTime.toDto(),
-                    divergenceTime: self.itemComAutoCalModel.restTime.toDto()
-                };
-
-                self.itemJobAutoCalModel.updateData(self.itemJobAutoCalModel.toDto());
+                var dto: JobAutoCalSettingDto = self.itemJobAutoCalModel.toDto();
+                dto.jobId = jobId;
 
                 service.saveJobAutoCal(dto).done(function() {
                      self.loadJobAlreadySettingList().done(function() {
@@ -857,17 +852,8 @@ module nts.uk.at.view.kmk006.a {
                 self.saveListEnum(self.itemWkpAutoCalModel);
                 var wkpId = self.selectedCurrentWkp();
 
-                var dto: WkpAutoCalSettingDto = {
-                    wkpId: wkpId,
-                    normalOTTime: self.itemWkpAutoCalModel.normalOTTime.toDto(),
-                    flexOTTime: self.itemWkpAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemWkpAutoCalModel.restTime.toDto(),
-                    leaveEarly: self.itemComAutoCalModel.restTime.toDto(),
-                    raisingSalary: self.itemComAutoCalModel.restTime.toDto(),
-                    divergenceTime: self.itemComAutoCalModel.restTime.toDto()
-                };
-
-                self.itemWkpAutoCalModel.updateData(self.itemWkpAutoCalModel.toDto());
+                var dto: WkpAutoCalSettingDto = self.itemWkpAutoCalModel.toDto();
+                dto.wkpId = wkpId; 
 
                 service.saveWkpAutoCal(dto).done(function() {
                     self.loadWkpAlreadySettingList().done(function() {
@@ -917,18 +903,9 @@ module nts.uk.at.view.kmk006.a {
                 var wkpId = self.selectedCurrentWkp();
 
 
-                var dto: WkpJobAutoCalSettingDto = {
-                    wkpId: wkpId,
-                    jobId: jobId,
-                    normalOTTime: self.itemWkpJobAutoCalModel.normalOTTime.toDto(),
-                    flexOTTime: self.itemWkpJobAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemWkpJobAutoCalModel.restTime.toDto(),
-                    leaveEarly: self.itemComAutoCalModel.restTime.toDto(),
-                    raisingSalary: self.itemComAutoCalModel.restTime.toDto(),
-                    divergenceTime: self.itemComAutoCalModel.restTime.toDto()
-                };
-
-                self.itemWkpJobAutoCalModel.updateData(self.itemWkpJobAutoCalModel.toDto());
+                var dto: WkpJobAutoCalSettingDto = self.itemWkpJobAutoCalModel.toDto();
+                dto.jobId = jobId;
+                dto.wkpId = wkpId;
 
                 service.saveWkpJobAutoCal(dto).done(function() {
                     // show message 15
@@ -1211,20 +1188,38 @@ module nts.uk.at.view.kmk006.a {
 
         }
 
-        export class WkpJobAutoCalSettingModel {
-            wkpId: KnockoutObservable<string>;
-            jobId: KnockoutObservable<string>;
+        export class BaseAutoCalSettingModel {
             normalOTTime: AutoCalOvertimeSettingModel;
             flexOTTime: AutoCalFlexOvertimeSettingModel;
             restTime: AutoCalRestTimeSettingModel;
+            leaveEarly: AutoCalcOfLeaveEarlySettingModel;
+            raisingSalary: AutoCalRaisingSalarySettingModel;
+            autoCalcSetOfDivergenceTime: Array<any>;
+            divergenceTime: KnockoutObservable<boolean>;
 
             constructor() {
-                this.wkpId = ko.observable('');
-                this.jobId = ko.observable('');
                 this.normalOTTime = new AutoCalOvertimeSettingModel();
                 this.flexOTTime = new AutoCalFlexOvertimeSettingModel();
                 this.restTime = new AutoCalRestTimeSettingModel();
+                this.leaveEarly = new AutoCalcOfLeaveEarlySettingModel();
+                this.raisingSalary = new AutoCalRaisingSalarySettingModel();
+                this.divergenceTime = ko.observable(false);
+                this.autoCalcSetOfDivergenceTime = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];
 
+            }
+        }
+
+        export class WkpJobAutoCalSettingModel extends BaseAutoCalSettingModel {
+            wkpId: KnockoutObservable<string>;
+            jobId: KnockoutObservable<string>;
+
+            constructor() {
+                super();
+                this.wkpId = ko.observable('');
+                this.jobId = ko.observable('');
             }
 
             updateData(dto: WkpJobAutoCalSettingDto) {
@@ -1233,6 +1228,9 @@ module nts.uk.at.view.kmk006.a {
                 this.normalOTTime.updateData(dto.normalOTTime);
                 this.flexOTTime.updateData(dto.flexOTTime);
                 this.restTime.updateData(dto.restTime);
+                this.leaveEarly.updateData(dto.leaveEarly);
+                this.raisingSalary.updateData(dto.raisingSalary);
+                this.divergenceTime(dto.divergenceTime);
 
             }
 
@@ -1242,7 +1240,10 @@ module nts.uk.at.view.kmk006.a {
                     jobId: this.jobId(),
                     normalOTTime: this.normalOTTime.toDto(),
                     flexOTTime: this.flexOTTime.toDto(),
-                    restTime: this.restTime.toDto()
+                    restTime: this.restTime.toDto(),
+                    leaveEarly: this.leaveEarly.toDto(),
+                    raisingSalary: this.raisingSalary.toDto(),
+                    divergenceTime: this.divergenceTime()
                 };
                 return dto;
             }
@@ -1252,21 +1253,18 @@ module nts.uk.at.view.kmk006.a {
                 this.normalOTTime.resetData();
                 this.flexOTTime.resetData();
                 this.restTime.resetData();
+                this.leaveEarly.resetData();
+                this.raisingSalary.resetData();
+                this.divergenceTime(false);
             }
         }
 
-        export class WkpAutoCalSettingModel {
+        export class WkpAutoCalSettingModel extends BaseAutoCalSettingModel {
             wkpId: KnockoutObservable<string>;
-            normalOTTime: AutoCalOvertimeSettingModel;
-            flexOTTime: AutoCalFlexOvertimeSettingModel;
-            restTime: AutoCalRestTimeSettingModel;
 
             constructor() {
+                super();
                 this.wkpId = ko.observable('');
-                this.normalOTTime = new AutoCalOvertimeSettingModel();
-                this.flexOTTime = new AutoCalFlexOvertimeSettingModel();
-                this.restTime = new AutoCalRestTimeSettingModel();
-
             }
 
             updateData(dto: WkpAutoCalSettingDto) {
@@ -1274,6 +1272,9 @@ module nts.uk.at.view.kmk006.a {
                 this.normalOTTime.updateData(dto.normalOTTime);
                 this.flexOTTime.updateData(dto.flexOTTime);
                 this.restTime.updateData(dto.restTime);
+                this.leaveEarly.updateData(dto.leaveEarly);
+                this.raisingSalary.updateData(dto.raisingSalary);
+                this.divergenceTime(dto.divergenceTime);
 
             }
 
@@ -1282,7 +1283,10 @@ module nts.uk.at.view.kmk006.a {
                     wkpId: this.wkpId(),
                     normalOTTime: this.normalOTTime.toDto(),
                     flexOTTime: this.flexOTTime.toDto(),
-                    restTime: this.restTime.toDto()
+                    restTime: this.restTime.toDto(),
+                    leaveEarly: this.leaveEarly.toDto(),
+                    raisingSalary: this.raisingSalary.toDto(),
+                    divergenceTime: this.divergenceTime()
                 };
                 return dto;
             }
@@ -1291,22 +1295,19 @@ module nts.uk.at.view.kmk006.a {
                 this.normalOTTime.resetData();
                 this.flexOTTime.resetData();
                 this.restTime.resetData();
+                this.leaveEarly.resetData();
+                this.raisingSalary.resetData();
+                this.divergenceTime(false);
             }
         }
 
 
-        export class JobAutoCalSettingModel {
+        export class JobAutoCalSettingModel extends BaseAutoCalSettingModel {
             jobId: KnockoutObservable<string>;
-            normalOTTime: AutoCalOvertimeSettingModel;
-            flexOTTime: AutoCalFlexOvertimeSettingModel;
-            restTime: AutoCalRestTimeSettingModel;
 
             constructor() {
+                super();
                 this.jobId = ko.observable('');
-                this.normalOTTime = new AutoCalOvertimeSettingModel();
-                this.flexOTTime = new AutoCalFlexOvertimeSettingModel();
-                this.restTime = new AutoCalRestTimeSettingModel();
-
             }
 
             updateData(dto: JobAutoCalSettingDto) {
@@ -1314,6 +1315,9 @@ module nts.uk.at.view.kmk006.a {
                 this.normalOTTime.updateData(dto.normalOTTime);
                 this.flexOTTime.updateData(dto.flexOTTime);
                 this.restTime.updateData(dto.restTime);
+                this.leaveEarly.updateData(dto.leaveEarly);
+                this.raisingSalary.updateData(dto.raisingSalary);
+                this.divergenceTime(dto.divergenceTime);
 
             }
 
@@ -1322,7 +1326,10 @@ module nts.uk.at.view.kmk006.a {
                     jobId: this.jobId(),
                     normalOTTime: this.normalOTTime.toDto(),
                     flexOTTime: this.flexOTTime.toDto(),
-                    restTime: this.restTime.toDto()
+                    restTime: this.restTime.toDto(),
+                    leaveEarly: this.leaveEarly.toDto(),
+                    raisingSalary: this.raisingSalary.toDto(),
+                    divergenceTime: this.divergenceTime()
                 };
                 return dto;
             }
@@ -1331,26 +1338,25 @@ module nts.uk.at.view.kmk006.a {
                 this.normalOTTime.resetData();
                 this.flexOTTime.resetData();
                 this.restTime.resetData();
+                this.leaveEarly.resetData();
+                this.raisingSalary.resetData();
+                this.divergenceTime(false);
             }
         }
 
         //        ComAutoCalSettingModel
-        export class ComAutoCalSettingModel {
-            normalOTTime: AutoCalOvertimeSettingModel;
-            flexOTTime: AutoCalFlexOvertimeSettingModel;
-            restTime: AutoCalRestTimeSettingModel;
-
+        export class ComAutoCalSettingModel extends BaseAutoCalSettingModel {
             constructor() {
-                this.normalOTTime = new AutoCalOvertimeSettingModel();
-                this.flexOTTime = new AutoCalFlexOvertimeSettingModel();
-                this.restTime = new AutoCalRestTimeSettingModel();
-
+                super();
             }
 
             updateData(dto: ComAutoCalSettingDto) {
                 this.normalOTTime.updateData(dto.normalOTTime);
                 this.flexOTTime.updateData(dto.flexOTTime);
                 this.restTime.updateData(dto.restTime);
+                this.leaveEarly.updateData(dto.leaveEarly);
+                this.raisingSalary.updateData(dto.raisingSalary);
+                this.divergenceTime(dto.divergenceTime);
 
             }
 
@@ -1358,8 +1364,10 @@ module nts.uk.at.view.kmk006.a {
                 var dto: ComAutoCalSettingDto = {
                     normalOTTime: this.normalOTTime.toDto(),
                     flexOTTime: this.flexOTTime.toDto(),
-                    restTime: this.restTime.toDto()
-
+                    restTime: this.restTime.toDto(),
+                    leaveEarly: this.leaveEarly.toDto(),
+                    raisingSalary: this.raisingSalary.toDto(),
+                    divergenceTime: this.divergenceTime()
                 };
                 return dto;
             }
@@ -1367,6 +1375,9 @@ module nts.uk.at.view.kmk006.a {
                 this.normalOTTime.resetData();
                 this.flexOTTime.resetData();
                 this.restTime.resetData();
+                this.leaveEarly.resetData();
+                this.raisingSalary.resetData();
+                this.divergenceTime(false);
             }
         }
         //        AutoCalOvertimeSettingDto
@@ -1475,6 +1486,82 @@ module nts.uk.at.view.kmk006.a {
                 this.legalMidOtTime.resetData();
             }
         }
+        
+        // AutoCalRaisingSalarySettingDto
+        export class AutoCalRaisingSalarySettingModel{
+            autoCalRaisingSalarySetting: Array<any>;
+            raisingSalaryCalcAtr: KnockoutObservable<boolean>;
+            autoCalSpecificRaisingSalarySetting: Array<any>;
+            specificRaisingSalaryCalcAtr: KnockoutObservable<boolean>;    
+            
+            constructor(){
+                this.autoCalRaisingSalarySetting = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];     
+                this.raisingSalaryCalcAtr = ko.observable(false);
+                this.autoCalSpecificRaisingSalarySetting = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];
+                this.specificRaisingSalaryCalcAtr = ko.observable(false);
+            }
+            
+            updateData(dto: AutoCalRaisingSalarySettingDto) {
+                this.raisingSalaryCalcAtr(dto.raisingSalaryCalcAtr);
+                this.specificRaisingSalaryCalcAtr(dto.specificRaisingSalaryCalcAtr);
+            }
+
+            toDto(): AutoCalRaisingSalarySettingDto {
+                var dto: AutoCalRaisingSalarySettingDto = {
+                    raisingSalaryCalcAtr: this.raisingSalaryCalcAtr(),
+                    specificRaisingSalaryCalcAtr: this.specificRaisingSalaryCalcAtr(),
+                };
+                return dto;
+            }
+            resetData() {
+                this.raisingSalaryCalcAtr(false);
+                this.specificRaisingSalaryCalcAtr(false);
+            }
+        }
+        
+        // AutoCalcOfLeaveEarlySettingDto
+        export class AutoCalcOfLeaveEarlySettingModel{
+            autoCalcOfLeaveLateSetting: Array<any>;
+            autoCalcOfLeaveLate: KnockoutObservable<boolean>;
+            autoCalcOfLeaveEarlySetting: Array<any>;
+            autoCalcOfLeaveEarly: KnockoutObservable<boolean>;            
+            constructor(){
+                this.autoCalcOfLeaveLateSetting = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];
+                this.autoCalcOfLeaveLate = ko.observable(false);
+                this.autoCalcOfLeaveEarlySetting = [
+                    { code: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: false, name: nts.uk.resource.getText("KMK006_42") }
+                ];
+                this.autoCalcOfLeaveEarly = ko.observable(false);    
+            }
+            
+            updateData(dto: AutoCalcOfLeaveEarlySettingDto) {
+                this.autoCalcOfLeaveLate(dto.autoCalcOfLeaveLate);
+                this.autoCalcOfLeaveEarly(dto.autoCalcOfLeaveEarly);
+            }
+
+            toDto(): AutoCalcOfLeaveEarlySettingDto {
+                var dto: AutoCalcOfLeaveEarlySettingDto = {
+                    autoCalcOfLeaveLate: this.autoCalcOfLeaveLate(),
+                    autoCalcOfLeaveEarly: this.autoCalcOfLeaveEarly(),
+                };
+                return dto;
+            }
+            resetData() {
+                this.autoCalcOfLeaveLate(false);
+                this.autoCalcOfLeaveEarly(false);
+            }
+        }
+               
         //        AutoCalSettingDto
         export class AutoCalSettingModel {
             upLimitOtSet: KnockoutObservable<number>;
