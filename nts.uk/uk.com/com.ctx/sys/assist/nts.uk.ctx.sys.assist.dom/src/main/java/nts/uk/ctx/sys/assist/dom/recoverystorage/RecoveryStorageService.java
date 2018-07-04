@@ -2,13 +2,9 @@ package nts.uk.ctx.sys.assist.dom.recoverystorage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +23,8 @@ import javax.transaction.Transactional.TxType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
@@ -69,6 +67,8 @@ public class RecoveryStorageService {
 		this.self = scContext.getBusinessObject(RecoveryStorageService.class);
 	}
 
+	public static final String DATE_FORMAT = "yyyy-MM-dd";
+
 	public static final int SELECTION_TARGET_FOR_RES = 1;
 
 	public static final String SQL_EXCEPTION = "113";
@@ -96,8 +96,19 @@ public class RecoveryStorageService {
 	public static final Integer HEADER_CSV = 0;
 
 	public static final Integer INDEX_SID = 1;
+	
+	public static final Integer INDEX_H_DATE = 2;
+	
+	public static final Integer INDEX_H_START_DATE = 3;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecoveryStorageService.class);
+
+    private static final Map<String, Integer> datetimeRange = new HashMap<String, Integer>();
+    static {
+    	datetimeRange.put(YEAR_MONTH_DAY, 10);
+    	datetimeRange.put(YEAR_MONTH, 6);
+    	datetimeRange.put(YEAR, 3);
+    }
 
 	public void recoveryStorage(String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -110,17 +121,17 @@ public class RecoveryStorageService {
 
 		// update OperatingCondition
 		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
-				DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value);
+				DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS);
 		
-		int errorCode = 0;
+		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		int numberCateSucess = 0;
 		// 処理対象のカテゴリを処理する
 		for (Category category : listCategory) {
 			
 			List<TableList> tableUse = performDataRecoveryRepository.getByStorageRangeSaved(
-					category.getCategoryId().v(), dataRecoveryProcessId, StorageRangeSaved.EARCH_EMP.value);
+					category.getCategoryId().v(), dataRecoveryProcessId, StorageRangeSaved.EARCH_EMP);
 			List<TableList> tableNotUse = performDataRecoveryRepository.getByStorageRangeSaved(
-					category.getCategoryId().v(), dataRecoveryProcessId, StorageRangeSaved.ALL_EMP.value);
+					category.getCategoryId().v(), dataRecoveryProcessId, StorageRangeSaved.ALL_EMP);
 
 			TableListByCategory tableListByCategory = new TableListByCategory(category.getCategoryId().v(),
 					tableUse);
@@ -129,45 +140,44 @@ public class RecoveryStorageService {
 
 			
 			// カテゴリ単位の復旧
-			errorCode = exCurrentCategory(tableListByCategory, tableNotUseCategory, uploadId, dataRecoveryProcessId);
+			condition = exCurrentCategory(tableListByCategory, tableNotUseCategory, uploadId, dataRecoveryProcessId);
 
 			// のカテゴリカウントをカウントアップ
 
-			if (errorCode != DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
+			if (condition != DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS) {
 				break;
-
 			}
 			numberCateSucess++;
 			dataRecoveryMngRepository.updateCategoryCnt(dataRecoveryProcessId, numberCateSucess);
 		}
 		
 
-		if (errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
+		if (condition == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS) {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
-					DataRecoveryOperatingCondition.DONE.value);
+					DataRecoveryOperatingCondition.DONE);
 		} else {
-			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,errorCode);
+			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, condition);
 		}
 	}
 
 	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
-	public int recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode, String employeeId,
+	public DataRecoveryOperatingCondition recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode, String employeeId,
 			List<DataRecoveryTable> targetDataByCate, List<Target> listTarget) throws Exception {
 
-		int errorCode = 0;
+		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 
 		// Check recovery method [復旧方法]
 		// sửa
 		if (performDataRecovery.isPresent()
-				&& performDataRecovery.get().getRecoveryMethod().value == RecoveryMethod.RESTORE_SELECTED_RANGE.value) {
+				&& performDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE) {
 
 			Optional<Target> existEmployee = listTarget.stream().filter(x -> {
 				return employeeId.equals(x.getSid());
 			}).findFirst();
 			if (!existEmployee.isPresent()) {
-				return DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value;
+				return DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 			}
 
 		}
@@ -183,7 +193,7 @@ public class RecoveryStorageService {
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
 			if (resultsSetting.isEmpty()) {
-				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
+				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 			}
 
 			// 履歴区分の判別する - check history division
@@ -193,43 +203,40 @@ public class RecoveryStorageService {
 				} catch (Exception e) {
 					LOGGER.error("SQL error rollBack transaction");
 					throw new Exception(SQL_EXCEPTION);
-
 				}
 			}
 
-
 			try {
 				// 対象社員の日付順の処理
-				errorCode = crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode,
-						dataRecoveryProcessId, dataRecoveryTable.getFileNameCsv(), tableList, performDataRecovery,
+				condition = crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode,
+						dataRecoveryProcessId, tableList, performDataRecovery,
 						resultsSetting, true);
 			} catch (Exception e) {
 				// DELETE/INSERT error
 				LOGGER.error("SQL error rollBack transaction");
 				throw new Exception(SQL_EXCEPTION);
-
 			}
 
 			//  Setting error
-			if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
+			if (condition == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION) {
 				LOGGER.error("Setting error rollBack transaction");
 				throw new Exception(SETTING_EXCEPTION);
-
 			}
 
 		}
-		return errorCode;
+		return condition;
 	}
 
 	
-	public int crudDataByTable(List<List<String>> targetDataTable, String employeeId, String employeeCode,
-			String dataRecoveryProcessId, String fileNameCsv, Optional<TableList> tableList,
+	public DataRecoveryOperatingCondition crudDataByTable(List<List<String>> targetDataTable, String employeeId, String employeeCode,
+			String dataRecoveryProcessId, Optional<TableList> tableList,
 			Optional<PerformDataRecovery> performDataRecovery, List<String> resultsSetting, Boolean tableUse)
 			throws ParseException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-		int errorCode = 0, indexCidOfCsv = 0;
+		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
+	    int indexCidOfCsv = 0;
 		List<String> targetDataHeader = targetDataTable.get(HEADER_CSV);
-		String V_FILED_KEY_UPDATE = null, TABLE_NAME = null, date = null, dateSub = null;
+		String V_FILED_KEY_UPDATE = null, TABLE_NAME = null, date = null, dateSub = "";
 
 		HashMap<Integer, String> indexAndFiled = new HashMap<>();
 		// search data by employee
@@ -243,14 +250,12 @@ public class RecoveryStorageService {
 
 		// sort date of targetData
 		dataTableNotHeader = sortByDate(targetDataTable);
-		
-		for (int i = 0; i < dataTableNotHeader.size(); i++) {
+		for (List<String> dataRow : dataTableNotHeader) {
 			Map<String, String> filedWhere = new HashMap<>();
-			List<String> dataRow = dataTableNotHeader.get(i);
 			if (resultsSetting.size() == 1) {
-				date = dataRow.get(2);
+				date = dataRow.get(INDEX_H_DATE);
 			} else if (resultsSetting.size() == 2) {
-				date = dataRow.get(3);
+				date = dataRow.get(INDEX_H_START_DATE);
 			}
 			// データベース復旧処理
 			if (employeeId != null && !dataRow.get(INDEX_SID).equals(employeeId)) {
@@ -258,34 +263,29 @@ public class RecoveryStorageService {
 			}
 			
 			// 履歴区分を判別する - check history division
-			if (tableList.get().getHistoryCls().value == HistoryDiviSion.NO_HISTORY.value && tableUse
+			if (tableUse && tableList.get().getHistoryCls() == HistoryDiviSion.NO_HISTORY
 					&& performDataRecovery.isPresent()
-					&& performDataRecovery.get().getRecoveryMethod().value == RecoveryMethod.RESTORE_SELECTED_RANGE.value
-					&& tableList.get().getRetentionPeriodCls().value != TimeStore.FULL_TIME.value
+					&& performDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE
+					&& tableList.get().getRetentionPeriodCls() != TimeStore.FULL_TIME
 					&& !checkSettingDate(resultsSetting, tableList, dataRow)) {
-				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
+				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 			} else if (!tableUse && performDataRecovery.isPresent()
-					&& performDataRecovery.get().getRecoveryMethod().value == RecoveryMethod.RESTORE_SELECTED_RANGE.value
-					&& tableList.get().getRetentionPeriodCls().value != TimeStore.FULL_TIME.value
+					&& performDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE
+					&& tableList.get().getRetentionPeriodCls() != TimeStore.FULL_TIME
 					&& !checkSettingDate(resultsSetting, tableList, dataRow)) {
 				continue;
 			}
 
 			// update recovery date for have history, save range none, year,
 			// year/month, year/month/day
-			if (tableList.get().getHistoryCls().value == HistoryDiviSion.HAVE_HISTORY.value && tableUse)
-				dateSub = date.substring(0, 10);
-			if (tableList.get().getRetentionPeriodCls().value == TimeStore.FULL_TIME.value) {
-				dateSub = null;
+			if (tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY && tableUse)
+				dateSub = dateTimeCutter(YEAR_MONTH_DAY, date).orElse("");
+			if (tableList.get().getRetentionPeriodCls() == TimeStore.FULL_TIME) {
+				dateSub = "";
 			}
-			if (YEAR.equals(resultsSetting.get(0)) && date != null && !date.isEmpty()) {
-				dateSub = date.substring(0, 3);
-			} else if (YEAR_MONTH.equals(resultsSetting.get(0)) && date != null && !date.isEmpty()) {
-				dateSub = date.substring(0, 6);
-			} else if (YEAR_MONTH_DAY.equals(resultsSetting.get(0)) && date != null && !date.isEmpty()) {
-				dateSub = date.substring(0, 10);
-			}
-			dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, dateSub);
+			
+			dateSub = dateTimeCutter(resultsSetting.get(0), date).orElse("");
+			dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, dateSub.replace("-", "/"));
 
 			// create filed where for query
 			for (Map.Entry<Integer, String> entry : indexAndFiled.entrySet()) {
@@ -302,7 +302,7 @@ public class RecoveryStorageService {
 					namePhysicalCid, cidCurrent);
 
 			if (count > 1 && tableUse) {
-				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
+				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 			} else if (count > 1 && !tableUse) {
 				continue;
 			} else if (count == 1) {
@@ -331,7 +331,7 @@ public class RecoveryStorageService {
 			}
 
 		}
-		return errorCode;
+		return condition;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -370,8 +370,8 @@ public class RecoveryStorageService {
 		String[] whereSid = { "" };
 
 		//
-		Optional<Object> keyQuery = Optional.empty();
-		Optional<Object> filedKey = Optional.empty();
+		Optional<Object> keyQuery;
+		Optional<Object> filedKey;
 		for (int i = 1; i < 11; i++) {
 			Method m1 = TableList.class.getMethod(GET_CLS_KEY_QUERY + i);
 			keyQuery = (Optional<Object>) m1.invoke(tableList.get());
@@ -395,71 +395,71 @@ public class RecoveryStorageService {
 	}
 
 	
-	public int exCurrentCategory(TableListByCategory tableListByCategory, TableListByCategory tableNotUseByCategory,
+	public DataRecoveryOperatingCondition exCurrentCategory(TableListByCategory tableListByCategory, TableListByCategory tableNotUseByCategory,
 			String uploadId, String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-		int errorCode = 0;
+		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		// カテゴリの中の社員単位の処理
-		errorCode = exTableUse(tableListByCategory, dataRecoveryProcessId, uploadId);
+		condition = exTableUse(tableListByCategory, dataRecoveryProcessId, uploadId);
 
-		if (errorCode == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS.value) {
+		if (condition == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS) {
 			// の処理対象社員コードをクリアする
 			dataRecoveryMngRepository.updateProcessTargetEmpCode(dataRecoveryProcessId, null);
 
 			// カテゴリの中の日付単位の処理
-			errorCode = exTableNotUse(tableNotUseByCategory, dataRecoveryProcessId, uploadId);
+			condition = exTableNotUse(tableNotUseByCategory, dataRecoveryProcessId, uploadId);
 
 		}
 
-		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, errorCode);
-		return errorCode;
+		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, condition);
+		return condition;
 	}
 
 	
-	public int exTableNotUse(TableListByCategory tableNotUseByCategory, String dataRecoveryProcessId, String uploadId)
+	public DataRecoveryOperatingCondition exTableNotUse(TableListByCategory tableNotUseByCategory, String dataRecoveryProcessId, String uploadId)
 			throws ParseException, NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		int errorCode = 0;
+		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		if (tableNotUseByCategory.getTables().size() == 0) {
-			return errorCode;
+			return condition;
 		}
 		
 		// テーブル一覧のカレントの1行分の項目を取得する
-		for (int i = 0; i < tableNotUseByCategory.getTables().size(); i++) {
+		for (TableList tableList : tableNotUseByCategory.getTables()) {
 
 			// Get trạng thái domain データ復旧動作管理
 			Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository
 					.getDataRecoveryMngById(dataRecoveryProcessId);
-			if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition().value == 1) {
-				errorCode = DataRecoveryOperatingCondition.INTERRUPTION_END.value;
-				return errorCode;
+			if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition() == DataRecoveryOperatingCondition.INTERRUPTION_END) {
+				return DataRecoveryOperatingCondition.INTERRUPTION_END;
 			}
 
 			List<List<String>> targetDataRecovery = CsvFileUtil.getAllRecord(uploadId,
-					tableNotUseByCategory.getTables().get(i).getInternalFileName());
+					tableList.getInternalFileName());
 
 			// 期間別データ処理
-			Optional<TableList> tableList = performDataRecoveryRepository.getByInternal(
-					tableNotUseByCategory.getTables().get(i).getInternalFileName(), dataRecoveryProcessId);
-			errorCode = exDataTabeRangeDate(tableNotUseByCategory.getTables().get(i).getInternalFileName(),
-					targetDataRecovery, tableList, dataRecoveryProcessId);
+//			Optional<TableList> tableList = performDataRecoveryRepository.getByInternal(a.getInternalFileName(),
+//					dataRecoveryProcessId);
+			condition = exDataTabeRangeDate(targetDataRecovery, Optional.of(tableList),
+					dataRecoveryProcessId);
 
 			// Xác định trạng thái error
-			if (errorCode == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value) {
-				return errorCode;
+			if (condition == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION) {
+				return condition;
 			}
 
 		}
 
-		return errorCode;
+		return condition;
 	}
 
-	public int exTableUse(TableListByCategory tableListByCategory, String dataRecoveryProcessId, String uploadId)
+	public DataRecoveryOperatingCondition exTableUse(TableListByCategory tableListByCategory, String dataRecoveryProcessId, String uploadId)
 			throws ParseException {
 
-		int errorCode = 0;
+		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
+		String errorCode = "";
 		int numberEmError = 0;
 		List<DataRecoveryTable> targetDataByCate = new ArrayList<>();
 
@@ -500,34 +500,31 @@ public class RecoveryStorageService {
 						employeeDataMngInfoImport.getEmployeeCode());
 
 				// 対象社員データ処理
+				
 				try {
-					errorCode = self.recoveryDataByEmployee(dataRecoveryProcessId,
+					condition = self.recoveryDataByEmployee(dataRecoveryProcessId,
 							employeeDataMngInfoImport.getEmployeeCode(), employeeDataMngInfoImport.getEmployeeId(),
 							targetDataByCate, listTarget);
 				} catch (Exception e) {
-					errorCode = Integer.valueOf(e.getMessage());
+					errorCode = e.getMessage();
+					numberEmError++;
+					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, numberEmError);
 				}
 
-				if (errorCode == Integer.valueOf(SETTING_EXCEPTION)) {
-					numberEmError++;
-					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, numberEmError);
-					return errorCode;
-				} else if (errorCode == Integer.valueOf(SQL_EXCEPTION)) {
-					numberEmError++;
-					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, numberEmError);
+				if (errorCode.equals(SETTING_EXCEPTION)) {
+					return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 				}
 
 				// check interruption [中断]
 				Optional<DataRecoveryMng> dataRecovery = dataRecoveryMngRepository
 						.getDataRecoveryMngById(dataRecoveryProcessId);
 				if (dataRecovery.isPresent() && dataRecovery.get()
-						.getOperatingCondition().value == DataRecoveryOperatingCondition.INTERRUPTION_END.value) {
-					errorCode = DataRecoveryOperatingCondition.INTERRUPTION_END.value;
-					return errorCode;
+						.getOperatingCondition() == DataRecoveryOperatingCondition.INTERRUPTION_END) {
+					return DataRecoveryOperatingCondition.INTERRUPTION_END;
 				}
 			}
 		}
-		return errorCode;
+		return condition;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -537,8 +534,8 @@ public class RecoveryStorageService {
 		// 「テーブル一覧」の抽出キー区から日付項目を設定する
 		List<String> checkKeyQuery = new ArrayList<>();
 		List<String> resultsSetting = new ArrayList<>();
-		Integer timeStore = null;
-		int count6 = 0, count7 = 0, count8 = 0;
+		TimeStore timeStore = null;
+		int countY = 0, countYm = 0, countYmd = 0;
 
 		Optional<Object> keyQuery = Optional.empty();
 
@@ -551,46 +548,50 @@ public class RecoveryStorageService {
 				}
 			}
 
-			timeStore = tableList.get().getRetentionPeriodCls().value;
+			timeStore = tableList.get().getRetentionPeriodCls();
 		}
 		for (String currentKeyQuery : checkKeyQuery) {
-			if (currentKeyQuery.equals(YEAR)) {
-				count6++;
-			} else if (currentKeyQuery.equals(YEAR_MONTH)) {
-				count7++;
-			} else if (currentKeyQuery.equals(YEAR_MONTH_DAY)) {
-				count8++;
+			switch (currentKeyQuery) {
+			case YEAR:
+				countY++;
+				break;
+			case YEAR_MONTH:
+				countYm++;
+				break;
+			case YEAR_MONTH_DAY:
+				countYmd++;
+				break;
 			}
 		}
 
 		// không date
-		if (count6 == 0 && count7 == 0 && count8 == 0) {
+		if (countY == 0 && countYm == 0 && countYmd == 0) {
 			resultsSetting.add(NONE_DATE);
-		} else if (count6 != 0 && count7 == 0 && count8 == 0) {
+		} else if (countY != 0 && countYm == 0 && countYmd == 0) {
 			// năm hoặc phạm vi năm
 			resultsSetting.add(YEAR);
-			if (count6 == 2) {
+			if (countY == 2) {
 				resultsSetting.add(YEAR);
 			}
-		} else if (count6 == 0 && count7 != 0 && count8 == 0) {
+		} else if (countY == 0 && countYm != 0 && countYmd == 0) {
 			// tháng năm hoặc là phạm vi tháng năm
 			resultsSetting.add(YEAR_MONTH);
-			if (count7 == 2) {
+			if (countYm == 2) {
 				resultsSetting.add(YEAR_MONTH);
 			}
-		} else if (count6 == 0 && count7 == 0 && count8 != 0) {
+		} else if (countY == 0 && countYm == 0 && countYmd != 0) {
 			// ngày tháng năm hoặc phạm vi ngày tháng năm
 			resultsSetting.add(YEAR_MONTH_DAY);
-			if (count8 == 2) {
+			if (countYmd == 2) {
 				resultsSetting.add(YEAR_MONTH_DAY);
 			}
 		}
 
 		// 保存期間区分と日付設定を判別
-		if (timeStore == null || timeStore == 0 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals(NONE_DATE)
-				|| timeStore == 1 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals(YEAR)
-				|| timeStore == 2 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals(YEAR_MONTH)
-				|| timeStore == 3 && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals(YEAR_MONTH_DAY)) {
+		if (timeStore == null || timeStore == TimeStore.FULL_TIME && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals(NONE_DATE)
+				|| timeStore == TimeStore.ANNUAL && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals(YEAR)
+				|| timeStore == TimeStore.MONTHLY && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals(YEAR_MONTH)
+				|| timeStore == TimeStore.DAILY && !resultsSetting.isEmpty() && !resultsSetting.get(0).equals(YEAR_MONTH_DAY)) {
 			resultsSetting.clear();
 			return resultsSetting;
 		}
@@ -602,55 +603,38 @@ public class RecoveryStorageService {
 	public Boolean checkSettingDate(List<String> resultsSetting, Optional<TableList> tableList, List<String> dataRow)
 			throws ParseException {
 		
-		if (!resultsSetting.isEmpty()) {
+		if (resultsSetting.isEmpty()) {
 			return false;
 		}
 
-		String H_Date_Csv = null;
+		String h_Date_Csv = null;
 		if (resultsSetting.size() == 1) {
-			H_Date_Csv = dataRow.get(2);
+			h_Date_Csv = dataRow.get(INDEX_H_DATE);
 		} else if (resultsSetting.size() == 2) {
-			H_Date_Csv = dataRow.get(3);
+			h_Date_Csv = dataRow.get(INDEX_H_START_DATE);
 		}
-		if (H_Date_Csv == null || H_Date_Csv.isEmpty())
+		if (StringUtil.isNullOrEmpty(h_Date_Csv, true)){
 			return false;
-		Date Date_Csv = new SimpleDateFormat("yyyy-MM-dd").parse(H_Date_Csv);
-		Integer Y_Date_Csv = Integer.parseInt(H_Date_Csv.substring(0, 4));
-		if (YEAR.equals(resultsSetting.get(0))
-				&& (Y_Date_Csv < Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3))
-						|| Y_Date_Csv > Integer.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3)))) {
-
+		}
+		GeneralDate hDateCsv = GeneralDate.fromString(h_Date_Csv, DATE_FORMAT);
+		GeneralDate dateFrom = GeneralDate.fromString(tableList.get().getSaveDateFrom().get(), DATE_FORMAT);
+		GeneralDate dateTo = GeneralDate.fromString(tableList.get().getSaveDateTo().get(), DATE_FORMAT);
+		
+		if (YEAR.equals(resultsSetting.get(0)) && (hDateCsv.year() < dateFrom.year() || hDateCsv.year() > dateTo.year())) {
 			return false;
-
-		} else if (YEAR_MONTH.equals(resultsSetting.get(0))) {
-			Integer M_Date_Csv = Integer.parseInt(H_Date_Csv.substring(5, 7));
-			if (Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3)) > Y_Date_Csv
-					|| (Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3)) == Y_Date_Csv
-							&& M_Date_Csv < Integer
-									.parseInt(tableList.get().getSaveDateFrom().get().substring(4)))
-					|| Integer.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3)) < Y_Date_Csv
-					|| (Integer.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3)) == Y_Date_Csv
-							&& M_Date_Csv > Integer
-									.parseInt(tableList.get().getSaveDateTo().get().substring(4)))) {
+		} else if (YEAR_MONTH.equals(resultsSetting.get(0)) ) {
+			if ((dateFrom.year() > hDateCsv.year() || (dateFrom.year() == hDateCsv.year() && hDateCsv.month() < dateFrom.month()))
+				|| (dateTo.year() < hDateCsv.year() || (dateTo.year() == hDateCsv.year() && hDateCsv.month() > dateTo.month()))) {
 				return false;
 			}
-
-		} else if (YEAR_MONTH_DAY.equals(resultsSetting.get(0))) {
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-			String from = tableList.get().getSaveDateFrom().orElse(null);
-			Date Date_From_Table = formatter.parse(from);
-			String to = tableList.get().getSaveDateTo().orElse(null);
-			Date Date_To_Table = formatter.parse(to);
-			if (!Date_Csv.after(Date_From_Table) || !Date_Csv.before(Date_To_Table)) {
-				return false;
-			}
+		} else if (YEAR_MONTH_DAY.equals(resultsSetting.get(0)) && (!hDateCsv.after(dateFrom) || !hDateCsv.before(dateTo))) {
+			return false;
 		}
 		return true;
-
 	}
 
 	@Transactional(value = TxType.REQUIRES_NEW)
-	public int exDataTabeRangeDate(String fileNameCsv, List<List<String>> targetDataRecovery,
+	public DataRecoveryOperatingCondition exDataTabeRangeDate(List<List<String>> targetDataRecovery,
 			Optional<TableList> tableList, String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
@@ -658,15 +642,15 @@ public class RecoveryStorageService {
 		List<String> resultsSetting = new ArrayList<>();
 		resultsSetting = this.settingDate(tableList);
 
-		int errorCode = 0;
+		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		if (resultsSetting.isEmpty()) {
-			return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value;
+			return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 		}
 
 		if (tableList.isPresent()) {
 
 			// 履歴区分の判別する - check phân loại lịch sử
-			if (tableList.get().getHistoryCls().value == HistoryDiviSion.HAVE_HISTORY.value) {
+			if (tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY) {
 				try {
 					deleteEmployeeHistory(tableList, false,null);
 				} catch (Exception e) {
@@ -677,12 +661,12 @@ public class RecoveryStorageService {
 			Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
 					.getPerformDatRecoverById(dataRecoveryProcessId);
 
-			errorCode = this.crudDataByTable(targetDataRecovery, null, null, dataRecoveryProcessId, fileNameCsv,
+			condition = this.crudDataByTable(targetDataRecovery, null, null, dataRecoveryProcessId,
 					tableList, performDataRecovery, resultsSetting, false);
 
 		}
 
-		return errorCode;
+		return condition;
 
 	}
 
@@ -692,29 +676,21 @@ public class RecoveryStorageService {
 			dataTableCus.add(list);
 		}
 		dataTableCus.remove(0);
-		Collections.sort(dataTableCus, new Comparator<List<String>>() {
-			DateFormat f = new SimpleDateFormat("yyyy-MM-dd");// or your
-
-			@Override
-			public int compare(List<String> o1, List<String> o2) {
-				try {
-					if (null == o1.get(2) || o1.get(2).isEmpty()) {
-						return (null == o2.get(2)) ? 0 : -1;
-					}
-					if (null == o2.get(2) || o2.get(2).isEmpty()) {
-						return 1;
-					}
-					return f.parse(o1.get(2)).compareTo(f.parse(o2.get(2)));
-				} catch (ParseException e) {
-					throw new IllegalArgumentException(e);
+		Collections.sort(dataTableCus, (o1, o2) -> {
+				if (StringUtil.isNullOrEmpty(o1.get(2), true)) {
+					return StringUtil.isNullOrEmpty(o2.get(2), true) ? 0 : -1;
 				}
-			}
+				if (StringUtil.isNullOrEmpty(o2.get(2), true)) {
+					return 1;
+				}
+				return o1.get(2).compareTo(o2.get(2));
 		});
 		return dataTableCus;
 	}
 
 	@SuppressWarnings("unchecked")
-	private HashMap<Integer, String> indexMapFiledCsv(List<String> targetDataHeader, Optional<TableList> tableList) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private HashMap<Integer, String> indexMapFiledCsv(List<String> targetDataHeader, Optional<TableList> tableList) throws 
+	NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		HashMap<Integer, String> indexfiledUpdate = new HashMap<>();
 		String[] whereCid = { "" };
@@ -733,5 +709,15 @@ public class RecoveryStorageService {
 		}
 		
 		return indexfiledUpdate;
+	}
+	
+	/**
+	 * Cut String by type
+	 * @param type RangeType
+	 * @param datetime
+	 * @return
+	 */
+	private Optional<String> dateTimeCutter(String type, String datetime){
+		return datetimeRange.containsKey(type) ? Optional.of(datetime.substring(0, datetimeRange.get(type))) : Optional.empty();
 	}
 }

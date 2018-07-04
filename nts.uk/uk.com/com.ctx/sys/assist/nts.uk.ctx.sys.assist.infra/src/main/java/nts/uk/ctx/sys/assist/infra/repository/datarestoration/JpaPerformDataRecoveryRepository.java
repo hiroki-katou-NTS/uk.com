@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
@@ -81,11 +82,11 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public List<TableList> getByStorageRangeSaved(String categoryId,String dataRecoveryProcessId , int storageRangeSaved) {
+	public List<TableList> getByStorageRangeSaved(String categoryId, String dataRecoveryProcessId, StorageRangeSaved storageRangeSaved) {
 		List<SspmtTableList> listTable = this.getEntityManager()
 				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class).setParameter("categoryId", categoryId)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
-				.setParameter("storageRangeSaved", storageRangeSaved).getResultList();
+				.setParameter("storageRangeSaved", storageRangeSaved.value).getResultList();
 
 		return listTable.stream().map(SspmtTableList::toDomain).collect(Collectors.toList());
 	}

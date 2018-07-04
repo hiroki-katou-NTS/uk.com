@@ -9,8 +9,10 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryOperatingCondition;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoveryMng;
 
 @Stateless
@@ -42,11 +44,11 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 	}
 
 	@Override
-	public void updateByOperatingCondition(String dataRecoveryProcessId, int operatingCondition) {
+	public void updateByOperatingCondition(String dataRecoveryProcessId, DataRecoveryOperatingCondition operatingCondition) {
 		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId,
 				SspmtDataRecoveryMng.class);
 		entity.ifPresent(x -> {
-			x.operatingCondition = operatingCondition;
+			x.operatingCondition = operatingCondition.value;
 			this.commandProxy().update(x);
 		});
 		em.flush();
@@ -84,7 +86,7 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId,
 				SspmtDataRecoveryMng.class);
 		entity.ifPresent(x -> {
-			x.recoveryDate = date;
+			x.recoveryDate = StringUtil.isNullOrEmpty(date, true) ? null : date;
 			this.commandProxy().update(x);
 		});
 	}
