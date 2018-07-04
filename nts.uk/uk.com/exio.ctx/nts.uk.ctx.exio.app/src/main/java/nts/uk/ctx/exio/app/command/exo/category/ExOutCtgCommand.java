@@ -9,7 +9,7 @@ public class ExOutCtgCommand
     /**
     * 
     */
-    private String categoryId;
+    private int categoryId;
     
     /**
     * 
@@ -64,7 +64,7 @@ public class ExOutCtgCommand
     /**
     * 
     */
-    private int defaultValue;
+    private boolean defaultValue;
     
     private Long version;
 

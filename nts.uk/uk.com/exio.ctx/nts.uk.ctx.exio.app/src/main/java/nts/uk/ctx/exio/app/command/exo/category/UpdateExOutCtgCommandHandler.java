@@ -11,16 +11,19 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 
 @Stateless
 @Transactional
-public class UpdateExOutCtgCommandHandler extends CommandHandler<ExOutCtgCommand>
-{
-    
-    @Inject
-    private ExOutCtgRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<ExOutCtgCommand> context) {
-        ExOutCtgCommand updateCommand = context.getCommand();
-        repository.update(new ExOutCtg(updateCommand.getCategoryId(), updateCommand.getOfficeHelperSysAtr(), updateCommand.getCategoryName(), updateCommand.getCategorySet(), updateCommand.getPersonSysAtr(), updateCommand.getAttendanceSysAtr(), updateCommand.getPayrollSysAtr(), updateCommand.getFunctionNo(), updateCommand.getFunctionName(), updateCommand.getExplanation(), updateCommand.getDisplayOrder(), updateCommand.getDefaultValue()));
-    
-    }
+public class UpdateExOutCtgCommandHandler extends CommandHandler<ExOutCtgCommand> {
+
+	@Inject
+	private ExOutCtgRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<ExOutCtgCommand> context) {
+		ExOutCtgCommand updateCommand = context.getCommand();
+		repository.update(new ExOutCtg(updateCommand.getCategoryId(), updateCommand.getOfficeHelperSysAtr(),
+				updateCommand.getCategoryName(), updateCommand.getCategorySet(), updateCommand.getPersonSysAtr(),
+				updateCommand.getAttendanceSysAtr(), updateCommand.getPayrollSysAtr(), updateCommand.getFunctionNo(),
+				updateCommand.getFunctionName(), updateCommand.getExplanation(), updateCommand.getDisplayOrder(),
+				updateCommand.isDefaultValue()));
+
+	}
 }

@@ -11,113 +11,82 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.permit.data.JpaEntityOfDescriptionOfAvailabilityPermissionBase;
 
 /**
-* 外部出力カテゴリ
-*/
+ * 外部出力カテゴリ
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_EX_OUT_CTG")
-public class OiomtExOutCtg extends UkJpaEntity implements Serializable
-{
-    private static final long serialVersionUID = 1L;
-    
-    /**
-    * ID
-    */
-    @EmbeddedId
-    public OiomtExOutCtgPk exOutCtgPk;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "OFFICE_HELPER_SYS_ATR")
-    public int officeHelperSysAtr;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "CATEGORY_NAME")
-    public String categoryName;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "CATEGORY_SET")
-    public int categorySet;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "PERSON_SYS_ATR")
-    public int personSysAtr;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "ATTENDANCE_SYS_ATR")
-    public int attendanceSysAtr;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "PAYROLL_SYS_ATR")
-    public int payrollSysAtr;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "FUNCTION_NO")
-    public int functionNo;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "FUNCTION_NAME")
-    public String functionName;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "EXPLANATION")
-    public String explanation;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "DISPLAY_ORDER")
-    public int displayOrder;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "DEFAULT_VALUE")
-    public int defaultValue;
-    
-    @Override
-    protected Object getKey()
-    {
-        return exOutCtgPk;
-    }
+public class OiomtExOutCtg extends JpaEntityOfDescriptionOfAvailabilityPermissionBase<ExOutCtg>
+		implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    public ExOutCtg toDomain() {
-        return new ExOutCtg(this.exOutCtgPk.categoryId, this.officeHelperSysAtr, this.categoryName, this.categorySet, this.personSysAtr, this.attendanceSysAtr, this.payrollSysAtr, this.functionNo, this.functionName, this.explanation, this.displayOrder, this.defaultValue);
-    }
-    public static OiomtExOutCtg toEntity(ExOutCtg domain) {
-        return new OiomtExOutCtg(new OiomtExOutCtgPk(domain.getCategoryId()), domain.getOfficeHelperSysAtr(), domain.getCategoryName(), domain.getCategorySet(), domain.getPersonSysAtr(), domain.getAttendanceSysAtr(), domain.getPayrollSysAtr(), domain.getFunctionNo(), domain.getFunctionName(), domain.getExplanation(), domain.getDisplayOrder(), domain.getDefaultValue());
-    }
+	/**
+	 * ID
+	 */
+	@EmbeddedId
+	public OiomtExOutCtgPk exOutCtgPk;
+
+	/**
+	 * オフィスヘルパシステム区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "OFFICE_HELPER_SYS_ATR")
+	public int officeHelperSysAtr;
+
+	/**
+	 * カテゴリ名
+	 */
+	@Basic(optional = false)
+	@Column(name = "CATEGORY_NAME")
+	public String categoryName;
+
+	/**
+	 * カテゴリ設定
+	 */
+	@Basic(optional = false)
+	@Column(name = "CATEGORY_SET")
+	public int categorySet;
+
+	/**
+	 * 人事システム区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "PERSON_SYS_ATR")
+	public int personSysAtr;
+
+	/**
+	 * 勤怠システム区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "ATTENDANCE_SYS_ATR")
+	public int attendanceSysAtr;
+
+	/**
+	 * 給与システム区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "PAYROLL_SYS_ATR")
+	public int payrollSysAtr;
+
+	@Override
+	protected Object getKey() {
+		return exOutCtgPk;
+	}
+
+	public ExOutCtg toDomain() {
+		return new ExOutCtg(this.exOutCtgPk.categoryId, this.officeHelperSysAtr, this.categoryName, this.categorySet,
+				this.personSysAtr, this.attendanceSysAtr, this.payrollSysAtr, this.functionNo, this.name,
+				this.explanation, this.displayOrder, this.defaultValue);
+	}
+
+	public static OiomtExOutCtg toEntity(ExOutCtg domain) {
+		return new OiomtExOutCtg(new OiomtExOutCtgPk(domain.getCategoryId().v()), domain.getOfficeHelperSysAtr().value,
+				domain.getCategoryName().v(), domain.getCategorySet().value, domain.getPersonSysAtr().value,
+				domain.getAttendanceSysAtr().value, domain.getPayrollSysAtr().value);
+	}
 
 }

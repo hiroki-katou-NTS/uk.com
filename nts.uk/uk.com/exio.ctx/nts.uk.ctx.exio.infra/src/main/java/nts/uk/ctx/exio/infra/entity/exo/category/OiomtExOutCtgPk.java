@@ -11,21 +11,20 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 外部出力カテゴリ: 主キー情報
-*/
+ * 外部出力カテゴリ: 主キー情報
+ */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class OiomtExOutCtgPk implements Serializable
-{
-    private static final long serialVersionUID = 1L;
-    
-    /**
-    * 
-    */
-    @Basic(optional = false)
-    @Column(name = "CATEGORY_ID")
-    public String categoryId;
-    
+public class OiomtExOutCtgPk implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * カテゴリID
+	 */
+	@Basic(optional = false)
+	@Column(name = "CATEGORY_ID")
+	public int categoryId;
+
 }
