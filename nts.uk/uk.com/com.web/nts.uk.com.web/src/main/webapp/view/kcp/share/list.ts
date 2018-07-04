@@ -818,8 +818,10 @@ module kcp.share.list {
                 if (self.alreadySettingList) {
                     self.addAreadySettingAttr(data, self.alreadySettingList());
                 }
-                self.itemList(data);
-                self.initNoSelectRow(self.isShowNoSelectRow);
+                _.defer(() => {
+                    self.itemList(data);
+                    self.initNoSelectRow(self.isShowNoSelectRow);
+                });
             });
         }
         
