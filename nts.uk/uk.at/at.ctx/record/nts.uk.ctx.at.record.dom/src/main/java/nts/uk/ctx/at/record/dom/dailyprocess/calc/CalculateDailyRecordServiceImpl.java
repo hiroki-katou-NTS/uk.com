@@ -33,11 +33,7 @@ import nts.uk.ctx.at.record.dom.calculationattribute.HolidayTimesheetCalculation
 import nts.uk.ctx.at.record.dom.calculationattribute.OvertimeTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.WorkingTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
@@ -55,26 +51,19 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorChe
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
 import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
-import nts.uk.ctx.at.record.dom.workrule.specific.LimitControlOfTotalWorkingSet;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -87,7 +76,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
@@ -106,10 +94,8 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndAggregateFrameSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
@@ -121,7 +107,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
-import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
@@ -153,7 +138,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -173,8 +157,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	@Inject
 	private GetOfStatutoryWorkTime getOfStatutoryWorkTime;
-	@Inject
-	private WorkInformationRepository workInformationRepository;
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
 	@Inject
@@ -230,7 +212,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//任意項目の計算
 		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter,companyCommonSetting);
 		//エラーチェック
-//		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
 		IntegrationOfDaily result = calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
 		
 		if(isShareContainerNotInit) {
@@ -861,7 +842,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 		   
 		   //手修正後の再計算
-		   //calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting, converter,overTotalTime,holidayWorkTotalTime,attendanceItemIdList,targetDate);
 		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting, converter,attendanceItemIdList,targetDate);
 		   //手修正された項目の値を計算値に戻す(手修正再計算の後Ver)
 		   DailyRecordToAttendanceItemConverter afterReCalcDto = converter.setData(calcResultIntegrationOfDaily); 
@@ -1001,8 +981,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 */
 	private CalculationRangeOfOneDay createOneDayRange(IntegrationOfDaily integrationOfDaily,Optional<WorkTimezoneCommonSet> commonSet) {
 		String companyId = AppContexts.user().companyId();
-		String placeId = integrationOfDaily.getAffiliationInfor().getWplID();
-		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		/*所定時間設定取得*/
