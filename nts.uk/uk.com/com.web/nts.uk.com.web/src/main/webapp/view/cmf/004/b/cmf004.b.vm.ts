@@ -393,7 +393,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 storeProcessingId: self.dataRecoverySelection().selectedRecoveryFile(),
                 dataRecoveryProcessId: self.recoveryProcessingId
             };
-            block.invisible();
+            nts.uk.ui.block.grayout();
             service.obtainRecovery(paramObtainRecovery).done((res) => {
                 if (res) {
                     if (res.status) {
