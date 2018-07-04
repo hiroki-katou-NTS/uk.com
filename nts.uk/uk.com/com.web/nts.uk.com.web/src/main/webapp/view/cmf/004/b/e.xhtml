@@ -62,8 +62,8 @@
                     <td class="halign-center row-checkbox">
                         <div tabindex="1" id="E5_2" data-bind="ntsCheckBox: { checked: isRecover, enable: iscanNotBeOld}"/>
                     </td>
-                    <td><label data-bind="text: categoryName"/></td>
-                    <td><label data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td>
+                    <td><span class="limited-label" data-bind="text: categoryName"/></td>
+                   	<td><span class="limited-label" data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td> 
                     <td class="halign-center"><label data-bind="text: startOfPeriod"/></td>
                     <td class="halign-center"><label data-bind="text: endOfPeriod"/></td>
                     <td><label data-bind="text: recoveryMethod"/></td>
