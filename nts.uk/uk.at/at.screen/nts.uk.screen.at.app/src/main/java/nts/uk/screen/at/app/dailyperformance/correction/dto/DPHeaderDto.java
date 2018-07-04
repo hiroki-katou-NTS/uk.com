@@ -134,6 +134,8 @@ public class DPHeaderDto {
 			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 			dto.setConstraint(new Constraint("TimeWithDay", false, ""));
+		} else if(attendanceAtr == DailyAttendanceAtr.Charater.value){
+			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		}
 		return dto;
 	}
