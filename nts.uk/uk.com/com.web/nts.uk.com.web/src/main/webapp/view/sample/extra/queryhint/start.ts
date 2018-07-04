@@ -1,13 +1,16 @@
 __viewContext.ready(function () {
     class ScreenModel {
         
+        autoSetHint: KnockoutObservable<boolean>;
         fetchSize: KnockoutObservable<number>;
         cacheStatement: KnockoutObservable<boolean>;
+        cacheStatementSize: KnockoutObservable<number>;
         cacheQueryResultSize: KnockoutObservable<number>;
         cacheUsage: KnockoutObservable<string>;
         batchSize: KnockoutObservable<number>;
         batchType: KnockoutObservable<string>;
         batchWrite: KnockoutObservable<string>;
+        batchWriteSize: KnockoutObservable<number>;
         flushMode: KnockoutObservable<boolean>;
         cacheUsages:Array<any> = [ {name: "UseEntityDefault", value: "UseEntityDefault"},
                         {name: "DoNotCheckCache", value: "DoNotCheckCache"},
@@ -28,23 +31,29 @@ __viewContext.ready(function () {
         constructor() {
             this.fetchSize = ko.observable(0);
             this.cacheStatement = ko.observable(false);
+            this.cacheStatementSize = ko.observable(0);
             this.cacheQueryResultSize = ko.observable(0);
             this.cacheUsage = ko.observable("");
             this.batchSize = ko.observable(0);
             this.batchType = ko.observable("");
             this.batchWrite = ko.observable("");
+            this.batchWriteSize = ko.observable(0);
             this.flushMode = ko.observable(false);
+            this.autoSetHint = ko.observable(false);
         }
     
         load() {
             nts.uk.request.ajax("query/hint/setting/get").done(res => {
+                this.autoSetHint(res.setting.autoSetHint);
                 this.fetchSize(res.setting.fetchSize);
                 this.cacheStatement(res.setting.cacheStatement);
+                this.cacheStatementSize(res.setting.cacheStatementSize);
                 this.cacheQueryResultSize(res.setting.cacheQueryResultSize);
                 this.cacheUsage(res.setting.cacheUsage);
                 this.batchSize(res.setting.batchSize);
                 this.batchType(res.setting.batchType);
                 this.batchWrite(res.setting.batchWriteType);
+                this.batchWriteSize(res.setting.batchWriteSize);
                 this.flushMode(res.setting.flushMode);
             });
         }
@@ -54,12 +63,15 @@ __viewContext.ready(function () {
                 setting: {
                     fetchSize: this.fetchSize(),
                     cacheStatement: this.cacheStatement(),
+                    cacheStatementSize: this.cacheStatementSize(),
                     cacheQueryResultSize: this.cacheQueryResultSize(),
                     cacheUsage: this.cacheUsage(),
                     batchSize: this.batchSize(),
                     batchType: this.batchType(),
                     batchWriteType: this.batchWrite(),
-                    flushMode: this.flushMode()
+                    batchWriteSize: this.batchWriteSize(),
+                    flushMode: this.flushMode(),
+                    autoSetHint: this.autoSetHint()
                 }
             }).done(res => {
                 nts.uk.ui.dialog.info("Done!");
