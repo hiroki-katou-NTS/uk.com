@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChang
 
 @Value
 public class ApplicationListDto {
+	private Integer isDisPreP;
 	private String startDate;
 	private String endDate;
 	private ApprovalListDisplaySetDto displaySet;

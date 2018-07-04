@@ -97,9 +97,9 @@
 												option: {
 												 width: '160' 
 												 },
-												},event: { blur: $parent.logMouseOver }" />
+												},event: { blur: $vm.logMouseOver.bind($vm) }" />
 											<button
-												data-bind="click:$parent.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
+												data-bind="click:$vm.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
 										</div>
 									</div>
 

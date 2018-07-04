@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.StatusOfEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidPub;
@@ -19,6 +20,7 @@ import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
+import nts.uk.ctx.sys.gateway.dom.login.dto.StatusOfEmployeeImport;
 
 /**
  * The Class SysEmployeeAdapterImpl.
@@ -114,5 +116,17 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 		default:
 			return SDelAtr.DELETED;
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter#getStatusOfEmployee(java.lang.String)
+	 */
+	@Override
+	public StatusOfEmployeeImport getStatusOfEmployee(String sid) {
+		//get status
+		StatusOfEmployeeExport status = this.syEmployeePub.getStatusOfEmployee(sid);
+		
+		//return
+		return new StatusOfEmployeeImport(status.isDeleted());
 	}
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
@@ -23,7 +24,7 @@ public class CalculateAttendanceRecordFinder {
 
 	/** The at name. */
 	@Inject
-	private DailyAttendanceItemNameDomainService atName;
+	private AttendanceItemNameDomainService atName;
 
 	/**
 	 * Gets the calculate attendance record dto.
@@ -40,8 +41,7 @@ public class CalculateAttendanceRecordFinder {
 						attendanceRecordKey.getPosition(), attendanceRecordKey.getExportAtr());
 		// convert to dto
 		CalculateAttendanceRecord calculateAttendanceRecord = optionalCalculateAttendanceRecord.isPresent()
-				? optionalCalculateAttendanceRecord.get()
-				: null;
+				? optionalCalculateAttendanceRecord.get() : null;
 
 		if (calculateAttendanceRecord != null) {
 			List<Integer> listAddedId = calculateAttendanceRecord.getAddedItem();
@@ -51,12 +51,13 @@ public class CalculateAttendanceRecordFinder {
 			List<AttendanceRecordItemDto> listAttendanceSubtracted = new ArrayList<>();
 
 			if (listAddedId != null && !listAddedId.isEmpty()) {
-				listAttendanceAdded = findAttendanceItemsById(listAddedId);
+				listAttendanceAdded = findAttendanceItemsById(listAddedId, attendanceRecordKey.getExportAtr());
 			}
 			if (listSubtracted != null && !listSubtracted.isEmpty()) {
-				listAttendanceSubtracted = findAttendanceItemsById(listSubtracted);
+				listAttendanceSubtracted = findAttendanceItemsById(listSubtracted, attendanceRecordKey.getExportAtr());
 			}
-			int attribute = calculateAttendanceRecord.getAttribute()!= null ? calculateAttendanceRecord.getAttribute().value : 0;
+			int attribute = calculateAttendanceRecord.getAttribute() != null
+					? calculateAttendanceRecord.getAttribute().value : 0;
 			CalculateAttendanceRecordDto calculateAttendanceRecordDto = new CalculateAttendanceRecordDto(
 					calculateAttendanceRecord.getName().toString(), listAttendanceAdded, listAttendanceSubtracted,
 					attribute);
@@ -73,9 +74,9 @@ public class CalculateAttendanceRecordFinder {
 	 *            the list attendance id
 	 * @return the list
 	 */
-	public List<AttendanceRecordItemDto> findAttendanceItemsById(List<Integer> listAttendanceId) {
+	public List<AttendanceRecordItemDto> findAttendanceItemsById(List<Integer> listAttendanceId, Long attendanceType) {
 		List<AttendanceRecordItemDto> result = new ArrayList<>();
-		result = atName.getNameOfDailyAttendanceItem(listAttendanceId).stream()
+		result = atName.getNameOfAttendanceItem(listAttendanceId, attendanceType.intValue()).stream()
 				.map(e -> new AttendanceRecordItemDto(e.getAttendanceItemId(), e.getAttendanceItemName(), 0,
 						e.getTypeOfAttendanceItem()))
 				.collect(Collectors.toList());

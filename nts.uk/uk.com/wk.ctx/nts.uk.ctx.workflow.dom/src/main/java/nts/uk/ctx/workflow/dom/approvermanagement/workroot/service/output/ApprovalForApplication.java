@@ -11,7 +11,7 @@ public class ApprovalForApplication {
 	/**
 	 * 申請種類
 	 */
-	int appType;
+	Integer appType;
 	/**
 	 * 申請種類 name
 	 */

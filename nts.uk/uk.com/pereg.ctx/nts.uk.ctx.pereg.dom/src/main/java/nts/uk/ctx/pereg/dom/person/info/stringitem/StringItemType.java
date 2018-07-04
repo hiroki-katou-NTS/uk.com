@@ -23,7 +23,7 @@ public enum StringItemType {
 	// 6: カードNO(CardNo)
 	CARDNO(6),	
 	// 7: 社員コード(EmployeeCode)
-	EMPPLOYEECODE(7);
+	EMPLOYEECODE(7);
 
 	public final int value;
 }

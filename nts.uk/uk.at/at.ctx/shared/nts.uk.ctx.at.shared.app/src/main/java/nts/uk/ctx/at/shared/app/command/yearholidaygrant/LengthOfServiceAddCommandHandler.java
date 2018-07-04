@@ -67,6 +67,12 @@ public class LengthOfServiceAddCommandHandler extends CommandHandler<List<GrantH
 				if (lengthService) {
 					// Update data
 					lengthServiceRepository.update(lengthOfService);
+					
+					GrantHdTbl newData = GrantHdTbl.createFromJavaType(companyId, item.getConditionNo(), item.getYearHolidayCode(), 
+							item.getGrantNum(), item.getGrantDays(), item.getLimitTimeHd() != null ? item.getLimitTimeHd() : 0, 
+									item.getLimitDayYear() != null ? item.getLimitDayYear() : 0);
+					
+					grantYearHolidayRepo.update(newData);
 				} else {
 					// Insert new record
 					lengthServiceRepository.add(lengthOfService);

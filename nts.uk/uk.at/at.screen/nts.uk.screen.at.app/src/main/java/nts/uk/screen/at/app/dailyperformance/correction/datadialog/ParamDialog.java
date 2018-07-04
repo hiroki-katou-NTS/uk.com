@@ -12,6 +12,9 @@ public class ParamDialog {
 	private String workplaceId;
 	private GeneralDate date;
 	private String selectCode;
+	private String employeeId;
+	private Integer itemId;
+	private String valueOld;
 	public ParamDialog (GeneralDate date, String selectCode){
 		this.date = date;
 		this.selectCode = selectCode;

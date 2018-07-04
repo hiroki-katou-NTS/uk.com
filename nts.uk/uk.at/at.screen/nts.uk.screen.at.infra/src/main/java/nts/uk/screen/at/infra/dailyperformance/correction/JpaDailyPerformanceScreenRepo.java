@@ -32,6 +32,8 @@ import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
+import nts.uk.ctx.at.record.infra.entity.monthly.erroralarm.KrcdtEmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.infra.entity.monthly.erroralarm.KrcdtEmployeeMonthlyPerErrorPK;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.flex.KrcstFlexShortageLimit;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
@@ -118,6 +120,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkI
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInformationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -232,10 +235,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId ORDER BY a.kfnmtApplicationCallPK.applicationType";
 
-	private final static String FIND_ITEM_MON_AUT;
-	
-	private final static String FIND_ITEM_MON_BUSS;
-	
 	private final static String FIND_PERIOD_ORDER_BY_STR_D_FOR_MULTI = "SELECT wi FROM KshmtWorkingCond wi "
 			+ "WHERE wi.kshmtWorkingCondPK.sid = :employeeId " 
 			+ "AND wi.strD <= :endDate " + "AND wi.endD >= :startDate "
@@ -518,20 +517,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" AND w.kshmtWorkingCondPK.sid = :sid");
 		builderString.append(" ORDER BY w.endD DESC");
 		FIND_WORK_CONDITION = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("SELECT a.kfnmtAuthorityMonthlyItemPK.attendanceItemId ");
-		builderString.append("FROM KfnmtAuthorityMonthlyItem a ");
-		builderString.append("WHERE a.kfnmtAuthorityMonthlyItemPK.companyId = :companyId ");
-		builderString.append("AND a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode IN :formats ");
-		FIND_ITEM_MON_AUT =  builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("SELECT a.krcmtBusinessTypeMonthlyPK.attendanceItemId ");
-		builderString.append("FROM KrcmtBusinessTypeMonthly a ");
-		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
-		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.businessTypeCode IN :formats ");
-		FIND_ITEM_MON_BUSS =  builderString.toString();
 
 	}
 
@@ -1317,16 +1302,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<Integer> getItemIdsMonthByAuthority(String companyId, Set<String> formats) {
-	     return this.queryProxy().query(FIND_ITEM_MON_AUT, Integer.class).setParameter("companyId", companyId).setParameter("formats", formats).getList();
-	}
-
-	@Override
-	public List<Integer> getItemIdsMonthByBussiness(String companyId, Set<String> formats) {
-		return this.queryProxy().query(FIND_ITEM_MON_BUSS, Integer.class).setParameter("companyId", companyId).setParameter("formats", formats).getList();
-	}
-
-	@Override
 	public List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date) {
 		List<KshmtWorkingCond> ents = this.queryProxy()
 				.query(FIND_PERIOD_ORDER_BY_STR_D_FOR_MULTI, KshmtWorkingCond.class).setParameter("endDate", date.end())
@@ -1338,5 +1313,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public Integer getLimitFexMonth() {
 		Optional<KrcstFlexShortageLimit> ent = this.queryProxy().query(GET_LIMIT_FLEX_MON, KrcstFlexShortageLimit.class).getSingle();
 		return ent.isPresent() ? ent.get().upperLimitTime : 0;
+	}
+
+	@Override
+	public Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId,
+			Integer closureId, Integer closeDay, Integer isLastDay) {
+		 Optional<ErrorFlexMonthDto> errorFlex = this.queryProxy().find(
+				new KrcdtEmployeeMonthlyPerErrorPK(errorType, yearMonth, employeeId, closureId, closeDay, isLastDay),
+				KrcdtEmployeeMonthlyPerError.class).map(x -> new ErrorFlexMonthDto(x.flex, x.annualHoliday, x.yearlyReserved));
+		return errorFlex;
 	}
 }

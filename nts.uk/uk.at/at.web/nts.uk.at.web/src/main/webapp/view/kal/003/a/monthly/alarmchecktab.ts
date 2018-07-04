@@ -40,12 +40,12 @@ module nts.uk.at.view.kal003.a.tab {
                 write: function (value) {
                     for (var i = 0; i < self.listFixedExtraMonFun().length; i++) {
                         self.listFixedExtraMonFun()[i].useAtr(value);
-                    }
+                    } 
                 },
                 owner: self
             });
 
-            $("#fixed-table1").ntsFixedTable({ height: 220 });
+            $("#fixed-table1").ntsFixedTable({ height: 192 });  
         }//end constructor
     }//end FixedCheckConditionTab
 }//end tab

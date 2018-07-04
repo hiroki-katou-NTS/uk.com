@@ -166,6 +166,8 @@ public class DPLoadRowProcessor {
 		
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
+		//get status check box 
+		Map<String, ApproveRootStatusForEmpDto> approvalDayMap =  process.getCheckApproval(approvalStatusAdapter, listEmployeeId, dateRange, sId, mode);
 		for (DPDataDto data : result.getLstData()) {
 			data.resetData();
 			data.setEmploymentCode(result.getEmploymentCode());
@@ -187,8 +189,6 @@ public class DPLoadRowProcessor {
 				result.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 			}
 			
-			//get status check box 
-			Map<String, ApproveRootStatusForEmpDto> approvalDayMap =  process.getCheckApproval(approvalStatusAdapter, listEmployeeId, dateRange, sId, mode);
 			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
 		//	if(mode == ScreenMode.APPROVAL.value){
 			data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
@@ -223,7 +223,7 @@ public class DPLoadRowProcessor {
 								data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();
 				dPControlDisplayItem.setLstAttendanceItem(param.getLstAttendanceItem());
-				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapDP, mapGetName, codeNameReasonMap,
+				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapGetName, codeNameReasonMap,
 						itemValueMap,  data, lock, dailyRecEditSetsMap, null);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()

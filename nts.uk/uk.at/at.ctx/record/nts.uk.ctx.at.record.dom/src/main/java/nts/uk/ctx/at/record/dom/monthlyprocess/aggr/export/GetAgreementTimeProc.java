@@ -213,7 +213,7 @@ public class GetAgreementTimeProc {
 		val agreementTimeOpt = monthlyCalculation.aggregateAgreementTime(
 				this.companyId, employeeId, this.yearMonth, this.closureId, this.closureDate, aggrPeriod,
 				Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
-				monthlyCalcDailys, monthlyOldDatas, this.repositories);
+				monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
 		if (agreementTimeOpt.isPresent()){
 			
 			// エラーメッセージがあれば、エラーメッセージを入れる

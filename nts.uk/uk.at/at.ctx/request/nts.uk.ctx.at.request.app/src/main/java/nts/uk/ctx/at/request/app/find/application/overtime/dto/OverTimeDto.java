@@ -54,6 +54,11 @@ public class OverTimeDto {
 	 * 申請者
 	 */
 	private String employeeName;
+	
+	/**
+	 * employees
+	 */
+	private List<EmployeeOvertimeDto> employees;
 	/**
 	 * 残業区分
 	 */
@@ -240,6 +245,7 @@ public class OverTimeDto {
 				false, 
 				"", 
 				"", 
+				null,
 				appOverTime.getOverTimeAtr().value, 
 				CollectionUtil.isEmpty(appOverTime.getOverTimeInput())
 					? Collections.emptyList() 

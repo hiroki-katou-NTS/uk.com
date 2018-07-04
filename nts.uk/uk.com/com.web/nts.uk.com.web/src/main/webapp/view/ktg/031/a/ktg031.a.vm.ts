@@ -57,7 +57,8 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 self.listToppage([]);
                 if (self.selectedRuleCode() == 0) {
                     service.getToppage(self.selectedRuleCode(), temp).done((listData) => {
-                        self.listToppage(_.map(listData, acc => {
+                        let listOrder = _.orderBy(listData, ["finishDateTime"], ['asc']); 
+                        self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert;
                             return new TopPageAlarmDto(acc);
@@ -65,7 +66,8 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                     });
                 }else{
                     service.getAllToppage(temp).done((data) => {
-                        self.listToppage(_.map(data, acc => {
+                        let listOrder = _.orderBy(data, ["finishDateTime"], ['asc']);
+                        self.listToppage(_.map(listOrder, acc => {
                             let afterConvert = self.convertTime(acc.finishDateTime);
                             acc.finishDateTime = afterConvert;
                             let a = new TopPageAlarmDto(acc);
@@ -135,11 +137,11 @@ module nts.uk.at.view.ktg031.a.viewmodel {
         updateRoger(index: number) {
             let self = this;
             block.grayout;
+            let cmd = {
+                executionLogId: self.listToppage()[index].executionLogId,
+                rogerFlag: 1
+            }
             if (self.selectedRuleCode() == 0) {
-                let cmd = {
-                    executionLogId: self.listToppage()[index].executionLogId,
-                    rogerFlag: 1
-                }
                 service.update(cmd).done(function() {
                     self.startPage();
                 }).always(() => {
@@ -147,7 +149,10 @@ module nts.uk.at.view.ktg031.a.viewmodel {
                 });
             } else {
                 self.listToppage()[index].hidden(false);
-                block.clear();
+                service.update(cmd).done(function() {
+                }).always(() => {
+                    block.clear();
+                });
             }
         }
 

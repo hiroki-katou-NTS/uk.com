@@ -39,6 +39,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         lstColumns: Array<any> = [];
         lstData: Array<any> = [];
         lstHeaderColor: Array<any> = [];
+        currentPageSize: KnockoutObservable<any> = ko.observable(12);
 
         constructor() {
             var self = this;
@@ -150,7 +151,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             return results;
         }
 
-        loadGrid() {
+        loadGrid(index? : any,pageIndex? : any) {
             var self = this;
             $("#approvalSttGrid").igGrid({
                 primaryKey: "employeeCode",
@@ -172,7 +173,25 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 12
+                        currentPageIndex:pageIndex||0,  
+                        pageSize: index||12,
+                        pageSizeChanging: (ui, args)=>{
+                            ko.cleanNode(approvalSttGrid) ;
+                            self.currentPageSize(args.newPageSize);
+                             self.loadGrid(args.newPageSize);
+                             self.setHeadersColor();
+                             self.addClickEventDateHeader();
+                             ko.applyBindings(self,approvalSttGrid);
+                            ko.applyBindings(self,approvalSttGrid_headers);
+                        },
+                        pageIndexChanging:(ui, args)=>{
+                            ko.cleanNode(approvalSttGrid) ;
+                             self.loadGrid(self.currentPageSize(),args.newPageIndex);
+                             self.setHeadersColor();
+                             self.addClickEventDateHeader();
+                             ko.applyBindings(self,approvalSttGrid);
+                            ko.applyBindings(self,approvalSttGrid_headers);
+                        } 
                     }
                 ]
             });

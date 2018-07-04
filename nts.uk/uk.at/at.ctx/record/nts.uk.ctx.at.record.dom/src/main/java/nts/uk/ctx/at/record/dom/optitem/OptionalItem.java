@@ -186,7 +186,7 @@ public class OptionalItem extends AggregateRoot {
 			return true;
 		}
 		//適用する雇用条件が取得できたかチェック
-		if(!empCondition.isPresent()) {
+		if(!empCondition.isPresent()||empCondition.get().getEmpConditions().isEmpty()) {
 			return true;
 		}
 		//雇用条件判断

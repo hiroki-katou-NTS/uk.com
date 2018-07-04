@@ -324,8 +324,15 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 				attendanceItemCon.setGroup2(setErAlConditionsAttendanceItem(toDto.getCheckConMonthly().getGroup2().getConditionOperator(), conditionsGroup2));
 			}
 		}
-		return new ExtraResultMonthly(toDto.getErrorAlarmCheckID(), toDto.getSortBy(), new NameAlarmExtractionCondition(toDto.getNameAlarmExtraCon()), toDto.isUseAtr(), EnumAdaptor.valueOf(toDto.getTypeCheckItem(), TypeMonCheckItem.class),
-				new HowDisplayMessage(toDto.isMessageBold(), toDto.getMessageColor()), new MessageDisplay(toDto.getDisplayMessage()), attendanceItemCon);
+		return new ExtraResultMonthly(toDto.getErrorAlarmCheckID(), 
+				toDto.getSortBy(), 
+				new NameAlarmExtractionCondition(toDto.getNameAlarmExtraCon()), 
+				toDto.isUseAtr(), 
+				EnumAdaptor.valueOf(toDto.getTypeCheckItem(), TypeMonCheckItem.class),
+				new HowDisplayMessage(toDto.isMessageBold(), 
+				toDto.getMessageColor()), 
+				new MessageDisplay(toDto.getDisplayMessage()), 
+				attendanceItemCon);
 	}
 
 	private ErAlConditionsAttendanceItem setErAlConditionsAttendanceItem(int conditionOperator, List<ErAlAttendanceItemCondition<?>> conditions) {

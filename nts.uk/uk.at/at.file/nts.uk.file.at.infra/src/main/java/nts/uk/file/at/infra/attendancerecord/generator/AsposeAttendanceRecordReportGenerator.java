@@ -205,7 +205,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
 
 					if (dataSource.getMode() == EXPORT_PDF) {
-						pageSetup.setFitToPagesWide(1);
 						pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
 					}
 
@@ -216,7 +215,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 			// delete template sheet
 			worksheetCollection.removeAt(0);
-
+			worksheetCollection.setActiveSheetIndex(0);
 			// Create file name
 			String fileName = data.getReportName() + "＿"
 					+ data.getExportDateTime().replaceAll(" ", "_").replaceAll(":", "").replaceAll("/", "");

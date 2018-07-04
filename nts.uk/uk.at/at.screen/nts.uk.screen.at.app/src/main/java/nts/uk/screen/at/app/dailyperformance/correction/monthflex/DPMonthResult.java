@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexShortageDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 
 @Data
@@ -17,4 +18,5 @@ public class DPMonthResult {
    private boolean error;
    private boolean hasItem;
    private Integer month;
+   private List<FormatDailyDto> formatDaily;
 }

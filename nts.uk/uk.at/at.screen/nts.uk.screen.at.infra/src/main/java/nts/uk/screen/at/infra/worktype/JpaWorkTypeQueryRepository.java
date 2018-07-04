@@ -120,16 +120,16 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		if(!workTypeAtrList.isEmpty()){
 			for(int item: workTypeAtrList){
 				if(item == 0){
-					Optional<WorkTypeDto> dto = this.queryProxy().query(SELECT_WORKTYPE_KDW006, WorkTypeDto.class).setParameter("companyId", companyId)
-													.setParameter("workTypeAtr", item).getSingle();
-					if(dto != null){
-						listNew.add(dto.get());
+					List<WorkTypeDto> dto = this.queryProxy().query(SELECT_WORKTYPE_KDW006, WorkTypeDto.class).setParameter("companyId", companyId)
+													.setParameter("workTypeAtr", item).getList();
+					if(!dto.isEmpty()){
+						listNew.addAll(dto);
 					}
 				}else{
-					Optional<WorkTypeDto> typeDto = this.queryProxy().query(SELECT_WORKTYPE_KDW006G, WorkTypeDto.class).setParameter("companyId", companyId)
-							.setParameter("workTypeAtr", item).getSingle();
-					if(typeDto != null){
-						listNew.add(typeDto.get());
+					List<WorkTypeDto> typeDto = this.queryProxy().query(SELECT_WORKTYPE_KDW006G, WorkTypeDto.class).setParameter("companyId", companyId)
+							.setParameter("workTypeAtr", item).getList();
+					if(!typeDto.isEmpty()){
+						listNew.addAll(typeDto);
 					}
 				}
 			}

@@ -58,6 +58,7 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 	 * @param tempRsvDataforOverWriteList 上書き用の暫定積休管理データ
 	 * @param prevAnnualLeave 前回の年休の集計結果
 	 * @param prevReserveLeave 前回の積立年休の集計結果
+	 * @param noCheckStartDate 集計開始日を締め開始日とする　（締め開始日を確認しない）
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @return 年休積立年休の集計結果
@@ -70,6 +71,7 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 			Optional<List<TempReserveLeaveManagement>> tempRsvDataforOverWriteList,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
 			Optional<AggrResultOfReserveLeave> prevReserveLeave,
+			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
 }

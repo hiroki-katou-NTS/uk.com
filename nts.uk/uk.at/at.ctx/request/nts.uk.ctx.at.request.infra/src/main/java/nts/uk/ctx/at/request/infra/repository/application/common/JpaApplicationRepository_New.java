@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -40,6 +41,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND a.appDate = :appDate "
 			+ " AND a.appType = :applicationType "
 			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
+	
 	//hoatt
 //	private static final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
 //			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
@@ -60,13 +62,19 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " WHERE a.krqdpApplicationPK.appID IN :listAppID AND a.krqdpApplicationPK.companyID = :companyID"
 			+ " ORDER BY a.appDate";
 	
-	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
+	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID = :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
-	private static final String SELECT_LATE_LEAVE = SELECT_BY_DATE + " O"
+	private static final String SELECT_LATE_LEAVE = SELECT_BY_DATE + " "
 			+ "AND a.employeeID = :employeeID "
 			+ "AND a.stateReflectionReal = 0 "
 			+ "AND a.appType = 9 ORDER BY a.appDate ASC";
-	
+
+	private String SELECT_BY_SID_PERIOD_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
+			+ " WHERE c.employeeID = :employeeID"
+			+ " AND c.appDate >= :startDate"
+			+ " AND c.appDate <= :endDate"
+			+ " AND c.stateReflectionReal IN :stateReflectionReals"
+			+ " AND c.appType IN appTypes";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -92,14 +100,13 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 
 	@Override
 	public void update(Application_New application) {
-		this.getEntityManager().createQuery(UPDATE)
-			.setParameter("version", application.getVersion())
-			.setParameter("companyID", application.getCompanyID())
-			.setParameter("appID", application.getAppID())
-			.setParameter("reversionReason", application.getReversionReason().v())
-			.setParameter("appReason", application.getAppReason().v())
-			.setParameter("stateReflectionReal", application.getReflectionInformation().getStateReflectionReal().value)			
-			.executeUpdate();
+		KrqdtApplication_New krqdtApplication = this.queryProxy()
+			.find(new KrqdpApplicationPK_New(application.getCompanyID(), application.getAppID()), KrqdtApplication_New.class).get();
+		krqdtApplication.reversionReason = application.getReversionReason().v();
+		krqdtApplication.appReason = application.getAppReason().v();
+		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
+		krqdtApplication.notReasonReal = application.getReflectionInformation().getNotReasonReal().isPresent() ? application.getReflectionInformation().getNotReasonReal().get().value : null;
+		this.commandProxy().update(krqdtApplication);
 		this.getEntityManager().flush();
 	}
 
@@ -107,7 +114,6 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	public void updateWithVersion(Application_New application) {
 		KrqdtApplication_New krqdtApplication = this.queryProxy()
 			.find(new KrqdpApplicationPK_New(application.getCompanyID(), application.getAppID()), KrqdtApplication_New.class).get();
-		krqdtApplication.version = application.getVersion();
 		krqdtApplication.reversionReason = application.getReversionReason().v();
 		krqdtApplication.appReason = application.getAppReason().v();
 		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
@@ -242,6 +248,17 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("employeeID", employeeID)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
+				.getList(x -> x.toDomain());
+	}
+	@Override
+	public List<Application_New> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect,
+			List<Integer> appType) {
+		return this.queryProxy().query(SELECT_BY_SID_PERIOD_APPTYPE, KrqdtApplication_New.class)
+				.setParameter("employeeID", sid)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.setParameter("stateReflectionReals", reflect)
+				.setParameter("appTypes", appType)
 				.getList(x -> x.toDomain());
 	}
 }

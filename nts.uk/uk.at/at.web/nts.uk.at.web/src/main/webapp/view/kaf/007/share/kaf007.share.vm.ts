@@ -8,6 +8,8 @@ module nts.uk.at.view.kaf007.share {
             application: KnockoutObservable<ApplicationCommand>;            
             //Data working
             dataWork:KnockoutObservable<DataWork>;
+            
+            employeeID : KnockoutObservable<string> = ko.observable(null);
             constructor()
             {
                 let self = this;
@@ -105,7 +107,7 @@ module nts.uk.at.view.kaf007.share {
            appReasonID: string;
            prePostAtr: KnockoutObservable<number>;
            inputDate: KnockoutObservable<string>;
-           enteredPersonSID: KnockoutObservable<string>;
+           employeeID: KnockoutObservable<string>;
            reversionReason: string;
            applicationDate: KnockoutObservable<string>;
            applicationReason: KnockoutObservable<string>;
@@ -124,7 +126,7 @@ module nts.uk.at.view.kaf007.share {
            constructor() {
                let self = this;
                self.prePostAtr = ko.observable(0);
-               self.enteredPersonSID = ko.observable('');
+               self.employeeID = ko.observable('');
                self.applicationDate =  ko.observable('');
                self.applicationReason = ko.observable('');
                self.applicationType = ko.observable(2);

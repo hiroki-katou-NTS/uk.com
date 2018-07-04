@@ -21,7 +21,7 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
 @Stateless
 public class AddEmployeeCommandFacade {
 
-	private final List<String> basicCategoriesDefinition = Arrays.asList("CS00001", "CS00002", "CS00003");
+	private static final List<String> basicCategoriesDefinition = Arrays.asList("CS00001", "CS00002", "CS00003");
 
 	@Inject
 	private PeregCommandFacade commandFacade;

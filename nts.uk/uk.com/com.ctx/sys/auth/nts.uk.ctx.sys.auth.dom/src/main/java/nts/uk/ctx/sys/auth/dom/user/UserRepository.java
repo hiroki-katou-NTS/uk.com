@@ -27,13 +27,17 @@ public interface UserRepository {
 
 	Optional<User> getListUserByDefUser(String userID , int defUser ,GeneralDate  expirationDate);
 	
+	Optional<User> getByUserIDAndDate(String userID , GeneralDate systemDate);
+
 	void addNewUser(User newUser);
 	
 	void update (User user);
+	
 	
 	// add function 21.06.2018 thanhpv
 	List<User> searchByKey(GeneralDate systemDate, int special, int multi, String key);	
 	// add function 19.06.2018 thanhpv for CAS013
 	List<User> searchUserMultiCondition(GeneralDate systemDate, int special, int multi, String key, List<String> employeePersonIdFindName, List<String> employeePersonId);
+
 
 }

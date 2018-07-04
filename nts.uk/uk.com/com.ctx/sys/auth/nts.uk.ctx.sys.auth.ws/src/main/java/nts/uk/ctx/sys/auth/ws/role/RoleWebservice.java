@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.auth.app.command.person.role.RemovePersonRoleCommand;
 import nts.uk.ctx.sys.auth.app.command.person.role.RemovePersonRoleCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.person.role.SavePersonRoleCommand;
 import nts.uk.ctx.sys.auth.app.command.person.role.SavePersonRoleCommandHandler;
+import nts.uk.ctx.sys.auth.app.find.person.role.GetRolesParam;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRole;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
@@ -49,6 +50,12 @@ public class RoleWebservice extends WebService {
 	@Path("getlistrolebytype/{roleType}")
 	public List<RoleDto> getListRoleByRoleType(@PathParam("roleType") int roleType) {
 		return this.personInforRoleFinder.getListRoleByRoleType(roleType);
+	}
+	
+	@POST
+	@Path("get-list-roles")
+	public List<RoleDto> getListRoles(GetRolesParam param) {
+		return this.personInforRoleFinder.getListRoles(param);
 	}
 
 	@POST

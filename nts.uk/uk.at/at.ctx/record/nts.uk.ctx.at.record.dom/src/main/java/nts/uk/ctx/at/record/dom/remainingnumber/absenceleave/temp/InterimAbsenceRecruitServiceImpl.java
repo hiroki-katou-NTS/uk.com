@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreaterAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -106,7 +106,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						recruitGuid,
 						employeeId,
 						targetWorkInfo.getYmd(),
-						CreaterAtr.RECORD,
+						CreateAtr.RECORD,
 						RemainType.PICKINGUP,
 						RemainAtr.SINGLE);
 				InterimRecMng recMng = new InterimRecMng(
@@ -128,7 +128,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						absenceGuid,
 						employeeId,
 						targetWorkInfo.getYmd(),
-						CreaterAtr.RECORD,
+						CreateAtr.RECORD,
 						RemainType.PAUSE,
 						RemainAtr.SINGLE);
 				InterimAbsMng absMng = new InterimAbsMng(

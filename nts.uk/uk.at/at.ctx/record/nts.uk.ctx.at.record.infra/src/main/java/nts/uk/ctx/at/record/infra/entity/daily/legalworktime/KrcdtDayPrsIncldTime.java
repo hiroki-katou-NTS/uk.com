@@ -76,7 +76,10 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 				TimeDivergenceWithCalculation winthinTime = domain.getWithinStatutoryMidNightTime().getTime();
 				/*所定内深夜時間*/
 				this.prsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
-						: domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();	
+						: domain.getWithinStatutoryMidNightTime().getTime().getTime().valueAsMinutes();
+				/*計算所定内深夜時間*/
+//				this.prsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
+//						: domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();
 				/*所定内深夜乖離時間*/
 				this.divPrsIncldMidnTime = winthinTime == null || winthinTime.getDivergenceTime() == null ? 0
 						: domain.getWithinStatutoryMidNightTime().getTime().getDivergenceTime().valueAsMinutes();

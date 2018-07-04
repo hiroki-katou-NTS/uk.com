@@ -17,8 +17,8 @@ import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmSet;
  */
 @Stateless
 public class JpaTopPageAlarmSetRepository extends JpaRepository implements TopPageAlarmSetRepository{
-	private final String SELECT_NO_WHERE = "SELECT c FROM KrcstToppageAlarmSet c ";
-	private final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.companyId = :companyId ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KrcstToppageAlarmSet c ";
+	private static final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.companyId = :companyId ";
 	/**
 	 * convert from top page alarm set entity to domain
 	 * @param entity

@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.diagnose.stopwatch.Stopwatches;
+import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
@@ -107,7 +107,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			procEmployeeIds = employeeIds;
 		}
 		
-		Stopwatches.start("08000:会社別データ読み込み");
+		ConcurrentStopwatches.start("08000:会社別データ読み込み");
 		
 		// 月別集計で必要な会社別設定を取得する
 		MonAggrCompanySettings companySets = MonAggrCompanySettings.loadSettings(companyId, this.repositories);
@@ -127,21 +127,21 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			return success;
 		}
 		
-		Stopwatches.stop("08000:会社別データ読み込み");
+		ConcurrentStopwatches.stop("08000:会社別データ読み込み");
 		
 		// 社員の数だけループ　（並列処理）
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
 		employeeIds.parallelStream().forEach(employeeId -> {
 			if (stateHolder.isInterrupt()) return;
 		
-			Stopwatches.start("10000:社員ごと：" + employeeId);
+			ConcurrentStopwatches.start("10000:社員ごと：" + employeeId);
 			
 			// 社員1人分の処理　（社員の月別実績を集計する）
 			ProcessState coStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
 					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr, companySets);
 			stateHolder.add(coStatus);
 
-			Stopwatches.stop("10000:社員ごと：" + employeeId);
+			ConcurrentStopwatches.stop("10000:社員ごと：" + employeeId);
 
 			if (coStatus == ProcessState.SUCCESS){
 				
@@ -160,8 +160,8 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			}
 		});
 		
-		Stopwatches.printAll();
-		Stopwatches.STOPWATCHES.clear();
+		ConcurrentStopwatches.printAll();
+		ConcurrentStopwatches.STOPWATCHES.clear();
 		
 		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
 		

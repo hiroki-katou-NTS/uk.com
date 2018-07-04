@@ -103,7 +103,7 @@ body {
 }
 
 #name {
-	width: 300px !important;
+	max-width: 300px !important;
 	margin-top: 5px;
 }
 
