@@ -12,6 +12,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
@@ -202,10 +204,10 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		if (tableName != null) {
 			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
 			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1  ");
-			if (!Objects.isNull(whereCid)) {
+			if (!StringUtils.isBlank(whereCid) && StringUtils.isBlank(cid)) {
 				DELETE_BY_TABLE_SQL.append(" AND ").append(whereCid).append(" = '").append(cid).append("'");
 			}
-			if (!Objects.isNull(whereSid)) {
+			if (!StringUtils.isBlank(whereSid) && StringUtils.isBlank(employeeId)) {
 				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = '").append(employeeId).append("'");
 			}
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
