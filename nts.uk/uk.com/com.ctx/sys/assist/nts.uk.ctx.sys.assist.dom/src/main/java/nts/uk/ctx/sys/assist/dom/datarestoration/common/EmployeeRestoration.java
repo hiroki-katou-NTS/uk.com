@@ -37,10 +37,12 @@ public class EmployeeRestoration {
 			return serverPrepareMng;
 		}
 		try {
+			// Restore to database
 			for (List<String> employeeInfo : targetEmployee.subList(1, targetEmployee.size())) {
 				performDataRecoveryRepository.addTargetEmployee(new Target(serverPrepareMng.getDataRecoveryProcessId(),
 						employeeInfo.get(0), employeeInfo.get(1), CommonKeyCrypt.decrypt(employeeInfo.get(2))));
 			}
+			// Count number of employee and set
 			int numOfPeopleRestore = 0;
 			int numPeopleSave = targetEmployee.size() - 1;
 			Optional<String> saveProcessId = Optional.empty();
