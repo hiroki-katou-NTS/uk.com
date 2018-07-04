@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.ws.exo.stdoutconset;
+package nts.uk.ctx.exio.ws.exo.condset;
 
 import java.util.Optional;
 
