@@ -12,7 +12,7 @@ public class JpaSearchCodeListRepository extends JpaRepository implements Search
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtSearchCodeList f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.searchCodeListPk.id =:id AND  f.searchCodeListPk.categoryId =:categoryId AND  f.searchCodeListPk.categoryItemNo =:categoryItemNo ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.searchCodeListPk.id =:id";
 
 
     @Override
@@ -26,8 +26,8 @@ public class JpaSearchCodeListRepository extends JpaRepository implements Search
     }
 
     @Override
-    public void remove(String id, String categoryId, int categoryItemNo){
-        this.commandProxy().remove(OiomtSearchCodeList.class, new OiomtSearchCodeListPk(id, categoryId, categoryItemNo)); 
+    public void remove(String id){
+        this.commandProxy().remove(OiomtSearchCodeList.class, new OiomtSearchCodeListPk(id)); 
     }
     
     public OiomtSearchCodeList toEntity(SearchCodeList domain){
@@ -35,6 +35,6 @@ public class JpaSearchCodeListRepository extends JpaRepository implements Search
     }
     
     public SearchCodeList toDomain(OiomtSearchCodeList entity){
-    	return new SearchCodeList(entity.searchCodeListPk.id, entity.searchCodeListPk.categoryId, entity.searchCodeListPk.categoryItemNo, entity.searchCode, entity.searchItemName);
+    	return new SearchCodeList(entity.searchCodeListPk.id, entity.categoryId, entity.categoryItemNo, entity.searchCode, entity.searchItemName);
     }
 }
