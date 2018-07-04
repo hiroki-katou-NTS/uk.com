@@ -177,19 +177,19 @@ public class DailyPerformanceSelectItemProcessor {
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
 												x.getTypeGroup()))
 										.collect(Collectors.toList());
+						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
+						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
+								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
+										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
+										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
 						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 					}
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
 						// chia cot con code name cua AttendanceItemId chinh va
 						// set
-						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
-						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
-								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
-										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
-										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
 						lstHeader.add(DPHeaderDto.createSimpleHeader(companyId, ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + PX, mapDP, optionalItemOpt, optionalItemAtrOpt));
+								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
 					}
 					result.setLstHeader(lstHeader);
 					// result.setLstSheet(lstSheet);
@@ -225,18 +225,19 @@ public class DailyPerformanceSelectItemProcessor {
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
 												x.getTypeGroup()))
 										.collect(Collectors.toList());
-						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
-					}
-					result.addColumnsToSheet(lstFormat, mapDP, true);
-					List<DPHeaderDto> lstHeader = new ArrayList<>();
-					for (FormatDPCorrectionDto dto : lstFormat) {
 						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
 						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
 								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
 										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
 										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
+						
+						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+					}
+					result.addColumnsToSheet(lstFormat, mapDP, true);
+					List<DPHeaderDto> lstHeader = new ArrayList<>();
+					for (FormatDPCorrectionDto dto : lstFormat) {
 						lstHeader.add(DPHeaderDto.createSimpleHeader(companyId, ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + PX, mapDP, optionalItemOpt, optionalItemAtrOpt));
+								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
 					}
 					result.setLstHeader(lstHeader);
 				}

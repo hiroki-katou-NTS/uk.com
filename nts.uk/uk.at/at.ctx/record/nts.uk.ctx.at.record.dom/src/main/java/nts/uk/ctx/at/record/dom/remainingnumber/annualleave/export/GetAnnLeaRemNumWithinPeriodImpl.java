@@ -75,6 +75,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWriteOpt,
 			Optional<List<TempAnnualLeaveManagement>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
+			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 
@@ -88,6 +89,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.getAnnLeaRemNumWithinPeriod);
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
-				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt, companySets, monthlyCalcDailys);
+				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt,
+				noCheckStartDate, companySets, monthlyCalcDailys);
 	}
 }

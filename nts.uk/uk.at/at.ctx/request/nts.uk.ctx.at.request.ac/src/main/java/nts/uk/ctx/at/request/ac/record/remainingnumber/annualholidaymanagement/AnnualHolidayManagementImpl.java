@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
-import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AttendRateAtNextHolidayExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AttendRateAtNextHolidayImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
@@ -23,8 +23,8 @@ public class AnnualHolidayManagementImpl implements AnnualHolidayManagementAdapt
 	private AnnualHolidayManagementPub annualPub;
 
 	@Override
-	public List<NextAnnualLeaveGrantImport> acquireNextHolidayGrantDate(String cId, String sId) {
-		return this.annualPub.acquireNextHolidayGrantDate(cId, sId).stream()
+	public List<NextAnnualLeaveGrantImport> acquireNextHolidayGrantDate(String cId, String sId, GeneralDate baseDate) {
+		return this.annualPub.acquireNextHolidayGrantDate(cId, sId,Optional.of(baseDate)).stream()
 				.map(x -> new NextAnnualLeaveGrantImport(x.getGrantDate(), x.getGrantDays().v(), x.getTimes().v(),
 						getLimitedHDDays(x.getTimeAnnualLeaveMaxDays()),
 						getLimitedTimeHdTime(x.getTimeAnnualLeaveMaxTime()),

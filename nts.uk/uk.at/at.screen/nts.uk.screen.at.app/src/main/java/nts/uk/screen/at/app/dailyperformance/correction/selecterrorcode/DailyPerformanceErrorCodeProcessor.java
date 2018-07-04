@@ -162,10 +162,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
-		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getLstAttendanceItem() != null
-				? dPControlDisplayItem.getLstAttendanceItem().stream()
-						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x))
-				: new HashMap<>();
+		Map<Integer, DPAttendanceItem> mapDP =  dPControlDisplayItem.getMapDPAttendance();
 		if (screenDto.getLstEmployee().size() > 0) {
 			/// ドメインモデル「社員の日別実績エラー一覧」をすべて取得する +
 			/// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
@@ -267,7 +264,7 @@ public class DailyPerformanceErrorCodeProcessor {
 							.collect(Collectors.toMap(x -> dailyProcessor.mergeString(String.valueOf(x.getItemId()),
 									"|", data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				}
-				dailyProcessor.processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapDP,
+				dailyProcessor.processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem,
 						mapGetName, codeNameReasonMap, itemValueMap, data, lock, dailyRecEditSetsMap, null);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()

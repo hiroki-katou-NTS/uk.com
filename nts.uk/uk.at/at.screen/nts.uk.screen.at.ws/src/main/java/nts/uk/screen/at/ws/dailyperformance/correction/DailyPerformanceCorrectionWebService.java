@@ -28,6 +28,7 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
@@ -166,7 +167,7 @@ public class DailyPerformanceCorrectionWebService {
 					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
 							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
 				}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
-						month.getClosureDate(), Collections.emptyList()));
+						month.getClosureDate()));
 			}
 		}
 		
@@ -195,6 +196,7 @@ public class DailyPerformanceCorrectionWebService {
 		List<DPItemValue> itemErrors = new ArrayList<>();
 		List<DPItemValue> itemInputErors = new ArrayList<>();
 		List<DPItemValue> itemInputError28 = new ArrayList<>();
+		List<DPItemValue> itemInputDeviation = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {
 			List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
 					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
@@ -224,7 +226,9 @@ public class DailyPerformanceCorrectionWebService {
 								x.getKey().getValue(), itemCovert));
 						//dailyModifyCommandFacade.handleUpdate();
 				});
-				dailyModifyCommandFacade.handleUpdate(querys);
+			List<DPItemValueRC> itemErrorResults = dailyModifyCommandFacade.handleUpdate(querys);
+			itemInputDeviation = itemErrorResults.stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
+					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
 				// insert cell edit
 				//dailyModifyCommandFacade.handleEditCell(itemValueChild);
 				//resultError.put(1, itemInputErors);
@@ -236,6 +240,9 @@ public class DailyPerformanceCorrectionWebService {
 			//return resultError;
 		}
 		
+		if(!itemInputDeviation.isEmpty()){
+			resultError.put(TypeError.DEVIATION_REASON.value, itemInputDeviation);
+		}
 		// insert sign
 		dailyModifyCommandFacade.insertSign(dataParent.getDataCheckSign());
 		

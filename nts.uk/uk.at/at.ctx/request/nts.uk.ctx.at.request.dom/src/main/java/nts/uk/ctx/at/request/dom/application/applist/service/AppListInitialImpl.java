@@ -1126,7 +1126,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
 		//対象が存在しない場合 - TH doi tuong k ton tai
-		if(!appFuncSet.isPresent() || appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.USE)){
+		if(!appFuncSet.isPresent() || appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.NOTUSE)){
 			//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
 			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
 		}

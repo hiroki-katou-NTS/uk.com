@@ -20,12 +20,14 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -130,6 +132,7 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param roleOverTimeFrameMap 残業枠の役割
 	 * @param autoExceptOverTimeFrames 自動的に除く残業枠
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregateForRegAndIrreg(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
@@ -139,13 +142,15 @@ public class OverTimeOfMonthly implements Cloneable {
 			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
 			List<RoleOvertimeWork> autoExceptOverTimeFrames,
 			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
 		if (roleOverTimeFrameMap.values().size() > 0) {
 			
 			// 自動計算して残業時間を集計する
 			this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
-					workInfo, legalOverTimeTransferOrder, roleOverTimeFrameMap, companySets, repositories);
+					workInfo, legalOverTimeTransferOrder, roleOverTimeFrameMap,
+					companySets, employeeSets, repositories);
 		}
 	}
 	
@@ -160,6 +165,7 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param legalOverTimeTransferOrder 法定内残業振替順
 	 * @param roleOverTimeFrameMap 残業枠の役割
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private void aggregateByAutoCalc(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
@@ -168,11 +174,12 @@ public class OverTimeOfMonthly implements Cloneable {
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
 			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
 			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 法定内残業にできる時間を計算する
 		AttendanceTime canLegalOverTime = this.calcLegalOverTime(attendanceTimeOfDaily,
-				companyId, workplaceId, employmentCd, workingSystem, repositories);
+				companyId, workplaceId, employmentCd, workingSystem, companySets, employeeSets, repositories);
 		
 		// 「残業枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -212,16 +219,26 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param workplaceId 職場ID
 	 * @param employmentCd 雇用コード
 	 * @param workingSystem 労働制
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private AttendanceTime calcLegalOverTime(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 	
 		// 日の法定労働時間を取得する
-		val dailyUnit = repositories.getDailyStatutoryWorkingHours().getDailyUnit(
-				companyId, employmentCd, attendanceTimeOfDaily.getEmployeeId(),
-				attendanceTimeOfDaily.getYmd(), workingSystem);
+		DailyUnit dailyUnit = DailyUnit.zero();
+		val workTimeSetOpt = companySets.getWorkingTimeSetting(employmentCd,
+				employeeSets.getWorkplacesToRoot(attendanceTimeOfDaily.getYmd()),
+				workingSystem, employeeSets, repositories);
+		if (workTimeSetOpt.isPresent()){
+			if (workTimeSetOpt.get().getDailyTime() != null){
+				dailyUnit = workTimeSetOpt.get().getDailyTime();
+			}
+		}
 		
 		// 日別実績の法定内時間を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();

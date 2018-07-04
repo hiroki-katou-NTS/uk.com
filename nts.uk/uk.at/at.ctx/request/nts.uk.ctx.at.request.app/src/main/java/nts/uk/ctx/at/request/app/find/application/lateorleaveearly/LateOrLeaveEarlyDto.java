@@ -55,11 +55,11 @@ public class LateOrLeaveEarlyDto {
 		/** 申請理由 appReason */
 		private String appReason;
 				
-		public static LateOrLeaveEarlyDto fromDomain(LateOrLeaveEarly domain){
+		public static LateOrLeaveEarlyDto fromDomain(LateOrLeaveEarly domain, Long version){
 			return new LateOrLeaveEarlyDto(
 					domain.getApplication().getCompanyID(),
 					domain.getApplication().getAppID(),
-					domain.getVersion(),
+					version,
 					domain.getApplication().getPrePostAtr().value,
 					domain.getApplication().getAppDate(),
 					domain.getActualCancelAtr(),

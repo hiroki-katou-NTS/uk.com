@@ -89,10 +89,10 @@
                         <table id="table-output-items" >
                            <colgroup>
                                 <col width="38"/>
-                                <col width="220"/>
+                                <col width="140"/>
                                 <col width="50"/>
                                 <col width="85"/>
-                                <col width="250"/>
+                                <col width="330"/>
                            </colgroup>
                            <thead>
                               <tr> 
@@ -113,7 +113,6 @@
                                         value : $data.headingName,
                                         required: false,
                                         enable: $data.sortBy() > 1,
-                                        option : { width : '190px'},
                                         constraint: 'ItemOutTblBookHeadingName'}" />
                                 </td>
                                 <td style="text-align:center;"><button tabindex="-1" id="btnSettingB16_5" class="small" data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 1">#{i18n.getText('KWR008_34')}</button></td>

@@ -323,20 +323,44 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
                         if (data.autoSendMail) {
                             appcommon.CommonProcess.displayMailResultKAF000(data);
-                        } else {
+                        }
+                    });
+                    if(!nts.uk.util.isNullOrEmpty(data.reflectAppId)){//TH goi xu ly phan anh
+                        service.reflectAppSingle([data.reflectAppId]).done(function(){
                             self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
                                 nts.uk.ui.block.clear();        
                             });
-                        }
-                    });
+                        });
+                    }else{
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                                nts.uk.ui.block.clear();        
+                            });
+                    }
+                    
                 } else {
                     nts.uk.ui.block.clear();
                 }
             } else {
                 nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
-                    nts.uk.ui.block.clear();   
+                    if (!nts.uk.util.isNullOrEmpty(data)) {
+                        self.callReflect(data);
+                    } else {
+                        self.reloadPage();
+                    }
                 });
             }
+        }
+
+       callReflect(data) {
+            let self = this;
+            service.reflectAppSingle(data).always(()=> self.reloadPage());
+        }
+
+        reloadPage() {
+            let self = this;
+            self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
+                nts.uk.ui.block.clear();
+            });
         }
 
         btnRemand() {
@@ -458,7 +482,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             shipmentCmd = {
                 absAppID: vm.absWk().appID(),
                 recAppID: vm.recWk().appID(),
-                appVersion: vm.version(),
+                appVersion: vm.version,
                 memo: memo ? memo : ""
             }
 

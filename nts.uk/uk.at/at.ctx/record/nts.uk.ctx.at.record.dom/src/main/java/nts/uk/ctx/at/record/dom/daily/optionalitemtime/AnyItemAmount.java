@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 
-import java.math.BigDecimal;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;

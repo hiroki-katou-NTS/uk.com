@@ -34,12 +34,12 @@ public class AbsRecMngInPeriodParamInput {
 	/**上書きフラグ	 True: 上書き, False: 未上書き*/
 	private boolean overwriteFlg;
 	/**上書き用の暫定管理データ	 */
-	private Optional<InterimAbsMng> useAbsMng;
+	private List<InterimAbsMng> useAbsMng;
 	/**	上書き用の暫定残数管理データ */
 	private List<InterimRemain> interimMng;
 	/**
 	 * 上書き用の暫定振出管理データ
 	 */
-	private Optional<InterimRecMng> useRecMng;
+	private List<InterimRecMng> useRecMng;
 	
 }

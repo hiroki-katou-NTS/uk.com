@@ -16,6 +16,14 @@ module nts.uk.at.view.kaf006.share {
                 this.typeOfDutyName = typeOfDutyName;
             }
         }
+        export class EmployeeOT{
+            id: string;
+            name: string;
+            constructor(id: string, name: string){
+                this.id = id;
+                this.name = name;
+            }    
+        }
         /**
          * 
          */

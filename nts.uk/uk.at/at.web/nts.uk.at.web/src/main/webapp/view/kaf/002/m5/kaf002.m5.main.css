@@ -90,10 +90,10 @@
 
 #m5-div-b {
 	width: 908px;
-	height: 380px;
+	height: 390px;
 	outline-style: solid;
 	outline-color: #999999;
-	outline-width: 0px;
+	outline-width: 1px;
 	position: relative;
 }
 #m5-table-b {

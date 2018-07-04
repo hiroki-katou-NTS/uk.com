@@ -8,9 +8,10 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreaterAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.interimremain.KrcmtInterimRemainMng;
@@ -35,6 +36,10 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			+ " AND c.ymd <= :endDate";
 	private String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c.remainMngId = :remainMngId";
 	
+	private String QUERY_BY_SID_YMD = "SELECT c FROM KrcmtInterimRemainMng c"
+			+ " WHERE c.sId = :sId"
+			+ " AND c.ymd = :ymd";
+	
 	@Override
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
 		return this.queryProxy().query(QUERY_BY_SID_PRIOD, KrcmtInterimRemainMng.class)
@@ -48,7 +53,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		return new InterimRemain(c.remainMngId, 
 				c.sId, 
 				c.ymd, 
-				EnumAdaptor.valueOf(c.createrAtr, CreaterAtr.class), 
+				EnumAdaptor.valueOf(c.createrAtr, CreateAtr.class), 
 				EnumAdaptor.valueOf(c.remainType, RemainType.class),
 				EnumAdaptor.valueOf(c.remainAtr, RemainAtr.class));
 	}
@@ -83,6 +88,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			entity.createrAtr = domain.getCreatorAtr().value;
 			entity.remainType = domain.getRemainType().value;
 			entity.remainAtr = domain.getRemainAtr().value;
+			this.commandProxy().update(entity);
 		}
 		//this.getEntityManager().flush();
 	}
@@ -110,5 +116,12 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			.setParameter("startDate", dateData.start())
 			.setParameter("endDate", dateData.end())
 			.executeUpdate();
+	}
+	@Override
+	public List<InterimRemain> getDataBySidDate(String sid, GeneralDate baseDate) {
+		return this.queryProxy().query(QUERY_BY_SID_YMD, KrcmtInterimRemainMng.class)
+				.setParameter("sId", sid)
+				.setParameter("ymd", baseDate)
+				.getList(c -> convertToDomainSet(c));
 	}
 }

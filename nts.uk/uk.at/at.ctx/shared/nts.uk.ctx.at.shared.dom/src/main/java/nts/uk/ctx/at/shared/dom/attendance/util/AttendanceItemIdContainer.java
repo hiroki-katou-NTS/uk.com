@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.attendance.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
+import nts.uk.ctx.at.shared.dom.attendance.util.enu.MonthlyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class AttendanceItemIdContainer implements ItemConst {
@@ -17,6 +20,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 	private final static Map<Integer, String> DAY_ITEM_ID_CONTAINER;
 	private final static Map<Integer, String> MONTHLY_ITEM_ID_CONTAINER;
 	private final static Map<String, Integer> ENUM_CONTAINER;
+	
 	static {
 		ENUM_CONTAINER = new HashMap<>();
 		ENUM_CONTAINER.put(E_WORK_REF, 0);
@@ -610,16 +614,16 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(312, join(excessHoliday, FRAMES, TRANSFER, joinNS(TIME, NUMBER_1, NUMBER_0)));
 		temp.put(314, join(excessHoliday, FRAMES, TRANSFER, joinNS(CALC, NUMBER_1, NUMBER_0)));
 		
-		temp.put(777, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_1)));
-		temp.put(778, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_2)));
-		temp.put(779, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_3)));
-		temp.put(780, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_4)));
-		temp.put(781, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_5)));
-		temp.put(782, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_6)));
-		temp.put(783, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_7)));
-		temp.put(784, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_8)));
-		temp.put(785, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_9)));
-		temp.put(786, join(excessHoliday, FRAMES, HOLIDAY_WORK, joinNS(DIVERGENCE, NUMBER_1, NUMBER_0)));
+		temp.put(777, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_1)));
+		temp.put(778, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_2)));
+		temp.put(779, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_3)));
+		temp.put(780, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_4)));
+		temp.put(781, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_5)));
+		temp.put(782, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_6)));
+		temp.put(783, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_7)));
+		temp.put(784, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_8)));
+		temp.put(785, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_9)));
+		temp.put(786, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_1, NUMBER_0)));
 		temp.put(790, join(excessHoliday, LATE_NIGHT, LEGAL, DIVERGENCE));
 		temp.put(791, join(excessHoliday, LATE_NIGHT, ILLEGAL, DIVERGENCE));
 		temp.put(792, join(excessHoliday, LATE_NIGHT, PUBLIC_HOLIDAY, DIVERGENCE));
@@ -2212,6 +2216,22 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return temp;
 	}
 
+	public static List<Integer> getItemIdByDailyDomains(DailyDomainGroup... domains){
+		return Arrays.stream(domains).map(e -> {
+			return DAY_ITEM_ID_CONTAINER.entrySet().stream()
+										.filter(en -> en.getValue().indexOf(e.name) == 0)
+										.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
+	public static List<Integer> getItemIdByDailyDomains(MonthlyDomainGroup... domains){
+		return Arrays.stream(domains).map(e -> {
+			return MONTHLY_ITEM_ID_CONTAINER.entrySet().stream()
+											.filter(en -> en.getValue().indexOf(e.name) == 0)
+											.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
 	public static boolean isHaveOptionalItems(Collection<ItemValue> items) {
 		return toFilterStream(items).findFirst().isPresent();
 	}

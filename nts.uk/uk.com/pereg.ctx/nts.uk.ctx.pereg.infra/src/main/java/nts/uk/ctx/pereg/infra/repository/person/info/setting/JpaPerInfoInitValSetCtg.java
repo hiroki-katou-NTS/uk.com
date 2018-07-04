@@ -17,7 +17,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonIn
 @Stateless
 public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoInitValSetCtgRepository {
 
-	private final String SEL_ALL_CTG = "SELECT  b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, cm.categoryType, "
+	private static final String SEL_ALL_CTG = "SELECT  b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, cm.categoryType, "
 			+ " CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting "
 			+ " FROM PpemtPerInfoCtg b " + " INNER JOIN PpemtPerInfoCtgCm cm "
 			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " INNER JOIN PpemtPerInfoCtgOrder e "
@@ -41,10 +41,10 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
 
 	private final static String SEL_ALL_CTG_BY_SET_ID_1 = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
-			+ " WHERE  c.settingCtgPk.settingId =:settingId";
+			+ " WHERE c.settingCtgPk.settingId =:settingId";
 
 	private final static String SEL_CTG_BY_SETID_CTGID = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
-			+ " WHERE  c.settingCtgPk.settingId =:settingId AND c.settingCtgPk.perInfoCtgId =:perInfoCtgId";
+			+ " WHERE c.settingCtgPk.settingId =:settingId AND c.settingCtgPk.perInfoCtgId =:perInfoCtgId";
 
 	private final static String DELETE_BY_SETTING_ID = " DELETE FROM PpemtPersonInitValueSettingCtg c"
 			+ " WHERE c.settingCtgPk.settingId =:settingId";
