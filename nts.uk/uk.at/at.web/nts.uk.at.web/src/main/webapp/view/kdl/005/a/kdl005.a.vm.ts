@@ -70,7 +70,7 @@ module nts.uk.at.view.kdl005.a {
                         self.isMultiSelect = ko.observable(false);
                         self.isShowWorkPlaceName = ko.observable(false);
                         self.isShowSelectAllButton = ko.observable(false);
-                        this.employeeList = ko.observableArray<UnitModel>(_.map(data.employeeBasicInfo,x=>{return {code:x.employeeCode ,name:x.businessName};}));
+                        self.employeeList = ko.observableArray<UnitModel>(_.map(data.employeeBasicInfo,x=>{return {code:x.employeeCode ,name:x.businessName};}));
                         self.listComponentOption = {
                             isShowAlreadySet: self.isShowAlreadySet(),
                             isMultiSelect: self.isMultiSelect(),
