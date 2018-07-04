@@ -8,6 +8,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.AttendanceClock;
 
 /**
  * 出力条件詳細項目
