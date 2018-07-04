@@ -14,12 +14,18 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.exio.app.command.exo.executionlog.ExOutOpMngCommand;
+import nts.uk.ctx.exio.app.command.exo.executionlog.RemoveExOutOpMngCommandHandler;
 import nts.uk.ctx.exio.app.find.exi.execlog.ErrorContentDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogFinder;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogFinder;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExiExecLogExportService;
+import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutOpMngDto;
+import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutOpMngFinder;
+import nts.uk.ctx.exio.app.find.exo.executionlog.ExterOutExecLogDto;
+import nts.uk.ctx.exio.app.find.exo.executionlog.ExterOutExecLogFinder;
 
 /**
  * The Class ExiExecLogWebService
@@ -35,7 +41,17 @@ public class ExiExecLogWebService extends WebService {
 
 	@Inject
 	private ExiExecLogExportService exportService;
-
+	
+	
+	@Inject
+	private ExOutOpMngFinder exOutOpMngFinder;
+	
+	@Inject
+	private RemoveExOutOpMngCommandHandler removeExOutOpMngCommandHandler;
+	
+	@Inject
+	private ExterOutExecLogFinder exterOutExecLogFinder;
+	
 	/**
 	 * @param externalProcessId
 	 * @return
@@ -56,5 +72,24 @@ public class ExiExecLogWebService extends WebService {
 	@Path("export")
 	public ExportServiceResult exportCsvError(ErrorContentDto command) {
 		return this.exportService.start(command);
+	}
+	
+	@POST
+	@Path("findExOutOpMng/{storeProcessingId}")
+	public ExOutOpMngDto findExOutOpMng(@PathParam("storeProcessingId") String storeProcessingId) {
+		return exOutOpMngFinder.getExOutOpMngById(storeProcessingId);
+	}
+	
+	
+	@POST
+	@Path("deleteexOutOpMng")
+	public void deleteexOutOpMng(ExOutOpMngCommand command) {
+		this.removeExOutOpMngCommandHandler.handle(command);
+	}
+	
+	@Path("getExterOutExecLog/{exterOutExecLogProcessId}")
+	@POST
+	public ExterOutExecLogDto getExterOutExecLogById(@PathParam("processId") String exterOutExecLogProcessId) {
+		return this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId);
 	}
 }
