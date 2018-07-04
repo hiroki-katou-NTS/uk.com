@@ -60,7 +60,7 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 	}
 
 	@Override
-	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, Integer closureDate,
+	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, ClosureDate closureDate,
 			String employeeID, AttendanceItemConAdapterDto attendanceItemCondition) {
 		return checkResultMonthlyPub.checkPerTimeMonActualResult(yearMonth, closureID, closureDate, employeeID, 
 				convertToAttendanceItemCon(attendanceItemCondition));
