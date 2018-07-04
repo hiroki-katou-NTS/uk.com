@@ -50,6 +50,11 @@ public class StdOutputCondSetCommand {
 	 */
 	private int stringFormat;
 
+	
 	private Long version;
+	
+	private String CopyDestinationCode;
+	
+	private int overWrite;
 
 }

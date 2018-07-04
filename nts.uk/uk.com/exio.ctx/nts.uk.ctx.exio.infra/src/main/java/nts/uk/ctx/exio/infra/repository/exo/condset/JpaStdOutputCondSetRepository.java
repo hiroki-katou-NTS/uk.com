@@ -17,6 +17,7 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtStdOutputCondSet f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutputCondSetPk.cid =:cid AND  f.stdOutputCondSetPk.conditionSetCd =:conditionSetCd ";
+	private static final String GET_OUTCNDSET_BY_CID_CNDCD = "SELECT f FROM OiomtStdOutputCondSet f where  f.stdOutputCondSetPk.cid =:cid AND  f.stdOutputCondSetPk.conditionSetCd =:conditionSetCds";
 
 	@Override
 	public List<StdOutputCondSet> getAllStdOutputCondSet() {
@@ -68,6 +69,12 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 		return new OiomtStdOutputCondSet(new OiomtStdOutputCondSetPk(domain.getCid(), domain.getConditionSetCd()),
 				domain.getCategoryId(), domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
 				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat());
+	}
+
+	@Override
+	public List<StdOutputCondSet> getOutputCondSetByCidAndconditionSetCd(String cid, String conditionSetCd) {
+		return this.queryProxy().query(GET_OUTCNDSET_BY_CID_CNDCD, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+				.setParameter("conditionSetCd", conditionSetCd).getList(c -> toDomain(c));
 	}
 
 }
