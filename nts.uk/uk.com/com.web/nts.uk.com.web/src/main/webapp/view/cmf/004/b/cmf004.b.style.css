@@ -1,5 +1,5 @@
 #data-recovery-wizard {
-	width: 1265px;
+	width: 1253px;
 	height: 735px;
 }
 
@@ -21,12 +21,17 @@
 	width: 120px;
 }
 
+#data-recovery-wizard .div-column-screenH {
+	width: 100px;
+}
+
+
 #data-recovery-wizard .div-column-2 {
 	width: 155px;
 }
 
 #data-recovery-wizard>.steps {
-	width: 250px;
+	width: 210px;
 }
 
 #data-recovery-wizard .push-left { 
@@ -39,6 +44,10 @@
 
 #H4_1 tr {
 	height: 28px;
+}
+
+#H4_1 table {
+	height: 140px;
 }
 
 #E4_1 tr {
@@ -75,4 +84,7 @@
 }
 .ntsDatepicker{
 	width:88px !important;
+}
+.contents-area{
+	padding: 5px !important;
 }
