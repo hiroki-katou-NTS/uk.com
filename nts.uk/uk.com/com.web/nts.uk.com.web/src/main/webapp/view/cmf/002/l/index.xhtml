@@ -23,7 +23,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-contents" data-bind="">
+			<div class="contents-area dialog-contents">
 				<!-- L1 - タイトル -->
 				<div id="L1" class="label dialog-title">#{i18n.getText('CMF002_192')}</div>
 				<div class="div-table">
@@ -40,6 +40,7 @@
 								options: timeSelectedList,
 								optionsValue: 'code',
 								optionsText: 'name',
+								enable: enableFormatSelectionCls(),
 								value: timeSelectedCode }">
 							</div>
 						</div>
@@ -58,7 +59,7 @@
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
 								required: true,
-								enable: true,
+								enable: decimalSelectionCls(),
 								option : {width : '35px'}}" />
 						</div>
 						<div class="div-table-col-small div-inline"
@@ -77,7 +78,7 @@
 								value: selectedRounding,
 								optionsText: 'name',
 								editable: false,
-								enable:true,
+								enable: decimalSelectionCls(),
 								required: true,
 								selectFirstIfNull : false,
 								columns: [
@@ -100,6 +101,7 @@
 								options: decimalSelectList,
 								optionsValue: 'code',
 								optionsText: 'name',
+								enable: enableSelectTimeCls(),
 								value: decimalSelectCode }">
 							</div>
 						</div>
@@ -113,7 +115,7 @@
 						<!-- L5_1 マイナス値チェック -->
 						<div id="" tabindex="1" class="div-table-col-standard">
 							<div id="L5_1"
-								data-bind="ntsCheckBox: { checked: outputMinusZero, enable: true, text: '#{i18n.getText('CMF002_147')}' }"></div>
+								data-bind="ntsCheckBox: { checked: outputMinusZero, enable: enableFormatSelectionCls(), text: '#{i18n.getText('CMF002_147')}' }"></div>
 						</div>
 					</div>
 
@@ -133,7 +135,7 @@
 								value: selectedSeparator,
 								optionsText: 'name',
 								editable: false,
-								enable:true,
+								enable: enableFormatSelectionCls(),
 								required: true,
 								selectFirstIfNull : false,
 								columns: [
@@ -149,13 +151,14 @@
 							<div id="L7" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_148')}</div>
 						</div>
 						<!-- L7_1 マイナス値チェック -->
-						<div id="I7_1" tabindex="6" class="div-table-col-standard" style="width: 110px;">
+						<div id="I7_1" tabindex="6" class="div-table-col-standard"
+							style="width: 110px;">
 							<div id="I7_1_1" tabindex="-1"
 								data-bind="ntsRadioButton: {
 									checked: fixedValueOperation, 
 									option: fixedValueOperationItem()[0], 
 									optionValue: 'code', 
-									enable: true, 
+									enable: enableFormatSelectionCls(), 
 									name: '#{i18n.getText('CMF002_148')}', 
 									optionText: 'name', 
 									group: 'fixedValueOperation' 
@@ -166,7 +169,7 @@
 									checked: fixedValueOperation, 
 									option: fixedValueOperationItem()[1], 
 									optionValue: 'code', 
-									enable: true, 
+									enable: enableFixedValueOperationCls(), 
 									name: '#{i18n.getText('CMF002_148')}', 
 									optionText: 'name', 
 									group: 'fixedValueOperation' 
@@ -184,7 +187,7 @@
 									visibleItemsCount: 5,
 									value: fixedValueOperationSymbol,
 									optionsText: 'name',
-									enable: true
+									enable: enableFixedValueOperation(),
 									}">
 							</div>
 						</div>
@@ -196,24 +199,25 @@
 								name:'#{i18n.getText('CMF002_152')}',
  								constraint: 'DecimalDigitNumber', 
 								required: true,
-								enable: true,
+								enable: enableFixedValueOperation(),
 								option : {width : '100px'}}" />
 						</div>
 					</div>
-					
+
 					<!-- L8 - 固定長出力(ラベル) -->
 					<div class="div-table-row">
 						<div class="div-table-col-medium">
 							<div id="L8" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_153')}</div>
 						</div>
 						<!-- L8_1 マイナス値チェック -->
-						<div id="L8_1" tabindex="9" class="div-table-col-standard" style="width: 110px;">
+						<div id="L8_1" tabindex="9" class="div-table-col-standard"
+							style="width: 110px;">
 							<div id="L8_1_1" tabindex="-1"
 								data-bind="ntsRadioButton: {
 									checked: fixedLengthOutput, 
 									option: fixedLengthOutputItem()[0], 
 									optionValue: 'code', 
-									enable: true, 
+									enable: enableFixedLengthOutputCls(), 
 									name: '#{i18n.getText('CMF002_153')}', 
 									optionText: 'name', 
 									group: 'fixedLengthOutputCls' 
@@ -224,7 +228,7 @@
 									checked: fixedLengthOutput, 
 									option: fixedLengthOutputItem()[1], 
 									optionValue: 'code', 
-									enable: true, 
+									enable: enableFixedLengthOutputCls(), 
 									name: '#{i18n.getText('CMF002_153')}', 
 									optionText: 'name', 
 									group: 'fixedLengthOutputCls' 
@@ -232,22 +236,22 @@
 							</div>
 						</div>
 						<div class="div-table-col-standard">
-							<div id="I8_2_1" style="display: inline" class="label">#{i18n.getText('CMF002_155')}</div>
-							<input id="I8_2_2" tabindex="10"
+							<div id="L8_2_1" style="display: inline" class="label">#{i18n.getText('CMF002_155')}</div>
+							<input id="L8_2_2" tabindex="10"
 								data-bind="ntsNumberEditor: {
 								value: fixedLengthIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
  								constraint: 'DecimalDigitNumber', 
-								required: true,
-								enable: true,
+								required: false,
+								enable: enableFixedLengthOutput(),
 								option : {width : '35px'}}" />
-							<div id="I8_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
+							<div id="L8_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
 						</div>
-						
+
 						<div class="div-table-col-big-big">
-							<div id="I8_3_1" style="display: inline"
+							<div id="L8_3_1" style="display: inline"
 								class="label label-vertical-align-center">#{i18n.getText('CMF002_156')}</div>
-							<div id="I8_3_2" tabindex="11"
+							<div id="L8_3_2" tabindex="11"
 								style="display: inline-block; width: 100px;"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF002_156')}',
@@ -256,24 +260,25 @@
 									visibleItemsCount: 5,
 									value: fixedLengthEditingMethod,
 									optionsText: 'name',
-									enable: true}">
+									enable: enableFixedLengthOutput()}">
 							</div>
 						</div>
 					</div>
-					
+
 					<!-- L9 - NULL値置き換え(ラベル) -->
 					<div class="div-table-row">
 						<div class="div-table-col-medium">
 							<div id="L9" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_157')}</div>
 						</div>
 						<!-- L9_1 NULL値置き換え -->
-						<div id="" tabindex="1" class="div-table-col-standard" style="width: 110px;">
+						<div id="" tabindex="1" class="div-table-col-standard"
+							style="width: 110px;">
 							<div id="L9_1_1" tabindex="-1"
 								data-bind="ntsRadioButton: {
 									checked: nullValueReplace, 
 									option: nullValueReplaceItem()[0], 
 									optionValue: 'code', 
-									enable: true, 
+									enable: enableNullValueReplaceCls(), 
 									name: '#{i18n.getText('CMF002_157')}', 
 									optionText: 'name', 
 									group: 'nullValueReplaceCls' 
@@ -284,7 +289,7 @@
 									checked: nullValueReplace, 
 									option: nullValueReplaceItem()[1], 
 									optionValue: 'code', 
-									enable: true, 
+									enable: enableNullValueReplaceCls(), 
 									name: '#{i18n.getText('CMF002_157')}', 
 									optionText: 'name', 
 									group: 'nullValueReplaceCls' 
@@ -298,23 +303,24 @@
 								name:'#{i18n.getText('CMF002_158')}',
  								constraint: 'DecimalDigitNumber', 
 								required: true,
-								enable: true,
+								enable: enableNullValueReplace(),
 								option : {width : '35px'}}" />
 						</div>
 					</div>
-					
+
 					<!--  L10 - 固定値(ラベル)  -->
 					<div class="div-table-row">
 						<div class="div-table-col-medium">
 							<div id="L10" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_159')}</div>
 						</div>
-						<div id="L10_1" tabindex="14" class="div-table-col-standard" style="width: 110px;">
+						<div id="L10_1" tabindex="14" class="div-table-col-standard"
+							style="width: 110px;">
 							<div id="L10_1_1" tabindex="-1"
 								data-bind="ntsRadioButton: {
 									checked: fixedValue, 
 									option: fixedValueItem()[0], 
 									optionValue: 'code', 
-									enable: true, 
+									enable: enableFixedValueCls(), 
 									name: '#{i18n.getText('CMF002_159')}', 
 									optionText: 'name', 
 									group: 'fixedValueCls' 
@@ -325,7 +331,7 @@
 									checked: fixedValue, 
 									option: fixedValueItem()[1], 
 									optionValue: 'code', 
-									enable: true, 
+									enable: enableFixedValueCls(), 
 									name: '#{i18n.getText('CMF002_159')}', 
 									optionText: 'name', 
 									group: 'fixedValueCls' 
@@ -339,7 +345,7 @@
 								name:'#{i18n.getText('CMF002_160')}',
  								constraint: 'DecimalDigitNumber', 
 								required: true,
-								enable: true,
+								enable: enableFixedValue(),
 								option : {width : '35px'}}" />
 						</div>
 					</div>
