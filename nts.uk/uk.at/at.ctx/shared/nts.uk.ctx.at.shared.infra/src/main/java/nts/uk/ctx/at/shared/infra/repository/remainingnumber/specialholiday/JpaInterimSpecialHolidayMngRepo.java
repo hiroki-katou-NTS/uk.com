@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements InterimSpecialHolidayMngRepository{
 	
-	private String QUERY_BY_SID_PERIOD = "SELECT c FROM KrcmtInterimSpeHoliday c"
+	private static final String QUERY_BY_SID_PERIOD = "SELECT c FROM KrcmtInterimSpeHoliday c"
 			+ " WHERE c.pk.sid = :sid"
 			+ " AND c.pk.ymd >= :startDate"
 			+ " AND c.pk.ymd <= :endDate"
