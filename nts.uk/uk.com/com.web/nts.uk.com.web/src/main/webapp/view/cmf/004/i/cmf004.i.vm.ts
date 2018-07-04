@@ -134,20 +134,20 @@ module nts.uk.com.view.cmf004.i.viewmodel {
         }
 
         public getStatusEnum(value): string {
-            if (value && value === 0) {
+            if (value === 0) {
                 return getText('Enum_OperatingCondition_INPROGRESS');
-            } else if (value && value === 1) {
+            } else if (value === 1) {
                 return getText('Enum_OperatingCondition_INTERRUPTION_END');
-            } else if (value && value === 2) {
+            } else if (value === 2) {
                 return getText('Enum_OperatingCondition_DELETING');
-            } else if (value && value === 3) {
+            } else if (value === 3) {
                 return getText('Enum_OperatingCondition_DONE');
-            } else if (value && value === 4) {
+            } else if (value === 4) {
                 return getText('Enum_OperatingCondition_INPREPARATION');
-            } else if (value && value === 5) {
+            } else if (value === 5) {
                 return getText('Enum_OperatingCondition_ABNORMAL_TERMINATION');
             }
-        }
+        } 
     }
 }
 

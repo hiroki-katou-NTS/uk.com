@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
@@ -233,9 +234,15 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	@Override
 	public void deleteEmployeeDataRecovery(String dataRecoveryProcessId, List<String> employeeIdList) {
-		this.getEntityManager().createQuery(DELETE_BY_LIST_ID_EMPLOYEE, SspmtTarget.class)
+		/*this.getEntityManager().createQuery(DELETE_BY_LIST_ID_EMPLOYEE, SspmtTarget.class)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
-				.setParameter("employeeIdList", employeeIdList).executeUpdate();
+				.setParameter("employeeIdList", employeeIdList).executeUpdate();*/
+		
+		CollectionUtil.split(employeeIdList, 1000, subEmployeeIdList -> {
+			this.getEntityManager().createQuery(DELETE_BY_LIST_ID_EMPLOYEE, SspmtTarget.class)
+			.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
+			.setParameter("employeeIdList", subEmployeeIdList).executeUpdate();
+		});
 
 	}
 
