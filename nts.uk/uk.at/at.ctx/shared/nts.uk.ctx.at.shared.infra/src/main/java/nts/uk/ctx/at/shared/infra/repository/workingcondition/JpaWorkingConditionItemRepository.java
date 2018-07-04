@@ -409,7 +409,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		}
 
 		// exclude select
-		return result.parallelStream().map(
+		return result.stream().map(
 				entity -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
