@@ -87,27 +87,31 @@ public class OptionalAggrPeriodExecLogFinder {
 		
 	}
 	
-	public AggrPeriodExcutionDto findStatus(String aggrFrameCode, int executionStatus){
+	public List<AggrPeriodExcutionDto> findStatus(String aggrFrameCode, int executionStatus){
 		String companyId = AppContexts.user().companyId();
-		Optional<AggrPeriodExcution> data = this.logRepo.findStatus(companyId, aggrFrameCode, executionStatus);
-
-		if (data.isPresent()) {
-			return AggrPeriodExcutionDto.fromDomain(data.get());
-		}
-
-		return null;
+		return logRepo.findExecutionStatus(companyId, aggrFrameCode, executionStatus).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList());
 		
 	}
 	
-	public AggrPeriodExcutionDto findAll(String aggrFrameCode) {
+	public List<AggrPeriodExcutionDto> findAll(String aggrFrameCode) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AggrPeriodExcution> data = this.logRepo.findAggrCode(companyId, aggrFrameCode);
-
-		if (data.isPresent()) {
-			return AggrPeriodExcutionDto.fromDomain(data.get());
-		}
-
-		return null;
+		return logRepo.findAggrCode(companyId, aggrFrameCode).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList());
 	}
 	
+	private AggrPeriodExcutionDto convertToDbType(AggrPeriodExcution excution) {
+		AggrPeriodExcutionDto excutionDto = new AggrPeriodExcutionDto();
+		excutionDto.setExecutionEmpId(excution.getExecutionEmpId());
+		excutionDto.setAggrFrameCode(excution.getAggrFrameCode().v());
+		excutionDto.setAggrId(excution.getAggrId());
+		excutionDto.setStartDateTime(excution.getStartDateTime());
+		excutionDto.setEndDateTime(excution.getEndDateTime());
+		excutionDto.setExecutionAtr(excution.getExecutionAtr().value);
+		excutionDto.setExecutionStatus(excution.getExecutionAtr().value);
+		excutionDto.setPresenceOfError(excution.getPresenceOfError().value);
+		return excutionDto;
+	}
 }

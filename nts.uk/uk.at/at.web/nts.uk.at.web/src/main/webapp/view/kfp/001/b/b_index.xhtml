@@ -37,15 +37,15 @@
 					#{i18n.getText('KFP001_14')} <span><input
 						id="code-text-d4-2" style="margin-left: 69px ! important"
 						tabindex="1"
-						data-bind="ntsTextEditor: {value: aggrFrameCode,constraint:'AggrFrameCode', required: true, name: '#[KFP001_15]', enable:'enableText'}" /></span>
+						data-bind="ntsTextEditor: {value: aggrFrameCode,constraint:'AggrFrameCode', required: true, name: '#[KFP001_15]', enable:$parent.enableText}" /></span>
 				</div>
 				<hr></hr>
 				<div id="label2-B5_1" class="label"
 					data-bind="ntsFormLabel: {required: true, constraint:['OptionalAggrName']}">
 					#{i18n.getText('KFP001_16')} <span><input
-						id="code-text-d4-2" style="margin-left: 71px ! important"
+						id="code-text-d4-21" style="margin-left: 71px ! important"
 						tabindex="2"
-						data-bind="ntsTextEditor: {value: optionalAggrName,constraint:'OptionalAggrName', required: true, name: '#[KFP001_17]', enable:'enableText'}" /></span>
+						data-bind="ntsTextEditor: {value: optionalAggrName,constraint:'OptionalAggrName', required: true, name: '#[KFP001_17]', enable:$parent.enableText}" /></span>
 				</div>
 				<hr></hr>
 				<div id="label2-B5_1" class="label"
@@ -59,8 +59,8 @@
 											required: true,
 											enable: true,
 											acceptJapaneseCalendar: true,
-											name: '#[KFP001_20]'}, 
-											enable:'enableText'">
+											name: '#[KFP001_20]', 
+											enable:$parent.enableText}">
 					</div>
 					<span style="margin-left: 15px;">~</span>
 					<div id="end-date-B6-4" style="margin-top: 10px;" tabindex="4"
@@ -71,7 +71,7 @@
 											enable: true,
 											acceptJapaneseCalendar: true,
 											name: '#[KFP001_21]', 
-											enable:'enableText'}">
+											enable:$parent.enableText}">
 											
 					</div>
 				</div>

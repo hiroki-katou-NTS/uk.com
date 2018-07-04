@@ -21,6 +21,8 @@ public interface OptionalAggrPeriodRepository {
 	
 	Optional<OptionalAggrPeriod> find(String companyId, String aggrFrameCode);
 	
+	boolean checkExit(String companyId, String aggrFrameCode);
+	
 	/**
 	 * Add Optional Aggr Period
 	 * @param optionalAggrPeriod

@@ -150,6 +150,14 @@ implements AggrPeriodExcutionRepository{
 				.getList(c -> convertToDomainApe(c));
 	}
 	
+	@Override
+	public List<AggrPeriodExcution> findAggrCode(String companyId, String aggrFrameCode) {
+		return this.queryProxy().query(FIND_AGGR_CODE, KrcmtAggrPeriodExcution.class)
+				.setParameter("companyId", companyId)
+				.setParameter("aggrFrameCode", aggrFrameCode)
+				.getList(c -> convertToDomainApe(c));
+	}
+	
 
 	/**
 	 * 
@@ -247,13 +255,4 @@ implements AggrPeriodExcutionRepository{
 				.getSingle(c -> convertToDomainApe(c));
 	}
 	
-	@Override
-	public Optional<AggrPeriodExcution> findAggrCode(String companyId, String aggrFrameCode) {
-		return this.queryProxy().query(FIND_AGGR_CODE, KrcmtAggrPeriodExcution.class)
-				.setParameter("companyId", companyId)
-				.setParameter("aggrFrameCode", aggrFrameCode)
-				.getSingle(c -> convertToDomainApe(c));
-	}
-
-
 }

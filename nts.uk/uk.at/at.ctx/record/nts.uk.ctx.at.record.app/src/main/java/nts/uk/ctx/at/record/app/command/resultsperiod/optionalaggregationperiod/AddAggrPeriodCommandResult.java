@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod;
 
+import java.util.List;
+
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 
@@ -11,6 +13,7 @@ public class AddAggrPeriodCommandResult {
 	private GeneralDateTime startDateTime;
 	
 	private GeneralDateTime endDateTime;
+	
 	
 
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -33,13 +34,20 @@ public class AddAggrPeriodCommandHandler
 	protected AddAggrPeriodCommandResult handle(CommandHandlerContext<AddAggrPeriodCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		String executionEmpId = AppContexts.user().employeeId();
+		AddAggrPeriodCommand command = context.getCommand();
+		
+		boolean existsBranch = repository.checkExit(companyId,
+				command.getAggrPeriodCommand().getAggrFrameCode());
+		if (existsBranch) {
+			throw new BusinessException("Msg_3");
+		}
+		
 		GeneralDateTime endDateTime = GeneralDateTime.now();
 		GeneralDateTime startDateTime = GeneralDateTime.now();
 
-		AddAggrPeriodCommand command = context.getCommand();
+		
 		OptionalAggrPeriod optionalAggrPeriod = command.getAggrPeriodCommand().toDomain(companyId);
 		String optionalAggrPeriodID = IdentifierUtil.randomUniqueId();
-
 		if (command.getMode() == 0) {
 			
 			List<OptionalAggrPeriod> aggrList = repository.findAll(companyId);
@@ -80,6 +88,7 @@ public class AddAggrPeriodCommandHandler
 		aggrPeriodCommandResult.setStartDateTime(startDateTime);
 		aggrPeriodCommandResult.setEndDateTime(endDateTime);
 		return aggrPeriodCommandResult;
-	}
+		
 
+	}
 }

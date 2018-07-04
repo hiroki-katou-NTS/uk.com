@@ -166,13 +166,13 @@ public class OptionalAggrPeriodWs {
 	
 	@POST
 	@Path("findStatus/{aggrFrameCode}/{executionStatus}")
-	public AggrPeriodExcutionDto findStatus(@PathParam("aggrFrameCode") String aggrFrameCode,@PathParam("executionStatus") int executionStatus) {
+	public List<AggrPeriodExcutionDto> findStatus(@PathParam("aggrFrameCode") String aggrFrameCode,@PathParam("executionStatus") int executionStatus) {
 		return this.logFinder.findStatus(aggrFrameCode, executionStatus);
 	}
 	
 	@POST
 	@Path("findAggrCode/{aggrFrameCode}")
-	public AggrPeriodExcutionDto findAggrCode(@PathParam("aggrFrameCode") String aggrFrameCode) {
+	public List<AggrPeriodExcutionDto> findAggrCode(@PathParam("aggrFrameCode") String aggrFrameCode) {
 		return this.logFinder.findAll(aggrFrameCode);
 	}
 	@Path("exportcsv")

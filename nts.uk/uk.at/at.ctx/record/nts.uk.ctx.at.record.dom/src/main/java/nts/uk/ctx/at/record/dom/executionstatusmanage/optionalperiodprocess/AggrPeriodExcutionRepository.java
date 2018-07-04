@@ -31,7 +31,7 @@ public interface AggrPeriodExcutionRepository {
 	 * @param aggrFrameCode
 	 * @return
 	 */
-	Optional<AggrPeriodExcution> findAggrCode(String companyId, String aggrFrameCode);
+	List<AggrPeriodExcution> findAggrCode(String companyId, String aggrFrameCode);
 
 	/**
 	 * 

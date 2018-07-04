@@ -124,5 +124,12 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 		return this.queryProxy().query(FIND, KrcmtOptionalAggrPeriod.class).setParameter("companyId", companyId)
 				.setParameter("aggrFrameCode", aggrFrameCode).getSingle(t -> convertToDomainOap(t));
 	}
+	
+	@Override
+	public boolean checkExit(String companyId, String aggrFrameCode) {
+		List<KrcmtOptionalAggrPeriod> branchs = this.queryProxy().query(FIND, KrcmtOptionalAggrPeriod.class)
+				.setParameter("companyId", companyId).setParameter("aggrFrameCode", aggrFrameCode).getList();
+		return !branchs.isEmpty();
+	}
 
 }

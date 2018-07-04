@@ -6,12 +6,13 @@ module nts.uk.at.view.kfp001.d {
             optionalAggrName: KnockoutObservable<string>;
             startDate: KnockoutObservable<string>;
             endDate: KnockoutObservable<string>;
-            peopleNo: KnockoutObservable<number>;
-            mode: KnockoutObservable<number>;
+            peopleNo: KnockoutObservable<number> = ko.observable(0);
+            mode: KnockoutObservable<number> = ko.observable(0);
             listEmp: KnockoutObservableArray<any>;
             executionId: KnockoutObservable<string>;
-            listSelect: KnockoutObservableArray<any>;
-            listSelectedEmpId : KnockoutObservableArray<any>;
+            listSelect: KnockoutObservableArray<any> = ko.observableArray([]); 
+            listSelectedEmpId : KnockoutObservableArray<any> = ko.observableArray([]); 
+            listAggr: KnockoutObservableArray<any> = ko.observableArray([]); 
 
             constructor() {
                 var self = this;
@@ -19,12 +20,8 @@ module nts.uk.at.view.kfp001.d {
                 self.optionalAggrName = ko.observable('');
                 self.startDate = ko.observable('');
                 self.endDate = ko.observable('');
-                self.peopleNo = ko.observable(0);
-                self.mode = ko.observable(0);
                 self.listEmp = ko.observableArray([]);
-                self.listSelect = ko.observableArray([]);
                 self.executionId = ko.observable('');
-                self.listSelectedEmpId = ko.observableArray([]); 
             }
             start() {
                
@@ -37,6 +34,7 @@ module nts.uk.at.view.kfp001.d {
                 return item.employeeId;    
                 });
                 self.listSelectedEmpId(listEmployeeId);
+
 
                 let listEmployee = [];
                 _.forEach(self.listEmp(), function(item) {
@@ -90,6 +88,16 @@ module nts.uk.at.view.kfp001.d {
                 $("#wizard").ntsWizard("prev").done(function() {
                 });
             }
+            
+            addListError(errorsRequest: Array<string>) {
+            var self = this;
+            var errors = [];
+            _.forEach(errorsRequest, function(err) {
+                errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+            });
+
+            nts.uk.ui.dialog.bundledErrors({ errors: errors });
+        }
 
         }
 

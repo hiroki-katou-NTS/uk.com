@@ -31,7 +31,7 @@ module nts.uk.at.view.kfp001.b {
             aggrId: KnockoutObservable<string>;
 
             mode: KnockoutObservable<number>;
-            
+
             enableText: KnockoutObservable<boolean>;
 
             constructor() {
@@ -87,6 +87,7 @@ module nts.uk.at.view.kfp001.b {
                         self.currentItem(self.findOptional(codeChanged));
                         self.currentItemExe(self.findExc(codeChanged))
                         self.enableText(false);
+                        $('#update-mode').show();
                         self.mode(1);
 
                     }
@@ -128,7 +129,7 @@ module nts.uk.at.view.kfp001.b {
                     //                    })
 
                     // Bind data to Screen D
-                    
+
 
                     ko.computed(() => {
                         self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
@@ -141,9 +142,10 @@ module nts.uk.at.view.kfp001.b {
                         self.dScreenmodel.endDate(self.currentItem().endDate());
                         self.dScreenmodel.mode(self.mode());
                         self.dScreenmodel.executionId(null);
+                        self.dScreenmodel.listAggr(self.optionalList());
 
                     });
-                    
+
                     dfd.resolve();
                 }).fail(function() {
                     dfd.reject();
@@ -243,6 +245,7 @@ module nts.uk.at.view.kfp001.b {
                     $('#code-text-d4-2').focus();
                     $('#update-mode').hide();
                     self.mode(0);
+                    self.enableText(true);
                 }
             }
             deleteDataB() {
@@ -253,30 +256,31 @@ module nts.uk.at.view.kfp001.b {
                     return item.aggrFrameCode() == self.currentCode();
                 });
                 nts.uk.ui.dialog.confirm("Msg_18").ifYes(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_35" });
-                    service.findStatus(self.currentCode(), 3).done(function(dataEx) {
-                        dataStatus = dataEx;
+
+                    $.when(service.findStatus(self.currentCode(), 3)).done(function(dataEx) {
+
+                        if (dataEx.length > 0) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_1172" });
+                            return;
+                        } else {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_35" });
+                            $.when(service.deleteOptionalAggr(self.currentCode())).done(function() {
+                                $.when(self.getAllOptionalAggrPeriod()).done(function() {
+                                    var optionalAggrId: string = null;
+                                    if (self.items().length == 0) {
+                                        self.initDataB();
+                                    } else if (self.items().length == 1) {
+                                        optionalAggrId = self.items()[0].aggrFrameCode();
+                                    } else if (index_of_itemDelete == self.items().length) {
+                                        optionalAggrId = self.items()[index_of_itemDelete - 1].aggrFrameCode();
+                                    } else {
+                                        optionalAggrId = self.items()[index_of_itemDelete].aggrFrameCode();
+                                    }
+                                    self.currentCode(optionalAggrId);
+                                });
+                            })
+                        }
                     })
-                    if (dataStatus.length > 0) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_1172" });
-                        return;
-                    } else {
-                        $.when(service.deleteOptionalAggr(self.currentCode())).done(function() {
-                            $.when(self.getAllOptionalAggrPeriod()).done(function() {
-                                var optionalAggrId: string = null;
-                                if (self.items().length == 0) {
-                                    self.initDataB();
-                                } else if (self.items().length == 1) {
-                                    optionalAggrId = self.items()[0].aggrFrameCode();
-                                } else if (index_of_itemDelete == self.items().length) {
-                                    optionalAggrId = self.items()[index_of_itemDelete - 1].aggrFrameCode();
-                                } else {
-                                    optionalAggrId = self.items()[index_of_itemDelete].aggrFrameCode();
-                                }
-                                self.currentCode(optionalAggrId);
-                            });
-                        })
-                    }
                 }).ifNo(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                     return;
@@ -288,7 +292,10 @@ module nts.uk.at.view.kfp001.b {
             opendScreenBorJ() {
                 let self = this;
                 var dfd = $.Deferred();
-
+                $("#code-text-d4-2").trigger("validate");
+                $("#code-text-d4-21").trigger("validate");
+                $("#start-date-B6-3").trigger("validate");
+                $("#end-date-B6-4").trigger("validate");
                 $("#wizard").ntsWizard("next").done(function() {
                 });
 
