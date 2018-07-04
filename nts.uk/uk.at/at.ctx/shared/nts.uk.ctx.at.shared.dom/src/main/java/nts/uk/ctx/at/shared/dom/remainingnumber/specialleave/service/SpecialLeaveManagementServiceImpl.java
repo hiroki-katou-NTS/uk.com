@@ -336,7 +336,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		outputData.setUndigested(outputData.getUndigested() + adjustCarryForward.getUnDigestedDay());
 		
 		//パラメータ．特別休暇の残数．未消化数=未消化数
-		RemainDaysOfSpecialHoliday remainDaysOfSpecialHoliday = new RemainDaysOfSpecialHoliday(null, outputData.getUndigested(), Optional.empty());
+		SpecialHolidayRemainInfor infor = new SpecialHolidayRemainInfor(0, 0, 0);
+		RemainDaysOfSpecialHoliday remainDaysOfSpecialHoliday = new RemainDaysOfSpecialHoliday(infor, outputData.getUndigested(), Optional.empty());
 		InPeriodOfSpecialLeave inPeriodData = new InPeriodOfSpecialLeave(new ArrayList<>(), remainDaysOfSpecialHoliday, new ArrayList<>());
 		//使用数を管理データから引く
 		inPeriodData = this.subtractUseDaysFromMngData(lstGrantData, lstInterimData, outputData, inPeriodData, adjustCarryForward.getLimitDays());

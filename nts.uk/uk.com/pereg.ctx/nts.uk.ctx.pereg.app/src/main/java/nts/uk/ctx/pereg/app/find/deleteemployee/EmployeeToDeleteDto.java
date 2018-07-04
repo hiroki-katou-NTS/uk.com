@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.find.employee;
+package nts.uk.ctx.pereg.app.find.deleteemployee;
 
 import lombok.Data;
 

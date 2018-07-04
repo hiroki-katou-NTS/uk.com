@@ -19,8 +19,8 @@ import nts.uk.ctx.pr.core.infra.entity.personalinfo.holiday.PhldtHolidayPaidPK;
 @Stateless
 public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPaidRepository {
 
-	private final String SELECT_BY_CCD_AND_PID = "SELECT c FROM PhldtHolidayPaid c WHERE c.phldtHolidayPaidPK.ccd = :ccd and c.phldtHolidayPaidPK.pId IN :pIds";
-	private final String SEL_1 = "SELECT c FROM PhldtHolidayPaid c WHERE c.phldtHolidayPaidPK.ccd = :ccd and c.phldtHolidayPaidPK.pId = :pId";
+	private static final String SELECT_BY_CCD_AND_PID = "SELECT c FROM PhldtHolidayPaid c WHERE c.phldtHolidayPaidPK.ccd = :ccd and c.phldtHolidayPaidPK.pId IN :pIds";
+	private static final String SEL_1 = "SELECT c FROM PhldtHolidayPaid c WHERE c.phldtHolidayPaidPK.ccd = :ccd and c.phldtHolidayPaidPK.pId = :pId";
 
 	@Override
 	public List<HolidayPaid> findAll(String companyCode, List<String> personIds) {
