@@ -4,11 +4,11 @@ module nts.uk.com.view.cmf002.b.service {
 
     var paths = {
         //TODO: Fake ws
-        getOutputConditionSetting: "exio/exi/codeconvert/getOutputConditionSetting/{0}"
+        getCndSet: "exio/exo/stdoutconset/getCndSet{0}"
     }
 
     // Get 出力条件設定（定型）
-    export function getOutputConditionSetting(condSetCode: string): JQueryPromise<any> {
-        return ajax(format(paths.getOutputConditionSetting, condSetCode));
+    export function getCndSet(cid: string ): JQueryPromise<any> {
+        return ajax(format(paths.getCndSet, cid));
     }
 }

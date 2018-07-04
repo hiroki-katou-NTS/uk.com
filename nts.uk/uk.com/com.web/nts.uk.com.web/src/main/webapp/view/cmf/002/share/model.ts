@@ -178,4 +178,35 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
         ];
     }
+    
+    export function getRounding(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, getText('CMF002_384')),
+            new model.ItemModel(1, getText('CMF002_385')),
+            new model.ItemModel(2, getText('CMF002_386'))
+        ];
+    }
+    
+    export function getTimeSelected(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, getText('CMF002_194')),
+            new model.ItemModel(1, getText('CMF002_195'))
+        ];
+    }
+    
+    export function getDecimalSelect(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, getText('CMF002_201')),
+            new model.ItemModel(1, getText('CMF002_202'))
+        ];
+    }
+    
+    export function getSeparator(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, getText('CMF002_398')),
+            new model.ItemModel(1, getText('CMF002_399')),
+            new model.ItemModel(2, getText('CMF002_400'))
+        ];
+    }
+    
 }

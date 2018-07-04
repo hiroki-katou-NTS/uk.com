@@ -14,40 +14,44 @@ import nts.arc.layer.dom.AggregateRoot;
 public class ExOutOpMng extends AggregateRoot
 {
     
-    /**
-    * 
+    
+
+
+	/**
+    * 外部出力処理ID
     */
     private ExOutProcessingId exOutProId;
     
     /**
-    * 
+    * 処理カウント
     */
     private int proCnt;
     
     /**
-    * 
+    * エラー件数
     */
     private int errCnt;
     
     /**
-    * 
+    * 処理トータルカウント
     */
     private int totalProCnt;
     
     /**
-    * 
+    * 中断するしない
     */
     private NotUseAtr doNotInterrupt;
     
     /**
-    * 
-    */
-    private String proUnit;
-    
+     * 処理単位
+     */
+     private String proUnit;
+     
     /**
-    * 
+    * 動作状態
     */
     private ExIoOperationState opCond;
     
+   
     
 }

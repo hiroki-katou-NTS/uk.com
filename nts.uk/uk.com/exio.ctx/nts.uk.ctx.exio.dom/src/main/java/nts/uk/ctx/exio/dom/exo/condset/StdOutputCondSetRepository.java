@@ -11,10 +11,15 @@ public interface StdOutputCondSetRepository
 
     List<StdOutputCondSet> getAllStdOutputCondSet();
     
+
     List<StdOutputCondSet> getOutputCondSetByCidAndconditionSetCd(String Cid, String conditionSetCd);
     
-    Optional<StdOutputCondSet> getStdOutputCondSetById(String cid, String conditionSetCd);
 
+    Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid);
+
+
+    Optional<StdOutputCondSet> getStdOutputCondSetById(String cid, String conditionSetCd);
+    
     void add(StdOutputCondSet domain);
 
     void update(StdOutputCondSet domain);

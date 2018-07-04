@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.outitem;
+package nts.uk.ctx.exio.infra.entity.exo.outitemsortorder;
 
 import java.io.Serializable;
 
@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * 出力項目(定型): 主キー情報
+ * 出力項目並び順(定型): 主キー情報
  */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class OiomtStdOutItemPk implements Serializable {
+public class OiomtStdOutItemOrderPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
