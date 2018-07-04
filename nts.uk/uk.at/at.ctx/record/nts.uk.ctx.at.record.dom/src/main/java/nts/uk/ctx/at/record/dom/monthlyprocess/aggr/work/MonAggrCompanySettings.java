@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentMap;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
@@ -21,6 +22,8 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
@@ -34,11 +37,13 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別集計で必要な会社別設定
@@ -58,6 +63,8 @@ public class MonAggrCompanySettings {
 	/** 締め */
 	@Getter
 	private Map<Integer, Closure> closureMap;
+	/** 締め当月の期間 */
+	private Map<Integer, DatePeriod> currentMonthPeriodMap;
 	/** 法定内振替順設定 */
 	@Getter
 	private LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet;
@@ -132,6 +139,8 @@ public class MonAggrCompanySettings {
 	/** 年休設定 */
 	@Getter
 	private AnnualPaidLeaveSetting annualLeaveSet;
+	/** 実績ロック */
+	private Map<Integer, ActualLock> actualLockMap;
 	
 	/** エラー情報 */
 	@Getter
@@ -143,6 +152,7 @@ public class MonAggrCompanySettings {
 		this.workTimeCommonSetMap = new ConcurrentHashMap<>();
 		this.predetermineTimeSetMap = new ConcurrentHashMap<>();
 		this.closureMap = new HashMap<>();
+		this.currentMonthPeriodMap = new HashMap<>();
 		this.roleOverTimeFrameList = new ArrayList<>();
 		this.roleHolidayWorkFrameList = new ArrayList<>();
 		this.holidayAdditionMap = new HashMap<>();
@@ -157,6 +167,7 @@ public class MonAggrCompanySettings {
 		this.optionalItemMap = new HashMap<>();
 		this.empConditionMap = new HashMap<>();
 		this.formulaList = new ArrayList<>();
+		this.actualLockMap = new HashMap<>();
 		this.errorInfos = new HashMap<>();
 	}
 	
@@ -203,6 +214,13 @@ public class MonAggrCompanySettings {
 		// 年休設定
 		domain.annualLeaveSet = repositories.getAnnualPaidLeaveSet().findByCompanyId(companyId);
 
+		// 実績ロック
+		val actualLocks = repositories.getActualLock().findAll(companyId);
+		for (val actualLock : actualLocks){
+			Integer closureId = actualLock.getClosureId().value;
+			domain.actualLockMap.put(closureId, actualLock);
+		}
+		
 		// 設定読み込み処理　（36協定時間用）
 		domain.loadSettingsForAgreementProc(companyId, resourceId, repositories);
 		
@@ -246,6 +264,40 @@ public class MonAggrCompanySettings {
 		for (val closure : closures){
 			val closureId = closure.getClosureId().value;
 			this.closureMap.putIfAbsent(closureId, closure);
+			
+			// 締め当月の期間
+			val currentMonth = closure.getClosureMonth();
+			if (currentMonth == null) continue;
+			if (currentMonth.getProcessingYm() == null) continue;
+			val currentPeriods = closure.getPeriodByYearMonth(currentMonth.getProcessingYm());
+			val nextPeriods = closure.getPeriodByYearMonth(currentMonth.getProcessingYm().addMonths(1));
+			if (currentPeriods.size() <= 0) continue;
+			// ※　当月期間が2つある時は、2つめが当月。翌月が2つある時は、その1つめが当月の後期になる。
+			val currentPeriod = currentPeriods.get(currentPeriods.size() - 1);
+			boolean isMultiPeriod = (nextPeriods.size() > 1);
+			if (isMultiPeriod){
+				if (currentMonth.getClosureClassification().isPresent()){
+					if (currentMonth.getClosureClassification().get() ==
+							ClosureClassification.ClassificationClosingBefore){
+						// 締め日変更前期間の時、当月期間そのまま
+						this.currentMonthPeriodMap.put(closureId, currentPeriod);
+					}
+					else {
+						// 締め日変更後期間の時、翌月の1つめの期間が当月
+						if (nextPeriods.size() > 0){
+							this.currentMonthPeriodMap.put(closureId, nextPeriods.get(0));
+						}
+					}
+				}
+				else {
+					// 締め変更区分がない時、当月期間そのまま
+					this.currentMonthPeriodMap.put(closureId, currentPeriod);
+				}
+			}
+			else {
+				// 締め期間が複数に分かれていない時、当月期間そのまま
+				this.currentMonthPeriodMap.put(closureId, currentPeriod);
+			}
 		}
 		
 		// 法定内振替順設定
@@ -395,6 +447,44 @@ public class MonAggrCompanySettings {
 			this.predetermineTimeSetMap.put(workTimeCode, null);
 		}
 		return this.predetermineTimeSetMap.get(workTimeCode);
+	}
+	
+	/**
+	 * 実績ロックされているか判定する　（月別用）
+	 * @param baseDate 基準日
+	 * @param closureId 締めID
+	 * @return 実績のロック状態　（ロックorアンロック）
+	 */
+	public LockStatus getDetermineActualLocked(GeneralDate baseDate, Integer closureId){
+		
+		LockStatus currentLockStatus = LockStatus.UNLOCK;
+		
+		// 「実績ロック」を取得する
+		if (!this.actualLockMap.containsKey(closureId)) return LockStatus.UNLOCK;
+		ActualLock actualLock = this.actualLockMap.get(closureId);
+		if (actualLock == null) return LockStatus.UNLOCK;
+		
+		// 月のロック状態を判定する
+		if (actualLock.getDailyLockState() == LockStatus.LOCK) {
+			currentLockStatus = LockStatus.LOCK;
+		}
+		else {
+			currentLockStatus = actualLock.getMonthlyLockState();
+		}
+		
+		// ロック状態をチェックする
+		if (currentLockStatus == LockStatus.UNLOCK) return LockStatus.UNLOCK;
+		
+		// 基準日が当月に含まれているかチェックする
+		if (!this.currentMonthPeriodMap.containsKey(closureId)) return LockStatus.UNLOCK;
+		DatePeriod currentPeriod = this.currentMonthPeriodMap.get(closureId);
+		if (currentPeriod == null) return LockStatus.UNLOCK;
+		if (currentPeriod.contains(baseDate)) {
+			// 基準日が締め期間に含まれている
+			return LockStatus.LOCK;
+		}
+		//基準日が締め期間に含まれていない
+		return LockStatus.UNLOCK;
 	}
 	
 	/**

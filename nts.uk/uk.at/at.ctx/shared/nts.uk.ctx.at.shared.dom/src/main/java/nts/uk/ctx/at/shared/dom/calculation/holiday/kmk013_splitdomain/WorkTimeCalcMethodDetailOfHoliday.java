@@ -64,6 +64,18 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 															: NotUseAtr.valueOf(minusAbsenceTime));
 	}
 	
+	public WorkTimeCalcMethodDetailOfHoliday(EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet,
+											 NotUseAtr calculateIncludCareTime,
+											 DeductLeaveEarly notDeductLateLeaveEarly,
+											 NotUseAtr calculateIncludIntervalExemptionTime,
+											 Optional<NotUseAtr> minusAbsenceTime) {
+		super();
+		this.includeVacationSet = includeVacationSet;
+		this.calculateIncludCareTime = calculateIncludCareTime;
+		this.notDeductLateLeaveEarly = notDeductLateLeaveEarly;
+		this.calculateIncludIntervalExemptionTime = calculateIncludIntervalExemptionTime;
+		this.minusAbsenceTime = minusAbsenceTime;
+	}
 	
 	
 	/**
@@ -102,8 +114,6 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 		} 
 		return true;
 	}
-	
-	
-	
+		
 }
 
