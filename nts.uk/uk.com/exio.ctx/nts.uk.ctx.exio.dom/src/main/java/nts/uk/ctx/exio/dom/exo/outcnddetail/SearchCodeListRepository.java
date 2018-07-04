@@ -9,5 +9,5 @@ public interface SearchCodeListRepository
 
     void update(SearchCodeList domain);
 
-    void remove(String id, String categoryId, int categoryItemNo);
+    void remove(String id);
 }

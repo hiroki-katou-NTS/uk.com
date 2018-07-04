@@ -28,18 +28,6 @@ public class OiomtSearchCodeListPk implements Serializable
     @Column(name = "ID")
     public String id;
     
-    /**
-    * カテゴリID
-    */
-    @Basic(optional = false)
-    @Column(name = "CATEGORY_ID")
-    public String categoryId;
     
-    /**
-    * カテゴリ項目NO
-    */
-    @Basic(optional = false)
-    @Column(name = "CATEGORY_ITEM_NO")
-    public Integer categoryItemNo;
     
 }
