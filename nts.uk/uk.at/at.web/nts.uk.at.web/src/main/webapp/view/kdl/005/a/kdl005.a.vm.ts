@@ -88,7 +88,7 @@ module nts.uk.at.view.kdl005.a {
                         $('#component-items-list').ntsListComponent(self.listComponentOption);
                         
                         $("#date-fixed-table").ntsFixedTable({ height: 320 });
-                    } else if(self.kdl005Data.employeeBasicInfo.length == 1) {
+                    } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
                         service.getDetailsConfirm(data.employeeBasicInfo[0].employeeId, self.kdl005Data.baseDate).done(function(data) {
