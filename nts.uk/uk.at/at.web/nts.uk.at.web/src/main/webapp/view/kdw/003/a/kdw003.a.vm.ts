@@ -2398,6 +2398,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             if (header.constraint.cDisplayType == "Primitive") {
                                 if(header.group == undefined || header.group.length == 0){
                                     delete header.constraint.cDisplayType;
+                                    if (header.constraint.primitiveValue.indexOf("AttendanceTime") != -1) {
+                                        header["columnCssClass"] = "right-align";
+                                    }
+                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes") {
+                                        header["columnCssClass"] = "right-align";
+                                    }
                                 }else{
                                   delete header.group[0].constraint.cDisplayType;
                                   delete header.constraint;
