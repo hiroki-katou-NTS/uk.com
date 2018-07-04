@@ -659,10 +659,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             _.each(self.employeeList(), function(emp){
                 lstid.push(emp.id);
             });
-            let data = {employeeBasicInfo: lstid.length > 0 ? lstid : [self.employeeID()],
+            let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
                         baseDate: self.displayEndDateFlg() ? moment(self.dateValue().startDate).format("YYYYMMDD") : moment(self.appDate()).format("YYYYMMDD")}
             setShared('KDL005_DATA', data);
-            if(data.employeeBasicInfo.length > 1) {
+            if(data.employeeIds.length > 1) {
                 modal("/view/kdl/005/a/multi.xhtml");
             } else {
                 modal("/view/kdl/005/a/single.xhtml");
