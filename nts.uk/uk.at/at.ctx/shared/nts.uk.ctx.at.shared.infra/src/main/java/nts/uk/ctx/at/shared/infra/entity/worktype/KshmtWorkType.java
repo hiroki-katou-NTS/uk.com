@@ -11,6 +11,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -72,13 +73,13 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
     @Column(name = "CALC_METHOD")
     public int calculatorMethod;
 	
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true, fetch = FetchType.LAZY)
     public List<KshmtWorkTypeSet> worktypeSetList;
     
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true, fetch = FetchType.LAZY)
     public KshmtWorkTypeOrder kshmtWorkTypeOrder;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true, fetch = FetchType.LAZY)
     public List<KshmtWorkTypeLanguage> workTypeLanguage;
     
 	@Override
