@@ -3,6 +3,10 @@ package nts.uk.ctx.exio.dom.exo.condset;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ejb.Stateless;
+
+
+@Stateless
 public class StdOutputCondSetService {
 
 	
