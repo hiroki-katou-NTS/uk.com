@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 就業時間帯の共通設定
 @Getter
+@AllArgsConstructor
 public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 
 	/** The zero H stradd calculate set. */
@@ -157,4 +159,24 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 			this.zeroHStraddCalculateSet = false;
 		}	
 	}
+	
+	/**
+	 * 遅刻・早退設定の共通設定のみtrueに変更した「 就業時間帯の共通設定」を返す
+	 * @return
+	 */
+	public WorkTimezoneCommonSet changeWorkTimezoneLateEarlySet() {
+		return new WorkTimezoneCommonSet(this.zeroHStraddCalculateSet,
+										 this.intervalSet,
+										 this.subHolTimeSet,
+										 this.medicalSets,
+										 this.goOutSet,
+										 this.stampSet,
+										 this.lateNightTimeSet,
+										 this.shortTimeWorkSet,
+										 this.extraordTimeSet,
+										 this.lateEarlySet.changeCommonSet(),
+										 this.holidayCalculation,
+										 this.raisingSalarySet);
+	}
+	
 }

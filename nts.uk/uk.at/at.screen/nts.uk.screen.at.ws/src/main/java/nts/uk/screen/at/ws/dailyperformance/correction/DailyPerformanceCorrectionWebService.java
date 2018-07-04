@@ -167,7 +167,7 @@ public class DailyPerformanceCorrectionWebService {
 					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
 							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
 				}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
-						month.getClosureDate(), Collections.emptyList()));
+						month.getClosureDate()));
 			}
 		}
 		

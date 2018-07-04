@@ -2,11 +2,16 @@ package nts.uk.ctx.exio.infra.entity.exo.outcnddetail;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -169,6 +174,10 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable
     {
         return outCndDetailItemPk;
     }
+    
+    @OneToMany(targetEntity = OiomtSearchCodeList.class, cascade = CascadeType.ALL, mappedBy ="oiomtOutCndDetailItem", orphanRemoval = true, fetch = FetchType.LAZY )
+    @JoinTable(name = "OIOMT_SEARCH_CODE_LIST")
+    public List<OiomtSearchCodeList> oiomtSearchCodeList;
 
 	public OiomtOutCndDetailItem(String categoryId,int categoryItemNo, String cid, 
 			String userId, String conditionSettingCd, int conditionSymbol, BigDecimal searchNum, BigDecimal searchNumEndVal,

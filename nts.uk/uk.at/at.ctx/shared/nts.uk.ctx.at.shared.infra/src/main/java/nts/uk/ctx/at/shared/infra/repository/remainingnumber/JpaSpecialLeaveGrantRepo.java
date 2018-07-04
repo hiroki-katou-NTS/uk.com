@@ -211,7 +211,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 				.query(GET_BY_PERIOD_STATUS, KrcmtSpecialLeaveReam.class)
 				.setParameter("employeeId", sid)
 				.setParameter("specialLeaCode", specialLeaveCode)
-				.setParameter("expStatus", expirationStatus)
+				.setParameter("expStatus", expirationStatus.value)
 				.setParameter("grantDate", grantDate)
 				.setParameter("deadlineDate", deadlineDate)
 				.getList();
