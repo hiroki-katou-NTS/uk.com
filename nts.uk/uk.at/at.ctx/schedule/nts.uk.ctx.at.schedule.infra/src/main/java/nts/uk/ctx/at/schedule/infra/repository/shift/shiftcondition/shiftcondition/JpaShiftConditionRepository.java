@@ -11,11 +11,11 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.shiftcondition.shiftcondition.K
 
 @Stateless
 public class JpaShiftConditionRepository extends JpaRepository implements ShiftConditionRepository {
-	private final String SELECT_SHIFT_CONDITION_NO_WHERE = "SELECT c FROM KscmtShiftCondition c ";
+	private static final String SELECT_SHIFT_CONDITION_NO_WHERE = "SELECT c FROM KscmtShiftCondition c ";
 
-	private final String SELECT_SHIFT_CON_BY_COMPANY = SELECT_SHIFT_CONDITION_NO_WHERE
+	private static final String SELECT_SHIFT_CON_BY_COMPANY = SELECT_SHIFT_CONDITION_NO_WHERE
 			+ "WHERE c.kscmntShiftConditionPk.companyId =:companyId ORDER  BY c.kscmntShiftConditionPk.conditionNo";
-	private final String SELECT_LIST_CONDITION = SELECT_SHIFT_CONDITION_NO_WHERE
+	private static final String SELECT_LIST_CONDITION = SELECT_SHIFT_CONDITION_NO_WHERE
 			+ "WHERE c.kscmntShiftConditionPk.companyId =:companyId AND c.kscmntShiftConditionPk.conditionNo  IN :conditionNos "
 			+ "ORDER BY c.kscmntShiftConditionPk.conditionNo ASC ";
 
