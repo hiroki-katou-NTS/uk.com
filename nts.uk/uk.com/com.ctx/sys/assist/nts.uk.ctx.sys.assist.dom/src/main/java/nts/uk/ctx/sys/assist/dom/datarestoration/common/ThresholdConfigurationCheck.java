@@ -30,11 +30,13 @@ public class ThresholdConfigurationCheck {
 		File f = new File(csvStoragePath);
 		if (!f.exists())
 			return true;
+		// Number of line without header in tablelist must be equals number of csv not include tablelist and target csv
 		List<String> listFileName = Arrays.asList(f.list());
 		if (tableList.size() != listFileName.size() - 2)
 			return true;
+		String tableJapanName = "";
 		for (TableList tableListItem : tableList) {
-			String tableJapanName = tableListItem.getInternalFileName();
+			tableJapanName = tableListItem.getInternalFileName();
 			if (!listFileName.contains(tableJapanName + EXTENSION)) {
 				return true;
 			}

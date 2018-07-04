@@ -47,6 +47,7 @@ public class CompanyDeterminationProcess {
 			}
 			tableListRepository.update(tableListRecord);
 		}
+		// If no category can be recover other company
 		if (isRecoveryOtherCompanyNoOccur) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.NO_SEPARATE_COMPANY);
 		}

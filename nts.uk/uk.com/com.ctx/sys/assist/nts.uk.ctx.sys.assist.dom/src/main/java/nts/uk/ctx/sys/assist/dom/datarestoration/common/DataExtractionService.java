@@ -11,6 +11,7 @@ import nts.gul.file.archive.ArchiveFormat;
 import nts.gul.file.archive.FileArchiver;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
 
 @Stateless
 public class DataExtractionService {
@@ -22,10 +23,15 @@ public class DataExtractionService {
 
 	// アルゴリズム「ファイル解凍処理」を実行する
 	public ServerPrepareMng extractData(ServerPrepareMng serverPrepareMng) {
+		if(! serverPrepareMng.getFileId().isPresent()){ 
+			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTION_FAILED);
+			return serverPrepareMng;
+		}
 		String fileId = serverPrepareMng.getFileId().get();
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
 		String password = serverPrepareMng.getPassword().isPresent() ? serverPrepareMng.getPassword().get().v() : "";
+		// Update validate status by extract status
 		serverPrepareMng = serverPrepareMng.setOperatingConditionBy(FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, password,destinationDirectory));
 		serverPrepareMngRepository.update(serverPrepareMng);
 		return serverPrepareMng;

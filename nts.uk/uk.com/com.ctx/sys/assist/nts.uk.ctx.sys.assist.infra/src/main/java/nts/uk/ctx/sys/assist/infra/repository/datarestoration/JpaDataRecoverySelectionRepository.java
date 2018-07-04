@@ -18,13 +18,13 @@ public class JpaDataRecoverySelectionRepository extends JpaRepository implements
 			+ "r.targetNumberPeople, r.saveFileName, r.fileId,  r.storeProcessingId FROM SspmtResultOfSaving  r "
 			+ "INNER JOIN SspmtManualSetOfDataSave m on r.storeProcessingId = m.storeProcessingId "
 			+ "where r.cid = :companyId and r.saveStartDatetime >= :startDate and r.saveStartDatetime <= :endDate and "
-			+ "r.deletedFiles = 0 and r.systemType in :systemType AND r.fileId IS NOT NULL";
+			+ "r.deletedFiles = 0 and r.systemType in :systemType AND r.fileId IS NOT NULL AND r.saveStatus = 0";
 
 	private final String SELECT_FILE_RECOVERY_SELECTION_DELETE = "SELECT r.delCode, r.delName, m.supplementExplanation, r.startDateTimeDel, r.delType, "
 			+ "r.numberEmployees, r.fileName, r.fileId FROM SspdtResultDeletion  r "
 			+ "INNER JOIN SspdtManualSetDeletion m on r.sspdtResultDeletionPK.delId = m.sspdtManualSetDeletionPK.delId "
 			+ "where r.companyID = :companyId and r.startDateTimeDel >= :startDate and r.startDateTimeDel <= :endDate and "
-			+ "r.isDeletedFilesFlg = 0 and r.systemType in :systemType AND r.fileId IS NOT NULL ";
+			+ "r.isDeletedFilesFlg = 0 and r.systemType in :systemType AND r.fileId IS NOT NULL AND r.status = 0 ";
 
 	@Override
 	public List<DataRecoverySelection> getDataRecoverySelection(String companyId, List<Integer> systemType,

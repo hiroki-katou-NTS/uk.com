@@ -29,14 +29,16 @@ public class TableListRestorationService {
 		List<TableList> tableList = new ArrayList<>();
 		List<List<String>> tableListContent = CsvFileUtil.getAllRecord(serverPrepareMng.getFileId().get(),
 				TABLELIST_CSV);
+		// Csv no content or only header
 		if (tableListContent.size() < 2) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.TABLE_LIST_FAULT);
 			serverPrepareMngRepository.update(serverPrepareMng);
 			return Arrays.asList(serverPrepareMng, tableList);
 		}
 		try {
+			TableList tableListData = null;
 			for (List<String> tableListSetting : tableListContent.subList(1, tableListContent.size())) {
-				TableList tableListData = TableList.createFromCsvData(tableListSetting);
+				tableListData = TableList.createFromCsvData(tableListSetting);
 				tableListData
 						.setDataRecoveryProcessId(Optional.ofNullable(serverPrepareMng.getDataRecoveryProcessId()));
 				tableList.add(tableListData);
