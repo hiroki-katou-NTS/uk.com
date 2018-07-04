@@ -72,13 +72,18 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 				ServerPrepareOperatingCondition.UPLOADING.value);
 		serverPrepareMngRepository.add(serverPrepareMng);
 		setter.setData(STATUS, convertToStatus(serverPrepareMng));
+		//アルゴリズム「サーバーアップロード処理」を実行する
+		// Check upload
 		serverPrepareMng = serverUploadProcessingService.serverUploadProcessing(serverPrepareMng, fileId, fileName,
 				password);
+		// AsyncTask update validate file status
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		if (!checkNormalFile(serverPrepareMng))
 			return;
 		serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTING);
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+		// アルゴリズム「ファイル解凍処理」を実行する
+		// Unzip file
 		serverPrepareMng = dataExtractionService.extractData(serverPrepareMng);
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		if (!checkNormalFile(serverPrepareMng))
@@ -87,6 +92,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 				AppContexts.user().companyId(), serverPrepareMng.getFileId().orElse(""),
 				serverPrepareMng.getUploadFileName().orElse(""));
 		// アルゴリズム「テーブル一覧の復元」を実行する
+		// Read table list csv
 		List<Object> restoreTableResult = tableListRestorationService.restoreTableList(serverPrepareMng);
 		serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(0);
 		List<TableList> tableList = (List<TableList>) (restoreTableResult.get(1));
@@ -94,7 +100,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		if (!checkNormalFile(serverPrepareMng))
 			return;
 		// アルゴリズム「調査保存チェック」を実行する=
-
+		// surveyPreservation is fixed for all record, only check in first record
 		if (tableList.get(FIRST_LINE).getSurveyPreservation() == NotUseAtr.USE) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY);
 			setter.updateData(STATUS, convertToStatus(serverPrepareMng));
@@ -109,6 +115,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		if (!checkNormalFile(serverPrepareMng))
 			return;
 		// アルゴリズム「別会社判定処理」を実行する
+		// Check any category can be recover
 		List<Object> sperateCompanyResult = companyDeterminationProcess
 				.sperateCompanyDeterminationProcess(serverPrepareMng, performDataRecovery, tableList);
 		serverPrepareMng = (ServerPrepareMng) sperateCompanyResult.get(0);
@@ -119,11 +126,13 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 			return;
 		serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECKING_TABLE_ITEMS);
 		// アルゴリズム「テーブル項目チェック」を実行する
+		// Validate header and table column
 		serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		if (!checkNormalFile(serverPrepareMng))
 			return;
 		// アルゴリズム「対象社員の復元」を実行する
+		//Restore employee to database
 		serverPrepareMng = employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery, tableList);
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 	}
@@ -138,12 +147,39 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 	}
 
 	public boolean checkNormalFile(ServerPrepareMng serverPrepareMng) {
+		// Continue validate if previous phase is done
 		return serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_FILE_STRUCTURE
 				|| serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.CHECKING_TABLE_ITEMS
 				|| serverPrepareMng.getOperatingCondition() == ServerPrepareOperatingCondition.UPLOAD_COMPLETED;
 	}
 
 	public ServerPrepareDto procesingStatus(ServerPrepareOperatingCondition condition) {
+		// Server status
+		/** First param: 3 phase
+		 * 0: Uploading
+		 * 1: Extracting
+		 * 2: Validating
+		 */
+		
+		/** Second param: Phase status
+		 * 0: Processing
+		 * 1: Success
+		 * 2: Failed
+		 */
+		
+		/** Third, fourth param: Server status (Enum value and name)
+		 * 
+		 * 
+		 * 
+		 */
+		
+		/** Fifth param: Error message
+		 * 
+		 * 
+		 * 
+		 */
+		
+		
 		switch (condition) {
 		case UPLOADING:
 			return new ServerPrepareDto(1, 0, condition.value, I18NText.getText(condition.nameId), "");

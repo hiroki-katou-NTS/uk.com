@@ -35,8 +35,8 @@
                     <col width="70px"/>
                     <col width="180px"/>
                     <col width="70px"/>
-                    <col width="112px"/>
-                    <col width="112px"/>
+                    <col width="115px"/>
+                    <col width="115px"/>
                     <col width="96px"/>
                 </colgroup>
                 <thead>
@@ -56,8 +56,8 @@
                         <td class="halign-center">
                             <div data-bind="ntsCheckBox: { checked: isRecover }"/>
                         </td>
-                        <td><label data-bind="text: categoryName"/></td>
-                        <td><label data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td>
+                        <td><span class="limited-label" data-bind="text: categoryName"/></td>
+                    	<td><span class="limited-label" data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td> 
                         <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.FULLTIME">
                         </com:ko-if>
                         <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.DAY">

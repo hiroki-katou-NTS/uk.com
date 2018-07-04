@@ -189,7 +189,7 @@ public class RecoveryStorageService {
 			// 履歴区分の判別する - check history division
 			if (tableList.isPresent() && tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY) {
 				try {
-					deleteEmployeeHistory(tableList, true);
+					deleteEmployeeHistory(tableList, true, employeeId);
 				} catch (Exception e) {
 					LOGGER.error("SQL error rollBack transaction");
 					throw new Exception(SQL_EXCEPTION);
@@ -278,11 +278,11 @@ public class RecoveryStorageService {
 			if (tableList.get().getRetentionPeriodCls().value == TimeStore.FULL_TIME.value) {
 				dateSub = null;
 			}
-			if (resultsSetting.get(0).equals(YEAR) && date != null && !date.isEmpty()) {
+			if (YEAR.equals(resultsSetting.get(0)) && date != null && !date.isEmpty()) {
 				dateSub = date.substring(0, 3);
-			} else if (resultsSetting.get(0).equals(YEAR_MONTH) && date != null && !date.isEmpty()) {
+			} else if (YEAR_MONTH.equals(resultsSetting.get(0)) && date != null && !date.isEmpty()) {
 				dateSub = date.substring(0, 6);
-			} else if (resultsSetting.get(0).equals(YEAR_MONTH_DAY) && date != null && !date.isEmpty()) {
+			} else if (YEAR_MONTH_DAY.equals(resultsSetting.get(0)) && date != null && !date.isEmpty()) {
 				dateSub = date.substring(0, 10);
 			}
 			dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, dateSub);
@@ -359,7 +359,7 @@ public class RecoveryStorageService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void deleteEmployeeHistory(Optional<TableList> tableList, Boolean tableNotUse) throws NoSuchMethodException,
+	public void deleteEmployeeHistory(Optional<TableList> tableList, Boolean tableNotUse, String employeeId) throws NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (!tableList.isPresent()) {
 			return;
@@ -388,10 +388,9 @@ public class RecoveryStorageService {
 
 		String cidCurrent = AppContexts.user().companyId();
 		String tableName = tableList.get().getTableEnglishName();
-		String currentEmployee = AppContexts.user().employeeId();
 
 		performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid[0], whereSid[0], cidCurrent,
-				currentEmployee);
+				employeeId);
 
 	}
 
@@ -613,30 +612,30 @@ public class RecoveryStorageService {
 		} else if (resultsSetting.size() == 2) {
 			H_Date_Csv = dataRow.get(3);
 		}
-		if (H_Date_Csv.isEmpty() || H_Date_Csv == null)
+		if (H_Date_Csv == null || H_Date_Csv.isEmpty())
 			return false;
 		Date Date_Csv = new SimpleDateFormat("yyyy-MM-dd").parse(H_Date_Csv);
 		Integer Y_Date_Csv = Integer.parseInt(H_Date_Csv.substring(0, 4));
-		if (resultsSetting.get(0).equals(YEAR)
+		if (YEAR.equals(resultsSetting.get(0))
 				&& (Y_Date_Csv < Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3))
 						|| Y_Date_Csv > Integer.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3)))) {
 
 			return false;
 
-		} else if (resultsSetting.get(0).equals(YEAR_MONTH)) {
+		} else if (YEAR_MONTH.equals(resultsSetting.get(0))) {
 			Integer M_Date_Csv = Integer.parseInt(H_Date_Csv.substring(5, 7));
-			if (Integer.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3)) > Y_Date_Csv
-					|| (Integer.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(0, 3)) == Y_Date_Csv
+			if (Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3)) > Y_Date_Csv
+					|| (Integer.parseInt(tableList.get().getSaveDateFrom().get().substring(0, 3)) == Y_Date_Csv
 							&& M_Date_Csv < Integer
-									.parseInt(tableList.get().getSaveDateFrom().orElse(null).substring(4)))
-					|| Integer.parseInt(tableList.get().getSaveDateTo().orElse(null).substring(0, 3)) < Y_Date_Csv
-					|| (Integer.parseInt(tableList.get().getSaveDateTo().orElse(null).substring(0, 3)) == Y_Date_Csv
+									.parseInt(tableList.get().getSaveDateFrom().get().substring(4)))
+					|| Integer.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3)) < Y_Date_Csv
+					|| (Integer.parseInt(tableList.get().getSaveDateTo().get().substring(0, 3)) == Y_Date_Csv
 							&& M_Date_Csv > Integer
-									.parseInt(tableList.get().getSaveDateTo().orElse(null).substring(4)))) {
+									.parseInt(tableList.get().getSaveDateTo().get().substring(4)))) {
 				return false;
 			}
 
-		} else if (resultsSetting.get(0).equals(YEAR_MONTH_DAY)) {
+		} else if (YEAR_MONTH_DAY.equals(resultsSetting.get(0))) {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 			String from = tableList.get().getSaveDateFrom().orElse(null);
 			Date Date_From_Table = formatter.parse(from);
@@ -669,7 +668,7 @@ public class RecoveryStorageService {
 			// 履歴区分の判別する - check phân loại lịch sử
 			if (tableList.get().getHistoryCls().value == HistoryDiviSion.HAVE_HISTORY.value) {
 				try {
-					deleteEmployeeHistory(tableList, false);
+					deleteEmployeeHistory(tableList, false,null);
 				} catch (Exception e) {
 					LOGGER.info("Delete data of employee have history error");
 				}

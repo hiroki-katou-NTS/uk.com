@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,9 +30,16 @@ public class DataRecoverySelectionFinder {
 				startDate, endDate);
 		if (!optDataRecoverySelection.isEmpty()) {
 			//return DataRecoverySelectionDto.fromDomain(optDataRecoverySelection);
-			return optDataRecoverySelection.stream().map(c -> DataRecoverySelectionDto.fromDomain(c)).collect(Collectors.toList());
+			
 		}
-		return null;
+		List<DataRecoverySelectionDto> listDataRecovery =  optDataRecoverySelection.stream().map(c -> DataRecoverySelectionDto.fromDomain(c)).collect(Collectors.toList());
+		listDataRecovery.sort(new Comparator<DataRecoverySelectionDto>() {
+		    @Override
+		    public int compare(DataRecoverySelectionDto m1, DataRecoverySelectionDto m2) {
+		        return m1.getSaveStartDatetime().compareTo(m2.getSaveStartDatetime());
+		     }
+		});
+		return listDataRecovery;
 	}
 
 	private List<Integer> getSystemType() {
