@@ -16,16 +16,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaCompanyAllotSettingRepository extends JpaRepository implements CompanyAllotSettingRepository {
 
-	private final String SEL_1 = "SELECT c FROM QstmtStmtAllotCp c"
+	private static final String SEL_1 = "SELECT c FROM QstmtStmtAllotCp c"
 			+ " WHERE c.qstmtStmtAllotCpPK.companyCode = :companyCode "
 			// + " c.startDate <= :BASEYM"
 			// + " AND c.endDate >= :BASEYM"
 			+ " AND ( c.paymentDetailCode != '00'" + " OR c.bonusDetailCode != '00')" + " ORDER BY c.startDate DESC";
-	private final String SEL_9 = "SELECT c FROM QstmtStmtAllotCp c "
+	private static final String SEL_9 = "SELECT c FROM QstmtStmtAllotCp c "
 			+ " WHERE c.qstmtStmtAllotCpPK.companyCode = :companyCode "
 			+ " AND c.endDate = (SELECT MAX(d.endDate) FROM QstmtStmtAllotCp d)";
 
-	private final String SEL_MAX = "SELECT c FROM QstmtStmtAllotCp c"
+	private static final String SEL_MAX = "SELECT c FROM QstmtStmtAllotCp c"
 			+ " WHERE c.qstmtStmtAllotCpPK.companyCode = :companyCode " 
 			+ " AND c.endDate = :endDate";
 
