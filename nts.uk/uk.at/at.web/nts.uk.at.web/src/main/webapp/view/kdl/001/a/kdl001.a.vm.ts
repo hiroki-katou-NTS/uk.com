@@ -151,9 +151,9 @@ module nts.uk.at.view.kdl001.a {
             }
 
             getSelectedTimeItems(codes) {
-                let self = this,
-                    timeItems = _.filter(self.selectAbleItemList(), item => { return codes.indexOf(item.code) > -1 }),
-                    mappedItems = _.map(timeItems, item => { return new TimeItem(item) })
+                let self = this;
+                var timeItems = _.filter(self.selectAbleItemList(), item => { return codes.indexOf(item.code) > -1 });
+                var mappedItems = _.map(timeItems, item => { return new TimeItem(item) });
                 return mappedItems;
             }
 
