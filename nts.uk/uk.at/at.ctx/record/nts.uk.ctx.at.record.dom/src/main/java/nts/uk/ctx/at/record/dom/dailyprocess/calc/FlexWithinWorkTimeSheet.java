@@ -265,9 +265,12 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 					&&!flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getIncludeVacationSet().getPredeterminedDeficiencyOfFlex().get().isCalc())
 					flexTime = (flexTime.greaterThan(0))?new AttendanceTimeOfExistMinus(0):flexTime;
 					
-				/*不足しているフレックス時間*/
+				
 				//zitudouIncludとzitudouを入れ替える
-				flexTime = flexTimeIncludePremium.minusMinutes(flexTime.valueAsMinutes());
+				//フレックス不足時の加算時間を計算
+				val diffValue = flexTimeIncludePremium.minusMinutes(flexTime.valueAsMinutes());
+				//割増フレックス　－　差分の時間をし、フレックス時間を求める
+				flexTime = flexTimeIncludePremium.minusMinutes(diffValue.valueAsMinutes());
 				//AttendanceTimeOfExistMinus husokuZiKasanZikan = zitudouIncludePremium.minusMinutes(zitudou.valueAsMinutes());
 			}
 		}

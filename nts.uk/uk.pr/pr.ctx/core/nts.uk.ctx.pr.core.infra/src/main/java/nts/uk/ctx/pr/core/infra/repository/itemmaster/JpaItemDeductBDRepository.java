@@ -14,8 +14,8 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeductBdPK;
 
 @Stateless
 public class JpaItemDeductBDRepository extends JpaRepository implements ItemDeductBDRepository {
-	private final String SEL = "SELECT c FROM QcamtItemDeductBd c";
-	private final String SEL_1 = SEL
+	private static final String SEL = "SELECT c FROM QcamtItemDeductBd c";
+	private static final String SEL_1 = SEL
 			+ " WHERE c.qcamtItemDeductBdPK.ccd = :companyCode AND c.qcamtItemDeductBdPK.itemCd = :itemCode";
 
 	@Override
