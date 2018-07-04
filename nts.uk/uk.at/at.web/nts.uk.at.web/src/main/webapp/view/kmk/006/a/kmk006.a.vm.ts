@@ -1519,14 +1519,14 @@ module nts.uk.at.view.kmk006.a {
             }
             
             updateData(dto: AutoCalcOfLeaveEarlySettingDto) {
-                this.autoCalcOfLeaveLate(dto.autoCalcOfLeaveLate);
-                this.autoCalcOfLeaveEarly(dto.autoCalcOfLeaveEarly);
+                this.autoCalcOfLeaveLate(dto.late);
+                this.autoCalcOfLeaveEarly(dto.leaveEarly);
             }
 
             toDto(): AutoCalcOfLeaveEarlySettingDto {
                 var dto: AutoCalcOfLeaveEarlySettingDto = {
-                    autoCalcOfLeaveLate: this.autoCalcOfLeaveLate(),
-                    autoCalcOfLeaveEarly: this.autoCalcOfLeaveEarly(),
+                    late: this.autoCalcOfLeaveLate(),
+                    leaveEarly: this.autoCalcOfLeaveEarly(),
                 };
                 return dto;
             }
