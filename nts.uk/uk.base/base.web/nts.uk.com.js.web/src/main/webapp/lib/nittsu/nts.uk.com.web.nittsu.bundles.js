@@ -12438,14 +12438,14 @@ var nts;
                                 showVertSum(self);
                                 break;
                             case "updateTable":
-                                updateTable(self, params[0], params[1], params[2], params[3]);
+                                updateTable(self, params[0], params[1], params[2], params[3], params[4]);
                                 break;
                             case "updateMode":
                                 return setUpdateMode(self, params[0], params[1]);
                             case "viewMode":
                                 return setViewMode(self, params[0], params[1], params[2]);
                             case "mode":
-                                setMode(self, params[0], params[1], params[2]);
+                                setMode(self, params[0], params[1], params[2], params[3]);
                                 break;
                             case "pasteOverWrite":
                                 setPasteOverWrite(self, params[0]);
@@ -12577,16 +12577,16 @@ var nts;
                     /**
                      * Update table.
                      */
-                    function updateTable($container, name, header, body, keepStates) {
+                    function updateTable($container, name, header, body, keepStates, keepStruct) {
                         switch (name) {
                             case "leftmost":
-                                updateLeftmost($container, header, body);
+                                updateLeftmost($container, header, body, keepStruct);
                                 break;
                             case "middle":
                                 updateMiddle($container, header, body);
                                 break;
                             case "detail":
-                                updateDetail($container, header, body, keepStates);
+                                updateDetail($container, header, body, keepStates, keepStruct);
                                 break;
                             case "verticalSummaries":
                                 updateVertSum($container, header, body);
@@ -12602,7 +12602,7 @@ var nts;
                     /**
                      * Update leftmost.
                      */
-                    function updateLeftmost($container, header, body) {
+                    function updateLeftmost($container, header, body, keepStruct) {
                         var exTable = $container.data(NAMESPACE);
                         var sizeAdjust, left, width, offsetWidth = 0;
                         if (!exTable.middleHeader && !exTable.leftHorzSumHeader
@@ -12640,8 +12640,13 @@ var nts;
                             if (offsetWidth > 0 && width) {
                                 $body.width(width);
                             }
-                            $body.empty();
-                            render.process($body[0], exTable.leftmostContent, true);
+                            if (keepStruct) {
+                                render.begin($body[0], body.dataSource, exTable.leftmostContent);
+                            }
+                            else {
+                                $body.empty();
+                                render.process($body[0], exTable.leftmostContent, true);
+                            }
                         }
                     }
                     /**
@@ -12668,8 +12673,27 @@ var nts;
                     /**
                      * Update detail.
                      */
-                    function updateDetail($container, header, body, keepStates) {
+                    function updateDetail($container, header, body, keepStates, keepStruct) {
                         var exTable = $container.data(NAMESPACE);
+                        var refreshFeatures = function (detail, features) {
+                            if (features && detail.features) {
+                                var newFeatures = _.map(detail.features, function (f, i) {
+                                    var z = -1;
+                                    _.forEach(features, function (ft, y) {
+                                        if (f.name == ft.name) {
+                                            z = y;
+                                            return false;
+                                        }
+                                    });
+                                    if (z > -1) {
+                                        var fts = features.splice(z, 1);
+                                        return fts[0];
+                                    }
+                                    return f;
+                                });
+                                detail.features = newFeatures;
+                            }
+                        };
                         if (header) {
                             _.assignIn(exTable.detailHeader, header);
                             var $header = $container.find("." + HEADER_PRF + DETAIL);
@@ -12682,10 +12706,15 @@ var nts;
                         if (body) {
                             _.assignIn(exTable.detailContent, body);
                             var $body = $container.find("." + BODY_PRF + DETAIL);
-                            $body.empty();
+                            if (keepStruct) {
+                                render.begin($body[0], body.dataSource, exTable.detailHeader);
+                            }
+                            else {
+                                $body.empty();
+                                render.process($body[0], exTable.detailContent, true);
+                            }
                             if (!keepStates)
                                 internal.clearStates($body[0]);
-                            render.process($body[0], exTable.detailContent, true);
                         }
                     }
                     /**
@@ -12833,7 +12862,7 @@ var nts;
                     /**
                      * Set mode.
                      */
-                    function setMode($container, viewMode, updateMode, occupation) {
+                    function setMode($container, viewMode, updateMode, occupation, features) {
                         var exTable = $container.data(NAMESPACE);
                         if (occupation) {
                             events.trigger($container[0], events.OCCUPY_UPDATE, occupation);
@@ -12866,8 +12895,28 @@ var nts;
                             var $grid = $container.find("." + BODY_PRF + DETAIL);
                             updateViewMode = true;
                         }
+                        var refreshFeatures = function () {
+                            if (features && exTable.detailContent.features) {
+                                var newFeatures = _.map(exTable.detailContent.features, function (f, i) {
+                                    var z = -1;
+                                    _.forEach(features, function (ft, y) {
+                                        if (f.name == ft.name) {
+                                            z = y;
+                                            return false;
+                                        }
+                                    });
+                                    if (z > -1) {
+                                        var fts = features.splice(z, 1);
+                                        return fts[0];
+                                    }
+                                    return f;
+                                });
+                                exTable.detailContent.features = newFeatures;
+                            }
+                        };
                         if (updateMode && exTable.updateMode !== updateMode) {
                             exTable.setUpdateMode(updateMode);
+                            refreshFeatures();
                             render.begin(table, ds, exTable.detailContent);
                             selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
                             if (updateMode === COPY_PASTE) {
@@ -12879,6 +12928,7 @@ var nts;
                             copy.off(table, updateMode);
                         }
                         else if (updateViewMode) {
+                            refreshFeatures();
                             render.begin(table, ds, exTable.detailContent);
                         }
                     }
