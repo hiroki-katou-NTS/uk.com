@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -25,10 +24,11 @@ public class OiomtExOutCtg extends JpaEntityOfDescriptionOfAvailabilityPermissio
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * ID
+	 * カテゴリID
 	 */
-	@EmbeddedId
-	public OiomtExOutCtgPk exOutCtgPk;
+	@Basic(optional = false)
+	@Column(name = "CATEGORY_ID")
+	public int categoryId;
 
 	/**
 	 * オフィスヘルパシステム区分
@@ -74,17 +74,17 @@ public class OiomtExOutCtg extends JpaEntityOfDescriptionOfAvailabilityPermissio
 
 	@Override
 	protected Object getKey() {
-		return exOutCtgPk;
+		return this.functionNo;
 	}
 
 	public ExOutCtg toDomain() {
-		return new ExOutCtg(this.exOutCtgPk.categoryId, this.officeHelperSysAtr, this.categoryName, this.categorySet,
+		return new ExOutCtg(this.categoryId, this.officeHelperSysAtr, this.categoryName, this.categorySet,
 				this.personSysAtr, this.attendanceSysAtr, this.payrollSysAtr, this.functionNo, this.name,
 				this.explanation, this.displayOrder, this.defaultValue);
 	}
 
 	public static OiomtExOutCtg toEntity(ExOutCtg domain) {
-		return new OiomtExOutCtg(new OiomtExOutCtgPk(domain.getCategoryId().v()), domain.getOfficeHelperSysAtr().value,
+		return new OiomtExOutCtg(domain.getCategoryId().v(), domain.getOfficeHelperSysAtr().value,
 				domain.getCategoryName().v(), domain.getCategorySet().value, domain.getPersonSysAtr().value,
 				domain.getAttendanceSysAtr().value, domain.getPayrollSysAtr().value);
 	}

@@ -9,7 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.infra.entity.exo.category.OiomtExOutCtg;
-import nts.uk.ctx.exio.infra.entity.exo.category.OiomtExOutCtgPk;
 
 @Stateless
 public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepository {
@@ -40,7 +39,7 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 	}
 
 	@Override
-	public void remove(int categoryId) {
-		this.commandProxy().remove(OiomtExOutCtg.class, new OiomtExOutCtgPk(categoryId));
+	public void remove(int functionNo) {
+		this.commandProxy().remove(OiomtExOutCtg.class, functionNo);
 	}
 }

@@ -16,6 +16,6 @@ public interface ExOutCtgRepository {
 
 	void update(ExOutCtg domain);
 
-	void remove(int categoryId);
+	void remove(int functionNo);
 
 }

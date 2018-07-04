@@ -17,7 +17,7 @@ public class RemoveExOutCtgCommandHandler extends CommandHandler<ExOutCtgCommand
 
 	@Override
 	protected void handle(CommandHandlerContext<ExOutCtgCommand> context) {
-		int categoryId = context.getCommand().getCategoryId();
-		repository.remove(categoryId);
+		int functionNo = context.getCommand().getFunctionNo();
+		repository.remove(functionNo);
 	}
 }
