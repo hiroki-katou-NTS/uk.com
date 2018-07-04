@@ -20,15 +20,15 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotHEm;
 
 @Stateless
 public class JpaEmployeeAllotSettingRepository extends JpaRepository implements EmployeeAllotSettingRepository {
-	private final String SEL_1 = "SELECT c FROM QstmtStmtAllotEm c"
+	private static final String SEL_1 = "SELECT c FROM QstmtStmtAllotEm c"
 			+ " WHERE c.qstmtStmtAllotEmPK.companyCode = :companyCode"
 			+ " AND c.qstmtStmtAllotEmPK.employeeCd = :employeeCd" + " AND c.qstmtStmtAllotEmPK.histId = :histId"
 			+ " AND ( c.paymentDetailCode != '00'" + " OR c.bonusDetailCode != '00')";
 
-	private final String SEL_2 = "SELECT c FROM QstmtStmtAllotEm c "
+	private static final String SEL_2 = "SELECT c FROM QstmtStmtAllotEm c "
 			+ " WHERE c.qstmtStmtAllotEmPK.companyCode = :companyCode" + " AND c.qstmtStmtAllotEmPK.histId = :histId";
 
-	private final String ALL_EMPLOYEE_SETTING = "SELECT e.cmnmtEmpPk.companyCode, a.QstmtStmtAllotEmPK.histId,  e.cmnmtEmpPk.employmentCode, e.employmentName, q.qstmtStmtLayoutHeadPK.stmtCd, q.stmtName"
+	private static final String ALL_EMPLOYEE_SETTING = "SELECT e.cmnmtEmpPk.companyCode, a.QstmtStmtAllotEmPK.histId,  e.cmnmtEmpPk.employmentCode, e.employmentName, q.qstmtStmtLayoutHeadPK.stmtCd, q.stmtName"
 			+ " FROM CmnmtEmp e, QstmtStmtAllotEm a "
 //			+ " ON e.cmnmtEmpPk.companyCode = a.qstmtStmtAllotEmPK.companyCode AND e.cmnmtEmpPk.employmentCode = a.qstmtStmtAllotEmPK.employeeCd"
 			+ " , QstmtStmtLayoutHead q"
@@ -41,12 +41,12 @@ public class JpaEmployeeAllotSettingRepository extends JpaRepository implements 
 //	private final String MAX_END = "SELECT c FROM QstmtStmtAllotHEm c"
 //			+ " WHERE c.QstmtStmtAllotHEmPK.companyCode = :companyCode "
 //			+ " AND c.endDate = (SELECT MAX(d.endDate) FROM QstmtStmtAllotHEm d)";
-	private final String EMP_SET_SEL = "SELECT a "
+	private static final String EMP_SET_SEL = "SELECT a "
 									+ " FROM QstmtStmtAllotEm a WHERE a.QstmtStmtAllotEmPK.histId = :histId ";
 	
-	private final String EMP_SEL = "SELECT e.cmnmtEmpPk.employmentCode, e.employmentName, e.cmnmtEmpPk.companyCode  FROM CmnmtEmp e WHERE e.cmnmtEmpPk.companyCode = :companyCode ";
+	private static final String EMP_SEL = "SELECT e.cmnmtEmpPk.employmentCode, e.employmentName, e.cmnmtEmpPk.companyCode  FROM CmnmtEmp e WHERE e.cmnmtEmpPk.companyCode = :companyCode ";
 	 
-	private final String LAYOUT_HEAD = "SELECT q.qstmtStmtLayoutHeadPK.companyCd, q.qstmtStmtLayoutHeadPK.stmtCd, q.stmtName, a.QstmtStmtAllotEmPK.histId FROM QstmtStmtLayoutHead q WHERE q.qstmtStmtLayoutHeadPK.stmtCd, = :stmtCd";
+	private static final String LAYOUT_HEAD = "SELECT q.qstmtStmtLayoutHeadPK.companyCd, q.qstmtStmtLayoutHeadPK.stmtCd, q.stmtName, a.QstmtStmtAllotEmPK.histId FROM QstmtStmtLayoutHead q WHERE q.qstmtStmtLayoutHeadPK.stmtCd, = :stmtCd";
 	@Override
 	public Optional<EmployeeAllotSetting> find(String companyCode, String historyID, String employeeCd) {
 		Optional<QstmtStmtAllotEm> empAllot = this.queryProxy().query(SEL_1, QstmtStmtAllotEm.class)

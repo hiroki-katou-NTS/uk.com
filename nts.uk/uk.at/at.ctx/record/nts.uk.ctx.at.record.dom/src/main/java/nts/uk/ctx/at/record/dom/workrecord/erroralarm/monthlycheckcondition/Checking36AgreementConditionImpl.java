@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRep
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -64,38 +66,121 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 	
 	@Inject
 	private AttendanceItemConvertFactory attendanceItemConvertFactory;
+	
+	@Inject
+	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
 
 	
 	@Override
-	public boolean check36AgreementCondition(String companyId,String employeeId,GeneralDate date,
-			YearMonth yearMonth, Year year,AgreementCheckCon36 agreementCheckCon36) {
-		//1名の36上限時間を取得
-		BasicAgreementSetting basicAgreementSet = this.getBasicAgreementSet(companyId, employeeId, date, yearMonth, year);
+	public boolean check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate,AgreementCheckCon36 agreementCheckCon36) {
 		
-		//取得できない　or　エラー時間、アラーム時間=null
-		if(basicAgreementSet==null) {
+		boolean check = false;
+		//実績データに埋まっている「36協定エラー状態」を取得する : 202,203,204,205,206
+		//
+		Optional<AttendanceTimeOfMonthly> attdTimeOfMonthly = attendanceTimeOfMonthlyRepo.find(employeeId,yearMonth,
+				EnumAdaptor.valueOf(closureID, ClosureId.class),
+				closureDate);
+		if(!attdTimeOfMonthly.isPresent()) {
 			return false;
 		}
-		//「36協定チェック条件」を取得する : input agreementCheckCon36 
-		//チェック値を計算する
-		int value = 0;
-		if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ALARM ) {
-			value = basicAgreementSet.getAlarmOneMonth().v() - agreementCheckCon36.getEralBeforeTime().intValue();
-		}else if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ERROR) {
-			value = basicAgreementSet.getErrorOneMonth().v() - agreementCheckCon36.getEralBeforeTime().intValue();
+		
+		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
+		int valueError = 0;
+		int valueAlarm = 0;
+		
+		//エラー時間( ID:204 or ID:206)　-　36協定エラーアラーム前時間
+		if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ERROR) {
+			if(agreementTimeOfMonthly.getExceptionLimitErrorTime().isPresent()) {
+				if(agreementTimeOfMonthly.getLimitErrorTime().v()<agreementTimeOfMonthly.getExceptionLimitErrorTime().get().v()) {
+					valueError = agreementTimeOfMonthly.getExceptionLimitErrorTime().get().v() - agreementCheckCon36.getEralBeforeTime().intValue();
+				}else {
+					valueError = agreementTimeOfMonthly.getLimitErrorTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+				}
+			}else {
+				valueError = agreementTimeOfMonthly.getLimitErrorTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+			}
+		//アラーム時間(ID:203 or ID:205)　-　36協定エラーアラーム前時間
+		}else {
+			if(agreementTimeOfMonthly.getExceptionLimitAlarmTime().isPresent()) {
+				if(agreementTimeOfMonthly.getLimitAlarmTime().v()<agreementTimeOfMonthly.getExceptionLimitAlarmTime().get().v()) {
+					valueAlarm = agreementTimeOfMonthly.getExceptionLimitAlarmTime().get().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+				}else {
+					valueAlarm = agreementTimeOfMonthly.getLimitAlarmTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+				}
+			}else {
+				valueAlarm = agreementTimeOfMonthly.getLimitAlarmTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+			}
+			
 		}
 		
-		//月別実績を取得するa
-		//get closureId and closureDate
-		ClosureId closureId = EnumAdaptor.valueOf(1, ClosureId.class);
+		//agreementTime : 202
+		int valueAgreementTime = agreementTimeOfMonthly.getAgreementTime().v();
 		
-		List<AttendanceTimeOfMonthly> attdTime =  attdTimeOfMonthlyRepo.findByYMAndClosureIdOrderByStartYmd(employeeId, yearMonth, closureId);
-		MonthlyRecordToAttendanceItemConverter monthlyRecord = attendanceItemConvertFactory.createMonthlyConverter();
-		Optional<ItemValue> itemValue = monthlyRecord.withAttendanceTime(attdTime.get(0)).convert(202);
+		//error
+		if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ERROR) {
+			check = compareOperator(agreementCheckCon36.getCompareOperator().value,valueAgreementTime,valueError);
+		}else {//alarm
+			check = compareOperator(agreementCheckCon36.getCompareOperator().value,valueAgreementTime,valueAlarm);
+		}
 		
 		
+	//		//1名の36上限時間を取得
+	//		BasicAgreementSetting basicAgreementSet = this.getBasicAgreementSet(companyId, employeeId, date, yearMonth, year);
+	//		
+	//		//取得できない　or　エラー時間、アラーム時間=null
+	//		if(basicAgreementSet==null) {
+	//			return false;
+	//		}
+	//		//「36協定チェック条件」を取得する : input agreementCheckCon36 
+	//		//チェック値を計算する
+	//		int value = 0;
+	//		if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ALARM ) {
+	//			value = basicAgreementSet.getAlarmOneMonth().v() - agreementCheckCon36.getEralBeforeTime().intValue();
+	//		}else if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ERROR) {
+	//			value = basicAgreementSet.getErrorOneMonth().v() - agreementCheckCon36.getEralBeforeTime().intValue();
+	//		}
+	//		
+	//		//月別実績を取得するa
+	//		//get closureId and closureDate
+	//		ClosureId closureId = EnumAdaptor.valueOf(1, ClosureId.class);
+	//		
+	//		List<AttendanceTimeOfMonthly> attdTime =  attdTimeOfMonthlyRepo.findByYMAndClosureIdOrderByStartYmd(employeeId, yearMonth, closureId);
+	//		MonthlyRecordToAttendanceItemConverter monthlyRecord = attendanceItemConvertFactory.createMonthlyConverter();
+	//		Optional<ItemValue> itemValue = monthlyRecord.withAttendanceTime(attdTime.get(0)).convert(202);
+			
+		return check;
+	}
+	
+	private boolean compareOperator(int valueAgreementTime,int value,int compareType) {
+		boolean check = false;
+		switch(compareType) {
+		case 0 :/* 等しい（＝） */
+			if(valueAgreementTime == value)
+				check = true;
+			break; 
+		case 1 :/* 等しくない（≠） */
+			if(valueAgreementTime != value)
+				check = true;
+			break; 
+		case 2 :/* より大きい（＞） */
+			if(valueAgreementTime > value)
+				check = true;
+			break;
+		case 3 :/* 以上（≧） */
+			if(valueAgreementTime >= value)
+				check = true;
+			break;
+		case 4 :/* より小さい（＜） */
+			if(valueAgreementTime < value)
+				check = true;
+			break;
+		default :/* 以下（≦） */
+			if(valueAgreementTime <= value)
+				check = true;
+			break; 
+		}
 		
-		return false;
+		return check;
 	}
 	
 //	//36協定実績(Work)の作成

@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotHClPK
 public class JpaClassificationAllotSettingHeaderRepository extends JpaRepository
 		implements ClassificationAllotSettingHeaderRepository {
 
-	private final String SEL = " SELECT c FROM QstmtStmtAllotHCl c WHERE c.qstmtStmtAllotHClPK.companyCode = :companyCode ";
+	private static final String SEL = " SELECT c FROM QstmtStmtAllotHCl c WHERE c.qstmtStmtAllotHClPK.companyCode = :companyCode ";
 
 	// public Optional<ClassificationAllotSettingHeader> find(String
 	// companyCode, String histortId) {

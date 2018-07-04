@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
@@ -176,8 +177,10 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			
 			// アルゴリズム「実績ロックされているか判定する」を実行する
-			// ＞ロックされていれば、親に「中断」を返す
-			//*****（未）　共通処理として作る必要がある。現時点では、日別作成の中にprivateで作られているため、共有できない。
+			if (companySets.getDetermineActualLocked(criteriaDate, closureId.value) == LockStatus.LOCK){
+				asyncContext.finishedAsCancelled();
+				return ProcessState.INTERRUPTION;
+			}
 			
 			// 月別実績を集計する　（アルゴリズム）
 			val value = this.aggregateMonthlyRecordService.aggregate(companyId, employeeId,
