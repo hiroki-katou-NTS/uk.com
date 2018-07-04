@@ -1487,7 +1487,6 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						/*就業時間*/
 						this.workTime = withinDomain.getWorkTime() == null ? 0 : withinDomain.getWorkTime().valueAsMinutes();
 						/*実働就業時間*/
-//						this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
 						this.pefomWorkTime = withinDomain.getActualWorkTime() == null ? 0 : withinDomain.getActualWorkTime().valueAsMinutes();
 						/*所定内割増時間*/
 						this.prsIncldPrmimTime = withinDomain.getWithinPrescribedPremiumTime() == null ? 0 : withinDomain.getWithinPrescribedPremiumTime().valueAsMinutes();
@@ -2040,7 +2039,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				   								   new AttendanceTime(this.recorePreLaborTime));
 		/*日別実績の所定内時間*/
 		val within =  WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(this.workTime),
-				   																  new AttendanceTime(this.actWorkTime),
+				   																  new AttendanceTime(this.pefomWorkTime),
 				   																  new AttendanceTime(this.prsIncldPrmimTime),
 				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(this.prsIncldMidnTime),
 				   																		  																				  new AttendanceTime(this.calcPrsIncldMidnTime))),
