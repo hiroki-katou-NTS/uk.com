@@ -13,6 +13,10 @@
 			<com:scriptfile path="cmf002.c.start.js" />
 			<com:scriptfile path="cmf002.c.vm.js" />
 			<com:stylefile path="cmf002.c.style.css" />
+			<com:ValidatorScript>
+		        nts.uk.ctx.exio.dom.exo.execlog.ExternalOutputConditionCode
+		        nts.uk.ctx.exio.dom.exo.execlog.ExternalOutputConditionName
+		    </com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -22,11 +26,11 @@
 				<!--C1_2 登録-->
 				<button tabindex="2" class="proceed">#{i18n.getText('CMF002_72')}</button>
 				<!--C1_3 コード変換一覧登録-->
-				<button tabindex="3">#{i18n.getText('CMF002_73')}</button>
+				<button tabindex="3" data-bind="click: openCMF002g">#{i18n.getText('CMF002_73')}</button>
 				<!--C1_4 出力項目初期値設定-->
-				<button tabindex="4" style="margin-left: 50px">#{i18n.getText('CMF002_74')}</button>
+				<button tabindex="4" data-bind="click: openCMF002h" style="margin-left: 50px">#{i18n.getText('CMF002_74')}</button>
 				<!--C1_5 出力項目一括設定-->
-				<button tabindex="5">#{i18n.getText('CMF002_75')}</button>
+				<button tabindex="5" data-bind="click: openCMF002f">#{i18n.getText('CMF002_75')}</button>
 				<!--C1_6 閉じる-->
 				<button tabindex="6">#{i18n.getText('CMF002_76')}</button>
 				<!--C1_7 削除-->
@@ -63,7 +67,7 @@
 										<!--C2 条件コード/名称-->
 										<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_78')}</div>
 									</td>
-									<td colspan="4x">
+									<td colspan="4">
 										<!--C2_1 条件設定--> <span class="label"
 										data-bind="text: conditionName"></span>
 									</td>
@@ -84,15 +88,15 @@
 										<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_80')}</div>
 									</td>
 									<td>
-										<!--C4_1 項目コード--> <input tabindex="8"
-										data-bind="ntsTextEditor: {
+										<!--C4_1 項目コード--> 
+										<input tabindex="8" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_81]',
 			                                 value: itemCode,
 			                                 constraint: 'ExternalOutputConditionCode',
 			                                 required: true,
 			                                 option: {width: '50px'}}" />
-										<!--C4_2 項目名称--> <input tabindex="9"
-										data-bind="ntsTextEditor: {
+										<!--C4_2 項目名称--> 
+										<input tabindex="9" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_82]',
 			                                 value: itemName,
 			                          		 constraint: 'ExternalOutputConditionName',
@@ -120,7 +124,7 @@
 									</td>
 									<td>
 										<!--C5_2 型条件編集-->
-										<button tabindex="11">#{i18n.getText('CMF002_85')}</button>
+										<button tabindex="11" data-bind="click: openItemTypeSetting">#{i18n.getText('CMF002_85')}</button>
 									</td>
 								</tr>
 								<tr>
@@ -129,8 +133,8 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_86')}</div>
 									</td>
 									<td colspan="4">
-										<!--C6_1 計算式--> <input
-										data-bind="ntsTextEditor: {
+										<!--C6_1 計算式--> 
+										<input data-bind="ntsTextEditor: {
 											readonly: true,
 											enable: false,
 			                                value: formula,
@@ -147,9 +151,9 @@
 								<div tabindex="13"
 									style="float: right; width: 320px; margin-bottom: 5px;"
 									data-bind="ntsSearchBox: {
-								searchMode: 'filter',
-								fields: ['code', 'name'], 
-								}" />
+											searchMode: 'hightlight',
+											fields: ['code', 'name'], 
+											}" />
 								<table tabindex="14" id="C8_3"
 									data-bind="ntsGridList: {
 								rows: 15,

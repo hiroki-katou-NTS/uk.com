@@ -209,4 +209,15 @@ module nts.uk.com.view.cmf002.share.model {
         ];
     }
     
+    export function getItemTypes(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('CMF002_366')),
+            new ItemModel(1, getText('CMF002_367')),
+            new ItemModel(2, getText('CMF002_368')),
+            new ItemModel(3, getText('CMF002_369')),
+            new ItemModel(4, getText('CMF002_370')),
+            new ItemModel(5, getText('CMF002_371'))
+        ];
+    }
+    
 }

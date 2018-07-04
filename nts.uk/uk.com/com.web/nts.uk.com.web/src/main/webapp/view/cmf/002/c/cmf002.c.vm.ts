@@ -10,6 +10,8 @@ module nts.uk.com.view.cmf002.c.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
+        screenMode: KnockoutObservable<number>;
+        
         conditionName: KnockoutObservable<string>;
         categoryName: KnockoutObservable<string>;
         itemCode: KnockoutObservable<string>;
@@ -27,19 +29,62 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         
         constructor() {
             let self = this;
-            // Todo
-            let params = getShared("CMF002cParams");
-            let _rsList: Array<model.ItemModel> = model.getSystemTypes();
+            let params = getShared("CMF002bParams");
+            let _rsList: Array<model.ItemModel> = model.getItemTypes();
             self.itemTypes(_rsList);
             
-            self.conditionName = ko.observable("Condition Name"); // params.conditionName + "　" + params.conditionCode;
-            self.categoryName = ko.observable("Category Name"); // params.categoryName;
+            self.conditionName = ko.observable(params.conditionName + "　" + params.conditionCode); 
+            self.categoryName = ko.observable(params.categoryName);
             self.itemCode = ko.observable("Item Code");
             self.itemName = ko.observable("Item Name");
             self.itemType = ko.observable(0);
             self.formula = ko.observable("A1+B2+C3");
             self.selectedStandardOutputItemCode = ko.observable("123");
             self.selectedExternalOutputCategoryItemData = ko.observable("123");
+        }
+        
+        openCMF002g() {
+            modal("/view/cmf/002/g/index.xhtml").onClosed(function() {
+
+            });
+        }
+
+        openCMF002h() {
+            modal("/view/cmf/002/h/index.xhtml").onClosed(function() {
+
+            });
+        }
+
+        openCMF002f() {
+            modal("/view/cmf/002/f/index.xhtml").onClosed(function() {
+
+            });
+        }
+
+        openItemTypeSetting() {
+            modal("/view/cmf/002/i/index.xhtml").onClosed(function() {
+
+            });
+
+            modal("/view/cmf/002/j/index.xhtml").onClosed(function() {
+
+            });
+
+            modal("/view/cmf/002/k/index.xhtml").onClosed(function() {
+
+            });
+
+            modal("/view/cmf/002/l/index.xhtml").onClosed(function() {
+
+            });
+
+            modal("/view/cmf/002/m/index.xhtml").onClosed(function() {
+
+            });
+
+            modal("/view/cmf/002/n/index.xhtml").onClosed(function() {
+
+            });
         }
     }
 }
