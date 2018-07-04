@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcond
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.CheckResultMonthlyPub;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 @Stateless
 public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
@@ -44,9 +45,8 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 	}
 
 	@Override
-	public boolean check36AgreementCondition(String companyId, String employeeId, GeneralDate date, YearMonth yearMonth,
-			Year year, AgreementCheckCon36FunImport agreementCheckCon36) {
-		return checkResultMonthlyPub.check36AgreementCondition(companyId, employeeId, date, yearMonth, year, 
+	public boolean check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate, AgreementCheckCon36FunImport agreementCheckCon36) {
+		return checkResultMonthlyPub.check36AgreementCondition(employeeId, yearMonth, closureID, closureDate,
 				convertToAgreementCheckCon36Import(agreementCheckCon36));
 	}
 	
