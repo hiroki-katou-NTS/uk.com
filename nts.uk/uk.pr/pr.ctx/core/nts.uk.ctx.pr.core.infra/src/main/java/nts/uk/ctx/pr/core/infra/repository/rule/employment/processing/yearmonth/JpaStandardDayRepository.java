@@ -12,9 +12,9 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.Qpdm
 
 @Stateless
 public class JpaStandardDayRepository extends JpaRepository implements StandardDayRepository {
-	private final String SELECT_ALL = "SELECT c FROM QpdmtStandardDay c";
-	private final String SELECT_ALL_BY_CCD = SELECT_ALL + " WHERE c.qpdmtStandardDayPk.ccd = :companyCode";
-	private final String SELECT_ALL_BY_CCD_AND_PROCESSING_NO = SELECT_ALL_BY_CCD
+	private static final String SELECT_ALL = "SELECT c FROM QpdmtStandardDay c";
+	private static final String SELECT_ALL_BY_CCD = SELECT_ALL + " WHERE c.qpdmtStandardDayPk.ccd = :companyCode";
+	private static final String SELECT_ALL_BY_CCD_AND_PROCESSING_NO = SELECT_ALL_BY_CCD
 			+ " AND c.qpdmtStandardDayPk.processingNo = :processingNo";
 
 	@Override
