@@ -3969,8 +3969,7 @@ var nts;
                 };
                 var startP = function () {
                     _.defer(function () {
-                        if (uk.request.location.current.rawUrl.indexOf("view/common/error/sessiontimeout") === -1
-                            && uk.request.location.current.rawUrl.indexOf("/view/ccg/007") === -1) {
+                        if (cantCall()) {
                             loadEmployeeCodeConstraints().always(function () { return _start.call(__viewContext); });
                         }
                         else {
@@ -3998,6 +3997,17 @@ var nts;
                             ui.menu.request();
                         }
                     }
+                };
+                var noSessionWebScreens = [
+                    "/view/sample/",
+                    "/view/common/error/",
+                    "/view/spr/index.xhtml",
+                    "/view/ccg/007/",
+                    "/view/kdw/003/a/index.xhtml"
+                ];
+                var cantCall = function () {
+                    return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })
+                        || uk.request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
                 };
                 var loadEmployeeCodeConstraints = function () {
                     var self = this, dfd = $.Deferred();
@@ -16927,6 +16937,7 @@ var nts;
                         var setWidthByConstraint = (data.setWidthByConstraint !== undefined) ? ko.unwrap(data.setWidthByConstraint) : false;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var setValOnRequiredError = (data.setValOnRequiredError !== undefined) ? ko.unwrap(data.setValOnRequiredError) : false;
+                        var constraint = !_.isNil(data.constraint) ? ko.unwrap(data.constraint) : undefined;
                         $input.data("setValOnRequiredError", setValOnRequiredError);
                         self.setWidthByConstraint(constraintName, $input);
                         $input.addClass('nts-editor nts-input');
@@ -16970,6 +16981,11 @@ var nts;
                                 }
                                 else {
                                     $input.ntsError('clearKibanError');
+                                    if (constraint === "StampNumber" || constraint === "EmployeeCode") {
+                                        var formatter = self.getFormatter(data);
+                                        var formatted = formatter.format(result.parsedValue);
+                                        $input.val(formatted);
+                                    }
                                 }
                             }
                         });
@@ -17036,6 +17052,7 @@ var nts;
                     TextEditorProcessor.prototype.getFormatter = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
+                        this.editorOption = this.editorOption || {};
                         if (constraint && constraint.formatOption) {
                             $.extend(this.editorOption, constraint.formatOption);
                         }
@@ -22595,18 +22612,9 @@ var nts;
                             case 'unsetupSelecting':
                                 return unsetupSelecting($grid);
                             case 'getSelected':
-                            case 'getSelectedValue':
                                 return getSelected($grid);
                             case 'setSelected':
                                 return setSelected($grid, param);
-                            case 'setSelectedValue':
-                                return setSelectedValue($grid, param);
-                            case 'setDataSource':
-                                $grid.data("initValue", null);
-                                $grid.data("selectionDisables", null);
-                                return setDataSource($grid, param);
-                            case 'getDataSource':
-                                return getDataSource($grid);
                             case 'deselectAll':
                                 return deselectAll($grid);
                             case 'setupDeleteButton':
@@ -23125,23 +23133,20 @@ var nts;
                                         return true;
                                     }
                                 });
-                                setDataSource($grid, source, options);
+                                setDataSource($grid, options, source);
                             }, 100);
                         });
                         $grid.on("checknewitem", function (evt) {
                             return false;
                         });
-                        setDataSource($grid, options.dataSource, options);
+                        setDataSource($grid, options, options.dataSource);
                         if (!_.isNil(options.value) && !_.isEmpty(options.value)) {
                             setValue($grid, options.value.constructor === Array ? options.value : [options.value]);
                         }
                     };
-                    function setDataSource($grid, sources, options) {
+                    function setDataSource($grid, options, sources) {
                         if (!sources)
                             return;
-                        if (!options) {
-                            options = $grid.igGrid("option");
-                        }
                         var optionsValue = options.primaryKey !== undefined ? options.primaryKey : options.optionsValue;
                         var gridSource = $grid.igGrid('option', 'dataSource');
                         if (String($grid.attr("filtered")) === "true") {
@@ -23179,9 +23184,6 @@ var nts;
                             }
                         }
                     }
-                    function getDataSource($grid) {
-                        return $grid.igGrid("option", "dataSource");
-                    }
                     function setValue($grid, value) {
                         if (!value)
                             return;
@@ -23214,17 +23216,6 @@ var nts;
                             if (!disables || !initVal || _.intersection(disables, initVal).length === 0) {
                                 _.defer(function () { $grid.trigger("selectChange"); });
                             }
-                        }
-                    }
-                    function setSelectedValue($grid, value) {
-                        var multiple = $grid.igGridSelection('option', 'multipleSelection');
-                        if (multiple) {
-                            var initVal = $grid.data("initValue");
-                            var disables = $grid.data("selectionDisables");
-                            setValue($grid, _.union(_.intersection(disables, initVal), value));
-                        }
-                        else {
-                            setValue($grid, value);
                         }
                     }
                 })(ntsGridList || (ntsGridList = {}));
@@ -29532,9 +29523,6 @@ var nts;
                         var HEADER_HEIGHT = 24;
                         var self = this;
                         var $treegrid = $(self);
-                        if (typeof options === "string") {
-                            return delegateMethod($treegrid, options, arguments[1]);
-                        }
                         var dataSource = options.dataSource;
                         var optionsValue = options.primaryKey !== undefined ? options.primaryKey : options.optionsValue;
                         var optionsText = options.primaryText !== undefined ? options.primaryText : options.optionsText;
@@ -29546,7 +29534,6 @@ var nts;
                         var rows = options.rows;
                         var virtualization = !uk.util.isNullOrUndefined(options.virtualization) ? options.virtualization : false;
                         var virtualizationMode = !uk.util.isNullOrUndefined(options.virtualizationMode) ? options.virtualizationMode : "";
-                        var multiple = !_.isNil(options.multiple) ? options.multiple : false;
                         // Default.
                         var showCheckBox = options.showCheckBox !== undefined ? options.showCheckBox : true;
                         var enable = options.enable !== undefined ? options.enable : true;
@@ -29567,7 +29554,7 @@ var nts;
                         var features = [];
                         features.push({
                             name: "Selection",
-                            multipleSelection: multiple,
+                            multipleSelection: true,
                             activation: true,
                             rowSelectionChanged: function (evt, ui) {
                                 //                    let selectedRows: Array<any> = ui.selectedRows;
@@ -29698,23 +29685,6 @@ var nts;
                                 ui.ig.tree.grid.expandTo(selectedValue, $treegrid);
                             }
                         }
-                    }
-                    function delegateMethod($grid, action, param) {
-                        switch (action) {
-                            case "getDataSource":
-                                return $grid.igTreeGrid("option", "dataSource");
-                            case "setDataSource":
-                                return setDataSource($grid, param);
-                            case "getSelected":
-                                return $grid.ntsTreeView("getSelected");
-                            case "setSelected":
-                                return selectRows($grid, param);
-                        }
-                    }
-                    function setDataSource($grid, sources) {
-                        if (_.isNil(sources))
-                            return;
-                        $grid.igTreeGrid("option", "dataSource", sources);
                     }
                 })(ntsTreeGrid || (ntsTreeGrid = {}));
             })(jqueryExtentions = ui_23.jqueryExtentions || (ui_23.jqueryExtentions = {}));
