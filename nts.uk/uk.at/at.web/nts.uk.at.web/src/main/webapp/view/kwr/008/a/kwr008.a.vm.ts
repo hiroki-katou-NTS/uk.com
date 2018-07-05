@@ -153,14 +153,24 @@ module nts.uk.at.view.kwr008.a {
                 self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage(), self.printFormat()));
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(res => {
                     let msgId = self.getAsyncData(res.taskDatas, "messageId").valueAsString;
-                    let msg = self.getAsyncData(res.taskDatas, "messageError").valueAsString;
                     if (msgId == "") return;
-                    nts.uk.ui.dialog.alertError({ messageId: msgId, message: message(msgId) + msg });
+                    let totalEmpErr = self.getAsyncData(res.taskDatas, "totalEmpErr").valueAsNumber;
+                    let msgEmpErr = self.getMsgEmpError(res.taskDatas, totalEmpErr);
+                    nts.uk.ui.dialog.alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
                 }).fail(err => {
                     nts.uk.ui.dialog.alertError(err);
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 })
+            }
+
+            private getMsgEmpError(data: Array<any>, totalErr: number) {
+                let self = this;
+                let msgEmpErr = "";
+                for (let i = 0; i < totalErr; i++){
+                    msgEmpErr += "\n" + self.getAsyncData(data, "empErr" + i).valueAsString;
+                }
+                return msgEmpErr;
             }
 
             private getAsyncData(data: Array<any>, key: string): any {

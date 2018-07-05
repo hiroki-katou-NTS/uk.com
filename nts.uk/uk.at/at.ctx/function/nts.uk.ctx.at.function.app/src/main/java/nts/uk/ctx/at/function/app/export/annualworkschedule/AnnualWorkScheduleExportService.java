@@ -52,10 +52,13 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		ExportData data = this.repostory.outputProcess(companyId, query.getSetItemsOutputCd(), fiscalYear, startYm,
 				endYm, employees, query.getPrintFormat(), query.getBreakPage());
 		val dataSetter = context.getDataSetter();
-		String msgErr = data.getMessageError();
-		if (msgErr != null) {
+		List<String> employeeError = data.getEmployeeError();
+		if (!employeeError.isEmpty()) {
 			dataSetter.setData("messageId", "Msg_1344");
-			dataSetter.setData("messageError", msgErr);
+			dataSetter.setData("totalEmpErr", employeeError.size());
+			for (int i = 0; i < employeeError.size(); i++) {
+				dataSetter.setData("empErr" + i, employeeError.get(i));
+			}
 		}
 		// invoke generator
 		this.generator.generate(context.getGeneratorContext(), data);
