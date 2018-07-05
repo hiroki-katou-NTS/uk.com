@@ -12,5 +12,5 @@ public interface CheckResultMonthlyAdapter {
 	
 	boolean check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate,AgreementCheckCon36FunImport agreementCheckCon36);
 	
-	boolean checkPerTimeMonActualResult(YearMonth yearMonth,int closureID, Integer closureDate,String employeeID,AttendanceItemConAdapterDto attendanceItemCondition);
+	boolean checkPerTimeMonActualResult(YearMonth yearMonth,int closureID, ClosureDate closureDate,String employeeID,AttendanceItemConAdapterDto attendanceItemCondition);
 }
