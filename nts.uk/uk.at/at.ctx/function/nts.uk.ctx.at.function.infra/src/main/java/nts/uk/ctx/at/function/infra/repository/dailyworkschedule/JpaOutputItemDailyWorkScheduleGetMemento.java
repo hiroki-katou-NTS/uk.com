@@ -91,4 +91,12 @@ public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDaily
 	public NameWorkTypeOrHourZone getWorkTypeNameDisplay() {
 		return NameWorkTypeOrHourZone.valueOf(this.kfnmtItemWorkSchedule.getWorkTypeNameDisplay().intValue());
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getRemarkInputNo()
+	 */
+	@Override
+	public Integer getRemarkInputNo() {
+		return this.kfnmtItemWorkSchedule.getRemarkInputNo().intValue();
+	}
 }

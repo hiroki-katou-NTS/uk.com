@@ -114,4 +114,12 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 	public void setWorkTypeNameDisplay(NameWorkTypeOrHourZone workTypeNameDisplay) {
 		kfnmtItemWorkSchedule.setWorkTypeNameDisplay(new BigDecimal(workTypeNameDisplay.value));
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setRemarkInputNo(java.lang.Integer)
+	 */
+	@Override
+	public void setRemarkInputNo(Integer remarkInputNo) {
+		kfnmtItemWorkSchedule.setRemarkInputNo(BigDecimal.valueOf(remarkInputNo));
+	}
 }

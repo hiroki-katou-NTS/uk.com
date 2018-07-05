@@ -40,6 +40,9 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	/** The zone name. */
 	private int workTypeNameDisplay;
 	
+	/** The remark input no. */
+	private int remarkInputNo;
+	
 	// This variable used to know is new mode when save.
 	@Getter
 	private boolean newMode; 
@@ -97,5 +100,13 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	@Override
 	public NameWorkTypeOrHourZone getWorkTypeNameDisplay() {
 		return NameWorkTypeOrHourZone.valueOf(this.workTypeNameDisplay);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getRemarkInputNo()
+	 */
+	@Override
+	public Integer getRemarkInputNo() {
+		return this.remarkInputNo;
 	}
 }

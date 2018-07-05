@@ -43,6 +43,10 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	// 勤務種類・就業時間帯の名称
 	private NameWorkTypeOrHourZone workTypeNameDisplay;
 	
+	/** The remark input no. */
+	// 備考入力No
+	private Integer remarkInputNo;
+	
 	/**
 	 * Instantiates a new output item daily work schedule.
 	 *
@@ -59,6 +63,7 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();
 		this.lstRemarkContent = memento.getLstRemarkContent();
 		this.workTypeNameDisplay = memento.getWorkTypeNameDisplay();
+		this.remarkInputNo = memento.getRemarkInputNo();
 	}
 	
 	/**
@@ -76,6 +81,7 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
 		memento.setLstRemarkContent(this.lstRemarkContent);
 		memento.setWorkTypeNameDisplay(this.workTypeNameDisplay);
+		memento.setRemarkInputNo(this.remarkInputNo);
 	}
 	
 	/* (non-Javadoc)
