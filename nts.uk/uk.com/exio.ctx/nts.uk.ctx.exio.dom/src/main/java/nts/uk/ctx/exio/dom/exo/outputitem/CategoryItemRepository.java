@@ -11,11 +11,12 @@ import java.util.Optional;
 public interface CategoryItemRepository {
 	List<CategoryItem> getAllCtgItem();
 
-	Optional<CategoryItem> getCtgItemById(String ctgItemNo, String cid, String outItemCd, String condSetCd);
+	Optional<CategoryItem> getCtgItemById(String categoryItemNo, String cid, String outputItemCode,
+			String conditionSetCode);
 
 	void add(CategoryItem domain);
 
 	void update(CategoryItem domain);
 
-	void remove(String ctgItemNo, String cid, String outItemCd, String condSetCd);
+	void remove(String categoryItemNo, String cid, String outputItemCode, String conditionSetCode);
 }

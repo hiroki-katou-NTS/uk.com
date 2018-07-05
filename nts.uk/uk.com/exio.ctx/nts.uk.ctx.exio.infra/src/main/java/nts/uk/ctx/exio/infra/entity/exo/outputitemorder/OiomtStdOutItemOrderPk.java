@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.outitemsortorder;
+package nts.uk.ctx.exio.infra.entity.exo.outputitemorder;
 
 import java.io.Serializable;
 

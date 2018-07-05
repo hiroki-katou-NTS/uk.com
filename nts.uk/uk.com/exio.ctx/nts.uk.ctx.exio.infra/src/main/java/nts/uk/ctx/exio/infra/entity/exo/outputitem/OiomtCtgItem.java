@@ -64,8 +64,8 @@ public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 
 	public static OiomtCtgItem toEntity(StandardOutputItem stdOutItem, CategoryItem domain) {
 		return new OiomtCtgItem(
-				new OiomtCtgItemPk(domain.getCategoryItemNo().v(), stdOutItem.getCid(), stdOutItem.getOutItemCd().v(),
-						stdOutItem.getCondSetCd().v()),
+				new OiomtCtgItemPk(domain.getCategoryItemNo().v(), stdOutItem.getCid(),
+						stdOutItem.getOutputItemCode().v(), stdOutItem.getConditionSettingCode().v()),
 				domain.getCategoryId().v(), domain.getOperationSymbol().value, domain.getOrder());
 	}
 

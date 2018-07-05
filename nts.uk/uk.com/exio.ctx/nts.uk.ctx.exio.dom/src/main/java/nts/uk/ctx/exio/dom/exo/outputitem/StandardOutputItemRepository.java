@@ -10,14 +10,14 @@ public interface StandardOutputItemRepository {
 
 	List<StandardOutputItem> getAllStdOutItem();
 
-	List<StandardOutputItem> getStdOutItemByCidAndSetCd(String cid, String condSetCd);
+	List<StandardOutputItem> getStdOutItemByCidAndSetCd(String cid, String conditionSettingCode);
 
-	Optional<StandardOutputItem> getStdOutItemById(String cid, String outItemCd, String condSetCd);
+	Optional<StandardOutputItem> getStdOutItemById(String cid, String outputItemCode, String conditionSettingCode);
 
 	void add(StandardOutputItem domain);
 
 	void update(StandardOutputItem domain);
 
-	void remove(String cid, String outItemCd, String condSetCd);
+	void remove(String cid, String outputItemCode, String conditionSettingCode);
 
 }

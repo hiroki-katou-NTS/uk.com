@@ -16,10 +16,10 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
-import nts.uk.ctx.exio.dom.exo.outitemsortorder.StdOutItemOrder;
-import nts.uk.ctx.exio.dom.exo.outitemsortorder.StdOutItemOrderRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -38,7 +38,7 @@ public class ExOutSummarySettingService {
 	StandardOutputItemRepository stdOutItemRepo;
 
 	@Inject
-	StdOutItemOrderRepository stdOutItemOrderRepo;
+	StandardOutputItemOrderRepository stdOutItemOrderRepo;
 
 	@Inject
 	SearchCodeListRepository searchCodeListRepo;
@@ -73,18 +73,18 @@ public class ExOutSummarySettingService {
 	private List<StandardOutputItem> getExOutItemList(String outItemCd, String condSetCd) {
 		String cid = AppContexts.user().companyId();
 		List<StandardOutputItem> stdOutItemList = new ArrayList<StandardOutputItem>();
-		List<StdOutItemOrder> stdOutItemOrder = new ArrayList<StdOutItemOrder>();
+		List<StandardOutputItemOrder> stdOutItemOrder = new ArrayList<StandardOutputItemOrder>();
 
 		if (outItemCd == null || outItemCd.equals("")) {
 			stdOutItemList = stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd);
-			stdOutItemOrder = stdOutItemOrderRepo.getStdOutItemOrderByCidAndSetCd(cid, condSetCd);
+			stdOutItemOrder = stdOutItemOrderRepo.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd);
 		} else {
 			if (stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).isPresent()) {
 				stdOutItemList.add(stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).get());
 			}
 
-			if (stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).isPresent()) {
-				stdOutItemOrder.add(stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).get());
+			if (stdOutItemOrderRepo.getStandardOutputItemOrderById(cid, outItemCd, condSetCd).isPresent()) {
+				stdOutItemOrder.add(stdOutItemOrderRepo.getStandardOutputItemOrderById(cid, outItemCd, condSetCd).get());
 			}
 		}
 
