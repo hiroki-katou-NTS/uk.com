@@ -18,7 +18,7 @@ public class ExCndOutput extends AggregateRoot
     /**
     * カテゴリID
     */
-    private CategoryId categoryId;
+    private CategoryCd categoryId;
     
     /**
     * 主テーブル

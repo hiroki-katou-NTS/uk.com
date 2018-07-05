@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.exo.category.Association;
-import nts.uk.ctx.exio.dom.exo.category.CategoryId;
+import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.ctx.exio.dom.exo.category.Conditions;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
 import nts.uk.ctx.exio.dom.exo.category.Form1;
@@ -211,7 +211,7 @@ public class OiomtExCndOutput extends UkJpaEntity implements Serializable {
 	}
 
 	public ExCndOutput toDomain() {
-		return new ExCndOutput(new CategoryId(this.exCndOutputPk.categoryId),
+		return new ExCndOutput(new CategoryCd(this.exCndOutputPk.categoryId),
 				new MainTable(this.mainTable),
 				new Form1( this.form1),
 				new Form2( this.form2),
