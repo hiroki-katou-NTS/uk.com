@@ -55,7 +55,7 @@ public class StdOutputCondSetCommand {
 	
 	private String copyDestinationCode;
 	
-	private int overWrite;
+	private boolean overWrite;
 	
 	private String screenMode;
 	

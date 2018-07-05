@@ -16,12 +16,12 @@ public class StdOutputCondSetService {
 	
 	
 	//Screen T
-	public Map<String, String> excuteCopy(String copyDestinationCode,String destinatioName, String conditionSetCd, int overwite){
+	public Map<String, String> excuteCopy(String copyDestinationCode,String destinationName, String conditionSetCd, boolean overwite){
 		Map<String, String> resultExvuteCopy = new HashMap<>();
 		String cid = AppContexts.user().companyId();
 		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid,conditionSetCd);
 		if(stdOutputCondSet.isPresent()){
-			if(overwite == 1){
+			if(overwite){
 				//result = OK
 				//overwrite = TO
 				resultExvuteCopy.put("result", "OK");
@@ -36,7 +36,7 @@ public class StdOutputCondSetService {
 			resultExvuteCopy.put("overwrite", "DONOT");
 		}
 		resultExvuteCopy.put("copyDestinationCode", copyDestinationCode);
-		resultExvuteCopy.put("destinatioName", destinatioName);
+		resultExvuteCopy.put("destinatioName", destinationName);
 		
 	return resultExvuteCopy;
 	}
