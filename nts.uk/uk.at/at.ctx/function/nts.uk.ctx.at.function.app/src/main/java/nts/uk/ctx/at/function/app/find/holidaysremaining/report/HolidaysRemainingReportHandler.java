@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -56,7 +57,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		HolidaysRemainingReportQuery query = context.getQuery();
 		String cId = AppContexts.user().companyId();
-		GeneralDate baseDate = GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getBaseDate(), "yyyy/MM/dd");
+		GeneralDate baseDate = GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getBaseDate(),
+				"yyyy/MM/dd");
 		Optional<HolidaysRemainingManagement> hdManagement = hdFinder
 				.findByCode(query.getHolidayRemainingOutputCondition().getOutputItemSettingCode());
 		if (hdManagement.isPresent()) {
@@ -69,13 +71,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					AppContexts.system().getInstallationType().value, null, null,
 					GeneralDateTime.localDateTime(LocalDateTime.of(endDate, LocalTime.of(0, 0))));
 
-			Map<String, String> empNameMap = query.getLstEmpIds().stream()
-					.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, EmployeeQuery::getEmployeeName));
+			Map<String, EmployeeQuery> empMap = query.getLstEmpIds().stream()
+					.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, Function.identity()));
 
 			Map<String, HolidaysRemainingEmployee> employees = new HashMap<>();
 
-			List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds,
-					GeneralDate.localDate(endDate), true, false, true, true, false, false));
+			List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter
+					.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, GeneralDate.localDate(endDate),
+							true, false, true, true, false, false));
 			for (EmployeeInformationImport emp : listEmployeeInformationImport) {
 				String wpCode = "";
 				String wpName = "";
@@ -94,8 +97,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 				employees.put(emp.getEmployeeId(),
 						new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
-								empNameMap.get(emp.getEmployeeId()), wpCode, wpName, empmentName, positionName,
-								this.getCurrentMonth(cId, emp.getEmployeeId(), baseDate)));
+								empMap.get(emp.getEmployeeId()).getEmployeeName(),
+								empMap.get(emp.getEmployeeId()).getWorkplaceId(), wpCode, wpName, empmentName,
+								positionName, this.getCurrentMonth(cId, emp.getEmployeeId(), baseDate)));
 			}
 
 			HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.infra.repository.holidaysremaining.report;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -216,11 +215,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private void printWorkplaceBreakPage(Worksheet worksheet, HolidayRemainingDataSource dataSource,
 			boolean isSameCurrentMonth) throws Exception {
 		int firstRow = NUMBER_ROW_OF_PAGE;
-		List<HolidaysRemainingEmployee> listEmployee = dataSource.getMapEmployees().values().stream()
-				.collect(Collectors.toList());
-		List<HolidaysRemainingEmployee> employees = listEmployee.stream()
-				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode)).collect(Collectors.toList());
-		firstRow = printEachWorkplace(worksheet, firstRow, employees, dataSource, isSameCurrentMonth);
+		
+		Map<String, List<HolidaysRemainingEmployee>> map = dataSource.getMapEmployees().values().stream()
+				.collect(Collectors.groupingBy(HolidaysRemainingEmployee::getWorkplaceId));
+		
+		for (List<HolidaysRemainingEmployee> listEmployee : map.values()) {
+			firstRow = printEachWorkplace(worksheet, firstRow, listEmployee, dataSource, isSameCurrentMonth);
+		}
 	}
 
 	private int printEachWorkplace(Worksheet worksheet, int firstRow, List<HolidaysRemainingEmployee> employees,
