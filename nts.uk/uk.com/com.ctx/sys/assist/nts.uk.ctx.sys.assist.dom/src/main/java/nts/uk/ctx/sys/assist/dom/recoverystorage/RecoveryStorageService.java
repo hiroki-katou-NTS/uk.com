@@ -67,7 +67,7 @@ public class RecoveryStorageService {
 		this.self = scContext.getBusinessObject(RecoveryStorageService.class);
 	}
 
-	public static final String DATE_FORMAT = "yyyy-MM-dd";
+	public static final String DATE_FORMAT = "yyyyMMdd";
 
 	public static final int SELECTION_TARGET_FOR_RES = 1;
 
@@ -169,7 +169,6 @@ public class RecoveryStorageService {
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 
 		// Check recovery method [復旧方法]
-		// sửa
 		if (performDataRecovery.isPresent()
 				&& performDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE) {
 
@@ -285,7 +284,7 @@ public class RecoveryStorageService {
 			}
 			
 			dateSub = dateTimeCutter(resultsSetting.get(0), date).orElse("");
-			dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, dateSub.replace("-", "/"));
+			dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, dateSub);
 
 			// create filed where for query
 			for (Map.Entry<Integer, String> entry : indexAndFiled.entrySet()) {
@@ -616,9 +615,9 @@ public class RecoveryStorageService {
 		if (StringUtil.isNullOrEmpty(h_Date_Csv, true)){
 			return false;
 		}
-		GeneralDate hDateCsv = GeneralDate.fromString(h_Date_Csv, DATE_FORMAT);
-		GeneralDate dateFrom = GeneralDate.fromString(tableList.get().getSaveDateFrom().get(), DATE_FORMAT);
-		GeneralDate dateTo = GeneralDate.fromString(tableList.get().getSaveDateTo().get(), DATE_FORMAT);
+		GeneralDate hDateCsv = stringToGenaralDate(h_Date_Csv); 
+		GeneralDate dateFrom = stringToGenaralDate(tableList.get().getSaveDateFrom().get());
+		GeneralDate dateTo = stringToGenaralDate(tableList.get().getSaveDateTo().get());
 		
 		if (YEAR.equals(resultsSetting.get(0)) && (hDateCsv.year() < dateFrom.year() || hDateCsv.year() > dateTo.year())) {
 			return false;
@@ -715,9 +714,21 @@ public class RecoveryStorageService {
 	 * Cut String by type
 	 * @param type RangeType
 	 * @param datetime
-	 * @return
+	 * @return Optional<String>
 	 */
 	private Optional<String> dateTimeCutter(String type, String datetime){
-		return datetimeRange.containsKey(type) ? Optional.of(datetime.substring(0, datetimeRange.get(type))) : Optional.empty();
+		return datetimeRange.containsKey(type) ? Optional.of(stringToGenaralDate(datetime).toString().substring(0, datetimeRange.get(type))) : Optional.empty();
+	}
+	
+	/**
+	 * Convert String to GeneralDate
+	 * @param datetime
+	 * @return GeneralDate
+	 */
+	private GeneralDate stringToGenaralDate(String datetime){
+		if(StringUtil.isNullOrEmpty(datetime, true)){
+			return null;
+		}
+		return datetime.replaceAll("[^\\d.]", "").length() > 7 ? GeneralDate.fromString(datetime.replaceAll("[^\\d.]", "").substring(0, 8), DATE_FORMAT) : null;
 	}
 }

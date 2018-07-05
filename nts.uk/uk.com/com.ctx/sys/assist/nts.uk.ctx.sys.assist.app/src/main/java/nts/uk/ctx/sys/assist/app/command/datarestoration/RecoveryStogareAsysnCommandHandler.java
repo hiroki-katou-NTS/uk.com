@@ -24,7 +24,7 @@ public class RecoveryStogareAsysnCommandHandler extends CommandHandler<PerformDa
 		try {
 			recoveryStorageService.recoveryStorage(dataRecoveryProcessId);
 		} catch (Exception e) {
-			repoDataRecoveryMng.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.ABNORMAL_TERMINATION.value);
+			repoDataRecoveryMng.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.ABNORMAL_TERMINATION);
 		}
 	}
 }
