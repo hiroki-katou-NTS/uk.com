@@ -88,4 +88,10 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 				domain.getCategoryId(), domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
 				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat());
 	}
+	
+	@Override
+	public List<StdOutputCondSet> getListStdOutputCondSetByCid(String cid) {
+		return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+				.getList(c -> toDomain(c));
+	}
 }

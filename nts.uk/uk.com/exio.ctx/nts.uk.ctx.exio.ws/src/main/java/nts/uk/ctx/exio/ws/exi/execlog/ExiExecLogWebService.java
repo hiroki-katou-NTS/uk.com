@@ -5,6 +5,7 @@
 package nts.uk.ctx.exio.ws.exi.execlog;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -15,7 +16,9 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exo.executionlog.ExOutOpMngCommand;
+import nts.uk.ctx.exio.app.command.exo.executionlog.ExterOutExecLogCommand;
 import nts.uk.ctx.exio.app.command.exo.executionlog.RemoveExOutOpMngCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExterOutExecLogCommandHandler;
 import nts.uk.ctx.exio.app.find.exi.execlog.ErrorContentDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogFinder;
@@ -26,6 +29,7 @@ import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutOpMngDto;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutOpMngFinder;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ExterOutExecLogDto;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ExterOutExecLogFinder;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class ExiExecLogWebService
@@ -51,6 +55,10 @@ public class ExiExecLogWebService extends WebService {
 	
 	@Inject
 	private ExterOutExecLogFinder exterOutExecLogFinder;
+	
+	@Inject
+	private UpdateExterOutExecLogCommandHandler updateExterOutExecLogCommandHandler;
+	
 	
 	/**
 	 * @param externalProcessId
@@ -91,5 +99,14 @@ public class ExiExecLogWebService extends WebService {
 	@POST
 	public ExterOutExecLogDto getExterOutExecLogById(@PathParam("processId") String exterOutExecLogProcessId) {
 		return this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId);
+	}
+	
+	@POST
+	@Path("updateFileSize/{cId}/{storeProcessingId}/{fileId}")
+	public void updateFileSize( @PathParam("storeProcessingId") String storeProcessingId,
+			@PathParam("fileId") String fileId) {
+		String companyId = AppContexts.user().companyId();
+		ExterOutExecLogCommand command = new ExterOutExecLogCommand(companyId, storeProcessingId, fileId);
+		updateExterOutExecLogCommandHandler.handle(command);
 	}
 }

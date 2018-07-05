@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.commonalgorithm;
 
-import java.util.Optional;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -31,7 +31,10 @@ public class AcquisitionSettingList {
 	 *            条件設定コード
 	 * @return 出力条件設定（定型）
 	 */
-	public Optional<StdOutputCondSet> getAcquisitionSettingList(String cId, String conditionSettingCode) {
-		return this.stdOutputCondSetRepository.getStdOutputCondSetById(cId, conditionSettingCode);
+	public List<StdOutputCondSet> getAcquisitionSettingList(String cId, String conditionSettingCode) {
+		if (conditionSettingCode == null) {
+			return this.stdOutputCondSetRepository.getListStdOutputCondSetByCid(cId);
+		}
+		return null;
 	}
 }
