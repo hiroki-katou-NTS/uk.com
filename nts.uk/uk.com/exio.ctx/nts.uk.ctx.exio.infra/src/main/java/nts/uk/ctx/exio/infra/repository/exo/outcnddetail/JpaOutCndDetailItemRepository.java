@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
+import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetail;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItem;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItemPk;
 
@@ -17,7 +18,9 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtOutCndDetailItem f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.outCndDetailItemPk.categoryId =:categoryId AND  f.outCndDetailItemPk.categoryItemNo =:categoryItemNo ";
-
+	private static final String SELECT_BY_CODE = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.conditionSettingCd =:conditionSettingCd  ";
+	
 	@Override
 	public List<OutCndDetailItem> getAllOutCndDetailItem() {
 		return null;
@@ -26,6 +29,13 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	@Override
 	public Optional<OutCndDetailItem> getOutCndDetailItemById(String categoryId, int categoryItemNo) {
 		return null;
+	}
+	
+	@Override
+	public List<OutCndDetailItem> getOutCndDetailItemByCode(String code) {
+		return this.queryProxy().query(SELECT_BY_CODE, OiomtOutCndDetailItem.class)
+				.setParameter("conditionSettingCd", code)
+				.getList(item -> toDomain(item));
 	}
 
 	@Override
@@ -93,4 +103,5 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 				entity.searchTimeEndVal,
 				entity.searchTimeStartVal);
 	}
+
 }

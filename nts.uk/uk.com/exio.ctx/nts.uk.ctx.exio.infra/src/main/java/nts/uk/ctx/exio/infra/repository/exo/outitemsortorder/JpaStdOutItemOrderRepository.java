@@ -17,7 +17,10 @@ public class JpaStdOutItemOrderRepository extends JpaRepository implements StdOu
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtStdOutItemOrder f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.outItemCd =:outItemCd AND  f.stdOutItemOrderPk.condSetCd =:condSetCd ";
-
+	private static final String SELECT_BY_CID_AND_SET_CODE = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd ";
+	
+	
 	@Override
 	public List<StdOutItemOrder> getAllStdOutItemOrder() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtStdOutItemOrder.class)
@@ -28,6 +31,12 @@ public class JpaStdOutItemOrderRepository extends JpaRepository implements StdOu
 	public Optional<StdOutItemOrder> getStdOutItemOrderById(String cid, String outItemCd, String condSetCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtStdOutItemOrder.class).setParameter("cid", cid)
 				.setParameter("outItemCd", outItemCd).setParameter("condSetCd", condSetCd).getSingle(c -> c.toDomain());
+	}
+	
+	@Override
+	public List<StdOutItemOrder> getStdOutItemOrderByCidAndSetCd(String cid, String condSetCd) {
+		return this.queryProxy().query(SELECT_BY_CID_AND_SET_CODE, OiomtStdOutItemOrder.class).setParameter("cid", cid)
+				.setParameter("condSetCd", condSetCd).getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -44,4 +53,5 @@ public class JpaStdOutItemOrderRepository extends JpaRepository implements StdOu
 	public void remove(String cid, String outItemCd, String condSetCd) {
 		this.commandProxy().remove(OiomtStdOutItemOrder.class, new OiomtStdOutItemOrderPk(cid, outItemCd, condSetCd));
 	}
+
 }

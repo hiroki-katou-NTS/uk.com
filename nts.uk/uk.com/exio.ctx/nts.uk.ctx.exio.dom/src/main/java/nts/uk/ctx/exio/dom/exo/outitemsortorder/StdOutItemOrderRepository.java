@@ -12,6 +12,8 @@ public interface StdOutItemOrderRepository {
 
 	Optional<StdOutItemOrder> getStdOutItemOrderById(String cid, String outItemCd, String condSetCd);
 
+	List<StdOutItemOrder> getStdOutItemOrderByCidAndSetCd(String cid, String condSetCd);
+	
 	void add(StdOutItemOrder domain);
 
 	void update(StdOutItemOrder domain);

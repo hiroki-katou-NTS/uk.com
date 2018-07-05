@@ -16,7 +16,8 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtCtgItemData f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING +
+    		" WHERE f.OiomtCtgItemDataPk.categoryId =:categoryId AND f.OiomtCtgItemDataPk.itemNo =:itemNo";
 
     @Override
     public List<CtgItemData> getAllCtgItemData(){
@@ -25,9 +26,11 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
     }
 
     @Override
-    public Optional<CtgItemData> getCtgItemDataById(){
+    public Optional<CtgItemData> getCtgItemDataById(String categoryId, Integer itemNo){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtCtgItemData.class)
-        .getSingle(c->c.toDomain());
+        		.setParameter("categoryId", categoryId)
+        		.setParameter("itemNo", itemNo)
+        		.getSingle(c->c.toDomain());
     }
 
     @Override

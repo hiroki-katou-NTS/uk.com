@@ -22,7 +22,7 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 
 
 	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.stdOutputCondSetPk.cid =:cid ";
+			+ " WHERE  f.stdOutputCondSetPk.cid =:cid ORDER BY f.stdOutputCondSetPk.conditionSetCd ASC";
 	
 
 	@Override
@@ -32,9 +32,9 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	}
 	
 	@Override
-	public Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid) {
+	public List<StdOutputCondSet> getStdOutputCondSetByCid(String cid) {
 		return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
-				.getSingle(c -> toDomain(c));
+				.getList(c -> toDomain(c));
 	}
 
 	@Override
