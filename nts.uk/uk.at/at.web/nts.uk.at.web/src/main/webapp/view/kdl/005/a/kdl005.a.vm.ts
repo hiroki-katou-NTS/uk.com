@@ -148,7 +148,7 @@ module nts.uk.at.view.kdl005.a {
                             }
                             
                             if(item.breakHis.expirationDate != null && item.isManaged == 1) {
-                                duedateHoliday = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.expirationDate])]);
+                                duedateHoliday = nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.expirationDate]);
                             } else {
                                 duedateHoliday = "";
                             }
