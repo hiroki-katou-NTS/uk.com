@@ -56,5 +56,11 @@ public class StdOutputCondSetCommand {
 	private String CopyDestinationCode;
 	
 	private int overWrite;
+	
+	private String screenMode;
+	
+	private String standType;
+	
+	private boolean checkAutoExecution;
 
 }

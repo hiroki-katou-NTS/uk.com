@@ -9,7 +9,7 @@ public class ExCndOutputCommand
     /**
     * 
     */
-    private String categoryId;
+    private int categoryId;
     
     /**
     * 

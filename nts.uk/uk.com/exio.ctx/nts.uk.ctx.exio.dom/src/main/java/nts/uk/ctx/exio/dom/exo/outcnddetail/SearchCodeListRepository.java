@@ -11,7 +11,7 @@ public interface SearchCodeListRepository
 
     void update(SearchCodeList domain);
 
-    void remove(String id, String categoryId, int categoryItemNo);
-    
     List<SearchCodeList> getSearchCodeByCateIdAndCateNo(String categoryId, Integer categoryNo);
+
+    void remove(String id);
 }

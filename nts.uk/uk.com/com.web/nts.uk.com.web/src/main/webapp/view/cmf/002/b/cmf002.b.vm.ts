@@ -196,7 +196,25 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     }
     
     public register(){
-        
+        let self = this;
+            let data = {
+                isNewMode: self.isNewMode(),
+                screenMode: self.pickUp(),
+                standType: moment.standType,
+                cid: self.cid(),
+                expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
+                pause: self.pause(),
+
+            };
+            
+            service.save(data).done(result => {
+         
+            }).fail(function(res: any) {
+                dialog.info({ messageId: "Msg_737" }).then(() => {
+            
+                });
+            });
+      
     }
     export class OutputItem {
         outputItemCode: KnockoutObservable<string> = ko.observable('');

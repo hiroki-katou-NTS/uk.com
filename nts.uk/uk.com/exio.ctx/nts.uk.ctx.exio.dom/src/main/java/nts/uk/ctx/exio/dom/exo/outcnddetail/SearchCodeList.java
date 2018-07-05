@@ -46,7 +46,4 @@ public class SearchCodeList extends AggregateRoot
 		this.searchItemName = searchItemName;
 	}
     
-    
-    
-    
 }

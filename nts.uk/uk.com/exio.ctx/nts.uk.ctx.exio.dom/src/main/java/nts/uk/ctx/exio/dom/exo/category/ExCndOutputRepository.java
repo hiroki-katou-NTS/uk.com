@@ -17,6 +17,6 @@ public interface ExCndOutputRepository
 
     void update(ExCndOutput domain);
 
-    void remove(String categoryId);
+    void remove(int categoryId);
 
 }
