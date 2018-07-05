@@ -16,15 +16,15 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.Ks
 
 @Stateless
 public class JpaCalendarWorkPlaceRepository extends JpaRepository implements CalendarWorkPlaceRepository {
-	private	final String SELECT_FROM_WORKPLACE = "SELECT w FROM KsmmtCalendarWorkplace w";
-	private final String SELECT_ALL_WORKPLACE = SELECT_FROM_WORKPLACE
+	private	static final String SELECT_FROM_WORKPLACE = "SELECT w FROM KsmmtCalendarWorkplace w";
+	private static final String SELECT_ALL_WORKPLACE = SELECT_FROM_WORKPLACE
 			+ " WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId ";
-	private final String SELECT_WORKPLACE_BY_DATE = SELECT_ALL_WORKPLACE
+	private static final String SELECT_WORKPLACE_BY_DATE = SELECT_ALL_WORKPLACE
 			+ " AND w.ksmmtCalendarWorkplacePK.date = :date";
-	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_WORKPLACE 
+	private static final String SELECT_BY_YEAR_MONTH = SELECT_ALL_WORKPLACE 
 			+ " AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
 			+ " AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
-	private final String DELETE_BY_YEAR_MONTH = "delete FROM KsmmtCalendarWorkplace w "
+	private static final String DELETE_BY_YEAR_MONTH = "delete FROM KsmmtCalendarWorkplace w "
 			+" WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId"
 			+" AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
 			+" AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
