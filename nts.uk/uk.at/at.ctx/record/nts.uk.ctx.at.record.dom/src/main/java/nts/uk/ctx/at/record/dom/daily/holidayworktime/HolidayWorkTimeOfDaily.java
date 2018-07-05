@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -36,7 +38,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
 public class HolidayWorkTimeOfDaily {
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;
 	private List<HolidayWorkFrameTime> holidayWorkFrameTime;
@@ -230,6 +232,34 @@ public class HolidayWorkTimeOfDaily {
 		}
 		Finally<HolidayMidnightWork> holidayMidnight = this.holidayMidNightWork.isPresent()?Finally.of(this.holidayMidNightWork.get().calcDiverGenceTime()):this.holidayMidNightWork;
 		return new HolidayWorkTimeOfDaily(this.holidayWorkFrameTimeSheet,list,holidayMidnight,this.holidayTimeSpentAtWork);
+	}
+	
+	//PCログインログオフから計算した計算時間を入れる(大塚モードのみ)
+	public void setPCLogOnValue(List<HolidayWorkFrameTime> frameByPCLogInfo) {
+		List<HolidayWorkFrameTime> changeList = this.getHolidayWorkFrameTime();
+		
+		frameByPCLogInfo.forEach(tc -> {
+			val frame = changeList.stream().filter(ts -> tc.getHolidayFrameNo().equals(ts.getHolidayFrameNo())).findFirst();
+			//置き換え
+			if(frame.isPresent()) {
+				changeList.forEach(tt ->{
+					if(tc.getHolidayFrameNo().equals(tt.getHolidayFrameNo())){
+						//残業時間の置き換え
+						tt.getHolidayWorkTime().get().replaceTimeAndCalcDiv(tc.getHolidayWorkTime().get().getCalcTime());
+						//振替時間の置き換え
+						tt.getTransferTime().get().replaceTimeAndCalcDiv(tc.getTransferTime().get().getCalcTime());
+					}
+				});
+			}
+			//新しく枠使い
+			else {
+				changeList.add(new HolidayWorkFrameTime(tc.getHolidayFrameNo(), 
+														Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), tc.getHolidayWorkTime().get().getCalcTime())), 
+														Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), tc.getTransferTime().get().getTime())), 
+														tc.getBeforeApplicationTime()));
+			}
+		});
+		this.holidayWorkFrameTime = changeList;
 	}
 	
 }

@@ -741,14 +741,17 @@ public abstract class CalculationTimeSheet {
 	 * 加給時間帯と重複している控除項目時間帯を加給時間帯へ保持させる 
 	 * (実働時間帯へ持っていきたい)
 	 */
-	public static List<BonusPayTimeSheetForCalc> getBonusPayTimeSheetIncludeDedTimeSheet(BonusPaySetting bonusPaySetting,TimeSpanForCalc duplicateTimeSheet,
+	public static List<BonusPayTimeSheetForCalc> getBonusPayTimeSheetIncludeDedTimeSheet(Optional<BonusPaySetting> bonuspaySetting,TimeSpanForCalc duplicateTimeSheet,
 															   							  List<TimeSheetOfDeductionItem> dedTimeSheet,
 															   							  List<TimeSheetOfDeductionItem> recordTimeSheet){
-		val duplicatedBonusPay = getDuplicatedBonusPay(bonusPaySetting.getLstBonusPayTimesheet().stream()
+		List<BonusPayTimeSheetForCalc> duplicatedBonusPay = new ArrayList<>();
+		if(bonuspaySetting.isPresent()) {
+			duplicatedBonusPay = getDuplicatedBonusPay(bonuspaySetting.get().getLstBonusPayTimesheet().stream()
 				  													   .filter(tc -> tc.getUseAtr().isUse())
 				  													   .map(tc ->BonusPayTimeSheetForCalc.convertForCalc(tc))
 				  													   .collect(Collectors.toList()),
 				  									  duplicateTimeSheet);
+		}
 		return bonusPay(duplicatedBonusPay,dedTimeSheet,recordTimeSheet);
 	}
 
@@ -756,14 +759,17 @@ public abstract class CalculationTimeSheet {
 	 * 特定加給時間帯と重複している控除項目時間帯を加給時間帯へ保持させる 
 	 * (実働時間帯へ持っていきたい)
 	 */
-	public static List<SpecBonusPayTimeSheetForCalc> getSpecBonusPayTimeSheetIncludeDedTimeSheet(BonusPaySetting bonusPaySetting,TimeSpanForCalc duplicateTimeSheet,
+	public static List<SpecBonusPayTimeSheetForCalc> getSpecBonusPayTimeSheetIncludeDedTimeSheet(Optional<BonusPaySetting> bonuspaySetting,TimeSpanForCalc duplicateTimeSheet,
 															   		   						  List<TimeSheetOfDeductionItem> dedTimeSheet,
 															   		   						  List<TimeSheetOfDeductionItem> recordTimeSheet){
-		val duplicatedSpecBonusPay = getDuplicatedSpecBonusPay(bonusPaySetting.getLstSpecBonusPayTimesheet().stream()
+		List<SpecBonusPayTimeSheetForCalc> duplicatedSpecBonusPay = new ArrayList<>();
+		if(bonuspaySetting.isPresent()) {
+			duplicatedSpecBonusPay = getDuplicatedSpecBonusPay(bonuspaySetting.get().getLstSpecBonusPayTimesheet().stream()
 				  													   .filter(tc -> tc.getUseAtr().isUse())
 				  													   .map(tc ->SpecBonusPayTimeSheetForCalc.convertForCalc(tc))
 				  													   .collect(Collectors.toList()),
 				 				  							   duplicateTimeSheet);
+		}
 		return specBonusPay(duplicatedSpecBonusPay,dedTimeSheet,recordTimeSheet);
 	}
 	

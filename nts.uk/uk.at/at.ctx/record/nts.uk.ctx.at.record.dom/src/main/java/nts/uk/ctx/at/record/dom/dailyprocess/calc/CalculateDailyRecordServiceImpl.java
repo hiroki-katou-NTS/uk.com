@@ -16,6 +16,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.auth.dom.kmk013.WorkPlaceAuthority;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
@@ -75,7 +76,14 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
@@ -144,6 +152,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.primitive.WorkplaceCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -167,7 +176,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private FlexWorkSettingRepository flexWorkSettingRepository;
 	@Inject
 	private SpecificWorkRuleRepository specificWorkRuleRepository;
-
 	
 	@Inject
 	private AttendanceItemConvertFactory attendanceItemConvertFactory;
@@ -181,7 +189,20 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
 	
-
+//	@Inject
+//	private C
+	
+	@Inject
+	//職場の加給時間設定
+	private WPBonusPaySettingRepository wPBonusPaySettingRepository;
+	
+	@Inject
+	//就業時間帯加給時間設定
+	private WTBonusPaySettingRepository wTBonusPaySettingRepository;
+	
+	@Inject
+	private BPSettingRepository bPSettingRepository;
+	
 	//任意項目の計算の為に追加
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
@@ -209,8 +230,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, converter,yesterDayInfo,tomorrowDayInfo);
+		//大塚モードの処理
+		val afterOOtsukaModeCalc = replaceStampForOOtsuka(afterCalcResult, companyCommonSetting, tomorrowDayInfo, tomorrowDayInfo, converter); 
+		
 		//任意項目の計算
-		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult,converter,companyCommonSetting);
+		val aftercalcOptionalItemResult = this.calcOptionalItem(afterOOtsukaModeCalc,converter,companyCommonSetting);
 		//エラーチェック
 		IntegrationOfDaily result = calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
 		
@@ -219,6 +243,27 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 		
 		return result;
+	}
+
+	//大塚モード(計算項目置き換えと計算)
+	private IntegrationOfDaily replaceStampForOOtsuka(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting, Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo, DailyRecordToAttendanceItemConverter converter) {
+		if(integrationOfDaily.getPcLogOnInfo().isPresent()) {
+			DailyRecordToAttendanceItemConverter calcrecordFromStamp = converter.setData(integrationOfDaily);
+			
+			val test = calcrecordFromStamp.toDomain();
+			
+			val pcStamp = test.getPcLogOnInfo().get().getLogOnInfo();
+			
+			test.stampReplaceFromPcLogInfo(pcStamp);
+			
+			//入れ替えた打刻で実際にレコード作成
+			val ootsukaRecord = this.createRecord(test, TimeSheetAtr.RECORD, companyCommonSetting, yesterDayInfo, tomorrowDayInfo);
+			ootsukaRecord.setCompanyCommonSetting(companyCommonSetting);
+			//計算
+			val calcrecordFromPcLogInfo = calcRecord(ootsukaRecord, ootsukaRecord, companyCommonSetting, converter);
+			return ootsukaProcessService.integrationConverter(integrationOfDaily, calcrecordFromPcLogInfo);
+		}
+		return integrationOfDaily;
 	}
 
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily,
@@ -266,6 +311,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
+		String placeId = integrationOfDaily.getAffiliationInfor().getWplID();
+				
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		
 		/* 勤務種類の取得 */
@@ -348,7 +395,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			test = Optional.empty();
 		}
 		
-
+		//加給設定の取得
+		Optional<BonusPaySetting> bonuspaySetting = getBpSetting(companyCommonSetting.bpUnitSetting,
+										   Optional.of(new WorkplaceCode(placeId)) ,
+										   Optional.of(new WorkTimeCode(workInfo.getRecordInfo().getWorkTimeCode().toString())),
+										   companyCommonSetting.getPersonInfo());
+//		if(!bonuspaySetting.isPresent()) {
+//			bonuspaySetting = Optional.of(BonusPaySetting.createFromJavaType(companyId,
+//																 "01"/*ここは聞く*/,
+//																 "テスト加給設定"/*ここは聞く*/,
+//																 Collections.emptyList(),
+//																 Collections.emptyList()
+//																));
+//		}
 	
 
 		
@@ -528,12 +587,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			
 			subhol = flexWorkSetOpt.get().getCommonSetting().getSubHolTimeSet();
 				oneRange.createTimeSheetAsFlex(personalInfo.getWorkingSystem(),oneRange.getPredetermineTimeSetForCalc(),
-												BonusPaySetting.createFromJavaType(companyId,
-														"01"/*ここは聞く*/,
-														"テスト加給設定"/*ここは聞く*/,
-														Collections.emptyList(),
-														Collections.emptyList()
-														),
+												bonuspaySetting,
 												flexWorkSetOpt.get().getOffdayWorkTime().getLstWorkTimezone(),
 												useLstTimeZone,
 											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay, workType.get(),tomorrow,
@@ -645,12 +699,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						Optional.of(fixedWorkSetting.get().getFixedWorkRestSetting().getCalculateMethod()),
 						workTime.get().getWorkTimeDivision(),
 						oneRange.getPredetermineTimeSetForCalc(), fixedWorkSetting.get(), 
-						BonusPaySetting.createFromJavaType(companyId,
-						"01"/*ここは聞く*/,
-						"テスト加給設定"/*ここは聞く*/,
-						Collections.emptyList(),
-						Collections.emptyList()
-						)
+						bonuspaySetting
 						,fixOtSetting ,
 						fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone(), 
 						overDayEndCalcSet, 
@@ -1198,4 +1247,37 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 	}
 	
+	private Optional<BonusPaySetting> getBpSetting(Optional<BPUnitUseSetting> bpUnitSetting,Optional<WorkplaceCode> workPlaceCode, Optional<WorkTimeCode> workTimeCode,Optional<WorkingConditionItem> bpCodeInPersonInfo) {
+		if(bpUnitSetting.isPresent()) {
+			//就業時間帯の加給
+			if(bpUnitSetting.get().getWorkingTimesheetUseAtr().isUse()) {
+				if(workTimeCode.isPresent()) {
+					val bpCode = wTBonusPaySettingRepository.getWTBPSetting(AppContexts.user().companyId(), new WorkingTimesheetCode(workTimeCode.get().toString()));
+					if(bpCode.isPresent()) {
+						return bPSettingRepository.getBonusPaySetting(AppContexts.user().companyId(), bpCode.get().getBonusPaySettingCode());
+					}
+				}
+				return Optional.empty();
+			}
+			//職場の加給
+			else if(bpUnitSetting.get().getWorkplaceUseAtr().isUse()) {
+				if(workPlaceCode.isPresent()) {
+					//val bpCode = wPBonusPaySettingRepository.get
+				}
+			}
+			//社員の加給
+			else if(bpUnitSetting.get().getPersonalUseAtr().isUse()) {
+				if(bpCodeInPersonInfo.isPresent()
+				   && bpCodeInPersonInfo.get().getTimeApply().isPresent()) {
+					return bPSettingRepository.getBonusPaySetting(AppContexts.user().companyId(), new BonusPaySettingCode(bpCodeInPersonInfo.get().getTimeApply().get().toString()));
+				}
+				return Optional.empty();
+			}
+			//会社の加給
+			else {
+				
+			}
+		}
+		return Optional.empty();
+	}
 }

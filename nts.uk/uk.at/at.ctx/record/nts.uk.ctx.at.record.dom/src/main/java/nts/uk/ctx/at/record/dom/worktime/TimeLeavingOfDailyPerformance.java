@@ -109,6 +109,8 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	public boolean isFirstTimeWork() {
 		return (this.workTimes.v()) == 1;
 	}
+	
+	
 
 	/**
 	 * ジャスト遅刻、ジャスト早退の計算区分を見て時刻調整

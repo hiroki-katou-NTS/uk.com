@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -71,6 +72,10 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	
+	@Inject
+	//加給利用単位
+	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
+	
 	/**
 	 * Managerクラス
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -114,8 +119,8 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
 														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
 														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
-														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId())
-														   );
+														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()),
+														   bPUnitUseSettingRepository.getSetting(AppContexts.user().companyId()));
 		
 		
 		// 社員分ループ

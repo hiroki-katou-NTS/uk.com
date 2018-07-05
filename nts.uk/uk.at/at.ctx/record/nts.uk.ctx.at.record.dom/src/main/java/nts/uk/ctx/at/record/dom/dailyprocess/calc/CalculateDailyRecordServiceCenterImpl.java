@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -76,6 +77,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private EmpConditionRepository empConditionRepository;
 
+	@Inject
+	private BPUnitUseSettingRepository bPUnitUseSettingRepository; 
 	
 	@Inject
 	private WorkInformationRepository workInformationRepository;
@@ -89,12 +92,13 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		String comanyId = AppContexts.user().companyId();
 		//会社共通の設定を
 		MasterShareContainer shareContainer = MasterShareBus.open();
-		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
-														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
-														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
-														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
-														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
-														   errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(AppContexts.user().companyId(), true));
+		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(comanyId),
+														   holidayAddtionRepository.findByCId(comanyId),
+														   specificWorkRuleRepository.findCalcMethodByCid(comanyId),
+														   compensLeaveComSetRepository.find(comanyId),
+														   divergenceTimeRepository.getAllDivTime(comanyId),
+														   errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(comanyId, true),
+														   bPUnitUseSettingRepository.getSetting(comanyId));
 
 		companyCommonSetting.setShareContainer(shareContainer);
 		//社員毎の期間取得
@@ -291,7 +295,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
 														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
 														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
-														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()));
+														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()),
+														   bPUnitUseSettingRepository.getSetting(AppContexts.user().companyId()));
 
 		//社員毎の期間取得
 		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(integrationList);
