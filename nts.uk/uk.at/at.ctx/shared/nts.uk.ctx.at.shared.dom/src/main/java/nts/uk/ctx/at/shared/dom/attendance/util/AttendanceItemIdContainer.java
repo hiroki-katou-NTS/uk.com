@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.attendance.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
+import nts.uk.ctx.at.shared.dom.attendance.util.enu.MonthlyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class AttendanceItemIdContainer implements ItemConst {
@@ -17,6 +20,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 	private final static Map<Integer, String> DAY_ITEM_ID_CONTAINER;
 	private final static Map<Integer, String> MONTHLY_ITEM_ID_CONTAINER;
 	private final static Map<String, Integer> ENUM_CONTAINER;
+	
 	static {
 		ENUM_CONTAINER = new HashMap<>();
 		ENUM_CONTAINER.put(E_WORK_REF, 0);
@@ -2212,6 +2216,22 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return temp;
 	}
 
+	public static List<Integer> getItemIdByDailyDomains(DailyDomainGroup... domains){
+		return Arrays.stream(domains).map(e -> {
+			return DAY_ITEM_ID_CONTAINER.entrySet().stream()
+										.filter(en -> en.getValue().indexOf(e.name) == 0)
+										.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
+	public static List<Integer> getItemIdByDailyDomains(MonthlyDomainGroup... domains){
+		return Arrays.stream(domains).map(e -> {
+			return MONTHLY_ITEM_ID_CONTAINER.entrySet().stream()
+											.filter(en -> en.getValue().indexOf(e.name) == 0)
+											.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
 	public static boolean isHaveOptionalItems(Collection<ItemValue> items) {
 		return toFilterStream(items).findFirst().isPresent();
 	}
