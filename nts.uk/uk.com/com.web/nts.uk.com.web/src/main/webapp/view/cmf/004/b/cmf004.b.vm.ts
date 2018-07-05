@@ -37,7 +37,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             { value: RecoveryMethod.RESTORE_ALL, text: getText('CMF004_92') },
             { value: RecoveryMethod.SELECTED_RANGE, text: getText('CMF004_93') }
         ]);
-        dataContentConfirm: KnockoutObservable<DataContentConfirm> = ko.observable(new DataContentConfirm([], 1));
+        dataContentConfirm: KnockoutObservable<DataContentConfirm> = ko.observable(new DataContentConfirm([], 0));
         //Screen F
         changeDataRecoveryPeriod: KnockoutObservable<ChangeDataRecoveryPeriod> = ko.observable(new ChangeDataRecoveryPeriod([]));
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
