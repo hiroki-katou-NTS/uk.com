@@ -11,6 +11,8 @@ public interface OutCndDetailItemRepository
 
     List<OutCndDetailItem> getAllOutCndDetailItem();
 
+    List<OutCndDetailItem> getOutCndDetailItemByCode(String code);
+    
     Optional<OutCndDetailItem> getOutCndDetailItemById(String categoryId, int categoryItemNo);
 
     void add(OutCndDetailItem domain);

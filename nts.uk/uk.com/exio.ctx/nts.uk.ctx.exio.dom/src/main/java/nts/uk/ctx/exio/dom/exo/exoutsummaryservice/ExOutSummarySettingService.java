@@ -1,59 +1,128 @@
 package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
 import nts.uk.ctx.exio.dom.exo.outitem.StdOutItem;
 import nts.uk.ctx.exio.dom.exo.outitem.StdOutItemRepository;
+import nts.uk.ctx.exio.dom.exo.outitemsortorder.StdOutItemOrder;
+import nts.uk.ctx.exio.dom.exo.outitemsortorder.StdOutItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ExOutSummarySettingService {
-	
+
 	@Inject
 	StdOutputCondSetRepository stdOutputCondSetRepo;
-	
+
 	@Inject
-	OutCndDetailRepository outCndDetailRep;
-	
+	OutCndDetailRepository outCndDetailRepo;
+
+	@Inject
+	OutCndDetailItemRepository outCndDetailItemRepo;
+
 	@Inject
 	StdOutItemRepository stdOutItemRepo;
+
+	@Inject
+	StdOutItemOrderRepository stdOutItemOrderRepo;
+
+	@Inject
+	SearchCodeListRepository searchCodeListRepo;
 	
-	//アルゴリズム「外部出力取得設定一覧」を実行する with type = fixed form (standard)
-	private Optional<StdOutputCondSet> getExOutSetting(String conditionSetCd) {
+	@Inject
+	CtgItemDataRepository ctgItemDataRepo;
+
+	// アルゴリズム「外部出力取得設定一覧」を実行する with type = fixed form (standard)
+	private List<StdOutputCondSet> getExOutSetting(String conditionSetCd) {
 		String cid = AppContexts.user().companyId();
-		
-		if(conditionSetCd.equals("") || conditionSetCd == null) {
-			return stdOutputCondSetRepo.getStdOutputCondSetByCid(cid);
+		List<StdOutputCondSet> stdOutputCondSetList = new ArrayList<StdOutputCondSet>();
+
+		if (conditionSetCd.equals("") || conditionSetCd == null) {
+			stdOutputCondSetList = stdOutputCondSetRepo.getStdOutputCondSetByCid(cid);
 		} else {
-			return stdOutputCondSetRepo.getStdOutputCondSetById(cid, conditionSetCd);
+			Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepo.getStdOutputCondSetById(cid,
+					conditionSetCd);
+			if (stdOutputCondSet.isPresent()) {
+				stdOutputCondSetList.add(stdOutputCondSet.get());
+			}
 		}
+
+		return stdOutputCondSetList;
 	}
-	
-	//アルゴリズム「外部出力取得条件一覧」を実行する with type = fixed form (standard)
-	private Optional<OutCndDetail> getExOutCond(String code) {
-		Optional<OutCndDetail> OutCndDetailList = outCndDetailRep.getOutCndDetailByCode(code);
-		return OutCndDetailList;
-		// TODO: xử lý search code list
+
+	// アルゴリズム「外部出力取得条件一覧」を実行する with type = fixed form (standard)
+	private String getExOutCond(String code) {
+		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
+		List<SearchCodeList> searchCodeList;
+		Optional<CtgItemData> ctgItemData;
+		StringBuilder cond = new StringBuilder("");
+
+		for (int i = 0; i < outCndDetailItemList.size(); i++) {
+			searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(
+					outCndDetailItemList.get(i).getCategoryId(), outCndDetailItemList.get(i).getCategoryItemNo().v());
+			for (int j = 0; j < searchCodeList.size(); j++) {
+				ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItemList.get(i).getCategoryId(), outCndDetailItemList.get(i).getCategoryItemNo().v());
+				if ((i != 0) && (j != 0)) {
+					cond.append(", ");
+				}
+				
+				//TODO Chờ domain sửa thì sửa lại số thành enum
+				if(ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == 1) || (ctgItemData.get().getDataType() == 2) || (ctgItemData.get().getDataType() == 3))) {
+					cond.append("'");
+				}
+				
+				cond.append(searchCodeList.get(j).getSearchCode());
+				
+				//TODO Chờ domain sửa thì sửa lại số thành enum
+				if(ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == 1) || (ctgItemData.get().getDataType() == 2) || (ctgItemData.get().getDataType() == 3))) {
+					cond.append("'");
+				}
+			}
+		}
+
+		return cond.toString();
 	}
-	
+
 	// アルゴリズム「外部出力取得項目一覧」を実行する with type = fixed form (standard)
 	private int getExOutItemList(String outItemCd, String condSetCd) {
 		String cid = AppContexts.user().companyId();
-		Optional<StdOutItem> stdOutItem;
-		
-		if(outItemCd.equals("") || outItemCd == null) {
-			stdOutItem = stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd);
+		List<StdOutItem> stdOutItemList = new ArrayList<StdOutItem>();
+		List<StdOutItemOrder> stdOutItemOrder = new ArrayList<StdOutItemOrder>();
+
+		if (outItemCd == null || outItemCd.equals("")) {
+			stdOutItemList = stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd);
+			stdOutItemOrder = stdOutItemOrderRepo.getStdOutItemOrderByCidAndSetCd(cid, condSetCd);
 		} else {
-			stdOutItem = stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd);
+			if (stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).isPresent()) {
+				stdOutItemList.add(stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).get());
+			}
+
+			if (stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).isPresent()) {
+				stdOutItemOrder.add(stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).get());
+			}
 		}
-		
-		return 1;
+
+		for (StdOutItem stdOutItem : stdOutItemList) {
+			if (stdOutItem.getItemType() != null) {
+
+			}
+		}
+
+		// TODO: Chờ QA
+		return 0;
 	}
 }

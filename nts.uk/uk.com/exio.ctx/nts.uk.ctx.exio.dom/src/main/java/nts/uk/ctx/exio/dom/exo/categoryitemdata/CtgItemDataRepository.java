@@ -11,7 +11,7 @@ public interface CtgItemDataRepository
 
     List<CtgItemData> getAllCtgItemData();
 
-    Optional<CtgItemData> getCtgItemDataById();
+    Optional<CtgItemData> getCtgItemDataById(String categoryId, Integer itemNo);
 
     void add(CtgItemData domain);
 

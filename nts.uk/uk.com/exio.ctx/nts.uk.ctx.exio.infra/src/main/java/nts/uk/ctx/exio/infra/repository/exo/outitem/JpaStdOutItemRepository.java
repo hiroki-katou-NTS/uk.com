@@ -32,9 +32,9 @@ public class JpaStdOutItemRepository extends JpaRepository implements StdOutItem
 	}
 
 	@Override
-	public Optional<StdOutItem> getStdOutItemByCidAndSetCd(String cid, String condSetCd) {
+	public List<StdOutItem> getStdOutItemByCidAndSetCd(String cid, String condSetCd) {
 		return this.queryProxy().query(SELECT_BY_CID_AND_SET_CODE, OiomtStdOutItem.class).setParameter("cid", cid)
-				.setParameter("condSetCd", condSetCd).getSingle(c -> c.toDomain());
+				.setParameter("condSetCd", condSetCd).getList(c -> c.toDomain());
 	}
 
 	@Override

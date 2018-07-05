@@ -16,9 +16,9 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtOutCndDetail f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.outCndDetailPk.cid =:cid AND  f.outCndDetailPk.companyCndSetCd =:companyCndSetCd ";
+			+ " WHERE  f.outCndDetailPk.cid =:cid AND  f.outCndDetailPk.conditionSettingCd =:conditionSettingCd ";
 	private static final String SELECT_BY_CODE = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.outCndDetailPk.companyCndSetCd =:companyCndSetCd ";
+			+ " WHERE  f.outCndDetailPk.conditionSettingCd =:conditionSettingCd ";
 
 	@Override
 	public List<OutCndDetail> getAllOutCndDetail() {
@@ -27,14 +27,14 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
 	}
 
 	@Override
-	public Optional<OutCndDetail> getOutCndDetailById(String cid, String companyCndSetCd) {
+	public Optional<OutCndDetail> getOutCndDetailById(String cid, String conditionSettingCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtOutCndDetail.class).setParameter("cid", cid)
-				.setParameter("companyCndSetCd", companyCndSetCd).getSingle(c -> c.toDomain());
+				.setParameter("conditionSettingCd", conditionSettingCd).getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public Optional<OutCndDetail> getOutCndDetailByCode(String code) {
-		return this.queryProxy().query(SELECT_BY_CODE, OiomtOutCndDetail.class).setParameter("companyCndSetCd", code)
+		return this.queryProxy().query(SELECT_BY_CODE, OiomtOutCndDetail.class).setParameter("conditionSettingCd", code)
 				.getSingle(c -> c.toDomain());
 	}
 
@@ -49,8 +49,8 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
 	}
 
 	@Override
-	public void remove(String cid, String companyCndSetCd) {
-		this.commandProxy().remove(OiomtOutCndDetail.class, new OiomtOutCndDetailPk(cid, companyCndSetCd));
+	public void remove(String cid, String conditionSettingCd) {
+		this.commandProxy().remove(OiomtOutCndDetail.class, new OiomtOutCndDetailPk(cid, conditionSettingCd));
 	}
 
 	public static OiomtOutCndDetail toEntity(OutCndDetail domain) {

@@ -13,7 +13,7 @@ public interface OutCndDetailRepository
     
     Optional<OutCndDetail> getOutCndDetailByCode(String code);
 
-    Optional<OutCndDetail> getOutCndDetailById(String cid, String companyCndSetCd);
+    Optional<OutCndDetail> getOutCndDetailById(String cid, String conditionSettingCd);
 
     void add(OutCndDetail domain);
 
