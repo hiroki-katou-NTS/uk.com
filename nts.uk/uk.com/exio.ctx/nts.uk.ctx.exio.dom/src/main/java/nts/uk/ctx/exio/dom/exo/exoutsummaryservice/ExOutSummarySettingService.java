@@ -16,10 +16,10 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
-import nts.uk.ctx.exio.dom.exo.outitem.StdOutItem;
-import nts.uk.ctx.exio.dom.exo.outitem.StdOutItemRepository;
 import nts.uk.ctx.exio.dom.exo.outitemsortorder.StdOutItemOrder;
 import nts.uk.ctx.exio.dom.exo.outitemsortorder.StdOutItemOrderRepository;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -35,22 +35,22 @@ public class ExOutSummarySettingService {
 	OutCndDetailItemRepository outCndDetailItemRepo;
 
 	@Inject
-	StdOutItemRepository stdOutItemRepo;
+	StandardOutputItemRepository stdOutItemRepo;
 
 	@Inject
 	StdOutItemOrderRepository stdOutItemOrderRepo;
 
 	@Inject
 	SearchCodeListRepository searchCodeListRepo;
-	
+
 	@Inject
 	CtgItemDataRepository ctgItemDataRepo;
 
-	//アルゴリズム「外部出力サマリー設定」を実行する
+	// アルゴリズム「外部出力サマリー設定」を実行する
 	public int getExOutSummarySetting(String conditionSetCd) {
 		return 1;
 	}
-	
+
 	// アルゴリズム「外部出力取得設定一覧」を実行する with type = fixed form (standard)
 	private List<StdOutputCondSet> getExOutSetting(String conditionSetCd) {
 		String cid = AppContexts.user().companyId();
@@ -70,9 +70,9 @@ public class ExOutSummarySettingService {
 	}
 
 	// アルゴリズム「外部出力取得項目一覧」を実行する with type = fixed form (standard)
-	private List<StdOutItem> getExOutItemList(String outItemCd, String condSetCd) {
+	private List<StandardOutputItem> getExOutItemList(String outItemCd, String condSetCd) {
 		String cid = AppContexts.user().companyId();
-		List<StdOutItem> stdOutItemList = new ArrayList<StdOutItem>();
+		List<StandardOutputItem> stdOutItemList = new ArrayList<StandardOutputItem>();
 		List<StdOutItemOrder> stdOutItemOrder = new ArrayList<StdOutItemOrder>();
 
 		if (outItemCd == null || outItemCd.equals("")) {
@@ -88,7 +88,7 @@ public class ExOutSummarySettingService {
 			}
 		}
 
-		for (StdOutItem stdOutItem : stdOutItemList) {
+		for (StandardOutputItem stdOutItem : stdOutItemList) {
 			if (stdOutItem.getItemType() != null) {
 
 			}
@@ -97,7 +97,7 @@ public class ExOutSummarySettingService {
 		// TODO: Chờ QA
 		return stdOutItemList;
 	}
-	
+
 	// アルゴリズム「外部出力取得条件一覧」を実行する with type = fixed form (standard)
 	private String getExOutCond(String code) {
 		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
@@ -109,20 +109,23 @@ public class ExOutSummarySettingService {
 			searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(
 					outCndDetailItemList.get(i).getCategoryId(), outCndDetailItemList.get(i).getCategoryItemNo().v());
 			for (int j = 0; j < searchCodeList.size(); j++) {
-				ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItemList.get(i).getCategoryId(), outCndDetailItemList.get(i).getCategoryItemNo().v());
+				ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItemList.get(i).getCategoryId(),
+						outCndDetailItemList.get(i).getCategoryItemNo().v());
 				if ((i != 0) && (j != 0)) {
 					cond.append(", ");
 				}
-				
-				//TODO Chờ domain sửa thì sửa lại số thành enum
-				if(ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == 1) || (ctgItemData.get().getDataType() == 2) || (ctgItemData.get().getDataType() == 3))) {
+
+				// TODO Chờ domain sửa thì sửa lại số thành enum
+				if (ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == 1)
+						|| (ctgItemData.get().getDataType() == 2) || (ctgItemData.get().getDataType() == 3))) {
 					cond.append("'");
 				}
-				
+
 				cond.append(searchCodeList.get(j).getSearchCode());
-				
-				//TODO Chờ domain sửa thì sửa lại số thành enum
-				if(ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == 1) || (ctgItemData.get().getDataType() == 2) || (ctgItemData.get().getDataType() == 3))) {
+
+				// TODO Chờ domain sửa thì sửa lại số thành enum
+				if (ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == 1)
+						|| (ctgItemData.get().getDataType() == 2) || (ctgItemData.get().getDataType() == 3))) {
 					cond.append("'");
 				}
 			}

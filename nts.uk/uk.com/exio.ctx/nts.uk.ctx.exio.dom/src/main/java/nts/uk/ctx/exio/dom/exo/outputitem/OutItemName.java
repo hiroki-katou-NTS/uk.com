@@ -1,20 +1,16 @@
-package nts.uk.ctx.exio.dom.exo.outitem;
+package nts.uk.ctx.exio.dom.exo.outputitem;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-/**
- * @author son.tc
- *
- */
-@StringMaxLength(3)
-public class OutItemCd extends StringPrimitiveValue<OutItemCd> {
+@StringMaxLength(20)
+public class OutItemName extends StringPrimitiveValue<OutItemName> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public OutItemCd(String rawValue) {
+	public OutItemName(String rawValue) {
 		super(rawValue);
 	}
 }

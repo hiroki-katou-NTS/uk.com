@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.outitem;
+package nts.uk.ctx.exio.infra.entity.exo.outputitem;
 
 import java.io.Serializable;
 
@@ -11,14 +11,21 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * 出力項目(定型): 主キー情報
+ * カテゴリ項目: 主キー情報
  */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class OiomtStdOutItemPk implements Serializable {
+public class OiomtCtgItemPk implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * カテゴリ項目NO
+	 */
+	@Basic(optional = false)
+	@Column(name = "CTG_ITEM_NO")
+	public String ctgItemNo;
 
 	/**
 	 * 会社ID

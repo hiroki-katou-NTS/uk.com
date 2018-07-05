@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exo.outitem;
+package nts.uk.ctx.exio.dom.exo.outputitem;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -7,10 +7,10 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * カテゴリ項目NO
  */
 @StringMaxLength(4)
-public class CtgItemNo extends StringPrimitiveValue<CtgItemNo> {
+public class CategoryItemNo extends StringPrimitiveValue<CategoryItemNo> {
 	private static final long serialVersionUID = 1L;
 
-	public CtgItemNo(String rawValue) {
+	public CategoryItemNo(String rawValue) {
 		super(rawValue);
 	}
 }

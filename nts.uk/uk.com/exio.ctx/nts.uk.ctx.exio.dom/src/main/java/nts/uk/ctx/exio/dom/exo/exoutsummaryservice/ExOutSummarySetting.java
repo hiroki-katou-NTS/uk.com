@@ -2,9 +2,9 @@ package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 
 import java.util.List;
 
-import nts.uk.ctx.exio.dom.exo.outitem.StdOutItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 
 public class ExOutSummarySetting {
-	private List<StdOutItem> stdOutItemList;
+	private List<StandardOutputItem> stdOutItemList;
 	
 }

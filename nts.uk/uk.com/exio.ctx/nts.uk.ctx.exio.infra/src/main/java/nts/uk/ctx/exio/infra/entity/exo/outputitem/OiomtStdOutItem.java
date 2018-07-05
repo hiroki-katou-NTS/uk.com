@@ -1,6 +1,8 @@
-package nts.uk.ctx.exio.infra.entity.exo.outitem;
+package nts.uk.ctx.exio.infra.entity.exo.outputitem;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -10,12 +12,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.exo.outitem.CondSetCd;
-import nts.uk.ctx.exio.dom.exo.outitem.ItemType;
-import nts.uk.ctx.exio.dom.exo.outitem.OutItemCd;
-import nts.uk.ctx.exio.dom.exo.outitem.OutItemName;
-import nts.uk.ctx.exio.dom.exo.outitem.StdOutItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -53,13 +51,15 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 		return stdOutItemPk;
 	}
 
-	public StdOutItem toDomain() {
-		return new StdOutItem(this.stdOutItemPk.cid, new OutItemCd(this.stdOutItemPk.outItemCd),
-				new CondSetCd(this.stdOutItemPk.condSetCd), new OutItemName(this.outItemName),
-				EnumAdaptor.valueOf(this.itemType, ItemType.class));
+	public StandardOutputItem toDomain(List<OiomtCtgItem> categoryItems) {
+		return new StandardOutputItem(this.stdOutItemPk.cid, this.stdOutItemPk.outItemCd, this.stdOutItemPk.condSetCd,
+				this.outItemName, this.itemType, categoryItems.stream().map(x -> {
+					return new CategoryItem(x.getCtgItemPk().ctgItemNo, x.getCtgId(), x.getOperationSymbol(),
+							x.getOrder());
+				}).collect(Collectors.toList()));
 	}
 
-	public static OiomtStdOutItem toEntity(StdOutItem domain) {
+	public static OiomtStdOutItem toEntity(StandardOutputItem domain) {
 		return new OiomtStdOutItem(
 				new OiomtStdOutItemPk(domain.getCid(), domain.getOutItemCd().v(), domain.getCondSetCd().v()),
 				domain.getOutItemName().v(), domain.getItemType().value);
