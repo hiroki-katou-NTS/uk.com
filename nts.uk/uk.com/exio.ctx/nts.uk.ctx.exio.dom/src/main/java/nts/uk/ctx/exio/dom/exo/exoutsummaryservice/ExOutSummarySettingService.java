@@ -46,13 +46,18 @@ public class ExOutSummarySettingService {
 	@Inject
 	CtgItemDataRepository ctgItemDataRepo;
 
+	//アルゴリズム「外部出力サマリー設定」を実行する
+	public int getExOutSummarySetting(String conditionSetCd) {
+		return 1;
+	}
+	
 	// アルゴリズム「外部出力取得設定一覧」を実行する with type = fixed form (standard)
 	private List<StdOutputCondSet> getExOutSetting(String conditionSetCd) {
 		String cid = AppContexts.user().companyId();
 		List<StdOutputCondSet> stdOutputCondSetList = new ArrayList<StdOutputCondSet>();
 
-		if (conditionSetCd.equals("") || conditionSetCd == null) {
-			stdOutputCondSetList = stdOutputCondSetRepo.getStdOutputCondSetByCid(cid);
+		if (conditionSetCd == null || conditionSetCd.equals("")) {
+			stdOutputCondSetList = stdOutputCondSetRepo.getStdOutCondSetByCid(cid);
 		} else {
 			Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepo.getStdOutputCondSetById(cid,
 					conditionSetCd);
@@ -64,6 +69,35 @@ public class ExOutSummarySettingService {
 		return stdOutputCondSetList;
 	}
 
+	// アルゴリズム「外部出力取得項目一覧」を実行する with type = fixed form (standard)
+	private List<StdOutItem> getExOutItemList(String outItemCd, String condSetCd) {
+		String cid = AppContexts.user().companyId();
+		List<StdOutItem> stdOutItemList = new ArrayList<StdOutItem>();
+		List<StdOutItemOrder> stdOutItemOrder = new ArrayList<StdOutItemOrder>();
+
+		if (outItemCd == null || outItemCd.equals("")) {
+			stdOutItemList = stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd);
+			stdOutItemOrder = stdOutItemOrderRepo.getStdOutItemOrderByCidAndSetCd(cid, condSetCd);
+		} else {
+			if (stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).isPresent()) {
+				stdOutItemList.add(stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).get());
+			}
+
+			if (stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).isPresent()) {
+				stdOutItemOrder.add(stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).get());
+			}
+		}
+
+		for (StdOutItem stdOutItem : stdOutItemList) {
+			if (stdOutItem.getItemType() != null) {
+
+			}
+		}
+
+		// TODO: Chờ QA
+		return stdOutItemList;
+	}
+	
 	// アルゴリズム「外部出力取得条件一覧」を実行する with type = fixed form (standard)
 	private String getExOutCond(String code) {
 		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
@@ -95,34 +129,5 @@ public class ExOutSummarySettingService {
 		}
 
 		return cond.toString();
-	}
-
-	// アルゴリズム「外部出力取得項目一覧」を実行する with type = fixed form (standard)
-	private int getExOutItemList(String outItemCd, String condSetCd) {
-		String cid = AppContexts.user().companyId();
-		List<StdOutItem> stdOutItemList = new ArrayList<StdOutItem>();
-		List<StdOutItemOrder> stdOutItemOrder = new ArrayList<StdOutItemOrder>();
-
-		if (outItemCd == null || outItemCd.equals("")) {
-			stdOutItemList = stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd);
-			stdOutItemOrder = stdOutItemOrderRepo.getStdOutItemOrderByCidAndSetCd(cid, condSetCd);
-		} else {
-			if (stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).isPresent()) {
-				stdOutItemList.add(stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).get());
-			}
-
-			if (stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).isPresent()) {
-				stdOutItemOrder.add(stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).get());
-			}
-		}
-
-		for (StdOutItem stdOutItem : stdOutItemList) {
-			if (stdOutItem.getItemType() != null) {
-
-			}
-		}
-
-		// TODO: Chờ QA
-		return 0;
 	}
 }
