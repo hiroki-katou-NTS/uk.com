@@ -208,7 +208,7 @@ module nts.uk.pr.view.ccg007.d {
                     height : 450
                 }).onClosed(function(): any {
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    if (!childData.submit.isNil) {
+                    if (childData.submit) {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                     }
                 })
