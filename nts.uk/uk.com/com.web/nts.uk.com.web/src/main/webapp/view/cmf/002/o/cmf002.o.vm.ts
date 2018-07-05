@@ -54,9 +54,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             });
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
-   
-            self.loadListOutputItem();
-            self.loadListOutputCondition()
         }
 
         selectStandardMode() {
@@ -76,6 +73,18 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.loadScreenQ();
             $('#ex_output_wizard').ntsWizard("goto", 2);
         }
+        
+        nextToScreenR() {
+            let self = this;
+            next();
+            
+            service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
+                self.listOutputCondition(res.ctgItemDataCustomList);
+                self.listOutputItem(res.ctdOutItemCustomList);
+            }).fail(function(res: any) {
+                console.log("getExOutSummarySetting fail");
+            });
+        }
 
         loadListCondition() {
             let self = this;
@@ -88,22 +97,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             ]);
             self.selectedConditionCd('1');
             self.selectedConditionName('test a');
-        }
-
-        loadListOutputItem() {
-            let self = this;
-
-            for (let i = 0; i < 20; i++) {
-                self.listOutputItem.push(new model.StandardOutputItem('00' + i, 'Test ' + i, '', '', 0));
-            }
-        }
-
-        loadListOutputCondition() {
-            let self = this;
-
-            for (let i = 0; i < 10; i++) {
-                self.listOutputCondition.push(new OutputCondition('item ' + i, 'Condition ' + i));
-            }
         }
 
         loadScreenQ() {
