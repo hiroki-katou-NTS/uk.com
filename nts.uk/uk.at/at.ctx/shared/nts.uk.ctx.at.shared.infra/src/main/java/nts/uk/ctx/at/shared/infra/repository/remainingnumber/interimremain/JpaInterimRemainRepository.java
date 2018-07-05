@@ -20,23 +20,23 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimRemainRepository extends JpaRepository  implements InterimRemainRepository{
 	
-	private String QUERY_BY_SID_PRIOD = "SELECT c FROM KrcmtInterimRemainMng c"
+	private static final String QUERY_BY_SID_PRIOD = "SELECT c FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate"
 			+ " AND c.remainType = :remainType";
-	private String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcmtInterimRemainMng c"
+	private static final String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate"
 			+ " AND c.remainType = :remainType";
-	private String DELETE_BY_SID_PRIOD = "DELETE FROM KrcmtInterimRemainMng c"
+	private static final String DELETE_BY_SID_PRIOD = "DELETE FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate";
-	private String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c.remainMngId = :remainMngId";
+	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c.remainMngId = :remainMngId";
 	
-	private String QUERY_BY_SID_YMD = "SELECT c FROM KrcmtInterimRemainMng c"
+	private static final String QUERY_BY_SID_YMD = "SELECT c FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :sId"
 			+ " AND c.ymd = :ymd";
 	

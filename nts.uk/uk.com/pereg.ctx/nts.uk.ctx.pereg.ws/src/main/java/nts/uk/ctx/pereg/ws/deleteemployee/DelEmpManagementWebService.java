@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.ws.company.organization.employee.deletemanagement;
+package nts.uk.ctx.pereg.ws.deleteemployee;
 
 import java.util.List;
 
@@ -13,16 +13,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.CompletelyDelEmpCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.EmployeeDeleteCommand;
-import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.EmployeeDeleteCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.EmployeeDeleteToRestoreCommand;
-import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.RestoreDataEmpCommandHandler;
-import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDetailDto;
-import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
-import nts.uk.ctx.bs.employee.app.find.employee.deletemanagement.EmployeeDeleteFinder;
+import nts.uk.ctx.pereg.app.command.deleteemployee.CompletelyDelEmpCommandHandler;
+import nts.uk.ctx.pereg.app.command.deleteemployee.EmployeeDeleteCommand;
+import nts.uk.ctx.pereg.app.command.deleteemployee.EmployeeDeleteCommandHandler;
+import nts.uk.ctx.pereg.app.command.deleteemployee.EmployeeDeleteToRestoreCommand;
+import nts.uk.ctx.pereg.app.command.deleteemployee.RestoreDataEmpCommandHandler;
+import nts.uk.ctx.pereg.app.find.deleteemployee.EmployeeDeleteFinder;
+import nts.uk.ctx.pereg.app.find.deleteemployee.EmployeeToDeleteDetailDto;
+import nts.uk.ctx.pereg.app.find.deleteemployee.EmployeeToDeleteDto;
 
-@Path("basic/organization/deleteempmanagement")
+
+@Path("ctx/pereg/deleteemployee")
 @Produces({ "application/json", "text/plain" })
 public class DelEmpManagementWebService extends WebService {
 
