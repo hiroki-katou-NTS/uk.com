@@ -5,9 +5,11 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 
 /**
  * 特別休暇利用条件
@@ -23,7 +25,7 @@ public class SpecialLeaveRestriction extends DomainObject {
 	private String companyId;
 	
 	/** 特別休暇コード */
-	private int specialHolidayCode;
+	private SpecialHolidayCode specialHolidayCode;
 	
 	/** 特別休暇利用条件コード */
 	private int specialLeaveCode;
@@ -91,5 +93,38 @@ public class SpecialLeaveRestriction extends DomainObject {
 				throw new BusinessException("Msg_366");
 			}
 		}
+	}
+	
+	/**
+	 * Create from Java Type
+	 * 
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @param specialLeaveCode
+	 * @param restrictionCls
+	 * @param ageLimit
+	 * @param genderRest
+	 * @param restEmp
+	 * @param listCls
+	 * @param ageStandard
+	 * @param ageRange
+	 * @param gender
+	 * @param listEmp
+	 * @return
+	 */
+	public static SpecialLeaveRestriction createFromJavaType(String companyId, int specialHolidayCode, int specialLeaveCode, int restrictionCls, 
+			int ageLimit, int genderRest, int restEmp, List<String> listCls, AgeStandard ageStandard, AgeRange ageRange, int gender, List<String> listEmp) {
+		return new SpecialLeaveRestriction(companyId, 
+				new SpecialHolidayCode(specialHolidayCode),
+				specialLeaveCode,
+				EnumAdaptor.valueOf(restrictionCls, UseAtr.class),
+				EnumAdaptor.valueOf(ageLimit, UseAtr.class),
+				EnumAdaptor.valueOf(genderRest, UseAtr.class),
+				EnumAdaptor.valueOf(restEmp, UseAtr.class),
+				listCls,
+				ageStandard,
+				ageRange,
+				EnumAdaptor.valueOf(gender, GenderCls.class),
+				listEmp);
 	}
 }

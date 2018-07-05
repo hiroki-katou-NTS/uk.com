@@ -3,8 +3,9 @@ package nts.uk.ctx.at.shared.dom.specialholidaynew;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.GrantPeriodic;
@@ -48,5 +49,30 @@ public class SpecialHoliday extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
+	}
+	
+	/**
+	 * Create from Java Type
+	 * 
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @param specialHolidayName
+	 * @param grantRegular
+	 * @param grantPeriodic
+	 * @param specialLeaveRestriction
+	 * @param targetItem
+	 * @param memo
+	 * @return
+	 */
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
+			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction, TargetItem targetItem, String memo) {
+		return new SpecialHoliday(companyId, 
+				new SpecialHolidayCode(specialHolidayCode),
+				new SpecialHolidayName(specialHolidayName),
+				grantRegular,
+				grantPeriodic,
+				specialLeaveRestriction,
+				targetItem,
+				new Memo(memo));
 	}
 }
