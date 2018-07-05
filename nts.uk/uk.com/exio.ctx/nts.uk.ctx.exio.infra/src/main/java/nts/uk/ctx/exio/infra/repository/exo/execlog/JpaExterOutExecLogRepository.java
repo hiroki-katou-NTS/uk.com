@@ -44,4 +44,15 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 	public void remove(String cid, String outProcessId) {
 		this.commandProxy().remove(OiomtExterOutExecLog.class, new OiomtExterOutExecLogPk(cid, outProcessId));
 	}
+
+	@Override
+	public void update(String cid, String outProcessId,Integer fileZise) {
+		Optional<OiomtExterOutExecLog> entityOpt = this.queryProxy()
+				.query(SELECT_BY_KEY_STRING, OiomtExterOutExecLog.class).setParameter("cid", cid)
+				.setParameter("outProcessId", outProcessId).getSingle();
+		entityOpt.ifPresent(entity -> {
+			entity.fileSize = fileZise;
+			this.commandProxy().update(entity);
+		});
+	}
 }

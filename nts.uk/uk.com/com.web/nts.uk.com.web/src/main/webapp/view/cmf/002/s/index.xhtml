@@ -83,8 +83,8 @@
  						<button id="S10_1" class="large"  tabindex="1" data-bind="click : interrupt">#{i18n.getText('CMF002_245')}</button> 
  					</com:ko-if>
  					<com:ko-if bind="(dialogMode() !== 'saving')">
-	 					<button id="S10_2" class="large"  tabindex="2" data-bind="click : download, enable: ((dialogMode() == 'done') &amp;&amp; (!isDownloaded()))">#{i18n.getText('CMF002_246')}</button>
-	 					<button id="S10_3" class="large"  tabindex="3">#{i18n.getText('CMF002_247')}</button>
+	 					<button id="S10_2" class="large"  tabindex="2" data-bind="click : close">#{i18n.getText('CMF002_246')}</button>
+	 					<button id="S10_3" class="large"  tabindex="3" data-bind="click : download, enable: ((dialogMode() == 'done') &amp;&amp; (!isDownloaded()))">#{i18n.getText('CMF002_247')}</button>
 	 					<button id="S10_4" class="large"  tabindex="3">#{i18n.getText('CMF002_248')}</button> 
 					</com:ko-if>
 				</div>
