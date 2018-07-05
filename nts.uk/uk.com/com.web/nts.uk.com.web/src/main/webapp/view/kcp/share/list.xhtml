@@ -12,8 +12,10 @@
 	float: left;
 }
 </style>
-	<div id="nts-component-list" style="padding: 20px; border-radius: 5px;"
-		data-bind="style: {width: gridStyle.totalComponentSize + 'px', height: gridStyle.totalHeight + 'px'},
+	<div id="nts-component-list" style="border-radius: 5px;"
+		data-bind="style: {width: gridStyle.totalComponentSize + 'px',
+				height: gridStyle.totalHeight + 'px',
+				padding: isDialog ? '0px' : '20px'},
 				css: {'caret-right caret-background bg-green': !isDialog}">
 		<com:ko tag="if" bind="!isDialog">
 			<i class="icon icon-searchbox"></i>
@@ -45,28 +47,13 @@
 			</div>
 		</com:ko>
 		<!-- End of Upgrade -->
-		<!-- <div style="width: 350px; margin-bottom: 10px;"
-			data-bind="attr: {tabindex: tabIndex.searchBox}, css: {'float-left': isHasButtonSelectAll}, ntsSearchBox: searchOption">
-		</div> -->
 		<div id="search-box-kcp"></div>
-
 		<com:ko tag="if" bind="isHasButtonSelectAll">
 			<button
 				data-bind="attr: {tabindex: tabIndex.selectAllButton}, click: selectAll"
 				style="margin-left: 4px;">#{i18n.getText('KCP004_7')}</button>
 			<div style="clear: both;"></div>
 		</com:ko>
-		<!-- <table
-			data-bind="attr: {tabindex: tabIndex.table}, ntsGridList: {
-				width: gridStyle.totalColumnSize,
-				dataSource: itemList,
-				primaryKey: targetKey,
-				columns: listComponentColumn,
-				multiple: isMultipleSelect,
-				value: selectedCodes,
-				name: getItemNameForList(),
-				rows: maxRows}">
-		</table> -->
 		<table id="grid-list-all-kcp"></table>
 	</div>
 </ui:composition>

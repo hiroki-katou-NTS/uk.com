@@ -373,8 +373,35 @@ module kcp.share.list {
                     fields: ['name', 'code'],
                     mode: 'igGrid'
                 };
-                $('#search-box-kcp').ntsSearchBox(searchBoxOptions);
-                $('#'+self.componentGridId).ntsGridList(options);
+
+                // set random id to prevent bug caused by calling multiple component on the same page
+                const searchBoxId = nts.uk.util.randomId();
+                const componentWrapperId = nts.uk.util.randomId();
+                $('#nts-component-list').attr('id', componentWrapperId);
+                $('#search-box-kcp').attr('id', searchBoxId);
+
+                // load ntsGrid & searchbox component
+                $('#' + searchBoxId).ntsSearchBox(searchBoxOptions);
+                $('#' + self.componentGridId).ntsGridList(options);
+
+                // setup event
+                $('#' + componentWrapperId).on('click', () => {
+                    const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
+                    self.selectedCodes(_.map(selecteds, o => o.id));
+                    console.log(selecteds);
+                });
+                $('#' + componentWrapperId).on('keyup', e => {
+                    if (e.which != KeyCode.ARROW_UP ||
+                        e.which != KeyCode.ARROW_DOWN ||
+                        e.which != KeyCode.ARROW_LEFT ||
+                        e.which != KeyCode.ARROW_RIGHT ||
+                        e.which != KeyCode.ENTER) {
+                        return;
+                    }
+                    const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
+                    self.selectedCodes(_.map(selecteds, o => o.id));
+                    console.log(selecteds);
+                });
             });
         }
 
@@ -902,6 +929,15 @@ module kcp.share.list {
             return '';
         }
     }
+
+    export class KeyCode {
+        static ARROW_UP = 37;
+        static ARROW_DOWN = 38;
+        static ARROW_LEFT = 39;
+        static ARROW_RIGHT = 40;
+        static ENTER = 13;
+    }
+
     
     /**
      * Service,
