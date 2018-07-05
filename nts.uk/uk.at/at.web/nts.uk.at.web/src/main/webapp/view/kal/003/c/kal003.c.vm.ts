@@ -86,7 +86,8 @@ module nts.uk.at.view.kal003.c.viewmodel {
                         { code: 1, name: "勤怠項目", enable: true }
                     ]);
                 }
-                self.validateRange();
+                $('.need-check').ntsError('clear');
+//                self.validateRange();
             });
             
             if (param.data.compareOperator > 5) {

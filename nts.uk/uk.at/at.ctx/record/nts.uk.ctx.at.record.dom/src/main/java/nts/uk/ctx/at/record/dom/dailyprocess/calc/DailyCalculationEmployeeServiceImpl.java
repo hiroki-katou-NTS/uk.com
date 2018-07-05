@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
@@ -183,7 +184,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		//*****（未）　期間分をまとめて取得するリポジトリメソッド等をここで使い、読み込んだデータは、最終的にIntegrationへ入れる。
 		//*****（未）　データがない日も含めて、毎日ごとに処理するなら、下のループをデータ単位→日単位に変え、Integrationへの取得はループ内で行う。
 		List<IntegrationOfDaily> integrationOfDailys = createIntegrationOfDaily(employeeId,datePeriod);
-
+		Map<GeneralDate,IntegrationOfDaily> mapIntegration = convertMap(integrationOfDailys);
 		/*労働条件取得*/
 		Map<String,DatePeriod> id = new HashMap<>();
 		id.put(employeeId, datePeriod);
@@ -207,8 +208,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		companyCommonSetting.setEmpCondition(empConditionRepository.findAll(companyId, optionalItemNoList));
 		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
 			
+		
 		// 取得データ分ループ
-		for (IntegrationOfDaily integrationOfDaily : integrationOfDailys) {
+		for (Map.Entry<GeneralDate,IntegrationOfDaily> entity:mapIntegration.entrySet()) {
 			
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.hasBeenRequestedToCancel()) {
@@ -216,17 +218,17 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				return ProcessState.INTERRUPTION;
 			}
 			
-			if(!nowCondition.get().getKey().contains(integrationOfDaily.getAffiliationInfor().getYmd())) {
+			if(!nowCondition.get().getKey().contains(entity.getValue().getAffiliationInfor().getYmd())) {
 				//労働条件
 				/*社員毎に取得するデータ(労働条件)*/
-				nowCondition = personalInfo.getItemAtDate(integrationOfDaily.getAffiliationInfor().getYmd());
+				nowCondition = personalInfo.getItemAtDate(entity.getValue().getAffiliationInfor().getYmd());
 				if(!nowCondition.isPresent()) continue;
 				//↑で取得したデータのセット
 				companyCommonSetting.setPersonInfo(Optional.of(nowCondition.get().getValue()));
 			}
 			//社員、日付毎に取得した法定労働時間
-			if(!integrationOfDaily.getAffiliationInfor().getEmploymentCode().equals(nowEmpCode)) {
-				nowEmpCode = integrationOfDaily.getAffiliationInfor().getEmploymentCode(); 
+			if(!entity.getValue().getAffiliationInfor().getEmploymentCode().equals(nowEmpCode)) {
+				nowEmpCode = entity.getValue().getAffiliationInfor().getEmploymentCode(); 
 				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),nowEmpCode.toString(), employeeId, datePeriod.start(), nowCondition.get().getValue().getLaborSystem());
 				companyCommonSetting.setDailyUnit(dailyUnit);
 			}
@@ -244,7 +246,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			String employmentCd = "dummy";
 			
 			// 計算処理　（勤務情報を取得して計算）
-			val value = this.calculateDailtRecordService.calculate(integrationOfDaily,companyCommonSetting);
+			val value = this.calculateDailtRecordService.calculate(entity.getValue(),
+																   companyCommonSetting,
+																   findAndGetWorkInfo(employeeId, mapIntegration,entity.getValue().getAffiliationInfor().getYmd().addDays(-1)),
+																   findAndGetWorkInfo(employeeId, mapIntegration,entity.getValue().getAffiliationInfor().getYmd().addDays(1)));
 			/*
 			// 状態確認
 			//*****（未）　IntegrationOfDailyの中に、boolean error;を置いて、処理内でのエラー有無を返し、ここで、エラー処理につなぐ。
@@ -328,5 +333,34 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					));
 		}
 		return returnList;
+	}
+	
+	/**
+	 * List→Mapへの変換クラス
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @return integrationOfDailyのMap
+	 */
+	private Map<GeneralDate, IntegrationOfDaily> convertMap(List<IntegrationOfDaily> integrationOfDaily) {
+		Map<GeneralDate, IntegrationOfDaily> map = new HashMap<>();
+		integrationOfDaily.forEach(tc ->{
+			map.put(tc.getAffiliationInfor().getYmd(), tc);
+		});
+		return map;
+	}
+	
+	/**
+	 * 前日翌日(parameterによってどっちにするか決める)の勤務情報を取得する
+	 * @param empId
+	 * @param mapIntegration
+	 * @param addDays　取得したい日(-1or+1した日を渡す)
+	 * @return addDaysの勤務情報
+	 */
+	private Optional<WorkInfoOfDailyPerformance> findAndGetWorkInfo(String empId, Map<GeneralDate, IntegrationOfDaily> mapIntegration, GeneralDate addDays) {
+		if(mapIntegration.containsKey(addDays)) {
+			return Optional.of(mapIntegration.get(addDays).getWorkInformation());
+		}
+		else {
+			return workInformationRepository.find(empId, addDays);
+		}
 	}
 }
