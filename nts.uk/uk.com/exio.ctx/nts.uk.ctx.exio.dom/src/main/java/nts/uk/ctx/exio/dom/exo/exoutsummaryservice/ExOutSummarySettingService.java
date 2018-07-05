@@ -17,10 +17,10 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
-import nts.uk.ctx.exio.dom.exo.outitem.StdOutItem;
-import nts.uk.ctx.exio.dom.exo.outitem.StdOutItemRepository;
-import nts.uk.ctx.exio.dom.exo.outitemsortorder.StdOutItemOrder;
-import nts.uk.ctx.exio.dom.exo.outitemsortorder.StdOutItemOrderRepository;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -33,10 +33,10 @@ public class ExOutSummarySettingService {
 	private OutCndDetailItemRepository outCndDetailItemRepo;
 
 	@Inject
-	private StdOutItemRepository stdOutItemRepo;
+	private StandardOutputItemRepository stdOutItemRepo;
 
 	@Inject
-	private StdOutItemOrderRepository stdOutItemOrderRepo;
+	private StandardOutputItemOrderRepository stdOutItemOrderRepo;
 
 	@Inject
 	private SearchCodeListRepository searchCodeListRepo;
@@ -46,7 +46,7 @@ public class ExOutSummarySettingService {
 
 	// アルゴリズム「外部出力サマリー設定」を実行する
 	public ExOutSummarySetting getExOutSummarySetting(String conditionSetCd) {
-		List<StdOutItem> stdOutItemList = getExOutItemList("", conditionSetCd);
+		List<StandardOutputItem> stdOutItemList = getExOutItemList("", conditionSetCd);
 		List<CtgItemDataCustom> ctgItemDataCustomList = getExOutCond(conditionSetCd);
 		
 		return new ExOutSummarySetting(stdOutItemList, ctgItemDataCustomList);
@@ -71,25 +71,25 @@ public class ExOutSummarySettingService {
 	}
 
 	// アルゴリズム「外部出力取得項目一覧」を実行する with type = fixed form (standard)
-	private List<StdOutItem> getExOutItemList(String outItemCd, String condSetCd) {
+	private List<StandardOutputItem> getExOutItemList(String outItemCd, String condSetCd) {
 		String cid = AppContexts.user().companyId();
-		List<StdOutItem> stdOutItemList = new ArrayList<StdOutItem>();
-		List<StdOutItemOrder> stdOutItemOrder = new ArrayList<StdOutItemOrder>();
+		List<StandardOutputItem> stdOutItemList = new ArrayList<StandardOutputItem>();
+		List<StandardOutputItemOrder> stdOutItemOrder = new ArrayList<StandardOutputItemOrder>();
 
 		if (outItemCd == null || outItemCd.equals("")) {
 			stdOutItemList = stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd);
-			stdOutItemOrder = stdOutItemOrderRepo.getStdOutItemOrderByCidAndSetCd(cid, condSetCd);
+			stdOutItemOrder = stdOutItemOrderRepo.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd);
 		} else {
 			if (stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).isPresent()) {
 				stdOutItemList.add(stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).get());
 			}
 
-			if (stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).isPresent()) {
-				stdOutItemOrder.add(stdOutItemOrderRepo.getStdOutItemOrderById(cid, outItemCd, condSetCd).get());
+			if (stdOutItemOrderRepo.getStandardOutputItemOrderById(cid, outItemCd, condSetCd).isPresent()) {
+				stdOutItemOrder.add(stdOutItemOrderRepo.getStandardOutputItemOrderById(cid, outItemCd, condSetCd).get());
 			}
 		}
 
-		for (StdOutItem stdOutItem : stdOutItemList) {
+		for (StandardOutputItem stdOutItem : stdOutItemList) {
 			if (stdOutItem.getItemType() != null) {
 
 			}

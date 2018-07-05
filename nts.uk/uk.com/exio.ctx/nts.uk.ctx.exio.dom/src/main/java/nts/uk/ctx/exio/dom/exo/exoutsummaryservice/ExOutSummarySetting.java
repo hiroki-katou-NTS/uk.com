@@ -4,11 +4,14 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.exio.dom.exo.outitem.StdOutItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
+
 
 @AllArgsConstructor
 @Getter
 public class ExOutSummarySetting {
-	private List<StdOutItem> stdOutItemList;
+
+	private List<StandardOutputItem> stdOutItemList;
 	private List<CtgItemDataCustom> ctgItemDataCustomList;
+
 }

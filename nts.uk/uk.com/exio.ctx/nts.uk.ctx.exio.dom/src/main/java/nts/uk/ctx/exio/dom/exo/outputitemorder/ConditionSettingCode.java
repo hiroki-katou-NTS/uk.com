@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exo.outitemsortorder;
+package nts.uk.ctx.exio.dom.exo.outputitemorder;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -8,13 +8,13 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 @StringMaxLength(3)
-public class CondSetCd extends StringPrimitiveValue<CondSetCd> {
+public class ConditionSettingCode extends StringPrimitiveValue<ConditionSettingCode> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public CondSetCd(String rawValue) {
+	public ConditionSettingCode(String rawValue) {
 		super(rawValue);
 	}
 }

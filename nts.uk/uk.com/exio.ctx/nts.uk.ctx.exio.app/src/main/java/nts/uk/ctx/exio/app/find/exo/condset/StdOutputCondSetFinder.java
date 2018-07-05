@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.app.find.exo.condset;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -29,7 +28,7 @@ public class StdOutputCondSetFinder {
 				.collect(Collectors.toList());
 	}
 	
-	public Optional<StdOutputCondSet> getCndSet() {
+	public List<StdOutputCondSet> getCndSet() {
 		String cId = AppContexts.user().companyId();
 		return acquisitionSettingList.getAcquisitionSettingList(cId, null);		
 	}

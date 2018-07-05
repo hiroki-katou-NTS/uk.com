@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.outitem;
+package nts.uk.ctx.exio.infra.entity.exo.outputitem;
 
 import java.io.Serializable;
 
@@ -9,14 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.exo.outitem.CondSetCd;
-import nts.uk.ctx.exio.dom.exo.outitem.CtgId;
-import nts.uk.ctx.exio.dom.exo.outitem.CtgItem;
-import nts.uk.ctx.exio.dom.exo.outitem.CtgItemNo;
-import nts.uk.ctx.exio.dom.exo.outitem.OperationSymbol;
-import nts.uk.ctx.exio.dom.exo.outitem.OutItemCd;
+import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -26,6 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_CTG_ITEM")
+@Getter
 public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -61,17 +58,15 @@ public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 		return ctgItemPk;
 	}
 
-	public CtgItem toDomain() {
-		return new CtgItem(new CtgItemNo(this.ctgItemPk.ctgItemNo), this.ctgItemPk.cid,
-				new OutItemCd(this.ctgItemPk.outItemCd), new CondSetCd(this.ctgItemPk.condSetCd), new CtgId(this.ctgId),
-				EnumAdaptor.valueOf(this.operationSymbol, OperationSymbol.class), this.order);
+	public CategoryItem toDomain() {
+		return new CategoryItem(this.ctgItemPk.ctgItemNo, this.ctgId, this.operationSymbol, this.order);
 	}
 
-	public static OiomtCtgItem toEntity(CtgItem domain) {
+	public static OiomtCtgItem toEntity(StandardOutputItem stdOutItem, CategoryItem domain) {
 		return new OiomtCtgItem(
-				new OiomtCtgItemPk(domain.getCtgItemNo().v(), domain.getCid(), domain.getOutItemCd().v(),
-						domain.getCondSetCd().v()),
-				domain.getCtgId().v(), domain.getOperationSymbol().value, domain.getOrder());
+				new OiomtCtgItemPk(domain.getCategoryItemNo().v(), stdOutItem.getCid(),
+						stdOutItem.getOutputItemCode().v(), stdOutItem.getConditionSettingCode().v()),
+				domain.getCategoryId().v(), domain.getOperationSymbol().value, domain.getOrder());
 	}
 
 }

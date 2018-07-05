@@ -60,7 +60,7 @@ public class TimeDataFmSet extends AggregateRoot
     private DelimiterSetting delimiterSetting;
     
     /**
-    * 前日出力方法
+    * 時分/分選択
     */
     private HourMinuteClassification selectHourMinute;
     

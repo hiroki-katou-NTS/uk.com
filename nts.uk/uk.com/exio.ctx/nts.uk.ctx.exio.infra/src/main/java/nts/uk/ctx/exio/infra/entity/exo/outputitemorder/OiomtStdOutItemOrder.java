@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.outitemsortorder;
+package nts.uk.ctx.exio.infra.entity.exo.outputitemorder;
 
 import java.io.Serializable;
 
@@ -10,9 +10,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.outitemsortorder.CondSetCd;
-import nts.uk.ctx.exio.dom.exo.outitemsortorder.OutItemCd;
-import nts.uk.ctx.exio.dom.exo.outitemsortorder.StdOutItemOrder;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.ConditionSettingCode;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.OutputItemCode;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -43,15 +43,15 @@ public class OiomtStdOutItemOrder extends UkJpaEntity implements Serializable {
 		return stdOutItemOrderPk;
 	}
 
-	public StdOutItemOrder toDomain() {
-		return new StdOutItemOrder(this.stdOutItemOrderPk.cid, new OutItemCd(this.stdOutItemOrderPk.outItemCd),
-				new CondSetCd(this.stdOutItemOrderPk.condSetCd), this.order);
+	public StandardOutputItemOrder toDomain() {
+		return new StandardOutputItemOrder(this.stdOutItemOrderPk.cid,
+				new OutputItemCode(this.stdOutItemOrderPk.outItemCd),
+				new ConditionSettingCode(this.stdOutItemOrderPk.condSetCd), this.order);
 	}
 
-	public static OiomtStdOutItemOrder toEntity(StdOutItemOrder domain) {
-		return new OiomtStdOutItemOrder(
-				new OiomtStdOutItemOrderPk(domain.getCid(), domain.getOutItemCd().v(), domain.getCondSetCd().v()),
-				domain.getOrder());
+	public static OiomtStdOutItemOrder toEntity(StandardOutputItemOrder domain) {
+		return new OiomtStdOutItemOrder(new OiomtStdOutItemOrderPk(domain.getCid(), domain.getOutputItemCode().v(),
+				domain.getConditionSettingCode().v()), domain.getOrder());
 	}
 
 }

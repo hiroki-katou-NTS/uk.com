@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -21,8 +21,8 @@ public class StdOutputCondSetService {
 	public Map<String, String> excuteCopy(String copyDestinationCode,String destinatioName, String conditionSetCd, int overwite){
 		Map<String, String> resultExvuteCopy = new HashMap<>();
 		String cid = AppContexts.user().companyId();
-		List<StdOutputCondSet> lstStdOutputCondSet = stdOutputCondSetRepository.getOutputCondSetByCidAndconditionSetCd(cid,conditionSetCd);
-		if(lstStdOutputCondSet.size() > 0){
+		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid,conditionSetCd);
+		if(stdOutputCondSet.isPresent()){
 			if(overwite == 1){
 				//result = OK
 				//overwrite = TO
@@ -54,7 +54,7 @@ public class StdOutputCondSetService {
 	//******
 	
 	
-	public void registerOutputSet(String screenMode , String standType, StdOutputCondSet stdOutputCondSet, boolean checkAutoExecution){
+	public void registerOutputSet(String screenMode , String standType, StdOutputCondSet stdOutputCondSet, boolean checkAutoExecution, List<StandardOutputItemOrder> stdOutItemOrder){
 		if (outputSetRegisConfir(screenMode, standType, stdOutputCondSet.getCid(), checkAutoExecution)) {
 			updateOutputCndSet(stdOutputCondSet,screenMode);
 		}

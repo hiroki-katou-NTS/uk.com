@@ -4,7 +4,8 @@ module nts.uk.com.view.cmf002.b {
          * define path to service
          */
         var path: any = {
-            getCndSet: "exio/exo/condset/getCndSet"
+            getCndSet: "exio/exo/condset/getCndSet",
+            deleteCnd: "exio/exo/condset/delete"
         };
 
         export function getCndSet(): JQueryPromise<any> {
