@@ -28,6 +28,17 @@ public class ExportData {
 	 */
 	List<String> employeeIdsError;
 
+	public String getMessageError() {
+		if (this.employeeIdsError == null || this.employeeIdsError.isEmpty()) {
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+		for (String emp : employeeIdsError) {
+			builder.append(System.lineSeparator() + emp);
+		}
+		return builder.toString();
+	}
+
 	public boolean hasDataItemOutput() {
 		if (this.employeeIds.isEmpty() || this.employees == null || this.employees.isEmpty()) {
 			return false;

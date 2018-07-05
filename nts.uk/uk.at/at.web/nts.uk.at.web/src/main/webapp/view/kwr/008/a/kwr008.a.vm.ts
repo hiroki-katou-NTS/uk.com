@@ -1,5 +1,5 @@
 module nts.uk.at.view.kwr008.a {
-
+    import message = nts.uk.resource.getMessage;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
@@ -152,12 +152,22 @@ module nts.uk.at.view.kwr008.a {
                 //ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する
                 self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage(), self.printFormat()));
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(res => {
-                    console.log(res);
+                    let msgId = self.getAsyncData(res.taskDatas, "messageId").valueAsString;
+                    let msg = self.getAsyncData(res.taskDatas, "messageError").valueAsString;
+                    if (msgId == "") return;
+                    nts.uk.ui.dialog.alertError({ messageId: msgId, message: message(msgId) + msg });
                 }).fail(err => {
                     nts.uk.ui.dialog.alertError(err);
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 })
+            }
+
+            private getAsyncData(data: Array<any>, key: string): any {
+                var result = _.find(data, (item) => {
+                    return item.key == key;
+                });
+                return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
             }
 
             openKWR008B() {
