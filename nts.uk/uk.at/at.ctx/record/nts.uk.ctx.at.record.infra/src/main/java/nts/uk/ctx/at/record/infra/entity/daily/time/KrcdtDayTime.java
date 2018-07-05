@@ -2202,6 +2202,31 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		for (KrcdtDayLeaveEarlyTime krcdt : getKrcdtDayLeaveEarlyTime()) {
 			leaveEarly.add(krcdt.toDomain());
 		}
+		/*日別実績の短時間勤務*/
+		
+		List<ShortWorkTimeOfDaily> test = Collections.emptyList();
+		for(KrcdtDayShorttime shortTimeValue : KrcdtDayShorttime) {
+			test.add(new ShortWorkTimeOfDaily(new WorkTimes(shortTimeValue.count),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecordTotalTime), new AttendanceTime(calToRecordTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecordInTime), new AttendanceTime(calToRecordInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecordOutTime), new AttendanceTime(calToRecordOutTime))),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionTotalTime), new AttendanceTime(calDeductionTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionInTime), new AttendanceTime(calDeductionInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionOutTime),new AttendanceTime(calDeductionOutTime))),
+											  ChildCareAttribute.decisionValue(shortTimeValue.krcdtDayShorttimePK.childCareAtr)));
+		}
+		if(test.isEmpty()) {
+			test.add( new  ShortWorkTimeOfDaily(new WorkTimes(1),
+                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                           TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                           TimeWithCalculation.sameTime(new AttendanceTime(0))),
+                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                              TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                              TimeWithCalculation.sameTime(new AttendanceTime(0))),
+                    ChildCareAttribute.CARE));
+
+		}
+		
 		/*日別実績の勤怠時間*/
 		// 日別実績の総労働時間
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(this.totalAttTime),
@@ -2214,14 +2239,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				Collections.emptyList(),
 				new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList()),
 				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily(),
-				new  ShortWorkTimeOfDaily(new WorkTimes(1),
-						 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-								 			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
-								 			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
-						 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
-					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
-						 ChildCareAttribute.CARE),
+				test.get(0),
 				vacation
 				);
 
