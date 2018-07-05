@@ -27,13 +27,14 @@ public class ExportData {
 	 * 対象の社員IDをエラーリスト
 	 */
 	List<String> employeeIdsError;
+	List<String> employeeError;
 
 	public String getMessageError() {
 		if (this.employeeIdsError == null || this.employeeIdsError.isEmpty()) {
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		for (String emp : employeeIdsError) {
+		for (String emp : employeeError) {
 			builder.append(System.lineSeparator() + emp);
 		}
 		return builder.toString();
@@ -48,9 +49,12 @@ public class ExportData {
 
 	public void storeEmployeeError() {
 		this.employeeIdsError = new ArrayList<>();
+		this.employeeError = new ArrayList<>();
 		for (Map.Entry<String, EmployeeData> emp : this.employees.entrySet()) {
 			if (!emp.getValue().hasDataItem()) {
 				this.employeeIdsError.add(emp.getKey());
+				EmployeeInfo employeeInfo = emp.getValue().getEmployeeInfo();
+				this.employeeError.add(employeeInfo.getEmployeeCode() + "　 " + employeeInfo.getEmployeeName());
 			}
 		}
 	}
