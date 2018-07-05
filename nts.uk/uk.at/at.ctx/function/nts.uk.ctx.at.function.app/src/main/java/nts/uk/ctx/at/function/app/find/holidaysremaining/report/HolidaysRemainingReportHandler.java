@@ -65,7 +65,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 			LocalDate endDate = (GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getEndMonth(),
 					"yyyy/MM/dd")).toLocalDate();
-			List<String> employeeIds = query.getLstEmpIds().stream().map(m -> m.getEmployeeId())
+			List<String> employeeIds = query.getLstEmpIds().stream().map(EmployeeQuery::getEmployeeId)
 					.collect(Collectors.toList());
 			employeeIds = this.regulationInfoEmployeeAdapter.sortEmployee(cId, employeeIds,
 					AppContexts.system().getInstallationType().value, null, null,

@@ -102,7 +102,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, HolidayRemainingDataSource dataSource) {
-		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
+		try {
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
@@ -130,7 +130,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		}
 	}
 
-	private boolean printTemplate(Worksheet worksheet, HolidayRemainingDataSource dataSource) throws Exception {
+	private boolean printTemplate(Worksheet worksheet, HolidayRemainingDataSource dataSource) {
 		Cells cells = worksheet.getCells();
 
 		// B1_1, B1_2
@@ -162,13 +162,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			worksheet.getShapes().removeAt(0);
 		} else {
 			isSameCurrentMonth = true;
-			Optional<YearMonth> currentMonthOpt = maps.keySet().stream().findFirst().get();
-			if (currentMonthOpt.isPresent()) {
-				if (totalMonths(currentMonthOpt.get(), dataSource.getEndMonth().yearMonth()) >= 0
-						&& totalMonths(dataSource.getStartMonth().yearMonth(), currentMonthOpt.get()) >= 0) {
+			Optional<Optional<YearMonth>> currentMonthOpt = maps.keySet().stream().findFirst();
+			if (currentMonthOpt.isPresent() && currentMonthOpt.get().isPresent()) {
+				if (totalMonths(currentMonthOpt.get().get(), dataSource.getEndMonth().yearMonth()) >= 0
+						&& totalMonths(dataSource.getStartMonth().yearMonth(), currentMonthOpt.get().get()) >= 0) {
 					Shape shape = worksheet.getShapes().get(0);
 					shape.setLowerRightColumn(shape.getLowerRightColumn()
-							+ totalMonths(dataSource.getStartMonth().yearMonth(), currentMonthOpt.get()));
+							+ totalMonths(dataSource.getStartMonth().yearMonth(), currentMonthOpt.get().get()));
 				}
 			} else {
 				worksheet.getShapes().removeAt(0);
@@ -322,9 +322,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// D2_3 No.369
 		Optional<GeneralDate> grantDate = getNextAnnLeaGrantDateAdapter.algorithm(AppContexts.user().companyId(),
 				employee.getEmployeeId());
-		if (grantDate.isPresent()) {
-			cells.get(rowIndexD + 1, 0).setValue(grantDate.get());
-		}
+		grantDate.ifPresent(generalDate -> cells.get(rowIndexD + 1, 0).setValue(generalDate));
 
 		// D2_4
 		cells.get(rowIndexD + 2, 0).setValue(employee.getEmploymentName());
@@ -788,10 +786,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		String cid = AppContexts.user().companyId();
 		List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(cid);
 
-		for (int i = 0; i < specialHoliday.size(); i++) {
+		for (Integer aSpecialHoliday : specialHoliday) {
 			cells.copyRows(cells, 18, firstRow, 2);
 
-			int specialHolidayCode = specialHoliday.get(i);
+			int specialHolidayCode = aSpecialHoliday;
 			Optional<SpecialHoliday> specialHolidayOpt = specialHolidays.stream()
 					.filter(c -> c.getSpecialHolidayCode().v() == specialHolidayCode).findFirst();
 			if (specialHolidayOpt.isPresent()) {
@@ -999,14 +997,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					String grantReamainDayValue = careHoliday.getBeforeCareLeaveDays() + "/"
 							+ careHoliday.getAfterCareLeaveDays().orElse(0d);
 					cells.get(firstRow + 1, 10 + totalMonth).setValue(grantReamainDayValue);
-				}
-				// Set background
-				for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
-						dataSource.getEndMonth().yearMonth()); i++) {
-					if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0) {
-						setBackgroundGray(cells.get(firstRow, 10 + i));
-						setBackgroundGray(cells.get(firstRow + 1, 10 + i));
-					}
 				}
 
 				// Set background
