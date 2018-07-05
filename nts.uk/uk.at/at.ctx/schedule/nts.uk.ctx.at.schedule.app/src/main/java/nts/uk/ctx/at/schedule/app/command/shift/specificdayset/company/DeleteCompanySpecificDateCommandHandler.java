@@ -15,7 +15,7 @@ public class DeleteCompanySpecificDateCommandHandler extends CommandHandler<Dele
 	@Inject
 	private CompanySpecificDateRepository repo;
 	
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteCompanySpecificDateCommand> context) {
