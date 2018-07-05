@@ -12,7 +12,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         SUNDAY_BACKGROUND_COLOR = "#FABF8F",
         SATURDAY_TEXT_COLOR = "#0031FF",
         SUNDAY_TEXT_COLOR = "#FF0000",
-        TEMPLATE_EMPLOYEE_NAME_HEADER = `<a class='limited-label' href='void(0)' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind="click: $vm.clickNameJumpToKdw003.bind($data, '\${employeeId}')">\${employeeName}</a>`,
+        TEMPLATE_EMPLOYEE_NAME_HEADER = `<a class='limited-label' href='void(0)' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind="click: clickNameJumpToKdw003.bind($data, '\${employeeId}')">\${employeeName}</a>`,
         getTemplateDisplayStt = (headerTxtId, startDate) => `{{if \${${headerTxtId}} == '${ApprovalStatus.Approved}' }}
             <a class='approved' href='void(0)' data-bind="click: $vm.clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">○</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.UnApproved}' }}
