@@ -10,21 +10,20 @@ import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class CheckSelectReason implements DivergenceReasonService{
+public class CheckSelectReason implements DivergenceReasonService {
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
-	
-	String companyId = AppContexts.user().companyId();
 
 	@Override
 	public boolean isExit(int selectUseSet, int divTimeId) {
-		if(selectUseSet==0){
+		String companyId = AppContexts.user().companyId();
+		if (selectUseSet == 0) {
 			return true;
-		}else{
+		} else {
 			List<DivergenceReason> lst = this.divTimeRepo.getDivReasonByCode(companyId, Integer.valueOf(divTimeId));
-			if(lst.isEmpty()){
+			if (lst.isEmpty()) {
 				return false;
-			}else{
+			} else {
 				return true;
 			}
 		}

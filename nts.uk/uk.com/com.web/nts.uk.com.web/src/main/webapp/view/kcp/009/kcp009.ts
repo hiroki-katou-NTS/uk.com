@@ -86,12 +86,9 @@ module kcp009.viewmodel {
                 }
             }
 
-            if (_.isEmpty($input.contents())) {
-                // SelectedItem Subscribe
-                self.selectedItem.subscribe(function(value: string) {
-                    self.bindEmployee(value);
-                });
-            }
+            self.selectedItem.subscribe(function(value: string) {
+                self.bindEmployee(value);
+            });
 
             // Selected OrdinalNumber
             self.selectedOrdinalNumber = ko.computed(function() {
