@@ -32,7 +32,13 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	}
 	
 	@Override
-	public List<StdOutputCondSet> getStdOutputCondSetByCid(String cid) {
+	 public Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid) {
+	  return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+	    .getSingle(c -> toDomain(c));
+	 }
+	
+	@Override
+	public List<StdOutputCondSet> getStdOutCondSetByCid(String cid) {
 		return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
 				.getList(c -> toDomain(c));
 	}
@@ -88,5 +94,7 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 		return this.queryProxy().query(GET_OUTCNDSET_BY_CID_CNDCD, OiomtStdOutputCondSet.class).setParameter("cid", cid)
 				.setParameter("conditionSetCd", conditionSetCd).getList(c -> toDomain(c));
 	}
+
+	
 
 }
