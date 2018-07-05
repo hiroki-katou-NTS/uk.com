@@ -422,7 +422,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             nts.uk.ui.errors.clearAll();
             let checkItemE = _.filter(self.dataContentConfirm().dataContentcategoryList(), x => { return x.isRecover() == true; }).length;
             if (checkItemE == 0) {
-                dialog.alertError({ messageId: "Msg_1256" });
+                dialog.alertError({ messageId: "Msg_1265" });
             } else {
                 $('#data-recovery-wizard').ntsWizard("next");
                 $("#F5_5:first-child .start-date input:first-child").focus();
