@@ -55,17 +55,7 @@ module nts.uk.at.view.kfp001.e {
             start(dataD: any) {
                 var self = this;
                 let dataE = nts.uk.ui.windows.getShared("KFP001_DATAE");
-                service.getErrorMessageInfo(self.logId()).done((res) => {
-                    _.forEach(res, function(sRes) {
-                        var errorMess = {
-                            personCode: self.aggrFrameCode(),
-                            personName: self.optionalAggrName(),
-                            disposalDay: sRes.processDay,
-                            messageError: sRes.errorMess
-                        };
-                        self.errorMessageInfo.push(new PersonInfoErrMessageLog(errorMess));
-                        })
-                })
+                
                 //system date
                 if (dataD !== undefined) {
                     //method execute
