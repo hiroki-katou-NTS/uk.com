@@ -22,5 +22,7 @@ public interface StdOutputCondSetRepository
     void update(StdOutputCondSet domain);
 
     void remove(String cid, String conditionSetCd);
+    
+    List<StdOutputCondSet> getListStdOutputCondSetByCid(String cid);
 
 }

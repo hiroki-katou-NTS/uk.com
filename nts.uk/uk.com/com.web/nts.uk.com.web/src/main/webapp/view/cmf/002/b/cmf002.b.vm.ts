@@ -1,6 +1,7 @@
 module nts.uk.com.view.cmf002.b.viewmodel {
     import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
+    import dialog  = nts.uk.ui.dialog;
     import model = cmf002.share.model;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -15,7 +16,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         stringFormatItems:        KnockoutObservableArray<model.ItemModel> = ko.observableArray(getStringFormatItems());
         categoryName:             KnockoutObservable<string>       = ko.observable('名名名名名名名名名名');
         conditionSetData:         KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
-            companyId: '',
+            cId: '',
             conditionSetCode: '',
             conditionSetName: '',
             categoryId: '',
@@ -61,12 +62,16 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 } else {
                     self.settingNewMode();
                 }
+            }).fail(function(res: any) {
+                dialog.info({ messageId: "Msg_737" }).then(() => {
+            
+                });
             });
             
-            for (let i = 1; i <= 30; i++) {
-                itemList.push(ko.toJS({ companyId: '1', conditionSetCode: i >= 10 ? '0' + i : '00' + i, conditionSetName: '名名名名名名名名名名' }));
-                outputItemList.push(ko.toJS({outputItemCode: i >=10 ? '0' + i: '00' + i, outputItemName: '名名名名名名名名名名'}));
-            }
+//            for (let i = 1; i <= 30; i++) {
+//                itemList.push(ko.toJS({ companyId: '1', conditionSetCode: i >= 10 ? '0' + i : '00' + i, conditionSetName: '名名名名名名名名名名' }));
+//                outputItemList.push(ko.toJS({outputItemCode: i >=10 ? '0' + i: '00' + i, outputItemName: '名名名名名名名名名名'}));
+//            }
             
             self.conditionSettingList(itemList);
             self.outputItemList(outputItemList);
@@ -97,6 +102,46 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().stringFormat(condSet.stringFormat);
             self.conditionSetData().outputItemCode(condSet.outputItemCode);
         }
+        
+        private addNew(){
+            let self = this;
+            dialog.info({ messageId: "Msg_737" });      
+        }
+        
+        private delete() {
+            let self = this;
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let data = {
+                    cId: self.cId(),
+                    conditionSetCode: self.conditionSetCode(),
+                };
+                service.deleteCnd(data).done(result => {
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
+                    }); 
+                });
+             });
+        }
+           
+    
+        public register(){
+            let self = this;
+            let data = {
+                isNewMode: self.isNewMode(),
+                screenMode: self.pickUp(),
+                standType: moment.standType,
+                cid: self.cid(),
+                expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
+                pause: self.pause(),
+
+            };
+            
+            service.save(data).done(result => {
+         
+            }).fail(function(res: any) {
+                dialog.info({ messageId: "Msg_737" })
+            });
+      
+        }
 
         /**
          * 画面モード　＝　新規
@@ -120,7 +165,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
-    }
+    
 
     //条件名出力選択, 項目名出力選択
     export function getNotUseAtrItems(): Array<model.ItemModel> {
@@ -191,31 +236,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         outputItemName: string;
     }
     
-    public addNew(){
-        
-    }
     
-    public register(){
-        let self = this;
-            let data = {
-                isNewMode: self.isNewMode(),
-                screenMode: self.pickUp(),
-                standType: moment.standType,
-                cid: self.cid(),
-                expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
-                pause: self.pause(),
-
-            };
-            
-            service.save(data).done(result => {
-         
-            }).fail(function(res: any) {
-                dialog.info({ messageId: "Msg_737" }).then(() => {
-            
-                });
-            });
-      
-    }
     export class OutputItem {
         outputItemCode: KnockoutObservable<string> = ko.observable('');
         outputItemname: KnockoutObservable<string> = ko.observable('');
@@ -224,5 +245,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.outputItemCode(param.outputItemCode || '');
             self.outputItemname(param.outputItemName || '');
         }
+    }
     }
 }
