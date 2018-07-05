@@ -82,11 +82,8 @@ module nts.uk.at.view.kfp001.d {
 
                 // Test data error !!!
                 if (self.aggrFrameCode() == '001') {
-                    let resourceId;
-                    var i;
-                    for (i = 0; i < self.peopleNo(); i++) { 
-                    resourceId = i + '441E74A5';
-                    }
+                    let resourceId = nts.uk.util.randomId().slice(0, 10);
+
                          let addErrorInforCommand = {
                         resourceId: resourceId,
                         periodArrgLogId: self.executionId(),

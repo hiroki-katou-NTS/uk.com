@@ -44,6 +44,7 @@ module nts.uk.at.view.kfp001.e {
                 self.mode = ko.observable(false);
 
                 self.columns = ko.observableArray([
+                    { headerText: getText('KFP001_39'), key: 'no', width: 110 },
                     { headerText: getText('KFP001_40'), key: 'personCode', width: 110 },
                     { headerText: getText('KFP001_41'), key: 'personName', width: 150 },
                     { headerText: getText('KFP001_42'), key: 'disposalDay', width: 150 },
@@ -113,6 +114,7 @@ module nts.uk.at.view.kfp001.e {
             private getLogData(): void {
                 var self = this;
                 service.getErrorMessageInfo(self.logId()).done((res) => {
+                    let errs = [];
                     _.forEach(res, function(sRes) {
                         var errorMess = {
                             personCode: self.aggrFrameCode(),
@@ -120,8 +122,9 @@ module nts.uk.at.view.kfp001.e {
                             disposalDay: sRes.processDay,
                             messageError: sRes.errorMess
                         };
-                        self.errorMessageInfo.push(new PersonInfoErrMessageLog(errorMess));
-                        })
+                        errs.push(new PersonInfoErrMessageLog(errorMess));
+                        });
+                    self.errorMessageInfo(errs);
                 })
             }
 

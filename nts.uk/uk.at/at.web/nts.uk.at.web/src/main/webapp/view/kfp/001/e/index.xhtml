@@ -54,7 +54,8 @@
 				</div>
 				<div class="place-holder">
 					<table id="single-list" class="disappear"
-						data-bind="ntsGridList: {
+						data-bind="css: {disappear: !isComplete()},
+						ntsGridList: {
 							dataSource: errorMessageInfo,
 							primaryKey: 'GUID',
 							columns: columns,
