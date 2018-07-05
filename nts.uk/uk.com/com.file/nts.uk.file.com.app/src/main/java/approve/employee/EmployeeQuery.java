@@ -1,7 +1,6 @@
 package approve.employee;
 
 import lombok.Data;
-import lombok.Value;
 
 @Data
 public class EmployeeQuery {
