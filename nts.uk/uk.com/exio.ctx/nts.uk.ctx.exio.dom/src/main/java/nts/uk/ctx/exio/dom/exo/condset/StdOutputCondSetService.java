@@ -16,6 +16,8 @@ public class StdOutputCondSetService {
 	@Inject
 	private StdOutputCondSetRepository stdOutputCondSetRepository;
 	
+	
+	//Screen T
 	public Map<String, String> excuteCopy(String copyDestinationCode,String destinatioName, String conditionSetCd, int overwite){
 		Map<String, String> resultExvuteCopy = new HashMap<>();
 		String cid = AppContexts.user().companyId();
@@ -49,6 +51,8 @@ public class StdOutputCondSetService {
 		resultAndOverwrite.put("overwite", overwite);
 		return resultAndOverwrite;
 	}
+	//******
+	
 	
 	public void registerOutputSet(String screenMode , String standType, StdOutputCondSet stdOutputCondSet, boolean checkAutoExecution){
 		if (outputSetRegisConfir(screenMode, standType, stdOutputCondSet.getCid(), checkAutoExecution)) {
