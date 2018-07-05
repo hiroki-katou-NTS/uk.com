@@ -1331,7 +1331,7 @@ module nts.layout {
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
 
-                    if (!empId) {
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
 
@@ -1356,7 +1356,7 @@ module nts.layout {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00084.data);
 
-                    if (!empId) {
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
 
@@ -1382,7 +1382,7 @@ module nts.layout {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00085.data);
 
-                    if (!empId) {
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
 

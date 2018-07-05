@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -20,7 +21,10 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRe
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 
 @Stateless
 @Transactional
@@ -49,6 +53,9 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	
 	@Inject
 	private ApplicationApprovalService_New appRepository;
+	
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeSetRepo;
 	@Override
 	public boolean isExist(String companyID, String appID) {
 		// TODO Auto-generated method stub
@@ -59,10 +66,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	public void createLateOrLeaveEarly(LateOrLeaveEarly lateOrLeaveEarly) {
 
 		/** 申請理由が必須  */
-
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(lateOrLeaveEarly.getApplication().getCompanyID());
-		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		
 		int prePost = lateOrLeaveEarly.getApplication().getPrePostAtr().value;
 		Integer lateTime1 = lateOrLeaveEarly.getLateTime1AsMinutes();
 		Integer earlyTime1 = lateOrLeaveEarly.getEarlyTime1AsMinutes();
@@ -72,13 +76,8 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		int late2 = lateOrLeaveEarly.getLate2().value;
 		int early1 = lateOrLeaveEarly.getEarly1().value;
 		int early2 = lateOrLeaveEarly.getEarly2().value;
-
-		String applicationReason = lateOrLeaveEarly.getApplication().getAppReason().v();
 		
-		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isBlank(applicationReason)) {
-			throw new BusinessException("Msg_115");
-		}
+		validateReason(lateOrLeaveEarly.getApplication().getCompanyID(),lateOrLeaveEarly.getApplication().getAppReason().v());
 
 		// [画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻≧早退時刻 (#Msg_381#)
 		if(lateTime1==null && earlyTime1==null && lateTime2!=null && earlyTime2!=null){
@@ -115,13 +114,19 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		lateOrLeaveEarlyRepository.add(lateOrLeaveEarly);
 		//applicationRepository_New.insert(lateOrLeaveEarly.getApplication());
 	}
+	private boolean isReasonTextFieldDisplay(AppTypeDiscreteSetting appTypeSet) {
+
+		return appTypeSet.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY);
+
+	}
+
+	private boolean isComboBoxReasonDisplay(AppTypeDiscreteSetting appTypeSet) {
+		return appTypeSet.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
+
+	}
 
 	@Override
 	public void updateLateOrLeaveEarly(LateOrLeaveEarly lateOrLeaveEarly) {
-		
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(lateOrLeaveEarly.getApplication().getCompanyID());
-		ApplicationSetting applicationSetting = applicationSettingOp.get();
 
 		int late1 = lateOrLeaveEarly.getLate1().value;
 		int late2 = lateOrLeaveEarly.getLate2().value;
@@ -134,13 +139,28 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 			throw new BusinessException("Msg_382");
 		}
 		//申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
-		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isEmpty(lateOrLeaveEarly.getApplication().getAppReason().v())) {
-			throw new BusinessException("Msg_115");
-		}
+		validateReason(lateOrLeaveEarly.getApplication().getCompanyID(),lateOrLeaveEarly.getApplication().getAppReason().v());
 		
 		lateOrLeaveEarlyRepository.update(lateOrLeaveEarly);
 		applicationRepository_New.updateWithVersion(lateOrLeaveEarly.getApplication());
+	}
+	
+	
+
+	private void validateReason(String companyID,String reason) {
+		ApplicationType appType= ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION;
+		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+				.getApplicationSettingByComID(companyID);
+		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		AppTypeDiscreteSetting appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
+				.get();
+		boolean isAllReasonControlDisplay = isComboBoxReasonDisplay(appTypeSet) && isReasonTextFieldDisplay(appTypeSet);
+		
+		boolean isReasonBlankWhenRequired = applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+				&& Strings.isBlank(reason);
+		if (isReasonBlankWhenRequired && isAllReasonControlDisplay) {
+			throw new BusinessException("Msg_115");
+		}
 	}
 
 	@Override

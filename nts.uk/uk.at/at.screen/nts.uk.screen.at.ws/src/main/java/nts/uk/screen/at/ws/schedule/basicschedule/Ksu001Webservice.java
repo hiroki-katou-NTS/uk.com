@@ -14,7 +14,6 @@ import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleScreenSymbolParams;
-import nts.uk.screen.at.app.schedule.basicschedule.StateWorkTypeCodeDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
@@ -60,7 +59,7 @@ public class Ksu001Webservice extends WebService {
 	public DataInitScreenDto init() {
 		PresentClosingPeriodExport obj = this.bScheduleScreenProces.getPresentClosingPeriodExport();
 		// get work type
-		List<WorkTypeScreenDto> workTypeList = this.bScheduleScreenProces.findByCIdAndDeprecateCls();
+		List<WorkTypeScreenDto> workTypeList = this.bScheduleScreenProces.findByCIdAndDeprecateCls1();
 		List<String> workTypeCodeList = workTypeList.stream().map(x -> x.getWorkTypeCode())
 				.collect(Collectors.toList());
 		// get work time
@@ -69,8 +68,8 @@ public class Ksu001Webservice extends WebService {
 				.collect(Collectors.toList());
 
 		return new DataInitScreenDto(workTypeList, workTimeList, obj.getClosureStartDate(), obj.getClosureEndDate(),
-				this.bScheduleScreenProces.checkStateWorkTypeCode(workTypeCodeList),
-				this.bScheduleScreenProces.checkNeededOfWorkTimeSetting(workTypeCodeList),
+				this.bScheduleScreenProces.checkStateWorkTypeCode1(workTypeCodeList, workTypeList),
+				this.bScheduleScreenProces.checkNeededOfWorkTimeSetting1(workTypeCodeList, workTypeList),
 				this.bScheduleScreenProces
 						.getListWorkEmpCombine(new ScheduleScreenSymbolParams(workTypeCodeList, workTimeCodeList)),
 				AppContexts.user().employeeId());
@@ -106,18 +105,6 @@ public class Ksu001Webservice extends WebService {
 	 * this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params);
 	 * }
 	 */
-
-	@POST
-	@Path("checkStateWorkTypeCode")
-	public List<StateWorkTypeCodeDto> checkStateWorkTypeCode(List<String> lstWorkTypeCode) {
-		return this.bScheduleScreenProces.checkStateWorkTypeCode(lstWorkTypeCode);
-	}
-
-	@POST
-	@Path("checkNeededOfWorkTimeSetting")
-	public List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting(List<String> lstWorkTypeCode) {
-		return this.bScheduleScreenProces.checkNeededOfWorkTimeSetting(lstWorkTypeCode);
-	}
 
 	@POST
 	@Path("getDataSpecDateAndHoliday")

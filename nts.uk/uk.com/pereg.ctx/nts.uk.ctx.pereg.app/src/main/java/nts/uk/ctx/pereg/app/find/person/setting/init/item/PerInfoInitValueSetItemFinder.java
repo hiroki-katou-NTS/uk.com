@@ -264,7 +264,7 @@ public class PerInfoInitValueSetItemFinder {
 			List<String> itemParents, PerInfoInitValueSettingItemDto dto, String selectionId, boolean isOld,
 			boolean isEven, String ctgCode) {
 		List<String> itemLst = new ArrayList<>();
-		if (ctgCode == "CS00020") {
+		if (ctgCode.equals("CS00020")) {
 			itemLst.addAll(this.createItemTimePointOfCS00020());
 
 		} else {

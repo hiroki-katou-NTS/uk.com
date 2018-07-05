@@ -64,15 +64,15 @@ module nts.uk.pr.view.ccg007.g {
                             self.OpenDialogH(data.url);
                             blockUI.clear();
                         });
-                        
-                        blockUI.clear();
+                    } else {
+                        self.closeDialog();
                     }
+                    blockUI.clear();
                 }).fail(function(res) {
                     //Return Dialog Error
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                     blockUI.clear();
                 });
-                
             }
             
             //open dialog H 
