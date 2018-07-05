@@ -107,6 +107,25 @@ public class ChangePasswordWebService extends WebService{
 	}
 	
 	/**
+	 * Gets the user name by login id.
+	 *
+	 * @param contractCode the contract code
+	 * @param loginId the login id
+	 * @return the user name by login id
+	 */
+	@POST
+	@Path("getUserNameByLoginId/{contractCode}/{loginId}")
+	public LoginInforDto getUserNameByLoginId(@PathParam("contractCode") String contractCode, @PathParam("loginId") String loginId) {
+		Optional<UserImport> user = this.userAdapter.findUserByContractAndLoginId(contractCode, loginId);
+		
+		if (user.isPresent()){
+			return new LoginInforDto(loginId, user.get().getUserName(), user.get().getUserId(), user.get().getContractCode());
+		}
+		
+		return new LoginInforDto();
+	}
+	
+	/**
 	 * getUserNameByLoginId.
 	 *
 	 * @param infor the infor

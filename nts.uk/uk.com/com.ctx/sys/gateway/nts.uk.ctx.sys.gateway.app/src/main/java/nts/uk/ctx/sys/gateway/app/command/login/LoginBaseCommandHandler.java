@@ -313,9 +313,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return true, if successful
 	 */
 	protected boolean checkAfterLogin(UserImportNew user, String oldPassword) {
-		PassStatus status = PassStatus.values()[user.getPassStatus()];
-		switch (status) {
-		case Official:
+		if (user.getPassStatus() != PassStatus.Reset.value){
 			// Get PasswordPolicy
 			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
 					.getPasswordPolicy(new ContractCode(user.getContractCode()));
@@ -324,13 +322,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Event Check
 				return this.checkEvent(passwordPolicyOpt.get(), user, oldPassword);
 			}
-			break;
-		case Reset:
+			return true;
+		} else {
 			return false;
-		default:
-			break;
 		}
-		return true;
 	}
 
 	/**
@@ -347,16 +342,20 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// Check Change Password at first login
 			if (passwordPolicy.isInitialPasswordChange()) {
 				// Check state
-				if (user.getPassStatus() != PassStatus.InitPassword.value) {
+				if (user.getPassStatus() == PassStatus.InitPassword.value) {
 					// Math PassPolicy
-					CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(),
-							oldPassword, user.getContractCode());
-					
-					if (mess.isError()) return false;
-					
-					return true;
+					return false;
 				}
-				return false;
+			}
+			
+			CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(),
+					oldPassword, user.getContractCode());
+			
+			if (mess.isError()){
+				if (passwordPolicy.isLoginCheck()){
+					return false;
+				}
+				return true;
 			}
 		}
 		return true;
@@ -441,7 +440,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the string
 	 */
 	protected String compareHashPassword(UserImportNew user, String password) {
-//		String pass = PasswordHash.generate("abc@123","8bf0d2f8-6a2e-481b-8ba0-721f7b3a709e");
 		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
 			// アルゴリズム「ロックアウト」を実行する ※２次対応
 			this.lockOutExecuted(user);
