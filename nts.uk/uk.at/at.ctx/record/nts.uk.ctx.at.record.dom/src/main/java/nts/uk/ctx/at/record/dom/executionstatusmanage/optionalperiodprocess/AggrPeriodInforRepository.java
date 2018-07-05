@@ -17,4 +17,6 @@ public interface AggrPeriodInforRepository {
 	 */
 	List<AggrPeriodInfor> findAll(String anyPeriodAggrLogId);
 
+	void addPeriodInfor(AggrPeriodInfor periodInfor);
+
 }

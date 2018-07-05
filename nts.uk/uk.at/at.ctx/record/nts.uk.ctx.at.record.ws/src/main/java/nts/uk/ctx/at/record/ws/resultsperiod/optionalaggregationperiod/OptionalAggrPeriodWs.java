@@ -15,6 +15,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandResult;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddErrorInforCommand;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddErrorInforCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommand;
@@ -30,9 +32,11 @@ import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.Opt
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodExecLogDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodExecLogFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodFinder;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.PeriodInforDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.PeriodTargetDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorInfoExportService;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorQuery;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInfor;
 
 @Path("ctx/at/record/optionalaggr/")
 @Produces("application/json")
@@ -64,6 +68,12 @@ public class OptionalAggrPeriodWs {
 	
 	@Inject
 	private ExecuteAggrPeriodCommandHandler executeAggrHandler;
+	
+	@Inject
+	private AggrPeriodErrorInfoFinder infoFinder;
+	
+	@Inject
+	private AddErrorInforCommandHandler inforHandler;
 	
 	/**
 	 * Find all.
@@ -186,4 +196,16 @@ public class OptionalAggrPeriodWs {
 		return this.executeAggrHandler.handle(excuteId);
 	}
 	
+	@POST
+	@Path("getErrorMessageInfo/{excuteId}")
+	public List<PeriodInforDto> getErrorMessageInfo(@PathParam("excuteId") String excuteId) {
+		return this.infoFinder.findAllInfo(excuteId);
+	}
+	
+	@POST
+	@Path("addErr")
+
+	public void addErr(AddErrorInforCommand command) {
+		this.inforHandler.handle(command);
+	}
 }

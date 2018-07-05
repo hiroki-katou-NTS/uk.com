@@ -19,6 +19,12 @@ module nts.uk.at.view.kfp001.e {
             isComplete: KnockoutObservable<boolean> = ko.observable(false);
             aggCreateStatus: KnockoutObservable<string> = ko.observable("");
             aggCreateHasError: KnockoutObservable<string> = ko.observable("");
+            logId: KnockoutObservable<string> = ko.observable("");
+            columns: KnockoutObservableArray<any>;
+
+            //
+            errorMessageInfo: KnockoutObservableArray<PersonInfoErrMessageLog> = ko.observableArray([]);
+            currentCode: KnockoutObservable<any> = ko.observable();
 
             //
             startDateTime: KnockoutObservable<string>;
@@ -37,11 +43,29 @@ module nts.uk.at.view.kfp001.e {
                 self.peopleNo = ko.observable(0);
                 self.mode = ko.observable(false);
 
+                self.columns = ko.observableArray([
+                    { headerText: getText('KFP001_40'), key: 'personCode', width: 110 },
+                    { headerText: getText('KFP001_41'), key: 'personName', width: 150 },
+                    { headerText: getText('KFP001_42'), key: 'disposalDay', width: 150 },
+                    { headerText: getText('KFP001_43'), key: 'messageError', width: 290 },
+                    { headerText: '', key: 'GUID', width: 1, hirren: true },
+                ]);
+
             }
             start(dataD: any) {
                 var self = this;
                 let dataE = nts.uk.ui.windows.getShared("KFP001_DATAE");
-
+                service.getErrorMessageInfo(self.logId()).done((res) => {
+                    _.forEach(res, function(sRes) {
+                        var errorMess = {
+                            personCode: self.aggrFrameCode(),
+                            personName: self.optionalAggrName(),
+                            disposalDay: sRes.processDay,
+                            messageError: sRes.errorMess
+                        };
+                        self.errorMessageInfo.push(new PersonInfoErrMessageLog(errorMess));
+                        })
+                })
                 //system date
                 if (dataD !== undefined) {
                     //method execute
@@ -50,7 +74,10 @@ module nts.uk.at.view.kfp001.e {
                         self.endDate(moment.utc(dataE.aggrPeriodCommand.endDate).format("YYYY/MM/DD"));
                         self.peopleNo(dataE.aggrPeriodCommand.peopleNo);
                         self.executeId(dataD.anyPeriodAggrLogId);
+                        self.logId(dataE.targetCommand.executionEmpId)
                         self.taskId(res.id);
+                        self.aggrFrameCode(dataE.aggrPeriodCommand.aggrFrameCode);
+                        self.optionalAggrName(dataE.aggrPeriodCommand.optionalAggrName);
                         self.startTime(moment.utc(dataD.startDateTime).format("YYYY/MM/DD HH:mm:ss"));
                         nts.uk.deferred.repeat(conf => conf
                             .task(() => {
@@ -95,13 +122,17 @@ module nts.uk.at.view.kfp001.e {
 
             private getLogData(): void {
                 var self = this;
-                var params = {
-                    executeId: self.executeId()
-                    //                    executionContent: self.selectedExeContent()
-                };
-                //                service.getErrorMessageInfo(params).done((res) => {
-                //                    self.errorMessageInfo(res);
-                //                });
+                service.getErrorMessageInfo(self.logId()).done((res) => {
+                    _.forEach(res, function(sRes) {
+                        var errorMess = {
+                            personCode: self.aggrFrameCode(),
+                            personName: self.optionalAggrName(),
+                            disposalDay: sRes.processDay,
+                            messageError: sRes.errorMess
+                        };
+                        self.errorMessageInfo.push(new PersonInfoErrMessageLog(errorMess));
+                        })
+                })
             }
 
             private getAsyncData(data: Array<any>, key: string): any {
@@ -110,6 +141,8 @@ module nts.uk.at.view.kfp001.e {
                 });
                 return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
             }
+
+
 
             cancelTask(): void {
                 var self = this;
@@ -122,6 +155,26 @@ module nts.uk.at.view.kfp001.e {
             }
 
 
+        }
+    }
+    export interface PersonInfoErrMessageLogDto {
+        personCode: string;
+        personName: string;
+        disposalDay: string;
+        messageError: number;
+    }
+    export class PersonInfoErrMessageLog {
+        GUID: string;
+        personCode: string;
+        personName: string;
+        disposalDay: string;
+        messageError: number;
+        constructor(data: PersonInfoErrMessageLogDto) {
+            this.GUID = nts.uk.util.randomId();
+            this.personCode = data.personCode;
+            this.personName = data.personName;
+            this.disposalDay = data.disposalDay;
+            this.messageError = data.messageError;
         }
     }
 }

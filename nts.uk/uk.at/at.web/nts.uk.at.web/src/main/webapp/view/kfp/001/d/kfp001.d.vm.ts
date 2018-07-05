@@ -10,10 +10,10 @@ module nts.uk.at.view.kfp001.d {
             mode: KnockoutObservable<number> = ko.observable(0);
             listEmp: KnockoutObservableArray<any>;
             executionId: KnockoutObservable<string>;
-            listSelect: KnockoutObservableArray<any> = ko.observableArray([]); 
-            listSelectedEmpId : KnockoutObservableArray<any> = ko.observableArray([]); 
+            listSelect: KnockoutObservableArray<any> = ko.observableArray([]);
+            listSelectedEmpId: KnockoutObservableArray<any> = ko.observableArray([]);
             listAggr: KnockoutObservableArray<any> = ko.observableArray([]);
-            peopleCount : KnockoutObservable<string> = ko.observable('');
+            peopleCount: KnockoutObservable<string> = ko.observable('');
 
             constructor() {
                 var self = this;
@@ -25,14 +25,13 @@ module nts.uk.at.view.kfp001.d {
                 self.executionId = ko.observable('');
             }
             start() {
-               
-
+                $("#button-2D").focus();
             }
 
             addData() {
                 let self = this;
                 let listEmployeeId = _.map(_.filter(self.listEmp(), (v) => _.includes(self.listSelect(), v.employeeCode)), (item) => {
-                return item.employeeId;    
+                    return item.employeeId;
                 });
                 self.listSelectedEmpId(listEmployeeId);
 
@@ -60,7 +59,7 @@ module nts.uk.at.view.kfp001.d {
                     startDate: moment(self.startDate()).utc(),
                     endDate: moment(self.endDate()).utc(),
                     peopleNo: self.peopleNo()
-                    
+
                 }
                 var addAggrPeriodCommand = {
                     mode: self.mode(),
@@ -80,6 +79,26 @@ module nts.uk.at.view.kfp001.d {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 })
+
+                // Test data error !!!
+                if (self.aggrFrameCode() == '001') {
+                    let resourceId;
+                    var i;
+                    for (i = 0; i < self.peopleNo(); i++) { 
+                    resourceId = i + '441E74A5';
+                    }
+                         let addErrorInforCommand = {
+                        resourceId: resourceId,
+                        periodArrgLogId: self.executionId(),
+                        processDay: moment(self.startDate()).utc(),
+                        errorMess: 'Loi roi'
+                    }
+
+                    service.addErr(addErrorInforCommand).done(function(dataErr) {
+                    });
+
+                }
+
             }
 
             opendScreenF() {
@@ -90,16 +109,16 @@ module nts.uk.at.view.kfp001.d {
                 $("#wizard").ntsWizard("prev").done(function() {
                 });
             }
-            
-            addListError(errorsRequest: Array<string>) {
-            var self = this;
-            var errors = [];
-            _.forEach(errorsRequest, function(err) {
-                errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
-            });
 
-            nts.uk.ui.dialog.bundledErrors({ errors: errors });
-        }
+            addListError(errorsRequest: Array<string>) {
+                var self = this;
+                var errors = [];
+                _.forEach(errorsRequest, function(err) {
+                    errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+                });
+
+                nts.uk.ui.dialog.bundledErrors({ errors: errors });
+            }
 
         }
 

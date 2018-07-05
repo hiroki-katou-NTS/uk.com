@@ -167,7 +167,7 @@ module nts.uk.at.view.kfp001.b {
                         self.dScreenmodel.startDate(self.dateValue().startDate);
                         self.dScreenmodel.endDate(self.dateValue().endDate);
                         self.dScreenmodel.mode(self.mode());
-                        self.dScreenmodel.executionId(null);
+                        self.dScreenmodel.executionId(self.aggrId);
                         self.dScreenmodel.listAggr(self.optionalList());
 
                     });

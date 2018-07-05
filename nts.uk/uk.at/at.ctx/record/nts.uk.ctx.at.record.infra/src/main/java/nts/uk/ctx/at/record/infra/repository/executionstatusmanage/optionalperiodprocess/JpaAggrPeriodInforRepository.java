@@ -8,7 +8,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInfor;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodinfor.ErrorMess;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodInfor;
+import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodInforPK;
+import nts.uk.ctx.at.record.infra.entity.resultsperiod.optionalaggregationperiod.KrcmtOptionalAggrPeriod;
+import nts.uk.ctx.at.record.infra.entity.resultsperiod.optionalaggregationperiod.KrcmtOptionalAggrPeriodPK;
 
 /**
  * 
@@ -31,6 +35,20 @@ public class JpaAggrPeriodInforRepository extends JpaRepository implements AggrP
 				entity.krcmtAggrPeriodInforPK.periodArrgLogId, entity.krcmtAggrPeriodInforPK.resourceId,
 				entity.processDay, new ErrorMess(entity.errorMess));
 		return domain;
+	}
+	
+	@Override
+	public void addPeriodInfor(AggrPeriodInfor periodInfor) {
+		this.commandProxy().insert(convertToDbTypeApi(periodInfor));
+
+	}
+	
+	private KrcmtAggrPeriodInfor convertToDbTypeApi(AggrPeriodInfor periodInfor) {
+		KrcmtAggrPeriodInfor entity = new KrcmtAggrPeriodInfor();
+		entity.krcmtAggrPeriodInforPK = new KrcmtAggrPeriodInforPK(periodInfor.getMemberId(), periodInfor.getPeriodArrgLogId(), periodInfor.getResourceId());
+		entity.processDay = periodInfor.getProcessDay();
+		entity.errorMess = periodInfor.getErrorMess().v();
+		return entity;
 	}
 
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,6 +11,8 @@ import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInfor;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -38,6 +41,22 @@ public class AggrPeriodErrorInfoFinder {
 		result.sort((AggrPeriodErrorInfoDto c1, AggrPeriodErrorInfoDto c2) -> c1.getEmployeeCode()
 				.compareTo(c2.getEmployeeCode()));
 		return result;
+	}
+	
+	public List<PeriodInforDto> findAllInfo(String periodArrgLogId){
+		return errorInfoRepo.findAll(periodArrgLogId).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList());
+	}
+	
+	private PeriodInforDto convertToDbType(AggrPeriodInfor infor) {
+		PeriodInforDto periodInforDto = new PeriodInforDto();
+			periodInforDto.setMemberId(infor.getMemberId());
+			periodInforDto.setPeriodArrgLogId(infor.getPeriodArrgLogId());
+			periodInforDto.setResourceId(infor.getResourceId());
+			periodInforDto.setProcessDay(infor.getProcessDay());
+			periodInforDto.setErrorMess(infor.getErrorMess().v());
+		return periodInforDto;
 	}
 
 }

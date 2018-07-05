@@ -1,15 +1,18 @@
 package nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodinfor.ErrorMess;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodtarget.State;
 /**
  * 任意期間集計エラーメッセージ情報
  * @author phongtq
  *
  */
 @Getter
-public class AggrPeriodInfor {
+public class AggrPeriodInfor extends AggregateRoot{
 
 	/** 社員ID*/
 	private String memberId;
@@ -34,6 +37,10 @@ public class AggrPeriodInfor {
 		this.resourceId = resourceId;
 		this.processDay = processDay;
 		this.errorMess = errorMess;
+	}
+	public static AggrPeriodInfor createFromJavaType(String memberId, String periodArrgLogId, String resourceId, GeneralDate processDay,
+			String errorMess){
+		return new AggrPeriodInfor(memberId, periodArrgLogId, resourceId, processDay, new ErrorMess(errorMess));
 	}
 	
 	
