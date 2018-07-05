@@ -391,7 +391,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         self.attendanceItemListDaily.push(item);
                     })
 
-                    self.attendanceItemList(_.orderBy(self.attendanceItemListDaily(), [e => Number(e.attendanceItemId)], ['asc']));
+                    self.attendanceItemListDaily(_.orderBy(self.attendanceItemListDaily(), [e => Number(e.attendanceItemId)], ['asc']));
+                    self.attendanceItemList(self.attendanceItemListDaily());
                 }
 
                 dfd.resolve();
