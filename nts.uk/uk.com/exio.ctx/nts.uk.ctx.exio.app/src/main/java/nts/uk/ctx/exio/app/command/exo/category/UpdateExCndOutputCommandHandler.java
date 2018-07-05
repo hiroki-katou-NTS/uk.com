@@ -8,7 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exo.category.Association;
-import nts.uk.ctx.exio.dom.exo.category.CategoryId;
+import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.ctx.exio.dom.exo.category.Conditions;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;
@@ -28,7 +28,7 @@ public class UpdateExCndOutputCommandHandler extends CommandHandler<ExCndOutputC
 	@Override
 	protected void handle(CommandHandlerContext<ExCndOutputCommand> context) {
 		ExCndOutputCommand updateCommand = context.getCommand();
-		repository.update(new ExCndOutput(new CategoryId(updateCommand.getCategoryId()),
+		repository.update(new ExCndOutput(new CategoryCd(updateCommand.getCategoryId()),
 				new MainTable(updateCommand.getMainTable()),
 				new Form1(updateCommand.getForm1()),
 				new Form2(updateCommand.getForm2()),

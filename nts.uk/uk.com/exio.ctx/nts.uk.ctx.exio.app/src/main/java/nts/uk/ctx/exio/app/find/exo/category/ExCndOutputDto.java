@@ -17,7 +17,7 @@ public class ExCndOutputDto {
 	/**
 	* 
 	*/
-	private String categoryId;
+	private int categoryId;
 
 	/**
 	* 

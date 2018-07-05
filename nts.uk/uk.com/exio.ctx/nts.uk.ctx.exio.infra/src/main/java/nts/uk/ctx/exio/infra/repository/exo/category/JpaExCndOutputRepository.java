@@ -42,7 +42,7 @@ public class JpaExCndOutputRepository extends JpaRepository implements ExCndOutp
     }
 
     @Override
-    public void remove(String categoryId){
+    public void remove(int categoryId){
         this.commandProxy().remove(OiomtExCndOutput.class, new OiomtExCndOutputPk(categoryId)); 
     }
 }

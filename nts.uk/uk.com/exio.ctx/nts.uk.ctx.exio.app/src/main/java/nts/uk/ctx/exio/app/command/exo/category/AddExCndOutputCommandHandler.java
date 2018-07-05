@@ -19,7 +19,7 @@ public class AddExCndOutputCommandHandler extends CommandHandler<ExCndOutputComm
 	@Override
 	protected void handle(CommandHandlerContext<ExCndOutputCommand> context) {
 		ExCndOutputCommand addCommand = context.getCommand();
-		repository.add(new ExCndOutput(new CategoryId(addCommand.getCategoryId()),
+		repository.add(new ExCndOutput(new CategoryCd(addCommand.getCategoryId()),
 				new MainTable(addCommand.getMainTable()),
 				new Form1(addCommand.getForm1()),
 				new Form2(addCommand.getForm2()),
