@@ -50,6 +50,9 @@ public class AttendanceItemDictionaryForCalc {
 		//外深夜
 		this.dictionary.put("外深夜時間", 563);
 		
+		//就外残業深夜
+		this.dictionary.put("就外残業深夜時間", 566);
+		
 		//休出法内深夜
 		this.dictionary.put("法内休出外深夜", 568);
 		//休出法外深夜

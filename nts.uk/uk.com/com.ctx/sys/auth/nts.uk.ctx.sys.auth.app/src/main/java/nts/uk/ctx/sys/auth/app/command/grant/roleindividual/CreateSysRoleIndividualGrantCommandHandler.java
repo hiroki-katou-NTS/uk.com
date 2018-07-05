@@ -33,7 +33,7 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 	@Inject
 	private UserRepository userRepo;
 
-	private final String COMPANY_ID_SYSADMIN = "000000000000-0000";
+	private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
 
 	@Override
 	protected CreateRoleIndividualGrantCommandResult handle(CommandHandlerContext<CreateRoleIndividualGrantCommand> context) {

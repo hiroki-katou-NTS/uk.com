@@ -18,14 +18,22 @@ public class SampleCorrectionLogParameter implements Serializable {
 	private final List<SampleCorrectionTarget> targets;
 	
 	@Value
-	public static class SampleCorrectionTarget {
+	public static class SampleCorrectionTarget implements Serializable {
+
+		/** serialVersionUID */
+		private static final long serialVersionUID = 1L;
+		
 		private final String employeeId;
 		private final GeneralDate date;
 		private final List<SampleCorrectedItem> correctedItems;
 	}
 	
 	@Value
-	public static class SampleCorrectedItem {
+	public static class SampleCorrectedItem implements Serializable {
+
+		/** serialVersionUID */
+		private static final long serialVersionUID = 1L;
+		
 		private final String itemName;
 		private final int itemNo;
 		private final int before;

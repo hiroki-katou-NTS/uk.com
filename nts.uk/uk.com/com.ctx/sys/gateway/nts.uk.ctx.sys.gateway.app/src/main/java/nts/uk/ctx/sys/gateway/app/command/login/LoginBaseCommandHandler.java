@@ -313,8 +313,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return true, if successful
 	 */
 	protected boolean checkAfterLogin(UserImportNew user, String oldPassword) {
-
-		if (user.getPassStatus() == PassStatus.Official.value) {
+		PassStatus status = PassStatus.values()[user.getPassStatus()];
+		switch (status) {
+		case Official:
 			// Get PasswordPolicy
 			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
 					.getPasswordPolicy(new ContractCode(user.getContractCode()));
@@ -323,12 +324,13 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Event Check
 				return this.checkEvent(passwordPolicyOpt.get(), user, oldPassword);
 			}
-			
-			return true;
+			break;
+		case Reset:
+			return false;
+		default:
+			break;
 		}
-
 		return true;
-
 	}
 
 	/**

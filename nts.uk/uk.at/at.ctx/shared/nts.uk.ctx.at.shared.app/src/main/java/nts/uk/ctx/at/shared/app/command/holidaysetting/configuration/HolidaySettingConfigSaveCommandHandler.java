@@ -39,9 +39,7 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 	
 	/** The pub hd set repo. */
 	@Inject
-	private PublicHolidaySettingRepository pubHdSetRepo;
-	
-	private boolean storeStatusManageComPublicHd;
+	private PublicHolidaySettingRepository pubHdSetRepo;	
 	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -49,6 +47,7 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 	@Override
 	protected void handle(CommandHandlerContext<HolidaySettingConfigSaveCommand> context) {
 		String companyId = AppContexts.user().companyId();
+		boolean storeStatusManageComPublicHd = false;
 		
 		HolidaySettingConfigSaveCommand command = context.getCommand();
 		
@@ -63,7 +62,7 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 		if (pubHdSetDomain.isManageComPublicHd() == true) {
 			//save PublicHolidaySetting
 			if(optionalPubHdSet.isPresent()){
-				setStoreStatusManageComPublicHd(optionalPubHdSet.get().isManageComPublicHd());
+				storeStatusManageComPublicHd = optionalPubHdSet.get().isManageComPublicHd();
 				this.pubHdSetRepo.update(pubHdSetDomain);
 			}else {
 				this.pubHdSetRepo.add(pubHdSetDomain);
@@ -98,7 +97,7 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 			//save PublicHolidaySetting
 			if(optionalPubHdSet.isPresent()){
 				PublicHolidaySetting publicHolidaySetting = optionalPubHdSet.get();
-				setStoreStatusManageComPublicHd(optionalPubHdSet.get().isManageComPublicHd());
+				storeStatusManageComPublicHd = optionalPubHdSet.get().isManageComPublicHd();
 				// 会社の公休管理をする was set 管理しない, all element on UI will be set disable and set default value 
 				// so I use domain get from service and onlye set "isManageComPublicHd" to false  
 				publicHolidaySetting.setManageComPublicHd(false);
@@ -119,7 +118,4 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 		}
 	}
 	
-	private void setStoreStatusManageComPublicHd(boolean args) {
-		storeStatusManageComPublicHd = args;
-	}
 }
