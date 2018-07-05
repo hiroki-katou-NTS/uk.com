@@ -339,7 +339,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         }
                     }
 
-
                 });
 
                 service.findAllAttendanceRecExportMonthly(code).done(function(listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>) {
@@ -381,7 +380,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
             service.getAttendanceCalculateList(2).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
                 if (listAttendanceItem.length > 0) {
-                    self.attendanceItemListMonthly(listAttendanceItem);
+                    self.attendanceItemListMonthly( _.orderBy(listAttendanceItem, [e => Number(e.attendanceItemId)], ['asc']));
                 }
             });
 
@@ -392,7 +391,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         self.attendanceItemListDaily.push(item);
                     })
 
-                    self.attendanceItemList(self.attendanceItemListDaily());
+                    self.attendanceItemList(_.orderBy(self.attendanceItemListDaily(), [e => Number(e.attendanceItemId)], ['asc']));
                 }
 
                 dfd.resolve();
