@@ -16,8 +16,10 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery;
 
 /**
+ * The Class WorkScheduleQueryData.
+ *
  * @author HoangNDH
- * Instantiates a new work schedule query data.
+ * Work schedule query data container
  */
 @Data
 public class WorkScheduleQueryData {
@@ -45,4 +47,7 @@ public class WorkScheduleQueryData {
 	
 	/** The lst workplace import. */
 	List<WkpHistImport> lstWorkplaceImport = new ArrayList<>();
+	
+	/** The remark data containter. */
+	RemarkQueryDataContainer remarkDataContainter;
 }
