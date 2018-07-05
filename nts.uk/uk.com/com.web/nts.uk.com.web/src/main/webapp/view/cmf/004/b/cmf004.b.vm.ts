@@ -430,7 +430,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
 
         nextToScreenG(): void {
+            nts.uk.ui.errors.clearAll();
             let self = this;
+            $("#F5_5 .ntsDatepicker").trigger("validate");
             for (let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())) {
                 if (checkRow.isRecover) {
                     if (checkRow.startOfPeriod > checkRow.endOfPeriod) {
@@ -447,9 +449,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     }
                 }
             }
-
-
-
         
             if (!nts.uk.ui.errors.hasError()) {
                 self.initScreenG();
