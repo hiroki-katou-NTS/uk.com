@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantRegular;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.GrantPeriodic;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -15,7 +17,8 @@ import nts.uk.shr.com.primitive.Memo;
  *
  */
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class SpecialHoliday extends AggregateRoot {
 
 	/** 会社ID */
@@ -40,7 +43,7 @@ public class SpecialHoliday extends AggregateRoot {
 	private TargetItem targetItem;
 	
 	/** メモ */
-	private Optional<Memo> memo;
+	private Memo memo;
 
 	@Override
 	public void validate() {

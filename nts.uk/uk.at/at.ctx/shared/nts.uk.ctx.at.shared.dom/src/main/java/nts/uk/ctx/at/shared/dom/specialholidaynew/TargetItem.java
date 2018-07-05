@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
@@ -12,8 +14,11 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Data
 public class TargetItem {
-	/** 会社ID */
-	private String companyId;
+	/** 対象の欠勤枠 */
+	private List<Integer> absenceFrameNo;
+	
+	/** 対象の特別休暇枠 */
+	private List<Integer> frameNo;
 }
