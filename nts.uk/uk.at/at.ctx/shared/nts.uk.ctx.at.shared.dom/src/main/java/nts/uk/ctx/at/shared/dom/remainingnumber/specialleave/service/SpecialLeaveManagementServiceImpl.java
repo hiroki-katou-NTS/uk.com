@@ -183,7 +183,9 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					&& interimMng.getYmd().beforeOrEquals(x.getDeadlineDate())).collect(Collectors.toList());
 			if(tmpGrantRemainingData.isEmpty()) {
 				//ループ中の「特別休暇暫定データ」を「特別休暇期間外の使用」に追加する
-				UseDaysOfPeriodSpeHoliday useDaysOPeriod = new UseDaysOfPeriodSpeHoliday(interimMng.getYmd(), speHolidayData.getUseDays().v(), speHolidayData.getUseTimes().v());
+				UseDaysOfPeriodSpeHoliday useDaysOPeriod = new UseDaysOfPeriodSpeHoliday(interimMng.getYmd(), 
+						speHolidayData.getUseDays().isPresent() ? Optional.of(speHolidayData.getUseDays().get().v()) : Optional.empty(), 
+								speHolidayData.getUseTimes().isPresent() ? Optional.of(speHolidayData.getUseTimes().get().v()) : Optional.empty());
 				lstUseDays.add(useDaysOPeriod);
 			} else {
 				int count = 0;
@@ -302,7 +304,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			double useDays = 0;
 			//使用数を求める
 			for (InterimSpecialHolidayMng interimData : lstInterimData) {
-				useDays += interimData.getUseDays().v();
+				useDays += interimData.getUseDays().isPresent() ? interimData.getUseDays().get().v() : 0;
 			}
 			outputData.setBeforeUseDays(useDays);
 		} else {
@@ -358,7 +360,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				InterimRemain interimMngData = optInterimMng.get();
 				if(interimMngData.getYmd().beforeOrEquals(dateData.start())
 						&& interimMngData.getYmd().afterOrEquals(dateData.end())) {
-					outputData += interimMng.getUseDays().v();
+					outputData += interimMng.getUseDays().isPresent() ? interimMng.getUseDays().get().v() : 0;
 				}
 			}
 		}
