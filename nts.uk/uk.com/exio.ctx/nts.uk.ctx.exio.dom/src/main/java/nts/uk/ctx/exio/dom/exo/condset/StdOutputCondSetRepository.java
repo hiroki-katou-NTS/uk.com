@@ -10,11 +10,7 @@ public interface StdOutputCondSetRepository
 {
 
     List<StdOutputCondSet> getAllStdOutputCondSet();
-    
-
-    List<StdOutputCondSet> getOutputCondSetByCidAndconditionSetCd(String Cid, String conditionSetCd);
-    
-
+   
     List<StdOutputCondSet> getStdOutCondSetByCid(String cid);
     
     Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid);
