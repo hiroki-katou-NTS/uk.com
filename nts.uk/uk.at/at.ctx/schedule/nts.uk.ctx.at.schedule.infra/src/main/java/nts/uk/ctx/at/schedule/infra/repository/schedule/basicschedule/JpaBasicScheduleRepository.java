@@ -24,6 +24,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
@@ -45,7 +46,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebr
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime.KscdtScheTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime.KscdtScheTimePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
@@ -54,6 +54,7 @@ import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcares
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.workscheduletimezone.JpaWorkScheduleTimeZoneSetMemento;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaBasicScheduleRepository.
@@ -63,6 +64,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 	public final String GET_LIST_DATE_BY_LIST_SID = "SELECT a.kscdpBSchedulePK.date " + "FROM KscdtBasicSchedule a "
 			+ "WHERE a.kscdpBSchedulePK.sId IN :sIds " + "ORDER BY a.kscdpBSchedulePK.date DESC";
+	
+	private String QUERY_BY_SID_PERIOD = "SELECT c FROM KscdtBasicSchedule c"
+			+ " WHERE c.kscdpBSchedulePK.sId = :employeeId"
+			+ " AND c.kscdpBSchedulePK.date >= :startDate"
+			+ " AND c.kscdpBSchedulePK.date <= :endDate";
+
+	public static final String GET_LIST_BY_LIST_SID_DATE = "SELECT a " + "FROM KscdtBasicSchedule a "
+			+ "WHERE a.kscdpBSchedulePK.sId IN :sIds " + "AND (a.kscdpBSchedulePK.date BETWEEN :startDate AND :endDate)";
 
 	/*
 	 * (non-Javadoc)
@@ -90,6 +99,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		// this.insertScheduleState(bSchedule.getWorkScheduleStates());
 	}
 
+	@Override
+	public void insertAll(List<BasicSchedule> listBSchedule) {
+		listBSchedule.forEach(x -> insert(x));
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -108,6 +122,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.updateScheduleMaster(bSchedule.getWorkScheduleMaster());
 		this.updateScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
 		this.updateScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
+	}
+
+	@Override
+	public void updateAll(List<BasicSchedule> listBSchedule) {
+		listBSchedule.forEach(x -> update(x));
 	}
 
 	@Override
@@ -133,32 +152,39 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param bSchedule
 	 * @return
 	 */
-	private List<KscdtWorkScheduleTimeZone> updateWorkScheduleTimeZone(BasicSchedule bSchedule) {
-		List<WorkScheduleTimeZone> scheduleTimeZones = bSchedule.getWorkScheduleTimeZones();
-		List<KscdtWorkScheduleTimeZone> entities = new ArrayList<KscdtWorkScheduleTimeZone>();
-		scheduleTimeZones.forEach(schedule -> {
-			KscdtWorkScheduleTimeZone entity = new KscdtWorkScheduleTimeZone();
-			String employeeId = bSchedule.getEmployeeId();
-			GeneralDate date = bSchedule.getDate();
-			Optional<KscdtWorkScheduleTimeZone> optionalEntity = this.findWorkScheduleTimeZone(employeeId, date,
-					schedule.getScheduleCnt());
-			// check null of startTime-endTime
-			if (schedule.getScheduleStartClock() == null || schedule.getScheduleEndClock() == null) {
-				if (optionalEntity.isPresent()) {
-					entity = optionalEntity.get();
-					this.commandProxy().remove(KscdtWorkScheduleTimeZone.class, entity.kscdtWorkScheduleTimeZonePk);
-				}
-				return;
-			}
-
-			if (optionalEntity.isPresent()) {
-				entity = optionalEntity.get();
-			}
-			schedule.saveToMemento(new JpaWorkScheduleTimeZoneSetMemento(entity, employeeId, date));
-			entities.add(entity);
-		});
-		return entities;
-	}
+	// private List<KscdtWorkScheduleTimeZone>
+	// updateWorkScheduleTimeZone(BasicSchedule bSchedule) {
+	// List<WorkScheduleTimeZone> scheduleTimeZones =
+	// bSchedule.getWorkScheduleTimeZones();
+	// List<KscdtWorkScheduleTimeZone> entities = new
+	// ArrayList<KscdtWorkScheduleTimeZone>();
+	// scheduleTimeZones.forEach(schedule -> {
+	// KscdtWorkScheduleTimeZone entity = new KscdtWorkScheduleTimeZone();
+	// String employeeId = bSchedule.getEmployeeId();
+	// GeneralDate date = bSchedule.getDate();
+	// Optional<KscdtWorkScheduleTimeZone> optionalEntity =
+	// this.findWorkScheduleTimeZone(employeeId, date,
+	// schedule.getScheduleCnt());
+	// // check null of startTime-endTime
+	// if (schedule.getScheduleStartClock() == null ||
+	// schedule.getScheduleEndClock() == null) {
+	// if (optionalEntity.isPresent()) {
+	// entity = optionalEntity.get();
+	// this.commandProxy().remove(KscdtWorkScheduleTimeZone.class,
+	// entity.kscdtWorkScheduleTimeZonePk);
+	// }
+	// return;
+	// }
+	//
+	// if (optionalEntity.isPresent()) {
+	// entity = optionalEntity.get();
+	// }
+	// schedule.saveToMemento(new JpaWorkScheduleTimeZoneSetMemento(entity,
+	// employeeId, date));
+	// entities.add(entity);
+	// });
+	// return entities;
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -446,8 +472,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		Optional<KscdtBasicSchedule> optionalEntity = this.findById(domain.getEmployeeId(), domain.getDate());
 		entity = optionalEntity.get();
 		domain.saveToMemento(new JpaBasicScheduleSetMemento(entity));
-		entity.workTimeCode = StringUtil.isNullOrEmpty(domain.getWorkTimeCode(), true)
-				|| ("000").equals(domain.getWorkTimeCode()) ? null : domain.getWorkTimeCode();
+		entity.workTimeCode = StringUtil.isNullOrEmpty(domain.getWorkTimeCode(), true) ? null
+				: domain.getWorkTimeCode();
 
 		return entity;
 	}
@@ -463,7 +489,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	private BasicSchedule toDomain(KscdtBasicSchedule entity, List<KscdtWorkScheduleTimeZone> entityTimeZones) {
 		return new BasicSchedule(new JpaBasicScheduleGetMemento(entity, entityTimeZones));
+	}
 
+	private BasicSchedule toDomain(KscdtBasicSchedule entity) {
+		return new BasicSchedule(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date, entity.workTypeCode,
+				entity.workTypeCode, ConfirmedAtr.valueOf(entity.confirmedAtr));
 	}
 
 	/**
@@ -578,11 +608,13 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param scheduleCnt
 	 * @return
 	 */
-	private Optional<KscdtWorkScheduleTimeZone> findWorkScheduleTimeZone(String employeeId, GeneralDate date,
-			int scheduleCnt) {
-		return this.queryProxy().find(new KscdtWorkScheduleTimeZonePK(employeeId, date, scheduleCnt),
-				KscdtWorkScheduleTimeZone.class);
-	}
+	// private Optional<KscdtWorkScheduleTimeZone>
+	// findWorkScheduleTimeZone(String employeeId, GeneralDate date,
+	// int scheduleCnt) {
+	// return this.queryProxy().find(new KscdtWorkScheduleTimeZonePK(employeeId,
+	// date, scheduleCnt),
+	// KscdtWorkScheduleTimeZone.class);
+	// }
 
 	/**
 	 * Find all work schedule time zone.
@@ -849,5 +881,23 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			return null;
 
 		return listDate.get(0);
+	}
+
+	@Override
+	public List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, DatePeriod dateData) {
+		List<BasicSchedule> lstData = this.queryProxy().query(QUERY_BY_SID_PERIOD, KscdtBasicSchedule.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.getList(x -> toDomain(x, this.findAllWorkScheduleTimeZone(employeeId, x.kscdpBSchedulePK.date)));
+		return lstData;
+	}
+	
+	@Override
+	public List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate) {
+		List<BasicSchedule> result = this.queryProxy().query(GET_LIST_BY_LIST_SID_DATE, KscdtBasicSchedule.class)
+				.setParameter("sIds", sId).setParameter("startDate", startDate).setParameter("endDate", endDate)
+				.getList(x -> toDomain(x));
+		return result;
 	}
 }

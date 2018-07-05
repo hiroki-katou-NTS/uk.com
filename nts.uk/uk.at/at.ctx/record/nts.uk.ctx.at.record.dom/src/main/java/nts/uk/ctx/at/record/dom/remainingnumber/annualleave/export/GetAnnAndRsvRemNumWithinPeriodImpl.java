@@ -40,7 +40,7 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 		return this.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate, isOverWrite,
 				tempAnnDataforOverWriteList, tempRsvDataforOverWriteList,
-				prevAnnualLeave, prevReserveLeave, Optional.empty(), Optional.empty());
+				prevAnnualLeave, prevReserveLeave, false, Optional.empty(), Optional.empty());
 	}
 	
 	/** 期間中の年休積休残数を取得　（月次集計用） */
@@ -51,6 +51,7 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 			Optional<List<TempAnnualLeaveManagement>> tempAnnDataforOverWriteList,
 			Optional<List<TempReserveLeaveManagement>> tempRsvDataforOverWriteList,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<AggrResultOfReserveLeave> prevReserveLeave,
+			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets, Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 		
 		AggrResultOfAnnAndRsvLeave aggrResult = new AggrResultOfAnnAndRsvLeave();
@@ -58,7 +59,7 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 		// 期間中の年休残数を取得
 		val aggrResultOfAnnualOpt = this.getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId, aggrPeriod,
 					mode, criteriaDate, isGetNextMonthData, isCalcAttendanceRate, isOverWrite,
-					tempAnnDataforOverWriteList, prevAnnualLeave, companySets, monthlyCalcDailys);
+					tempAnnDataforOverWriteList, prevAnnualLeave, noCheckStartDate, companySets, monthlyCalcDailys);
 
 		// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
 		aggrResult.setAnnualLeave(aggrResultOfAnnualOpt);

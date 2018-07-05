@@ -15,8 +15,8 @@ import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSetDomainService;
-import nts.uk.ctx.at.shared.app.service.workingcondition.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 
 /**
  * 

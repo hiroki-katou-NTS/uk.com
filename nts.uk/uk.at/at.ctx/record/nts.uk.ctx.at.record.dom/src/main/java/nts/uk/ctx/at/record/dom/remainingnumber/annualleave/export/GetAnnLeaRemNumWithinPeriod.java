@@ -48,6 +48,7 @@ public interface GetAnnLeaRemNumWithinPeriod {
 	 * @param isOverWrite 上書きフラグ
 	 * @param forOverWriteList 上書き用の暫定年休管理データ
 	 * @param prevAnnualLeave 前回の年休の集計結果
+	 * @param noCheckStartDate 集計開始日を締め開始日とする　（締め開始日を確認しない）
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @return 年休の集計結果
@@ -57,6 +58,7 @@ public interface GetAnnLeaRemNumWithinPeriod {
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite, Optional<List<TempAnnualLeaveManagement>> forOverWriteList,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
+			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
 }

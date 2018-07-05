@@ -156,7 +156,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 					listItemOut, startYm, numMonth, setOutItemsWoSc.getDisplayFormat());
 		}
 		// 出力するデータ件数をチェックする
-		if (exportData.getEmployees() == null || exportData.getEmployees().isEmpty()) {
+		if (!exportData.hasDataItemOutput()) {
 			throw new BusinessException("Msg_885");
 		}
 		return exportData;

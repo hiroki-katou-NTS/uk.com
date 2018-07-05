@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 public interface AnnualHolidayManagementPub {
 	/**
 	 * RequestList210
@@ -12,7 +14,7 @@ public interface AnnualHolidayManagementPub {
 	 * @param sId
 	 * @return
 	 */
-	List<NextAnnualLeaveGrantExport> acquireNextHolidayGrantDate(String cId, String sId);
+	List<NextAnnualLeaveGrantExport> acquireNextHolidayGrantDate(String cId, String sId, Optional<GeneralDate> referenceDate);
 
 	/**
 	 * RequestList323 

@@ -57,7 +57,7 @@ module cps002.j.vm {
                 
                 let ce = ko.toJS(self.stampCardEditing);
                 let s ="";
-                if (cardNo && cardNo.length < ce.digitsNumber) {
+                if (cardNo && cardNo.length == ce.digitsNumber) {
                     switch (ce.method) {
                         case EDIT_METHOD.PreviousZero: {
                             s = _.padStart(cardNo, ce.digitsNumber, '0');

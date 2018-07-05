@@ -16,6 +16,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -58,6 +59,8 @@ public class KrcdtMonMedicalTime extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonAttendanceTime krcdtMonAttendanceTime;
+//	//テーブル結合用
+//	public KrcdtMonTime krcdtMonTime;
 	
 	/**
 	 * キー取得

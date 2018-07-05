@@ -41,7 +41,7 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)){
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID()); 
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),""); 
 		}
 		isAutoSendMail = true;
 		// アルゴリズム「送信先リストの取得」を実行する
@@ -60,6 +60,6 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 			autoSuccessMail = mailResult.getSuccessList();
 			autoFailMail = mailResult.getFailList();
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID());
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
 	}
 }
