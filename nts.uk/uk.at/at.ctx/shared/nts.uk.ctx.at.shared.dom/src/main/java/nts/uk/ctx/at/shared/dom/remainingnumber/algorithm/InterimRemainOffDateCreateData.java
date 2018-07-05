@@ -45,7 +45,7 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	public WorkTypeRemainInfor createWorkTypeRemainInfor(String cid, CreateAtr createAtr, String workTypeCode);
 	/**
-	 * 1日勤務時の残数発生使用明細を作成する
+	 * 残数発生使用明細を作成する
 	 * @param workType
 	 * @param dataOutput
 	 * @return

@@ -7,13 +7,11 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum ScheduleRecordAtr {
-	/** 未反映状態 */
-	NOT_APPLICABLE(0),
-	/** 実績 */
-	RECORD(1),
-	/** スケジュール */
-	SCHEDULE(2);
+public enum ManagermentAtr {
+	/** 0: 日数 */
+	DAYS(0),
+	/** 1: 時間数 */
+	TIMES(1);
 
 	public final int value;
 }
