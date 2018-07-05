@@ -1,5 +1,5 @@
-#contents-area{
-height: 600px !important;
+#contents-area {
+	height: 600px !important;
 }
 
 #button24 {
@@ -42,7 +42,9 @@ height: 600px !important;
 }
 
 #hr-3 {
-	margin-top: 18px;
+	margin-top: 6px;
+	margin-right: 4px;
+	width: 442px;
 }
 
 #next-button-B {
@@ -55,15 +57,18 @@ height: 600px !important;
 }
 
 #label-B7_2 {
-	margin-left: 29px;
+	margin-left: 40px;
 	width: 10% !important;
 }
+
 div.label {
-    width: 19%;
+	width: 19%;
 }
-#button-reference-B7_3{
+
+#button-reference-B7_3 {
 	margin-left: 65px;
 }
+
 .nts-wizard.vertical>.content {
 	width: 830px;
 	height: 800px;
@@ -83,9 +88,9 @@ div.label {
 }
 
 .nts-wizard>.content>.body {
- padding: 0;
+	padding: 0;
 }
 
-#left-content{
+#left-content {
 	margin-left: 10px;
 }

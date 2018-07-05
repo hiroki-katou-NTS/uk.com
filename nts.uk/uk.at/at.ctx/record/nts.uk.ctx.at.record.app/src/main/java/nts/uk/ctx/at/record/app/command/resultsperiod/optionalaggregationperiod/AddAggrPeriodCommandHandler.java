@@ -36,11 +36,7 @@ public class AddAggrPeriodCommandHandler
 		String executionEmpId = AppContexts.user().employeeId();
 		AddAggrPeriodCommand command = context.getCommand();
 		
-		boolean existsBranch = repository.checkExit(companyId,
-				command.getAggrPeriodCommand().getAggrFrameCode());
-		if (existsBranch) {
-			throw new BusinessException("Msg_3");
-		}
+		
 		
 		GeneralDateTime endDateTime = GeneralDateTime.now();
 		GeneralDateTime startDateTime = GeneralDateTime.now();
@@ -49,6 +45,11 @@ public class AddAggrPeriodCommandHandler
 		OptionalAggrPeriod optionalAggrPeriod = command.getAggrPeriodCommand().toDomain(companyId);
 		String optionalAggrPeriodID = IdentifierUtil.randomUniqueId();
 		if (command.getMode() == 0) {
+			boolean existsBranch = repository.checkExit(companyId,
+					command.getAggrPeriodCommand().getAggrFrameCode());
+			if (existsBranch) {
+				throw new BusinessException("Msg_3");
+			}
 			
 			List<OptionalAggrPeriod> aggrList = repository.findAll(companyId);
 			if (aggrList.size() <= 99) {

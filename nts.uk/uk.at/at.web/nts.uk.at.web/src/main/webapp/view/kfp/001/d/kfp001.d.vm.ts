@@ -12,7 +12,8 @@ module nts.uk.at.view.kfp001.d {
             executionId: KnockoutObservable<string>;
             listSelect: KnockoutObservableArray<any> = ko.observableArray([]); 
             listSelectedEmpId : KnockoutObservableArray<any> = ko.observableArray([]); 
-            listAggr: KnockoutObservableArray<any> = ko.observableArray([]); 
+            listAggr: KnockoutObservableArray<any> = ko.observableArray([]);
+            peopleCount : KnockoutObservable<string> = ko.observable('');
 
             constructor() {
                 var self = this;
@@ -59,6 +60,7 @@ module nts.uk.at.view.kfp001.d {
                     startDate: moment(self.startDate()).utc(),
                     endDate: moment(self.endDate()).utc(),
                     peopleNo: self.peopleNo()
+                    
                 }
                 var addAggrPeriodCommand = {
                     mode: self.mode(),

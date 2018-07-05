@@ -34,6 +34,11 @@ module nts.uk.at.view.kfp001.b {
 
             enableText: KnockoutObservable<boolean>;
 
+            dateValue: KnockoutObservable<any>;
+            startDateString: KnockoutObservable<string>;
+            endDateString: KnockoutObservable<string>;
+            peopleCount: KnockoutObservable<string> = ko.observable('');
+
             constructor() {
                 var self = this;
                 //import cScreenModel, dScreenModel
@@ -41,7 +46,19 @@ module nts.uk.at.view.kfp001.b {
                 self.dScreenmodel = new nts.uk.at.view.kfp001.d.viewmodel.ScreenModel();
                 self.aggrList = ko.observableArray([]);
 
+                self.startDateString = ko.observable("");
+                self.endDateString = ko.observable("");
+                self.dateValue = ko.observable({});
 
+                self.startDateString.subscribe(function(value) {
+                    self.dateValue().startDate = value;
+                    self.dateValue.valueHasMutated();
+                });
+
+                self.endDateString.subscribe(function(value) {
+                    self.dateValue().endDate = value;
+                    self.dateValue.valueHasMutated();
+                });
 
                 //Init wizard
                 self.stepList = [
@@ -86,8 +103,16 @@ module nts.uk.at.view.kfp001.b {
                     if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
                         self.currentItem(self.findOptional(codeChanged));
                         self.currentItemExe(self.findExc(codeChanged))
+                        self.getPeriod();
+                        self.dateValue({
+                            startDate: self.currentItem().startDate(),
+                            endDate: self.currentItem().endDate()
+                        });
+
                         self.enableText(false);
+                        nts.uk.ui.errors.clearAll();
                         $('#update-mode').show();
+                        $('#update-mode').focus();
                         self.mode(1);
 
                     }
@@ -114,12 +139,13 @@ module nts.uk.at.view.kfp001.b {
                         self.currentCode(self.items()[0].aggrFrameCode());
                         self.mode(1);
                         self.enableText(false);
-                        $.when(service.findAggrCode(self.currentCode())).done(function(data) {
-                            service.findTargetPeriod(data.aggrId).done(function(dataTarget) {
-                                self.aggrId = data.aggrId;
-                            })
+                        self.getPeriod();
+                        self.dateValue({
+                            startDate: self.currentItem().startDate(),
+                            endDate: self.currentItem().endDate()
                         });
                         $('#update-mode').show();
+                        $('#update-mode').focus();
                     } else {
                         self.initDataB();
                     }
@@ -133,13 +159,13 @@ module nts.uk.at.view.kfp001.b {
 
                     ko.computed(() => {
                         self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
-                        self.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
                         self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
+                        self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.multiSelectedCode())]));
                         self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
                         self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
                         self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
-                        self.dScreenmodel.startDate(self.currentItem().startDate());
-                        self.dScreenmodel.endDate(self.currentItem().endDate());
+                        self.dScreenmodel.startDate(self.dateValue().startDate);
+                        self.dScreenmodel.endDate(self.dateValue().endDate);
                         self.dScreenmodel.mode(self.mode());
                         self.dScreenmodel.executionId(null);
                         self.dScreenmodel.listAggr(self.optionalList());
@@ -150,6 +176,25 @@ module nts.uk.at.view.kfp001.b {
                 }).fail(function() {
                     dfd.reject();
                 });
+                return dfd.promise();
+            }
+
+            getPeriod() {
+
+                var self = this;
+                var dfd = $.Deferred();
+
+                $.when(service.findAggrCode(self.currentCode())).done(function(data) {
+                    service.findTargetPeriod(data[0].aggrId).done(function(dataTarget) {
+                        self.aggrId = data[0].aggrId;
+                        self.peopleNo(dataTarget.length);
+
+                        self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataTarget.length]));
+                    })
+                }).fail(function() {
+                    dfd.reject();
+                });;
+
                 return dfd.promise();
             }
             // ドメインモデル 「任意集計期間」 を取得する get domain OptionalAggrPeriod by CompanyId            
@@ -167,6 +212,7 @@ module nts.uk.at.view.kfp001.b {
                             endDate: optionalAggrPeriodRes.endDate,
                         };
                         self.items.push(new model.OptionalAggrPeriodDto(optionalAggr));
+
                         $('#code-text-d4-2').focus();
                     });
                     dfd.resolve();
@@ -237,13 +283,20 @@ module nts.uk.at.view.kfp001.b {
                 let self = this;
                 var emptyObject: model.IOptionalAggrPeriodDto = {};
                 if (self.items().length >= 100) {
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_1151"));
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1151" });
                 } else {
                     self.currentItem(new model.OptionalAggrPeriodDto(emptyObject))
                     self.currentCode("");
                     self.peopleNo(0);
+                    nts.uk.ui.errors.clearAll();
+                    self.enableNEW(false);
+                    self.enableDEL(false);
                     $('#code-text-d4-2').focus();
                     $('#update-mode').hide();
+                    self.dateValue({
+                        startDate : new Date(),
+                        endDate : new Date()
+                    });
                     self.mode(0);
                     self.enableText(true);
                 }
@@ -255,7 +308,7 @@ module nts.uk.at.view.kfp001.b {
                 var index_of_itemDelete = _.findIndex(self.items(), function(item) {
                     return item.aggrFrameCode() == self.currentCode();
                 });
-                nts.uk.ui.dialog.confirm("Msg_18").ifYes(function() {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
 
                     $.when(service.findStatus(self.currentCode(), 3)).done(function(dataEx) {
 
@@ -263,7 +316,6 @@ module nts.uk.at.view.kfp001.b {
                             nts.uk.ui.dialog.info({ messageId: "Msg_1172" });
                             return;
                         } else {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_35" });
                             $.when(service.deleteOptionalAggr(self.currentCode())).done(function() {
                                 $.when(self.getAllOptionalAggrPeriod()).done(function() {
                                     var optionalAggrId: string = null;
@@ -282,7 +334,6 @@ module nts.uk.at.view.kfp001.b {
                         }
                     })
                 }).ifNo(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                     return;
                 });
             }
@@ -298,7 +349,10 @@ module nts.uk.at.view.kfp001.b {
                 $("#end-date-B6-4").trigger("validate");
                 $("#wizard").ntsWizard("next").done(function() {
                 });
+            }
 
+            opendScreenF() {
+                nts.uk.ui.windows.sub.modal('/view/kfp/001/f/index.xhtml');
             }
 
             targetEmployee() {

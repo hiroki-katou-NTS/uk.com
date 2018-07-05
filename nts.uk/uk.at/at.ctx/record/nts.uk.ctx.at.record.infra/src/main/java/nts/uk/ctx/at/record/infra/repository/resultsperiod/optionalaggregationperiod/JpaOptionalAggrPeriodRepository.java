@@ -26,6 +26,7 @@ public class JpaOptionalAggrPeriodRepository extends JpaRepository implements Op
 		builderString.append("SELECT e");
 		builderString.append(" FROM KrcmtOptionalAggrPeriod e");
 		builderString.append(" WHERE e.krcmtOptionalAggrPeriodPK.companyId = :companyId");
+		builderString.append(" ORDER BY e.krcmtOptionalAggrPeriodPK.aggrFrameCode ASC");
 		FIND_ALL = builderString.toString();
 
 		builderString = new StringBuilder();

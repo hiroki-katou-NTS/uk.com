@@ -35,12 +35,11 @@
 				<div id="people-no-D5_1" class="label5" style="margin-top: 30px;"
 					data-bind="ntsFormLabel: {required: true}">
 					#{i18n.getText('KFP001_31')}</div>
-				<label id="label1-D5_2" class="label6" data-bind="text: peopleNo">
-				</label> <span style = "margin-left: 2px;">人</span>
+				<span id="people" style="margin-left: 50px;" data-bind="text: peopleCount"></span>
 			</div>
 			<div></div>
 			<button id="button-1D" data-bind="click: prevC" tabindex="6">#{i18n.getText('KFP001_26')}</button>
-			<button id="button-2D" class="proceed large" data-bind="click: addData" tabindex="6">#{i18n.getText('KFP001_25')}</button>
+			<button id="button-2D" class="proceed x-large" data-bind="click: addData" tabindex="6">#{i18n.getText('KFP001_60')}</button>
 		</div>
 
 	</ui:composition>

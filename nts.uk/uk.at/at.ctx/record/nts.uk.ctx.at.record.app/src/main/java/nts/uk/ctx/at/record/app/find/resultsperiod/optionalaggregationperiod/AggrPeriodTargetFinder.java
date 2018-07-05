@@ -58,7 +58,7 @@ public class AggrPeriodTargetFinder {
 		targetDto.setAggrId(target.getAggrId());
 		targetDto.setEmployeeId(employeeIds);
 		targetDto.setState(target.getState().value);
-		return null;
+		return targetDto;
 	}
 
 }

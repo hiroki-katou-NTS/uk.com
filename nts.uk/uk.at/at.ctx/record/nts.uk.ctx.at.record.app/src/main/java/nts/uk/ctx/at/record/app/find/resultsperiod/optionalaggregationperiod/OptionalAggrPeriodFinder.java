@@ -36,7 +36,6 @@ public class OptionalAggrPeriodFinder {
 		if (data.isPresent()) {
 			return OptionalAggrPeriodDto.fromDomain(data.get());
 		}
-
 		return null;
 	}
 

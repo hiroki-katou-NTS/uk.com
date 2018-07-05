@@ -43,6 +43,7 @@ implements AggrPeriodExcutionRepository{
 	builderString.append(" FROM KrcmtAggrPeriodExcution e");
 	builderString.append(" WHERE e.krcmtAggrPeriodExcutionPK.companyId = :companyId");
 	builderString.append(" AND e.aggrFrameCode = :aggrFrameCode");
+	builderString.append(" ORDER BY e.startDateTime DESC");
 	FIND_AGGR_CODE = builderString.toString();
 	
 	builderString = new StringBuilder();
