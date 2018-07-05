@@ -431,7 +431,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         nextToScreenG(): void {
             let self = this;
-            nts.uk.ui.errors.clearAll();
             for (let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())) {
                 if (checkRow.isRecover) {
                     if (checkRow.startOfPeriod > checkRow.endOfPeriod) {
@@ -451,7 +450,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
 
 
-
+        
             if (!nts.uk.ui.errors.hasError()) {
                 self.initScreenG();
                 $('#data-recovery-wizard').ntsWizard("next");
