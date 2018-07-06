@@ -435,16 +435,16 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             for (let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())) {
                 if (checkRow.isRecover) {
                     if (checkRow.startOfPeriod > checkRow.endOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1320', messageParams: [checkRow.rowNumber] });
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(0).ntsError('set', { messageId: 'Msg_1320', messageParams: [checkRow.rowNumber] });
                     }
                     let oldData = _.find(self.categoryListOld, x => {
                         return x.categoryId == checkRow.categoryId;
                     });
-                    if (oldData.startOfPeriod < checkRow.startOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
+                    if (oldData.startOfPeriod > checkRow.startOfPeriod) {
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(0).ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
                     }
-                    if (oldData.endOfPeriod > checkRow.endOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
+                    if (oldData.endOfPeriod < checkRow.endOfPeriod) {
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(1).ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
                     }
                 }
             }
