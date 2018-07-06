@@ -125,7 +125,7 @@ public class DayOffManagementService {
 			if (leaveUpdate.isPresent()) {
 				unUsedDay = leaveUpdate.get().getOccurredDays().v();
 				leaveManaDataRepository.updateUnUseDayLeaveId(dayOffManagementData.getLeaveId(),
-						unUsedDay - unUsedDayNew);
+						unUsedDay - unUsedDayNew, dayOffManagementData.getDaysOffMana());
 			}
 
 			response.add("Msg_15");
