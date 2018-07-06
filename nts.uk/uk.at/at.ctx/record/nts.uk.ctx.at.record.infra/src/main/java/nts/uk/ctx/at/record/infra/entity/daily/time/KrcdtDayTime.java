@@ -2206,14 +2206,22 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		
 		List<ShortWorkTimeOfDaily> test = Collections.emptyList();
 		for(KrcdtDayShorttime shortTimeValue : KrcdtDayShorttime) {
-			test.add(new ShortWorkTimeOfDaily(new WorkTimes(shortTimeValue.count),
-											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecordTotalTime), new AttendanceTime(calToRecordTotalTime)), 
-													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecordInTime), new AttendanceTime(calToRecordInTime)), 
-													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecordOutTime), new AttendanceTime(calToRecordOutTime))),
-											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionTotalTime), new AttendanceTime(calDeductionTotalTime)), 
-													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionInTime), new AttendanceTime(calDeductionInTime)), 
-													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionOutTime),new AttendanceTime(calDeductionOutTime))),
-											  ChildCareAttribute.decisionValue(shortTimeValue.krcdtDayShorttimePK.childCareAtr)));
+			if(shortTimeValue != null) {
+				test.add(new ShortWorkTimeOfDaily(new WorkTimes(shortTimeValue.count == null ? 0 : shortTimeValue.count),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordTotalTime == null ? 0 : shortTimeValue.toRecordTotalTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordTotalTime == null ? 0 : shortTimeValue.calToRecordTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordInTime == null ? 0 : shortTimeValue.toRecordInTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordInTime == null ? 0 : shortTimeValue.calToRecordInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordOutTime == null ? 0 : shortTimeValue.toRecordOutTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordOutTime == null ? 0 : shortTimeValue.calToRecordOutTime ))),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionTotalTime == null ? 0 : shortTimeValue.deductionTotalTime ), 
+													  															  new AttendanceTime(shortTimeValue.calDeductionTotalTime == null ? 0 : shortTimeValue.calDeductionTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionInTime == null ? 0 : shortTimeValue.deductionInTime), 
+													  															  new AttendanceTime(shortTimeValue.calDeductionInTime == null ? 0 : shortTimeValue.calDeductionInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionOutTime == null ? 0 : shortTimeValue.deductionOutTime),
+													  															  new AttendanceTime(shortTimeValue.calDeductionOutTime == null ? 0 : shortTimeValue.calDeductionOutTime))),
+											  ChildCareAttribute.decisionValue(shortTimeValue.krcdtDayShorttimePK == null || shortTimeValue.krcdtDayShorttimePK.childCareAtr == null? 0 : shortTimeValue.krcdtDayShorttimePK.childCareAtr)));
+			}
 		}
 		if(test.isEmpty()) {
 			test.add( new  ShortWorkTimeOfDaily(new WorkTimes(1),
