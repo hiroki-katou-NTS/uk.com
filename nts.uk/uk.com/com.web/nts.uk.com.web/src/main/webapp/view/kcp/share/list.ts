@@ -404,6 +404,9 @@ module kcp.share.list {
         // set up on selected code changed event
         private initEvent(): void {
             let self = this;
+            self.selectedCodes.subscribe(value => {
+                $('#' + self.componentGridId).ntsGridList("setSelectedValue", value);
+            });
             $(self.componentWrapperSelector).on('click', () => {
                 const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
                 if (self.isMultipleSelect) {
@@ -411,7 +414,6 @@ module kcp.share.list {
                 } else {
                     self.selectedCodes(selecteds.id);
                 }
-                console.log(selecteds);
             });
             $(self.componentWrapperSelector + ' span').on('click', () => {
                 const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
@@ -420,7 +422,6 @@ module kcp.share.list {
                 } else {
                     self.selectedCodes(selecteds.id);
                 }
-                console.log(selecteds);
             });
             $(self.componentWrapperSelector).on('keyup', e => {
                 if (e.which != KeyCode.ARROW_UP ||
@@ -436,7 +437,6 @@ module kcp.share.list {
                 } else {
                     self.selectedCodes(selecteds.id);
                 }
-                console.log(selecteds);
             });
         }
 
