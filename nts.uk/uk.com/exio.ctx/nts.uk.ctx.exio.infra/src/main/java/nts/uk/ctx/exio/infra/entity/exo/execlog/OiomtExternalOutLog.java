@@ -74,13 +74,6 @@ public class OiomtExternalOutLog extends UkJpaEntity implements Serializable {
 	public GeneralDateTime logRegisterDate;
 
 	/**
-	 * ログ連番
-	 */
-	@Basic(optional = false)
-	@Column(name = "LOG_SEQUENCE_NUM")
-	public int logSequenceNum;
-
-	/**
 	 * 処理カウント
 	 */
 	@Basic(optional = false)
@@ -101,16 +94,15 @@ public class OiomtExternalOutLog extends UkJpaEntity implements Serializable {
 
 	public ExternalOutLog toDomain() {
 		return new ExternalOutLog(this.externalOutLogPk.cid, this.externalOutLogPk.outProcessId, this.errContent,
-				this.errTargetVal, this.errDate, this.errEmp, this.errItem, this.logRegisterDate, this.logSequenceNum,
+				this.errTargetVal, this.errDate, this.errEmp, this.errItem, this.logRegisterDate, this.externalOutLogPk.logSequenceNum,
 				this.processCount, this.processContent);
 	}
 
 	public static OiomtExternalOutLog toEntity(ExternalOutLog domain) {
-		return new OiomtExternalOutLog(new OiomtExternalOutLogPk(domain.getCompanyId(), domain.getOutputProcessId()),
+		return new OiomtExternalOutLog(new OiomtExternalOutLogPk(domain.getCompanyId(), domain.getOutputProcessId(), domain.getLogSequenceNumber()),
 				domain.getErrorContent().orElse(null), domain.getErrorTargetValue().orElse(null),
 				domain.getErrorDate().orElse(null), domain.getErrorEmployee().orElse(null),
-				domain.getErrorItem().orElse(null), domain.getLogRegisterDateTime(), domain.getLogSequenceNumber(),
-				domain.getProcessCount(), domain.getProcessContent().value);
+				domain.getErrorItem().orElse(null), domain.getLogRegisterDateTime(), domain.getProcessCount(), domain.getProcessContent().value);
 	}
 
 }
