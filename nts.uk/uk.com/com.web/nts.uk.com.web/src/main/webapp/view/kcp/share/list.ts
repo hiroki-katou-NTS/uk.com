@@ -484,8 +484,8 @@ module kcp.share.list {
             if (self.isShowAlreadySet) {
                 self.listComponentColumn.push({
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: self.gridStyle.alreadySetColumnSize,
-                    formatter: function(isAlreadySet: string) {
-                        if (isAlreadySet == 'true') {
+                    formatter: function(isAlreadySet) {
+                        if (isAlreadySet == true || isAlreadySet == 'true') {
                             return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
                         }
                         return '';
@@ -544,7 +544,7 @@ module kcp.share.list {
             }
 
             // Map already setting attr to data list.
-            if (!nts.uk.util.isNullOrEmpty(data.alreadySettingList)) {
+            if (!_.isEmpty(data.alreadySettingList())) {
                 self.alreadySettingList = data.alreadySettingList;
                 self.addAreadySettingAttr(dataList, self.alreadySettingList());
 
@@ -893,7 +893,7 @@ module kcp.share.list {
         private reloadEmployment(closureId: number) {
             var self = this;
             service.findEmployments(closureId).done(function(data: UnitModel[]) {
-                if (self.alreadySettingList) {
+                if (!_.isEmpty(self.alreadySettingList())) {
                     self.addAreadySettingAttr(data, self.alreadySettingList());
                 }
                 self.itemList(data);
