@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.employee.deletemanagement;
+package nts.uk.ctx.pereg.app.command.deleteemployee;
 
 import java.util.Date;
 import java.util.List;
@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
@@ -22,6 +23,9 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 	/** The repository. */
 	@Inject
 	private EmployeeDataMngInfoRepository EmpDataMngRepo;
+	
+	@Inject
+	private StampCardRepository stampCardRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<EmployeeDeleteCommand> context) {
@@ -39,6 +43,9 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 				empInfo.setRemoveReason(new RemoveReason(command.getReason()));
 				empInfo.setDeletedStatus(EmployeeDeletionAttr.TEMPDELETED);
 				EmpDataMngRepo.updateRemoveReason(empInfo);
+				
+				stampCardRepo.deleteBySid(command.getSId());
+				
 			} 
 		}
 	}

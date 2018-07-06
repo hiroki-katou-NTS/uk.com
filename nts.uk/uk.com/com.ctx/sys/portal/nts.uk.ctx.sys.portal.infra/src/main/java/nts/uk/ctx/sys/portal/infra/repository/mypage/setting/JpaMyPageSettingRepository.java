@@ -26,10 +26,10 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 @Stateless
 public class JpaMyPageSettingRepository extends JpaRepository implements MyPageSettingRepository {
 
-	private final String GET_ONE_MPS = "SELECT m FROM CcgmtMyPageSet m WHERE m.cid = :companyId";
-	private final String GET_ONE_PIS = "SELECT p FROM CcgmtPartItemSet p WHERE p.ccgmtPartItemSetPK.cid = :companyId";
-	private final String GET_ONE_PIS_BY_TPP_ID = "SELECT p FROM CcgmtPartItemSet p WHERE p.ccgmtPartItemSetPK.cid = :companyId AND p.ccgmtPartItemSetPK.topPagePartId = :topPagePartId";
-	private final String GET_ONE_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.ccgmtTopPagePartPK.topPagePartID = :topPagePartId";
+	private static final String GET_ONE_MPS = "SELECT m FROM CcgmtMyPageSet m WHERE m.cid = :companyId";
+	private static final String GET_ONE_PIS = "SELECT p FROM CcgmtPartItemSet p WHERE p.ccgmtPartItemSetPK.cid = :companyId";
+	private static final String GET_ONE_PIS_BY_TPP_ID = "SELECT p FROM CcgmtPartItemSet p WHERE p.ccgmtPartItemSetPK.cid = :companyId AND p.ccgmtPartItemSetPK.topPagePartId = :topPagePartId";
+	private static final String GET_ONE_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.ccgmtTopPagePartPK.topPagePartID = :topPagePartId";
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository#findByCompanyId(java.lang.String)
 	 */

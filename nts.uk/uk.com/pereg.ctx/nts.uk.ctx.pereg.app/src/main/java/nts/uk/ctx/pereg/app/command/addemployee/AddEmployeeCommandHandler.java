@@ -24,13 +24,6 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommandAssembler;
-import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingCondition2Command;
-import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingCondition2CommandHandler;
-import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingConditionCommandAssembler;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
@@ -41,8 +34,6 @@ import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
@@ -75,10 +66,10 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private EmpRegHistoryRepository empHisRepo;
 	
 	
-	private static List<String> historyCategoryCodeList = Arrays.asList("CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
+	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
 			"CS00019", "CS00020", "CS00021");
 			       
-	private static Map<String, String> startDateItemCodes;
+	private static final Map<String, String> startDateItemCodes;
 	static {
 		Map<String, String> aMap = new HashMap<>();
 		// 分類１
@@ -101,7 +92,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
 	
-	private static Map<String, String> endDateItemCodes;
+	private static final Map<String, String> endDateItemCodes;
 	static {
 		Map<String, String> aMap = new HashMap<>();
 		// 分類１
