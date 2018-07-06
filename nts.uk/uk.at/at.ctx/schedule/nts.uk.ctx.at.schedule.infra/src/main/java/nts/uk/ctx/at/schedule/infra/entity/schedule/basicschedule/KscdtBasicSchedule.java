@@ -57,4 +57,9 @@ public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kscdpBSchedulePK;
 	}
+	
+	public KscdtScheMasterInfo getKscdtScheMasterInfo(){
+		KscdtScheMasterInfo kscdtScheMasterInfoEntity = this.kscdtScheMasterInfo;
+		return kscdtScheMasterInfoEntity;
+	}
 }

@@ -44,7 +44,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet master) {
 		Stopwatches.start("ERALALL");
 		String companyID = AppContexts.user().companyId();
-		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
+		List<EmployeeDailyPerError> addItemList = integrationOfDaily.getEmployeeError() == null? integrationOfDaily.getEmployeeError() :new ArrayList<>();
 		List<ErrorAlarmWorkRecord> divergenceError = new ArrayList<>();
 		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.converterFactory.createDailyConverter().setData(integrationOfDaily);
 		//勤務実績のエラーアラーム数分ループ
