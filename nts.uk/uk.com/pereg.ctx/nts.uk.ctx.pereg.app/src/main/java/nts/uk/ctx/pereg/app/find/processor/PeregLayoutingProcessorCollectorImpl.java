@@ -34,7 +34,6 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialle
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave7informationDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave8informationDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave9informationDto;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.nursingcareleave.CareLeaveInfoDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto1;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto10;
@@ -57,7 +56,6 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.Sp
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto8;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto9;
 import nts.uk.ctx.at.shared.app.find.shortworktime.ShortWorkTimeDto;
-import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingCondition2Dto;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
 import nts.uk.ctx.bs.employee.app.find.department.affiliate.AffDeptHistDto;
@@ -130,7 +128,6 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00035 その他休暇情報
 			new TypeLiteral<PeregFinder<OtherHolidayInfoDto>>(){},
 			// CS00036 子の看護・介護休暇管理
-			new TypeLiteral<PeregFinder<CareLeaveInfoDto>>(){},
 			// CS00049 特別休暇１１情報
 			new TypeLiteral<PeregFinder<Specialleave11informationDto>>(){},
 			// CS00050 特別休暇１２情報
@@ -192,9 +189,7 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00068  特別休暇20付与残数
 			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto20>>(){},
 			// CS00069 打刻カード番号
-			new TypeLiteral<PeregFinder<PeregStampCardDto>>(){},
-			// CS00070  労働条件２
-			new TypeLiteral<PeregFinder<WorkingCondition2Dto>>() {}
+			new TypeLiteral<PeregFinder<PeregStampCardDto>>(){}
 			);
 
 	@Override

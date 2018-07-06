@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -68,13 +67,12 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			boolean isCompany, 
 			boolean isWorkplace,
 			boolean isPerson) {
-		//MasterApproverRootOutput masterInfor = null;
-		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(null, null);		
+		CompanyApprovalInfor comMasterInfor = null;		
 		Map<String, WorkplaceApproverOutput> mapWpRootInfor = new HashMap<>();
 		Map<String, PersonApproverOutput> mapPsRootInfor = new HashMap<>();
 		//出力対象に会社別がある(có 会社別 trong đối tượng output)
 		if(isCompany) {
-			comMasterInfor = getComApprovalInfor(companyID, baseDate);
+			comMasterInfor = this.getComApprovalInfor(companyID, baseDate);
 		}
 		//出力対象に職場別がある(có 職場別 trong đối tượng output)
 		if(isWorkplace) {
@@ -94,7 +92,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				mapPsRootInfor = getPsRootInfor(lstPss, companyID);
 			}
 		}
-		MasterApproverRootOutput masterInfor = new MasterApproverRootOutput(comMasterInfor, mapWpRootInfor,mapPsRootInfor);
+		MasterApproverRootOutput masterInfor = new MasterApproverRootOutput(comMasterInfor,mapWpRootInfor,mapPsRootInfor);
 		return masterInfor;
 	}
 	/**
@@ -214,18 +212,33 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param companyID
 	 * @return
 	 */
-	private ApprovalForApplication getApproval(int appType, String appName, CompanyApprovalRoot comRoot, String companyID) {
-		ApprovalForApplication approvalForApplication = new ApprovalForApplication(appType, appName, null, null, null);
-		approvalForApplication.setStartDate(comRoot.getEmploymentAppHistoryItems().get(0).start());
-		approvalForApplication.setEndDate(comRoot.getEmploymentAppHistoryItems().get(0).end());
+	private ApprovalForApplication getApproval(CompanyApprovalRoot comRoot, String companyID) {
+		//find name
+		String nameRoot = this.findNameRoot(comRoot.getEmploymentRootAtr(), comRoot.getApplicationType(), comRoot.getConfirmationRootType());
+		//khoi tao
+		ApprovalForApplication approvalForApp = new ApprovalForApplication(comRoot.getApplicationType() == null ? null : 
+			comRoot.getApplicationType().value,nameRoot , null, null, null);
+		approvalForApp.setStartDate(comRoot.getEmploymentAppHistoryItems().get(0).start());
+		approvalForApp.setEndDate(comRoot.getEmploymentAppHistoryItems().get(0).end());
 		
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
 		//承認フェーズ, 承認者
 		lstMatter = getPhaseApprover(companyID, comRoot.getBranchId(), comRoot.getEmploymentAppHistoryItems().get(0).start());		
-		approvalForApplication.setLstApproval(lstMatter);
-		return approvalForApplication;
+		approvalForApp.setLstApproval(lstMatter);
+		return approvalForApp;
 	}
-	
+	private String findNameRoot(EmploymentRootAtr empRootAtr, ApplicationType appType, ConfirmationRootType confirmType){
+		if(empRootAtr.equals(EmploymentRootAtr.COMMON)){
+			return "共通ルート";
+		}
+		if(empRootAtr.equals(EmploymentRootAtr.APPLICATION)){
+			return EnumAdaptor.valueOf(appType.value, ApplicationType.class).nameId;
+		}
+		if(empRootAtr.equals(EmploymentRootAtr.CONFIRMATION)){
+			return EnumAdaptor.valueOf(confirmType.value, ConfirmationRootType.class).nameId;
+		}
+		return "";
+	}
 	
 	private List<ApprovalRootMaster> getPhaseApprover(String companyID, String branchId, GeneralDate baseDate){
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
@@ -265,54 +278,20 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain 「会社別就業承認ルート」)
 		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate);
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
-		List<ApprovalForApplication> comApproverRoot =  new ArrayList<>();
+		List<ApprovalForApplication> comApproverRoots =  new ArrayList<>();
 		if(CollectionUtil.isEmpty(lstComs)) {
 			return null;
 		}
-		
-		//lay du lieu voi truong hop 0: 共通(common)
-		Optional<CompanyApprovalRoot> opComCommon = lstComs.stream()
-				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
-				.findAny();
-		if(opComCommon.isPresent()) {	
-			ApprovalForApplication approvalForApplication = getApproval(0, ROOT_COMMON, opComCommon.get(), companyID);			
-			comApproverRoot.add(approvalForApplication);
-		}
-		
-				 
-				 
-		//ApprovalForApplication approvalForApplication = new ApprovalForApplication(0, rootCommon, null, null, null);
-		
-		//Lap de lay du lieu theo app type
-		for(ApplicationType appType: ApplicationType.values()) {
-			if(appType == ApplicationType.APPLICATION_36) {
+		for (CompanyApprovalRoot comRoot : lstComs) {
+			//TH don 36 bo qua
+			if(comRoot.isApplication() && comRoot.getApplicationType().equals(ApplicationType.APPLICATION_36)){
 				continue;
-			}		
-			Optional<CompanyApprovalRoot> comApps = lstComs
-					.stream()
-					.filter(x -> x.getApplicationType() == appType)
-					.findAny();
-			if(comApps.isPresent()) {	
-				ApprovalForApplication approvalForApplication = getApproval(appType.value + 1,appType.nameId, comApps.get(), companyID);
-				//thong tin các application da duoc set approver
-				comApproverRoot.add(approvalForApplication);
 			}
-			
+			//convert data
+			ApprovalForApplication comApprover = this.getApproval(comRoot, companyID);
+			comApproverRoots.add(comApprover);
 		}
-		//lay du lieu theo CONFIRMATION
-		 List<CompanyApprovalRoot>  confirmLst =  lstComs.stream()
-			.filter(x -> x.getEmploymentRootAtr() ==  EmploymentRootAtr.CONFIRMATION).collect(Collectors.toList());
-		
-		 confirmLst.forEach(item->{
-			 ApprovalForApplication approvalForApplication = getApproval(0,item.getConfirmationRootType().nameId, item, companyID);
-			 comApproverRoot.add(approvalForApplication);
-		 });
-		 
-		 
-		if(!CollectionUtil.isEmpty(comApproverRoot)) {
-			Collections.sort(comApproverRoot, Comparator.comparing(ApprovalForApplication:: getAppType));
-		}		
-		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, comApproverRoot);
+		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, comApproverRoots);
 		return comMasterInfor;
 	}
 }

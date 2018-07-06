@@ -66,7 +66,7 @@ public class TimeRoundingSetting extends DomainObject {
 		case ROUNDING_DOWN_OVER:
 			int mod = minutesInHour % (this.roundingTime.asTime() * 2);
 			val direction = mod < this.roundingTime.asTime() ? Direction.TO_BACK : Direction.TO_FORWARD;
-			return this.roundingTime.round(timeAsMinutes, direction);
+			return collectionUnit().round(timeAsMinutes, direction);
 		case ROUNDING_DOWN:
 			return this.roundingTime.round(timeAsMinutes, Direction.TO_BACK);
 		case ROUNDING_UP:
@@ -102,5 +102,27 @@ public class TimeRoundingSetting extends DomainObject {
 	public void setDefaultDataRoundingDown() {
 		this.roundingTime = Unit.ROUNDING_TIME_1MIN;
 		this.rounding = Rounding.ROUNDING_DOWN;
+	}
+	
+	
+	/**
+	 * 未満切捨、以上切上の場合に単位を補正する
+	 * @return
+	 */
+	public Unit collectionUnit() {
+		switch (this.roundingTime) {
+		case ROUNDING_TIME_15MIN:
+			return Unit.valueOf(6);
+		case ROUNDING_TIME_30MIN:
+			return Unit.valueOf(7);
+		case ROUNDING_TIME_1MIN:
+		case ROUNDING_TIME_5MIN:
+		case ROUNDING_TIME_6MIN:
+		case ROUNDING_TIME_10MIN:
+		case ROUNDING_TIME_60MIN:
+			throw new RuntimeException("invalid case: " + this.roundingTime);
+		default:
+			throw new RuntimeException("invalid case: " + this.roundingTime);
+		}
 	}
 }

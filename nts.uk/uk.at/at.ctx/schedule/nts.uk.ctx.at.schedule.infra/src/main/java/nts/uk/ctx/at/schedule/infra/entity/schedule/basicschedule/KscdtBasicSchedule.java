@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -49,7 +50,7 @@ public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 	@Column(name = "CONFIRMED_ATR")
 	public int confirmedAtr;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscdtBasicSchedule", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscdtBasicSchedule", orphanRemoval = true, fetch = FetchType.LAZY)
 	public KscdtScheMasterInfo kscdtScheMasterInfo;
 
 	@Override
