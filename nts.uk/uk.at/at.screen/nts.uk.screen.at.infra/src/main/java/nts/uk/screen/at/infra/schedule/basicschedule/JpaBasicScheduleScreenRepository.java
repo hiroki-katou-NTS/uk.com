@@ -49,10 +49,10 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " AND a.kshmtWorkTimeSetPK.cid = b.kshmtWorkTimeSheetSetPK.cid"
 			+ " WHERE a.kshmtWorkTimeSetPK.cid = :companyId" + " AND a.abolitionAtr = :abolitionAtr"
 			+ " ORDER BY a.kshmtWorkTimeSetPK.worktimeCd ASC";
-	private static final String SELECT_BY_CID_DEPRECATE_CLS = "SELECT NEW " + WorkTypeScreenDto.class.getName()
-			+ " (c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.memo)"
+	private static final String SELECT_BY_CID_DEPRECATE_CLS_1 = "SELECT NEW " + WorkTypeScreenDto.class.getName()
+			+ " (c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr)"
 			+ " FROM KshmtWorkType c LEFT JOIN KshmtWorkTypeOrder o "
-			+ "ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode "
+			+ " ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode "
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId " + " AND c.deprecateAtr = :deprecateClassification "
 			+ " ORDER BY  CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ";
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c"
@@ -152,8 +152,8 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	 * Find by companyId and deprecateClassification
 	 */
 	@Override
-	public List<WorkTypeScreenDto> findByCIdAndDeprecateCls(String companyId, int deprecateClassification) {
-		return this.queryProxy().query(SELECT_BY_CID_DEPRECATE_CLS, WorkTypeScreenDto.class)
+	public List<WorkTypeScreenDto> findByCIdAndDeprecateCls1(String companyId, int deprecateClassification) {
+		return this.queryProxy().query(SELECT_BY_CID_DEPRECATE_CLS_1, WorkTypeScreenDto.class)
 				.setParameter("companyId", companyId).setParameter("deprecateClassification", deprecateClassification)
 				.getList();
 	}
