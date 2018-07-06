@@ -46,7 +46,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         selectedEmployeeCodeScreenG: KnockoutObservableArray<string> = ko.observableArray([]);
         employeeListScreenG: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         //Screen H
-        buton_I_enable: KnockoutObservable<string> = ko.observable(true);
+        buton_I_enable: KnockoutObservable<boolean> = ko.observable(true);
         recoveryMethodDescription1: KnockoutObservable<string> = ko.observable("");
         recoveryMethodDescription2: KnockoutObservable<string> = ko.observable("");
         dataRecoverySummary: KnockoutObservable<DataRecoverySummary> = ko.observable(new DataRecoverySummary([], 0, [], []));
@@ -139,6 +139,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     fileId: fileInfo.id,
                     fileName: fileInfo.originalName
                 });
+                self.fileName("");
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                     setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
                     nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
