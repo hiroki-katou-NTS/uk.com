@@ -60,13 +60,12 @@ public class DPDataDto {
 	}
 	
 	public void resetData(){
-		this.state ="";
-			this.state ="";
-		    this.error ="";
-		    this.sign = false;
-		    this.approval = false;
-		    this.typeGroup ="";
-		    this.cellDatas = new HashSet<>();
+//		this.state = "";
+//		this.error = "";
+//		this.sign = false;
+//		this.approval = false;
+//		this.typeGroup = "";
+		this.cellDatas = new HashSet<>();
 	}
 	
 }

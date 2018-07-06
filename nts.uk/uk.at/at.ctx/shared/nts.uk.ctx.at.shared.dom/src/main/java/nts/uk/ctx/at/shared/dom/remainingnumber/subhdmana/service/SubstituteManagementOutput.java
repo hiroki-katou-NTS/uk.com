@@ -15,7 +15,5 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 public class SubstituteManagementOutput {
 	SWkpHistImport sWkpHistImport;
 	ExtraHolidayManagementOutput extraHolidayManagementOutput; 
-	CompensatoryLeaveEmSetting compensatoryLeaveEmSetting;
-	CompensatoryLeaveComSetting compensatoryLeaveComSetting;
 	
 }

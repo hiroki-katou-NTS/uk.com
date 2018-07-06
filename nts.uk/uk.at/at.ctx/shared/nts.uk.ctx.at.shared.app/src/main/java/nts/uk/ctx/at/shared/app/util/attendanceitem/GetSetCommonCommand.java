@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
-public interface GetSetCommonCommand {
+public interface GetSetCommonCommand extends ItemConst {
 
 	public void setRecords(ConvertibleAttendanceItem item);
 	

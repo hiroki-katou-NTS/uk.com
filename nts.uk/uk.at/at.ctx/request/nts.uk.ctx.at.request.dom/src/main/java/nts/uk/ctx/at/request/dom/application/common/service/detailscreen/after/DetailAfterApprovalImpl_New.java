@@ -67,19 +67,21 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				application.getAppType().value, 
 				application.getAppDate());
 		applicationRepository.updateWithVersion(application);
+		String reflectAppId = "";
 		if(allApprovalFlg.equals(Boolean.TRUE)){
 			// 実績反映状態 = 反映状態．反映待ち
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
 			applicationRepository.update(application);
-			if((application.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
-					(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
-					|| application.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION)))
-				|| application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)
-				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)
-				|| application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
-				|| application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
-				appReflectManager.reflectEmployeeOfApp(application);
-			}
+			reflectAppId = application.getAppID();
+//			if((application.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
+//					(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
+//					|| application.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION)))
+//				|| application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)
+//				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)
+//				|| application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
+//				|| application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
+//				appReflectManager.reflectEmployeeOfApp(application);
+//			}
 		} else {
 			// ドメインモデル「申請」と紐付き「反映情報」．実績反映状態 = 反映状態．未反映
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
@@ -90,7 +92,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 		if (discreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 			isAutoSendMail = true;
 			if(allApprovalFlg.equals(Boolean.TRUE)){
-				MailResult applicantResult = otherCommonAlgorithm.sendMail(Arrays.asList(application.getEmployeeID()), application);
+				MailResult applicantResult = otherCommonAlgorithm.sendMailApplicantApprove(application);
 				autoSuccessMail.addAll(applicantResult.getSuccessList());
 				autoFailMail.addAll(applicantResult.getFailList());
 			}
@@ -107,12 +109,12 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 						employeeID, 
 						application.getAppType().value, 
 						application.getAppDate());
-				MailResult applicantResult = otherCommonAlgorithm.sendMail(destination, application);
+				MailResult applicantResult = otherCommonAlgorithm.sendMailApproverApprove(destination, application);
 				autoSuccessMail.addAll(applicantResult.getSuccessList());
 				autoFailMail.addAll(applicantResult.getFailList());
 			}
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID);
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, reflectAppId);
 	}
 
 }

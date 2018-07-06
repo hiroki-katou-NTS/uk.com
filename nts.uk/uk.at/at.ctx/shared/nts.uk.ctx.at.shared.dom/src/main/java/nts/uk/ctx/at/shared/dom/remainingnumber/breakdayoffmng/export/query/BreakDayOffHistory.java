@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 @Setter
 @Getter
 @AllArgsConstructor
@@ -15,7 +16,7 @@ public class BreakDayOffHistory {
 	/**
 	 * 発生消化年月日
 	 */
-	private GeneralDate hisDate;
+	private CompensatoryDayoffDate hisDate;
 	/**
 	 * 休出履歴
 	 */

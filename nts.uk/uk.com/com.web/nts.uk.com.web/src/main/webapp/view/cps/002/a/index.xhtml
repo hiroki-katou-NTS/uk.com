@@ -96,11 +96,10 @@
 												required:true,
 												option: {
 												 width: '160' 
-												 
-												 }
-												}" />
+												 },
+												},event: { blur: $vm.logMouseOver.bind($vm) }" />
 											<button
-												data-bind="click:$parent.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
+												data-bind="click:$vm.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
 										</div>
 									</div>
 
@@ -137,8 +136,8 @@
 												 	width: '160' 
 												 }
 												 }" />
-											<!-- <button
-												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button> -->
+											<button
+												data-bind="click:$parent.openJModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button> 
 										</div>
 									</div>
 									<div class="div_line">
@@ -241,10 +240,12 @@
 
 									<div class="step1_bot_col2">
 										<div class="div_line">
-											<button class="small" data-bind="click:openFModal">#{i18n.getText('CPS002_30')}</button>
+											<button class="small" data-bind="click:openFModal ,
+											 								style: { visibility: enaBtnOpenFModal() ? 'visible' : 'hidden' }">#{i18n.getText('CPS002_30')}</button>
 										</div>
 										<div class="div_line">
-											<button class="small" data-bind="click:openInitModal">#{i18n.getText('CPS002_31')}</button>
+											<button class="small" data-bind="click:openInitModal ,
+																			style: { visibility: enaBtnOpenInitModal() ? 'visible' : 'hidden' }">#{i18n.getText('CPS002_31')}</button>
 										</div>
 									</div>
 								</div>

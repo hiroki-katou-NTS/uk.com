@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     import service = nts.uk.at.view.kaf005.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -14,7 +15,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //manualSendMailAtr
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
-        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
         displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(false);
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
@@ -54,6 +55,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: KnockoutObservable<string> = ko.observable('');
         employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
+        employeeList :KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+        selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+        employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+        totalEmployee: KnockoutObservable<string> = ko.observable(null);
         heightOvertimeHours: KnockoutObservable<number> = ko.observable(null);
         
         overtimeAtr: KnockoutObservable<number> = ko.observable(null);
@@ -66,7 +71,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //加給時間
         bonusTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
         //menu-bar 
-        enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti: KnockoutObservable<boolean> = ko.observable(true);
@@ -139,7 +143,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.timeEnd1(transferData.endTime);
                 self.appDate(transferData.appDate);
                 self.multilContent(transferData.applicationReason);
-                self.employeeIDs(transferData.employeeIDs); 
+                self.employeeIDs(transferData.employeeIDs);
+                self.employeeID(transferData.employeeID); 
                 self.uiType(transferData.uiType); 
             }
                     
@@ -176,6 +181,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 timeStart1: self.timeStart1(),
                 timeEnd1: self.timeEnd1(),
                 reasonContent: self.multilContent(),
+                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                 employeeIDs: self.employeeIDs()
             }).done((data) => {
                 self.initData(data);
@@ -203,7 +209,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             overtimeAtr: self.overtimeAtr()    
                         }).done((data) =>{
                             self.findBychangeAppDateData(data);
-                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
+                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID());
                             self.convertAppOvertimeReferDto(data);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
@@ -301,7 +307,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
-            self.manualSendMailAtr(!data.manualSendMailAtr);
+            self.checkBoxValue(!data.manualSendMailAtr);
+            self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.prePostSelected(data.application.prePostAtr);
             self.displayCaculationTime(data.displayCaculationTime);
@@ -357,6 +364,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.workTypeChangeFlg(data.workTypeChangeFlg);
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
+            self.convertAppOvertimeReferDto(data);
+            // list employeeID
+            if(!nts.uk.util.isNullOrEmpty(data.employees)){
+                self.employeeFlag(true);
+                for(let i= 0; i < data.employees.length; i++){
+                    self.employeeList.push(new common.EmployeeOT(data.employees[i].employeeIDs,data.employees[i].employeeName));
+                }
+                let total = data.employees.length;
+                self.totalEmployee(nts.uk.resource.getText("KAF005_184",total.toString()));
+            }
             // 休憩時間
             for (let i = 1; i < 11; i++) {
                 self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i, null, null, null,""));
@@ -538,7 +555,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }
             }
             let overtime: common.AppOverTime = {
-                applicationDate: self.appDate(),
+                applicationDate: new Date(self.appDate()),
                 prePostAtr: self.prePostSelected(),
                 applicantSID: self.employeeID(),
                 applicationReason: appReason,
@@ -555,7 +572,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
                 flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
                 divergenceReasonContent: divergenceReason,
-                sendMail: self.manualSendMailAtr(),
+                sendMail: self.checkBoxValue(),
                 overtimeAtr: self.overtimeAtr(),
                 calculateFlag: self.calculateFlag()
             };
@@ -608,19 +625,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         //登録処理を実行
         registerData(overtime) {
+            var self = this;
             service.createOvertime(overtime).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                            location.reload();
-                        });    
+                        appcommon.CommonProcess.displayMailResult(data);  
                     } else {
                         if(self.checkBoxValue()){
-                            let command = {appID: data.appID};
-                            setShared("KDL030_PARAM", command);
-                            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                                location.reload();
-                            });    
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);  
                         } else {
                             location.reload();
                         }   
@@ -874,7 +886,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         findBychangeAppDateData(data: any) {
             var self = this;
             let overtimeDto = data;
-            self.manualSendMailAtr(!overtimeDto.manualSendMailAtr);
+            self.checkBoxValue(!overtimeDto.manualSendMailAtr);
+            self.enableSendMail(!overtimeDto.sendMailWhenRegisterFlg);
             self.prePostSelected(overtimeDto.application.prePostAtr);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.displayCaculationTime(overtimeDto.displayCaculationTime);

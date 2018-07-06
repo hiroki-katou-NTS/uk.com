@@ -148,5 +148,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		// A14
 		this.updateJobAssign.handle(kaf022.getJobAssign());
 		this.updateAppro.handle(kaf022.getApprovalSet());
+		
+		this.updateAppliSet.handle(kaf022.getAppliSet());
 	}
 }

@@ -32,33 +32,43 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             nts.uk.ui.block.invisible();
             if (!_.isEmpty(self.appID)){
                 service.getApplicationForSendByAppID(self.appID).done(function(result) {
-                    if (result) {
-                        let listApprovalPhase: any = result.listApprovalPhaseStateDto;
+                    if (result) {//check data
+                        
+                        let listApprovalPhase = result.listApprovalPhaseStateDto
                         self.mailContent(result.mailTemplate);
                         self.applicant(ko.toJS({employeeID: result.application.applicantSID, smail: result.applicantMail}));
                         self.application(ko.toJS(result.application));
-                        for (let i = 0; i < listApprovalPhase.length; i++) {
-                            for (let listApprovalFrame = listApprovalPhase[i].listApprovalFrame, j = 0; j < listApprovalFrame.length; j++) {
-                                for (let listApprover = listApprovalFrame[j].listApprover, k = 0; k < listApprover.length; k++) {
-                                    if (listApprover[k].representerName.length > 0){
-                                        listApprover[k].approverName += '(' + listApprover[k].representerName + ')';
-                                    } else if (listApprover[k].approverMail.length >0){
-                                        listApprover[k].approverName += '(@)';
-                                        listApprover[k]['isSend'] = 1;
-                                    } else {
-                                        listApprover[k]['isSend'] = 0;
+                        //list Phase
+                        let listPhaseDto: Array<ApprovalPhaseState> = [];
+                        _.each(listApprovalPhase, function(phase){//for by phase
+                            //list frame
+                            let listFrameDto: Array<ApprovalFrame> = [];
+                            _.each(phase.listApprovalFrame, function(frame){//for by frame
+                                //list approver
+                                let listApproverDto: Array<Approver> = [];
+                                _.each(frame.listApprover, function(approver){//for by approver
+                                //fill approver
+                                    listApproverDto.push(new Approver(approver.approverID, 
+                                            approver.approverMail.length >0 ? approver.approverName + '(@)' : approver.approverName, 
+                                            approver.approverMail, approver.approverMail.length >0 ? 1 : 0));
+                                    //check agent
+                                    if(approver.representerID != '' && approver.representerName != ''){
+                                        //fill agent
+                                        listApproverDto.push(new Approver(approver.representerID, 
+                                            approver.agentMail.length >0 ? approver.representerName + '(@)' : approver.representerName, 
+                                            approver.agentMail, approver.agentMail.length >0 ? 1 : 0));
                                     }
-                                    listApprover[k]['dispApproverName'] = listApprover[k].approverName;
-                                }
-                            }
-                        }
-                        self.approvalRootState(ko.mapping.fromJS(listApprovalPhase)());
+                                });
+                                listFrameDto.push(new ApprovalFrame(frame.phaseOrder, frame.frameOrder, listApproverDto));
+                            });
+                            listPhaseDto.push(new ApprovalPhaseState(phase.phaseOrder, phase.approvalAtrName,listFrameDto));
+                        });
+                        self.approvalRootState(listPhaseDto);
                     }
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.request.jump("../test/index.xhtml");
                     });
                 }).always(function(res: any) {
                     nts.uk.ui.block.clear();
@@ -69,57 +79,70 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         // アルゴリズム「メール送信」を実行する
         sendMail() {
             var self = this;
-            let listSendMail: Array<String> = [];
-            if (self.isSendToApplicant()) {
-                listSendMail.push(self.applicant().employeeID);
+            //validate
+            $(".A4_2").trigger("validate");
+            if (nts.uk.ui.errors.hasError()){
+                return;
             }
-            let listApprovalPhase = ko.toJS(self.approvalRootState);
-            _.forEach(listApprovalPhase, x => {
+            let listSendMail: Array<String> = [];
+            _.forEach(self.approvalRootState(), x => {
                 _.forEach(x.listApprovalFrame, y => {
                     _.forEach(y.listApprover, z => {
-                        if (z.isSend == 1)
-                        listSendMail.push(z.approverID);
+                        if (z.isSend() == 1)
+                        listSendMail.push(z.id);
                     });
                 });
             });
-
-            if (listSendMail.length > 0) {
-                let command = {
-                    'mailContent': ko.toJS(self.mailContent),
-                    'application': ko.toJS(self.application),
-                    'sendMailOption': listSendMail
-                };
-                nts.uk.ui.block.invisible();
-                service.sendMail(command).done(function(result) {
-                    // TO DO
-                    if (result) {
-                        // 成功
-                        let successList: Array<string> = [];
-                        // 送信失敗 
-                        let failedList: Array<string> = [];
-                        // メール送信時のエラーチェック
-                        if (result.successList) {
-                            _.forEach(result.successList, x => {
-                                successList.push(x);
-                            });
-                        }
-                        if (result.errorList) {
-                            _.forEach(result.errorList, x => {
-                                failedList.push(x);
-                            });
-                        }
-                        setShared("KDL030_PARAM_RES", command);
-                        self.handleSendMailResult(successList, failedList);
-                    }
-                }).fail(function(res: any) {
-                    dialog.alertError(res.errorMessage);
-                }).always(function(res: any) {
-                    nts.uk.ui.block.clear();
-                });
-
-            } else {
+            //送信対象者リストの「メール送信」をチェックする
+            if(listSendMail.length == 0){//「送信する」の承認者が０人の場合
+                //エラーメッセージ（Msg_14）
                 dialog.alertError({ messageId: "Msg_14" });
+                return;
             }
+            //申請者にメール送信かチェックする
+            let applicantID = '';
+            if (self.isSendToApplicant()) {//チェックあり
+                //申請者をループ対象に追加する
+//                listSendMail.push(self.applicant().employeeID);
+                applicantID = self.applicant().employeeID;
+            }
+            let command = {
+                'mailContent': ko.toJS(self.mailContent),
+                'application': ko.toJS(self.application),
+                'sendMailOption': listSendMail,
+                'applicantID' : applicantID
+            };
+            nts.uk.ui.block.invisible();
+            service.sendMail(command).done(function(result) {
+                nts.uk.ui.block.clear();
+                // TO DO
+                if (result) {
+                    // 成功
+                    let successList: Array<string> = [];
+                    // 送信失敗 
+                    let failedList: Array<string> = [];
+                    // メール送信時のエラーチェック
+                    if (result.successList) {
+                        _.forEach(result.successList, x => {
+                            successList.push(x);
+                        });
+                    }
+                    if (result.errorList) {
+                        _.forEach(result.errorList, x => {
+                            failedList.push(x);
+                        });
+                    }
+                    setShared("KDL030_PARAM_RES", command);
+                    self.handleSendMailResult(successList, failedList);
+                }
+            }).fail(function(res: any) {
+                nts.uk.ui.block.clear();
+                //Msg1057
+                dialog.alertError({ messageId: res.messageId}).then(() =>{
+                    nts.uk.ui.windows.close();
+                });;
+            });
+
         }
         cancel() {
             nts.uk.ui.windows.close(); 
@@ -129,59 +152,57 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             let numOfSuccess = successList.length;
             let numOfFailed = failedList.length
             let sucessListAsStr = "";
-            if (numOfSuccess != 0 && numOfFailed ==0) {
-                dialog.info({ message: getMessage('Msg_207') + "\n" + successList.join('\n'), messageId: "Msg_207" }).then(() =>{
-                    nts.uk.ui.windows.close();
-                });
-            } else if (numOfFailed != 0 && numOfSuccess ==0) {
-                dialog.alertError({ message: getMessage('Msg_651') + "\n" + failedList.join('\n'), messageId: "Msg_657" }).then(() =>{
-                    nts.uk.ui.windows.close();
-                });
-            } else {
-                dialog.info({ message: getMessage('Msg_207') + "\n" + successList.join('\n'), messageId: "Msg_207" }).then(()=>{
-                    dialog.alertError({ message: getMessage('Msg_651') + "\n" + failedList.join('\n'), messageId: "Msg_657" }).then(() =>{
+            //送信出来た人があったかチェックする
+            //送信できた人なし
+            if (numOfSuccess > 0) {//送信できた人あり
+                //情報メッセージ（Msg_207）を画面表示する
+                dialog.info({messageId: "Msg_207" }).then(() =>{
+                    //アルゴリズム「送信・送信後チェック」で溜め込んだ社員名があったかチェックする
+                    if(numOfFailed > 0){//溜め込んだ社員名無しあり
+                        //エラーメッセージ（Msg_651）と溜め込んだ社員名をエラーダイアログに出力する
+                        dialog.alertError({ message: getMessage('Msg_651') + "\n" + failedList.join('\n'), messageId: "Msg_651" }).then(() =>{
+                            nts.uk.ui.windows.close();
+                        });
+                    }else{
                         nts.uk.ui.windows.close();
-                    });
+                    }
                 });
             }
         }
     }
 
-
     export class ApprovalPhaseState {
         phaseOrder: number;
-        approvalAtr: string;
+        approvalAtrName: string;
         listApprovalFrame: Array<ApprovalFrame>;
+        constructor(phaseOrder: number, approvalAtrName: string,listApprovalFrame: Array<ApprovalFrame>){
+            this.phaseOrder = phaseOrder;
+            this.approvalAtrName = approvalAtrName;
+            this.listApprovalFrame = listApprovalFrame;
+        }
     }
     export class ApprovalFrame {
         phaseOrder: number;
         frameOrder: number;
-        approvalAtr: string;
         listApprover: Array<Approver>;
-        approverID: string;
-        approverName: string;
-        representerID: string;
-        representerName: string;
-        approvalReason: string;
-        constructor(phaseOrder: number, frameOrder: number, approvalAtr: string, listApprover: Array<Approver>) {
+        constructor(phaseOrder: number, frameOrder: number, listApprover: Array<Approver>) {
             this.phaseOrder = phaseOrder;
             this.frameOrder = frameOrder;
-            this.approvalAtr = approvalAtr;
             this.listApprover = listApprover;
         }
     }
     export class Approver {
-        approverID: string;
-        approverName: string;
-        representerID: string;
-        representerName: string;
+        id: string;
+        dispApproverName: string;
         mail: string;
-        constructor(approverID: string, approverName: string, representerID: string, representerName: string, mail: string) {
-            this.approverID = approverID;
-            this.approverName = approverName;
-            this.representerID = representerID;
-            this.representerName = representerName;
+        isSend: KnockoutObservable<number>;;
+        showButton: boolean;
+        constructor(id: string, name: string, mail: string, isSend: number) {
+            this.id = id;
+            this.dispApproverName = name;
             this.mail = mail;
+            this.isSend = ko.observable(isSend);
+            this.showButton = mail == '' ? false : true;
         }
     }
     export class ItemModel {

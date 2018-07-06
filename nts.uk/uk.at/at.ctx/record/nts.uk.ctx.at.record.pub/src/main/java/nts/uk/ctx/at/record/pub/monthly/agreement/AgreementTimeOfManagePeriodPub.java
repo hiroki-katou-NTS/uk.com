@@ -40,4 +40,12 @@ public interface AgreementTimeOfManagePeriodPub {
 	 */
 	// RequestList421
 	List<AgreementTimeOfManagePeriod> findByYear(String employeeId, Year year);
+	
+	/**
+	 * 36協定時間を取得する
+	 * @param employeeId list  List<社員ID>
+	 * @param period 期間（年月）
+	 * @return 36協定時間マップ
+	 */	
+	Map<String, Map<YearMonth, AttendanceTimeMonth>> getTimeByPeriod(List<String> employeeIds, YearMonthPeriod period);
 }

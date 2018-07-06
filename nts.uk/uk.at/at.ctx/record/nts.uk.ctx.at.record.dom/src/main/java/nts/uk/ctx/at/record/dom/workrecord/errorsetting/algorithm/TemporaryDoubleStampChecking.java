@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /*
@@ -19,14 +17,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
  */
 @Stateless
 public class TemporaryDoubleStampChecking {
-	
-	@Inject
-	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
-	
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
-	public void temporaryDoubleStampChecking(String companyID, String employeeID, GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance){
+	public EmployeeDailyPerError temporaryDoubleStampChecking(String companyID, String employeeID, GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance){
+		
+		EmployeeDailyPerError employeeDailyPerError = null;
 		
 		List<Integer> attendanceItemIDList = new ArrayList<>();
 		
@@ -59,9 +53,15 @@ public class TemporaryDoubleStampChecking {
 					}
 				}				
 			}
-			if (!attendanceItemIDList.isEmpty()) {
-				this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDList);
+			if(!attendanceItemIDList.isEmpty()){
+				employeeDailyPerError = new EmployeeDailyPerError(companyID,
+						employeeID, processingDate, new ErrorAlarmWorkRecordCode("S006"),
+						attendanceItemIDList);
 			}
+//			if (!attendanceItemIDList.isEmpty()) {
+//				this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDList);
+//			}
 		}
+		return employeeDailyPerError;
 	}
 }

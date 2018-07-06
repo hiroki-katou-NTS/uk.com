@@ -96,7 +96,7 @@ public class FinderDtoKaf022 {
 	public DtoKaf022 findDtoKaf022() {
 		DtoKaf022 result = new DtoKaf022();
 		result.allClosure = finder.findAll();
-//		result.appSet = appFinder.findByComId();
+		result.appSet = appSetFind.getAppRef();
 		result.appCommon = appCommonSetFinder.findByCom();
 		result.proxy = proxyAppSetFinder.findAll();
 		result.mailHd = mailHdInstructionFinder.findByComId();

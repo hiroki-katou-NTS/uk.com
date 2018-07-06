@@ -21,6 +21,7 @@ public interface LeaveComDayOffManaRepository {
 	void deleteByComDayOffID(String comDayOffID);
 
 	List<LeaveComDayOffManagement> getByListComLeaveID(List<String> listLeaveID);
+	List<LeaveComDayOffManagement> getByListComId(List<String> listComID);
 	/**
 	 * Delete 休出代休紐付け管理 by comDayOffId
 	 * @param comDayOffId

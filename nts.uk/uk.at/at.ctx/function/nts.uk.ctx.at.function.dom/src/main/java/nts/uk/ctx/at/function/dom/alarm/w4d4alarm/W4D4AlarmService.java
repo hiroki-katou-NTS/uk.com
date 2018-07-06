@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -62,7 +63,10 @@ public class W4D4AlarmService {
 
 	}
 	
-	public List<ValueExtractAlarm> calculateTotal4W4D(List<EmployeeSearchDto> employee, DatePeriod period, String checkConditionCode, List<String> empIds) {
+	public List<ValueExtractAlarm> calculateTotal4W4D(List<EmployeeSearchDto> employees, DatePeriod period, String checkConditionCode) {
+		
+		List<String> empIds = employees.stream().map( e->e.getId()).collect(Collectors.toList());
+		
 		String companyID = AppContexts.user().companyId();
 		List<ValueExtractAlarm> result = new ArrayList<ValueExtractAlarm>();
 		
@@ -74,7 +78,7 @@ public class W4D4AlarmService {
 		List<RegulationInfoEmployeeResult> listTarget = erAlWorkRecordCheckAdapter.filterEmployees(period.end(), empIds, optAlarmCheckConditionByCategory.get().getExtractTargetCondition());
 		if(!listTarget.isEmpty()) {
 			for(RegulationInfoEmployeeResult target : listTarget) {
-				Optional<EmployeeSearchDto> emOp = employee.stream().filter(e -> e.getId().equals(target.getEmployeeId())).findFirst();
+				Optional<EmployeeSearchDto> emOp = employees.stream().filter(e -> e.getId().equals(target.getEmployeeId())).findFirst();
 				if(emOp.isPresent()) {
 					AlarmCheckConditionByCategory alarmCheckConditionByCategory = optAlarmCheckConditionByCategory.get();
 					AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) alarmCheckConditionByCategory.getExtractionCondition();

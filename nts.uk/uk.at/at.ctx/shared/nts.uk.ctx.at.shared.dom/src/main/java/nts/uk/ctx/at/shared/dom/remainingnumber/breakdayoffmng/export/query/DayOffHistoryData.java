@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 
 /**
  * 代休履歴
@@ -26,7 +27,7 @@ public class DayOffHistoryData {
 	/**
 	 * 代休日
 	 */
-	private GeneralDate dayOffDate;
+	private CompensatoryDayoffDate dayOffDate;
 	/**
 	 * 必要日数
 	 */

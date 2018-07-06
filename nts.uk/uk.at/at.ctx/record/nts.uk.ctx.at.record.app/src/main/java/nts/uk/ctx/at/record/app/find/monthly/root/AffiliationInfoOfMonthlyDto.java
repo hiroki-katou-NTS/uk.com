@@ -3,13 +3,16 @@ package nts.uk.ctx.at.record.app.find.monthly.root;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AggregateAffiliationInfoDto;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -19,17 +22,17 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の所属情報 */
-@AttendanceItemRoot(rootName = AttendanceLayoutConst.MONTHLY_AFFILIATION_INFO_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
+@AttendanceItemRoot(rootName = ItemConst.MONTHLY_AFFILIATION_INFO_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 	/** 年月: 年月 */
 	private YearMonth yearMonth;
 
 	/** 月初の情報: 集計所属情報 */
-	@AttendanceItemLayout(jpPropertyName = "月初の情報", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = START_MONTH, layout = LAYOUT_A)
 	private AggregateAffiliationInfoDto startMonthInfo;
 
 	/** 月末の情報: 集計所属情報 */
-	@AttendanceItemLayout(jpPropertyName = "月末の情報", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = END_MONTH, layout = LAYOUT_B)
 	private AggregateAffiliationInfoDto endMonthInfo;
 
 	/** 社員ID: 社員ID */
@@ -47,15 +50,25 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 	}
 
 	@Override
-	public AffiliationInfoOfMonthly toDomain() {
-		if (this.isHaveData()) {
-			return AffiliationInfoOfMonthly.of(employeeId, yearMonth, 
-										ConvertHelper.getEnum(closureID, ClosureId.class), 
-										closureDate == null ? null : closureDate.toDomain(), 
-										startMonthInfo == null ? null : startMonthInfo.toDomain(), 
-										endMonthInfo == null ? null : endMonthInfo.toDomain());
+	public AffiliationInfoOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+		if(!this.isHaveData()) {
+			return null;
 		}
-		return null;
+		if(employeeId == null){
+			employeeId = this.employeeId;
+		}
+		if(ym == null){
+			ym = this.yearMonth;
+		} 
+		if(closureDate == null){
+			closureDate = this.closureDate;
+		}
+		return AffiliationInfoOfMonthly.of(employeeId, yearMonth, 
+									ConvertHelper.getEnum(closureID, ClosureId.class), 
+									closureDate == null ? null : closureDate.toDomain(), 
+									startMonthInfo == null ? new AggregateAffiliationInfo()  : startMonthInfo.toDomain(), 
+									endMonthInfo == null ? new AggregateAffiliationInfo() : endMonthInfo.toDomain());
+		
 	}
 
 	@Override

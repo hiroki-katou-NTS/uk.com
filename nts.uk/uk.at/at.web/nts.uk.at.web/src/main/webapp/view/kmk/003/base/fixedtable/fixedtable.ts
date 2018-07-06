@@ -257,7 +257,6 @@ module nts.fixedtable {
                 // add properties isChecked when multiple select
                 self.addCheckBoxItemAtr();
                 self.subscribeChangeCheckbox();
-                self.initEventChangeComboBox(self.$element);
             });
         }
 
@@ -664,13 +663,9 @@ module nts.fixedtable {
             var self = this;
             if (element) {
                 element.delegate('.ui-igcombo-wrapper', "igcomboselectionchanged", function(evt, ui) {
-                    var key = $(this).data('key');
-                    var newValue = ui.items[0].data[key];
-                    var oldValue = $(this).data('value');
-                    if (!oldValue || oldValue != newValue) {
-                        _.defer(() => self.itemList.valueHasMutated());
-                        $(this).data('value', newValue);
-                    }
+                    setTimeout(() =>
+                        self.itemList.valueHasMutated()
+                        , 200);
                 });
             }
         }
@@ -693,20 +688,11 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
     init = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
         bindingContext: KnockoutBindingContext) => {
         let input: any = valueAccessor();
-    }
-
-    /**
-     * Update
-     */
-    update = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
-        bindingContext: KnockoutBindingContext) => {
-
         let webserviceLocator: any = nts.uk.request.location.siteRoot
             .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
             .mergeRelativePath('/view/kmk/003/base/fixedtable/fixedtable.xhtml').serialize();
 
         //get data
-        let input: any = valueAccessor();
         let data: nts.fixedtable.FixTableOption = input.option;
 
         let screenModel = new nts.fixedtable.FixTableScreenModel(data,input.isEnableAllControl);
@@ -749,6 +735,13 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.addMinRows();
             });
         });
+    }
+
+    /**
+     * Update
+     */
+    update = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+        bindingContext: KnockoutBindingContext) => {
     }
 
 }

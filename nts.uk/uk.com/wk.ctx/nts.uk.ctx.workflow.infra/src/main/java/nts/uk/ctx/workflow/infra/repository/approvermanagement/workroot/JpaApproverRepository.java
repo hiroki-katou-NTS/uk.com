@@ -19,7 +19,7 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtAppover
 @Stateless
 public class JpaApproverRepository extends JpaRepository implements ApproverRepository{
 
-	private final String SELECT_FROM_APPROVER = "SELECT c FROM WwfmtAppover c"
+	private static final String SELECT_FROM_APPROVER = "SELECT c FROM WwfmtAppover c"
 			+ " WHERE c.wwfmtAppoverPK.companyId = :companyId"
 			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId"
 			+ " ORDER BY c.displayOrder ASC";

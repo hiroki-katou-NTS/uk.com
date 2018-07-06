@@ -20,7 +20,7 @@ public interface SystemResourceQueryRepository {
 	 * @param companyId the company id
 	 * @return the list
 	 */
-	List<SystemResourceData> findListResourceCus(String companyId);
+	List<SystemResourceData> findListResourceCus(String companyId, String languageId);
 	
 	/**
 	 * Find list resource.

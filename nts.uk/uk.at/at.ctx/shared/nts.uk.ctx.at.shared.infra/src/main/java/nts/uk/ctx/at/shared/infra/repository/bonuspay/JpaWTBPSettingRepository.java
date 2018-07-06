@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstWTBonusPaySettingPK;
 
 @Stateless
 public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPaySettingRepository {
-	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpstWTBonusPaySetting c WHERE c.kbpstWTBonusPaySettingPK.companyId = :companyId";
+	private static final String SELECT_BY_COMPANYID = "SELECT c FROM KbpstWTBonusPaySetting c WHERE c.kbpstWTBonusPaySettingPK.companyId = :companyId";
 
 	@Override
 	public List<WorkingTimesheetBonusPaySetting> getListSetting(String companyId) {

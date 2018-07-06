@@ -4,12 +4,12 @@
 		<span class="title">#{i18n.getText('KDM001_150')}</span>
 		<!-- B1_1 新規 -->
 		<div>
-			<button id ="B1_1" tabindex="6" data-bind="click: function(){ openNewSubstituteData()}">#{i18n.getText('KDM001_1')}</button>
+			<button id ="B1_1" tabindex="6" data-bind="click: function(){ openNewSubstituteData()}, enable: !isHaveError()">#{i18n.getText('KDM001_1')}</button>
 		</div>
 		<!-- B1_2 「代休確認表」出力画面へ遷移する -->
 		<div style="margin-left: auto;">
-			<a id = "B1_2" tabindex="7" class="goout"
-				data-bind="ntsLinkButton: {}, click: function(){ openConfirmScreen()}">#{i18n.getText('KDM001_32')}</a>
+<!-- 			<a id = "B1_2" tabindex="7" class="goout" -->
+<!-- 				data-bind="ntsLinkButton: {}, click: function(){ openConfirmScreen()}, hidden: true">#{i18n.getText('KDM001_32')}</a> -->
 		</div> 
 	
 	</div>

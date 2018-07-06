@@ -47,4 +47,8 @@ public class PayoutManagementDataDto {
 		this.Linked = isLinked;
 	}
 	
+	public void setunUsedDays(Double unUsedDays){
+		this.unUsedDays = unUsedDays;
+	}
+	
 }

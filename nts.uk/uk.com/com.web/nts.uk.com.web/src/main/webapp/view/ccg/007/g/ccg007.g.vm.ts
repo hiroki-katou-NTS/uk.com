@@ -2,10 +2,10 @@ module nts.uk.pr.view.ccg007.g {
     export module viewmodel {
         import blockUI = nts.uk.ui.block;
         import CallerParameter = service.CallerParameter;
+        import SendMailInfoFormGCommand = service.SendMailInfoFormGCommand;
+        
 
         export class ScreenModel {
-            
-            companyCode: KnockoutObservable<string>;
             companyName: KnockoutObservable<string>;
             employeeCode: KnockoutObservable<string>;
             
@@ -15,7 +15,6 @@ module nts.uk.pr.view.ccg007.g {
             constructor(parentData: CallerParameter) {
                 var self = this;
                 
-                self.companyCode = ko.observable(null);
                 self.companyName = ko.observable(null);
                 self.employeeCode = ko.observable(null);
                 
@@ -33,6 +32,7 @@ module nts.uk.pr.view.ccg007.g {
                 // block ui
                 nts.uk.ui.block.invisible();
                 
+                //set infor sendMail
                 self.companyName(self.callerParameter.companyName);
                 self.employeeCode(self.callerParameter.employeeCode);
                 
@@ -52,14 +52,22 @@ module nts.uk.pr.view.ccg007.g {
                 
                 blockUI.invisible();
                 
-                service.submitSendMail(self.callerParameter).done(function () {
-                    
+                //add command
+                let command: SendMailInfoFormGCommand = new SendMailInfoFormGCommand(self.callerParameter.companyCode, 
+                    self.callerParameter.employeeCode, self.callerParameter.contractCode);
+                
+                //sendMail
+                service.submitSendMail(command).done(function (data) {
+                    if (!nts.uk.util.isNullOrEmpty(data.url)){
+                        nts.uk.ui.dialog.info({ messageId: "Msg_207" });
+                    }
+                    self.closeDialog();
+                    blockUI.clear();
                 }).fail(function(res) {
                     //Return Dialog Error
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                     blockUI.clear();
                 });
-                
             }
             
             /**

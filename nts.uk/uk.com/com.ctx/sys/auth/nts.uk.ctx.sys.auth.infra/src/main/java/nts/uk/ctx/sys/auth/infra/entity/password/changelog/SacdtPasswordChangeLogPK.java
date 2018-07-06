@@ -25,8 +25,8 @@ public class SacdtPasswordChangeLogPK implements Serializable {
 	private String userId;
 
 	/** The login id. */
-	@Column(name="LOGIN_ID")
-	private String loginId;
+	@Column(name="LOG_ID")
+	private String logId;
 
 	/** The modified datetime. */
 	@Column(name="MODIFIED_DATETIME")
@@ -52,7 +52,7 @@ public class SacdtPasswordChangeLogPK implements Serializable {
 		SacdtPasswordChangeLogPK castOther = (SacdtPasswordChangeLogPK)other;
 		return 
 			this.userId.equals(castOther.userId)
-			&& this.loginId.equals(castOther.loginId)
+			&& this.logId.equals(castOther.logId)
 			&& this.modifiedDatetime.equals(castOther.modifiedDatetime);
 	}
 
@@ -63,7 +63,7 @@ public class SacdtPasswordChangeLogPK implements Serializable {
 		final int prime = 31;
 		int hash = 17;
 		hash = hash * prime + this.userId.hashCode();
-		hash = hash * prime + this.loginId.hashCode();
+		hash = hash * prime + this.logId.hashCode();
 		hash = hash * prime + this.modifiedDatetime.hashCode();
 		
 		return hash;

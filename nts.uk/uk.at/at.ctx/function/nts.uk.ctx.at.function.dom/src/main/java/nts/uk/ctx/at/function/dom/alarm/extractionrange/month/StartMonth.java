@@ -33,4 +33,12 @@ public class StartMonth {
 	public void setFixedMonth(YearSpecifiedType yearSpecifiedType, int designatedMonth) {
 		this.fixedMonthly = Optional.of(new FixedMonthly(yearSpecifiedType, designatedMonth));
 	}
+	
+	public boolean isFixedMomnth() {
+		return this.specifyStartMonth == SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE;
+	}
+	
+	public boolean isDesignateMonth() {
+		return this.specifyStartMonth == SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH;
+	}
 }

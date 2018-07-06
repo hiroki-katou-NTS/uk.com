@@ -36,8 +36,8 @@ public class JpaPasswordChangeLogGetMemento implements PasswordChangeLogGetMemen
 	 * getLoginId()
 	 */
 	@Override
-	public LoginId getLoginId() {
-		return new LoginId(this.entity.getSacdtPasswordChangeLogPK().getLoginId());
+	public String getLogId() {
+		return this.entity.getSacdtPasswordChangeLogPK().getLogId();
 	}
 
 	/*

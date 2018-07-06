@@ -52,12 +52,12 @@
 					<table id="multi-list"
 						data-bind="ntsGridList: {
 							name: '#[KDM001_93]',
-							dataSource: items,
+							options: items,
 							optionsValue: 'subOfHDID',
 							columns: columns,
 							multiple: true,
-							selectionDisables: disables,
 							rows: 8,
+							selectionDisables: disables,
 							value: currentCodeList
 						}" tabindex="1"></table>
 				</div>
@@ -65,7 +65,7 @@
 				<span id="E7_1" style="margin-left: 210px; margin-top: 15px;"
 					class="label">#{i18n.getText('KDM001_98')}</span>
 				<!-- E7_2残数-->
-				<span id="E7_2" class="label" data-bind="text: residualDayDispay"></span>
+				<span id="E7_2" class="label" data-bind="text: residualDayDisplay"></span>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- E31_1 登録 -->

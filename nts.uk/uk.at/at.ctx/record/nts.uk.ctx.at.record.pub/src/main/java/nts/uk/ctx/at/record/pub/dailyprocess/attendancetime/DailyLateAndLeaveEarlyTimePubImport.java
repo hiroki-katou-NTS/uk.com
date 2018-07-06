@@ -1,10 +1,6 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime;
 
-import java.util.Map;
-
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.importparam.DailyLateAndLeaveEarlyTimePubImpParam;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -21,16 +17,13 @@ public class DailyLateAndLeaveEarlyTimePubImport {
 	//年月日
 	DatePeriod daterange;
 	
-	//日付、表示のBoolean
-	Map<GeneralDate,DailyLateAndLeaveEarlyTimePubImpParam> booleanParam;
-	
 	/**
 	 * Constructor 
 	 */
 	public DailyLateAndLeaveEarlyTimePubImport(String employeeId,
-			Map<GeneralDate, DailyLateAndLeaveEarlyTimePubImpParam> booleanParam) {
+			DatePeriod daterange) {
 		super();
 		this.employeeId = employeeId;
-		this.booleanParam = booleanParam;
+		this.daterange = daterange;
 	}
 }

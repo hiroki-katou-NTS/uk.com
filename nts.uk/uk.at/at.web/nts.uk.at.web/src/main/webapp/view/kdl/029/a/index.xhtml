@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 860 , height: 700};</script>
+			<!-- kcp005 -->
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+
+			<!-- kdl029 a-->
+			<com:stylefile path="kdl029.style.css" />
+			<com:scriptfile path="kdl029.a.start.js" />
+			<com:scriptfile path="kdl029.a.service.js" />
+			<com:scriptfile path="kdl029.a.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area"></div>
+
+			<div id="contents-area" class="cf">
+				<div id="content-left">
+					<!-- A1 -->
+					<label>#{i18n.getText('KDL029_2')}</label>
+					<!-- A2 -->
+					<div id="component-items-list" tabindex="7" class="pull-left contentkcp005"></div>
+				</div>
+				<div id="content-right">
+					<div id="content_right_top">
+						<div class="div_line">
+								<!-- A3_1 -->
+								<label data-bind ="text: employeeCode"></label>
+								<!-- A3_2 -->
+								<label class ="margin-left-employee" data-bind ="text: employeeName"> </label>
+						</div>
+						<div class="div_line">
+							<!-- A4 -->
+							<table id="single-list"
+								data-bind="ntsGridList: {
+										width: 500 ,								
+										height: 100,
+										dataSource: dataHolidayGrantInfo ,
+										primaryKey: 'code',
+										columns: columnHolidayGrantInfos ,
+										multiple: false ,
+										value: value
+									}"></table>
+							<table id="totalTable">
+								<tr>
+									<td class ="width_td">#{i18n.getText('KDL029_21')}</td>
+									<td class ="width_td"></td>
+									<td class ="width_td"></td>
+									<td class ="width_td">a12</td>
+									<td class ="width_td"></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<div id="content_right_bottom">
+						<div id="content_right_bottom_left">
+							<div class="div_line">
+								<!-- A5_1 -->
+								<label>#{i18n.getText('KDL029_15')}</label>
+							</div>
+							<div class="div_line">
+								<!-- A6 -->
+								<table id="single-list"
+									data-bind="ntsGridList: {
+										width: 400 ,								
+										height: 100,
+										dataSource: dataSteadyUseInfor,
+										primaryKey: 'code',
+										columns: columnSteadyUseInfors ,
+										multiple: false ,
+										value: value
+									}"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- A10_1 -->
+				<button class="large" data-bind="click: closeDialog">#{i18n.getText('KDL029_20')}</button>
+			</div>
+
+		</ui:define>
+
+	</ui:composition>
+
+
+</body>
+</html>

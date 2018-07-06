@@ -15,4 +15,6 @@ public class DetailApproverOutput {
 	public String representerName;
 	
 	public String jobtitle;
+	
+	public String jobtitleAgent;
 }	

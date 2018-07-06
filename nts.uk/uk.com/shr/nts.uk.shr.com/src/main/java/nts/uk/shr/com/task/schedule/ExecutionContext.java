@@ -32,7 +32,7 @@ public class ExecutionContext {
 	 * @return next fire time
 	 */
 	public GeneralDateTime nextFireTime() {
-		return this.source.getNextFireTime();
+		return this.source.getNextFireTime().orElse(null);
 	}
 
 	/**

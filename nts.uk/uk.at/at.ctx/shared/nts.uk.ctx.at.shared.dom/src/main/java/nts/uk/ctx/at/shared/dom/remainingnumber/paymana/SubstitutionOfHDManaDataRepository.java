@@ -46,5 +46,5 @@ public interface SubstitutionOfHDManaDataRepository {
 	 * @param remainDays 未相殺日数>remainDays
 	 * @return
 	 */
-	List<SubstitutionOfHDManagementData> getByRemainDays(String sid, Double remainDays);
+	List<SubstitutionOfHDManagementData> getByRemainDays(String sid, double remainDays);
 }

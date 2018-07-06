@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk013.d {
             selectedId34: KnockoutObservable<any>;
             selectedId44: KnockoutObservable<any>;
             
-            time: KnockoutObservable<number>;
+            suppDays: KnockoutObservable<number>;
             
             constructor() {
                 var self = this;
@@ -84,7 +84,7 @@ module nts.uk.at.view.kmk013.d {
                     }
                 });
                  
-                self.time = ko.observable(2);
+                self.suppDays = ko.observable(2);
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -113,7 +113,7 @@ module nts.uk.at.view.kmk013.d {
                     service.findRefreshByCId().done((arr) => {
                         let data = arr[0];
                         if (data) {
-                            self.time(data.attendanceTime);
+                            self.suppDays(data.supplementableDays);
                         }
                     }).always(() => {
                         dfd.resolve();
@@ -137,7 +137,7 @@ module nts.uk.at.view.kmk013.d {
     
                     service.save(data).done(() => {
                         let insuffData = {};
-                        insuffData.attendanceTime = self.time();
+                        insuffData.supplementableDays = self.suppDays();
                         service.saveRefresh(insuffData).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 // Focus on D3_4 by default

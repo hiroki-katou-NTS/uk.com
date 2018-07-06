@@ -22,9 +22,10 @@ module cps001.a.service {
         emp: {
             getInfo: 'bs/employee/person/get-header/{0}',
             getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}',
-            permision: 'ctx/pereg/roles/auth/get-self-auth',
+            permision: 'ctx/pereg/functions/auth/find-all',
         },
-        file: '/shr/infra/file/storage/infor/{0}'
+        file: '/shr/infra/file/storage/infor/{0}',
+        lstcardno:'at/record/stamp/stampcard/getListCardNo'
     };
 
     export function getPerson(id: string) {
@@ -85,5 +86,9 @@ module cps001.a.service {
 
     export function getFileInfo(id: string) {
         return ajax(paths.file, id);
+    }
+    
+    export function getLstCardNoByContractCd() {
+        return ajax('at', paths.lstcardno);
     }
 }

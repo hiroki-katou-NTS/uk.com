@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.login;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,22 +21,38 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.LockInterval;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.LockOutMessage;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
@@ -52,6 +68,7 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
+import nts.uk.shr.com.enumcommon.Abolition;
 import nts.uk.shr.com.system.config.InstallationType;
 
 /**
@@ -61,7 +78,7 @@ import nts.uk.shr.com.system.config.InstallationType;
  *            the generic type
  */
 @Stateless
-public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResult<T, String> {
+public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResult<T, CheckChangePassDto> {
 
 	/** The employee adapter. */
 	@Inject
@@ -109,6 +126,26 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 	/** The Constant FIST_COMPANY. */
 	private static final Integer FIST_COMPANY = 0;
+	
+	/** The role individual grant adapter. */
+	@Inject
+	private RoleIndividualGrantAdapter roleIndividualGrantAdapter;
+
+	/** The Password policy repo. */
+	@Inject
+	private PasswordPolicyRepository PasswordPolicyRepo;
+	
+	/** The role adapter. */
+	@Inject
+	private RoleAdapter roleAdapter;
+	
+	/** The employee info adapter. */
+	@Inject
+	private EmployeeInfoAdapter employeeInfoAdapter;
+	
+	/** The company bs adapter. */
+	@Inject
+	private CompanyBsAdapter companyBsAdapter;
 
 	/*
 	 * (non-Javadoc)
@@ -119,7 +156,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 */
 	@Override
 	@Transactional
-	protected String handle(CommandHandlerContext<T> context) {
+	protected CheckChangePassDto handle(CommandHandlerContext<T> context) {
 		return this.internalHanler(context);
 	}
 
@@ -127,8 +164,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * Internal hanler.
 	 *
 	 * @param context the context
+	 * @return the check change pass dto
 	 */
-	protected abstract String internalHanler(CommandHandlerContext<T> context);
+	protected abstract CheckChangePassDto internalHanler(CommandHandlerContext<T> context);
 
 	/**
 	 * Re check contract.
@@ -170,16 +208,18 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/**
 	 * Check employee del status.
 	 *
-	 * @param sid
-	 *            the sid
+	 * @param sid            the sid
+	 * @return the check change pass dto
 	 */
-	protected void checkEmployeeDelStatus(String sid) {
+	protected CheckChangePassDto checkEmployeeDelStatus(String sid) {
 		// get Employee status
 		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(sid);
 
 		if (!optMngInfo.isPresent() || !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
 			throw new BusinessException("Msg_301");
 		}
+		
+		return new CheckChangePassDto(false, null);
 	}
 
 	/**
@@ -218,7 +258,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param companyCode
 	 *            the company code
 	 */
-	protected void setLoggedInfo(UserImport user, EmployeeImport em, String companyCode) {
+	public void setLoggedInfo(UserImportNew user, EmployeeImport em, String companyCode) {
 		// set info to session
 		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
 				companyCode, em.getEmployeeId(), em.getEmployeeCode());
@@ -227,11 +267,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/**
 	 * Inits the session.
 	 *
-	 * @param user
-	 *            the user
+	 * @param user            the user
+	 * @return the check change pass dto
 	 */
 	// init session
-	protected void initSession(UserImport user) {
+	public CheckChangePassDto initSession(UserImportNew user) {
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
 		if (lstCompanyId.isEmpty()) {
 			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
@@ -261,22 +301,74 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			}
 		}
 		this.setRoleId(user.getUserId());
+		
+		return new CheckChangePassDto(false, null);
 	}
-	
-	protected void checkAfterLogin(UserImport user) {
-		
-//		user.
-		
+
+	/**
+	 * Check after login.
+	 *
+	 * @param user            the user
+	 * @param oldPassword the old password
+	 * @return true, if successful
+	 */
+	protected boolean checkAfterLogin(UserImportNew user, String oldPassword) {
+		if (user.getPassStatus() != PassStatus.Reset.value){
+			// Get PasswordPolicy
+			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
+					.getPasswordPolicy(new ContractCode(user.getContractCode()));
+
+			if (passwordPolicyOpt.isPresent()) {
+				// Event Check
+				return this.checkEvent(passwordPolicyOpt.get(), user, oldPassword);
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Check event.
+	 *
+	 * @param passwordPolicy            the password policy
+	 * @param user            the user
+	 * @param oldPassword the old password
+	 * @return true, if successful
+	 */
+	protected boolean checkEvent(PasswordPolicy passwordPolicy, UserImportNew user, String oldPassword) {
+		// Check passwordPolicy isUse
+		if (passwordPolicy.isUse()) {
+			// Check Change Password at first login
+			if (passwordPolicy.isInitialPasswordChange()) {
+				// Check state
+				if (user.getPassStatus() == PassStatus.InitPassword.value) {
+					// Math PassPolicy
+					return false;
+				}
+			}
+			
+			CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(),
+					oldPassword, user.getContractCode());
+			
+			if (mess.isError()){
+				if (passwordPolicy.isLoginCheck()){
+					return false;
+				}
+				return true;
+			}
+		}
+		return true;
 	}
 
 	/**
 	 * Sets the role id.
 	 *
-	 * @param userId
-	 *            the new role id
+	 * @param userId            the new role id
+	 * @return the check change pass dto
 	 */
 	// set roll id into login user context
-	protected void setRoleId(String userId) {
+	public CheckChangePassDto setRoleId(String userId) {
 		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
 		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
 		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
@@ -319,6 +411,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (personalInfoRoleId != null) {
 			manager.roleIdSetter().forPersonalInfo(personalInfoRoleId);
 		}
+		
+		return new CheckChangePassDto(false, null);
 	}
 
 	/**
@@ -341,12 +435,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/**
 	 * Compare hash password.
 	 *
-	 * @param user
-	 *            the user
-	 * @param password
-	 *            the password
+	 * @param user            the user
+	 * @param password            the password
+	 * @return the string
 	 */
-	protected String compareHashPassword(UserImport user, String password) {
+	protected String compareHashPassword(UserImportNew user, String password) {
 		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
 			// アルゴリズム「ロックアウト」を実行する ※２次対応
 			this.lockOutExecuted(user);
@@ -361,7 +454,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param user
 	 *            the user
 	 */
-	private void lockOutExecuted(UserImport user) {
+	private void lockOutExecuted(UserImportNew user) {
 		// ドメインモデル「アカウントロックポリシー」を取得する
 		AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository
 				.getAccountLockPolicy(new ContractCode(user.getContractCode())).get();
@@ -398,7 +491,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	private boolean checkLoginLog(String userId, AccountLockPolicy accountLockPolicy) {
 		GeneralDateTime startTime = GeneralDateTime.now();
 		// Check the domain model [Account lock policy. Error interval]
-		if (accountLockPolicy.getErrorCount().lessThanOrEqualTo(BigDecimal.ZERO)) {
+		if (accountLockPolicy.getLockInterval().lessThanOrEqualTo(new LockInterval(0))) {
 			startTime = GeneralDateTime.fromString("1901/01/01 00:00:00", "yyyy/MM/dd HH:mm:ss");
 		} else {
 			startTime = startTime.addMinutes(-1 * accountLockPolicy.getLockInterval().minute());
@@ -417,13 +510,19 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 	/**
 	 * Compare account.
+	 *
+	 * @param context the context
+	 * @return the windows account
 	 */
 	// アルゴリズム「アカウント照合」を実行する
-	protected void compareAccount(HttpServletRequest context) {
+	protected WindowsAccount compareAccount(HttpServletRequest context) {
 		// Windowsログイン時のアカウントを取得する
 		// get UserName and HostName
 		String username = AppContexts.windowsAccount().getUserName();
-		String hostname = AppContexts.windowsAccount().getDomain();
+		String domain = AppContexts.windowsAccount().getDomain();
+		
+		//cut hostname
+		String hostname = domain.substring(0, domain.lastIndexOf(";"));
 
 		// ドメインモデル「Windowsアカウント情報」を取得する
 		// ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from
@@ -434,15 +533,18 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (!opWindowAccount.isPresent()) {
 			// エラーメッセージ（#Msg_876）を表示する。
 			throw new BusinessException("Msg_876");
-		} else {
-			List<WindowsAccountInfo> windows =  opWindowAccount.get().getAccountInfos().stream().filter(item -> item.getHostName().v().equals(hostname)
-					&& item.getUserName().v().equals(username) && item.getUseAtr().equals(UseAtr.Use)).collect(Collectors.toList());
-			if (windows.isEmpty()) {
-				throw new BusinessException("Msg_876");
-			} else {
-				this.getUserAndCheckLimitTime(context, opWindowAccount.get());
-			}
 		}
+		
+		//set List WindowsAccountInfor
+		List<WindowsAccountInfo> windows = opWindowAccount.get().getAccountInfos()
+				.stream().filter(item -> item.getHostName().v().equals(hostname)
+						&& item.getUserName().v().equals(username) && item.getUseAtr().equals(UseAtr.Use))
+				.collect(Collectors.toList());
+		
+		if (windows.isEmpty()) {
+			throw new BusinessException("Msg_876");
+		}
+		return opWindowAccount.get();
 	}
 
 	/**
@@ -452,18 +554,170 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the window account
 	 * @return the user and check limit time
 	 */
-	private void getUserAndCheckLimitTime(HttpServletRequest request, WindowsAccount windowAccount) {
+	public UserImportNew getUserAndCheckLimitTime(WindowsAccount windowAccount) {
 		// get user
-		Optional<UserImport> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
+		Optional<UserImportNew> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
 
 		// Validate limit time
 		if (optUserImport.isPresent()) {
 			if (optUserImport.get().getExpirationDate().before(GeneralDate.today())) {
 				throw new BusinessException("Msg_316");
 			}
-			// set info to session
-			request.changeSessionId();
-			this.initSession(optUserImport.get());
 		}
+		return optUserImport.get();
+	}
+	
+	/**
+	 * Error check.
+	 *
+	 * @param userId the user id
+	 * @param roleType the role type
+	 * @param contractCode the contract code
+	 */
+	//アルゴリズム「エラーチェック（形式１）」を実行する 
+	public void errorCheck(String userId, Integer roleType, String contractCode){
+		
+		GeneralDate date = GeneralDate.today();
+		//切替可能な会社一覧を取得する Get list company
+		List<String> companyIds = this.getListCompany(userId, date, roleType);
+		
+		if (companyIds.isEmpty()){
+			throw new BusinessException("Msg_281"); 
+		} 
+		
+		if (!this.checkAccoutLock(contractCode, userId).v().isEmpty()) {
+			//return messageError
+			throw new BusinessException(this.checkAccoutLock(contractCode, userId).v());
+		}
+	}
+	
+	/**
+	 * Error check 2.
+	 *
+	 * @param companyId the company id
+	 */
+	//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
+	public void errorCheck2(String companyId, String contractCode, String userId){
+		
+		//ドメインモデル「会社」の使用区分をチェックする (Check usage classification of domain model "company")
+		CompanyInforImport company = this.companyInformationAdapter.findComById(companyId);
+		
+		if (company.getIsAbolition() == Abolition.ABOLISH.value){
+			throw new BusinessException("Msg_281");
+		}
+		String message = this.checkAccoutLock(contractCode, userId).v();
+		if (!message.isEmpty()) {
+			//return messageError
+			throw new BusinessException(message);
+		}
+		
+	}
+	
+	/**
+	 * Gets the list company.
+	 *
+	 * @param userId the user id
+	 * @param date the date
+	 * @param roleType the role type
+	 * @return the list company
+	 */
+	//切替可能な会社一覧を取得する
+	private List<String> getListCompany(String userId, GeneralDate date, Integer roleType){
+		
+		//ドメインモデル「ロール個人別付与」を取得する  (get List RoleIndividualGrant)
+		List<RoleIndividualGrantImport> roles = this.roleIndividualGrantAdapter.getByUserIDDateRoleType(userId, date, roleType);
+		
+		List<RoleImport> roleImp = new ArrayList<>();
+		
+		if (!roles.isEmpty()){
+			//ドメインモデル「ロール」を取得する (Acquire domain model "role"
+			roles.stream().map(roleItem -> {
+				return roleImp.addAll(this.roleAdapter.getAllById(roleItem.getRoleId()));
+			}).collect(Collectors.toList());
+		}
+		
+		GeneralDate systemDate = GeneralDate.today();
+		
+		//ドメインモデル「ユーザ」を取得する get domain "User"
+		Optional<UserImportNew> user = this.userAdapter.getByUserIDandDate(userId, systemDate);
+		
+		List<EmployeeInfoDtoImport> employees = new ArrayList<>();
+		
+		if (!user.get().getAssociatePersonId().isEmpty()){
+			employees.addAll(this.employeeInfoAdapter.getEmpInfoByPid(user.get().getAssociatePersonId()));
+			
+			employees.forEach(empItem -> {
+				//アルゴリズム「社員が削除されたかを取得」を実行する (Execute the algorithm "社員が削除されたかを取得")
+				if(this.employeeAdapter.getStatusOfEmployee(empItem.getEmployeeId()).isDeleted()){
+					//社員（List）から当該社員を除く  (Remove the employee from the employee (List))
+					employees.remove(empItem);
+				}
+			});
+		}
+		
+		//imported（権限管理）「会社」を取得する  (imported (authority management) Acquire "company") Request No.51
+		List<CompanyBsImport> companys = this.companyBsAdapter.getAllCompany();
+		
+		List<String> companyIdAll = companys.stream().map(item -> {
+			return item.getCompanyId();
+		}).collect(Collectors.toList());
+		
+		List<String> lstCompanyId = new ArrayList<>();
+		
+		// merge duplicate companyId from lstRole and lstEm
+		if (!roleImp.isEmpty()){
+			List<String> lstComp = new ArrayList<>();
+			roleImp.forEach(role -> {
+				if (role.getCompanyId() != null) {
+					lstComp.add(role.getCompanyId());
+				}
+			});
+			
+			lstCompanyId.addAll(lstComp);
+		}
+
+		if (!employees.isEmpty()){
+			List<String> lstComp = new ArrayList<>();
+			employees.forEach(emp -> {
+				if (emp.getCompanyId() != null) {
+					lstComp.add(emp.getCompanyId());
+				}
+			});
+			
+			lstCompanyId.addAll(lstComp);
+		}
+		
+		lstCompanyId = lstCompanyId.stream().distinct().collect(Collectors.toList());
+		
+		//取得した会社（List）から、会社IDのリストを抽出する (Extract the list of company IDs from the acquired company (List))
+		List<String> lstCompanyFinal = lstCompanyId.stream().filter(com -> companyIdAll.contains(com)).collect(Collectors.toList());
+		
+		return lstCompanyFinal;
+	}
+	
+	/**
+	 * Check accout lock.
+	 *
+	 * @param contractCode the contract code
+	 * @param userId the user id
+	 * @return the lock out message
+	 */
+	private LockOutMessage checkAccoutLock(String contractCode, String userId){
+		//ドメインモデル「アカウントロックポリシー」を取得する (Acquire the domain model "account lock policy")
+		if (this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(contractCode)).isPresent()){
+			AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository
+					.getAccountLockPolicy(new ContractCode(contractCode)).get();
+			if (accountLockPolicy.isUse()) {
+				//ドメインモデル「ロックアウトデータ」を取得する (Acquire domain model "lockout data")
+				Optional<LockOutData> lockoutData = this.lockOutDataRepository.findByUserId(userId);
+				
+				if (lockoutData.isPresent()){
+					//エラーメッセージ（ドメインモデル「アカウントロックポリシー.ロックアウトメッセージ」）を表示する 
+					//(Display error message (domain model "Account lock policy. Lockout message"))
+					return accountLockPolicy.getLockOutMessage();
+				}
+			}
+		}
+		return new LockOutMessage(null);
 	}
 }

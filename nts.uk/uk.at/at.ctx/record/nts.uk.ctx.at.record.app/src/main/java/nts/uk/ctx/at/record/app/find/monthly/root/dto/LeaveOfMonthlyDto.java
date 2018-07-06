@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AggregateLe
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AnyLeave;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 
@@ -17,17 +18,14 @@ import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 /** 月別実績の休業 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class LeaveOfMonthlyDto {
+public class LeaveOfMonthlyDto implements ItemConst {
 	/** 固定休業日数: 集計休業日数 */
-	@AttendanceItemLayout(jpPropertyName = "固定休業日数", layout = "A", listMaxLength = 5, listNoIndex = true, enumField = "leaveAtr")
+	@AttendanceItemLayout(jpPropertyName = FIXED, layout = LAYOUT_A, listMaxLength = 5, listNoIndex = true, enumField = DEFAULT_ENUM_FIELD_NAME)
 	private List<AggregateLeaveDaysDto> fixLeaveDays;
 
 	/** 任意休業日数: 任意休業 */
-	 @AttendanceItemLayout(jpPropertyName = "任意休業日数", layout = "A", listMaxLength = 4, indexField = "anyLeaveNo")
-	/** TODO: check list max length */
+	 @AttendanceItemLayout(jpPropertyName = OPTIONAL, layout = LAYOUT_B, listMaxLength = 4, indexField = DEFAULT_INDEX_FIELD_NAME)
 	/** 任意休業日数: 任意休業 */
-	// @AttendanceItemLayout(jpPropertyName = "固定休業日数", layout = "A", listMaxLength
-	// = ??, indexField = "anyLeaveNo")
 	private List<AnyLeaveDto> anyLeaveDays;
 
 	public static LeaveOfMonthlyDto from(LeaveOfMonthly domain) {
@@ -35,10 +33,10 @@ public class LeaveOfMonthlyDto {
 		if (domain != null) {
 			dto.setAnyLeaveDays(ConvertHelper.mapTo(domain.getAnyLeaveDays(), 
 							c -> new AnyLeaveDto(c.getValue().getAnyLeaveNo(),
-												c.getValue().getDays() == null ? null : c.getValue().getDays().v())));
+												c.getValue().getDays() == null ? 0 : c.getValue().getDays().v())));
 			dto.setFixLeaveDays(ConvertHelper.mapTo(domain.getFixLeaveDays(), 
 					c -> new AggregateLeaveDaysDto(c.getValue().getLeaveAtr() == null ? 0 : c.getValue().getLeaveAtr().value,
-										c.getValue().getDays() == null ? null : c.getValue().getDays().v())));
+										c.getValue().getDays() == null ? 0 : c.getValue().getDays().v())));
 		}
 		return dto;
 	}
@@ -46,9 +44,9 @@ public class LeaveOfMonthlyDto {
 	public LeaveOfMonthly toDomain() {
 		return LeaveOfMonthly.of(
 				ConvertHelper.mapTo(fixLeaveDays,
-						c -> AggregateLeaveDays.of(ConvertHelper.getEnum(c.getLeaveAtr(), CloseAtr.class),
-								c.getDays() == null ? null : new AttendanceDaysMonth(c.getDays()))),
-				ConvertHelper.mapTo(anyLeaveDays, c -> AnyLeave.of(c.getAnyLeaveNo(),
-						c.getDays() == null ? null : new AttendanceDaysMonth(c.getDays()))));
+						c -> AggregateLeaveDays.of(ConvertHelper.getEnum(c.getAttr(), CloseAtr.class),
+								new AttendanceDaysMonth(c.getDays()))),
+				ConvertHelper.mapTo(anyLeaveDays, c -> AnyLeave.of(c.getNo(),
+						new AttendanceDaysMonth(c.getDays()))));
 	}
 }

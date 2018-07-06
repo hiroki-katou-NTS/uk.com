@@ -15,9 +15,9 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaProxyAppSetRepository extends JpaRepository implements ProxyAppSetRepository{
-	private final String SELECT_NO_WHERE = "SELECT c FROM KrqstProxyAppSet c ";
-	private final String SELECT_BY_COMID = SELECT_NO_WHERE + "WHERE c.krqstProxyAppSetPK.companyId = :companyId";
-	private final String DELETE_BY_COMID = "DELETE FROM KrqstProxyAppSet c WHERE c.krqstProxyAppSetPK.companyId = :companyId";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KrqstProxyAppSet c ";
+	private static final String SELECT_BY_COMID = SELECT_NO_WHERE + "WHERE c.krqstProxyAppSetPK.companyId = :companyId";
+	private static final String DELETE_BY_COMID = "DELETE FROM KrqstProxyAppSet c WHERE c.krqstProxyAppSetPK.companyId = :companyId";
 	
 	/**
 	 * convert from entity to domain

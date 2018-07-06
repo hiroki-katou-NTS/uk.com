@@ -43,7 +43,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.TimeLeavingOfDailyP
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -105,39 +105,39 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@Override
 	public FinderFacade getFinder(String layout){
 		switch (layout) {
-		case AttendanceLayoutConst.DAILY_WORK_INFO_CODE:
+		case DAILY_WORK_INFO_CODE:
 			return this.workInfoFinder;
-		case AttendanceLayoutConst.DAILY_CALCULATION_ATTR_CODE:
+		case DAILY_CALCULATION_ATTR_CODE:
 			return this.calcAttrFinder;
-		case AttendanceLayoutConst.DAILY_AFFILIATION_INFO_CODE:
+		case DAILY_AFFILIATION_INFO_CODE:
 			return this.affiliInfoFinder;
-		case AttendanceLayoutConst.DAILY_BUSINESS_TYPE_CODE:
+		case DAILY_BUSINESS_TYPE_CODE:
 			return this.businessTypeFinder;
-		case AttendanceLayoutConst.DAILY_OUTING_TIME_CODE:
+		case DAILY_OUTING_TIME_CODE:
 			return this.outingTimeFinder;
-		case AttendanceLayoutConst.DAILY_BREAK_TIME_CODE:
+		case DAILY_BREAK_TIME_CODE:
 			return this.breakItemFinder;
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_CODE:
+		case DAILY_ATTENDANCE_TIME_CODE:
 			return this.attendanceTimeFinder;
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
 			return this.attendanceTimeByWorkFinder;
-		case AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_CODE:
+		case DAILY_ATTENDACE_LEAVE_CODE:
 			return this.timeLeavingFinder;
-		case AttendanceLayoutConst.DAILY_SHORT_TIME_CODE:
+		case DAILY_SHORT_TIME_CODE:
 			return this.shortWorkFinder;
-		case AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_CODE:
+		case DAILY_SPECIFIC_DATE_ATTR_CODE:
 			return this.specificDateAttrFinder;
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
 			return this.attendanceLeavingGateFinder;
-		case AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_CODE:
+		case DAILY_OPTIONAL_ITEM_CODE:
 			return this.optionalItemFinder;
-		case AttendanceLayoutConst.DAILY_EDIT_STATE_CODE:
+		case DAILY_EDIT_STATE_CODE:
 			return this.editStateFinder;
-		case AttendanceLayoutConst.DAILY_TEMPORARY_TIME_CODE:
+		case DAILY_TEMPORARY_TIME_CODE:
 			return this.temporaryTimeFinder;
-		case AttendanceLayoutConst.DAILY_PC_LOG_INFO_CODE:
+		case DAILY_PC_LOG_INFO_CODE:
 			return this.pcLogOnInfoFinder;
-		case AttendanceLayoutConst.DAILY_REMARKS_CODE:
+		case DAILY_REMARKS_CODE:
 			return this.remarkFinder;
 		default:
 			return null;

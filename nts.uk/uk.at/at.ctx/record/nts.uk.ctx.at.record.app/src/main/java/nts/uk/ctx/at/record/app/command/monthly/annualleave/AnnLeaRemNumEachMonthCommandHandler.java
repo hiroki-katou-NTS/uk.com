@@ -16,7 +16,7 @@ public class AnnLeaRemNumEachMonthCommandHandler extends CommandFacade<AnnLeaRem
 	@Override
 	protected void handle(CommandHandlerContext<AnnLeaRemNumEachMonthCommand> context) {
 		if(context.getCommand().getData().isHaveData()) {
-			repo.persistAndUpdate(context.getCommand().getData().toDomain());
+			repo.persistAndUpdate(context.getCommand().toDomain());
 		}
 		
 	}

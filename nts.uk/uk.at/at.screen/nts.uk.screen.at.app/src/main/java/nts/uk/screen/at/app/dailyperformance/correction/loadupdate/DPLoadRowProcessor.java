@@ -39,6 +39,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorr
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -72,6 +73,7 @@ public class DPLoadRowProcessor {
 	private static final String COLUMN_SUBMITTED = "Submitted";
 	public static final int MINUTES_OF_DAY = 24 * 60;
 	private static final String STATE_DISABLE = "ntsgrid-disable";
+	private static final String LOCK_SIGN = "sign";
 
 
 	
@@ -124,6 +126,12 @@ public class DPLoadRowProcessor {
 		Map<Integer, DPAttendanceItem> mapDP =param.getLstAttendanceItem().stream()
 						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.setLstEmployee(param.getLstEmployee());
+		
+		result.markLoginUser(sId);
+		long start1 = System.currentTimeMillis();
+		result.createModifierCellStateCaseRow(mapDP, param.getLstHeader());
+		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
+		
 		if (result.getLstEmployee().size() > 0) {
 			if (lstError.size() > 0) {
 				// Get list error setting
@@ -143,22 +151,13 @@ public class DPLoadRowProcessor {
 				? codeNameReason.getCodeNames().stream()
 						.collect(Collectors.toMap(x -> process.mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
+
 		// No 20 get submitted application
-		List<ApplicationExportDto> appplication = listEmployeeId.isEmpty() ? Collections.emptyList() : applicationListFinder.getApplicationBySID(listEmployeeId,
-				dateRange.getStartDate(), dateRange.getEndDate());
-		Map<String, String> appMapDateSid = new HashMap<>();
-		appplication.forEach(x -> {
-			String key = x.getEmployeeID() + "|" + x.getAppDate();
-			if (appMapDateSid.containsKey(key)) {
-				appMapDateSid.put(key, appMapDateSid.get(key) + "  " + x.getAppTypeName());
-			} else {
-				appMapDateSid.put(key, x.getAppTypeName());
-			}
-		});
+		// disable check box sign
+		Map<String, Boolean> disableSignMap = new HashMap<>();
+		Map<String, String> appMapDateSid = process.getApplication(listEmployeeId, dateRange, disableSignMap);
 		//get  check box sign(Confirm day)
 		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
-		result.markLoginUser(sId);
-		result.createAccessModifierCellState(mapDP);
 		
 		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
 		result.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()
@@ -167,6 +166,8 @@ public class DPLoadRowProcessor {
 		
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
+		//get status check box 
+		Map<String, ApproveRootStatusForEmpDto> approvalDayMap =  process.getCheckApproval(approvalStatusAdapter, listEmployeeId, dateRange, sId, mode);
 		for (DPDataDto data : result.getLstData()) {
 			data.resetData();
 			data.setEmploymentCode(result.getEmploymentCode());
@@ -184,8 +185,10 @@ public class DPLoadRowProcessor {
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
 			//set checkbox sign
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
-			//get status check box 
-			Map<String, ApproveRootStatusForEmpDto> approvalDayMap =  process.getCheckApproval(approvalStatusAdapter, listEmployeeId, dateRange, sId, mode);
+			if(disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate())){
+				result.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+			}
+			
 			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
 		//	if(mode == ScreenMode.APPROVAL.value){
 			data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
@@ -198,24 +201,29 @@ public class DPLoadRowProcessor {
 				boolean lock = process.checkLockAndSetState(employeeAndDateRange, data);
 
 				if (lock || data.isApproval()) {
-					process.lockCell(result, data);
+					if(lock) process.lockCell(result, data, true);
 					if (data.isApproval()) {
 						val typeLock = data.getState();
 						if (typeLock.equals(""))
 							data.setState("lock|" + LOCK_EDIT_APPROVAL);
 						else
 							data.setState(typeLock + "|" + LOCK_EDIT_APPROVAL);
+						 process.lockCell(result, data, false);
 						lock = true;
 					}
 				}
 				
+				if(data.isSign() && mode == ScreenMode.NORMAL.value){
+					process.lockCell(result, data, false);
+					lock = true;
+				}
 				
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> process.mergeString(String.valueOf(x.getItemId()), "|",
 								data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();
 				dPControlDisplayItem.setLstAttendanceItem(param.getLstAttendanceItem());
-				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapDP, mapGetName, codeNameReasonMap,
+				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapGetName, codeNameReasonMap,
 						itemValueMap,  data, lock, dailyRecEditSetsMap, null);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()

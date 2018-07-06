@@ -19,7 +19,7 @@
 			<div id="functions-area">
 				<!-- C1_1条件選択に戻る -->
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">#{i18n.getText('KAF018_17')}</a>
+					data-bind="ntsLinkButton: { action: goBackA }">#{i18n.getText('KAF018_17')}</a>
 				<!-- C1_2一覧へ戻る-->
 				<button id="buttonC" tabindex="1" data-bind="click: backToB">#{i18n.getText('KAF018_26')}</button>
 			</div>
@@ -79,7 +79,7 @@
 					</tr>
 				</table>
 				<!--C5社員一覧 -->
-				<div id="extable"  tabindex="4" style="width: 600px;"></div>
+				<div id="extable"  tabindex="4"></div>
 				
 			</div>
 		</ui:define>

@@ -35,8 +35,8 @@ module nts.uk.at.view.kmk013.h {
             constructor() {
                 var self = this;
                 self.itemListH2_3 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_229') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_230') }
+                    { code: 1, name: nts.uk.resource.getText('KMK013_209') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_210') }
                 ]);
                 self.selectedH2_3 = ko.observable(1);
                 

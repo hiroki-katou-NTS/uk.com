@@ -1,6 +1,8 @@
 module nts.uk.at.view.kaf002.m5 {
     import service = nts.uk.at.view.kaf002.shr.service;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    import setShared = nts.uk.ui.windows.setShared;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export module viewmodel {
         export class ScreenModel {
             supFrameNo: number = 1;
@@ -11,9 +13,13 @@ module nts.uk.at.view.kaf002.m5 {
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             workLocationList: Array<vmbase.IWorkLocation> = [];
             displayItemNo: number = 5;
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>){
-                var self = this;    
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>, editable: any, screenMode: any){
+                var self = this;   
+                self.screenMode(screenMode);
+                self.editable(editable); 
                 self.workLocationList = listWorkLocation;
                 self.supFrameNo = 1;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
@@ -114,6 +120,10 @@ module nts.uk.at.view.kaf002.m5 {
             
             register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),
@@ -137,19 +147,13 @@ module nts.uk.at.view.kaf002.m5 {
                 } else {
                     nts.uk.ui.block.invisible();
                     service.insert(command)
-                    .done(() => {
+                    .done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    location.reload();
-                                });    
+                                appcommon.CommonProcess.displayMailResult(data);   
                             } else {
-                                if(self.checkBoxValue()){
-                                    let command = {appID: data.appID};
-                                    setShared("KDL030_PARAM", command);
-                                    nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                                        location.reload();
-                                    });    
+                                if(checkBoxValue){
+                                    appcommon.CommonProcess.openDialogKDL030(data.appID);   
                                 } else {
                                     location.reload();
                                 }   
@@ -164,6 +168,10 @@ module nts.uk.at.view.kaf002.m5 {
             
             update(application : vmbase.Application){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     version: application.version,
                     appID: application.applicationID(),
@@ -182,12 +190,10 @@ module nts.uk.at.view.kaf002.m5 {
                 if(!nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
                     nts.uk.ui.block.invisible();
                     service.update(command)
-                    .done(() => {
+                    .done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    location.reload();
-                                });    
+                                appcommon.CommonProcess.displayMailResult(data);   
                             } else {
                                 location.reload();
                             }
@@ -233,6 +239,21 @@ module nts.uk.at.view.kaf002.m5 {
             
             openSelectCardDialog(frameNo: number){
                 // alert('KDL018');
+            }
+            
+            validateInput(appStampList: KnockoutObservableArray<vmbase.AppStampWork>){
+                _.forEach(appStampList(), (x,i) =>{
+                    if(!nts.uk.util.isNullOrEmpty(x.startTime().value())){
+                        $(".m5-start-input:eq("+i+")").ntsError('check');            
+                    } else {
+                            
+                    } 
+                    if(!nts.uk.util.isNullOrEmpty(x.endTime().value())){
+                        $(".m5-end-input:eq("+i+")").ntsError('check');    
+                    } else {
+                            
+                    }     
+                });    
             }
         }
     }

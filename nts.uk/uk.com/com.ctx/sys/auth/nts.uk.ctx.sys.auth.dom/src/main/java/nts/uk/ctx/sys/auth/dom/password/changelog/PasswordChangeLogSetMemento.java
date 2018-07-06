@@ -13,7 +13,7 @@ public interface PasswordChangeLogSetMemento {
 	 *
 	 * @param loginID the new login id
 	 */
-	public void setLoginId(LoginId loginID);
+	public void setLogId(String logID);
 	
 	/**
 	 * Sets the user id.

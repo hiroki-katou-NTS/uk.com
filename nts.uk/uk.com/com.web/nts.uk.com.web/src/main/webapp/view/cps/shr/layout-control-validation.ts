@@ -34,7 +34,7 @@ module nts.layout {
                 .map(x => x.items)
                 .flatten()
                 .flatten()
-                .filter((x: IItemData) => x.required && x.type != ITEM_TYPE.SET)
+                .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
                 .each((x: IItemData) => {
                     let v: any = ko.toJS(x),
                         id = v.itemDefId.replace(/[-_]/g, ''),
@@ -47,6 +47,21 @@ module nts.layout {
                         });
                     }
                 });
+
+            setTimeout(() => {
+                let _item: any = _(items)
+                    .filter(x => _.has(x, "items") && !!x.items)
+                    .map(x => x.items)
+                    .flatten()
+                    .flatten()
+                    .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
+                    //.orderBy((x: any) => x.dispOrder)
+                    .find((x: any) => !!ko.toJS(x.editable));
+
+                if (_item) {
+                    _item.hasFocus(true);
+                }
+            }, 50);
         },
         checkError: (items: Array<any>) => {
             _(items)
@@ -71,7 +86,7 @@ module nts.layout {
                                 .trigger('blur')
                                 .trigger('change');
                         } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
-                            if (nou(x.value) && x.required) {
+                            if (_.isNil(x.value) && (x.required || !_.isEmpty(x.textValue))) {
                                 if (!getError($element).length) {
                                     $element.ntsError('set', {
                                         messageId: "FND_E_REQ_SELECT",
@@ -102,6 +117,7 @@ module nts.layout {
         }
 
         find = (categoryCode: string, subscribeCode): IFindData => {
+
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
@@ -118,6 +134,7 @@ module nts.layout {
         };
 
         finds = (categoryCode: string, subscribesCode: Array<string> = undefined): Array<IFindData> => {
+
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (!!subscribesCode ? subscribesCode.indexOf(x.itemCode) > -1 : true));
@@ -186,6 +203,7 @@ module nts.layout {
         finder: IFinder = undefined;
         constructor(private lstCls: Array<any>) {
             let self = this;
+
             self.finder = new constraint(lstCls);
 
             setTimeout(() => {
@@ -209,6 +227,10 @@ module nts.layout {
                 self.haft_int();
 
                 self.card_no();
+
+                self.CS00070Validate();
+
+                // self.annLeaGrantRemnNum();
 
                 validate.initCheckError(lstCls);
             }, 50);
@@ -647,7 +669,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00193',
                         workTime: 'IS00194',
                         firstTimes: {
@@ -660,7 +682,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00202',
                         workTime: 'IS00203',
                         firstTimes: {
@@ -673,7 +695,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00211',
                         workTime: 'IS00212',
                         firstTimes: {
@@ -686,7 +708,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00220',
                         workTime: 'IS00221',
                         firstTimes: {
@@ -699,7 +721,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00229',
                         workTime: 'IS00230',
                         firstTimes: {
@@ -712,7 +734,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00238',
                         workTime: 'IS00239',
                         firstTimes: {
@@ -725,7 +747,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00184',
                         workTime: 'IS00185',
                         firstTimes: {
@@ -875,9 +897,11 @@ module nts.layout {
                     }
 
                     if (!workTime) {
+
                         workType.ctrl.on('click', () => {
                             setShared("KDL002_Multiple", false, true);
-                            setShared("KDL002_SelectedItemId", workType.data.value(), true);
+                            setShared('kdl002isSelection', false, true);
+                            setShared("KDL002_SelectedItemId", _.isNil(workType.data.value())? []: [workType.data.value()], true);
                             setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                             modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -889,37 +913,106 @@ module nts.layout {
                             });
                         });
                     } else {
+
                         validateEditable(group, workTime.data.value, mt);
 
                         workType.ctrl.on('click', () => {
-                            setShared('parentCodes', {
-                                workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
-                                selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
-                                workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
-                            }, true);
 
-                            modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                                let childData: IChildData = getShared('childData');
+                            if (['IS00130', 'IS00139'].indexOf(workType.data.itemCode) > - 1) {
+                                setShared('parentCodes', {
+                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                }, true);
 
-                                if (childData) {
-                                    setData(workType, childData.selectedWorkTypeCode);
+                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                    let childData: IChildData = getShared('childData');
 
-                                    setData(workTime, childData.selectedWorkTimeCode);
+                                    if (childData) {
+                                        setData(workType, childData.selectedWorkTypeCode);
 
-                                    firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
-                                    firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+                                        setData(workTime, childData.selectedWorkTimeCode);
 
-                                    secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
-                                    secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
 
-                                    validateEditable(group, workTime.data.value);
-                                }
-                            });
+                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+
+                                        validateEditable(group, workTime.data.value);
+                                    }
+                                });
+                            } else {
+                                setShared("KDL002_Multiple", false, true);
+                                setShared('kdl002isSelection', true, true);
+                                setShared("KDL002_SelectedItemId", _.isNil(workType.data.value())? []: [workType.data.value()], true);
+                                setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                                    let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                                    if (childData.length > 0) {
+                                        setData(workType, childData[0].code);
+                                    }
+                                });
+                            }
                         });
 
-                        // handle click event of workType
-                        workTime.ctrl.on('click', () => workType.ctrl.trigger('click'));
+                        // handle click event of workTime
+                        workTime.ctrl.on('click', () => {
+                            if (['IS00131', 'IS00140'].indexOf(workTime.data.itemCode) > - 1) {
+                                setShared('parentCodes', {
+                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                }, true);
+
+                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                    let childData: IChildData = getShared('childData');
+
+                                    if (childData) {
+                                        setData(workType, childData.selectedWorkTypeCode);
+
+                                        setData(workTime, childData.selectedWorkTimeCode);
+
+                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+
+                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+
+                                        validateEditable(group, workTime.data.value);
+                                    }
+                                });
+                            } else {
+
+
+                                setShared("kml001multiSelectMode", false);
+                                setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
+                                setShared("kml001isSelection", true);
+                                setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                    let childData: Array<any> = getShared('kml001selectedTimes');
+                                    if (childData) {
+                                        if (childData.length > 0) {
+                                            let data: any = childData[0];
+                                            setData(workTime, data.selectedWorkTimeCode);
+
+                                            firstTimes && setData(firstTimes.start, data.first && data.first.start);
+                                            firstTimes && setData(firstTimes.end, data.first && data.first.end);
+
+                                            secondTimes && setData(secondTimes.start, data.second && data.second.start);
+                                            secondTimes && setData(secondTimes.end, data.second && data.second.end);
+
+                                            validateEditable(group, workTime.data.value);
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
             });
@@ -1195,7 +1288,42 @@ module nts.layout {
                 CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084'),
                 CS00017_IS00085: IFindData = finder.find('CS00017', 'IS00085'),
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
-                CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131');
+                CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
+                initCDL008Data = (data: IItemData) => {
+                    if (!!CS00017_IS00082) {
+                        let v = CS00017_IS00082.data.value();
+
+                        if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
+                            setShared('inputCDL008', {
+                                selectedCodes: [data.value],
+                                baseDate: ko.toJS(moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate()),
+                                isMultiple: false,
+                                selectedSystemType: 5,
+                                isrestrictionOfReferenceRange: false,
+                                showNoSelection: !data.required
+                            }, true);
+                        } else {
+                            setShared('inputCDL008', null);
+                        }
+                    } else if (location.href.indexOf('/view/cps/002') > -1) {
+                        setShared('inputCDL008', {
+                            selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
+                            baseDate: ko.toJS((__viewContext || {
+                                viewModel: {
+                                    currentEmployee: {
+                                        hireDate: new Date()
+                                    }
+                                }
+                            }).viewModel.currentEmployee).hireDate,
+                            isMultiple: false,
+                            selectedSystemType: 5,
+                            isrestrictionOfReferenceRange: false,
+                            showNoSelection: !data.required
+                        }, true);
+                    } else {
+                        setShared('inputCDL008', null);
+                    }
+                };
 
             if (CS00016_IS00077 && CS00016_IS00079) {
                 CS00016_IS00077.data.value.subscribe(_date => {
@@ -1203,7 +1331,7 @@ module nts.layout {
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
 
-                    if (!empId) {
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
 
@@ -1226,10 +1354,9 @@ module nts.layout {
             if (CS00017_IS00082 && CS00017_IS00084) {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
-                        data = ko.toJS(CS00017_IS00082.data),
                         comboData = ko.toJS(CS00017_IS00084.data);
 
-                    if (!empId) {
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
 
@@ -1245,58 +1372,76 @@ module nts.layout {
                         workplaceId: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
+                        CS00017_IS00084.data.value.valueHasMutated();
+                    });
+                });
+            }
+
+            if (CS00017_IS00082 && CS00017_IS00085) {
+                CS00017_IS00082.data.value.subscribe(_date => {
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                        comboData = ko.toJS(CS00017_IS00085.data);
+
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
+                        return;
+                    }
+
+                    fetch.get_cb_data({
+                        comboBoxType: comboData.item.referenceType,
+                        categoryId: comboData.categoryId,
+                        required: comboData.required,
+                        standardDate: moment.utc(_date).toDate(),
+                        typeCode: comboData.item.typeCode,
+                        masterType: comboData.item.masterType,
+                        employeeId: empId,
+                        cps002: false,
+                        workplaceId: undefined
+                    }).done((cbx: Array<IComboboxItem>) => {
+                        CS00017_IS00085.data.lstComboBoxValue(cbx);
+                        CS00017_IS00085.data.value.valueHasMutated();
                     });
                 });
             }
 
             if (CS00017_IS00084) {
-                // 
                 CS00017_IS00084.ctrl.on('click', () => {
-                    setShared('inputCDL008', {
-                        selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
-                        baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
-                        isMultiple: false,
-                        selectedSystemType: 5,
-                        isrestrictionOfReferenceRange: false
-                    }, true);
+                    initCDL008Data(ko.toJS(CS00017_IS00084.data));
 
-                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                        // Check is cancel.
-                        if (getShared('CDL008Cancel')) {
-                            return;
-                        }
+                    if (!!getShared('inputCDL008')) {
+                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                            // Check is cancel.
+                            if (getShared('CDL008Cancel')) {
+                                return;
+                            }
 
-                        //view all code of selected item 
-                        let output = getShared('outputCDL008');
-                        if (output) {
-                            CS00017_IS00084.data.value(output);
-                        }
-                    });
+                            //view all code of selected item 
+                            let output = getShared('outputCDL008');
+                            if (!_.isNil(output)) {
+                                CS00017_IS00084.data.value(output);
+                            }
+                        });
+                    }
                 });
             }
 
             if (CS00017_IS00085) {
                 CS00017_IS00085.ctrl.on('click', () => {
-                    setShared('inputCDL008', {
-                        selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
-                        baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
-                        isMultiple: false,
-                        selectedSystemType: 5,
-                        isrestrictionOfReferenceRange: false
-                    }, true);
+                    initCDL008Data(ko.toJS(CS00017_IS00085.data));
 
-                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                        // Check is cancel.
-                        if (getShared('CDL008Cancel')) {
-                            return;
-                        }
+                    if (!!getShared('inputCDL008')) {
+                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                            // Check is cancel.
+                            if (getShared('CDL008Cancel')) {
+                                return;
+                            }
 
-                        //view all code of selected item 
-                        let output = getShared('outputCDL008');
-                        if (output) {
-                            CS00017_IS00085.data.value(output);
-                        }
-                    });
+                            //view all code of selected item 
+                            let output = getShared('outputCDL008');
+                            if (!_.isNil(output)) {
+                                CS00017_IS00085.data.value(output);
+                            }
+                        });
+                    }
                 });
             }
 
@@ -1379,6 +1524,83 @@ module nts.layout {
                 CS00024_IS00280.data.value.valueHasMutated();
             }
         }
+
+        // 次回年休付与情報を取得する
+        /*annLeaGrantRemnNum = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                CS00037_IS00385: IFindData = finder.find('CS00037', 'IS00385'),
+                CS00037_IS00386: IFindData = finder.find('CS00037', 'IS00386'),
+                CS00037_IS00390: IFindData = finder.find('CS00037', 'IS00390'),
+                CS00037_IS00391: IFindData = finder.find('CS00037', 'IS00391'),
+                CS00037_IS00393: IFindData = finder.find('CS00037', 'IS00393'),
+                CS00037_IS00394: IFindData = finder.find('CS00037', 'IS00394'),
+                CS00037_IS00396: IFindData = finder.find('CS00037', 'IS00396'),
+                CS00037_IS00397: IFindData = finder.find('CS00037', 'IS00397'),
+                validate = () => {
+                    let v390 = ko.toJS($(CS00037_IS00390.id).val()),
+                        v391 = ko.toJS($(CS00037_IS00391.id).val()),
+                        v393 = ko.toJS($(CS00037_IS00393.id).val()),
+                        v394 = ko.toJS($(CS00037_IS00394.id).val()),
+                        v396 = ko.toJS($(CS00037_IS00396.id).val()),
+                        v397 = ko.toJS($(CS00037_IS00397.id).val());
+        
+                    // change require of control
+                    if (v390 || v391 || v393 || v394 || v396 || v397) {
+                        CS00037_IS00385.data.required(true);
+                        CS00037_IS00386.data.required(true);
+                        CS00037_IS00390.data.required(true);
+                        CS00037_IS00391.data.required(true);
+                        CS00037_IS00393.data.required(true);
+                        CS00037_IS00394.data.required(true);
+                        CS00037_IS00396.data.required(true);
+                        CS00037_IS00397.data.required(true);
+                    } else {
+                        CS00037_IS00385.data.required(false);
+                        CS00037_IS00386.data.required(false);
+                        CS00037_IS00390.data.required(false);
+                        CS00037_IS00391.data.required(false);
+                        CS00037_IS00393.data.required(false);
+                        CS00037_IS00394.data.required(false);
+                        CS00037_IS00396.data.required(false);
+                        CS00037_IS00397.data.required(false);
+                    }
+        
+                    // validate again;
+                    $(CS00037_IS00390.id).trigger('change');
+                    $(CS00037_IS00391.id).trigger('change');
+                    $(CS00037_IS00393.id).trigger('change');
+                    $(CS00037_IS00394.id).trigger('change');
+                    $(CS00037_IS00396.id).trigger('change');
+                    $(CS00037_IS00397.id).trigger('change');
+        
+                };
+        
+        
+            $(CS00037_IS00390.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00391.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00393.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00394.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00396.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00397.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        } */
 
         specialLeaveInformation = () => {
             let self = this,
@@ -1743,6 +1965,39 @@ module nts.layout {
                             }
                         }
                     });
+                }
+            }
+        }
+
+        CS00070Validate() {
+            let self = this,
+                finder: IFinder = self.finder,
+                CS00020IS00119: IFindData = finder.find('CS00020', 'IS00119'),
+                CS00020IS00120: IFindData = finder.find('CS00020', 'IS00120'),
+                CS00070IS00781: IFindData = finder.find('CS00070', 'IS00781'),
+                CS00070IS00782: IFindData = finder.find('CS00070', 'IS00782');
+
+
+
+            if (CS00070IS00781) {
+                CS00070IS00781.data.editable(false);
+                if (CS00020IS00119) {
+                    CS00020IS00119.data.value.subscribe(v => {
+                        CS00070IS00781.data.value(v);
+                    });
+
+                    CS00020IS00119.data.value.valueHasMutated();
+                }
+            }
+
+            if (CS00070IS00782) {
+                CS00070IS00782.data.editable(false);
+                if (CS00020IS00120) {
+                    CS00020IS00120.data.value.subscribe(v => {
+                        CS00070IS00782.data.value(v);
+                    });
+
+                    CS00020IS00119.data.value.valueHasMutated();
                 }
             }
         }

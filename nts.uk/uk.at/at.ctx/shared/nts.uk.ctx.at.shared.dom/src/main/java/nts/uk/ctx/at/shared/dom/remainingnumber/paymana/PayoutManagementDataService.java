@@ -110,11 +110,10 @@ public class PayoutManagementDataService {
 						splitMana.getHolidayDate().getDayoffDate().orElse(null), closureDate, closureId, checkedSplit, pickUp));
 			if (checkedSplit) {
 				if (this.checkInfoSubPayMana(splitMana.getCid(), splitMana.getSID(), splitMana.getHolidayDate().getDayoffDate().orElse(null))
-						|| this.checkInfoPayMana(subMana.getCid(), subMana.getSID(), subMana.getHolidayDate().getDayoffDate().orElse(null))) {
+						|| this.checkInfoPayMana(splitMana.getCid(), splitMana.getSID(), splitMana.getHolidayDate().getDayoffDate().orElse(null))) {
 					errors.add("Msg_737_splitMana");
 				}
 			}
-
 		}
 		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, splitMana.getRequiredDays().v(),subMana.getRequiredDays().v(), payMana.getOccurredDays().v() ));
 		if (errors.isEmpty()) {
@@ -199,7 +198,7 @@ public class PayoutManagementDataService {
 			if (stateAtr == DigestionAtr.EXPIRED.value) {
 				errorList.add("Msg_1212");
 				return errorList;
-			} else if (dayoffDate.compareTo(expiredDate) > 0) {
+			} else if (dayoffDate.compareTo(expiredDate) >= 0) {
 				errorList.add("Msg_825");
 			}
 			return errorList;
@@ -221,11 +220,15 @@ public class PayoutManagementDataService {
 			if (!errorListCheckBox.isEmpty()) {
 				return errorListCheckBox;
 			} else {
-				if(ZERO.equals(data.getUnUsedDays().v()) ){
+				// Update state 
+				if (checkBox){
+					data.setStateAtr(DigestionAtr.EXPIRED.value);
+				} else if (ZERO.equals(data.getUnUsedDays().v()) ){
 					data.setStateAtr(DigestionAtr.USED.value);
-				}else{
+				} else {
 					data.setStateAtr(DigestionAtr.UNUSED.value);
 				}
+				
 				payoutManagementDataRepository.update(data);
 				return Collections.emptyList();
 			}
@@ -262,14 +265,14 @@ public class PayoutManagementDataService {
 			// Update remain days 振出管理データ
 			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
 			if (payoutMan.isPresent()) {
-				payoutMan.get().setRemainNumber(item.getUsedDays().v().doubleValue());
+				payoutMan.get().setRemainNumberToFree(item.getUsedDays().v());
 				payoutMan.get().setStateAtr(DigestionAtr.UNUSED.value);
 				payoutManagementDataRepository.update(payoutMan.get());
 			}
 		});
 		subOfHDId.forEach(i -> {
 			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(i.getPayoutId(), subId,
-					i.getOccurredDays(), TargetSelectionAtr.MANUAL.value));
+					i.getUnUsedDays(), TargetSelectionAtr.MANUAL.value));
 			// Update remain days 振出管理データ
 			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(i.getPayoutId());
 			if (payoutMan.isPresent()) {

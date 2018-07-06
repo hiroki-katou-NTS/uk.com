@@ -10,11 +10,13 @@ public class SubOfHDManagement {
 	private String payoutId;
 	private String dayoffDate;
 	private Double occurredDays;
+	private Double unUsedDays;
 
-	public SubOfHDManagement(String payoutId, String dayoffDate, Double occurredDays) {
+	public SubOfHDManagement(String payoutId, String dayoffDate, Double occurredDays, Double unUsedDays) {
 		super();
 		this.payoutId = payoutId;
 		this.dayoffDate = dayoffDate;
 		this.occurredDays = occurredDays;
+		this.unUsedDays = unUsedDays;
 	}
 }

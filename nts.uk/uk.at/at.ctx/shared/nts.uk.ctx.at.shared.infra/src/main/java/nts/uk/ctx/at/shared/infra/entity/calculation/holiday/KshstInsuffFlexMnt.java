@@ -29,8 +29,8 @@ public class KshstInsuffFlexMnt extends UkJpaEntity implements Serializable {
 	public KshstInsuffFlexMntPK kshstInsuffFlexMntPK;
 
 	/** 補填可能時間 */
-	@Column(name="ATTEND_TIME")
-	private double attendTime;
+	@Column(name="SUPPLEMTABLE_DAYS")
+	private double supplementableDays;
 
 	@Override
 	protected Object getKey() {

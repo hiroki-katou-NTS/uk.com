@@ -39,5 +39,23 @@ public class WorkTimeHolidayCalcMethod extends DomainObject{
 		this.calculateActualOperation = CalcurationByActualTimeAtr.valueOf(calculateActualOperation);
 		this.advancedSet = Optional.ofNullable(advancedSet);
 	}
+
+	public WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr calculateActualOperation,
+			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet) {
+		super();
+		this.calculateActualOperation = calculateActualOperation;
+		this.advancedSet = advancedSet;
+	}
+	
+	
+	public WorkTimeHolidayCalcMethod changeDeduct() {
+		if(this.advancedSet.isPresent()) {
+			return new WorkTimeHolidayCalcMethod(this.calculateActualOperation, this.advancedSet.map(c -> new WorkTimeCalcMethodDetailOfHoliday(c.getIncludeVacationSet(), c.getCalculateIncludCareTime(),
+					c.getNotDeductLateLeaveEarly().changeDeduct(), c.getCalculateIncludIntervalExemptionTime(), c.getMinusAbsenceTime())));
+		}else {
+			return new WorkTimeHolidayCalcMethod(this.calculateActualOperation,this.advancedSet);
+		}
+	}
+	
 }
 

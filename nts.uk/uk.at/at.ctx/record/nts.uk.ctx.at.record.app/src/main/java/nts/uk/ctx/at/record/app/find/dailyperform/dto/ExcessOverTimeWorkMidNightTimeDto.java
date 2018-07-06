@@ -4,16 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 /** 法定外残業深夜時間 */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExcessOverTimeWorkMidNightTimeDto {
+public class ExcessOverTimeWorkMidNightTimeDto implements ItemConst {
 
 	/** 時間: 計算付き時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME)
 	private CalcAttachTimeDto time;
 
 	public static ExcessOverTimeWorkMidNightTimeDto fromOverTimeWorkDailyPerform(

@@ -15,7 +15,6 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Man
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.absenceleaveapp.KrqdtAbsenceLeaveApp;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subdigestion.KrqdtSubDigestion;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subtargetdigestion.KrqdtSubTargetDigestion;
@@ -29,8 +28,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaAbsenceLeaveAppRepository extends JpaRepository implements AbsenceLeaveAppRepository {
 
-	String FIND_SUB_DIG = "SELECT d FROM KrqdtSubDigestion d WHERE d.absenceLeaveAppID=:absenceLeaveAppID";
-	String FIND_SUB_TAG_DIG_BY_ABS_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.appID=:appID";
+	private static final String FIND_SUB_DIG = "SELECT d FROM KrqdtSubDigestion d WHERE d.absenceLeaveAppID=:absenceLeaveAppID";
+	private static final String FIND_SUB_TAG_DIG_BY_ABS_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.appID=:appID";
 
 	@Override
 	public void insert(AbsenceLeaveApp absApp) {

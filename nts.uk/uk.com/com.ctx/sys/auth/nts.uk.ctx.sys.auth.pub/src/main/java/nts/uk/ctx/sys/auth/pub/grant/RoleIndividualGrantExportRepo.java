@@ -27,4 +27,6 @@ public interface RoleIndividualGrantExportRepo {
 	
 	Optional<RoleIndividualGrantExport> getByUserCompanyRoleTypeDate(
 			String userId, String companyId, int roleType, GeneralDate date);
+	
+	List<RoleIndividualGrantEx> getByUserIDDateRoleType(String userID, GeneralDate date , int roleType);
 }

@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDai
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
@@ -109,39 +109,39 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 
 	public DailyWorkCommonCommand getCommand(String layout) {
 		switch (layout) {
-		case AttendanceLayoutConst.DAILY_WORK_INFO_CODE:
+		case DAILY_WORK_INFO_CODE:
 			return this.workInfo;
-		case AttendanceLayoutConst.DAILY_CALCULATION_ATTR_CODE:
+		case DAILY_CALCULATION_ATTR_CODE:
 			return this.calcAttr;
-		case AttendanceLayoutConst.DAILY_AFFILIATION_INFO_CODE:
+		case DAILY_AFFILIATION_INFO_CODE:
 			return this.affiliationInfo;
-		case AttendanceLayoutConst.DAILY_BUSINESS_TYPE_CODE:
+		case DAILY_BUSINESS_TYPE_CODE:
 			return this.businessType;
-		case AttendanceLayoutConst.DAILY_OUTING_TIME_CODE:
+		case DAILY_OUTING_TIME_CODE:
 			return this.outingTime;
-		case AttendanceLayoutConst.DAILY_BREAK_TIME_CODE:
+		case DAILY_BREAK_TIME_CODE:
 			return this.breakTime;
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_CODE:
+		case DAILY_ATTENDANCE_TIME_CODE:
 			return this.attendanceTime;
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
 			return this.attendanceTimeByWork;
-		case AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_CODE:
+		case DAILY_ATTENDACE_LEAVE_CODE:
 			return this.timeLeaving;
-		case AttendanceLayoutConst.DAILY_SHORT_TIME_CODE:
+		case DAILY_SHORT_TIME_CODE:
 			return this.shortWorkTime;
-		case AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_CODE:
+		case DAILY_SPECIFIC_DATE_ATTR_CODE:
 			return this.specificDateAttr;
-		case AttendanceLayoutConst.DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
 			return this.attendanceLeavingGate;
-		case AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_CODE:
+		case DAILY_OPTIONAL_ITEM_CODE:
 			return this.optionalItem;
-		case AttendanceLayoutConst.DAILY_EDIT_STATE_CODE:
+		case DAILY_EDIT_STATE_CODE:
 			return this.editState;
-		case AttendanceLayoutConst.DAILY_TEMPORARY_TIME_CODE:
+		case DAILY_TEMPORARY_TIME_CODE:
 			return this.temporaryTime;
-		case AttendanceLayoutConst.DAILY_PC_LOG_INFO_CODE:
+		case DAILY_PC_LOG_INFO_CODE:
 			return this.pcLogInfo;
-		case AttendanceLayoutConst.DAILY_REMARKS_CODE:
+		case DAILY_REMARKS_CODE:
 			return this.remarks;
 		default:
 			return null;

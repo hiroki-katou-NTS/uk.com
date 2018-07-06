@@ -10,6 +10,8 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	void insert(EmployeeDailyPerError employeeDailyPerformanceError);
 	
+	void insert(List<EmployeeDailyPerError> employeeDailyPerformanceError);
+	
 	boolean checkExistErrorCode(String employeeID, GeneralDate processingDate, String errorCode);
 	
 	boolean checkExistErrorCodeByPeriod(String employeeID, DatePeriod datePeriod, String errorCode);
@@ -29,5 +31,7 @@ public interface EmployeeDailyPerErrorRepository {
 	boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate);
 	
 	boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate);
+	
+	boolean checkExistErrorByDate(String companyID, String employeeID, GeneralDate date);
 	
 }

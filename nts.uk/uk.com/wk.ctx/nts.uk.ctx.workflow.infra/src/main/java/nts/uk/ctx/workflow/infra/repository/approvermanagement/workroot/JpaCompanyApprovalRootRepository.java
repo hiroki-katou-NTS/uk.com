@@ -24,59 +24,59 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComAppr
 @Stateless
 public class JpaCompanyApprovalRootRepository extends JpaRepository implements CompanyApprovalRootRepository{
 
-	private final String FIND_BY_ALL = "SELECT c FROM WwfmtComApprovalRoot c";
-	private final String FIND_BY_CID = FIND_BY_ALL
+	private static final String FIND_BY_ALL = "SELECT c FROM WwfmtComApprovalRoot c";
+	private static final String FIND_BY_CID = FIND_BY_ALL
 	   + " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId";
-	private final String FIND_BY_DATE = FIND_BY_CID 
+	private static final String FIND_BY_DATE = FIND_BY_CID 
 	   + " AND c.endDate = :endDate"
 	   + " AND c.applicationType = :applicationType"
 	   + " AND c.employmentRootAtr = :employmentRootAtr";
-	private final String FIND_BY_DATE_CFR = FIND_BY_CID 
+	private static final String FIND_BY_DATE_CFR = FIND_BY_CID 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"; 
-	private final String SELECT_COM_APR_BY_DATE_APP_NULL = FIND_BY_CID 
+	private static final String SELECT_COM_APR_BY_DATE_APP_NULL = FIND_BY_CID 
 				   + " AND c.endDate = :endDate"
 				   + " AND c.employmentRootAtr = :employmentRootAtr"
 				   + " AND c.applicationType IS NULL";
-	private final String FIND_BY_BASEDATE = FIND_BY_CID
+	private static final String FIND_BY_BASEDATE = FIND_BY_CID
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.employmentRootAtr = :rootAtr" 
 				+ " AND c.applicationType = :appType";
-	private final String FIND_BY_BASEDATE_OF_COM = FIND_BY_CID
+	private static final String FIND_BY_BASEDATE_OF_COM = FIND_BY_CID
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.employmentRootAtr = 0";
 	
-	private final String FIND_ALL_BY_BASEDATE = FIND_BY_CID
+	private static final String FIND_ALL_BY_BASEDATE = FIND_BY_CID
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate";
-	private final String FIND_BY_APP_TYPE = FIND_BY_CID 
+	private static final String FIND_BY_APP_TYPE = FIND_BY_CID 
 			   + " AND c.applicationType = :applicationType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
-	private final String FIND_BY_CFR_TYPE = FIND_BY_CID 
+	private static final String FIND_BY_CFR_TYPE = FIND_BY_CID 
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
-	private final String SELECT_COM_APR_APP_NULL = FIND_BY_CID 
+	private static final String SELECT_COM_APR_APP_NULL = FIND_BY_CID 
 				   + " AND c.employmentRootAtr = :employmentRootAtr"
 				   + " AND c.applicationType IS NULL"
 				   + " ORDER BY c.startDate DESC";
-	private final String FIND_LAST_BY_END_DATE = FIND_BY_CID 
+	private static final String FIND_LAST_BY_END_DATE = FIND_BY_CID 
 					 +" AND c.endDate = :endDate";
-	private final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
+	private static final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.confirmationRootType = :confirmationRootType"
 				+ " AND c.employmentRootAtr = :employmentRootAtr";
-	private final String FIND_BY_DATE_EMP = FIND_BY_CID 
+	private static final String FIND_BY_DATE_EMP = FIND_BY_CID 
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = :employmentRootAtr";
 	
-	private final String FIND_BY_EMP_CONFIRM = FIND_BY_CID
+	private static final String FIND_BY_EMP_CONFIRM = FIND_BY_CID
 			 + " AND c.startDate <= :baseDate"
 			 + " AND c.endDate >= :baseDate"
 			 + " AND c.confirmationRootType = :confirmationRootType"

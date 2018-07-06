@@ -4,6 +4,18 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive;
  * @author do_dt
  *
  */
-public enum RemainAtr {
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+public enum RemainAtr {
+	/**
+	 * 単一
+	 */
+	SINGLE(0),
+	/**
+	 * 複合
+	 */
+	COMPOSITE(1);
+	public final Integer value;
 }

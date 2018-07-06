@@ -1,6 +1,8 @@
 module nts.uk.at.view.kaf002.m2 {
     import service = nts.uk.at.view.kaf002.shr.service;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    import setShared = nts.uk.ui.windows.setShared;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export module viewmodel {
         export class ScreenModel {
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
@@ -9,8 +11,10 @@ module nts.uk.at.view.kaf002.m2 {
             supFrameNo: number = 1;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             workLocationList: Array<vmbase.IWorkLocation> = [];
-            displayAllLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_29'))); 
+            displayAllLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KAF002_56")); 
             displayItemNo: number = this.supFrameNo;
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 var self = this;
                 self.extendsMode.subscribe((v)=>{ 
@@ -20,8 +24,10 @@ module nts.uk.at.view.kaf002.m2 {
                 });        
             }
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>){
-                var self = this;    
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>, editable: any, screenMode: any){
+                var self = this;   
+                self.screenMode(screenMode);
+                self.editable(editable); 
                 self.workLocationList = listWorkLocation;
                 self.supFrameNo = data.supFrameDispNO;
                 self.refreshData();
@@ -48,6 +54,8 @@ module nts.uk.at.view.kaf002.m2 {
             
             extendsModeEvent(){
                 var self = this;
+                nts.uk.ui.errors.clearAll();
+                $('#appDate').trigger("validate");
                 self.displayItemNo = 5;
                 self.extendsMode(!self.extendsMode());    
                 self.extendsModeDisplay(!self.extendsMode()); 
@@ -83,6 +91,11 @@ module nts.uk.at.view.kaf002.m2 {
             
             register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
+                $('#appDate').trigger("validate");
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),
@@ -106,19 +119,13 @@ module nts.uk.at.view.kaf002.m2 {
                 } else {
                     nts.uk.ui.block.invisible();
                     service.insert(command)
-                    .done(() => {
+                    .done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    location.reload();
-                                });    
+                                appcommon.CommonProcess.displayMailResult(data);    
                             } else {
-                                if(self.checkBoxValue()){
-                                    let command = {appID: data.appID};
-                                    setShared("KDL030_PARAM", command);
-                                    nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                                        location.reload();
-                                    });    
+                                if(checkBoxValue){
+                                    appcommon.CommonProcess.openDialogKDL030(data.appID);    
                                 } else {
                                     location.reload();
                                 }   
@@ -133,6 +140,10 @@ module nts.uk.at.view.kaf002.m2 {
             
             update(application : vmbase.Application){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     version: application.version,
                     appID: application.applicationID(),
@@ -151,12 +162,10 @@ module nts.uk.at.view.kaf002.m2 {
                 if(!nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
                     nts.uk.ui.block.invisible();
                     service.update(command)
-                    .done(() => {
+                    .done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    location.reload();
-                                });    
+                                appcommon.CommonProcess.displayMailResult(data);  
                             } else {
                                 location.reload();
                             }
@@ -198,6 +207,21 @@ module nts.uk.at.view.kaf002.m2 {
                         self.appStampList()[frameNo][timeType+'Location']().name(self.findWorkLocationName(workLocation)); 
                     }
                 });      
+            }
+            
+            validateInput(appStampList: KnockoutObservableArray<vmbase.AppStampWork>){
+                _.forEach(appStampList(), (x,i) =>{
+                    if(!nts.uk.util.isNullOrEmpty(x.startTime().value())){
+                        $(".m2-start-input:eq("+i+")").ntsError('check');            
+                    } else {
+                            
+                    } 
+                    if(!nts.uk.util.isNullOrEmpty(x.endTime().value())){
+                        $(".m2-end-input:eq("+i+")").ntsError('check');    
+                    } else {
+                            
+                    }     
+                });    
             }
         }
     }

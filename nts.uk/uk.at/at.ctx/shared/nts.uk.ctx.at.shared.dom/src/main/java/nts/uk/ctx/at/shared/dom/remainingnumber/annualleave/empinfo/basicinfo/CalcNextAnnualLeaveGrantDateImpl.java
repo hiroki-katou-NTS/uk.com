@@ -35,9 +35,6 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 	@Inject
 	private GetNextAnnualLeaveGrant getNextAnnualLeaveGrant;
 	
-	/** 次回年休付与リスト */
-	private List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList;
-	
 	/**
 	 * 次回年休付与を計算
 	 * @param companyId 会社ID
@@ -48,16 +45,16 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 	@Override
 	public List<NextAnnualLeaveGrant> algorithm(String companyId, String employeeId, Optional<DatePeriod> period){
 		
-		this.nextAnnualLeaveGrantList = new ArrayList<>();
+		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
 
 		// 「年休社員基本情報」を取得
 		val annualLeaveEmpBasicInfoOpt = this.annLeaEmpBasicInfoRepo.get(employeeId);
-		if (!annualLeaveEmpBasicInfoOpt.isPresent()) return this.nextAnnualLeaveGrantList;
+		if (!annualLeaveEmpBasicInfoOpt.isPresent()) return nextAnnualLeaveGrantList;
 		val annualLeaveEmpBasicInfo = annualLeaveEmpBasicInfoOpt.get();
 	
 		// 「社員」を取得する
 		val employee = this.empEmployee.findByEmpId(employeeId);
-		if (employee == null) return this.nextAnnualLeaveGrantList;
+		if (employee == null) return nextAnnualLeaveGrantList;
 		
 		// 「期間」をチェック
 		DatePeriod targetPeriod = null;
@@ -74,7 +71,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 			
 			// 社員に対応する締め開始日を取得する
 			val closureStartOpt = this.getClosureStartForEmployee.algorithm(employeeId);
-			if (!closureStartOpt.isPresent()) return this.nextAnnualLeaveGrantList;
+			if (!closureStartOpt.isPresent()) return nextAnnualLeaveGrantList;
 			targetPeriod = new DatePeriod(closureStartOpt.get().addDays(1), GeneralDate.max());
 			
 			isSingleDay = true;			// 単一日フラグ=true
@@ -85,11 +82,11 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 		val grantTableCode = grantRule.getGrantTableCode().v();
 		
 		// 次回年休付与を取得する
-		this.nextAnnualLeaveGrantList = this.getNextAnnualLeaveGrant.algorithm(
+		nextAnnualLeaveGrantList = this.getNextAnnualLeaveGrant.algorithm(
 				companyId, grantTableCode, employee.getEntryDate(), grantRule.getGrantStandardDate(),
 				targetPeriod, isSingleDay);
 		
 		// 次回年休付与を返す
-		return this.nextAnnualLeaveGrantList;
+		return nextAnnualLeaveGrantList;
 	}
 }

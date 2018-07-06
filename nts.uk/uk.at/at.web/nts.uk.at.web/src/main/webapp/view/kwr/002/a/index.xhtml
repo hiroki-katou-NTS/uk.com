@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName
+			</com:ValidatorScript>
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:stylefile path="kwr002.a.style.css" />
+			<com:scriptfile path="kwr002.a.service.js" />
+			<com:scriptfile path="kwr002.a.vm.js" />
+			<com:scriptfile path="kwr002.a.start.js" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button style="margin-left: 90px; width: 85px" id="print" tabindex="1"
+					class="proceed group-button-1" data-bind="click: print, enable: enableSave">#{i18n.getText('KWR002_9')}</button>
+				<!-- A1_2 -->
+				<button id="exportExcel" tabindex="2" class="group-button-1"
+					data-bind="click: exportExcel, enable: enableSave">#{i18n.getText('KWR002_10')}</button>
+			</div>
+			<div id="contents-area" class="fixed-flex-layout">
+				<!--The component container-->
+				<div id="ccgcomponent" tabindex="3"></div>
+
+				<div class="drag-panel" style="margin-left: 85px; margin-top: 30px">
+					<div style="margin-bottom: 10px">
+						<label>#{i18n.getText('KWR002_11')}</label>
+					</div>
+
+					<div class="selectionEmployee" tabindex="-1">
+						<div id="employeeSearch" tabindex="-1"></div>
+					</div>
+
+					<!--<table tabindex="4" id="multi-list"-->
+						<!--data-bind="ntsGridList: {								-->
+							<!--height: 312, -->
+							<!--options: employeeList,-->
+							<!--optionsValue: 'id',-->
+							<!--columns: columns,-->
+							<!--multiple: true,-->
+							<!--value: currentCodeList}">-->
+					<!--</table>-->
+
+				</div>
+				<div class="drag-panel" style="margin-left: 30px; margin-top: 30px">
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_17')}</div>
+					<div style="padding: 40px; margin-bottom: 40px"
+						id="daterangepicker" tabindex="5"
+						data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}" />
+					<div style="margin: 0px 0px 10px -10px">
+						<label>#{i18n.getText('KWR002_26')}</label>
+					</div>
+
+
+					<div>
+						<div style="float: left"
+							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_18')}</div>
+
+						<div style="float: left" id="combo-box" tabindex="6"
+							data-bind="ntsComboBox: {
+								options: attendanceRecordList,
+								optionsValue: 'code',
+								visibleItemsCount: 10,
+								value: selectedCode,
+								optionsText: 'name',
+								editable:  false,
+								enable: true,
+								required: true,
+								columns: [
+									{ prop: 'code', length: 4 },
+									{ prop: 'name', length: 10 }]}">
+						</div>
+						<div style="float: left; margin-left: 20px">
+							<button id="openBDialog" tabindex="7" class="group-button-1"
+								data-bind="click: openBDialog, disable: false">#{i18n.getText('KWR002_20')}</button>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

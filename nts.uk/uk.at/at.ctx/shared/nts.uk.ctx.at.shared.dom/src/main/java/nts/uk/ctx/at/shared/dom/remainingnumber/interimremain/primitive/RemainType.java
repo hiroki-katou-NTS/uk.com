@@ -15,12 +15,20 @@ public enum RemainType {
 	FUNDINGANNUAL(1,"積立年休"),
 	/**	特休 */
 	SPECIAL(2,"特休"),
-	/**	振出振休 */
-	COMPLEMENTLEAVE(3,"振出振休"),
-	/**	休出代休 */
-	BREAKDAYOFF(4,"休出代休"),
+	/**	振休 */
+	PAUSE(3,"振休"),
+	/**	代休 */
+	SUBHOLIDAY(4,"代休"),
 	/**	時間年休 */
-	TIMEANNUAL(5, "時間年休");
+	TIMEANNUAL(5, "時間年休"),
+	/**
+	 * 振出
+	 */
+	PICKINGUP(6,"振出"),
+	/**
+	 * 休出
+	 */	
+	BREAK(7,"休出");
 	
 	public final Integer value;
 	

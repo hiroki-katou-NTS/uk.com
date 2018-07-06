@@ -68,11 +68,14 @@ module nts.uk.ui.koExtentions {
     }
     
     function getCurrentWindow(){
-        var self = nts.uk.ui.windows.getSelf();;
+        var self = nts.uk.ui.windows.getSelf();
         var dfd = $.Deferred();
         if(!nts.uk.util.isNullOrUndefined(self)){
             dfd.resolve(self);   
         } else {
+            if(nts.uk.util.isInFrame()){
+                dfd.resolve({isFrame: true});        
+            }
             nts.uk.deferred.repeat(conf => conf
                 .task(() =>  {
                     let def = $.Deferred();
@@ -109,9 +112,30 @@ module nts.uk.ui.koExtentions {
             var displayrows: number = ko.unwrap(option.displayrows);
             
             getCurrentWindow().done(function(self){
-                var id = 'ntsErrorDialog_' + self.id;
-                var $dialog = $("<div>", { "id": id });
-                PS.$('body').append($dialog);
+                let idX = "";
+                if(self.isFrame){
+                    idX = nts.uk.util.randomId(); 
+                    self = PS.window.parent.nts.uk.ui.windows.getSelf();
+                    PS = PS.window.parent;
+                } else {
+                    idX = self.id;    
+                }
+                var id = 'ntsErrorDialog_' + idX;
+                var $dialog = $("<div>", { "id": id, "class": "ntsErrorDialog" });
+                if (self.isRoot) {
+                    PS.$('body').append($dialog);
+                } else {
+                    let temp = self;
+                    while (!nts.uk.util.isNullOrUndefined(temp)) {
+                        if (temp.isRoot) {
+                            $(temp.globalContext.document.getElementsByTagName("body")).append($dialog);
+                            temp = null;
+                        } else {
+                            temp = temp.parent;
+                        }
+                    }
+                }
+                
                 // Create Buttons
                 var dialogbuttons = [];
     
@@ -122,7 +146,7 @@ module nts.uk.ui.koExtentions {
                         click: function() { button.click(bindingContext.$data, $dialog) }
                     });
                 }
-                $dialog.data("winid", self.id);
+                $dialog.data("winid", idX);
                 // Calculate width
                 var dialogWidth: number = 40 + 35 + 17;
                 headers.forEach(function(header, index) {
@@ -177,14 +201,23 @@ module nts.uk.ui.koExtentions {
                         maxrowsHeight = $dialog.dialog("option", "maxHeight");
                     }
                     $dialog.dialog("option", "height", maxrowsHeight);
-                });
+                });  
                 
-                PS.$("body").bind("dialogclosed", function(evt, eData){
-                    if($dialog.data("winid") === eData.dialogId){
-                        $dialog.dialog("close");
-                        $dialog.remove();
-                    }
-                });    
+                PS.$("body").data(self.id, $dialog);
+                $(element).data("dialogX", $dialog);
+                if(self.isRoot){
+                    $("body").bind("dialogclosed", function(evt, eData){
+//                            console.log(eData.dialogId);
+                        let $cDialog = $("#ntsErrorDialog_" + eData.dialogId);
+                        
+                        if(!nts.uk.util.isNullOrEmpty($cDialog)){
+                            $("body").data(eData.dialogId).dialog("destroy");
+//                            $cDialog.dialog().dialog("destroy");
+//                            console.log("destroyed");
+                            $cDialog.remove();
+                        }
+                    });  
+                }
             });
         }
 
@@ -202,21 +235,31 @@ module nts.uk.ui.koExtentions {
             //var maxrows: number = ko.unwrap(option.maxrows);
             var autoclose: boolean = ko.unwrap(option.autoclose);
             var show: boolean = ko.unwrap(option.show);
-            getCurrentWindow().done(function(self){
-                var id = 'ntsErrorDialog_' + self.id;
-                var $dialog;
-                if (self.isRoot) {
-                    $dialog = PS.$("#" + id);
-                } else {
-                    while (!nts.uk.util.isNullOrUndefined(self)) {
-                        if (self.isRoot) {
-                            $dialog = $(self.globalContext.document.getElementById(id));
-                            self = null;
-                        } else {
-                            self = self.parent;
-                        }
+            
+            let isNotFunctionArea = _.isEmpty($('#functions-area')) && _.isEmpty($('#functions-area-bottom'));
+            let isFrame = nts.uk.util.isInFrame();
+            if(isNotFunctionArea && isFrame){
+                if(!_.isEmpty(errors)){
+                    let mesArr = [], mesCodeArr = _.map(errors, (error) => error.errorCode );
+                    _.forEach(errors, (error) => {
+                        mesArr.push(error.message);
+                        mesCodeArr.push(error.errorCode); 
+                    });
+                    let totalMes = _.join(_.uniq(mesArr), '\n');
+                    let totalMesCode = _.join(_.uniq(mesCodeArr), ', ');
+                    let mainD = PS.window.parent.nts.uk.ui.windows.getSelf();
+                    while(!mainD.isRoot){
+                        mainD = mainD.parent;
                     }
+                    nts.uk.ui.errors.clearAll();
+                    mainD.globalContext.nts.uk.ui.dialog.error({ message: totalMes, messageId: totalMesCode }).then(() => {
+                    });
                 }
+                return;  
+            }
+            
+            getCurrentWindow().done(function(self){
+                var $dialog = $(element).data("dialogX");
     
                 if (show == true) {
                     // Create Error Table
@@ -294,17 +337,12 @@ module nts.uk.ui.koExtentions {
                     $dialog.html("");
                     $dialog.append($errorboard).append($message);
     
-    //                $dialog.on("dialogresizestop dialogopen", function() {
-                    
-    //                if($dialog.dialog("isOpen")){
-                        $dialog.dialog("open");    
-    //                } else {
-                        $dialog.closest("[role='dialog']").show();
-    //                }
+//                    $dialog.closest("[role='dialog']").show();
+                    $dialog.dialog("open");    
                 }
                 else {
-                    $dialog.closest("[role='dialog']").hide();
-    //                $dialog.dialog("close");
+//                    $dialog.closest("[role='dialog']").hide();
+                    $dialog.dialog("close"); 
                 }        
             });
             

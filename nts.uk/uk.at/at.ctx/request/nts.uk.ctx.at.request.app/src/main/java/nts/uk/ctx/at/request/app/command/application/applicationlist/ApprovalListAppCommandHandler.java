@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListApprovalRepository;
@@ -26,7 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class ApprovalListAppCommandHandler extends CommandHandler<List<ApprovalListAppCommand>>{
+public class ApprovalListAppCommandHandler extends CommandHandlerWithResult<List<ApprovalListAppCommand>, List<String>>{
 	
 	@Inject
 	private AppListApprovalRepository repoAppListAppv;
@@ -35,7 +36,7 @@ public class ApprovalListAppCommandHandler extends CommandHandler<List<ApprovalL
 	@Inject
 	private AppCommonSetRepository repoAppCommonSet;
 	@Override
-	protected void handle(CommandHandlerContext<List<ApprovalListAppCommand>> context) {
+	protected List<String> handle(CommandHandlerContext<List<ApprovalListAppCommand>> context) {
 		// TODO Auto-generated method stub
 		List<ApprovalListAppCommand> data = context.getCommand();
 		//アルゴリズム「申請一覧承認登録」を実行する - 14
@@ -50,16 +51,18 @@ public class ApprovalListAppCommandHandler extends CommandHandler<List<ApprovalL
 		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();
 		//アルゴリズム「申請一覧承認登録チェック」を実行する - 15
 		boolean checkAppv = repoAppListAppv.checkResAppvListApp(appCommonSet.get(), PrePostAtr.POSTERIOR, "", "");
+		List<String> lstRefAppId = new ArrayList<>();
 		if(checkAppv){
 			//アルゴリズム「申請一覧承認登録実行」を実行する - 16
 			List<AppVersion> lstApp = new ArrayList<>();
 			for (ApprovalListAppCommand app : data) {
 				lstApp.add(new AppVersion(app.getAppId(), app.getVersion()));
 			}
-			repoAppListAppv.approvalListApp(lstApp, true, true, true);
+			lstRefAppId = repoAppListAppv.approvalListApp(lstApp, true, true, true);
 		}
 		//アルゴリズム「申請一覧リスト取得」を実行する - 1 => load lai du lieu: xu ly tren ui
 //		repoAppListInit.getApplicationList(param, displaySet);
+		return lstRefAppId;
 	}
 
 }

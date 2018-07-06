@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.app.command.monthly.attendancetime.AttendanceTimeOfM
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
@@ -45,19 +45,19 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 	public MonthlyWorkCommonCommand getCommand(String group){
 		MonthlyWorkCommonCommand command = null;
 		switch (group) {
-		case AttendanceLayoutConst.MONTHLY_AFFILIATION_INFO_CODE:
+		case MONTHLY_AFFILIATION_INFO_CODE:
 			command = this.affiliationInfo;
 			break;
-		case AttendanceLayoutConst.MONTHLY_ATTENDANCE_TIME_CODE:
+		case MONTHLY_ATTENDANCE_TIME_CODE:
 			command = this.attendanceTime;
 			break;
-		case AttendanceLayoutConst.MONTHLY_OPTIONAL_ITEM_CODE:
+		case MONTHLY_OPTIONAL_ITEM_CODE:
 			command = this.anyItem;
 			break;
-		case AttendanceLayoutConst.MONTHLY_ANNUAL_LEAVING_REMAIN_CODE:
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_CODE:
 			command = this.annualLeave;
 			break;
-		case AttendanceLayoutConst.MONTHLY_RESERVE_LEAVING_REMAIN_CODE:
+		case MONTHLY_RESERVE_LEAVING_REMAIN_CODE:
 			command = this.reserveLeave;
 			break;
 		default:

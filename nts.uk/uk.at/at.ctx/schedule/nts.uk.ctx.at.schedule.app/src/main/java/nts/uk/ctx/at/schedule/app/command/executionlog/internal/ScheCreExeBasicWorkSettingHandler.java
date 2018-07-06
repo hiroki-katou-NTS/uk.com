@@ -79,12 +79,12 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * Gets the workday division by wkp.
-	 *
+	 * 
+	 * 職場の稼働日区分を取得する
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the workday division by wkp
+	 * @return
 	 */
-	// 職場の稼働日区分を取得する
 	public Optional<Integer> getWorkdayDivisionByWkp(WorkdayAttrByWorkplaceGeterCommand command) {
 		for (String workplaceId : command.getWorkplaceIds()) {
 
@@ -113,15 +113,12 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * To basic work setting.
-	 *
+	 * 
 	 * @param domain
-	 *            the domain
 	 * @param workdayAtr
-	 *            the workday atr
-	 * @return the optional
+	 * @return
 	 */
 	private Optional<BasicWorkSetting> toBasicWorkSetting(WorkplaceBasicWork domain, int workdayAtr) {
-
 		// check of basic work by work day atr
 		for (BasicWorkSetting basicWorkSetting : domain.getBasicWorkSetting()) {
 			if (basicWorkSetting.getWorkdayDivision().value == workdayAtr) {
@@ -133,20 +130,18 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * Gets the basic work setting by workplace.
-	 *
+	 * 
+	 * 職場の基本勤務設定を取得する
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the basic work setting by workplace
+	 * @return
 	 */
-	// 職場の基本勤務設定を取得する
 	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkplace(
 			BasicWorkSettingByWorkplaceGetterCommand command) {
 		for (String workplaceId : command.getWorkplaceIds()) {
-
 			// find basic work by id
 			Optional<WorkplaceBasicWork> optionalWorkplaceBasicWork = this.workplaceBasicWorkRepository
 					.findById(workplaceId);
-
 			// check exist data WorkplaceBasicWork
 			if (optionalWorkplaceBasicWork.isPresent()) {
 				return this.toBasicWorkSetting(optionalWorkplaceBasicWork.get(), command.getWorkdayDivision());
@@ -155,7 +150,6 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 		Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
 				.findById(command.getBaseGetter().getCompanyId(), command.getWorkdayDivision());
-
 		// check not exist data
 		if (!optionalCompanyBasicWork.isPresent()) {
 			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_589");
@@ -169,45 +163,20 @@ public class ScheCreExeBasicWorkSettingHandler {
 	/**
 	 * Gets the basic work setting by workday division.
 	 * 
+	 * 「稼働日区分」に対応する「基本勤務設定」を取得する
+	 * 
 	 * @param command
 	 * @param mapClassificationHist
 	 * @param mapWorkplaceHist
-	 * @return the basic work setting by workday division
+	 * @return
 	 */
-	// 「稼働日区分」に対応する「基本勤務設定」を取得する
 	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkdayDivision(BasicWorkSettingGetterCommand command,
 			Map<String, List<ExClassificationHistItemImported>> mapClassificationHist,
 			Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist) {
 
 		// check 基本勤務の参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (command.getReferenceBasicWork() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
-
-			// // find work place by id
-			// Optional<WorkplaceDto> optionalWorkplace =
-			// this.scWorkplaceAdapter
-			// .findWorkplaceById(command.getEmployeeId(),
-			// command.getBaseGetter().getToDate());
-			//
-			// // check exist data work place
-			// if (optionalWorkplace.isPresent()) {
-			// // find by level work place
-			// List<String> workplaceIds =
-			// this.findWpkIdsBySid(command.getBaseGetter(),
-			// command.getEmployeeId());
-			//
-			// BasicWorkSettingByWorkplaceGetterCommand commandGetter =
-			// command.toBasicWorkplace();
-			// commandGetter.setWorkplaceIds(workplaceIds);
-			// // return basic work setting
-			// return this.getBasicWorkSettingByWorkplace(commandGetter);
-			//
-			// } else {
-			// // add log error employee => 602
-			// this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(),
-			// command.getEmployeeId(), "Msg_602",
-			// "#Com_Workplace");
-			// }
-
+			// EA No1683
 			List<ExWorkplaceHistItemImported> listWorkplaceHistItem = mapWorkplaceHist.get(command.getEmployeeId());
 			if (listWorkplaceHistItem != null) {
 				Optional<ExWorkplaceHistItemImported> optWorkplaceHistItem = listWorkplaceHistItem.stream()
@@ -228,29 +197,9 @@ public class ScheCreExeBasicWorkSettingHandler {
 			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
 					"#Com_Workplace");
 
-		}
-		// 営業日カレンダーの参照先 is 分類 (referenceBusinessDayCalendar is CLASSIFICATION)
-		else {
-			// // find classification by id
-			// Optional<ClassificationDto> optionalClass =
-			// this.scClassificationAdapter.findByDate(command.getEmployeeId(),
-			// command.getBaseGetter().getToDate());
-			//
-			// // check exist data classification
-			// if (optionalClass.isPresent()) {
-			// // setup command getter by classification
-			// BasicWorkSettingByClassificationGetterCommand commandGetter =
-			// command.toBasicClassification();
-			// commandGetter.setClassificationCode(optionalClass.get().getClassificationCode());
-			// // return basic work setting by classification
-			// return this.getBasicWorkSettingByClassification(commandGetter);
-			// } else {
-			// // add message error log 602
-			// this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(),
-			// command.getEmployeeId(), "Msg_602",
-			// "#Com_Class");
-			// }
-			
+		} else {
+			// 営業日カレンダーの参照先 is 分類
+			// referenceBusinessDayCalendar is CLASSIFICATION
 			List<ExClassificationHistItemImported> listClassHistItem = mapClassificationHist
 					.get(command.getEmployeeId());
 			if (listClassHistItem != null) {
@@ -276,26 +225,26 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * Find wpk ids by sid.
-	 *
+	 * 
+	 * 所属職場を含む上位職場を取得
+	 * 
 	 * @param command
-	 *            the command
 	 * @param employeeId
-	 *            the employee id
-	 * @return the list
+	 * @return
 	 */
-	// 所属職場を含む上位職場を取得
 	private List<String> findWpkIdsBySid(ScheduleErrorLogGeterCommand command, String employeeId) {
 		return this.scWorkplaceAdapter.findWpkIdsBySid(command.getCompanyId(), employeeId, command.getToDate());
 	}
 
 	/**
 	 * Gets the basic work setting.
-	 *
-	 * @param personalWorkScheduleCreSet
-	 *            the personal work schedule cre set
-	 * @return the basic work setting
+	 * 
+	 * 基本勤務設定を取得する
+	 * 
+	 * @param command
+	 * @param empGeneralInfo
+	 * @return
 	 */
-	// 基本勤務設定を取得する
 	public Optional<BasicWorkSetting> getBasicWorkSetting(BasicWorkSettingGetterCommand command,
 			EmployeeGeneralInfoImported empGeneralInfo) {
 
@@ -326,12 +275,12 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * Gets the workday division by class.
-	 *
+	 * 
+	 * 分類の稼働日区分を取得する
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the workday division by class
+	 * @return
 	 */
-	// 分類の稼働日区分を取得する
 	private Optional<Integer> getWorkdayDivisionByClass(WorkdayAttrByClassGetterCommand command) {
 
 		// find calendar classification by id
@@ -362,48 +311,20 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * Gets the business day calendar.
-	 *
+	 * 
+	 * 営業日カレンダーから「稼働日区分」を取得する
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the business day calendar
+	 * @param mapClassificationHist
+	 * @param mapWorkplaceHist
+	 * @return
 	 */
-	// 営業日カレンダーから「稼働日区分」を取得する
 	private Optional<Integer> getBusinessDayCalendar(BasicWorkSettingGetterCommand command,
 			Map<String, List<ExClassificationHistItemImported>> mapClassificationHist,
 			Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist) {
-
 		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (command.getReferenceBusinessDayCalendar() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
-
-			// // find work place by id
-			// // Imported「所属職場履歴」を取得する(lấy dữ liệu Imported「所属職場履歴」)
-			// Optional<WorkplaceDto> optionalWorkplace =
-			// this.scWorkplaceAdapter
-			// .findWorkplaceById(command.getEmployeeId(),
-			// command.getBaseGetter().getToDate());
-			// // check exist data work place
-			// if (optionalWorkplace.isPresent()) {
-			// // List<String> workplaceIds =
-			// // this.findLevelWorkplace(command.getBaseGetter(),
-			// // workplaceDto.getWorkplaceCode()); FIXBUG #87217
-			// List<String> workplaceIds =
-			// this.findWpkIdsBySid(command.getBaseGetter(),
-			// command.getEmployeeId());
-			//
-			// // setup command getter work place
-			//
-			// WorkdayAttrByWorkplaceGeterCommand commandGetter =
-			// command.toCommandWorkplace();
-			// commandGetter.setWorkplaceIds(workplaceIds);
-			// // return work day atr by work place id
-			// return this.getWorkdayDivisionByWkp(commandGetter);
-			// }else {
-			// // add log error employee => 602
-			// this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(),
-			// command.getEmployeeId(), "Msg_602",
-			// "#Com_Workplace");
-			// }
-
+			// EA No1682
 			// 「社員の履歴情報」から該当社員、該当日の職場情報を取得する
 			List<ExWorkplaceHistItemImported> listWorkplaceHistItem = mapWorkplaceHist.get(command.getEmployeeId());
 			if (listWorkplaceHistItem != null) {
@@ -429,37 +350,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
 					"#Com_Workplace");
 
-		} else
-		// CLASSIFICATION
-		{
-			// // find classification by id
-			// // Imported「所属分類履歴」から分類コードを取得する(lấy dữ liệu Imported「所属分類履歴」)
-			// Optional<ClassificationDto> optionalClassification =
-			// this.scClassificationAdapter
-			// .findByDate(command.getEmployeeId(),
-			// command.getBaseGetter().getToDate());
-			//
-			// // check exist data classification
-			// if (optionalClassification.isPresent()) {
-			// ClassificationDto classificationDto =
-			// optionalClassification.get();
-			// //
-			// // set command work day getter
-			// WorkdayAttrByClassGetterCommand commandGetter =
-			// command.toCommandClassification();
-			// commandGetter.setClassificationCode(classificationDto.getClassificationCode());
-			// //
-			// // return work day atr by classification
-			// return this.getWorkdayDivisionByClass(commandGetter);
-			// //
-			// } else {
-			// // add log error employee => 602
-			// this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(),
-			// command.getEmployeeId(), "Msg_602",
-			// "#Com_Class");
-			//
-			// }
-
+		} else {
 			// 「社員の履歴情報」から該当社員、該当日の分類情報を取得する
 			List<ExClassificationHistItemImported> listClassHistItem = mapClassificationHist
 					.get(command.getEmployeeId());
@@ -488,16 +379,13 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * To basic work setting classification.
-	 *
+	 * 
 	 * @param domain
-	 *            the domain
 	 * @param workdayAtr
-	 *            the workday atr
-	 * @return the optional
+	 * @return
 	 */
 	private Optional<BasicWorkSetting> toBasicWorkSettingClassification(ClassificationBasicWork domain,
 			int workdayAtr) {
-
 		// find by work day atr
 		for (BasicWorkSetting basicWorkSetting : domain.getBasicWorkSetting()) {
 			if (basicWorkSetting.getWorkdayDivision().value == workdayAtr) {
@@ -509,15 +397,12 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * To basic work setting company.
-	 *
+	 * 
 	 * @param domain
-	 *            the domain
 	 * @param workdayAtr
-	 *            the workday atr
-	 * @return the optional
+	 * @return
 	 */
 	private Optional<BasicWorkSetting> toBasicWorkSettingCompany(CompanyBasicWork domain, int workdayAtr) {
-
 		// find by work day atr
 		for (BasicWorkSetting basicWorkSetting : domain.getBasicWorkSetting()) {
 			if (basicWorkSetting.getWorkdayDivision().value == workdayAtr) {
@@ -529,14 +414,12 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * Gets the basic work setting by classification.
-	 *
-	 * @param classificationCode
-	 *            the classification code
-	 * @param workdayAtr
-	 *            the workday atr
-	 * @return the basic work setting by classification
+	 * 
+	 * 分類の基本勤務設定を取得する
+	 * 
+	 * @param command
+	 * @return
 	 */
-	// 分類の基本勤務設定を取得する
 	private Optional<BasicWorkSetting> getBasicWorkSettingByClassification(
 			BasicWorkSettingByClassificationGetterCommand command) {
 		// find classification basic work by id

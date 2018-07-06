@@ -1,15 +1,21 @@
 module nts.uk.at.view.kaf002.m4 {
     import service = nts.uk.at.view.kaf002.shr.service;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    import setShared = nts.uk.ui.windows.setShared;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export module viewmodel {
         export class ScreenModel {
             appStamp: KnockoutObservable<vmbase.AppStampOnlineRecord> = ko.observable(new vmbase.AppStampOnlineRecord(0,null)); 
             supFrameNo: number = 10;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             stampCombinationList: KnockoutObservableArray<vmbase.StampCombination> = ko.observableArray([]);  
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<any>){
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<any>, editable: any, screenMode: any){
                 var self = this;    
+                self.screenMode(screenMode);
+                self.editable(editable);
                 self.supFrameNo = data.supFrameDispNO;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
                 service.getStampCombinationAtr().done(data => {
@@ -49,19 +55,13 @@ module nts.uk.at.view.kaf002.m4 {
                         appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp())
                     }
                     service.insert(command)
-                    .done(() => {
+                    .done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    location.reload();
-                                });    
+                                appcommon.CommonProcess.displayMailResult(data);   
                             } else {
-                                if(self.checkBoxValue()){
-                                    let command = {appID: data.appID};
-                                    setShared("KDL030_PARAM", command);
-                                    nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                                        location.reload();
-                                    });    
+                                if(checkBoxValue){
+                                    appcommon.CommonProcess.openDialogKDL030(data.appID);   
                                 } else {
                                     location.reload();
                                 }   
@@ -93,12 +93,10 @@ module nts.uk.at.view.kaf002.m4 {
                     appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp())
                 }
                 service.update(command)
-                .done(() => {
+                .done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         if(data.autoSendMail){
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                location.reload();
-                            });    
+                            appcommon.CommonProcess.displayMailResult(data);   
                         } else {
                             location.reload();
                         }

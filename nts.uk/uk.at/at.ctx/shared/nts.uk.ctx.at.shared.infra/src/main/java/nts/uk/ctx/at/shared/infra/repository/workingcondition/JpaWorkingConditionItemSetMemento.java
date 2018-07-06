@@ -65,7 +65,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setScheduleManagementAtr(ManageAtr scheduleManagementAtr) {
-		this.entity.setScheManagementAtr(scheduleManagementAtr.value);
+		if (scheduleManagementAtr != null) {
+			this.entity.setScheManagementAtr(scheduleManagementAtr.value);
+		}
 	}
 
 	/*
@@ -78,7 +80,10 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setVacationAddedTimeAtr(NotUseAtr vacationAddedTimeAtr) {
-		this.entity.setVacationAddTimeAtr(vacationAddedTimeAtr.value);
+		if(vacationAddedTimeAtr != null) {
+			this.entity.setVacationAddTimeAtr(vacationAddedTimeAtr.value);
+		}
+		
 	}
 
 	/*
@@ -103,13 +108,14 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory) {
-		List<KshmtPerWorkCat> kshmtPerWorkCats = new ArrayList<>();
-		if(this.entity.getKshmtPerWorkCats() != null){
-			kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
+		if (workCategory != null) {
+			List<KshmtPerWorkCat> kshmtPerWorkCats = new ArrayList<>();
+			if (this.entity.getKshmtPerWorkCats() != null) {
+				kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
+			}
+			workCategory.saveToMemento(new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats));
+			this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
 		}
-		workCategory.saveToMemento(
-				new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats));
-		this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
 	}
 
 	/*
@@ -122,7 +128,10 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setContractTime(LaborContractTime contractTime) {
-		this.entity.setContractTime(contractTime.v());
+		if(contractTime != null) {
+			this.entity.setContractTime(contractTime.v());
+		}
+		
 	}
 
 	/*
@@ -135,7 +144,10 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setAutoIntervalSetAtr(NotUseAtr autoIntervalSetAtr) {
-		this.entity.setAutoIntervalSetAtr(autoIntervalSetAtr.value);
+		if(autoIntervalSetAtr != null ) {
+			this.entity.setAutoIntervalSetAtr(autoIntervalSetAtr.value);
+		}
+		
 	}
 
 	/*
@@ -148,13 +160,15 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek) {
-		List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
-		if(this.entity.getKshmtPersonalDayOfWeeks() != null){
-			kshmtPersonalDayOfWeeks = this.entity.getKshmtPersonalDayOfWeeks();
+		if (workDayOfWeek != null) {
+			List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
+			if (this.entity.getKshmtPersonalDayOfWeeks() != null) {
+				kshmtPersonalDayOfWeeks = this.entity.getKshmtPersonalDayOfWeeks();
+			}
+			workDayOfWeek
+					.saveToMemento(new JpaPerDayOfWeekSetMemento(this.entity.getHistoryId(), kshmtPersonalDayOfWeeks));
+			this.entity.setKshmtPersonalDayOfWeeks(kshmtPersonalDayOfWeeks);
 		}
-		workDayOfWeek.saveToMemento(
-				new JpaPerDayOfWeekSetMemento(this.entity.getHistoryId(), kshmtPersonalDayOfWeeks));
-		this.entity.setKshmtPersonalDayOfWeeks(kshmtPersonalDayOfWeeks);
 	}
 
 	/*
@@ -178,7 +192,10 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setAutoStampSetAtr(NotUseAtr autoStampSetAtr) {
-		this.entity.setAutoStampSetAtr(autoStampSetAtr.value);
+		if(autoStampSetAtr != null) {
+			this.entity.setAutoStampSetAtr(autoStampSetAtr.value);
+		}
+		
 	}
 
 	/*
@@ -253,7 +270,10 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setHourlyPaymentAtr(HourlyPaymentAtr hourlyPaymentAtr) {
-		this.entity.setHourlyPayAtr(hourlyPaymentAtr.value);
+		if(hourlyPaymentAtr != null) {
+			this.entity.setHourlyPayAtr(hourlyPaymentAtr.value);
+		}
+		
 	}
 
 	/*

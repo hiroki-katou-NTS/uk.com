@@ -12,10 +12,10 @@
 			<table id="employ_view">
 				<tr id="function-tr">
 					<td id="tbl_left"  class="bg-green border-left employment-tdpad">
-					<button data-bind="text: targetBtnText, attr: {tabindex: tabIndex, id: 'btn_show_list-' + prefix()}"></button>
+					<button class="btn_show_list" data-bind="text: targetBtnText, attr: {tabindex: tabIndex, id: 'btn_show_list-' + prefix()}"></button>
 						<!-- #{i18n.getText('KCP009_3')} --></td>
 					<td class="bg-green none_border employment-tdpad"><button
-							class="btn_select btn_show_list"
+							class="btn_select"
 							data-bind="click: previousEmp, enable: isActivePreviousBtn(), attr: {tabindex: tabIndex, id: 'prev-btn-' + prefix()}">
 							<!-- <span class="caret-left caret-inline"></span> -->
 						</button></td>

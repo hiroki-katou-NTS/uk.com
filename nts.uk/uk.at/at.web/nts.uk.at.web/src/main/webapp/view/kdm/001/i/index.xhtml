@@ -54,7 +54,7 @@
 					<!-- I6_1 年月日 -->
 					<!-- Datepicker -->
 					<div id="I6_1" tabindex="2"
-						data-bind="ntsDatePicker: {value: dateHoliday, dateFormat: 'YYYY/MM/DD', required: checkedHoliday, name: '#[KDM001_62]'}"></div>
+						data-bind="ntsDatePicker: {value: dateHoliday, dateFormat: 'YYYY/MM/DD', required: checkedHoliday, enable:checkedHoliday, name: '#[KDM001_62]'}"></div>
 					<!-- I6_2 休出日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_111')}</span>
 					<!-- I6_3 休出日数 -->
@@ -68,7 +68,7 @@
 					value: selectedCodeHoliday,
 					optionsText: 'name',
 					editable: false,
-					enable: true,
+					enable:checkedHoliday,
 					required: checkedHoliday,
 					selectFirstIfNull : false,
 					columns: [
@@ -83,7 +83,7 @@
 					<!-- I8_1 期限 -->
 					<!-- Datepicker -->
 					<div id="I8_1" tabindex="4"
-						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]', required: checkedHoliday}"></div>
+						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]', required: checkedHoliday, enable:checkedHoliday}"></div>
 				</div>
 
 				<div class="down-s left-m">
@@ -102,7 +102,7 @@
 					<!-- I11_1 年月日 -->
 					<!-- Datepicker -->
 					<div id="I11_1"
-						data-bind="ntsDatePicker: {value: dateSubHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]', required: checkedSubHoliday}"></div>
+						data-bind="ntsDatePicker: {value: dateSubHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]', required: checkedSubHoliday, enable:checkedSubHoliday}"></div>
 					<!-- I11_2 代休日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
 					<!-- I11_3 代休日数 -->
@@ -116,7 +116,7 @@
 					value: selectedCodeSubHoliday,
 					optionsText: 'name',
 					editable: false,
-					enable: true,
+					enable:checkedSubHoliday,
 					selectFirstIfNull : false,
 					required: checkedSubHoliday,
 					columns: [

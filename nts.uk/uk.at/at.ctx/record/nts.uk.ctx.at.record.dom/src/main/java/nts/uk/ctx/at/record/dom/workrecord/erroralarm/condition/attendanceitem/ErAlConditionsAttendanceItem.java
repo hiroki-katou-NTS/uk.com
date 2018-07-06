@@ -44,6 +44,7 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 		this.lstErAlAtdItemCon = new ArrayList<>();
 	}
 
+	
 	/** Init from Java type */
 	public static ErAlConditionsAttendanceItem init(int conditionOperator) {
 		return new ErAlConditionsAttendanceItem(EnumAdaptor.valueOf(conditionOperator, LogicalOperator.class));
@@ -96,7 +97,14 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 			return aic.checkTarget(getValueFromItemIds);
 		});
 	}
-	
+
+	public ErAlConditionsAttendanceItem(String atdItemConGroupId, LogicalOperator conditionOperator, List<ErAlAttendanceItemCondition<?>> lstErAlAtdItemCon) {
+		super();
+		this.atdItemConGroupId = atdItemConGroupId;
+		this.conditionOperator = conditionOperator;
+		this.lstErAlAtdItemCon = lstErAlAtdItemCon;
+	}
+
 	private boolean isNotUseAll(){
 		return !lstErAlAtdItemCon.stream().filter(aic -> aic.isUse()).findFirst().isPresent();
 	}

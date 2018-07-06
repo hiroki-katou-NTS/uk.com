@@ -54,8 +54,8 @@ public class ApplicationStampWebService extends WebService {
 	
 	@POST
 	@Path("update")
-	public void update(AppStampCmd command){
-		this.updateApplicationStampCommandHandler.handle(command);
+	public ProcessResult update(AppStampCmd command){
+		return this.updateApplicationStampCommandHandler.handle(command);
 	}
 	
 	@POST

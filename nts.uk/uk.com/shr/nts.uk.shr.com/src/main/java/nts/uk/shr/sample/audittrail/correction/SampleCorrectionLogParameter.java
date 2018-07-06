@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 
@@ -17,14 +18,22 @@ public class SampleCorrectionLogParameter implements Serializable {
 	private final List<SampleCorrectionTarget> targets;
 	
 	@Value
-	public static class SampleCorrectionTarget {
+	public static class SampleCorrectionTarget implements Serializable {
+
+		/** serialVersionUID */
+		private static final long serialVersionUID = 1L;
+		
 		private final String employeeId;
 		private final GeneralDate date;
 		private final List<SampleCorrectedItem> correctedItems;
 	}
 	
 	@Value
-	public static class SampleCorrectedItem {
+	public static class SampleCorrectedItem implements Serializable {
+
+		/** serialVersionUID */
+		private static final long serialVersionUID = 1L;
+		
 		private final String itemName;
 		private final int itemNo;
 		private final int before;
@@ -32,6 +41,7 @@ public class SampleCorrectionLogParameter implements Serializable {
 		
 		public ItemInfo toItemInfo() {
 			return ItemInfo.create(
+					IdentifierUtil.randomUniqueId(),
 					this.itemName,
 					DataValueAttribute.COUNT,
 					this.before,

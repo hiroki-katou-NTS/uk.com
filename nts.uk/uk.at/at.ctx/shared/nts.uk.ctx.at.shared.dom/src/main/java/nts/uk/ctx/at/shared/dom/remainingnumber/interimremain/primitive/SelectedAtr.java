@@ -8,9 +8,18 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum SelectedAtr {
-	AUTOMATIC(0,""),
-	REQUEST(1, ""),
-	MANUAL(2, "");
+	/**
+	 * 自動
+	 */
+	AUTOMATIC(0,"自動"),
+	/**
+	 * 申請
+	 */
+	REQUEST(1, "申請"),
+	/**
+	 * 手動
+	 */
+	MANUAL(2, "手動");
 	public final Integer value;
 	public final String name;
 }

@@ -11,7 +11,13 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
         enumConditionType: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "固定値", enable: true },
-            { code: 1, name: "勤怠項目", enable: true }
+            { code: 1, name: "勤怠項目", enable: true },
+            { code: 2, name: "入力チェック", enable: true }
+        ]);
+        
+        enumInputCheckCondition: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0, name: nts.uk.resource.getText("KDW007_108") },
+            { code: 1, name: nts.uk.resource.getText("KDW007_107") }
         ]);
 
         enumCompareOperator: KnockoutObservableArray<any> = ko.observableArray([
@@ -26,8 +32,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             { code: 8, name: "範囲の外（境界値を含まない）（＞＜）" },
             { code: 9, name: "範囲の外（境界値を含む）（≧≦）" }
         ]);
-
-        currentAtdItemCondition: any;
+        
+        currentAtdItemCondition: ErAlAtdItemCondition;
         displayTargetAtdItems: KnockoutObservable<string> = ko.observable("");
         displayCompareAtdItems: KnockoutObservable<string> = ko.observable("");
         mode: number;
@@ -53,16 +59,30 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
             self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
 
+            if (caic.compareOperator() > 5) {
+                self.enumConditionType([
+                    { code: 0, name: "固定値", enable: true },
+                    { code: 1, name: "勤怠項目", enable: false },
+                    { code: 2, name: "入力チェック", enable: true }
+                ]);
+            } else {
+                self.enumConditionType([
+                    { code: 0, name: "固定値", enable: true },
+                    { code: 1, name: "勤怠項目", enable: true },
+                    { code: 2, name: "入力チェック", enable: true }
+                ]);
+            }
+            
             caic.conditionAtr.subscribe(v => {
-
+                $(".value-input").ntsError("clear");
                 caic.uncountableAtdItem(null);
                 caic.countableAddAtdItems([]);
                 caic.countableSubAtdItems([]);
                 caic.conditionType(0);
                 caic.compareOperator(0);
                 caic.singleAtdItem(null);
-                caic.compareStartValue(0);
-                caic.compareEndValue(0);
+                caic.compareStartValue(null);
+                caic.compareEndValue(null);
 
                 self.fillTextDisplayTarget();
                 self.fillTextDisplayComparison();
@@ -72,36 +92,32 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 if (value > 5) {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
-                        { code: 1, name: "勤怠項目", enable: false }
+                        { code: 1, name: "勤怠項目", enable: false },
+                        { code: 2, name: "入力チェック", enable: true }
                     ]);
 
                     caic.conditionType(0);
                 } else {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
-                        { code: 1, name: "勤怠項目", enable: true }
+                        { code: 1, name: "勤怠項目", enable: true },
+                        { code: 2, name: "入力チェック", enable: true }
                     ]);
                 }
+                self.validateRange();
             });
 
             caic.conditionType.subscribe((value) => {
                 if (value === 0) {
                     $('#display-compare-item').ntsError('clear');
                     $(".value-input").trigger("validate");
-                } else {
+                } else if (value === 1) {
                     $('.value-input').ntsError('clear');
                     $("#display-compare-item").trigger("validate");
+                } else {
+                    $('#display-compare-item').ntsError('clear');
+                    $('.value-input').ntsError('clear');
                 }
-            });
-
-            caic.conditionAtr.subscribe((value) => {
-                $(".value-input").ntsError("clear");
-                caic.compareStartValue(0);
-                caic.compareEndValue(0);
-            });
-
-            caic.compareOperator.subscribe((value) => {
-                self.validateRange();
             });
 
             $(".value-input").blur(() => {
@@ -111,72 +127,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             self.fillTextDisplayTarget();
             self.fillTextDisplayComparison();
 
-            // validate
-            caic.compareStartValue.subscribe(v => {
-                let s = ko.toJS(caic.compareStartValue),
-                    e = ko.toJS(caic.compareEndValue),
-                    t = ko.toJS(caic.compareOperator);
-
-                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-
-                setTimeout(() => {
-                    switch (t) {
-                        case 0:
-                            break;
-                        case 1:
-                            break;
-                        case 2:
-                            break;
-                        case 3:
-                            break;
-                        case 4:
-                            break;
-                        case 5:
-                            break;
-                        case 6:
-                            if (s > e || s == e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                        case 7:
-                            if (s > e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                        case 8:
-                            if (s > e || s == e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                        case 9:
-                            if (s > e) {
-                                nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                                nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                                $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                            }
-                            else {
-                            }
-                    }
-                }, 25);
-            });
-
-            caic.compareEndValue.subscribe(v => caic.compareStartValue.valueHasMutated());
         }
 
         fillTextDisplayTarget() {
             let self = this;
             self.displayTargetAtdItems("");
-            if (self.currentAtdItemCondition.conditionAtr() === 2) {
+            if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
                 if (self.currentAtdItemCondition.uncountableAtdItem()) {
                     service.getAttendanceItemByCodes([self.currentAtdItemCondition.uncountableAtdItem()], self.mode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
@@ -293,9 +249,10 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             let self = this;
             self.getListItemByAtr().done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-                if (self.currentAtdItemCondition.conditionAtr() === 2) {
+                if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
                     //Open dialog KDL021
                     nts.uk.ui.windows.setShared('Multiple', false);
+                    nts.uk.ui.windows.setShared('MonthlyMode', self.mode == 1);
                     nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                     nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.uncountableAtdItem()]);
                     nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
@@ -332,7 +289,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             self.getListItemByAtr().done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 nts.uk.ui.windows.setShared('Multiple', false);
-                // example wait
+                nts.uk.ui.windows.setShared('MonthlyMode', self.mode == 1);
                 nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.singleAtdItem()]);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
@@ -350,7 +307,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 caic = ko.toJS(self.currentAtdItemCondition);
 
             $('.value-input').ntsError('clear');
-            //$(".value-input").trigger("validate");
+            $('.value-input').filter(":enabled").trigger("validate");
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
                 setTimeout(() => {
@@ -408,6 +365,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         singleAtdItem: KnockoutObservable<number>;
         compareStartValue: KnockoutObservable<number>;
         compareEndValue: KnockoutObservable<number>;
+        inputCheckCondition: KnockoutObservable<number> = ko.observable(0);
 
         constructor(param) {
             this.targetNO = ko.observable(param.targetNO);
@@ -421,10 +379,6 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             this.compareStartValue = ko.observable(param.compareStartValue);
             this.compareEndValue = ko.observable(param.compareEndValue);
             this.compareOperator = ko.observable(param.compareOperator);
-
-            this.compareEndValue.subscribe(v => {
-                console.log(v);
-            });
         }
         
     }
@@ -434,10 +388,10 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         TIME = 1,
         /* 回数 */
         NUMBER = 2,
-        /* 金額 */
-        AMOUNT = 3,
         /* 日数 */
-        DAYS = 4,
+        DAYS = 3,
+        /* 金額 */
+        AMOUNT = 4,
         /* マスタを参照する */
         REFER_TO_MASTER = 5
     }

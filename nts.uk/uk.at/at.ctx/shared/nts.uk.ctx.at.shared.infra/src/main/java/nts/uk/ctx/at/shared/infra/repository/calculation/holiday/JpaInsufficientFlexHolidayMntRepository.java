@@ -34,7 +34,7 @@ public class JpaInsufficientFlexHolidayMntRepository extends JpaRepository imple
 	 */
 	private InsufficientFlexHolidayMnt convertToDomain(KshstInsuffFlexMnt kshstInsuffFlexMnt) {
 		InsufficientFlexHolidayMnt insufficientFlexHolidayMnt = 
-				InsufficientFlexHolidayMnt.createFromJavaType(kshstInsuffFlexMnt.kshstInsuffFlexMntPK.companyId, kshstInsuffFlexMnt.getAttendTime());
+				InsufficientFlexHolidayMnt.createFromJavaType(kshstInsuffFlexMnt.kshstInsuffFlexMntPK.companyId, kshstInsuffFlexMnt.getSupplementableDays());
 		return insufficientFlexHolidayMnt;
 	}
 	
@@ -47,7 +47,7 @@ public class JpaInsufficientFlexHolidayMntRepository extends JpaRepository imple
 		KshstInsuffFlexMnt kshstInsuffFlexMnt = new KshstInsuffFlexMnt();
 		KshstInsuffFlexMntPK kshstInsuffFlexMntPK = new KshstInsuffFlexMntPK(insufficientFlexHolidayMnt.getCompanyId());
 		kshstInsuffFlexMnt.setKshstInsuffFlexMntPK(kshstInsuffFlexMntPK);
-		kshstInsuffFlexMnt.setAttendTime(insufficientFlexHolidayMnt.getAttendanceTime().v());
+		kshstInsuffFlexMnt.setSupplementableDays(insufficientFlexHolidayMnt.getSupplementableDays().v());
 		return kshstInsuffFlexMnt;
 	}
 	
@@ -69,7 +69,7 @@ public class JpaInsufficientFlexHolidayMntRepository extends JpaRepository imple
 		KshstInsuffFlexMnt entity = new KshstInsuffFlexMnt();
 		KshstInsuffFlexMntPK primaryKey = new KshstInsuffFlexMntPK(refreshInsuffFlex.getCompanyId());
 		entity.setKshstInsuffFlexMntPK(primaryKey);
-		entity.setAttendTime(refreshInsuffFlex.getAttendanceTime().v());
+		entity.setSupplementableDays(refreshInsuffFlex.getSupplementableDays().v());
 		this.commandProxy().update(entity);
 	}
 

@@ -61,5 +61,9 @@ public enum CalculationMethodAtTheTimeOfLackOfFixedTimeForFlexWork {
 		// Not found.
 		return null;
 	}
+	
+	public boolean isCalc() {
+		return this.equals(CALCULATE_DEFICIENCY_OF_FLEX);
+	}
 }
 

@@ -1,0 +1,39 @@
+.header-content {
+	margin: 5px 10px;
+	border-bottom-style: solid;
+	border-width: 1px;
+	border-color: #b1b1b1;
+	padding-bottom:5px;
+}
+
+.contents-area {
+	margin: 20px 0px 0px 30px;
+}
+
+.swaplist-content {
+	margin: 30px 0px 0px 15px;
+}
+
+#left-content {
+	padding: 15px;
+	float: left;
+	max-height: 800px;
+	max-width: 400px;
+}
+
+.drop-down-attendance {
+	margin: 0 0 45px 20px;
+}
+
+.labelCombo {
+	margin-top: 8px;
+	float: left;
+}
+
+.combo {
+	float: left;
+}
+
+.group-swith-button {
+	margin: 20px 50px 0 50px;
+}

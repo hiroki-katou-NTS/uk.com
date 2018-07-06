@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.monthly.roundingset;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -7,6 +8,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.ItemRoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.monthly.roundingset.RoundingProcessOfExcessOutsideTime;
@@ -23,6 +25,10 @@ public class JpaExcOutRoundingSet extends JpaRepository implements RoundingSetOf
 
 	private static final String REMOVE_BY_CID_FOR_EXCOUT =
 			"DELETE FROM KrcstMonExcoutRound a "
+			+ "WHERE a.PK.companyId = :companyId ";
+	
+	private static final String REMOVE_BY_CID_FOR_ITEM =
+			"DELETE FROM KrcstMonItemRound a "
 			+ "WHERE a.PK.companyId = :companyId ";
 	
 	/** 検索 */

@@ -4,17 +4,20 @@ import static mockit.Deencapsulation.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
-import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 
 public class AuditTrailTest {
 
@@ -28,6 +31,18 @@ public class AuditTrailTest {
 		
 		@Override
 		public UserInfo findByEmployeeId(String employeeId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<UserInfo> findByEmployeeId(List<String> employeeIds) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<UserInfo> findByUserId(List<String> userIds) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -46,7 +61,7 @@ public class AuditTrailTest {
 				TargetDataType.DAILY_RECORD,
 				TargetDataKey.of(date),
 				CorrectionAttr.EDIT,
-				ItemInfo.create("遅刻回数", DataValueAttribute.COUNT, 1, 2),
+				ItemInfo.create(IdentifierUtil.randomUniqueId(), "遅刻回数", DataValueAttribute.COUNT, 1, 2),
 				100);
 	}
 

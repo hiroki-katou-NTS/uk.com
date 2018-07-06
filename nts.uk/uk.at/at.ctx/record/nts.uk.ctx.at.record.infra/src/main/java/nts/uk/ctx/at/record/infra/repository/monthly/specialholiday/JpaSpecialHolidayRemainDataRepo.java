@@ -26,11 +26,10 @@ import nts.uk.ctx.at.record.infra.entity.monthly.specialholiday.KrcdtMonSpRemain
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements SpecialHolidayRemainDataRepository{
-	private String SQL_BY_YM_STATUS = "SELECT c FROM KrcdtMonSpRemain c"
+	private static final String SQL_BY_YM_STATUS = "SELECT c FROM KrcdtMonSpRemain c"
 			+ " WHERE c.pk.sid = :sid"
 			+ " AND c.pk.ym = :ym"
-			+ " AND c.closureStatus = :status"
-			+ " ORDER BY c.closureEndDate ACS";
+			+ " AND c.closureStatus = :status";
 	@Override
 	public List<SpecialHolidayRemainData> getByYmStatus(String sid, YearMonth ym, ClosureStatus status) {
 		return this.queryProxy().query(SQL_BY_YM_STATUS, KrcdtMonSpRemain.class)

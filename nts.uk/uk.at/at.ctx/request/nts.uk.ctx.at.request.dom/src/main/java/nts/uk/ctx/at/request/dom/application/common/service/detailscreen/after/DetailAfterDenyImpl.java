@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -53,12 +52,12 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 			AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 			if (discreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 				isAutoSendMail = true;
-				MailResult mailResult = otherCommonAlgorithm.sendMailApplicantDeny(Arrays.asList(application.getEmployeeID()), application); 
+				MailResult mailResult = otherCommonAlgorithm.sendMailApplicantDeny(application); 
 				autoSuccessMail = mailResult.getSuccessList();
 				autoFailMail = mailResult.getFailList();
 			}
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID);
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
 	}
 
 }

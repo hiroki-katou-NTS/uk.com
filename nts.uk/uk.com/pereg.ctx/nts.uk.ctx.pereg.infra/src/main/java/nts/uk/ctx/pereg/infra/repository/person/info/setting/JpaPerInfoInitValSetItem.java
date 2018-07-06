@@ -26,7 +26,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonIn
 @Stateless
 public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoInitValueSetItemRepository {
 
-	private final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtPerInfoItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
+	private static final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtPerInfoItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
 			// 0, 1, 2
 			+ " ITEM.requiredAtr, "
 			// 3
@@ -53,12 +53,12 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND ITEM.abolitionAtr = 0 " + " AND CM.dataType <> 9 AND CM.dataType <> 10 AND CM.dataType <> 12 "
 			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId" + " ORDER BY E.disporder";
 
-	private final String IS_EXITED_ITEM_LST_1 = "SELECT ITEM "
+	private static final String IS_EXITED_ITEM_LST_1 = "SELECT ITEM "
 			+ " FROM  PpemtPerInfoItem ITEM INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  ITEM.itemCd = CM.ppemtPerInfoItemCmPK.itemCd" + " WHERE   ITEM.abolitionAtr = 0"
 			+ " AND CM.itemType = 2" + " AND ITEM.perInfoCtgId IN :perInfoCtgId";
 	// SONNLB
-	private final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
+	private static final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
 			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr,b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd , pc.categoryCd,pm.dataType ,pm.selectionItemRefType,pm.itemParentCd,pm.dateItemType,pm.selectionItemRefCode"
 			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtPerInfoItem c"
 			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
@@ -70,20 +70,20 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " WHERE c.abolitionAtr = 0 AND b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd  ORDER BY po.disporder";
 	// SONNLB
 
-	private final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
+	private static final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.perInfoCtgId =:perInfoCtgId AND c.settingItemPk.settingId =:settingId";
 
-	private final String SEL_ALL_ITEM_BY_SETTINGID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
+	private static final String SEL_ALL_ITEM_BY_SETTINGID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.settingId =:settingId";
 
-	private final String SEL_A_ITEM = " SELECT c FROM PpemtPersonInitValueSettingItem c"
+	private static final String SEL_A_ITEM = " SELECT c FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.settingId =:settingId" + " AND c.settingItemPk.perInfoCtgId =:perInfoCtgId"
 			+ " AND c.settingItemPk.perInfoItemDefId =:perInfoItemDefId";
 
-	private final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
+	private static final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.settingId =:settingId";
 
-	private final String SEL_ALL_ITEM_DATA = "SELECT id.settingItemPk.perInfoItemDefId"
+	private static final String SEL_ALL_ITEM_DATA = "SELECT id.settingItemPk.perInfoItemDefId"
 			+ " FROM PpemtPersonInitValueSettingItem id"
 			+ " INNER JOIN PpemtPerInfoItem pi ON id.settingItemPk.perInfoItemDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"

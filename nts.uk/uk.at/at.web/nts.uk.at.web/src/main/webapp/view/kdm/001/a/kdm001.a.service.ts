@@ -4,7 +4,7 @@ module nts.uk.at.view.kdm001.a.service {
     
     var paths: any = {
         getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
-        getWpName: "screen/com/kcp010/getLoginWkp",
+        getWpName: "screen/com/kcp010/getLoginWorkPlace",
         getFurikyuMngDataExtraction: "at/record/remainnumber/paymana/getFurikyuMngDataExtraction/{0}/{1}/{2}/{3}",
         getNumberOfDayLeft: "at/record/remainnumber/paymana/getNumberOfDayLeft/{0}"
     }

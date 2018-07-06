@@ -21,9 +21,12 @@ public interface AggregateMonthlyRecordService {
 	 * @param closureDate 締め日付
 	 * @param datePeriod 期間
 	 * @param prevAggrResult 前回集計結果　（年休積立年休の集計結果）
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @return 集計結果
 	 */
 	AggregateMonthlyRecordValue aggregate(String companyId, String employeeId,
 			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
-			AggrResultOfAnnAndRsvLeave prevAggrResult);
+			AggrResultOfAnnAndRsvLeave prevAggrResult,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets);
 }

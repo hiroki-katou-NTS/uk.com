@@ -136,3 +136,6 @@ div.form-label.broken {
 #inpReasonTextarea{
 	min-height: 100px;
 }
+#content{
+	width: 1200px;
+}

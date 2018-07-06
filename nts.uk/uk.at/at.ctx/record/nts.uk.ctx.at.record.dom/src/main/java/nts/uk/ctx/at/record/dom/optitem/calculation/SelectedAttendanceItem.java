@@ -53,7 +53,13 @@ public class SelectedAttendanceItem extends DomainObject {
 	public Integer calc(ItemValue itemValue,Integer result) {
 		Integer value = 0;
 		if(itemValue.getValue()!=null) {
-			value = (Integer) itemValue.value();
+			if (itemValue.getValueType().isInteger()){
+				value = itemValue.value();
+			}
+			if (itemValue.getValueType().isDouble()){
+				Double doubleValue = itemValue.value();
+				value = doubleValue.intValue();
+			}
 		}
 		switch(this.operator) {
 		case ADD:

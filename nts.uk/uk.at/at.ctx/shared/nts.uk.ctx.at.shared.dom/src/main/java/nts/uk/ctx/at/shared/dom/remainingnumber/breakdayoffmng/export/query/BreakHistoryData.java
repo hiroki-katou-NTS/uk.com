@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 @Setter
 @Getter
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class BreakHistoryData {
 	/**
 	 * 休出日
 	 */
-	private GeneralDate breakDate;
+	private CompensatoryDayoffDate breakDate;
 	/**
 	 * 使用期限日
 	 */

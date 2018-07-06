@@ -98,6 +98,9 @@ module nts.uk.at.view.kal003.a.tab {
             }
             let workRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId() - 1];
             if (workRecordExtractingCondition) {
+                if (_.isEmpty(workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon())) {
+                    workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon([shareutils.getDefaultCondition(0), shareutils.getDefaultCondition(1), shareutils.getDefaultCondition(2)]);
+                }
                 self.showDialogKal003B(workRecordExtractingCondition, rowId());
             }
         }
@@ -110,8 +113,8 @@ module nts.uk.at.view.kal003.a.tab {
         private showDialogKal003B(workRecordExtractingCondition: model.WorkRecordExtractingCondition, rowId: number) {
             let self = this;
             let sendData = ko.toJS(workRecordExtractingCondition);
-            sendData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(sendData, workRecordExtractingCondition);
-
+            //sendData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(sendData, workRecordExtractingCondition);
+            sendData = { data: shareutils.convertArrayOfWorkRecordExtractingConditionToJS(sendData, workRecordExtractingCondition), category: self.category() };
             windows.setShared('inputKal003b', sendData);
             windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 600, width: 1020 }).onClosed(function(): any {
                 // get data from share window    

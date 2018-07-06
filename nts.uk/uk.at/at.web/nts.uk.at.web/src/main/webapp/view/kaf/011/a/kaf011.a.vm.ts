@@ -8,7 +8,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
     import alError = nts.uk.ui.dialog.alertError;
-
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ViewModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         prePostTypes = ko.observableArray([
@@ -41,9 +42,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
         employeeID: KnockoutObservable<string> = ko.observable('');
 
         employeeName: KnockoutObservable<string> = ko.observable('');
-        
+
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
-        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
 
         drawalReqSet: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
 
@@ -53,8 +54,14 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
 
+        employeeList = ko.observableArray([]);
+
+        selectedEmployee = ko.observable(null);
+
+        totalEmployeeText = ko.observable('');
         constructor() {
             let self = this;
+
             self.appComSelectedCode.subscribe((newCode) => {
                 if (newCode == 0) { return; };
                 if (newCode == 1) {
@@ -75,6 +82,25 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 }
 
             });
+
+            self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
+                    $('#recTimeBtn').ntsError("clear");
+                }
+            });
+
+            self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
+                    $('#absTimeBtn').ntsError("clear");
+                }
+            });
+            self.employeeList.subscribe((datas) => {
+                if (datas.length) {
+                    self.totalEmployeeText(text('KAF011_79', [datas.length]));
+                    self.selectedEmployee(datas[0]);
+                }
+
+            });
         }
         enablePrepost() {
             let self = this;
@@ -85,11 +111,16 @@ module nts.uk.at.view.kaf011.a.screenModel {
             block.invisible();
             var self = this,
                 dfd = $.Deferred(),
-                startParam = {
-                    sID: null,
-                    appDate: self.appDate(),
-                    uiType: 0
-                };
+                employeeIDs = [];
+
+            __viewContext.transferred.ifPresent(data => {
+                employeeIDs = data.employeeIds;
+            });
+            let startParam = {
+                sIDs: employeeIDs,
+                appDate: self.appDate(),
+                uiType: 0
+            };
 
             service.start(startParam).done((data: common.IHolidayShipment) => {
                 self.setDataFromStart(data);
@@ -123,13 +154,15 @@ module nts.uk.at.view.kaf011.a.screenModel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
+                self.employeeList(_.map(data.employees, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
                 self.recWk().setWkTypes(data.recWkTypes || []);
                 self.absWk().setWkTypes(data.absWkTypes || []);
                 self.appReasons(data.appReasonComboItems || []);
                 self.employeeID(data.employeeID);
-                self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr == 1 ? false : true);
+                self.checkBoxValue(data.applicationSetting.manualSendMailAtr == 1 ? true : false);
+                self.enableSendMail(!data.sendMailWhenRegisterFlg);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
@@ -189,7 +222,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         appReasonText: '',
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
-                        enteredPersonSID: self.employeeID(),
+                        employeeID: self.employeeList()[0] ? self.employeeList()[0].sid : null,
                         appVersion: 0
                         ,
                     }
@@ -207,7 +240,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
             let isControlError = self.validateControl();
             if (isControlError) { return; }
-            
+
             let isCheckReasonError = !self.checkReason();
             if (isCheckReasonError) { return; }
             block.invisible();
@@ -270,16 +303,20 @@ module nts.uk.at.view.kaf011.a.screenModel {
         }
 
         openKDL009() {
-            //chưa có màn hình KDL009
-            //            nts.uk.ui.windows.sub.modal('/view/kdl/009/a/index.xhtml').onClosed(function(): any {
-            //
-            //            });
-
+            let self = this;
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.sid);
+            });
+            let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYYMMDD")}
+            setShared('KDL009_DATA', data);
+            if(data.employeeIds.length > 1) {
+                modal("/view/kdl/009/a/multi.xhtml");
+            } else {
+                modal("/view/kdl/009/a/single.xhtml");
+            }
         }
-
-
-
-
     }
 
 

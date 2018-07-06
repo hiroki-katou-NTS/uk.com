@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.appabsence;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -69,6 +70,10 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		newBeforeRegister.processBeforeRegister(appRoot,0);
 		// 7.登録時のエラーチェック
 		checkBeforeRegister(command,startDate,endDate,true);
+		//計画年休上限チェック(check giới han trên plan annual holiday)
+		//hoatt-2018-07-04
+		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
+				startDate, endDate, EnumAdaptor.valueOf(command.getHolidayAppType(), HolidayAppType.class));
 		// insert
 		absenceServiceProcess.CreateAbsence(appAbsence, appRoot);
 		// 2-2.新規画面登録時承認反映情報の整理

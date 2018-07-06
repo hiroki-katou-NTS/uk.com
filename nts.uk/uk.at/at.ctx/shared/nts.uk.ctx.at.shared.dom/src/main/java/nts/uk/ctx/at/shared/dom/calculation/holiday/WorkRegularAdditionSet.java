@@ -33,6 +33,13 @@ public class WorkRegularAdditionSet extends AggregateRoot{
 	// 休暇の計算方法の設定
 	private HolidayCalcMethodSet vacationCalcMethodSet;
 
+	//Constructor
+	public WorkRegularAdditionSet(String companyId, HolidayCalcMethodSet vacationCalcMethodSet) {
+		super();
+		this.companyId = companyId;
+		this.vacationCalcMethodSet = vacationCalcMethodSet;
+	}
+	
 	/**
 	 * Creates the from java type.
 	 *
@@ -100,8 +107,9 @@ public class WorkRegularAdditionSet extends AggregateRoot{
 																	= new EmploymentCalcDetailedSetIncludeVacationAmount(additionTime2, null, 
 																														null, 
 																														null);
+		DeductLeaveEarly deductLeaveEarly2 = new DeductLeaveEarly(notDeductLateleave2, enableSetPerWorkHour1);
 		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = new WorkTimeCalcMethodDetailOfHoliday(includeVacationSet, incChildNursingCare2, 
-																									notDeductLateleave2, 
+																									deductLeaveEarly2, 
 																									exemptTaxTime2, null);
 		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = new WorkTimeHolidayCalcMethod(calcActualOperation2, advanceSetWork);
 		
@@ -109,4 +117,6 @@ public class WorkRegularAdditionSet extends AggregateRoot{
 		
 		this.vacationCalcMethodSet = calcMethodSet;
 	}
+
+
 }

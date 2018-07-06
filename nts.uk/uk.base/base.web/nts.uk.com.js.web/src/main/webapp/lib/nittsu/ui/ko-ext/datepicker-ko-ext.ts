@@ -17,6 +17,7 @@ module nts.uk.ui.koExtentions {
             var value = data.value;
             var name = data.name !== undefined ? ko.unwrap(data.name) : "";
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            let pickOnly = !util.isNullOrUndefined(data.pickOnly) ? ko.unwrap(data.pickOnly) : false;
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
             var ISOFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);
@@ -27,6 +28,7 @@ module nts.uk.ui.koExtentions {
             var button: boolean = (data.button !== undefined) ? ko.unwrap(data.button) : false;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+            var focus: any = (data.focus !== undefined) ? ko.unwrap(data.focus) : false;
             var autoHide: boolean = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
             let acceptJapaneseCalendar: boolean = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : true;
             var valueType:string = typeof value();
@@ -106,6 +108,11 @@ module nts.uk.ui.koExtentions {
 
             name = nts.uk.resource.getControlName(name);
             
+            if (pickOnly) {
+                $input.attr("readonly", true);
+                $input.css("cursor", "default");
+            }
+            
             $input.on("change", (e) => {
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
@@ -130,7 +137,7 @@ module nts.uk.ui.koExtentions {
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     value(newText);
                 }
-                $input.focus();
+                //$input.focus();
             });
             
             $input.on("blur", () => {
@@ -242,7 +249,7 @@ module nts.uk.ui.koExtentions {
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-            
+            var focus: any = (data.focus !== undefined) ? ko.unwrap(data.focus) : false;
             var container = $(element); 
             let dateNormalizer = container.find("input").data("dateNormalizer");
             if (dateNormalizer) {
@@ -288,6 +295,9 @@ module nts.uk.ui.koExtentions {
             }
             if (data.button)
                 container.find('.datepicker-btn').prop("disabled", disabled);
+            if(focus){
+                $input.focus();
+            }
         }
     }
 

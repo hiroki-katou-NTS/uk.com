@@ -4,7 +4,7 @@ module nts.uk.ui.koExtentions {
 
     import count = nts.uk.text.countHalf;
 
-    const WoC = 8,
+    const WoC = 9,
         MINWIDTH = 'auto',
         TAB_INDEX = 'tabindex',
         KEYPRESS = 'keypress',
@@ -214,6 +214,13 @@ module nts.uk.ui.koExtentions {
                         setTimeout(() => {
                             let data = $element.data(DATA);
 
+                            // select first if !select and !editable
+                            if (!data[EDITABLE] && !data[VALUE]) {
+                                $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
+                                //reload data
+                                data = $element.data(DATA);
+                            }
+
                             // set value on select
                             accessor.value(data[VALUE]);
 
@@ -355,7 +362,7 @@ module nts.uk.ui.koExtentions {
                         n = _.omit(k, [optionsValue]),
                         nt = _.map(props, p => k[p]).join(' ').trim();
 
-                    c[optionsValue] = v || '';
+                    c[optionsValue] = !_.isNil(v) ? v : '';
                     c['nts_' + optionsText] = nt || t || ' ';
 
                     return _.extend(n, c);

@@ -16,9 +16,9 @@ public class InsufficientFlexHolidayMnt {
 	private String companyId;
 	
 	/** 補填可能時間 */
-	private AttendanceDaysMonth attendanceTime;
+	private AttendanceDaysMonth supplementableDays;
 	
-	public static InsufficientFlexHolidayMnt createFromJavaType(String companyId, double attendanceTime) {
-		return new InsufficientFlexHolidayMnt(companyId, new AttendanceDaysMonth(attendanceTime));
+	public static InsufficientFlexHolidayMnt createFromJavaType(String companyId, double supplementableDays) {
+		return new InsufficientFlexHolidayMnt(companyId, new AttendanceDaysMonth(supplementableDays));
 	}
 }

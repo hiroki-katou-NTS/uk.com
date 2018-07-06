@@ -24,4 +24,6 @@ public class ApprovalStatusPeriorDto {
 	private List<String> employeesCode;
 	
 	private int yearMonth;
+	
+	private String closureName;
 }
