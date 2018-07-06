@@ -11,7 +11,8 @@ import javax.persistence.Table;
 
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.datafomat.AwDataFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -80,7 +81,7 @@ public class OiomtAwDataFormatSet extends UkJpaEntity implements Serializable
     }
     
     public AwDataFormatSet toDomain() {
-        return new AwDataFormatSet(this.awDataFormatSetPk.cid, this.closedOutput, this.absenceOutput, this.fixedValue, this.valueOfFixedValue, this.atWorkOutput, this.retirementOutput);
+        return new AwDataFormatSet(ItemType.ATWORK.value,this.awDataFormatSetPk.cid, this.closedOutput, this.absenceOutput, this.fixedValue, this.valueOfFixedValue, this.atWorkOutput, this.retirementOutput);
     }
     public static OiomtAwDataFormatSet toEntity(AwDataFormatSet domain) {
         return new OiomtAwDataFormatSet(

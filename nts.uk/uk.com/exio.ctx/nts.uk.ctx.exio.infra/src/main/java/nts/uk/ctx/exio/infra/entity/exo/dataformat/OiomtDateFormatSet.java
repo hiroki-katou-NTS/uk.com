@@ -8,7 +8,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.datafomat.DateFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.DateFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -70,7 +71,7 @@ public class OiomtDateFormatSet extends UkJpaEntity implements Serializable
     }
 
     public DateFormatSet toDomain() {
-        return new DateFormatSet(this.dateFormatSetPk.cid, this.nullValueSubstitution, this.fixedValue, this.valueOfFixedValue, this.valueOfNullValueSubs, this.formatSelection);
+        return new DateFormatSet(ItemType.DATE.value,this.dateFormatSetPk.cid, this.nullValueSubstitution, this.fixedValue, this.valueOfFixedValue, this.valueOfNullValueSubs, this.formatSelection);
     }
     public static OiomtDateFormatSet toEntity(DateFormatSet domain) {
         return new OiomtDateFormatSet(

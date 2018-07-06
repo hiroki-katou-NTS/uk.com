@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.dom.exo.datafomat.ChacDataFmSet;
-import nts.uk.ctx.exio.dom.exo.datafomat.ChacDataFmSetRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSetRepository;
 
 
 @Stateless
@@ -39,7 +39,7 @@ public class SettingTypeScreen {
 						settingItemScreenCommand.setEndDigit(x.v());
 					});
 					// check cdConvertCd not null
-					charFormatSet.getCdConvertCd().ifPresent(x -> {
+					charFormatSet.getConvertCode().ifPresent(x -> {
 						settingItemScreenCommand.setCdConvertCd(x.v());
 					});
 					// check valueOfFixedValue not null
