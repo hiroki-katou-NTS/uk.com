@@ -19,12 +19,12 @@ import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.QtxmtResidential
  */
 @Stateless
 public class JpaResidentialTaxRepository extends JpaRepository implements ResidentialTaxRepository {
-	private final String SEL_1 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd";
-	private final String SEL_2 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode <>:resiTaxCode AND c.resiTaxReportCode =:resiTaxReportCode ";
+	private static final String SEL_1 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd";
+	private static final String SEL_2 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode <>:resiTaxCode AND c.resiTaxReportCode =:resiTaxReportCode ";
 	// key CCD RESI_TAX_CD
-	private final String SEL_3 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode";
-	private final String SEL_5 = "SELECT c.qtxmtResidentialTaxPk.resiTaxCode FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.resiTaxReportCode =:resiTaxReportCode";
-	private final String UPD_2 = "UPDATE QtxmtResidentialTax c SET c.resiTaxReportCode = :resiTaxReportCode WHERE  c.qtxmtResidentialTaxPk.companyCd = :companyCd"
+	private static final String SEL_3 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode";
+	private static final String SEL_5 = "SELECT c.qtxmtResidentialTaxPk.resiTaxCode FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.resiTaxReportCode =:resiTaxReportCode";
+	private static final String UPD_2 = "UPDATE QtxmtResidentialTax c SET c.resiTaxReportCode = :resiTaxReportCode WHERE  c.qtxmtResidentialTaxPk.companyCd = :companyCd"
 			+ " AND c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode";
 	private static ResidentialTax toDomain(QtxmtResidentialTax entity) {
 		val domain = ResidentialTax.createFromJavaType(entity.qtxmtResidentialTaxPk.companyCd, entity.companyAccountNo,

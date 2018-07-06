@@ -31,10 +31,10 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateSe
 public class PensionRateServiceImpl extends PensionRateService {
 
 	/** The fund rate item count. */
-	private final int FUND_RATE_ITEM_COUNT = 6;
+	private static final int FUND_RATE_ITEM_COUNT = 6;
 
 	/** The rounding method count. */
-	private final int ROUNDING_METHOD_COUNT = 2;
+	private static final int ROUNDING_METHOD_COUNT = 2;
 
 	/** The pension rate repo. */
 	@Inject

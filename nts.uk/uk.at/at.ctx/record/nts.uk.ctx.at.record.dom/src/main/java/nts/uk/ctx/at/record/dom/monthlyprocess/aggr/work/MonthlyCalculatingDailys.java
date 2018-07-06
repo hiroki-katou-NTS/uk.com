@@ -106,6 +106,16 @@ public class MonthlyCalculatingDailys {
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
+		// 取得期間を　開始日-6日～開始日-1日　とする　（前月の最終週の集計のため）
+		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.start().addDays(-1));
+		
+		// 日別実績の勤怠時間　（前月最終週分）
+		val findAttendanceTimeOfDailyList =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		for (val attendanceTimeOfDaily : findAttendanceTimeOfDailyList){
+			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+		}
+		
 		// 日別実績の勤怠時間
 		val attendanceTimeOfDailyList = attendanceTimeOfDailys;
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){

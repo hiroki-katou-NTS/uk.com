@@ -73,6 +73,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_CF_DAY_BY_EMP_DATE;
 	private static final String SELECT_CF_MONTH_BY_EMP_DATE;
 	
+	private static final String SELECT_CF_DAY_BY_EMP_DATE_SP;
+	
 	private static final String SELECT_BY_LIST_EMP_DATE;
 	
 	private static final String SELECT_APPS_BY_EMP_AND_DATES;
@@ -199,6 +201,14 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" AND e.recordDate <= :endDate");
 		builderString.append(" AND e.employeeID = :employeeID");
 		SELECT_CF_MONTH_BY_EMP_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtAppRootDaySimple e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
+		builderString.append(" AND e.employeeID = :employeeID");
+		SELECT_CF_DAY_BY_EMP_DATE_SP = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -668,7 +678,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	@Override
 	public void deleteConfirmDay(String employeeID, GeneralDate date) {
-		List<WwfdpApprovalRootDayPK> rootDayKeyList = this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE, WwfdtApprovalRootDay.class)
+		List<WwfdpApprovalRootDayPK> rootDayKeyList = this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE_SP, WwfdtAppRootDaySimple.class)
 				.setParameter("startDate", date)
 				.setParameter("endDate", date)
 				.setParameter("employeeID", employeeID)

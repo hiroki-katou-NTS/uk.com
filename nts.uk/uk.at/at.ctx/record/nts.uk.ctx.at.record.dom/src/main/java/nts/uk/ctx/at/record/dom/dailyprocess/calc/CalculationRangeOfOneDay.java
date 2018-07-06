@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
@@ -90,21 +91,41 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class CalculationRangeOfOneDay {
 
-	private Finally<WithinWorkTimeSheet> withinWorkingTimeSheet = Finally.empty();
-
-	@Setter
-	private Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet = Finally.empty();
-
+	//1日の範囲
 	private TimeSpanForCalc oneDayOfRange;
 
+	//勤務情報
 	private WorkInfoOfDailyPerformance workInformationOfDaily;
 	
 	@Setter
+	//出退勤
 	private TimeLeavingOfDailyPerformance attendanceLeavingWork;
 
+	//所定時間設定
 	private PredetermineTimeSetForCalc predetermineTimeSetForCalc;
-
+	
+	
+	//インターバル制度管理
+	
+	//休暇使用合計残時間未割当
 	private Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime = Finally.empty();// 時間休暇�?算残時�?
+	
+	//非勤務時間帯
+	
+	//加給時間
+	
+	//就業時間内時間帯
+	private Finally<WithinWorkTimeSheet> withinWorkingTimeSheet = Finally.empty();
+
+	@Setter
+	//就業時間外時間帯
+	private Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet = Finally.empty();
+
+	//出勤前時間
+	
+	//退勤後時間
+
+
 
 
 	public CalculationRangeOfOneDay(Finally<WithinWorkTimeSheet> withinWorkingTimeSheet,
@@ -907,5 +928,7 @@ public class CalculationRangeOfOneDay {
 	 public void clearLeavingTime() {
 		 this.attendanceLeavingWork = new TimeLeavingOfDailyPerformance(this.getAttendanceLeavingWork().getEmployeeId(), new WorkTimes(0), Collections.emptyList(), this.getAttendanceLeavingWork().getYmd());
 	 }
+	 
+
 	 
 }
