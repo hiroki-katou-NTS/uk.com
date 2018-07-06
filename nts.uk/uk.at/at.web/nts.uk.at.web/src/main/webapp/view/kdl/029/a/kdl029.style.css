@@ -1,0 +1,17 @@
+@import url("common.css");
+
+#totalTable {
+	width: 250px;
+}
+
+#content-left {
+	width: 352px;
+	height: 355px;
+}
+
+#contents-area {
+	padding: 10px !important;
+}
+.width_td{
+	width: 90px;
+}

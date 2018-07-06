@@ -8,7 +8,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
     import alError = nts.uk.ui.dialog.alertError;
-
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ViewModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         prePostTypes = ko.observableArray([
@@ -302,16 +303,20 @@ module nts.uk.at.view.kaf011.a.screenModel {
         }
 
         openKDL009() {
-            //chưa có màn hình KDL009
-            //            nts.uk.ui.windows.sub.modal('/view/kdl/009/a/index.xhtml').onClosed(function(): any {
-            //
-            //            });
-
+            let self = this;
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.sid);
+            });
+            let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYYMMDD")}
+            setShared('KDL009_DATA', data);
+            if(data.employeeIds.length > 1) {
+                modal("/view/kdl/009/a/multi.xhtml");
+            } else {
+                modal("/view/kdl/009/a/single.xhtml");
+            }
         }
-
-
-
-
     }
 
 

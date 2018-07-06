@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         DATE_FORMAT: string = "YYYY/MM/DD";
         //kaf000
@@ -605,6 +606,74 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         openCMM018() {
             let self = this;
             nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
+        }
+        
+        //ver10
+        /**
+         * when click button A1_7: 年休参照ボタン
+         */
+        openKDL020(){
+            let self = this;
+            if (self.displayEndDateFlg()) {
+                $(".ntsStartDatePicker").trigger("validate");
+                $(".ntsEndDatePicker").trigger("validate");
+            } else {
+                $("#inputdate").trigger("validate");
+            }
+            if (nts.uk.ui.errors.hasError()) { return; }
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.id);
+            });
+            setShared('KDL020A_PARAM', { baseDate: moment(new Date()).toDate(), 
+                                            employeeIds: lstid.length > 0 ? lstid : [self.employeeID()] } );
+            modal('/view/kdl/020/a/index.xhtml')
+        }
+        /**
+         * when click button A1_8: 積休参照ボタン
+         */
+        openKDL029(){
+            let self = this;
+            if (self.displayEndDateFlg()) {
+                $(".ntsStartDatePicker").trigger("validate");
+                $(".ntsEndDatePicker").trigger("validate");
+            } else {
+                $("#inputdate").trigger("validate");
+            }
+            if (nts.uk.ui.errors.hasError()) { return; }
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.id);
+            });
+            let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYYMMDD")}
+            setShared('KDL029_PARAM', param);
+            modal("/view/kdl/029/a/index.xhtml");
+        }
+        /**
+         * when click button A1_3: 代休参照ボタン
+         */
+        openKDL005(){
+            let self = this;
+            if (self.displayEndDateFlg()) {
+                $(".ntsStartDatePicker").trigger("validate");
+                $(".ntsEndDatePicker").trigger("validate");
+            } else {
+                $("#inputdate").trigger("validate");
+            }
+            if (nts.uk.ui.errors.hasError()) { return; }
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.id);
+            });
+            let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYYMMDD")}
+            setShared('KDL005_DATA', data);
+            if(data.employeeIds.length > 1) {
+                modal("/view/kdl/005/a/multi.xhtml");
+            } else {
+                modal("/view/kdl/005/a/single.xhtml");
+            }
         }
     }
 
