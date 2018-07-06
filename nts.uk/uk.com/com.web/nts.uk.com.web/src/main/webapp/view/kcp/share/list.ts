@@ -390,6 +390,11 @@ module kcp.share.list {
                     self.selectedCodes(_.map(selecteds, o => o.id));
                     console.log(selecteds);
                 });
+                $('#' + componentWrapperId + ' span').on('click', () => {
+                    const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
+                    self.selectedCodes(_.map(selecteds, o => o.id));
+                    console.log(selecteds);
+                });
                 $('#' + componentWrapperId).on('keyup', e => {
                     if (e.which != KeyCode.ARROW_UP ||
                         e.which != KeyCode.ARROW_DOWN ||
