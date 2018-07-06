@@ -80,7 +80,7 @@
 								data-bind="ntsTextEditor:{
                                          value: joinNameTargetWorkType,
                                          required: true,
-                                         enable: true,
+                                         enable: enableState,
                                          readonly:true,
                                          option: {width: '180px'}}" />
 
@@ -101,7 +101,7 @@
                                          option: {width: '180px'}}" />
 
 								<button tabindex="5"
-									data-bind="enable:true, click:function(data){openKDL002Dialog(ignoreType),data}">#{i18n.getText('KDW010_6')}</button></td>
+									data-bind="enable:enableState, click:function(data){openKDL002Dialog(ignoreType),data}">#{i18n.getText('KDW010_6')}</button></td>
 						</tr>
 						<tr class="spacer"></tr>
 						<tr class="row">
