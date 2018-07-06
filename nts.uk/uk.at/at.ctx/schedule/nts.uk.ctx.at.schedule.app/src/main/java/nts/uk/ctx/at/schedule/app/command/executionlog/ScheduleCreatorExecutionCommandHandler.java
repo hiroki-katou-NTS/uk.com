@@ -455,27 +455,27 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		List<GeneralDate> betweenDates = dateAfterCorrection.datesBetween();
 		
-		ExecutorService executorService = Executors.newFixedThreadPool(20);
-		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
+		/*ExecutorService executorService = Executors.newFixedThreadPool(20);
+		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());*/
 		
 		betweenDates.forEach(dateInPeriod -> {
-			AsyncTask task = AsyncTask.builder()
+			/*AsyncTask task = AsyncTask.builder()
 					.withContexts()
 					.keepsTrack(false)
 					.threadName(this.getClass().getName())
-					.build(() -> {
+					.build(() -> {*/
 						createScheduleBasedPersonOneDate(command, creator, domain, context, dateInPeriod,
 								empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType,
 								listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting,
 								mapFlowWorkSetting, mapDiffTimeWorkSetting);
 						
-						// Count down latch.
+						/*// Count down latch.
 						countDownLatch.countDown();
 					});
-			executorService.submit(task);
+			executorService.submit(task);*/
 		});
 		
-		// Wait for latch until finish.
+	/*	// Wait for latch until finish.
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException ie) {
@@ -483,7 +483,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		} finally {
 			// Force shut down executor services.
 			executorService.shutdown();
-		}
+		}*/
 
 	}
 

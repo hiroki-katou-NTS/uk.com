@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.parallel.ParallelWithContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
@@ -123,7 +124,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		/** start 並列処理、PARALLELSTREAM */
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
 		
-		employeeIds.parallelStream().forEach(employeeId -> {
+		ParallelWithContext.forEach(employeeIds, employeeId -> {
 			// 社員の日別実績を計算
 			if(stateHolder.isInterrupt()){
 				return;
