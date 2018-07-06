@@ -286,8 +286,8 @@ module nts.uk.at.view.kwr001.a {
                             case OPEN_SCREEN_C:
                                 self.openScreenC();
                                 break;
-                            case "Msg_1141":
-                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1141"});
+                            case "Msg_1348":
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1348"});
                                 break;
                             default:
                                 break;

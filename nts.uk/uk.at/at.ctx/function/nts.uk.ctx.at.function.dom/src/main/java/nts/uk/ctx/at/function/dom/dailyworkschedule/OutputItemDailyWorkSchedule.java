@@ -45,7 +45,7 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	
 	/** The remark input no. */
 	// 備考入力No
-	private Integer remarkInputNo;
+	private RemarkInputContent remarkInputNo;
 	
 	/**
 	 * Instantiates a new output item daily work schedule.

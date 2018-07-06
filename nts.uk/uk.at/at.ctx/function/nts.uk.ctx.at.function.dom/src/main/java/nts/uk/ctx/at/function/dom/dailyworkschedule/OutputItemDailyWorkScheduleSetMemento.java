@@ -59,5 +59,5 @@ public interface OutputItemDailyWorkScheduleSetMemento {
 	 *
 	 * @param remarkInputNo the new remark input no
 	 */
-	void setRemarkInputNo(Integer remarkInputNo);
+	void setRemarkInputNo(RemarkInputContent remarkInputNo);
 }

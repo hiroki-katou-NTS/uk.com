@@ -59,5 +59,5 @@ public interface OutputItemDailyWorkScheduleGetMemento {
 	 *
 	 * @return the remark input no
 	 */
-	Integer getRemarkInputNo();
+	RemarkInputContent getRemarkInputNo();
 }
