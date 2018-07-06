@@ -214,6 +214,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     self.getAllData(data.conditionSettingCode()).done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
                             if (self.screenMode() != model.SCREEN_MODE.UPDATE) $("#B4_3").focus();
+                            else $("#B3_4").focus();
                         });
                     });
                 }).fail(error => {
@@ -249,6 +250,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                         info({ messageId: "Msg_16" }).then(() => {
                             if (self.screenMode() != model.SCREEN_MODE.UPDATE) {
                                 $("#B4_3").focus();
+                            } else {
+                                $("#B3_4").focus();
                             }
                         });
                     });
