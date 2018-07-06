@@ -145,7 +145,7 @@ public class OiomtChacDataFmSet extends UkJpaEntity implements Serializable
         		domain.getFixedValue().value,
         		domain.getCdEdittingMethod().value, 
         		domain.getCdEditDigit().orElse(null).v(),
-        		domain.getCdConvertCd().orElse(null).v(),
+        		domain.getConvertCode().orElse(null).v(),
         		domain.getSpaceEditting().value,
         		domain.getEffectDigitLength().value, 
         		domain.getStartDigit().orElse(null).v(),

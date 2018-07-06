@@ -15,7 +15,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(3)
 @ZeroPaddedCode
-public class CodeConvertCode extends StringPrimitiveValue<PrimitiveValue<String>> {
+public class ConvertCode extends StringPrimitiveValue<PrimitiveValue<String>> {
 
 	/**
 	 * 
@@ -27,7 +27,7 @@ public class CodeConvertCode extends StringPrimitiveValue<PrimitiveValue<String>
 	 * 
 	 * @param rawValue
 	 */
-	public CodeConvertCode(String rawValue) {
+	public ConvertCode(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

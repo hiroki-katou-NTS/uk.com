@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.exio.dom.exo.cdconvert.CodeConvertCode;
+import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
@@ -56,7 +56,7 @@ public class ChacDataFmSet extends AggregateRoot
     /**
     * コード変換コード
     */
-    private Optional<CodeConvertCode> cdConvertCd;
+    private Optional<ConvertCode> convertCode;
     
     /**
     * スペース編集
@@ -84,7 +84,7 @@ public class ChacDataFmSet extends AggregateRoot
     private Optional<DataTypeFixedValue> valueOfFixedValue;
 
 	public ChacDataFmSet(String cid, int nullValueReplace, String valueOfNullValueReplace, int cdEditting,
-			int fixedValue, int cdEdittingMethod, int cdEditDigit, String cdConvertCd, int spaceEditting,
+			int fixedValue, int cdEdittingMethod, int cdEditDigit, String convertCode, int spaceEditting,
 			int effectDigitLength, int startDigit, int endDigit, String valueOfFixedValue) {
 		this.cid = cid;
 		this.nullValueReplace = EnumAdaptor.valueOf(nullValueReplace, NotUseAtr.class);
@@ -93,13 +93,11 @@ public class ChacDataFmSet extends AggregateRoot
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
 		this.cdEdittingMethod = EnumAdaptor.valueOf(cdEdittingMethod,FixedLengthEditingMethod.class) ;
 		this.cdEditDigit = Optional.of(new DataFormatCharacterDigit(cdEditDigit));
-		this.cdConvertCd = Optional.of(new CodeConvertCode(cdConvertCd));
+		this.convertCode = Optional.of(new ConvertCode(convertCode));
 		this.spaceEditting = EnumAdaptor.valueOf(spaceEditting,EditSpace.class );
 		this.effectDigitLength = EnumAdaptor.valueOf(effectDigitLength, NotUseAtr.class);
 		this.startDigit = Optional.of(new DataFormatCharacterDigit(startDigit));
 		this.endDigit = Optional.of(new DataFormatCharacterDigit(endDigit));
 		this.valueOfFixedValue = Optional.of(new DataTypeFixedValue (valueOfFixedValue));
 	}
-    
-    
 }

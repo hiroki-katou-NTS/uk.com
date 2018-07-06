@@ -10,48 +10,80 @@ module nts.uk.com.view.cmf002.v2.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        listConvertCode: KnockoutObservableArray<model.AcceptanceCodeConvert>
-        selectedConvertCode: KnockoutObservable<string>
+        listOutputCodeConvert: KnockoutObservableArray<OutputCodeConvert>
+        selectedOutputCodeConvert: KnockoutObservable<string>
         constructor() {
             var self = this;
-            self.listConvertCode = ko.observableArray([
-                new model.AcceptanceCodeConvert("1", "Item 1", 0),
-                new model.AcceptanceCodeConvert("2", "Item 2", 0),
-                new model.AcceptanceCodeConvert("3", "Item 3", 0),
-                new model.AcceptanceCodeConvert("4", "Item 4", 0),
-                new model.AcceptanceCodeConvert("5", "Item 5", 0),
-                new model.AcceptanceCodeConvert("6", "Item 6", 0),
-                new model.AcceptanceCodeConvert("7", "Item 7", 0),
-                new model.AcceptanceCodeConvert("8", "Item 8", 0),
-                new model.AcceptanceCodeConvert("9", "Item 9", 0),
-                new model.AcceptanceCodeConvert("10", "Item 10", 0),
-                new model.AcceptanceCodeConvert("11", "Item 11", 0),
-            ]);
-            self.selectedConvertCode = ko.observable("1");
-
+            let firstItem = new OutputCodeConvert("", getText('CMF002_502'), 0);
+            self.listOutputCodeConvert = ko.observableArray([firstItem]);
+            self.selectedOutputCodeConvert = ko.observable("");
+            self.selectedOutputCodeConvert.subscribe(x =>{
+                if (x != "")  nts.uk.ui.errors.clearAll();  
+            });
         }
         start(): JQueryPromise<any> {
-            //block.invisible();
+
+            //Todo: getshared khi chuyen tu man hinh J sang MH v2
+            //            let params = getShared("CMF001v2Params");
+            //            if (params) {
+            //                let cId = params.cid;
+            let cId = "000000000000-0001";
+
+            block.invisible();
             var self = this;
             var dfd = $.Deferred();
             dfd.resolve();
-//            service.getCharacterDataFormatSetting().done(function(charFormat) {
-//                if (charFormat) {
-//                    let characterDataFormatSetting = new model.CharacterDataFormatSetting(charFormat.effectDigitLength, 
-//                    charFormat.startDigit, charFormat.endDigit, charFormat.codeEditing, charFormat.codeEditDigit, 
-//                    charFormat.codeEditingMethod, charFormat.spaceEditing, charFormat.codeConvertCode, charFormat.nullValueReplace, 
-//                    charFormat.valueOfNullValueReplace, charFormat.fixedValue, charFormat.valueOfFixedValue);
-//                    self.characterDataFormatSetting(characterDataFormatSetting);
-//                }
-//                block.clear();
-//                dfd.resolve();
-//            }).fail(function(error) {
-//                alertError(error);
-//                block.clear();
-//                dfd.reject();
-//            });
+            service.getOutputCodeConvertByCid(cId).done(function(result: Array<any>) {
+                if (result && result.length) {
+                    let _outputCodeConverttResult: Array<any> = _.sortBy(result, ['convertCode']);
+                    let _listOutputCodeConvert: Array<OutputCodeConvert> = _.map(_outputCodeConverttResult, x => {
+                        return new OutputCodeConvert(x.convertCode, x.convertName, x.acceptWithoutSetting);
+                    });
+                    self.listOutputCodeConvert.push.apply(self.listOutputCodeConvert, _listOutputCodeConvert);
+                }
+                block.clear();
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                block.clear();
+                dfd.reject();
+            });
             return dfd.promise();
+            //            }
         }
         
+        selectConvertCode() {
+            $('#V2_2_container').ntsError('clear');
+            let self = this;
+            let outputCodeConvert = new OutputCodeConvert("", "", 0);
+            if (!_.isEqual(self.selectedOutputCodeConvert(), "")) {
+                outputCodeConvert = _.find(ko.toJS(self.listOutputCodeConvert), (x: OutputCodeConvert) => x.dispConvertCode == self.selectedOutputCodeConvert());
+                setShared("CMF002v2Params", { outputCodeConvert: outputCodeConvert });
+                nts.uk.ui.windows.close();
+            } else {
+                $('#V2_2_container').ntsError('set', { messageId: "Msg_656" });
+            }
+        }
+
+        cancelSelectConvertCode() {
+            nts.uk.ui.windows.close();
+        }
+
+    }
+
+    export class OutputCodeConvert {
+        convertCode: KnockoutObservable<string>;
+        convertName: KnockoutObservable<string>;
+        acceptWithoutSetting: KnockoutObservable<number>;
+        dispConvertCode: string;
+        dispConvertName: string;
+
+        constructor(code: string, name: string, acceptWithoutSetting: number) {
+            this.convertCode = ko.observable(code);
+            this.convertName = ko.observable(name);
+            this.acceptWithoutSetting = ko.observable(acceptWithoutSetting);
+            this.dispConvertCode = code;
+            this.dispConvertName = name;
+        }
     }
 }
