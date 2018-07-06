@@ -2,18 +2,15 @@ package nts.uk.ctx.exio.dom.exo.datafomat;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
 * 日付型データ形式設定
 */
-@AllArgsConstructor
 @Getter
-public class DateFormatSet extends AggregateRoot
+public class DateFormatSet extends DataFormatSetting
 {
     
     /**
@@ -46,10 +43,10 @@ public class DateFormatSet extends AggregateRoot
     */
     private DateOutputFormat formatSelection;
 
-	public DateFormatSet(String cid, int nullValueSubstitution, int fixedValue,
+	public DateFormatSet(int itemType, String cid, int nullValueSubstitution, int fixedValue,
 			String valueOfFixedValue, String valueOfNullValueSubs,
 			int formatSelection) {
-		super();
+		super(itemType);
 		this.cid = cid;
 		this.nullValueSubstitution = EnumAdaptor.valueOf(nullValueSubstitution,NotUseAtr.class) ;
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue,NotUseAtr.class);

@@ -12,7 +12,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 * 時刻型データ形式設定
 */
 @Getter
-public class InTimeDataFmSet extends AggregateRoot
+public class InTimeDataFmSet extends DataFormatSetting
 {
     
     /**
@@ -95,7 +95,7 @@ public class InTimeDataFmSet extends AggregateRoot
     */
     private Rounding minuteFractionDigitProcessCla;
 
-	public InTimeDataFmSet(String cid, int nullValueSubs,
+	public InTimeDataFmSet(int itemType, String cid, int nullValueSubs,
 			String valueOfNullValueSubs, int outputMinusAsZero, int fixedValue,
 			String valueOfFixedValue, int timeSeletion,
 			int fixedLengthOutput, int fixedLongIntegerDigit,
@@ -103,7 +103,7 @@ public class InTimeDataFmSet extends AggregateRoot
 			int previousDayOutputMethod, int nextDayOutputMethod,
 			int minuteFractionDigit, int decimalSelection,
 			int minuteFractionDigitProcessCla) {
-		super();
+		super(itemType);
 		this.cid = cid;
 		this.nullValueSubs = EnumAdaptor.valueOf(nullValueSubs,NotUseAtr.class);
 		this.valueOfNullValueSubs = Optional.of(new DataFormatNullReplacement(valueOfNullValueSubs));
