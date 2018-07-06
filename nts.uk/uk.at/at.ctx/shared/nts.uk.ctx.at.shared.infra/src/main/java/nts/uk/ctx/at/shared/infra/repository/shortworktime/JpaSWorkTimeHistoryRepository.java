@@ -226,4 +226,41 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		return mapResult.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(),
 				e -> new ShortWorkTimeHistory(new JpaSWorkTimeHistGetMemento(e.getValue()))));
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository#
+	 * findLstByEmpAndPeriod(java.util.List,
+	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<ShortWorkTimeHistory> findLstByEmpAndPeriod(List<String> empIdList,
+			DatePeriod period) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
+		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		predicateList.add(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
+				.get(BshmtWorktimeHistPK_.sid).in(empIdList));
+
+		predicateList.add(builder.not(
+				builder.or(builder.lessThan(root.get(BshmtWorktimeHist_.endYmd), period.start()),
+						builder.greaterThan(root.get(BshmtWorktimeHist_.strYmd), period.end()))));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		List<BshmtWorktimeHist> result = em.createQuery(query).getResultList();
+
+		Map<String, List<BshmtWorktimeHist>> mapResult = result.stream()
+				.collect(Collectors.groupingBy(item -> item.getBshmtWorktimeHistPK().getSid()));
+
+		// Return
+		return mapResult.values().stream()
+				.map(e -> new ShortWorkTimeHistory(new JpaSWorkTimeHistGetMemento(e)))
+				.collect(Collectors.toList());
+	}
 }
