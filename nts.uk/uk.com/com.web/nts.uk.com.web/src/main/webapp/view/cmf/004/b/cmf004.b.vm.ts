@@ -87,7 +87,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             //_____KCP005H________
             self.kcp005ComponentOptionScreenH = {
                 isShowAlreadySet: false,
-                isMultiSelect: true,
+                isMultiSelect: false,
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeListScreenH,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -432,23 +432,24 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             nts.uk.ui.errors.clearAll();
             let self = this;
             $("#F5_5 .ntsDatepicker").trigger("validate");
-            for (let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())) {
-                if (checkRow.isRecover) {
-                    if (checkRow.startOfPeriod > checkRow.endOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(0).ntsError('set', { messageId: 'Msg_1320', messageParams: [checkRow.rowNumber] });
-                    }
-                    let oldData = _.find(self.categoryListOld, x => {
-                        return x.categoryId == checkRow.categoryId;
-                    });
-                    if (oldData.startOfPeriod > checkRow.startOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(0).ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
-                    }
-                    if (oldData.endOfPeriod < checkRow.endOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(1).ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
+            if (!nts.uk.ui.errors.hasError()) {
+                for (let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())) {
+                    if (checkRow.isRecover) {
+                        if (checkRow.startOfPeriod > checkRow.endOfPeriod) {
+                            $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(0).ntsError('set', { messageId: 'Msg_1320', messageParams: [checkRow.rowNumber] });
+                        }
+                        let oldData = _.find(self.categoryListOld, x => {
+                            return x.categoryId == checkRow.categoryId;
+                        });
+                        if (oldData.startOfPeriod > checkRow.startOfPeriod) {
+                            $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(0).ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
+                        }
+                        if (oldData.endOfPeriod < checkRow.endOfPeriod) {
+                            $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(1).ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
+                        }
                     }
                 }
             }
-        
             if (!nts.uk.ui.errors.hasError()) {
                 self.initScreenG();
                 $('#data-recovery-wizard').ntsWizard("next");
