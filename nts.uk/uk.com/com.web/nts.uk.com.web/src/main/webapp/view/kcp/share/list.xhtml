@@ -12,11 +12,12 @@
 	float: left;
 }
 </style>
-	<div id="nts-component-list" style="border-radius: 5px;"
+	<div style="border-radius: 5px;"
 		data-bind="style: {width: gridStyle.totalComponentSize + 'px',
 				height: gridStyle.totalHeight + 'px',
 				padding: isDialog ? '0px' : '20px'},
-				css: {'caret-right caret-background bg-green': !isDialog}">
+				css: {'caret-right caret-background bg-green': !isDialog},
+				attr: {id: componentWrapperId}">
 		<com:ko tag="if" bind="!isDialog">
 			<i class="icon icon-searchbox"></i>
 		</com:ko>
@@ -47,7 +48,7 @@
 			</div>
 		</com:ko>
 		<!-- End of Upgrade -->
-		<div id="search-box-kcp"></div>
+		<div data-bind="attr: {id: searchBoxId}"></div>
 		<com:ko tag="if" bind="isHasButtonSelectAll">
 			<button
 				data-bind="attr: {tabindex: tabIndex.selectAllButton}, click: selectAll"

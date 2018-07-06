@@ -245,6 +245,9 @@ module kcp.share.list {
         optionalColumnName: string;
         optionalColumnDatasource: KnockoutObservableArray<OptionalColumnDataSource>;
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
+        componentWrapperSelector: string;
+        componentWrapperId: string;
+        searchBoxId: string;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -258,6 +261,10 @@ module kcp.share.list {
             this.closureSelectionType = ClosureSelectionType.NO_SELECT;
             this.closureList = ko.observableArray([]);
             this.hasUpdatedOptionalContent = ko.observable(false);
+            // set random id to prevent bug caused by calling multiple component on the same page
+            this.componentWrapperId = nts.uk.util.randomId();
+            this.searchBoxId = nts.uk.util.randomId();
+            this.componentWrapperSelector = '#' + this.componentWrapperId;
         }
 
         /**
@@ -325,6 +332,7 @@ module kcp.share.list {
                     self.addOptionalContentToItemList();
                 }
                 self.hasUpdatedOptionalContent(false);
+                self.reloadNtsGridList();
                 self.createGlobalVarDataList(newList, $input);
             });
             
@@ -348,6 +356,14 @@ module kcp.share.list {
                 });
             });
             return dfd.promise();
+        }
+
+        /**
+         * Reload nts grid list
+         */
+        private reloadNtsGridList(): void {
+            let self = this;
+            $('#' + self.componentGridId).ntsGridList("setDataSource", self.itemList());
         }
 
         private loadNtsGridList(): void {
@@ -376,39 +392,51 @@ module kcp.share.list {
                     mode: 'igGrid'
                 };
 
-                // set random id to prevent bug caused by calling multiple component on the same page
-                const searchBoxId = nts.uk.util.randomId();
-                const componentWrapperId = nts.uk.util.randomId();
-                $('#nts-component-list').attr('id', componentWrapperId);
-                $('#search-box-kcp').attr('id', searchBoxId);
-
                 // load ntsGrid & searchbox component
-                $('#' + searchBoxId).ntsSearchBox(searchBoxOptions);
+                $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
                 $('#' + self.componentGridId).ntsGridList(options);
 
                 // setup event
-                $('#' + componentWrapperId).on('click', () => {
-                    const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
+                self.initEvent();
+            });
+        }
+
+        // set up on selected code changed event
+        private initEvent(): void {
+            let self = this;
+            $(self.componentWrapperSelector).on('click', () => {
+                const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
+                if (self.isMultipleSelect) {
                     self.selectedCodes(_.map(selecteds, o => o.id));
-                    console.log(selecteds);
-                });
-                $('#' + componentWrapperId + ' span').on('click', () => {
-                    const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
+                } else {
+                    self.selectedCodes(selecteds.id);
+                }
+                console.log(selecteds);
+            });
+            $(self.componentWrapperSelector + ' span').on('click', () => {
+                const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
+                if (self.isMultipleSelect) {
                     self.selectedCodes(_.map(selecteds, o => o.id));
-                    console.log(selecteds);
-                });
-                $('#' + componentWrapperId).on('keyup', e => {
-                    if (e.which != KeyCode.ARROW_UP ||
-                        e.which != KeyCode.ARROW_DOWN ||
-                        e.which != KeyCode.ARROW_LEFT ||
-                        e.which != KeyCode.ARROW_RIGHT ||
-                        e.which != KeyCode.ENTER) {
-                        return;
-                    }
-                    const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
+                } else {
+                    self.selectedCodes(selecteds.id);
+                }
+                console.log(selecteds);
+            });
+            $(self.componentWrapperSelector).on('keyup', e => {
+                if (e.which != KeyCode.ARROW_UP ||
+                    e.which != KeyCode.ARROW_DOWN ||
+                    e.which != KeyCode.ARROW_LEFT ||
+                    e.which != KeyCode.ARROW_RIGHT ||
+                    e.which != KeyCode.ENTER) {
+                    return;
+                }
+                const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
+                if (self.isMultipleSelect) {
                     self.selectedCodes(_.map(selecteds, o => o.id));
-                    console.log(selecteds);
-                });
+                } else {
+                    self.selectedCodes(selecteds.id);
+                }
+                console.log(selecteds);
             });
         }
 
@@ -546,7 +574,7 @@ module kcp.share.list {
             }
 
             // Map already setting attr to data list.
-            if (!_.isEmpty(data.alreadySettingList())) {
+            if (!_.isNil(data.alreadySettingList)) {
                 self.alreadySettingList = data.alreadySettingList;
                 self.addAreadySettingAttr(dataList, self.alreadySettingList());
 
@@ -886,6 +914,7 @@ module kcp.share.list {
                 _.defer(() => {
                     self.itemList(data);
                     self.initNoSelectRow(self.isShowNoSelectRow);
+                    self.reloadNtsGridList();
                 });
             });
         }
@@ -909,6 +938,7 @@ module kcp.share.list {
                 } else {
                     self.selectedCodes(selectedCodes);
                 }
+                self.reloadNtsGridList();
             })
         }
         
