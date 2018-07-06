@@ -23,7 +23,7 @@
                 <!--H3_4 コード名称ラベル-->
                 <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_172')}</div>
                 <!--H3_5 コード-->
-                <label style="margin-right: 15px;" data-bind="text: $vm.recoverySourceCode"/>
+                <label  data-bind="text: $vm.recoverySourceCode"/>
                 <!--H3_6 保存セット名称-->
                 <label  data-bind="text: $vm.recoverySourceName"/>
             </div>
@@ -61,11 +61,11 @@
                     <tbody data-bind="foreach: recoveryCategoryList">
                     <tr>
                         <td class="halign-right row-number"><label data-bind="text: rowNumber"/></td>
-                        <td><label data-bind="text: categoryName"/></td>
+                        <td><label class = "limited-label" data-bind="text: categoryName"/></td>
                         <td><label class = "limited-label" data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td>
                         <td class="halign-center"><label data-bind="text: startOfPeriod"/></td>
                         <td class="halign-center"><label data-bind="text: endOfPeriod"/></td>
-                        <td><label data-bind="text: recoveryMethod"/></td>
+                        <td><label class = "limited-label" data-bind="text: recoveryMethod"/></td>
                     </tr>
                     </tbody>
                 </table>

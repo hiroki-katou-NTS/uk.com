@@ -350,10 +350,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
 
         formatDate(recoveryPeriod, dateFormat): string {
-            if (recoveryPeriod() == PeriodEnum.DAY) {
-                return moment.utc(dateFormat).format("YYYY/MM/DD");
-            }
-            if (recoveryPeriod() == PeriodEnum.FULLTIME) {
+            if (recoveryPeriod() == PeriodEnum.DAY) { 
                 return moment.utc(dateFormat).format("YYYY/MM/DD");
             }
             if (recoveryPeriod() == PeriodEnum.MONTH) {
