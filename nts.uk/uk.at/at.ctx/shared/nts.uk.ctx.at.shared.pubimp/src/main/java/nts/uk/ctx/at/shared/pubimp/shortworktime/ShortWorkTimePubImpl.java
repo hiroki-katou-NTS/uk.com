@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.pubimp.shortworktime;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,6 +22,8 @@ import nts.uk.ctx.at.shared.pub.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortChildCareFrameExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimeExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimePub;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -74,6 +79,48 @@ public class ShortWorkTimePubImpl implements ShShortWorkTimePub {
 						})
 						.collect(Collectors.toList()))
 				.build());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimePub#
+	 * findShortWorkTimes(java.util.List,
+	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<ShShortWorkTimeExport> findShortWorkTimes(List<String> empIds, DatePeriod period) {
+		// find short work time history
+		List<ShortWorkTimeHistory> opWorkTimeHist = this.workTimeHistRepo
+				.findLstByEmpAndPeriod(empIds, period);
+
+		List<DateHistoryItem> dateHistoryItems = opWorkTimeHist.stream()
+				.flatMap(shortWorkTimeHistory -> shortWorkTimeHistory.getHistoryItems().stream())
+				.collect(Collectors.toList());
+
+		List<String> historyIds = dateHistoryItems.stream().map(DateHistoryItem::identifier)
+				.collect(Collectors.toList());
+
+		List<ShortWorkTimeHistoryItem> shortWorkTimeHistoryItems = this.workTimeHistItemRepo
+				.findByHistIds(historyIds);
+
+		Map<String, ShortWorkTimeHistoryItem> mapShortWorkTimeHistoryItem = shortWorkTimeHistoryItems
+				.stream().collect(Collectors.toMap(ShortWorkTimeHistoryItem::getHistoryId,
+						Function.identity()));
+
+		// return value
+		return opWorkTimeHist.parallelStream().map(workTimeHist -> {
+			ShortWorkTimeHistoryItem workTimeHistItem = mapShortWorkTimeHistoryItem
+					.get(workTimeHist.getHistoryItems().get(0).identifier());
+			return ShShortWorkTimeExport.builder().employeeId(workTimeHist.getEmployeeId())
+					.period(workTimeHist.getHistoryItems().get(0).span())
+					.childCareAtr(ChildCareAtr.valueOf(workTimeHistItem.getChildCareAtr().value))
+					.lstTimeSlot(workTimeHistItem.getLstTimeSlot().stream().map(item -> {
+						return ShShortChildCareFrameExport.builder().timeSlot(item.getTimeSlot())
+								.startTime(item.getStartTime()).endTime(item.getEndTime()).build();
+					}).collect(Collectors.toList())).build();
+		}).collect(Collectors.toList());
+
 	}
 
 }
