@@ -5,11 +5,11 @@
 	width: 450px;
 }
 
-#combo-box{
+#app-type{
 	width: 140px;
 }
 
-#grid-list{
+#disp-order{
 	margin-top: 20px;
 	margin-left: 15px;
 }
@@ -24,11 +24,11 @@
     margin-top: 50px;
 }
 
-#textarea{
+#reason-temp{
 	margin-top: 20px;
 }
 
-#chckbox{
+#default-flg{
 	margin-top: 20px;
 }
 

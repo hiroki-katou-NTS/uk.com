@@ -38,7 +38,7 @@
 					<div class="flex valign-center" style = "margin-left: 10px;">
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_440')}</div>
 						<!-- S2_2 -->
-						<div id="combo-box"
+						<div id="app-type"
 						data-bind="ntsComboBox: {
 							options: listAppType,
 							optionsValue: 'code',
@@ -53,7 +53,7 @@
 							<!-- S2_3 -->
 						<div id="left-content" class="bg-green caret-right caret-background">
 							<div>
-								<div id = "grid-list" style="display: inline-block;">
+								<div id = "disp-order" style="display: inline-block;">
 									<table id="grid-test-single"
 										data-bind="ntsGridList: {
 												height: 257,
@@ -82,20 +82,13 @@
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_443')}</div>
 						<!-- S2_11 -->
 						<div>
-							<textarea id="textarea" tabindex="9" data-bind="ntsMultilineEditor: {
+							<textarea id="reason-temp" tabindex="9" data-bind="ntsMultilineEditor: {
 								    name:'#{i18n.getText('KAF022_112')}',
 									value: reasonTemp,
 									required: true}"></textarea>
-						</div> <!-- data-bind="ntsTextEditor: {
-								    name:'#{i18n.getText('KAF022_112')}',
-									value: reasonTemp,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" --> 
+						</div> 
 						<!-- S2_12 -->
-						<div id = "chckbox" tabindex="10" data-bind="ntsCheckBox: { checked: defaultFlg }">#{i18n.getText('KAF022_442')}</div>			
+						<div id = "default-flg" tabindex="10" data-bind="ntsCheckBox: { checked: defaultFlg }">#{i18n.getText('KAF022_442')}</div>			
 					</div>	
 			</div>
 		</ui:define>
