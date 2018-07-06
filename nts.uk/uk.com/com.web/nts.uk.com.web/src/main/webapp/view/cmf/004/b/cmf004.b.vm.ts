@@ -62,12 +62,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             if (/Chrome/.test(navigator.userAgent)) {
                 $("#E4_1").ntsFixedTable({ height: 164, width: 700 });
                 $("#F4_1").ntsFixedTable({ height: 184, width: 700 });
+                $("#H4_1").ntsFixedTable({ height: 164, width: 700 });
             } else {
                 $("#E4_1").ntsFixedTable({ height: 165, width: 700 });
-                $("#F4_1").ntsFixedTable({ height: 185, width: 700 });
+                $("#F4_1").ntsFixedTable({ height: 184, width: 700 });
+                $("#H4_1").ntsFixedTable({ height: 164, width: 700 });
             }
-            $("#H4_1").ntsFixedTable({ height: 164 });
-
             //_____KCP005G________
             self.kcp005ComponentOptionScreenG = {
                 isShowAlreadySet: false,
