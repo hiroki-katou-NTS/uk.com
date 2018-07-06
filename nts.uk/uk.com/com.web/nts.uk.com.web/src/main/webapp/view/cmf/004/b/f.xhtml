@@ -17,7 +17,7 @@
             <!--F3_3 コード名称ラベル-->
             <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_111')}</div>
             <!--F3_4 コード-->
-            <label style="margin-right: 15px;" data-bind="text: $vm.recoverySourceCode"/>
+            <label data-bind="text: $vm.recoverySourceCode"/>
             <!--F3_5 保存名称-->
             <label data-bind="text: $vm.recoverySourceName"/>
         </div>
@@ -59,6 +59,8 @@
                         <td><span class="limited-label" data-bind="text: categoryName"/></td>
                     	<td><span class="limited-label" data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td> 
                         <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.FULLTIME">
+                        	<td><span class="limited-label" data-bind="text: startOfPeriod"/></td>
+                        	<td><span class="limited-label" data-bind="text: endOfPeriod"/></td>
                         </com:ko-if>
                         <com:ko-if bind="recoveryPeriod() == nts.uk.com.view.cmf004.b.viewmodel.PeriodEnum.DAY">
                             <td class="halign-center date-period start-date">

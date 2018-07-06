@@ -62,12 +62,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             if (/Chrome/.test(navigator.userAgent)) {
                 $("#E4_1").ntsFixedTable({ height: 164, width: 700 });
                 $("#F4_1").ntsFixedTable({ height: 184, width: 700 });
+                $("#H4_1").ntsFixedTable({ height: 164, width: 700 });
             } else {
                 $("#E4_1").ntsFixedTable({ height: 165, width: 700 });
-                $("#F4_1").ntsFixedTable({ height: 185, width: 700 });
+                $("#F4_1").ntsFixedTable({ height: 184, width: 700 });
+                $("#H4_1").ntsFixedTable({ height: 164, width: 700 });
             }
-            $("#H4_1").ntsFixedTable({ height: 164 });
-
             //_____KCP005G________
             self.kcp005ComponentOptionScreenG = {
                 isShowAlreadySet: false,
@@ -307,6 +307,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     _.forEach(data.targets, x => {
                         employeeData.push({ code: x.scd, name: x.bussinessName, id: x.sid });
                     });
+                    employeeData = _.sortBy(employeeData, ["code"]);
                     self.employeeListScreenG(employeeData);
                 }
             }).always(() => {
@@ -351,10 +352,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
 
         formatDate(recoveryPeriod, dateFormat): string {
-            if (recoveryPeriod() == PeriodEnum.DAY) {
-                return moment.utc(dateFormat).format("YYYY/MM/DD");
-            }
-            if (recoveryPeriod() == PeriodEnum.FULLTIME) {
+            if (recoveryPeriod() == PeriodEnum.DAY) { 
                 return moment.utc(dateFormat).format("YYYY/MM/DD");
             }
             if (recoveryPeriod() == PeriodEnum.MONTH) {
@@ -437,16 +435,16 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             for (let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())) {
                 if (checkRow.isRecover) {
                     if (checkRow.startOfPeriod > checkRow.endOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1320', messageParams: [checkRow.rowNumber] });
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(0).ntsError('set', { messageId: 'Msg_1320', messageParams: [checkRow.rowNumber] });
                     }
                     let oldData = _.find(self.categoryListOld, x => {
                         return x.categoryId == checkRow.categoryId;
                     });
-                    if (oldData.startOfPeriod < checkRow.startOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
+                    if (oldData.startOfPeriod > checkRow.startOfPeriod) {
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(0).ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
                     }
-                    if (oldData.endOfPeriod > checkRow.endOfPeriod) {
-                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').first().ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
+                    if (oldData.endOfPeriod < checkRow.endOfPeriod) {
+                        $('tr[data-id=' + checkRow.rowNumber + ']').find('.ntsDatepicker').eq(1).ntsError('set', { messageId: 'Msg_1319', messageParams: [checkRow.rowNumber] });
                     }
                 }
             }
