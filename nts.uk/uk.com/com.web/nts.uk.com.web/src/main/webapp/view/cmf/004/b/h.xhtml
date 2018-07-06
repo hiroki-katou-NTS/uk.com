@@ -78,7 +78,7 @@
             </div>
             <div class="div-line">
 					<!--H6_3 復旧方法説明2-->
-					<div style="margin-left: 100px; width: 475px">
+					<div style="margin-left: 95px; width: 503px">
 						<span class="limited-label" data-bind="text: $vm.recoveryMethodDescription2"></span>
 					</div>
 				</div>
@@ -101,7 +101,7 @@
 <!--         <button id="H9_2" class="x-large proceed" data-bind="click: restoreData_click, enable: buton_I_enable &amp;&amp; selectedEmployeeCodeScreenH().length != 0">#{i18n.getText('CMF004_192')}</button> -->
     
     			<com:ko-if bind="buton_I_enable()">
-                		<button id="H9_2" class="x-large proceed" data-bind="click: restoreData_click, enable: selectedEmployeeCodeScreenH().length != 0">#{i18n.getText('CMF004_192')}</button>
+                		<button id="H9_2" class="x-large proceed" data-bind="click: restoreData_click">#{i18n.getText('CMF004_192')}</button>
 				</com:ko-if>
 				<com:ko-if bind="!buton_I_enable()">
                 		<button id="H9_2" class="x-large proceed" data-bind="enable: false">#{i18n.getText('CMF004_192')}</button>

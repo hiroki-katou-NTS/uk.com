@@ -87,7 +87,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             //_____KCP005H________
             self.kcp005ComponentOptionScreenH = {
                 isShowAlreadySet: false,
-                isMultiSelect: true,
+                isMultiSelect: false,
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeListScreenH,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
