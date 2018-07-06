@@ -22,7 +22,7 @@ public class ExcuteCopyOutCondSetCommandHandler
 				command.getCopyDestinationCode(),
 				command.getDestinationName(),
 				command.getConditionSetCd(),
-				command.getOverWrite());
+				command.isOverWrite());
 	}
 
 }

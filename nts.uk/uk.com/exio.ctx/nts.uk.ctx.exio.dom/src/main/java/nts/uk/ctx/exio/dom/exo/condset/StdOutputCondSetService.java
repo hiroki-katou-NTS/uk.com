@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -18,12 +18,12 @@ public class StdOutputCondSetService {
 	
 	
 	//Screen T
-	public Map<String, String> excuteCopy(String copyDestinationCode,String destinatioName, String conditionSetCd, int overwite){
+	public Map<String, String> excuteCopy(String copyDestinationCode,String destinationName, String conditionSetCd, boolean overwite){
 		Map<String, String> resultExvuteCopy = new HashMap<>();
 		String cid = AppContexts.user().companyId();
-		List<StdOutputCondSet> lstStdOutputCondSet = stdOutputCondSetRepository.getOutputCondSetByCidAndconditionSetCd(cid,conditionSetCd);
-		if(lstStdOutputCondSet.size() > 0){
-			if(overwite == 1){
+		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid,conditionSetCd);
+		if(stdOutputCondSet.isPresent()){
+			if(overwite){
 				//result = OK
 				//overwrite = TO
 				resultExvuteCopy.put("result", "OK");
@@ -38,7 +38,7 @@ public class StdOutputCondSetService {
 			resultExvuteCopy.put("overwrite", "DONOT");
 		}
 		resultExvuteCopy.put("copyDestinationCode", copyDestinationCode);
-		resultExvuteCopy.put("destinatioName", destinatioName);
+		resultExvuteCopy.put("destinatioName", destinationName);
 		
 	return resultExvuteCopy;
 	}
@@ -54,7 +54,7 @@ public class StdOutputCondSetService {
 	//******
 	
 	
-	public void registerOutputSet(String screenMode , String standType, StdOutputCondSet stdOutputCondSet, boolean checkAutoExecution){
+	public void registerOutputSet(String screenMode , String standType, StdOutputCondSet stdOutputCondSet, boolean checkAutoExecution, List<StandardOutputItemOrder> stdOutItemOrder){
 		if (outputSetRegisConfir(screenMode, standType, stdOutputCondSet.getCid(), checkAutoExecution)) {
 			updateOutputCndSet(stdOutputCondSet,screenMode);
 		}

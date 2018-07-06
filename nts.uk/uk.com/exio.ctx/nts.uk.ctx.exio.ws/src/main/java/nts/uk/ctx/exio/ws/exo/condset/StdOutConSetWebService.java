@@ -1,12 +1,12 @@
 package nts.uk.ctx.exio.ws.exo.condset;
 
+
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -29,11 +29,6 @@ public class StdOutConSetWebService extends WebService{
 	@Inject
 	private RegisterStdOutputCondSetCommandHandler registerStdOutputCondSetCommandHandler;
 	
-	@POST
-	@Path("getCndSet/{cId}")
-	public Optional<StdOutputCondSet> getCndSet(@PathParam("cId") String cId){
-		return stdOutputCondSetFinder.getCndSet();
-	}
 	
 	@POST
 	@Path("excuteCopy")
@@ -43,13 +38,19 @@ public class StdOutConSetWebService extends WebService{
 	
 	@POST
 	@Path("getCndSet")
-	public Optional<StdOutputCondSet> getCndSet(){
+	public List<StdOutputCondSet> getCndSet(){
 		return stdOutputCondSetFinder.getCndSet();
 	}
 	
 	@POST
 	@Path("register")
 	public void register(StdOutputCondSetCommand command){
+		registerStdOutputCondSetCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("delete")
+	public void delete(StdOutputCondSetCommand command){
 		registerStdOutputCondSetCommandHandler.handle(command);
 	}
 

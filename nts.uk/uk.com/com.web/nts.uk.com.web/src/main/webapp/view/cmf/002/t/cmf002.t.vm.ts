@@ -11,44 +11,39 @@ module nts.uk.com.view.cmf002.t.viewmodel {
     import error = nts.uk.ui.errors;
 
     export class ScreenModel {
-        systemType: model.ItemModel;
-        required: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-        checked: KnockoutObservable<boolean>;
-        newCondCode: KnockoutObservable<string>;
-        newCondName: KnockoutObservable<string>;
-        selectionType: string;
-        conditionCode: KnockoutObservable<string>;
-        conditionName: KnockoutObservable<string>;
-        targetType: string;
-
+        sourceCode: KnockoutObservable<string> = ko.observable('');
+        sourceName: KnockoutObservable<string> = ko.observable('');
+        standardType: KnockoutObservable<string> = ko.observable('');
+        copySourceName: KnockoutObservable<string> = ko.observable('');
+        destinationCategory: KnockoutObservable<string> = ko.observable('');
+        conditionSetCd: KnockoutObservable<string> = ko.observable('');
+        conditionName: KnockoutObservable<string> = ko.observable('');
+        overWrite: KnockoutObservable<boolean> = ko.observable(false);
+        copyDestinationCode: KnockoutObservable<string> = ko.observable('');
+        destinationName: KnockoutObservable<string> = ko.observable('');
         constructor() {
+            let self = this;
+            self.initScreen();
+        }
+
+        public initScreen(): void {
             block.invisible();
             let self = this,
-            info = getShared("getScreenB");
-            if(info){
+                info = getShared("getScreenB");
+            if (info) {
+                self.sourceCode(info.sourceCode);
+                self.sourceName(info.sourceName);
                 self.newCondCode(info.newCondCode);
-                self.newCondName((info.newCondName);
-                self.conditionCode((info.conditionCode);
-                self.conditionName((info.conditionName);
+                self.newCondName(info.newCondName);
+                self.conditionSetCd('123');
+                self.conditionName('abc');
             }
-            self.required = ko.observable(true)
-            self.enable = ko.observable(true);
-            self.checked = ko.observable(true);
-            self.newCondCode = ko.observable('');
-            self.newCondName = ko.observable('');
-            let params = getShared('CMF001mParams');
-            self.selectionType = params.systemType;
-            self.conditionCode = ko.observable(params.conditionCode);
-            self.conditionName = ko.observable(params.conditionName);
-            
+            self.conditionSetCd('conditionSetCd');
+            self.conditionName('conditionName');
+            self.overWrite(false);
+            self.destinationName('destinationName');
+            self.copyDestinationCode('copyDestinationCode');
             block.clear();
-        }
-        /**
-        * Close dialog.
-        */
-        cancelSetting(): void {
-            nts.uk.ui.windows.close();
         }
 
         excuteCopy() {
@@ -59,38 +54,32 @@ module nts.uk.com.view.cmf002.t.viewmodel {
                 block.invisible();
                 let self = this;
                 let data = {
-                   newCondCode : self.newCondCode();
-                   newCondName :self.newCondName();
-                   conditionCode:self.conditionCode();
-                   conditionName:self.conditionName();
+                    conditionSetCd: self.conditionSetCd(),
+                    conditionName: self.conditionName(),
+                    overWrite: self.overWrite(),
+                    destinationName: self.destinationName(),
+                    copyDestinationCode: self.copyDestinationCode()
+
                 };
-                service.excuteCopy().done((result)=>{
-                    
-               });
+                service.excuteCopy(data).done((result) => {
+                    //do something
+                }).fail(function(res) {
+                    alertError({ messageId: res.messageId });
+                }).always(function() {
+                    block.clear();
+                });
             }
         }
 
-        //設定
-        saveData() {
-            var self = this;
-            $(".nts-editor").trigger("validate");
-            //            if (!nts.uk.ui.errors.hasError()) {
-            //                service.checkExistCode(self.systemType.code, self.newCondCode()).done((result) => {
-            //                    if(result && !self.checked()){
-            //                        nts.uk.ui.dialog.alertError({ messageId: "Msg_3", messageParams: [nts.uk.resource.getText("T3_2")] }).then(() => {
-            //                            $("#T4").focus();  
-            //                        });
-            //                    } else {
-            //                        setShared('CMF001mOutput', {
-            //                            checked: self.checked(),
-            //                            code: self.newCondCode(),
-            //                            name: self.newCondName()
-            //                        }, true);  
-            //                        nts.uk.ui.windows.close();
-            //                    }
-            //                });
-            //                
-            //            }
+
+
+        /**
+        * Close dialog.
+        */
+        cancelSetting(): void {
+            nts.uk.ui.windows.close();
+            alert('close');
         }
+
     }
 }

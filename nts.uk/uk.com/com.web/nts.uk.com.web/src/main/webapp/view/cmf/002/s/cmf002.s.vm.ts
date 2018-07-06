@@ -108,12 +108,30 @@ module nts.uk.com.view.cmf002.s {
                         
                         // end: update dialog to complete mode
                         if(res.opCond == 4) {
-                            self.dialogMode("done");
                             let fileId = null;
+                            let delFile = null;
+                            service.getExterOutExecLog(storeProcessingId).done(function(res: any) {
+                                delFile = res.delFile;
+                                if(delFile == 1){
+                                    self.dialogMode("File_delete");
+                                }else{
+                                    self.dialogMode("done");
+                                    fileId = res.fileId;
+                                    service.updateFileSize(storeProcessingId,fileId).done(function(data: any){
+                                    });
+                                    nts.uk.request.specials.donwloadFile(fileId);
+                                    self.isDownloaded(true);
+                                    $('#S10_2').focus();
+                                }
+                            }).fail(function(res: any) {
+                                console.log("Get fileId fail");
+                                $('#S10_2').focus();
+                            });
                         }
                         // end: update dialog to Error/Interrupt mode
                         if((res.opCond == 5) || (res.opCond == 6)) {
                             self.dialogMode("error_interrupt");
+                            $('#S10_2').focus();
                         }
                         // delete dataStorageMng of process when end
                         let exOutOpMng = new ExOutOpMng(storeProcessingId, 0, 0, 0, 0, 0, 0);
@@ -138,6 +156,7 @@ module nts.uk.com.view.cmf002.s {
                           self.status(self.getStatusEnum(5));
                           // stop auto request to server
                           clearInterval(self.interval);
+                          $('#S10_2').focus();
 
                           // delete dataStorageMng of process when interrupt
                           let exOutOpMng = new ExOutOpMng(self.storeProcessingId, 0, 0, 0, 0, '0', 0);
@@ -155,7 +174,7 @@ module nts.uk.com.view.cmf002.s {
               //ダウンロードをする
               public download(): void {
                   let self = this;
-
+                  
                   // confirm down load when click button
                   nts.uk.ui.dialog.confirm({ messageId: "Msg_388" })
                       .ifYes(() => {
@@ -163,6 +182,7 @@ module nts.uk.com.view.cmf002.s {
                               let fileId = res.fileId;
                               nts.uk.request.specials.donwloadFile(fileId);
                               self.isDownloaded(true);
+                              $('#S10_2').focus();
                           }).fail(function(res: any) {
                               console.log("Get fileId fail");
                           });
@@ -171,6 +191,12 @@ module nts.uk.com.view.cmf002.s {
                           return;
                       });
               }
+            
+            // close popup
+            public close(): void {
+                 nts.uk.ui.windows.close();
+            }
+            
             public getStatusEnum(value: number): string {
                 if (value && value === 0) {
                     return getText('CMF002_515');
