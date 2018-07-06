@@ -1,6 +1,7 @@
 package nts.uk.file.at.infra.schedule.daily;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -53,9 +54,12 @@ public class RemarkQueryDataContainer {
 	 * @param dateReriod
 	 */
 	public void initData(List<String> employeeIds, DatePeriod dateReriod) {
-		if (lstRemarkContent.contains(RemarksContentChoice.MANUAL_INPUT) || lstRemarkContent.contains(RemarksContentChoice.ACKNOWLEDGMENT))
+		List<RemarksContentChoice> lstRemarkEnable = lstRemarkContent.stream().filter(x -> x.isUsedClassification()).map(x -> {
+			return x.getPrintItem();
+		}).collect(Collectors.toList());
+		if (lstRemarkEnable.contains(RemarksContentChoice.MANUAL_INPUT) || lstRemarkEnable.contains(RemarksContentChoice.ACKNOWLEDGMENT))
 			editStateDto = editStateFinder.find(employeeIds, dateReriod);
-		if (lstRemarkContent.contains(RemarksContentChoice.NOT_CALCULATED))
+		if (lstRemarkEnable.contains(RemarksContentChoice.NOT_CALCULATED))
 			dailyPerformanceList = dailyPerformanceRepo.find(employeeIds, new DateRange(dateReriod.start(), dateReriod.end()));
 	}
 }
