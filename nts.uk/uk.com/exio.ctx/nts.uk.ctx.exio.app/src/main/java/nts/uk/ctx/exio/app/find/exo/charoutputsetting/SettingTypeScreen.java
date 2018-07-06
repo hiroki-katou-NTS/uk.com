@@ -17,7 +17,6 @@ public class SettingTypeScreen {
 		Optional<ChacDataFmSet> chacDataFmSet = chacDataFmSetRepository
 				.getChacDataFmSetById(outputTypeSettingCommand.getCid());
 		if ("individual".equals(outputTypeSettingCommand.getClassification()) || "initial".equals(outputTypeSettingCommand.getClassification())) {
-			if (outputTypeSettingCommand.getItemType() != null) {
 				if (chacDataFmSet.isPresent()) {
 					ChacDataFmSet charFormatSet = chacDataFmSet.get();
 					// check valueOfNullValueReplace not null
@@ -52,7 +51,6 @@ public class SettingTypeScreen {
 					settingItemScreenCommand.setEffectDigitLength(charFormatSet.getEffectDigitLength().value);
 				}
 			}
-		}
 		return settingItemScreenCommand;
 	}
 }

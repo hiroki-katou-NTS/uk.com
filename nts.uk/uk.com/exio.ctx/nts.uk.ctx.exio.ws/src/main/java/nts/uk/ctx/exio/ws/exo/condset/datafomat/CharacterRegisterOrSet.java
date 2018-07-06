@@ -5,9 +5,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.exio.app.command.exo.charegister.ChacDataFmSetCommand;
 import nts.uk.ctx.exio.app.command.exo.charegister.SettingDataCharRegisterService;
 import nts.uk.ctx.exio.app.command.exo.charegister.SettingDataCharUpdateService;
-import nts.uk.ctx.exio.app.command.exo.datafomat.ChacDataFmSetCommand;
 
 @Path("exio/exo/character")
 @Produces("application/json")
