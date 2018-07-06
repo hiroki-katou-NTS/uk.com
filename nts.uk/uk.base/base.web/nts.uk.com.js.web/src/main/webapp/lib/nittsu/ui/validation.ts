@@ -286,7 +286,7 @@ module nts.uk.ui.validation {
                 return result;
             }
             
-            result = checkCharType.call(self, inputText.trim(), self.charType);
+            result = checkCharType.call(self, _.trim(inputText, ' '), self.charType);
             if (!result.isValid) return result;
             
             if (self.constraint && !util.isNullOrUndefined(self.constraint.maxLength)

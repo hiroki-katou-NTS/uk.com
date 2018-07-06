@@ -279,6 +279,7 @@
 							<div id="inpReasonTemp"
 								data-bind="ntsComboBox: {
 							name: '#[KAF004_17]',
+							dropDownAttachedToBody:true,
 							options: ListTypeReason,
 							optionsValue: 'reasonID',
 							visibleItemsCount: 5,
@@ -295,13 +296,13 @@
 						<div class="valign-center control-group">
 							<div style="vertical-align: top;" class="leftWidth" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_18')}</div>
 							<div id="multiline">
-								<textarea id="appReason" style="height: 120px;"
+								<textarea id="appReason" style="height: 85px;"
 									data-bind="ntsMultilineEditor: {
 								name: '#[KAF004_18]',
 								value: appreason,
 								option: {
 									resizeable: false,
-			                    	width: '609'
+			                    	width: '610'
 			                   	},
 							}" />
 							</div>

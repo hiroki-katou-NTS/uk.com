@@ -139,6 +139,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         listCareInputError: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheckHolidays: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheck28: KnockoutObservableArray<any> = ko.observableArray([]);
+        listCheckDeviation: any = [];
         employIdLogin: any;
         dialogShow: any;
         //contain data share
@@ -664,9 +665,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.dialogShow.close();
             }
             if(self.workTypeNotFound.length > 0) {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_1293" }).then(function() {
-                    self.showErrorDialog();
-                });
+                self.showErrorDialog();
                 return;
             }
             // insert flex
@@ -679,6 +678,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.listCareInputError([]);
                 self.listCheckHolidays([]);
                 self.listCheck28([]);
+                self.listCheckDeviation = [];
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
                 var dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 let dataChangeProcess: any = [];
@@ -803,6 +803,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                             if (data[3] != undefined) {
                                 self.listCheck28(data[3]);
+                            }
+                            
+                             if (data[4] != undefined) {
+                                self.listCheckDeviation = data[4];
                             }
                             self.showErrorDialog();
                         }
@@ -1186,10 +1190,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.displayNumberZero();
                 
                 //check visable MIGrid
-                if (self.displayFormat()) {
+                if (self.displayFormat() !=0) {
                     self.isVisibleMIGrid(false);
-                } else {
-                    self.isVisibleMIGrid(true);
                 }
                 
                 nts.uk.ui.block.clear();
@@ -1208,7 +1210,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.listCareInputError([]);
             self.listCheckHolidays([]);
             self.listCheck28([]);
-            self.workTypeNotFound = [];    
+            self.workTypeNotFound = [];   
+            self.listCheckDeviation = []; 
         }
         
         btnExtraction_Click() {
@@ -1321,7 +1324,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let dateCon = _.find(self.dpData, (item: any) => {
                     return item.id == value.rowId.substring(1, value.rowId.length);
                 });
-                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: nts.uk.resource.getMessage("Msg_1293"), itemName: "", columnKey: value.itemId };
+                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.itemId };
                 let item = _.find(self.optionalHeader, (data) => {
                     if (data.group != undefined && data.group != null) {
                         return String(data.group[0].key) === value.columnKey;
@@ -1330,6 +1333,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 object.itemName = (item == undefined) ? "" : item.headerText;
                 errorValidateScreeen.push(object);
             });
+            
+            _.each(self.listCheckDeviation, value => {
+                let dateCon = _.find(self.dpData, (item: any) => {
+                    return item.employeeId == value.employeeId && item.date == value.date;
+                });
+                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.valueType, itemName: "", columnKey: value.itemId };
+                let item = _.find(self.optionalHeader, (data) => {
+                    if (data.group != undefined && data.group != null) {
+                        return String(data.group[0].key) === "Code"+value.itemId;
+                    } else {
+                        return data.key != undefined && String(data.key) === "A" + value.itemId;
+                    }
+                })
+                object.itemName = (item == undefined) ? "" : item.headerText;
+                object.message = nts.uk.resource.getMessage("Msg_1298", [object.itemName, value.value])
+                errorValidateScreeen.push(object);
+            });
+            
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
@@ -2597,24 +2618,30 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 var object = {};
                 if (val == "") {
                     dfd.resolve(nts.uk.resource.getText("KDW003_82"));
-                }else if(val == valOld && columnKey == "Code28"){
-                    let dataSourceOld: any = __viewContext.vm.formatDate(__viewContext.vm.dailyPerfomanceData());
-                    let item28Old = _.find(dataSourceOld, valueData => {
-                        return valueData.id == rowId && valueData["Code28"] != undefined;
-                    });
-                    _.remove(__viewContext.vm.workTypeNotFound, dataTemp => {
-                        return dataTemp.rowId == rowId;
-                    });
-                    dfd.resolve(item28Old["Name28"]);
-                } else {
+                }else {
                     $.when(service.findCodeName(param)).done((data) => {
-                        if (data != undefined && data.errorFind) {
+                        if (data != undefined) {
                             let typeError = _.find(__viewContext.vm.workTypeNotFound, data => {
                                 return data.columnKey == columnKey && data.rowId == rowId;
                             });
-                            if (typeError == undefined) {
-                                __viewContext.vm.workTypeNotFound.push({ columnKey: columnKey, rowId: rowId });
+                            if (data.errorFind == 1) {
+                                if (typeError == undefined) {
+                                    __viewContext.vm.workTypeNotFound.push({ columnKey: columnKey, rowId: rowId, message: nts.uk.resource.getMessage("Msg_1293") });
+                                } else {
+                                    typeError.message = nts.uk.resource.getMessage("Msg_1293");
+                                }
+                            } else if (data.errorFind == 2) {
+                                if (typeError == undefined) {
+                                    __viewContext.vm.workTypeNotFound.push({ columnKey: columnKey, rowId: rowId, message: nts.uk.resource.getMessage("Msg_1314") });
+                                } else {
+                                    typeError.message = nts.uk.resource.getMessage("Msg_1314");
+                                }
+                            } else {
+                                _.remove(__viewContext.vm.workTypeNotFound, dataTemp => {
+                                    return dataTemp.columnKey == columnKey && dataTemp.rowId == rowId;
+                                });
                             }
+                            
                             dfd.resolve(data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
                         } else {
                             _.remove(__viewContext.vm.workTypeNotFound, dataTemp => {

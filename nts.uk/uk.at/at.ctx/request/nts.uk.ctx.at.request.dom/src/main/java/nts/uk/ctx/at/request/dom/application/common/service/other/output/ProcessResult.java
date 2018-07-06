@@ -16,4 +16,5 @@ public class ProcessResult {
 	private List<String> autoSuccessMail;
 	private List<String> autoFailMail;
 	private String appID;
+	private String reflectAppId;
 }

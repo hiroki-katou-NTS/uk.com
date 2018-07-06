@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.TranferTimeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 
 public class ClassOccurrentUseDetailDataImpl implements ClassOccurrentUseDetailData{
@@ -12,6 +13,12 @@ public class ClassOccurrentUseDetailDataImpl implements ClassOccurrentUseDetailD
 	public Optional<OccurrenceUseDetail> getOccurrenceUseDetail(InforFormerRemainData inforData, WorkTypeClassification workTypeClass) {
 		//勤務種類別残数情報をチェックする
 		
+		return null;
+	}
+
+	@Override
+	public TranferTimeInfor getTranferTimeInfor(InforFormerRemainData inforData) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

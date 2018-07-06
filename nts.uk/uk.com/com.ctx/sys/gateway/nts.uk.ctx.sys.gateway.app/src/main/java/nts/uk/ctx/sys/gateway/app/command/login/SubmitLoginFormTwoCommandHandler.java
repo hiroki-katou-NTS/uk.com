@@ -23,6 +23,7 @@ import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 
 /**
  * The Class SubmitLoginFormTwoCommandHandler.
@@ -49,15 +50,24 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	protected CheckChangePassDto internalHanler(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
 
 		SubmitLoginFormTwoCommand command = context.getCommand();
+		
+		UserImportNew user = new UserImportNew();
+		String oldPassword = null;
+		EmployeeImport em = new EmployeeImport();
+		String companyCode = command.getCompanyCode();
+		String contractCode = command.getContractCode();
+		String companyId = contractCode + "-" + companyCode;
+		
 		if (command.isSignOn()) {
 			// アルゴリズム「アカウント照合」を実行する
-			this.compareAccount(context.getCommand().getRequest());
+			WindowsAccount windowAcc = this.compareAccount(context.getCommand().getRequest());
+			
+			//get User
+			user = this.getUserAndCheckLimitTime(windowAcc);
+			oldPassword = user.getPassword();
 		} else {
-			String companyCode = command.getCompanyCode();
 			String employeeCode = command.getEmployeeCode();
-			String password = command.getPassword();
-			String contractCode = command.getContractCode();
-			String companyId = contractCode + "-" + companyCode;
+			oldPassword = command.getPassword();
 			
 			// check validate input
 			this.checkInput(command);
@@ -69,34 +79,41 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 			
 			// Get domain 社員
-			EmployeeImport em = this.getEmployee(companyId, employeeCode);
+			em = this.getEmployee(companyId, employeeCode);
 			
 			// Check del state
 			this.checkEmployeeDelStatus(em.getEmployeeId());
 			
 			// Get User by PersonalId
-			UserImportNew user = this.getUser(em.getPersonalId());
+			user = this.getUser(em.getPersonalId());
 			
 			// check password
-			String msgErrorId = this.compareHashPassword(user, password);
+			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){
 				return new CheckChangePassDto(false, msgErrorId);
 			} 
 			
 			// check time limit
 			this.checkLimitTime(user);
-	
-			//set info to session
-			context.getCommand().getRequest().changeSessionId();
-			this.setLoggedInfo(user,em,companyCode);
-			
-			//set role Id for LoginUserContextManager
-			this.setRoleId(user.getUserId());
-			
-			//アルゴリズム「ログイン記録」を実行する
-			if (!this.checkAfterLogin(user, password)){
-				return new CheckChangePassDto(true, null);
-			}
+		}
+		
+		//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
+		this.errorCheck2(companyId, contractCode, user.getUserId());
+		
+		//set info to session
+		context.getCommand().getRequest().changeSessionId();
+		if (command.isSignOn()){
+			this.initSession(user);
+		} else {
+			this.setLoggedInfo(user, em, companyCode);
+		}
+		
+		//set role Id for LoginUserContextManager
+		this.setRoleId(user.getUserId());
+		
+		//アルゴリズム「ログイン記録」を実行する
+		if (!this.checkAfterLogin(user, oldPassword)){
+			return new CheckChangePassDto(true, null);
 		}
 		return new CheckChangePassDto(false, null);
 	}

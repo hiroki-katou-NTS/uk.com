@@ -175,7 +175,7 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
         return result;
 	}
      
-	private final String SELECT_BY_CID_ROLLSETCD_AUTHOR = "SELECT rs FROM SacmtRoleSet rs"
+	private static final String SELECT_BY_CID_ROLLSETCD_AUTHOR = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyId"
             + " AND rs.roleSetPK.roleSetCd = :roleSetCd "
             + " AND rs.approvalAuthority = :approvalAuthority";

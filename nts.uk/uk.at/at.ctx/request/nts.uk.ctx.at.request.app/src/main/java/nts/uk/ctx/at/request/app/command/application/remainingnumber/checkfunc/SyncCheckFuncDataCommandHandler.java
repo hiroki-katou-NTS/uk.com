@@ -42,6 +42,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
 	private static final String NUMBER_OF_ERROR = "NUMBER_OF_ERROR";
 	private static final String MSG_1116 = "Msg_1116";
+	private static final String MSG_1316 = "Msg_1316";
 	private static final String ERROR_LIST = "ERROR_LIST";
 
 	@Inject
@@ -95,44 +96,26 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return;
 		}
 		List<PlannedVacationListCommand> plannedVacationList = new ArrayList<>();
-		if (outputErrorInfoCommand.isEmpty()) {
-			// 計画休暇一覧を取得する
-			plannedVacationList = getPlannedVacationList(asyncTask, command.getDate(), outputErrorInfoCommand);
-		}
+		// 計画休暇一覧を取得する
+		plannedVacationList = getPlannedVacationList(asyncTask, command.getDate(), outputErrorInfoCommand);
 
 		if (asyncTask.hasBeenRequestedToCancel()) {
 			asyncTask.finishedAsCancelled();
 			return;
 		}
-		if (outputErrorInfoCommand.size() > 0) {
-			// エラーがあった場合
-			for (int i = 0; i < outputErrorInfoCommand.size(); i++) {
-				JsonObject value = Json.createObjectBuilder()
-						.add("employeeCode", outputErrorInfoCommand.get(i).getEmployeeCode())
-						.add("employeeName", outputErrorInfoCommand.get(i).getEmployeeName())
-						.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
-				setter.setData(ERROR_LIST + i, value);
-				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
-				setter.updateData(NUMBER_OF_ERROR, i + 1);
-
-				if (asyncTask.hasBeenRequestedToCancel()) {
-					asyncTask.finishedAsCancelled();
-					return;
-				}
-			}
-		} else {
+		if (employeeListResult.size() > 0) {
 			// エラーがなかった場合
 
 			// アルゴリズム「Excel出力データ取得」を実行する
 			List<ExcelInforCommand> excelInforList = new ArrayList<>();
-			for (int i = 0; i < employeeSearchCommand.size(); i++) {
+			for (int i = 0; i < employeeListResult.size(); i++) {
 				if (asyncTask.hasBeenRequestedToCancel()) {
 					asyncTask.finishedAsCancelled();
 					break;
 				}
 				// Imported(就業)「社員」を取得する
 				SyEmployeeImport employeeRecordImport = employeeRecordAdapter
-						.getPersonInfor(employeeSearchCommand.get(i).getEmployeeId());
+						.getPersonInfor(employeeListResult.get(i).getEmployeeId());
 
 				if (employeeRecordImport == null) {
 					// 取得失敗
@@ -145,7 +128,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				// (Thực hiện thuật toán 「指定年月日時点の年休残数を取得-lấy số phép còn lại
 				// tại thời điểm xác định」)
 				List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport = annualBreakManageAdapter
-						.getYearHolidayTimeAnnualRemaining(employeeSearchCommand.get(i).getEmployeeId(),
+						.getYearHolidayTimeAnnualRemaining(employeeListResult.get(i).getEmployeeId(),
 								command.getDate());
 				if (yearlyHolidaysTimeRemainingImport.isEmpty()) {
 					// 取得失敗
@@ -160,16 +143,9 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 
 				// パラメータ.年休残数をチェックする
 				// (Check số phép còn lại trong param -パラメータ.年休残数)
-				if (command.getMaxDay() != null) {
-					for (YearlyHolidaysTimeRemainingImport yearlyHolidaysTimeRemaining : yearlyHolidaysTimeRemainingImport) {
-						if (yearlyHolidaysTimeRemaining.getAnnualRemaining().compareTo(command.getMaxDay()) >= 0) {
-							// 取得した年休残数 ≧ パラメータ.年休残数
-							// パラメータ.処理人数に＋１加算する
-							setter.updateData(NUMBER_OF_SUCCESS, i + 1);
-							return;
-						}
-					}
-				}
+				if(!checkMaxDayEmployeeList(asyncTask, employeeListResult.get(i), command.getMaxDay(),
+						outputErrorInfoCommand, yearlyHolidaysTimeRemainingImport)) continue;
+
 				if (asyncTask.hasBeenRequestedToCancel()) {
 					asyncTask.finishedAsCancelled();
 					break;
@@ -179,7 +155,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				List<String> workTypeCode = plannedVacationList.stream().map(x -> x.getWorkTypeCode())
 						.collect(Collectors.toList());
 				Optional<DailyWorkTypeListImport> dailyWorkTypeListImport = this.annualBreakManageAdapter
-						.getDailyWorkTypeUsed(employeeSearchCommand.get(i).getEmployeeId(), workTypeCode,
+						.getDailyWorkTypeUsed(employeeListResult.get(i).getEmployeeId(), workTypeCode,
 								command.getStartTime(), command.getEndTime());
 				if (!dailyWorkTypeListImport.isPresent()) {
 					// 取得失敗
@@ -195,19 +171,14 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
 				excelInforCommand.setName(employeeRecordImport.getBusinessName());
 				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate().toString());
-				// GeneralDate temDate9999 = GeneralDate.fromString("99991231",
-				// "YYYY/MM/DD");
 				excelInforCommand.setDateEnd("9999/12/31".equals(employeeRecordImport.getRetiredDate().toString()) ? ""
 						: employeeRecordImport.getRetiredDate().toString());
-
 				excelInforCommand
 						.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay().toString());
 				excelInforCommand.setDateTargetRemaining(command.getDate().toString());
 				excelInforCommand.setDateAnnualRetirement(
 						yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime());
 				excelInforCommand.setDateAnnualRest(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining());
-				// excelInforCommand.setNumberOfWorkTypeUsedImport(dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports());
-				// excelInforCommand.setPlannedVacationListCommand(plannedVacationList);
 				excelInforList.add(excelInforCommand);
 
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
@@ -238,7 +209,24 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				asyncTask.finishedAsCancelled();
 				return;
 			}
+		}
+		// push list err
+		if (outputErrorInfoCommand.size() > 0) {
+			// エラーがあった場合
+			for (int i = 0; i < outputErrorInfoCommand.size(); i++) {
+				JsonObject value = Json.createObjectBuilder()
+						.add("employeeCode", outputErrorInfoCommand.get(i).getEmployeeCode())
+						.add("employeeName", outputErrorInfoCommand.get(i).getEmployeeName())
+						.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
+				setter.setData(ERROR_LIST + i, value);
+				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+				setter.updateData(NUMBER_OF_ERROR, i + 1);
 
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					asyncTask.finishedAsCancelled();
+					return;
+				}
+			}
 		}
 		// delay a moment.
 		try {
@@ -343,6 +331,30 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			}
 		}
 
+	}
+
+	/**
+	 * @param setter
+	 * @param employeeCheckMaxDay
+	 * @param employeeListResult
+	 */
+	private boolean checkMaxDayEmployeeList(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask,
+			EmployeeSearchCommand employee, Double maxDay, List<OutputErrorInfoCommand> outputErrorInfoCommand,
+			List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport) {
+		if (maxDay != null) {
+			if (yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining().compareTo(maxDay) >= 0) {
+				// 取得した年休残数 ≧ パラメータ.年休残数
+				// パラメータ.処理人数に＋１加算する
+				OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
+				outputErrorInfo.setEmployeeCode(employee.getEmployeeCode());
+				outputErrorInfo.setEmployeeName(employee.getEmployeeName());
+				outputErrorInfo.setErrorMessage(MSG_1316);
+
+				outputErrorInfoCommand.add(outputErrorInfo);
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

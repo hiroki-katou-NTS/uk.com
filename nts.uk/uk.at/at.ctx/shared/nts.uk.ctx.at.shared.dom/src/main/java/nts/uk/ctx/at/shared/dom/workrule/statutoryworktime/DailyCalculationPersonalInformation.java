@@ -14,10 +14,13 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
  */
 @RequiredArgsConstructor
 public class DailyCalculationPersonalInformation {
+	//所定内時間
 	private final Optional<DailyTime> predetermineTime;
 	@Getter
+	//法定労働
 	private final DailyTime statutoryWorkTime;
 	@Getter
+	//労働制
 	private final WorkingSystem workingSystem;
 	
 	/**

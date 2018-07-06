@@ -40,6 +40,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class HolidayWorkTimeOfDaily {
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;
 	private List<HolidayWorkFrameTime> holidayWorkFrameTime;
+	//休出深夜
 	private Finally<HolidayMidnightWork> holidayMidNightWork;
 	private AttendanceTime holidayTimeSpentAtWork;
 	
@@ -192,7 +193,7 @@ public class HolidayWorkTimeOfDaily {
 			  												  ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		for(HolidayWorkFrameTime frameTime:this.getHolidayWorkFrameTime()) {
-			if(frameTime.isOverLimitDivergenceTime()) {
+			if(frameTime.isPreOverLimitDivergenceTime()) {
 				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getHolidayFrameNo().v());
 				if(itemId.isPresent())
 					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
@@ -202,7 +203,7 @@ public class HolidayWorkTimeOfDaily {
 	}
 	
 	/**
-	 *　深夜時間のチェック＆エラーゲット 
+	 *　実績の休出深夜超過
 	 * @return
 	 */
 	public List<EmployeeDailyPerError> checkNightTimeExcess(String employeeId,

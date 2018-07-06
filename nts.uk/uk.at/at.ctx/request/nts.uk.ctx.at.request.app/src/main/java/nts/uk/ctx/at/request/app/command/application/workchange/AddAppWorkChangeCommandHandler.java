@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCom
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -31,6 +32,8 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeRegisterService workChangeRegisterService;
+	@Inject
+	private IFactoryApplication IfacApp;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
@@ -46,23 +49,10 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		String appID = IdentifierUtil.randomUniqueId();
 		// 入力者 = 申請者
 		// 申請者
-		String applicantSID = AppContexts.user().employeeId();
+		String applicantSID = addCommand.getEmployeeID()!=null?addCommand.getEmployeeID(): AppContexts.user().employeeId();
 		// 申請
-		Application_New app = new Application_New(
-				0L, 
-				companyId, 
-				appID,
-				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), 
-				GeneralDateTime.now(), 
-				applicantSID,
-				new AppReason(Strings.EMPTY), 
-				appCommand.getStartDate(),
-				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())),
-				ApplicationType.WORK_CHANGE_APPLICATION, 
-				applicantSID, 
-				Optional.of(appCommand.getStartDate()),
-				Optional.of(appCommand.getEndDate()), 
-				ReflectionInformation_New.firstCreate());		
+		Application_New app = IfacApp.buildApplication(appID, appCommand.getStartDate(), appCommand.getPrePostAtr(), null, appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator()), ApplicationType.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
+					
 		// 勤務変更申請
 		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(
 				companyId, 

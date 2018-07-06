@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -19,21 +20,25 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimRemainRepository extends JpaRepository  implements InterimRemainRepository{
 	
-	private String QUERY_BY_SID_PRIOD = "SELECT c FROM KrcmtInterimRemainMng c"
+	private static final String QUERY_BY_SID_PRIOD = "SELECT c FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate"
 			+ " AND c.remainType = :remainType";
-	private String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcmtInterimRemainMng c"
+	private static final String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate"
 			+ " AND c.remainType = :remainType";
-	private String DELETE_BY_SID_PRIOD = "DELETE FROM KrcmtInterimRemainMng c"
+	private static final String DELETE_BY_SID_PRIOD = "DELETE FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate";
-	private String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c.remainMngId = :remainMngId";
+	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c.remainMngId = :remainMngId";
+	
+	private static final String QUERY_BY_SID_YMD = "SELECT c FROM KrcmtInterimRemainMng c"
+			+ " WHERE c.sId = :sId"
+			+ " AND c.ymd = :ymd";
 	
 	@Override
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
@@ -111,5 +116,12 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			.setParameter("startDate", dateData.start())
 			.setParameter("endDate", dateData.end())
 			.executeUpdate();
+	}
+	@Override
+	public List<InterimRemain> getDataBySidDate(String sid, GeneralDate baseDate) {
+		return this.queryProxy().query(QUERY_BY_SID_YMD, KrcmtInterimRemainMng.class)
+				.setParameter("sId", sid)
+				.setParameter("ymd", baseDate)
+				.getList(c -> convertToDomainSet(c));
 	}
 }
