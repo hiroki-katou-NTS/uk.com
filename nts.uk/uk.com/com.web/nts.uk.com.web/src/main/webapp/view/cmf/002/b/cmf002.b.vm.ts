@@ -8,6 +8,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     import block = nts.uk.ui.block;
     export class ScreenModel {
         isNewMode:                KnockoutObservable<boolean> = ko.observable(true);
+        standType:                KnockoutObservable<string> = ko.observable('stand');
         conditionSettingList:     KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
         outputItemList:           KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
         selectedConditionSetting: KnockoutObservable<string> = ko.observable('');
@@ -121,6 +122,21 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 });
              });
         }
+        
+        openCopyScreen() {
+            let self = this;
+            //setShared('CMF002_T_PARAMS', {standType:self.standType() , conditionSetCd:self.conditionSettingList[i] , conditionName:});
+            
+            modal("/view/cmf/002/t/index.xhtml").onClosed(function() {
+//                let params = getShared('KDM001_A_PARAMS');
+                
+//                if (params.isSuccess) {
+//                    self.updateDataList(false);
+//                }
+                
+                $('#T3_2').focus();
+            });
+        }
            
     
         public register(){
@@ -166,7 +182,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             return dfd.promise();
         }
     
-
+}
     //条件名出力選択, 項目名出力選択
     export function getNotUseAtrItems(): Array<model.ItemModel> {
         return [
@@ -247,4 +263,3 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         }
     }
     }
-}
