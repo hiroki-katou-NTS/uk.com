@@ -7,7 +7,6 @@ module nts.uk.at.view.kfp001.e {
             optionalAggrName: KnockoutObservable<string>;
             startDate: KnockoutObservable<string>;
             endDate: KnockoutObservable<string>;
-            peopleNo: KnockoutObservable<number>;
             mode: KnockoutObservable<boolean>;
             startTime: KnockoutObservable<string> = ko.observable("");
             endTime: KnockoutObservable<string> = ko.observable("");
@@ -21,6 +20,7 @@ module nts.uk.at.view.kfp001.e {
             aggCreateHasError: KnockoutObservable<string> = ko.observable("");
             logId: KnockoutObservable<string> = ko.observable("");
             columns: KnockoutObservableArray<any>;
+            peopleCount: KnockoutObservable<string> = ko.observable('0');
 
             //
             errorMessageInfo: KnockoutObservableArray<PersonInfoErrMessageLog> = ko.observableArray([]);
@@ -31,7 +31,7 @@ module nts.uk.at.view.kfp001.e {
             endDateTime: KnockoutObservable<string>;
 
             //enable enableCancelTask
-            enableCancelTask: KnockoutObservable<boolean> = ko.observable(true);
+            enableCancelTask: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 var self = this;
@@ -40,11 +40,10 @@ module nts.uk.at.view.kfp001.e {
                 self.optionalAggrName = ko.observable('');
                 self.startDate = ko.observable('');
                 self.endDate = ko.observable('');
-                self.peopleNo = ko.observable(0);
                 self.mode = ko.observable(false);
 
                 self.columns = ko.observableArray([
-                    { headerText: getText('KFP001_39'), key: 'no', width: 110 },
+                    { headerText: getText('KFP001_39'), key: 'no', width: 50 },
                     { headerText: getText('KFP001_40'), key: 'personCode', width: 110 },
                     { headerText: getText('KFP001_41'), key: 'personName', width: 150 },
                     { headerText: getText('KFP001_42'), key: 'disposalDay', width: 150 },
@@ -63,16 +62,17 @@ module nts.uk.at.view.kfp001.e {
                     service.executeAggr(dataD.anyPeriodAggrLogId).done(res => {
                         self.startDate(moment.utc(dataE.aggrPeriodCommand.startDate).format("YYYY/MM/DD"));
                         self.endDate(moment.utc(dataE.aggrPeriodCommand.endDate).format("YYYY/MM/DD"));
-                        self.peopleNo(dataE.aggrPeriodCommand.peopleNo);
                         self.executeId(dataD.anyPeriodAggrLogId);
                         self.logId(dataE.targetCommand.executionEmpId)
                         self.taskId(res.id);
                         self.aggrFrameCode(dataE.aggrPeriodCommand.aggrFrameCode);
                         self.optionalAggrName(dataE.aggrPeriodCommand.optionalAggrName);
                         self.startTime(moment.utc(dataD.startDateTime).format("YYYY/MM/DD HH:mm:ss"));
+                        self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataE.aggrPeriodCommand.peopleNo]));
                         nts.uk.deferred.repeat(conf => conf
                             .task(() => {
                                 return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
+                                    self.enableCancelTask(false);
                                     // DailyCreate
                                     self.aggCreateCount(self.getAsyncData(info.taskDatas, "aggCreateCount").valueAsNumber);
                                     self.aggCreateTotal(self.getAsyncData(info.taskDatas, "aggCreateTotal").valueAsNumber);
@@ -100,13 +100,16 @@ module nts.uk.at.view.kfp001.e {
                                         // Get Log data
                                         self.getLogData();
                                     }
-                                    self.enableCancelTask(false);
+                                    //self.enableCancelTask(false);
                                 });
+                                
                             })
                             .while(info => info.pending || info.running)
                             .pause(1000)
                         );
+                        self.enableCancelTask(true);
                     });
+                self.enableCancelTask(true);
                 }
 
             }

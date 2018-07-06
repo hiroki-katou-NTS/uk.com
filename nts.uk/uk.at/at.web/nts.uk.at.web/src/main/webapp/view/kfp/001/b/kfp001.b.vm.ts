@@ -39,6 +39,8 @@ module nts.uk.at.view.kfp001.b {
             endDateString: KnockoutObservable<string>;
             peopleCount: KnockoutObservable<string> = ko.observable('');
 
+            status: KnockoutObservable<number> = ko.observable(0);
+
             constructor() {
                 var self = this;
                 //import cScreenModel, dScreenModel
@@ -188,7 +190,7 @@ module nts.uk.at.view.kfp001.b {
                     service.findTargetPeriod(data[0].aggrId).done(function(dataTarget) {
                         self.aggrId = data[0].aggrId;
                         self.peopleNo(dataTarget.length);
-
+                        self.status(data[0].executionStatus);
                         self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataTarget.length]));
                     })
                 }).fail(function() {
@@ -294,8 +296,8 @@ module nts.uk.at.view.kfp001.b {
                     $('#code-text-d4-2').focus();
                     $('#update-mode').hide();
                     self.dateValue({
-                        startDate : new Date(),
-                        endDate : new Date()
+                        startDate: new Date(),
+                        endDate: new Date()
                     });
                     self.mode(0);
                     self.enableText(true);
@@ -347,8 +349,20 @@ module nts.uk.at.view.kfp001.b {
                 $("#code-text-d4-21").trigger("validate");
                 $("#start-date-B6-3").trigger("validate");
                 $("#end-date-B6-4").trigger("validate");
-                $("#wizard").ntsWizard("next").done(function() {
+                let checkCode = _.filter(self.optionalList(), function(obj) {
+                    return obj.aggrFrameCode == self.currentItem().aggrFrameCode();
                 });
+                if (checkCode && self.mode() == 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_3" });
+                } else {
+                    if (self.status() == model.ExecutionStatus.Processing) {
+                        nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
+                    } else {
+                        $("#wizard").ntsWizard("next").done(function() {
+                        });
+                    }
+                }
+
             }
 
             opendScreenF() {
