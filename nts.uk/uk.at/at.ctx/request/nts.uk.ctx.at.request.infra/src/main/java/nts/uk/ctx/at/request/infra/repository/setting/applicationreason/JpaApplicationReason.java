@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.setting.applicationreason;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepo
 import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ReasonTemp;
 import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReason;
+import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReasonPK;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -34,8 +36,8 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 	
 	private static final String FINDBYDEFAULT = FINDBYAPPTYPE + " AND c.defaultFlg = :defaultFlg";
 	
-	private static final String DELETEREASON = "DELETE FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyIdm "
-			+ "AND c.krqstAppReasonPK.appType = :appType AND c.krqstAppReasonPK.appType = :reasonID ";
+	private static final String DELETEREASON = "DELETE FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId "
+			+ "AND c.krqstAppReasonPK.appType = :appType AND c.krqstAppReasonPK.reasonID = :reasonID ";
 
 	/**
 	 * get reason by companyid
@@ -50,11 +52,10 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 	}
 
 	private ApplicationReason toDomain(KrqstAppReason c) {
-		
 		return ApplicationReason.createSimpleFromJavaType(c.krqstAppReasonPK.companyId,
 				c.krqstAppReasonPK.appType,
 				c.krqstAppReasonPK.reasonID,
-				Integer.valueOf(c.dispOrder).intValue(),
+				c.dispOrder,
 				c.reasonTemp,
 				c.defaultFlg
 				);
@@ -98,20 +99,28 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 				.setParameter("reasonID", reasonID)
 				.getSingle(c->toDomain(c));
 	}
+	
+	/**
+	 * get reason by application type for KAF022
+	 * @author yennth
+	 */
+	@Override
+	public List<ApplicationReason> getByAppType(String companyId, int appType) {		
+		return this.queryProxy().query(FINDBYAPPTYPE,KrqstAppReason.class)
+				.setParameter("companyId", companyId)
+				.setParameter("appType", appType)
+				.getList(c->toDomain(c));
+	}
+	
 	/**
 	 * convert from domain to entity
 	 * @param domain
 	 * @return
 	 * @author yennth
 	 */
-	private static KrqstAppReason toEntity(ApplicationReason domain){
-		val entity = new KrqstAppReason();
-		entity.krqstAppReasonPK.appType = domain.appType.value;
-		entity.krqstAppReasonPK.companyId = domain.companyId;
-		entity.dispOrder = domain.dispOrder;
-		entity.krqstAppReasonPK.reasonID = domain.reasonID;
-		entity.defaultFlg = domain.defaultFlg.value;
-		entity.reasonTemp = domain.reasonTemp.v();
+	private KrqstAppReason toEntity(ApplicationReason domain){
+		val entity = new KrqstAppReason(new KrqstAppReasonPK(domain.getCompanyId(), domain.getAppType().value, domain.getReasonID()), 
+				domain.getDispOrder(), domain.getReasonTemp().v(), domain.getDefaultFlg().value);
 		return entity;
 	}
 	
@@ -121,23 +130,13 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 	 */
 	@Override
 	public void updateReason(List<ApplicationReason> listUpdate) {
-		int appType = 0;
-		String companyId = AppContexts.user().companyId(); 
-		if(!listUpdate.isEmpty()){
-			appType = listUpdate.get(0).appType.value;
-			// tìm object dưới DB mà có default là 1 để chuyển thành 0
-			KrqstAppReason findDefault = this.queryProxy().query(FINDBYDEFAULT, KrqstAppReason.class)
-					.setParameter("companyId", companyId)
-					.setParameter("appType", appType)
-					.setParameter("defaultFlg", 1).getSingleOrNull();
-			if(findDefault != null){
-				findDefault.setDefaultFlg(0);
-				this.commandProxy().update(this.toDomain(findDefault));
-				// update list nhận được
-				for(ApplicationReason obj: listUpdate){
-					this.commandProxy().update(obj);
-				}
+		List<KrqstAppReason> listEntity = new ArrayList<>();
+		if (!listUpdate.isEmpty()) {
+			for (ApplicationReason obj : listUpdate) {
+				listEntity.add(toEntity(obj));
 			}
+			// update list nhận được
+			this.commandProxy().updateAll(listEntity);
 		}
 	}
 	/**
@@ -146,7 +145,7 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 	 */
 	@Override
 	public void insertReason(ApplicationReason insert) {
-		this.commandProxy().insert(insert);
+		this.commandProxy().insert(this.toEntity(insert));
 	}
 
 	@Override

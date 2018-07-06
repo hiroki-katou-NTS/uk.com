@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 900, height: 700 };</script>
+			<script>var dialogSize = { width: 750, height: 500 };</script>
 			<com:stylefile path="kaf022.s.main.css" />
 			<com:scriptfile path="kaf022.s.service.js" />
 			<com:scriptfile path="kaf022.s.start.js" />
@@ -27,13 +27,13 @@
 				<button tabindex="1"  data-bind="click: createNew">#{i18n.getText('KAF022_434')}</button>
 				<!-- data-bind="click: closeWindows" -->
 				<!-- S1_2 -->
-				<button  tabindex="2" class="proceed">#{i18n.getText('KAF022_1')}</button>
+				<button  tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('KAF022_1')}</button>
 				<!-- S1_3 -->
-				<button style = "margin-left: 50px" tabindex="3" >#{i18n.getText('KAF022_435')}</button>
+				<button style = "margin-left: 50px" tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAF022_435')}</button>
 				<!-- S1_4 -->
-				<button  tabindex="4" style = "margin-left: 105px" class="danger">#{i18n.getText('KAF022_275')}</button>
+				<button  tabindex="4" style = "margin-left: 105px" class="danger" data-bind="click: remove">#{i18n.getText('KAF022_275')}</button>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" style = "width: 700px !important">
 				<div style="float: left;">
 					<div class="flex valign-center" style = "margin-left: 10px;">
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_440')}</div>
@@ -56,9 +56,9 @@
 								<div id = "grid-list" style="display: inline-block;">
 									<table id="grid-test-single"
 										data-bind="ntsGridList: {
-												height: 300,
+												height: 257,
 												dataSource: listReason,
-												primaryKey: 'displayOrder',
+												primaryKey: 'dispOrder',
 												columns: columns,
 												value: selectedOrder,
 												multiple: false
@@ -68,7 +68,7 @@
 								<div id="grid-up-down"
 									data-bind="ntsUpDown: {
 											targetSource: listReason,
-											primaryKey: 'displayOrder',
+											primaryKey: 'dispOrder',
 											comId: '#grid-test-single',
 											type: 'grid'
 										}"

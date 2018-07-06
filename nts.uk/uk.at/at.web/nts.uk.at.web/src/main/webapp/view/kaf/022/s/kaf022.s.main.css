@@ -1,6 +1,6 @@
 #left-content{
 	margin-top: 15px;
-    height: 350px;
+    height: 300px;
     margin-left: 10px;
 	width: 450px;
 }
@@ -31,3 +31,11 @@
 #chckbox{
 	margin-top: 20px;
 }
+
+#grid-test-single > tbody > tr> td:nth-child(1){
+	text-align: center !important;
+}
+
+/* #single-list>tbody>tr>td:last-child {
+    text-align: center;
+} */

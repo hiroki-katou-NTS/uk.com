@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.request.app.command.applicationreason;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;

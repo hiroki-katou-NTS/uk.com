@@ -26,7 +26,7 @@ public class ApplicationReasonDto {
 	/**
 	 * 表示順
 	 */
-	int displayOrder;
+	int dispOrder;
 	/**
 	 * 定型理由
 	 */

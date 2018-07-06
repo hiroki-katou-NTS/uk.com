@@ -18,6 +18,14 @@ public interface ApplicationReasonRepository {
 	 */
 	List<ApplicationReason> getReasonByAppType(String companyId, int appType);
 	/**
+	 * get application by company id and application type
+	 * @param companyId
+	 * @param appType
+	 * @return
+	 */
+	List<ApplicationReason> getByAppType(String companyId, int appType);
+	
+	/**
 	 * update list application reason
 	 * @param listUpdate
 	 * @author yennth

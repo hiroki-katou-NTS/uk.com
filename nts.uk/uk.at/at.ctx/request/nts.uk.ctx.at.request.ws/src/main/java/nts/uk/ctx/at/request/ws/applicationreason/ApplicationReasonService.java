@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import UpdateApplicationReasonCommand.UpdateApplicationReasonCommand;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
@@ -16,6 +15,7 @@ import nts.uk.ctx.at.request.app.command.applicationreason.ApplicationReasonComm
 import nts.uk.ctx.at.request.app.command.applicationreason.DeleteApplicationReasonCommand;
 import nts.uk.ctx.at.request.app.command.applicationreason.DeleteApplicationReasonCommandHandler;
 import nts.uk.ctx.at.request.app.command.applicationreason.InsertApplicationReasonCommandHandler;
+import nts.uk.ctx.at.request.app.command.applicationreason.UpdateApplicationReasonCommand;
 import nts.uk.ctx.at.request.app.command.applicationreason.UpdateApplicationReasonCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.ProxyAppSetCommand;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
@@ -59,7 +59,7 @@ public class ApplicationReasonService extends WebService{
 	
 	// insert a item application reason for KAF022
 	@POST
-	@Path("delete/{appType}/{reasonID}")
+	@Path("delete")
 	public void delete(DeleteApplicationReasonCommand deleteCmd) {
 		this.delete.handle(deleteCmd);
 	}

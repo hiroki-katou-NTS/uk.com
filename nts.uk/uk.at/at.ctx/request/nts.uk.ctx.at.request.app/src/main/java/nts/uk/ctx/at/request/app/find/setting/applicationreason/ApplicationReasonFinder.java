@@ -24,7 +24,7 @@ public class ApplicationReasonFinder {
 	 */
 	public List<ApplicationReasonDto> getListApplicationReason(int appType) {
 		String companyId = AppContexts.user().companyId();
-		List<ApplicationReasonDto> listReason = appFormRepo.getReasonByAppType(companyId, appType)
+		List<ApplicationReasonDto> listReason = appFormRepo.getByAppType(companyId, appType)
 															.stream().map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList());
 		return listReason;
 	}

@@ -1,10 +1,9 @@
-package UpdateApplicationReasonCommand;
+package nts.uk.ctx.at.request.app.command.applicationreason;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.app.command.applicationreason.ApplicationReasonCommand;
 
 @Data
 @AllArgsConstructor
