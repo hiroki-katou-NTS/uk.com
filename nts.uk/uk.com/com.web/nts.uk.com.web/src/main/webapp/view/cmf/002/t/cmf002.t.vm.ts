@@ -21,6 +21,8 @@ module nts.uk.com.view.cmf002.t.viewmodel {
         overWrite: KnockoutObservable<boolean> = ko.observable(false);
         copyDestinationCode: KnockoutObservable<string> = ko.observable('');
         destinationName: KnockoutObservable<string> = ko.observable('');
+        result: KnockoutObservable<boolean> = ko.observable(false);
+        
         constructor() {
             let self = this;
             self.initScreen();
@@ -59,10 +61,16 @@ module nts.uk.com.view.cmf002.t.viewmodel {
                     overWrite: self.overWrite(),
                     destinationName: self.destinationName(),
                     copyDestinationCode: self.copyDestinationCode()
-
                 };
-                service.excuteCopy(data).done((result) => {
-                    //do something
+                service.excuteCopy(data).done(function(res){
+                  let dataOut = {
+                     result :  res.result,
+                     destinationName : res.destinationName,
+                     copyDestinationCode :  res.destinationCode,
+                     overWrite : res.overWrite
+                     }                    
+                     setShared('CMF002_T_Output', dataOut);       
+                     nts.uk.ui.windows.close();
                 }).fail(function(res) {
                     alertError({ messageId: res.messageId });
                 }).always(function() {
@@ -78,7 +86,6 @@ module nts.uk.com.view.cmf002.t.viewmodel {
         */
         cancelSetting(): void {
             nts.uk.ui.windows.close();
-            alert('close');
         }
 
     }
