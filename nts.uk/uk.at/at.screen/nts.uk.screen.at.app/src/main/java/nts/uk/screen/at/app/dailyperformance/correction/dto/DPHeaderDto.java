@@ -84,12 +84,10 @@ public class DPHeaderDto {
 	}
 
 	public static DPHeaderDto createSimpleHeader(String companyId, String key, String width,
-			Map<Integer, DPAttendanceItem> mapDP, Map<Integer, Integer> optionalItemOpt,
-			Map<Integer, OptionalItemAtr> optionalItemAtr) {
+			Map<Integer, DPAttendanceItem> mapDP) {
 		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, "", false, "", false, false);
 		// optionalRepo.findByListNos(companyId, optionalitemNos)
 		DPAttendanceItem item = mapDP.get(Integer.parseInt(getCode(key)));
-		setOptionalItemAtr(item, optionalItemOpt, optionalItemAtr);
 		int attendanceAtr = item.getAttendanceAtr();
 		if (attendanceAtr == DailyAttendanceAtr.Code.value) {
 			List<DPHeaderDto> groups = new ArrayList<>();
@@ -110,23 +108,23 @@ public class DPHeaderDto {
 			if (item.getTypeGroup() == TypeLink.CALC.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "String",
 						String.valueOf(withChild) + "px", "", false, "ComboboxCalc", false, false);
-				groups.get(0).setConstraint(new Constraint("Integer", false, "2"));
+				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 				groups.add(dtoG);
 			}
 			if (item.getTypeGroup() == TypeLink.REASON_GO_OUT.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "String",
 						String.valueOf(withChild) + "px", "", false, "ComboboxReason", false, false);
 				groups.add(dtoG);
-				groups.get(0).setConstraint(new Constraint("Integer", false, "3"));
+				groups.get(0).setConstraint(new Constraint("Integer", true, "3"));
 			}
 			if (item.getTypeGroup() == TypeLink.DOWORK.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "String",
 						String.valueOf(withChild) + "px", "", false, "ComboboxDoWork", false, false);
 				groups.add(dtoG);
-				groups.get(0).setConstraint(new Constraint("Integer", false, "1"));
+				groups.get(0).setConstraint(new Constraint("Integer", true, "1"));
 			}
 			dto.setGroup(groups);
-			dto.setConstraint(new Constraint("Combo", false, ""));
+			dto.setConstraint(new Constraint("Combo", true, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value) {
 			// dto.setNtsControl("TextEditorNumberSeparated");
 			dto.setConstraint(new Constraint("Currency", false, ""));
@@ -141,21 +139,6 @@ public class DPHeaderDto {
 		return dto;
 	}
 
-	private static void setOptionalItemAtr(DPAttendanceItem item, Map<Integer, Integer> optionalItemOpt,
-			Map<Integer, OptionalItemAtr> optionalItemAtr){
-		Integer itemNo = optionalItemOpt.get(item.getId());
-		if(itemNo != null){
-			OptionalItemAtr atr = optionalItemAtr.get(itemNo);
-			if(atr != null && atr.value == OptionalItemAtr.TIME.value){
-				item.setAttendanceAtr(DailyAttendanceAtr.Time.value);
-			}else if(atr != null && atr.value == OptionalItemAtr.NUMBER.value){
-				item.setAttendanceAtr(DailyAttendanceAtr.NumberOfTime.value);
-			}else if(atr != null && atr.value == OptionalItemAtr.AMOUNT.value){
-				item.setAttendanceAtr(DailyAttendanceAtr.AmountOfMoney.value);
-			}
-		}
-	}
-	
 	public static DPHeaderDto addHeaderApplication() {
 		return new DPHeaderDto(TextResource.localize("KDW003_63"), "Application", "String", "90px", "", false, "Button",
 				false, false);

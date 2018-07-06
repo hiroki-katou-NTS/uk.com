@@ -330,6 +330,8 @@ module kcp.share.list {
             if (self.listType == ListType.EMPLOYEE) {
                 self.initEmployeeSubscription(data);
                 self.initComponent(data, data.employeeInputList(), $input).done(function() {
+                    // Set default value when init component.
+                    _.defer(() => self.initSelectedValue(data, self.itemList()));
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -338,6 +340,8 @@ module kcp.share.list {
             // Find data list.
             this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
                 self.initComponent(data, dataList, $input).done(function() {
+                    // Set default value when init component.
+                    _.defer(() => self.initSelectedValue(data, self.itemList()));
                     dfd.resolve();
                 });
             });
@@ -515,9 +519,6 @@ module kcp.share.list {
                 $input.find('table').attr('id', self.componentGridId);
                 ko.applyBindings(self, $input[0]);
                 $input.find('.base-date-editor').find('.nts-input').width(133);
-                
-                // Set default value when init component.
-                self.initSelectedValue(data, self.itemList());
                 dfd.resolve();
             });
             
@@ -637,7 +638,9 @@ module kcp.share.list {
             var self = this;
             switch(data.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
-                    //self.selectedCodes(data.selectedCode());
+                    if(data.isShowNoSelectRow && _.isEmpty(data.selectedCode())) {
+                        self.selectedCodes("");
+                    }
                     return;
                 case SelectType.SELECT_ALL:
                     if (!self.isMultipleSelect){

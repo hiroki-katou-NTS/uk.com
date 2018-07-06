@@ -73,8 +73,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeServic
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus.DivCheckMasterShareContainer;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
@@ -2705,14 +2705,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId, period,
 						empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),Optional.ofNullable(dailyCreateLog),
 						processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()? true
-								: false);
+								: false, null);
 			} catch (Exception e) {
 				throw new CreateDailyException();
 			}
 		} else {
 			try {
 				ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
-				DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
+				MasterShareContainer shareContainer = MasterShareBus.open();
 				companyCommonSetting.setShareContainer(shareContainer);
 				processState = this.dailyCalculationEmployeeService.calculate(asyContext, employeeId, period,
 						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
@@ -2945,7 +2945,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		try {
 			// ⑤社員の日別実績を作成する
 			 processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId, period,
-					companyId, empCalAndSumExeLogId,Optional.ofNullable(dailyCreateLog), true);
+					companyId, empCalAndSumExeLogId,Optional.ofNullable(dailyCreateLog), true, null);
 		} catch (Exception e) {
 			throw new CreateDailyException();
 		}
@@ -2953,7 +2953,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		
 		try {
 			ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
-			DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
+			MasterShareContainer shareContainer = MasterShareBus.open();
 			companyCommonSetting.setShareContainer(shareContainer);
 			// 社員の日別実績を計算
 			 ProcessState2 = this.dailyCalculationEmployeeService.calculate(asyncContext, empId, period,

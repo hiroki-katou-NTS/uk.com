@@ -9,6 +9,7 @@ import nts.uk.ctx.at.function.dom.adapter.sysfixedcheckcondition.SysFixedCheckCo
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.sysfixedcheckcondition.SysFixedCheckConMonPub;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 @Stateless
 public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 	
@@ -16,8 +17,8 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 	private SysFixedCheckConMonPub sysFixedCheckConMonPub;
 
 	@Override
-	public Optional<ValueExtractAlarm> checkAgreement(String employeeID, int yearMonth) {
-		Optional<ValueExtractAlarmWRPubExport> data = sysFixedCheckConMonPub.checkAgreement(employeeID, yearMonth);
+	public Optional<ValueExtractAlarm> checkAgreement(String employeeID, int yearMonth,int closureId,ClosureDate closureDate) {
+		Optional<ValueExtractAlarmWRPubExport> data = sysFixedCheckConMonPub.checkAgreement(employeeID, yearMonth,closureId,closureDate);
 		if(data.isPresent()) {
 			return Optional.of(convertToExport(data.get()));
 		}

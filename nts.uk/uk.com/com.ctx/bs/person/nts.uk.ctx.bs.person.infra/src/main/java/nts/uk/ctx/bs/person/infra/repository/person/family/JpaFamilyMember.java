@@ -17,7 +17,7 @@ import nts.uk.ctx.bs.person.infra.entity.person.info.widowhistory.BpsmtWidowHis;
 @Stateless
 public class JpaFamilyMember extends JpaRepository implements FamilyMemberRepository {
 
-	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtFamily c WHERE c.pid = :pid";
+	public static final String GET_ALL_BY_PID = "SELECT c FROM BpsmtFamily c WHERE c.pid = :pid";
 	
 	private static final String SELECT_FAMILY_BY_ID = "SELECT c FROM BpsmtFamily c WHERE c.ppsmtFamilyPk.familyId = :familyId";
 

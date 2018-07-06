@@ -63,7 +63,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var self = this;
 
             var categoryId = modelCheck.categoryId;
-            if (categoryId == 7) {
+            if (categoryId == 7 ||categoryId == 9 ) {
 
                 let paramMonthly = _.find(modelCheck.listExtractionMonthly, ['unit', 3]);
                 let extractionMonthDto = {
@@ -281,7 +281,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             } else if (checkCondition.alarmCategory == 5 || checkCondition.alarmCategory == 13) {
                 this.setDailyText(checkCondition);
 
-            } else if (checkCondition.alarmCategory == 7) {
+            } else if (checkCondition.alarmCategory == 7 ) {
                 this.extractionPeriod = _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].strMonth]).name + ' ' + getText('KAL004_30') + ' ' +
                     _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].endMonth]).name;
 

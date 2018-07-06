@@ -36,11 +36,11 @@ public class DataDialogWithTypeProcessor {
 	public CodeNameType getDutyType(String companyId, String workTypeCode, String employmentCode) {
 		List<WorkTypeChangedDto> dtos = repo.findWorkTypeChanged(employmentCode, workTypeCode, companyId);
 		Set<String> workTypeCodes = dtos.stream().map(x -> x.getTypeCode()).collect(Collectors.toSet());
-		if (!workTypeCode.equals("") && workTypeCodes.isEmpty())
-			return CodeNameType.create(TypeLink.DUTY.value, new ArrayList<>())
-					.createError(true);
+//		if (!workTypeCode.equals("") && workTypeCodes.isEmpty())
+//			return CodeNameType.create(TypeLink.DUTY.value, new ArrayList<>())
+//					.createError(true);
 		List<CodeName> codeNames = repo.findWorkType(companyId, workTypeCodes);
-		return CodeNameType.create(TypeLink.DUTY.value, codeNames).createError(workTypeCodes.isEmpty() && !workTypeCode.equals(""));
+		return CodeNameType.create(TypeLink.DUTY.value, codeNames).createError(!workTypeCodes.isEmpty());
 	}
 
 	// 勤務種類
@@ -106,16 +106,23 @@ public class DataDialogWithTypeProcessor {
 		switch (type) {
 		case 1:
 			// KDL002
-			if (param.getItemId() != null && param.getItemId() == 28) {
+			if (param.getItemId() != null && (param.getItemId() == 28 || param.getItemId() == 1)) {
+				codeName = this.getDutyTypeAll(companyId).getCodeNames().stream()
+						.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
+				if(!codeName.isPresent()) return new CodeName(param.getWorkTypeCode(), TextResource.localize("KDW003_81"), "")
+						.createError(ErrorTypeWorkType.NO_GROUP.code);
+				if(param.getItemId() == 1) return codeName.get().createError(ErrorTypeWorkType.MASTER.code);
+				
+				
 				AffEmploymentHistoryDto aff = repo.getAffEmploymentHistory(param.getEmployeeId(),
 						new DateRange(null, param.getDate()));
 				CodeNameType codeNameType = this.getDutyType(companyId, param.getValueOld(),
 						aff == null ? "" : aff.getEmploymentCode());
-				codeName = codeNameType.getCodeNames().stream().filter(x -> x.getCode().equals(param.getSelectCode()))
+				Optional<CodeName> codeNameG = codeNameType.getCodeNames().stream().filter(x -> x.getCode().equals(param.getSelectCode()))
 						.findFirst();
-				CodeName codeNameTemp = codeName.isPresent() ? codeName.get().createError(codeNameType.getError())
-						: new CodeName(param.getWorkTypeCode(), TextResource.localize("KDW003_81"), "")
-								.createError(codeNameType.getError());
+				CodeName codeNameTemp = codeNameG.isPresent() ? codeNameG.get().createError(ErrorTypeWorkType.MASTER.code)
+						: codeName.get()
+								.createError(codeNameType.getError() ? ErrorTypeWorkType.GROUP.code: ErrorTypeWorkType.MASTER.code);
 				return codeNameTemp;
 			} else {
 				codeName = this.getDutyTypeAll(companyId).getCodeNames().stream()
@@ -126,37 +133,44 @@ public class DataDialogWithTypeProcessor {
 			// KDL001
 			codeName = this.getWorkHours(companyId, param.getWorkplaceId()).getCodeNames().stream()
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
-			return codeName.isPresent() ? codeName.get() : null;
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
 		case 3:
 			// KDL010
 			codeName = this.getServicePlace(companyId).getCodeNames().stream()
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
-			return codeName.isPresent() ? codeName.get() : null;
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
 		case 4:
 			// KDL032
 			codeName = this.getReason(companyId).getCodeNames().stream()
 					.filter(x -> x.getCode().equals(param.getSelectCode()) && Integer.parseInt(x.getId()) == (DailyPerformanceCorrectionProcessor.DEVIATION_REASON_MAP.get(Integer.parseInt(param.getWorkTypeCode())))).findFirst();
-			return codeName.isPresent() ? codeName.get() : null;
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
 		case 5:
 			// CDL008
 			codeName = this.getWorkPlace(companyId, param.getDate()).getCodeNames().stream()
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
-			return codeName.isPresent() ? codeName.get() : null;
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
 		case 6:
 			// KCP002
 			codeName = this.getClassification(companyId).getCodeNames().stream()
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
-			return codeName.isPresent() ? codeName.get() : null;
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
 		case 7:
 			// KCP003
 			codeName = this.getPossition(companyId, param.getDate()).getCodeNames().stream()
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
-			return codeName.isPresent() ? codeName.get() : null;
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
 		case 8:
 			// KCP001
 			codeName = this.getEmployment(companyId).getCodeNames().stream()
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
-			return codeName.isPresent() ? codeName.get() : null;
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
 		default:
 			return null;
 		}

@@ -18,7 +18,7 @@ import nts.uk.ctx.pereg.infra.entity.roles.auth.category.PpemtPersonCategoryAuth
 @Stateless
 public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements PersonInfoRoleAuthRepository {
 
-	private final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
+	private static final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 
 	@Override
 	public Optional<PersonInfoRoleAuth> get(String roleId, String companyId) {

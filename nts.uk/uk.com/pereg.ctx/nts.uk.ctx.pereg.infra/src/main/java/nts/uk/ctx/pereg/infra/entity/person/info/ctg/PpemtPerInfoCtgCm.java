@@ -59,6 +59,10 @@ public class PpemtPerInfoCtgCm extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @Column(name = "EMPLOYMENT_USE_ATR")
     public int employmentUseAtr;
+    
+	@Basic(optional = false)
+	@Column(name = "CAN_ABOLITION")
+	public int canAbolition;
 
     
 	@Override

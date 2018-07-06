@@ -156,10 +156,10 @@ module nts.uk.at.view.ksu007.a {
                 self.closed = ko.observable(true); // 休業区分
                 self.retirement = ko.observable(true); // 退職区分
                 self.systemType = ko.observable(1);
-                self.showClosure = ko.observable(true); // 就業締め日利用
+                self.showClosure = ko.observable(false); // 就業締め日利用
                 self.showBaseDate = ko.observable(true); // 基準日利用
                 self.showAllClosure = ko.observable(true); // 全締め表示
-                self.showPeriod = ko.observable(true); // 対象期間利用
+                self.showPeriod = ko.observable(false); // 対象期間利用
                 self.periodFormatYM = ko.observable(false); // 対象期間精度
             }
 

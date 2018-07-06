@@ -14,9 +14,9 @@ import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtApplicationCal
 @Stateless
 public class JpaAppliCalDaiCorrecRepository extends JpaRepository implements IAppliCalDaiCorrecRepository{
 	
-	private final String SELECT_NO_WHERE = "SELECT c FROM KfnmtApplicationCall c ";
-	private final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.kfnmtApplicationCallPK.companyId = :companyId ";
-	private final String DELETE_BY_COM = "DELETE FROM KfnmtApplicationCall c "
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KfnmtApplicationCall c ";
+	private static final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.kfnmtApplicationCallPK.companyId = :companyId ";
+	private static final String DELETE_BY_COM = "DELETE FROM KfnmtApplicationCall c "
 												+ "WHERE c.kfnmtApplicationCallPK.companyId = :companyId ";
 	
 	@Override

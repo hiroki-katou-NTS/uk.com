@@ -3,9 +3,25 @@
 	<div class="left-contents-kaf007">
 		<!--A2 申請者--> 		
 		<div class="valign-center control-group-kaf007">
-			<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF007_7')}</div>
+			<div class="lblTitle-kaf007" style="vertical-align: top;" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF007_7')}</div>
 			<!--A2_1 申請者名--> 			
-			<label class="lblEmployeeName" data-bind="text: $parent.employeeName"></label>
+			<label class="lblEmployeeName" data-bind="text: $parent.employeeName,visible:!$parent.screenModeNew()==true"></label>
+			<div style="display: inline-block;" class="control-group-kaf007" data-bind="if:$parent.screenModeNew()==true">
+				<label data-bind="text:$parent.employeeName,visible:!$parent.employeeList().length"
+					class="text_line"></label>
+				<div data-bind="if:$parent.employeeList().length">
+					<div id="list-box"
+						data-bind="ntsListBox: {
+											options: $parent.employeeList ,
+											optionsValue: 'code',
+											optionsText: 'name',
+											multiple: false,
+											value: $parent.selectedEmployee ,
+											enable: true,
+											rows: 5 }"></div>
+					<div class="control-group-kaf007" data-bind="text:$parent.totalEmployeeText"></div>
+				</div>
+			</div>
 		</div>
 		<!--A3 事前事後区分--> 
 		<div class="valign-center control-group-kaf007 " data-bind="if: $parent.prePostDisp">

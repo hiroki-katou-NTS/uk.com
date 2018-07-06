@@ -16,7 +16,7 @@ public class JpaCategoryFieldMtRepository extends JpaRepository implements Categ
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtCategoryFieldMt f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
-    private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryPk.categoryId IN :lstCID ";
+    private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryFieldMtPk.categoryId IN :lstCategoryId ";
     
 
     
@@ -64,7 +64,7 @@ public class JpaCategoryFieldMtRepository extends JpaRepository implements Categ
 	@Override
 	public List<CategoryFieldMt> getCategoryFieldMtByListId(List<String> categoryIds) {
 		return this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, SspmtCategoryFieldMt.class)
-				.setParameter("lstCID", categoryIds).setParameter("categoryIds", categoryIds)
+				.setParameter("lstCategoryId", categoryIds)
 		        .getList(c->c.toDomain());
 	}
 }

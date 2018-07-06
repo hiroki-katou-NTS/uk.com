@@ -83,7 +83,7 @@ module nts.uk.com.view.cdl008.a {
                         return;
                     }
                 } else {
-                    if (!self.selectedSelWorkplace || !self.selectedSelWorkplace()) {
+                    if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
                         return;
                     }

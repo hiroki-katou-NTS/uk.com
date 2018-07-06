@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.interimremain;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -51,4 +52,11 @@ public interface InterimRemainRepository {
 	 * @param dateData
 	 */
 	void deleteBySidPeriod(String employeeId, DatePeriod dateData);
+	/**
+	 * 暫定残数管理データ を検索
+	 * @param sid　社員ID
+	 * @param baseDate　対象日
+	 * @return
+	 */
+	List<InterimRemain> getDataBySidDate(String sid, GeneralDate baseDate);
 }

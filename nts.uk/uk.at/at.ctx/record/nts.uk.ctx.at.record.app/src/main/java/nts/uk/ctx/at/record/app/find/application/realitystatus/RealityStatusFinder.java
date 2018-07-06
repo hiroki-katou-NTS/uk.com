@@ -34,9 +34,9 @@ public class RealityStatusFinder {
 				wkpInfoDto.getEndDate(), wkpInfoDto.getListEmpCd(), wkpInfoDto.isConfirmData());
 	}
 
-	public String checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
+	public void checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
 		// アルゴリズム「承認状況未確認メール送信」を実行する
-		return realityStatusService.checkSendUnconfirmedMail(this.getWkpIdMailCheck(listWkp));
+		realityStatusService.checkSendUnconfirmedMail(this.getWkpIdMailCheck(listWkp));
 	}
 
 	public SendMailResultDto exeSendUnconfirmMail(ExeSendUnconfirmMailParam dto) {

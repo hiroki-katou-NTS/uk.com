@@ -41,8 +41,7 @@ public class WithinStatutoryMidNightTime {
 	 * @return
 	 */
 	public int calcOverLimitDivergenceTime() {
-		return this.getTime().getDivergenceTime().valueAsMinutes() 
-				 + this.getTime().getDivergenceTime().valueAsMinutes();
+		return this.getTime().getDivergenceTime().valueAsMinutes();
 	}
 		/**
 	 * 実績超過乖離時間が発生しているか判定する
