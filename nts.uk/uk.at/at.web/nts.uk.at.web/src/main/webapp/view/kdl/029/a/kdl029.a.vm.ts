@@ -82,7 +82,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
             block.clear();
             service.findAllEmploymentSystem({
                 mode: self.multiSelect(),
-                inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("yyyy/MM/dd"),
+                inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("YYYY/MM/DD"),
                 employeeIDs: self.employeeIDList()
             }).done(function(data){
                 self.employeeCode(data.employeeCode);
@@ -110,7 +110,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                         self.employeeName(name.name);
                         service.findByEmployee({
                             mode: self.multiSelect(),
-                            inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("yyyy/MM/dd"),
+                            inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("YYYY/MM/DD"),
                             employeeIDs: employeeIDs
                         }).done(data =>{
                             self.getDataForTable(data);
@@ -133,12 +133,14 @@ module nts.uk.at.view.kdl029.a.screenModel {
             if (!nts.uk.util.isNullOrEmpty(data.reserveLeaveManagerImport)) {
                 let dataRessult = data.reserveLeaveManagerImport.fundingYearHolidayGrantInfor;
                 let dataHoliday = [];
-                for (let i = 0; i < dataRessult.length; i++) {
+                if(dataRessult != null && dataRessult != undefined){
+                    for (let i = 0; i < dataRessult.length; i++) {
                     dataHoliday.push(new DataHolidayGrantInfo(dataRessult[i].grantDate,
                         dataRessult[i].grandNumber,
                         dataRessult[i].daysUsedNo,
                         dataRessult[i].remainDays,
                         dataRessult[i].deadline));
+                    }
                 }
                 self.dataHolidayGrantInfo(dataHoliday);
                 let yearlyRessult = data.reserveLeaveManagerImport.yearlySupensionManageInfor;
