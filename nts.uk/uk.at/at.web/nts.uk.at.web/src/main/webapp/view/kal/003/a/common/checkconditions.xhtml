@@ -86,23 +86,24 @@
 			<label class="label4w4d">#{i18n.getText('KAL003_152')}</label>
 		</div>
 	</div>
-	<div id="daily-content" data-bind="visible: category() == 9">
+	<!-- 	MinhVV ADD -->
+	<div id="multiple-months-content" data-bind="visible: category() == 9">
 		<div id="div_group_function">
 		    <table>
 		       <tr>
 			       <td class = "pad_left_10px">
-				       <!-- A11_1 -->
+				       <!-- A8_1 -->
 				       <div class = "pad_left_10px"><button data-bind="click: createNewCheckCondition_click,enable: true">#{i18n.getText('KAL003_21')}</button></div>
 		           </td>
 		           <td class = "pad_left_10px"> 
-		               <!-- A11_2 -->
-	                    <div class = "pad_left_10px"><button data-bind="click: deleteCheckCondition_click, enable: true">#{i18n.getText('KAL003_22')}</button></div>
+		               <!-- A8_2 -->
+	                    <div class = "pad_left_10px"><button data-bind="click: deleteCheckCondition_click, enable: true" style="margin-left: 50px">#{i18n.getText('KAL003_22')}</button></div>
 	               </td>
 	           </tr>
 		    </table>
 		</div>
-		<div id="div_table_check_conditions">
-		   <table id="check-condition-table">
+		<div id="div_table_check_conditions" style="margin-top: 20px">
+		   <table id="check-condition-table_category9">
 		       <colgroup>
 			        <col width="36px"/>
 			        <col width="36px"/>
@@ -147,7 +148,6 @@
 		           </tr>
 		       </tbody>
 		   </table>
-
 		</div>
 	</div>
 </ui:composition>
