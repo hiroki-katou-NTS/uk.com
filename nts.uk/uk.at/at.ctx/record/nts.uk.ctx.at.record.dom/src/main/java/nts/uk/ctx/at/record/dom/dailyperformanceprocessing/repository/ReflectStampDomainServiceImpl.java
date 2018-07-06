@@ -188,27 +188,26 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 															  					 calcOfDaily.get(), 
 															  					 affInfoOfDaily.get(), 
 															  					 workTypeOfDaily, 
-															  					 Optional.of(reflectStamp.getPcLogOnInfoOfDaily()), 
+															  					 Optional.ofNullable(reflectStamp.getPcLogOnInfoOfDaily()), 
 															  					 reflectStamp.getEmployeeDailyPerErrorList(), 
-															  					 Optional.of(reflectStamp.getOutingTimeOfDailyPerformance()),
+															  					 Optional.ofNullable(reflectStamp.getOutingTimeOfDailyPerformance()),
 															  					 Arrays.asList(breakTimeOfDailyPerformance), 
 															  					 Optional.empty(), 
 															  					 Optional.empty(),
-															  					 Optional.of(reflectStamp.getTimeLeavingOfDailyPerformance()), 
-															  					 Optional.of(reflectStamp.getShortTimeOfDailyPerformance()), 
+															  					 Optional.ofNullable(reflectStamp.getTimeLeavingOfDailyPerformance()), 
+															  					 Optional.ofNullable(reflectStamp.getShortTimeOfDailyPerformance()), 
 															  					 Optional.empty(), 
-															  					 Optional.of(reflectStamp.getAttendanceLeavingGateOfDaily()), 
+															  					 Optional.ofNullable(reflectStamp.getAttendanceLeavingGateOfDaily()), 
 															  					 Optional.empty(), 
 															  					 Collections.emptyList(), 
-															  					 Optional.of(reflectStamp.getTemporaryTimeOfDailyPerformance()));
+															  					 Optional.ofNullable(reflectStamp.getTemporaryTimeOfDailyPerformance()));
 			
 				calculateDailyRecordServiceCenter.errorCheck(Arrays.asList(integarationOfDaily))
 												 .forEach(tc -> {
 													 	employeeDailyPerErrorList.addAll(tc.getEmployeeError());
 												 });
-
+				reflectStamp.setEmployeeDailyPerErrorList(employeeDailyPerErrorList);
 			}
-			reflectStamp.setEmployeeDailyPerErrorList(employeeDailyPerErrorList);
 		}
 		return reflectStamp;
 	}

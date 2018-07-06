@@ -1,29 +1,28 @@
 /******************************************************************
+
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTimePK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTime_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet_;
@@ -174,13 +173,12 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 				.in(workTimeCodes));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
+		
+		query.orderBy(builder.asc(root.get(KshmtFixedHolRestSet_.startTime)));
 
 		List<KshmtFixedHolRestSet> result = em.createQuery(query).getResultList();
 
-		List<KshmtFixedHolRestSet> KshmtFixedHolRestSets = result.stream()
-				.sorted((item1, item2) -> item1.getStartTime() - item2.getEndTime()).collect(Collectors.toList());
-
-		Map<WorkTimeCode, List<KshmtFixedHolRestSet>> mapResttimes = KshmtFixedHolRestSets.stream().collect(
+		Map<WorkTimeCode, List<KshmtFixedHolRestSet>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFixedHolRestSetPK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<DeductionTime>> map = mapResttimes.entrySet().stream().collect(Collectors
@@ -211,13 +209,12 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 				.in(workTimeCodes));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
+		
+		query.orderBy(builder.asc(root.get(KshmtFixedHalfRestSet_.startTime)));
 
 		List<KshmtFixedHalfRestSet> result = em.createQuery(query).getResultList();
 
-		List<KshmtFixedHalfRestSet> kshmtFixedHalfRestSets = result.stream()
-				.sorted((item1, item2) -> item1.getStartTime() - item2.getEndTime()).collect(Collectors.toList());
-
-		Map<WorkTimeCode, List<KshmtFixedHalfRestSet>> mapResttimes = kshmtFixedHalfRestSets.stream().collect(
+		Map<WorkTimeCode, List<KshmtFixedHalfRestSet>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFixedHalfRestSetPK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<DeductionTime>> map = mapResttimes.entrySet().stream().collect(Collectors

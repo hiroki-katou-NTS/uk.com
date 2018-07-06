@@ -41,7 +41,6 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	private static final int ROW_PER_PAGE_7_GROUP_MONTHS = 28;
 	/** C2_3 or C2_5 */
 	private static final int MAX_GROUP_MONTHS = 7;
-	private List<ExportItem> itemBooks;
 
 	@Override
 	public void generate(FileGeneratorContext fileContext, ExportData dataSource) {
@@ -94,7 +93,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 
 			HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
 			List<String> empIds = dataSource.getEmployeeIds();
-			this.itemBooks = dataSource.getExportItems();
+			List<ExportItem> itemBooks = dataSource.getExportItems();
 			// set first employee
 			EmployeeData firstEmp = dataSource.getEmployees().get(empIds.remove(0));
 
@@ -117,7 +116,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				// break page and print
 				boolean isNewPage = sumRowCount > rowsPerPage
 						|| (nextWorkplace && PageBreakIndicator.WORK_PLACE.equals(dataSource.getPageBreak()));
-				print(wsc, newRange, emp, isNewPage || nextWorkplace, isMonthsExceeded, is7Group);
+				print(wsc, newRange, emp, isNewPage || nextWorkplace, isMonthsExceeded, is7Group, itemBooks);
 				if (isNewPage) {
 					pageBreaks.add(newRange.range.getFirstRow());
 					sumRowCount = newRange.range.getRowCount(); // reset sum row
@@ -126,7 +125,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				offset = newRange.offset;
 			}
 
-			print(wsc, new RangeCustom(empRange, 0), firstEmp, true, isMonthsExceeded, is7Group);
+			print(wsc, new RangeCustom(empRange, 0), firstEmp, true, isMonthsExceeded, is7Group, itemBooks);
 
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
@@ -183,25 +182,25 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	 * @param isNewPage
 	 */
 	private void print(WorksheetCollection wsc, RangeCustom range, EmployeeData emp, boolean isPrintWorkplace,
-			boolean isMonthsExceeded, boolean is7Group) {
+			boolean isMonthsExceeded, boolean is7Group, List<ExportItem> itemBooks) {
 		if (isPrintWorkplace) {
 			String workplace = emp.getEmployeeInfo().getWorkplaceName();
 			range.cell("workplace").putValue(workplace);
 		}
 		// print employee info
-		if (this.itemBooks.size() >= 1) {
+		if (itemBooks.size() >= 1) {
 			range.cell("empName")
 					.setValue(emp.getEmployeeInfo().getEmployeeCode() + " " + emp.getEmployeeInfo().getEmployeeName());
 		}
-		if (this.itemBooks.size() >= 2) {
+		if (itemBooks.size() >= 2) {
 			range.cell("employmentName").setValue(emp.getEmployeeInfo().getEmploymentName());
 		}
-		if (this.itemBooks.size() >= 3) {
+		if (itemBooks.size() >= 3) {
 			range.cell("jobTitle").setValue(emp.getEmployeeInfo().getJobTitle());
 		}
 
 		int rowOffset = 0;
-		for (ExportItem itemBook : this.itemBooks) {
+		for (ExportItem itemBook : itemBooks) {
 			range.cell("item", rowOffset, 0).putValue(itemBook.getHeadingName());
 			AnnualWorkScheduleData data = emp.getAnnualWorkSchedule() == null ? null
 					: emp.getAnnualWorkSchedule().get(itemBook.getCd());

@@ -62,10 +62,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaBasicScheduleRepository extends JpaRepository implements BasicScheduleRepository {
 
-	public final String GET_LIST_DATE_BY_LIST_SID = "SELECT a.kscdpBSchedulePK.date " + "FROM KscdtBasicSchedule a "
+	public static final String GET_LIST_DATE_BY_LIST_SID = "SELECT a.kscdpBSchedulePK.date " + "FROM KscdtBasicSchedule a "
 			+ "WHERE a.kscdpBSchedulePK.sId IN :sIds " + "ORDER BY a.kscdpBSchedulePK.date DESC";
 	
-	private String QUERY_BY_SID_PERIOD = "SELECT c FROM KscdtBasicSchedule c"
+	private static final String QUERY_BY_SID_PERIOD = "SELECT c FROM KscdtBasicSchedule c"
 			+ " WHERE c.kscdpBSchedulePK.sId = :employeeId"
 			+ " AND c.kscdpBSchedulePK.date >= :startDate"
 			+ " AND c.kscdpBSchedulePK.date <= :endDate";
