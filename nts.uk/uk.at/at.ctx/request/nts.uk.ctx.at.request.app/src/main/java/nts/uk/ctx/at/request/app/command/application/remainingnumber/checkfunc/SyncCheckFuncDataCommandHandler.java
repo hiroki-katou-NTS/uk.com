@@ -67,6 +67,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		List<OutputErrorInfoCommand> outputErrorInfoCommand = new ArrayList<>();
 
 		// get data from client to server
+		int countEmployee = 0;
 		CheckFuncDataCommand command = context.getCommand();
 		List<EmployeeSearchCommand> employeeSearchCommand = command.getEmployeeList();
 		setter.setData(NUMBER_OF_SUCCESS, command.getPass());
@@ -120,7 +121,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				if (employeeRecordImport == null) {
 					// 取得失敗
 					// パラメータ.処理人数に＋１加算する
-					setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+					countEmployee++;
+					setter.updateData(NUMBER_OF_SUCCESS, countEmployee);
 					continue;
 				}
 				// 取得成功
@@ -133,7 +135,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				if (yearlyHolidaysTimeRemainingImport.isEmpty()) {
 					// 取得失敗
 					// パラメータ.処理人数に＋１加算する
-					setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+					countEmployee++;
+					setter.updateData(NUMBER_OF_SUCCESS, countEmployee);
 					continue;
 				}
 				if (asyncTask.hasBeenRequestedToCancel()) {
@@ -160,7 +163,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				if (!dailyWorkTypeListImport.isPresent()) {
 					// 取得失敗
 					// パラメータ.処理人数に＋１加算する
-					setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+					countEmployee++;
+					setter.updateData(NUMBER_OF_SUCCESS, countEmployee);
 					continue;
 				}
 				if (asyncTask.hasBeenRequestedToCancel()) {
@@ -180,8 +184,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 						yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime());
 				excelInforCommand.setDateAnnualRest(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining());
 				excelInforList.add(excelInforCommand);
-
-				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+				countEmployee++;
+				setter.updateData(NUMBER_OF_SUCCESS, countEmployee);
 
 				ObjectMapper mapper = new ObjectMapper();
 				try {
@@ -210,6 +214,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				return;
 			}
 		}
+		setter.updateData(NUMBER_OF_SUCCESS, employeeSearchCommand.size());
 		// push list err
 		if (outputErrorInfoCommand.size() > 0) {
 			// エラーがあった場合
@@ -219,7 +224,6 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 						.add("employeeName", outputErrorInfoCommand.get(i).getEmployeeName())
 						.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
 				setter.setData(ERROR_LIST + i, value);
-				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
 				setter.updateData(NUMBER_OF_ERROR, i + 1);
 
 				if (asyncTask.hasBeenRequestedToCancel()) {

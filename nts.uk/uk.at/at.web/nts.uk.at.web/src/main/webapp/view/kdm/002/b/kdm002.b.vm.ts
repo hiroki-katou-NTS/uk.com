@@ -240,7 +240,11 @@ module nts.uk.at.view.kdm002.b {
                                 }
                                 if (self.excelContent().length > 0) {
                                     if (res.succeeded) {
+                                        if(self.imErrorLog().length == 0){
                                         self.status(getText("KDM002_29"));
+                                            } else {
+                                             self.status(getText("KDM002_30"));
+                                        }
                                         self.startExportExcel(true);
                                         $('#BTN_CLOSE').focus();
                                     } else if (res.cancelled) {
