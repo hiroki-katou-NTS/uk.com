@@ -307,6 +307,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     _.forEach(data.targets, x => {
                         employeeData.push({ code: x.scd, name: x.bussinessName, id: x.sid });
                     });
+                    employeeData = _.sortBy(employeeData, ["code"]);
                     self.employeeListScreenG(employeeData);
                 }
             }).always(() => {
