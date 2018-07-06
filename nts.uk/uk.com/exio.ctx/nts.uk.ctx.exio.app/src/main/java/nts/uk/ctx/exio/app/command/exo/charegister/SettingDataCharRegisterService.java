@@ -6,7 +6,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.app.command.exo.datafomat.ChacDataFmSetCommand;
 import nts.uk.ctx.exio.dom.exo.datafomat.ChacDataFmSet;
 import nts.uk.ctx.exio.dom.exo.datafomat.ChacDataFmSetRepository;
 
