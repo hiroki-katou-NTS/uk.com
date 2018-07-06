@@ -192,7 +192,8 @@ public class RecoveryStorageService {
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
 			if (resultsSetting.isEmpty()) {
-				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
+				continue;
+				//return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 			}
 
 			// 履歴区分の判別する - check history division
@@ -235,7 +236,7 @@ public class RecoveryStorageService {
 		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 	    int indexCidOfCsv = 0;
 		List<String> targetDataHeader = targetDataTable.get(HEADER_CSV);
-		String V_FILED_KEY_UPDATE = null, TABLE_NAME = null, date = null, dateSub = "";
+		String V_FILED_KEY_UPDATE = null, TABLE_NAME = null, h_Date_Csv = null, dateSub = "";
 
 		HashMap<Integer, String> indexAndFiled = new HashMap<>();
 		// search data by employee
@@ -252,38 +253,36 @@ public class RecoveryStorageService {
 		for (List<String> dataRow : dataTableNotHeader) {
 			Map<String, String> filedWhere = new HashMap<>();
 			if (resultsSetting.size() == 1) {
-				date = dataRow.get(INDEX_H_DATE);
+				h_Date_Csv = dataRow.get(INDEX_H_DATE);
 			} else if (resultsSetting.size() == 2) {
-				date = dataRow.get(INDEX_H_START_DATE);
+				h_Date_Csv = dataRow.get(INDEX_H_START_DATE);
 			}
+			
+			
 			// データベース復旧処理
-			if (employeeId != null && !dataRow.get(INDEX_SID).equals(employeeId)) {
+			if ((StringUtil.isNullOrEmpty(h_Date_Csv, true))
+					|| (tableUse && employeeId != null && !dataRow.get(INDEX_SID).equals(employeeId))) {
 				continue;
 			}
 			
+			
 			// 履歴区分を判別する - check history division
-			if (tableUse && tableList.get().getHistoryCls() == HistoryDiviSion.NO_HISTORY
-					&& performDataRecovery.isPresent()
-					&& performDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE
+			if (((tableUse && tableList.get().getHistoryCls() == HistoryDiviSion.NO_HISTORY) || !tableUse)
+					&& ( performDataRecovery.isPresent() && performDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE
 					&& tableList.get().getRetentionPeriodCls() != TimeStore.FULL_TIME
-					&& !checkSettingDate(resultsSetting, tableList, dataRow)) {
-				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
-			} else if (!tableUse && performDataRecovery.isPresent()
-					&& performDataRecovery.get().getRecoveryMethod() == RecoveryMethod.RESTORE_SELECTED_RANGE
-					&& tableList.get().getRetentionPeriodCls() != TimeStore.FULL_TIME
-					&& !checkSettingDate(resultsSetting, tableList, dataRow)) {
-				continue;
+					&& !checkSettingDate(resultsSetting, tableList, dataRow, h_Date_Csv))) {
+				 continue;
 			}
 
 			// update recovery date for have history, save range none, year,
 			// year/month, year/month/day
 			if (tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY && tableUse)
-				dateSub = dateTimeCutter(YEAR_MONTH_DAY, date).orElse("");
+				dateSub = dateTimeCutter(YEAR_MONTH_DAY, h_Date_Csv).orElse("");
 			if (tableList.get().getRetentionPeriodCls() == TimeStore.FULL_TIME) {
 				dateSub = "";
 			}
 			
-			dateSub = dateTimeCutter(resultsSetting.get(0), date).orElse("");
+			dateSub = dateTimeCutter(resultsSetting.get(0), h_Date_Csv).orElse("");
 			dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, dateSub);
 
 			// create filed where for query
@@ -599,22 +598,13 @@ public class RecoveryStorageService {
 
 	}
 
-	public Boolean checkSettingDate(List<String> resultsSetting, Optional<TableList> tableList, List<String> dataRow)
+	public Boolean checkSettingDate(List<String> resultsSetting, Optional<TableList> tableList, List<String> dataRow, String h_Date_Csv)
 			throws ParseException {
 		
 		if (resultsSetting.isEmpty()) {
 			return false;
 		}
 
-		String h_Date_Csv = null;
-		if (resultsSetting.size() == 1) {
-			h_Date_Csv = dataRow.get(INDEX_H_DATE);
-		} else if (resultsSetting.size() == 2) {
-			h_Date_Csv = dataRow.get(INDEX_H_START_DATE);
-		}
-		if (StringUtil.isNullOrEmpty(h_Date_Csv, true)){
-			return false;
-		}
 		GeneralDate hDateCsv = stringToGenaralDate(h_Date_Csv); 
 		GeneralDate dateFrom = stringToGenaralDate(tableList.get().getSaveDateFrom().get());
 		GeneralDate dateTo = stringToGenaralDate(tableList.get().getSaveDateTo().get());
