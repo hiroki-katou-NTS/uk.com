@@ -4,6 +4,13 @@
 package nts.uk.screen.at.infra.dailyperformance.correction;
 
 import java.math.BigDecimal;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -373,10 +380,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("AND e.errorCode IN :errorCodes");
 		SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS = builderString.toString();
 
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT s FROM KwrmtErAlWorkRecord s");
+//		builderString.append(" WHERE s.kwrmtErAlWorkRecordPK.companyId = :companyId ");
+//		builderString.append("AND s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :lstCode");
 		builderString = new StringBuilder();
-		builderString.append("SELECT s FROM KwrmtErAlWorkRecord s");
-		builderString.append(" WHERE s.kwrmtErAlWorkRecordPK.companyId = :companyId ");
-		builderString.append("AND s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :lstCode");
+		builderString.append("SELECT s , u.ERAL_CHECK_ID ");
+		builderString.append("FROM KRCMT_ERAL_SET s JOIN KRCMT_ERAL_CONDITION u ");
+		builderString.append("ON s.ERAL_CHECK_ID = u.ERAL_CHECK_ID ");
+		builderString.append("WHERE s.CID = :companyId ");
+		builderString.append("AND s.ERROR_ALARM_CD IN :lstCode ");
 		SEL_ERROR_SETTING = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -873,17 +886,66 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<DPErrorSettingDto> getErrorSetting(List<String> listErrorCode) {
-		return this.queryProxy().query(SEL_ERROR_SETTING, KwrmtErAlWorkRecord.class)
-				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstCode", listErrorCode)
-				.getList().stream().map(s -> {
-					return new DPErrorSettingDto(s.kwrmtErAlWorkRecordPK.companyId,
-							s.kwrmtErAlWorkRecordPK.errorAlarmCode, s.errorAlarmName, s.fixedAtr == 1 ? true : false,
-							s.useAtr == 1 ? true : false, s.typeAtr,
-							s.krcmtErAlCondition == null ? "" : s.krcmtErAlCondition.messageDisplay,
-							s.boldAtr == 1 ? true : false, s.messageColor, s.cancelableAtr == 1 ? true : false,
-							s.errorDisplayItem == null ? null : s.errorDisplayItem.intValue());
-				}).collect(Collectors.toList());
+	public List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode) {
+		return getErrorSettingN(companyId, listErrorCode);
+//		List<Object[]> enities = this.queryProxy().query(SEL_ERROR_SETTING, Object[].class).setParameter("companyId", companyId).setParameter("lstCode", listErrorCode)
+//				.getList();
+//		return enities.stream().map(x ->{
+//			KwrmtErAlWorkRecord alWorkRecord = (KwrmtErAlWorkRecord) x[0];
+//			String alCondition = (String) x[1];
+//			return new DPErrorSettingDto(alWorkRecord.kwrmtErAlWorkRecordPK.companyId,
+//					alWorkRecord.kwrmtErAlWorkRecordPK.errorAlarmCode, alWorkRecord.errorAlarmName, alWorkRecord.fixedAtr == 1 ? true : false,
+//							alWorkRecord.useAtr == 1 ? true : false, alWorkRecord.typeAtr,
+//									alCondition == null ? "" : alCondition,
+//											alWorkRecord.boldAtr == 1 ? true : false, alWorkRecord.messageColor, alWorkRecord.cancelableAtr == 1 ? true : false,
+//													alWorkRecord.errorDisplayItem == null ? null : alWorkRecord.errorDisplayItem.intValue());
+//		}).collect(Collectors.toList());
+	}
+	
+	private List<DPErrorSettingDto> getErrorSettingN(String companyId, List<String> listErrorCode){
+		List<DPErrorSettingDto> dtos = new ArrayList<>();
+		String textIn ="";
+		for(int i =0; i<listErrorCode.size(); i++){
+			String  text = listErrorCode.get(i);
+			if(i == (listErrorCode.size() -1)){
+				textIn += "'" +text+ "'";
+			}else{
+				textIn += "'" +text+ "'"+ ",";
+			}
+		}
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			String query = "SELECT s.*, u.MESSAGE_DISPLAY FROM KRCMT_ERAL_SET as s JOIN KRCMT_ERAL_CONDITION as u ON s.ERAL_CHECK_ID = u.ERAL_CHECK_ID WHERE s.CID = ? AND s.ERROR_ALARM_CD IN (" + textIn+")";
+			PreparedStatement pstatement = con.prepareStatement(query);
+			pstatement.setString(1, companyId);
+//			Array array = pstatement.getConnection().createArrayOf("ANY ", new Object[]{"A", "B","C"});
+//			pstatement.setArray(2, array);
+			ResultSet rs = pstatement.executeQuery();
+
+			while (rs.next()) {
+
+				String errorAlarmCode = rs.getString("ERROR_ALARM_CD");
+				String errorAlarmName = rs.getString("ERROR_ALARM_NAME");
+				int fixedAtr = rs.getInt("FIXED_ATR");
+				int useAtr = rs.getInt("USE_ATR");
+				int typeAtr = rs.getInt("ERAL_ATR");
+				int boldAtr = rs.getInt("BOLD_ATR");
+				String messageColor = rs.getString("MESSAGE_COLOR");
+				int cancelableAtr = rs.getInt("CANCELABLE_ATR");
+				Integer errorDisplayItem = rs.getInt("ERROR_DISPLAY_ITEM");
+				String messageDisplay = rs.getString("MESSAGE_DISPLAY");
+
+				dtos.add(new DPErrorSettingDto(companyId, errorAlarmCode, errorAlarmName, fixedAtr == 1 ? true : false,
+						useAtr == 1 ? true : false, typeAtr, messageDisplay == null ? "" : messageDisplay,
+						boldAtr == 1 ? true : false, messageColor, cancelableAtr == 1 ? true : false,
+						errorDisplayItem));
+			}
+
+			return dtos;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dtos;
 	}
 
 	@Override
@@ -1369,4 +1431,5 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				KrcdtEmployeeMonthlyPerError.class).map(x -> new ErrorFlexMonthDto(x.flex, x.annualHoliday, x.yearlyReserved));
 		return errorFlex;
 	}
+	
 }

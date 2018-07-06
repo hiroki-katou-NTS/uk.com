@@ -34,7 +34,6 @@ import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
 import nts.uk.ctx.at.record.dom.adapter.employee.NarrowEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
-import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
@@ -114,6 +113,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
 import nts.uk.shr.com.context.AppContexts;
@@ -177,6 +177,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private OptionalItemRepository optionalItemRepository;
+	
+	@Inject
+	private IFindData findData;
 	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
@@ -254,7 +257,7 @@ public class DailyPerformanceCorrectionProcessor {
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
-		
+		findData.destroyFindData();
 		// identityProcessDto show button A2_6
 		//アルゴリズム「本人確認処理の利用設定を取得する」を実行する
 		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
@@ -425,9 +428,11 @@ public class DailyPerformanceCorrectionProcessor {
 		if (screenDto.getLstEmployee().size() > 0) {
 			if (lstError.size() > 0) {
 				// Get list error setting
+				long timeT = System.currentTimeMillis();
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
+				System.out.println("time load Error: "+ (System.currentTimeMillis() - timeT));
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}
 		}
@@ -1024,6 +1029,7 @@ public class DailyPerformanceCorrectionProcessor {
 	public List<ErrorReferenceDto> getListErrorRefer(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee) {
 		List<ErrorReferenceDto> lstErrorRefer = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
 		List<DPErrorDto> lstError = this.repo.getListDPError(dateRange,
 				lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList()));
 		Map<String, String> appMapDateSid = getApplication(new ArrayList<>(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet())), dateRange, null);
@@ -1031,7 +1037,7 @@ public class DailyPerformanceCorrectionProcessor {
 			// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
 			// Get list error setting
 			List<DPErrorSettingDto> lstErrorSetting = this.repo
-					.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 			// convert to list error reference
 			//IntStream.range(0, lstError.size()).forEach(id -> {
 			   int rowId = 0;

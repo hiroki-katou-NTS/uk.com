@@ -189,6 +189,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         isVisibleMIGrid: KnockoutObservable<boolean> = ko.observable(false);
         listAttendanceItemId: KnockoutObservableArray<any> = ko.observableArray([]);
         monthYear: KnockoutObservable<string> = ko.observable(null);
+        
+        agreementInfomation: KnockoutObservable<AgreementInfomation> =  ko.observable(new AgreementInfomation());
 
         constructor(dataShare: any) {
             var self = this;
@@ -580,7 +582,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 //update
             }
-           //  alert("thoi gian load ALL: "+ (performance.now() - startTime));
+            //alert("time load ALL: "+ (performance.now() - startTime));
         }
 
         convertMinute(value): string {
@@ -591,6 +593,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred(),
                 self = this;
             if(data.monthResult != null){
+                // set agreementInfo
+                self.agreementInfomation().mapDataAgreement(data.monthResult.agreementInfo);
                 self.autBussCode(data.autBussCode);
                 let listFormatDaily :any[] = data.monthResult.formatDaily;
                 self.listAttendanceItemId((data.monthResult.results != null && data.monthResult.results.length != 0) ? data.monthResult.results[0].items : []);
@@ -608,6 +612,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // delete localStorage miGrid
                 localStorage.removeItem(window.location.href + '/miGrid');
                 self.getNameMonthly();
+                //
             }
             
             if (data.monthResult != null &&  data.monthResult.flexShortage != null && data.monthResult.flexShortage.showFlex && self.displayFormat() == 0) {
@@ -3436,5 +3441,41 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         INSERT = 1,
         SHOW_CONFIRM = 2
 
+    }
+    
+     class AgreementInfomation {
+        agreementTime:  KnockoutObservable<string> = ko.observable("");
+        cssAgree: any;
+         
+        agreementExcess:  KnockoutObservable<string> = ko.observable("");
+        cssFrequency: any;
+         
+        showAgreement: KnockoutObservable<boolean> = ko.observable(false);
+                
+        constructor() {
+           // this.agreementTime = "";
+            this.cssAgree = "";
+            
+           // this.agreementExcess = "";
+            this.cssFrequency = "";
+            
+        }
+         
+        mapDataAgreement(data: any) : void{
+            if(!data.showAgreement) return;
+            this.agreementTime(nts.uk.resource.getText("KDW003_74", [data.agreementTime36, data.maxTime]));
+            this.cssAgree = data.cssAgree;
+            this.agreementExcess(nts.uk.resource.getText("KDW003_76", [data.excessFrequency, data.maxNumber]));
+            this.cssFrequency = data.cssFrequency;
+            
+            this.showAgreement(data.showAgreement);
+            
+            this.processState(data.cssAgree, data.cssFrequency);
+        }
+         
+        processState(cssAgree: any, cssFrequency: any){
+            $("#agree-time").addClass(cssAgree);
+            $("#agree-excess").addClass(cssFrequency);
+        }
     }
 }

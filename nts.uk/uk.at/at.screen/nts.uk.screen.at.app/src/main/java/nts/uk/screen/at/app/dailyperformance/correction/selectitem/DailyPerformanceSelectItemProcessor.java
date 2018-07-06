@@ -295,7 +295,7 @@ public class DailyPerformanceSelectItemProcessor {
 			List<String> formatCodes) {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
-
+        String companyId = AppContexts.user().companyId();
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
 		 */
@@ -365,7 +365,7 @@ public class DailyPerformanceSelectItemProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
 				//screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
