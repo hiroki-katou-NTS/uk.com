@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryOperatingCondition;
 @Stateless
 public class StopPerformDataRecovryCommandHandler extends CommandHandler<StopPerformDataRecovryCommand> {
 
@@ -16,8 +17,7 @@ public class StopPerformDataRecovryCommandHandler extends CommandHandler<StopPer
 	protected void handle(CommandHandlerContext<StopPerformDataRecovryCommand> context) {
 		StopPerformDataRecovryCommand updateCommand = context.getCommand();
 		String dataRecoveryProcessId = updateCommand.getDataRecoveryProcessId();
-		int operatingCondition = 1;
-		repoDataRecoveryMng.updateByOperatingCondition(dataRecoveryProcessId, operatingCondition);
+		repoDataRecoveryMng.updateByOperatingCondition(dataRecoveryProcessId, DataRecoveryOperatingCondition.INTERRUPTION_END);
 	}
 
 }

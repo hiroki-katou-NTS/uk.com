@@ -88,3 +88,7 @@
 .contents-area{
 	padding: 5px !important;
 }
+#data-recovery-wizard > .content > .body {
+ padding-top: 0;
+ left: 0px !important;
+}

@@ -37,7 +37,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             { value: RecoveryMethod.RESTORE_ALL, text: getText('CMF004_92') },
             { value: RecoveryMethod.SELECTED_RANGE, text: getText('CMF004_93') }
         ]);
-        dataContentConfirm: KnockoutObservable<DataContentConfirm> = ko.observable(new DataContentConfirm([], 1));
+        dataContentConfirm: KnockoutObservable<DataContentConfirm> = ko.observable(new DataContentConfirm([], 0));
         //Screen F
         changeDataRecoveryPeriod: KnockoutObservable<ChangeDataRecoveryPeriod> = ko.observable(new ChangeDataRecoveryPeriod([]));
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
@@ -46,7 +46,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         selectedEmployeeCodeScreenG: KnockoutObservableArray<string> = ko.observableArray([]);
         employeeListScreenG: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         //Screen H
-        buton_I_enable: KnockoutObservable<string> = ko.observable(true);
+        buton_I_enable: KnockoutObservable<boolean> = ko.observable(true);
         recoveryMethodDescription1: KnockoutObservable<string> = ko.observable("");
         recoveryMethodDescription2: KnockoutObservable<string> = ko.observable("");
         dataRecoverySummary: KnockoutObservable<DataRecoverySummary> = ko.observable(new DataRecoverySummary([], 0, [], []));
@@ -139,6 +139,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     fileId: fileInfo.id,
                     fileName: fileInfo.originalName
                 });
+                self.fileName("");
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                     setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
                     nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
@@ -430,8 +431,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
 
         nextToScreenG(): void {
-            let self = this;
             nts.uk.ui.errors.clearAll();
+            let self = this;
+            $("#F5_5 .ntsDatepicker").trigger("validate");
             for (let checkRow of ko.toJS(self.changeDataRecoveryPeriod().changeDataCategoryList())) {
                 if (checkRow.isRecover) {
                     if (checkRow.startOfPeriod > checkRow.endOfPeriod) {
@@ -448,10 +450,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     }
                 }
             }
-
-
-
-
+        
             if (!nts.uk.ui.errors.hasError()) {
                 self.initScreenG();
                 $('#data-recovery-wizard').ntsWizard("next");

@@ -15,7 +15,7 @@ public interface DataRecoveryMngRepository {
 
 	void remove(String dataRecoveryProcessId);
 	
-	void updateByOperatingCondition(String dataRecoveryProcessId, int operatingCondition);
+	void updateByOperatingCondition(String dataRecoveryProcessId, DataRecoveryOperatingCondition operatingCondition);
 	
 	void updateCategoryCnt(String dataRecoveryProcessId, int totalCategoryCnt);
 	
