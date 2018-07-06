@@ -2,11 +2,14 @@ package nts.uk.ctx.exio.app.find.exo.charoutputsetting;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.datafomat.ChacDataFmSet;
 import nts.uk.ctx.exio.dom.exo.datafomat.ChacDataFmSetRepository;
 
+
+@Stateless
 public class SettingTypeScreen {
 
 	@Inject
