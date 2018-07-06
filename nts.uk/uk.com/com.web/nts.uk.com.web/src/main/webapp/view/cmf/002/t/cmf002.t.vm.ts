@@ -54,11 +54,11 @@ module nts.uk.com.view.cmf002.t.viewmodel {
                 block.invisible();
                 let self = this;
                 let data = {
-                    conditionSetCd: self.conditionSetCd();
-                    conditionName: self.conditionName();
-                    overWrite: self.overWrite();
-                    destinationName: self.destinationName();
-                    copyDestinationCode: self.copyDestinationCode();
+                    conditionSetCd: self.conditionSetCd(),
+                    conditionName: self.conditionName(),
+                    overWrite: self.overWrite(),
+                    destinationName: self.destinationName(),
+                    copyDestinationCode: self.copyDestinationCode()
 
                 };
                 service.excuteCopy(data).done((result) => {
