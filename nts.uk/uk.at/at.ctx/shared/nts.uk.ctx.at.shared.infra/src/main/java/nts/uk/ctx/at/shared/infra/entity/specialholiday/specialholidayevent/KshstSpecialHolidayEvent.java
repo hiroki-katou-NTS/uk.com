@@ -38,11 +38,11 @@ public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializabl
 	
 	/* 忌引とする */
 	@Column(name = "MAKE_INVITATION_ATR")
-	public String makeInvitation;
+	public int makeInvitation;
 	
 	/* 休日を取得日に含める */
 	@Column(name = "INCLUDE_HOLIDAYS_ATR")
-	public String includeHolidays;
+	public int includeHolidays;
 	
 	/* 年齢条件 */
 	@Column(name = "AGE_LIMIT_ATR")
@@ -54,23 +54,31 @@ public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializabl
 	
 	/* 雇用条件 */
 	@Column(name = "RESTRICT_EMP_ATR")
-	public String restrictEmployment;
+	public int restrictEmployment;
 	
 	/* 分類条件 */
 	@Column(name = "RESTRICT_CLS_ATR")
-	public String restrictClassification;
+	public int restrictClassification;
 	
 	/* 性別 */
 	@Column(name = "GENDER_ATR")
 	public Integer gender;
 
 	/* 年齢範囲 */
-	@Column(name = "AGE_RANGE_ATR")
-	public String ageRange;
+	@Column(name = "AGE_RANGE_LOWER_LIMIT")
+	public String ageRangeLowerLimit;
+	
+	/* 年齢範囲 */
+	@Column(name = "AGE_RANGE_HIGHER_LIMIT")
+	public String ageRangeHigherLimit;
 	
 	/* 年齢基準 */
-	@Column(name = "AGE_STANDARD_ATR")
-	public String ageStandard;
+	@Column(name = "AGE_STANDARD_LOWER_LIMIT")
+	public String ageStandardLowerLimit;
+	
+	/* 年齢基準*/
+	@Column(name = "AGE_STANDARD_HIGHER_LIMIT")
+	public String ageStandardHigherLimit;
 	
 	/* メモ */
 	@Column(name = "MEMO")

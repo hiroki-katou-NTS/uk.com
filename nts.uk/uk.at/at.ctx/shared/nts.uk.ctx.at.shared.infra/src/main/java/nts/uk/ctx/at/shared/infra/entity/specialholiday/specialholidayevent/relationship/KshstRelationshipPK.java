@@ -1,9 +1,15 @@
-package nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent;
+package nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.relationship;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+@AllArgsConstructor
+@NoArgsConstructor
+@Embeddable
 public class KshstRelationshipPK implements Serializable {
 
 	
