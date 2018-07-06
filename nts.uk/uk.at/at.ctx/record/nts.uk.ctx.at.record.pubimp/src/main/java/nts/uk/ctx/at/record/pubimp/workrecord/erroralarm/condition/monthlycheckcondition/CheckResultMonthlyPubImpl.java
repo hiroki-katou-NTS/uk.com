@@ -72,7 +72,7 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	}
 
 	@Override
-	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, Integer closureDate,
+	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, ClosureDate closureDate,
 			String employeeID, AttendanceItemConditionPubExport attendanceItemCondition) {
 		boolean check = perTimeMonActualResult.checkPerTimeMonActualResult(
 				yearMonth, 

@@ -41,5 +41,5 @@ public interface CheckResultMonthlyPub {
 	 * @param attendanceItemCondition
 	 * @return
 	 */
-	boolean checkPerTimeMonActualResult(YearMonth yearMonth,int closureID, Integer closureDate,String employeeID,AttendanceItemConditionPubExport attendanceItemCondition);
+	boolean checkPerTimeMonActualResult(YearMonth yearMonth,int closureID, ClosureDate closureDate,String employeeID,AttendanceItemConditionPubExport attendanceItemCondition);
 }

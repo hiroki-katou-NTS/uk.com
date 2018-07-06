@@ -39,7 +39,8 @@ public class CheckAgreementDefault implements CheckAgreementService {
 		
 		if(status == AgreementTimeStatusOfMonthly.NORMAL ||status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL ) {
 			return Optional.empty();
-		}else if(status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR || status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP ||status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+		}else if(status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR || status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP ||
+				status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
 			return Optional.of(new ValueExtractAlarmWR(null,
 					employeeID,
 					date,

@@ -177,9 +177,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			
 			// アルゴリズム「実績ロックされているか判定する」を実行する
-			if (companySets.getDetermineActualLocked(criteriaDate, closureId.value) == LockStatus.LOCK){
-				asyncContext.finishedAsCancelled();
-				return ProcessState.INTERRUPTION;
+			if (companySets.getDetermineActualLocked(datePeriod.end(), closureId.value) == LockStatus.LOCK){
+				continue;
 			}
 			
 			// 月別実績を集計する　（アルゴリズム）
