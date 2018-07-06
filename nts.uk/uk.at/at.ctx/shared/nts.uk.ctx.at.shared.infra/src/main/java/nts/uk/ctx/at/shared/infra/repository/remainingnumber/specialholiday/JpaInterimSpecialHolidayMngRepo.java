@@ -18,9 +18,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements InterimSpecialHolidayMngRepository{
 
-	private String DELETE_BY_ID = "DELETE FROM KrcmtInterimSpeHoliday c"
+	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimSpeHoliday c"
 			+ " WHERE c.pk.specialHolidayId = :specialHolidayId";
-	private String QUERY_BY_ID = "SELECT c FROM KrcmtInterimSpeHoliday c"
+	private static final String QUERY_BY_ID = "SELECT c FROM KrcmtInterimSpeHoliday c"
 			+ " WHERE c.pk.specialHolidayId = :specialHolidayId";
 	private InterimSpecialHolidayMng toDomain(KrcmtInterimSpeHoliday c) {
 		return new InterimSpecialHolidayMng(
