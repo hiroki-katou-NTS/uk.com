@@ -2204,7 +2204,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		}
 		/*日別実績の短時間勤務*/
 		
-		List<ShortWorkTimeOfDaily> test = Collections.emptyList();
+		List<ShortWorkTimeOfDaily> test = new ArrayList<>();
 		for(KrcdtDayShorttime shortTimeValue : KrcdtDayShorttime) {
 			if(shortTimeValue != null) {
 				test.add(new ShortWorkTimeOfDaily(new WorkTimes(shortTimeValue.count == null ? 0 : shortTimeValue.count),
