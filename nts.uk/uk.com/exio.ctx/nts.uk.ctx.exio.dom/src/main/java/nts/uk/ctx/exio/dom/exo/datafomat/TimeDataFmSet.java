@@ -11,7 +11,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 * 時間型データ形式設定
 */
 @Getter
-public class TimeDataFmSet extends AggregateRoot
+public class TimeDataFmSet extends DataFormatSetting
 {
     
     /**
@@ -99,12 +99,12 @@ public class TimeDataFmSet extends AggregateRoot
     */
     private Rounding minuteFractionDigitProcessCla;
 
-	public TimeDataFmSet(String cid, int nullValueSubs, int outputMinusAsZero, int fixedValue,
+	public TimeDataFmSet(int itemType, String cid, int nullValueSubs, int outputMinusAsZero, int fixedValue,
 			String valueOfFixedValue, int fixedLengthOutput,
 			int fixedLongIntegerDigit, int fixedLengthEditingMothod,int delimiterSetting, 
 			int selectHourMinute, int minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, 
 			int fixedValueOperation, String fixedCalculationValue, String valueOfNullValueSubs,int minuteFractionDigitProcessCla) {
-		super();
+		super(itemType);
 		this.cid = cid;
 		this.nullValueSubs = EnumAdaptor.valueOf(nullValueSubs, NotUseAtr.class);
 		this.outputMinusAsZero = EnumAdaptor.valueOf(outputMinusAsZero, NotUseAtr.class);

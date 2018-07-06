@@ -14,8 +14,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 * 文字型データ形式設定
 */
 @Getter
-@AllArgsConstructor
-public class ChacDataFmSet extends AggregateRoot
+public class ChacDataFmSet extends DataFormatSetting
 {
     
     /**
@@ -83,9 +82,10 @@ public class ChacDataFmSet extends AggregateRoot
     */
     private Optional<DataTypeFixedValue> valueOfFixedValue;
 
-	public ChacDataFmSet(String cid, int nullValueReplace, String valueOfNullValueReplace, int cdEditting,
+	public ChacDataFmSet(int itemType,String cid, int nullValueReplace, String valueOfNullValueReplace, int cdEditting,
 			int fixedValue, int cdEdittingMethod, int cdEditDigit, String cdConvertCd, int spaceEditting,
 			int effectDigitLength, int startDigit, int endDigit, String valueOfFixedValue) {
+		super(itemType);
 		this.cid = cid;
 		this.nullValueReplace = EnumAdaptor.valueOf(nullValueReplace, NotUseAtr.class);
 		this.valueOfNullValueReplace = Optional.of(new DataFormatNullReplacement(valueOfNullValueReplace));

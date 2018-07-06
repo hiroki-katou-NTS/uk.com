@@ -11,7 +11,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 * 在職区分型データ形式設定
 */
 @Getter
-public class AwDataFormatSet extends AggregateRoot
+public class AwDataFormatSet extends DataFormatSetting
 {
     
     /**
@@ -49,11 +49,11 @@ public class AwDataFormatSet extends AggregateRoot
     */
     private Optional<DataTypeFixedValue> retirementOutput;
 
-	public AwDataFormatSet(String cid, String closedOutput,
+	public AwDataFormatSet(int itemType ,String cid, String closedOutput,
 			String absenceOutput, int fixedValue,
 			String valueOfFixedValue, String atWorkOutput,
 			String retirementOutput) {
-		super();
+		super(itemType);
 		this.cid = cid;
 		this.closedOutput = Optional.of(new DataTypeFixedValue(closedOutput));
 		this.absenceOutput = Optional.of(new DataTypeFixedValue(absenceOutput));

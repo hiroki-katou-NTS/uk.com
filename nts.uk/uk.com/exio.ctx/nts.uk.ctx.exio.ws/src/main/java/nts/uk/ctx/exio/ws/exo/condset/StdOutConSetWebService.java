@@ -13,6 +13,7 @@ import nts.uk.ctx.exio.app.command.exo.condset.ExcuteCopyOutCondSetCommandHandle
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
+import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 
 @Path("exio/exo/condset")
@@ -39,6 +40,12 @@ public class StdOutConSetWebService extends WebService{
 	@Path("getCndSet")
 	public List<StdOutputCondSet> getCndSet(){
 		return stdOutputCondSetFinder.getCndSet();
+	}
+	
+	@POST
+	@Path("getOutItem")
+	public List<StdOutItemDto> getOutItem(String cndSetcd){
+		return stdOutputCondSetFinder.getOutItem(cndSetcd);
 	}
 	
 	@POST
