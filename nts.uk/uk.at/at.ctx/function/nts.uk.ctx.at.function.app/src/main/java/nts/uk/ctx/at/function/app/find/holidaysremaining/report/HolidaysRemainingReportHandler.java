@@ -79,6 +79,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter
 					.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, GeneralDate.localDate(endDate),
 							true, false, true, true, false, false));
+			boolean isSameCurrentMonth = true;
+			Optional<YearMonth> lastCurrentMonth = null;
 			for (EmployeeInformationImport emp : listEmployeeInformationImport) {
 				String wpCode = "";
 				String wpName = "";
@@ -95,11 +97,16 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					positionName = emp.getPosition().getPositionName();
 				}
 
+				Optional<YearMonth> currentMonth = this.getCurrentMonth(cId, emp.getEmployeeId(), baseDate);
+				if (isSameCurrentMonth && lastCurrentMonth != null && currentMonth != lastCurrentMonth) {
+					isSameCurrentMonth = false;
+				}
+				lastCurrentMonth = currentMonth;
 				employees.put(emp.getEmployeeId(),
 						new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
 								empMap.get(emp.getEmployeeId()).getEmployeeName(),
 								empMap.get(emp.getEmployeeId()).getWorkplaceId(), wpCode, wpName, empmentName,
-								positionName, this.getCurrentMonth(cId, emp.getEmployeeId(), baseDate)));
+								positionName, currentMonth));
 			}
 
 			HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(
@@ -107,8 +114,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					query.getHolidayRemainingOutputCondition().getEndMonth(),
 					query.getHolidayRemainingOutputCondition().getOutputItemSettingCode(),
 					query.getHolidayRemainingOutputCondition().getPageBreak(),
-					query.getHolidayRemainingOutputCondition().getBaseDate(), hdManagement.get(), employeeIds,
-					employees);
+					query.getHolidayRemainingOutputCondition().getBaseDate(), hdManagement.get(), 
+					isSameCurrentMonth, employeeIds, employees);
 
 			this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 		}
