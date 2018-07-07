@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.app.find.exo.charoutputsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.exio.dom.exo.datafomat.ItemType;
+import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
 
 @Getter
 @AllArgsConstructor

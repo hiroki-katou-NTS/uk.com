@@ -9,7 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.datafomat.InTimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.InTimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -141,7 +142,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     }
 
     public InTimeDataFmSet toDomain() {
-        return new InTimeDataFmSet(this.inTimeDataFmSetPk.cid, this.nullValueSubs, this.valueOfNullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.timeSeletion, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMothod, this.delimiterSetting, this.previousDayOutputMethod, this.nextDayOutputMethod, this.minuteFractionDigit, this.decimalSelection, this.minuteFractionDigitProcessCla);
+        return new InTimeDataFmSet(ItemType.INS_TIME.value, this.inTimeDataFmSetPk.cid, this.nullValueSubs, this.valueOfNullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.timeSeletion, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMothod, this.delimiterSetting, this.previousDayOutputMethod, this.nextDayOutputMethod, this.minuteFractionDigit, this.decimalSelection, this.minuteFractionDigitProcessCla);
     }
     public static OiomtInTimeDataFmSet toEntity(InTimeDataFmSet domain) {
         return new OiomtInTimeDataFmSet(

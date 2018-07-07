@@ -84,7 +84,7 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	}
 
 	private OiomtStdOutputCondSet toEntity(StdOutputCondSet domain) {
-		return new OiomtStdOutputCondSet(new OiomtStdOutputCondSetPk(domain.getCid(), domain.getConditionSetCd()),
+		return new OiomtStdOutputCondSet(new OiomtStdOutputCondSetPk(domain.getCid(), domain.getConditionSetCode()),
 				domain.getCategoryId(), domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
 				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat());
 	}

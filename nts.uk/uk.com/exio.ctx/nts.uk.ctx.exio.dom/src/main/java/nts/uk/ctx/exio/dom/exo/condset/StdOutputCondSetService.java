@@ -24,32 +24,18 @@ public class StdOutputCondSetService {
 		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid,conditionSetCd);
 		if(stdOutputCondSet.isPresent()){
 			if(overwite){
-				//result = OK
-				//overwrite = TO
 				resultExvuteCopy.put("result", "OK");
 				resultExvuteCopy.put("overwrite", "TO");
 			}else{
 				throw new BusinessException("Msg_3");
 			}
 		}else{
-			//result = OK
-			//overwrite = DONOT
 			resultExvuteCopy.put("result", "OK");
 			resultExvuteCopy.put("overwrite", "DONOT");
 		}
 		resultExvuteCopy.put("copyDestinationCode", copyDestinationCode);
 		resultExvuteCopy.put("destinatioName", destinationName);
-		
 	return resultExvuteCopy;
-	}
-	
-	
-	
-	public Map<String, String> getResultAndOverwrite(String result, String overwite){
-		Map<String, String> resultAndOverwrite = new HashMap<>();
-		resultAndOverwrite.put("result", result);
-		resultAndOverwrite.put("overwite", overwite);
-		return resultAndOverwrite;
 	}
 	//******
 	

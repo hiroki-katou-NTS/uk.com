@@ -26,7 +26,7 @@
 				<!--B1_3 登録-->
 				<button id="B1_3" data-bind="click: register" class="proceed">#{i18n.getText('CMF002_29')}</button>
 				<!--B1_5 複製-->
-				<button id="B1_5">#{i18n.getText('CMF002_32')}</button>
+				<button id="B1_5" data-bind="click: openCopyScreen" >#{i18n.getText('CMF002_32')}</button>
 				<!--B1_6 削除-->
 				<button id="B1_6" class="danger">#{i18n.getText('CMF002_33')}</button>
 				<!--B1_8 外部出力-->
@@ -63,6 +63,7 @@
 								<table id="B3_3"
 									data-bind="ntsGridList: {
 													height: 514,
+													rows: 15,
 		                                            options: $parent.conditionSettingList,
 		                                            optionsValue: $parent.selectedConditionSetting,
 		                                            primaryKey: 'conditionSetCode',
@@ -71,8 +72,8 @@
 								                				{headerText: '#{i18n.getText('CMF002_38')}', key: 'conditionSetName', width: 200, formatter: _.escape}
 								                			],
 		                                            multiple: false,
-		                                            value: $parent.selectedConditionSetting,
-		                                            enable: true}">
+		                                            value: $parent.selectedConditionSetting
+		                                            }">
 								</table>
 							</div>
 						</div>

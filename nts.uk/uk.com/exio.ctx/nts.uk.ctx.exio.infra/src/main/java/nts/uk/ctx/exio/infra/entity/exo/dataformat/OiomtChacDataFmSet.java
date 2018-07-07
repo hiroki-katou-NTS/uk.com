@@ -9,7 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.datafomat.ChacDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -121,7 +122,7 @@ public class OiomtChacDataFmSet extends UkJpaEntity implements Serializable
     }
 
     public ChacDataFmSet toDomain() {
-        return new ChacDataFmSet(
+        return new ChacDataFmSet(ItemType.CHARACTER.value,
         		this.chacDataFmSetPk.cid,
         		this.nullValueReplace,
         		this.valueOfNullValueReplace,
@@ -145,7 +146,7 @@ public class OiomtChacDataFmSet extends UkJpaEntity implements Serializable
         		domain.getFixedValue().value,
         		domain.getCdEdittingMethod().value, 
         		domain.getCdEditDigit().orElse(null).v(),
-        		domain.getCdConvertCd().orElse(null).v(),
+        		domain.getConvertCode().orElse(null).v(),
         		domain.getSpaceEditting().value,
         		domain.getEffectDigitLength().value, 
         		domain.getStartDigit().orElse(null).v(),

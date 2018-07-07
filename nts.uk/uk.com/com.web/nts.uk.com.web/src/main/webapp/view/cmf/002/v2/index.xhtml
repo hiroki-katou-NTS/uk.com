@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 500 };</script>
+			<script>var dialogSize = { width: 380, height: 570 };</script>
 			<!-- 			<com:ValidatorScript> -->
 			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit -->
 			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber -->
@@ -19,7 +19,7 @@
 			<com:scriptfile path="cmf002.v2.vm.js" />
 			<com:scriptfile path="cmf002.v2.start.js" />
 			<com:stylefile path="cmf002.v2.style.css" />
-			<com:stylefile path="cmf002.v2.service.js" />
+			<com:scriptfile path="cmf002.v2.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -34,10 +34,10 @@
 							searchMode: 'highlight', 
 							targetKey: 'dispConvertCode', 
 							comId: 'V2_2', 
-							items: listConvertCode, 
-							selected: selectedConvertCode,  
-							selectedKey: 'dispItemCode', 
-							fields: ['dispConvertName'], 
+							items: listOutputCodeConvert, 
+							selected: selectedOutputCodeConvert,  
+							selectedKey: 'dispConvertCode', 
+							fields: ['dispConvertCode','dispConvertName'], 
 							mode: 'igGrid'}" 
 							/>
 
@@ -46,7 +46,7 @@
 								height: 300,
 								width: 280,
 								name:'#{i18n.getText('CMF002_350')}',
-								dataSource: listConvertCode,
+								dataSource: listOutputCodeConvert,
 								primaryKey: 'dispConvertCode',
 									columns: [
 					                { headerText: '#{i18n.getText('CMF002_270')}', key: 'dispConvertCode', width: 70, formatter: _.escape },
@@ -54,7 +54,7 @@
 					            ],
 					            rows: 10,
 								multiple: false,
-								value: selectedConvertCode
+								value: selectedOutputCodeConvert
 							}">
 						</table>
 					</div>

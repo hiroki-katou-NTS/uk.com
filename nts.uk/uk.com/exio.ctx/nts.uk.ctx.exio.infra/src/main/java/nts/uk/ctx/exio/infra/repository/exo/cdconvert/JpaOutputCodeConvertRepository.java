@@ -17,6 +17,7 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtOutputCodeConvert f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
+    private static final String SELECT_BY_CID = SELECT_BY_KEY_STRING + " f.cid = :cid";
 
     @Override
     public List<OutputCodeConvert> getAllOutputCodeConvert(){
@@ -44,4 +45,11 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
     public void remove(){
         this.commandProxy().remove(OiomtOutputCodeConvert.class, new OiomtOutputCodeConvertPk()); 
     }
+
+	@Override
+	public List<OutputCodeConvert> getOutputCodeConvertByCid(String cid) {
+		return this.queryProxy().query(SELECT_BY_CID, OiomtOutputCodeConvert.class)
+				.setParameter("cid", cid)
+				.getList(item -> item.toDomain());
+	}
 }
