@@ -12,6 +12,7 @@ import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtCtgItem;
 import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItem;
 import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItemPk;
+import nts.uk.ctx.exio.infra.entity.exo.outputitemorder.OiomtStdOutItemOrder;
 
 @Stateless
 public class JpaStandardOutputItemRepository extends JpaRepository implements StandardOutputItemRepository {
@@ -21,6 +22,9 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.outItemCd =:outItemCd AND  f.stdOutItemPk.condSetCd =:condSetCd ";
 	private static final String SELECT_BY_CID_AND_SET_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.condSetCd =:condSetCd ";
+	
+	private static final String DELETE_BY_CID_CNDSETCD = "DELETE f FROM OiomtStdOutItem f "
+			+ "WHERE f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd";
 
 	private List<OiomtCtgItem> oiomtCtgItems = new ArrayList<>();
 
@@ -56,6 +60,12 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	@Override
 	public void remove(String cid, String outItemCd, String condSetCd) {
 		this.commandProxy().remove(OiomtStdOutItem.class, new OiomtStdOutItemPk(cid, outItemCd, condSetCd));
+	}
+
+	@Override
+	public void remove(String cid, String condSetCd) {
+			this.queryProxy().query(DELETE_BY_CID_CNDSETCD, OiomtStdOutItemOrder.class).setParameter("cid", cid)
+			.setParameter("condSetCd", condSetCd);
 	}
 
 }

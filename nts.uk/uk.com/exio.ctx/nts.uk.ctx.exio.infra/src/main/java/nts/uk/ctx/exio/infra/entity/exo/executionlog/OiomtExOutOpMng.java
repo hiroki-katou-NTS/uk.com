@@ -10,11 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.exo.executionlog.ExIoOperationState;
 import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMng;
-import nts.uk.ctx.exio.dom.exo.executionlog.ExOutProcessingId;
-import nts.uk.ctx.exio.dom.exo.executionlog.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -81,10 +77,8 @@ public class OiomtExOutOpMng extends UkJpaEntity implements Serializable {
 	}
 
 	public ExOutOpMng toDomain() {
-		return new ExOutOpMng(new ExOutProcessingId(this.exOutOpMngPk.exOutProId), this.proCnt, this.errCnt,
-				this.totalProCnt, EnumAdaptor.valueOf(this.doNotInterrupt, NotUseAtr.class), this.proUnit,
-				EnumAdaptor.valueOf(this.opCond, ExIoOperationState.class)
-				);
+		return new ExOutOpMng(this.exOutOpMngPk.exOutProId, this.proCnt, this.errCnt, this.totalProCnt,
+				this.doNotInterrupt, this.proUnit, this.opCond);
 
 	}
 

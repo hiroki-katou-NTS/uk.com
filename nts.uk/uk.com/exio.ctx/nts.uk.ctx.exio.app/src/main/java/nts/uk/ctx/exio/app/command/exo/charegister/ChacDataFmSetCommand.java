@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.command.exo.datafomat;
+package nts.uk.ctx.exio.app.command.exo.charegister;
 
 import lombok.Value;
 
@@ -40,12 +40,12 @@ public class ChacDataFmSetCommand
     /**
     * コード編集桁
     */
-    private int cdEditDigit;
+    private Integer cdEditDigit;
     
     /**
     * コード変換コード
     */
-    private int cdConvertCd;
+    private String cdConvertCd;
     
     /**
     * スペース編集
@@ -60,12 +60,12 @@ public class ChacDataFmSetCommand
     /**
     * 有効桁数開始桁
     */
-    private int startDigit;
+    private Integer startDigit;
     
     /**
     * 有効桁数終了桁
     */
-    private int endDigit;
+    private Integer endDigit;
     
     /**
     * 固定値の値

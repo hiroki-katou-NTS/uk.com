@@ -19,5 +19,7 @@ public interface StandardOutputItemRepository {
 	void update(StandardOutputItem domain);
 
 	void remove(String cid, String outputItemCode, String conditionSettingCode);
+	
+	void remove(String cid, String condSetCd);
 
 }

@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.exo.category.*;
-import nts.arc.enums.EnumAdaptor;;
+import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
+import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;;
 
 @Stateless
 @Transactional
@@ -19,33 +19,15 @@ public class AddExCndOutputCommandHandler extends CommandHandler<ExCndOutputComm
 	@Override
 	protected void handle(CommandHandlerContext<ExCndOutputCommand> context) {
 		ExCndOutputCommand addCommand = context.getCommand();
-		repository.add(new ExCndOutput(new CategoryCd(addCommand.getCategoryId()),
-				new MainTable(addCommand.getMainTable()),
-				new Form1(addCommand.getForm1()),
-				new Form2(addCommand.getForm2()),
-				new Conditions(addCommand.getConditions()),
-				new PhysicalProjectName(addCommand.getOutCondItemName1()),	
-				new PhysicalProjectName(addCommand.getOutCondItemName2()),
-				new PhysicalProjectName(addCommand.getOutCondItemName3()),
-				new PhysicalProjectName(addCommand.getOutCondItemName4()),
-				new PhysicalProjectName(addCommand.getOutCondItemName5()),
-				new PhysicalProjectName(addCommand.getOutCondItemName6()),
-				new PhysicalProjectName(addCommand.getOutCondItemName7()),
-				new PhysicalProjectName(addCommand.getOutCondItemName8()),
-				new PhysicalProjectName(addCommand.getOutCondItemName9()),
-				new PhysicalProjectName(addCommand.getOutCondItemName10()),				
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation1(),Association.class) ,
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation2(),Association.class) ,
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation3(),Association.class) ,
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation4(),Association.class) ,
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation5(),Association.class) ,
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation6(),Association.class) ,
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation7(),Association.class) ,
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation8(),Association.class) ,
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation9(),Association.class) ,
-				EnumAdaptor.valueOf(addCommand.getOutCondAssociation10(),Association.class)));
-			
-		
-
+		repository.add(new ExCndOutput(addCommand.getCategoryId(), addCommand.getMainTable(), addCommand.getForm1(),
+				addCommand.getForm2(), addCommand.getConditions(), addCommand.getOutCondItemName1(),
+				addCommand.getOutCondItemName2(), addCommand.getOutCondItemName3(), addCommand.getOutCondItemName4(),
+				addCommand.getOutCondItemName5(), addCommand.getOutCondItemName6(), addCommand.getOutCondItemName7(),
+				addCommand.getOutCondItemName8(), addCommand.getOutCondItemName9(), addCommand.getOutCondItemName10(),
+				addCommand.getOutCondAssociation1(), addCommand.getOutCondAssociation2(),
+				addCommand.getOutCondAssociation3(), addCommand.getOutCondAssociation4(),
+				addCommand.getOutCondAssociation5(), addCommand.getOutCondAssociation6(),
+				addCommand.getOutCondAssociation7(), addCommand.getOutCondAssociation8(),
+				addCommand.getOutCondAssociation9(), addCommand.getOutCondAssociation10()));
 	}
 }

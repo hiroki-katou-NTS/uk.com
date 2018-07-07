@@ -19,6 +19,8 @@ public class JpaStandardOutputItemOrderRepository extends JpaRepository implemen
 			+ " WHERE  f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.outItemCd =:outItemCd AND  f.stdOutItemOrderPk.condSetCd =:condSetCd ";
 	private static final String SELECT_BY_CID_AND_SET_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd ";
+	private static final String DELETE_BY_CID_CNDSETCD = "DELETE f FROM OiomtStdOutItemOrder f "
+			+ "WHERE f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd";
 
 	@Override
 	public List<StandardOutputItemOrder> getAllStandardOutputItemOrder() {
@@ -53,5 +55,10 @@ public class JpaStandardOutputItemOrderRepository extends JpaRepository implemen
 	public void remove(String cid, String outItemCd, String condSetCd) {
 		this.commandProxy().remove(OiomtStdOutItemOrder.class, new OiomtStdOutItemOrderPk(cid, outItemCd, condSetCd));
 	}
-
+	
+	@Override
+	public void remove(String cid, String condSetCd) {
+		this.queryProxy().query(DELETE_BY_CID_CNDSETCD, OiomtStdOutItemOrder.class).setParameter("cid", cid)
+		.setParameter("condSetCd", condSetCd);
+	}
 }

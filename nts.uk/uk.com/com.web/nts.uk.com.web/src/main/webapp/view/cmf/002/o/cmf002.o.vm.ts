@@ -3,9 +3,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog.info;
     import alertError = nts.uk.ui.dialog.alertError;
-    import block = nts.uk.ui.block;
+
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+      import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
 
     export class ScreenModel {
         //wizard
@@ -28,6 +29,25 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         // setup ccg001
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        //set up kcp 005
+        lstSearchEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        selectedEmployeeCode: KnockoutObservableArray<string>;
+        listComponentOption: any;
+        selectedCode: KnockoutObservable<string>;
+        multiSelectedCode: KnockoutObservableArray<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+        isShowWorkPlaceName: KnockoutObservable<boolean>;
+        isShowSelectAllButton: KnockoutObservable<boolean>;
+        employeeList: KnockoutObservableArray<UnitModel>;
+
+
+
+
+
 
         constructor() {
             var self = this;
@@ -54,11 +74,71 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             });
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
-   
-            self.loadListOutputItem();
-            self.loadListOutputCondition()
-        }
 
+            //set up kcp 005
+            self.baseDate = ko.observable(new Date());
+            self.selectedCode = ko.observable('1');
+            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+            self.isShowAlreadySet = ko.observable(false);
+            self.alreadySettingList = ko.observableArray([
+                { code: '1', isAlreadySetting: true },
+                { code: '2', isAlreadySetting: true }
+            ]);
+            self.isDialog = ko.observable(false);
+            self.isShowNoSelectRow = ko.observable(false);
+            self.isMultiSelect = ko.observable(false);
+            self.isShowWorkPlaceName = ko.observable(false);
+            self.isShowSelectAllButton = ko.observable(false);
+            this.employeeList = ko.observableArray<UnitModel>([]);
+            self.listComponentOption = {
+                isShowAlreadySet: self.isShowAlreadySet(),
+                isMultiSelect: self.isMultiSelect(),
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedCode,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectRow(),
+                alreadySettingList: self.alreadySettingList,
+                isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                isShowSelectAllButton: self.isShowSelectAllButton()
+            };
+
+        }
+         /**
+        * apply ccg001 search data to kcp005
+        */
+        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            var self = this;
+            self.employeeList([]);
+            var employeeSearchs: UnitModel[] = [];
+            for (var employeeSearch of dataList) {
+                var employee: UnitModel = {
+                    code: employeeSearch.employeeCode,
+                    name: employeeSearch.employeeName,
+                    workplaceName: employeeSearch.workplaceName
+                };
+                employeeSearchs.push(employee);
+            }
+            self.employeeList(employeeSearchs);
+            self.lstPersonComponentOption = {
+                isShowAlreadySet: false,
+                isMultiSelect: true,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedEmployeeCode,
+                isDialog: false,
+                isShowNoSelectRow: false,
+                alreadySettingList: self.alreadySettingPersonal,
+                isShowWorkPlaceName: true,
+                isShowSelectAllButton: true,
+                maxWidth: 550,
+                maxRows: 15
+            };
+          
+        }
+      
         selectStandardMode() {
             $('#ex_output_wizard').ntsWizard("next");
         }
@@ -76,6 +156,18 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.loadScreenQ();
             $('#ex_output_wizard').ntsWizard("goto", 2);
         }
+        
+        nextToScreenR() {
+            let self = this;
+            next();
+            
+            service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
+                self.listOutputCondition(res.ctgItemDataCustomList);
+                self.listOutputItem(res.ctdOutItemCustomList);
+            }).fail(function(res: any) {
+                console.log("getExOutSummarySetting fail");
+            });
+        }
 
         loadListCondition() {
             let self = this;
@@ -88,22 +180,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             ]);
             self.selectedConditionCd('1');
             self.selectedConditionName('test a');
-        }
-
-        loadListOutputItem() {
-            let self = this;
-
-            for (let i = 0; i < 20; i++) {
-                self.listOutputItem.push(new model.StandardOutputItem('00' + i, 'Test ' + i, '', '', 0));
-            }
-        }
-
-        loadListOutputCondition() {
-            let self = this;
-
-            for (let i = 0; i < 10; i++) {
-                self.listOutputCondition.push(new OutputCondition('item ' + i, 'Condition ' + i));
-            }
         }
 
         loadScreenQ() {
@@ -144,17 +220,44 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 isMutipleCheck: true, // 選択モード
 
                 /** Return data */
-                returnDataFromCcg001: function(data: any) {
-                    debugger;
-                    self.selectedEmployee(data.listEmployee);
-                    //self.applyKCP005ContentSearch(data.listEmployee);
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                  
+                   
+                    
+                    self.applyKCP005ContentSearch(data.listEmployee);
+                    
                 }
             }
-
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
     }
 
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+
+    export interface UnitModel {
+        code: string;
+        name?: string;
+        workplaceName?: string;
+        isAlreadySetting?: boolean;
+    }
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
+    }
     class OutputCondition {
         itemName: string;
         condition: string;
