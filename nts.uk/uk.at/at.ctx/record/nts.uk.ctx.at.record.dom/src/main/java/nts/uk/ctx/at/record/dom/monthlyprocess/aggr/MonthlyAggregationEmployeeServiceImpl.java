@@ -183,7 +183,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			
 			// 月別実績を集計する　（アルゴリズム）
 			val value = this.aggregateMonthlyRecordService.aggregate(companyId, employeeId,
-					yearMonth, closureId, closureDate, datePeriod, prevAggrResult, companySets, employeeSets);
+					yearMonth, closureId, closureDate, datePeriod, prevAggrResult, companySets, employeeSets,
+					Optional.empty(), Optional.empty());
 			if (value.getErrorInfos().size() > 0) {
 
 				// エラー処理

@@ -13,6 +13,7 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffDa
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.RemainDataTimesMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
@@ -133,6 +135,8 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param prevAggrResult 前回集計結果　（年休積立年休の集計結果）
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
+	 * @param dailyWorksOpt 日別実績(WORK)List
+	 * @param monthlyWorkOpt 月別実績(WORK)
 	 * @return 集計結果
 	 */
 	public AggregateMonthlyRecordValue aggregate(
@@ -140,7 +144,9 @@ public class AggregateMonthlyRecordServiceProc {
 			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
 			AggrResultOfAnnAndRsvLeave prevAggrResult,
 			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets) {
+			MonAggrEmployeeSettings employeeSets,
+			Optional<List<IntegrationOfDaily>> dailyWorksOpt,
+			Optional<IntegrationOfMonthly> monthlyWorkOpt) {
 		
 		this.aggregateResult = new AggregateMonthlyRecordValue();
 		this.errorInfos = new HashMap<>();
@@ -172,11 +178,11 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 計算に必要なデータを準備する
 		this.monthlyCalculatingDailys = MonthlyCalculatingDailys.loadData(
-				employeeId, monthPeriod, this.repositories);
+				employeeId, monthPeriod, dailyWorksOpt, this.repositories);
 		
 		// 集計前の月別実績データを確認する
 		this.monthlyOldDatas = MonthlyOldDatas.loadData(
-				employeeId, yearMonth, closureId, closureDate, this.repositories);
+				employeeId, yearMonth, closureId, closureDate, monthlyWorkOpt, this.repositories);
 		
 		// 「労働条件項目」を取得
 		List<WorkingConditionItem> workingConditionItems = this.repositories.getWorkingConditionItem()
