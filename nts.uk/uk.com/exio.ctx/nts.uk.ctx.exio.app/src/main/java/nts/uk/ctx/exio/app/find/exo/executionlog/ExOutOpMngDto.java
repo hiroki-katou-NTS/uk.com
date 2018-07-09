@@ -52,7 +52,7 @@ public class ExOutOpMngDto {
 
 
 	public static ExOutOpMngDto fromDomain(ExOutOpMng domain) {
-		return new ExOutOpMngDto(domain.getExOutProId().v(),
+		return new ExOutOpMngDto(domain.getExOutProId(),
 				domain.getProCnt(),
 				domain.getErrCnt(),
 				domain.getTotalProCnt(),
