@@ -13,14 +13,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.ChildNursingRemainExport;
-import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.ChildNursingRemainInforExport;
-import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.NursingMode;
-import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.ShNursingLeaveSettingPub;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.NursCareLevRemainDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.NursingCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.InterimRemainOfMonthProccess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -28,6 +26,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettin
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.temp.caredata.TempCareData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.temp.caredata.TempCareDataRepository;
+import nts.uk.ctx.at.shared.pub.vacation.setting.nursingleave.ChildNursingRemainExport;
+import nts.uk.ctx.at.shared.pub.vacation.setting.nursingleave.ChildNursingRemainInforExport;
+import nts.uk.ctx.at.shared.pub.vacation.setting.nursingleave.NursingMode;
+import nts.uk.ctx.at.shared.pub.vacation.setting.nursingleave.ShNursingLeaveSettingPub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -41,7 +43,13 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	private NursingLeaveSettingRepository nursingLeaveSettingRepository;
 
 	@Inject
-	private NursCareLevRemainDataRepository nursCareLevRemainDataRepository;
+	private LeaveForCareDataRepo leaveForCareDataRepo;
+	
+	@Inject
+	private LeaveForCareInfoRepository leaveForCareInfoRepository;
+	
+	@Inject
+	private ChildCareLeaveRemaiDataRepo childCareLeaveRemaiDataRepo;
 
 	@Inject
 	private TempCareDataRepository tempCareDataRepository;
@@ -115,9 +123,9 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		double grantedNumberNextTime = 0;
 		double useNumberPersonInfo = 0;
 		boolean useClassification = false;
-		Optional<NursingCareLeaveRemainingInfo> optionalNursingInfo = this.nursCareLevRemainInfoRepository
-				.getChildCareByEmpId(employeeId);
-		NursingCareLeaveRemainingInfo nursingInfo = optionalNursingInfo.get();
+		Optional<LeaveForCareInfo> optionalNursingInfo = this.leaveForCareInfoRepository
+				.getCareByEmpId(employeeId);
+		LeaveForCareInfo nursingInfo = optionalNursingInfo.get();
 		useClassification = nursingInfo.isUseClassification();
 		if (nursingInfo.getUpperlimitSetting().equals(UpperLimitSetting.FAMILY_INFO)) {
 			int fakeTargetNumberFamily = 13; // (gọi request 440 và 441 ra,
@@ -144,7 +152,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		// setManage
 		childNursingRemainExport.setIsManage(useClassification);
 		// calculate overlap time
-		Optional<NursingCareLeaveRemainingData> optionalNursingData = this.nursCareLevRemainDataRepository
+		Optional<LeaveForCareData> optionalNursingData = this.leaveForCareDataRepo
 				.getCareByEmpId(employeeId);
 		useNumberPersonInfo = optionalNursingData.get().getNumOfUsedDay().v();
 		GeneralDate startDateOverlapBeforeGrant, endDateOverlapBeforeGrant, startDateOverlapAfterGrant,
@@ -241,7 +249,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		} else {
 			List<TempCareData> tempCareDataList = tempCareDataRepository.findByEmpIdInPeriod(employeeId,
 					startDate, endDate);
-			tempCareDataList.forEach( domain -> usedNumber += domain.getAnnualLeaveUse().v());
+			//tempCareDataList.forEach( domain -> usedNumber += domain.getAnnualLeaveUse().v());
 		}
 		
 		return usedNumber;
