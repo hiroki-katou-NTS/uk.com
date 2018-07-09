@@ -258,6 +258,17 @@ public class TotalWorkingTime {
 			flexPreAppTime = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime();
 		}
 		
+		//staticを外すまでの所定外深夜事前申請取り出し処理
+		AttendanceTime beforeApplicationTime = new AttendanceTime(0);
+		if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()
+				&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
+				&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
+				&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime() != null
+				&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null
+				) {
+			beforeApplicationTime = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getBeforeApplicationTime();
+		}		
+		
 		/*日別実績の所定内時間(就業時間)*/
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(recordClass,
 				   																      vacationClass,
@@ -281,7 +292,7 @@ public class TotalWorkingTime {
 																									eachCompanyTimeSet,
 																									flexPreAppTime,
 																									conditionItem,
-																									predetermineTimeSetByPersonInfo,recordClass.getCoreTimeSetting());
+																									predetermineTimeSetByPersonInfo,recordClass.getCoreTimeSetting(),beforeApplicationTime);
 		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;

@@ -66,7 +66,7 @@ public class HolidayWorkTimeOfDaily {
 														 AutoCalSetting holidayAutoCalcSetting,
 														 WorkType workType,
 														 Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
+														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily,AttendanceTime beforeApplicationTime) {
 		//時間帯
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
 		//枠時間
@@ -77,7 +77,7 @@ public class HolidayWorkTimeOfDaily {
 				 															   integrationOfDaily);
 		//深夜
 		//holMidNightTime.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
-		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet));
+		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet,beforeApplicationTime));
 		//使用時間
 		val holidayTimeSpentTime = new AttendanceTime(0);
 		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheet,
@@ -120,7 +120,7 @@ public class HolidayWorkTimeOfDaily {
 	 * 休出時間が含んでいる深夜時間の算出
 	 * @return
 	 */
-	public static HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(HolidayWorkTimeSheet holidayWorkTimeSheet) {
+	public static HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(HolidayWorkTimeSheet holidayWorkTimeSheet,AttendanceTime beforeApplicationTime) {
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
 			if(frameTime.getMidNightTimeSheet().isPresent()) {
@@ -134,6 +134,15 @@ public class HolidayWorkTimeOfDaily {
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getStatutory()),StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getExcess()),StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getPublicholiday()),StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		
+		//事前申請制御
+		for(HolidayWorkMidNightTime holidayWorkMidNightTime:holidayWorkList) {
+			if(holidayWorkMidNightTime.getTime().getTime().greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
+				TimeDivergenceWithCalculation time = TimeDivergenceWithCalculation.sameTime(beforeApplicationTime);
+				holidayWorkMidNightTime = new HolidayWorkMidNightTime(time,holidayWorkMidNightTime.getStatutoryAtr());
+			}
+		}
+		
 		return new HolidayMidnightWork(holidayWorkList);
 	}
 	

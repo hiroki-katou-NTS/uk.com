@@ -238,7 +238,7 @@ public class OverTimeOfDaily {
 												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,  
 												  AttendanceTime flexPreAppTime,
 												  WorkingConditionItem conditionItem,
-												  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
+												  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,AttendanceTime beforeApplicationTime) {
 		val overTimeSheet = recordReGet.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get();
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
@@ -250,7 +250,7 @@ public class OverTimeOfDaily {
 																  recordReGet.getIntegrationOfDaily(), 
 																  recordReGet.getStatutoryFrameNoList());
 		//残業内の深夜時間計算
-		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting()));
+		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),beforeApplicationTime));
 		//変形法定内残業時間計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
@@ -292,9 +292,13 @@ public class OverTimeOfDaily {
 	 * @param oneDay
 	 * @return　所定外深夜時間
 	 */
-	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(OverTimeSheet overTimeSheet,AutoCalOvertimeSetting autoCalcSet) {
+	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(OverTimeSheet overTimeSheet,AutoCalOvertimeSetting autoCalcSet,AttendanceTime beforeApplicationTime) {
 		
 		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
+		//事前申請制御
+		if(calcTime.greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
+			calcTime = beforeApplicationTime;
+		}
 		return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));
 	}
 	
