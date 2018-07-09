@@ -140,16 +140,39 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         nextToScreenR() {
             let self = this;
-           
-            $('#ex_output_wizard').ntsWizard("next");
+            next();
+            
+            service.getExOutSummarySetting("conditionSetCd").done(res ==> {
 
             service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
                 self.listOutputCondition(res.ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
-            }).fail(function(res: any) {
+            }).fail(res ==> {
                 console.log("getExOutSummarySetting fail");
             });
         }
+        
+        createExOutText() {
+            let self = this;
+            
+            //TODO set command
+            let command = new CreateExOutTextCommand();
+            service.createExOutText(command).done(res ==> {
+                let params = {
+                    storeProcessingId: res,
+                };
+
+                setShared("CMF002_R_PARAMS", params);
+                nts.uk.ui.windows.sub.modal("/view/cmf/002/s/index.xhtml").onClosed(() => {
+                    //TODO
+                    //disable nut
+                    //$("").focus();
+                });
+            }).fail(res ==> {
+                console.log("createExOutText fail");
+            });
+        }
+
         loadListCondition() {
             let self = this;
 
@@ -245,6 +268,27 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         constructor(itemName: string, condition: string) {
             this.itemName = itemName;
             this.condition = condition;
+        }
+    }
+
+    class CreateExOutTextCommand {
+        conditionSetCd: string;
+        userId: string;
+        startDate: string;
+        endDate: string;
+        referenceDate: string;
+        standardType: boolean;
+        sidList: Array<string>;
+        
+        constructor(conditionSetCd: string, userId: string, startDate: string, endDate: string
+                , referenceDate: string, standardType: boolean, sidList: Array<string>) {
+            this.conditionSetCd = conditionSetCd;
+            this.userId = userId;
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.referenceDate = referenceDate;
+            this.standardType = standardType;
+            this.sidList = sidList;
         }
     }
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.ws.exo.condset;
+package nts.uk.ctx.exio.ws.exo.condset.externaloutput;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
