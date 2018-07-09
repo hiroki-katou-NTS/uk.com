@@ -115,7 +115,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         flag: boolean = true;
         isClickChangeDisplayMode: boolean = false;
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
-        arrLockCellInit: KnockoutObservableArray<any> = ko.observableArray([]);
+        arrLockCellInit: KnockoutObservableArray<Cell> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -1408,15 +1408,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         saveData(): void {
             let self = this;
             setTimeout(function() {
-
                 let arrObj: any[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
-                    arrTmp: Cell[] = _.clone(arrCell);
-                if (arrCell.length == 0) {
+                    arrTmp: Cell[] = _.clone(arrCell),
+                    arrLockCellAfterSave: Cell[] = $("#extable").exTable("lockCells");
+                // compare 2 array lockCell init and after
+                if (arrCell.length == 0 && _.isEqual(self.arrLockCellInit(), arrLockCellAfterSave)) {
                     return;
                 }
 
                 self.stopRequest(false);
+                                    
+                let arrNewCellIsLocked: any[] = _.differenceWith(arrLockCellAfterSave, self.arrLockCellInit(), _.isEqual),
+                    arrNewCellIsUnlocked: any[] = _.differenceWith(self.arrLockCellInit(), arrLockCellAfterSave, _.isEqual);
 
                 if (self.selectedModeDisplay() == 2) {
                     _.each(arrTmp, (item) => {
@@ -1430,20 +1434,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
                     });
                 }
+                arrNewCellIsUnlocked = _.differenceBy(arrNewCellIsUnlocked, arrCell, 'rowIndex', 'columnKey');
+                arrCell.push.apply(arrCell, arrNewCellIsUnlocked);
+                arrCell =_.differenceBy(arrCell, arrNewCellIsLocked, 'rowIndex', 'columnKey');
+                
 
                 for (let i = 0; i < arrCell.length; i += 1) {
+                    let cell: any = arrCell[i], valueCell = cell.value;
                     let workScheduleTimeZone: any = self.selectedModeDisplay() != 1 ? [{
                         scheduleCnt: 1,
-                        scheduleStartClock: (typeof arrCell[i].value.startTime === 'number') ? arrCell[i].value.startTime
-                            : (arrCell[i].value.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(arrCell[i].value.startTime).asMinutes : null),
-                        scheduleEndClock: (typeof arrCell[i].value.endTime === 'number') ? arrCell[i].value.endTime
-                            : (arrCell[i].value.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(arrCell[i].value.endTime).asMinutes : null),
+                        scheduleStartClock: (typeof valueCell.startTime === 'number') ? valueCell.startTime
+                            : (valueCell.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.startTime).asMinutes : null),
+                        scheduleEndClock: (typeof valueCell.endTime === 'number') ? valueCell.endTime
+                            : (valueCell.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.endTime).asMinutes : null),
                         //set static bounceAtr =  1
                         bounceAtr: 1
                     }] : null;
                         
                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
-                    let date: string = moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
+                    let date: string = moment.utc(cell.columnKey.slice(1, cell.columnKey.length), 'YYYYMMDD').toISOString(),
                         confirmedAtr: number = 0;
 
                     //TO-DO
@@ -1451,15 +1460,46 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     arrObj.push({
                         date: date,
-                        employeeId: self.listSid()[Number(arrCell[i].rowIndex)],
-                        workTimeCode: arrCell[i].value.workTimeCode,
-                        workTypeCode: arrCell[i].value.workTypeCode,
+                        employeeId: self.listSid()[Number(cell.rowIndex)],
+                        workTimeCode: valueCell.workTimeCode,
+                        workTypeCode: valueCell.workTypeCode,
                         confirmedAtr: confirmedAtr,
                         workScheduleTimeZoneSaveCommands: workScheduleTimeZone
                         //workScheduleStateCommands: workScheduleStateCommands
                     });
                 }
+                
+                for (let i = 0; i < arrNewCellIsLocked.length; i += 1) {
+                    let newCellIsLocked: any = arrNewCellIsLocked[i], valueNewCellIsLocked = newCellIsLocked.value;
+                    if(!valueNewCellIsLocked.workTypeCode) continue; 
+                    let workScheduleTimeZone: any = self.selectedModeDisplay() != 1 ? [{
+                        scheduleCnt: 1,
+                        scheduleStartClock: (typeof valueNewCellIsLocked.startTime === 'number') ? valueNewCellIsLocked.startTime
+                            : (valueNewCellIsLocked.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.startTime).asMinutes : null),
+                        scheduleEndClock: (typeof valueNewCellIsLocked.endTime === 'number') ? valueNewCellIsLocked.endTime
+                            : (valueNewCellIsLocked.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.endTime).asMinutes : null),
+                        //set static bounceAtr =  1
+                        bounceAtr: 1
+                    }] : null;
+                        
+                    // slice string '_YYYYMMDD' to 'YYYYMMDD'
+                    let date: string = moment.utc(newCellIsLocked.columnKey.slice(1, newCellIsLocked.columnKey.length), 'YYYYMMDD').toISOString(),
+                        confirmedAtr: number = 1;
 
+                    //TO-DO
+                    // let workScheduleStateCommands: any = null;
+
+                    arrObj.push({
+                        date: date,
+                        employeeId: self.listSid()[Number(newCellIsLocked.rowIndex)],
+                        workTimeCode: valueNewCellIsLocked.workTimeCode,
+                        workTypeCode: valueNewCellIsLocked.workTypeCode,
+                        confirmedAtr: confirmedAtr,
+                        workScheduleTimeZoneSaveCommands: workScheduleTimeZone
+                        //workScheduleStateCommands: workScheduleStateCommands
+                    });
+                }
+                
                 service.registerData(arrObj).done(function(error: any) {
                     //get data and update extable
                     self.setDatasource().done(function() {
