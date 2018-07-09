@@ -62,7 +62,7 @@ module nts.uk.com.view.kfp001.h.viewmodel {
                 columns: [
                     { headerText: "", key: 'logId', dataType: 'string', hidden: true },
                     { headerText: getText('KFP001_14'), key: 'code', dataType: 'string', width: '60px' },
-                    { headerText: getText('KFP001_16'), key: 'name', dataType: 'string', width: '180px' },
+                    { headerText: getText('KFP001_16'), key: 'name', dataType: 'string', width: '200px' },
                     { headerText: getText('KFP001_55'), key: 'executionDateTime', dataType: 'string', width: '180px' },
                     { headerText: getText('KFP001_56'), key: 'executorCode', dataType: 'string', width: '160px' },
                     { headerText: getText('KFP001_57'), key: 'executorName', dataType: 'string', width: '140px' },
@@ -138,7 +138,7 @@ module nts.uk.com.view.kfp001.h.viewmodel {
             this.logId = logId;
             this.code = code;
             this.name = name;
-            this.executionDateTime = execDT;
+            this.executionDateTime = moment.utc(execDT).format("YYYY/MM/DD hh:mm:ss");
             this.executorCode = execCode;
             this.executorName = execName;
             this.start = start;
