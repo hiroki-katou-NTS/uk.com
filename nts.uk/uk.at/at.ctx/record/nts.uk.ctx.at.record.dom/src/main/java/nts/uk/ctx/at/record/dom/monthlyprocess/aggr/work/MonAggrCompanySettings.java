@@ -465,12 +465,7 @@ public class MonAggrCompanySettings {
 		if (actualLock == null) return LockStatus.UNLOCK;
 		
 		// 月のロック状態を判定する
-		if (actualLock.getDailyLockState() == LockStatus.LOCK) {
-			currentLockStatus = LockStatus.LOCK;
-		}
-		else {
-			currentLockStatus = actualLock.getMonthlyLockState();
-		}
+		currentLockStatus = actualLock.getMonthlyLockState();
 		
 		// ロック状態をチェックする
 		if (currentLockStatus == LockStatus.UNLOCK) return LockStatus.UNLOCK;

@@ -16,6 +16,7 @@
 .inputDivLabelMain{
 	margin-left: 30px;
 	margin-right: 20px;
+	width: 55px;
 	font-size: 13px;
 }
 
@@ -122,9 +123,6 @@
 	padding-top: 7px;
 }
 
-#nts-component-tree{
-	width: 352px !important;
-}
 #single-tree-grid_container{
 	width: 352px !important;
 }

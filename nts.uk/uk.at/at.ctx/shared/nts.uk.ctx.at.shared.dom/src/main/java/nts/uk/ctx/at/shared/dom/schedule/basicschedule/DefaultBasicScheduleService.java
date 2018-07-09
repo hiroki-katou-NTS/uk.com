@@ -35,7 +35,10 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
-
+	
+	/**
+	 *  就業時間帯の必須チェック
+	 */
 	@Override
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
@@ -150,7 +153,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 		return WorkStyle.ONE_DAY_WORK;
 	}
-
+	
 	@Override
 	public SetupType checkRequired(SetupType morningWorkStyle, SetupType afternoonWorkStyle) {
 
