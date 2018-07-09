@@ -15,7 +15,7 @@ public class CompanySpecificDateFinder {
 	@Inject
 	private CompanySpecificDateRepository companySpecDateRepo;
 	
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	// NO with name
 	public List<CompanySpecificDateDto> getComSpecByDate(String comSpecDate) {

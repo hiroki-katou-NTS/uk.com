@@ -10,14 +10,14 @@
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: stampAtr,
-						enable: true }"></div>
+						enable: screenMode()==1 }"></div>
 		</div>
 	</div>
 	<div class="table m5-table">
 		<div class="cell m5-column1">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
 		</div>
-		<div class="cell m5-column2">
+		<div class="cell m5-column2" data-bind="let: { screenEditable: editable }">
 			<div data-bind="if: stampAtr() == 0">
 				<div id="m5-div-a">
 					<div id="m5-backgroud-a"></div>
@@ -45,12 +45,12 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 										<div class="m5-inline-div" data-bind="with: startLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
 										</div>
 									</div>	
@@ -62,12 +62,12 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>	
 									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 										<div class="m5-inline-div" data-bind="with: endLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>
@@ -107,7 +107,7 @@
 												optionsValue: 'code',
 												value: stampGoOutAtr,
 												optionsText: 'name',
-												enable: true,
+												enable: screenEditable,
 												columns: [
 													{ prop: 'name', length: 3 },
 												]}"></span>	
@@ -119,12 +119,12 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 										<div class="m5-inline-div" data-bind="with: startLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
 										</div>
 									</div>
@@ -136,12 +136,12 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>	
 									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 										<div class="m5-inline-div" data-bind="with: endLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>
@@ -178,7 +178,7 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 								<td>
@@ -188,7 +188,7 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 							</tr>	
@@ -223,7 +223,7 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 								<td>
@@ -233,7 +233,7 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 							</tr>	
@@ -274,7 +274,7 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 								<td>
@@ -284,13 +284,13 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 								<td>	
 									<div class="m5-inline-div" data-bind="with: supportCard">
 										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-										<button data-bind="click: function(){ $parents[1].openSelectCardDialog() }, enable: checked">#{i18n.getText('KAF002_15')}</button>
+										<button data-bind="click: function(){ $parents[1].openSelectCardDialog() }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_15')}</button>
 										<span class="label m5-label limited-label" data-bind="name: '#[KAF002_25]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 									</div>
 								</td>
@@ -298,7 +298,7 @@
 									<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
 										<div class="m5-inline-div" data-bind="with: supportLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('support', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('support', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>

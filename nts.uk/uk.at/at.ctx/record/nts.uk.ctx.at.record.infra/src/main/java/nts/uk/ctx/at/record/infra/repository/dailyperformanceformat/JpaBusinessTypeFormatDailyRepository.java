@@ -25,6 +25,8 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 
 	private static final String REMOVE_EXIST_DATA;
 	
+	private static final String REMOVE_EXIST_DATA_BY_CODE;
+	
 	private static final String IS_EXIST_DATA;
 
 	private final static String SEL_FORMAT_BY_ATD_ITEM = "SELECT f FROM KrcmtBusinessTypeDaily f WHERE f.krcmtBusinessTypeDailyPK.companyId = :companyId AND f.krcmtBusinessTypeDailyPK.attendanceItemId IN :lstItem";
@@ -56,6 +58,15 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
 		UPDATE_BY_KEY = builderString.toString();
 
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcmtBusinessTypeDaily a ");
+		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.attendanceItemId IN :attendanceItemIds ");
+		REMOVE_EXIST_DATA_BY_CODE = builderString.toString();
+		
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcmtBusinessTypeDaily a ");
@@ -161,6 +172,18 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 	@Override
 	public List<BusinessTypeFormatDaily> getBusinessTypeFormatByCompanyId(String companyId) {
 		return this.queryProxy().query(FIND_BY_COMPANYID, KrcmtBusinessTypeDaily.class).setParameter("companyId", companyId).getList(f -> toDomain(f));
+	}
+
+	@Override
+	public void deleteExistDataByCode(String businesstypeCode, String companyId, int sheetNo,
+			List<Integer> attendanceItemIds) {
+		this.getEntityManager().createQuery(REMOVE_EXIST_DATA_BY_CODE)
+			.setParameter("companyId", companyId)
+			.setParameter("businessTypeCode", businesstypeCode)
+			.setParameter("sheetNo", sheetNo)
+			.setParameter("attendanceItemIds", attendanceItemIds)
+			.executeUpdate();
+		
 	}
 	
 }

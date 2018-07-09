@@ -34,7 +34,6 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialle
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave7informationDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave8informationDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave9informationDto;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.nursingcareleave.CareLeaveInfoDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto1;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto10;
@@ -129,7 +128,6 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00035 その他休暇情報
 			new TypeLiteral<PeregFinder<OtherHolidayInfoDto>>(){},
 			// CS00036 子の看護・介護休暇管理
-			new TypeLiteral<PeregFinder<CareLeaveInfoDto>>(){},
 			// CS00049 特別休暇１１情報
 			new TypeLiteral<PeregFinder<Specialleave11informationDto>>(){},
 			// CS00050 特別休暇１２情報
