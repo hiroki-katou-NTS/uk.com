@@ -614,13 +614,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
          */
         openKDL020(){
             let self = this;
-            if (self.displayEndDateFlg()) {
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
-            } else {
-                $("#inputdate").trigger("validate");
-            }
-            if (nts.uk.ui.errors.hasError()) { return; }
             let lstid = [];
             _.each(self.employeeList(), function(emp){
                 lstid.push(emp.id);
@@ -634,19 +627,12 @@ module nts.uk.at.view.kaf006.a.viewmodel {
          */
         openKDL029(){
             let self = this;
-            if (self.displayEndDateFlg()) {
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
-            } else {
-                $("#inputdate").trigger("validate");
-            }
-            if (nts.uk.ui.errors.hasError()) { return; }
             let lstid = [];
             _.each(self.employeeList(), function(emp){
                 lstid.push(emp.id);
             });
             let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
-                        baseDate: moment(new Date()).format("YYYYMMDD")}
+                        baseDate: moment(new Date()).format("YYYY/MM/DD")}
             setShared('KDL029_PARAM', param);
             modal("/view/kdl/029/a/index.xhtml");
         }
@@ -655,13 +641,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
          */
         openKDL005(){
             let self = this;
-            if (self.displayEndDateFlg()) {
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
-            } else {
-                $("#inputdate").trigger("validate");
-            }
-            if (nts.uk.ui.errors.hasError()) { return; }
             let lstid = [];
             _.each(self.employeeList(), function(emp){
                 lstid.push(emp.id);
