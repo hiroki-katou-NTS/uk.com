@@ -140,7 +140,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         nextToScreenR() {
             let self = this;
-            next();
+            self.next();
             
             service.getExOutSummarySetting("conditionSetCd").done(res => {
 
