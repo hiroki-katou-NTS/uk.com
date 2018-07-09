@@ -263,6 +263,10 @@ module kcp.share.tree {
                 self.createGlobalVarDataList();
             });
 
+            self.itemList.subscribe(vl => {
+                self.reloadNtsTreeGrid();
+            });
+
             // Find data.
             const param = <service.WorkplaceParam>{};
             param.baseDate = self.baseDate();
