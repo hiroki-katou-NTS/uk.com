@@ -111,7 +111,7 @@ public class CalculationRangeOfOneDay {
 	private Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime = Finally.empty();// 時間休暇�?算残時�?
 	
 	//非勤務時間帯
-	
+	private Optional<NonWorkingTimeSheet> nonWorkingTimeSheet; 
 	//加給時間
 	
 	//就業時間内時間帯
@@ -132,7 +132,8 @@ public class CalculationRangeOfOneDay {
 			Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet, TimeSpanForCalc oneDayOfRange,
 			TimeLeavingOfDailyPerformance attendanceLeavingWork, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime,
-			WorkInfoOfDailyPerformance workInformationofDaily) {
+			WorkInfoOfDailyPerformance workInformationofDaily,
+			Optional<NonWorkingTimeSheet> nonWorkingTimeSheet) {
 		this.withinWorkingTimeSheet = withinWorkingTimeSheet;
 		this.outsideWorkTimeSheet = outsideWorkTimeSheet;
 		this.oneDayOfRange = oneDayOfRange;
@@ -140,6 +141,7 @@ public class CalculationRangeOfOneDay {
 		this.predetermineTimeSetForCalc = predetermineTimeSetForCalc;
 		this.timeVacationAdditionRemainingTime = timeVacationAdditionRemainingTime;
 		this.workInformationOfDaily = workInformationofDaily;
+		this.nonWorkingTimeSheet = nonWorkingTimeSheet;
 	}
 
 	/**

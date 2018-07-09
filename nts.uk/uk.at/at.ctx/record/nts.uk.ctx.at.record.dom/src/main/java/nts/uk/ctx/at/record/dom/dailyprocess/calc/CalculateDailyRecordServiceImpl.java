@@ -133,6 +133,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
@@ -172,8 +173,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private FlowWorkSettingRepository flowWorkSettingRepository;
 	@Inject
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
+	
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepository;
+	
 	@Inject
 	private SpecificWorkRuleRepository specificWorkRuleRepository;
 	
@@ -512,7 +515,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			flexWorkSetOpt = shareContainer.getShared("PRE_FLEX_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
 					() -> flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
 		}
-		
+		Optional<FlexCalcSetting> flexCalcSetting = Optional.empty();
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 			
 		//休暇加算時間設定
@@ -569,7 +572,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			statutoryOverFrameNoList = flexOtSetting.stream()
 					   								.map(tc -> new OverTimeFrameNo(tc.getLegalOTframeNo().v()))
 					   								.collect(Collectors.toList());
-				
+			
+			flexCalcSetting = Optional.of(flexWorkSetOpt.get().getCalculateSetting());
+			
 			/*前日の勤務情報取得  */
 			val yesterDay = getWorkTypeByWorkInfo(yesterDayInfo,workType.get());
 			/*翌日の勤務情報取得 */
@@ -788,7 +793,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 										hourlyPaymentAddSetting,
 										illegularAddSetting,
 										commonSet,
-										statutoryOverFrameNoList);
+										statutoryOverFrameNoList,
+										flexCalcSetting);
 	}
 
 	/**
@@ -1088,7 +1094,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 											timeLeavingOfDailyPerformance.get(),/*出退勤*/
 											PredetermineTimeSetForCalc.convertMastarToCalc(predetermineTimeSet.get())/*所定時間帯(計算用)*/,
 											Finally.of(new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0))),
-											toDayWorkInfo);
+											toDayWorkInfo,
+											Optional.empty());
 	}
 	
 	/**

@@ -13,6 +13,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
@@ -85,6 +87,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -239,6 +242,7 @@ public class TotalWorkingTime {
 		
 
 		Optional<WorkTimeCode> workTimeCode = Optional.empty();
+		Optional<FlexCalcSetting> flexCalcSet = Optional.empty();
 		//日別実績の所定外時間
 		if(recordClass.getCalculatable() && recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() != null) {
 			workTimeCode = recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v() == null
@@ -322,8 +326,7 @@ public class TotalWorkingTime {
 																		conditionItem,
 																		predetermineTimeSetByPersonInfo);
 			//計上用のコアタイム無しの遅刻時間計算
-			TimeWithCalculation calcedLateTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(
-																							 DeductionAtr.Appropriate, 
+			TimeWithCalculation calcedLateTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(DeductionAtr.Appropriate, 
 																							 PremiumAtr.RegularWork,
 																							 recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 																							 vacationClass,
@@ -346,8 +349,7 @@ public class TotalWorkingTime {
 																							 predetermineTimeSetByPersonInfo);
 			
 			//コアタイム無しの遅刻時間計算
-			TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(
-					 																				  DeductionAtr.Deduction, 
+			TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(DeductionAtr.Deduction, 
 					 																				  PremiumAtr.RegularWork,
 					 																				  recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 					 																				  vacationClass,
@@ -393,8 +395,17 @@ public class TotalWorkingTime {
 
 		//日別実績の外出時間
 		val outingList = new ArrayList<OutingTimeOfDaily>();
-		val outingTime = OutingTimeOfDaily.calcOutingTime(recordClass.getCalculationRangeOfOneDay(),recordClass.getCalculatable());
-		outingList.add(outingTime);
+		if(recordClass != null 
+		 &&recordClass.getIntegrationOfDaily().getOutingTime().isPresent()) {
+			for(OutingTimeSheet outingOfDaily:recordClass.getIntegrationOfDaily().getOutingTime().get().getOutingTimeSheets()) {
+				val outingTime = OutingTimeOfDaily.calcOutingTime(outingOfDaily,
+																  recordClass.getCalculationRangeOfOneDay(),
+																  recordClass.getCalculatable(),
+																  recordClass.getFlexCalcSetting()
+																  );
+				outingList.add(outingTime);
+			}
+		}
 		
 		val shotrTime = new ShortWorkTimeOfDaily(new WorkTimes(1),
 											 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),

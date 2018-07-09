@@ -307,8 +307,6 @@ public abstract class CalculationTimeSheet {
 		
 	}
 
-	
-	
 	/**
 	 * 
 	 * @param basePoint 

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -426,4 +427,42 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 //		}
 		return result;
 	}
+	
+	public AttendanceTime calcOutingTimeInFlex(boolean isWithin) {
+		val a = this.getCoreTimeSheet();
+		AttendanceTime returnValue = new AttendanceTime(0);
+		if(a.isPresent()) {
+			for(WithinWorkTimeFrame b : this.getWithinWorkTimeFrame()) {
+				if(isWithin) {
+					val dupRange = a.get().getDuplicatedWith(b.timeSheet.getTimeSpan());
+					if(dupRange.isPresent()) {
+						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
+												 .map(tc -> tc.replaceTimeSpan(dupRange.get()))
+												 .filter(tc -> tc.getGoOutReason().isPresent())
+												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
+														 || tc.getGoOutReason().get().isCompensation())
+												 .map(tc -> tc.calcTotalTime().valueAsMinutes())
+												 .collect(Collectors.summingInt(tc -> tc)));
+												 
+					}
+				}
+				else {
+					val dupRange = a.get().getNotDuplicationWith(b.timeSheet.getTimeSpan());
+					if(dupRange.isPresent()) {
+						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
+												 .map(tc -> tc.replaceTimeSpan(dupRange.get()))
+												 .filter(tc -> tc.getGoOutReason().isPresent())
+												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
+														 || tc.getGoOutReason().get().isCompensation())
+												 .map(tc -> tc.calcTotalTime().valueAsMinutes())
+												 .collect(Collectors.summingInt(tc -> tc)));
+												 
+					}
+				}
+			}
+		}
+		return returnValue;
+
+	}
+	
 }
