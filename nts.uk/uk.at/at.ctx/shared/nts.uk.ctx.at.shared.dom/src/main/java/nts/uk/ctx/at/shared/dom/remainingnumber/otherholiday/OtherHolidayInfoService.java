@@ -99,9 +99,9 @@ public class OtherHolidayInfoService {
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 
 	// Constants
-	private final BigDecimal ZERO = new BigDecimal(0);
-	private final BigDecimal ONE = new BigDecimal(1);
-	private final BigDecimal AHALF = new BigDecimal(0.5);
+	private static final BigDecimal ZERO = new BigDecimal(0);
+	private static final BigDecimal ONE = new BigDecimal(1);
+	private static final BigDecimal AHALF = new BigDecimal(0.5);
 
 	public void addOtherHolidayInfo(String cid, PublicHolidayRemain pubHD, ExcessLeaveInfo exLeav,
 			BigDecimal remainNumber, BigDecimal remainLeft) {

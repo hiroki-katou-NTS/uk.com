@@ -47,10 +47,10 @@ $(function() {
         vm.dataSourceFilter = [];
     })
 
-    $(document).on('keydown', 'input.ntsSearchBox.nts-editor.ntsSearchBox_Component', function(e) {
-        processFilter();
-
-    })
+//    $(document).on('keydown', 'input.ntsSearchBox.nts-editor.ntsSearchBox_Component', function(e) {
+//        processFilter();
+//
+//    })
 })
 
 

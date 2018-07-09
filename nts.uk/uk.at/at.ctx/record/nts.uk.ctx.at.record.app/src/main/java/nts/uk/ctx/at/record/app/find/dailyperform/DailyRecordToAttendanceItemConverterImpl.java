@@ -106,6 +106,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.withAnyItems(domain.getAnyItemValue().orElse(null));
 		this.withEditStates(domain.getEditState());
 		this.withTemporaryTime(domain.getTempTime().orElse(null));
+		this.withPCLogInfo(domain.getPcLogOnInfo().orElse(null));
 //		this.withRemarks(domain.get)
 		return this;
 	}

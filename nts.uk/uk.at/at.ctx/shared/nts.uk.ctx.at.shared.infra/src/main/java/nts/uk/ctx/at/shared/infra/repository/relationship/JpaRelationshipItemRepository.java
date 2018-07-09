@@ -17,9 +17,9 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstG
 @Stateless
 public class JpaRelationshipItemRepository extends JpaRepository implements RelationshipRepository{
 	
-	private final String SELECT_NO_WHERE = "SELECT c FROM KshstRelationshipItem c ";
-	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstRelationshipPK.companyId = :companyId";
-	private final String DELETE_GRANT = "DELETE FROM KshstGrantRelationshipItem c WHERE c.kshstGrantRelationshipPK.companyId = :companyId AND c.kshstGrantRelationshipPK.relationshipCode = :relationshipCode";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KshstRelationshipItem c ";
+	private static final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstRelationshipPK.companyId = :companyId";
+	private static final String DELETE_GRANT = "DELETE FROM KshstGrantRelationshipItem c WHERE c.kshstGrantRelationshipPK.companyId = :companyId AND c.kshstGrantRelationshipPK.relationshipCode = :relationshipCode";
 			
 	/**
 	 * change from entity to domain

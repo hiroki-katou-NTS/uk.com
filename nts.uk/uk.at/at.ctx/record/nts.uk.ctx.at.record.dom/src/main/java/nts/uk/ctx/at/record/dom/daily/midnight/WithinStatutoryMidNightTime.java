@@ -21,6 +21,7 @@ public class WithinStatutoryMidNightTime {
 		super();
 		this.time = time;
 	}
+
 	
 	 /**
 	  * 所定内深夜時間の計算指示を出す

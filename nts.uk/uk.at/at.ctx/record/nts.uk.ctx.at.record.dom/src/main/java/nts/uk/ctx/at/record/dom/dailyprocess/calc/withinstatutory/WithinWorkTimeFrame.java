@@ -408,13 +408,13 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * 就内時間枠を作る
 	 * @param duplicateTimeSheet
 	 * @param deductionTimeSheet
-	 * @param bonusPaySetting
+	 * @param bonuspaySetting
 	 * @param midNightTimeSheet
 	 * @return
 	 */
 	public static WithinWorkTimeFrame createWithinWorkTimeFrame(WithinWorkTimeFrame duplicateTimeSheet,
 																DeductionTimeSheet deductionTimeSheet,
-																BonusPaySetting bonusPaySetting,
+																Optional<BonusPaySetting> bonuspaySetting,
 																MidNightTimeSheet midNightTimeSheet,
 																Optional<LateDecisionClock> lateDesClock,
 																Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock,
@@ -505,9 +505,9 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(dupTimeSheet.getTimezone().getTimeSpan(), DeductionAtr.Appropriate);
 		
 		/*加給*/
-		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 		/*特定日*/
-		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 
 		/*深夜*/
 		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);

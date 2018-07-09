@@ -15,9 +15,9 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondi
 @Stateless
 public class JpaExtraResultMonthlyRepository extends JpaRepository implements ExtraResultMonthlyRepository {
 	
-	private final String SELECT_BY_LIST_ID = "SELECT c FROM KrcmtExtraResultMonthly c "
+	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KrcmtExtraResultMonthly c "
 			+ " WHERE c.errorAlarmCheckID IN :listErrorAlarmCheckID";
-	private final String SELECT_BY_CODE  = "SELECT c FROM KrcmtExtraResultMonthly c "
+	private static final String SELECT_BY_CODE  = "SELECT c FROM KrcmtExtraResultMonthly c "
 			+ " WHERE c.errorAlarmCheckID =:errorAlarmCheckID" ;
 	
 	@Override

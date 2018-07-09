@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -570,6 +571,35 @@ public class OverTimeOfDaily {
 		Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeMidNight = this.excessOverTimeWorkMidNightTime.isPresent()?Finally.of(this.excessOverTimeWorkMidNightTime.get().calcDiverGenceTime())
 																																:this.excessOverTimeWorkMidNightTime;
 		return new OverTimeOfDaily(this.overTimeWorkFrameTimeSheet,OverTimeFrameList,excessOverTimeMidNight,this.irregularWithinPrescribedOverTimeWork,flexTime,this.overTimeWorkSpentAtWork);
+	}
+	
+	//PCログインログオフから計算した計算時間を入れる(大塚モードのみ)
+	public void setPCLogOnValue(List<OverTimeFrameTime> frameByPCLogInfo) {
+		List<OverTimeFrameTime> changeList = this.getOverTimeWorkFrameTime();
+		
+		frameByPCLogInfo.forEach(tc -> {
+			val frame = changeList.stream().filter(ts -> tc.getOverWorkFrameNo().equals(ts.getOverWorkFrameNo())).findFirst();
+			//置き換え
+			if(frame.isPresent()) {
+				changeList.forEach(tt ->{
+					if(tc.getOverWorkFrameNo().equals(tt.getOverWorkFrameNo())){
+						//残業時間の置き換え
+						tt.getOverTimeWork().replaceTimeAndCalcDiv(tc.getOverTimeWork().getCalcTime());
+						//振替時間の置き換え
+						tt.getTransferTime().replaceTimeAndCalcDiv(tc.getTransferTime().getCalcTime());
+					}
+				});
+			}
+			//新しく枠使い
+			else {
+				changeList.add(new OverTimeFrameTime(tc.getOverWorkFrameNo(),
+													 TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), tc.getOverTimeWork().getCalcTime()),
+													 TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), tc.getTransferTime().getCalcTime()),
+													 tc.getBeforeApplicationTime(),
+													 tc.getOrderTime()));
+			}
+		});
+		this.overTimeWorkFrameTime = changeList;
 	}
 	
 }

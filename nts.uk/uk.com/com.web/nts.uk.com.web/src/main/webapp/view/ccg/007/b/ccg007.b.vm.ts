@@ -38,7 +38,7 @@ module nts.uk.pr.view.ccg007.b {
                         .done(function(data: any) {
                             if (data.onpre) {
                                 nts.uk.characteristics.remove("contractInfo");
-                                nts.uk.characteristics.save("contractInfo", { contractCode: defaultContractCode, contractPassword: null });
+                                nts.uk.characteristics.save("contractInfo", { contractCode: defaultContractCode, contractPassword: self.contractPassword() });
                                 self.contractCode(defaultContractCode);
                                 self.contractPassword(null);
                                 //シングルサインオン（Active DirectorySSO）かをチェックする
@@ -172,6 +172,7 @@ module nts.uk.pr.view.ccg007.b {
                 
                 //set LoginId to dialog
                 nts.uk.ui.windows.setShared('parentCodes', {
+                    form1: true,
                     loginId: self.loginId(),
                     contractCode : self.contractCode(),
                     contractPassword: self.contractPassword()
@@ -182,7 +183,7 @@ module nts.uk.pr.view.ccg007.b {
                     height : 450
                 }).onClosed(function(): any {
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    if (!childData.submit.isNil) {
+                    if (childData.submit) {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                     }    
                 })

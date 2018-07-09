@@ -3,8 +3,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
     import formatById = nts.uk.time.format.byId;
 
     export class ScreenModel {
-        listWorkType: KnockoutObservableArray<ksu001.common.viewmodel.WorkType>;
-        listWorkTime: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+        listWorkType: KnockoutObservableArray<ksu001.common.viewmodel.WorkType> = ko.observableArray([]);
+        listWorkTime: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime> = ko.observableArray([]);
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         selectedWorkTypeCode: KnockoutObservable<string>;
@@ -15,7 +15,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         selectedRuleCode: any;
         nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         currentScreen: any = null;
-        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime> = ko.observableArray([]);
         startDateScreenA: any = null;
         endDateScreenA: any = null;
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
@@ -26,9 +26,6 @@ module nts.uk.at.view.ksu001.o.viewmodel {
 
         constructor() {
             let self = this;
-            self.listWorkType = ko.observableArray([]);
-            self.listWorkTime = ko.observableArray([]);
-            self.listWorkTimeComboBox = ko.observableArray([]);
             self.roundingRules = ko.observableArray([
                 { code: '1', name: nts.uk.resource.getText("KSU001_71") },
                 { code: '2', name: nts.uk.resource.getText("KSU001_72") }
@@ -198,17 +195,17 @@ module nts.uk.at.view.ksu001.o.viewmodel {
          * so get startDate, endDate for screen A
          * checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime
          */
-        getWorkTypeTimeAndStartEndDate(): JQueryPromise<any> {
+        initScreen(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            service.getWorkTypeTimeAndStartEndDate().done(function(data) {
+            service.initScreen().done(function(data) {
                 self.employeeIdLogin = data.employeeIdLogin;
                 //set date for startDate and endDate
                 self.startDateScreenA = data.startDate;
                 self.endDateScreenA = data.endDate;
                 //set data for listWorkType
                 self.listWorkType(data.listWorkType);
-                self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode),
-                    self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
+                self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
+                self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
                 self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
                 self.workEmpCombines = data.workEmpCombines;
                 //set data for listWorkTime
