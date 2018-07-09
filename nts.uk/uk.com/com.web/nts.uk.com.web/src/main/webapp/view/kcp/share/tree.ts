@@ -173,9 +173,11 @@ module kcp.share.tree {
 
         treeStyle: TreeStyle;
         restrictionOfReferenceRange: boolean;
+        searchBoxId: string;
 
         constructor() {
             let self = this;
+            self.searchBoxId = nts.uk.util.randomId();
             self.itemList = ko.observableArray([]);
             self.backupItemList = ko.observableArray([]);
             self.listWorkplaceId = [];
@@ -294,19 +296,6 @@ module kcp.share.tree {
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
-                    
-                    const searchBoxOptions = {
-                        childField: 'childs',
-                        targetKey: 'workplaceId',
-                        comId: self.getComIdSearchBox(),
-                        items: self.itemList(),
-                        selected: self.selectedWorkplaceIds(),
-                        selectedKey: 'workplaceId',
-                        fields: ['nodeText', 'code'],
-                        mode: 'igTree'
-                    };
-                    $('#search-box').ntsSearchBox(searchBoxOptions);
-
                     dfd.resolve();
                 })
                 
@@ -613,8 +602,18 @@ module kcp.share.tree {
                     enable: true,
                     showCheckBox: self.isMultiSelect
                 };
-
+                const searchBoxOptions = {
+                    childField: 'childs',
+                    targetKey: 'workplaceId',
+                    comId: self.getComIdSearchBox(),
+                    items: self.itemList(),
+                    selected: self.selectedWorkplaceIds(),
+                    selectedKey: 'workplaceId',
+                    fields: ['nodeText', 'code'],
+                    mode: 'igTree'
+                };
                 $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
+                $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
                 self.initEvent();
 
