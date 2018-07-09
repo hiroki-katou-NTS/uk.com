@@ -15,16 +15,16 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.KstscExternalBudgetPK
 @Stateless
 public class JpaExternalBudgetRepository extends JpaRepository implements ExternalBudgetRepository {
 
-	private final String SELECT_NO_WHERE = "SELECT c FROM KscstExternalBudget c ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KscstExternalBudget c ";
 
-	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
+	private static final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
 			+ " WHERE c.kscstExternalBudgetPk.companyId = :companyId";
 
-	private final String SELECTED_ITEM = SELECT_NO_WHERE 
+	private static final String SELECTED_ITEM = SELECT_NO_WHERE 
 			+ " WHERE c.kscstExternalBudgetPk.companyId = :companyId "
 			+ " AND c.kscstExternalBudgetPk.externalBudgetCd = :externalBudgetCd ";
 	
-	private final String SELECTED_ITEM_Atr = SELECT_ALL_DETAILS + " AND c.budgetAtr = :budgetAtr AND c.unitAtr = :unitAtr";
+	private static final String SELECTED_ITEM_ATR = SELECT_ALL_DETAILS + " AND c.budgetAtr = :budgetAtr AND c.unitAtr = :unitAtr";
 	
 
 	private static ExternalBudget toDomain(KscstExternalBudget entity) {
@@ -92,7 +92,7 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 	 */
 	@Override
 	public List<ExternalBudget> findByAtr(String companyId, int budgetAtr, int unitAtr) {
-		return this.queryProxy().query(SELECTED_ITEM_Atr, KscstExternalBudget.class)
+		return this.queryProxy().query(SELECTED_ITEM_ATR, KscstExternalBudget.class)
 				.setParameter("companyId", companyId)
 				.setParameter("budgetAtr", budgetAtr)
 				.setParameter("unitAtr", unitAtr)

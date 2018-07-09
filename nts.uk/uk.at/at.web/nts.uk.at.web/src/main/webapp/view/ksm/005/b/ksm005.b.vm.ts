@@ -73,7 +73,7 @@ module nts.uk.at.view.ksm005.b {
                 };
                 $("#calendar").ntsCalendar("init", {
                     buttonClick: function(date: string) {
-                        self.openDialogByFindDate(date);
+                        self.openDialogByFindDate(moment.utc(date,"YYYY-MM-DD").format("YYYY/MM/DD"));
                     }
                 });
                 self.optionDates = ko.observableArray([]);

@@ -455,4 +455,14 @@ public class AnnualWorkScheduleData {
 		}
 		return annualWorkScheduleData;
 	}
+	
+	public boolean hasItemData() {
+		if (this.month1st != null || this.month2nd != null || this.month3rd != null || this.month4th != null
+				|| this.month5th != null || this.month6th != null || this.month7th != null || this.month8th != null
+				|| this.month9th != null || this.month10th != null || this.month11th != null
+				|| this.month12th != null) {
+			return true;
+		}
+		return false;
+	}
 }

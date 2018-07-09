@@ -165,12 +165,14 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.items.removeAll();
             
             service.checkData().done(function(check){
-                if(check.manageType == 1 && check.reference == 1) {
-                    flagDay = true;
-                }
-
-                if (check.maxManageType == 1 && check.maxReference == 1 && check.timeManageType == 1) {
-                    flagYear = true;
+                if(check != null) {
+                    if(check.manageType == 1 && check.reference == 1) {
+                        flagDay = true;
+                    }
+    
+                    if (check.maxManageType == 1 && check.maxReference == 1 && check.timeManageType == 1) {
+                        flagYear = true;
+                    }
                 }
                 
                 //Update case
@@ -404,25 +406,29 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     }
                 });
                 
-                service.addYearHolidayGrant(data).done(function(){
-                    nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
-                    self.checkDataExisted(true);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                }).fail(function(error){
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
-                        if(error.messageId === "Msg_266") {
-                            $('.year-input1').focus();
-                        } else if(error.messageId === "Msg_268") {
-                            
-                        } else if(error.messageId === "Msg_269") {
-                            $('.year-input1').focus();
-                        } else if(error.messageId === "Msg_270") {
-                            $('#b2_1').focus();
-                        }
-                    }); 
-                }).always(function() {
+                if(data.length > 0) {
+                    service.addYearHolidayGrant(data).done(function(){
+                        nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
+                        self.checkDataExisted(true);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                            if(error.messageId === "Msg_266") {
+                                $('.year-input1').focus();
+                            } else if(error.messageId === "Msg_268") {
+                                
+                            } else if(error.messageId === "Msg_269") {
+                                $('.year-input1').focus();
+                            } else if(error.messageId === "Msg_270") {
+                                $('#b2_1').focus();
+                            }
+                        }); 
+                    }).always(function() {
+                        blockUI.clear();
+                    });
+                } else {
                     blockUI.clear();
-                });
+                }
             }
         }
         

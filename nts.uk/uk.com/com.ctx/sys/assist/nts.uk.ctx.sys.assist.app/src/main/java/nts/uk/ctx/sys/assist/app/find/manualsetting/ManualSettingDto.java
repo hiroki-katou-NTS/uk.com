@@ -29,8 +29,8 @@ public class ManualSettingDto {
 	private GeneralDate monthSaveStartDate;
 	private String suppleExplanation;
 	private int systemType;
-	private int endYear;
-	private int startYear;
+	private Integer endYear;
+	private Integer startYear;
 	private int presenceOfEmployee;
 	private int identOfSurveyPre;
 	private String practitioner;
@@ -41,9 +41,10 @@ public class ManualSettingDto {
 				domain.getPasswordAvailability().value, domain.getSaveSetName().v(), domain.getReferenceDate(),
 				domain.getCompressedPassword().v(), domain.getExecutionDateAndTime(), domain.getDaySaveEndDate(),
 				domain.getDaySaveStartDate(), domain.getMonthSaveEndDate(), domain.getMonthSaveStartDate(),
-				domain.getSuppleExplanation(), domain.getSystemType().value, domain.getEndYear().v(),
-				domain.getStartYear().v(), domain.getPresenceOfEmployee().value, domain.getIdentOfSurveyPre().value,
-				domain.getPractitioner());
+				domain.getSuppleExplanation(), domain.getSystemType().value,
+				domain.getEndYear().isPresent() ? domain.getEndYear().get().v() : null,
+				domain.getStartYear().isPresent() ? domain.getStartYear().get().v() : null,
+				domain.getPresenceOfEmployee().value, domain.getIdentOfSurveyPre().value, domain.getPractitioner());
 	}
 
 	/**
@@ -69,8 +70,8 @@ public class ManualSettingDto {
 	public ManualSettingDto(String cid, String storeProcessingId, int passwordAvailability, String saveSetName,
 			GeneralDate referenceDate, String compressedPassword, GeneralDateTime executionDateAndTime,
 			GeneralDate daySaveEndDate, GeneralDate daySaveStartDate, GeneralDate monthSaveEndDate,
-			GeneralDate monthSaveStartDate, String suppleExplanation, int systemType, int endYear, int startYear,
-			int presenceOfEmployee, int identOfSurveyPre, String practitioner) {
+			GeneralDate monthSaveStartDate, String suppleExplanation, int systemType, Integer endYear,
+			Integer startYear, int presenceOfEmployee, int identOfSurveyPre, String practitioner) {
 		super();
 		this.cid = cid;
 		this.storeProcessingId = storeProcessingId;

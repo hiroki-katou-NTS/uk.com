@@ -110,7 +110,7 @@ module a2 {
                 if (data && data.length > 0) {
                     let dataObject: any = {
                         userInfo: userInfo,
-                        data: _.sortBy(data, item => item.functionName)//sort ASC
+                        data: data//sort ASC
                     };
                     nts.uk.ui.windows.setShared("CMM048_DIALOG_B_INPUT_DATA", dataObject);
                     nts.uk.ui.windows.sub.modal("/view/cmm/048/b/index.xhtml").onClosed(() => {

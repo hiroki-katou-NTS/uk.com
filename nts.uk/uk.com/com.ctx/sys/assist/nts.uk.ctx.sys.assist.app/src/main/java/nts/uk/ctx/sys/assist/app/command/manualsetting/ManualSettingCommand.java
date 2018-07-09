@@ -37,8 +37,8 @@ public class ManualSettingCommand {
 	private GeneralDate monthSaveEndDate;
 	private GeneralDate monthSaveStartDate;
 	private String suppleExplanation;
-	private int endYear;
-	private int startYear;
+	private Integer endYear;
+	private Integer startYear;
 	private int presenceOfEmployee;
 	private int identOfSurveyPre;
 	private String practitioner;

@@ -492,40 +492,82 @@ module nts.uk.at.view.kal003.share.model {
                 return;
             }
             let pair = 2, pairNext = 1;
-            if(self.typeCheckItem() === 3){
-                pair = 4, pairNext = 2;
-            }
-            let x = 0, maxInputs = self.inputs().length,
+            //if enum == 3
+            if(self.typeCheckItem() === 3){//sua day nay,ngay xua m viet chung, h t tach ra lam th rieng
+                for(let idx = 0; idx < 4; idx++){
+                    self.inputs()[idx].value.subscribe((newVal) => {
+                        let startDayValue: InputModel = self.inputs()[0];
+                        let endDayValue: InputModel = self.inputs()[2];
+                        let startTimeValue: InputModel = self.inputs()[1];
+                        let endTimeValue: InputModel = self.inputs()[3];
+                        self.validateDayTimePair(startDayValue, endDayValue, 
+                                startTimeValue, endTimeValue, idx <= 1);
+                    });    //t muoons set name cho tung input nay thi ls?
+                }
+            //end if enum = 3
+            }else{
+                let x = 0, maxInputs = self.inputs().length,
                     pairCount = maxInputs/pair;
-            for(let idx = 0; idx < pairCount; idx++){
-                for(let idy = 0; idy < pairNext; idy++){
-                    let currentIdx = idx + idy;
-                    let pairTargetIdx = idx + idy + pairNext;
-                    self.inputs()[currentIdx].value.subscribe((newVal) => {
-                        let startPairValue: InputModel = self.inputs()[currentIdx];
-                        let endPairValue: InputModel = self.inputs()[pairTargetIdx];
-                        if(endPairValue.enable()){
-                            //validate start and end pair;
-                            if(parseInt(newVal)>=parseInt(endPairValue.value())){
-                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });    
+                for(let idx = 0; idx < pairCount; idx++){
+                    for(let idy = 0; idy < pairNext; idy++){
+                        let currentIdx = idx + idy;
+                        let pairTargetIdx = idx + idy + pairNext;
+                        self.inputs()[currentIdx].value.subscribe((newVal) => {
+                            let startPairValue: InputModel = self.inputs()[currentIdx];
+                            let endPairValue: InputModel = self.inputs()[pairTargetIdx];
+                            if(endPairValue.enable()){
+                                //validate start and end pair;
+                                if(parseInt(newVal)>=parseInt(endPairValue.value())){
+                                    nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
+                                    $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });    
+                                }
+                                    
+                                // set error;    
                             }
-                                
-                            // set error;    
-                        }
-                    });
-                    self.inputs()[pairTargetIdx].value.subscribe((newVal) => {
-                        let startPairValue: InputModel = self.inputs()[currentIdx];
-                        let endPairValue: InputModel = self.inputs()[pairTargetIdx];
-                        if(startPairValue.enable()){
-                            if(parseInt(newVal)<=parseInt(startPairValue.value())){
-                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });    
-                            }   
-                        }
-                    });
-                } 
-                idx += pair;
-            } 
+                        });
+                        self.inputs()[pairTargetIdx].value.subscribe((newVal) => {
+                            let startPairValue: InputModel = self.inputs()[currentIdx];
+                            let endPairValue: InputModel = self.inputs()[pairTargetIdx];
+                            if(startPairValue.enable()){
+                                if(parseInt(newVal)<=parseInt(startPairValue.value())){
+                                    nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
+                                    $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });    
+                                }   
+                            }
+                        });
+                    } 
+                    idx += pair;
+                }
+            }//end else
+             
         }
+        
+        validateDayTimePair(startDayValue: InputModel, endDayValue: InputModel, startTimeValue: InputModel,
+                endTimeValue: InputModel, startFlag: boolean){
+            if(endDayValue.enable()){
+                nts.uk.ui.errors.removeByCode($('#' + startDayValue.inputId), "Msg_927");
+                nts.uk.ui.errors.removeByCode($('#' + endDayValue.inputId), "Msg_927");
+                nts.uk.ui.errors.removeByCode($('#' + startTimeValue.inputId), "Msg_927");
+                nts.uk.ui.errors.removeByCode($('#' + endTimeValue.inputId), "Msg_927");
+                let startDay: number = parseInt(startDayValue.value());
+                let endDay: number = parseInt(endDayValue.value());
+                let startTime: number = parseInt(startTimeValue.value());
+                let endTime: number = parseInt(endTimeValue.value());
+                let fullStart = startDay*1440 + startTime;
+                let fullEnd = endDay*1440 + endTime;
+                //validate start and end pair;
+                if(fullStart >= fullEnd){
+                    let dayId = startFlag ? startDayValue.inputId : endDayValue.inputId;
+                    let timeId = startFlag ? startTimeValue.inputId : endTimeValue.inputId;
+                    $('#' + dayId).ntsError('set', { messageId: "Msg_927" });  
+                    $('#' + timeId).ntsError('set', { messageId: "Msg_927" });   
+                }
+                    
+                // set error;    
+            }
+        }
+        
+        
         
         openSelect(viewmodel: ScreenModel){
               
