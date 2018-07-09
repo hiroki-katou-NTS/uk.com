@@ -93,7 +93,7 @@ module nts.uk.at.view.kfp001.b {
                 self.itemsExe = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
-                    { headerText: 'コード', key: 'aggrFrameCode', width: 30 },
+                    { headerText: 'コード', key: 'aggrFrameCode', width: 45 },
                     { headerText: '名称', key: 'optionalAggrName', width: 120 }
                 ]);
                 self.currentItem = ko.observable(new model.OptionalAggrPeriodDto({}));

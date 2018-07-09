@@ -1,5 +1,11 @@
 #contents-area {
 	height: 541px !important;
+	width: 98%;
+	overflow: hidden !important;
+}
+
+body {
+	overflow: hidden;
 }
 
 #button24 {
@@ -33,7 +39,7 @@
 
 #right-content {
 	margin-top: -312px;
-	margin-left: 340px;
+	margin-left: 310px;
 }
 
 #period-input {
@@ -43,13 +49,13 @@
 
 #hr-3 {
 	margin-top: 6px;
-	margin-right: 4px;
-	width: 442px;
+	margin-right: 121px;
+	width: 372px;
 }
 
 #next-button-B {
-	left: 700px;
-	top: 120px;
+	left: 621px;
+	top: 174px;
 }
 
 #end-date-B6-4 {
@@ -78,12 +84,12 @@ div.label {
 }
 
 .nts-wizard.vertical>.steps {
-	width: 240px;
+	width: 210px;
 	height: 800px;
 }
 
 .nts-wizard {
-	width: 1200px;
+	width: 1040px;
 }
 
 .nts-wizard>.content>.body {
@@ -91,5 +97,9 @@ div.label {
 }
 
 #left-content {
-	margin-left: 10px;
+	margin-left: 5px;
+}
+
+#code-text-d4-21 {
+	width: 214px !important;
 }
