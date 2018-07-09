@@ -8,6 +8,7 @@
 	<ui:composition>
 		<!-- P 出力設定選択 -->
 		<div class="contentP">
+		
 			<!--P3 情報を選んでください-->
 			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF002_219')}</div>
 			<table style="margin-bottom: 15px; margin-left: 20px">
@@ -22,13 +23,13 @@
 					</td>
 				</tr>
 			</table>
-			<table style="width: 100%;">
+			<table style="height: 300px;">
 				<tr>
 					<td rowspan="2" style="width: 360px;">
 						<div class="" style="width: 360px; float: left;">
 							<!--P5 条件設定選択(パネル)-->
 							<div
-								data-bind="ntsPanel:{width: '320px', height: '464px', direction: 'none', showIcon: true, visible: true}">
+								data-bind="ntsPanel:{width: '320px', height: '310px', direction: 'none', showIcon: true, visible: true}">
 								<!--P5_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
 								<!--P5_2 絞り込み検索-->
@@ -45,7 +46,7 @@
 								<!--P5_3 条件設定一覧-->
 								<table id="grd_Condition"
 									data-bind="ntsGridList: {
-										height: 384,
+										rows: 9,
 										name: '#[CMF002_345]', 
 				 						dataSource: listCondition,
 										primaryKey: 'code',
