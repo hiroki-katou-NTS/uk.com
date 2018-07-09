@@ -124,11 +124,12 @@ module nts.uk.at.view.kdl005.a {
                 var duedateHoliday = "";
                 var occurrenceDays1 = "";
                 var occurrenceDays2 = "";
-                var isHalfDay = false;
                 self.dataItems.removeAll();
                 
                 if(data.lstHistory != null && data.lstHistory.length >= 1) {
                     _.each(data.lstHistory, function (item) {
+                        var isHalfDay = false;
+                        
                         if(item.breakHis != null) {
                             if(!item.breakHis.chkDisappeared) {
                                 if(item.breakHis.mngAtr == 0 || item.breakHis.mngAtr == 4) {
@@ -143,7 +144,6 @@ module nts.uk.at.view.kdl005.a {
                             if(Number(item.breakHis.occurrenceDays) == 0 || Number(item.breakHis.occurrenceDays) == 1) {
                                 occurrenceDays1 = "";
                             } else {
-                                isHalfDay = true;
                                 occurrenceDays1 = item.breakHis.occurrenceDays + nts.uk.resource.getText("KDL005_27");
                             }
                             
@@ -172,9 +172,12 @@ module nts.uk.at.view.kdl005.a {
                             if(Number(item.dayOffHis.requeiredDays) == 0 || Number(item.dayOffHis.requeiredDays) == 1) {
                                 occurrenceDays2 = "";
                             } else {
-                                isHalfDay = true;
                                 occurrenceDays2 = item.dayOffHis.requeiredDays + nts.uk.resource.getText("KDL005_27");
                             }
+                        }
+                        
+                        if(item.breakHis.mngAtr == 1) {
+                            isHalfDay = true;
                         }
                         
                         var temp = new DataItems(leaveDate, dayOffDate, duedateHoliday, occurrenceDays1, occurrenceDays2, isHalfDay);
