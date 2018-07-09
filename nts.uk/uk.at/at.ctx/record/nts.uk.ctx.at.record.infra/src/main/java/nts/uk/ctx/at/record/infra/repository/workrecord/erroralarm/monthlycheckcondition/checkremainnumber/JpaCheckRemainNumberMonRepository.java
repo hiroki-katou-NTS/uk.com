@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondi
 @Stateless
 public class JpaCheckRemainNumberMonRepository extends JpaRepository implements CheckRemainNumberMonRepository {
 
-	private final String SELECT_CHECK_REMAIN_BY_ID = " SELECT c FROM KrcmtCheckRemainNumberMon c"
+	private static final String SELECT_CHECK_REMAIN_BY_ID = " SELECT c FROM KrcmtCheckRemainNumberMon c"
 			+ " WHERE c.errorAlarmCheckID = :errorAlarmCheckID ";
 	
 	@Override

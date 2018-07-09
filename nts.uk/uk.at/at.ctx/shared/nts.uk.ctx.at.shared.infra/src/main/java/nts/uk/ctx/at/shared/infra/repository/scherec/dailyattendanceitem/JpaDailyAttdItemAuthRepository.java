@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyS
 @Stateless
 public class JpaDailyAttdItemAuthRepository extends JpaRepository implements DailyAttdItemAuthRepository {
 	
-	private final String SELECT_BY_AUTHORITY_DAILY_ID = "SELECT c FROM KshstDailyServiceTypeControl c"
+	private static final String SELECT_BY_AUTHORITY_DAILY_ID = "SELECT c FROM KshstDailyServiceTypeControl c"
 			+ " WHERE c.kshstDailyServiceTypeControlPK.companyID = :companyID"
 			+ " AND c.kshstDailyServiceTypeControlPK.authorityDailyID = :authorityDailyID"
 			+ " ORDER BY c.kshstDailyServiceTypeControlPK.itemDailyID";

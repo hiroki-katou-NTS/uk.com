@@ -36,7 +36,7 @@ public interface BasicScheduleService {
 	 * @return SetupType
 	 */
 	SetupType checkNeededOfWorkTimeSetting(String workTypeCode);
-
+	
 	/**
 	 * Check required of input type
 	 * 
@@ -52,7 +52,7 @@ public interface BasicScheduleService {
 	 * @return WorkStyle
 	 */
 	WorkStyle checkWorkDay(String workTypeCode);
-
+	
 	/**
 	 * Check required
 	 * 

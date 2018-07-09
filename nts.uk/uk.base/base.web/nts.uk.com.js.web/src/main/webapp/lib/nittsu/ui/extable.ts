@@ -5525,14 +5525,14 @@ module nts.uk.ui.exTable {
                     showVertSum(self);
                     break;
                 case "updateTable": 
-                    updateTable(self, params[0], params[1], params[2], params[3]);
+                    updateTable(self, params[0], params[1], params[2], params[3], params[4]);
                     break;
                 case "updateMode":
                     return setUpdateMode(self, params[0], params[1]);
                 case "viewMode":
                     return setViewMode(self, params[0], params[1], params[2]);
                 case "mode":
-                    setMode(self, params[0], params[1], params[2]);
+                    setMode(self, params[0], params[1], params[2], params[3]);
                     break;
                 case "pasteOverWrite":
                     setPasteOverWrite(self, params[0]);
@@ -5670,16 +5670,16 @@ module nts.uk.ui.exTable {
         /**
          * Update table.
          */
-        function updateTable($container: JQuery, name: string, header: any, body: any, keepStates?: boolean) {
+        function updateTable($container: JQuery, name: string, header: any, body: any, keepStates?: boolean, keepStruct?: boolean) {
             switch (name) {
                 case "leftmost":
-                    updateLeftmost($container, header, body);
+                    updateLeftmost($container, header, body, keepStruct);
                     break;
                 case "middle": 
                     updateMiddle($container, header, body);
                     break;
                 case "detail":
-                    updateDetail($container, header, body, keepStates);
+                    updateDetail($container, header, body, keepStates, keepStruct);
                     break;
                 case "verticalSummaries":
                     updateVertSum($container, header, body); 
@@ -5696,7 +5696,7 @@ module nts.uk.ui.exTable {
         /**
          * Update leftmost.
          */
-        function updateLeftmost($container: JQuery, header: any, body: any) {
+        function updateLeftmost($container: JQuery, header: any, body: any, keepStruct?: boolean) {
             let exTable: any = $container.data(NAMESPACE);
             let sizeAdjust, left, width, offsetWidth = 0;
             if (!exTable.middleHeader && !exTable.leftHorzSumHeader 
@@ -5736,8 +5736,12 @@ module nts.uk.ui.exTable {
                 if (offsetWidth > 0 && width) {
                     $body.width(width);
                 }
-                $body.empty();
-                render.process($body[0], exTable.leftmostContent, true);
+                if (keepStruct) {
+                    render.begin($body[0], body.dataSource, exTable.leftmostContent);
+                } else {
+                    $body.empty();
+                    render.process($body[0], exTable.leftmostContent, true);
+                }
             }
         }
         
@@ -5765,8 +5769,30 @@ module nts.uk.ui.exTable {
         /**
          * Update detail.
          */
-        function updateDetail($container: JQuery, header: any, body: any, keepStates: boolean) {
+        function updateDetail($container: JQuery, header: any, body: any, keepStates: boolean, keepStruct?: boolean) {
             let exTable: any = $container.data(NAMESPACE);
+            
+            let refreshFeatures = function(detail, features) {
+                if (features && detail.features) {
+                    let newFeatures = _.map(detail.features, (f, i) => {
+                        let z = -1;
+                        _.forEach(features, (ft, y) => {
+                            if (f.name == ft.name) {
+                                z = y;
+                                return false;    
+                            }
+                        });
+                        
+                        if (z > -1) {
+                            let fts = features.splice(z, 1);
+                            return fts[0];
+                        }
+                        return f;
+                    });
+                    detail.features = newFeatures;
+                }
+            };
+            
             if (header) {
                 _.assignIn(exTable.detailHeader, header);
                 let $header = $container.find("." + HEADER_PRF + DETAIL);
@@ -5778,9 +5804,13 @@ module nts.uk.ui.exTable {
             if (body) {
                 _.assignIn(exTable.detailContent, body);
                 let $body = $container.find("." + BODY_PRF + DETAIL);
-                $body.empty();
+                if (keepStruct) {
+                    render.begin($body[0], body.dataSource, exTable.detailContent);
+                } else {
+                    $body.empty();
+                    render.process($body[0], exTable.detailContent, true);
+                }
                 if (!keepStates) internal.clearStates($body[0]);
-                render.process($body[0], exTable.detailContent, true);
             }
         }
         
@@ -5928,7 +5958,7 @@ module nts.uk.ui.exTable {
         /**
          * Set mode.
          */
-        function setMode($container: JQuery, viewMode: any, updateMode: any, occupation?: any) {
+        function setMode($container: JQuery, viewMode: any, updateMode: any, occupation?: any, features?: Array<any>) {
             let exTable: any = $container.data(NAMESPACE);
             if (occupation) {
                 events.trigger($container[0], events.OCCUPY_UPDATE, occupation);
@@ -5962,8 +5992,30 @@ module nts.uk.ui.exTable {
                 updateViewMode = true;
             }
             
+            let refreshFeatures = function() {
+                if (features && exTable.detailContent.features) {
+                    let newFeatures = _.map(exTable.detailContent.features, (f, i) => {
+                        let z = -1;
+                        _.forEach(features, (ft, y) => {
+                            if (f.name == ft.name) {
+                                z = y;
+                                return false;    
+                            }
+                        });
+                        
+                        if (z > -1) {
+                            let fts = features.splice(z, 1);
+                            return fts[0];
+                        }
+                        return f;
+                    });
+                    exTable.detailContent.features = newFeatures;
+                }
+            };
+            
             if (updateMode && exTable.updateMode !== updateMode) {
                 exTable.setUpdateMode(updateMode);
+                refreshFeatures();
                 render.begin(table, ds, exTable.detailContent);
                 selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
                 if (updateMode === COPY_PASTE) {
@@ -5974,6 +6026,7 @@ module nts.uk.ui.exTable {
                 selection.off($container[0]);
                 copy.off(table, updateMode);
             } else if (updateViewMode) {
+                refreshFeatures();
                 render.begin(table, ds, exTable.detailContent);
             }
         }

@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
@@ -28,10 +27,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTime
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.AttendanceItemConditionPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErAlAtdItemConditionPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.AgreementCheckCon36PubEx;
-import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.CheckResultMonthlyPub;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -61,21 +60,19 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	}
 
 	@Override
-	public boolean check36AgreementCondition(String companyId, String employeeId, GeneralDate date, YearMonth yearMonth,
-			Year year, AgreementCheckCon36PubEx agreementCheckCon36) {
+	public boolean check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate, AgreementCheckCon36PubEx agreementCheckCon36) {
 		boolean check = checking36AgreementCondition.check36AgreementCondition(
-				companyId, 
-				employeeId, 
-				date, 
+				employeeId,
 				yearMonth, 
-				year, 
+				closureID, 
+				closureDate,
 				convertToAgreementCheckCon36AdapterPubDto(agreementCheckCon36));
 				
 		return check;
 	}
 
 	@Override
-	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, Integer closureDate,
+	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, ClosureDate closureDate,
 			String employeeID, AttendanceItemConditionPubExport attendanceItemCondition) {
 		boolean check = perTimeMonActualResult.checkPerTimeMonActualResult(
 				yearMonth, 

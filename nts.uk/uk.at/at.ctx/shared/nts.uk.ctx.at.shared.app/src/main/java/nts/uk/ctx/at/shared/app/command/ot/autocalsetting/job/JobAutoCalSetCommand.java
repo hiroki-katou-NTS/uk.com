@@ -6,13 +6,20 @@ package nts.uk.ctx.at.shared.app.command.ot.autocalsetting.job;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.AutoCalRaisingSalarySettingDto;
+import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.AutoCalRestTimeSettingDto;
+import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.AutoCalcOfLeaveEarlySettingDto;
+import nts.uk.ctx.at.shared.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
+import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
 /**
  * The Class JobAutoCalSetCommand.
@@ -32,6 +39,18 @@ public class JobAutoCalSetCommand {
 
 	/** The rest time. */
 	private AutoCalRestTimeSettingDto restTime;
+
+	/** The leave early. */
+	// 遅刻早退
+	private AutoCalcOfLeaveEarlySettingDto leaveEarly;
+
+	/** The raising salary. */
+	// 加給
+	private AutoCalRaisingSalarySettingDto raisingSalary;
+
+	/** The set of divergence time. */
+	// 乖離時間
+	private Integer divergenceTime;
 
 	/**
 	 * To domain.
@@ -121,6 +140,32 @@ public class JobAutoCalSetCommand {
 		@Override
 		public AutoCalRestTimeSetting getRestTime() {
 			return this.command.getRestTime().toDomain();
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingGetMemento#getLeaveEarly()
+		 */
+		@Override
+		public AutoCalcOfLeaveEarlySetting getLeaveEarly() {
+			return new AutoCalcOfLeaveEarlySetting(this.command.leaveEarly.isLate(),
+					this.command.leaveEarly.isLeaveEarly());
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingGetMemento#getRaisingSalary()
+		 */
+		@Override
+		public AutoCalRaisingSalarySetting getRaisingSalary() {
+			return new AutoCalRaisingSalarySetting(this.command.raisingSalary.isSpecificRaisingSalaryCalcAtr(),
+					this.command.raisingSalary.isRaisingSalaryCalcAtr());
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingGetMemento#getDivergenceTime()
+		 */
+		@Override
+		public AutoCalcSetOfDivergenceTime getDivergenceTime() {
+			return new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.valueOf(this.command.divergenceTime));
 		}
 
 	}
