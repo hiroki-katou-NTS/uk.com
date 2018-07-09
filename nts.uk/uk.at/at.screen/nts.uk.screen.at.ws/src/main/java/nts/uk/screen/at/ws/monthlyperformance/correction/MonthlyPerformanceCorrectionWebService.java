@@ -16,6 +16,8 @@ import org.eclipse.persistence.internal.libraries.antlr.runtime.misc.IntArray;
 
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatFinder;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.monthlycondition.MonthlyCorrectConditionDto;
+import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.monthlycondition.MonthlyCorrectConditionFinder;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
@@ -44,9 +46,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class MonthlyPerformanceCorrectionWebService {
 	@Inject
 	private MonthlyPerformanceCorrectionProcessor processor;
+	
 	/** 会社の月別実績の修正のフォーマット */
 	@Inject
 	private MonPfmCorrectionFormatFinder monPfmCorrectionFormatFinder;
+	
+	@Inject
+	private MonthlyCorrectConditionFinder monthlyCorrectionCondFinder;
+	
 	@Inject
 	private MonthlyPerformanceReload monthlyPerformanceReload;
 	
@@ -71,9 +78,8 @@ public class MonthlyPerformanceCorrectionWebService {
 	}
 	@POST
 	@Path("getErrorList")
-	public List<ErrorAlarmWorkRecordDto> getMonthlyErrorList() {
-		//TODO wait domain 社員の月別実績エラー一覧
-		return Arrays.asList(new ErrorAlarmWorkRecordDto("", "001", "Error 001", 0, 0, 0, "001", 0, "#FFFFFF", 0, BigDecimal.valueOf(0)));
+	public List<MonthlyCorrectConditionDto> getMonthlyErrorList() {
+		return monthlyCorrectionCondFinder.findUseMonthlyCorrectCondition();
 	}
 	@POST
 	@Path("getFormatCodeList")
