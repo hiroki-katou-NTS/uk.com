@@ -31,7 +31,11 @@ module nts.uk.com.view.cdl008.a {
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
-                    self.isMultiple = inputCDL008.isMultiple;
+                    if (_.isNil(inputCDL008.showBaseDate)) {
+                        self.isMultiple = false;
+                    } else {
+                        self.isMultiple = inputCDL008.showBaseDate ? false : true;
+                    }
                     if (self.isMultiple) {
                         self.selectedMulWorkplace(inputCDL008.selectedCodes);
                     }
