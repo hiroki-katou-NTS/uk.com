@@ -140,23 +140,17 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         nextToScreenR() {
             let self = this;
-<<<<<<< HEAD
             next();
             
             service.getExOutSummarySetting("conditionSetCd").done(res ==> {
-=======
-           
-            $('#ex_output_wizard').ntsWizard("next");
 
             service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
->>>>>>> bd216317e20e2dea333636b7bcfc6b2dec8d26ca
                 self.listOutputCondition(res.ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
             }).fail(res ==> {
                 console.log("getExOutSummarySetting fail");
             });
         }
-<<<<<<< HEAD
         
         createExOutText() {
             let self = this;
@@ -179,8 +173,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             });
         }
 
-=======
->>>>>>> bd216317e20e2dea333636b7bcfc6b2dec8d26ca
         loadListCondition() {
             let self = this;
 
