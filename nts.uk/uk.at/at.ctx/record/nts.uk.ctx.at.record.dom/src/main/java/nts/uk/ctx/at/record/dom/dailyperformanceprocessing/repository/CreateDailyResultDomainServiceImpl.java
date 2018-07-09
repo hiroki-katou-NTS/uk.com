@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -21,16 +24,21 @@ import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -57,6 +65,9 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	@Inject
+	private WorkingConditionRepository workingConditionRepo;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
@@ -69,6 +80,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		ProcessState status = ProcessState.SUCCESS;
 
 		// AsyncCommandHandlerContext<SampleCancellableAsyncCommand> ABC;
+		
 
 		// ③日別実績の作成処理
 		if (executionLog.isPresent()) {
@@ -85,10 +97,30 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 				Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
 						.findByCid(companyId);
 				
-				List<WorkingConditionItem> workingConditionItem = this.workingConditionItemRepository
+				
+				//...................................
+				List<WorkingConditionItem> workingConditionItems = this.workingConditionItemRepository
 						.getBySidsAndDatePeriod(emloyeeIds, periodTime);
+				
+				Map<String, List<WorkingConditionItem>> mapWOrking = workingConditionItems.parallelStream()
+						.collect(Collectors.groupingBy(WorkingConditionItem::getEmployeeId));
 
+				// Map<Sid, Map<HistoryID, List<WorkingConditionItem>>>
+				Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem = mapWOrking.entrySet().parallelStream()
+						.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+								.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, Function.identity()))));
+				
+				List<WorkingCondition> workingConditions = workingConditionRepo.getBySidsAndDatePeriod(emloyeeIds, periodTime);
 
+				// Map<Sid, List<DateHistoryItem>>
+				Map<String, List<DateHistoryItem>> mapLstDateHistoryItem = workingConditions.parallelStream()
+						.collect(Collectors.toMap(WorkingCondition::getEmployeeId, WorkingCondition::getDateHistoryItem));
+				
+				// Map<Sid, Map<HistoryID, DateHistoryItem>>
+				Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem = mapLstDateHistoryItem.entrySet()
+						.stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+						.collect(Collectors.toMap(DateHistoryItem::identifier, Function.identity()))));
+				
 				Stopwatches.start("start create");
 				
 				StateHolder stateHolder = new StateHolder(emloyeeIds.size());
@@ -110,7 +142,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 									return;
 								}
 								ProcessState cStatus = createData(asyncContext, periodTime, executionAttr, companyId, empCalAndSumExecLogID,
-										executionLog, dataSetter, employeeGeneralInfoImport, stateHolder, employeeId, stampReflectionManagement);
+										executionLog, dataSetter, employeeGeneralInfoImport, stateHolder, employeeId, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem);
 								
 								stateHolder.add(cStatus);
 								// Count down latch.
@@ -143,14 +175,19 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 		return status;
 	}
+	
 
 	@Transactional(value = TxType.REQUIRES_NEW)
 	private ProcessState createData(AsyncCommandHandlerContext asyncContext, DatePeriod periodTime, ExecutionAttr executionAttr,
 			String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
 			TaskDataSetter dataSetter, EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			StateHolder stateHolder, String employeeId, Optional<StampReflectionManagement> stampReflectionManagement) {
+			StateHolder stateHolder, String employeeId, Optional<StampReflectionManagement> stampReflectionManagement, 
+			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem) {
+		
 		ProcessState cStatus = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext, employeeId,
-				periodTime, companyId, empCalAndSumExecLogID, executionLog, false, employeeGeneralInfoImport, stampReflectionManagement);
+				periodTime, companyId, empCalAndSumExecLogID, executionLog, false, employeeGeneralInfoImport, stampReflectionManagement,
+				mapWorkingConditionItem, mapDateHistoryItem);
 		// 状態確認
 		if (cStatus == ProcessState.SUCCESS){
 			updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExecLogID);

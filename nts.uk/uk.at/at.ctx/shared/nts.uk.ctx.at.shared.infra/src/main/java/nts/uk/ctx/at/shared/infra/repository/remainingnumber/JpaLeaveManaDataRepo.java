@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.DaysOffMana;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
@@ -183,9 +184,9 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	
 	
 	@Override
-	public void updateUnUseDayLeaveId(String leaveId,Double unUsedDay) {
+	public void updateUnUseDayLeaveId(String leaveId,Double unUsedDay, List<DaysOffMana> daysOffMana) {
 		KrcmtLeaveManaData leaveMana =  this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
-		if(unUsedDay < leaveMana.occurredDays && unUsedDay !=0.0 ) {
+		if((unUsedDay < leaveMana.occurredDays && unUsedDay !=0.0) || daysOffMana.isEmpty() ) {
 			leaveMana.unUsedDays = unUsedDay;
 			leaveMana.subHDAtr = 0;
 		} else {
