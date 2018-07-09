@@ -192,8 +192,7 @@ public class RecoveryStorageService {
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
 			if (resultsSetting.isEmpty()) {
-				continue;
-				//return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
+				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 			}
 
 			// 履歴区分の判別する - check history division
