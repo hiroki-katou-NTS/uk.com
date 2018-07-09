@@ -79,3 +79,6 @@ button.large {
 .col_right_dv {
 	width: 40px;
 }
+#master-wrapper {
+    overflow: hidden;
+}
