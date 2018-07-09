@@ -1,0 +1,7 @@
+#X3 .table .cell:NTH-CHILD(1) {
+	width: 130px;
+}
+
+#X3 .table .cell:NTH-CHILD(2) {
+	width: 300px;
+}
