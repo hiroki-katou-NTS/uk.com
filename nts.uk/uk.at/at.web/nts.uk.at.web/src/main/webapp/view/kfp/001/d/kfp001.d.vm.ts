@@ -25,8 +25,12 @@ module nts.uk.at.view.kfp001.d {
                 self.executionId = ko.observable('');
             }
             start() {
+                let self = this;
                 $("#button-2D").focus();
-                
+                let peopleCo = nts.uk.ui.windows.getShared("KFP001_DATAC_SELECT");
+                if (peopleCo != self.peopleNo()){
+                    self.peopleNo(peopleCo);
+                }
             }
 
             addData() {

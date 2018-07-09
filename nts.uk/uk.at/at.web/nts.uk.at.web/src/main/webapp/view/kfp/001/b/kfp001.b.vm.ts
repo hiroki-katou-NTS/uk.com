@@ -161,6 +161,7 @@ module nts.uk.at.view.kfp001.b {
 
                     ko.computed(() => {
                         self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
+                        self.dScreenmodel.peopleNo(null);
                         self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
                         self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.multiSelectedCode())]));
                         self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
@@ -345,6 +346,7 @@ module nts.uk.at.view.kfp001.b {
             opendScreenBorJ() {
                 let self = this;
                 var dfd = $.Deferred();
+                self.cScreenmodel.start();
                 $("#code-text-d4-2").trigger("validate");
                 $("#code-text-d4-21").trigger("validate");
                 $("#start-date-B6-3").trigger("validate");
@@ -359,6 +361,7 @@ module nts.uk.at.view.kfp001.b {
                         nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
                     } else {
                         $("#wizard").ntsWizard("next").done(function() {
+                            
                         });
                     }
                 }

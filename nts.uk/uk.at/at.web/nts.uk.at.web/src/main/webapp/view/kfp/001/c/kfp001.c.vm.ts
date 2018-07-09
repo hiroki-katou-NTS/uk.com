@@ -135,6 +135,7 @@ module nts.uk.at.view.kfp001.c {
                         let selectList = _.map(data.listEmployee, item => {
                             return item.employeeCode;
                         });
+                        self.multiSelectedCode([]);
                         self.multiSelectedCode(selectList);
                     }
                 }
