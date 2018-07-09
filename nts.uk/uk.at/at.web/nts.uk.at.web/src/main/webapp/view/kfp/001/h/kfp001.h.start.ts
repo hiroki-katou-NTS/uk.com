@@ -4,6 +4,7 @@ module nts.uk.com.view.kfp001.h {
             screenModel.startPage().done(function() {
                 __viewContext.bind(screenModel);
                 screenModel.bindLinkClick();
+                $(".ntsStartDatePicker").focus();
             });
     });
 }
