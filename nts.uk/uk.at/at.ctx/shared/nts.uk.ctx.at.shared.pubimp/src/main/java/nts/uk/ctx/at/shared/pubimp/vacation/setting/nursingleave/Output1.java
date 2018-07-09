@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.pubimp.vacation.setting.nursingleave;
 
+import java.util.Optional;
+
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
@@ -12,12 +14,14 @@ public class Output1 {
 	
 	private boolean periodGrantFlag;
 	
-	private GeneralDate useStartDateAfter;
+	private Optional<GeneralDate> useStartDateAfter;
 	
-	private GeneralDate useEndDateAfter;
+	private Optional<GeneralDate> useEndDateAfter;
 	
 	public Output1() {
 		this.periodGrantFlag = false;
+		useStartDateAfter = Optional.empty();
+		useEndDateAfter = Optional.empty();
 	}
 
 }

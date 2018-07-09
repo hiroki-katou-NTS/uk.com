@@ -200,12 +200,33 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	}
 	
 	private Output1 calculationUsagePeriod(Integer startMonthDay, GeneralDate startDate, GeneralDate endDate) {
-		Output1 ouput = new Output1();
+		Output1 output = new Output1();
 		int dayStartMonthDay = startMonthDay % 100;
 		int monthStartMonthDay = startMonthDay / 100;
 		GeneralDate commencementDate = GeneralDate.ymd(startDate.year(), monthStartMonthDay, dayStartMonthDay);
-		
-		return ouput;
+		GeneralDate useStartDateBeforeGrant;
+
+		if (commencementDate.after(startDate)) {
+			useStartDateBeforeGrant = commencementDate.addYears(-1);
+		} else {
+			useStartDateBeforeGrant = commencementDate;
+		}
+		// set to output
+		output.setUseStartDateBefore(useStartDateBeforeGrant);
+		output.setUseEndDateBefore(useStartDateBeforeGrant.addYears(1).addDays(-1));
+
+		GeneralDate checkDate = useStartDateBeforeGrant.addYears(1);
+		if (checkDate.beforeOrEquals(endDate)) {
+			// change flag
+			output.setPeriodGrantFlag(true);
+			GeneralDate useStartDateAfterGrant = useStartDateBeforeGrant.addYears(1);
+
+			// set to input
+			output.setUseStartDateAfter(Optional.of(useStartDateAfterGrant));
+			output.setUseEndDateAfter(Optional.of(useStartDateAfterGrant.addYears(1).addDays(-1)));
+		}
+
+		return output;
 	}
 	
 
