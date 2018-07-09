@@ -58,10 +58,11 @@ public class OptionalAggrPeriodExecLogFinder {
 			List<AggrPeriodInfor> listError = errorInfoRepo.findAll(log.getAggrId());
 			EmployeeRecordImport empInfo = lstEmpInfo.stream().filter(e -> e.getEmployeeId().equals(log.getExecutionEmpId())).collect(Collectors.toList()).get(0);
 			if (optAggr.isPresent()) {
+				OptionalAggrPeriod aggr = optAggr.get();
 				OptionalAggrPeriodExecLogDto dto = new OptionalAggrPeriodExecLogDto(log.getAggrId(),
-						log.getAggrFrameCode().v(), optAggr.get().getOptionalAggrName().v(), log.getStartDateTime(),
-						empInfo.getEmployeeCode(), empInfo.getPname(), optAggr.get().getStartDate(),
-						optAggr.get().getEndDate(), log.getExecutionStatus().get().name, listTarget.size(), listError.size());
+						log.getAggrFrameCode().v(), aggr.getOptionalAggrName().v(), log.getStartDateTime(),
+						empInfo.getEmployeeCode(), empInfo.getPname(), aggr.getStartDate(),
+						aggr.getEndDate(), log.getExecutionStatus().get().name, listTarget.size(), listError.size());
 				result.add(dto);
 			} else {
 				OptionalAggrPeriodExecLogDto dto = new OptionalAggrPeriodExecLogDto(log.getAggrId(),

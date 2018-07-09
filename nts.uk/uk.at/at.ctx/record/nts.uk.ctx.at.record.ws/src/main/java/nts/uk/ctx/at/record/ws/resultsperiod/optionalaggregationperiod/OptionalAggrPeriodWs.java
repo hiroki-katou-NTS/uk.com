@@ -132,7 +132,7 @@ public class OptionalAggrPeriodWs {
 	@POST
 	@Path("findbyperiod/{start}/{end}")
 	public List<OptionalAggrPeriodExecLogDto> findByPeriod(@PathParam("start") String start, @PathParam("end") String end) {
-		return this.logFinder.findLog(GeneralDate.fromString(end, "yyyy-MM-dd"), GeneralDate.fromString(end, "yyyy-MM-dd"));
+		return this.logFinder.findLog(GeneralDate.fromString(start, "yyyy-MM-dd"), GeneralDate.fromString(end, "yyyy-MM-dd"));
 	}
 	
 	@POST

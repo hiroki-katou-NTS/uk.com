@@ -27,12 +27,13 @@ module nts.uk.com.view.kfp001.h.viewmodel {
             end = moment.utc(self.periodValue().endDate, "YYYY/MM/DD").format("YYYY-MM-DD");
             block.invisible();
             service.getLogData(start, end).done((result: Array<any>) => {
+                let list: Array<DataModel> = [];
                 if (result && result.length > 0) {
-                    let list: Array<DataModel> = _.map(result, log => {
+                    list = _.map(result, log => {
                         return new DataModel(log.id, log.code, log.name, log.executionDt, log.executorCode, log.executorName, log.aggregationStart, log.aggregationEnd, log.status, log.targetNum, log.errorNum);
                     });
-                    self.listData(list);
                 }
+                self.listData(list);
                 self.initIGrid();
                 dfd.resolve();
             }).fail((error) => {
