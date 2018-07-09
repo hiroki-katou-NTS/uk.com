@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class MasterApproverRootOutput {
 	
-	CompanyApprovalInfor companyRootInfor;
+	CompanyApprovalInfor comRootInfor;
 	/**
 	 * workplaceId, approver of workplace
 	 */
@@ -18,5 +18,4 @@ public class MasterApproverRootOutput {
 	 * employee Id, approver of employee
 	 */
 	Map<String, PersonApproverOutput> personRootInfor;
-	
 }

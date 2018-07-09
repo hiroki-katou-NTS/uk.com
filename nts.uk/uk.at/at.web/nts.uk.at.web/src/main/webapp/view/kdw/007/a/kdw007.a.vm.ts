@@ -16,12 +16,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         showTypeAtr: KnockoutObservable<number> = ko.observable(0);
         listUseAtr: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
-            { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") }
+            { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") },
+            { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") }
         ]);
         listRemarkCancelErrorInput: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: nts.uk.resource.getText("KDW007_110") },
-            { code: '1', name: nts.uk.resource.getText("KDW007_109") }
+            { code: '1', name: nts.uk.resource.getText("KDW007_109") },
+            { code: '0', name: nts.uk.resource.getText("KDW007_110") }
         ]);
         listRemarkColumnNo: KnockoutObservableArray<any> = ko.observableArray([]);
         listTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
@@ -235,7 +235,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             selectedErrorAlarm.code(param && param.code ? param.code : '');
             selectedErrorAlarm.name(param && param.name ? param.name : '');
             selectedErrorAlarm.fixedAtr(param && param.fixedAtr ? param.fixedAtr : 0);
-            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 1);
+            selectedErrorAlarm.useAtr(param && nts.uk.ntsNumber.isNumber(param.useAtr, false) ? param.useAtr : 1);
             selectedErrorAlarm.remarkCancelErrorInput(param && param.remarkCancelErrorInput ? param.remarkCancelErrorInput : 0);
             selectedErrorAlarm.remarkColumnNo(param && param.remarkColumnNo ? param.remarkColumnNo : 833);
             selectedErrorAlarm.typeAtr(param && param.typeAtr ? param.typeAtr : 0);

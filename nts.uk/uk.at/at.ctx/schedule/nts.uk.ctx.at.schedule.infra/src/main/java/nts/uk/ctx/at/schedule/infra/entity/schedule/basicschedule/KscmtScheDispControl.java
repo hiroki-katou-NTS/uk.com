@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -55,10 +56,10 @@ public class KscmtScheDispControl extends UkJpaEntity implements Serializable {
 	@Column(name = "SYMBOL_HALF_DAY_NAME")
 	public String symbolHalfDayName;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="scheDispControl", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="scheDispControl", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KscmtSchePerInfoAtr> schePerInfoAtr;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="scheDispControl", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="scheDispControl", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KscstScheQualifySet> scheQualifySet;
 
 	@Override

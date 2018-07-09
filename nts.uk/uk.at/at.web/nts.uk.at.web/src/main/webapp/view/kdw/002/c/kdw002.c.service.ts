@@ -6,11 +6,13 @@ module nts.uk.at.view.kdw002.c {
             getDailyAttdItemByRoleID : "at/shared/scherec/dailyattditem/auth/getdailyattd",
             getListDailyAttdItem : "at/shared/scherec/dailyattditem/getalldailyattd",
             updateDailyAttdItem :"at/shared/scherec/dailyattditem/auth/updatedailyattd",
+            getNameDaily  :"screen/at/correctionofdailyperformance/getNamedailyAttItem", 
             //monthly
             getListMonthlyAttdItem:"at/record/attendanceitem/monthly/findall",
             getMonthlyAttdItemByRoleID : "at/shared/scherec/monthlyattditem/auth/getmonthlyattd",
-            updateMonthlyAttdItem :"at/shared/scherec/monthlyattditem/auth/updatemonthlyattd"
-            }
+            updateMonthlyAttdItem :"at/shared/scherec/monthlyattditem/auth/updatemonthlyattd",
+            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
+        }
         //daily
         export function getEmpRole(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getEmpRole);
@@ -27,6 +29,10 @@ module nts.uk.at.view.kdw002.c {
             return nts.uk.request.ajax(paths.getDailyAttdItemByRoleID +"/" +roleID);
         }
         
+        export function getNameDaily(listID : any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getNameDaily,listID);
+        }
+        
         // monthly
         export function getListMonthlyAttdItem(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getListMonthlyAttdItem);
@@ -37,6 +43,9 @@ module nts.uk.at.view.kdw002.c {
         
         export function updateMonthlyAttdItem(command): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.updateMonthlyAttdItem,command);
+        }
+        export function getNameMonthly(listID : any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getNameMonthly,listID);
         }
         
         

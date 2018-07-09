@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.vacation.absenceleave.KrcdtMonS
 @Stateless
 public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implements AbsenceLeaveRemainDataRepository{
 	
-	private String QUERY_BY_SID_YM_STATUS = "SELECT c FROM KrcdtMonSubOfHdRemain c"
+	private static final String QUERY_BY_SID_YM_STATUS = "SELECT c FROM KrcdtMonSubOfHdRemain c"
 			+ " WHERE c.pk.sId = :employeeId"
 			+ " AND c.pk.ym = :ym"
 			+ " AND c.closureStatus = :status"

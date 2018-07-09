@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf002.b {
                                 nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                             });
                         } else {
-                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode });  
+                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, true);  
                         }  
                     }).fail((res1) => { 
                         nts.uk.ui.dialog.alertError({ messageId: res1.messageId }).then(function(){

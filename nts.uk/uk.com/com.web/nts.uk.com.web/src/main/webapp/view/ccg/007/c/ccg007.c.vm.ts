@@ -42,7 +42,7 @@ module nts.uk.pr.view.ccg007.c {
                         .done(function(showContractData: any) {
                             if (showContractData.onpre) {
                                 nts.uk.characteristics.remove("contractInfo");
-                                nts.uk.characteristics.save("contractInfo", { contractCode: defaultContractCode, contractPassword: null });
+                                nts.uk.characteristics.save("contractInfo", { contractCode: defaultContractCode, contractPassword: self.contractPassword() });
                                 self.contractCode(defaultContractCode);
                                 self.contractPassword(null);
                                 self.getEmployeeLoginSetting(defaultContractCode);
@@ -187,8 +187,10 @@ module nts.uk.pr.view.ccg007.c {
                 
                 //set LoginId to dialog
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    loginId: self.employeeCode(),
-                    contractCode : self.contractCode()
+                    form1: false,
+                    employeeCode: self.employeeCode(),
+                    contractCode : self.contractCode(),
+                    companyCode: self.companyCode()
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/ccg/007/e/index.xhtml',{
@@ -196,7 +198,7 @@ module nts.uk.pr.view.ccg007.c {
                     height : 450
                 }).onClosed(function(): any {
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    if (!childData.submit.isNil) {
+                    if (childData.submit) {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                     }    
                 })

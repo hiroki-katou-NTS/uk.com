@@ -516,15 +516,16 @@ public class ApprovalStatusFinder {
 			if (overFrame.getApplicationTime() != 0) {
 				if (countItem > 2) {
 					time += overFrame.getApplicationTime();
-					countRest = lstFrame.size() - 3;
 				} else {
 					frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
 					time += overFrame.getApplicationTime();
 					countItem++;
 				}
+				countRest++;
 			}
 		}
-		String other = countRest > 0 ? I18NText.getText("KAF018_231", String.valueOf(countRest)) : "";
+		int countTemp = countRest -3;
+		String other = countTemp > 0 ? I18NText.getText("KAF018_231", String.valueOf(countTemp)) : "";
 		String otherFull = (frameName != "" || other != "") ? "（" + frameName + other + "）" : "";
 		appContent += clockShorHm(time) + "　" + otherFull;
 		return appContent;

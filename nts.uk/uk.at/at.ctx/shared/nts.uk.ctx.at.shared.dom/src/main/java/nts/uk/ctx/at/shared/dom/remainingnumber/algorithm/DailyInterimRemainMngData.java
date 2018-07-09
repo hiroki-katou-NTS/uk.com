@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -48,5 +49,9 @@ public class DailyInterimRemainMngData {
 	 * 暫定休出管理データ
 	 */
 	private Optional<InterimBreakMng> breakData;
+	/**
+	 * 暫定特別休暇データ
+	 */
+	private List<InterimSpecialHolidayMng> specialHolidayData;
 	
 }

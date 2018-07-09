@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 
 @Stateless
 public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngRegister{
@@ -36,6 +37,8 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 	private InterimRecAbasMngRepository recAbsRepos;
 	@Inject
 	private InterimBreakDayOffMngRepository breakDayOffRepos;
+	@Inject
+	private InterimSpecialHolidayMngRepository specialHoliday;
 	@Override
 	public void registryInterimDataMng(InterimRemainCreateDataInputPara inputData) {
 		//指定期間の暫定残数管理データを作成する
@@ -57,7 +60,9 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 			//暫定積立年休データの登録
 			dataInput.setRemainType(RemainType.FUNDINGANNUAL);
 			this.registryInterimResereLeave(dataInput);
-			//TODO　暫定特休データの登録
+			//暫定特休データの登録
+			dataInput.setRemainType(RemainType.SPECIAL);
+			this.registryInterimResereLeave(dataInput);
 			//暫定振休データの登録
 			dataInput.setRemainType(RemainType.PAUSE);
 			this.registryInterimResereLeave(dataInput);
@@ -123,9 +128,13 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 				InterimBreakMng breakDataCreate = earchData.getBreakData().get();
 				breakDataCreate.setBreakMngId(mngId);
 				breakDayOffRepos.persistAndUpdateInterimBreakMng(breakDataCreate);
+			case SPECIAL:
+				earchData.getSpecialHolidayData().forEach(x -> {
+					x.setSpecialHolidayId(mngId);
+					specialHoliday.persistAndUpdateInterimSpecialHoliday(x);
+				});
 			default:
 				break;
-				
 			}			
 		}
 		//暫定残数管理データ(新作成)がある、INPUT．暫定残数管理データ(DB既存)がない
@@ -154,6 +163,10 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 			case BREAK:
 				InterimBreakMng breakDataCreate = earchData.getBreakData().get();
 				breakDayOffRepos.persistAndUpdateInterimBreakMng(breakDataCreate);
+			case SPECIAL:
+				earchData.getSpecialHolidayData().forEach(x -> {
+					specialHoliday.persistAndUpdateInterimSpecialHoliday(x);
+				});
 			default:
 				break;
 			}			
@@ -179,6 +192,10 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 				breakDayOffRepos.deleteInterimDayOffMng(mngId);
 			case BREAK:
 				breakDayOffRepos.deleteInterimBreakMng(mngId);
+			case SPECIAL:
+				earchData.getSpecialHolidayData().forEach(x -> {
+					specialHoliday.deleteSpecialHoliday(mngId);
+				});
 			default:
 				break;
 			}

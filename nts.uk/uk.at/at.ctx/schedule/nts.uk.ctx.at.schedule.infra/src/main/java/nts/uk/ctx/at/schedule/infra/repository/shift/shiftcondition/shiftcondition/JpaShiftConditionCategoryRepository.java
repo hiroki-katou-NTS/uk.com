@@ -11,8 +11,8 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.shiftcondition.shiftcondition.K
 
 @Stateless
 public class JpaShiftConditionCategoryRepository extends JpaRepository implements ShiftConditionCategoryRepository {
-	private final String SELECT_SHIFT_CONDITION_CATEGORY_NO_WHERE = "SELECT c FROM KscmtShiftConditionCategory c ";
-	private final String SELECT_SHIFT_CON_CATE_BY_COMPANY = SELECT_SHIFT_CONDITION_CATEGORY_NO_WHERE
+	private static final String SELECT_SHIFT_CONDITION_CATEGORY_NO_WHERE = "SELECT c FROM KscmtShiftConditionCategory c ";
+	private static final String SELECT_SHIFT_CON_CATE_BY_COMPANY = SELECT_SHIFT_CONDITION_CATEGORY_NO_WHERE
 			+ "WHERE c.pk.companyId =:companyId ORDER  BY c.pk.categoryNo ";
 
 	@Override
