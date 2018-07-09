@@ -21,9 +21,6 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area-bottom">
-				<button tabindex="2" id="F5_2" data-bind="click: closeDialog">#{i18n.getText('KFP001_45')}</button>
-			</div>
 			<div class="contents-area">
 				<div style="padding: 20px">
 					<div class="valign-center control-group">
@@ -41,7 +38,7 @@
 						<div style="width: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KFP001_31')}</div>
 						<span class="label" data-bind="text: targetNum"></span>
 					</div>
-					<table id="single-list" tabindex="1"  data-bind="ntsGridList: {								
+					<table id="single-list" tabindex="1" data-bind="ntsGridList: {								
 						rows: 10,
 						dataSource: items,
 						name: '#[KFP001_46]',
@@ -56,6 +53,9 @@
 						value: currentCode
 					}"></table>
 				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="2" id="F5_2" data-bind="click: closeDialog">#{i18n.getText('KFP001_45')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
