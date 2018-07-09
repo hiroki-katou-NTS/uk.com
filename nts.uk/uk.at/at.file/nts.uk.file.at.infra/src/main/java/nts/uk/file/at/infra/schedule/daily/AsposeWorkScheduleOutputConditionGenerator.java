@@ -639,6 +639,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
 									if (optRemarkInput.isPresent()) {
 										String value = optRemarkInput.get().getValue();
+										value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
 										personalPerformanceDate.detailedErrorData += (value == null? "" : value + "　");
 									}
 								}
@@ -818,6 +819,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
 						if (optRemarkInput.isPresent()) {
 							String value = optRemarkInput.get().getValue();
+							value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
 							detailedDate.errorDetail += (value == null? "" : value + "　");
 						}
 					}
