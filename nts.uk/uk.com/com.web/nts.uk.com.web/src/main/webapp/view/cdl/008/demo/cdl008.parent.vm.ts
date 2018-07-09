@@ -11,6 +11,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
         enable: KnockoutObservable<boolean>;
         restrictionOfReferenceRange: boolean;
         isDisplayUnselect: KnockoutObservable<boolean>;
+        isShowBaseDate: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -30,6 +31,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
             self.selectedSystemType = ko.observable(5);         
             self.restrictionOfReferenceRange = false;
             self.isDisplayUnselect = ko.observable(false);
+            self.isShowBaseDate = ko.observable(false);
 
             self.isDisplayUnselect.subscribe(function(data) {
                 if (data && self.selectMode()) {
@@ -51,7 +53,8 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 isMultiple: self.selectMode(),
                 selectedSystemType: self.selectedSystemType(),
                 isrestrictionOfReferenceRange: self.restrictionOfReferenceRange,
-                showNoSelection: self.isDisplayUnselect()
+                showNoSelection: self.isDisplayUnselect(),
+                isShowBaseDate: self.isShowBaseDate()
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {
