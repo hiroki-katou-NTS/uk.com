@@ -117,7 +117,7 @@ module nts.uk.com.view.cmf004.i.viewmodel {
         public breakFollow(): void {
             let self = this;
             // stop auto request to server
-            clearInterval(self.interval);
+            //clearInterval(self.interval);
             //update status end 
             let paramBreakFollowProcessing = {
                 dataRecoveryProcessId: self.recoveryProcessingId
