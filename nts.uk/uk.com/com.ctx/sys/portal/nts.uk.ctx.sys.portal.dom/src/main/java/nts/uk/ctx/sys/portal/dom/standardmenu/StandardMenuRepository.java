@@ -126,4 +126,24 @@ public interface StandardMenuRepository {
 	 * @return standard menu
 	 */
 	List<StandardMenu> getProgram(String companyId, String programId, String screenId);
+	
+	/**
+	 * ThanhPV
+	 * insert StandardMenu
+	 * @param standardMenu
+	 */
+	void insertStandardMenu(StandardMenu standardMenu);
+	
+	/**
+	 * ThanhPV
+	 * Update StandardMenu
+	 * @param standardMenu
+	 */
+	void updateStandardMenu(StandardMenu standardMenu);
+	/**
+	 * ThanhPV
+	 * delete StandardMenu
+	 * @param standardMenu
+	 */
+	void deleteStandardMenu(String companyId, String code, int system, int classification);
 }

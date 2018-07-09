@@ -240,13 +240,22 @@ module nts.uk.at.view.kdm002.b {
                                 }
                                 if (self.excelContent().length > 0) {
                                     if (res.succeeded) {
-                                        self.status(getText("KDM002_29"));
+                                        if (self.imErrorLog().length == 0) {
+                                            self.status(getText("KDM002_29"));
+                                            $('#BTN_CLOSE').focus();
+                                        } else {
+                                            self.status(getText("KDM002_30"));
+                                        }
                                         self.startExportExcel(true);
-                                        $('#BTN_CLOSE').focus();
+                                        $('#BTN_ERROR_EXPORT').focus();
                                     } else if (res.cancelled) {
                                         self.status(getText("KDM002_23"));
                                     }
                                     $('#BTN_CLOSE').focus();
+                                }
+                                if (self.excelContent().length == 0 && self.imErrorLog().length == 0) {
+                                    self.status(getText("KDM002_29"));
+                                     $('#BTN_CLOSE').focus();
                                 }
 
 

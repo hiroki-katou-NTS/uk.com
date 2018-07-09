@@ -29,7 +29,7 @@ public interface LeaveManaDataRepository {
 	
 	void updateByLeaveIds(List<String> leaveIds);
 	
-	public void updateUnUseDayLeaveId(String leaveId, Double unUsedDay);
+	public void updateUnUseDayLeaveId(String leaveId, Double unUsedDay, List<DaysOffMana> daysOffMana);
 	
 	void updateSubByLeaveId(String leaveId, Boolean check);
 	/**

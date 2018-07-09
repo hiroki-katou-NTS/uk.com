@@ -28,16 +28,15 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 	private AttendanceItemConvertFactory attendanceItemConvertFactory;
 	
 	@Override
-	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, Integer closureDate,
+	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, ClosureDate closureDate,
 			String employeeID,AttendanceItemCondition attendanceItemCondition) {
 		
 		//社員に一致する月別実績を取得する
-		ClosureDate closureDateConvert = new ClosureDate(closureDate,new Boolean(true));
 		Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly = attendanceTimeOfMonthlyRepo.find(
 				employeeID, 
 				yearMonth,
 				EnumAdaptor.valueOf(closureID,ClosureId.class),
-				closureDateConvert);
+				closureDate);
 		//存在しない場合
 		if(!attendanceTimeOfMonthly.isPresent()) {
 			return false;
