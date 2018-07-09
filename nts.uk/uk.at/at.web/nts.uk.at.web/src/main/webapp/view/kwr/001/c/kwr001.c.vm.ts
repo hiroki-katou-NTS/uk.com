@@ -124,7 +124,6 @@ module nts.uk.at.view.kwr001.c {
                 self.currentRemarkInputContent = ko.observable('1');
                 
                 self.currentRemarkInputContent.subscribe(function(value) {
-                    console.log(value);    
                 })
                 
                 self.checkedRemarksInput.subscribe(function(isChecked) {
@@ -351,6 +350,7 @@ module nts.uk.at.view.kwr001.c {
                                                                 return self.currentCodeList() == o.itemCode;             
                                                             });
                     command.remarkInputNo = _.isEmpty(outputItemDailyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemDailyWorkSchedule.remarkInputNo;
+                    self.currentRemarkInputContent(self.convertDBRemarkInputToValue(command.remarkInputNo));
                 }
                 service.save(command).done(function() {
                     self.getDataService().done(function(){

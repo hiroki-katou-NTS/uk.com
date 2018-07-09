@@ -47,6 +47,8 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	// 備考入力No
 	private RemarkInputContent remarkInputNo;
 	
+	private static final String MAX_ATTENDANCE_ITEM = "48";
+	
 	/**
 	 * Instantiates a new output item daily work schedule.
 	 *
@@ -96,7 +98,7 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 		}
 		
 		if (this.lstDisplayedAttendance.size() > 48) {
-			throw new BusinessException("Msg_1297");
+			throw new BusinessException("Msg_1297", new String[]{MAX_ATTENDANCE_ITEM});
 		}
 	}
 }
