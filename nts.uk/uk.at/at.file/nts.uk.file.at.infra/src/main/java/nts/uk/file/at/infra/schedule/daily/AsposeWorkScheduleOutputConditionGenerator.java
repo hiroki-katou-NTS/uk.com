@@ -435,7 +435,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			return x.getPrintItem();
 		}).collect(Collectors.toList());
 		if (lstRemarkEnable.contains(RemarksContentChoice.REMARKS_INPUT))
-			itemsId.add(outputItem.getRemarkInputNo() + 833); // Remark no (0~4) -> attendanceId (833~837)
+			itemsId.add(outputItem.getRemarkInputNo().value + 833); // Remark no (0~4) -> attendanceId (833~837)
 		// Request list #332
 		List<AttendanceResultImport> lstAttendanceResultImport = attendaceAdapter.getValueOf(query.getEmployeeId(), new DatePeriod(query.getStartDate(), query.getEndDate()), itemsId);
 		queryData.setLstAttendanceResultImport(lstAttendanceResultImport);
@@ -636,7 +636,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								
 								// Append 備考入力
 								if (remark.getPrintItem() == RemarksContentChoice.REMARKS_INPUT) {
-									Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo() + 833).findFirst();
+									Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
 									if (optRemarkInput.isPresent()) {
 										String value = optRemarkInput.get().getValue();
 										personalPerformanceDate.detailedErrorData += (value == null? "" : value + "　");
@@ -815,7 +815,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				lstRemarkContent.stream().filter(remark -> remark.isUsedClassification()).forEach(remark -> {
 					// Append 備考入力
 					if (remark.getPrintItem() == RemarksContentChoice.REMARKS_INPUT) {
-						Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo() + 833).findFirst();
+						Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
 						if (optRemarkInput.isPresent()) {
 							String value = optRemarkInput.get().getValue();
 							detailedDate.errorDetail += (value == null? "" : value + "　");
