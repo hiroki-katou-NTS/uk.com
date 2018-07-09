@@ -23,7 +23,6 @@ import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.WorkScheduleBre
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeImport;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
@@ -55,10 +54,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
  */
 @Stateless
 public class ScheCreExeBasicScheduleHandler {
-
-	/** The sc short work time adapter. */
-	@Inject
-	private ScShortWorkTimeAdapter scShortWorkTimeAdapter;
 
 	/** The basic schedule repository. */
 	@Inject
@@ -109,11 +104,12 @@ public class ScheCreExeBasicScheduleHandler {
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
 			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto) {
 
-		// get short work time
-		// アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する
-		Optional<ShortWorkTimeDto> optionalShortTime = this.getShortWorkTime(employeeId, dateInPeriod);
+		// 「社員の短時間勤務一覧」からパラメータ.社員ID、対象日をもとに該当する短時間勤務を取得する
+		// EA修正履歴：No2135
+		// EA修正履歴：No2136
+		Optional<ShortWorkTimeDto> optionalShortTime = listShortWorkTimeDto.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getPeriod().contains(dateInPeriod))).findFirst();
 
 		// add command save
 		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
@@ -178,20 +174,6 @@ public class ScheCreExeBasicScheduleHandler {
 
 		// add to list basicSchedule to insert/update all
 		allData.add(commandSave.toDomain());
-	}
-
-	/**
-	 * Gets the short work time.
-	 *
-	 * @param employeeId
-	 *            the employee id
-	 * @param baseDate
-	 *            the base date
-	 * @return the short work time
-	 */
-	// アルゴリズム (WorkTime)
-	private Optional<ShortWorkTimeDto> getShortWorkTime(String employeeId, GeneralDate baseDate) {
-		return this.scShortWorkTimeAdapter.findShortWorkTime(employeeId, baseDate);
 	}
 
 	/**

@@ -152,8 +152,6 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 						continue;
 					}
 
-					// update again data time zone for case user update start
-					// time, end time (mode show time)
 					List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>();
 					bSchedule.getWorkScheduleTimeZones().forEach(item -> {
 						if (item.getScheduleCnt() == 1) {
