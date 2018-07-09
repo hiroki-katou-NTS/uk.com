@@ -142,14 +142,15 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
             next();
             
-            service.getExOutSummarySetting("conditionSetCd").done(res ==> {
+            service.getExOutSummarySetting("conditionSetCd").done(res => {
 
-            service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
-                self.listOutputCondition(res.ctgItemDataCustomList);
-                self.listOutputItem(res.ctdOutItemCustomList);
-            }).fail(res ==> {
-                console.log("getExOutSummarySetting fail");
-            });
+                service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
+                    self.listOutputCondition(res.ctgItemDataCustomList);
+                    self.listOutputItem(res.ctdOutItemCustomList);
+                }).fail(res => {
+                    console.log("getExOutSummarySetting fail");
+                });
+            }
         }
         
         createExOutText() {
@@ -157,7 +158,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             
             //TODO set command
             let command = new CreateExOutTextCommand();
-            service.createExOutText(command).done(res ==> {
+            service.createExOutText(command).done(res => {
                 let params = {
                     storeProcessingId: res,
                 };
@@ -168,7 +169,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     //disable nut
                     //$("").focus();
                 });
-            }).fail(res ==> {
+            }).fail(res => {
                 console.log("createExOutText fail");
             });
         }
@@ -199,7 +200,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 showAllClosure: false, // 全締め表示
                 showPeriod: true, // 対象期間利用
                 periodFormatYM: false, // 対象期間精度
-
                 /** Required parameter */
                 baseDate: moment.utc().toISOString(), // 基準日
                 periodStartDate: moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString(), // 対象期間開始日
@@ -208,13 +208,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 leaveOfAbsence: true, // 休職区分
                 closed: true, // 休業区分
                 retirement: true, // 退職区分
-
                 /** Quick search tab options */
                 showAllReferableEmployee: true, // 参照可能な社員すべて
                 showOnlyMe: true, // 自分だけ
                 showSameWorkplace: true, // 同じ職場の社員
                 showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
-
                 /** Advanced search properties */
                 showEmployment: true, // 雇用条件
                 showWorkplace: true, // 職場条件
@@ -222,7 +220,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 showJobTitle: true, // 職位条件
                 showWorktype: true, // 勤種条件
                 isMutipleCheck: true, // 選択モード
-
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
 
@@ -235,7 +232,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             $('#component-items-list').ntsListComponent(self.listComponentOption);
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
-    }
+    
 
     export class ListType {
         static EMPLOYMENT = 1;
@@ -317,7 +314,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         showAllClosure: boolean; // 全締め表示
         showPeriod: boolean; // 対象期間利用
         periodFormatYM: boolean; // 対象期間精度
-
         /** Required parameter */
         baseDate?: string; // 基準日
         periodStartDate?: string; // 対象期間開始日
@@ -326,13 +322,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         leaveOfAbsence: boolean; // 休職区分
         closed: boolean; // 休業区分
         retirement: boolean; // 退職区分
-
         /** Quick search tab options */
         showAllReferableEmployee: boolean; // 参照可能な社員すべて
         showOnlyMe: boolean; // 自分だけ
         showSameWorkplace: boolean; // 同じ職場の社員
         showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
-
         /** Advanced search properties */
         showEmployment: boolean; // 雇用条件
         showWorkplace: boolean; // 職場条件
@@ -342,7 +336,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isMutipleCheck: boolean; // 選択モード
         // showDepartment: boolean; // 部門条件 not covered
         // showDelivery: boolean; not covered
-
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     }
