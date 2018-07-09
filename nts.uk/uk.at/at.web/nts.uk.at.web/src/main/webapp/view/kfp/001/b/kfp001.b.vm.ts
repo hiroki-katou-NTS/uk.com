@@ -352,7 +352,7 @@ module nts.uk.at.view.kfp001.b {
                 let checkCode = _.filter(self.optionalList(), function(obj) {
                     return obj.aggrFrameCode == self.currentItem().aggrFrameCode();
                 });
-                if (checkCode && self.mode() == 0) {
+                if (checkCode.length > 0 && self.mode() == 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_3" });
                 } else {
                     if (self.status() == model.ExecutionStatus.Processing) {
