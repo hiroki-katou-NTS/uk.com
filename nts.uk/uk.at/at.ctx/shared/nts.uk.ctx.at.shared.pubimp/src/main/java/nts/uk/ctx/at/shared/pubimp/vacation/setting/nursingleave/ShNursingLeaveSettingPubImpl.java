@@ -243,13 +243,17 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	
 	private double getNursingUsedNumber(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate, NursingMode mode) {
 		double usedNumber= 0;
+		List<TempCareData> tempCareDataList = new ArrayList<>();
 		if (mode == NursingMode.Monthly) {
-			Map<GeneralDate, DailyInterimRemainMngData> memoryData = interimRemainOfMonthProccess
-					.createInterimRemainDataMng(companyId, employeeId, new DatePeriod(startDate, endDate));
+			// TODO
+			//　対象外
 		} else {
-			List<TempCareData> tempCareDataList = tempCareDataRepository.findByEmpIdInPeriod(employeeId,
+			tempCareDataList = tempCareDataRepository.findByEmpIdInPeriod(employeeId,
 					startDate, endDate);
-			//tempCareDataList.forEach( domain -> usedNumber += domain.getAnnualLeaveUse().v());
+		}
+		
+		for (TempCareData domain : tempCareDataList) {
+			usedNumber += domain.getAnnualLeaveUse().v();
 		}
 		
 		return usedNumber;
