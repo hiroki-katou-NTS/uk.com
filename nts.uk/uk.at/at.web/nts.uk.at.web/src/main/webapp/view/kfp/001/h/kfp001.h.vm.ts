@@ -146,7 +146,7 @@ module nts.uk.com.view.kfp001.h.viewmodel {
             this.executorName = execName;
             this.start = start;
             this.end = end;
-            this.aggregationPeriod = start + getText("KFP001_30") + end;
+            this.aggregationPeriod = (start && end) ? start + getText("KFP001_30") + end : "";
             this.result = result;
             this.targetPeopleNum = targetNum;
             this.errorPeopleNum = errorNum;
