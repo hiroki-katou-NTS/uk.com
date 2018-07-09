@@ -23,7 +23,7 @@ public interface ShNursingLeaveSettingPub {
 	 */
 	// RequestList206: 期間内の子看護残を集計する
 	// ＜INPUT＞・会社ID・社員ID・集計開始日・集計終了日・モード
-	ChildNursingRemainExport aggrChildNursingRemainPeriod(String companyId, String employeeId, DatePeriod period, Integer mode);
+	ChildNursingRemainExport aggrChildNursingRemainPeriod(String companyId, String employeeId, DatePeriod period, NursingMode mode);
 
 	/**
 	 * Aggr nursing remain period.
