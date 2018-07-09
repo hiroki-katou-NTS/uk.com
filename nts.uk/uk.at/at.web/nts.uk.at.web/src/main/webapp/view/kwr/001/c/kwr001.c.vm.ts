@@ -396,6 +396,8 @@ module nts.uk.at.view.kwr001.c {
             
             // return to screen A
             closeScreenC(): void {
+                let self = this;
+                nts.uk.ui.windows.setShared('KWR001_C', self.currentCodeList(), true);
                 nts.uk.ui.windows.close();
             }
             
