@@ -53,7 +53,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         selectedSetting: ApplicationApprovalSettingWkp;
         // update ver27
         selectVer27: KnockoutObservable<number> = ko.observable(0);
-        visible27: KnockoutObservable<boolean> = ko.observable(true);
+        visible27: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             var self = this;
@@ -104,9 +104,9 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             
             self.selectVer27.subscribe((value) => {
                 if(value == 0){
-                    self.visible27(true);
+                    self.visible27(false);
                 }else{
-                    self.visible27(false);    
+                    self.visible27(true);    
                 }
             });
         }
