@@ -35,7 +35,7 @@
         </div>
         <div class="div-line flex">
             <!--E4_1 カテゴリ一覧-->
-            <table id="E4_1">
+            <table tabindex = "1" id="E4_1">
                 <colgroup>
                     <col width="30px"/>
                     <col width="70px"/>
@@ -60,7 +60,7 @@
                 <tr id="E4_2">
                     <td class="halign-right row-number"><label data-bind="text: rowNumber"/></td>
                     <td class="halign-center row-checkbox">
-                        <div tabindex="1" id="E5_2" data-bind="ntsCheckBox: { checked: isRecover, enable: iscanNotBeOld}"/>
+                        <div tabindex="-1" id="E5_2" data-bind="ntsCheckBox: { checked: isRecover, enable: iscanNotBeOld}"/>
                     </td>
                     <td><span class="limited-label" data-bind="text: categoryName"/></td>
                    	<td><span class="limited-label" data-bind="text: $vm.getTextRecovery(recoveryPeriod)"/></td> 

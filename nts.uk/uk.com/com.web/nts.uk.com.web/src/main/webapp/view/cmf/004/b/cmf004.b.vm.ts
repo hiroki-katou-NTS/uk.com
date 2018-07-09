@@ -157,9 +157,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 self.recoveryProcessingId = recoveryInfo.processingId;
                                 self.initScreenE();
                                 $('#data-recovery-wizard').ntsWizard("next");
+                                $('#E4_1').focus();
                             }
                         }
+                        $('#E4_1').focus();
                     });
+                    $('#E4_1').focus();
                 });
             }
         }
@@ -414,6 +417,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     if (res.status) {
                         self.initScreenE();
                         $('#data-recovery-wizard').ntsWizard("next");
+                        $('#E4_1').focus();
                     } else {
                         if (res.message.length > 0) {
                             dialog.alertError({ messageId: res.message });
@@ -426,7 +430,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             }).always((err) => {
                 block.clear();
             });
-            $("#E4_2:first-child .row-checkbox .ntsCheckBox-label:first-child input[type=checkbox]:first-child").focus();
+            $('#E4_1').focus();
         }
 
         backToScreenA(): void {
