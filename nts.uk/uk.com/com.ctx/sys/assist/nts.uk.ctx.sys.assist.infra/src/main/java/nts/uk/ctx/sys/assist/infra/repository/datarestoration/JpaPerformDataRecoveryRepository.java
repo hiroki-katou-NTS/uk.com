@@ -206,10 +206,10 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		if (tableName != null) {
 			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
 			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1  ");
-			if (!StringUtils.isBlank(whereCid) && StringUtils.isBlank(cid)) {
+			if (!StringUtils.isBlank(whereCid) && !StringUtils.isBlank(cid)) {
 				DELETE_BY_TABLE_SQL.append(" AND ").append(whereCid).append(" = '").append(cid).append("'");
 			}
-			if (!StringUtils.isBlank(whereSid) && StringUtils.isBlank(employeeId)) {
+			if (!StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
 				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = '").append(employeeId).append("'");
 			}
 			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
