@@ -34,8 +34,9 @@ module nts.uk.at.view.kfp001.d {
             }
 
             addData() {
-                let self = this;
                 nts.uk.ui.block.invisible();
+                let self = this;
+                
                 let listEmployeeId = _.map(_.filter(self.listEmp(), (v) => _.includes(self.listSelect(), v.employeeCode)), (item) => {
                     return item.employeeId;
                 });
@@ -76,7 +77,6 @@ module nts.uk.at.view.kfp001.d {
                 }
 
                 service.addOptionalAggrPeriod(addAggrPeriodCommand).done(function(data) {
-                    
                     self.mode(1);
                     nts.uk.ui.windows.setShared("KFP001_DATAD", data);
                     nts.uk.ui.windows.setShared("KFP001_DATAE", addAggrPeriodCommand);
