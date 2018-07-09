@@ -43,6 +43,7 @@ td div {
 
 #a7_23 {
 	width: 42px;
+	margin-left: 37px;
 }
 
 #7_27 {
@@ -198,12 +199,14 @@ div.form-label {
 	margin-bottom: 5px;
 } */
 #a7_row1 {
-	position: absolute;
-}
+	/* position: absolute; */
+	margin-left: 5px;
+	margin-right: 5px;
+} 
 
-.special-a7 {
+/* .special-a7 {
 	padding-left: 49px;
-}
+} */
 
 #fixed-table-a7 span.label-a27 {
 	margin-left: 29px;

@@ -398,59 +398,97 @@
 												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
 														tabindex:42 
 													}">#{i18n.getText('KAF022_61')}</div></td>
-										<td><span class="ntsControl"> <label
-												class="ntsRadioBox" tabindex="43"> <input 
-													type="radio" name="textRadioA7_18"
-													data-bind="checkedValue: 1, checked: retrictPreMethodFlg, enable: true,attr:{
-														tabindex:43
-													}" />
-													<span class="box"></span><span class="label">#{i18n.getText('KAF022_63')}</span>
-											</label>
-										</span>
-											<span  id="a7_row1"
-												data-bind="ntsComboBox: {
-													options: $parent.itemListA7_20,
-													optionsValue: 'code',
-													visibleItemsCount: 8,
-													value: retrictPreDay,
-													optionsText: 'name',
-													editable: $parent.isEditable,
-													enable: $parent.isEnable,
-													columns: [
-														{ prop: 'name', length: 4 }
-													]},attr:{
-														tabindex:44 
-													}">
-											</span> <span class="label" id="a7_21">#{i18n.getText('KAF022_65')}</span>
-
+										<td>
+										<div class="flex valign-center" style = "margin-top: 5px;">
+											<span class="ntsControl"> <label
+													class="ntsRadioBox" tabindex="43"> <input 
+														type="radio" name="textRadioA7_18"
+														data-bind="checkedValue: 1, checked: retrictPreMethodFlg, enable: true,attr:{
+															tabindex:43
+														}" />
+														<span class="box"></span><span class="label">#{i18n.getText('KAF022_63')}</span>
+												</label>
+											</span>
+												<span  id="a7_row1"
+													data-bind="ntsComboBox: {
+														options: $parent.itemListA7_20,
+														optionsValue: 'code',
+														visibleItemsCount: 8,
+														value: retrictPreDay,
+														optionsText: 'name',
+														editable: $parent.isEditable,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 4 }
+														]},attr:{
+															tabindex:44 
+														}">
+												</span>
+												 <span class="label" id="a7_21">#{i18n.getText('KAF022_65')}</span>
+									 	</div>
+										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="ntsControl special-a7"> <label class="ntsRadioBox" >
-													<span tabindex="45">
-													<input  type="radio" name="textRadioA7_18"
-													data-bind="checkedValue: 0, checked: retrictPreMethodFlg, enable: true,attr:{
-														tabindex:45 
-													}" />
-													<span class="box"></span><span class="label">#{i18n.getText('KAF022_66')}</span>
-													</span>
-													<span> <input
-														id="a7_23" 
-														data-bind="ntsTimeEditor: {
-													name:'#{i18n.getText('KAF022_67')}',
-													value: retrictPreTimeDay,
-													constraint: 'AttendanceClock',
-								                    inputFormat: 'time',
-								                    mode:'time',
-													required: false,
-													enable: true,
-													readonly: false,
-													immediate: false},attr:{
-														tabindex:46 
-													}" />
+												<span tabindex="45">
+												<input  type="radio" name="textRadioA7_18"
+												data-bind="checkedValue: 0, checked: retrictPreMethodFlg, enable: true,attr:{
+													tabindex:45 
+												}" />
+												<span class="box"></span><span class="label">#{i18n.getText('KAF022_66')}</span>
+												</span>
+												<span class="label" style = "margin-left: 5px;">#{i18n.getText('KAF022_374')}</span>
+												<span> <input id="a7_23" 
+															data-bind="ntsTimeEditor: {
+														name:'#{i18n.getText('KAF022_67')}',
+														value: preOtTime,
+														constraint: 'AttendanceClock',
+									                    inputFormat: 'time',
+									                    mode:'time',
+														required: false,
+														enable: true,
+														readonly: false,
+														immediate: false},attr:{
+															tabindex:45 
+														}" />
 												</span> <span class="label" id="a7_24">#{i18n.getText('KAF022_65')}</span>
-											</label>
-										</span></td>
+												</label>
+											</span>
+										</div>
+										
+										<div class="flex valign-center" style = "margin-top: 5px;">
+											<span class="label" id="a7_22_2" style = "margin-left: 90px;">#{i18n.getText('KAF022_375')}</span>
+											<span> <input style = "width: 42px; margin-left: 40px" data-bind="ntsTimeEditor: {
+														name:'#{i18n.getText('KAF022_67')}',
+														value: normalOtTime,
+														constraint: 'AttendanceClock',
+									                    inputFormat: 'time',
+									                    mode:'time',
+														required: false,
+														enable: true,
+														readonly: false,
+														immediate: false},attr:{
+															tabindex:46 
+														}" /></span>
+										</div>
+										
+										<div class="flex valign-center" style = "margin-top: 5px;">
+											<span class="label" id="a7_22_3" style = "margin-left: 90px;">#{i18n.getText('KAF022_376')}</span>
+											<span> <input style = "width: 42px; margin-left: 5px; margin-bottom: 5px;" data-bind="ntsTimeEditor: {
+														name:'#{i18n.getText('KAF022_67')}',
+														value: retrictPreTimeDay,
+														constraint: 'AttendanceClock',
+									                    inputFormat: 'time',
+									                    mode:'time',
+														required: false,
+														enable: true,
+														readonly: false,
+														immediate: false},attr:{
+															tabindex:47 
+														}" /></span>
+										</div>
+									</td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: retrictPostAllowFutureFlg },attr:{
-														tabindex:47
+														tabindex:48
 													}">#{i18n.getText('KAF022_68')}</div></td>
 									</tr>
 									<tr data-bind="if: appType()!=0">

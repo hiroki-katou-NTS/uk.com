@@ -181,7 +181,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_888" })
                 }
             });
-        }
+        } 
 
         update() {
             let command = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewmodelM.selectedSetting);

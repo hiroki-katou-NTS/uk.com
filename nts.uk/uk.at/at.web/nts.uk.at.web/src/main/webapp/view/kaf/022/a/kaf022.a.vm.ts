@@ -1787,9 +1787,9 @@ module nts.uk.at.view.kmf022 {
                         let obj: any = _.find(data.beforeAfter, ['appType', appType.value]);
                         if (obj) {
                             self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, obj.retrictPreUseFlg, obj.retrictPreMethodFlg,
-                                obj.retrictPreDay, obj.retrictPreTimeDay, obj.retrictPostAllowFutureFlg));
+                                obj.retrictPreDay, obj.retrictPreTimeDay, obj.retrictPostAllowFutureFlg, obj.preOtTime, obj.normalOtTime));
                         } else {
-                            self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, 0, 0, 0, 0, 0));
+                            self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, 0, 0, 0, 0, 0, 0, 0));
                         }
                         let obj1: any = _.find(data.appType, ['appType', appType.value]);
                         if (obj1) {
@@ -2441,8 +2441,10 @@ module nts.uk.at.view.kmf022 {
             retrictPreTimeDay: KnockoutObservable<number>;
             retrictPostAllowFutureFlg: KnockoutObservable<boolean>;
             appTypeName: KnockoutObservable<string>;
+            preOtTime: KnockoutObservable<number>;
+            normalOtTime: KnockoutObservable<number>;
             constructor(companyId: string, appTypeName: string, appType: number, retrictPreUseFlg: number, retrictPreMethodFlg: number,
-                retrictPreDay: number, retrictPreTimeDay: number, retrictPostAllowFutureFlg: number) {
+                retrictPreDay: number, retrictPreTimeDay: number, retrictPostAllowFutureFlg: number, preOtTime: number, normalOtTime: number) {
                 this.companyId = ko.observable(companyId);
                 this.appTypeName = ko.observable(appTypeName);
                 this.appType = ko.observable(appType);
@@ -2451,6 +2453,8 @@ module nts.uk.at.view.kmf022 {
                 this.retrictPreDay = ko.observable(retrictPreDay);
                 this.retrictPreTimeDay = ko.observable(retrictPreTimeDay);
                 this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1 ? true : false);
+                this.preOtTime = ko.observable(preOtTime);
+                this.normalOtTime = ko.observable(normalOtTime);
             }
         }
         class ItemA8 {
