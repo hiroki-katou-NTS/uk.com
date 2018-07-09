@@ -46,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
@@ -250,7 +251,7 @@ public class OverTimeOfDaily {
 																  recordReGet.getIntegrationOfDaily(), 
 																  recordReGet.getStatutoryFrameNoList());
 		//残業内の深夜時間計算
-		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),beforeApplicationTime));
+		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),beforeApplicationTime,recordReGet.getIntegrationOfDaily().getCalAttr()));
 		//変形法定内残業時間計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
@@ -292,11 +293,11 @@ public class OverTimeOfDaily {
 	 * @param oneDay
 	 * @return　所定外深夜時間
 	 */
-	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(OverTimeSheet overTimeSheet,AutoCalOvertimeSetting autoCalcSet,AttendanceTime beforeApplicationTime) {
+	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(OverTimeSheet overTimeSheet,AutoCalOvertimeSetting autoCalcSet,AttendanceTime beforeApplicationTime,CalAttrOfDailyPerformance calAttr) {
 		
 		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
 		//事前申請制御
-		if(calcTime.greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
+		if(calAttr.getOvertimeSetting().getNormalMidOtTime().getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION&&calcTime.greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
 			calcTime = beforeApplicationTime;
 		}
 		return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));

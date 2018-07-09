@@ -1415,16 +1415,16 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 											   .map(ts -> ts.getMidNightTimeSheet().get().calcTotalTime().v())
 											   .collect(Collectors.summingInt(tc -> tc));
 		
-		for(WithinWorkTimeFrame frametime : withinWorkTimeFrame) {
-			val a = frametime.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.BREAK);
-			if(frametime.getMidNightTimeSheet().isPresent()) {
-				totalDedTime += a.stream().filter(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).isPresent())
-										 .map(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).get().lengthAsMinutes())
-										 .collect(Collectors.summingInt(tc->tc));
-			}
-		}
-		
-		totalMidNightTime -= totalDedTime;
+//		for(WithinWorkTimeFrame frametime : withinWorkTimeFrame) {
+//			val a = frametime.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.BREAK);
+//			if(frametime.getMidNightTimeSheet().isPresent()) {
+//				totalDedTime += a.stream().filter(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).isPresent())
+//										 .map(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).get().lengthAsMinutes())
+//										 .collect(Collectors.summingInt(tc->tc));
+//			}
+//		}
+//		
+//		totalMidNightTime -= totalDedTime;
 		return new AttendanceTime(totalMidNightTime);
 	}
 	
