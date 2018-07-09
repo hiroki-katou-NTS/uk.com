@@ -196,7 +196,7 @@ module kcp.share.tree {
             self.levelSelected = ko.observable(10);
             self.isMultipleUse = false;
             self.isMultiSelect = false;
-            self.isFullView = ko.observable(false);
+            self.isFullView = ko.observable(true);
 
             self.treeStyle = {
                 width: 412,
@@ -207,7 +207,6 @@ module kcp.share.tree {
         public init($input: JQuery, data: TreeComponentOption): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            ko.cleanNode($input[0]);
             self.data = data;
             self.isShowNoSelectRow = _.isNil(data.isShowNoSelectRow) ? false : data.isShowNoSelectRow;;
             self.$input = $input;
@@ -581,30 +580,8 @@ module kcp.share.tree {
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
                 self.itemList(subItemList);
                 self.initSelectedValue(self.itemList());
-                ko.cleanNode($('#' + self.getComIdSearchBox())[0]);
-                self.addColToGrid(self.data, self.itemList());
-                ko.applyBindings(self, $('#' + self.getComIdSearchBox())[0]);
                 
-                let options = {
-                    width: self.treeStyle.width,
-                    dataSource: subItemList,
-                    selectedValues: self.selectedWorkplaceIds(),
-                    optionsValue: 'workplaceId',
-                    optionsChild: 'childs',
-                    optionsText: 'nodeText',
-                    multiple: self.isMultipleUse,
-                    virtualization: true,
-                    rows: self.maxRows,
-                    virtualizationMode: 'continuous',
-                    extColumns: self.treeComponentColumn,
-                    enable: true,
-                    showCheckBox: self.isMultiSelect
-                };
-                if (self.isMultiSelect) {
-                    $('#multiple-tree-grid').ntsTreeGrid(options);
-                } else {
-                    $('#single-tree-grid').ntsTreeGrid(options);
-                }
+                self.reloadNtsTreeGrid();
                 
                 self.createGlobalVarDataList();
             }
@@ -636,12 +613,10 @@ module kcp.share.tree {
                     enable: true,
                     showCheckBox: self.isMultiSelect
                 };
-                
-                if (self.isMultiSelect) {
-                    $('#multiple-tree-grid').ntsTreeGrid(options);
-                } else {
-                    $('#single-tree-grid').ntsTreeGrid(options);
-                }
+
+                $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
+
+                self.initEvent();
 
                 // defined function get data list.
                 self.createGlobalVarDataList();
@@ -665,6 +640,15 @@ module kcp.share.tree {
             return dfd.promise();
         }
 
+        // set up on selected code changed event
+        private initEvent(): void {
+            let self = this;
+            $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridselectionrowselectionchanged", (evt, ui) => {
+                const selecteds = _.map(ui.selectedRows, o => o.id);
+                self.selectedWorkplaceIds(selecteds);
+            });
+        }
+
         private createGlobalVarDataList() {
             var self = this;
             $('#script-for-' + self.$input.attr('id')).remove();
@@ -674,6 +658,11 @@ module kcp.share.tree {
                 + JSON.stringify(self.backupItemList());
             s.id = 'script-for-' + self.$input.attr('id');
             $("head").append(s);
+        }
+
+        private reloadNtsTreeGrid(): void {
+            let self = this;
+            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setDataSource", self.itemList());
         }
 
         /**
@@ -703,28 +692,6 @@ module kcp.share.tree {
 
                 // Filter data
                 self.filterData();
-                
-                let options = {
-                    width: self.treeStyle.width,
-                    dataSource: self.itemList(),
-                    selectedValues: self.selectedWorkplaceIds(),
-                    optionsValue: 'workplaceId',
-                    optionsChild: 'childs',
-                    optionsText: 'nodeText',
-                    multiple: self.isMultipleUse,
-                    virtualization: true,
-                    rows: self.maxRows,
-                    virtualizationMode: 'continuous',
-                    extColumns: self.treeComponentColumn,
-                    enable: true,
-                    showCheckBox: self.isMultiSelect
-                };
-                
-                if (self.isMultiSelect) {
-                    $('#multiple-tree-grid').ntsTreeGrid(options);
-                } else {
-                    $('#single-tree-grid').ntsTreeGrid(options);
-                }
             });
         }
 
