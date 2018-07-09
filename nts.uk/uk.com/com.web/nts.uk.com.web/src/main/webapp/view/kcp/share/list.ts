@@ -245,7 +245,6 @@ module kcp.share.list {
         optionalColumnName: string;
         optionalColumnDatasource: KnockoutObservableArray<OptionalColumnDataSource>;
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
-        componentWrapperSelector: string;
         componentWrapperId: string;
         searchBoxId: string;
         
@@ -264,7 +263,6 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
-            this.componentWrapperSelector = '#' + this.componentWrapperId;
         }
 
         /**
@@ -404,39 +402,9 @@ module kcp.share.list {
         // set up on selected code changed event
         private initEvent(): void {
             let self = this;
-            self.selectedCodes.subscribe(value => {
-                $('#' + self.componentGridId).ntsGridList("setSelectedValue", value);
-            });
-            $(self.componentWrapperSelector).on('click', () => {
-                const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
-                if (self.isMultipleSelect) {
-                    self.selectedCodes(_.map(selecteds, o => o.id));
-                } else {
-                    self.selectedCodes(selecteds.id);
-                }
-            });
-            $(self.componentWrapperSelector + ' span').on('click', () => {
-                const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
-                if (self.isMultipleSelect) {
-                    self.selectedCodes(_.map(selecteds, o => o.id));
-                } else {
-                    self.selectedCodes(selecteds.id);
-                }
-            });
-            $(self.componentWrapperSelector).on('keyup', e => {
-                if (e.which != KeyCode.ARROW_UP ||
-                    e.which != KeyCode.ARROW_DOWN ||
-                    e.which != KeyCode.ARROW_LEFT ||
-                    e.which != KeyCode.ARROW_RIGHT ||
-                    e.which != KeyCode.ENTER) {
-                    return;
-                }
-                const selecteds = $('#' + self.componentGridId).ntsGridList("getSelectedValue");
-                if (self.isMultipleSelect) {
-                    self.selectedCodes(_.map(selecteds, o => o.id));
-                } else {
-                    self.selectedCodes(selecteds.id);
-                }
+            $(document).delegate('#' + self.componentGridId, "iggridselectionrowselectionchanged", (evt, ui) => {
+                const selecteds = _.map(ui.selectedRows, o => o.id);
+                self.selectedCodes(selecteds);
             });
         }
 
@@ -966,14 +934,6 @@ module kcp.share.list {
             }
             return '';
         }
-    }
-
-    export class KeyCode {
-        static ARROW_UP = 37;
-        static ARROW_DOWN = 38;
-        static ARROW_LEFT = 39;
-        static ARROW_RIGHT = 40;
-        static ENTER = 13;
     }
 
     
