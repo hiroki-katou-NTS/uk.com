@@ -4,13 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.pubimp.vacation.setting.nursingleave;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
@@ -232,14 +233,17 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	private double getNursingUsedNumber(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate,
 			NursingMode mode) {
 		double usedNumber = 0;
+		List<TempCareData> tempCareDataList = new ArrayList<>();
 		if (mode == NursingMode.Monthly) {
-			Map<GeneralDate, DailyInterimRemainMngData> memoryData = interimRemainOfMonthProccess
-					.createInterimRemainDataMng(companyId, employeeId, new DatePeriod(startDate, endDate));
+			// TODO
+			//　対象外
 		} else {
-			List<TempCareData> tempCareDataList = tempCareDataRepository.findByEmpIdInPeriod(employeeId, startDate,
-					endDate);
-			// tempCareDataList.forEach( domain -> usedNumber +=
-			// domain.getAnnualLeaveUse().v());
+			tempCareDataList = tempCareDataRepository.findByEmpIdInPeriod(employeeId,
+					startDate, endDate);
+		}
+		
+		for (TempCareData domain : tempCareDataList) {
+			usedNumber += domain.getAnnualLeaveUse().v();
 		}
 
 		return usedNumber;
