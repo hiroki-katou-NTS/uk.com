@@ -257,9 +257,9 @@ module nts.uk.at.view.kdm002.b {
                                         self.status(getText("KDM002_23"));
                                     }
                                 }
-                                
+
                                 self.isStop(true);
-                                
+
                                 if (self.excelContent().length == 0 && self.imErrorLog().length == 0) {
                                     $('#BTN_CLOSE').focus();
                                 }
@@ -267,8 +267,7 @@ module nts.uk.at.view.kdm002.b {
                                     $('#BTN_ERROR_EXPORT').focus();
                                 }
                                 if (self.excelContent().length > 0) {
-                                                                        if (res.succeeded) {
-
+                                    if (res.succeeded) {
                                         if (self.imErrorLog().length == 0) {
                                             $('#BTN_CLOSE').focus();
                                         } else {
@@ -276,9 +275,9 @@ module nts.uk.at.view.kdm002.b {
                                         }
                                         $('#BTN_ERROR_EXPORT').focus();
                                     } else if (res.cancelled) {
-                                     $('#BTN_CLOSE').focus();
+                                        $('#BTN_CLOSE').focus();
                                     }
-                            }
+                                }
                             }
                         });
                     }).while(infor => {
