@@ -508,7 +508,7 @@ public class RecoveryStorageService {
 					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, numberEmError);
 				}
 
-				if (errorCode.equals(SETTING_EXCEPTION)) {
+				if (condition == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION || errorCode.equals(SETTING_EXCEPTION)) {
 					return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 				}
 
