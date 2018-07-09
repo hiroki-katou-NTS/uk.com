@@ -58,6 +58,7 @@ module nts.uk.com.view.cmf004.d {
                                         self.convertToDisplayStatus(status);
                                         if (status.processingType == 3 && status.processingStatus == 2) {
                                             self.isSuccess(true);
+                                            $('#D3_2').focus();
                                         } else {
                                             self.isSuccess(false);
                                             if (status.processingStatus == 1) {
@@ -67,7 +68,6 @@ module nts.uk.com.view.cmf004.d {
                                             }
                                         }
                                     }
-                                    $('#D3_1').focus();
                                     block.clear();
                                 }
                                 if (res.running) {
