@@ -66,17 +66,19 @@
 										</tr>
 									</com:ko-if>
 									
-									<tr>
-										<td>
-											<span style="float: left; padding-left: 10px;" data-bind="text: leaveDate"></span> 
-											<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays1"></span>
-										</td> 
-	 									<td>
-	 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDate"></span> 
-	 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2"></span>
- 										</td>
-	 									<td><span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span></td>
-									</tr>
+									<com:ko-if bind="!isHalfDay">
+										<tr>
+											<td>
+												<span style="float: left; padding-left: 10px;" data-bind="text: leaveDate"></span> 
+												<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays1"></span>
+											</td> 
+		 									<td>
+		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDate"></span> 
+		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2"></span>
+	 										</td>
+		 									<td><span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span></td>
+										</tr>
+									</com:ko-if>
 								</com:ko-foreach>
 							</tbody>
 						</table>
