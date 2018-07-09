@@ -347,6 +347,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 categoryItem.endOfPeriod(self.formatDate(categoryItem.recoveryPeriod, categoryItem.endOfPeriod()));
             });
             let _employeeList = self.getRecoveryEmployee(self.employeeListScreenG(), self.selectedEmployeeCodeScreenG());
+            _employeeList = _.sortBy(_employeeList, ["code"]);
             self.employeeListScreenH(_employeeList);
             let _recoveryMethod = self.dataContentConfirm().selectedRecoveryMethod();
             let _recoveryMethodDescription1 = self.getRecoveryMethodDescription1(_recoveryMethod);
