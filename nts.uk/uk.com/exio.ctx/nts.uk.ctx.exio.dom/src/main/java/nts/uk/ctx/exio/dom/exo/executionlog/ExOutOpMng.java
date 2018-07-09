@@ -15,7 +15,7 @@ public class ExOutOpMng extends AggregateRoot {
 	/**
 	 * 外部出力処理ID
 	 */
-	private ExOutProcessingId exOutProId;
+	private String exOutProId;
 
 	/**
 	 * 処理カウント
@@ -49,7 +49,7 @@ public class ExOutOpMng extends AggregateRoot {
 
 	public ExOutOpMng(String exOutProId, int proCnt, int errCnt, int totalProCnt, int doNotInterrupt, String proUnit,
 			int opCond) {
-		this.exOutProId = new ExOutProcessingId(exOutProId);
+		this.exOutProId = exOutProId;
 		this.proCnt = proCnt;
 		this.errCnt = errCnt;
 		this.totalProCnt = totalProCnt;
