@@ -4,6 +4,6 @@ module nts.uk.at.view.kfp001.b {
         __viewContext["viewmodel"] = screenModel;
         __viewContext.bind(screenModel);
         screenModel.start();
-        screenModel.cScreenmodel.start();
+        //screenModel.cScreenmodel.start();
     });
         }
