@@ -14,11 +14,20 @@
 
 #ex_output_wizard>.steps {
 	width: 250px;
-	height: 700px;
+	height: 460px;
 }
 
 #ex_output_wizard>.content {
 	width: 850px;
-	height: 700px;
+	height: 500px;
 	background: none;
+}
+div#ex_output_wizard-p-2{
+	padding: 0;
+}
+div#nts-component-list{
+	margin-left: 60px;
+}
+.content clearfix{
+	height: 500px;
 }

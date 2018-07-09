@@ -10,13 +10,13 @@ import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSetRepository;
 
 
 @Stateless
-public class SettingTypeScreen {
+public class SettingTypeScreenFinder {
 
 	@Inject
 	ChacDataFmSetRepository chacDataFmSetRepository;
 
-	public SettingItemScreenCommand getActiveType(OutputTypeSettingCommand outputTypeSettingCommand) {
-		SettingItemScreenCommand settingItemScreenCommand = null;
+	public SettingItemScreenDTO getActiveType(OutputTypeSettingDTO outputTypeSettingCommand) {
+		SettingItemScreenDTO settingItemScreenCommand = null;
 		Optional<ChacDataFmSet> chacDataFmSet = chacDataFmSetRepository
 				.getChacDataFmSetById(outputTypeSettingCommand.getCid());
 		if ("individual".equals(outputTypeSettingCommand.getClassification()) || "initial".equals(outputTypeSettingCommand.getClassification())) {

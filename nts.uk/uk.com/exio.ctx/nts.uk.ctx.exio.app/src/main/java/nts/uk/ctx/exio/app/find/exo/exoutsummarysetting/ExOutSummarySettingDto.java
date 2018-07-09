@@ -3,12 +3,10 @@ package nts.uk.ctx.exio.app.find.exo.exoutsummarysetting;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.CtgItemDataCustom;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.ExOutSummarySetting;
 
-@AllArgsConstructor
 @Getter
 public class ExOutSummarySettingDto {
 
