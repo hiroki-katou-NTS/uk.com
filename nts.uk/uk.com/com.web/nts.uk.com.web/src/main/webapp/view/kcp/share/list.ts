@@ -229,7 +229,6 @@ module kcp.share.list {
         selectType: SelectType;
         componentGridId: string;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-        searchOption: any;
         targetKey: string;
         maxRows: number;
         tabIndex: TabIndex;
@@ -338,8 +337,6 @@ module kcp.share.list {
             if (self.listType == ListType.EMPLOYEE) {
                 self.initEmployeeSubscription(data);
                 self.initComponent(data, data.employeeInputList(), $input).done(function() {
-                    // Set default value when init component.
-                    _.defer(() => self.loadNtsGridList());
                     dfd.resolve(self);
                 });
                 return dfd.promise();
@@ -348,8 +345,6 @@ module kcp.share.list {
             // Find data list.
             this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
                 self.initComponent(data, dataList, $input).done(function() {
-                    // Set default value when init component.
-                    _.defer(() => self.loadNtsGridList());
                     dfd.resolve(self);
                 });
             });
@@ -555,31 +550,24 @@ module kcp.share.list {
             }
             self.itemList(dataList);
             self.initNoSelectRow(data.isShowNoSelectRow);
-             
             
             // Init component.
             var fields: Array<string> = ['name', 'code'];
             if (data.isShowWorkPlaceName) {
                 fields.push('workplaceName');
             }
-            self.searchOption = {
-                searchMode: 'filter',
-                targetKey: self.targetKey,
-                comId: self.componentGridId,
-                items: self.itemList,
-                selected: self.selectedCodes,
-                selectedKey: self.targetKey,
-                fields: fields,
-                mode: 'igGrid'
-            }
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
-            $input.load(webserviceLocator, function() {
-                $input.find('table').attr('id', self.componentGridId);
-                ko.applyBindings(self, $input[0]);
-                $input.find('.base-date-editor').find('.nts-input').width(133);
-                dfd.resolve();
+            _.defer(() => {
+                $input.load(webserviceLocator, function() {
+                    $input.find('table').attr('id', self.componentGridId);
+                    ko.applyBindings(self, $input[0]);
+                    $input.find('.base-date-editor').find('.nts-input').width(133);
+
+                    self.loadNtsGridList();
+                    dfd.resolve();
+                });
             });
             
             $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt) {
