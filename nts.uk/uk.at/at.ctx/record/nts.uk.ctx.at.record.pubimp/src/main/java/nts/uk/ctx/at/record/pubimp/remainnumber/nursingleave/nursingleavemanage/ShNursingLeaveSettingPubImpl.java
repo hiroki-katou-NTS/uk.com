@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.pubimp.vacation.setting.nursingleave;
+package nts.uk.ctx.at.record.pubimp.remainnumber.nursingleave.nursingleavemanage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.ChildNursingRemainExport;
+import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.ChildNursingRemainInforExport;
+import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.NursingMode;
+import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.ShNursingLeaveSettingPub;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.NursCareLevRemainDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.NursingCareLeaveRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursCareLevRemainInfoRepository;
@@ -22,9 +26,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettin
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.temp.caredata.TempCareData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.temp.caredata.TempCareDataRepository;
-import nts.uk.ctx.at.shared.pub.vacation.setting.nursingleave.ChildNursingRemainExport;
-import nts.uk.ctx.at.shared.pub.vacation.setting.nursingleave.ChildNursingRemainInforExport;
-import nts.uk.ctx.at.shared.pub.vacation.setting.nursingleave.ShNursingLeaveSettingPub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -45,7 +46,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 
 	@Inject
 	private TempCareDataRepository tempCareDataRepository;
-
+	
 	@Override
 	public ChildNursingRemainExport aggrChildNursingRemainPeriod(String companyId, String employeeId, DatePeriod period,
 			Integer mode) {
@@ -229,5 +230,12 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		return output;
 	}
 	
+	
+	private Integer getNursingUsedNumber(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate, NursingMode mode) {
+		
+		
+		
+		return 0;
+	}
 
 }
