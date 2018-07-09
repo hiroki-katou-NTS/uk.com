@@ -19,11 +19,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_GRANT_DATE_TBL")
-public class KshstGrantDateTbl extends UkJpaEntity implements Serializable {
+public class KshstGrantDateTblNew extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KshstGrantDateTblPK kshstGrantDateTblPK;
+	public KshstGrantDateTblNewPK kshstGrantDateTblPK;
 	
 	/* 名称 */
 	@Column(name = "GRANT_NAME")

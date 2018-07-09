@@ -20,11 +20,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_GRANT_REGULAR")
-public class KshstGrantRegular extends UkJpaEntity implements Serializable {
+public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KshstGrantRegularPK kshstGrantRegularPK;
+	public KshstGrantRegularNewPK kshstGrantRegularPK;
 
 	/* 付与するタイミングの種類 */
 	@Column(name = "TYPE_TIME")
@@ -46,15 +46,15 @@ public class KshstGrantRegular extends UkJpaEntity implements Serializable {
 	@Column(name = "GRANTED_DAYS")
 	public int grantedDays;
 	
-	@OneToOne(optional = false)
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false),
-		@JoinColumn(name = "SPHD_CD", referencedColumnName="SPHD_CD", insertable = false, updatable = false)
-	})
-	public KshstSpecialHoliday specialHoliday;
-	
-	@OneToOne(cascade = CascadeType.REMOVE, mappedBy="grantRegular", orphanRemoval = false)
-	public KshstGrantDateTbl grantDateTbl;
+//	@OneToOne(optional = false)
+//	@JoinColumns({
+//		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false),
+//		@JoinColumn(name = "SPHD_CD", referencedColumnName="SPHD_CD", insertable = false, updatable = false)
+//	})
+//	public KshstSpecialHoliday specialHoliday;
+//	
+//	@OneToOne(cascade = CascadeType.REMOVE, mappedBy="grantRegular", orphanRemoval = false)
+//	public KshstGrantDateTbl grantDateTbl;
 
 	@Override
 	protected Object getKey() {
@@ -62,7 +62,7 @@ public class KshstGrantRegular extends UkJpaEntity implements Serializable {
 		return kshstGrantRegularPK;
 	}
 
-	public KshstGrantRegular(KshstGrantRegularPK kshstGrantRegularPK, int typeTime, int grantDate, int allowDisappear, int interval, int grantedDays) {
+	public KshstGrantRegularNew(KshstGrantRegularNewPK kshstGrantRegularPK, int typeTime, int grantDate, int allowDisappear, int interval, int grantedDays) {
 		this.kshstGrantRegularPK = kshstGrantRegularPK;
 		this.typeTime = typeTime;
 		this.grantDate = grantDate;
@@ -77,10 +77,10 @@ public class KshstGrantRegular extends UkJpaEntity implements Serializable {
 	 * @param domain
 	 * @return
 	 */
-	public static KshstGrantRegular toEntity(GrantRegular domain){
+	public static KshstGrantRegularNew toEntity(GrantRegular domain){
 		FixGrantDate fixGrantDate = domain.getGrantTime().isPresent() ? domain.getGrantTime().get().getFixGrantDate() : null;
 		
-		return new KshstGrantRegular(new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value, 
+		return new KshstGrantRegularNew(new KshstGrantRegularNewPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value, 
 				domain.getGrantDate().value, domain.isAllowDisappear() ? 1 : 0, fixGrantDate != null ? fixGrantDate.getInterval() : 0, 
 						fixGrantDate != null ? fixGrantDate.getGrantDays().v() : 0);
 	}
