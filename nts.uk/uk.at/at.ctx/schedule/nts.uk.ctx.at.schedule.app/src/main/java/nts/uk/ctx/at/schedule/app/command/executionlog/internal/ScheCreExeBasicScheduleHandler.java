@@ -104,7 +104,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param listFlowWorkSetting
 	 * @param listDiffTimeWorkSetting
 	 */
-	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, String employeeId,
+	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod, String employeeId,
 			WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
 			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData,
@@ -113,14 +113,14 @@ public class ScheCreExeBasicScheduleHandler {
 
 		// get short work time
 		// アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する
-		Optional<ShortWorkTimeDto> optionalShortTime = this.getShortWorkTime(employeeId, command.getToDate());
+		Optional<ShortWorkTimeDto> optionalShortTime = this.getShortWorkTime(employeeId, dateInPeriod);
 
 		// add command save
 		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
 		commandSave.setWorktypeCode(worktypeDto.getWorktypeCode());
 		commandSave.setEmployeeId(employeeId);
 		commandSave.setWorktimeCode(workTimeCode);
-		commandSave.setYmd(command.getToDate());
+		commandSave.setYmd(dateInPeriod);
 
 		if (optionalShortTime.isPresent()) {
 			commandSave
@@ -141,7 +141,7 @@ public class ScheCreExeBasicScheduleHandler {
 			return;
 
 		// check not exist error
-		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(), employeeId)) {
+		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(dateInPeriod), employeeId)) {
 
 			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
 			commandGetter.setWorktypeCode(worktypeDto.getWorktypeCode());
@@ -173,7 +173,7 @@ public class ScheCreExeBasicScheduleHandler {
 
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
-			this.basicScheduleRepository.delete(employeeId, command.getToDate());
+			this.basicScheduleRepository.delete(employeeId, dateInPeriod);
 		}
 
 		// add to list basicSchedule to insert/update all
@@ -408,6 +408,11 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<WorkScheduleBreakSaveCommand>();
 		List<DeductionTime> timeZones = businessDayCal.getTimezones();
+		
+		if (timeZones == null) {
+			timeZones = new ArrayList<>();
+		}
+		
 		for (int i = 0; i < timeZones.size(); i++) {
 			WorkScheduleBreakSaveCommand wBreakSaveCommand = new WorkScheduleBreakSaveCommand();
 			wBreakSaveCommand.setScheduleBreakCnt(i + 1);

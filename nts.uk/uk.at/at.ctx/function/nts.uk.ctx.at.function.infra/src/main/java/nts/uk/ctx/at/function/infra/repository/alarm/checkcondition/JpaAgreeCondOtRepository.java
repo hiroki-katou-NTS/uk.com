@@ -15,14 +15,14 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCondOtRepository{
 	
-	private final String SELECT_NO_WHERE = "SELECT c FROM Kfnmt36AgreeCondOt c ";
-	private final String SELECT_BY_ID = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.id = :id ";
-	private final String SELECT_BY_NO = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.no = :no ";
-	private final String SELECT_CODE = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.companyId = :companyId AND c.kfnmt36AgreeCondOtPK.code = :code AND c.kfnmt36AgreeCondOtPK.category = :category ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM Kfnmt36AgreeCondOt c ";
+	private static final String SELECT_BY_ID = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.id = :id ";
+	private static final String SELECT_BY_NO = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.no = :no ";
+	private static final String SELECT_CODE = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.companyId = :companyId AND c.kfnmt36AgreeCondOtPK.code = :code AND c.kfnmt36AgreeCondOtPK.category = :category ";
 	
-	private final String DELETE_NO_WHERE = "DELETE FROM Kfnmt36AgreeCondOt c ";
-	private final String DELETE_CODE = DELETE_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.companyId = :companyId AND c.kfnmt36AgreeCondOtPK.category = :category AND c.kfnmt36AgreeCondOtPK.code = :code ";
-	private final String DELEETE_ID = DELETE_CODE + " AND c.kfnmt36AgreeCondOtPK.id = :id AND c.kfnmt36AgreeCondOtPK.no = :no ";
+	private static final String DELETE_NO_WHERE = "DELETE FROM Kfnmt36AgreeCondOt c ";
+	private static final String DELETE_CODE = DELETE_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.companyId = :companyId AND c.kfnmt36AgreeCondOtPK.category = :category AND c.kfnmt36AgreeCondOtPK.code = :code ";
+	private static final String DELEETE_ID = DELETE_CODE + " AND c.kfnmt36AgreeCondOtPK.id = :id AND c.kfnmt36AgreeCondOtPK.no = :no ";
 	/**
 	 * convert from entity to domain
 	 * @param entity

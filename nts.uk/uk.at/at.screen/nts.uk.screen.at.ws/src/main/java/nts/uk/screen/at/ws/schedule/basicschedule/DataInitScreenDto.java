@@ -22,6 +22,7 @@ public class DataInitScreenDto {
 	GeneralDate endDate;
 	List<StateWorkTypeCodeDto> checkStateWorkTypeCode;
 	List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting;
+	// get symbol
 	List<WorkEmpCombineScreenDto> workEmpCombines;
 	String employeeIdLogin;
 }
