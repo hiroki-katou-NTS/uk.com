@@ -83,7 +83,7 @@ public class OiomtExOutOpMng extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtExOutOpMng toEntity(ExOutOpMng domain) {
-		return new OiomtExOutOpMng(new OiomtExOutOpMngPk(domain.getExOutProId().v()), domain.getProCnt(),
+		return new OiomtExOutOpMng(new OiomtExOutOpMngPk(domain.getExOutProId()), domain.getProCnt(),
 				domain.getErrCnt(), domain.getTotalProCnt(), domain.getDoNotInterrupt().value, domain.getProUnit(),
 				domain.getOpCond().value);
 	}

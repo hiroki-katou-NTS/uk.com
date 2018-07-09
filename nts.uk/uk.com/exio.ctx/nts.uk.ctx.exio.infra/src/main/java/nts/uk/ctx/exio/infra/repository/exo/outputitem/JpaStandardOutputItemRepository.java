@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.infra.repository.exo.outputitem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +8,6 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
-import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtCtgItem;
 import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItem;
 import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItemPk;
 import nts.uk.ctx.exio.infra.entity.exo.outputitemorder.OiomtStdOutItemOrder;
@@ -22,29 +20,25 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.outItemCd =:outItemCd AND  f.stdOutItemPk.condSetCd =:condSetCd ";
 	private static final String SELECT_BY_CID_AND_SET_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.condSetCd =:condSetCd ";
-	
+
 	private static final String DELETE_BY_CID_CNDSETCD = "DELETE f FROM OiomtStdOutItem f "
 			+ "WHERE f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd";
 
-	private List<OiomtCtgItem> oiomtCtgItems = new ArrayList<>();
-
 	@Override
 	public List<StandardOutputItem> getAllStdOutItem() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtStdOutItem.class)
-				.getList(item -> item.toDomain(oiomtCtgItems));
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtStdOutItem.class).getList(item -> item.toDomain());
 	}
 
 	@Override
 	public Optional<StandardOutputItem> getStdOutItemById(String cid, String outItemCd, String condSetCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtStdOutItem.class).setParameter("cid", cid)
-				.setParameter("outItemCd", outItemCd).setParameter("condSetCd", condSetCd)
-				.getSingle(c -> c.toDomain(oiomtCtgItems));
+				.setParameter("outItemCd", outItemCd).setParameter("condSetCd", condSetCd).getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public List<StandardOutputItem> getStdOutItemByCidAndSetCd(String cid, String condSetCd) {
 		return this.queryProxy().query(SELECT_BY_CID_AND_SET_CODE, OiomtStdOutItem.class).setParameter("cid", cid)
-				.setParameter("condSetCd", condSetCd).getList(c -> c.toDomain(oiomtCtgItems));
+				.setParameter("condSetCd", condSetCd).getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -64,8 +58,8 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 
 	@Override
 	public void remove(String cid, String condSetCd) {
-			this.queryProxy().query(DELETE_BY_CID_CNDSETCD, OiomtStdOutItemOrder.class).setParameter("cid", cid)
-			.setParameter("condSetCd", condSetCd);
+		this.queryProxy().query(DELETE_BY_CID_CNDSETCD, OiomtStdOutItemOrder.class).setParameter("cid", cid)
+				.setParameter("condSetCd", condSetCd);
 	}
 
 }

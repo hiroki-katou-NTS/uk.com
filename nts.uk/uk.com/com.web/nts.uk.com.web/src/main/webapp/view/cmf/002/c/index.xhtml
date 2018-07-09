@@ -22,7 +22,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!--C1_1 新規-->
-				<button tabindex="1">#{i18n.getText('CMF002_71')}</button>
+				<button tabindex="1" data-bind="click: settingNewMode">#{i18n.getText('CMF002_71')}</button>
 				<!--C1_2 登録-->
 				<button tabindex="2" class="proceed">#{i18n.getText('CMF002_72')}</button>
 				<!--C1_3 コード変換一覧登録-->
@@ -34,7 +34,7 @@
 				<!--C1_6 閉じる-->
 				<button tabindex="6">#{i18n.getText('CMF002_76')}</button>
 				<!--C1_7 削除-->
-				<button tabindex="7" class="danger">#{i18n.getText('CMF002_77')}</button>
+				<button tabindex="7" data-bind="enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_77')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="flex-layout">
@@ -51,7 +51,7 @@
 								multiple: false,
 								dataSource: listStandardOutputItem,
 								primaryKey: 'dispOutputItemCode', 
-								value: selectedStandardOutputItemCode,
+								value: itemCode,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_60')}', key: 'dispOutputItemCode', width: 50, formatter: _.escape },
@@ -94,6 +94,7 @@
 			                                 value: itemCode,
 			                                 constraint: 'ExternalOutputConditionCode',
 			                                 required: true,
+			                                 enable: isNewMode(),
 			                                 option: {width: '50px'}}" />
 										<!--C4_2 項目名称--> 
 										<input tabindex="9" data-bind="ntsTextEditor: {
@@ -117,6 +118,7 @@
 											value: itemType,
 											optionsText: 'name',
 											editable: false,
+											enable: isNewMode(),
 											required: true,
 											columns: [
 													{ prop: 'name', length: 10 },
@@ -187,8 +189,8 @@
 								rows: 15,
 								name: '#[CMF002_348]', 
 								multiple: false,
-								dataSource: listStandardOutputItem,
-								value: selectedStandardOutputItemCode,
+								dataSource: listCategoryItem,
+								value: selectedCategoryItem,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
 									{ headerText: '', key: 'key1', width: 30, formatter: _.escape },

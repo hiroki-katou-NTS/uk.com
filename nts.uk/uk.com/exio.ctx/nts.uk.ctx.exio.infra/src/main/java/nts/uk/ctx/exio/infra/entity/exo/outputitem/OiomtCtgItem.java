@@ -6,13 +6,14 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
-import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -53,20 +54,19 @@ public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 	@Column(name = "ORDER")
 	public int order;
 
+	/**
+	 * カテゴリ項目
+	 */
+	@ManyToOne
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "OUT_ITEM_CD", referencedColumnName = "OUT_ITEM_CD"),
+			@PrimaryKeyJoinColumn(name = "COND_SET_CD", referencedColumnName = "COND_SET_CD")})
+	private OiomtStdOutItem oiomtStdOutItem;
+
+	
 	@Override
 	protected Object getKey() {
 		return ctgItemPk;
-	}
-
-	public CategoryItem toDomain() {
-		return new CategoryItem(this.ctgItemPk.ctgItemNo, this.ctgId, this.operationSymbol, this.order);
-	}
-
-	public static OiomtCtgItem toEntity(StandardOutputItem stdOutItem, CategoryItem domain) {
-		return new OiomtCtgItem(
-				new OiomtCtgItemPk(domain.getCategoryItemNo().v(), stdOutItem.getCid(),
-						stdOutItem.getOutputItemCode().v(), stdOutItem.getConditionSettingCode().v()),
-				domain.getCategoryId().v(), domain.getOperationSymbol().value, domain.getOrder());
 	}
 
 }

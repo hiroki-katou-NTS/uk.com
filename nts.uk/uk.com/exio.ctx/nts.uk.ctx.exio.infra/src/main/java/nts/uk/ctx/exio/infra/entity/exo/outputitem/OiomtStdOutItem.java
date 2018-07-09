@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -46,14 +50,21 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 	@Column(name = "ITEM_TYPE")
 	public int itemType;
 
+	/**
+	 * カテゴリ項目
+	 */
+	@OneToMany(targetEntity = OiomtCtgItem.class, cascade = CascadeType.ALL, mappedBy = "oiomtStdOutItem", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "OIOMT_CTG_ITEM")
+	public List<OiomtCtgItem> oiomtCtgItems;
+
 	@Override
 	protected Object getKey() {
 		return stdOutItemPk;
 	}
 
-	public StandardOutputItem toDomain(List<OiomtCtgItem> categoryItems) {
+	public StandardOutputItem toDomain() {
 		return new StandardOutputItem(this.stdOutItemPk.cid, this.stdOutItemPk.outItemCd, this.stdOutItemPk.condSetCd,
-				this.outItemName, this.itemType, categoryItems.stream().map(x -> {
+				this.outItemName, this.itemType, this.oiomtCtgItems.stream().map(x -> {
 					return new CategoryItem(x.getCtgItemPk().ctgItemNo, x.getCtgId(), x.getOperationSymbol(),
 							x.getOrder());
 				}).collect(Collectors.toList()));
@@ -63,6 +74,13 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 		return new OiomtStdOutItem(
 				new OiomtStdOutItemPk(domain.getCid(), domain.getOutputItemCode().v(),
 						domain.getConditionSettingCode().v()),
-				domain.getOutputItemName().v(), domain.getItemType().value);
+				domain.getOutputItemName().v(), domain.getItemType().value,
+				domain.getCategoryItems().stream().map(item -> {
+					return new OiomtCtgItem(
+							new OiomtCtgItemPk(item.getCategoryItemNo().v(), domain.getCid(),
+									domain.getOutputItemCode().v(), domain.getConditionSettingCode().v()),
+							item.getCategoryId().v().intValue(), item.getOperationSymbol().value, item.getOrder(),
+							null);
+				}).collect(Collectors.toList()));
 	}
 }

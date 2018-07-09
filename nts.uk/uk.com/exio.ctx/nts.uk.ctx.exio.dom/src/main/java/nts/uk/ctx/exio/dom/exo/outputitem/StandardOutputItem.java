@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.exo.outputitem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -43,7 +42,7 @@ public class StandardOutputItem extends AggregateRoot {
 	/**
 	 * カテゴリ項目
 	 */
-	private List<CategoryItem> categoryItems = new ArrayList<>();
+	private List<CategoryItem> categoryItems;
 
 	public StandardOutputItem(String cid, String outputItemCode, String conditionSettingCode, String outputItemName,
 			int itemType, List<CategoryItem> categoryItems) {

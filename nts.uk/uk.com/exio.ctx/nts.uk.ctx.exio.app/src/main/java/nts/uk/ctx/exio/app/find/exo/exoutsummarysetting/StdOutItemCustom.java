@@ -1,10 +1,8 @@
 package nts.uk.ctx.exio.app.find.exo.exoutsummarysetting;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 
-@AllArgsConstructor
 @Getter
 public class StdOutItemCustom {
 	private String outItemCd;
