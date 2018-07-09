@@ -16,6 +16,14 @@ public interface TempCareDataRepository {
 	public List<TempCareData> findTempCareDataByEmpId(String employeeId);
 	
 	/**
+	 * @param employeeId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<TempCareData> findByEmpIdInPeriod(String employeeId, GeneralDate startDate, GeneralDate endDate);
+	
+	/**
 	 * Gets the temp care data info.
 	 *
 	 * @param employeeId the employee id

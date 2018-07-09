@@ -2,10 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.pubimp.remainnumber.nursingleave.nursingleavemanage;
+package nts.uk.ctx.at.shared.pubimp.vacation.setting.nursingleave;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -16,11 +17,12 @@ import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.Chi
 import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.ChildNursingRemainInforExport;
 import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.NursingMode;
 import nts.uk.ctx.at.record.pub.remainnumber.nursingleave.nursingleavemanage.ShNursingLeaveSettingPub;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.NursCareLevRemainDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.NursingCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursCareLevRemainInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.InterimRemainOfMonthProccess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -39,13 +41,13 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	private NursingLeaveSettingRepository nursingLeaveSettingRepository;
 
 	@Inject
-	private NursCareLevRemainInfoRepository nursCareLevRemainInfoRepository;
-
-	@Inject
 	private NursCareLevRemainDataRepository nursCareLevRemainDataRepository;
 
 	@Inject
 	private TempCareDataRepository tempCareDataRepository;
+	
+	@Inject 
+	private InterimRemainOfMonthProccess interimRemainOfMonthProccess;
 	
 	@Override
 	public ChildNursingRemainExport aggrChildNursingRemainPeriod(String companyId, String employeeId, DatePeriod period,
@@ -231,11 +233,18 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	}
 	
 	
-	private Integer getNursingUsedNumber(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate, NursingMode mode) {
+	private double getNursingUsedNumber(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate, NursingMode mode) {
+		double usedNumber= 0;
+		if (mode == NursingMode.Monthly) {
+			Map<GeneralDate, DailyInterimRemainMngData> memoryData = interimRemainOfMonthProccess
+					.createInterimRemainDataMng(companyId, employeeId, new DatePeriod(startDate, endDate));
+		} else {
+			List<TempCareData> tempCareDataList = tempCareDataRepository.findByEmpIdInPeriod(employeeId,
+					startDate, endDate);
+			tempCareDataList.forEach( domain -> usedNumber += domain.getAnnualLeaveUse().v());
+		}
 		
-		
-		
-		return 0;
+		return usedNumber;
 	}
 
 }

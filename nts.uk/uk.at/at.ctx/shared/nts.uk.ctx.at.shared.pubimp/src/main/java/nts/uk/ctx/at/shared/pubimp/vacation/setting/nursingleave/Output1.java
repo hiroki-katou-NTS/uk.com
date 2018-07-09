@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pubimp.remainnumber.nursingleave.nursingleavemanage;
+package nts.uk.ctx.at.shared.pubimp.vacation.setting.nursingleave;
 
 import java.util.Optional;
 

@@ -89,4 +89,25 @@ public class JpaTempCareDataRepository extends JpaRepository implements TempCare
 		return entity;
 	}
 
+	@Override
+	public List<TempCareData> findByEmpIdInPeriod(String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcdtTempCareData> cq = criteriaBuilder.createQuery(KrcdtTempCareData.class);
+		Root<KrcdtTempCareData> root = cq.from(KrcdtTempCareData.class);
+		cq.select(root);
+		// create conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates
+				.add(criteriaBuilder.equal(root.get(KrcdtTempCareData_.id).get(KrcdtTempCareDataPK_.sid), employeeId));
+		predicates.add(criteriaBuilder
+				.greaterThanOrEqualTo(root.get(KrcdtTempCareData_.id).get(KrcdtTempCareDataPK_.ymd), startDate));
+		predicates.add(criteriaBuilder
+				.lessThanOrEqualTo(root.get(KrcdtTempCareData_.id).get(KrcdtTempCareDataPK_.ymd),endDate));
+		cq.where(predicates.toArray(new Predicate[] {}));
+		List<KrcdtTempCareData> listKrcdtTempCareData = em.createQuery(cq).getResultList();
+		return listKrcdtTempCareData.isEmpty() ? new ArrayList<TempCareData>()
+				: listKrcdtTempCareData.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
+	}
+
 }
