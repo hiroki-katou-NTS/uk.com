@@ -291,7 +291,7 @@ module kcp.share.tree {
                     self.backupItemList(self.itemList());
                 }
                 // Set default value when initial component.
-                self.initSelectedValue(res);
+                self.initSelectedValue();
 
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
@@ -449,9 +449,9 @@ module kcp.share.tree {
         /**
          * Initial select mode
          */
-        private initSelectedValue(dataList: Array<UnitModel>) {
+        private initSelectedValue() {
             let self = this;
-            if (!dataList || dataList.length <= 0) {
+            if (_.isEmpty(self.itemList())) {
                 return;
             }
             switch (self.data.selectType) {
@@ -469,7 +469,7 @@ module kcp.share.tree {
                     }
                     break;
                 case SelectionType.SELECT_FIRST_ITEM:
-                    self.selectedWorkplaceIds(dataList.length > 0 ? self.selectData(self.data, dataList[0]) : null);
+                    self.selectedWorkplaceIds(self.selectData(self.data, self.itemList()[0]));
                     break;
                 case SelectionType.NO_SELECT:
                     self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
@@ -568,7 +568,7 @@ module kcp.share.tree {
                 // find sub list unit model by level
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
                 self.itemList(subItemList);
-                self.initSelectedValue(self.itemList());
+                self.initSelectedValue();
                 
                 self.reloadNtsTreeGrid();
                 
@@ -594,7 +594,7 @@ module kcp.share.tree {
                     optionsValue: 'workplaceId',
                     optionsChild: 'childs',
                     optionsText: 'nodeText',
-                    multiple: self.isMultipleUse,
+                    multiple: self.isMultiSelect,
                     virtualization: true,
                     rows: self.maxRows,
                     virtualizationMode: 'continuous',
