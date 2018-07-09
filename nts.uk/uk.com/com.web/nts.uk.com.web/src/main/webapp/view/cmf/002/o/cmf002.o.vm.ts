@@ -6,8 +6,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-      import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
-
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     export class ScreenModel {
         //wizard
         stepList: Array<NtsWizardStep> = [];
@@ -25,7 +24,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         listOutputCondition: KnockoutObservableArray<OutputCondition> = ko.observableArray([]);
         selectedOutputConditionItem: KnockoutObservable<string> = ko.observable('');
-
+        alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
         // setup ccg001
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
@@ -42,12 +41,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        employeeList: KnockoutObservableArray<UnitModel>;
-
-
-
-
-
+        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
         constructor() {
             var self = this;
@@ -60,9 +54,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 { content: '.step-4' }
             ];
             self.stepSelected = ko.observable({ id: 'step-4', content: '.step-4' });
-
+            self.alreadySettingPersonal = ko.observableArray([]);
             self.loadListCondition();
-
+            self.selectedEmployeeCode = ko.observableArray([]);
             self.selectedConditionCd.subscribe(function(data: any) {
                 if (data) {
                     let item = _.find(ko.toJS(self.listCondition), (x: model.ItemModel) => x.code == data);
@@ -86,42 +80,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             ]);
             self.isDialog = ko.observable(false);
             self.isShowNoSelectRow = ko.observable(false);
-            self.isMultiSelect = ko.observable(false);
-            self.isShowWorkPlaceName = ko.observable(false);
-            self.isShowSelectAllButton = ko.observable(false);
-            this.employeeList = ko.observableArray<UnitModel>([]);
+            self.isMultiSelect = ko.observable(true);
+            self.isShowWorkPlaceName = ko.observable(true);
+            self.isShowSelectAllButton = ko.observable(true);
             self.listComponentOption = {
-                isShowAlreadySet: self.isShowAlreadySet(),
-                isMultiSelect: self.isMultiSelect(),
-                listType: ListType.EMPLOYEE,
-                employeeInputList: self.employeeList,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                selectedCode: self.selectedCode,
-                isDialog: self.isDialog(),
-                isShowNoSelectRow: self.isShowNoSelectRow(),
-                alreadySettingList: self.alreadySettingList,
-                isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                isShowSelectAllButton: self.isShowSelectAllButton()
-            };
-
-        }
-         /**
-        * apply ccg001 search data to kcp005
-        */
-        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
-            var self = this;
-            self.employeeList([]);
-            var employeeSearchs: UnitModel[] = [];
-            for (var employeeSearch of dataList) {
-                var employee: UnitModel = {
-                    code: employeeSearch.employeeCode,
-                    name: employeeSearch.employeeName,
-                    workplaceName: employeeSearch.workplaceName
-                };
-                employeeSearchs.push(employee);
-            }
-            self.employeeList(employeeSearchs);
-            self.lstPersonComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.EMPLOYEE,
@@ -134,11 +96,30 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: true,
                 maxWidth: 550,
-                maxRows: 15
+                maxRows: 12
             };
-          
+
         }
-      
+        /**
+       * apply ccg001 search data to kcp005
+       */
+        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            let self = this;
+            let employeeSearchs: UnitModel[] = [];
+            for (let employeeSearch of dataList) {
+                let employee: UnitModel = {
+                    code: employeeSearch.employeeCode,
+                    name: employeeSearch.employeeName,
+                    workplaceName: employeeSearch.workplaceName,
+                    isAlreadySetting: false
+                };
+                employeeSearchs.push(employee);
+            }
+            self.employeeList(employeeSearchs);
+          
+
+        }
+
         selectStandardMode() {
             $('#ex_output_wizard').ntsWizard("next");
         }
@@ -156,11 +137,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.loadScreenQ();
             $('#ex_output_wizard').ntsWizard("goto", 2);
         }
-        
+
         nextToScreenR() {
             let self = this;
-            next();
-            
+           
+            $('#ex_output_wizard').ntsWizard("next");
+
             service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
                 self.listOutputCondition(res.ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
@@ -168,7 +150,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 console.log("getExOutSummarySetting fail");
             });
         }
-
         loadListCondition() {
             let self = this;
 
@@ -221,11 +202,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                  
-                   
-                    
+
+
+
                     self.applyKCP005ContentSearch(data.listEmployee);
-                    
+
                 }
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
@@ -321,11 +302,5 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     }
-    export interface Ccg001ReturnedData {
-        baseDate: string; // 基準日
-        closureId?: number; // 締めID
-        periodStart: string; // 対象期間（開始)
-        periodEnd: string; // 対象期間（終了）
-        listEmployee: Array<EmployeeSearchDto>; // 検索結果
-    }
+
 }
