@@ -384,6 +384,7 @@ module nts.uk.at.view.kwr001.c {
                 $('#C3_2').focus();
                 self.getOutputItemDailyWorkSchedule([]);
                 self.enableBtnDel(false);
+                self.selectedRuleCode(0);
             }
             
             private convertBoolToNum(value: boolean): number {
