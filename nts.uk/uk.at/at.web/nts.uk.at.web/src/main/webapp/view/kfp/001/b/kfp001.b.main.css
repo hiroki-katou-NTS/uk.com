@@ -1,5 +1,5 @@
 #contents-area {
-	height: 600px !important;
+	height: 541px !important;
 }
 
 #button24 {
@@ -84,7 +84,6 @@ div.label {
 
 .nts-wizard {
 	width: 1200px;
-	height: inherit;
 }
 
 .nts-wizard>.content>.body {
