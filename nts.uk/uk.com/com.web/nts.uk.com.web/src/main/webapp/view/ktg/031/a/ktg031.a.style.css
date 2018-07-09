@@ -1,0 +1,57 @@
+#contents-area{
+	height: 400px !important;
+	width: 448px; 
+	padding: 0;
+}
+.cf {
+	margin-left: 295px;
+}
+
+.table1 {
+	margin-top: 7px;
+	margin-left: 5px;
+}
+
+.table1 td {
+	border: 1px solid #CCC;
+	height: 118px !important;
+	display: block;
+	width: 381px;
+}
+
+
+tbody {
+	display: block;
+	height: 360px;
+    overflow: auto;
+    width: 400px;
+}
+
+#finishDateTime {
+    float: right;
+    margin-right: 60px;
+    margin-top: 5px;
+}
+
+#processingName {
+	margin-left: 50px;
+	width: 191px;
+	font-weight: bold;
+    font-size: 18px;
+    margin-top: 7px;
+}
+
+#button1 {
+	margin-left: 5px;
+}
+
+#processingResult {
+	margin-left: 30px;
+}
+
+#button2 {
+	margin-left: 325px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	position: relative;
+}

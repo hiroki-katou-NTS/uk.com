@@ -1,9 +1,13 @@
 package nts.uk.ctx.sys.auth.pubimp.user;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
@@ -29,9 +33,16 @@ public class UserInfoAdaptorForLogImpl implements UserInfoAdaptorForLog {
 			throw new RuntimeException("employee not found: " + employeeId);
 		}
 		
-		return this.userRepo.getByAssociatedPersonId(employee.getPId())
-				.map(u -> UserInfo.employee(u.getUserID(), employeeId, employee.getPName()))
-				.get();
+		return this.getUserInfoByEmployee(employee);
+	}
+
+	@Override
+	public List<UserInfo> findByEmployeeId(List<String> employeeIds) {
+
+		val employees = this.employeePub.findBySIds(employeeIds);
+		return employees.stream()
+				.map(e -> this.getUserInfoByEmployee(e))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -42,4 +53,18 @@ public class UserInfoAdaptorForLogImpl implements UserInfoAdaptorForLog {
 				.get();
 	}
 
+	@Override
+	public List<UserInfo> findByUserId(List<String> userIds) {
+
+		return this.userRepo.getByListUser(userIds).stream()
+				.map(u -> UserInfo.user(u.getUserID(), u.getUserName().v()))
+				.collect(Collectors.toList());
+	}
+
+
+	private UserInfo getUserInfoByEmployee(EmployeeBasicInfoExport employee) {
+		return this.userRepo.getByAssociatedPersonId(employee.getPId())
+				.map(u -> UserInfo.employee(u.getUserID(), employee.getEmployeeId(), employee.getPName()))
+				.get();
+	}
 }

@@ -180,7 +180,9 @@ module nts.uk.at.view.kwr001.a {
                                 code: value.employeeCode,
                                 name: value.employeeName,
                             };
-                            employeeSearchs.push(employee);
+                            if (!_.isEmpty(value.workplaceId) && !_.isNil(value.workplaceId)) {
+                                employeeSearchs.push(employee);    
+                            }
                         });
                         self.employeeList(employeeSearchs);
                     }
@@ -290,7 +292,7 @@ module nts.uk.at.view.kwr001.a {
                             default:
                                 break;
                         }
-                        if (!_.isNull(dataService.setMsgErrClosingPeriod)) {
+                        if (!_.isNil(dataService.setMsgErrClosingPeriod)) {
                             nts.uk.ui.dialog.alertError({ messageId: dataService.msgErrClosingPeriod});
                         }
                         dfd.resolve();
@@ -404,8 +406,8 @@ module nts.uk.at.view.kwr001.a {
                 nts.uk.ui.windows.setShared('KWR001_C', codeChoose, true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
                     $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
-                    let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
-                    self.getDataStartPageService(isExist).done(function(dataService: any) {                       
+                        let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
+                        self.getDataStartPageService(isExist).done(function(dataService: any) {                       
                             self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
                             if (_.isEmpty(dataService.lstOutputItemDailyWorkSchedule)) {
                                 self.selectedCodeA7_3('');
@@ -501,6 +503,8 @@ module nts.uk.at.view.kwr001.a {
                             };
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(){
+                            }).fail(function(error){
+                                nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                             }).always(function() {
                                nts.uk.ui.block.clear(); 
                             });
@@ -525,8 +529,7 @@ module nts.uk.at.view.kwr001.a {
                     }
                 }
                 
-                if (self.checkedA10_7() && !self.checkedA10_10() && !self.checkedA10_11() && !self.checkedA10_12()
-                        && !self.checkedA10_13() && !self.checkedA10_14()) {
+                if (!self.checkCumulativeWorkHierarchy()) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1184" });
                     return false;
                 }
@@ -541,6 +544,56 @@ module nts.uk.at.view.kwr001.a {
                     return false;
                 }
                 
+                return true;
+            }
+            
+            // 職場階層累計をチェック(Check cumulative work hierarchy)
+            private checkCumulativeWorkHierarchy(): boolean {
+                let sum: number = 0;
+                let self = this;
+                if (!self.checkedA10_7()) {
+                    return true;
+                }
+                
+                if (self.checkedA10_10()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_11()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_12()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_13()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_14()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_15()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_16()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_17()) {
+                    sum += 1;
+                }
+                
+                if (self.checkedA10_18()) {
+                    sum += 1;
+                }
+                
+                if (sum == 0 || sum >= 6) {
+                    return false;
+                }
                 return true;
             }
             

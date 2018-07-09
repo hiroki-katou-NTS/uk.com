@@ -280,7 +280,7 @@ module nts.uk.ui.koExtentions {
             $grid.on("iggridvirtualrecordsrender", function(evt, ui) {
                 let disables = $grid.data("selectionDisables");
                 let $header = ui.owner._headerParent;
-                if (!disables || disables.length === 0 || !$header) return;
+                if (!disables || !$header) return;
                 let data = ui.owner.dataSource._data;
                 let selected = $grid.ntsGridList('getSelected');
                 let valueCount = _.intersection(disables, value).length;

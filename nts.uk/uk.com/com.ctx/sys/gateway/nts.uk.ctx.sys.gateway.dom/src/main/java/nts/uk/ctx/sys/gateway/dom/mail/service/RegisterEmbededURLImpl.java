@@ -13,7 +13,6 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserInforExImport;
@@ -59,19 +58,21 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		} 
 		String cid = AppContexts.user().companyId();
 		// Request list 313
-		if(Strings.isNotBlank(employeeId)){
-			Optional<UserInforExImport> opUserInforEx = userAdapter.getByEmpID(employeeId);
-			if(opUserInforEx.isPresent()){
-				loginId = opUserInforEx.get().getLoginID();
-				employeeCD = opUserInforEx.get().getEmpCD();
-			};
-		}	
+//		if(Strings.isNotBlank(employeeId)){
+//			Optional<UserInforExImport> opUserInforEx = userAdapter.getByEmpID(employeeId);
+//			if(opUserInforEx.isPresent()){
+//				loginId = opUserInforEx.get().getLoginID();
+//				employeeCD = opUserInforEx.get().getEmpCD();
+//			};
+//		}	
 		GeneralDateTime issueDate = GeneralDateTime.now();
 		GeneralDateTime startDate = GeneralDateTime.now();
 		GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodCls, numOfPeriod);
 		UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCD, loginId, employeeCD, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
 		if (!Objects.isNull(urlInfo)){
-			return (programId + "" + screenId+"/"+ urlInfo.getEmbeddedId());
+			String serverPath = AppContexts.requestedWebApi().getHostApi().replaceFirst("at", "com");
+			String apiPath = "view/ccg/033/index.xhtml";
+			return (serverPath + apiPath +"?id="+ urlInfo.getEmbeddedId());
 		}
 		return Strings.EMPTY;
 		

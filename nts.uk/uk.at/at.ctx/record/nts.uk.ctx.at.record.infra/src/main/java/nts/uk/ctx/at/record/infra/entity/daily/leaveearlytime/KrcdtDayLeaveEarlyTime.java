@@ -56,18 +56,18 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 	@Column(name = "SP_VACTN_USE_TIME")
 	public int spVactnUseTime;
 	
-	@ManyToOne
-	@JoinColumns(value = { 
-			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
-			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false)
-	})
-	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 //	@ManyToOne
 //	@JoinColumns(value = { 
 //			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 //			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false)
 //	})
-//	public KrcdtDayTime krcdtDayTime;
+//	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+	@ManyToOne
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false)
+	})
+	public KrcdtDayTime krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {
@@ -89,13 +89,13 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 			TimeWithCalculation leaveEarly = leaveEarlyTime.getLeaveEarlyTime();
 			//早退時間
 			this.leaveEarlyTime = leaveEarly.getTime() == null ? 0 : leaveEarly.getTime().valueAsMinutes();
-			this.calcLeaveEarlyTime = leaveEarly.getCalcTime() == null ? this.leaveEarlyTime : leaveEarly.getCalcTime().valueAsMinutes();
+			this.calcLeaveEarlyTime = leaveEarly.getCalcTime() == null ? 0 : leaveEarly.getCalcTime().valueAsMinutes();
 		}
 		if(leaveEarlyTime.getLeaveEarlyDeductionTime() != null){
 			TimeWithCalculation leaveEarlyDedct = leaveEarlyTime.getLeaveEarlyDeductionTime();
 			//早退控除時間
 			this.leaveEarlyDedctTime = leaveEarlyDedct.getTime() == null ? 0 : leaveEarlyDedct.getTime().valueAsMinutes();
-			this.calcLeaveEarlyDedctTime = leaveEarlyDedct.getCalcTime() == null ? this.leaveEarlyDedctTime : leaveEarlyDedct.getCalcTime().valueAsMinutes();
+			this.calcLeaveEarlyDedctTime = leaveEarlyDedct.getCalcTime() == null ? 0 : leaveEarlyDedct.getCalcTime().valueAsMinutes();
 		}
 		//休暇使用時間
 		if(leaveEarlyTime.getTimePaidUseTime() != null){

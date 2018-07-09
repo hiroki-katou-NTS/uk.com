@@ -24,7 +24,7 @@ import nts.uk.ctx.bs.person.infra.entity.person.currentaddress.BpsmtCurrentaddre
 @Stateless
 public class JpaCurrentAddressRepository extends JpaRepository implements CurrentAddressRepository {
 
-	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtCurrentaddress c WHERE c.pid = :pid";
+	public static final String GET_ALL_BY_PID = "SELECT c FROM BpsmtCurrentaddress c WHERE c.pid = :pid";
 
 	private static final String SELECT_CURRENT_ADD_BY_ID = "SELECT c FROM BpsmtCurrentaddress c "
 			+ " WHERE c.bpsmtCurrentaddressPK.currentAddId = :currentAddId";

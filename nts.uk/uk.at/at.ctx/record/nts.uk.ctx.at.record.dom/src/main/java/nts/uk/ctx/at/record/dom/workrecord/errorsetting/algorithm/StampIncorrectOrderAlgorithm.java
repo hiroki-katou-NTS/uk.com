@@ -7,13 +7,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.OutPutProcess;
-import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
@@ -27,17 +25,13 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class StampIncorrectOrderAlgorithm {
 
 	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository; 
-
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	public void stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate,
+	public EmployeeDailyPerError stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
-
+		
+		EmployeeDailyPerError employeeDailyPerError = null;
+		
 		List<Integer> attendanceItemIds = new ArrayList<>();
 
 		// TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance =
@@ -56,10 +50,6 @@ public class StampIncorrectOrderAlgorithm {
 					attendanceItemIds.add(41);
 					attendanceItemIds.add(44);
 				}
-				if (!attendanceItemIds.isEmpty()) {
-					this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-							new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);	
-				}
 			} else {
 				if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2) {
 					if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getWorkNo()
@@ -68,8 +58,6 @@ public class StampIncorrectOrderAlgorithm {
 						attendanceItemIds.add(34);
 						attendanceItemIds.add(41);
 						attendanceItemIds.add(44);
-						this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID,
-								processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 					} else {
 						if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp() != null
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().isPresent()
@@ -115,15 +103,20 @@ public class StampIncorrectOrderAlgorithm {
 									attendanceItemIds.add(34);
 									attendanceItemIds.add(41);
 									attendanceItemIds.add(44);
-									this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID,
-											processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 								}
 							}
 						}
 					}
 				}
-			}
+			}				
 		}
+		if (!attendanceItemIds.isEmpty()) {
+			employeeDailyPerError = new EmployeeDailyPerError(companyID,
+					employeeID, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+					attendanceItemIds);
+		}
+		
+		return employeeDailyPerError;
 	}
 
 	private List<OutPutProcess> checkPairReversed(List<TimeLeavingWork> timeLeavingWorks) {

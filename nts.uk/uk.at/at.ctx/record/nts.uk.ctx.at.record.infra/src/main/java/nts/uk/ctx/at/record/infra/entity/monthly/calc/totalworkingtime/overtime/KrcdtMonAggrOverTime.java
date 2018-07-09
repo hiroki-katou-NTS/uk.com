@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -74,6 +75,8 @@ public class KrcdtMonAggrOverTime extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonAttendanceTime krcdtMonAttendanceTime;
+//	//テーブル結合用
+//	public KrcdtMonTime krcdtMonTime;
 	
 	/**
 	 * キー取得

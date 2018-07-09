@@ -61,5 +61,13 @@ public enum VacationSpecifiedTimeRefer {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 平日時の就業時間帯であるか判定する
+	 * @return 平日時の就業時間帯である
+	 */
+	public boolean isWorkHourDurWeekDay() {
+		return WORK_HOUR_DUR_WEEKDAY.equals(this);
+	}
 }
 

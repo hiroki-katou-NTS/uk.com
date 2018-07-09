@@ -20,8 +20,13 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
@@ -81,6 +86,9 @@ public class DailyPerformanceSelectItemProcessor {
 	
 	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
+	
+	@Inject
+	private OptionalItemRepository optionalItemRepository;
 	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
@@ -169,13 +177,18 @@ public class DailyPerformanceSelectItemProcessor {
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
 												x.getTypeGroup()))
 										.collect(Collectors.toList());
+						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
+						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
+								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
+										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
+										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
 						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 					}
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
 						// chia cot con code name cua AttendanceItemId chinh va
 						// set
-						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
+						lstHeader.add(DPHeaderDto.createSimpleHeader(companyId, ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
 								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
 					}
 					result.setLstHeader(lstHeader);
@@ -212,12 +225,18 @@ public class DailyPerformanceSelectItemProcessor {
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
 												x.getTypeGroup()))
 										.collect(Collectors.toList());
+						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
+						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
+								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
+										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
+										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
+						
 						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 					}
 					result.addColumnsToSheet(lstFormat, mapDP, true);
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
-						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
+						lstHeader.add(DPHeaderDto.createSimpleHeader(companyId, ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
 								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
 					}
 					result.setLstHeader(lstHeader);
@@ -373,9 +392,10 @@ public class DailyPerformanceSelectItemProcessor {
 					}
 				}
 				//アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
-				Optional<WorkFixedDto> workFixedOp =repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
-				if(workFixedOp.isPresent()){
-					employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+workFixedOp.get().getWkpId()+"|"+LOCK_EDIT_CELL_WORK, datePeriod);
+				List<WorkFixedDto> workFixeds = repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
+				for (WorkFixedDto workFixedOp : workFixeds) {
+					employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId().toString()+
+							"|" + workFixedOp.getWkpId()+ "|"+LOCK_EDIT_CELL_WORK, datePeriod);
 				}
 			});
 		}
@@ -491,7 +511,7 @@ public class DailyPerformanceSelectItemProcessor {
 							if(value.equals("")){
 								value = TextResource.localize("KDW003_82");
 							}else{
-								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.valueOf(item.getTypeGroup()).value, new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(), data.getDate(), value));
+								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.valueOf(item.getTypeGroup()).value, new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(), data.getDate(), value, "", null, null));
 								//CodeName codeName = null;
 								value = (codeName == null) ? TextResource.localize("KDW003_81") : codeName.getName();
 							}

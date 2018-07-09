@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -16,6 +20,8 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 		implements BusinessTypeFormatMonthlyRepository {
 
 	private static final String FIND;
+	
+	private static final String FIND_BY_LIST_CODE;
 
 	private static final String UPDATE_BY_KEY;
 
@@ -32,6 +38,14 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
 		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.businessTypeCode = :businessTypeCode ");
 		FIND = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessTypeMonthly a ");
+		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.businessTypeCode IN :listBusinessTypeCode ");
+		builderString.append("ORDER BY a.order ASC ");
+		FIND_BY_LIST_CODE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KrcmtBusinessTypeMonthly a ");
@@ -123,6 +137,26 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	@Override
 	public List<BusinessTypeFormatMonthly> getMonthlyDetailByCompanyId(String companyId) {
 		return this.queryProxy().query(FIND_BY_COMPANYID, KrcmtBusinessTypeMonthly.class).setParameter("companyId", companyId).getList(f -> toDomain(f));
+	}
+
+	@Override
+	public List<BusinessTypeFormatMonthly> getListBusinessTypeFormat(String companyId, List<String> listBusinessTypeCode) {
+		return this.queryProxy().query(FIND_BY_LIST_CODE, KrcmtBusinessTypeMonthly.class)
+				.setParameter("companyId", companyId)
+				.setParameter("listBusinessTypeCode", listBusinessTypeCode).getList(f -> toDomain(f));
+	}
+
+	@Override
+	public void updateColumnsWidth(String companyId, Map<Integer, Integer> lstHeader, List<String> formatCodes) {
+		List<Integer> itemIds = new ArrayList<>();
+		itemIds.addAll(lstHeader.keySet());
+		List<KrcmtBusinessTypeMonthly> items = this.getListBusinessTypeFormat(companyId, formatCodes).stream()
+				.map(x -> toEntity(x)).collect(Collectors.toList());
+		List<KrcmtBusinessTypeMonthly> entities = items.stream()
+				.map(x -> new KrcmtBusinessTypeMonthly(x.krcmtBusinessTypeMonthlyPK, x.order,
+						new BigDecimal(lstHeader.get(x.krcmtBusinessTypeMonthlyPK.attendanceItemId))))
+				.collect(Collectors.toList());
+		this.commandProxy().updateAll(entities);
 	}
 
 }

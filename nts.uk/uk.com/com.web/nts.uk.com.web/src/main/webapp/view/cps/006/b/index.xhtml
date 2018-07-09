@@ -44,7 +44,7 @@
 						<div>
 							<div
 								data-bind="ntsSearchBox: {
-							searchMode: 'filter',
+							searchMode: 'highlight',
 							targetKey: 'id', 
 							comId: 'B1_3', 
 							items: itemInfoDefList , 
@@ -52,7 +52,6 @@
 							selectedKey: 'id', 
 							fields: ['itemName'], 
 							placeHolder:'名称で検索…',
-							searchText: '絞り込み',
 							mode: 'igGrid'}" />
 						</div>
 
@@ -94,7 +93,7 @@
 									data-bind="ntsTextEditor: {name: '#[CPS006_16]', value: itemNameText, constraint:'ItemName', required:true}" />
 							</div>
 
-							<com:ko-if bind="currentItem().systemRequired === 0">
+							<com:ko-if bind="currentItem().canAbolition === true">
 								<div id="B2_5"
 									data-bind="ntsCheckBox: { checked: ckbIsAbolition }">#{i18n.getText('CPS006_24')}</div>
 							</com:ko-if>

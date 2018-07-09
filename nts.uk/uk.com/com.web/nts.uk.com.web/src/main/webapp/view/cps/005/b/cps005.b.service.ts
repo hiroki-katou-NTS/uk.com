@@ -1,5 +1,6 @@
 module nts.uk.com.view.cps005.b.service {
     import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
 
     let paths = {
         getAllPerInfoItemDefByCtgId: "ctx/pereg/person/info/ctgItem/findby/categoryId1/{0}/{1}",
@@ -14,12 +15,12 @@ module nts.uk.com.view.cps005.b.service {
     };
 
     export function getAllPerInfoItemDefByCtgId(categoryId: string, personEmployeeType: number) {
-        let _path = nts.uk.text.format(paths.getAllPerInfoItemDefByCtgId, categoryId, personEmployeeType);
+        let _path = format(paths.getAllPerInfoItemDefByCtgId, categoryId, personEmployeeType);
         return ajax("com", _path);
     };
 
     export function getPerInfoItemDefById(itemId: string, personEmployeeType: number) {
-        let _path = nts.uk.text.format(paths.getPerInfoItemDefById, itemId, personEmployeeType);
+        let _path = format(paths.getPerInfoItemDefById, itemId, personEmployeeType);
         return ajax("com", _path);
     };
 

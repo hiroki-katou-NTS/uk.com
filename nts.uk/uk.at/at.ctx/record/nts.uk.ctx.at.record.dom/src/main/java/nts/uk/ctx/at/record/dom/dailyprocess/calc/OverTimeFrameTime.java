@@ -119,11 +119,32 @@ public class OverTimeFrameTime {
 	}
 	
 	/**
+	 * 申請超過時間の計算
+	 * @return
+	 */
+	public int calcOverLimitTime() {
+		AttendanceTime overTime = new AttendanceTime(0);
+		if(this.getOverTimeWork() != null
+			&& this.getOverTimeWork().getTime() != null)
+			overTime = this.getOverTimeWork().getTime();
+		
+		AttendanceTime transTime = new AttendanceTime(0);
+		if(this.getTransferTime() != null
+		   && this.getTransferTime().getTime() != null)
+			transTime = this.getTransferTime().getTime();
+		return overTime.addMinutes(transTime.valueAsMinutes()).valueAsMinutes();  
+				 
+	}
+	
+	/**
 	 * 事前申請超過時間の計算
 	 * @return
 	 */
 	public int calcPreOverLimitDivergenceTime() {
-		return calcOverLimitDivergenceTime() - this.BeforeApplicationTime.valueAsMinutes();
+		if(this.BeforeApplicationTime != null) {
+			return calcOverLimitTime() - this.BeforeApplicationTime.valueAsMinutes();
+		}
+		return calcOverLimitTime();
 	}
 
 	/**

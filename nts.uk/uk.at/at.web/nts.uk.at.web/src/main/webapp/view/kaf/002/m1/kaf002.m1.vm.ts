@@ -14,8 +14,10 @@ module nts.uk.at.view.kaf002.m1 {
             stampAtrList: KnockoutObservableArray<vmbase.SimpleObject> = ko.observableArray([]);
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             workLocationList: Array<vmbase.IWorkLocation> = [];
-            displayAllLabel: string = nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31'));
+            displayAllLabel: string = nts.uk.resource.getText("KAF002_13", [nts.uk.resource.getText('Com_Out')]);
             displayItemNo: number = this.supFrameNo;
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 var self = this;
                 self.extendsMode.subscribe((v)=>{ 
@@ -25,8 +27,10 @@ module nts.uk.at.view.kaf002.m1 {
                 });        
             }
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>){
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>, editable: any, screenMode: any){
                 var self = this;    
+                self.screenMode(screenMode);
+                self.editable(editable);
                 self.workLocationList = listWorkLocation;
                 self.supFrameNo = data.supFrameDispNO;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
@@ -58,7 +62,7 @@ module nts.uk.at.view.kaf002.m1 {
                 self.stampAtr.subscribe((value)=>{ 
                     nts.uk.ui.errors.clearAll();
                     if(value == 1){
-                        self.displayItemNo = self.extendsMode() ? 10 : self.supFrameNo;   
+                        self.displayItemNo = self.extendsMode() ? 10 : 3;   
                         self.extendsModeDisplay(!self.extendsMode() && (self.stampAtr() == 1));      
                     } else {
                         self.displayItemNo = 2;
@@ -105,6 +109,10 @@ module nts.uk.at.view.kaf002.m1 {
             
             register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),
@@ -149,6 +157,10 @@ module nts.uk.at.view.kaf002.m1 {
             
             update(application : vmbase.Application){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     version: application.version,
                     appID: application.applicationID(),
@@ -214,6 +226,21 @@ module nts.uk.at.view.kaf002.m1 {
                         self.appStampList()[frameNo][timeType+'Location']().name(self.findWorkLocationName(workLocation));   
                     }
                 });      
+            }
+            
+            validateInput(appStampList: KnockoutObservableArray<vmbase.AppStampGoOutPermit>){
+                _.forEach(appStampList(), (x,i) =>{
+                    if(!nts.uk.util.isNullOrEmpty(x.startTime().value())){
+                        $(".m1-start-input:eq("+i+")").ntsError('check');            
+                    } else {
+                            
+                    } 
+                    if(!nts.uk.util.isNullOrEmpty(x.endTime().value())){
+                        $(".m1-end-input:eq("+i+")").ntsError('check');    
+                    } else {
+                            
+                    }     
+                });    
             }
         }
     }

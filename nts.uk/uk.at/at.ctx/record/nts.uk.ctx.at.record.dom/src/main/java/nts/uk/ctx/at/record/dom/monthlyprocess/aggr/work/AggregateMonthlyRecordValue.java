@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.Ab
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
@@ -170,5 +171,31 @@ public class AggregateMonthlyRecordValue {
 			}
 		}
 		this.anyItemList.add(sumAnyItem);
+	}
+	
+	/**
+	 * 月別実績(Work)の取得
+	 * @return 月別実績(Work)
+	 */
+	public IntegrationOfMonthly getIntegration(){
+		
+		IntegrationOfMonthly result = new IntegrationOfMonthly();
+		result.setAttendanceTime(this.attendanceTime);
+		result.setAffiliationInfo(this.affiliationInfo);
+		result.getAnyItemList().addAll(this.anyItemList);
+		result.setAgreementTime(this.agreementTime);
+		AnnLeaRemNumEachMonth annualLeaveRemain = null;
+		if (this.annLeaRemNumEachMonthList.size() > 0) annualLeaveRemain = this.annLeaRemNumEachMonthList.get(0);
+		result.setAnnualLeaveRemain(Optional.ofNullable(annualLeaveRemain));
+		RsvLeaRemNumEachMonth reserveLeaveRemain = null;
+		if (this.rsvLeaRemNumEachMonthList.size() > 0) reserveLeaveRemain = this.rsvLeaRemNumEachMonthList.get(0);
+		result.setReserveLeaveRemain(Optional.ofNullable(reserveLeaveRemain));
+		AbsenceLeaveRemainData absenceLeaveRemain = null;
+		if (this.absenceLeaveRemainList.size() > 0) absenceLeaveRemain = this.absenceLeaveRemainList.get(0);
+		result.setAbsenceLeaveRemain(Optional.ofNullable(absenceLeaveRemain));
+		MonthlyDayoffRemainData monthlyDayoffRemain = null;
+		if (this.monthlyDayoffRemainList.size() > 0) monthlyDayoffRemain = this.monthlyDayoffRemainList.get(0);
+		result.setMonthlyDayoffRemain(Optional.ofNullable(monthlyDayoffRemain));
+		return result;
 	}
 }

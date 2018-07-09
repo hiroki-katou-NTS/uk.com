@@ -1,10 +1,11 @@
 module nts.uk.com.view.cps005.a {
     __viewContext.ready(function() {
         __viewContext['screenModel'] = new viewmodel.ScreenModel();
-        __viewContext['screenModel'].startPage().done(function() {
-            __viewContext.bind(__viewContext['screenModel']);
+        let vm: any = __viewContext['screenModel'];
+        vm.startPage().done(function() {
+            __viewContext.bind(vm);
             ko.computed(function() {
-                __viewContext['screenModel'].isEnableButtonProceedA(nts.uk.ui._viewModel.errors.isEmpty() && __viewContext['screenModel'].currentData().isEnableButtonProceed());
+                vm.isEnableButtonProceedA(nts.uk.ui._viewModel.errors.isEmpty() && vm.currentData().isEnableButtonProceed());
             });
         });
     });
@@ -19,24 +20,31 @@ $(function() {
         processFilter();
     })
 
+    $(document).on("keydown", 'input.ntsSearchBox.nts-editor.ntsSearchBox_Component', function(e) {
+        if (e.keyCode == 13) {
+            processFilter();
+        }
+    })
+
 })
 
 
-function processFilter(){
-    let dataSourceFilter: Array<any> = $("#category-list-items").igGrid("option", "dataSource");
+function processFilter() {
+    let vm: any = __viewContext['screenModel'],
+        dataSourceFilter: Array<any> = $("#category-list-items").igGrid("option", "dataSource");
 
     if (dataSourceFilter.length > 0) {
-        if (nts.uk.text.isNullOrEmpty(__viewContext['screenModel'].currentData().perInfoCtgSelectCode())) {
-            __viewContext['screenModel'].currentData().perInfoCtgSelectCode(dataSourceFilter[0].id);
+        if (nts.uk.text.isNullOrEmpty(vm.currentData().perInfoCtgSelectCode())) {
+            vm.currentData().perInfoCtgSelectCode(dataSourceFilter[0].id);
         }
     } else {
-        __viewContext['screenModel'].currentData().perInfoCtgSelectCode("");
-        __viewContext['screenModel'].currentData().currentCtgSelected(new nts.uk.com.view.cps005.a.PerInfoCtgModel(null));
-        __viewContext['screenModel'].isUpdate = false;
+        vm.currentData().perInfoCtgSelectCode("");
+        vm.currentData().currentCtgSelected(new nts.uk.com.view.cps005.a.PerInfoCtgModel(null));
+        vm.isUpdate = false;
         $("#category-name-control").focus();
-        __viewContext['screenModel'].currentData().isEnableButtonProceed(true);
-        __viewContext['screenModel'].currentData().isEnableButtonOpenDialog(false);
-        __viewContext['screenModel'].currentData().isHisTypeUpdateModel(false);
+        vm.currentData().isEnableButtonProceed(true);
+        vm.currentData().isEnableButtonOpenDialog(false);
+        vm.currentData().isHisTypeUpdateModel(false);
     }
 
 

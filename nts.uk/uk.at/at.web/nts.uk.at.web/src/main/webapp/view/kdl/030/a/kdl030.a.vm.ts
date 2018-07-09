@@ -32,34 +32,43 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             nts.uk.ui.block.invisible();
             if (!_.isEmpty(self.appID)){
                 service.getApplicationForSendByAppID(self.appID).done(function(result) {
-                    if (result) {
-                        let listApprovalPhase: any = result.listApprovalPhaseStateDto;
+                    if (result) {//check data
+                        
+                        let listApprovalPhase = result.listApprovalPhaseStateDto
                         self.mailContent(result.mailTemplate);
                         self.applicant(ko.toJS({employeeID: result.application.applicantSID, smail: result.applicantMail}));
                         self.application(ko.toJS(result.application));
-                        for (let i = 0; i < listApprovalPhase.length; i++) {
-                            for (let listApprovalFrame = listApprovalPhase[i].listApprovalFrame, j = 0; j < listApprovalFrame.length; j++) {
-                                for (let listApprover = listApprovalFrame[j].listApprover, k = 0; k < listApprover.length; k++) {
-                                    if (listApprover[k].representerName.length > 0){
-                                        listApprover[k].approverName += '(' + listApprover[k].representerName + ')';
+                        //list Phase
+                        let listPhaseDto: Array<ApprovalPhaseState> = [];
+                        _.each(listApprovalPhase, function(phase){//for by phase
+                            //list frame
+                            let listFrameDto: Array<ApprovalFrame> = [];
+                            _.each(phase.listApprovalFrame, function(frame){//for by frame
+                                //list approver
+                                let listApproverDto: Array<Approver> = [];
+                                _.each(frame.listApprover, function(approver){//for by approver
+                                //fill approver
+                                    listApproverDto.push(new Approver(approver.approverID, 
+                                            approver.approverMail.length >0 ? approver.approverName + '(@)' : approver.approverName, 
+                                            approver.approverMail, approver.approverMail.length >0 ? 1 : 0));
+                                    //check agent
+                                    if(approver.representerID != '' && approver.representerName != ''){
+                                        //fill agent
+                                        listApproverDto.push(new Approver(approver.representerID, 
+                                            approver.agentMail.length >0 ? approver.representerName + '(@)' : approver.representerName, 
+                                            approver.agentMail, approver.agentMail.length >0 ? 1 : 0));
                                     }
-                                    if (listApprover[k].approverMail.length >0){
-                                        listApprover[k].approverName += '(@)';
-                                        listApprover[k]['isSend'] = 1;
-                                    } else {
-                                        listApprover[k]['isSend'] = 0;
-                                    }
-                                    listApprover[k]['dispApproverName'] = listApprover[k].approverName;
-                                }
-                            }
-                        }
-                        self.approvalRootState(ko.mapping.fromJS(listApprovalPhase)());
+                                });
+                                listFrameDto.push(new ApprovalFrame(frame.phaseOrder, frame.frameOrder, listApproverDto));
+                            });
+                            listPhaseDto.push(new ApprovalPhaseState(phase.phaseOrder, phase.approvalAtrName,listFrameDto));
+                        });
+                        self.approvalRootState(listPhaseDto);
                     }
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-//                        nts.uk.request.jump("../test/index.xhtml");
                     });
                 }).always(function(res: any) {
                     nts.uk.ui.block.clear();
@@ -76,12 +85,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 return;
             }
             let listSendMail: Array<String> = [];
-            let listApprovalPhase = ko.toJS(self.approvalRootState);
-            _.forEach(listApprovalPhase, x => {
+            _.forEach(self.approvalRootState(), x => {
                 _.forEach(x.listApprovalFrame, y => {
                     _.forEach(y.listApprover, z => {
-                        if (z.isSend == 1)
-                        listSendMail.push(z.approverID);
+                        if (z.isSend() == 1)
+                        listSendMail.push(z.id);
                     });
                 });
             });
@@ -92,14 +100,17 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 return;
             }
             //申請者にメール送信かチェックする
+            let applicantID = '';
             if (self.isSendToApplicant()) {//チェックあり
                 //申請者をループ対象に追加する
-                listSendMail.push(self.applicant().employeeID);
+//                listSendMail.push(self.applicant().employeeID);
+                applicantID = self.applicant().employeeID;
             }
             let command = {
                 'mailContent': ko.toJS(self.mailContent),
                 'application': ko.toJS(self.application),
-                'sendMailOption': listSendMail
+                'sendMailOption': listSendMail,
+                'applicantID' : applicantID
             };
             nts.uk.ui.block.invisible();
             service.sendMail(command).done(function(result) {
@@ -162,38 +173,36 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 
     export class ApprovalPhaseState {
         phaseOrder: number;
-        approvalAtr: string;
+        approvalAtrName: string;
         listApprovalFrame: Array<ApprovalFrame>;
+        constructor(phaseOrder: number, approvalAtrName: string,listApprovalFrame: Array<ApprovalFrame>){
+            this.phaseOrder = phaseOrder;
+            this.approvalAtrName = approvalAtrName;
+            this.listApprovalFrame = listApprovalFrame;
+        }
     }
     export class ApprovalFrame {
         phaseOrder: number;
         frameOrder: number;
-        approvalAtr: string;
         listApprover: Array<Approver>;
-        approverID: string;
-        approverName: string;
-        representerID: string;
-        representerName: string;
-        approvalReason: string;
-        constructor(phaseOrder: number, frameOrder: number, approvalAtr: string, listApprover: Array<Approver>) {
+        constructor(phaseOrder: number, frameOrder: number, listApprover: Array<Approver>) {
             this.phaseOrder = phaseOrder;
             this.frameOrder = frameOrder;
-            this.approvalAtr = approvalAtr;
             this.listApprover = listApprover;
         }
     }
     export class Approver {
-        approverID: string;
-        approverName: string;
-        representerID: string;
-        representerName: string;
+        id: string;
+        dispApproverName: string;
         mail: string;
-        constructor(approverID: string, approverName: string, representerID: string, representerName: string, mail: string) {
-            this.approverID = approverID;
-            this.approverName = approverName;
-            this.representerID = representerID;
-            this.representerName = representerName;
+        isSend: KnockoutObservable<number>;;
+        showButton: boolean;
+        constructor(id: string, name: string, mail: string, isSend: number) {
+            this.id = id;
+            this.dispApproverName = name;
             this.mail = mail;
+            this.isSend = ko.observable(isSend);
+            this.showButton = mail == '' ? false : true;
         }
     }
     export class ItemModel {

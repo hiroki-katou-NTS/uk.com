@@ -84,7 +84,14 @@ module nts.uk.ui {
         }
         
         var startP = function(){
-            _.defer(() => _start.call(__viewContext));
+            _.defer(() => {
+                if (request.location.current.rawUrl.indexOf("view/common/error/sessiontimeout") === -1
+                    && request.location.current.rawUrl.indexOf("/view/ccg/007") === -1) {
+                    loadEmployeeCodeConstraints().always(() => _start.call(__viewContext));
+                } else {
+                    _start.call(__viewContext);
+                }
+            });
             
             let onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
             
@@ -108,6 +115,60 @@ module nts.uk.ui {
                 }
             }
         }
+        
+        let loadEmployeeCodeConstraints = function() {
+            let self = this,
+                dfd = $.Deferred();
+        
+            request.ajax("com", "/bs/employee/setting/code/find").done(res => {
+                
+                let formatOption: any = {
+                    autofill: true
+                };
+        
+                if (res.ceMethodAttr === 0) {
+                    formatOption.filldirection = "left";
+                    formatOption.fillcharacter = "0";
+                } else if (res.ceMethodAttr === 1) {
+                    formatOption.filldirection = "right";
+                    formatOption.fillcharacter = "0";
+                } else if (res.ceMethodAttr === 2) {
+                    formatOption.filldirection = "left";
+                    formatOption.fillcharacter = " ";
+                } else {
+                    formatOption.filldirection = "right";
+                    formatOption.fillcharacter = " ";
+                }
+                
+                // if not have primitive, create new
+                if (!__viewContext.primitiveValueConstraints) {
+                    __viewContext.primitiveValueConstraints = {
+                        EmployeeCode: {
+                            valueType: "String",
+                            charType: "AlphaNumeric",
+                            maxLength: res.numberOfDigits,
+                            formatOption: formatOption
+                        }
+                    };
+                } else {
+                    // extend primitive constraint
+                    _.extend(__viewContext.primitiveValueConstraints, {
+                        EmployeeCode: {
+                            valueType: "String",
+                            charType: "AlphaNumeric",
+                            maxLength: res.numberOfDigits,
+                            formatOption: formatOption
+                        }
+                    });
+                }
+        
+                dfd.resolve();
+            }).fail(res => {
+                dfd.reject();
+            });
+        
+            return dfd.promise();
+        };
         
         $(function () {
             

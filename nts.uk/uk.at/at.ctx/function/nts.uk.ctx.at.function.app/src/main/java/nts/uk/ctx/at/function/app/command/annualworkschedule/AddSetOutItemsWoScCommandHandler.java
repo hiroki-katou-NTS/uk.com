@@ -31,7 +31,7 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 	/**
 	 * 36協定時間
 	 */
-	private String CD_36_AGREEMENT_TIME = "01";
+	private static final String CD_36_AGREEMENT_TIME = "01";
 
 	@Override
 	protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
@@ -62,6 +62,7 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 														  addCommand.getName(),
 														  addCommand.isOutNumExceedTime36Agr(),
 														  addCommand.getDisplayFormat(),
+														  addCommand.getPrintForm(),
 														  listItemOutTblBook));
 	}
 }

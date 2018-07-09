@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeN
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -26,7 +27,9 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
@@ -106,14 +109,28 @@ public class AppAbsenceFinder {
 	private InitMode initMode;
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
+	@Inject
+	private AtEmployeeAdapter atEmployeeAdapter;
 
-	public AppAbsenceDto getAppForLeave(String appDate, String employeeID) {
+	public AppAbsenceDto getAppForLeave(String appDate, String employeeID,List<String> employeeIDs) {
 
 		AppAbsenceDto result = new AppAbsenceDto();
 		boolean checkCaller = false;
-		if (employeeID == null) {
+		if (employeeID == null && CollectionUtil.isEmpty(employeeIDs)) {
 			employeeID = AppContexts.user().employeeId();
 			checkCaller = true;
+		}else if(!CollectionUtil.isEmpty(employeeIDs)){
+			employeeID = employeeIDs.get(0);
+			checkCaller = true;
+			List<EmployeeInfoImport> employees = this.atEmployeeAdapter.getByListSID(employeeIDs);
+			if(!CollectionUtil.isEmpty(employees)){
+				List<EmployeeOvertimeDto> employeeOTs = new ArrayList<>();
+				for(EmployeeInfoImport emp : employees){
+					EmployeeOvertimeDto employeeOT = new EmployeeOvertimeDto(emp.getSid(), emp.getBussinessName());
+					employeeOTs.add(employeeOT);
+				}
+				result.setEmployees(employeeOTs);
+			}
 		}
 		String companyID = AppContexts.user().companyId();
 		// 1-1.新規画面起動前申請共通設定を取得する

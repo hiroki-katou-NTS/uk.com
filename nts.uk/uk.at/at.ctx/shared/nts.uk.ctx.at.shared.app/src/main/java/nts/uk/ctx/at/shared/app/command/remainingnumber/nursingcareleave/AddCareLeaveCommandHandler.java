@@ -7,10 +7,14 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.NursCareLevRemainDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.NursingCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursCareLevRemainInfoRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -22,10 +26,16 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 		implements PeregAddCommandHandler<AddCareLeaveCommand> {
 
 	@Inject
-	private NursCareLevRemainDataRepository dataRepo;
+	private LeaveForCareInfoRepository careInfoRepo;
 
 	@Inject
-	private NursCareLevRemainInfoRepository infoRepo;
+	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
+
+	@Inject
+	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
+	
+	@Inject
+	private LeaveForCareDataRepo careDataRepo;
 
 	@Override
 	public String targetCategoryCd() {
@@ -41,35 +51,36 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddCareLeaveCommand> context) {
 		String cId = AppContexts.user().companyId();
 		AddCareLeaveCommand data = context.getCommand();
-
+		// child-care-data
 		if (data.getChildCareUsedDays() != null) {
-			NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(
+			ChildCareLeaveRemainingData childCareData = ChildCareLeaveRemainingData.getChildCareHDRemaining(
 					data.getSId(), data.getChildCareUsedDays().doubleValue());
-			dataRepo.add(childCareData, cId);
+			childCareDataRepo.add(childCareData, cId);
 		}
 
+		// care-data
 		if (data.getCareUsedDays() != null) {
-			NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(
+			LeaveForCareData careData = LeaveForCareData.getCareHDRemaining(
 					data.getSId(),data.getCareUsedDays().doubleValue());
-			dataRepo.add(careData, cId);
+			careDataRepo.add(careData, cId);
 		}
-		
 
-		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(
+		ChildCareLeaveRemainingInfo childCareInfo = ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(
 				data.getSId(), data.getChildCareUseArt() == null ? 0 : data.getChildCareUseArt().intValue(),
 				data.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getChildCareUpLimSet().intValue(),
 				data.getChildCareThisFiscal() == null ? null : data.getChildCareThisFiscal().doubleValue(),
 				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().doubleValue());
+		childCareInfoRepo.add(childCareInfo, cId);
 
-		NursingCareLeaveRemainingInfo careInfo = NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(),
+		LeaveForCareInfo careInfo = LeaveForCareInfo.createCareLeaveInfo(data.getSId(),
 				data.getCareUseArt() == null ? 0 : data.getCareUseArt().intValue(),
 				data.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getCareUpLimSet().intValue(),
 				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().doubleValue(),
 				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().doubleValue());
-		infoRepo.add(childCareInfo, cId);
-		infoRepo.add(careInfo, cId);
+		careInfoRepo.add(careInfo, cId);
+		
 		return new PeregAddCommandResult(data.getSId());
 	}
 

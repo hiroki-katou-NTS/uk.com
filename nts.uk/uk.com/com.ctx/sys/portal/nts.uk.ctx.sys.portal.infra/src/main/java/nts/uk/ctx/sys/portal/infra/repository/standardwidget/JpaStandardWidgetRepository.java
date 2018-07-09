@@ -14,15 +14,15 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 public class JpaStandardWidgetRepository extends JpaRepository implements StandardWidgetRepository {
 
 	
-	private final String  SELECT_ALL = " SELECT s, t FROM SptstStandardWidget s, CcgmtTopPagePart t " 
+	private static final String  SELECT_ALL = " SELECT s, t FROM SptstStandardWidget s, CcgmtTopPagePart t " 
 										+ " WHERE s.sptstStandardWidgetPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID";
 	
-	private final String  SELECT_IN_BY_TOP_PAGE_PART_ID = " SELECT s, t FROM SptstStandardWidget s, CcgmtTopPagePart t " 
+	private static final String  SELECT_IN_BY_TOP_PAGE_PART_ID = " SELECT s, t FROM SptstStandardWidget s, CcgmtTopPagePart t " 
 			+ " WHERE s.sptstStandardWidgetPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID "
 			+ "AND t.ccgmtTopPagePartPK.topPagePartID IN :toppagePartIDs "
 			+ "AND t.ccgmtTopPagePartPK.companyID =:cID";
 
-	private final String  SELECT_BY_ID = SELECT_ALL + "AND s.sptstStandardWidgetPK.toppagePartID =:toppagePartID";
+	private static final String  SELECT_BY_ID = SELECT_ALL + "AND s.sptstStandardWidgetPK.toppagePartID =:toppagePartID";
 	
 	@Override
 	public List<StandardWidget> getAll(){

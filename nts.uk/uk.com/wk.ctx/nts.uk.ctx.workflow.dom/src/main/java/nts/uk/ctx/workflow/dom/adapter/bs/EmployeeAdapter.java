@@ -67,4 +67,6 @@ public interface EmployeeAdapter {
 	 * @return
 	 */
 	boolean canApprovalOnBaseDate(String companyId, String employeeID, GeneralDate date);
+	
+	boolean isEmployeeDelete(String sid);
 }

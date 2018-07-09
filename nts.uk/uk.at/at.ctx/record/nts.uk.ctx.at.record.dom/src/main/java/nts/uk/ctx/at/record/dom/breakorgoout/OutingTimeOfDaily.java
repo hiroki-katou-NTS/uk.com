@@ -56,7 +56,7 @@ public class OutingTimeOfDaily {
 	 * 全ての外出時間を計算する指示を出すクラス
 	 * @return
 	 */
-	public static OutingTimeOfDaily calcOutingTime(CalculationRangeOfOneDay oneDay) {
+	public static OutingTimeOfDaily calcOutingTime(CalculationRangeOfOneDay oneDay,boolean isCalculatable) {
 		//回数
 		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(1);
 		//外出理由

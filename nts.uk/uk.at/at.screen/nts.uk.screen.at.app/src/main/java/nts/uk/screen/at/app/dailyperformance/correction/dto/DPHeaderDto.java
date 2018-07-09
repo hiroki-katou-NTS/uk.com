@@ -9,11 +9,9 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.shr.com.i18n.TextResource;
@@ -85,8 +83,10 @@ public class DPHeaderDto {
 		this.group = new ArrayList<>();
 	}
 
-	public static DPHeaderDto createSimpleHeader(String key, String width, Map<Integer, DPAttendanceItem> mapDP) {
+	public static DPHeaderDto createSimpleHeader(String companyId, String key, String width,
+			Map<Integer, DPAttendanceItem> mapDP) {
 		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, "", false, "", false, false);
+		// optionalRepo.findByListNos(companyId, optionalitemNos)
 		DPAttendanceItem item = mapDP.get(Integer.parseInt(getCode(key)));
 		int attendanceAtr = item.getAttendanceAtr();
 		if (attendanceAtr == DailyAttendanceAtr.Code.value) {
@@ -108,23 +108,23 @@ public class DPHeaderDto {
 			if (item.getTypeGroup() == TypeLink.CALC.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "String",
 						String.valueOf(withChild) + "px", "", false, "ComboboxCalc", false, false);
-				groups.get(0).setConstraint(new Constraint("Integer", false, "2"));
+				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 				groups.add(dtoG);
 			}
 			if (item.getTypeGroup() == TypeLink.REASON_GO_OUT.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "String",
 						String.valueOf(withChild) + "px", "", false, "ComboboxReason", false, false);
 				groups.add(dtoG);
-				groups.get(0).setConstraint(new Constraint("Integer", false, "3"));
+				groups.get(0).setConstraint(new Constraint("Integer", true, "3"));
 			}
 			if (item.getTypeGroup() == TypeLink.DOWORK.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "String",
 						String.valueOf(withChild) + "px", "", false, "ComboboxDoWork", false, false);
 				groups.add(dtoG);
-				groups.get(0).setConstraint(new Constraint("Integer", false, "1"));
+				groups.get(0).setConstraint(new Constraint("Integer", true, "1"));
 			}
 			dto.setGroup(groups);
-			dto.setConstraint(new Constraint("Combo", false, ""));
+			dto.setConstraint(new Constraint("Combo", true, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value) {
 			// dto.setNtsControl("TextEditorNumberSeparated");
 			dto.setConstraint(new Constraint("Currency", false, ""));
@@ -148,10 +148,10 @@ public class DPHeaderDto {
 		return new DPHeaderDto(TextResource.localize("KDW003_62"), "Submitted", "String", "90px", "", false, "Label",
 				false, false);
 	}
-	
+
 	public static DPHeaderDto addHeaderApplicationList() {
-		return new DPHeaderDto(TextResource.localize("KDW003_110"), "ApplicationList", "String", "90px", "", false, "ButtonList",
-				false, false);
+		return new DPHeaderDto(TextResource.localize("KDW003_110"), "ApplicationList", "String", "90px", "", false,
+				"ButtonList", false, false);
 	}
 
 	private static String getCode(String key) {
@@ -185,12 +185,12 @@ public class DPHeaderDto {
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_33"), "employeeName", "String", "190px", "", false,
 				"Label", true, true));
 		lstHeader.add(new DPHeaderDto("", "picture-person", "String", "35px", "", false, "Image", true, true));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("承認"), "approval", "boolean", "35px", "", false,
-				"Checkbox", true, true));
+		lstHeader.add(new DPHeaderDto(TextResource.localize("承認"), "approval", "boolean", "35px", "", false, "Checkbox",
+				true, true));
 		return lstHeader;
 	}
 
-	private static String getPrimitiveName(DPAttendanceItem item){
+	private static String getPrimitiveName(DPAttendanceItem item) {
 		if (item.getTypeGroup() != null) {
 			switch (item.getTypeGroup()) {
 			case 1:

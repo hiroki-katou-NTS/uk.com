@@ -65,7 +65,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = (c.workTimeCode == '000') ? null : c.workTimeCode;
+                        workTimeCode = _.isEmpty(c.workTimeCode) ? null : c.workTimeCode;
                         //                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
                         //                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
                         startTime = c.startTime ? formatById("Clock_Short_HM", c.startTime) : '';
@@ -213,7 +213,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.workEmpCombines = data.workEmpCombines;
                 //set data for listWorkTime
                 //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
-                //                    workTimeCode: '000',
+                //                    workTimeCode: '',
                 //                    name: nts.uk.resource.getText("KSU001_97"),
                 //                    abName: '',
                 //                    symbolName: '',
@@ -227,9 +227,9 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 //                    workNo: undefined,
                 //                    useAtr: undefined
                 //                }));
-                // insert item 「なし」 with code = '000'
+                // insert item 「なし」 with code = ''
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
-                    workTimeCode: '000',
+                    workTimeCode: '',
                     name: nts.uk.resource.getText("KSU001_98"),
                     abName: '',
                     symbolName: '',
@@ -243,9 +243,9 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     workNo: undefined,
                     useAtr: undefined
                 }));
-                // insert item 「個人情報設定」 with code = '000'
+                // insert item 「個人情報設定」 with code = ''
                 //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
-                //                    workTimeCode: '000',
+                //                    workTimeCode: '',
                 //                    name: nts.uk.resource.getText("KSU001_99"),
                 //                    abName: '',
                 //                    symbolName: '',

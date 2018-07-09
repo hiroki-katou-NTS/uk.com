@@ -33,6 +33,11 @@ public class SetOutItemsWoScCommand {
 	* 表示形式
 	*/
 	private int displayFormat;
+	
+	/*
+	 * 年間勤務表印刷形式
+	 */
+	private int printForm;
 
 	private List<ItemOutTblBookCommand> listItemOutput;
 }

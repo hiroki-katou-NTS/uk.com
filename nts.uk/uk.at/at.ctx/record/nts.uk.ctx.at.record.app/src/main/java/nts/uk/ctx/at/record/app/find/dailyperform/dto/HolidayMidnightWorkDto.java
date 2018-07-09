@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -54,6 +55,7 @@ public class HolidayMidnightWorkDto implements ItemConst {
 	}
 
 	public HolidayWorkMidNightTime newMidNightTime(CalcAttachTimeDto time, StaturoryAtrOfHolidayWork attr) {
-		return new HolidayWorkMidNightTime(time.createTimeDivWithCalc(), attr);
+		return new HolidayWorkMidNightTime(time == null ? TimeDivergenceWithCalculation.emptyTime() 
+																: time.createTimeDivWithCalc(), attr);
 	}
 }

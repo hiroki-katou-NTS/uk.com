@@ -58,7 +58,8 @@ public class WorkTypeProcessor {
 	 */
 	public List<WorkTypeDto> findWorkTypeSpe(){
 		String companyId = AppContexts.user().companyId();
-		return this.workTypeQueryRepository.findAllWorkTypeSPE(companyId, DeprecateClassification.NotDeprecated.value, WorkTypeClassification.SpecialHoliday.value, WorkTypeClassification.Absence.value);
+		return this.workTypeQueryRepository.findAllWorkTypeSPE(companyId, DeprecateClassification.NotDeprecated.value, 
+				WorkTypeClassification.SpecialHoliday.value, WorkTypeClassification.Absence.value);
 	}
 	
 	/**

@@ -32,6 +32,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanAct
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
@@ -57,6 +58,8 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attenda
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSinglePK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlConGroup;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlInputCheck;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlInputCheckPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleAtdPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
@@ -94,6 +97,12 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 
 	@Column(name = "USE_ATR")
 	public int useAtr;
+	
+	@Column(name = "REMARK_CANCEL_ERR_INP")
+	public int remarkCancelErrorInput;
+	
+	@Column(name = "REMARK_COLUMN_NO")
+	public int remarkColumnNo;
 
 	@Column(name = "ERAL_ATR")
 	public int typeAtr;
@@ -134,12 +143,12 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			KrcmtErAlAtdItemCon atdItemCon) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(
 				entity.kwrmtErAlWorkRecordPK.companyId, entity.kwrmtErAlWorkRecordPK.errorAlarmCode,
-				atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo, atdItemCon.conditionAtr, atdItemCon.useAtr == 1);
+				atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo, atdItemCon.conditionAtr, atdItemCon.useAtr == 1,
+				atdItemCon.type);
 		// Set Target
-		if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
+		if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value || atdItemCon.type == ErrorAlarmConditionType.INPUT_CHECK.value) {
 			atdItemConDomain.setUncountableTarget(Optional.ofNullable(atdItemCon.lstAtdItemTarget)
-					.orElse(Collections.emptyList()).stream().filter(atdItemTarget -> atdItemTarget.targetAtr == 2)
-					.findFirst().get().krcstErAlAtdTargetPK.attendanceItemId);
+					.orElse(Collections.emptyList()).stream().findFirst().get().krcstErAlAtdTargetPK.attendanceItemId);
 		} else {
 			atdItemConDomain.setCountableTarget(
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
@@ -193,6 +202,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 						atdItemCon.erAlCompareSingle.conditionType, (V) new AttendanceItemId(
 								atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId));
 			}
+		} else if (atdItemCon.erAlInputCheck != null) {
+			atdItemConDomain.setInputCheck(atdItemCon.erAlInputCheck.inputCheckCondition);
 		}
 		return atdItemConDomain;
 	}
@@ -202,9 +213,9 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK = new KrcmtErAlAtdItemConPK(atdItemConditionGroup1,
 				(erAlAtdItemCon.getTargetNO()));
 		List<KrcstErAlAtdTarget> lstAtdItemTarget = new ArrayList<>();
-		if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
+		if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY || erAlAtdItemCon.getType() == ErrorAlarmConditionType.INPUT_CHECK) {
 			lstAtdItemTarget.add(new KrcstErAlAtdTarget(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
-					(erAlAtdItemCon.getTargetNO()), (erAlAtdItemCon.getUncountableTarget().getAttendanceItem())), 2));
+					(erAlAtdItemCon.getTargetNO()), (erAlAtdItemCon.getUncountableTarget().getAttendanceItem())), erAlAtdItemCon.getConditionAtr().value));
 		} else {
 			List<KrcstErAlAtdTarget> lstAtdItemTargetAdd = erAlAtdItemCon.getCountableTarget()
 					.getAddSubAttendanceItems().getAdditionAttendanceItems().stream()
@@ -225,6 +236,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		int endValue = 0;
 		KrcstErAlCompareSingle erAlCompareSingle = null;
 		KrcstErAlCompareRange erAlCompareRange = null;
+		KrcstErAlInputCheck erAlInputCheck = null;
 		KrcstErAlSingleFixed erAlSingleFixed = null;
 		List<KrcstErAlSingleAtd> erAlSingleAtd = new ArrayList<>();
 		if (erAlAtdItemCon.getCompareRange() != null) {
@@ -271,10 +283,14 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 										((AttendanceItemId) erAlAtdItemCon.getCompareSingleValue().getValue()).v()),
 								2));
 			}
+		} else if (erAlAtdItemCon.getInputCheck() != null) {
+			erAlInputCheck = new KrcstErAlInputCheck(
+					new KrcstErAlInputCheckPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()),
+					erAlAtdItemCon.getInputCheck().getInputCheckCondition().value);
 		}
 		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
-				erAlAtdItemCon.isUse() ? 1 : 0, lstAtdItemTarget, erAlCompareSingle, erAlCompareRange,
-				erAlSingleFixed, erAlSingleAtd);
+				erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
+				erAlCompareRange, erAlInputCheck, erAlSingleFixed, erAlSingleAtd);
 	}
 
 	public static KwrmtErAlWorkRecord fromDomain(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
@@ -402,16 +418,17 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 					conditionDomain.getContinuousPeriod() != null ? conditionDomain.getContinuousPeriod().v() : 0);
 		}
 		KwrmtErAlWorkRecord entity = new KwrmtErAlWorkRecord(kwrmtErAlWorkRecordPK, errorAlarmName, fixedAtr, useAtr,
-				typeAtr, boldAtr, messageColor.equals("") ? null : messageColor, cancelableAtr, errorDisplayItem,
-				eralCheckId, krcmtErAlCondition, krcstErAlApplication, cancelRoleId);
+				domain.getRemarkCancelErrorInput().value, domain.getRemarkColumnNo(), typeAtr, boldAtr,
+				messageColor.equals("") ? null : messageColor, cancelableAtr, errorDisplayItem, eralCheckId,
+				krcmtErAlCondition, krcstErAlApplication, cancelRoleId);
 		return entity;
 	}
 
 	public static ErrorAlarmWorkRecord toDomain(KwrmtErAlWorkRecord entity) {
 		ErrorAlarmWorkRecord domain = ErrorAlarmWorkRecord.createFromJavaType(AppContexts.user().companyId(),
 				entity.kwrmtErAlWorkRecordPK.errorAlarmCode, entity.errorAlarmName, entity.fixedAtr == 1,
-				entity.useAtr == 1, entity.typeAtr, entity.boldAtr == 1, entity.messageColor, entity.cancelableAtr == 1,
-				entity.errorDisplayItem,
+				entity.useAtr == 1, entity.remarkCancelErrorInput, entity.remarkColumnNo, entity.typeAtr,
+				entity.boldAtr == 1, entity.messageColor, entity.cancelableAtr == 1, entity.errorDisplayItem,
 				Optional.ofNullable(entity.krcstErAlApplication).orElse(Collections.emptyList()).stream()
 						.map(eralAppEntity -> eralAppEntity.krcstErAlApplicationPK.appTypeCd)
 						.collect(Collectors.toList()),
