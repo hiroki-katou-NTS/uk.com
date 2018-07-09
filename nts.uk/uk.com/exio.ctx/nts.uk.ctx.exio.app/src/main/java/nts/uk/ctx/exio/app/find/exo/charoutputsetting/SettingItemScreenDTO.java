@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class SettingItemScreenCommand {
+public class SettingItemScreenDTO {
 
 	/**
 	 * NULL値置換

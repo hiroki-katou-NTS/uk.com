@@ -6,7 +6,7 @@ import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
 
 @Getter
 @AllArgsConstructor
-public class OutputTypeSettingCommand {
+public class OutputTypeSettingDTO {
 	
 	String Cid;
 	
