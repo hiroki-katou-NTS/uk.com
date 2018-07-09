@@ -2383,15 +2383,16 @@ module nts.uk.at.view.kmf022 {
                     prinFlg: self.selectedIdA17_5()
                 };
                 data.jobSearch = ko.toJS(self.listDataA15());
-                service.update(data).done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        //Load data setting
-                        self.loadData();
+                if (nts.uk.ui.errors.hasError() === false) {
+                    service.update(data).done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            //Load data setting
+                            self.loadData();
+                        });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
-
+                }
             }
 
         }

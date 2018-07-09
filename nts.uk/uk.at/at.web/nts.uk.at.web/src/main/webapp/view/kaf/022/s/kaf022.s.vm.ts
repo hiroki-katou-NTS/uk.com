@@ -150,18 +150,20 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             listUpdate.listCommand.push(cmd);
             let code = cmd.dispOrder;
             nts.uk.ui.block.grayout();
-            service.update(listUpdate).done(function() {
-                self.startPage().done(function() {
-                    self.selectedOrder(code);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            if (nts.uk.ui.errors.hasError() === false) {
+                service.update(listUpdate).done(function() {
+                    self.startPage().done(function() {
+                        self.selectedOrder(code);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    });
+                }).fail(function(res) {
+                    nts.uk.ui.block.clear();
+                    alert(res.message);
+                    dfd.reject();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
-            }).fail(function(res) {
-                nts.uk.ui.block.clear();
-                alert(res.message);
-                dfd.reject();
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
+            }
         }
         
         /** update or insert data when click button register **/

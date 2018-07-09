@@ -2,6 +2,11 @@ module nts.uk.at.view.kmf022.m.viewmodel {
     var lstWkp = [];
 
     export class ScreenModel {
+        // update ver27
+        enumVer27 = ko.observableArray([
+            { code: 0, name: nts.uk.resource.getText("KAF022_378") },
+            { code: 1, name: nts.uk.resource.getText("KAF022_379") }
+        ]);
 
         enumUseAtr = ko.observableArray([
             { code: 1, name: nts.uk.resource.getText("KAF022_100") },
@@ -46,6 +51,9 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         alreadySettingList: KnockoutObservableArray<any>;
         lstAppApprovalSettingWkp: Array<IApplicationApprovalSettingWkp>;
         selectedSetting: ApplicationApprovalSettingWkp;
+        // update ver27
+        selectVer27: KnockoutObservable<number> = ko.observable(0);
+        visible27: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             var self = this;
@@ -93,6 +101,14 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 $('#wkp-list').focusTreeGridComponent();
             });
             $("#fixed-table-wkp-setting").ntsFixedTable({});
+            
+            self.selectVer27.subscribe((value) => {
+                if(value == 0){
+                    self.visible27(true);
+                }else{
+                    self.visible27(false);    
+                }
+            });
         }
 
         reloadData() {
@@ -176,13 +192,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             });
             let lstCommand = [];
             lstCommand.push(command);
-            nts.uk.at.view.kmf022.m.service.update(lstCommand).done(() => {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                    nts.uk.ui._viewModel.content.viewmodelM.reloadData();
+            if (nts.uk.ui.errors.hasError() === false) {
+                nts.uk.at.view.kmf022.m.service.update(lstCommand).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        nts.uk.ui._viewModel.content.viewmodelM.reloadData();
+                    });
+                }).fail(() => {
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
                 });
-            }).fail(() => {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
-            });
+            }
         }
 
         remove() {
@@ -190,7 +208,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.at.view.kmf022.m.service.remove(command).done(() => {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
-                       nts.uk.ui._viewModel.content.viewmodelM.reloadData();
+                        nts.uk.ui._viewModel.content.viewmodelM.reloadData();
                     });
                 });
             });

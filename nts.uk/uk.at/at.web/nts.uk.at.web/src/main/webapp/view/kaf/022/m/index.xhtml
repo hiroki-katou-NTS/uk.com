@@ -1,11 +1,23 @@
 <div  class="fixed-flex-layout contents-area-kaf022">
- 	<div class="fixed-flex-layout-left"> 
-	<div id="wkp-list"></div>
-	</div>
-	<div class="fixed-flex-layout-right">
+	<!-- update ver27 -->
+	<div style="position: relative;">
+		<div id = "ver27" class="cf" data-bind="ntsSwitchButton: {
+											options:  enumVer27,
+											name: '#[KAF022_377]',
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectVer27,
+											enable: true }"></div>
+		<div data-bind="visible: visible27">
+			<div id="left-content" class="fixed-flex-layout-left">
+				<div id="wkp-list"></div>
+			</div>
+		</div>
+
+	<div id = "right-content" data-bind = "style: {marginLeft: visible27() ? '510px' : '10px'}" class="fixed-flex-layout-right">
 	<div id="display-detail" data-bind="with: selectedSetting">
-		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF022_276',["#Com_Workplace"])}</div>
-		<span data-bind="text: wkpName"></span><br/>
+		<div data-bind="visible: $root.content.viewmodelM.visible27, ntsFormLabel: {}">#{i18n.getText('KAF022_276',["#Com_Workplace"])}</div>
+		<span data-bind="visible: $root.content.viewmodelM.visible27, text: wkpName"></span><br/>
 		<div data-bind="ntsFormLabel: {}" style="margin:10px 0 10px 0;">#{i18n.getText('KAF022_282')}</div>
 		<div class="cf" data-bind="ntsSwitchButton: {
 			options: $parent.enumUseAtr,
@@ -300,6 +312,7 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
 	</div>
 	</div>
 </div>
