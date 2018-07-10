@@ -21,9 +21,6 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area-bottom">
-				<button tabindex="3" id="G6_2" data-bind="click: closeDialog">#{i18n.getText('KMW006_31')}</button>
-			</div>
 			<div class="contents-area">
 				<div style="padding: 20px">
 					<div class="valign-center control-group">
@@ -41,9 +38,9 @@
 						<div style="width: 90px" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KFP001_31')}</div>
 						<span class="label" data-bind="text: errorNum"></span>
 					</div>
-					<div class="valign-center control-group cf">
-						<button tabindex="1" class="pull-right" data-bind="click: exportCsv">#{i18n.getText('KFP001_37')}</button>
-					</div>
+<!-- 					<div class="valign-center control-group cf"> -->
+<!-- 						<button tabindex="1" class="pull-right" data-bind="click: exportCsv">#{i18n.getText('KFP001_37')}</button> -->
+<!-- 					</div> -->
 					<table id="single-list" tabindex="2" data-bind="ntsGridList: {								
 						rows: 10,
 						dataSource: items,
@@ -60,6 +57,9 @@
 						value: currentCode
 					}"></table>
 				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="3" id="G6_2" data-bind="click: closeDialog">#{i18n.getText('KMW006_31')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

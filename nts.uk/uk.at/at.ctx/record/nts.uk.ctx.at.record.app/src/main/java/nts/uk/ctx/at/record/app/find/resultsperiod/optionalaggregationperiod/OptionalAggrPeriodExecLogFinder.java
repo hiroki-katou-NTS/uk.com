@@ -50,21 +50,24 @@ public class OptionalAggrPeriodExecLogFinder {
 		List<OptionalAggrPeriodExecLogDto> result = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		List<AggrPeriodExcution> listLog = logRepo.findExecutionPeriod(companyId, start, end);
+		List<String> listEmployeeId = listLog.stream().map(l -> l.getExecutionEmpId()).collect(Collectors.toList());
+		List<EmployeeRecordImport> lstEmpInfo = empAdapter.getPersonInfor(listEmployeeId);
 		for (AggrPeriodExcution log : listLog) {
 			Optional<OptionalAggrPeriod> optAggr = aggrPeriodRepo.find(companyId, log.getAggrFrameCode().v());
 			List<AggrPeriodTarget> listTarget = targetRepo.findAll(log.getAggrId());
 			List<AggrPeriodInfor> listError = errorInfoRepo.findAll(log.getAggrId());
-			EmployeeRecordImport empInfo = empAdapter.getPersonInfor(log.getExecutionEmpId());
+			EmployeeRecordImport empInfo = lstEmpInfo.stream().filter(e -> e.getEmployeeId().equals(log.getExecutionEmpId())).collect(Collectors.toList()).get(0);
 			if (optAggr.isPresent()) {
+				OptionalAggrPeriod aggr = optAggr.get();
 				OptionalAggrPeriodExecLogDto dto = new OptionalAggrPeriodExecLogDto(log.getAggrId(),
-						log.getAggrFrameCode().v(), optAggr.get().getOptionalAggrName().v(), log.getStartDateTime(),
-						log.getExecutionEmpId(), empInfo.getPname(), optAggr.get().getStartDate(),
-						optAggr.get().getEndDate(), log.getExecutionStatus().get().name, listTarget.size(), listError.size());
+						log.getAggrFrameCode().v(), aggr.getOptionalAggrName().v(), log.getStartDateTime(),
+						empInfo.getEmployeeCode(), empInfo.getPname(), aggr.getStartDate(),
+						aggr.getEndDate(), log.getExecutionStatus().get().name, listTarget.size(), listError.size());
 				result.add(dto);
 			} else {
 				OptionalAggrPeriodExecLogDto dto = new OptionalAggrPeriodExecLogDto(log.getAggrId(),
 						log.getAggrFrameCode().v(), TextResource.localize("Msg_1307"), log.getStartDateTime(),
-						log.getExecutionEmpId(), empInfo.getPname(), null, null, log.getExecutionStatus().get().name,
+						empInfo.getEmployeeCode(), empInfo.getPname(), null, null, log.getExecutionStatus().get().name,
 						listTarget.size(), listError.size());
 				result.add(dto);
 			}

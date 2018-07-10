@@ -27,12 +27,13 @@ module nts.uk.com.view.kfp001.h.viewmodel {
             end = moment.utc(self.periodValue().endDate, "YYYY/MM/DD").format("YYYY-MM-DD");
             block.invisible();
             service.getLogData(start, end).done((result: Array<any>) => {
+                let list: Array<DataModel> = [];
                 if (result && result.length > 0) {
-                    let list: Array<DataModel> = _.map(result, log => {
+                    list = _.map(result, log => {
                         return new DataModel(log.id, log.code, log.name, log.executionDt, log.executorCode, log.executorName, log.aggregationStart, log.aggregationEnd, log.status, log.targetNum, log.errorNum);
                     });
-                    self.listData(list);
                 }
+                self.listData(list);
                 self.initIGrid();
                 dfd.resolve();
             }).fail((error) => {
@@ -62,7 +63,7 @@ module nts.uk.com.view.kfp001.h.viewmodel {
                 columns: [
                     { headerText: "", key: 'logId', dataType: 'string', hidden: true },
                     { headerText: getText('KFP001_14'), key: 'code', dataType: 'string', width: '60px' },
-                    { headerText: getText('KFP001_16'), key: 'name', dataType: 'string', width: '180px' },
+                    { headerText: getText('KFP001_16'), key: 'name', dataType: 'string', width: '200px' },
                     { headerText: getText('KFP001_55'), key: 'executionDateTime', dataType: 'string', width: '180px' },
                     { headerText: getText('KFP001_56'), key: 'executorCode', dataType: 'string', width: '160px' },
                     { headerText: getText('KFP001_57'), key: 'executorName', dataType: 'string', width: '140px' },
@@ -85,6 +86,9 @@ module nts.uk.com.view.kfp001.h.viewmodel {
                         pageCountLimit: 99
                     }
                 ]
+            });
+            $("#list").blur(() => {
+                $(".ntsStartDatePicker").focus();
             });
         }
 
@@ -138,12 +142,12 @@ module nts.uk.com.view.kfp001.h.viewmodel {
             this.logId = logId;
             this.code = code;
             this.name = name;
-            this.executionDateTime = execDT;
+            this.executionDateTime = moment.utc(execDT).format("YYYY/MM/DD hh:mm:ss");
             this.executorCode = execCode;
             this.executorName = execName;
             this.start = start;
             this.end = end;
-            this.aggregationPeriod = start + getText("KFP001_30") + end;
+            this.aggregationPeriod = (start && end) ? start + getText("KFP001_30") + end : "";
             this.result = result;
             this.targetPeopleNum = targetNum;
             this.errorPeopleNum = errorNum;

@@ -30,8 +30,10 @@ public class AggrPeriodTargetFinder {
 	public List<AggrPeriodTargetDto> findAll(String aggrPeriodId) {
 		List<AggrPeriodTargetDto> result = new ArrayList<>();
 		List<AggrPeriodTarget> listTarget = targetRepo.findAll(aggrPeriodId);
+		List<String> listEmployeeId = listTarget.stream().map(l -> l.getEmployeeId()).collect(Collectors.toList());
+		List<EmployeeRecordImport> lstEmpInfo = empAdapter.getPersonInfor(listEmployeeId);
 		for (AggrPeriodTarget a : listTarget) {
-			EmployeeRecordImport empInfo = empAdapter.getPersonInfor(a.getEmployeeId());
+			EmployeeRecordImport empInfo = lstEmpInfo.stream().filter(e -> e.getEmployeeId().equals(a.getEmployeeId())).collect(Collectors.toList()).get(0);
 			AggrPeriodTargetDto dto = new AggrPeriodTargetDto(a.getEmployeeId(), empInfo.getEmployeeCode(),
 					empInfo.getPname(), a.getState().name);
 			result.add(dto);
