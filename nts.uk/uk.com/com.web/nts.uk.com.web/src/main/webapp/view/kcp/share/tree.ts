@@ -794,8 +794,9 @@ module kcp.share.tree {
          */
         private findSelectionRowData(dataList: Array<UnitModel>, listRowData: Array<RowSelection>) {
             let self = this;
+            let selectedWorkplaces = self.getSelectedWorkplace();
             for (let unitModel of dataList) {
-                if (self.getSelectedWorkplace().contains(unitModel.workplaceId)) {
+                if (_.some(selectedWorkplaces, id => id == unitModel.workplaceId)) {
                     listRowData.push({
                         workplaceId: unitModel.workplaceId,
                         workplaceCode: unitModel.code
