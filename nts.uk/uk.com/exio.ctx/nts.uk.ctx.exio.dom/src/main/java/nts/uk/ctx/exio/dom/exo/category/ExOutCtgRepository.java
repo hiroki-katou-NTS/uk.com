@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface ExOutCtgRepository {
 
 	List<ExOutCtg> getAllExOutCtg();
+	
+	List<ExOutCtg> getExOutCtgList();
 
 	Optional<ExOutCtg> getExOutCtgById(String categoryId);
 
