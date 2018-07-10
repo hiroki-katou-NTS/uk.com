@@ -56,7 +56,7 @@
 								}"></div>
 								<div data-bind="ntsComboBox: {
 										options: encodingList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										value: selectedEncoding,
 										optionsText: 'name',
 										editable: false,
@@ -169,6 +169,7 @@
 												value: itemType,
 												optionsText: 'name',
 												option: {width: '70px'},
+												selectFirstIfNull: true,
 												columns: [
 													{ prop: 'name', length: 5 }
 												]}"></div>
