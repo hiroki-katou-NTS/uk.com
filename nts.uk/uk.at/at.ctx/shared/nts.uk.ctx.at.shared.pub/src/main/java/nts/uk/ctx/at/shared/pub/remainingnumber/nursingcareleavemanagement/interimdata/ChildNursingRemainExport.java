@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.pub.vacation.setting.nursingleave;
+package nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata;
 
 import java.util.Optional;
 

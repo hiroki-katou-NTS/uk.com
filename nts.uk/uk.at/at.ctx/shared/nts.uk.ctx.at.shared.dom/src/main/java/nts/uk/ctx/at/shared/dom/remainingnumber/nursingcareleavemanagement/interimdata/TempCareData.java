@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.vacation.setting.temp.caredata;
+package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.interimdata;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;

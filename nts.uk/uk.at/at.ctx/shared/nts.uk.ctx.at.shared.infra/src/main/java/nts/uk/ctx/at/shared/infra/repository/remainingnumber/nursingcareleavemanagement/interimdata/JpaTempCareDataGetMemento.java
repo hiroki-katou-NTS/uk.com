@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.shared.repository.vacation.setting.temp.caredata;
+package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.interimdata;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ScheduleRecordAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimeHoliday;
-import nts.uk.ctx.at.shared.dom.vacation.setting.temp.caredata.TempCareDataGetMemento;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.interimdata.TempCareDataGetMemento;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.temp.caredata.KrcdtTempCareData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareData;
 
 public class JpaTempCareDataGetMemento implements TempCareDataGetMemento {
 	

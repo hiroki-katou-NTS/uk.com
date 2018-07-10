@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.vacation.setting.temp.caredata;
+package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.interimdata;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;

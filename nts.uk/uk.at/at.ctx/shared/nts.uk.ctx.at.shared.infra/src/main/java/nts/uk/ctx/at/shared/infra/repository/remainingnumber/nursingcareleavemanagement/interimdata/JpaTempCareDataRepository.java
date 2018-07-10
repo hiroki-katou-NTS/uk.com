@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.repository.vacation.setting.temp.caredata;
+package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.interimdata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +14,12 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.vacation.setting.temp.caredata.TempCareData;
-import nts.uk.ctx.at.shared.dom.vacation.setting.temp.caredata.TempCareDataRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.temp.caredata.KrcdtTempCareData;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.temp.caredata.KrcdtTempCareDataPK;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.temp.caredata.KrcdtTempCareDataPK_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.temp.caredata.KrcdtTempCareData_;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.interimdata.TempCareData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.interimdata.TempCareDataRepository;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareDataPK;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareDataPK_;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareData_;
 
 @Stateless
 public class JpaTempCareDataRepository extends JpaRepository implements TempCareDataRepository {
