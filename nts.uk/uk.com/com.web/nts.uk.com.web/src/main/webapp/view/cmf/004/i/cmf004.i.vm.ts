@@ -27,7 +27,7 @@ module nts.uk.com.view.cmf004.i.viewmodel {
 
         //status follow
         isEnding: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         //time start
         timeStart: any;
         // interval 1000ms request to server
@@ -119,13 +119,18 @@ module nts.uk.com.view.cmf004.i.viewmodel {
             // stop auto request to server
             //clearInterval(self.interval);
             //update status end 
-            let paramBreakFollowProcessing = {
-                dataRecoveryProcessId: self.recoveryProcessingId
-            };
-            service.breakFollowProcessing(paramBreakFollowProcessing).done(function(res: any) {
-                self.isEnding(true);
-                $('#I5_2').focus();
-            });
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_612" })
+                .ifYes(function() {
+                    let paramBreakFollowProcessing = {
+                        dataRecoveryProcessId: self.recoveryProcessingId
+                    };
+                    service.breakFollowProcessing(paramBreakFollowProcessing).done(function(res: any) {
+                        $('#I5_2').focus();
+                    });
+                })
+                .ifNo(function() {
+                });
+
         }
 
         // close popup
@@ -147,7 +152,7 @@ module nts.uk.com.view.cmf004.i.viewmodel {
             } else if (value === 5) {
                 return getText('Enum_OperatingCondition_ABNORMAL_TERMINATION');
             }
-        } 
+        }
     }
 }
 
