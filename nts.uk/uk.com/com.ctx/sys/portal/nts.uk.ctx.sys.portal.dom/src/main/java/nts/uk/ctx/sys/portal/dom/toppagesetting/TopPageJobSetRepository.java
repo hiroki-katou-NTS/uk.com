@@ -38,5 +38,14 @@ public interface TopPageJobSetRepository {
 	 * @param topPageJobSet
 	 */
 	void updateProperty(TopPageJobSet topPageJobSet);
+	
+	/**
+	 * Add by ThanhPV when remove top page in CCG015
+	 * 
+	 * Remove top page code selected in top page job set
+	 * 
+	 *  
+	 * */
+	void removeTopPageCode(String companyID, String code); 
 
 }

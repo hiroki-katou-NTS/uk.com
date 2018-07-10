@@ -1,0 +1,43 @@
+table {
+	border-collapse: collapse;
+}
+
+table, th, td {
+	border: 1px solid black;
+}
+
+.columnLeft {
+	background-color: #CCFF99;
+	width: 130px;
+}
+
+.columnRight {
+	width: 300px;
+}
+
+.labeLeft {
+	margin-left: 10px;
+}
+
+.labeRight {
+	margin-left: 10px;
+}
+
+#D1_1 {
+	margin-top: 10px;
+	margin-left: 50px;
+}
+
+
+#bodyScreen {
+	margin-left: 50px;
+	margin-bottom: 50px;
+}
+
+#D3_1 {
+	margin-top: 10px;
+}
+
+#3_2 {
+	margin-top: 10px;
+}

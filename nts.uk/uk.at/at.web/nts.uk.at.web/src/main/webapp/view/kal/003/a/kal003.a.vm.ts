@@ -188,6 +188,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     i = 0;
                 });
             }
+            // MinhVV add
+            if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
+                
+            }
 
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
@@ -260,6 +264,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     obj.code = self.selectedAlarmCheckCondition().code();
                     obj.useAtr(+obj.useAtr());
                 });
+                
+            }
+            // MinhVV add
+            if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
                 
             }
 
@@ -342,6 +350,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.MONTHLY) {
                         self.tabCheckAlarm.listExtraResultMonthly([]);  
                         self.tabAlarmcheck.listFixedExtraMonFun([]);
+                    }
+                    // MinhVV add
+                    if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.MULTIPLE_MONTHS) {
+                        
                     }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
@@ -445,6 +457,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             if (item.monAlarmCheckCon().listFixExtraMon().length > 0) {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
                             }
+                        }
+                        // MinhVV add
+                        if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
+                            
                         }
                             
                         self.screenMode(model.SCREEN_MODE.UPDATE);
