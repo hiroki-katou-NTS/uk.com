@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AWDataScreenFinder {
@@ -14,12 +15,11 @@ public class AWDataScreenFinder {
 	@Inject
 	AwDataFormatSetRepository awDataFormatSetRepository;
 
-	public AwDataFormatDTO getAWData(AWOutputTypeSettingDTO outputTypeSettingDTO) {
+	public AwDataFormatDTO getAWData(){
 		AwDataFormatDTO awDataFormatDTO = null;
+		String cid = AppContexts.user().companyId();
 		Optional<AwDataFormatSet> awDataFormatSet = awDataFormatSetRepository
-				.getAwDataFormatSetById(outputTypeSettingDTO.getCid());
-		if ("individual".equals(outputTypeSettingDTO.getClassification())
-				|| "initial".equals(outputTypeSettingDTO.getClassification())) {
+				.getAwDataFormatSetById(cid);
 			if (awDataFormatSet.isPresent()) {
 				awDataFormatSet.get().getAbsenceOutput().ifPresent(x -> {
 					awDataFormatDTO.setAbsenceOutput(x.v());
@@ -38,7 +38,6 @@ public class AWDataScreenFinder {
 				});
 				awDataFormatDTO.setFixedValue(awDataFormatSet.get().getFixedValue().value);
 			}
-		}
 		return awDataFormatDTO;
 	}
 }

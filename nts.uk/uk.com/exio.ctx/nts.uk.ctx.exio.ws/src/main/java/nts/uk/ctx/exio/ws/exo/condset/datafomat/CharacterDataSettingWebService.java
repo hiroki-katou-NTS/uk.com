@@ -5,7 +5,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.exio.app.find.exo.charoutputsetting.OutputTypeSettingDTO;
 import nts.uk.ctx.exio.app.find.exo.charoutputsetting.SettingItemScreenDTO;
 import nts.uk.ctx.exio.app.find.exo.charoutputsetting.SettingTypeScreenFinder;
 
@@ -18,7 +17,7 @@ public class CharacterDataSettingWebService {
 	
 	@POST
 	@Path("getdatatype")
-	public SettingItemScreenDTO getCharDatatype(OutputTypeSettingDTO command){
-		return settingTypeScreen.getActiveType(command);
+	public SettingItemScreenDTO getCharDatatype(){
+		return settingTypeScreen.getActiveType();
 	}
 }

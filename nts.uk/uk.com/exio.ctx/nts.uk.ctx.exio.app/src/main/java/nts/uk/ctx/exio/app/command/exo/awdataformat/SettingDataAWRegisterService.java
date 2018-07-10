@@ -20,7 +20,7 @@ public class SettingDataAWRegisterService extends CommandHandler<AWDataFormatCom
 	@Override
 	protected void handle(CommandHandlerContext<AWDataFormatCommand> context) {
 		AWDataFormatCommand command = context.getCommand();
-		AwDataFormatSet awDataFormatSet = new AwDataFormatSet(ItemType.CHARACTER.value, command.getCid(),
+		AwDataFormatSet awDataFormatSet = new AwDataFormatSet(ItemType.ATWORK.value, command.getCid(),
 				command.getClosedOutput(), command.getAbsenceOutput(), command.getFixedValue(),
 				command.getValueOfFixedValue(), command.getAtWorkOutput(), command.getRetirementOutput());
 		awDataFormatSetRepository.add(awDataFormatSet);

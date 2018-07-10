@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 
 @Stateless
@@ -15,11 +16,11 @@ public class SettingTypeScreenFinder {
 	@Inject
 	ChacDataFmSetRepository chacDataFmSetRepository;
 
-	public SettingItemScreenDTO getActiveType(OutputTypeSettingDTO outputTypeSettingCommand) {
+	public SettingItemScreenDTO getActiveType(){
 		SettingItemScreenDTO settingItemScreenCommand = null;
+		String cid = AppContexts.user().companyId();
 		Optional<ChacDataFmSet> chacDataFmSet = chacDataFmSetRepository
-				.getChacDataFmSetById(outputTypeSettingCommand.getCid());
-		if ("individual".equals(outputTypeSettingCommand.getClassification()) || "initial".equals(outputTypeSettingCommand.getClassification())) {
+				.getChacDataFmSetById(cid);
 				if (chacDataFmSet.isPresent()) {
 					ChacDataFmSet charFormatSet = chacDataFmSet.get();
 					// check valueOfNullValueReplace not null
@@ -53,7 +54,6 @@ public class SettingTypeScreenFinder {
 					settingItemScreenCommand.setSpaceEditting(charFormatSet.getSpaceEditting().value);
 					settingItemScreenCommand.setEffectDigitLength(charFormatSet.getEffectDigitLength().value);
 				}
-			}
 		return settingItemScreenCommand;
 	}
 }
