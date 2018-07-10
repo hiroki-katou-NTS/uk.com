@@ -99,7 +99,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
         instructInfor : KnockoutObservable <string> = ko.observable('');
 
-        overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
+        overtimeWork: KnockoutObservableArray<common.OvertimeWork> = ko.observableArray([
+            new common.OvertimeWork("",0,0,0,0,"",""),
+            new common.OvertimeWork("",0,0,0,0,"",""),    
+        ]);
         indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         
 
@@ -358,6 +361,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.prePostEnable(data.prePostCanChangeFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+            common.Process.setOvertimeWork(data.agreementTimeDto, self);
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
             self.preDisplayAtr(data.preDisplayAtr);
             self.performanceDisplayAtr(data.performanceDisplayAtr);
