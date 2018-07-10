@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.exo.datafomat.TimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.datafomat.TimeDataFmSetRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -19,14 +19,17 @@ public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPer
 	@Override
 	protected void handle(CommandHandlerContext<AddPerformSettingByTimeCommand> context) {
 		AddPerformSettingByTimeCommand addCommand = context.getCommand();
-		//外部出力時間型登録チェック
+
+		// 外部出力時間型登録チェック
 		String cid = AppContexts.user().companyId();
-		repoTimeDataFmSet.add(new TimeDataFmSet(cid, addCommand.getNullValueSubs(), addCommand.getOutputMinusAsZero(),
-				addCommand.getFixedValue(), addCommand.getValueOfFixedValue(), addCommand.getFixedLengthOutput(),
-				addCommand.getFixedLongIntegerDigit(), addCommand.getFixedLengthEditingMothod(),
-				addCommand.getDelimiterSetting(), addCommand.getSelectHourMinute(), addCommand.getMinuteFractionDigit(),
-				addCommand.getDecimalSelection(), addCommand.getFixedValueOperationSymbol(),
-				addCommand.getFixedValueOperation(), addCommand.getFixedCalculationValue(),
-				addCommand.getValueOfNullValueSubs(), addCommand.getMinuteFractionDigitProcessCla()));
+		int itemType = 3;
+		repoTimeDataFmSet.add(new TimeDataFmSet(itemType, cid, addCommand.getNullValueSubs(),
+				addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(), addCommand.getValueOfFixedValue(),
+				addCommand.getFixedLengthOutput(), addCommand.getFixedLongIntegerDigit(),
+				addCommand.getFixedLengthEditingMothod(), addCommand.getDelimiterSetting(),
+				addCommand.getSelectHourMinute(), addCommand.getMinuteFractionDigit(), addCommand.getDecimalSelection(),
+				addCommand.getFixedValueOperationSymbol(), addCommand.getFixedValueOperation(),
+				addCommand.getFixedCalculationValue(), addCommand.getValueOfNullValueSubs(),
+				addCommand.getMinuteFractionDigitProcessCla()));
 	}
 }

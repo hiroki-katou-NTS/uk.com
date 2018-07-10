@@ -224,6 +224,4 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             nts.uk.ui.windows.close();
         }
     }
-
 }
-

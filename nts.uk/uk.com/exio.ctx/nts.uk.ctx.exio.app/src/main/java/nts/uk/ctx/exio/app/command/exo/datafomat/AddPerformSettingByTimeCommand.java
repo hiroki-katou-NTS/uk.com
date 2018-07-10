@@ -4,7 +4,7 @@ import lombok.Value;
 
 @Value
 public class AddPerformSettingByTimeCommand {
-	 /**
+	 	/**
 	    * 会社ID
 	    */
 	    private String cid;
