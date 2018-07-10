@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 // @Entity
-// @Table(name="KRCDT_TEMP_CARE_DATA")
+// @Table(name="KRCDT_CH_TEMP_CARE_DATA")
 public class KrcdtChildTempCareData extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
