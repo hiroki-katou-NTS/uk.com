@@ -31,10 +31,10 @@ module nts.uk.com.view.cdl008.a {
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
-                    if (_.isNil(inputCDL008.showBaseDate)) {
+                    if (inputCDL008.isShowBaseDate == undefined) {
                         self.isMultiple = false;
                     } else {
-                        self.isMultiple = inputCDL008.showBaseDate ? false : true;
+                        self.isMultiple = inputCDL008.isShowBaseDate ? false : true;
                     }
                     if (self.isMultiple) {
                         self.selectedMulWorkplace(inputCDL008.selectedCodes);
