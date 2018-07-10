@@ -266,13 +266,18 @@ public class RecoveryStorageService {
 
 			// update recovery date for have history, save range none, year,
 			// year/month, year/month/day
-			if (tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY && tableUse)
-				dateSub = dateTimeCutter(YEAR_MONTH_DAY, h_Date_Csv).orElse("");
-			if (tableList.get().getRetentionPeriodCls() == TimeStore.FULL_TIME) {
+			if(!h_Date_Csv.isEmpty()) {
+				if (tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY && tableUse)
+					dateSub = dateTimeCutter(YEAR_MONTH_DAY, h_Date_Csv).orElse("");
+				if (tableList.get().getRetentionPeriodCls() == TimeStore.FULL_TIME) {
+					dateSub = "";
+				}
+				
+				dateSub = dateTimeCutter(resultsSetting.get(0), h_Date_Csv).orElse("");
+			} else {
 				dateSub = "";
 			}
 			
-			dateSub = dateTimeCutter(resultsSetting.get(0), h_Date_Csv).orElse("");
 			dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, dateSub);
 
 			// create filed where for query
