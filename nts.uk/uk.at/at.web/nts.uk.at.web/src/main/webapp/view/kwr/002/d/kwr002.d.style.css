@@ -37,3 +37,6 @@
 .group-swith-button {
 	margin: 20px 50px 0 50px;
 }
+table tr td {
+    white-space: nowrap;
+}
