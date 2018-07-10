@@ -69,9 +69,9 @@ public class AgreementTimeServiceImpl implements AgreementTimeService {
 			detailCurrentMonth = detailCurrentMonthLst.get(0);
 		}
 		// 36協定時間の取得
-		List<AgreementTimeImport> detailNextMonthLst = agreementTimeAdapter.getAgreementTime(companyID, Arrays.asList(employeeID), currentMonth, closure.getClosureId());
+		List<AgreementTimeImport> detailNextMonthLst = agreementTimeAdapter.getAgreementTime(companyID, Arrays.asList(employeeID), nextMonth, closure.getClosureId());
 		if(!CollectionUtil.isEmpty(detailNextMonthLst)){
-			detailCurrentMonth = detailNextMonthLst.get(0);
+			detailNextMonth = detailNextMonthLst.get(0);
 		}
 		
 		return new AgreeOverTimeOutput(detailCurrentMonth, detailNextMonth, currentMonth, nextMonth);

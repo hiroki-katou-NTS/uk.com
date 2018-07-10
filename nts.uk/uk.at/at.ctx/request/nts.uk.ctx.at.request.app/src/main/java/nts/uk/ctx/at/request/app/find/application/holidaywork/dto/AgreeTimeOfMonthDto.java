@@ -26,14 +26,14 @@ public class AgreeTimeOfMonthDto {
 	
 	public static AgreeTimeOfMonthDto fromDomain(AgreeTimeOfMonthExport agreeTimeOfMonthExport){
 		if(agreeTimeOfMonthExport==null){
-			return new AgreeTimeOfMonthDto(-1, -1, -1, -1, -1, -1);
+			return new AgreeTimeOfMonthDto(null, null, null, null, null, null);
 		}
 		return new AgreeTimeOfMonthDto(
 				agreeTimeOfMonthExport.getAgreementTime(), 
 				agreeTimeOfMonthExport.getLimitErrorTime(), 
 				agreeTimeOfMonthExport.getLimitAlarmTime(), 
-				agreeTimeOfMonthExport.getExceptionLimitErrorTime().orElse(-1), 
-				agreeTimeOfMonthExport.getExceptionLimitAlarmTime().orElse(-1), 
+				agreeTimeOfMonthExport.getExceptionLimitErrorTime().orElse(null), 
+				agreeTimeOfMonthExport.getExceptionLimitAlarmTime().orElse(null), 
 				agreeTimeOfMonthExport.getStatus());
 	}
 }

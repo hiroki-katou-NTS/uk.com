@@ -520,11 +520,15 @@ module nts.uk.at.view.kaf010.share {
             } 
             
             public static convertTime(minutes: number){
-                return moment(nts.uk.time.parseTime(minutes, true)).format("HH:mm");    
+                if(minutes < 0){
+                    return "-" + nts.uk.time.format.byId("Time_Short_HM", -minutes);    
+                } else {
+                    return nts.uk.time.format.byId("Time_Short_HM", minutes);    
+                }
             }
             
             public static setNulltoZero(param: number){
-                return param < 0 ? 0 : param;        
+                return param;        
             }
         }
     }

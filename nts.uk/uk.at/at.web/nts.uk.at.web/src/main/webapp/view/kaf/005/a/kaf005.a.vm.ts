@@ -361,7 +361,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.prePostEnable(data.prePostCanChangeFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
-            common.Process.setOvertimeWork(data.agreementTimeDto, self);
+            if(nts.uk.util.isNullOrUndefined(data.agreementTimeDto)){
+                self.indicationOvertimeFlg(false);    
+            } else {
+                common.Process.setOvertimeWork(data.agreementTimeDto, self);    
+            }
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
             self.preDisplayAtr(data.preDisplayAtr);
             self.performanceDisplayAtr(data.performanceDisplayAtr);

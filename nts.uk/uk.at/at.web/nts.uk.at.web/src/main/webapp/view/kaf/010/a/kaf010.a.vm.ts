@@ -302,7 +302,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.prePostEnable(data.prePostCanChangeFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
-            common.Process.setOvertimeWork(data.agreementTimeDto, self);
+            if(nts.uk.util.isNullOrUndefined(data.agreementTimeDto)){
+                self.indicationOvertimeFlg(false);       
+            } else {
+                common.Process.setOvertimeWork(data.agreementTimeDto, self);
+            }
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
             // list employeeID
             if(!nts.uk.util.isNullOrEmpty(data.employees)){
