@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -25,7 +24,7 @@ public class TimeDataFmSet extends DataFormatSetting
     private NotUseAtr nullValueSubs;
     
     /**
-    * マイナス値を0で出力
+    * マイナス値を0で出力する
     */
     private NotUseAtr outputMinusAsZero;
     
@@ -65,7 +64,7 @@ public class TimeDataFmSet extends DataFormatSetting
     private HourMinuteClassification selectHourMinute;
     
     /**
-    * データ形式小数桁
+    * 分/小数処理桁
     */
     private Optional<DataFormatDecimalDigit> minuteFractionDigit;
     

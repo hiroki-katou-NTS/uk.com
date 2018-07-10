@@ -34,7 +34,7 @@ public class DateFormatSet extends DataFormatSetting
     private Optional<DataTypeFixedValue> valueOfFixedValue;
     
     /**
-    * 小数桁
+    * NULL値置換の値
     */
     private Optional<DataFormatNullReplacement> valueOfNullValueSubs;
     

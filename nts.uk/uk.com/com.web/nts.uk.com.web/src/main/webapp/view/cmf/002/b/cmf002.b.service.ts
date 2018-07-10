@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf002.b {
         }
         
         export function getOutItem(cndSetcd: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.getOutItem,cndSetcd);
+            return nts.uk.request.ajax("com",path.getOutItem,cndSetcd);
         }
         
         export function deleteCnd(command: any): JQueryPromise<any> {

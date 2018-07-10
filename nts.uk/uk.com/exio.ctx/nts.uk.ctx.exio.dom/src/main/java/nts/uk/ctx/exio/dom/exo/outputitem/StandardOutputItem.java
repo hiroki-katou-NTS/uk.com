@@ -53,4 +53,13 @@ public class StandardOutputItem extends AggregateRoot {
 		this.itemType = EnumAdaptor.valueOf(itemType, ItemType.class);
 		this.categoryItems = categoryItems;
 	}
+	
+	public StandardOutputItem(String cid, String outputItemCode, String conditionSettingCode, String outputItemName,
+			int itemType) {
+		this.cid = cid;
+		this.outputItemCode = new OutputItemCode(outputItemCode);
+		this.conditionSettingCode = new ConditionSettingCode(conditionSettingCode);
+		this.outputItemName = new OutputItemName(outputItemName);
+		this.itemType = EnumAdaptor.valueOf(itemType, ItemType.class);
+	}
 }
