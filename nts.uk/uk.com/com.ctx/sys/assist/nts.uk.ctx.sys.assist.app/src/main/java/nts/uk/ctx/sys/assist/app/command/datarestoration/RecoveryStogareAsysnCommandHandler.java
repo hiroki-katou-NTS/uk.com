@@ -7,7 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryOperatingCondition;
-import nts.uk.ctx.sys.assist.dom.recoverystorage.RecoveryStorageService;
+import nts.uk.ctx.sys.assist.dom.datarestoration.RecoveryStorageService;
 
 @Stateless
 public class RecoveryStogareAsysnCommandHandler extends CommandHandler<PerformDataRecoveryCommand> {
