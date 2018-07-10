@@ -183,7 +183,8 @@ public class RecoveryStorageService {
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
 			if (resultsSetting.isEmpty()) {
-				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
+				LOGGER.error("Setting error rollBack transaction");
+				throw new Exception(SETTING_EXCEPTION);
 			}
 
 			// 履歴区分の判別する - check history division
@@ -498,7 +499,7 @@ public class RecoveryStorageService {
 					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, numberEmError);
 				}
 
-				if (condition == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION || errorCode.equals(SETTING_EXCEPTION)) {
+				if (errorCode.equals(SETTING_EXCEPTION)) {
 					return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 				}
 
@@ -590,7 +591,7 @@ public class RecoveryStorageService {
 	public Boolean checkSettingDate(List<String> resultsSetting, Optional<TableList> tableList, List<String> dataRow, String h_Date_Csv)
 			throws ParseException {
 		
-		if (resultsSetting.isEmpty() || (StringUtil.isNullOrEmpty(h_Date_Csv, true))) {
+		if (StringUtil.isNullOrEmpty(h_Date_Csv, true)) {
 			return false;
 		}
 
