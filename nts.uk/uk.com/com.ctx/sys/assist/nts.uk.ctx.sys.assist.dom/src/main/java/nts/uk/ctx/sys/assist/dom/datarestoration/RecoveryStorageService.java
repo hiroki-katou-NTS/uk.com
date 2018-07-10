@@ -183,7 +183,8 @@ public class RecoveryStorageService {
 			List<String> resultsSetting = new ArrayList<>();
 			resultsSetting = this.settingDate(tableList);
 			if (resultsSetting.isEmpty()) {
-				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
+				LOGGER.error("Setting error rollBack transaction");
+				throw new Exception(SETTING_EXCEPTION);
 			}
 
 			// 履歴区分の判別する - check history division
@@ -250,8 +251,7 @@ public class RecoveryStorageService {
 			
 			
 			// データベース復旧処理
-			if ((StringUtil.isNullOrEmpty(h_Date_Csv, true))
-					|| (tableUse && employeeId != null && !dataRow.get(INDEX_SID).equals(employeeId))) {
+			if ((tableUse && employeeId != null && !dataRow.get(INDEX_SID).equals(employeeId))) {
 				continue;
 			}
 			
@@ -266,13 +266,18 @@ public class RecoveryStorageService {
 
 			// update recovery date for have history, save range none, year,
 			// year/month, year/month/day
-			if (tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY && tableUse)
-				dateSub = dateTimeCutter(YEAR_MONTH_DAY, h_Date_Csv).orElse("");
-			if (tableList.get().getRetentionPeriodCls() == TimeStore.FULL_TIME) {
+			if(!h_Date_Csv.isEmpty()) {
+				if (tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY && tableUse)
+					dateSub = dateTimeCutter(YEAR_MONTH_DAY, h_Date_Csv).orElse("");
+				if (tableList.get().getRetentionPeriodCls() == TimeStore.FULL_TIME) {
+					dateSub = "";
+				}
+				
+				dateSub = dateTimeCutter(resultsSetting.get(0), h_Date_Csv).orElse("");
+			} else {
 				dateSub = "";
 			}
 			
-			dateSub = dateTimeCutter(resultsSetting.get(0), h_Date_Csv).orElse("");
 			dataRecoveryMngRepository.updateRecoveryDate(dataRecoveryProcessId, dateSub);
 
 			// create filed where for query
@@ -499,7 +504,7 @@ public class RecoveryStorageService {
 					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, numberEmError);
 				}
 
-				if (condition == DataRecoveryOperatingCondition.ABNORMAL_TERMINATION || errorCode.equals(SETTING_EXCEPTION)) {
+				if (errorCode.equals(SETTING_EXCEPTION)) {
 					return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 				}
 
@@ -591,7 +596,7 @@ public class RecoveryStorageService {
 	public Boolean checkSettingDate(List<String> resultsSetting, Optional<TableList> tableList, List<String> dataRow, String h_Date_Csv)
 			throws ParseException {
 		
-		if (resultsSetting.isEmpty()) {
+		if (StringUtil.isNullOrEmpty(h_Date_Csv, true)) {
 			return false;
 		}
 
