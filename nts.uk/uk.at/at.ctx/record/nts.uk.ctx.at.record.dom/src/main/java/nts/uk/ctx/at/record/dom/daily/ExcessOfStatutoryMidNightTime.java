@@ -24,6 +24,11 @@ public class ExcessOfStatutoryMidNightTime {
 		this.beforeApplicationTime = beforeApplicationTime;
 	}
 	
+	
+	public void replaceCalcTime(AttendanceTime calcTime) {
+		this.time = TimeDivergenceWithCalculation.createTimeWithCalculation(this.getTime().getTime(), calcTime);
+	}
+	
 	/**
 	 * 所定外深夜時間の計算 
 	 */

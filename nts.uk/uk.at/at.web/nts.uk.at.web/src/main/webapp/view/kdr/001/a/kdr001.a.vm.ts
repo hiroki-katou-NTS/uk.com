@@ -213,6 +213,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.lstSearchEmployee(data.listEmployee);
+                    self.selectedEmployeeCode(data.listEmployee.map(item => item.code));
                     self.applyKCP005ContentSearch(data.listEmployee);
                 }
             }

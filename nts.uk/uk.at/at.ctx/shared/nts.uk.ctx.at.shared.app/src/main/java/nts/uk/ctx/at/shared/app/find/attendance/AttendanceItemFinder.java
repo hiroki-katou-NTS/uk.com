@@ -13,8 +13,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class AttendanceItemFinder {
 	@Inject
 	private AttendanceItemRepository attendanceRepo;
-	// user contexts
-	String companyId = AppContexts.user().companyId();
 
 	public List<AttendanceItemDto> getPossibleAttendanceItem(List<Integer> listPossible) {
 		List<AttendanceItemDto> lst = this.attendanceRepo

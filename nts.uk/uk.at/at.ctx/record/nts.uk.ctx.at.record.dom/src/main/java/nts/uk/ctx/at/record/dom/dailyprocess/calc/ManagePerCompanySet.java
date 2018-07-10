@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -47,6 +48,9 @@ public class ManagePerCompanySet {
 	//エラーアラームマスタ
 	List<ErrorAlarmWorkRecord> errorAlarm; 
 	
+	//加給利用単位
+	Optional<BPUnitUseSetting> bpUnitSetting;
+	
 	//労働条件
 	@Setter
 	Optional<WorkingConditionItem> personInfo;
@@ -75,7 +79,8 @@ public class ManagePerCompanySet {
 			Optional<CalculateOfTotalConstraintTime> calculateOfTotalCons,
 			CompensatoryLeaveComSetting compensatoryLeaveComSet,
 			List<DivergenceTime> divergenceTime,
-			List<ErrorAlarmWorkRecord> errorAlarm) {
+			List<ErrorAlarmWorkRecord> errorAlarm,
+			Optional<BPUnitUseSetting> bpUnitSetting) {
 		super();
 		this.holidayAddition = holidayAddition;
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
@@ -83,6 +88,7 @@ public class ManagePerCompanySet {
 		this.compensatoryLeaveComSet = compensatoryLeaveComSet;
 		this.divergenceTime = divergenceTime;
 		this.errorAlarm = errorAlarm;
+		this.bpUnitSetting = bpUnitSetting;
 		this.optionalItems = new ArrayList<>();
 		this.formulaList = new ArrayList<>();
 		this.empCondition = new ArrayList<>();

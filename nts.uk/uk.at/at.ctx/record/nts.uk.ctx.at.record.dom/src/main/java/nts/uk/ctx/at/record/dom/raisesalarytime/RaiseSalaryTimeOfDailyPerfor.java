@@ -61,4 +61,46 @@ public class RaiseSalaryTimeOfDailyPerfor {
 		});
 	}
 
+	public void replaceValueByPCLogInfo(RaiseSalaryTimeOfDailyPerfor rsTimeOfDaily) {
+		//加給の入替
+		replaceBpTimeByPcInfo(rsTimeOfDaily.getRaisingSalaryTimes());
+		//特定日加給の入替
+		replaceSpecBpTimeByPcInfo(rsTimeOfDaily.getAutoCalRaisingSalarySettings());
+	}
+
+	private void replaceSpecBpTimeByPcInfo(List<BonusPayTime> specRsTimes) {
+		specRsTimes.forEach(tc ->{
+			val getItemByBpNo = this.autoCalRaisingSalarySettings.stream().filter(ts -> ts.getBonusPayTimeItemNo() == tc.getBonusPayTimeItemNo()).findFirst();
+			if(getItemByBpNo.isPresent()) {
+				this.autoCalRaisingSalarySettings.forEach(tt ->{
+					if(tt.getBonusPayTimeItemNo() == tc.getBonusPayTimeItemNo()) {
+						tt.replaceValueByPClogInfo(tc.getBonusPayTime(),
+												   tc.getWithinBonusPay().getCalcTime(),
+												   tc.getExcessBonusPayTime().getCalcTime());
+					}
+				});
+			}
+			else {
+				this.autoCalRaisingSalarySettings.add(tc);
+			}
+		});
+	}
+
+	private void replaceBpTimeByPcInfo(List<BonusPayTime> rSTimes) {
+		rSTimes.forEach(tc ->{
+			val getItemByBpNo = this.raisingSalaryTimes.stream().filter(ts -> ts.getBonusPayTimeItemNo() == tc.getBonusPayTimeItemNo()).findFirst();
+			if(getItemByBpNo.isPresent()) {
+				this.raisingSalaryTimes.forEach(tt ->{
+					if(tt.getBonusPayTimeItemNo() == tc.getBonusPayTimeItemNo()) {
+						tt.replaceValueByPClogInfo(tc.getBonusPayTime(),
+												   tc.getWithinBonusPay().getCalcTime(),
+												   tc.getExcessBonusPayTime().getCalcTime());
+					}
+				});
+			}
+			else {
+				this.raisingSalaryTimes.add(tc);
+			}
+		});
+	}
 }

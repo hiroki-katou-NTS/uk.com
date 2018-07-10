@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.attendance.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
+import nts.uk.ctx.at.shared.dom.attendance.util.enu.MonthlyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class AttendanceItemIdContainer implements ItemConst {
@@ -17,6 +20,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 	private final static Map<Integer, String> DAY_ITEM_ID_CONTAINER;
 	private final static Map<Integer, String> MONTHLY_ITEM_ID_CONTAINER;
 	private final static Map<String, Integer> ENUM_CONTAINER;
+	
 	static {
 		ENUM_CONTAINER = new HashMap<>();
 		ENUM_CONTAINER.put(E_WORK_REF, 0);
@@ -738,14 +742,14 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(488, join(totalLabol, GO_OUT, CALC, EXCESS_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_CHARGE)));
 		temp.put(492, join(totalLabol, GO_OUT, CALC, EXCESS_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
 		temp.put(496, join(totalLabol, GO_OUT, CALC, EXCESS_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
-		temp.put(464, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
-		temp.put(468, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
-		temp.put(477, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_UNION)));
-		temp.put(480, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_UNION)));
-		temp.put(484, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_CHARGE)));
-		temp.put(487, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_CHARGE)));
-		temp.put(491, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
-		temp.put(495, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
+		temp.put(464, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
+		temp.put(468, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
+		temp.put(477, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_UNION)));
+		temp.put(480, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_UNION)));
+		temp.put(484, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_CHARGE)));
+		temp.put(487, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_CHARGE)));
+		temp.put(491, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
+		temp.put(495, join(totalLabol, GO_OUT, CALC, WITHIN_STATUTORY, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
 		temp.put(502, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(ANNUNAL_LEAVE, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
 		temp.put(503, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(EXCESS, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
 		temp.put(504, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(SPECIAL, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
@@ -773,7 +777,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(473, join(totalLabol, GO_OUT, DEDUCTION, EXCESS_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
 		temp.put(500, join(totalLabol, GO_OUT, DEDUCTION, EXCESS_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
 		temp.put(472, join(totalLabol, GO_OUT, DEDUCTION, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
-		temp.put(499, join(totalLabol, GO_OUT, DEDUCTION, WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
+		temp.put(499, join(totalLabol, GO_OUT, DEDUCTION, WITHIN_STATUTORY,  WITHIN_STATUTORY, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
 		temp.put(89, join(totalLabol, GO_OUT, AFTER_CORRECTED, GO_OUT, STAMP, joinNS(CLOCK, NUMBER_1)));
 		temp.put(96, join(totalLabol, GO_OUT, AFTER_CORRECTED, GO_OUT, STAMP, joinNS(CLOCK, NUMBER_2)));
 		temp.put(103, join(totalLabol, GO_OUT, AFTER_CORRECTED, GO_OUT, STAMP, joinNS(CLOCK, NUMBER_3)));
@@ -2212,6 +2216,22 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return temp;
 	}
 
+	public static List<Integer> getItemIdByDailyDomains(DailyDomainGroup... domains){
+		return Arrays.stream(domains).map(e -> {
+			return DAY_ITEM_ID_CONTAINER.entrySet().stream()
+										.filter(en -> en.getValue().indexOf(e.name) == 0)
+										.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
+	public static List<Integer> getItemIdByDailyDomains(MonthlyDomainGroup... domains){
+		return Arrays.stream(domains).map(e -> {
+			return MONTHLY_ITEM_ID_CONTAINER.entrySet().stream()
+											.filter(en -> en.getValue().indexOf(e.name) == 0)
+											.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
 	public static boolean isHaveOptionalItems(Collection<ItemValue> items) {
 		return toFilterStream(items).findFirst().isPresent();
 	}

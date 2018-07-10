@@ -104,7 +104,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param fixedWorkSetting 固定勤務設定クラス
 	 * @param workTimeCommonSet 就業時間帯の共通設定
 	 * @param deductionTimeSheet 控除時間帯
-	 * @param bonusPaySetting 加給設定
+	 * @param bonuspaySetting 加給設定
 	 * @param personalCondition 
 	 * @param vacationClass 
 	 * @param late 
@@ -144,7 +144,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,
 													WorkTimezoneCommonSet workTimeCommonSet,
 													DeductionTimeSheet deductionTimeSheet,
-													BonusPaySetting bonusPaySetting,
+													Optional<BonusPaySetting> bonuspaySetting,
 													MidNightTimeSheet midNightTimeSheet,
 													int workNo,
 													Optional<CoreTimeSetting> coreTimeSetting,
@@ -199,7 +199,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					 lstHalfDayWorkTimezone,
 					 workTimeCommonSet,
 					 deductionTimeSheet,
-					 bonusPaySetting,
+					 bonuspaySetting,
 					 midNightTimeSheet,
 					 workNo,
 					lateDesClock,
@@ -263,7 +263,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,
 			WorkTimezoneCommonSet workTimeCommonSet,
 			DeductionTimeSheet deductionTimeSheet,
-			BonusPaySetting bonusPaySetting,
+			Optional<BonusPaySetting> bonuspaySetting,
 			MidNightTimeSheet midNightTimeSheet,
 			int workNo,
 			Optional<LateDecisionClock> lateDesClock,
@@ -298,7 +298,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			//就業時間内時間枠の作成
 			timeFrames.add(WithinWorkTimeFrame.createWithinWorkTimeFrame(duplicateTimeSheet,
 																		 deductionTimeSheet,
-																		 bonusPaySetting,
+																		 bonuspaySetting,
 																		 midNightTimeSheet,
 																		 lateDesClock,
 																		 leaveEarlyDesClock,
@@ -1415,16 +1415,16 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 											   .map(ts -> ts.getMidNightTimeSheet().get().calcTotalTime().v())
 											   .collect(Collectors.summingInt(tc -> tc));
 		
-		for(WithinWorkTimeFrame frametime : withinWorkTimeFrame) {
-			val a = frametime.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.BREAK);
-			if(frametime.getMidNightTimeSheet().isPresent()) {
-				totalDedTime += a.stream().filter(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).isPresent())
-										 .map(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).get().lengthAsMinutes())
-										 .collect(Collectors.summingInt(tc->tc));
-			}
-		}
-		
-		totalMidNightTime -= totalDedTime;
+//		for(WithinWorkTimeFrame frametime : withinWorkTimeFrame) {
+//			val a = frametime.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.BREAK);
+//			if(frametime.getMidNightTimeSheet().isPresent()) {
+//				totalDedTime += a.stream().filter(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).isPresent())
+//										 .map(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).get().lengthAsMinutes())
+//										 .collect(Collectors.summingInt(tc->tc));
+//			}
+//		}
+//		
+//		totalMidNightTime -= totalDedTime;
 		return new AttendanceTime(totalMidNightTime);
 	}
 	

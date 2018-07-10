@@ -103,4 +103,22 @@ public class HolidayMidnightWork {
 																					  .collect(Collectors.summingInt(tc -> tc)));
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
+	
+	public void replaceValueBypcLogInfo(List<HolidayWorkMidNightTime> pcLogInfo) {
+		List<HolidayWorkMidNightTime> copyList = this.holidayWorkMidNightTime;
+		pcLogInfo.forEach(tc ->{
+			val getItemByAtr = copyList.stream().filter(ts -> ts.getStatutoryAtr().equals(tc.getStatutoryAtr())).findFirst();
+			if(getItemByAtr.isPresent()) {
+				copyList.forEach(tt ->{
+					if(tc.getStatutoryAtr().equals(tt.getStatutoryAtr())) {
+						tt.getTime().replaceTimeAndCalcDiv(tc.getTime().getCalcTime());
+					}
+				});
+			}
+			else {
+				copyList.add(tc);
+			}
+		});
+		this.holidayWorkMidNightTime = copyList;
+	}
 }

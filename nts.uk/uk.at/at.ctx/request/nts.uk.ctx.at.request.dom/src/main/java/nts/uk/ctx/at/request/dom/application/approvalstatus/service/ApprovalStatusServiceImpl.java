@@ -595,29 +595,26 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			if (appPhase.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.APPROVED)
 					|| appPhase.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {
 				continue;
-			} else {
-				List<ApprovalFrameImport_New> listAppFrame = appPhase.getListApprovalFrame();
-				// クラス：承認枠
-				for (ApprovalFrameImport_New appFrame : listAppFrame) {
-					// 承認済、否認の場合
-					if (appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-							|| appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {
-						continue;
-					}
-					// 未承認、差し戻しの場合
-					// アルゴリズム「承認状況未承認メール未承認者取得」を実行する
-					getUnAppPersonAndResult = this.getUnApprovalMailPerson(listAppFrame, appDate);
-					if (getUnAppPersonAndResult.isResult()) {
-						result = true;
-					} else {
-						continue;
-					}
-				}
-				// 次の承認枠が存在しない場合
-				listUnAppPerson = getUnAppPersonAndResult.getListUnAppPerson();
-				if (result)
-					return listUnAppPerson;
 			}
+			List<ApprovalFrameImport_New> listAppFrame = appPhase.getListApprovalFrame();
+			// クラス：承認枠
+			for (ApprovalFrameImport_New appFrame : listAppFrame) {
+				// 承認済、否認の場合
+				if (appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.APPROVED)
+						|| appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {
+					continue;
+				}
+				// 未承認、差し戻しの場合
+				// アルゴリズム「承認状況未承認メール未承認者取得」を実行する
+				getUnAppPersonAndResult = this.getUnApprovalMailPerson(listAppFrame, appDate);
+				if (getUnAppPersonAndResult.isResult()) {
+					result = true;
+				}
+			}
+			// 次の承認枠が存在しない場合
+			listUnAppPerson = getUnAppPersonAndResult.getListUnAppPerson();
+			if (result)
+				return listUnAppPerson;
 		}
 		return Collections.emptyList();
 	}
@@ -649,9 +646,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		for (int i = 1; i < 5; i++) {
 			List<AgentInfoImport> listAgentInfor = agentApdater.findAgentByPeriod(companyID, listApprovalEmpId, appDate,
 					appDate, i);
-			for (AgentInfoImport agent : listAgentInfor) {
-				listUnAppPersonEmp.add(agent.getAgentID());
+			// 対象が存在する場合
+			if (listAgentInfor.size() > 0) {
+				for (AgentInfoImport agent : listAgentInfor) {
+					listUnAppPersonEmp.add(agent.getAgentID());
+				}
 			}
+			// 対象が存在しない場合
+			listUnAppPersonEmp.addAll(listApprovalEmpId);
 		}
 
 		if (!listUnAppPersonEmp.isEmpty()) {
