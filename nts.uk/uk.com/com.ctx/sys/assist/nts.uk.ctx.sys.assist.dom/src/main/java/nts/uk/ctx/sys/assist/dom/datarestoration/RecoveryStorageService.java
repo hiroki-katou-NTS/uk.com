@@ -250,8 +250,7 @@ public class RecoveryStorageService {
 			
 			
 			// データベース復旧処理
-			if ((StringUtil.isNullOrEmpty(h_Date_Csv, true))
-					|| (tableUse && employeeId != null && !dataRow.get(INDEX_SID).equals(employeeId))) {
+			if ((tableUse && employeeId != null && !dataRow.get(INDEX_SID).equals(employeeId))) {
 				continue;
 			}
 			
@@ -591,7 +590,7 @@ public class RecoveryStorageService {
 	public Boolean checkSettingDate(List<String> resultsSetting, Optional<TableList> tableList, List<String> dataRow, String h_Date_Csv)
 			throws ParseException {
 		
-		if (resultsSetting.isEmpty()) {
+		if (resultsSetting.isEmpty() || (StringUtil.isNullOrEmpty(h_Date_Csv, true))) {
 			return false;
 		}
 
