@@ -15,16 +15,15 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         decimalDigit: KnockoutObservable<number>;
         decimalPointClassification: KnockoutObservable<number>;
         decimalFraction: KnockoutObservable<number>;
-        outputMinusAsZeroChecked: KnockoutObservable<boolean> = ko.observable(false);
         outputMinusAsZero: KnockoutObservable<number>;
         fixedValueOperation: KnockoutObservable<number>;
         fixedValueOperationSymbol: KnockoutObservable<number>;
         fixedCalculationValue: KnockoutObservable<number>;
         fixedLengthOutput: KnockoutObservable<number>;
-        fixedLongIntegerDigit: KnockoutObservable<number>;
-        fixedLengthEditingMothod: KnockoutObservable<number>;
-        nullValueSubs: KnockoutObservable<number>;
-        valueOfNullValueSubs: KnockoutObservable<number>;
+        fixedLengthIntegerDigit: KnockoutObservable<number>;
+        fixedLengthEditingMethod: KnockoutObservable<number>;
+        nullValueReplace: KnockoutObservable<number>;
+        valueOfNullValueReplace: KnockoutObservable<number>;
         fixedValue: KnockoutObservable<number>;
         valueOfFixedValue: KnockoutObservable<string>;
         inputMode: boolean;
@@ -32,21 +31,22 @@ module nts.uk.com.view.cmf002.l.viewmodel {
 
         //L2_1
         timeSelectedList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getTimeSelected());
-        selectHourMinute: KnockoutObservable<number> = ko.observable(0);
+        timeSelectedCode: KnockoutObservable<number> = ko.observable(0);
         //L4_1
         decimalSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDecimalSelect());
-        decimalSelection: KnockoutObservable<number> = ko.observable(0);
-        //L3_1
-        minuteFractionDigit: KnockoutObservable<number>;
+        decimalSelectCode: KnockoutObservable<number> = ko.observable(0);
+
+        minorityValue: KnockoutObservable<number>;
         //L3_3
         itemListRounding: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRounding());
-        minuteFractionDigitProcessCla: KnockoutObservable<number> = ko.observable(0);
+        selectedRounding: KnockoutObservable<number> = ko.observable(0);
 
         //L5_1
-        outputMinusAsZeroChecked: KnockoutObservable<boolean> = ko.observable(false);
+        outputMinusZero: KnockoutObservable<boolean> = ko.observable(true);
+
         //L6_1
         separatorSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSeparator());
-        delimiterSetting: KnockoutObservable<number> = ko.observable(0);
+        selectedSeparator: KnockoutObservable<number> = ko.observable(0);
 
         //L7_1
         fixedValueOperationItem: KnockoutObservableArray<model.ItemModel>;
@@ -69,17 +69,17 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             var self = this;
             self.inputMode = true;
             self.initComponent();
-            //self.validateData();
-            self.outputMinusAsZero = ko.observable(0);
-            self.minuteFractionDigit = ko.observable(0);
+            self.validate();
+
+            self.minorityValue = ko.observable(0);
             self.fixedValueOperation = ko.observable(0);
             self.fixedValueOperationSymbol = ko.observable(0);
             self.fixedCalculationValue = ko.observable(0);
             self.fixedLengthOutput = ko.observable(0);
-            self.fixedLongIntegerDigit = ko.observable(0);
-            self.fixedLengthEditingMothod = ko.observable(0);
-            self.nullValueSubs = ko.observable(0);
-            self.valueOfNullValueSubs = ko.observable(0);
+            self.fixedLengthIntegerDigit = ko.observable(0);
+            self.fixedLengthEditingMethod = ko.observable(0);
+            self.nullValueReplace = ko.observable(0);
+            self.valueOfNullValueReplace = ko.observable(0);
             self.fixedValue = ko.observable(0);
             self.valueOfFixedValue = ko.observable("");
         }
@@ -122,40 +122,23 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             ]);
         }
 
-        sendData() { 
-            var self = this;
-            
-            if (self.outputMinusAsZeroChecked()) {
-                self.outputMinusAsZero(1);
+        validate() {
+            if (self.selectedValue == 0) {
+                if (self.formatSelection() == model.FORMAT_SELECTION.DECIMAL) {
+
+                }
+                if (self.fixedValueOperation() == model.NOT_USE_ATR.USE) {
+
+                }
+                if (self.fixedLengthOutput() == model.NOT_USE_ATR.USE) {
+
+                }
+                if (self.nullValueReplace() == model.NOT_USE_ATR.USE) {
+
+                }
             } else {
-                self.outputMinusAsZero(0);
+
             }
-            
-            let data = {
-                selectHourMinute: self.selectHourMinute(),
-                minuteFractionDigit: self.minuteFractionDigit(),
-                minuteFractionDigitProcessCla: self.minuteFractionDigitProcessCla(),
-                decimalSelection: self.decimalSelection(),
-                outputMinusAsZero: self.outputMinusAsZero(),
-                delimiterSetting: self.delimiterSetting(),
-                fixedValueOperation: self.fixedValueOperation(),
-                fixedValueOperationSymbol: self.fixedValueOperationSymbol(),
-                fixedCalculationValue: self.fixedCalculationValue(),
-                fixedLengthOutput: self.fixedLengthOutput(),
-                fixedLongIntegerDigit: self.fixedLongIntegerDigit(),
-                fixedLengthEditingMothod: self.fixedLengthEditingMothod(),
-                nullValueSubs: self.nullValueSubs(),
-                valueOfNullValueSubs: self.valueOfNullValueSubs(),
-                fixedValue: self.fixedValue(),
-                valueOfFixedValue: self.valueOfFixedValue()
-            };
-            console.log(data);
-            service.sendPerformSettingByTime(data).done(result => {
-
-            }).fail(function(error) {
-
-            });
-
         }
         //※L1　～　※L6
         enableFormatSelectionCls() {
@@ -188,17 +171,17 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         enableNullValueReplace() {
             var self = this;
-            return (self.nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.nullValueReplace() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L5
         enableSelectTimeCls() {
             var self = this;
-            return (self.selectHourMinute() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.timeSelectedCode() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L6
         decimalSelectionCls() {
             var self = this;
-            return (self.selectHourMinute() == model.getTimeSelected()[0].code && self.decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return ( self.timeSelectedCode() == model.getTimeSelected()[0].code && self.decimalSelectCode() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
 
@@ -220,9 +203,8 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             return dfd.promise();
         }
 
-        cancelCharacterSetting() {
-            nts.uk.ui.windows.close();
-        }
+        saveCharacterSetting() { }
+        cancelCharacterSetting() { }
     }
 
 }
