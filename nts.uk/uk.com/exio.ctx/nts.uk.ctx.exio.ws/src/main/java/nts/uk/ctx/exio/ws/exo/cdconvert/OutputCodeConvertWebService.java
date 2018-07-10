@@ -9,7 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.exio.app.find.exo.cdconvert.OutputCodeConvertDto;
+import nts.uk.ctx.exio.app.find.exo.cdconvert.OutputCodeConvertDTO;
 import nts.uk.ctx.exio.app.find.exo.cdconvert.OutputCodeConvertFinder;
 
 @Path("exio/exo/codeconvert")
@@ -21,7 +21,7 @@ public class OutputCodeConvertWebService extends WebService {
 
 	@POST
 	@Path("getAllOutputCodeConvert/{cid}")
-	public List<OutputCodeConvertDto> getAllOutputCodeConvert(@PathParam("cid") String cid) {
+	public List<OutputCodeConvertDTO> getAllOutputCodeConvert(@PathParam("cid") String cid) {
 		return this.outputCodeConvertFinder.getOutputCodeConvertByCid(cid);
 	}
 }
