@@ -137,6 +137,7 @@ module nts.uk.at.view.kmk006.a {
                 ]);
                 
                 self.initDataSource();
+                self.initNextTabFeature();
                 
                 self.autoCalcOfLeaveLate = ko.observable(false);
                 self.autoCalcOfLeaveEarly = ko.observable(false);
@@ -159,7 +160,8 @@ module nts.uk.at.view.kmk006.a {
                     isDialog: false,
                     alreadySettingList: self.wkpAlreadySettingList,
                     maxRows: 20,
-                    systemType: 2
+                    systemType: 2,
+                    tabindex: -1
                 };
                 self.treeOptionsWkpTotal = {
                     isShowAlreadySet: false,
@@ -172,7 +174,8 @@ module nts.uk.at.view.kmk006.a {
                     isShowSelectButton: false,
                     isDialog: false,
                     maxRows: 10,
-                    systemType: 2
+                    systemType: 2,
+                    tabindex: -1
                 };
                 self.itemComAutoCalModel = new ComAutoCalSettingModel();
                 self.itemJobAutoCalModel = new JobAutoCalSettingModel();
@@ -228,7 +231,8 @@ module nts.uk.at.view.kmk006.a {
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.jobAlreadySettingList,
-                    maxRows: 20
+                    maxRows: 20,
+                    tabindex: -1
                 };
                 self.jobTotalListOptions = {
                     isShowAlreadySet: false,
@@ -240,7 +244,8 @@ module nts.uk.at.view.kmk006.a {
                     selectedCode: self.totalSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
-                    maxRows: 10
+                    maxRows: 10,
+                    tabindex: -1
                 };
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
                 
@@ -455,6 +460,33 @@ module nts.uk.at.view.kmk006.a {
                     { code: 0, name: nts.uk.resource.getText("KMK006_42") },
                     { code: 1, name: nts.uk.resource.getText("KMK006_41") }
                 ];
+            }
+            
+            //init next tab
+            public initNextTabFeature() {
+                var self = this;
+                const TAB_KEY_CODE = 9;
+
+                // when tab to last item of tab 1
+                $("[tabindex='7']").on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE) {
+                        self.selectedTab('tab-2');
+                    }
+                });
+
+                // when tab to last item of tab 2
+                $("[tabindex='17']").on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE) {
+                        self.selectedTab('tab-3');
+                    }
+                });
+
+                // when tab to last item of tab 3
+                $("[tabindex='21']").on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE) {
+                        self.selectedTab('tab-4');
+                    }
+                });
             }
 
             //load workPlace-job already setting
@@ -1066,6 +1098,7 @@ module nts.uk.at.view.kmk006.a {
          */
             public onSelectCompany(): JQueryPromise<void> {            
                 var self = this;
+                self.selectedTab('tab-1');
                 var dfd = $.Deferred<void>();
 
                 self.clearAllError();
@@ -1082,6 +1115,7 @@ module nts.uk.at.view.kmk006.a {
 
             public onSelectJobTitle(): void {
                 var self = this;
+                self.selectedTab('tab-1');
 
                 self.clearAllError();
                 self.baseDateJobList(moment(new Date()).toDate());
@@ -1105,6 +1139,7 @@ module nts.uk.at.view.kmk006.a {
           */
             public onSelectWorkplace(): void {
                 var self = this;
+                self.selectedTab('tab-1');
 
                 self.clearAllError();
                 self.baseDateTreeList(moment(new Date()).toDate());
@@ -1120,6 +1155,7 @@ module nts.uk.at.view.kmk006.a {
 
             public onSelectWkpJob(): void {
                 var self = this;
+                self.selectedTab('tab-1');
 
                 self.clearAllError();
                 self.baseDateJobListTotal(moment(new Date()).toDate());
