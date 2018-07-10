@@ -22,7 +22,9 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
 			+ " WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication = 1";
 	private static final String SELECT_BY_KEY_AND_DISPLAY_CLS = SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS
 			+ " AND f.ctgItemDataPk.itemNo =:itemNo";
-
+	private static final String SELECT_BY_KEY_AND_DISPLAY_CLASS = SELECT_BY_KEY_STRING + 
+			" AND f.displayClassfication =: displayClassfication";
+			
     @Override
     public List<CtgItemData> getAllCtgItemData(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtCtgItemData.class)
@@ -47,6 +49,15 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
         return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtCtgItemData.class)
         		.setParameter("categoryId", categoryId)
         		.setParameter("itemNo", itemNo)
+        		.getSingle(c->c.toDomain());
+    }
+    
+    @Override
+    public Optional<CtgItemData> getCtgItemDataByIdAndDisplayClass(String categoryId, Integer itemNo, int displayClassfication){
+        return this.queryProxy().query(SELECT_BY_KEY_AND_DISPLAY_CLASS, OiomtCtgItemData.class)
+        		.setParameter("categoryId", categoryId)
+        		.setParameter("itemNo", itemNo)
+        		.setParameter("displayClassfication", displayClassfication)
         		.getSingle(c->c.toDomain());
     }
 
