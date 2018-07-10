@@ -31,17 +31,13 @@ module nts.uk.com.view.cmf002.t.viewmodel {
         public initScreen(): void {
             block.invisible();
             let self = this,
-                info = getShared("getScreenB");
+                info = getShared("CMF002_T_PARAMS");
             if (info) {
-                self.sourceCode(info.sourceCode);
-                self.sourceName(info.sourceName);
-                self.newCondCode(info.newCondCode);
-                self.newCondName(info.newCondName);
-                self.conditionSetCd('123');
-                self.conditionName('abc');
+                self.conditionSetCd(info.conditionSetCd);
+                self.conditionName(info.conditionName);
             }
-            self.conditionSetCd('conditionSetCd');
-            self.conditionName('conditionName');
+//            self.conditionSetCd('conditionSetCd');
+//            self.conditionName('conditionName');
             self.overWrite(false);
             self.destinationName('destinationName');
             self.copyDestinationCode('copyDestinationCode');

@@ -10,6 +10,7 @@
 		<div class="contentR">
 			<!--R3 テキスト出力を行う-->
 			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF002_229')}</div>
+			
 			<table style="margin-bottom: 15px">
 				<tr>
 					<td style="padding: 5px 20px 5px 0px;">
@@ -82,7 +83,6 @@
 					</td>
 				</tr>
 			</table>
-
 			<table style="width: 100%; margin-top: 20px">
 				<tr>
 					<td>
@@ -90,7 +90,7 @@
 						<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_233')}</button>
 						<!--R20_2 テキストを出力する-->
 						<button class="proceed x-large" style="margin-left: 10px"
-							data-bind="click: next">#{i18n.getText('CMF002_234')}</button>
+							data-bind="click: createExOutText">#{i18n.getText('CMF002_234')}</button>
 					</td>
 				</tr>
 			</table>

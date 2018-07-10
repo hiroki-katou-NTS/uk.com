@@ -12,7 +12,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         standType:                KnockoutObservable<string> = ko.observable('stand');
         conditionSettingList:     KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
         outputItemList:           KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
-        selectedConditionSetting: KnockoutObservable<string> = ko.observable('0');
+        selectedConditionSetting: KnockoutObservable<IConditionSet> = ko.observable();
+        selectedConditionSettingCode: KnockoutObservable<string> = ko.observable('');
         notUseAtrItems:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getNotUseAtrItems());
         delimiterItems:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getDelimiterItems());
         stringFormatItems:        KnockoutObservableArray<model.ItemModel> = ko.observableArray(getStringFormatItems());
@@ -32,8 +33,13 @@ module nts.uk.com.view.cmf002.b.viewmodel {
 
         constructor() {
             let self = this;
-            let domainmode = 1;
+            //let domainmode = 1;
             self.initScreen();
+            self.selectedConditionSettingCode.subscribe((data) => {
+                self.getOutItem(data);
+                self.selectedConditionSetting(self.getConditionName(data));
+                //self.settingCurrentCondition(self.selectedConditionSetting());
+            });
         }
         
         /**
@@ -51,7 +57,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             service.getCndSet().done((itemList: Array<IConditionSet>) =>{
                 if (itemList && itemList.length > 0) {
                     self.conditionSettingList(itemList);
-                   
+                    let index = 0;
                     let index : number = 0;
                     if (conditionSetCode) {
                         index = _.findIndex(self.conditionSettingList(), function(x: IConditionSet)
@@ -60,7 +66,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     }
                     let _conditionSet = self.conditionSettingList()[index];
                     self.settingCurrentCondition(_conditionSet);
-                    
+                    self.selectedConditionSetting(self.conditionSettingList()[index]);
+                    self.selectedConditionSettingCode(self.conditionSettingList()[index].conditionSetCode);
+                    self.getOutItem(self.selectedConditionSettingCode());
                     self.settingUpdateMode();
                 } else {
                     self.settingNewMode();
@@ -75,8 +83,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
 //                itemList.push(ko.toJS({ companyId: '1', conditionSetCode: i >= 10 ? '0' + i : '00' + i, conditionSetName: '名名名名名名名名名名' }));
 //                outputItemList.push(ko.toJS({outputItemCode: i >=10 ? '0' + i: '00' + i, outputItemName: '名名名名名名名名名名'}));
 //            }
-            self.selectedConditionSetting(self.conditionSettingList()[0]);
-            self.getOutItem(self.selectedConditionSetting );
+            
             self.conditionSettingList(itemList);
             self.outputItemList(outputItemList);
         }
@@ -107,11 +114,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().outputItemCode(condSet.outputItemCode);
         }
         
-        getOutItem(selectedConditionSetting){
-            service.getOutItem(self.selectedConditionSetting()).done((outputItemList: Array<IOutputItem>) =>{
-                if (outputItemList && outputItemList.length > 0) {
-                    self.outputItemList(outputItemList);
-                }
+        getOutItem(selectedConditionSettingCode: string){
+            let self = this;
+            let itemList: Array<IOutputItem> = [];
+            service.getOutItem(selectedConditionSettingCode).done((itemList: Array<IOutputItem>) =>{
+                self.outputItemList(itemList);
             }).fail(function(res: any) {
                 dialog.info({ messageId: "Msg_737" }).then(() => {
             
@@ -119,12 +126,22 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
         }
         
-        private addNew(){
+        getConditionName(conditionCode){
+            let self = this;
+            for (var i = 0 ; i < self.conditionSettingList().length ; i++) {
+                if ( conditionCode == self.conditionSettingList()[i].conditionCode){
+                    return self.conditionSettingList()[i];
+                }
+            }
+        }
+        
+        
+        public addNew(){
             let self = this;
             dialog.info({ messageId: "Msg_737" });      
         }
         
-        private delete() {
+        public delete() {
             let self = this;
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let data = {
@@ -141,7 +158,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         openCopyScreen() {
             let self = this;
             setShared('CMF002_T_PARAMS', {standType:self.standType() , 
-                    conditionSetCd:self.conditionSettingList[0].conditionSetCode() , conditionName: self.conditionSettingList[0].conditionSetName()});
+                    conditionSetCd:self.selectedConditionSetting().conditionSetCode , conditionName: self.selectedConditionSetting().conditionSetName});
             
             modal("/view/cmf/002/t/index.xhtml").onClosed(function() {
 //                let params = getShared('KDM001_A_PARAMS');
@@ -161,9 +178,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 isNewMode: self.isNewMode(),
                 screenMode: self.pickUp(),
                 standType: moment.standType,
-                cid: self.cid(),
-                expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
-                pause: self.pause(),
+                conditionSetCode: self.selectedConditionSetting().conditionSetCode,
+                conditionSetName: self.selectedConditionSetting().conditionSetName
 
             };
             
@@ -271,11 +287,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     
     export class OutputItem {
         outputItemCode: KnockoutObservable<string> = ko.observable('');
-        outputItemname: KnockoutObservable<string> = ko.observable('');
+        outputItemName: KnockoutObservable<string> = ko.observable('');
         constructor(param: IOutputItem) {
             let self = this;
-            self.outputItemCode(param.outputItemCode || '');
-            self.outputItemname(param.outputItemName || '');
+            self.outItemCd(param.outItemCd || '');
+            self.outItemName(param.outItemName || '');
         }
     }
     }

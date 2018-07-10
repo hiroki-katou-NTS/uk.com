@@ -108,7 +108,7 @@ module nts.uk.com.view.cmf002.share.model {
         fixedValue: KnockoutObservable<number>;
         valueOfFixedValue: KnockoutObservable<string>;
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number,
-            codeEditDigit: number, codeEditingMethod: number, spaceEditing: number, codeConvertCode: string, 
+            codeEditDigit: number, codeEditingMethod: number, spaceEditing: number, codeConvertCode: string,
             nullValueReplace: number, valueOfNullValueReplace: string, fixedValue: number, valueOfFixedValue: string) {
             this.effectDigitLength = ko.observable(effectDigitLength);
             this.startDigit = ko.observable(startDigit);
@@ -155,7 +155,23 @@ module nts.uk.com.view.cmf002.share.model {
             this.itemType = ko.observable(itemType);
         }
     }
-    
+
+    export class CategoryItem {
+        categoryItemNo: KnockoutObservable<string>;
+        dispCategoryItemNo: string;
+        categoryId: KnockoutObservable<number>;
+        operationSymbol: KnockoutObservable<number>;
+        dispOperationSymbol: string;
+
+        constructor(categoryItemNo: string, categoryId: number, operationSymbol: number) {
+            this.categoryItemNo = ko.observable(categoryItemNo);
+            this.dispCategoryItemNo = categoryItemNo
+            this.categoryId = ko.observable(categoryId);
+            this.operationSymbol = ko.observable(operationSymbol);
+            //this.dispOperationSymbol = operationSymbol;
+        }
+    }
+
     export class ExternalOutputCategoryItemData {
         itemNo: KnockoutObservable<string>;
         dispItemNo: string;
@@ -169,7 +185,7 @@ module nts.uk.com.view.cmf002.share.model {
             this.dispitemName = itemName;
         }
     }
-    
+
     export function getSystemTypes(): Array<ItemModel> {
         return [
             new ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
@@ -178,7 +194,7 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
         ];
     }
-    
+
     export function getRounding(): Array<ItemModel> {
         return [
             new model.ItemModel(0, getText('CMF002_384')),
@@ -186,21 +202,21 @@ module nts.uk.com.view.cmf002.share.model {
             new model.ItemModel(2, getText('CMF002_386'))
         ];
     }
-    
+
     export function getTimeSelected(): Array<ItemModel> {
         return [
             new model.ItemModel(0, getText('CMF002_194')),
             new model.ItemModel(1, getText('CMF002_195'))
         ];
     }
-    
+
     export function getDecimalSelect(): Array<ItemModel> {
         return [
             new model.ItemModel(0, getText('CMF002_201')),
             new model.ItemModel(1, getText('CMF002_202'))
         ];
     }
-    
+
     export function getSeparator(): Array<ItemModel> {
         return [
             new model.ItemModel(0, getText('CMF002_398')),
@@ -208,7 +224,7 @@ module nts.uk.com.view.cmf002.share.model {
             new model.ItemModel(2, getText('CMF002_400'))
         ];
     }
-    
+
     export function getItemTypes(): Array<ItemModel> {
         return [
             new ItemModel(0, getText('CMF002_366')),
@@ -219,5 +235,5 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(5, getText('CMF002_371'))
         ];
     }
-    
+
 }

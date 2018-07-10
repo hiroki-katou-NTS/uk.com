@@ -11,7 +11,7 @@ public interface AwDataFormatSetRepository
 
     List<AwDataFormatSet> getAllAwDataFormatSet();
 
-    Optional<AwDataFormatSet> getAwDataFormatSetById();
+    Optional<AwDataFormatSet> getAwDataFormatSetById(String cid);
 
     void add(AwDataFormatSet domain);
 

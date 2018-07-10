@@ -30,7 +30,7 @@ public class InTimeDataFmSet extends DataFormatSetting
     private Optional<DataFormatNullReplacement> valueOfNullValueSubs;
     
     /**
-    * マイナス値を0で出力
+    * マイナス値を0で出力する
     */
     private NotUseAtr outputMinusAsZero;
     
@@ -75,7 +75,7 @@ public class InTimeDataFmSet extends DataFormatSetting
     private PreviousDayOutputMethod previousDayOutputMethod;
     
     /**
-    * 前日出力方法
+    * 翌日出力方法
     */
     private NextDayOutputMethod nextDayOutputMethod;
     

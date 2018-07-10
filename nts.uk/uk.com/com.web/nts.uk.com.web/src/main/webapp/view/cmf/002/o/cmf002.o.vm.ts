@@ -6,8 +6,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-      import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
-
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     export class ScreenModel {
         //wizard
         stepList: Array<NtsWizardStep> = [];
@@ -25,7 +24,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         listOutputCondition: KnockoutObservableArray<OutputCondition> = ko.observableArray([]);
         selectedOutputConditionItem: KnockoutObservable<string> = ko.observable('');
-
+        alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
         // setup ccg001
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
@@ -42,12 +41,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        employeeList: KnockoutObservableArray<UnitModel>;
-
-
-
-
-
+        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
         constructor() {
             var self = this;
@@ -60,9 +54,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 { content: '.step-4' }
             ];
             self.stepSelected = ko.observable({ id: 'step-4', content: '.step-4' });
-
+            self.alreadySettingPersonal = ko.observableArray([]);
             self.loadListCondition();
-
+            self.selectedEmployeeCode = ko.observableArray([]);
             self.selectedConditionCd.subscribe(function(data: any) {
                 if (data) {
                     let item = _.find(ko.toJS(self.listCondition), (x: model.ItemModel) => x.code == data);
@@ -86,42 +80,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             ]);
             self.isDialog = ko.observable(false);
             self.isShowNoSelectRow = ko.observable(false);
-            self.isMultiSelect = ko.observable(false);
-            self.isShowWorkPlaceName = ko.observable(false);
-            self.isShowSelectAllButton = ko.observable(false);
-            this.employeeList = ko.observableArray<UnitModel>([]);
+            self.isMultiSelect = ko.observable(true);
+            self.isShowWorkPlaceName = ko.observable(true);
+            self.isShowSelectAllButton = ko.observable(true);
             self.listComponentOption = {
-                isShowAlreadySet: self.isShowAlreadySet(),
-                isMultiSelect: self.isMultiSelect(),
-                listType: ListType.EMPLOYEE,
-                employeeInputList: self.employeeList,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                selectedCode: self.selectedCode,
-                isDialog: self.isDialog(),
-                isShowNoSelectRow: self.isShowNoSelectRow(),
-                alreadySettingList: self.alreadySettingList,
-                isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                isShowSelectAllButton: self.isShowSelectAllButton()
-            };
-
-        }
-         /**
-        * apply ccg001 search data to kcp005
-        */
-        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
-            var self = this;
-            self.employeeList([]);
-            var employeeSearchs: UnitModel[] = [];
-            for (var employeeSearch of dataList) {
-                var employee: UnitModel = {
-                    code: employeeSearch.employeeCode,
-                    name: employeeSearch.employeeName,
-                    workplaceName: employeeSearch.workplaceName
-                };
-                employeeSearchs.push(employee);
-            }
-            self.employeeList(employeeSearchs);
-            self.lstPersonComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.EMPLOYEE,
@@ -134,11 +96,30 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: true,
                 maxWidth: 550,
-                maxRows: 15
+                maxRows: 12
             };
-          
+
         }
-      
+        /**
+       * apply ccg001 search data to kcp005
+       */
+        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            let self = this;
+            let employeeSearchs: UnitModel[] = [];
+            for (let employeeSearch of dataList) {
+                let employee: UnitModel = {
+                    code: employeeSearch.employeeCode,
+                    name: employeeSearch.employeeName,
+                    workplaceName: employeeSearch.workplaceName,
+                    isAlreadySetting: false
+                };
+                employeeSearchs.push(employee);
+            }
+            self.employeeList(employeeSearchs);
+          
+
+        }
+
         selectStandardMode() {
             $('#ex_output_wizard').ntsWizard("next");
         }
@@ -156,16 +137,40 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.loadScreenQ();
             $('#ex_output_wizard').ntsWizard("goto", 2);
         }
-        
+
         nextToScreenR() {
             let self = this;
-            next();
+            self.next();
             
-            service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
-                self.listOutputCondition(res.ctgItemDataCustomList);
-                self.listOutputItem(res.ctdOutItemCustomList);
-            }).fail(function(res: any) {
-                console.log("getExOutSummarySetting fail");
+            service.getExOutSummarySetting("conditionSetCd").done(res => {
+
+                service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
+                    self.listOutputCondition(res.ctgItemDataCustomList);
+                    self.listOutputItem(res.ctdOutItemCustomList);
+                }).fail(res => {
+                    console.log("getExOutSummarySetting fail");
+                });
+            }
+        }
+        
+        createExOutText() {
+            let self = this;
+            
+            //TODO set command
+            let command = new CreateExOutTextCommand();
+            service.createExOutText(command).done(res => {
+                let params = {
+                    storeProcessingId: res,
+                };
+
+                setShared("CMF002_R_PARAMS", params);
+                nts.uk.ui.windows.sub.modal("/view/cmf/002/s/index.xhtml").onClosed(() => {
+                    //TODO
+                    //disable nut
+                    //$("").focus();
+                });
+            }).fail(res => {
+                console.log("createExOutText fail");
             });
         }
 
@@ -195,7 +200,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 showAllClosure: false, // 全締め表示
                 showPeriod: true, // 対象期間利用
                 periodFormatYM: false, // 対象期間精度
-
                 /** Required parameter */
                 baseDate: moment.utc().toISOString(), // 基準日
                 periodStartDate: moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString(), // 対象期間開始日
@@ -204,13 +208,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 leaveOfAbsence: true, // 休職区分
                 closed: true, // 休業区分
                 retirement: true, // 退職区分
-
                 /** Quick search tab options */
                 showAllReferableEmployee: true, // 参照可能な社員すべて
                 showOnlyMe: true, // 自分だけ
                 showSameWorkplace: true, // 同じ職場の社員
                 showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
-
                 /** Advanced search properties */
                 showEmployment: true, // 雇用条件
                 showWorkplace: true, // 職場条件
@@ -218,20 +220,19 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 showJobTitle: true, // 職位条件
                 showWorktype: true, // 勤種条件
                 isMutipleCheck: true, // 選択モード
-
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                  
-                   
-                    
+
+
+
                     self.applyKCP005ContentSearch(data.listEmployee);
-                    
+
                 }
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
-    }
+    
 
     export class ListType {
         static EMPLOYMENT = 1;
@@ -267,6 +268,27 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         }
     }
 
+    class CreateExOutTextCommand {
+        conditionSetCd: string;
+        userId: string;
+        startDate: string;
+        endDate: string;
+        referenceDate: string;
+        standardType: boolean;
+        sidList: Array<string>;
+        
+        constructor(conditionSetCd: string, userId: string, startDate: string, endDate: string
+                , referenceDate: string, standardType: boolean, sidList: Array<string>) {
+            this.conditionSetCd = conditionSetCd;
+            this.userId = userId;
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.referenceDate = referenceDate;
+            this.standardType = standardType;
+            this.sidList = sidList;
+        }
+    }
+
     export interface EmployeeSearchDto {
         employeeId: string;
 
@@ -292,7 +314,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         showAllClosure: boolean; // 全締め表示
         showPeriod: boolean; // 対象期間利用
         periodFormatYM: boolean; // 対象期間精度
-
         /** Required parameter */
         baseDate?: string; // 基準日
         periodStartDate?: string; // 対象期間開始日
@@ -301,13 +322,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         leaveOfAbsence: boolean; // 休職区分
         closed: boolean; // 休業区分
         retirement: boolean; // 退職区分
-
         /** Quick search tab options */
         showAllReferableEmployee: boolean; // 参照可能な社員すべて
         showOnlyMe: boolean; // 自分だけ
         showSameWorkplace: boolean; // 同じ職場の社員
         showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
-
         /** Advanced search properties */
         showEmployment: boolean; // 雇用条件
         showWorkplace: boolean; // 職場条件
@@ -317,15 +336,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isMutipleCheck: boolean; // 選択モード
         // showDepartment: boolean; // 部門条件 not covered
         // showDelivery: boolean; not covered
-
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     }
-    export interface Ccg001ReturnedData {
-        baseDate: string; // 基準日
-        closureId?: number; // 締めID
-        periodStart: string; // 対象期間（開始)
-        periodEnd: string; // 対象期間（終了）
-        listEmployee: Array<EmployeeSearchDto>; // 検索結果
-    }
+
 }
