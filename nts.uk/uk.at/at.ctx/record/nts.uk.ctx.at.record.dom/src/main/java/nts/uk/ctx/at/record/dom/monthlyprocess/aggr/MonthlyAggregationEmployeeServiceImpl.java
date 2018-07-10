@@ -87,6 +87,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	
 	/** 社員の月別実績を集計する */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType) {
