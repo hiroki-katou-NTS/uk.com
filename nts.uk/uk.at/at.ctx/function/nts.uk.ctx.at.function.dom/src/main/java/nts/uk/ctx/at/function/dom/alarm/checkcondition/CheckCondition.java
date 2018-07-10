@@ -44,7 +44,7 @@ public class CheckCondition  extends DomainObject {
 	public boolean isMonthly() {
 		return this.alarmCategory == AlarmCategory.MONTHLY;
 	}
-	public boolean isMULTIPLE_MONTH() {
+	public boolean isMultipleMonth() {
 		return this.alarmCategory == AlarmCategory.MULTIPLE_MONTH;
 	}
 	public boolean is4W4D() {

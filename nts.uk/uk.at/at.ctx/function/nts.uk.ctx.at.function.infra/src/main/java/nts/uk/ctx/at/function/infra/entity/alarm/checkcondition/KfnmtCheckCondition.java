@@ -199,7 +199,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily));
 			return entity;
 			
-		} else if (domain.isMonthly() || domain.isMULTIPLE_MONTH()) {		
+		} else if (domain.isMonthly() || domain.isMultipleMonth()) {		
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 
