@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 810, height: 655 };</script>
+			<script>var dialogSize = { width: 710, height: 555 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -36,7 +36,7 @@
 						</tr>
 						<tr>
 							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
-							<td><span class="process-count"><span data-bind="text: aggCreateCount"></span> / <span data-bind="text: peopleCount"></span></span></td>
+							<td><span data-bind="text: aggCreateCount"></span>/<span data-bind="text: peopleCount"></span>></td>
 						</tr>
 
 
@@ -61,7 +61,7 @@
 							columns: columns,
 							multiple: false,
 							value: currentCode,
-							showNumbering: true,
+							showNumbering: false,
 							rows: 10
 						}"></table>
 				</div>

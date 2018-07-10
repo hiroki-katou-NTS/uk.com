@@ -114,7 +114,7 @@ module nts.uk.at.view.kfp001.b {
                         self.enableText(false);
                         nts.uk.ui.errors.clearAll();
                         $('#update-mode').show();
-                        $('#update-mode').focus();
+                        $('#button-reference-B7_3').focus();
                         self.mode(1);
 
                     }
@@ -172,6 +172,8 @@ module nts.uk.at.view.kfp001.b {
                         self.dScreenmodel.mode(self.mode());
                         self.dScreenmodel.executionId(self.aggrId);
                         self.dScreenmodel.listAggr(self.optionalList());
+                        self.cScreenmodel.periodStartDate(self.currentItem().startDate());
+                        self.cScreenmodel.periodEndDate(self.currentItem().endDate());
 
                     });
 
@@ -292,7 +294,7 @@ module nts.uk.at.view.kfp001.b {
                     self.currentCode("");
                     self.peopleNo(0);
                     nts.uk.ui.errors.clearAll();
-                    self.enableNEW(false);
+                    //self.enableNEW(false);
                     self.enableDEL(false);
                     $('#code-text-d4-2').focus();
                     $('#update-mode').hide();
@@ -341,6 +343,7 @@ module nts.uk.at.view.kfp001.b {
                 });
             }
             navigateView() {
+
                 nts.uk.request.jump("/view/kfp/001/a/index.xhtml");
             }
             opendScreenBorJ() {
@@ -351,6 +354,9 @@ module nts.uk.at.view.kfp001.b {
                 $("#code-text-d4-21").trigger("validate");
                 $("#start-date-B6-3").trigger("validate");
                 $("#end-date-B6-4").trigger("validate");
+                if (nts.uk.ui.errors.hasError() == true) {
+                    return;
+                }
                 let checkCode = _.filter(self.optionalList(), function(obj) {
                     return obj.aggrFrameCode == self.currentItem().aggrFrameCode();
                 });
@@ -361,7 +367,7 @@ module nts.uk.at.view.kfp001.b {
                         nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
                     } else {
                         $("#wizard").ntsWizard("next").done(function() {
-                            
+
                         });
                     }
                 }
@@ -369,6 +375,17 @@ module nts.uk.at.view.kfp001.b {
             }
 
             opendScreenF() {
+                let self = this;
+                let params = {
+                    code: self.currentItem().aggrFrameCode(),
+                    name: self.currentItem().optionalAggrName(),
+                    start: self.currentItem().startDate(),
+                    end: self.currentItem().endDate(),
+                    logId: self.aggrId,
+                    dispTargetPeopleNum: self.peopleCount()
+
+                }
+                nts.uk.ui.windows.setShared("Kfp001fParams", params);
                 nts.uk.ui.windows.sub.modal('/view/kfp/001/f/index.xhtml');
             }
 

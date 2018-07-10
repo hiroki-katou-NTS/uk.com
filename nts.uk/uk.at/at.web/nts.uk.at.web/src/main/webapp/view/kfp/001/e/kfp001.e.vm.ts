@@ -55,7 +55,7 @@ module nts.uk.at.view.kfp001.e {
             start(dataD: any) {
                 var self = this;
                 let dataE = nts.uk.ui.windows.getShared("KFP001_DATAE");
-                
+
                 //system date
                 if (dataD !== undefined) {
                     //method execute
@@ -83,7 +83,7 @@ module nts.uk.at.view.kfp001.e {
                                         //content executing
                                         //  self.executionContents(self.contents);
                                         // self.selectedExeContent(self.executionContents().length > 0 ? self.executionContents()[0].value : null);
-
+                                                       
                                         // End count time
                                         self.elapseTime.end();
 
@@ -102,14 +102,14 @@ module nts.uk.at.view.kfp001.e {
                                     }
                                     //self.enableCancelTask(false);
                                 });
-                                
+
                             })
                             .while(info => info.pending || info.running)
                             .pause(1000)
                         );
                         self.enableCancelTask(true);
                     });
-                self.enableCancelTask(true);
+                    self.enableCancelTask(true);
                 }
 
             }
@@ -117,16 +117,24 @@ module nts.uk.at.view.kfp001.e {
             private getLogData(): void {
                 var self = this;
                 service.getErrorMessageInfo(self.logId()).done((res) => {
+                    let numberNo;
+                       
                     let errs = [];
+                    
                     _.forEach(res, function(sRes) {
-                        var errorMess = {
-                            personCode: self.aggrFrameCode(),
-                            personName: self.optionalAggrName(),
-                            disposalDay: sRes.processDay,
-                            messageError: sRes.errorMess
-                        };
-                        errs.push(new PersonInfoErrMessageLog(errorMess));
-                        });
+                            errs = [];
+                            var errorMess = {
+                                personCode: self.aggrFrameCode(),
+                                personName: self.optionalAggrName(),
+                                disposalDay: sRes.processDay,
+                                messageError: sRes.errorMess
+                            };
+                        for (let i = 0; i < res.length; i++) {
+                            errorMess["no"] = i + 1;
+                            errs.push(new PersonInfoErrMessageLog(errorMess));
+                            }
+                        
+                    });
                     self.errorMessageInfo(errs);
                 })
             }
@@ -154,6 +162,7 @@ module nts.uk.at.view.kfp001.e {
         }
     }
     export interface PersonInfoErrMessageLogDto {
+        no: number;
         personCode: string;
         personName: string;
         disposalDay: string;
@@ -161,11 +170,13 @@ module nts.uk.at.view.kfp001.e {
     }
     export class PersonInfoErrMessageLog {
         GUID: string;
+        no: number;
         personCode: string;
         personName: string;
         disposalDay: string;
         messageError: number;
         constructor(data: PersonInfoErrMessageLogDto) {
+            this.no = data.no;
             this.GUID = nts.uk.util.randomId();
             this.personCode = data.personCode;
             this.personName = data.personName;
