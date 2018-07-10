@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
@@ -13,51 +14,52 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  */
 @Getter
 public class TempCareData extends AggregateRoot {
-	
-	/** The employee id. */
+
+	/**
+	 * 社員ID
+	 */
 	private String employeeId;
-	
-	/** The schedule record atr. */
-	private ScheduleRecordAtr scheduleRecordAtr;
-	
-	/** The annual leave use. */
-	private ManagementDays annualLeaveUse;
-	
-	/** The time annual leave use private go out. */
-	private TimeHoliday timeAnnualLeaveUsePrivateGoOut;
-	
-	/** The work type code. */
-	private WorkTypeCode workTypeCode;
-	
-	/** The ymd. */
+
+	/**
+	 * 年月日
+	 */
 	private GeneralDate ymd;
-	
+
 	/**
-	 * Instantiates a new temp care data.
-	 *
-	 * @param memento the memento
+	 * 勤務種類
 	 */
-	public TempCareData(TempCareDataGetMemento memento) {
-		this.employeeId = memento.getEmployeeId();
-		this.scheduleRecordAtr = memento.getScheduleRecordAtr();
-		this.annualLeaveUse = memento.getAnnualLeaveUse();
-		this.timeAnnualLeaveUsePrivateGoOut = memento.getTimeAnnualLeaveUsePrivateGoOut();
-		this.workTypeCode = memento.getWorkTypeCode();
-		this.ymd = memento.getYmd();
+	private WorkTypeCode workTypeCode;
+
+	/**
+	 * 使用日数
+	 */
+	private ManagementDays usedDays;
+
+	/**
+	 * 使用時間
+	 */
+	private TimeHoliday usedTime;
+
+	/**
+	 * 予定実績区分
+	 */
+	private ScheduleRecordAtr scheduleRecordAtr;
+
+	public TempCareData(String employeeId, GeneralDate ymd, WorkTypeCode workTypeCode, ManagementDays usedDays,
+			TimeHoliday usedTime, ScheduleRecordAtr scheduleRecordAtr) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.workTypeCode = workTypeCode;
+		this.usedDays = usedDays;
+		this.usedTime = usedTime;
+		this.scheduleRecordAtr = scheduleRecordAtr;
 	}
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(TempCareDataSetMemento memento) {
-		memento.setEmployeeId(this.employeeId);
-		memento.setScheduleRecordAtr(this.scheduleRecordAtr);
-		memento.setAnnualLeaveUse(this.annualLeaveUse);
-		memento.setTimeAnnualLeaveUsePrivateGoOut(this.timeAnnualLeaveUsePrivateGoOut);
-		memento.setWorkTypeCode(this.workTypeCode);
-		memento.setYmd(this.ymd);
+
+	public static TempCareData createFromJavaType(String employeeId, GeneralDate ymd, String workTypeCode,
+			double usedDays, int usedTime, int scheduleRecordAtr) {
+		return new TempCareData(employeeId, ymd, new WorkTypeCode(workTypeCode), new ManagementDays(usedDays),
+				new TimeHoliday(usedTime), EnumAdaptor.valueOf(scheduleRecordAtr, ScheduleRecordAtr.class));
 	}
 
 }

@@ -352,7 +352,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		}
 		
 		for (TempCareData domain : tempCareDataList) {
-			usedNumber += domain.getAnnualLeaveUse().v();
+			usedNumber += domain.getUsedDays().v();
 		}
 
 		return usedNumber;
