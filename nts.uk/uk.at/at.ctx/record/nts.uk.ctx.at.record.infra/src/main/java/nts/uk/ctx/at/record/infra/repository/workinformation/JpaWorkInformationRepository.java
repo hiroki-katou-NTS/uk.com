@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -199,6 +200,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdAndEmps(List<String> employeeIds,
 			DatePeriod datePeriod) {
+		if(employeeIds.isEmpty())
+			return Collections.emptyList();
 		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS, KrcdtDaiPerWorkInfo.class)
 				.setParameter("employeeIds", employeeIds)
 				.setParameter("startDate", datePeriod.start())
