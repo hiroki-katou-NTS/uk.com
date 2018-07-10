@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.interimdata;
+package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
