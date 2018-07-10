@@ -114,15 +114,12 @@ public class ScheCreExeWorkTypeHandler {
 			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter,
 					empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkTimeSetting);
 
-			if (optionalWorkTime.isPresent()) {
 				// update all basic schedule
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
-						optionalWorkTime == null ? null : optionalWorkTime.get(), empGeneralInfo, listWorkType,
+						optionalWorkTime.isPresent() ? optionalWorkTime.get() : null, empGeneralInfo, listWorkType,
 						listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
 						mapDiffTimeWorkSetting, listShortWorkTimeDto);
-			}
-
 		}
 	}
 
