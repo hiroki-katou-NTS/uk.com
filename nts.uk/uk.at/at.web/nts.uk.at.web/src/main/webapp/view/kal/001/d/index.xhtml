@@ -10,7 +10,7 @@
 			<script>
 				    var dialogSize = {
 				        width : 550,
-				        height : 260
+				        height : 290
 				    };
             </script>
 			<com:stylefile path="kal001.d.style.css" />
@@ -22,7 +22,9 @@
 
 		<ui:define name="content">
 			<!--D1_1-->
-			<label id="D1_1">#{i18n.getText('KAL001_28')}</label>
+			<div id="titleScreen">
+				<label>#{i18n.getText('KAL001_28')}</label>
+			</div>
 			<div id="bodyScreen">
 				<table>
 					<tr>
@@ -41,9 +43,9 @@
 						<td class="columnLeft"><label class ="labeLeft">#{i18n.getText('KAL001_33')}</label></td>
 						<td>
 							<label class="labeRight" data-bind="text: empProcessStr"/>
-							<label class="labeRight" data-bind="text: strSlash"/>
-							<label class="labeRight" data-bind="text: empProcessTotalCount"/>
-							<label class="labeRight" data-bind="text: strPersion"/>
+							<label data-bind="text: strSlash"/>
+							<label data-bind="text: empProcessTotalCount"/>
+							<label data-bind="text: strPersion"/>
 							<label class="labeRight" data-bind="text: strFinish, visible :displayStrFinish"/>
 						</td>
 					</tr>

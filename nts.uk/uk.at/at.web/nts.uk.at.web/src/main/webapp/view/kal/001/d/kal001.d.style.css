@@ -1,4 +1,5 @@
 table {
+	padding-top :10px;
 	border-collapse: collapse;
 }
 
@@ -22,22 +23,26 @@ table, th, td {
 .labeRight {
 	margin-left: 10px;
 }
+.textMargin {
+	margin-left: 0px;
+}
 
-#D1_1 {
-	margin-top: 10px;
+#titleScreen {
+	margin-top: 20px;
 	margin-left: 50px;
 }
 
 
 #bodyScreen {
+	margin-top: 5px;
 	margin-left: 50px;
 	margin-bottom: 50px;
 }
 
 #D3_1 {
-	margin-top: 10px;
+	margin-top: 20px;
 }
 
-#3_2 {
-	margin-top: 10px;
+#D3_2 {
+	margin-top: 20px;
 }
