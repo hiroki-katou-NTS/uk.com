@@ -399,7 +399,11 @@ module kcp.share.list {
             let self = this;
             $(document).delegate('#' + self.componentGridId, "iggridselectionrowselectionchanged", (evt, ui) => {
                 const selecteds = _.map(ui.selectedRows, o => o.id);
-                self.selectedCodes(selecteds);
+                if (self.isMultipleSelect) {
+                    self.selectedCodes(selecteds);
+                } else {
+                    self.selectedCodes(selecteds[0]);
+                }
             });
         }
 

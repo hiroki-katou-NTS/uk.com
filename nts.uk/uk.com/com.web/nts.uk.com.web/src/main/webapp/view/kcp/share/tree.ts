@@ -648,7 +648,11 @@ module kcp.share.tree {
             let self = this;
             $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridselectionrowselectionchanged", (evt, ui) => {
                 const selecteds = _.map(ui.selectedRows, o => o.id);
-                self.selectedWorkplaceIds(selecteds);
+                if (self.isMultiSelect) {
+                    self.selectedWorkplaceIds(selecteds);
+                } else {
+                    self.selectedWorkplaceIds(selecteds[0]);
+                }
             });
         }
 
