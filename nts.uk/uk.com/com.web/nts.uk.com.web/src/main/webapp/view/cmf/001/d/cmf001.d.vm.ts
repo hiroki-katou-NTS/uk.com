@@ -37,7 +37,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         listMappingData: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
         
         selectedEncoding: KnockoutObservable<number> = ko.observable(3);
-        encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray([]);
+        encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray(model.getEncodingList());
 
         constructor(data: any) {
             var self = this;
@@ -50,8 +50,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             self.selectedCategory = ko.observable('');
 
             self.listCategoryItem = ko.observableArray([]);
-
-            self.encodingList(model.getEncodingList());
             
             self.selectedCategory.subscribe((data) => {
                 if (data) {
@@ -75,6 +73,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             self.selectedAcceptItem.subscribe((data) => {
                 $("#fixed-table tr").removeClass("my-active-row");
                 $("#fixed-table tr[data-id='" + data + "']").addClass("my-active-row");
+            });
+            self.selectedEncoding.subscribe((data) => {
+                console.log(data);
             });
         }
 
@@ -408,9 +409,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                                         cond.characterCode,
                                                         cond.deleteExistDataMethod, cond.categoryId));
                     if (cond.characterCode == null)
-                        self.selectedEncoding = ko.observable(3);
+                        self.selectedEncoding(3);
                     else
-                        self.selectedEncoding = ko.observable(cond.characterCode);
+                        self.selectedEncoding(cond.characterCode);
                     service.getAllCategory().done((rs: Array<any>) => {
                         if (rs && rs.length) {
                             let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
