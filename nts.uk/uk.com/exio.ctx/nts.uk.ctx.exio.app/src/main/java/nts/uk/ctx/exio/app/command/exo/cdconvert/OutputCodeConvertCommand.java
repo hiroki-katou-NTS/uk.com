@@ -9,7 +9,7 @@ public class OutputCodeConvertCommand
     /**
     * コード変換コード
     */
-    private String convertCd;
+    private String convertCode;
     
     /**
     * コード変換名称

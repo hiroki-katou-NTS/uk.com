@@ -39,9 +39,4 @@ public class JpaExternalOutLogRepository extends JpaRepository implements Extern
 	public void update(ExternalOutLog domain) {
 		this.commandProxy().update(OiomtExternalOutLog.toEntity(domain));
 	}
-
-	@Override
-	public void remove(String cid, String outProcessId) {
-		this.commandProxy().remove(OiomtExternalOutLog.class, new OiomtExternalOutLogPk(cid, outProcessId));
-	}
 }

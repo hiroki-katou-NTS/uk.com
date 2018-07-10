@@ -19,7 +19,7 @@ public class RemoveExCndOutputCommandHandler extends CommandHandler<ExCndOutputC
     
     @Override
     protected void handle(CommandHandlerContext<ExCndOutputCommand> context) {
-        String categoryId = context.getCommand().getCategoryId();
+        int categoryId = context.getCommand().getCategoryId();
         repository.remove(categoryId);
     }
 }

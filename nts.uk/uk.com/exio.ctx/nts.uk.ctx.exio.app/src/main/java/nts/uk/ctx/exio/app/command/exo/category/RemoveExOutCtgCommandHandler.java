@@ -10,15 +10,14 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 
 @Stateless
 @Transactional
-public class RemoveExOutCtgCommandHandler extends CommandHandler<ExOutCtgCommand>
-{
-    
-    @Inject
-    private ExOutCtgRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<ExOutCtgCommand> context) {
-        String categoryId = context.getCommand().getCategoryId();
-        repository.remove(categoryId);
-    }
+public class RemoveExOutCtgCommandHandler extends CommandHandler<ExOutCtgCommand> {
+
+	@Inject
+	private ExOutCtgRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<ExOutCtgCommand> context) {
+		int functionNo = context.getCommand().getFunctionNo();
+		repository.remove(functionNo);
+	}
 }

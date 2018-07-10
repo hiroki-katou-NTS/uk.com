@@ -17,5 +17,7 @@ public interface ExterOutExecLogRepository {
 	void update(ExterOutExecLog domain);
 
 	void remove(String cid, String outProcessId);
+	
+	void update(String cid, String outProcessId, Integer fileSize);
 
 }

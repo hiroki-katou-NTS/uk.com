@@ -9,7 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.datafomat.TimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -149,7 +150,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     }
 
     public TimeDataFmSet toDomain() {
-        return new TimeDataFmSet(this.timeDataFmSetPk.cid, this.nullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMothod, this.delimiterSetting, this.selectHourMinute, this.minuteFractionDigit, this.decimalSelection, this.fixedValueOperationSymbol, this.fixedValueOperation, this.fixedCalculationValue, this.valueOfNullValueSubs, this.minuteFractionDigitProcessCla);
+        return new TimeDataFmSet(ItemType.TIME.value, this.timeDataFmSetPk.cid, this.nullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMothod, this.delimiterSetting, this.selectHourMinute, this.minuteFractionDigit, this.decimalSelection, this.fixedValueOperationSymbol, this.fixedValueOperation, this.fixedCalculationValue, this.valueOfNullValueSubs, this.minuteFractionDigitProcessCla);
     }
     public static OiomtTimeDataFmSetO toEntity(TimeDataFmSet domain) {
         return new OiomtTimeDataFmSetO(new OiomtTimeDataFmSetPk(domain.getCid()),

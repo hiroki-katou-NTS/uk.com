@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.datafomat.NumberDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.NumberDataFmSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

@@ -18,5 +18,6 @@ public interface OutputCodeConvertRepository
     void update(OutputCodeConvert domain);
 
     void remove();
-
+    
+    List<OutputCodeConvert> getOutputCodeConvertByCid(String cid);
 }

@@ -1,6 +1,11 @@
 package nts.uk.ctx.exio.dom.exo.executionlog;
 
 public enum ExIoOperationState {
+	
+	/**
+	 * 準備中
+	 */
+	PERPAKING(0),	
 	/**
 	 * 出力中
 	 */
@@ -29,23 +34,12 @@ public enum ExIoOperationState {
 	 * 出力完了
 	 */
 	EXPORT_FINISH(7),
-	/**
-	 * 準備中
-	 */
-	PERPAKING(0),
+	
 	/**
 	 * 受入完了
 	 */
 	IMPORT_FINISH(8);
 	
-	
-	
-	
-	
-	
-	
-	
-
 	/** The value. */
 	public final int value;
 

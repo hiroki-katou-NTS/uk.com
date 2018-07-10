@@ -1,0 +1,28 @@
+
+td {
+	padding: 5px;
+	border: 1px solid black;
+}
+
+.button {
+	text-align: center;
+	margin-top: 30px;
+}
+
+#master-wrapper {
+	overflow: hidden; 
+}
+#listlog_virtualContainer {
+	margin-left: 20px;
+}
+
+#Y_1 {
+	font-size: 24px;
+}
+#Y_3 {
+	margin-left: 20px;
+}
+#Y_5 {
+    margin-left: 20px;
+    font-size: 15px;
+}

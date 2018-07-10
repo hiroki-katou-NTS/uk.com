@@ -16,6 +16,4 @@ public interface ExternalOutLogRepository {
 
 	void update(ExternalOutLog domain);
 
-	void remove(String cid, String outProcessId);
-
 }

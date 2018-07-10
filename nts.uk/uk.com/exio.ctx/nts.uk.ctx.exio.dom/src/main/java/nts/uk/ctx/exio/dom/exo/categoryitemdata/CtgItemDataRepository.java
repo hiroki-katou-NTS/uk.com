@@ -10,8 +10,12 @@ public interface CtgItemDataRepository
 {
 
     List<CtgItemData> getAllCtgItemData();
+    
+    List<CtgItemData> getAllByCategoryId(String categoryId);
+    
+    List<CtgItemData> getAllByKey(String categoryId, String itemNo);
 
-    Optional<CtgItemData> getCtgItemDataById();
+    Optional<CtgItemData> getCtgItemDataById(String categoryId, Integer itemNo);
 
     void add(CtgItemData domain);
 

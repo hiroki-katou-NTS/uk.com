@@ -33,5 +33,12 @@ public class OiomtExternalOutLogPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "OUT_PROCESS_ID")
 	public String outProcessId;
+	
+	/**
+	 * ログ連番
+	 */
+	@Basic(optional = false)
+	@Column(name = "LOG_SEQUENCE_NUM")
+	public int logSequenceNum;
 
 }

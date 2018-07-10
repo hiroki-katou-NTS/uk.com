@@ -10,13 +10,10 @@ public interface StdOutputCondSetRepository
 {
 
     List<StdOutputCondSet> getAllStdOutputCondSet();
+   
+    List<StdOutputCondSet> getStdOutCondSetByCid(String cid);
     
-
-    List<StdOutputCondSet> getOutputCondSetByCidAndconditionSetCd(String Cid, String conditionSetCd);
-    
-
     Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid);
-
 
     Optional<StdOutputCondSet> getStdOutputCondSetById(String cid, String conditionSetCd);
     
@@ -25,5 +22,7 @@ public interface StdOutputCondSetRepository
     void update(StdOutputCondSet domain);
 
     void remove(String cid, String conditionSetCd);
+    
+    List<StdOutputCondSet> getListStdOutputCondSetByCid(String cid);
 
 }

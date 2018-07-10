@@ -3,10 +3,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog.info;
     import alertError = nts.uk.ui.dialog.alertError;
-    import block = nts.uk.ui.block;
+
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     export class ScreenModel {
         //wizard
         stepList: Array<NtsWizardStep> = [];
@@ -24,10 +24,24 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         listOutputCondition: KnockoutObservableArray<OutputCondition> = ko.observableArray([]);
         selectedOutputConditionItem: KnockoutObservable<string> = ko.observable('');
-
+        alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
         // setup ccg001
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        //set up kcp 005
+        lstSearchEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        selectedEmployeeCode: KnockoutObservableArray<string>;
+        listComponentOption: any;
+        selectedCode: KnockoutObservable<string>;
+        multiSelectedCode: KnockoutObservableArray<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+        isShowWorkPlaceName: KnockoutObservable<boolean>;
+        isShowSelectAllButton: KnockoutObservable<boolean>;
+        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
         constructor() {
             var self = this;
@@ -40,9 +54,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 { content: '.step-4' }
             ];
             self.stepSelected = ko.observable({ id: 'step-4', content: '.step-4' });
-
+            self.alreadySettingPersonal = ko.observableArray([]);
             self.loadListCondition();
-
+            self.selectedEmployeeCode = ko.observableArray([]);
             self.selectedConditionCd.subscribe(function(data: any) {
                 if (data) {
                     let item = _.find(ko.toJS(self.listCondition), (x: model.ItemModel) => x.code == data);
@@ -54,9 +68,56 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             });
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
-   
-            self.loadListOutputItem();
-            self.loadListOutputCondition()
+
+            //set up kcp 005
+            self.baseDate = ko.observable(new Date());
+            self.selectedCode = ko.observable('1');
+            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+            self.isShowAlreadySet = ko.observable(false);
+            self.alreadySettingList = ko.observableArray([
+                { code: '1', isAlreadySetting: true },
+                { code: '2', isAlreadySetting: true }
+            ]);
+            self.isDialog = ko.observable(false);
+            self.isShowNoSelectRow = ko.observable(false);
+            self.isMultiSelect = ko.observable(true);
+            self.isShowWorkPlaceName = ko.observable(true);
+            self.isShowSelectAllButton = ko.observable(true);
+            self.listComponentOption = {
+                isShowAlreadySet: false,
+                isMultiSelect: true,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedEmployeeCode,
+                isDialog: false,
+                isShowNoSelectRow: false,
+                alreadySettingList: self.alreadySettingPersonal,
+                isShowWorkPlaceName: true,
+                isShowSelectAllButton: true,
+                maxWidth: 550,
+                maxRows: 12
+            };
+
+        }
+        /**
+       * apply ccg001 search data to kcp005
+       */
+        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            let self = this;
+            let employeeSearchs: UnitModel[] = [];
+            for (let employeeSearch of dataList) {
+                let employee: UnitModel = {
+                    code: employeeSearch.employeeCode,
+                    name: employeeSearch.employeeName,
+                    workplaceName: employeeSearch.workplaceName,
+                    isAlreadySetting: false
+                };
+                employeeSearchs.push(employee);
+            }
+            self.employeeList(employeeSearchs);
+          
+
         }
 
         selectStandardMode() {
@@ -77,6 +138,42 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             $('#ex_output_wizard').ntsWizard("goto", 2);
         }
 
+        nextToScreenR() {
+            let self = this;
+            self.next();
+            
+            service.getExOutSummarySetting("conditionSetCd").done(res => {
+
+                service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
+                    self.listOutputCondition(res.ctgItemDataCustomList);
+                    self.listOutputItem(res.ctdOutItemCustomList);
+                }).fail(res => {
+                    console.log("getExOutSummarySetting fail");
+                });
+            }
+        }
+        
+        createExOutText() {
+            let self = this;
+            
+            //TODO set command
+            let command = new CreateExOutTextCommand();
+            service.createExOutText(command).done(res => {
+                let params = {
+                    storeProcessingId: res,
+                };
+
+                setShared("CMF002_R_PARAMS", params);
+                nts.uk.ui.windows.sub.modal("/view/cmf/002/s/index.xhtml").onClosed(() => {
+                    //TODO
+                    //disable nut
+                    //$("").focus();
+                });
+            }).fail(res => {
+                console.log("createExOutText fail");
+            });
+        }
+
         loadListCondition() {
             let self = this;
 
@@ -88,22 +185,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             ]);
             self.selectedConditionCd('1');
             self.selectedConditionName('test a');
-        }
-
-        loadListOutputItem() {
-            let self = this;
-
-            for (let i = 0; i < 20; i++) {
-                self.listOutputItem.push(new model.StandardOutputItem('00' + i, 'Test ' + i, '', '', 0));
-            }
-        }
-
-        loadListOutputCondition() {
-            let self = this;
-
-            for (let i = 0; i < 10; i++) {
-                self.listOutputCondition.push(new OutputCondition('item ' + i, 'Condition ' + i));
-            }
         }
 
         loadScreenQ() {
@@ -119,7 +200,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 showAllClosure: false, // 全締め表示
                 showPeriod: true, // 対象期間利用
                 periodFormatYM: false, // 対象期間精度
-
                 /** Required parameter */
                 baseDate: moment.utc().toISOString(), // 基準日
                 periodStartDate: moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString(), // 対象期間開始日
@@ -128,13 +208,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 leaveOfAbsence: true, // 休職区分
                 closed: true, // 休業区分
                 retirement: true, // 退職区分
-
                 /** Quick search tab options */
                 showAllReferableEmployee: true, // 参照可能な社員すべて
                 showOnlyMe: true, // 自分だけ
                 showSameWorkplace: true, // 同じ職場の社員
                 showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
-
                 /** Advanced search properties */
                 showEmployment: true, // 雇用条件
                 showWorkplace: true, // 職場条件
@@ -142,25 +220,72 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 showJobTitle: true, // 職位条件
                 showWorktype: true, // 勤種条件
                 isMutipleCheck: true, // 選択モード
-
                 /** Return data */
-                returnDataFromCcg001: function(data: any) {
-                    debugger;
-                    self.selectedEmployee(data.listEmployee);
-                    //self.applyKCP005ContentSearch(data.listEmployee);
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+
+
+
+                    self.applyKCP005ContentSearch(data.listEmployee);
+
                 }
             }
-
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
+    
+
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
     }
 
+    export interface UnitModel {
+        code: string;
+        name?: string;
+        workplaceName?: string;
+        isAlreadySetting?: boolean;
+    }
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
+    }
     class OutputCondition {
         itemName: string;
         condition: string;
         constructor(itemName: string, condition: string) {
             this.itemName = itemName;
             this.condition = condition;
+        }
+    }
+
+    class CreateExOutTextCommand {
+        conditionSetCd: string;
+        userId: string;
+        startDate: string;
+        endDate: string;
+        referenceDate: string;
+        standardType: boolean;
+        sidList: Array<string>;
+        
+        constructor(conditionSetCd: string, userId: string, startDate: string, endDate: string
+                , referenceDate: string, standardType: boolean, sidList: Array<string>) {
+            this.conditionSetCd = conditionSetCd;
+            this.userId = userId;
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.referenceDate = referenceDate;
+            this.standardType = standardType;
+            this.sidList = sidList;
         }
     }
 
@@ -189,7 +314,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         showAllClosure: boolean; // 全締め表示
         showPeriod: boolean; // 対象期間利用
         periodFormatYM: boolean; // 対象期間精度
-
         /** Required parameter */
         baseDate?: string; // 基準日
         periodStartDate?: string; // 対象期間開始日
@@ -198,13 +322,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         leaveOfAbsence: boolean; // 休職区分
         closed: boolean; // 休業区分
         retirement: boolean; // 退職区分
-
         /** Quick search tab options */
         showAllReferableEmployee: boolean; // 参照可能な社員すべて
         showOnlyMe: boolean; // 自分だけ
         showSameWorkplace: boolean; // 同じ職場の社員
         showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
-
         /** Advanced search properties */
         showEmployment: boolean; // 雇用条件
         showWorkplace: boolean; // 職場条件
@@ -214,15 +336,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isMutipleCheck: boolean; // 選択モード
         // showDepartment: boolean; // 部門条件 not covered
         // showDelivery: boolean; not covered
-
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     }
-    export interface Ccg001ReturnedData {
-        baseDate: string; // 基準日
-        closureId?: number; // 締めID
-        periodStart: string; // 対象期間（開始)
-        periodEnd: string; // 対象期間（終了）
-        listEmployee: Array<EmployeeSearchDto>; // 検索結果
-    }
+
 }

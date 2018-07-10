@@ -22,5 +22,14 @@ public class ExOutOpMngFinder
         return finder.getAllExOutOpMng().stream().map(item -> ExOutOpMngDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
+    
+    public ExOutOpMngDto getExOutOpMngById(String storeProcessingId){
+        if(finder.getExOutOpMngById(storeProcessingId).isPresent()){
+        	return ExOutOpMngDto.fromDomain(finder.getExOutOpMngById(storeProcessingId).get());
+        }
+        else {
+    		return null;
+    	}
+    }
 
 }

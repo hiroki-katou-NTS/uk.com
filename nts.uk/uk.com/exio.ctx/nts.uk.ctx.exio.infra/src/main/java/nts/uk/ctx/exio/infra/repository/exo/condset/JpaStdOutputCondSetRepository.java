@@ -22,7 +22,7 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 
 
 	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.stdOutputCondSetPk.cid =:cid ";
+			+ " WHERE  f.stdOutputCondSetPk.cid =:cid ORDER BY f.stdOutputCondSetPk.conditionSetCd ASC";
 	
 
 	@Override
@@ -32,9 +32,15 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	}
 	
 	@Override
-	public Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid) {
+	 public Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid) {
+	  return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+	    .getSingle(c -> toDomain(c));
+	 }
+	
+	@Override
+	public List<StdOutputCondSet> getStdOutCondSetByCid(String cid) {
 		return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
-				.getSingle(c -> toDomain(c));
+				.getList(c -> toDomain(c));
 	}
 
 	@Override
@@ -78,15 +84,14 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	}
 
 	private OiomtStdOutputCondSet toEntity(StdOutputCondSet domain) {
-		return new OiomtStdOutputCondSet(new OiomtStdOutputCondSetPk(domain.getCid(), domain.getConditionSetCd()),
+		return new OiomtStdOutputCondSet(new OiomtStdOutputCondSetPk(domain.getCid(), domain.getConditionSetCode()),
 				domain.getCategoryId(), domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
 				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat());
 	}
-
+	
 	@Override
-	public List<StdOutputCondSet> getOutputCondSetByCidAndconditionSetCd(String cid, String conditionSetCd) {
-		return this.queryProxy().query(GET_OUTCNDSET_BY_CID_CNDCD, OiomtStdOutputCondSet.class).setParameter("cid", cid)
-				.setParameter("conditionSetCd", conditionSetCd).getList(c -> toDomain(c));
+	public List<StdOutputCondSet> getListStdOutputCondSetByCid(String cid) {
+		return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+				.getList(c -> toDomain(c));
 	}
-
 }

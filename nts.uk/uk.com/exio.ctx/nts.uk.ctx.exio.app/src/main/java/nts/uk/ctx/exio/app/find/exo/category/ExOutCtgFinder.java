@@ -10,17 +10,15 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 
 @Stateless
 /**
-* 外部出力カテゴリ
-*/
-public class ExOutCtgFinder
-{
+ * 外部出力カテゴリ
+ */
+public class ExOutCtgFinder {
 
-    @Inject
-    private ExOutCtgRepository finder;
+	@Inject
+	private ExOutCtgRepository finder;
 
-    public List<ExOutCtgDto> getAllExOutCtg(){
-        return finder.getAllExOutCtg().stream().map(item -> ExOutCtgDto.fromDomain(item))
-                .collect(Collectors.toList());
-    }
+	public List<ExOutCtgDto> getAllExOutCtg() {
+		return finder.getAllExOutCtg().stream().map(item -> ExOutCtgDto.fromDomain(item)).collect(Collectors.toList());
+	}
 
 }

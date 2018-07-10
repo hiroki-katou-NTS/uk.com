@@ -33,6 +33,20 @@ public class OiomtSearchCodeList extends UkJpaEntity implements Serializable
     public OiomtSearchCodeListPk searchCodeListPk;
     
     /**
+     * カテゴリID
+     */
+     @Basic(optional = false)
+     @Column(name = "CATEGORY_ID")
+     public String categoryId;
+     
+     /**
+     * カテゴリ項目NO
+     */
+     @Basic(optional = false)
+     @Column(name = "CATEGORY_ITEM_NO")
+     public Integer categoryItemNo;
+    
+    /**
     * 検索コード
     */
     @Basic(optional = false)
@@ -60,7 +74,9 @@ public class OiomtSearchCodeList extends UkJpaEntity implements Serializable
     public OiomtOutCndDetailItem oiomtOutCndDetailItem;
 
 	public OiomtSearchCodeList(String id, String categoryId, Integer categoryItemNo, String searchCode, String searchItemName) {
-		this.searchCodeListPk = new OiomtSearchCodeListPk(id, categoryId, categoryItemNo);
+		this.searchCodeListPk = new OiomtSearchCodeListPk(id);
+		this.categoryId = categoryId;
+		this.categoryItemNo = categoryItemNo;
 		this.searchCode = searchCode;
 		this.searchItemName = searchItemName;
 	}

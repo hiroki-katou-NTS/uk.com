@@ -19,7 +19,7 @@ public class StdOutputCondSet extends AggregateRoot {
 	/**
 	 * 外部出力条件コード
 	 */
-	private String conditionSetCd;
+	private String conditionSetCode;
 
 	/**
 	 * カテゴリID

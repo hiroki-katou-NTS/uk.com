@@ -22,17 +22,16 @@
 				<!--B1_7 画面タイプ名-->
 				<label class="title-left">#{i18n.getText('#CMF002_35')}</label>
 				<!--B1_2 新規-->
-				<button id="B1_2" data-bind="click: addNew">#{i18n.getText('CMF002_28')}</button>
+				<button id="B1_2" >#{i18n.getText('CMF002_28')}</button>
 				<!--B1_3 登録-->
 				<button id="B1_3" data-bind="click: register" class="proceed">#{i18n.getText('CMF002_29')}</button>
 				<!--B1_5 複製-->
-				<button id="B1_5">#{i18n.getText('CMF002_32')}</button>
+				<button id="B1_5" data-bind="click: openCopyScreen" >#{i18n.getText('CMF002_32')}</button>
 				<!--B1_6 削除-->
 				<button id="B1_6" class="danger">#{i18n.getText('CMF002_33')}</button>
 				<!--B1_8 外部出力-->
 				<label class="title-left">#{i18n.getText('#CMF002_25')}</label>
 			</div>
-
 			<div id="contents-area">
 				<div style="text-align: center; width: 1250px;">
 					<span class="label warning">#{i18n.getText('CMF002_39')}</span>
@@ -64,6 +63,7 @@
 								<table id="B3_3"
 									data-bind="ntsGridList: {
 													height: 514,
+													rows: 15,
 		                                            options: $parent.conditionSettingList,
 		                                            optionsValue: $parent.selectedConditionSetting,
 		                                            primaryKey: 'conditionSetCode',
@@ -72,8 +72,8 @@
 								                				{headerText: '#{i18n.getText('CMF002_38')}', key: 'conditionSetName', width: 200, formatter: _.escape}
 								                			],
 		                                            multiple: false,
-		                                            value: $parent.selectedConditionSetting,
-		                                            enable: true}">
+		                                            value: $parent.selectedConditionSettingCode
+		                                            }">
 								</table>
 							</div>
 						</div>
