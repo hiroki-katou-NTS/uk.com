@@ -109,7 +109,12 @@ public class RecoveryStorageService {
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 		String uploadId = performRecoveries.get().getUploadfileId();
 		List<Category> listCategory = categoryRepository.findById(dataRecoveryProcessId, SELECTION_TARGET_FOR_RES);
-
+		
+		Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository.getDataRecoveryMngById(dataRecoveryProcessId);
+		if(dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition() == DataRecoveryOperatingCondition.INTERRUPTION_END) {
+			return;
+		}
+		
 		// update OperatingCondition
 		dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
 				DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS);
