@@ -123,7 +123,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		/** start 並列処理、PARALLELSTREAM */
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
 		
-		employeeIds.parallelStream().forEach(employeeId -> {
+		employeeIds.stream().forEach(employeeId -> {
 			// 社員の日別実績を計算
 			if(stateHolder.isInterrupt()){
 				return;
