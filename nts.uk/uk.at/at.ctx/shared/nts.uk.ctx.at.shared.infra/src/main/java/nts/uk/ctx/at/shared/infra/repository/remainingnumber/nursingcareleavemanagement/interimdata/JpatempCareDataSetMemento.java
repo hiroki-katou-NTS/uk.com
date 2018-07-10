@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.ScheduleRecordAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimeHoliday;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareDataSetMemento;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.interimdata.KrcdtTempCareData;
 
 @NoArgsConstructor
 public class JpatempCareDataSetMemento implements TempCareDataSetMemento {

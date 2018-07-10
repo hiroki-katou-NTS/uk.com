@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata;
+package nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.interimdata;
 
 import java.io.Serializable;
 

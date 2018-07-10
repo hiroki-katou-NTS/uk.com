@@ -16,10 +16,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareDataRepository;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareData;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareDataPK;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareDataPK_;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.interimdata.KrcdtTempCareData_;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.interimdata.KrcdtTempCareData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.interimdata.KrcdtTempCareDataPK;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.interimdata.KrcdtTempCareDataPK_;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.interimdata.KrcdtTempCareData_;
 
 @Stateless
 public class JpaTempCareDataRepository extends JpaRepository implements TempCareDataRepository {
