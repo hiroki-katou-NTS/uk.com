@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.interimdata;
+package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.care.interimdata;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
