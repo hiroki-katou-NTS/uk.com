@@ -46,7 +46,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             self.execHistColumns = [
                 { headerText: "", key: 'outputProcessId', dataType: 'string' },
                 // X5_H1_2
-                { headerText: getText("CMF002_310"), dataType: 'string', key: 'deleteFile', width: '80px', unbound: false, ntsControl: 'ButtonDel', formatter: formatBtnDel },
+                { headerText: getText("CMF002_310"), dataType: 'string', key: 'deleteFile', width: '80px', unbound: false, ntsControl: 'ButtonDel' },
                 // X5_H1_3
                 { headerText: getText("CMF002_311"), dataType: 'string', key: 'fileDowload', width: '80px', unbound: false, ntsControl: 'FlexImage' },
                 // X5_H1_4
@@ -68,7 +68,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 // X5_H1_12
                 { headerText: getText("CMF002_320"), dataType: 'string', key: 'totalErrorCount', width: '50px', unbound: false, ntsControl: 'ButtonLog' },
                 // X5_H1_13
-                { headerText: getText("CMF002_321"), dataType: 'string', key: 'fileName', width: '200px' },
+                { headerText: getText("CMF002_321"), dataType: 'string', key: 'fileName', width: '190px' },
                 // X5_H1_14
                 { headerText: getText("CMF002_322"), dataType: 'string', key: 'fileSize', width: '100px' },
             ];
@@ -102,7 +102,6 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 hidePrimaryKey: true,
-                showNumbering: true,
                 columns: self.execHistColumns,
                 ntsControls: self.execHistControl,
                 features: [
@@ -261,14 +260,6 @@ module nts.uk.com.view.cmf002.x.viewmodel {
     }
 }
 
-function formatBtnDel(value, row) {
-    if (value == 0)
-        return '';
-}
-function formatIcon(value, row) {
-    if (value == 0)
-        return '';
-}
 function formatDateTime(value, row) {
     return nts.uk.time.formatDate(value, "yyyy/MM/dd hh:mm:ss")
 }
