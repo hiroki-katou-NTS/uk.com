@@ -5070,6 +5070,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 */
 	public HolidayWorkTimeOfMonthly toDomainHolidayWorkTimeOfMonthly(){
 		//TODO
+		
 		return HolidayWorkTimeOfMonthly.of(
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.totalHolidayWorkTime),
@@ -5147,10 +5148,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonAggrOverTimes 集計残業時間
 	 * @return 月別実績の残業時間
 	 */
-	public OverTimeOfMonthly toDomain(List<KrcdtMonAggrOverTime> krcdtMonAggrOverTimes){
-		
-		if (krcdtMonAggrOverTimes == null) krcdtMonAggrOverTimes = new ArrayList<>();
-		
+	public OverTimeOfMonthly toDomain(){
+		List<AggregateOverTime> overTimeList = this.getOverTimeLst();	
 		return OverTimeOfMonthly.of(
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.totalOverTime),
@@ -5159,7 +5158,22 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.totalTransferOverTime),
 						new AttendanceTimeMonth(this.calcTotalTransferOverTime)),
-				krcdtMonAggrOverTimes.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+				overTimeList);
+	}
+	
+	private  List<AggregateOverTime> getOverTimeLst(){
+		List<AggregateOverTime> overTimeList = new ArrayList<>();
+		overTimeList.add(this.toDomainOverTime1());
+		overTimeList.add(this.toDomainOverTime2());
+		overTimeList.add(this.toDomainOverTime3());
+		overTimeList.add(this.toDomainOverTime4());
+		overTimeList.add(this.toDomainOverTime5());
+		overTimeList.add(this.toDomainOverTime6());
+		overTimeList.add(this.toDomainOverTime7());
+		overTimeList.add(this.toDomainOverTime8());
+		overTimeList.add(this.toDomainOverTime9());
+		overTimeList.add(this.toDomainOverTime10());
+		return overTimeList;
 	}
 	
 	/** KRCDT_MON_REG_IRREG_TIME **/
