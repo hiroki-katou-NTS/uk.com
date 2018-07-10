@@ -7,12 +7,15 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
@@ -63,6 +66,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionLog 実行ログ
 	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public ProcessState manager(AsyncCommandHandlerContext asyncContext, String companyId, List<String> employeeIds,
 			DatePeriod datePeriod, ExecutionAttr executionAttr, String empCalAndSumExecLogID,
@@ -166,10 +170,10 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
 		
 		// 処理を完了する
-		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
-		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		this.empCalAndSumExeLogRepository.updateLogInfo(
 				empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
+		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
+		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		return success;
 	}
 	
