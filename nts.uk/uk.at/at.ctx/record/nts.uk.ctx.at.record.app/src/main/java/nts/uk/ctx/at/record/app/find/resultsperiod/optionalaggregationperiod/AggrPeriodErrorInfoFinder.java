@@ -11,8 +11,6 @@ import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInfor;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -32,8 +30,10 @@ public class AggrPeriodErrorInfoFinder {
 	public List<AggrPeriodErrorInfoDto> findAll(String aggrPeriodId) {
 		List<AggrPeriodErrorInfoDto> result = new ArrayList<>();
 		List<AggrPeriodInfor> listErr = errorInfoRepo.findAll(aggrPeriodId);
+		List<String> listEmployeeId = listErr.stream().map(l -> l.getMemberId()).collect(Collectors.toList());
+		List<EmployeeRecordImport> lstEmpInfo = empAdapter.getPersonInfor(listEmployeeId);
 		for (AggrPeriodInfor err : listErr) {
-			EmployeeRecordImport empInfo = empAdapter.getPersonInfor(err.getMemberId());
+			EmployeeRecordImport empInfo = lstEmpInfo.stream().filter(e -> e.getEmployeeId().equals(err.getMemberId())).collect(Collectors.toList()).get(0);
 			AggrPeriodErrorInfoDto dto = new AggrPeriodErrorInfoDto(err.getMemberId(), empInfo.getEmployeeCode(),
 					empInfo.getPname(), err.getProcessDay(), err.getErrorMess().v());
 			result.add(dto);
