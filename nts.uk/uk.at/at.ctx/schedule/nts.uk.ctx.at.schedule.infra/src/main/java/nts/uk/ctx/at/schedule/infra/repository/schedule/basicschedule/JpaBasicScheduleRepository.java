@@ -216,7 +216,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		if (optionalEntity.isPresent()) {
 			BasicSchedule basicSchedule = this.toDomain(optionalEntity.get(),
 					this.findAllWorkScheduleTimeZone(sId, date));
-			basicSchedule.setWorkScheduleMaster(toDomainScheMaster(optionalEntity, basicSchedule));
+			basicSchedule.setWorkScheduleMaster(toDomainScheMaster(optionalEntity.get().getKscdtScheMasterInfo(), basicSchedule));
 			return Optional.of(basicSchedule);
 		}
 		return Optional.empty();
@@ -228,9 +228,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param optionalEntity
 	 * @param basicSchedule
 	 */
-	private ScheMasterInfo toDomainScheMaster(Optional<KscdtBasicSchedule> optionalEntity,
+	private ScheMasterInfo toDomainScheMaster(KscdtScheMasterInfo kscdtScheMasterEntity,
 			BasicSchedule basicSchedule) {
-		KscdtScheMasterInfo kscdtScheMasterEntity = optionalEntity.get().kscdtScheMasterInfo;
 		ScheMasterInfo scheMasterInfo = ScheMasterInfo.createFromJavaType(
 				kscdtScheMasterEntity.kscdtScheMasterInfoPk.sId,
 				kscdtScheMasterEntity.kscdtScheMasterInfoPk.generalDate, kscdtScheMasterEntity.employmentCd,

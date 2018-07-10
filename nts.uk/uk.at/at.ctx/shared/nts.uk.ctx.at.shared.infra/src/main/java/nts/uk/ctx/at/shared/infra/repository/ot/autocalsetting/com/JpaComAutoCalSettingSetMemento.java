@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.com;
 
+import nts.uk.ctx.at.shared.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KshmtAutoComCalSet;
 
 /**
@@ -92,6 +95,44 @@ public class JpaComAutoCalSettingSetMemento implements ComAutoCalSettingSetMemen
 		this.entity.setRestTimeLimit(restTime.getRestTime().getUpLimitORtSet().value);
 		this.entity.setLateNightTimeAtr(restTime.getLateNightTime().getCalAtr().value);	
 		this.entity.setLateNightTimeLimit(restTime.getLateNightTime().getUpLimitORtSet().value);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.
+	 * ComAutoCalSettingSetMemento#setLeaveEarly(nts.uk.ctx.at.shared.dom.ot.
+	 * autocalsetting.AutoCalcOfLeaveEarlySetting)
+	 */
+	@Override
+	public void setLeaveEarly(AutoCalcOfLeaveEarlySetting leaveEarly) {
+		this.entity.setLeaveEarly(leaveEarly.isLeaveEarly());
+		this.entity.setLeaveLate(leaveEarly.isLate());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.
+	 * ComAutoCalSettingSetMemento#setRaisingSalary(nts.uk.ctx.at.shared.dom.
+	 * workrule.outsideworktime.AutoCalRaisingSalarySetting)
+	 */
+	@Override
+	public void setRaisingSalary(AutoCalRaisingSalarySetting raisingSalary) {
+		this.entity.setRaisingCalcAtr(raisingSalary.isRaisingSalaryCalcAtr());
+		this.entity.setSpecificRaisingCalcAtr(raisingSalary.isSpecificRaisingSalaryCalcAtr());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.
+	 * ComAutoCalSettingSetMemento#setDivergenceTime(nts.uk.ctx.at.shared.dom.
+	 * calculationattribute.AutoCalcSetOfDivergenceTime)
+	 */
+	@Override
+	public void setDivergenceTime(AutoCalcSetOfDivergenceTime divergenceTime) {
+		this.entity.setDivergence(divergenceTime.getDivergenceTime().value);
 	}
 
 }

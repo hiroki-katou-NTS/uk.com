@@ -350,6 +350,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam = <EmployeeQueryParam>{};
                 self.queryParam.sortOrderNo = 1; // 並び順NO＝1
                 self.queryParam.nameType = 1; // ビジネスネーム（日本語）
+                self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT);
             }
 
             /**
@@ -1418,8 +1419,6 @@ module nts.uk.com.view.ccg.share.ccg {
             public setBaseDateAndPeriod(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-                // set default base date
-                self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // set base date = user input
                 if (self.showBaseDate) {
