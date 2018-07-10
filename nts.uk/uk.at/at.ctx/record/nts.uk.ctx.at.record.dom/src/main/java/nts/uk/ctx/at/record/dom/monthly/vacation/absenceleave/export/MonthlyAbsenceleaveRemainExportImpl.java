@@ -18,13 +18,13 @@ public class MonthlyAbsenceleaveRemainExportImpl implements MonthlyAbsenceleaveR
 	@Override
 	public List<AbsenceleaveCurrentMonthOfEmployee> getDataCurrentMonthOfEmployee(String employeeId, YearMonth startMonth, YearMonth endMonth) {
 		List<AbsenceleaveCurrentMonthOfEmployee> lstOutputData = new ArrayList<AbsenceleaveCurrentMonthOfEmployee>();
-		for(YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); startMonth.addMonths(1)) {
+		for(YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); ym = ym.addMonths(1)) {
 			//ドメインモデル「振休月別残数データ」を取得
 			List<AbsenceLeaveRemainData> lstAbsenData = absenceLeaveRepos.getDataBySidYmClosureStatus(employeeId, ym, ClosureStatus.PROCESSED);
 			if(lstAbsenData.isEmpty()) {
 				continue;
 			}
-			AbsenceleaveCurrentMonthOfEmployee dataOutput = new AbsenceleaveCurrentMonthOfEmployee(employeeId, ym, null, null, null, null, null);
+			AbsenceleaveCurrentMonthOfEmployee dataOutput = new AbsenceleaveCurrentMonthOfEmployee(employeeId, ym, (double)0, (double)0, (double)0, (double)0, (double)0);
 			GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			GeneralDate endDatecarryMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			//同じ属性同士の値を合算

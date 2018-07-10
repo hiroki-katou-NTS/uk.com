@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -46,13 +47,15 @@ public class KrcdtMonAggrSpecDays extends UkJpaEntity implements Serializable {
 	/** マッチング：月別実績の勤怠時間 */
 	@ManyToOne
 	@JoinColumns({
-		@JoinColumn(name = "SID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.SID", insertable = false, updatable = false),
-		@JoinColumn(name = "YM", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.YM", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_ID", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_DAY", insertable = false, updatable = false),
-		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.IS_LAST_DAY", insertable = false, updatable = false)
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YM", referencedColumnName = "YM", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "CLOSURE_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "CLOSURE_DAY", insertable = false, updatable = false),
+		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonAttendanceTime krcdtMonAttendanceTime;
+//	//テーブル結合用
+//	public KrcdtMonTime krcdtMonTime;
 	
 	/**
 	 * キー取得

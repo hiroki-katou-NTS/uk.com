@@ -41,6 +41,15 @@ public interface WorkingConditionItemRepository {
 	 * @return the optional
 	 */
 	Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+	
+	/**
+	 * Gets the by sids and base date.
+	 *
+	 * @param sIds the s ids
+	 * @param baseDate the base date
+	 * @return the by sids and base date
+	 */
+	List<WorkingConditionItem> getBySidsAndDatePeriod(List<String> sIds, DatePeriod datePeriod);
 
 	/**
 	 * Find working condition item by pers work cat.
@@ -122,4 +131,12 @@ public interface WorkingConditionItemRepository {
 	 * @return the by sid ,hist id and data Period 
 	 */
 	WorkingConditionWithDataPeriod getBySidAndPeriodOrderByStrDWithDatePeriod(Map<String,DatePeriod> param,GeneralDate max,GeneralDate min);
+	
+	
+	/**
+	 * Update WorkingCondition
+	 * trong trường hợp chia đôi category WorkingCondition
+	 * @param item the item
+	 */
+	void updateWorkCond2(WorkingConditionItem item);
 }

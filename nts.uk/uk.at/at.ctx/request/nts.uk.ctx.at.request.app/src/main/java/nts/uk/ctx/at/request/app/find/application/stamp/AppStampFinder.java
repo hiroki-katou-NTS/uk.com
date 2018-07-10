@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSetDto;
@@ -46,7 +47,7 @@ public class AppStampFinder {
 		AppStampNewPreDto appStampNewPreDto = new AppStampNewPreDto();
 		appStampNewPreDto.appCommonSettingDto = new AppCommonSettingDto(
 				GeneralDate.today().toString("yyyy/MM/dd"), 
-				null, 
+				ApplicationSettingDto.convertToDto(appStampNewPreOutput.appCommonSettingOutput.applicationSetting), 
 				null, 
 				appStampNewPreOutput.appCommonSettingOutput.appTypeDiscreteSettings.stream().map(x -> AppTypeDiscreteSettingDto.convertToDto(x)).collect(Collectors.toList()), 
 				null);
@@ -97,7 +98,8 @@ public class AppStampFinder {
 	public AppStampDto getAppStampByID(String appID){
 		String companyID = AppContexts.user().companyId();
 		AppStamp appStamp = appStampCommonDomainService.findByID(companyID, appID);
-		String employee = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEmployeeID());
-		return AppStampDto.convertToDto(appStamp, employee);
+		String employeeName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEmployeeID());
+		String inputEmpName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEnteredPersonID());
+		return AppStampDto.convertToDto(appStamp, employeeName, inputEmpName);
 	}
 }

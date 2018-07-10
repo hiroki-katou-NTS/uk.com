@@ -54,6 +54,7 @@ public class JpaCategoryDeletionRepository extends JpaRepository implements Cate
 		for (CategoryDeletion categoryDeletion : categories) {
 			this.commandProxy().insert(SspdtCategoryDeletion.toEntity(categoryDeletion));
 		}
+		this.getEntityManager().flush();
 	}
 
 	/*

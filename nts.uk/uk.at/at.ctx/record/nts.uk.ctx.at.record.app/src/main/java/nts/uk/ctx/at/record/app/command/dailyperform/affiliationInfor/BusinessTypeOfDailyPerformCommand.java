@@ -21,6 +21,7 @@ public class BusinessTypeOfDailyPerformCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void updateData(Object data) {
+		if(data == null){ return; }
 		this.data = Optional.of((WorkTypeOfDailyPerformance) data);
 	}
 	

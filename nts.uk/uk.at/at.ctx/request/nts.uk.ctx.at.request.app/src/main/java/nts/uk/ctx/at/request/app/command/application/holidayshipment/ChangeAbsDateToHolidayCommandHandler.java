@@ -9,30 +9,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.RecInfo;
 
 @Stateless
 public class ChangeAbsDateToHolidayCommandHandler
 		extends CommandHandlerWithResult<SaveHolidayShipmentCommand, Integer> {
 
-	String companyID, appReason, employeeID;
-	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
-	AbsenceLeaveAppCommand absCmd;
-	SaveHolidayShipmentCommand command;
-
 	@Override
 	protected Integer handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
-
 		// tạm thời chưa làm được do không có thông tin về domain
-		command = context.getCommand();
-		absCmd = command.getAbsCmd();
+		SaveHolidayShipmentCommand command = context.getCommand();
+		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		// アルゴリズム「関連付けられた振出情報の取得」を実行する
-		List<ChangeInfo> changeInfos = getChangeInfo();
+		List<ChangeInfo> changeInfos = getChangeInfo(absCmd);
 		Integer payoutType = null;
 		for (ChangeInfo changeInfo : changeInfos) {
 			RecInfo recInfo = changeInfo.getRecInfo();
@@ -50,7 +42,7 @@ public class ChangeAbsDateToHolidayCommandHandler
 		return payoutType;
 	}
 
-	private List<ChangeInfo> getChangeInfo() {
+	private List<ChangeInfo> getChangeInfo(AbsenceLeaveAppCommand absCmd) {
 		List<ChangeInfo> changeInfos = new ArrayList<ChangeInfo>();
 		// INPUT.消化対象振休管理の件数分ループ
 		absCmd.getSubDigestions().forEach(x -> {

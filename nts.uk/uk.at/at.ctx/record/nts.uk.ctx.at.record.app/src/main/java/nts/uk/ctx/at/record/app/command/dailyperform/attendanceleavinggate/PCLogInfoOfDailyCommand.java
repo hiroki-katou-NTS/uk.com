@@ -21,7 +21,7 @@ public class PCLogInfoOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void updateData(Object item) {
-		if(this.data == null){ return; }
+		if(item == null){ return; }
 		this.data = Optional.of((PCLogOnInfoOfDaily) item);
 	}
 

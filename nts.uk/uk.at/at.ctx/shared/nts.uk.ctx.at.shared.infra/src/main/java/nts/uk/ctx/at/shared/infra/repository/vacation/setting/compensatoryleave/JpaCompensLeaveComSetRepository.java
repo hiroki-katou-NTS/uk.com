@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kclm
 public class JpaCompensLeaveComSetRepository extends JpaRepository implements CompensLeaveComSetRepository {
     
     /** The element first. */
-    private static int ELEMENT_FIRST = 0;
+    private static final int ELEMENT_FIRST = 0;
     
     /*
      * (non-Javadoc)

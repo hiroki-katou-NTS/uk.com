@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
@@ -19,19 +20,20 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Da
 
 /** 日別実績の勤務情報 */
 @Data
-@AttendanceItemRoot(rootName = "日別実績の勤務情報")
+@AttendanceItemRoot(rootName = ItemConst.DAILY_WORK_INFO_NAME)
 public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
 	/** 勤務実績の勤務情報: 勤務情報 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "勤務実績の勤務情報")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ACTUAL)
 	private WorkInfoDto actualWorkInfo;
 
 	/** 勤務予定の勤務情報: 勤務情報 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "勤務予定の勤務情報")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = PLAN)
 	private WorkInfoDto planWorkInfo;
 
 	/** 勤務予定時間帯: 予定時間帯 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "勤務予定時間帯", listMaxLength = 2, indexField = "workNo")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PLAN + TIME_ZONE, 
+			listMaxLength = 2, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<ScheduleTimeZoneDto> scheduleTimeZone;
 
 	private String employeeId;
@@ -71,7 +73,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			return new ScheduleTimeZoneDto(sts.getWorkNo() == null ? null : sts.getWorkNo().v().intValue(),
 					sts.getAttendance() == null ? null : sts.getAttendance().v(),
 					sts.getLeaveWork() == null ? null : sts.getLeaveWork().v());
-		}).sorted((s1, s2) -> s1.getWorkNo().compareTo(s2.getWorkNo())).collect(Collectors.toList());
+		}).sorted((s1, s2) -> s1.getNo().compareTo(s2.getNo())).collect(Collectors.toList());
 	}
 
 	private static WorkInfoDto createWorkInfo(WorkInformation workInfo) {
@@ -104,7 +106,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
 				calculationState, goStraightAtr, backStraightAtr, date, dayOfWeek,
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
-						(c) -> new ScheduleTimeSheet(c.getWorkNo(),
+						(c) -> new ScheduleTimeSheet(c.getNo(),
 										c.getWorking() == null ? 0 : c.getWorking(), 
 										c.getLeave() == null ? 0 : c.getLeave())));
 	}

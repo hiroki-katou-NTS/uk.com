@@ -3,7 +3,12 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexCarryforwardTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexShortDeductTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,41 +18,41 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績のフレックス時間 */
-public class FlexTimeOfMonthlyDto {
+public class FlexTimeOfMonthlyDto implements ItemConst {
 
 	/** フレックス繰越時間: フレックス繰越時間 */
-	@AttendanceItemLayout(jpPropertyName = "フレックス繰越時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = CARRY_FORWARD, layout = LAYOUT_A)
 	private FlexCarryforwardTimeDto carryforwardTime;
 
 	/** フレックス時間: フレックス時間 */
-	@AttendanceItemLayout(jpPropertyName = "フレックス時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private FlexTimeMDto flexTime;
 
 	/** フレックス超過時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "フレックス超過時間", layout = "A")
-	private Integer excessTime;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = EXCESS + TIME, layout = LAYOUT_C)
+	private int excessTime;
 
 	/** フレックス不足控除時間: フレックス不足控除時間 */
-	@AttendanceItemLayout(jpPropertyName = "フレックス不足控除時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = SHORTAGE + DEDUCTION, layout = LAYOUT_D)
 	private FlexShortDeductTimeDto shortDeductTime;
 
 	/** フレックス不足時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "フレックス不足時間", layout = "A")
-	private Integer shortageTime;
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = SHORTAGE, layout = LAYOUT_E)
+	private int shortageTime;
 
 	/** 時間外超過のフレックス時間: 時間外超過のフレックス時間 */
-	@AttendanceItemLayout(jpPropertyName = "時間外超過のフレックス時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = EXCESS, layout = LAYOUT_F)
 	private FlexTimeOfExcessOutsideTimeDto excessOutsideTime;
 
 	public FlexTimeOfMonthly toDomain() {
-		return FlexTimeOfMonthly.of(flexTime == null ? null : flexTime.toDomain(),
-				excessTime == null ? null : new AttendanceTimeMonth(excessTime),
-				shortageTime == null ? null : new AttendanceTimeMonth(shortageTime),
-				carryforwardTime == null ? null : carryforwardTime.toDomain(),
-				excessOutsideTime == null ? null : excessOutsideTime.toDmain(),
-				shortDeductTime == null ? null : shortDeductTime.toDomain());
+		return FlexTimeOfMonthly.of(flexTime == null ? new FlexTime() : flexTime.toDomain(),
+				new AttendanceTimeMonth(excessTime),
+				new AttendanceTimeMonth(shortageTime),
+				carryforwardTime == null ? new FlexCarryforwardTime() : carryforwardTime.toDomain(),
+				excessOutsideTime == null ? new FlexTimeOfExcessOutsideTime() : excessOutsideTime.toDmain(),
+				shortDeductTime == null ? new FlexShortDeductTime() : shortDeductTime.toDomain());
 	}
 
 	public static FlexTimeOfMonthlyDto from(FlexTimeOfMonthly domain) {

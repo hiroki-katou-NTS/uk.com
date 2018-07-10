@@ -89,7 +89,7 @@ public class SaveVacationHistCommandHandler extends CommandHandler<VacationHisto
 		}
 		
 		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(),
-				new OptionalMaxDay(command.getMaxDay()), command.getVacationHistory().getHistoryId(),
+				new OptionalMaxDay(command.getMaxDay()), 
 				command.getVacationHistory().getStartDate(), command.getVacationHistory().getEndDate());
 		
 		//check validate

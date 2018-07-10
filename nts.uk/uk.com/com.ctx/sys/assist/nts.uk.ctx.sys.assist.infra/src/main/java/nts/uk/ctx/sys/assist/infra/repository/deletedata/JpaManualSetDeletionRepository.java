@@ -41,7 +41,7 @@ public class JpaManualSetDeletionRepository extends JpaRepository implements Man
 	@Override
 	public void addManualSetting(ManualSetDeletion domain) {
 		this.commandProxy().insert(SspdtManualSetDeletion.toEntity(domain));
-
+		this.getEntityManager().flush();
 	}
 	
 }

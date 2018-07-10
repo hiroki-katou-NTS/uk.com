@@ -10,8 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;

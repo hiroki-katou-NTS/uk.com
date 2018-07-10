@@ -18,6 +18,7 @@
 		<jar-file>lib/nts.uk.ctx.sys.portal.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.shared.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.assist.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.sys.log.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.query.infra.jar</jar-file>
 		
 		<jar-file>lib/nts.uk.ctx.at.auth.infra.jar</jar-file>

@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -326,6 +327,37 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		BsEmploymentHistoryImport bsEmploymentHist = optBsEmploymentHist.get();
 		//対応するドメインモデル「雇用に紐づく就業締め」を取得する (Lấy về domain model "Thuê" tương ứng)
 		Optional<ClosureEmployment> optClosureEmployment= closureEmploymentRepo.findByEmploymentCD(companyId, bsEmploymentHist.getEmploymentCode());
+		if(!optClosureEmployment.isPresent()) {
+			return null;
+		}
+		ClosureEmployment closureEmp = optClosureEmployment.get();
+		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
+		Optional<Closure> optClosure = closureRepository.findById(companyId, closureEmp.getClosureId());
+		if(!optClosure.isPresent()) {
+			return null;
+		}
+		
+		return optClosure.get();
+	}
+
+	@Override
+	public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
+		// 社員に対応する処理締めを取得する.
+		Closure closure = this.getClosureDataByEmployee(employeeId, baseDate);
+		if(closure == null) {
+			return null;
+		}
+		CurrentMonth currentMonth = closure.getClosureMonth();
+		
+		// 当月の期間を算出する.
+		return this.getClosurePeriod(
+				closure.getClosureId().value, currentMonth.getProcessingYm());
+	}
+
+	@Override
+	public Closure getClosurByEmployment(String employmentCd) {
+		String companyId = AppContexts.user().companyId();
+		Optional<ClosureEmployment> optClosureEmployment= closureEmploymentRepo.findByEmploymentCD(companyId, employmentCd);
 		if(!optClosureEmployment.isPresent()) {
 			return null;
 		}

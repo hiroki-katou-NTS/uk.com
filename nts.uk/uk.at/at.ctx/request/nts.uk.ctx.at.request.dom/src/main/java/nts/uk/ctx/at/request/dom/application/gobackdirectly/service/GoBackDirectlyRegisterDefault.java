@@ -10,10 +10,10 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
@@ -42,15 +42,12 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-	
 
 	/**
 	 * 
 	 */
 	@Override
-	public void register(GoBackDirectly goBackDirectly, Application_New application) {
+	public ProcessResult register(GoBackDirectly goBackDirectly, Application_New application) {
 		String employeeID = application.getEmployeeID();
 		//アルゴリズム「直行直帰登録」を実行する		
 		goBackDirectRepo.insert(goBackDirectly);
@@ -58,7 +55,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		// 2-2.新規画面登録時承認反映情報の整理
 		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		newAfterRegister.processAfterRegister(application);
+		return newAfterRegister.processAfterRegister(application);
 		
 	}
 

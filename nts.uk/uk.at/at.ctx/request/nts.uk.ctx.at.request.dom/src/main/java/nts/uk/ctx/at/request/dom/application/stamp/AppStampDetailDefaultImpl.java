@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -9,6 +7,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 /**
  * 
  * @author Doan Duy Hung
@@ -47,13 +46,13 @@ public class AppStampDetailDefaultImpl implements AppStampDetailDomainService {
 	}
 
 	@Override
-	public List<String> appStampUpdate(String applicationReason, AppStamp appStamp) {
+	public ProcessResult appStampUpdate(String applicationReason, AppStamp appStamp) {
 		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
 		return appStampUpdateProcess(appStamp);
 	}
 	
-	private List<String> appStampUpdateProcess(AppStamp appStamp) {
+	private ProcessResult appStampUpdateProcess(AppStamp appStamp) {
 		detailBeforeProcessRegister.processBeforeDetailScreenRegistration(
 				appStamp.getApplication_New().getCompanyID(), 
 				appStamp.getApplication_New().getEmployeeID(), 

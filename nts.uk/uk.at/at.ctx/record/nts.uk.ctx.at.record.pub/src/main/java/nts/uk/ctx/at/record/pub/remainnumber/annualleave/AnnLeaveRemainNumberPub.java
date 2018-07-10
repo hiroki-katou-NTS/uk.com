@@ -25,6 +25,13 @@ public interface AnnLeaveRemainNumberPub {
 	List<AggrResultOfAnnualLeaveEachMonth> getAnnLeaveRemainAfterThisMonth(String employeeId, DatePeriod datePeriod);
 	
 	/**
+	 * RequestList #No.369
+	 * @param employeeId
+	 * @return
+	 */
+	NextHolidayGrantDate getNextHolidayGrantDate(String companyId, String employeeId);	
+
+	/**
 	 * RequestList198
 	 * 基準日時点の年休残数を取得する
 	 * @param employeeID

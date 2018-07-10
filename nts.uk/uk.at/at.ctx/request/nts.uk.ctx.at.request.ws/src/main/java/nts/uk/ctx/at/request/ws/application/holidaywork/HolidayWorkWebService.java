@@ -7,8 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.Value;
-import nts.arc.layer.app.command.JavaTypeResult;
+import lombok.Data;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
@@ -19,9 +18,12 @@ import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWo
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamGetHolidayWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkParamHoliday;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @Path("at/request/application/holidaywork")
@@ -38,8 +40,8 @@ public class HolidayWorkWebService extends WebService{
 	
 	@POST
 	@Path("getHolidayWorkByUI")
-	public AppHolidayWorkDto getOvertimeByUIType(Param param) {
-		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType());
+	public AppHolidayWorkDto getOvertimeByUIType(ParamGetHolidayWork param) {
+		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID());
 	}
 	@POST
 	@Path("findChangeAppDate")
@@ -63,9 +65,8 @@ public class HolidayWorkWebService extends WebService{
 	}
 	@POST
 	@Path("create")
-	public JavaTypeResult<String> createHolidayWork(CreateHolidayWorkCommand command){
-		JavaTypeResult<String>  test = new JavaTypeResult<String>(createHolidayWorkCommandHandler.handle(command)); 
-		return test;
+	public ProcessResult createHolidayWork(CreateHolidayWorkCommand command){
+		return createHolidayWorkCommandHandler.handle(command);
 	}
 	@POST
 	@Path("checkBeforeRegister")
@@ -84,27 +85,13 @@ public class HolidayWorkWebService extends WebService{
 	}
 	@POST
 	@Path("update")
-	public List<String> updateHolidayWork(UpdateHolidayWorkCommand command){
-		List<String>  test = updateHolidayWorkCommandHandle.handle(command); 
-		return test;
+	public ProcessResult updateHolidayWork(UpdateHolidayWorkCommand command){
+		return updateHolidayWorkCommandHandle.handle(command);
 	}
 	@POST
 	@Path("getRecordWork")
-	public RecordWorkDto getRecordWork(RecordWorkParam param) {
+	public RecordWorkDto getRecordWork(RecordWorkParamHoliday param) {
 		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours());
 	}
 	
-}
-@Value
-class Param{
-	private String appDate;
-	private int uiType;
-}
-@Value
-class RecordWorkParam {
-	public String employeeID; 
-	public String appDate;
-	public String siftCD;
-	public int prePostAtr;
-	public List<CaculationTime> breakTimeHours;
 }

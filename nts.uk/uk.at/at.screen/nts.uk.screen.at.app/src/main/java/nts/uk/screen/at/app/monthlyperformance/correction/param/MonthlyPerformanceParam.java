@@ -48,4 +48,6 @@ public class MonthlyPerformanceParam {
 	 * List item(in all sheet) to be display	
 	 */
 	private Map<Integer, PAttendanceItem> lstAtdItemUnique;
+	
+	private Integer yearMonth;
 }

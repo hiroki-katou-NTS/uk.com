@@ -331,7 +331,10 @@ module nts.uk.com.view.cmm013.a {
                 if (!_self.validate()) {
                     return;
                 }
-
+                $('.nts-input').ntsEditor('validate');
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 nts.uk.ui.block.grayout();
                 service.saveJobTitle(_self.toJSON())
                     .done(() => {

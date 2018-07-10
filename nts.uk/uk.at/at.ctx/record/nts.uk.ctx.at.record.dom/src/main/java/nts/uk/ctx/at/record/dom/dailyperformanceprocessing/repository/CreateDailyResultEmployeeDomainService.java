@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -17,7 +21,9 @@ public interface CreateDailyResultEmployeeDomainService {
 
 	ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
-			boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport);
+			boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport, Optional<StampReflectionManagement> stampReflectionManagement,
+			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem);
 	/**
 	 * create method for kbt002 call
 	 * @param asyncContext
@@ -31,6 +37,6 @@ public interface CreateDailyResultEmployeeDomainService {
 	 */
 	ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
-			boolean reCreateWorkType);
+			boolean reCreateWorkType, Optional<StampReflectionManagement> stampReflectionManagement);
 
 }

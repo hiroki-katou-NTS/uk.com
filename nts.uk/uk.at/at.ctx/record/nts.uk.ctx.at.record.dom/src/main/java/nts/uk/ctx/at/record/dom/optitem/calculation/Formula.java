@@ -10,6 +10,8 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
@@ -167,18 +169,81 @@ public class Formula extends AggregateRoot {
 	 * @param resultCalcFormula 計算結果(List)
 	 * @return 計算式の結果クラス
 	 */
-	public ResultOfCalcFormula dicisionCalc(OptionalItem optionalItem ,PerformanceAtr performanceAtr,List<ResultOfCalcFormula> resultCalcFormula) {
-		int calcValue = 0;
-		if(this.getCalcAtr().isItemSelection()) {
-			//計算式による計算
+	public ResultOfCalcFormula dicisionCalc(OptionalItem optionalItem,
+											PerformanceAtr performanceAtr,
+											List<ResultOfCalcFormula> resultCalcFormula,
+											Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
+											Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
+		double calcValue = 0;
+		if(this.getCalcAtr().isFormulaSetting()) {
+			if(this.calcFormulaSetting.getFormulaSetting().isPresent()) {
+				//計算式による計算
+				calcValue = this.calcFormulaSetting.getFormulaSetting().get().calculationBycalculationFormula(resultCalcFormula, optionalItem.getOptionalItemAtr());
+			}else {
+				//計算式設定が取得できない場合は0 ← これで良い？
+				calcValue = 0;
+			}
 		}
-		else if(this.getCalcAtr().isFormulaSetting()) {
-			//項目選択による計算
+		else if(this.getCalcAtr().isItemSelection()) {
+			if(this.calcFormulaSetting.getItemSelection().isPresent()) {
+				//項目選択による計算
+				calcValue = this.calcFormulaSetting.getItemSelection().get().calculationByItemSelection(performanceAtr, dailyRecordDto, monthlyRecordDto);
+			}else {
+				//計算項目選択が取得できない場合は0 ← これで良い？
+				calcValue = 0;
+			}
 		}
 		else {
 			throw new RuntimeException("unknown FormulaSetting"+ this.getCalcAtr());
 		}
 		
-		return ResultOfCalcFormula.of(formulaId,this.formulaAtr, calcValue);
+		//丸め処理
+		calcValue = calcRounding(calcValue,performanceAtr);
+			
+//		return ResultOfCalcFormula.of(formulaId,this.formulaAtr, calcValue);
+		return ResultOfCalcFormula.of(formulaId,optionalItem.getOptionalItemAtr(), calcValue);
 	}
+	
+	
+	public double calcRounding(double calcValue,PerformanceAtr performanceAtr){
+		if(performanceAtr.isDailyPerformance()) {
+			if(this.dailyRounding.isPresent()) {
+				double result = calcValue;
+				switch(this.formulaAtr) {
+				case TIME:
+					result = this.dailyRounding.get().getTimeRounding().round((int)calcValue);
+					return result;
+				case NUMBER:
+					result = this.dailyRounding.get().getNumberRounding().round(calcValue);
+					return result;
+				case AMOUNT:
+					result = this.dailyRounding.get().getAmountRounding().round(calcValue);
+					return result;
+				default:
+					throw new RuntimeException("unknown optionalItemAtr:" + this.formulaAtr);			
+				}
+			}
+			return calcValue;
+		}else{
+			if(this.monthlyRounding.isPresent()) {
+				double result = calcValue;
+				switch(this.formulaAtr) {
+				case TIME:
+					result = this.monthlyRounding.get().getTimeRounding().round((int)calcValue);
+					return result;
+				case NUMBER:
+					result = this.monthlyRounding.get().getNumberRounding().round(calcValue);
+					return result;
+				case AMOUNT:
+					result = this.monthlyRounding.get().getAmountRounding().round(calcValue);
+					return result;
+				default:
+					throw new RuntimeException("unknown optionalItemAtr:" + this.formulaAtr);
+					
+				}
+			}
+			return calcValue;
+		}
+	}
+	
 }

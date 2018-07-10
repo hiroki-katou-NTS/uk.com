@@ -16,7 +16,7 @@ public class AppStampWorkCmd {
 	
 	private String supportCard;
 		
-	private String supportLocationCD;
+	private String supportLocation;
 	
 	private Integer startTime;
 	

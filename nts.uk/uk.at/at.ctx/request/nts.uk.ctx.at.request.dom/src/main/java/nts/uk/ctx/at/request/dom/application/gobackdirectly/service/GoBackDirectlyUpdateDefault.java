@@ -1,29 +1,21 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 
 @Stateless
@@ -88,13 +80,13 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	 * アルゴリズム「直行直帰更新」を実行する
 	 */
 	@Override
-	public void updateGoBackDirectly(GoBackDirectly goBackDirectly, Application_New application, Long version) {
+	public ProcessResult updateGoBackDirectly(GoBackDirectly goBackDirectly, Application_New application, Long version) {
 		// ドメインモデル「直行直帰申請」の更新する
 		this.goBackDirectlyRepo.update(goBackDirectly);
 		application.setVersion(version);
 		appRepo.updateWithVersion(application);
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		this.detailAfterUpdate.processAfterDetailScreenRegistration(application);
+		return this.detailAfterUpdate.processAfterDetailScreenRegistration(application);
 	}
 
 }

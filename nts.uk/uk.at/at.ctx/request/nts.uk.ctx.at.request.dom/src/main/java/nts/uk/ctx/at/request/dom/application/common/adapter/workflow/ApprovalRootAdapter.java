@@ -36,4 +36,6 @@ public interface ApprovalRootAdapter {
 	 * @param jobTitleId
 	 */
 	List<ApproverInfoImport> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId);
+	
+	Integer getCurrentApprovePhase(String rootStateID, Integer rootType);
 }

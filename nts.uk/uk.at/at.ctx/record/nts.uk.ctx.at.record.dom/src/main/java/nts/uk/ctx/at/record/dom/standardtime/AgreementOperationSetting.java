@@ -18,25 +18,32 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 
 /**
- * 
+ * ３６協定運用設定
  * @author nampt
  *
  */
 @Getter
 public class AgreementOperationSetting extends AggregateRoot {
 
+	/**会社ID**/
 	private String companyId;
 
+	/** ３６協定起算月 **/
 	private StartingMonthType startingMonth;
 
+	/** ３６協定超過上限回数 **/
 	private TimeOverLimitType numberTimesOverLimitType;
 
+	/** ３６協定締め日 **/
 	private ClosingDateType closingDateType;
 
+	/** ３６協定締め日区分 **/
 	private ClosingDateAtr closingDateAtr;
 
+	/** ３６協定対象設定 - 年間勤務表 **/
 	private TargetSettingAtr yearlyWorkTableAtr;
 
+	/** ３６協定対象設定 - アラームリスト **/
 	private TargetSettingAtr alarmListAtr;
 
 	public AgreementOperationSetting(String companyId, StartingMonthType startingMonth,

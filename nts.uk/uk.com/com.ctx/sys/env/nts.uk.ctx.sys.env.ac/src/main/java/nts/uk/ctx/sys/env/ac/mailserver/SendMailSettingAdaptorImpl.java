@@ -14,8 +14,6 @@ import nts.gul.mail.send.setting.SendMailAuthenticationMethod;
 import nts.gul.mail.send.setting.SendMailEncryptedConnectionType;
 import nts.gul.mail.send.setting.SendMailSetting;
 import nts.gul.misc.ServerLocator;
-import nts.uk.ctx.sys.env.dom.mailserver.AuthenticationMethod;
-import nts.uk.ctx.sys.env.dom.mailserver.EncryptionMethod;
 import nts.uk.ctx.sys.env.dom.mailserver.MailServer;
 import nts.uk.ctx.sys.env.dom.mailserver.MailServerRepository;
 import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
@@ -56,15 +54,36 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 		int secondsToTimeout = 60;
 		SendMailAuthenticationMethod authenticationMethod = SendMailAuthenticationMethod.NONE;
 		if (UseAuthentication.USE.equals(mailServer.getUseAuthentication())) {
-			authenticationMethod = this
-					.switchAuthenticationMethodEnum(mailServer.getAuthenticationMethod());
+			switch (mailServer.getAuthenticationMethod()) {
+			case POP_BEFORE_SMTP:
+				authenticationMethod =  SendMailAuthenticationMethod.POP_BEFORE_SMTP;
+			case IMAP_BEFORE_SMTP:
+				authenticationMethod =  SendMailAuthenticationMethod.IMAP_BEFORE_SMTP;
+			case SMTP_AUTH_LOGIN:
+				authenticationMethod =  SendMailAuthenticationMethod.SMTP_AUTH_LOGIN;
+			case SMTP_AUTH_PLAIN:
+				authenticationMethod =  SendMailAuthenticationMethod.SMTP_AUTH_PLAIN;
+			case SMTP_AUTH_CRAM_MD5:
+				authenticationMethod =  SendMailAuthenticationMethod.SMTP_AUTH_MD5;
+			default:
+				authenticationMethod =  SendMailAuthenticationMethod.NONE;
+			}
 		}
 
 		Optional<SendMailAuthenticationAccount> authenticationAccount = Optional
 				.of(new SendMailAuthenticationAccount(mailServer.getEmailAuthentication().v(),
 						mailServer.getPassword().v()));
-		Optional<SendMailEncryptedConnectionType> encryptionType = Optional
-				.of(this.switchEncryptionTypeEnum(mailServer.getEncryptionMethod()));
+		
+		SendMailEncryptedConnectionType encryptType = SendMailEncryptedConnectionType.NONE;
+		switch (mailServer.getEncryptionMethod()) {
+		case TSL:
+			encryptType = SendMailEncryptedConnectionType.TLS;
+		case SSL:
+			encryptType = SendMailEncryptedConnectionType.SSL;
+		default:
+			encryptType = SendMailEncryptedConnectionType.NONE;
+		}
+		Optional<SendMailEncryptedConnectionType> encryptionType = Optional.of(encryptType);
 		ServerLocator serverLocator = null;
 
 		// Get info
@@ -90,49 +109,5 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 				authenticationMethod, authenticationAccount, authenticationServer, encryptionType);
 
 		return new UkSendMailSetting(sendMailSetting, mailServer.getEmailAuthentication().v());
-	}
-
-	/**
-	 * Switch authentication method enum.
-	 *
-	 * @param authenticationMethod
-	 *            the authentication method
-	 * @return the send mail authentication method
-	 */
-	private SendMailAuthenticationMethod switchAuthenticationMethodEnum(
-			AuthenticationMethod authenticationMethod) {
-		switch (authenticationMethod) {
-		case POP_BEFORE_SMTP:
-			return SendMailAuthenticationMethod.POP_BEFORE_SMTP;
-		case IMAP_BEFORE_SMTP:
-			return SendMailAuthenticationMethod.IMAP_BEFORE_SMTP;
-		case SMTP_AUTH_LOGIN:
-			return SendMailAuthenticationMethod.SMTP_AUTH_LOGIN;
-		case SMTP_AUTH_PLAIN:
-			return SendMailAuthenticationMethod.SMTP_AUTH_PLAIN;
-		case SMTP_AUTH_CRAM_MD5:
-			return SendMailAuthenticationMethod.SMTP_AUTH_MD5;
-		default:
-			return SendMailAuthenticationMethod.NONE;
-		}
-	}
-
-	/**
-	 * Switch encryption type enum.
-	 *
-	 * @param encryptionMethod
-	 *            the encryption method
-	 * @return the send mail encrypted connection type
-	 */
-	private SendMailEncryptedConnectionType switchEncryptionTypeEnum(
-			EncryptionMethod encryptionMethod) {
-		switch (encryptionMethod) {
-		case TSL:
-			return SendMailEncryptedConnectionType.TLS;
-		case SSL:
-			return SendMailEncryptedConnectionType.SSL;
-		default:
-			return SendMailEncryptedConnectionType.NONE;
-		}
 	}
 }

@@ -591,6 +591,8 @@ module nts.uk.at.view.ksm006.a {
                                 }
                                 blockUI.clear();
                             });
+                            
+                            self.selectedWorkplaceId.valueHasMutated();
 
                             $('#workplace-list').focus();
                         });
@@ -844,7 +846,7 @@ module nts.uk.at.view.ksm006.a {
                             }
                             self.worktypeCode(childData.selectedWorkTypeCode);
                             self.worktypeDisplayName(childData.selectedWorkTypeName);
-                            if (childData.selectedWorkTimeCode == '000' || !childData.selectedWorkTimeCode) {
+                            if (!childData.selectedWorkTimeCode) {
                                 self.workingCode(null);
                                 self.workingDisplayName(null);
                             } else {

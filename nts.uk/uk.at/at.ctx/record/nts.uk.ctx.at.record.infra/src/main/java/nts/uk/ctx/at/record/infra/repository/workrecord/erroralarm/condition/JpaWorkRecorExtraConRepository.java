@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtWo
 public class JpaWorkRecorExtraConRepository extends JpaRepository implements WorkRecordExtraConRepository  {
 
 	
-	private final String SELECT_FROM_WORK_RECORD = " SELECT c FROM KrcmtWorkRecordExtraCon c ";
-	private final String SELECT_FROM_WORK_RECORD_BY_ID = SELECT_FROM_WORK_RECORD 
+	private static final String SELECT_FROM_WORK_RECORD = " SELECT c FROM KrcmtWorkRecordExtraCon c ";
+	private static final String SELECT_FROM_WORK_RECORD_BY_ID = SELECT_FROM_WORK_RECORD 
 			+ " WHERE c.errorAlarmCheckID = :errorAlarmCheckID ";
 	
 	@Override
@@ -60,7 +60,7 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 		this.commandProxy().remove(KrcmtWorkRecordExtraCon.class,errorAlarmCheckID);
 		
 	}
-	private final String SELECT_WREC_BY_LIST_ID = "SELECT c FROM KrcmtWorkRecordExtraCon c WHERE c.errorAlarmCheckID IN :listErrorAlarmID";
+	private static final String SELECT_WREC_BY_LIST_ID = "SELECT c FROM KrcmtWorkRecordExtraCon c WHERE c.errorAlarmCheckID IN :listErrorAlarmID";
 	@Override
 	public List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID) {
 		List<WorkRecordExtractingCondition> datas = new ArrayList<>();

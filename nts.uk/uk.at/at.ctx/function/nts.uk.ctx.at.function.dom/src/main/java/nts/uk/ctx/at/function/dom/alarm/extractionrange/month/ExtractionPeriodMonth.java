@@ -26,4 +26,14 @@ public class ExtractionPeriodMonth extends ExtractionRangeBase{
 		this.endMonth = endMonth;
 		this.numberOfMonth = numberOfMonth;
 	}
+	
+	public boolean isOneMonth() {
+		return this.numberOfMonth == NumberOfMonth.ONE_MONTH;
+	}
+	public boolean isTwoMonth() {
+		return this.numberOfMonth == NumberOfMonth.TWO_MONTH;
+	}
+	public boolean isThreeMonth() {
+		return this.numberOfMonth == NumberOfMonth.THREE_MONTH;
+	}
 }

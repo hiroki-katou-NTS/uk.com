@@ -29,7 +29,7 @@ module cps002.i.vm {
             $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                 $(".checkbox-holder").show();
             });
-
+            $(".upload-btn").focus();
 
         }
         start() {

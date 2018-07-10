@@ -34,78 +34,115 @@
 					<button id="register-button" class="proceed" data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_3')}</button>
 					<button id = "delete-button" class="danger" data-bind="click: remove, enable: !isNewMode() &amp;&amp; selectedErrorAlarm().fixedAtr() != 1 ">#{i18n.getText('KDW007_4')}</button>
 				</div>
-				<div id="contents-area">
-					<com:ko-if bind="screenMode() == 0">
-						<div id="showtypeCbb" data-bind="ntsComboBox: {
-							options: enumShowTypeAtr,
-							optionsValue: 'code',
-							value: showTypeAtr,
-							optionsText: 'name',
-							enable: true,
-							columns: [
-								{ prop: 'name', length: 10 },
-							]}"></div><br/>
-					</com:ko-if>
-					<table id="lstErrorAlarm" data-bind="ntsGridList: {								
-						height: 370,
-						dataSource: lstFilteredData,
-						primaryKey: 'code',
-						columns: gridListColumns,
-						multiple: false,
-						value: selectedErrorAlarmCode
-					}"></table>
-					<div id="right-content">
-						<com:ko-if bind="!isNewMode()">
-							<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCode', required: true}">#{i18n.getText('KDW007_6')}</div>
-							<input id="errorAlarmWorkRecordCode" class="need-check" data-bind="ntsTextEditor: {
-								name: '#[KDW007_6]',
-								value: selectedErrorAlarm().code,
-								constraint: 'ErrorAlarmWorkRecordCode',
-								required: true,
-								enable: isNewMode
-								}" />
+				<div id="contents-area" class="fixed-flex-layout">
+					<div class="fixed-flex-layout-left">
+						<com:ko-if bind="screenMode() == 0">
+							<div id="showtypeCbb" data-bind="ntsComboBox: {
+								options: enumShowTypeAtr,
+								optionsValue: 'code',
+								value: showTypeAtr,
+								optionsText: 'name',
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}"></div><br/>
 						</com:ko-if>
-						<com:ko-if bind="isNewMode">
-							<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCodeNewMode', required: true}">#{i18n.getText('KDW007_6')}</div>
-							<input id="errorAlarmWorkRecordCode" class="need-check" data-bind="ntsTextEditor: {
-								name: '#[KDW007_6]',
-								value: selectedErrorAlarm().code,
-								constraint: 'ErrorAlarmWorkRecordCodeNewMode',
+						<table id="lstErrorAlarm" data-bind="ntsGridList: {								
+							height: 370,
+							dataSource: lstFilteredData,
+							primaryKey: 'code',
+							columns: gridListColumns,
+							multiple: false,
+							value: selectedErrorAlarmCode
+						}"></table>
+					</div>
+					
+					<div class="fixed-flex-layout-right">
+						<div class="valign-center control-group">
+							<com:ko-if bind="!isNewMode()">
+								<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCode', required: true}">#{i18n.getText('KDW007_6')}</div>
+								<input id="errorAlarmWorkRecordCode" class="need-check" data-bind="ntsTextEditor: {
+									name: '#[KDW007_6]',
+									value: selectedErrorAlarm().code,
+									constraint: 'ErrorAlarmWorkRecordCode',
+									required: true,
+									enable: isNewMode
+									}" />
+							</com:ko-if>
+							<com:ko-if bind="isNewMode">
+								<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCodeNewMode', required: true}">#{i18n.getText('KDW007_6')}</div>
+								<input id="errorAlarmWorkRecordCode" class="need-check" data-bind="ntsTextEditor: {
+									name: '#[KDW007_6]',
+									value: selectedErrorAlarm().code,
+									constraint: 'ErrorAlarmWorkRecordCodeNewMode',
+									required: true,
+									enable: isNewMode
+									}" />
+							</com:ko-if>
+							<div id="labelName" data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordName', required: true}">#{i18n.getText('KDW007_7')}</div>
+							<input id="errorAlarmWorkRecordName" class="need-check" data-bind="ntsTextEditor: {
+							    name: '#[KDW007_7]',
+								value: selectedErrorAlarm().name,
+								constraint: 'ErrorAlarmWorkRecordName',
 								required: true,
-								enable: isNewMode
+								enable: true
 								}" />
-						</com:ko-if>
-						<div id="labelName" data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordName', required: true}">#{i18n.getText('KDW007_7')}</div>
-						<input id="errorAlarmWorkRecordName" class="need-check" data-bind="ntsTextEditor: {
-						    name: '#[KDW007_7]',
-							value: selectedErrorAlarm().name,
-							constraint: 'ErrorAlarmWorkRecordName',
-							required: true,
-							enable: true
-							}" /><br/>
-						<div id="labelUseAtr" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_8')}</div>
-						<div id="useAtr" class="cf" data-bind="ntsSwitchButton: {
-							options: listUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: selectedErrorAlarm().useAtr,
-							enable: true }"></div><br/>
+						</div>
+						<div class="valign-center control-group">	
+							<div id="labelUseAtr" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_8')}</div>
+							<div id="useAtr" class="cf" data-bind="ntsSwitchButton: {
+								options: listUseAtr,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedErrorAlarm().useAtr,
+								enable: true }"></div>
+						</div>
 						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<!-- Tab 1 -->
 							<div class="settingTab">
-								<div id="type-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_10')}</div>
-								<div id="typeAtr" class="cf" data-bind="ntsSwitchButton: {
-									options: listTypeAtr,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: selectedErrorAlarm().typeAtr,
-									enable: selectedErrorAlarm().fixedAtr() != 1 }"></div><br/>
-								<span id="noticed-label">#{i18n.getText('KDW007_91')}</span><br/>
-								<div id="color-display-target-item-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_11')}</div>
-								<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_12')}</button>
-								<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span><br/>
-								<div id="color-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
-								<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/><br/>
+								<div class="valign-center control-group">
+									<div id="type-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_10')}</div>
+									<div id="typeAtr" class="cf" data-bind="ntsSwitchButton: {
+										options: listTypeAtr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedErrorAlarm().typeAtr,
+										enable: selectedErrorAlarm().fixedAtr() != 1 }"></div>
+								</div>
+									
+								<div class="label" id="noticed-label">#{i18n.getText('KDW007_91')}</div>
+								
+								<div class="valign-center control-group">
+									<div id="remark-cancel-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_105')}</div>
+									<div id="remarkCancelErrorInput" class="cf" data-bind="ntsSwitchButton: {
+										options: listRemarkCancelErrorInput,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedErrorAlarm().remarkCancelErrorInput,
+										enable: true }"></div>
+									<div id="remark-no-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_106')}</div>
+									<div id="remarkColumnNo" data-bind="ntsComboBox: {
+										options: listRemarkColumnNo,
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										value: selectedErrorAlarm().remarkColumnNo,
+										width: '150px',
+										optionsText: 'name',
+										selectFirstIfNull: true,
+										enable: selectedErrorAlarm().remarkCancelErrorInput() == 1,
+										columns: [
+											{ prop: 'name', length: 10 }
+										]}"></div>
+								</div>
+								<div class="valign-center control-group">
+									<div id="color-display-target-item-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_11')}</div>
+									<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_12')}</button>
+									<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span>
+								</div>
+								<div class="valign-center control-group">
+									<div id="color-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
+									<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/>
+								</div>
 								<div id="message-label" data-bind="ntsFormLabel: {constraint: 'DisplayMessage', required: false }">#{i18n.getText('KDW007_14')}</div>
 								<textarea id="messageDisplay" class="need-check" data-bind="ntsMultilineEditor: { 
 								    name: '#[KDW007_14]',
@@ -372,26 +409,35 @@
 		                            </tr>
 		                            <com:ko-foreach bind="selectedErrorAlarm().erAlAtdItemConditionGroup1">
 		                            	<tr>
-		                            		<com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
-				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
-				                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayTarget"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+		                            		<com:ko-if bind="$data.conditionType() == 0 || $data.conditionType() == 1">
+			                            		<com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
+					                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+					                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayTarget"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+				                            	</com:ko-if>
+				                            	<com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+				                            		<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+					                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+				                            	</com:ko-if>
+				                            	<com:ko-if bind="$data.compareOperator() &lt; 6">
+					                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+					                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+				                            	</com:ko-if>
 			                            	</com:ko-if>
-			                            	<com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+			                            	<com:ko-if bind="$data.conditionType() == 2">
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-			                            		<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
-				                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-			                            	</com:ko-if>
-			                            	<com:ko-if bind="$data.compareOperator() &lt; 6">
-				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: ''"></span></td>
 				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: ''"></span></td>
+			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: ''"></span></td>
 			                            	</com:ko-if>
 			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog.bind($data, $root.content.screenMode()), enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
 			                            	<td><button data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>
@@ -433,26 +479,35 @@
 		                            </tr>
 		                            <com:ko-foreach bind="selectedErrorAlarm().erAlAtdItemConditionGroup2">
 		                            	<tr>
-		                            		<com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
-				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
-				                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayTarget"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+	                            			<com:ko-if bind="$data.conditionType() == 0 || $data.conditionType() == 1">
+			                            		<com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
+					                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+					                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayTarget"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+				                            	</com:ko-if>
+				                            	<com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+				                            		<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+					                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+				                            	</com:ko-if>
+				                            	<com:ko-if bind="$data.compareOperator() &lt; 6">
+					                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+					                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
+					                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+				                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+				                            	</com:ko-if>
 			                            	</com:ko-if>
-			                            	<com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+			                            	<com:ko-if bind="$data.conditionType() == 2">
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-			                            		<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
-				                            	<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-			                            	</com:ko-if>
-			                            	<com:ko-if bind="$data.compareOperator() &lt; 6">
-				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: ''"></span></td>
 				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: ''"></span></td>
+			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: ''"></span></td>
 			                            	</com:ko-if>
 			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog.bind($data, $root.content.screenMode()), enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
 			                            	<td><button data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>

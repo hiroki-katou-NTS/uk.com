@@ -23,15 +23,15 @@ public class CompanyWtSettingFinder {
 	@Inject
 	private CompanyWtSettingRepository repository;
 
-	/** The company id. */
-	String companyId = AppContexts.user().companyId();
-
 	/**
 	 * Find.
 	 *
 	 * @return the company setting dto
 	 */
 	public CompanyWtSettingDto find(int year) {
+		/** The company id. */
+		String companyId = AppContexts.user().companyId();
+		
 		Optional<CompanyWtSetting> optCompanySetting = this.repository.find(companyId, year);
 		// Update mode.
 		if(optCompanySetting.isPresent()) {

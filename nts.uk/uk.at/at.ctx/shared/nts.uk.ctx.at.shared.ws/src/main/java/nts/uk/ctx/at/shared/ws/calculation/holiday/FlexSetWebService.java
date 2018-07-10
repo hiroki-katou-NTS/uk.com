@@ -3,12 +3,10 @@ package nts.uk.ctx.at.shared.ws.calculation.holiday;
  * @author phongtq
  */
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.flex.AddFlexSetCommand;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.flex.AddFlexSetCommandHandler;
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetFinder;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.InsufficientFlexHolidayMntDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.InsufficientFlexHolidayMntFinder;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 
 @Path("shared/caculation/holiday/flex")
 @Produces("application/json")

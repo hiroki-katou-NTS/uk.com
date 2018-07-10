@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.GetNextAnnLeaGrantDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 
 /**
  * 実装：次回年休付与年月日を取得する

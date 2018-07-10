@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 
 /**
  * @author hungnm
@@ -69,13 +70,15 @@ public class DailyPerformanceCorrectionDto {
 	
 	private IdentityProcessUseSetDto identityProcessDto;
 	
-	private FlexShortage flexShortage;
+	private DPMonthResult monthResult;
 	
 	private Integer showQuestionSPR;
 	
 	private ChangeSPR changeSPR;
 	
 	private List<TextStyle> textStyles;
+	
+	private Set<String> autBussCode;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -87,6 +90,7 @@ public class DailyPerformanceCorrectionDto {
 		this.dPErrorDto = new ArrayList<>();
 		this.changeSPR = new ChangeSPR(false, false);
 		this.textStyles = new ArrayList<>();
+		this.autBussCode = new HashSet<>();
 	}
 
 	/** Check if employeeId is login user */
@@ -119,7 +123,7 @@ public class DailyPerformanceCorrectionDto {
 //		if (existedCellState.isPresent()) {
 //			existedCellState.get().addState("ntsgrid-disable");
 //		} else {
-		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted")){
+		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted") && !header.getKey().equals("ApplicationList")){
 			int attendanceAtr = mapDP.get(Integer.parseInt(getID(header.getKey()))).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
@@ -169,6 +173,25 @@ public class DailyPerformanceCorrectionDto {
 		});
 	}
 
+	public void createModifierCellStateCaseRow(Map<Integer, DPAttendanceItem> mapDP, List<DPHeaderDto> lstHeader) {
+		this.getLstData().forEach(data -> {
+			boolean isLoginUser = isLoginUser(data.getEmployeeId());
+			lstHeader.forEach(header -> {
+				if (header.getChangedByOther() && !header.getChangedByYou()) {
+					if (isLoginUser) {
+						setDisableCell(header, data, mapDP);
+					}
+				} else if (!header.getChangedByOther() && header.getChangedByYou()) {
+					if (!isLoginUser) {
+						setDisableCell(header, data, mapDP);
+					}
+				} else if (!header.getChangedByOther() && !header.getChangedByYou()) {
+					setDisableCell(header, data, mapDP);
+				}
+			});
+		});
+	}
+	
 	/** Set Error/Alarm text and state for cell */
 	public void addErrorToResponseData(List<DPErrorDto> lstError, List<DPErrorSettingDto> lstErrorSetting, Map<Integer, DPAttendanceItem> mapDP) {
 		lstError.forEach(error -> {

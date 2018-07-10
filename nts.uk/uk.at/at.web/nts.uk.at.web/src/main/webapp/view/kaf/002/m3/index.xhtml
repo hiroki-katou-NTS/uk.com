@@ -2,7 +2,7 @@
 	<div class="cell m3-column1">
 		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_18')}</div>
 	</div>
-	<div class="cell" id="m3-div">
+	<div class="cell" id="m3-div" data-bind="let: { screenEditable: editable }">
 		<div id="m3-backgroud"></div>
 		<table id="m3-table">
 			<thead>
@@ -10,7 +10,7 @@
 					<td></td>
 					<td>
 						<span class="label m3-label">#{i18n.getText('KAF002_27')}</span>
-						<button data-bind="ntsHelpButton: {image: '/view/kaf/002/m3/m3-msg.PNG', position: 'right top', enable: true }">?</button>
+						<button data-bind="ntsHelpButton: {image: '/view/kaf/002/m3/m3-msg.PNG', position: 'right top', enable: screenEditable }">?</button>
 					</td>
 				</tr>
 			</thead>
@@ -26,13 +26,13 @@
 						<div class="cf m3-switch" data-bind="ntsSwitchButton: {
 							name: '#[KAF002_28]',
 							options: ko.observableArray([
-					            { code: 0, name: '#{i18n.getText('KAF002_36')}' },
-					            { code: 1, name: '#{i18n.getText('KAF002_37')}' }
+					            { code: 1, name: '#{i18n.getText('KAF002_36')}' },
+					            { code: 0, name: '#{i18n.getText('KAF002_37')}' }
 					        ]),
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: cancelAtr,
-							enable: true }"></div>
+							enable: screenEditable }"></div>
 					</td>
 				</tr>	
 			</tbody>

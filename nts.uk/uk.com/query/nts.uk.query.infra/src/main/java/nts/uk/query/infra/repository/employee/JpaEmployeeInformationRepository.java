@@ -30,12 +30,12 @@ import nts.uk.query.model.workplace.WorkplaceModel;
 @Stateless
 public class JpaEmployeeInformationRepository extends JpaRepository implements EmployeeInformationRepository {
 
-	private final String EMPLOYEE_QUERY = "SELECT e, p"
+	private static final String EMPLOYEE_QUERY = "SELECT e, p"
 			+ " FROM BsymtEmployeeDataMngInfo e"
 			+ " LEFT JOIN BpsmtPerson p ON p.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
-	private final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName"
+	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
 			+ " LEFT JOIN BsymtWorkplaceHist wh ON awhi.workPlaceId = wh.bsymtWorkplaceHistPK.wkpid"
@@ -46,7 +46,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND wh.strD <= :refDate"
 			+ " AND wh.endD >= :refDate";
 
-	private final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName"
+	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName"
 			+ " FROM BsymtAffJobTitleHist ajh"
 			+ " LEFT JOIN BsymtAffJobTitleHistItem ajhi ON ajhi.hisId = ajh.hisId"
 			+ " LEFT JOIN BsymtJobHist jh ON jh.bsymtJobHistPK.jobId = ajhi.jobTitleId"
@@ -57,7 +57,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND jh.startDate <= :refDate"
 			+ " AND jh.endDate >= :refDate";
 
-	private final String EMPLOYMENT_QUERY = "SELECT eh.sid, e.bsymtEmploymentPK.code, e.name "
+	private static final String EMPLOYMENT_QUERY = "SELECT eh.sid, e.bsymtEmploymentPK.code, e.name "
 			+ "FROM BsymtEmploymentHist eh "
 			+ "LEFT JOIN BsymtEmploymentHistItem ehi ON ehi.hisId = eh.hisId "
 			+ "LEFT JOIN BsymtEmployment e ON e.bsymtEmploymentPK.code = ehi.empCode "
@@ -65,7 +65,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ "AND eh.strDate <= :refDate "
 			+ "AND eh.endDate >= :refDate";
 
-	private final String CLASSIFICATION_QUERY = "SELECT ach.sid, c.bsymtClassificationPK.clscd, c.clsname "
+	private static final String CLASSIFICATION_QUERY = "SELECT ach.sid, c.bsymtClassificationPK.clscd, c.clsname "
 			+ "FROM BsymtAffClassHistory ach "
 			+ "LEFT JOIN BsymtAffClassHistItem achi ON achi.historyId = ach.historyId "
 			+ "LEFT JOIN BsymtClassification c ON c.bsymtClassificationPK.clscd = achi.classificationCode "
@@ -73,7 +73,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ "AND ach.startDate <= :refDate "
 			+ "AND ach.endDate >= :refDate";
 
-	private final String EMPCLS_QUERY = "SELECT wc.kshmtWorkingCondPK.sid, wci.laborSys "
+	private static final String EMPCLS_QUERY = "SELECT wc.kshmtWorkingCondPK.sid, wci.laborSys "
 			+ "FROM KshmtWorkingCond wc "
 			+ "LEFT JOIN KshmtWorkingCondItem wci ON wci.historyId = wc.kshmtWorkingCondPK.historyId "
 			+ "WHERE wc.kshmtWorkingCondPK.sid IN :listSid "

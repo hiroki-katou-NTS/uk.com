@@ -43,6 +43,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.TimeLeavingOfDailyP
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -103,63 +104,44 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	
 	@Override
 	public FinderFacade getFinder(String layout){
-		FinderFacade finder = null;
 		switch (layout) {
-		case "A":
-			finder = this.workInfoFinder;
-			break;
-		case "B":
-			finder = this.calcAttrFinder;
-			break;
-		case "C":
-			finder = this.affiliInfoFinder;
-			break;
-		case "D":
-			finder = this.businessTypeFinder;
-			break;
-		case "E":
-			finder = this.outingTimeFinder;
-			break;
-		case "F":
-			finder = this.breakItemFinder;
-			break;
-		case "G":
-			finder = this.attendanceTimeFinder;
-			break;
-		case "H":
-			finder = this.attendanceTimeByWorkFinder;
-			break;
-		case "I":
-			finder = this.timeLeavingFinder;
-			break;
-		case "J":
-			finder = this.shortWorkFinder;
-			break;
-		case "K":
-			finder = this.specificDateAttrFinder;
-			break;
-		case "L":
-			finder = this.attendanceLeavingGateFinder;
-			break;
-		case "M":
-			finder = this.optionalItemFinder;
-			break;
-		case "N":
-			finder = this.editStateFinder;
-			break;
-		case "O":
-			finder = this.temporaryTimeFinder;
-			break;
-		case "P":
-			finder = this.pcLogOnInfoFinder;
-			break;
-		case "Q":
-			finder = this.remarkFinder;
-			break;
+		case DAILY_WORK_INFO_CODE:
+			return this.workInfoFinder;
+		case DAILY_CALCULATION_ATTR_CODE:
+			return this.calcAttrFinder;
+		case DAILY_AFFILIATION_INFO_CODE:
+			return this.affiliInfoFinder;
+		case DAILY_BUSINESS_TYPE_CODE:
+			return this.businessTypeFinder;
+		case DAILY_OUTING_TIME_CODE:
+			return this.outingTimeFinder;
+		case DAILY_BREAK_TIME_CODE:
+			return this.breakItemFinder;
+		case DAILY_ATTENDANCE_TIME_CODE:
+			return this.attendanceTimeFinder;
+		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+			return this.attendanceTimeByWorkFinder;
+		case DAILY_ATTENDACE_LEAVE_CODE:
+			return this.timeLeavingFinder;
+		case DAILY_SHORT_TIME_CODE:
+			return this.shortWorkFinder;
+		case DAILY_SPECIFIC_DATE_ATTR_CODE:
+			return this.specificDateAttrFinder;
+		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+			return this.attendanceLeavingGateFinder;
+		case DAILY_OPTIONAL_ITEM_CODE:
+			return this.optionalItemFinder;
+		case DAILY_EDIT_STATE_CODE:
+			return this.editStateFinder;
+		case DAILY_TEMPORARY_TIME_CODE:
+			return this.temporaryTimeFinder;
+		case DAILY_PC_LOG_INFO_CODE:
+			return this.pcLogOnInfoFinder;
+		case DAILY_REMARKS_CODE:
+			return this.remarkFinder;
 		default:
-			break;
+			return null;
 		}
-		return finder;
 	}
 
 	@SuppressWarnings("unchecked")

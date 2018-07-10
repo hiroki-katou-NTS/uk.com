@@ -458,4 +458,11 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		this.commandProxy().remove(KshstSpecialHoliday.class, kshstSpecialHolidayPK);
 	}
 
+	@Override
+	public Optional<SpecialHoliday> findByCidHolidayCd(String cid, int specialCode) {
+		KshstGrantPeriodicPK key = new KshstGrantPeriodicPK(cid, specialCode);
+		return this.queryProxy().find(key, KshstSpecialHoliday.class).map(x -> convertToDomain(x));
+	}
+
+	
 }

@@ -22,8 +22,8 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageJobSetPK;
 @Stateless
 public class JpaTopPageJobSetRepository extends JpaRepository implements TopPageJobSetRepository {
 
-	private final String SEL = "SELECT a FROM CcgptTopPageJobSet a ";
-	private final String SEL_BY_LIST_JOB_ID = SEL
+	private static final String SEL = "SELECT a FROM CcgptTopPageJobSet a ";
+	private static final String SEL_BY_LIST_JOB_ID = SEL
 			+ "WHERE a.ccgptTopPageJobSetPK.companyId = :companyId AND a.ccgptTopPageJobSetPK.jobId IN :jobId";
 
 	public static TopPageJobSet toDomain(CcgptTopPageJobSet entity) {
@@ -101,5 +101,20 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		entity.loginMenuCls = MenuClassification.TopPage.value;
 		entity.system = System.COMMON.value;
 		this.commandProxy().update(entity);
+	}
+
+	private static final String REMOVE_TOP_PAGE_CODE = "UPDATE CcgptTopPageJobSet c "
+			+ "SET c.topMenuCd = '', "
+			+ "c.loginMenuCd = '' "
+			+ "WHERE c.ccgptTopPageJobSetPK.companyId = :companyId "
+			+ "AND c.topMenuCd = :topMenuCd "
+			+ "AND c.loginMenuCd = :loginMenuCd ";
+	@Override
+	public void removeTopPageCode(String companyID, String code) {
+		this.getEntityManager().createQuery(REMOVE_TOP_PAGE_CODE, CcgptTopPageJobSet.class)
+		.setParameter("companyId", companyID)
+		.setParameter("topMenuCd", code)
+		.setParameter("loginMenuCd", code)
+		.executeUpdate();
 	}
 }

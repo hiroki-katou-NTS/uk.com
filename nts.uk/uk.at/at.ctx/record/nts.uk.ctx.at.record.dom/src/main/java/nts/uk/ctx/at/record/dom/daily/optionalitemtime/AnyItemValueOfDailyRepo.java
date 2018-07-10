@@ -22,4 +22,6 @@ public interface AnyItemValueOfDailyRepo {
 	public void update(AnyItemValueOfDaily domain);
 
 	public void add(AnyItemValueOfDaily domain);
+	
+	public void remove(AnyItemValueOfDaily domain);
 }

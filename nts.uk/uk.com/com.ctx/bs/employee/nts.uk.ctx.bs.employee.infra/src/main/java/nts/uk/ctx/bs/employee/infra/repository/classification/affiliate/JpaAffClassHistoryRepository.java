@@ -28,15 +28,15 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaAffClassHistoryRepository extends JpaRepository implements AffClassHistoryRepository {
 
-	private static String GET_BY_EID = "select h from BsymtAffClassHistory h"
+	private static final String GET_BY_EID = "select h from BsymtAffClassHistory h"
 			+ " where h.sid = :sid and h.cid = :cid ORDER BY h.startDate";
 	
-	private static String GET_BY_EID_DESC = GET_BY_EID + " DESC";
+	private static final String GET_BY_EID_DESC = GET_BY_EID + " DESC";
 
-	private final String GET_BY_SID_DATE = "select h from BsymtAffClassHistory h"
+	private static final String GET_BY_SID_DATE = "select h from BsymtAffClassHistory h"
 			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
 	
-	private final String GET_BY_SID_LIST_PERIOD = "select h from BsymtAffClassHistory h"
+	private static final String GET_BY_SID_LIST_PERIOD = "select h from BsymtAffClassHistory h"
 			+ " where h.sid IN :employeeIds and h.startDate <= :endDate and h.endDate >= :startDate"
 			+ " ORDER BY h.sid, h.startDate";
 			

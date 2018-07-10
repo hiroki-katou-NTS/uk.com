@@ -3,7 +3,7 @@ module nts.uk.at.view.kmk010.a {
     export module service {
         var paths = {
             findAllOvertimeCalculationMethod: "ctx/at/shared/outsideot/setting/findAll/method",
-            findAllAttendanceItemOvertime: "ctx/at/shared/outsideot/setting/findAll/attendanceItem",
+            findAllAttendanceItemOvertime: "at/share/attendanceType/getAtdId",
             findAllOvertimeUnit: "ctx/at/shared/outsideot/setting/findAll/unit",
             findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/rounding",
             findAllOvertimeRoundingSub: "ctx/at/shared/outsideot/setting/findAll/roundingsub",
@@ -16,6 +16,7 @@ module nts.uk.at.view.kmk010.a {
             findAllOvertimeLanguageBRDItem : "ctx/at/shared/outsideot/breakdown/language/findAll",
             findAllOutsideOTBRDItem : "ctx/at/shared/outsideot/breakdown/findAll",
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
+            findAllMonthlyAttendanceItem: "at/record/businesstype/attendanceItem/getMonthlyAttendanceItems",
             checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage",
             exportOutsideOTSettingExcelMasterList: "/masterlist/report/print"
         }
@@ -105,6 +106,13 @@ module nts.uk.at.view.kmk010.a {
          */
         export function findAllDailyAttendanceItem(): JQueryPromise<model.DailyAttendanceItemDto[]> {
             return nts.uk.request.ajax('at', paths.findAllDailyAttendanceItem);
+        }
+        
+        /**
+         * call service find all monthly attendance item
+         */
+        export function findAllMonthlyAttendanceItem(): JQueryPromise<model.DailyAttendanceItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllMonthlyAttendanceItem);
         }
 
         /**

@@ -38,7 +38,7 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 	@Override
 	public void add(ManagementDeletion domain) {
 		this.commandProxy().insert(SspdtManagementDeletion.toEntity(domain));
-
+		this.getEntityManager().flush();
 	}
 
 	@Override

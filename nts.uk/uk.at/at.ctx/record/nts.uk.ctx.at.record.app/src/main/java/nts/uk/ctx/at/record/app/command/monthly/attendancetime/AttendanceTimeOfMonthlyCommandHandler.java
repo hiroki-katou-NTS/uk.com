@@ -16,7 +16,7 @@ public class AttendanceTimeOfMonthlyCommandHandler extends CommandFacade<Attenda
 	@Override
 	protected void handle(CommandHandlerContext<AttendanceTimeOfMonthlyCommand> context) {
 		if(context.getCommand().getData().isHaveData()) {
-			repo.persistAndUpdate(context.getCommand().getData().toDomain());
+			repo.persistAndUpdate(context.getCommand().toDomain());
 		}
 		
 	}

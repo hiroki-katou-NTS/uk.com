@@ -5,52 +5,53 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
 
 @Data
 /** 年休付与情報 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveGrantDto {
+public class AnnualLeaveGrantDto implements ItemConst {
 
 	/** 付与日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "付与日数", layout = "A")
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double grantDays;
 	
 	/** 付与労働日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "付与労働日数", layout = "B")
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = LABOR, layout = LAYOUT_B)
 	private double grantWorkingDays;
 	
 	/** 付与所定日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "付与所定日数", layout = "C")
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_C)
 	private double grantPrescribedDays;
 	
 	/** 付与控除日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "付与控除日数", layout = "D")
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = DEDUCTION, layout = LAYOUT_D)
 	private double grantDeductedDays;
 	
 	/** 控除日数付与前 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "控除日数付与前", layout = "E")
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = DEDUCTION + BEFORE, layout = LAYOUT_E)
 	private double deductedDaysBeforeGrant;
 	
 	/** 控除日数付与後 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "控除日数付与後", layout = "F")
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = DEDUCTION + AFTER, layout = LAYOUT_F)
 	private double deductedDaysAfterGrant;
 	
 	/** 出勤率 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "出勤率", layout = "G")
+	@AttendanceItemValue(type = ValueType.RATE)
+	@AttendanceItemLayout(jpPropertyName = ATTENDANCE + RATE, layout = LAYOUT_G)
 	private double attendanceRate;
 
 	public static AnnualLeaveGrantDto from(AnnualLeaveGrant domain) {

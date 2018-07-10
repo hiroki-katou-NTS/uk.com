@@ -10,6 +10,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.service.output.AppRootStateConfirmOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
+import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 /**
  * 
  * @author Doan Duy Hung
@@ -26,7 +27,8 @@ public class GenerateApprovalRootStateImpl implements GenerateApprovalRootStateS
 			ConfirmationRootType confirmAtr, ApplicationType appType, GeneralDate date) {
 		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService
 				.getApprovalRootConfirm(companyID, employeeID, confirmAtr, date);
-		switch (approvalRootContentOutput.getErrorFlag()) {
+		ErrorFlag errorFlag = approvalRootContentOutput.getErrorFlag();
+		switch (errorFlag) {
 		case NO_APPROVER:
 			return new AppRootStateConfirmOutput(
 				true, 

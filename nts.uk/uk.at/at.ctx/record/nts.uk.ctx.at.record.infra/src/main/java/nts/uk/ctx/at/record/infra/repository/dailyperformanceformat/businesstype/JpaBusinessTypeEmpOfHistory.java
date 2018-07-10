@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfHistory;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfHistoryPK;
+import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHis;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -30,6 +31,13 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 	private static final String FIND_BY_BASE_DATE;
 	private static final String FIND_BY_EMPLOYEE;
 	private static final String FIND_BY_EMPLOYEE_DESC;
+
+	private static final String FIND_BY_CID_SID_DATE_PERIOD = "SELECT NEW " + BusinessTypeOfEmpDto.class.getName()
+			+ " (a.cID, a.sId, a.krcmtBusinessTypeOfHistoryPK.historyId, a.startDate, a.endDate, b.businessTypeCode)"
+			+ " FROM KrcmtBusinessTypeOfHistory a JOIN KrcmtBusinessTypeOfEmployee b"
+			+ " ON a.krcmtBusinessTypeOfHistoryPK.historyId = b.krcmtBusinessTypeOfEmployeePK.historyId"
+			+ " WHERE a.sId IN :sIds" + " AND a.cID = :cId"
+			+ " AND a.startDate <= :endDate and a.endDate >= :startDate";
 
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -56,7 +64,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 
 		KrcmtBusinessTypeOfHistory entity = new KrcmtBusinessTypeOfHistory();
 		KrcmtBusinessTypeOfHistoryPK pk = new KrcmtBusinessTypeOfHistoryPK(historyId);
-		entity.KrcmtBusinessTypeOfHistoryPK = pk;
+		entity.krcmtBusinessTypeOfHistoryPK = pk;
 		entity.startDate = startDate;
 		entity.endDate = endDate;
 		entity.cID = companyId;
@@ -69,7 +77,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		String companyId = entities.get(0).cID;
 		String employeeId = entities.get(0).sId;
 		List<DateHistoryItem> histories = entities.stream().map(entity -> {
-			DateHistoryItem history = new DateHistoryItem(entity.KrcmtBusinessTypeOfHistoryPK.historyId,
+			DateHistoryItem history = new DateHistoryItem(entity.krcmtBusinessTypeOfHistoryPK.historyId,
 					new DatePeriod(entity.startDate, entity.endDate));
 			return history;
 		}).collect(Collectors.toList());
@@ -157,5 +165,15 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 	public Optional<BusinessTypeOfEmpHis> findByBaseDateAndSid(GeneralDate baseDate, String sId) {
 		return this.findByBaseDate(baseDate, sId).map(x -> new BusinessTypeOfEmpHis(x.getCompanyId(), x.getEmployeeId(),
 				x.getHistory().get(0).identifier(), x.getHistory().get(0).span()));
+	}
+
+	@Override
+	public List<BusinessTypeOfEmpDto> findByCidSidBaseDate(String cid, List<String> sIds, DatePeriod datePeriod) {
+		List<BusinessTypeOfEmpDto> entities = this.queryProxy()
+				.query(FIND_BY_CID_SID_DATE_PERIOD, BusinessTypeOfEmpDto.class).setParameter("sIds", sIds)
+				.setParameter("cId", cid).setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.getList();
+		return entities;
 	}
 }

@@ -16,5 +16,6 @@ public interface GetRsvLeaNumAfterCurrentMon {
 	 * @param period 年月期間
 	 * @return 積立年休利用当月状況リスト
 	 */
+	// RequestList364
 	List<RsvLeaUsedCurrentMonExport> algorithm(String employeeId, YearMonthPeriod period);
 }

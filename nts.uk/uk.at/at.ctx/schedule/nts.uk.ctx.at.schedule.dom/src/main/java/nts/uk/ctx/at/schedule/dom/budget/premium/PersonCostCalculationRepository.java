@@ -69,4 +69,12 @@ public interface PersonCostCalculationRepository {
 	 * @param personCostCalculation PersonCostCalculation
 	 */
 	public void delete(PersonCostCalculation personCostCalculation);
+	
+	/**
+	 * @param companyID
+	 * @param date
+	 * @param displayNumber
+	 * @return
+	 */
+	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date);
 }

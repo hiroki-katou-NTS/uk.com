@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.calculationattribute.repo.NCalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
@@ -23,6 +24,8 @@ import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRe
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.InsertWorkInfoOfDailyPerforService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 
@@ -67,6 +70,9 @@ public class RegisterDailyPerformanceInfoService {
 
 	@Inject
 	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
+	
+	@Inject
+	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
 	public void registerDailyPerformanceInfo(String companyId, String employeeID, GeneralDate day,
 			ReflectStampOutput stampOutput, AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
@@ -211,6 +217,15 @@ public class RegisterDailyPerformanceInfoService {
 					this.pCLogOnInfoOfDailyRepo.update(stampOutput.getPcLogOnInfoOfDaily());
 				} else {
 					this.pCLogOnInfoOfDailyRepo.add(stampOutput.getPcLogOnInfoOfDaily());
+				}
+			}
+			
+			if (stampOutput.getEmployeeDailyPerErrorList() != null && !stampOutput.getEmployeeDailyPerErrorList().isEmpty()) {
+				for(EmployeeDailyPerError dailyPerError : stampOutput.getEmployeeDailyPerErrorList()){
+					if (dailyPerError != null) {
+						this.createEmployeeDailyPerError.createEmployeeError(dailyPerError);
+					}
+					
 				}
 			}
 		}

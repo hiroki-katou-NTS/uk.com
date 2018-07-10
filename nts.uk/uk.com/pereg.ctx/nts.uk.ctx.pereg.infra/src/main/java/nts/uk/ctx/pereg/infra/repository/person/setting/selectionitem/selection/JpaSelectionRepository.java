@@ -1,8 +1,7 @@
 package nts.uk.ctx.pereg.infra.repository.person.setting.selectionitem.selection;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -90,7 +89,16 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	public void remove(String selectionId) {
 		PpemtSelectionPK pk = new PpemtSelectionPK(selectionId);
 		this.commandProxy().remove(PpemtSelection.class, pk);
-
+	}
+	
+	@Override
+	public void removeAll(List<String> selectionIds) {
+		if (selectionIds.isEmpty()) {
+			return;
+		}
+		List<PpemtSelectionPK> keys = selectionIds.stream().map(x -> new PpemtSelectionPK(x))
+				.collect(Collectors.toList());
+		this.commandProxy().removeAll(PpemtSelection.class, keys);
 	}
 	
 	@Override
@@ -124,13 +132,13 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	}
 	
 	@Override
-	public Map<String, List<Selection>> getByHistIdList(List<String> histIdList) {
+	public List<Selection> getByHistIdList(List<String> histIdList) {
 		if (histIdList.isEmpty()) {
-			return new HashMap<>();
+			return new ArrayList<>();
 		}
 		List<Selection> selections = this.queryProxy().query(SELECT_ALL_HISTORY_ID_LIST, PpemtSelection.class)
 				.setParameter("histIdList", histIdList).getList(c -> toDomain(c));
-		return selections.stream().collect(Collectors.groupingBy(Selection::getHistId));
+		return selections;
 	}
 
 	// to Entity:

@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanAct
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
@@ -48,6 +49,10 @@ public class ErrorAlarmWorkRecordDto {
 	private int fixedAtr;
 	/* 使用する */
 	private int useAtr;
+	
+	private int remarkCancelErrorInput;
+	
+	private int remarkColumnNo;
 	/* 区分 */
 	private int typeAtr;
 	/* 表示メッセージ */
@@ -80,9 +85,10 @@ public class ErrorAlarmWorkRecordDto {
 		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);
 		erAlAtdItemConditionDto.setUseAtr(itemDomain.isUse());
+//		erAlAtdItemConditionDto.setConditionType(itemDomain.getType().);
 		// Check Target
 		// チェック対象
-		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
+		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY || itemDomain.getType() == ErrorAlarmConditionType.INPUT_CHECK) {
 			erAlAtdItemConditionDto.setUncountableAtdItem(itemDomain.getUncountableTarget().getAttendanceItem());
 		} else {
 			erAlAtdItemConditionDto.setCountableAddAtdItems(
@@ -145,6 +151,9 @@ public class ErrorAlarmWorkRecordDto {
 			}
 			erAlAtdItemConditionDto.setConditionType(itemDomain.getCompareSingleValue().getConditionType().value);
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);
+		} else if (itemDomain.getInputCheck() != null) {
+			erAlAtdItemConditionDto.setInputCheckCondition(itemDomain.getInputCheck().getInputCheckCondition().value);
+			erAlAtdItemConditionDto.setConditionType(itemDomain.getType().value);
 		}
 		return erAlAtdItemConditionDto;
 	}
@@ -153,16 +162,19 @@ public class ErrorAlarmWorkRecordDto {
 		super();
 	}
 
-	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
-			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, Integer errorDisplayItem,
-			int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode, int operatorBetweenGroups,
-			int operatorGroup1, int operatorGroup2, boolean group2UseAtr) {
+	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr,
+			int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, String displayMessage, int boldAtr,
+			String messageColor, int cancelableAtr, Integer errorDisplayItem, int operatorBetweenPlanActual,
+			List<Integer> lstApplicationTypeCode, int operatorBetweenGroups, int operatorGroup1, int operatorGroup2,
+			boolean group2UseAtr) {
 		super();
 		this.companyId = companyId;
 		this.code = code;
 		this.name = name;
 		this.fixedAtr = fixedAtr;
 		this.useAtr = useAtr;
+		this.remarkCancelErrorInput = remarkCancelErrorInput;
+		this.remarkColumnNo = remarkColumnNo;
 		this.typeAtr = typeAtr;
 		this.displayMessage = displayMessage;
 		this.boldAtr = boldAtr;
@@ -177,55 +189,21 @@ public class ErrorAlarmWorkRecordDto {
 		this.group2UseAtr = group2UseAtr;
 	}
 
-	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
-			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, Integer errorDisplayItem,
-			AlarmCheckTargetConditionDto alCheckTargetCondition, WorkTypeConditionDto workTypeCondition,
-			WorkTimeConditionDto workTimeCondition, int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode,
-			int operatorBetweenGroups, int operatorGroup1, int operatorGroup2,
-			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1,
-			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2) {
-		super();
-		this.companyId = companyId;
-		this.code = code;
-		this.name = name;
-		this.fixedAtr = fixedAtr;
-		this.useAtr = useAtr;
-		this.typeAtr = typeAtr;
-		this.displayMessage = displayMessage;
-		this.boldAtr = boldAtr;
-		this.messageColor = messageColor;
-		this.cancelableAtr = cancelableAtr;
-		this.errorDisplayItem = errorDisplayItem;
-		this.alCheckTargetCondition = alCheckTargetCondition;
-		this.workTypeCondition = workTypeCondition;
-		this.workTimeCondition = workTimeCondition;
-		this.operatorBetweenPlanActual = operatorBetweenPlanActual;
-		this.lstApplicationTypeCode = lstApplicationTypeCode;
-		this.operatorBetweenGroups = operatorBetweenGroups;
-		this.operatorGroup1 = operatorGroup1;
-		this.operatorGroup2 = operatorGroup2;
-		this.erAlAtdItemConditionGroup1 = erAlAtdItemConditionGroup1;
-		this.erAlAtdItemConditionGroup2 = erAlAtdItemConditionGroup2;
-	}
-
 	public static ErrorAlarmWorkRecordDto fromDomain(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
 		// Create to DTO root
 		ErrorAlarmWorkRecordDto errorAlarmWorkRecordDto = new ErrorAlarmWorkRecordDto(domain.getCompanyId(),
 				domain.getCode().v(), domain.getName().v(), domain.getFixedAtr() ? 1 : 0, domain.getUseAtr() ? 1 : 0,
-				domain.getTypeAtr().value,
+				domain.getRemarkCancelErrorInput().value, domain.getRemarkColumnNo(), domain.getTypeAtr().value,
 				conditionDomain != null ? conditionDomain.getDisplayMessage().v() : "",
 				domain.getMessage().getBoldAtr() ? 1 : 0, domain.getMessage().getMessageColor().v(),
 				domain.getCancelableAtr() ? 1 : 0,
 				domain.getErrorDisplayItem() != null ? domain.getErrorDisplayItem().intValue() : null, 0,
 				domain.getLstApplication(),
+				domain.getFixedAtr() ? 0 : conditionDomain.getAtdItemCondition().getOperatorBetweenGroups().value,
 				domain.getFixedAtr() ? 0
-						: conditionDomain.getAtdItemCondition().getOperatorBetweenGroups().value,
+						: conditionDomain.getAtdItemCondition().getGroup1().getConditionOperator().value,
 				domain.getFixedAtr() ? 0
-						: conditionDomain.getAtdItemCondition().getGroup1()
-								.getConditionOperator().value,
-				domain.getFixedAtr() ? 0
-						: conditionDomain.getAtdItemCondition().getGroup2()
-								.getConditionOperator().value,
+						: conditionDomain.getAtdItemCondition().getGroup2().getConditionOperator().value,
 				domain.getFixedAtr() ? false : conditionDomain.getAtdItemCondition().isUseGroup2());
 		if (!domain.getFixedAtr()) {
 			// Set AlarmCheckTargetConditionDto

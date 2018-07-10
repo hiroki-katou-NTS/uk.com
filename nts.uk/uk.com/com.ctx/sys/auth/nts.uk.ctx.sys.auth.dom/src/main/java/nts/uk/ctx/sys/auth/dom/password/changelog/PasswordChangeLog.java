@@ -12,12 +12,13 @@ import nts.uk.ctx.sys.auth.dom.user.HashPassword;
 /**
  * The Class PasswordChangeLog.
  */
+
 @Getter
 public class PasswordChangeLog extends AggregateRoot{
 	
-	/** The login ID. */
+	/** The log ID. */
 	//ログID
-	private LoginId loginID;
+	private String logID;
 	
 	/** The user ID. */
 	//ユーザID
@@ -37,7 +38,7 @@ public class PasswordChangeLog extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(PasswordChangeLogSetMemento memento) {
-		memento.setLoginId(this.loginID);
+		memento.setLogId(this.logID);
 		memento.setUserId(this.userID);
 		memento.setModifiedDate(this.modifiedDate);
 		memento.setPassword(this.password);
@@ -49,7 +50,7 @@ public class PasswordChangeLog extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public PasswordChangeLog(PasswordChangeLogGetMemento memento) {
-		this.loginID = memento.getLoginId();
+		this.logID = memento.getLogId();
 		this.userID = memento.getUserId();
 		this.modifiedDate = memento.getModifiedDateTime();
 		this.password = memento.getPassword();
@@ -63,9 +64,9 @@ public class PasswordChangeLog extends AggregateRoot{
 	 * @param modifiedDate the modified date
 	 * @param password the password
 	 */
-	public PasswordChangeLog(LoginId loginID, String userID, GeneralDateTime modifiedDate, HashPassword password) {
+	public PasswordChangeLog(String logID, String userID, GeneralDateTime modifiedDate, HashPassword password) {
 		super();
-		this.loginID = loginID;
+		this.logID = logID;
 		this.userID = userID;
 		this.modifiedDate = modifiedDate;
 		this.password = password;

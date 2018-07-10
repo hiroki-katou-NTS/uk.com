@@ -12,6 +12,10 @@ import nts.arc.time.GeneralDate;
 @RequiredArgsConstructor
 public class ItemInfo {
 
+	/** 項目ID */
+	@Getter
+	private final String id;
+	
 	/** 項目名 */
 	@Getter
 	private final String name;
@@ -24,16 +28,34 @@ public class ItemInfo {
 	@Getter
 	private final Value valueAfter;
 	
-	public static ItemInfo create(String name, DataValueAttribute attr, Object valueBefore, Object valueAfter) {
-		return new ItemInfo(name, Value.create(valueBefore, attr), Value.create(valueBefore, attr));
+	public static ItemInfo create(String id, String name, DataValueAttribute attr, Object valueBefore, Object valueAfter) {
+		return new ItemInfo(id, name, Value.create(valueBefore, attr), Value.create(valueBefore, attr));
+	}
+	
+	/**
+	 * create to read data only, not to write
+	 * @param id
+	 * @param name
+	 * @param valueBefore
+	 * @param valueAfter
+	 * @return
+	 */
+	public static ItemInfo createToView(String id, String name, String valueBefore, String valueAfter) {
+		return new ItemInfo(id, name, Value.createToView(valueBefore), Value.createToView(valueAfter));
 	}
 	
 	@RequiredArgsConstructor
 	@Getter
 	public static class Value {
 		
+		/**
+		 * 整形前の値。記録として残すためだけのもので、表示には使わない。
+		 * 将来、データの復元などに利用する可能性がある。
+		 */
 		private final RawValue rawValue;
-		private final String textValue;
+		
+		/** 表示用に整形された値。画面に表示するときにはこちらを見れば良い。 */
+		private final String viewValue;
 	
 		static Value create(Object value, DataValueAttribute attr) {
 			
@@ -47,6 +69,15 @@ public class ItemInfo {
 				throw new RuntimeException("invalid attribute: " + attr);
 			}
 		}
+		
+		/**
+		 * create to read data only, not to write
+		 * @param value
+		 * @return
+		 */
+		static Value createToView(String value) {
+			return new Value(null, value);
+		}
 	}
 	
 	@RequiredArgsConstructor
@@ -54,30 +85,26 @@ public class ItemInfo {
 	public static class RawValue {
 		
 		private final Type type;
-		private final String asString;
-		private final Integer asInt;
-		private final Double asDouble;
-		private final BigDecimal asDecimal;
-		private final GeneralDate asDate;
+		private final Object value;
 		
 		public static RawValue asString(String value) {
-			return new RawValue(Type.STRING, value, null, null, null, null);
+			return new RawValue(Type.STRING, value);
 		}
 		
 		public static RawValue asInteger(Integer value) {
-			return new RawValue(Type.INTEGER, null, value, null, null, null);
+			return new RawValue(Type.INTEGER, value);
 		}
 		
 		public static RawValue asDouble(Double value) {
-			return new RawValue(Type.DOUBLE, null, null, value, null, null);
+			return new RawValue(Type.DOUBLE, value);
 		}
 		
 		public static RawValue asDecimal(BigDecimal value) {
-			return new RawValue(Type.DECIMAL, null, null, null, value, null);
+			return new RawValue(Type.DECIMAL, value);
 		}
 		
 		public static RawValue asDate(GeneralDate value) {
-			return new RawValue(Type.DATE, null, null, null, null, value);
+			return new RawValue(Type.DATE, value);
 		}
 		
 		@RequiredArgsConstructor

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.gobackdirectly;
 
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -9,8 +10,8 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyUpdateService;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -33,7 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApplicationGoBackDirectlyCommand> {
+public class UpdateGoBackDirectlyCommandHandler extends CommandHandlerWithResult<UpdateApplicationGoBackDirectlyCommand, ProcessResult> {
 	@Inject
 	private GoBackDirectlyUpdateService goBackDirectlyUpdateService;
 	
@@ -44,7 +46,7 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateApplicationGoBackDirectlyCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<UpdateApplicationGoBackDirectlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		UpdateApplicationGoBackDirectlyCommand command = context.getCommand();
 		
@@ -120,6 +122,6 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 				command.goBackCommand.workLocationCD2);
 		// update
 		
-		this.goBackDirectlyUpdateService.updateGoBackDirectly(updateGoBack, updateApp, command.goBackCommand.version);
+		return this.goBackDirectlyUpdateService.updateGoBackDirectly(updateGoBack, updateApp, command.goBackCommand.version);
 	}
 }

@@ -206,10 +206,13 @@ module nts.uk.at.view.kaf007.b {
                 let workChange = ko.toJS(self.appWorkChange());
                 //application change date format
                 self.changeDateFormat(workChange);
-                service.updateWorkChange(workChange).done(() => {
-                    
-                    dialog.info({ messageId: "Msg_15" }).then(function() {
-                        location.reload();
+                service.updateWorkChange(workChange).done((data) => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        if(data.autoSendMail){
+                            appcommon.CommonProcess.displayMailResult(data);    
+                        } else {
+                            location.reload();
+                        }
                     });
                 }).fail((res) => {
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});

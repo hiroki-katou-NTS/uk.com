@@ -32,13 +32,12 @@
 					data-bind="click: openDialogSettingC,
                          enable: true > 0">#{i18n.getText('CAS011_7')}</button>
 			</div>
-
-			<div id="contents-area " class="fixed-flex-layout">
-				<div class="container cf">
+			<div class="container">
+				<div id="contents-area " class="fixed-flex-layout">
 					<div id="content-left" class="fixed-flex-layout-left">
 						<!--A2_001 -->
 						<div>#{i18n.getText('CAS011_8')}</div>
-						<div style="float: left">
+						<div>
 							<table id="role_set_grid"
 								data-bind="ntsGridList: {
 	                                            name:'#[CAS011_8]',
@@ -271,6 +270,8 @@
                         }">
 						</div>
 					</div>
+
+
 				</div>
 			</div>
 		</ui:define>

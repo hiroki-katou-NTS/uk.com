@@ -7,6 +7,7 @@ package nts.uk.ctx.at.request.dom.vacation.history;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -75,4 +76,13 @@ public interface VacationHistoryRepository {
      * @return the list
      */
     public List<PlanVacationHistory> findHistoryByBaseDate(String companyId, GeneralDate baseDate);
+    /**
+     * 
+     * @param cid 会社ID = INPUT．会社ID
+     * @param workTypeCode ・勤務種類コード = INPUT．勤務種類コード AND
+     * @param dateData・INPUT．開始日 <= 期間．終了日 AND
+     * 			 ・INPUT．終了日 >= 期間．開始日
+     * @return 
+     */
+    List<PlanVacationHistory> findByWorkTypeAndPeriod(String cid, String workTypeCode, Period dateData);
 }

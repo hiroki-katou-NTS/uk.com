@@ -9,7 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.pereg.app.find.common.CheckEnableParam;
 import nts.uk.ctx.pereg.app.find.common.CheckWorkTimeCodeParam;
 import nts.uk.ctx.pereg.dom.common.CheckResult;

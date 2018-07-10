@@ -28,7 +28,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 
 @Stateless
 public class HolidaySixProcessImpl implements HolidaySixProcess{
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
 	private HolidayThreeProcess holidayThreeProcess;
 	@Inject

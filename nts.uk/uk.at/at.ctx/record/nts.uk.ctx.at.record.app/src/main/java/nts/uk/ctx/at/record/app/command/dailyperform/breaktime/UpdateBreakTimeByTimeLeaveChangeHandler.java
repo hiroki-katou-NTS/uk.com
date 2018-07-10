@@ -31,7 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandler<UpdateBreakTimeByTimeLeaveChangeCommand> {
 
-	private final List<Integer> breakTimeItems = Arrays.asList(157, 159, 160, 161, 163, 165, 166, 167, 169, 171, 172,
+	private final static List<Integer> BREAK_TIME_ITEMS = Arrays.asList(157, 159, 160, 161, 163, 165, 166, 167, 169, 171, 172,
 			173, 175, 177, 178, 179, 181, 183, 184, 185, 187, 189, 190, 191, 193, 195, 196, 197, 199, 201, 202, 203,
 			205, 207, 208, 209, 211, 213, 214, 215);
 	@Inject
@@ -94,7 +94,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandler<Upda
 	/** 取得したドメインモデル「編集状態」を見て、マージする */
 	private BreakTimeOfDailyPerformance mergeWithEditStates(String employeeId, GeneralDate workingDate,
 			BreakTimeOfDailyPerformance breakTime, BreakTimeOfDailyPerformance breakTimeRecord) {
-		List<Integer> inputByHandItems = this.editStateRepo.findByItems(employeeId, workingDate, breakTimeItems)
+		List<Integer> inputByHandItems = this.editStateRepo.findByItems(employeeId, workingDate, BREAK_TIME_ITEMS)
 				.stream().filter(es -> isInputByHands(es.getEditStateSetting())).map(c -> c.getAttendanceItemId())
 				.collect(Collectors.toList());
 		if (!inputByHandItems.isEmpty()) {

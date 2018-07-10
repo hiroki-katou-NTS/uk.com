@@ -63,4 +63,23 @@ public enum SettingItemOrder {
 		// Not found.
 		return null;
 	}
+	
+	
+	/**
+	 * leftか判定する
+	 * @return leftならtrue
+	 */
+	public boolean isLeft() {
+		return LEFT.equals(this);
+	}
+	
+	/**
+	 * ｒightか判定する
+	 * @return ｒightならtrue
+	 */
+	public boolean isRight() {
+		return RIGHT.equals(this);
+	}	
+	
+	
 }

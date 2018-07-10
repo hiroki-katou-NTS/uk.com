@@ -263,6 +263,7 @@ module nts.uk.at.view.kdm002.a {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
+                self.selectedEmployeeCode(self.employeeList().map(a => a.code));
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false,
                     isMultiSelect: true,

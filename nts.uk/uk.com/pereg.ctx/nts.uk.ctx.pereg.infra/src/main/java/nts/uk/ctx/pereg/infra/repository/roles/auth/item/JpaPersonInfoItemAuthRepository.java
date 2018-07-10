@@ -19,7 +19,7 @@ import nts.uk.ctx.pereg.infra.entity.roles.auth.item.PpemtPersonItemAuthPk;
 @Stateless
 public class JpaPersonInfoItemAuthRepository extends JpaRepository implements PersonInfoItemAuthRepository {
 
-	private final String SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY = "SELECT DISTINCT p.ppemtPersonItemAuthPk.roleId,"
+	private static final String SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY = "SELECT DISTINCT p.ppemtPersonItemAuthPk.roleId,"
 			+ " p.ppemtPersonItemAuthPk.personInfoCategoryAuthId, i.ppemtPerInfoItemPK.perInfoItemDefId, p.selfAuthType,"
 			+ " p.otherPersonAuthType, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
 			+ " CASE WHEN p.ppemtPersonItemAuthPk.personItemDefId IS NULL THEN 'False' ELSE 'True' END AS IsConfig, im.itemParentCd, im.dataType" 
@@ -33,28 +33,28 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 			+ " AND p.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId AND p.ppemtPersonItemAuthPk.roleId =:roleId" 
 			+ " WHERE i.abolitionAtr = 0" + " ORDER BY io.disporder";
 
-	private final String SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID = " SELECT c FROM PpemtPersonItemAuth c"
+	private static final String SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID = " SELECT c FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId"
 			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:categoryId ";
 
-	private final String SEL_ALL_BY_ROLE_ID_CTG_ID_LIST = " SELECT c FROM PpemtPersonItemAuth c"
+	private static final String SEL_ALL_BY_ROLE_ID_CTG_ID_LIST = " SELECT c FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId"
 			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId IN :categoryIdList ";
 	
-	private final String SEL_ALL_BY_ROLE_ID = " SELECT c FROM PpemtPersonItemAuth c"
+	private static final String SEL_ALL_BY_ROLE_ID = " SELECT c FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId";
 
-	private final String DELETE_BY_ROLE_ID = "DELETE FROM PpemtPersonItemAuth c"
+	private static final String DELETE_BY_ROLE_ID = "DELETE FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId";
 
-	private final String SEL_ALL_ITEM_DATA = String.join(" ", "SELECT id.ppemtPersonItemAuthPk.personItemDefId",
+	private static final String SEL_ALL_ITEM_DATA = String.join(" ", "SELECT id.ppemtPersonItemAuthPk.personItemDefId",
 			" FROM PpemtPersonItemAuth id",
 			" INNER JOIN PpemtPerInfoItem pi ON id.ppemtPersonItemAuthPk.personItemDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId",
 			" INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId",
 			" INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd",
 			" WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd", " AND pi.perInfoCtgId IN :perInfoCtgId");
 	
-	private final String IS_SELF_AUTH = String.join(" ",
+	private static final String IS_SELF_AUTH = String.join(" ",
 			" SELECT au  FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co, PpemtPerInfoItem i, PpemtPerInfoItemCm ic, PpemtPersonItemAuth au",
 			" WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd", 
 			" AND ca.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId  AND co.ppemtPerInfoCtgCmPK.categoryCd  = ic.ppemtPerInfoItemCmPK.categoryCd ",

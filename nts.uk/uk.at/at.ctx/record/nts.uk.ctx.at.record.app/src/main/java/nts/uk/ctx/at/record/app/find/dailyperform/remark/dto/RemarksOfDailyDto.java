@@ -4,24 +4,26 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
-@AttendanceItemRoot(rootName = "日別実績の備考")
+@AttendanceItemRoot(rootName = ItemConst.DAILY_REMARKS_NAME)
 public class RemarksOfDailyDto extends AttendanceItemCommon {
 	
 	private String employeeId;
 	
 	private GeneralDate ymd;
 
-	@AttendanceItemValue
-	@AttendanceItemLayout(jpPropertyName = "備考", layout = "A")
+	@AttendanceItemValue(type = ValueType.TEXT)
+	@AttendanceItemLayout(jpPropertyName = REMARK, layout = LAYOUT_A)
 	private String remark;
 	
-	private int remarkNo;
+	private int no;
 	
 	@Override
 	public String employeeId() {
@@ -35,7 +37,7 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 
 	@Override
 	public RemarksOfDailyPerform toDomain(String employeeId, GeneralDate date) {
-		return new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(remark), remarkNo);
+		return new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(remark), no);
 	}
 
 	public static RemarksOfDailyDto getDto(RemarksOfDailyPerform x) {
@@ -44,7 +46,7 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 			dto.setEmployeeId(x.getEmployeeId());
 			dto.setYmd(x.getYmd());
 			dto.setRemark(x.getRemarks().v());
-			dto.setRemarkNo(x.getRemarkNo());
+			dto.setNo(x.getRemarkNo());
 			dto.exsistData();
 		}
 		return dto;

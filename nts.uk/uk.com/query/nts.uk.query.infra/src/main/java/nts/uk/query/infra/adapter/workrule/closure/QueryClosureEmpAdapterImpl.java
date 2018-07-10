@@ -19,7 +19,7 @@ import nts.uk.query.model.workrule.closure.QueryClosureEmpAdapter;
 public class QueryClosureEmpAdapterImpl extends JpaRepository implements QueryClosureEmpAdapter {
 
 	/** The find by closure id. */
-	private final String FIND_BY_CLOSURE_ID = "SELECT c FROM KclmtClosureEmployment c"
+	private static final String FIND_BY_CLOSURE_ID = "SELECT c FROM KclmtClosureEmployment c"
 			+ " WHERE c.closureId = :closureId";
 
 	/*

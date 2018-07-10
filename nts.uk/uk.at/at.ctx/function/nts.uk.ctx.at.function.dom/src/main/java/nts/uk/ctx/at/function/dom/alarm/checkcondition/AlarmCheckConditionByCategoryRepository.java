@@ -24,4 +24,6 @@ public interface AlarmCheckConditionByCategoryRepository {
 	
 	public boolean isCodeExist(String companyId, int category, String code);
 	
+	public List<AlarmCheckConditionByCategory> findByCategoryAndCode(String companyId, int category, List<String> codes);
+	
 }

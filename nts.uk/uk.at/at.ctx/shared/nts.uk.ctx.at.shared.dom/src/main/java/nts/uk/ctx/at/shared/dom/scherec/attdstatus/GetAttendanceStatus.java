@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.scherec.attdstatus;
 
+import java.util.Map;
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -11,30 +13,18 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface GetAttendanceStatus {
 
 	/**
-	 * データ設定
+	 * 取得
+	 * @param employeeId 社員ID
+	 * @param targetDate 対象日
+	 * @return 出勤状態
+	 */
+	Optional<AttendanceStatus> get(String employeeId, GeneralDate targetDate);
+
+	/**
+	 * 取得
 	 * @param employeeId 社員ID
 	 * @param period 期間
+	 * @return 出勤状態マップ（年月日別）
 	 */
-	GetAttendanceStatus setData(String employeeId, DatePeriod period);
-
-	/**
-	 * 出勤状態を判断する
-	 * @param ymd 年月日
-	 * @return true：出勤している、false：出勤していない
-	 */
-	boolean isAttendanceDay(GeneralDate ymd);
-	
-	/**
-	 * 2回目の打刻が存在するか確認
-	 * @param ymd 年月日
-	 * @return true：存在する、false：存在しない
-	 */
-	boolean isTwoTimesStampExists(GeneralDate ymd);
-
-	/**
-	 * 総労働時間を取得する
-	 * @param ymd 年月日
-	 * @return 総労働時間
-	 */
-	AttendanceTime getTotalTime(GeneralDate ymd);
+	Map<GeneralDate, AttendanceStatus> getMap(String employeeId, DatePeriod period);
 }

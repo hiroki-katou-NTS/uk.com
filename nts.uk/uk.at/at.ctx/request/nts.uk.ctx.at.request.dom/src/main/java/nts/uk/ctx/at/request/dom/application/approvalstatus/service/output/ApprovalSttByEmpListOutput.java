@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -13,6 +14,9 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class ApprovalSttByEmpListOutput {
-	List<DailyStatusOutput> listDailyStt;
-	List<ApprovalStatusEmployeeOutput> listAppSttEmp;
+	String empId;
+	String empName;
+	List<DailyStatus> listDaily;
+	private GeneralDate startDate;
+	private GeneralDate endDate;
 }

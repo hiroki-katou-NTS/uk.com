@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class MyPageSetWebService extends WebService {
 
-	private final String defaultCompanyId = "000000000000-0000";
+	private static final String defaultCompanyId = "000000000000-0000";
 	
 	/** The my page setting finder. */
 	@Inject

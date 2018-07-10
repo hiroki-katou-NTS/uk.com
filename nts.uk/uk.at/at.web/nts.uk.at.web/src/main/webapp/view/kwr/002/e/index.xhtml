@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1150,
+					height : 860
+				};
+			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kwr002.e.style.css" />
+			<com:scriptfile path="kwr002.e.service.js" />
+			<com:scriptfile path="kwr002.e.vm.js" />
+			<com:scriptfile path="kwr002.e.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div
+				class="contents-area fixed-flex-layout external"
+				style="display: block;">
+				<div style="display: inline;">
+					<!-- E1_1 -->
+					<div data-bind="ntsFormLabel: {}" class="form-label" style="padding-right: 0px;">#{i18n.getText('KWR002_160')}</div>
+					<!-- E1_2 -->
+					<label data-bind="text: layoutCode"></label>
+					<!-- E1_3 -->
+					<label data-bind="text: layoutName"></label>
+					<!-- E1_4 -->
+					<label data-bind="text: dailyMonthly" style="margin-left: 15px;"></label>
+					<!-- E1_5 -->
+					<label data-bind="text: columnIndex" style="margin-left: 2px;"></label>
+					<!-- E1_6 -->
+					<label>#{i18n.getText('KWR002_162')}</label>
+					<!-- E1_7 -->
+					<label data-bind="text: position"></label>
+					<!-- E1_8 -->
+					<label>#{i18n.getText('KWR002_163')}</label>
+					<hr></hr>
+				</div>
+				<div style="display: block;" class="external">
+					<div style="display: inline-flex;">
+						<!-- E2_1 -->
+						<div data-bind="ntsFormLabel: {constraint: 'ItemName'}"
+							class="form-label required external">#{i18n.getText('KWR002_164')}</div>
+						<!-- E2_2 -->
+						<input tabindex="1" id="attendance_name"
+							data-bind="ntsTextEditor: { 
+											name: '#{i18n.getText('KWR002_165')}',
+											value: attendanceRecordName,
+                                          	constraint: 'ItemName',
+                                          	enable: true,
+                                          	required: true}"
+							class="external" />
+					</div>
+					<div class="fixed-flex-layout external" style="margin-top: 20px; height: 460px;">
+						<div class="fixed-flex-layout-left external" style="width: 430px;">
+							<div
+								class="panel ntsPanel caret-background caret-right direction-right"
+								data-bind="ntsPanel:{width: '390px', height: '410px', direction: 'right', showIcon: true, visible: true}"
+								style="margin: unset;">
+								<i class="icon icon-searchbox"></i>
+								<div style="display: inline-flex; margin-bottom: 10px;"
+									class="external">
+									<div style="margin-top: 10px;">
+										<!-- E3_2 -->
+										<label>#{i18n.getText('KWR002_166')}</label>
+									</div>
+									<!-- E3_3 -->
+									<div id="combo-box" tabindex="2" class="external"
+										data-bind="ntsComboBox: {options: selectionTypeList,
+																		name: '#{i18n.getText('KWR002_167')}',
+																		optionsValue: 'code',
+																		visibleItemsCount: 5,
+																		value: selectionTypeValue,
+																		optionsText: 'name',
+																		enable: true,
+																		required: false,
+																		selectFirstIfNull: false
+																		}">
+									</div>
+								</div>
+								<!-- E3_4 -->
+								<div tabindex="3" class="external"
+									data-bind="ntsSearchBox:{
+													searchMode: 'filter',
+													targetKey: 'code',
+													comId: 'selection-multi-list',
+					                    	        items: gridItems, 
+					                    	        selected: currentCodeList,
+					                    	        selectedKey: 'code',
+					                    	        fields: ['name', 'code'],
+					                    	        mode: 'igGrid'}"
+									style="display: inline-flex; width: 350px"></div>
+								<div class="external">
+									<!-- E4_1 -->
+									<table id="selection-multi-list" tabindex="4"
+										data-bind="ntsGridList: {
+													name: '#{i18n.getText('KWR002_175')}',
+													options: gridItems,
+													height: 310,
+													optionsValue: 'code',
+													columns: columns,
+													multiple: true,
+													value: currentCodeList}">
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="fixed-flex-layout-right"
+							style="display: inline-flex; margin-top: 40px; margin-right: 20px;">
+							<div style="display: block; margin: 35px;">
+								<!-- E6_1 -->
+								<div style="margin-top: 150px;">
+									<button tabindex="6" class="small" style="width: 50px; height: 35px; font-size: 17px;"
+										data-bind="click: writeItemWithAdd">#{i18n.getText('KWR002_178')}</button>
+								</div>
+								<!-- E6_2 -->
+								<div style="margin-top: 50px;">
+									<button tabindex="7" class="small" style="width: 50px; height: 35px; font-size: 17px;"
+										data-bind="click: writeItemWithSubtract">#{i18n.getText('KWR002_179')}</button>
+								</div>
+							</div>
+							<div class="external" style="height: 450px;">
+								<table id="selected-list" tabindex="8"
+									data-bind="name: '#{i18n.getText('KWR002_185')}'">
+									<thead style="background-color: #cff1a5;">
+										<tr height="30px">
+											<th width="104px"><label style="margin-left: 2px; font-weight: bold;">#{i18n.getText('KWR002_186')}</label></th>
+											<th width="105px"><label style="margin-left: 2px; font-weight: bold;">#{i18n.getText('KWR002_187')}</label></th>
+											<th width="210px"><label style="margin-left: 2px; font-weight: bold;">#{i18n.getText('KWR002_188')}</label></th>
+											<th width="74px"><label style="margin-left: 2px; font-weight: bold;">#{i18n.getText('KWR002_189')}</label></th>
+											<th width="19px"></th>
+										</tr>
+									</thead>
+									<tbody data-bind="foreach: selectedGridItems">
+										<tr height="30px">
+											<td width="100px" style="text-align: center;"><span
+												data-bind="text: action"></span></td>
+											<td width="100px"><span data-bind="text: code" style="margin-left: 2px;"></span></td>
+											<td width="200px"><span data-bind="text: name" style="margin-left: 2px;"></span></td>
+											<td tabindex="9" width="70px" style="text-align: center;"><button
+													data-bind="click: function() {$parent.deleteItem($data)}"
+													class="small" style="width: 25px; height: 22px; padding: 0px;">
+													<img src="../image/削除ボタン.jpg" height="20" width="20"/>
+												</button></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="external" style="margin-left: 30px;">
+					<!-- E9_1 -->
+					<div data-bind="ntsFormLabel: {}" class="form-label">#{i18n.getText('KWR002_190')}</div>
+				</div>
+				<div class="external" style="margin-left: 30px;">
+					<!-- E9_2 -->
+					<textarea id="multiline-textbox"
+						data-bind="ntsMultilineEditor: {value: formulaContent, readonly: true, name: '#{i18n.getText('KWR002_191')}'}" />
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- E10_1 -->
+				<button tabindex="10" id="" class="button x-large proceed"
+					data-bind="click: decide">#{i18n.getText('KWR002_192')}</button>
+				<!-- E10_2 -->
+				<button tabindex="11" id="" class="button fix-button large"
+					data-bind="click: cancel">#{i18n.getText('KWR002_193')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

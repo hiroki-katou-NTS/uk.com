@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -12,23 +13,23 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の給与用日数 */
-public class PayDaysOfMonthlyDto {
+public class PayDaysOfMonthlyDto implements ItemConst {
 
 	/** 給与出勤日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "給与出勤日数", layout = "A")
-	private Double payAttendanceDays;
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = ATTENDANCE, layout = LAYOUT_A)
+	private double payAttendanceDays;
 
 	/** 給与欠勤日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "給与欠勤日数", layout = "B")
-	private Double payAbsenceDays;
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = ABSENCE, layout = LAYOUT_B)
+	private double payAbsenceDays;
 	
 	public static PayDaysOfMonthlyDto from(PayDaysOfMonthly domain) {
 		PayDaysOfMonthlyDto dto = new PayDaysOfMonthlyDto();
 		if(domain != null) {
-			dto.setPayAbsenceDays(domain.getPayAbsenceDays() == null ? null : domain.getPayAbsenceDays().v());
-			dto.setPayAttendanceDays(domain.getPayAttendanceDays() == null ? null : domain.getPayAttendanceDays().v());
+			dto.setPayAbsenceDays(domain.getPayAbsenceDays() == null ? 0 : domain.getPayAbsenceDays().v());
+			dto.setPayAttendanceDays(domain.getPayAttendanceDays() == null ? 0 : domain.getPayAttendanceDays().v());
 		}
 		return dto;
 	}

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingReposito
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 
 /**
@@ -40,11 +43,41 @@ public class GetCommonSetImpl implements GetCommonSet {
 	@Override
 	public Optional<WorkTimezoneCommonSet> get(String companyId, String workTimeCode) {
 		
+		val workTimeSetOpt = this.workTimeSet.findByCode(companyId, workTimeCode);
+		if (!workTimeSetOpt.isPresent()) return Optional.empty();
+		
+		return this.getCommon(companyId, workTimeSetOpt.get());
+	}
+	
+	/** 全ての共通設定の取得 */
+	@Override
+	public Map<String, WorkTimezoneCommonSet> getAll(String companyId) {
+
+		Map<String, WorkTimezoneCommonSet> results = new HashMap<>();
+		
+		val workTimeSets = this.workTimeSet.findByCompanyId(companyId);
+		for (val workTimeSet : workTimeSets){
+			val commonSetOpt = this.getCommon(companyId, workTimeSet);
+			if (!commonSetOpt.isPresent()) continue;
+			val workTimeCode = workTimeSet.getWorktimeCode().v();
+			results.putIfAbsent(workTimeCode, commonSetOpt.get());
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * 取得共通処理
+	 * @param companyId 会社ID
+	 * @param workTimeSet 就業時間帯の設定
+	 * @return 就業時間帯の共通設定
+	 */
+	private Optional<WorkTimezoneCommonSet> getCommon(String companyId, WorkTimeSetting workTimeSet) {
+		
 		Optional<WorkTimezoneCommonSet> commonSet = Optional.empty();
 		
-		val workTimeSetOpt = this.workTimeSet.findByCode(companyId, workTimeCode);
-		if (!workTimeSetOpt.isPresent()) return commonSet;
-		val workTimeDivision = workTimeSetOpt.get().getWorkTimeDivision();
+		val workTimeCode = workTimeSet.getWorktimeCode().v();
+		val workTimeDivision = workTimeSet.getWorkTimeDivision();
 		
 		switch (workTimeDivision.getWorkTimeDailyAtr()){
 		case REGULAR_WORK:

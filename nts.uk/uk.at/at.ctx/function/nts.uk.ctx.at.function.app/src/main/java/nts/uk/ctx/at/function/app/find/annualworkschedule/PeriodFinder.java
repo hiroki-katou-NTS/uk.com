@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.app.find.annualworkschedule;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -19,18 +21,21 @@ public class PeriodFinder {
 	private CompanyAdapter companyAdapter;
 
 	public PeriodDto getPeriod() {
-		//社員に対応する処理締めを取得する
-		Closure closure
-			= closureEmploymentService.findClosureByEmployee(AppContexts.user().employeeId(), GeneralDate.today()).get();
-		YearMonth standardYm = closure.getClosureMonth().getProcessingYm();
-		//会社の期首月を取得する (RequetsList108)
+		// 社員に対応する処理締めを取得する
+		Optional<Closure> closureOtp = closureEmploymentService.findClosureByEmployee(AppContexts.user().employeeId(),
+				GeneralDate.today());
+		if (!closureOtp.isPresent()) {
+			return null;
+		}
+		YearMonth standardYm = closureOtp.get().getClosureMonth().getProcessingYm();
+		// 会社の期首月を取得する (RequetsList108)
 		CompanyDto companyDto = companyAdapter.getFirstMonth(AppContexts.user().companyId());
 		int startMonth = companyDto.getStartMonth();
-		//起算月　＜＝　パラメータ「基準年月．月」
-		int startYear = standardYm.year() - (startMonth <= standardYm.month()? 0: 1);
+		// 起算月 ＜＝ パラメータ「基準年月．月」
+		int startYear = standardYm.year() - (startMonth <= standardYm.month() ? 0 : 1);
 
 		YearMonth startYm = YearMonth.of(startYear, startMonth);
-		//取得した起算年月の12ヶ月先の年月を取得する
+		// 取得した起算年月の12ヶ月先の年月を取得する
 		YearMonth endYm = startYm.addMonths(11);
 		return new PeriodDto(startYm.year() + "" + startYm.month(), endYm.year() + "" + endYm.month());
 	}

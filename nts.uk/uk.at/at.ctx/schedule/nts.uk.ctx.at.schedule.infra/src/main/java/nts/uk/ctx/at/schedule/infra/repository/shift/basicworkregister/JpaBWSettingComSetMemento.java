@@ -51,7 +51,11 @@ public class JpaBWSettingComSetMemento implements BasicWorkSettingSetMemento {
 	 */
 	@Override
 	public void setSiftCode(WorkingCode workingCode) {
-		this.typeValue.setWorkingCode(workingCode.v());
+		if (workingCode == null) {
+			this.typeValue.setWorkingCode(null);
+		} else {
+			this.typeValue.setWorkingCode(workingCode.v());
+		}
 	}
 
 	/*

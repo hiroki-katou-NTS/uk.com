@@ -83,8 +83,9 @@ public class HourlyPaymentAdditionSet extends AggregateRoot{
 																	= new EmploymentCalcDetailedSetIncludeVacationAmount(addition2, null, 
 																														null, 
 																														null);
+		DeductLeaveEarly deductLeaveEarly2 = new DeductLeaveEarly(notDeductLateLeaveEarly, enableSetPerWorkHour1);
 		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = new WorkTimeCalcMethodDetailOfHoliday(includeVacationSet, calculateIncludCareTime, 
-																									notDeductLateLeaveEarly, 
+																									deductLeaveEarly2, 
 																									calculateIncludeIntervalExemptionTime2, null);
 		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = new WorkTimeHolidayCalcMethod(calcWorkHourVacation, advanceSetWork);
 		

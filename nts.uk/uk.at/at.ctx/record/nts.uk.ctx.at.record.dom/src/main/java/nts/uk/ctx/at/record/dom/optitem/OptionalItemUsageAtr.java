@@ -69,5 +69,21 @@ public enum OptionalItemUsageAtr {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 利用するか判定する
+	 * @return するならtrue
+	 */
+	public boolean isUSE() {
+		return USE.equals(this);
+	}
+	
+	/**
+	 * 利用しないか判定する
+	 * @return しないならtrue
+	 */
+	public boolean isNotUse() {
+		return NOT_USE.equals(this);
+	}
 
 }

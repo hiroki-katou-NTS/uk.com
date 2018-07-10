@@ -13,11 +13,12 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<InputCommonData,String> {
+public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<InputCommonData, ProcessResult> {
 
 	// 4-1.詳細画面登録前の処理
 	@Inject
@@ -27,7 +28,7 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 	private DetailAfterApproval_New detailAfterApproval_New;
 
 	@Override
-	protected String handle(CommandHandlerContext<InputCommonData> context) {
+	protected ProcessResult handle(CommandHandlerContext<InputCommonData> context) {
 		String companyID = AppContexts.user().companyId();
 		String memo = context.getCommand().getMemo();
 		String employeeID = AppContexts.user().employeeId();

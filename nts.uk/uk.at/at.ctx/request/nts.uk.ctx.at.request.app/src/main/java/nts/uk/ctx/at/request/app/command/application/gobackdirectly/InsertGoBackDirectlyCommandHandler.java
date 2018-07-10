@@ -10,13 +10,15 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.StringUtil;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -29,7 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApplicationGoBackDirectlyCommand> {
+public class InsertGoBackDirectlyCommandHandler extends CommandHandlerWithResult<InsertApplicationGoBackDirectlyCommand, ProcessResult> {
 	@Inject
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
 	
@@ -38,9 +40,11 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	@Inject
+	private IFactoryApplication iFactoryApplication;
 	
 	@Override
-	protected void handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		InsertApplicationGoBackDirectlyCommand command = context.getCommand();
 		
@@ -71,18 +75,22 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 			}
 		}
 		appReason = typicalReason + displayReason;
-		Application_New newApp = Application_New.firstCreate(
-				companyId, 
-				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),  
-				command.appCommand.getApplicationDate(),
-				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType.class), 
-				command.appCommand.getEnteredPersonSID(),
-				new AppReason(appReason));
-		
+		// 申請ID
+		String appID = IdentifierUtil.randomUniqueId();
+//		Application_New newApp = Application_New.firstCreate(
+//				companyId, 
+//				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),  
+//				command.appCommand.getApplicationDate(),
+//				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType.class), 
+//				command.appCommand.getEnteredPersonSID(),
+//				new AppReason(appReason));
+		Application_New appRoot = iFactoryApplication.buildApplication(appID, command.appCommand.getApplicationDate(),
+				command.appCommand.getPrePostAtr(), appReason,appReason,
+				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, command.appCommand.getApplicationDate(), command.appCommand.getApplicationDate(), command.appCommand.getApplicantSID());
 		// get new GoBack Direct Item
 		GoBackDirectly newGoBack = new GoBackDirectly(
 				companyId, 
-				newApp.getAppID(),
+				appID,
 				command.goBackCommand.workTypeCD, 
 				command.goBackCommand.siftCD, 
 				command.goBackCommand.workChangeAtr,
@@ -99,6 +107,6 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 		//勤務を変更する
 		
 		//直行直帰登録
-		goBackDirectlyRegisterService.register(newGoBack, newApp);
+		return goBackDirectlyRegisterService.register(newGoBack, appRoot);
 	}
 }

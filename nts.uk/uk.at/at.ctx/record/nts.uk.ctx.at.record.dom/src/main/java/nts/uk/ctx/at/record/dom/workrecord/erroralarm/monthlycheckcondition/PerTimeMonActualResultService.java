@@ -1,0 +1,14 @@
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition;
+
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+
+/**
+ * 月別実績をチェックする
+ * @author tutk
+ *
+ */
+public interface PerTimeMonActualResultService {
+	boolean checkPerTimeMonActualResult(YearMonth yearMonth,int closureID, ClosureDate closureDate,String employeeID,AttendanceItemCondition attendanceItemCondition);
+}

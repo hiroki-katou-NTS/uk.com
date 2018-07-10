@@ -39,7 +39,7 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 	
 	/** The pub hd set repo. */
 	@Inject
-	private PublicHolidaySettingRepository pubHdSetRepo;
+	private PublicHolidaySettingRepository pubHdSetRepo;	
 	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -47,6 +47,7 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 	@Override
 	protected void handle(CommandHandlerContext<HolidaySettingConfigSaveCommand> context) {
 		String companyId = AppContexts.user().companyId();
+		boolean storeStatusManageComPublicHd = false;
 		
 		HolidaySettingConfigSaveCommand command = context.getCommand();
 		
@@ -61,6 +62,7 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 		if (pubHdSetDomain.isManageComPublicHd() == true) {
 			//save PublicHolidaySetting
 			if(optionalPubHdSet.isPresent()){
+				storeStatusManageComPublicHd = optionalPubHdSet.get().isManageComPublicHd();
 				this.pubHdSetRepo.update(pubHdSetDomain);
 			}else {
 				this.pubHdSetRepo.add(pubHdSetDomain);
@@ -95,6 +97,9 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 			//save PublicHolidaySetting
 			if(optionalPubHdSet.isPresent()){
 				PublicHolidaySetting publicHolidaySetting = optionalPubHdSet.get();
+				storeStatusManageComPublicHd = optionalPubHdSet.get().isManageComPublicHd();
+				// 会社の公休管理をする was set 管理しない, all element on UI will be set disable and set default value 
+				// so I use domain get from service and onlye set "isManageComPublicHd" to false  
 				publicHolidaySetting.setManageComPublicHd(false);
 				this.pubHdSetRepo.update(publicHolidaySetting);
 			}else {
@@ -105,10 +110,12 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 		//check managementCategory change
 		// ドメインモデル「特別休暇」を新規登録した場合
 		// Event： 特別休暇情報が変更された を発行する
-		if (!optionalPubHdSet.isPresent()) {
+		if (!optionalPubHdSet.isPresent() || storeStatusManageComPublicHd != command
+				.getPubHdSet().getIsManageComPublicHd()) {
 			val publicHolidaySettingDomainEvent = new PublicHolidaySettingDomainEvent(
 					command.getPubHdSet().getIsManageComPublicHd());
 			publicHolidaySettingDomainEvent.toBePublished();
 		}
 	}
+	
 }

@@ -4,19 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 @Data
 /** 出退勤時刻 */
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkLeaveTimeDto {
+public class WorkLeaveTimeDto implements ItemConst {
 
-	private Integer workNo;
+	private Integer no;
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "出勤")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ATTENDANCE)
 	private WithActualTimeStampDto working;
 	
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "退勤")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LEAVE)
 	private WithActualTimeStampDto leave;
 }

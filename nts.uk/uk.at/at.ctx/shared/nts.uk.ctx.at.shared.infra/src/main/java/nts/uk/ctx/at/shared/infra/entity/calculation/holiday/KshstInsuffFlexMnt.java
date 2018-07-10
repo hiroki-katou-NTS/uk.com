@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-import java.math.BigDecimal;
 
 
 /**
@@ -29,8 +29,8 @@ public class KshstInsuffFlexMnt extends UkJpaEntity implements Serializable {
 	public KshstInsuffFlexMntPK kshstInsuffFlexMntPK;
 
 	/** 補填可能時間 */
-	@Column(name="ATTEND_TIME")
-	private int attendTime;
+	@Column(name="SUPPLEMTABLE_DAYS")
+	private double supplementableDays;
 
 	@Override
 	protected Object getKey() {

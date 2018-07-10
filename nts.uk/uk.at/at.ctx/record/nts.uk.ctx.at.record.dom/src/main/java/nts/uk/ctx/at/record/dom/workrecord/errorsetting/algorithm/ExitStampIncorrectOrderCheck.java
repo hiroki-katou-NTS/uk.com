@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
@@ -28,14 +28,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class ExitStampIncorrectOrderCheck {
 
 	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	public void exitStampIncorrectOrderCheck(String companyId, String employeeId, GeneralDate processingDate,
+	public List<EmployeeDailyPerError> exitStampIncorrectOrderCheck(String companyId, String employeeId, GeneralDate processingDate,
 			AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+		
+		List<EmployeeDailyPerError> employeeDailyPerErrorList = new ArrayList<>();
+		
 		if (attendanceLeavingGateOfDaily != null
 				&& !attendanceLeavingGateOfDaily.getAttendanceLeavingGates().isEmpty()) {
 
@@ -45,8 +45,10 @@ public class ExitStampIncorrectOrderCheck {
 			// ペアの逆転がないか確認する(入退門)
 			List<Integer> attendanceItemIds = this.checkPairReversed(attendanceLeavingGateOfDaily);
 			if (!attendanceItemIds.isEmpty()) {
-				this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
-						new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+						employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+						attendanceItemIds);
+				employeeDailyPerErrorList.add(employeeDailyPerError);
 			} else {
 				if (attendanceLeavingGates.size() == 2) {
 					if (attendanceLeavingGates.get(0).getAttendance().isPresent()
@@ -62,8 +64,12 @@ public class ExitStampIncorrectOrderCheck {
 							attendanceItemIds.add(77);
 							attendanceItemIds.add(79);
 							attendanceItemIds.add(81);
-							this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-									processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+//							this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
+//									processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+							EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+									employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+									attendanceItemIds);
+							employeeDailyPerErrorList.add(employeeDailyPerError);
 						} else {
 							if (attendanceLeavingGates.get(0).getLeaving().isPresent()
 									&& attendanceLeavingGates.get(1).getLeaving().isPresent()) {
@@ -93,16 +99,19 @@ public class ExitStampIncorrectOrderCheck {
 									attendanceItemIds.add(77);
 									attendanceItemIds.add(79);
 									attendanceItemIds.add(81);
-									this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-											processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+									EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+											employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+											attendanceItemIds);
+									employeeDailyPerErrorList.add(employeeDailyPerError);
 								} else {
 									// 入退門と出退勤の順序不正判断処理
 									attendanceItemIds = this.checkOder(attendanceLeavingGateOfDaily,
 											timeLeavingOfDailyPerformance);
 									if (!attendanceItemIds.isEmpty()) {
-										this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId,
+										EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
 												employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
 												attendanceItemIds);
+										employeeDailyPerErrorList.add(employeeDailyPerError);
 									}
 								}
 							}
@@ -111,7 +120,7 @@ public class ExitStampIncorrectOrderCheck {
 				}
 			}
 		}
-
+		return employeeDailyPerErrorList;
 	}
 
 	private List<Integer> checkPairReversed(AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily) {

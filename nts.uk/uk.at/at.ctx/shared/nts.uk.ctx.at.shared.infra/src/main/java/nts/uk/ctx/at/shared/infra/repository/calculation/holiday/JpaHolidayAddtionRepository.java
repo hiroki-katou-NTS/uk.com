@@ -172,9 +172,10 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstRegularWorkSet.exemptTaxTime2 = advanceSetWork.getCalculateIncludIntervalExemptionTime().value;
 		kshstRegularWorkSet.calcActualOperation2 = workTimeHolidayCalcMethod.getCalculateActualOperation().value;
 		kshstRegularWorkSet.incChildNursingCare2 = advanceSetWork.getCalculateIncludCareTime().value;
-		kshstRegularWorkSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().value;
+		kshstRegularWorkSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0;
 		kshstRegularWorkSet.additionTime2 = includeVacationSet.getAddition().value;
 		kshstRegularWorkSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
+		kshstRegularWorkSet.enableSetPerWorkHour2 = kshstRegularWorkSet.enableSetPerWorkHour1;
 		kshstRegularWorkSet.kshstRegularWorkSetPK = kshstRegularWorkSetPK;
 		return kshstRegularWorkSet;
 	}
@@ -338,9 +339,10 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			kshstWorkDepLaborSet.minusAbsenceTime2 = advanceSetWork.getMinusAbsenceTime().get().value;
 			kshstWorkDepLaborSet.calcActualOperation2 = workTimeHolidayCalcMethod.getCalculateActualOperation().value;
 			kshstWorkDepLaborSet.incChildNursingCare2 = advanceSetWork.getCalculateIncludCareTime().value;
-			kshstWorkDepLaborSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().value;
+			kshstWorkDepLaborSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0;
 			kshstWorkDepLaborSet.additionTime2 = includeVacationSet.getAddition().value;
 			kshstWorkDepLaborSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
+			kshstWorkDepLaborSet.enableSetPerWorkHour2 = kshstWorkDepLaborSet.enableSetPerWorkHour1;
 			
 			kshstWorkDepLaborSet.kshstWorkDepLaborSetPK = kshstWorkDepLaborSetPK;
 		return kshstWorkDepLaborSet;
@@ -380,9 +382,10 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstHourPayAaddSet.calcWorkHourVacation = workTimeHolidayCalcMethod.getCalculateActualOperation().value;
 		kshstHourPayAaddSet.addition2 = includeVacationSet.getAddition().value;
 		kshstHourPayAaddSet.calculateIncludCareTime = advanceSetWork.getCalculateIncludCareTime().value;
-		kshstHourPayAaddSet.notDeductLateLeaveEarly = advanceSetWork.getNotDeductLateLeaveEarly().value;
+		kshstHourPayAaddSet.notDeductLateLeaveEarly = advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0;
 		kshstHourPayAaddSet.calculateIncludeIntervalExemptionTime2 = advanceSetWork.getCalculateIncludIntervalExemptionTime().value;
 		kshstHourPayAaddSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
+		kshstHourPayAaddSet.enableSetPerWorkHour2 = kshstHourPayAaddSet.enableSetPerWorkHour1;
 		kshstHourPayAaddSet.kshstHourPayAaddSetPK = kshstHourPayAaddSetPK;
 		return kshstHourPayAaddSet;
 }
@@ -422,10 +425,11 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstFlexWorkSet.minusAbsenceTime2 = advanceSetWork.getMinusAbsenceTime().get().value;
 		kshstFlexWorkSet.calcActualOperation2 = workTimeHolidayCalcMethod.getCalculateActualOperation().value;
 		kshstFlexWorkSet.incChildNursingCare2 = advanceSetWork.getCalculateIncludCareTime().value;
-		kshstFlexWorkSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().value;
+		kshstFlexWorkSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0;
 		kshstFlexWorkSet.predeterminDeficiency2 = includeVacationSet.getPredeterminedDeficiencyOfFlex().get().value;
 		kshstFlexWorkSet.additionTime2 = includeVacationSet.getAddition().value;
 		kshstFlexWorkSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
+		kshstFlexWorkSet.enableSetPerWorkHour2 = kshstFlexWorkSet.enableSetPerWorkHour1;
 		kshstFlexWorkSet.additionWithinMonthlyStatutory = includeVacationSet.getAdditionWithinMonthlyStatutory().get().value;
 		
 		kshstFlexWorkSet.kshstFlexWorkSetPK = kshstFlexWorkSetPK;

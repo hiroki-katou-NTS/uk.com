@@ -10,7 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApplicationEmailBody
 			</com:ValidatorScript>
-			<script>var dialogSize = { width: 750, height: 400 };</script>
+			<script>var dialogSize = { width: 850, height: 550 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdl030.a.start.js" />
 			<com:scriptfile path="kdl030.a.vm.js" />
@@ -25,50 +25,57 @@
 				</div>
 				<div class="table valign-center">
 					<div class="cell">
-						<div id="A4_1" class="column1"
+						<div id="A1_1" class="column1"
 							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL030_3')}</div>
 					</div>
-					<div>
+					<div id = "A2_2">
 						<table id="table-phase">
+						<colgroup>
+							<col width="111px"/>
+							<col width="111px"/>
+							<col width="300px"/>
+							<col width="100px"/>
+							<col width="200px"/>
+						</colgroup>
 						<thead>
 							<tr class="bg-green">
-								<th class="phase-app" style="width: 111px;">#{i18n.getText('KDL030_10')}</th>
-								<th class="order-app" style="width: 111px;">#{i18n.getText('KDL030_11')}</th>
-								<th class="name-app" style="width: 230px;">#{i18n.getText('KDL030_12')}</th>
-								<th class="status-app" style="width: 111px;">#{i18n.getText('KDL030_13')}</th>
-								<th class="isMail-app" style="width: 200px;">#{i18n.getText('KDL030_14')}</th>
+								<th class="phase-app">#{i18n.getText('KDL030_10')}</th>
+								<th class="order-app">#{i18n.getText('KDL030_11')}</th>
+								<th class="name-app">#{i18n.getText('KDL030_12')}</th>
+								<th class="status-app">#{i18n.getText('KDL030_13')}</th>
+								<th class="isMail-app">#{i18n.getText('KDL030_14')}</th>
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: approvalRootState">
+							<!-- 1 フェーズ -->
 							<com:ko bind="$data.listApprovalFrame" tag="foreach">
 								<tr style="cursor:pointer;">
 									<com:ko bind="$index() === 0" tag="if">
-										<td data-bind="attr: {rowspan: $parent.listApprovalFrame().length}, text: 'フェーズ'+$parent.phaseOrder()" style="width: 111px;"  class="bg-green"></td>
+										<td data-bind="attr: {rowspan: $parent.listApprovalFrame.length}, text: 'フェーズ'+$parent.phaseOrder" 
+											style="width: 111px;"  class="bg-green"></td>
 									</com:ko>
-									<td data-bind="text: '承認者'+$data.frameOrder()" style="width: 111px; text-align: left; padding-left: 5px;"  class="bg-green" ></td>
-									<td data-bind="foreach: $data.listApprover" style="width: 230px; text-align: left; padding-left: 5px;">
-										<com:ko bind="$index() != 0" tag="if">
-											<label>sdfs</label>
-										</com:ko>
-										<div style="display: inline-block;">
-											<label data-bind="text: $data.approverName()"></label>
-											<div style="display: inline-block;" data-bind="if: $data.representerName().length > 0">
-												<label data-bind="text: '(' + $data.representerName() + ')'"></label>
-											</div>
-											<div style="display: inline-block;" data-bind="if: $data.sMail().length > 0">
-												<label data-bind="text: '(' + '@' + ')'"></label>
-											</div>
-										</div>									
+									<!-- 承認者 -->
+									<td data-bind="text: '承認者'+$data.frameOrder" class="bg-green" ></td>
+									<!-- 社員名 -->
+									<td data-bind="foreach: $data.listApprover">
+										<div class = "rowPer"  data-bind="text: $data.dispApproverName,
+																css: { rowBorder:  ($parent.listApprover.length - $index()) > 1 }"></div>
 									</td>
-									<td data-bind="text: $data.approvalAtr()" style="width: 111px; text-align: left; padding-left: 5px;"  ></td>
- 									<td data-bind="foreach: $data.listApprover"> 
- 										<div class="cf" data-bind="ntsSwitchButton: { 
-   										name: 'Sample Switch',   
-   										options: $parents[2].optionList,   
-  										optionsValue: 'dispCode',  
-  										optionsText: 'dispName',  
-  										value: $data.isSend, 
-  										enable: $data.sMail().length >= 0 }"></div> 
+									<!-- 状況 -->
+									<td data-bind="text: $parent.approvalAtrName" ></td>
+ 									<!-- メール送信 -->
+ 									<td data-bind="foreach: $data.listApprover">
+ 										<div  class = "rowPer" data-bind = "if: $data.showButton,
+ 												css: {rowBorder: ($parent.listApprover.length - $index()) > 1},
+ 													attr: { id: 'sendAtr_' + $index()}">
+	 										<div data-bind="ntsSwitchButton: { 
+			   										name: '#{i18n.getText('KAF030_25')}',   
+			   										options: $parents[2].optionList,   
+			  										optionsValue: 'dispCode',  
+			  										optionsText: 'dispName',  
+			  										value: $data.isSend}">
+	  										</div>
+ 										</div>
 									</td>
 								</tr>
 							</com:ko>
@@ -88,18 +95,19 @@
 							data-bind="ntsFormLabel: { required : true,  constraint: 'ApplicationEmailBody' }">#{i18n.getText('KDL030_6')}</div>
 					</div>
 					<div class="cell column2">
-						<textarea tabindex="2" id="A4_2"
+						<textarea id="A4_2"
 							data-bind="ntsMultilineEditor: { 
 									name: '#[KDL034_14]',
 									value: mailContent,
+									required : true,
 									constraint: 'ApplicationEmailBody' }" />
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="3" class="x-large proceed"
-					data-bind="click: sendMail">#{i18n.getText('KDL030_8')}</button>
-				<button tabindex="4" data-bind="click: cancel">#{i18n.getText('KDL030_9')}</button>
+				<button  class="x-large proceed"
+					data-bind="click: sendMail, enable: $root.errors.isEmpty">#{i18n.getText('KDL030_8')}</button>
+				<button data-bind="click: cancel">#{i18n.getText('KDL030_9')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -55,26 +55,31 @@ module ccg018.a.viewmodel {
             // call start function on view at here
             switch (tab.id()) {
                 case 'a1':
-                    var viewmodelA1 = new ccg018.a1.viewmodel.ScreenModel(self.baseModel);
-                    $(resultArea).load(viewmodelA1.screenTemplateUrl(), function() {
-                        viewmodelA1.searchByDate().done(function() {
-                            ko.applyBindings(viewmodelA1, resultArea.children().get(0));
-                            ko.applyBindings(viewmodelA1, resultArea.children().get(1));
-                            if (viewmodelA1.categorySet() == 0) {
-                                $("#width-tbody").addClass("width-tbody");
-                            } else {
-                                $("#width-tbody").removeClass("width-tbody");
-                            }
-                            $('#A2-2').focus();
+                    self.findByCId().done(function(){
+                        var viewmodelA1 = new ccg018.a1.viewmodel.ScreenModel(self.baseModel);
+                        $(resultArea).load(viewmodelA1.screenTemplateUrl(), function() {
+                            viewmodelA1.searchByDate().done(function() {
+                                ko.applyBindings(viewmodelA1, resultArea.children().get(0));
+                                ko.applyBindings(viewmodelA1, resultArea.children().get(1));
+                                if (viewmodelA1.categorySet() == 0) {
+                                    $("#width-tbody").addClass("width-tbody");
+                                } else {
+                                    $("#width-tbody").removeClass("width-tbody");
+                                }
+                                $('#A2-2').focus();
+                            });
                         });
                     });
                     break;
                 case 'b':
-                    var viewmodelB = new ccg018.b.viewmodel.ScreenModel(self.baseModel);
-                    $(resultArea).load(viewmodelB.screenTemplateUrl(), function() {
-                        viewmodelB.start().done(function() {
-                            ko.applyBindings(viewmodelB, resultArea.children().get(0));
-                            ko.applyBindings(viewmodelB, resultArea.children().get(1));
+                    self.findByCId().done(function(){
+                        var viewmodelB = new ccg018.b.viewmodel.ScreenModel(self.baseModel);
+                        $(resultArea).load(viewmodelB.screenTemplateUrl(), function() {
+                            viewmodelB.start().done(function() {
+                                ko.applyBindings(viewmodelB, resultArea.children().get(0));
+                                ko.applyBindings(viewmodelB, resultArea.children().get(1));
+
+                            });
                         });
                     });
                     break;

@@ -66,7 +66,7 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		for (SacmtRoleSetGrantedJobTitleDetail newDetail : newDetails){
 			for (SacmtRoleSetGrantedJobTitleDetail oldDetail : oldDetails){
 				if (oldDetail.roleSetGrantedJobTitleDetailPK.equals(newDetail.roleSetGrantedJobTitleDetailPK)){
-					newDetails.set(newDetails.indexOf(newDetail), oldDetail);
+					newDetails.set(newDetails.indexOf(newDetail), newDetail);
 					break;
 				}
 			}

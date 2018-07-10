@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import text = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         isNewScreen: KnockoutObservable<boolean> = ko.observable(true);
         dateType: string = 'YYYY/MM/DD';
@@ -15,6 +16,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
+        employeeList :KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+        selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+        employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+        totalEmployee: KnockoutObservable<string> = ko.observable(null);
+        employeeIDs :KnockoutObservableArray<string> = ko.observableArray([]);
+        
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(2);
         defaultPrePost: number = 0;
@@ -94,8 +101,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         checkboxEnable: KnockoutObservable<boolean> = ko.observable(false);
         workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
         workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
-        constructor() {
+        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
+        constructor(transferData :any) {
             let self = this;
+            if(!nts.uk.util.isNullOrEmpty(transferData)){
+                self.employeeIDs(transferData.employeeIds);
+            }
+            
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //MultilineEditor 
@@ -112,7 +124,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         if (!$('#inputdate').ntsError('hasError')) {
                             if (!nts.uk.util.isNullOrEmpty(value)) {
                                 nts.uk.ui.block.invisible();
-                                self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false)
+                                self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false,self.employeeID)
                                     .done((changeDateData) => {
                                         self.defaultPrePost = changeDateData.defaultPrePostAtr;
                                         nts.uk.ui.block.clear();
@@ -144,8 +156,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let change = 3; //3:変更する
 
             //get Common Setting
-            service.getGoBackSetting().done(function(settingData: any) {
+            service.getGoBackSetting({
+                employeeIDs: self.employeeIDs()
+            }).done(function(settingData: any) {
                 if (!nts.uk.util.isNullOrEmpty(settingData)) {
+                    self.checkBoxValue(settingData.appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true : false);
                     self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
@@ -205,7 +220,15 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         }
 
                     }
-
+                    // list employeeID
+                    if (!nts.uk.util.isNullOrEmpty(settingData.employees)) {
+                        self.employeeFlag(true);
+                        for (let i = 0; i < settingData.employees.length; i++) {
+                            self.employeeList.push(new common.EmployeeOT(settingData.employees[i].employeeIDs, settingData.employees[i].employeeName));
+                        }
+                        let total = settingData.employees.length;
+                        self.totalEmployee(nts.uk.resource.getText("KAF009_44", total.toString()));
+                    }
                     //共通設定.複数回勤務
                     self.useMulti(settingData.dutiesMulti);
                     //場所選択
@@ -285,9 +308,17 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         registry() {
             let self = this;
             nts.uk.ui.block.invisible();
-            service.insertGoBackDirect(self.getCommand()).done(function() {
+            service.insertGoBackDirect(self.getCommand()).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    location.reload();
+                    if(data.autoSendMail){
+                        appcommon.CommonProcess.displayMailResult(data);     
+                    } else {
+                        if(self.checkBoxValue()){
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);    
+                        } else {
+                            location.reload();
+                        }   
+                    }
                 });
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });

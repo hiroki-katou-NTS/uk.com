@@ -1,8 +1,7 @@
 @CHARSET "UTF-8";
 
 #combo-box {
-	width: 30px;
-	margin-left: 35px;
+	padding-left: 20px;
 }
 
 .padding-bottom {
