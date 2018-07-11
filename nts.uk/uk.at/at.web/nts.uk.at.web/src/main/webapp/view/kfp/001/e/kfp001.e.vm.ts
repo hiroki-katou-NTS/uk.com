@@ -46,10 +46,10 @@ module nts.uk.at.view.kfp001.e {
 
                 self.columns = ko.observableArray([
                     { headerText: getText('KFP001_39'), key: 'no', width: 50 },
-                    { headerText: getText('KFP001_40'), key: 'personCode', width: 110 },
-                    { headerText: getText('KFP001_41'), key: 'personName', width: 150 },
-                    { headerText: getText('KFP001_42'), key: 'disposalDay', width: 150 },
-                    { headerText: getText('KFP001_43'), key: 'messageError', width: 290 },
+                    { headerText: getText('KFP001_40'), key: 'personCode', width: 70 },
+                    { headerText: getText('KFP001_41'), key: 'personName', width: 210 },
+                    { headerText: getText('KFP001_42'), key: 'disposalDay', width: 130 },
+                    { headerText: getText('KFP001_43'), key: 'messageError', width: 180 },
                     { headerText: '', key: 'GUID', width: 1, hirren: true },
                 ]);
 

@@ -25,7 +25,6 @@ module nts.uk.at.view.kfp001.b {
             //
             enableNEW: KnockoutObservable<boolean>;
             enableDEL: KnockoutObservable<boolean>;
-            isNext: KnockoutObservable<boolean> = ko.observable(true);
             peopleNo: KnockoutObservable<number>;
             peopleFromC: KnockoutObservable<number>;
 
@@ -42,6 +41,7 @@ module nts.uk.at.view.kfp001.b {
 
             status: KnockoutObservable<number> = ko.observable(0);
             preOfError: KnockoutObservable<string> = ko.observable('');
+            isFocus: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 var self = this;
@@ -103,8 +103,9 @@ module nts.uk.at.view.kfp001.b {
                 self.currentCode = ko.observable();
                 self.aggrId = ko.observable('');
                 self.currentCode.subscribe(function(codeChanged) {
-
                     if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
+                        self.enableNEW(true);
+                        self.enableDEL(true);
                         self.currentItem(self.findOptional(codeChanged));
                         self.currentItemExe(self.findExc(codeChanged))
                         self.getPeriod();
@@ -178,7 +179,7 @@ module nts.uk.at.view.kfp001.b {
                             self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.multiSelectedCode())]));
                         }
 
-                        
+
                         self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
                         self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
                         self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
@@ -313,11 +314,9 @@ module nts.uk.at.view.kfp001.b {
                     self.currentCode("");
                     self.peopleNo(0);
                     nts.uk.ui.errors.clearAll();
-                    //self.enableNEW(false);
+                    self.enableNEW(false);
                     self.enableDEL(false);
-                    $('#code-text-d4-2').focus();
                     $('#update-mode').hide();
-                    self.isNext(true);
                     self.dateValue({
                         startDate: new Date(),
                         endDate: new Date()
@@ -325,7 +324,9 @@ module nts.uk.at.view.kfp001.b {
                     self.mode(0);
                     self.enableText(true);
                 }
+                self.isFocus(true)
             }
+
             deleteDataB() {
 
                 let self = this;
@@ -374,8 +375,7 @@ module nts.uk.at.view.kfp001.b {
                 $("#code-text-d4-21").trigger("validate");
                 $("#start-date-B6-3").trigger("validate");
                 $("#end-date-B6-4").trigger("validate");
-                if (nts.uk.ui.errors.hasError() == true) {
-                    self.isNext(false);
+                if (self.currentItem().aggrFrameCode() == null || self.currentItem().optionalAggrName() == null) {
                     return;
                 }
                 let checkCode = _.filter(self.optionalList(), function(obj) {

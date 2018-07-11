@@ -174,7 +174,7 @@ module nts.uk.at.view.kfp001.c {
                 });
 
                 nts.uk.ui.windows.setShared("KFP001_DATAC", self.selectedEmployee());
-                if (self.selectedEmployee().length >= 422) {
+                if (self.multiSelectedCode().length >= 418) {
                     nts.uk.ui.windows.setShared("KFP001_DATAC_SELECT", self.selectedEmployee().length);
 
                 } else {

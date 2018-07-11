@@ -38,7 +38,7 @@
 						#{i18n.getText('KFP001_14')}</div>
 					<span> <input id="code-text-d4-2"
 						style="margin-left: 40px ! important" tabindex="4"
-						data-bind="ntsTextEditor: {value: aggrFrameCode,constraint:'AggrFrameCode', required: true, name: '#[KFP001_15]', enable:$parent.enableText}" /></span>
+						data-bind="ntsTextEditor: {value: aggrFrameCode,constraint:'AggrFrameCode', required: true, name: '#[KFP001_15]', enable:$parent.enableText}, hasFocus: $parent.isFocus" /></span>
 					<hr></hr>
 				</div>
 				<div>
@@ -80,7 +80,7 @@
 			</div>
 		</div>
 		<button id="next-button-B" class="proceed x-large"
-			data-bind="click : opendScreenBorJ,enable: isNext" tabindex="9" >#{i18n.getText('KFP001_25')}</button>
+			data-bind="click : opendScreenBorJ,enable: $root.errors.isEmpty" tabindex="9" >#{i18n.getText('KFP001_25')}</button>
 	</ui:composition>
 </body>
 </html>
