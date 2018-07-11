@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSymbol;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
@@ -59,9 +60,9 @@ public class ExOutSummarySettingService {
 				continue;
 			}
 			
+			//TODO đổi thành swith case, với xem so sánh enum
 			// 数値型 NumericType
-			// TODO Chờ domain sửa thì sửa lại số thành enum
-			if(ctgItemData.get().getDataType() == 0) {
+			if(ctgItemData.get().getDataType() == DataType.NUMERIC) {
 				if(outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchNumStartVal().isPresent() ? outCndDetailItem.getSearchNumStartVal().get() : "");
 					cond.append(I18NText.getText("#CMF002_235"));
@@ -72,7 +73,7 @@ public class ExOutSummarySettingService {
 				}
 			}
 			//文字型 CharacterType
-			else if(ctgItemData.get().getDataType() == 1) {
+			else if(ctgItemData.get().getDataType() == DataType.CHARACTER) {
 				if(outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchCharStartVal().isPresent() ? outCndDetailItem.getSearchCharStartVal().get() : "");
 					cond.append(I18NText.getText("#CMF002_235"));
@@ -83,7 +84,7 @@ public class ExOutSummarySettingService {
 				}
 			}
 			//日付型 DateType
-			else if(ctgItemData.get().getDataType() == 2) {
+			else if(ctgItemData.get().getDataType() == DataType.DATE) {
 				if(outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchDateStart().isPresent() ? outCndDetailItem.getSearchDateStart().get() : "");
 					cond.append(I18NText.getText("#CMF002_235"));
@@ -94,7 +95,7 @@ public class ExOutSummarySettingService {
 				}
 			}
 			//時間型 TimeType
-			else if(ctgItemData.get().getDataType() == 3) {
+			else if(ctgItemData.get().getDataType() == DataType.TIME) {
 				if(outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchTimeStartVal().isPresent() ? outCndDetailItem.getSearchTimeStartVal().get() : "");
 					cond.append(I18NText.getText("#CMF002_235"));
@@ -105,7 +106,7 @@ public class ExOutSummarySettingService {
 				}
 			}
 			//時刻型 TimeClockType
-			else if(ctgItemData.get().getDataType() == 4) {
+			else if(ctgItemData.get().getDataType() == DataType.INS_TIME) {
 				if(outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchClockStartVal().isPresent() ? outCndDetailItem.getSearchClockStartVal().get() : "");
 					cond.append(I18NText.getText("#CMF002_235"));

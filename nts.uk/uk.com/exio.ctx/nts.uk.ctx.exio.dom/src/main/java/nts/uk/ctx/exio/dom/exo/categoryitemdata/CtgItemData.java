@@ -12,7 +12,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 
 @Getter
-
 public class CtgItemData extends AggregateRoot
 {
     
