@@ -28,10 +28,6 @@ public class KshstGrantDayPerRelationship extends UkJpaEntity implements Seriali
 	@Column(name = "S_HOLIDAY_EVENT_NO")
 	public int sHolidayEventNo;
 
-	/* 特別休暇コード */
-	@Column(name = "S_HOLIDAY_CD")
-	private int sHolidayCd;
-
 	/* 忌引とする */
 	@Column(name = "MAKE_INVITATION")
 	private int makeInvitation;

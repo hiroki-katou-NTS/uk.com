@@ -66,19 +66,19 @@ public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializabl
 
 	/* 年齢範囲 */
 	@Column(name = "AGE_RANGE_LOWER_LIMIT")
-	public String ageRangeLowerLimit;
+	public int ageRangeLowerLimit;
 	
 	/* 年齢範囲 */
 	@Column(name = "AGE_RANGE_HIGHER_LIMIT")
-	public String ageRangeHigherLimit;
+	public int ageRangeHigherLimit;
 	
-	/* 年齢基準 */
-	@Column(name = "AGE_STANDARD_LOWER_LIMIT")
-	public String ageStandardLowerLimit;
+	/* 年齢基準年区分 */
+	@Column(name = "AGE_STANDARD_YEAR_TYPE")
+	public int ageStandardYear;
 	
-	/* 年齢基準*/
-	@Column(name = "AGE_STANDARD_HIGHER_LIMIT")
-	public String ageStandardHigherLimit;
+	/* 年齢基準月日*/
+	@Column(name = "AGE_STANDARD_BASE_DATE")
+	public String ageStandardBaseDate;
 	
 	/* メモ */
 	@Column(name = "MEMO")
