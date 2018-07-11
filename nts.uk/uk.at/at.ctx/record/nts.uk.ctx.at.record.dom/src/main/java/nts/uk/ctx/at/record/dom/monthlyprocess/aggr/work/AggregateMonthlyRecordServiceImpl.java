@@ -1,10 +1,15 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
@@ -38,7 +43,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			String companyId, String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
 			AggrResultOfAnnAndRsvLeave prevAggrResult,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
+			Optional<List<IntegrationOfDaily>> dailyWorks, Optional<IntegrationOfMonthly> monthlyWork) {
 		
 		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc(
 				this.repositories,
@@ -47,6 +53,6 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				this.breakDayoffMng);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
-				datePeriod, prevAggrResult, companySets, employeeSets);
+				datePeriod, prevAggrResult, companySets, employeeSets, dailyWorks, monthlyWork);
 	}	
 }

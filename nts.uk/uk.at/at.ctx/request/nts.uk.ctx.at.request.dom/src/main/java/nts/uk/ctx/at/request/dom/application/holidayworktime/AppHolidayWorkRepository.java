@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AppHolidayWorkRepository {
@@ -42,4 +44,12 @@ public interface AppHolidayWorkRepository {
 	 * @return
 	 */
 	public Optional<AppHolidayWork> getAppHolidayWorkFrame(String companyID, String appID);
+	/**
+	 * get list Application Holiday Work and Frame
+	 * @author hoatt
+	 * @param companyID
+	 * @param lstAppID
+	 * @return map: key - appID, value - AppHolidayWork
+	 */
+	public Map<String,AppHolidayWork> getListAppHdWorkFrame(String companyID, List<String> lstAppID);
 }
