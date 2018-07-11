@@ -60,12 +60,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             let self = this;
             //Fixed table
             if (/Chrome/.test(navigator.userAgent)) {
-                $("#E4_1").ntsFixedTable({ height: 164, width: 700 });
-                $("#F4_1").ntsFixedTable({ height: 184, width: 700 });
+                $("#E4_1").ntsFixedTable({ height: 164, width: 715 });
+                $("#F4_1").ntsFixedTable({ height: 184, width: 715 });
                 $("#H4_1").ntsFixedTable({ height: 164, width: 700 });
             } else {
-                $("#E4_1").ntsFixedTable({ height: 165, width: 700 });
-                $("#F4_1").ntsFixedTable({ height: 184, width: 700 });
+                $("#E4_1").ntsFixedTable({ height: 165, width: 715 });
+                $("#F4_1").ntsFixedTable({ height: 184, width: 715 });
                 $("#H4_1").ntsFixedTable({ height: 164, width: 700 });
             }
             //_____KCP005G________

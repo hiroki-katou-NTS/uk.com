@@ -11,13 +11,21 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.assist.dom.datarestoration.*;
-
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
+import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.RecoveryMethod;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<PerformDataRecoveryCommand> {
 	@Inject
 	private PerformDataRecoveryRepository repoPerformDataRecovery;
+	@Inject
+	private DataRecoveryResultRepository repoDataRecoveryResult;
 	@Inject
 	private DataRecoveryMngRepository repoDataRecoveryMng;
 	@Inject
@@ -39,6 +47,19 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 				categoryTotalCount, totalNumOfProcesses, numOfProcesses, processTargetEmpCode, suspendedState,
 				operatingCondition, recoveryDate);
 		repoDataRecoveryMng.add(dataRecoveryMng);
+
+		// ドメインモデル「データ復旧の結果」を登録する
+		String cid = AppContexts.user().companyId();
+		String saveSetCode = null;
+		String practitioner = "";
+		String executionResult = null;
+		GeneralDateTime startDateTime = GeneralDateTime.now();
+		GeneralDateTime endDateTime = null;
+		Integer saveForm = 0;
+		String saveName = "";
+		DataRecoveryResult dataRecoveryResult = new DataRecoveryResult(dataRecoveryProcessId, cid, saveSetCode,
+				practitioner, executionResult, startDateTime, endDateTime, saveForm, saveName);
+		repoDataRecoveryResult.add(dataRecoveryResult);
 
 		// 復旧条件の調整
 		// 画面の「復旧方法」をドメインモデル「データ復旧の実行」に更新する
