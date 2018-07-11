@@ -10,7 +10,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;
+        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, null, null, 0, "", 0, ""));
         effectDigitLengthItem: KnockoutObservableArray<model.ItemModel>;
         codeEditingItem: KnockoutObservableArray<model.ItemModel>;
         nullValueReplaceItem: KnockoutObservableArray<model.ItemModel>;
@@ -19,11 +19,10 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         spaceEditingItem: KnockoutObservableArray<model.ItemModel>;
         codeConvertCode: KnockoutObservable<model.AcceptanceCodeConvert>;
         dispConvertName: KnockoutObservable<string>;
-        modeScreen: KnockoutObservable<number>;
-        isEnable: KnockoutObservable<boolean>;
+        modeScreen: KnockoutObservable<number> = ko.observable(0);
+        isEnable: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
-            self.inputMode = true;
             self.initComponent();
             self.validate();
         }
@@ -37,7 +36,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             service.getCharacterDataFormatSetting().done(function(data: Array<any>) {
                 if (data && data.length) {
                     let _rsList: Array<model.characterDataFormatSetting> = _.map(data, rs => {
-                        return new model.characterDataFormatSetting(rs.effectDigitLength, rs.startDigit, rs.endDigit, rs.codeEditing, rs.codeEditDigit, rs.codeEditingMethod, rs.spaceEditing, rs.codeConvertCode, rs.nullValueReplace, rs.valueOfNullValueReplace, rs.fixedValue, rs.valueOfFixedValue);
+                        return new model.characterDataFormatSetting(rs.effectDigitLength(), rs.startDigit(), rs.endDigit(), rs.codeEditing(), rs.codeEditDigit(), rs.codeEditingMethod(), rs.spaceEditing(), rs.codeConvertCode(), rs.nullValueReplace(), rs.valueOfNullValueReplace(), rs.fixedValue(), rs.valueOfFixedValue());
                     });
                     self.characterDataFormatSetting(_rsList);
                 } else {
@@ -45,7 +44,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
                 }
             }
             if (parrams.modeScreen) {
-            self.isEnable(false);
+                self.isEnable(false);
             }
             if (!parrams.modeScreen) {
                 self.isEnable(true);
@@ -134,45 +133,45 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         }
         enableEffectDigitLengthCls() {
             var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.modeScreen);
         }
         enableCodeEditingCls() {
             var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.modeScreen);
         }
 
         enableSpaceEditing() {
             var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.modeScreen);
         }
         enableConvertCode() {
             var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.modeScreen);
         }
         enableNullValueReplaceCls() {
             var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.modeScreen);
         }
 
         enableFixedValueCls() {
             var self = this;
-            return (self.inputMode);
+            return (self.modeScreen);
         }
         enableEffectDigitLength() {
             var self = this;
-            return (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE && self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE && self.modeScreen && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         enableCodeEditing() {
             var self = this;
-            return (self.characterDataFormatSetting().codeEditing() == model.NOT_USE_ATR.USE && self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.characterDataFormatSetting().codeEditing() == model.NOT_USE_ATR.USE && self.modeScreen && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         enableNullValueReplace() {
             var self = this;
-            return (self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE && self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE && self.modeScreen && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         enableFixedValue() {
             var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.modeScreen);
         }
         open002_V2() {
 
@@ -182,10 +181,10 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             let command = ko.toJS(self.characterDataFormatSetting());
             service.setCharacterDataFormatSetting(command).done(function() {
                 nts.uk.ui.windows.close();
+            }).fail(error => {
+                alertError({ messageId: "Msg" });
             });
-        }).fail(error => {
-            alertError({ messageId: "Msg" });
-        });
+        }
         cancelCharacterSetting() {
             nts.uk.ui.windows.close();
         }

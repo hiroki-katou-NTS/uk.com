@@ -57,9 +57,9 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             let command = ko.toJS(self.AtWorkDataOutputItem());
             service.setAWDataFormatSetting(command).done(function() {
                 nts.uk.ui.windows.close();
+            }).fail(error => {
+                alertError({ messageId: "Msg" });
             });
-        }).fail(error => {
-            alertError({ messageId: "Msg" });
-        });
+        }
     }
 }

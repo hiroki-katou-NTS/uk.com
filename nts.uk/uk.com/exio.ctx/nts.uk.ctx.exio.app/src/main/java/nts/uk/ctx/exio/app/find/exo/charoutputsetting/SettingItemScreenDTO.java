@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.app.find.exo.charoutputsetting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSet;
 
 @Setter
 @Getter
@@ -68,4 +69,15 @@ public class SettingItemScreenDTO {
 	 * 固定値の値
 	 */
 	private String valueOfFixedValue;
+	
+	public static SettingItemScreenDTO fromDomain(ChacDataFmSet domain){
+		String valueOfNullValueReplace = domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null;
+		Integer cdEditDigit = domain.getCdEditDigit().isPresent() ? domain.getCdEditDigit().get().v() : null;
+		String cdConvertCd = domain.getConvertCode().isPresent() ? domain.getConvertCode().get().v() : null;
+		Integer startDigit = domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null;
+		Integer endDigit = domain.getEndDigit().isPresent() ? domain.getEndDigit().get().v() : null;
+		String valueOfFixedValue = domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null;
+
+		return new SettingItemScreenDTO(domain.getNullValueReplace().value, valueOfNullValueReplace, domain.getCdEditting().value, domain.getFixedValue().value, domain.getCdEdittingMethod().value, cdEditDigit, cdConvertCd, domain.getSpaceEditting().value, domain.getEffectDigitLength().value, startDigit, endDigit, valueOfFixedValue);
+	}
 }
