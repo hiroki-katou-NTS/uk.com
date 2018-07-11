@@ -177,12 +177,14 @@ module nts.uk.com.view.cmf002.share.model {
         dispItemNo: string;
         itemName: KnockoutObservable<string>;
         dispitemName: string;
+        isCheck: KnockoutObservable<boolean>;
 
         constructor(itemNo: string, itemName: string) {
             this.itemNo = ko.observable(itemNo);
             this.dispItemNo = itemNo;
             this.itemName = ko.observable(itemName);
             this.dispitemName = itemName;
+            this.isCheck = ko.observable(false);
         }
     }
 
