@@ -20,8 +20,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
- * @author phongtq
- * 任意期間集計Mgrクラス
+ * @author phongtq 任意期間集計Mgrクラス
  */
 @Stateless
 public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDomainService {
@@ -45,8 +44,7 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 	public <C> void excuteOptionalPeriod(String companyId, String excuteId, AsyncCommandHandlerContext<C> asyn) {
 
 		// ドメインモデル「任意期間集計実行ログ」を取得
-		Optional<AggrPeriodExcution> excutionPeriod = excutionRepo.findBy(companyId, excuteId,
-				ExecutionStatus.PROCESSING.value);
+		Optional<AggrPeriodExcution> excutionPeriod = excutionRepo.findByAggr(companyId, excuteId);
 
 		// ドメインモデル「任意集計期間」を取得
 		Optional<OptionalAggrPeriod> optionalPeriod = respsitory.find(companyId,
@@ -73,22 +71,22 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 			}
 			// ログ情報（実行内容の完了状態）を更新する
 			targetRepo.updateExcution(periodTarget);
-			
+
 			// Get End Date Time Excution
 			GeneralDateTime endDateTime = GeneralDateTime.now();
-			
+
 			// 状態を確認する
 			if (excutionPeriod.isPresent() && periodTarget.getState().value == 0) {
-				excutionRepo.updateExe(excutionPeriod.get(), 2, endDateTime);
-			} else {
 				periodInforRepo.findAll(excuteId);
 				List<AggrPeriodInfor> periodInforLst = periodInforRepo.findAll(excuteId);
-				
+
 				if (periodInforLst.size() == 0) {
 					excutionRepo.updateExe(excutionPeriod.get(), 0, endDateTime);
 				} else {
 					excutionRepo.updateExe(excutionPeriod.get(), 1, endDateTime);
 				}
+			} else {
+				excutionRepo.updateExe(excutionPeriod.get(), 2, endDateTime);
 			}
 		}
 		dataSetter.setData("aggCreateStatus", "完了");
