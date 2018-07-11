@@ -170,7 +170,7 @@ module nts.uk.at.view.kfp001.b {
 
                         self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
                         self.dScreenmodel.peopleNo(null);
-                        if (_.size(self.cScreenmodel.selectedEmployee()) >= 422) {
+                        if (_.size(self.cScreenmodel.multiSelectedCode()) >= 418) {
                             self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.selectedEmployee()));
                             self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.selectedEmployee())]));
                         } else {
