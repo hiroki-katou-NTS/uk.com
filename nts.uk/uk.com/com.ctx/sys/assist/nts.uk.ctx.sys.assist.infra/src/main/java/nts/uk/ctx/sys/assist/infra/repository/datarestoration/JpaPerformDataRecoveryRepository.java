@@ -51,6 +51,8 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static final String UPDATE_DATE_FROM_TO_BY_LIST_CATEGORY_ID = "UPDATE SspmtTableList t SET t.saveDateFrom =:startOfPeriod, t.saveDateTo =:endOfPeriod  WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.tableListPk.categoryId =:checkCate ";
 	
+	private static final String DELETE_TABLE_LIST = "DELETE FROM SspmtTableList  t where t.tableListPk.dataStorageProcessingId =:dataStorageProcessingId";
+	
 	/*@PersistenceContext(unitName = "UK")
     private EntityManager entityManager;*/
 	
@@ -107,7 +109,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+	public Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 		
 		if (tableName != null) {
@@ -272,6 +274,18 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 				.setParameter("startOfPeriod", startOfPeriod).setParameter("endOfPeriod", endOfPeriod)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).setParameter("checkCate", checkCate)
 				.executeUpdate();
+	}
+
+	@Override
+	public void deleteTableListByDataStorageProcessingId(String dataStorageProcessingId) {
+
+		if (dataStorageProcessingId != null) {
+			this.getEntityManager().createQuery(DELETE_TABLE_LIST, SspmtTableList.class)
+			.setParameter("dataStorageProcessingId", dataStorageProcessingId)
+			.executeUpdate();
+
+		}
+		
 	}
 
 }

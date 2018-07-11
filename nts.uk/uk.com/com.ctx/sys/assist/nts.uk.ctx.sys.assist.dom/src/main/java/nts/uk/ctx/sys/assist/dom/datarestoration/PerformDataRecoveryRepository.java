@@ -27,7 +27,7 @@ public interface PerformDataRecoveryRepository {
 
 	Optional<TableList> getByInternal(String internalFileName, String dataRecoveryProcessId);
 
-	int countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+	Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent);
 
 	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
@@ -51,4 +51,7 @@ public interface PerformDataRecoveryRepository {
 
 	void updateCategorySelectByDateFromTo(String startOfPeriod, String endOfPeriod, String dataRecoveryProcessId,
 			String checkCate);
+	
+	void deleteTableListByDataStorageProcessingId(String dataStorageProcessingId);
+	
 }
