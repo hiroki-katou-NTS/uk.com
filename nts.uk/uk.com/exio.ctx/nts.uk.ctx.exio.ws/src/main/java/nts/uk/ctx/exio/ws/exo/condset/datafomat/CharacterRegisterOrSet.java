@@ -7,7 +7,6 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.app.command.exo.charegister.ChacDataFmSetCommand;
 import nts.uk.ctx.exio.app.command.exo.charegister.SettingDataCharRegisterService;
-import nts.uk.ctx.exio.app.command.exo.charegister.SettingDataCharUpdateService;
 
 @Path("exio/exo/character")
 @Produces("application/json")
@@ -16,19 +15,10 @@ public class CharacterRegisterOrSet {
 	@Inject
 	SettingDataCharRegisterService settingDataCharRegisterService;
 	
-	@Inject
-	SettingDataCharUpdateService settingDataCharUpdateService;
-	
 	@POST
 	@Path("add")
 	public void addCharacter(ChacDataFmSetCommand command) {
 		this.settingDataCharRegisterService.handle(command);
-	}
-	
-	@POST
-	@Path("update")
-	public void updateCharacter(ChacDataFmSetCommand command) {
-		this.settingDataCharUpdateService.handle(command);
 	}
 
 }
