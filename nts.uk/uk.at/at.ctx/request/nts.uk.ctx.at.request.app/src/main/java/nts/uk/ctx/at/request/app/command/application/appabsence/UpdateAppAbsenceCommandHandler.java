@@ -9,11 +9,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -35,6 +38,8 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 	private DetailAfterUpdate detailAfterUpdate;
 	@Inject
 	private CreatAppAbsenceCommandHandler creatAppAbsenceCommandHandler;
+	@Inject 
+	private AbsenceServiceProcess absenceServiceProcess;
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateAppAbsenceCommand> context) {
 		String companyID = AppContexts.user().companyId();
@@ -71,6 +76,10 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		creatAppAbsenceCommandHandler.checkBeforeRegister(convert(command),
 				opAppAbsence.get().getApplication().getAppDate(),
 				opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate(),false);
+		//計画年休上限チェック(check giới han trên plan annual holiday)
+		//hoatt-2018-07-05
+		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
+				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"), GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"), EnumAdaptor.valueOf(command.getHolidayAppType(), HolidayAppType.class));
 		//update appAbsence
 		appAbsenceRepository.updateAbsence(appAbsence);
 		//update application

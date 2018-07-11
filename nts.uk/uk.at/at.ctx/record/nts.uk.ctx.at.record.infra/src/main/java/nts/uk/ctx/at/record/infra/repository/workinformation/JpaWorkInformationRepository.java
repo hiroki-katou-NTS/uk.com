@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
 	
+	private static final String FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS;
+	
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD_DESC;
 	
 	private static final String FIND_BY_LIST_SID_AND_PERIOD;
@@ -56,7 +59,16 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("WHERE a.krcdtWorkScheduleTimePK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtWorkScheduleTimePK.ymd = :ymd ");
 		DEL_BY_KEY_ID = builderString.toString();
-
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
+		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd >= :startDate ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
+		builderString.append("ORDER BY a.krcdtDaiPerWorkInfoPK.ymd ");
+		FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS = builderString.toString();
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
@@ -183,6 +195,17 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 								.map(af -> af.toDomain()).collect(Collectors.toList()));
 		});
 		return result;
+	}
+
+	@Override
+	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdAndEmps(List<String> employeeIds,
+			DatePeriod datePeriod) {
+		if(employeeIds.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeIds", employeeIds)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
 	}
 
 }

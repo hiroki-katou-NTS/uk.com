@@ -30,6 +30,9 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCal
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -115,6 +118,12 @@ public class MonAggrCompanySettings {
 	/** 時間外超過設定 */
 	@Getter
 	private OutsideOTSetting outsideOverTimeSet;
+	/** 時間外超過設定：内訳項目一覧（積上番号順） */
+	@Getter
+	private List<OutsideOTBRDItem> outsideOTBDItems;
+	/** 時間外超過設定：超過時間一覧（超過時間順） */
+	@Getter
+	private List<Overtime> outsideOTOverTimes;
 	/** 丸め設定 */
 	@Getter
 	private RoundingSetOfMonthly roundingSet;
@@ -163,6 +172,8 @@ public class MonAggrCompanySettings {
 		this.comRegSetOpt = Optional.empty();
 		this.comIrgSetOpt = Optional.empty();
 		this.comFlexSetOpt = Optional.empty();
+		this.outsideOTBDItems = new ArrayList<>();
+		this.outsideOTOverTimes = new ArrayList<>();
 		this.agreementOperationSet = Optional.empty();
 		this.optionalItemMap = new HashMap<>();
 		this.empConditionMap = new HashMap<>();
@@ -366,6 +377,16 @@ public class MonAggrCompanySettings {
 		}
 		this.outsideOverTimeSet = outsideOTSetOpt.get();
 		
+		// 時間外超過設定：内訳項目一覧（積上番号順）
+		this.outsideOTBDItems.addAll(this.outsideOverTimeSet.getBreakdownItems());
+		this.outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
+		this.outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
+		
+		// 時間外超過設定：超過時間一覧（超過時間順）
+		this.outsideOTOverTimes.addAll(this.outsideOverTimeSet.getOvertimes());
+		this.outsideOTOverTimes.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
+		this.outsideOTOverTimes.sort((a, b) -> a.getOvertime().v() - b.getOvertime().v());
+		
 		// 丸め設定
 		this.roundingSet = new RoundingSetOfMonthly(companyId);
 		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(companyId);
@@ -465,12 +486,7 @@ public class MonAggrCompanySettings {
 		if (actualLock == null) return LockStatus.UNLOCK;
 		
 		// 月のロック状態を判定する
-		if (actualLock.getDailyLockState() == LockStatus.LOCK) {
-			currentLockStatus = LockStatus.LOCK;
-		}
-		else {
-			currentLockStatus = actualLock.getMonthlyLockState();
-		}
+		currentLockStatus = actualLock.getMonthlyLockState();
 		
 		// ロック状態をチェックする
 		if (currentLockStatus == LockStatus.UNLOCK) return LockStatus.UNLOCK;

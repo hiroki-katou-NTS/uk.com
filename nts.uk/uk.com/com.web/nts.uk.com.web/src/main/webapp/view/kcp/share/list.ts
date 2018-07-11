@@ -262,8 +262,8 @@ module kcp.share.list {
         /**
          * Init component.
          */
-        public init($input: JQuery, data: ComponentOption) :JQueryPromise<void> {
-            var dfd = $.Deferred<void>();
+        public init($input: JQuery, data: ComponentOption) :JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
             var self = this;
             $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
             ko.cleanNode($input[0]);
@@ -332,7 +332,7 @@ module kcp.share.list {
                 self.initComponent(data, data.employeeInputList(), $input).done(function() {
                     // Set default value when init component.
                     _.defer(() => self.initSelectedValue(data, self.itemList()));
-                    dfd.resolve();
+                    dfd.resolve(self);
                 });
                 return dfd.promise();
             }
@@ -342,7 +342,7 @@ module kcp.share.list {
                 self.initComponent(data, dataList, $input).done(function() {
                     // Set default value when init component.
                     _.defer(() => self.initSelectedValue(data, self.itemList()));
-                    dfd.resolve();
+                    dfd.resolve(self);
                 });
             });
             return dfd.promise();
@@ -482,7 +482,7 @@ module kcp.share.list {
             }
 
             // Map already setting attr to data list.
-            if (!nts.uk.util.isNullOrEmpty(data.alreadySettingList)) {
+            if (!_.isNil(data.alreadySettingList)) {
                 self.alreadySettingList = data.alreadySettingList;
                 self.addAreadySettingAttr(dataList, self.alreadySettingList());
 
@@ -818,9 +818,10 @@ module kcp.share.list {
                 if (self.alreadySettingList) {
                     self.addAreadySettingAttr(data, self.alreadySettingList());
                 }
-                self.itemList(data);
-                self.initNoSelectRow(self.isShowNoSelectRow);
-                self.selectedCodes(self.isMultipleSelect ? [] : null);
+                _.defer(() => {
+                    self.itemList(data);
+                    self.initNoSelectRow(self.isShowNoSelectRow);
+                });
             });
         }
         

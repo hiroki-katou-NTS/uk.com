@@ -74,4 +74,15 @@ public interface WebMenuRepository {
 	 * @param companyId
 	 */
 	void changeNotDefault(String companyId, String webMenuCode);
+	
+	/**
+	 * Add by ThanhPV for CCG008
+	 * Delete the "tree menu" associated with the domain model "Web Menu"
+	 * 
+	 * conditions:
+	 * Web menu. Company ID ← Login company ID
+	 * Tree menu. Menu classification ← Top page
+	 * Tree menu. Code ← deleted top page code
+	 */
+	void removeTreeMenu(String companyId, int classification, String code);
 }
