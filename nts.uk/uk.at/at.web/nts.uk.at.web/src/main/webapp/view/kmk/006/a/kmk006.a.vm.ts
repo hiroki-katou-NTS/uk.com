@@ -624,21 +624,17 @@ module nts.uk.at.view.kmk006.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
 
-                //nts.uk.ui.block.grayout();
                 service.getComAutoCal().done((data) => {
                     if (data) {
                         self.itemComAutoCalModel.updateData(data);
+                    } else {
+                        self.itemComAutoCalModel.resetData();
                     }
-                    if (self.itemComAutoCalModel) {
-                        // load get all value enum                      
-                        self.reLoadListEnum(self.itemComAutoCalModel);
-                    }
+                    self.reLoadListEnum(self.itemComAutoCalModel);
                     dfd.resolve();
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res);
                     dfd.reject(res);
-                }).always(() => {
-                    //nts.uk.ui.block.clear();
                 });
 
                 return dfd.promise();
@@ -652,23 +648,17 @@ module nts.uk.at.view.kmk006.a {
                 var dfd = $.Deferred<any>();
                
                 if (wkpId) {
-                    //nts.uk.ui.block.grayout();
                     service.getWkpAutoCal(wkpId).done((data) => {
                         if (data) {
                             self.itemWkpAutoCalModel.updateData(data);
                         } else {
                             self.itemWkpAutoCalModel.resetData();
                         }
-                        if (self.itemWkpAutoCalModel) {
-                            // load get all value enum
-                            self.reLoadListEnum(self.itemWkpAutoCalModel);
-                        }
+                        self.reLoadListEnum(self.itemWkpAutoCalModel);
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError(res);
                         dfd.reject(res);
-                    }).always(() => {
-                        //nts.uk.ui.block.clear();
                     });
                 } else {
                     dfd.resolve();    
@@ -685,23 +675,17 @@ module nts.uk.at.view.kmk006.a {
                 var dfd = $.Deferred<any>();                
 
                 if (jobId) {
-                    //nts.uk.ui.block.grayout();
                     service.getJobAutoCal(jobId).done((data) => {
                         if (data) {
                             self.itemJobAutoCalModel.updateData(data);                           
                         } else {
                             self.itemJobAutoCalModel.resetData();
                         }
-                        if (self.itemJobAutoCalModel) {
-                            // load get all value enum
-                            self.reLoadListEnum(self.itemJobAutoCalModel);
-                        }
+                        self.reLoadListEnum(self.itemJobAutoCalModel);
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError(res);
                         dfd.reject(res);
-                    }).always(() => {
-                        //nts.uk.ui.block.clear();
                     });
                 } else {
                     dfd.resolve();    
@@ -715,18 +699,14 @@ module nts.uk.at.view.kmk006.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
 
-                //nts.uk.ui.block.grayout();
                 if (wkpId && jobId) {
                     service.getWkpJobAutoCal(wkpId, jobId).done((data) => {             
                         if (data) {
                             self.itemWkpJobAutoCalModel.updateData(data);
                         } else {
                             self.itemWkpJobAutoCalModel.resetData();
-                        }                       
-                        if (self.itemWkpJobAutoCalModel) {
-                            // load get all value enum
-                            self.reLoadListEnum(self.itemWkpJobAutoCalModel);    
                         }
+                        self.reLoadListEnum(self.itemWkpJobAutoCalModel);
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError(res);
@@ -1236,7 +1216,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime = new AutoCalRestTimeSettingModel();
                 this.leaveEarly = new AutoCalcOfLeaveEarlySettingModel();
                 this.raisingSalary = new AutoCalRaisingSalarySettingModel();
-                this.divergenceTime = ko.observable(0);
+                this.divergenceTime = ko.observable(1);
 
             }
         }
@@ -1284,7 +1264,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(0);
+                this.divergenceTime(1);
             }
         }
 
@@ -1326,7 +1306,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(0);
+                this.divergenceTime(1);
             }
         }
 
@@ -1369,7 +1349,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(0);
+                this.divergenceTime(1);
             }
         }
 
@@ -1406,7 +1386,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(0);
+                this.divergenceTime(1);
             }
         }
         //        AutoCalOvertimeSettingDto
