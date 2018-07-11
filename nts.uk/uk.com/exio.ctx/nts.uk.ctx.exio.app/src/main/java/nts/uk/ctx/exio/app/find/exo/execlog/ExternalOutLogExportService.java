@@ -32,7 +32,7 @@ public class ExternalOutLogExportService  extends ExportService<ErrorContentDto>
     	String nameSetting;
     	List<String> resultLog = new ArrayList<>();
 //		List<String> errorLog = new ArrayList<>();
-		List<String> header = this.getTextHeader();  
+		List<String> header = new ArrayList<>();
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		
 		nameSetting = lstError.getNameSetting();
