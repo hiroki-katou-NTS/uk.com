@@ -455,27 +455,27 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		List<GeneralDate> betweenDates = dateAfterCorrection.datesBetween();
 		
-		ExecutorService executorService = Executors.newFixedThreadPool(20);
-		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
+		/*ExecutorService executorService = Executors.newFixedThreadPool(20);
+		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());*/
 		
 		betweenDates.forEach(dateInPeriod -> {
-			AsyncTask task = AsyncTask.builder()
+			/*AsyncTask task = AsyncTask.builder()
 					.withContexts()
 					.keepsTrack(false)
 					.threadName(this.getClass().getName())
-					.build(() -> {
+					.build(() -> {*/
 						createScheduleBasedPersonOneDate(command, creator, domain, context, dateInPeriod,
 								empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType,
 								listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting,
 								mapFlowWorkSetting, mapDiffTimeWorkSetting);
 						
-						// Count down latch.
+						/*// Count down latch.
 						countDownLatch.countDown();
 					});
-			executorService.submit(task);
+			executorService.submit(task);*/
 		});
 		
-		// Wait for latch until finish.
+	/*	// Wait for latch until finish.
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException ie) {
@@ -483,7 +483,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		} finally {
 			// Force shut down executor services.
 			executorService.shutdown();
-		}
+		}*/
 
 	}
 
@@ -681,6 +681,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
 			ScheduleCreateContent content = command.getContent();
 			// 実施区分を判断, 処理実行区分を判断
+			// EA No2115
 			if (content.getImplementAtr() == ImplementAtr.RECREATE
 					&& content.getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
 				BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();

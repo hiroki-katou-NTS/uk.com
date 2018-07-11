@@ -50,7 +50,8 @@ public class AttendanceIdItemFinder {
 
 		// get attendanceName
 		List<AttendanceItemName> dailyAttendanceItems = atName.getNameOfAttendanceItem(
-				attendanceItemList.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList()),attendanceType);
+				attendanceItemList.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList()),
+				attendanceType);
 
 		// map attendanceId,attendanceName,ScreenUseItem
 		attendanceItemList.forEach(attendanceItem -> {
@@ -60,7 +61,8 @@ public class AttendanceIdItemFinder {
 			}
 		});
 
-		return attendanceItemList;
+		return attendanceItemList.stream().filter(e -> e.getAttendanceItemName() != null)
+				.collect(Collectors.toList());
 
 	}
 }
