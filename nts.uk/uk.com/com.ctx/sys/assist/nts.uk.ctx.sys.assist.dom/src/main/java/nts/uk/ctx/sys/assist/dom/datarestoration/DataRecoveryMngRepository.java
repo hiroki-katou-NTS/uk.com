@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.assist.dom.datarestoration;
 
 import java.util.Optional;
 
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+
 /**
  * データ復旧動作管理
  */
@@ -26,5 +28,7 @@ public interface DataRecoveryMngRepository {
 	void updateRecoveryDate(String dataRecoveryProcessId, String date);
 	
 	void updateErrorCount(String dataRecoveryProcessId, int errorCount);
+	
+	void updateSuspendedState(String dataRecoveryProcessId, NotUseAtr use);
 	
 }

@@ -14,6 +14,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryOperatingCondition;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoveryMng;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 @Transactional(value = TxType.REQUIRES_NEW)
@@ -99,5 +100,17 @@ public class JpaDataRecoveryMngRepository extends JpaRepository implements DataR
 			x.errorCount = errorCount;
 			this.commandProxy().update(x);
 		});
+	}
+
+	@Override
+	public void updateSuspendedState(String dataRecoveryProcessId, NotUseAtr use) {
+		Optional<SspmtDataRecoveryMng> entity = this.queryProxy().find(dataRecoveryProcessId,
+				SspmtDataRecoveryMng.class);
+		entity.ifPresent(x -> {
+			x.suspendedState = use.value;
+			this.commandProxy().update(x);
+		});
+		em.flush();
+		
 	}
 }
