@@ -50,4 +50,9 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 		}
 	}
 
+	@Override
+	public void add(LogBasicInformation domain) {
+		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(domain));
+	}
+
 }
