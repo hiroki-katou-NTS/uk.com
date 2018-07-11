@@ -653,7 +653,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showBaseDate = _.isNil(options.showBaseDate) ? true : (isBaseDateAndPeriodHidden ? true : options.showBaseDate);
                 self.showAllClosure = _.isNil(options.showAllClosure) ? false : options.showAllClosure;
                 self.showPeriod = _.isNil(options.showPeriod) ? false : options.showPeriod;
-                self.showClosure = self.showPeriod; // specs update ver3.1
+                self.showClosure = _.isNil(options.showClosure) ? false : options.showClosure;
                 // if ShowPeriod = false then period accuracy must be false too. 
                 self.showPeriodYM = _.isNil(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
                 self.isTab2Lazy = _.isNil(options.isTab2Lazy) ? true : options.isTab2Lazy;
