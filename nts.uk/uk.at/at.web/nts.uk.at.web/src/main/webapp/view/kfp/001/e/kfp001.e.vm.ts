@@ -70,8 +70,14 @@ module nts.uk.at.view.kfp001.e {
                         self.taskId(res.id);
                         self.aggrFrameCode(dataE.aggrPeriodCommand.aggrFrameCode);
                         self.optionalAggrName(dataE.aggrPeriodCommand.optionalAggrName);
+                        if(self.aggrFrameCode() == '001'){
                         self.presenceOfError('エラーあり');
-                        self.executionStatus('完了');
+                        self.executionStatus('完了');    
+                        }else{
+                        self.presenceOfError('エラーなし');
+                        self.executionStatus('完了');    
+                        }
+                        
                         self.startTime(moment.utc(dataD.startDateTime).format("YYYY/MM/DD HH:mm:ss"));
                         self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataE.aggrPeriodCommand.peopleNo]));
                         nts.uk.deferred.repeat(conf => conf

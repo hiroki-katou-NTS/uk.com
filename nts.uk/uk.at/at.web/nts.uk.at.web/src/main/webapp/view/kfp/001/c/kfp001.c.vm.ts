@@ -86,11 +86,11 @@ module nts.uk.at.view.kfp001.c {
                 if ($('.ccg-sample-has-error').ntsError('hasError')) {
                     return;
                 }
-                let dataB =   nts.uk.ui.windows.getShared("KFP001_DATAB");
-                if(dataB != null){
+                let dataB = nts.uk.ui.windows.getShared("KFP001_DATAB");
+                if (dataB != null) {
                     self.periodStartDate(moment.utc(dataB.periodStartDate).toISOString());
                     self.periodEndDate(moment.utc(dataB.periodEndDate).toISOString());
-                }else{
+                } else {
                     self.periodStartDate(moment.utc().toISOString());
                     self.periodEndDate(moment.utc().toISOString());
                 }
@@ -174,7 +174,12 @@ module nts.uk.at.view.kfp001.c {
                 });
 
                 nts.uk.ui.windows.setShared("KFP001_DATAC", self.selectedEmployee());
-                nts.uk.ui.windows.setShared("KFP001_DATAC_SELECT", self.multiSelectedCode().length);
+                if (self.selectedEmployee().length >= 422) {
+                    nts.uk.ui.windows.setShared("KFP001_DATAC_SELECT", self.selectedEmployee().length);
+
+                } else {
+                    nts.uk.ui.windows.setShared("KFP001_DATAC_SELECT", self.multiSelectedCode().length);
+                }
                 self.dScreenmodel.start();
             }
             navigateView() {

@@ -167,10 +167,18 @@ module nts.uk.at.view.kfp001.b {
 
 
                     ko.computed(() => {
+
                         self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
                         self.dScreenmodel.peopleNo(null);
-                        self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
-                        self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.multiSelectedCode())]));
+                        if (_.size(self.cScreenmodel.selectedEmployee()) >= 422) {
+                            self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.selectedEmployee()));
+                            self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.selectedEmployee())]));
+                        } else {
+                            self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
+                            self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.multiSelectedCode())]));
+                        }
+
+                        
                         self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
                         self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
                         self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
@@ -181,7 +189,7 @@ module nts.uk.at.view.kfp001.b {
                         self.dScreenmodel.listAggr(self.optionalList());
                         self.dScreenmodel.presenceOfError(self.status());
                         self.dScreenmodel.executionStatus(self.preOfError());
-                        
+
                         self.cScreenmodel.periodStartDate(self.currentItem().startDate());
                         self.cScreenmodel.periodEndDate(self.currentItem().endDate());
 
