@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
 import nts.uk.ctx.sys.log.infra.entity.logbasicinfo.SrcdtLogBasicInfo;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
+import nts.uk.shr.com.security.audittrail.basic.LogBasicInformationShrRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -19,7 +20,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 
 @Stateless
-public class JpaLogBasicInformationRepository extends JpaRepository implements LogBasicInfoRepository {
+public class JpaLogBasicInformationRepository extends JpaRepository implements LogBasicInfoRepository, LogBasicInformationShrRepository {
 
 	@Override
 	public Optional<LogBasicInformation> getLogBasicInfo(String companyId, String operationId) {
