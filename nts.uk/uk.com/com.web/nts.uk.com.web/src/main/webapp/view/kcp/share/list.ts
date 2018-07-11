@@ -482,7 +482,7 @@ module kcp.share.list {
             }
 
             // Map already setting attr to data list.
-            if (!nts.uk.util.isNullOrEmpty(data.alreadySettingList)) {
+            if (!_.isNil(data.alreadySettingList)) {
                 self.alreadySettingList = data.alreadySettingList;
                 self.addAreadySettingAttr(dataList, self.alreadySettingList());
 
