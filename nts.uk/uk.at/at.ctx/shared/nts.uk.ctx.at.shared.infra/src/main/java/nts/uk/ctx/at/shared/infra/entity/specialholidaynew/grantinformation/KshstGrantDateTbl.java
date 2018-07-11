@@ -1,16 +1,10 @@
 package nts.uk.ctx.at.shared.infra.entity.specialholidaynew.grantinformation;
 
 import java.io.Serializable;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -46,16 +40,6 @@ public class KshstGrantDateTbl extends UkJpaEntity implements Serializable {
 	/* テーブル以降の毎年付与日数 */
 	@Column(name = "NUMBER_OF_DAYS")
 	public int numberOfDays;
-	
-	@OneToOne(optional = false)
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false),
-		@JoinColumn(name = "SPHD_CD", referencedColumnName="SPHD_CD", insertable = false, updatable = false)
-	})
-	public KshstGrantRegularNew grantRegular;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantDateTbl", orphanRemoval = true)
-	public List<KshstElapseYears> elapseYears;
 	
 	@Override
 	protected Object getKey() {

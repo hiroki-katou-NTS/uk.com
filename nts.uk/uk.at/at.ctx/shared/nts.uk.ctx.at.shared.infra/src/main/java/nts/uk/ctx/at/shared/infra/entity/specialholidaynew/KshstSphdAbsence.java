@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -28,13 +25,6 @@ public class KshstSphdAbsence extends UkJpaEntity implements Serializable {
 	/* 主キー */
 	@EmbeddedId
 	public KshstSphdAbsencePK pk;
-	
-	@ManyToOne
-    @JoinColumns({
-    	@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
-    	@JoinColumn(name="SPHD_CD", referencedColumnName="SPHD_CD", insertable = false, updatable = false)
-    })
-	public KshstSpecialHolidayNew specialHoliday;
 	
 	@Override
 	protected Object getKey() {

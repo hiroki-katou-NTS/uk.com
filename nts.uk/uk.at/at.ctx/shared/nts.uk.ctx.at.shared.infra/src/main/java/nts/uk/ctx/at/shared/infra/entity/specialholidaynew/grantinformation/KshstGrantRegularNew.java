@@ -2,19 +2,14 @@ package nts.uk.ctx.at.shared.infra.entity.specialholidaynew.grantinformation;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantRegular;
-import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayNew;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -51,16 +46,6 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 	/* 固定付与日数 */
 	@Column(name = "GRANTED_DAYS")
 	public int grantedDays;
-
-	@OneToOne(optional = false)
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false),
-		@JoinColumn(name = "SPHD_CD", referencedColumnName="SPHD_CD", insertable = false, updatable = false)
-	})
-	public KshstSpecialHolidayNew specialHoliday;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="grantRegular", orphanRemoval = true)
-	public KshstGrantDateTbl grantDateTbl;
 	
 	@Override
 	protected Object getKey() {
