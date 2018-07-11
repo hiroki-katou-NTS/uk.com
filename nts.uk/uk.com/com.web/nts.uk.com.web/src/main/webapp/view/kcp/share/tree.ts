@@ -61,7 +61,7 @@ module kcp.share.tree {
          * Base date.
          */
         baseDate: KnockoutObservable<Date>;
-        
+
         /**
          * Select mode
          */
@@ -156,7 +156,6 @@ module kcp.share.tree {
         isMultiSelect: boolean;
         isDialog: boolean;
         hasBaseDate: KnockoutObservable<boolean>;
-        isShowBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
         levelSelected: KnockoutObservable<number>;
@@ -181,7 +180,6 @@ module kcp.share.tree {
             self.backupItemList = ko.observableArray([]);
             self.listWorkplaceId = [];
             self.hasBaseDate = ko.observable(false);
-            self.isShowBaseDate = ko.observable(false);
             self.alreadySettingList = ko.observableArray([]);
             self.levelList = [
                 { level: 1, name: '1' },
@@ -222,7 +220,6 @@ module kcp.share.tree {
                 self.isMultiSelect = data.isMultiSelect;
             }
             self.hasBaseDate(!self.isMultipleUse);
-            self.isShowBaseDate(self.isMultiSelect);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
