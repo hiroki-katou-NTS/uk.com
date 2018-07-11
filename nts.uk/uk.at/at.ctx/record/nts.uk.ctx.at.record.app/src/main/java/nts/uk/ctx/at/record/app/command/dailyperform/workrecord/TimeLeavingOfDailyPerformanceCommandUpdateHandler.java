@@ -20,7 +20,10 @@ public class TimeLeavingOfDailyPerformanceCommandUpdateHandler extends CommandFa
 		if(command.getData().isPresent()){
 			TimeLeavingOfDailyPerformance domain = command.toDomain().get();
 			repo.update(domain);
-			domain.timeLeavesChanged();
+
+			if(command.isTriggerEvent()){
+				domain.timeLeavesChanged();
+			}
 		}
 	}
 }
