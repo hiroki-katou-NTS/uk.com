@@ -14,6 +14,8 @@ module nts.uk.at.view.kfp001.d {
             listSelectedEmpId: KnockoutObservableArray<any> = ko.observableArray([]);
             listAggr: KnockoutObservableArray<any> = ko.observableArray([]);
             peopleCount: KnockoutObservable<string> = ko.observable('');
+            presenceOfError: KnockoutObservable<string> = ko.observable('');
+            executionStatus: KnockoutObservable<string> = ko.observable('');
 
             constructor() {
                 var self = this;
@@ -28,7 +30,7 @@ module nts.uk.at.view.kfp001.d {
                 let self = this;
                 $("#button-2D").focus();
                 let peopleCo = nts.uk.ui.windows.getShared("KFP001_DATAC_SELECT");
-                if (peopleCo != self.peopleNo()){
+                if (peopleCo != self.peopleNo()) {
                     self.peopleNo(peopleCo);
                 }
             }
@@ -36,7 +38,7 @@ module nts.uk.at.view.kfp001.d {
             addData() {
                 nts.uk.ui.block.invisible();
                 let self = this;
-                
+
                 let listEmployeeId = _.map(_.filter(self.listEmp(), (v) => _.includes(self.listSelect(), v.employeeCode)), (item) => {
                     return item.employeeId;
                 });
@@ -78,7 +80,13 @@ module nts.uk.at.view.kfp001.d {
 
                 service.addOptionalAggrPeriod(addAggrPeriodCommand).done(function(data) {
                     self.mode(1);
+
+                    let exc = {
+                    presenceOfError : self.presenceOfError(),
+                    executionStatus : self.executionStatus()   
+                    }
                     nts.uk.ui.windows.setShared("KFP001_DATAD", data);
+                    nts.uk.ui.windows.setShared("KFP001_DATA_EXC", exc);
                     nts.uk.ui.windows.setShared("KFP001_DATAE", addAggrPeriodCommand);
                     nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
                 }).fail(function(res) {
@@ -91,7 +99,7 @@ module nts.uk.at.view.kfp001.d {
                 if (self.aggrFrameCode() == '001') {
                     let resourceId = nts.uk.util.randomId().slice(0, 10);
 
-                         let addErrorInforCommand = {
+                    let addErrorInforCommand = {
                         resourceId: resourceId,
                         periodArrgLogId: self.executionId(),
                         processDay: moment(self.startDate()).utc(),
@@ -102,7 +110,7 @@ module nts.uk.at.view.kfp001.d {
                     });
 
                 }
-                 nts.uk.ui.block.clear();
+                nts.uk.ui.block.clear();
 
             }
 

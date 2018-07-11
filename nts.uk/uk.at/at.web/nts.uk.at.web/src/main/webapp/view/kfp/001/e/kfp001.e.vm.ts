@@ -21,6 +21,8 @@ module nts.uk.at.view.kfp001.e {
             logId: KnockoutObservable<string> = ko.observable("");
             columns: KnockoutObservableArray<any>;
             peopleCount: KnockoutObservable<string> = ko.observable('0');
+            presenceOfError: KnockoutObservable<string> = ko.observable('');
+            executionStatus: KnockoutObservable<string> = ko.observable('');
 
             //
             errorMessageInfo: KnockoutObservableArray<PersonInfoErrMessageLog> = ko.observableArray([]);
@@ -31,7 +33,7 @@ module nts.uk.at.view.kfp001.e {
             endDateTime: KnockoutObservable<string>;
 
             //enable enableCancelTask
-            enableCancelTask: KnockoutObservable<boolean> = ko.observable(false);
+            enableCancelTask: KnockoutObservable<boolean> = ko.observable(true);
 
             constructor() {
                 var self = this;
@@ -55,7 +57,8 @@ module nts.uk.at.view.kfp001.e {
             start(dataD: any) {
                 var self = this;
                 let dataE = nts.uk.ui.windows.getShared("KFP001_DATAE");
-
+                let dataExc = nts.uk.ui.windows.getShared("KFP001_DATA_EXC");
+                $(".closebutton").focus();
                 //system date
                 if (dataD !== undefined) {
                     //method execute
@@ -67,23 +70,26 @@ module nts.uk.at.view.kfp001.e {
                         self.taskId(res.id);
                         self.aggrFrameCode(dataE.aggrPeriodCommand.aggrFrameCode);
                         self.optionalAggrName(dataE.aggrPeriodCommand.optionalAggrName);
+                        self.presenceOfError('エラーあり');
+                        self.executionStatus('完了');
                         self.startTime(moment.utc(dataD.startDateTime).format("YYYY/MM/DD HH:mm:ss"));
                         self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataE.aggrPeriodCommand.peopleNo]));
                         nts.uk.deferred.repeat(conf => conf
                             .task(() => {
                                 return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
-                                    self.enableCancelTask(false);
+                                    self.enableCancelTask(true);
                                     // DailyCreate
                                     self.aggCreateCount(self.getAsyncData(info.taskDatas, "aggCreateCount").valueAsNumber);
                                     self.aggCreateTotal(self.getAsyncData(info.taskDatas, "aggCreateTotal").valueAsNumber);
 
 
                                     if (!info.pending && !info.running) {
+
                                         self.isComplete(true);
                                         //content executing
                                         //  self.executionContents(self.contents);
                                         // self.selectedExeContent(self.executionContents().length > 0 ? self.executionContents()[0].value : null);
-                                                       
+
                                         // End count time
                                         self.elapseTime.end();
 
@@ -99,6 +105,7 @@ module nts.uk.at.view.kfp001.e {
 
                                         // Get Log data
                                         self.getLogData();
+                                        self.enableCancelTask(false);
                                     }
                                     //self.enableCancelTask(false);
                                 });
@@ -107,9 +114,7 @@ module nts.uk.at.view.kfp001.e {
                             .while(info => info.pending || info.running)
                             .pause(1000)
                         );
-                        self.enableCancelTask(true);
                     });
-                    self.enableCancelTask(true);
                 }
 
             }
@@ -118,22 +123,22 @@ module nts.uk.at.view.kfp001.e {
                 var self = this;
                 service.getErrorMessageInfo(self.logId()).done((res) => {
                     let numberNo;
-                       
+
                     let errs = [];
-                    
+
                     _.forEach(res, function(sRes) {
-                            errs = [];
-                            var errorMess = {
-                                personCode: self.aggrFrameCode(),
-                                personName: self.optionalAggrName(),
-                                disposalDay: sRes.processDay,
-                                messageError: sRes.errorMess
-                            };
+                        errs = [];
+                        var errorMess = {
+                            personCode: self.aggrFrameCode(),
+                            personName: self.optionalAggrName(),
+                            disposalDay: sRes.processDay,
+                            messageError: sRes.errorMess
+                        };
                         for (let i = 0; i < res.length; i++) {
                             errorMess["no"] = i + 1;
                             errs.push(new PersonInfoErrMessageLog(errorMess));
-                            }
-                        
+                        }
+
                     });
                     self.errorMessageInfo(errs);
                 })
@@ -183,5 +188,27 @@ module nts.uk.at.view.kfp001.e {
             this.disposalDay = data.disposalDay;
             this.messageError = data.messageError;
         }
+    }
+    export enum ExecutionStatus {
+        // 0:完了
+        Done = 0,
+        // 1:完了（エラーあり）
+        DoneWitdError = 1,
+        // 2:中断終了
+        EndOfInterruption = 2,
+        // 3:処理中 
+        Processing = 3,
+        // 4:中断開始
+        StartOfInterruption = 4,
+        // 5:実行中止
+        StopExecution = 5
+    }
+    export enum PresenceOfError {
+
+        // 0:エラーあり
+        Error = 0,
+        // 1:エラーなし
+        NoError = 1
+
     }
 }

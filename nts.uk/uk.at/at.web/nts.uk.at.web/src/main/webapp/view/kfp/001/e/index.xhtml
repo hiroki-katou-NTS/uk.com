@@ -36,7 +36,11 @@
 						</tr>
 						<tr>
 							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
-							<td><span data-bind="text: aggCreateCount"></span>/<span data-bind="text: peopleCount"></span>></td>
+							<td><span data-bind="text: aggCreateCount"></span>/<span data-bind="text: peopleCount">
+							
+							</span><span style="margin-left: 10px;" data-bind="text: executionStatus"></span><span style="margin-left: 10px;" data-bind="text: presenceOfError">
+							
+							</span></td>
 						</tr>
 
 
@@ -69,7 +73,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button tabindex="3" class="cancelbutton" data-bind="click: cancelTask, enable : enableCancelTask">#{i18n.getText('KDW001_39')}</button>
-				<button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
+				<button tabindex="4" class="closebutton" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

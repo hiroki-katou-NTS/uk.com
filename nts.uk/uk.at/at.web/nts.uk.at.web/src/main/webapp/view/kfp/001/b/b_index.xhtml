@@ -13,7 +13,7 @@
 		<div id="left-content"
 			class="bg-green caret-right caret-background cf"
 			style="width: 290px; height: 335px;" tabindex="3">
-			<div id="LST_001" style="margin-left: 10px; padding: 10px;">
+			<div id="LST_001" style="margin-left: 10px; padding: 10px; ">
 				<div id="LST_001" style="margin-left: -10px; padding: 10px;">
 					<table id="single-list"
 						data-bind="ntsGridList: {								
@@ -80,7 +80,7 @@
 			</div>
 		</div>
 		<button id="next-button-B" class="proceed x-large"
-			data-bind="click : opendScreenBorJ" tabindex="9">#{i18n.getText('KFP001_25')}</button>
+			data-bind="click : opendScreenBorJ,enable: isNext" tabindex="9" >#{i18n.getText('KFP001_25')}</button>
 	</ui:composition>
 </body>
 </html>

@@ -86,6 +86,14 @@ module nts.uk.at.view.kfp001.c {
                 if ($('.ccg-sample-has-error').ntsError('hasError')) {
                     return;
                 }
+                let dataB =   nts.uk.ui.windows.getShared("KFP001_DATAB");
+                if(dataB != null){
+                    self.periodStartDate(moment.utc(dataB.periodStartDate).toISOString());
+                    self.periodEndDate(moment.utc(dataB.periodEndDate).toISOString());
+                }else{
+                    self.periodStartDate(moment.utc().toISOString());
+                    self.periodEndDate(moment.utc().toISOString());
+                }
 
                 self.ccg001ComponentOption = {
                     /** Common properties */
@@ -101,8 +109,8 @@ module nts.uk.at.view.kfp001.c {
 
                     /** Required parameter */
                     baseDate: moment().toISOString(), // 基準日
-                    periodStartDate: moment().toISOString(), // 対象期間開始日
-                    periodEndDate: moment().toISOString(), // 対象期間終了日
+                    periodStartDate: self.periodStartDate(), // 対象期間開始日
+                    periodEndDate: self.periodEndDate(), // 対象期間終了日
                     inService: true, // 在職区分
                     leaveOfAbsence: false, // 休職区分
                     closed: false, // 休業区分
@@ -148,9 +156,10 @@ module nts.uk.at.view.kfp001.c {
 
             start() {
                 var self = this;
+                self.reloadCcg001();
                 $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
-
+                $("#button-2").focus();
             }
 
 

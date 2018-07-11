@@ -25,6 +25,7 @@ module nts.uk.at.view.kfp001.b {
             //
             enableNEW: KnockoutObservable<boolean>;
             enableDEL: KnockoutObservable<boolean>;
+            isNext: KnockoutObservable<boolean> = ko.observable(true);
             peopleNo: KnockoutObservable<number>;
             peopleFromC: KnockoutObservable<number>;
 
@@ -40,6 +41,7 @@ module nts.uk.at.view.kfp001.b {
             peopleCount: KnockoutObservable<string> = ko.observable('');
 
             status: KnockoutObservable<number> = ko.observable(0);
+            preOfError: KnockoutObservable<string> = ko.observable('');
 
             constructor() {
                 var self = this;
@@ -148,6 +150,11 @@ module nts.uk.at.view.kfp001.b {
                         });
                         $('#update-mode').show();
                         $('#update-mode').focus();
+                        let period = {
+                            periodStartDate: self.currentItem().startDate(),
+                            periodEndDate: self.currentItem().endDate()
+                        }
+                        nts.uk.ui.windows.setShared("KFP001_DATAB", period);
                     } else {
                         self.initDataB();
                     }
@@ -172,6 +179,9 @@ module nts.uk.at.view.kfp001.b {
                         self.dScreenmodel.mode(self.mode());
                         self.dScreenmodel.executionId(self.aggrId);
                         self.dScreenmodel.listAggr(self.optionalList());
+                        self.dScreenmodel.presenceOfError(self.status());
+                        self.dScreenmodel.executionStatus(self.preOfError());
+                        
                         self.cScreenmodel.periodStartDate(self.currentItem().startDate());
                         self.cScreenmodel.periodEndDate(self.currentItem().endDate());
 
@@ -194,6 +204,7 @@ module nts.uk.at.view.kfp001.b {
                         self.aggrId = data[0].aggrId;
                         self.peopleNo(dataTarget.length);
                         self.status(data[0].executionStatus);
+                        self.preOfError(data[0].presenceOfError);
                         self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataTarget.length]));
                     })
                 }).fail(function() {
@@ -298,6 +309,7 @@ module nts.uk.at.view.kfp001.b {
                     self.enableDEL(false);
                     $('#code-text-d4-2').focus();
                     $('#update-mode').hide();
+                    self.isNext(true);
                     self.dateValue({
                         startDate: new Date(),
                         endDate: new Date()
@@ -349,12 +361,13 @@ module nts.uk.at.view.kfp001.b {
             opendScreenBorJ() {
                 let self = this;
                 var dfd = $.Deferred();
-                self.cScreenmodel.start();
+
                 $("#code-text-d4-2").trigger("validate");
                 $("#code-text-d4-21").trigger("validate");
                 $("#start-date-B6-3").trigger("validate");
                 $("#end-date-B6-4").trigger("validate");
                 if (nts.uk.ui.errors.hasError() == true) {
+                    self.isNext(false);
                     return;
                 }
                 let checkCode = _.filter(self.optionalList(), function(obj) {
@@ -367,7 +380,7 @@ module nts.uk.at.view.kfp001.b {
                         nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
                     } else {
                         $("#wizard").ntsWizard("next").done(function() {
-
+                            self.cScreenmodel.start();
                         });
                     }
                 }
@@ -463,6 +476,14 @@ module nts.uk.at.view.kfp001.b {
                 StartOfInterruption = 4,
                 // 5:実行中止
                 StopExecution = 5
+            }
+            export enum PresenceOfError {
+
+                // 0:エラーあり
+                Error = 0,
+                // 1:エラーなし
+                NoError = 1
+
             }
         }
     }
