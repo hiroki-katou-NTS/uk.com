@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -78,7 +79,7 @@ public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializabl
 	
 	/* 年齢基準月日*/
 	@Column(name = "AGE_STANDARD_BASE_DATE")
-	public String ageStandardBaseDate;
+	public GeneralDate ageStandardBaseDate;
 	
 	/* メモ */
 	@Column(name = "MEMO")
