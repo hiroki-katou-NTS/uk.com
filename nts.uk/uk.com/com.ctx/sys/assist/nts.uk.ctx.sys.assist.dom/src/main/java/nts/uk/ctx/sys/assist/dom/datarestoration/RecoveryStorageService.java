@@ -630,7 +630,7 @@ public class RecoveryStorageService {
 				|| (dateTo.year() < hDateCsv.year() || (dateTo.year() == hDateCsv.year() && hDateCsv.month() > dateTo.month()))) {
 				return false;
 			}
-		} else if (YEAR_MONTH_DAY.equals(resultsSetting.get(0)) && (!hDateCsv.after(dateFrom) || !hDateCsv.before(dateTo))) {
+		} else if (YEAR_MONTH_DAY.equals(resultsSetting.get(0)) && (dateFrom.after(hDateCsv) || dateTo.before(hDateCsv))) {
 			return false;
 		}
 		return true;
