@@ -1,4 +1,6 @@
-package nts.uk.ctx.exio.app.command.exo.datafomat;
+package nts.uk.ctx.exio.app.command.exo.dataformat;
+
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,17 +21,23 @@ public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPer
 	@Override
 	protected void handle(CommandHandlerContext<AddPerformSettingByTimeCommand> context) {
 		AddPerformSettingByTimeCommand addCommand = context.getCommand();
-
 		// 外部出力時間型登録チェック
 		String cid = AppContexts.user().companyId();
 		int itemType = 3;
-		repoTimeDataFmSet.add(new TimeDataFmSet(itemType, cid, addCommand.getNullValueSubs(),
+		TimeDataFmSet timeDataFmSet = new TimeDataFmSet(itemType, cid, addCommand.getNullValueSubs(),
 				addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(), addCommand.getValueOfFixedValue(),
 				addCommand.getFixedLengthOutput(), addCommand.getFixedLongIntegerDigit(),
 				addCommand.getFixedLengthEditingMothod(), addCommand.getDelimiterSetting(),
 				addCommand.getSelectHourMinute(), addCommand.getMinuteFractionDigit(), addCommand.getDecimalSelection(),
 				addCommand.getFixedValueOperationSymbol(), addCommand.getFixedValueOperation(),
 				addCommand.getFixedCalculationValue(), addCommand.getValueOfNullValueSubs(),
-				addCommand.getMinuteFractionDigitProcessCla()));
+				addCommand.getMinuteFractionDigitProcessCla());
+		// Check exist in database
+		Optional<TimeDataFmSet> dataTimeDataFmSet = repoTimeDataFmSet.getTimeDataFmSetByCid(cid);
+		if (dataTimeDataFmSet.isPresent()) {
+			repoTimeDataFmSet.update(timeDataFmSet);
+		} else {
+			repoTimeDataFmSet.add(timeDataFmSet);
+		}
 	}
 }
