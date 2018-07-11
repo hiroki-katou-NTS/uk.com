@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.standardmenu.StandardMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.standardmenu.UpdateStandardMenuCommand;
@@ -73,4 +74,11 @@ public class StandardMenuWebService extends WebService {
 		return finder.findAllDisplay();
 
 	}
+	
+	@POST
+	@Path("findProgramName/{programID}/{screenID}")
+	public JavaTypeResult<String> getProgramName(@PathParam("programID") String programID, @PathParam("screenID") String screenID) {
+		return new JavaTypeResult<String>(finder.getProgramName(programID, screenID));
+	}
+	
 }

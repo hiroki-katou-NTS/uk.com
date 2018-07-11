@@ -71,6 +71,7 @@ public class SubstitutionOfHDManaDataService {
 		Optional<PayoutManagementData> payoutData = payoutManagementDataRepository.findByID(payoutId);
 		if (payoutData.isPresent()) {
 			payoutData.get().setRemainNumber(remainNumber);
+			payoutData.get().setStateAtr(DigestionAtr.UNUSED.value);
 			if (remainNumber.equals(0d)){
 				payoutData.get().setStateAtr(DigestionAtr.USED.value);
 			}

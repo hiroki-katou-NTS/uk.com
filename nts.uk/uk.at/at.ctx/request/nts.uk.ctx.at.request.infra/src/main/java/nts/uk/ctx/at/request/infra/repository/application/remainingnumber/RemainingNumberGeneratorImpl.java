@@ -37,11 +37,29 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 	public void generate(FileGeneratorContext generatorContext, List<ExcelInforCommand> dataSource) {
 		// TODO Auto-generated method stub
 		try (val reportContext = this.createContext(FILE_TEMPLATE)) {
+			List<String> wkCodeTemp = new ArrayList<>();
 			List<String> htbPlanneds = new ArrayList<>();
 			val designer = this.createContext(FILE_TEMPLATE);
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
+			
+			// get auto index
+			if (!dataSource.isEmpty()) {
+				for (int i = 0; i < dataSource.get(0).getPlannedVacationListCommand().size(); i++) {
+					final String workTypeCode = dataSource.get(0).getPlannedVacationListCommand().get(i).getWorkTypeCode();
+
+					for (int j = 0; j < dataSource.size(); j++) {
+						Optional<NumberOfWorkTypeUsedImport> optNumWTUse = dataSource.get(j).getNumberOfWorkTypeUsedImport()
+								.stream().filter((item) -> item.getWorkTypeCode().equals(workTypeCode)).findFirst();
+						if (optNumWTUse.isPresent()) {
+							wkCodeTemp.add(workTypeCode);
+							break;
+						}
+					}
+				}
+			}
+			htbPlanneds = wkCodeTemp.stream().distinct().collect(Collectors.toList());
 
 			printTemplate(worksheet, dataSource, htbPlanneds);
 
@@ -65,7 +83,6 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 			throws Exception {
 
 		Cells cells = worksheet.getCells();
-		List<String> wkCodeTemp = new ArrayList<>();
 
 		cells.get(0, 0).setValue(TextResource.localize("KDM002_11"));
 		setBackgroundHeader(cells.get(0, 0));
@@ -88,21 +105,7 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 		cells.get(0, 6).setValue(TextResource.localize("KDM002_9"));
 		setBackgroundHeader(cells.get(0, 6));
 		setBorderStyle(cells.get(0, 6));
-		if (!dataSource.isEmpty()) {
-			for (int i = 0; i < dataSource.get(0).getPlannedVacationListCommand().size(); i++) {
-				final String workTypeCode = dataSource.get(0).getPlannedVacationListCommand().get(i).getWorkTypeCode();
-
-				for (int j = 0; j < dataSource.size(); j++) {
-					Optional<NumberOfWorkTypeUsedImport> optNumWTUse = dataSource.get(j).getNumberOfWorkTypeUsedImport()
-							.stream().filter((item) -> item.getWorkTypeCode().equals(workTypeCode)).findFirst();
-					if (optNumWTUse.isPresent()) {
-						wkCodeTemp.add(workTypeCode);
-						break;
-					}
-				}
-			}
-		}
-		htbPlanneds = wkCodeTemp.stream().distinct().collect(Collectors.toList());
+		
 		// auto header
 		int index = 0;
 		for (String wtCode : htbPlanneds) {
