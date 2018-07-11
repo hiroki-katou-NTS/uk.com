@@ -23,6 +23,8 @@
 			<com:scriptfile path="../l/kaf022.l.vm.js" />
 			<com:scriptfile path="../l/kaf022.l.service.js" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			
+			<com:scriptfile path="subviews/kaf022.b.vm.js" />
 			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" /> 
  			<com:scriptfile path="../e/kmf004.e.service.js" />  -->
  			<com:ValidatorScript>
@@ -1060,6 +1062,10 @@
 			</div>
 			<div id="tabpanel-m" role="tabpanel" class="screen-m" data-bind="with: viewmodelM">
 				<ui:include src="../m/index.xhtml" />
+			</div>
+			<div data-bind="let: { userRating: ko.observable(true) }">
+				<kaf022-b params="value: userRating"></kaf022-b>
+				<button data-bind="click: function() { userRating(!userRating()); }">Change like</button>
 			</div>
 		</ui:define>
 	</ui:composition>
