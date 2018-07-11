@@ -81,6 +81,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		if (!checkNormalFile(serverPrepareMng))
 			return;
 		serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EXTRACTING);
+		serverPrepareMngRepository.update(serverPrepareMng);
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		// アルゴリズム「ファイル解凍処理」を実行する
 		// Unzip file
@@ -103,6 +104,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		// surveyPreservation is fixed for all record, only check in first record
 		if (tableList.get(FIRST_LINE).getSurveyPreservation() == NotUseAtr.USE) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY);
+			serverPrepareMngRepository.update(serverPrepareMng);
 			setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 			return;
 		}
@@ -125,6 +127,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		if (!checkNormalFile(serverPrepareMng))
 			return;
 		serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECKING_TABLE_ITEMS);
+		serverPrepareMngRepository.update(serverPrepareMng);
 		// アルゴリズム「テーブル項目チェック」を実行する
 		// Validate header and table column
 		serverPrepareMng = tableItemValidation.checkTableItem(serverPrepareMng, tableList);
@@ -135,6 +138,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		//Restore employee to database
 		serverPrepareMng = employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery, tableList);
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
+		serverPrepareMngRepository.update(serverPrepareMng);
 	}
 
 	private String convertToStatus(ServerPrepareMng serverPrepareMng) {
