@@ -186,5 +186,11 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			}
 		}
 	}
+
+	@Override
+	public List<String> getListEmployeeId(String workplaceId, GeneralDate referenceDate) {
+		// processing
+		return new ArrayList<>();
+	}
 	
 }
