@@ -317,6 +317,19 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			});
 		});
 	}
+	
+	@SuppressWarnings({ "unchecked" })
+	private <T extends DailyWorkCommonCommand> void registerAllCommand(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
+		commands.stream().forEach(c -> {
+			c.getAvailableLayout().stream().forEach(layout -> {
+				T command = (T) c.getCommand(layout);
+				CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
+				if(handler != null){
+					handler.handle(command);
+				}
+			});
+		});
+	}
 
 	private void registerErrorWhenCalc(Map<String, List<GeneralDate>> param, List<EmployeeDailyPerError> errors) {
 		//remove data error
