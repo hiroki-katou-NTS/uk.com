@@ -681,6 +681,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
 			ScheduleCreateContent content = command.getContent();
 			// 実施区分を判断, 処理実行区分を判断
+			// EA No2115
 			if (content.getImplementAtr() == ImplementAtr.RECREATE
 					&& content.getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
 				BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
