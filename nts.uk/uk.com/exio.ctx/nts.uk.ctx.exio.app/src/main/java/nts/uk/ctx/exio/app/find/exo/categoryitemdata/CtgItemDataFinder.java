@@ -15,7 +15,7 @@ public class CtgItemDataFinder {
 
 	public List<CtgItemDataDto> getAllCategoryItem(String categoryId) {
 		return acquisitionCategory.getExternalOutputCategoryItem(categoryId, null).stream().map(item -> {
-			return new CtgItemDataDto(item.getItemNo(), item.getItemName());
+			return new CtgItemDataDto(item.getItemNo().v(), item.getItemName());
 		}).collect(Collectors.toList());
 	}
 }
