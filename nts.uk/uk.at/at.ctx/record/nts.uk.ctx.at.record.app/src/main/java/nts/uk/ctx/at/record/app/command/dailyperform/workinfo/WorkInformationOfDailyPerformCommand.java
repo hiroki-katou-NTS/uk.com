@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.workinfo;
 
-import java.util.Optional;
-
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
@@ -12,6 +11,10 @@ public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand
 
 	@Getter
 	private WorkInfoOfDailyPerformance data;
+	
+	@Getter
+	@Setter
+	private boolean isTriggerEvent = false;
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
