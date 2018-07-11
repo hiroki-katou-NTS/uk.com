@@ -3,8 +3,6 @@ package nts.uk.ctx.at.shared.dom.specialholidaynew;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-
 /**
  * Special Holiday Repository
  * 
@@ -13,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
  */
 public interface SpecialHolidayRepository {
 	/**
-	 * Find by Company Id
+	 * Find By CompanyId
 	 * @param companyId
 	 * @return
 	 */

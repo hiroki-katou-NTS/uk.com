@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation;
 
-import java.time.Period;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +28,7 @@ public class GrantPeriodic extends DomainObject {
 	private TimeLimitSpecification timeSpecifyMethod;
 	
 	/** 使用可能期間 */
-	private Period availabilityPeriod;
+	private AvailabilityPeriod availabilityPeriod;
 	
 	/** 有効期限 */
 	private SpecialVacationDeadline expirationDate;
@@ -64,7 +62,7 @@ public class GrantPeriodic extends DomainObject {
 	 * @param limitCarryoverDays
 	 * @return
 	 */
-	public static GrantPeriodic createFromJavaType(String companyId, int specialHolidayCode, int timeSpecifyMethod, Period availabilityPeriod, 
+	public static GrantPeriodic createFromJavaType(String companyId, int specialHolidayCode, int timeSpecifyMethod, AvailabilityPeriod availabilityPeriod, 
 			SpecialVacationDeadline expirationDate, int limitCarryoverDays) {
 		return new GrantPeriodic(companyId, 
 				new SpecialHolidayCode(specialHolidayCode),
