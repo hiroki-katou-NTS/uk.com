@@ -27,22 +27,21 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             var self = this;
             let parrams = getShared('CMF002CParams');
             self.modeScreen(parrams.modeScreen);
+            service.getAWDataFormatSetting().done(function(data: Array<any>) {
+                if (data && data.length) {
+                    let _rsList: Array<model.AtWorkDataOutputItem> = _.map(data, rs => {
+                        return new model.AtWorkDataOutputItem(rs.closedOutput, rs.absenceOutput, rs.fixedValue, rs.valueOfFixedValue, rs.atWorkOutput, rs.retirementOutput);
+                    });
+                    self.AtWorkDataOutputItem(_rsList);
+                } else {
+                    self.AtWorkDataOutputItem = ko.observable(new model.AtWorkDataOutputItem("", "", 2, "", "", ""));
+                }
+            }
             if (parrams.modeScreen) {
                 self.isEnable(false);
-                self.AtWorkDataOutputItem = ko.observable(new model.AtWorkDataOutputItem(parrams.closedOutput, parrams.absenceOutput, parrams.fixedValue, parrams.valueOfFixedValue, parrams.atWorkOutput, parrams.retirementOutput));
             }
             if (!parrams.modeScreen) {
                 self.isEnable(true);
-                service.getAWDataFormatSetting().done(function(data: Array<any>) {
-                    if (data && data.length) {
-                        let _rsList: Array<model.AtWorkDataOutputItem> = _.map(data, rs => {
-                            return new model.AtWorkDataOutputItem(rs.closedOutput, rs.absenceOutput, rs.fixedValue, rs.valueOfFixedValue, rs.atWorkOutput, rs.retirementOutput);
-                        });
-                        self.AtWorkDataOutputItem(_rsList);
-                    } else {
-                        self.AtWorkDataOutputItem = ko.observable(new model.AtWorkDataOutputItem("", "", 2, "", "", ""));
-                    }
-                }
             }
         }
 
