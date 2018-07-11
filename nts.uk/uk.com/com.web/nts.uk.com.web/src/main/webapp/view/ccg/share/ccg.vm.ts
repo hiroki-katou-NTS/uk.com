@@ -574,16 +574,16 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 // set advanced search tab flag
                 self.showAdvancedSearchTab = self.showAdvancedSearchTab &&
-                    (self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF);
+                    (self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF);
                 // always show quick search if advanced search is hidden
                 self.showQuickSearchTab = self.showAdvancedSearchTab ? self.showQuickSearchTab : true;
 
-                self.showAllReferableEmployee = self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF
+                self.showAllReferableEmployee = self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
                     && self.showAllReferableEmployee;
-                self.showSameWorkplace = self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF
+                self.showSameWorkplace = self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
                     && self.showSameWorkplace;
-                self.showSameWorkplaceAndChild = (self.referenceRange == ConfigEnumReferenceRange.ALL_EMPLOYEE
-                    || self.referenceRange == ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD)
+                self.showSameWorkplaceAndChild = (self.referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
+                    || self.referenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD)
                     && self.showSameWorkplaceAndChild;
             }
 
@@ -609,7 +609,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private setAdvancedSearchParam(): void {
                 let self = this;
                 let param = this.queryParam;
-                param.referenceRange = ConfigEnumReferenceRange.ALL_EMPLOYEE;
+                param.referenceRange = SearchReferenceRange.ALL_EMPLOYEE;
 
                 // filter param
                 param.filterByEmployment = self.showEmployment;
@@ -1656,7 +1656,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchAllListEmployee(): void {
                 var self = this;
-                self.queryParam.referenceRange = ConfigEnumReferenceRange.ALL_EMPLOYEE;
+                self.queryParam.referenceRange = SearchReferenceRange.ALL_EMPLOYEE;
                 self.quickSearchEmployee();
             }
             
@@ -1665,7 +1665,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchEmployeeOfDepOnly(): void {
                 var self = this;
-                self.queryParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_ONLY;
+                self.queryParam.referenceRange = SearchReferenceRange.DEPARTMENT_ONLY;
                 self.quickSearchEmployee();
             }
             
@@ -1674,7 +1674,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchEmployeeOfDepAndChild(): void {
                 var self = this;
-                self.queryParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD;
+                self.queryParam.referenceRange = SearchReferenceRange.DEPARTMENT_AND_CHILD;
                 self.quickSearchEmployee();
             }
 
@@ -1936,11 +1936,18 @@ module nts.uk.com.view.ccg.share.ccg {
             static CLOSURE_ALL_NAME = nts.uk.resource.getText("CCG001_64");
         }
         
-        export class ConfigEnumReferenceRange{
+        export class ReferenceRange {
             static ALL_EMPLOYEE = 0;
             static DEPARTMENT_AND_CHILD = 1;
             static DEPARTMENT_ONLY = 2;
+        }
+
+        export class EmployeeReferenceRange extends ReferenceRange {
             static ONLY_MYSELF = 3;
+        }
+
+        export class SearchReferenceRange extends ReferenceRange {
+            static DO_NOT_CONSIDER_REFERENCE_RANGE = 3;
         }
 
         export class DateRangePickerModel {
