@@ -277,8 +277,12 @@ public class AggregateMonthlyRecordServiceProc {
 		ConcurrentStopwatches.stop("12300:36協定時間：");
 		ConcurrentStopwatches.start("12400:残数処理：");
 		
-		// 残数処理
-		this.remainingProcess(monthPeriod);
+		// 集計開始日を締め開始日をする時だけ、残数処理を実行する　（集計期間の初月（＝締めの当月）だけ実行する）
+		if (this.employeeSets.isNoCheckStartDate()){
+			
+			// 残数処理
+			this.remainingProcess(monthPeriod);
+		}
 
 		ConcurrentStopwatches.stop("12400:残数処理：");
 		ConcurrentStopwatches.start("12500:任意項目：");
