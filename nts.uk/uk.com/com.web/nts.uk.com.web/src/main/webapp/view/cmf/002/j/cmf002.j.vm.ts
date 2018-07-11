@@ -19,7 +19,8 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         spaceEditingItem: KnockoutObservableArray<model.ItemModel>;
         codeConvertCode: KnockoutObservable<model.AcceptanceCodeConvert>;
         dispConvertName: KnockoutObservable<string>;
-        inputMode: boolean;
+        modeScreen: KnockoutObservable<number>;
+        isEnable: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.inputMode = true;
@@ -29,9 +30,27 @@ module nts.uk.com.view.cmf002.j.viewmodel {
 
         initComponent() {
             var self = this;
+            let parrams = getShared('CMF002CParams');
+            self.modeScreen(parrams.modeScreen);
             self.codeConvertCode = ko.observable(new model.AcceptanceCodeConvert("", "", 0));
             self.dispConvertName = ko.observable(self.codeConvertCode().convertCode() + self.codeConvertCode().convertName());
-            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, null, null, 0, "", 0, ""));
+            service.getCharacterDataFormatSetting().done(function(data: Array<any>) {
+                if (data && data.length) {
+                    let _rsList: Array<model.characterDataFormatSetting> = _.map(data, rs => {
+                        return new model.characterDataFormatSetting(rs.effectDigitLength, rs.startDigit, rs.endDigit, rs.codeEditing, rs.codeEditDigit, rs.codeEditingMethod, rs.spaceEditing, rs.codeConvertCode, rs.nullValueReplace, rs.valueOfNullValueReplace, rs.fixedValue, rs.valueOfFixedValue);
+                    });
+                    self.characterDataFormatSetting(_rsList);
+                } else {
+                    self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, null, null, 0, "", 0, ""));
+                }
+            }
+            if (parrams.modeScreen) {
+            self.isEnable(false);
+            }
+            if (!parrams.modeScreen) {
+                self.isEnable(true);
+            }
+
             self.effectDigitLengthItem = ko.observableArray([
                 new model.ItemModel(model.FORMAT_SELECTION.DECIMAL, getText('CMF002_165')),
                 new model.ItemModel(model.FORMAT_SELECTION.NO_DECIMAL, getText('CMF002_166'))
@@ -111,21 +130,6 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             dfd.resolve();
-            //            service.getCharacterDataFormatSetting().done(function(charFormat) {
-            //                if (charFormat) {
-            //                    let characterDataFormatSetting = new model.CharacterDataFormatSetting(charFormat.effectDigitLength, 
-            //                    charFormat.startDigit, charFormat.endDigit, charFormat.codeEditing, charFormat.codeEditDigit, 
-            //                    charFormat.codeEditingMethod, charFormat.spaceEditing, charFormat.codeConvertCode, charFormat.nullValueReplace, 
-            //                    charFormat.valueOfNullValueReplace, charFormat.fixedValue, charFormat.valueOfFixedValue);
-            //                    self.characterDataFormatSetting(characterDataFormatSetting);
-            //                }
-            //                block.clear();
-            //                dfd.resolve();
-            //            }).fail(function(error) {
-            //                alertError(error);
-            //                block.clear();
-            //                dfd.reject();
-            //            });
             return dfd.promise();
         }
         enableEffectDigitLengthCls() {
@@ -174,10 +178,14 @@ module nts.uk.com.view.cmf002.j.viewmodel {
 
         }
         saveCharacterSetting() {
-            var self = this;
-            let params = "";
-            setShared("CMF002iOutput", params);
-        }
+            let self = this;
+            let command = ko.toJS(self.characterDataFormatSetting());
+            service.setCharacterDataFormatSetting(command).done(function() {
+                nts.uk.ui.windows.close();
+            });
+        }).fail(error => {
+            alertError({ messageId: "Msg" });
+        });
         cancelCharacterSetting() {
             nts.uk.ui.windows.close();
         }
