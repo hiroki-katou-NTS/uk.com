@@ -86,14 +86,14 @@ module nts.uk.at.view.kfp001.c {
                 if ($('.ccg-sample-has-error').ntsError('hasError')) {
                     return;
                 }
-                let dataB = nts.uk.ui.windows.getShared("KFP001_DATAB");
-                if (dataB != null) {
-                    self.periodStartDate(moment.utc(dataB.periodStartDate).toISOString());
-                    self.periodEndDate(moment.utc(dataB.periodEndDate).toISOString());
-                } else {
-                    self.periodStartDate(moment.utc().toISOString());
-                    self.periodEndDate(moment.utc().toISOString());
-                }
+//                let dataB = nts.uk.ui.windows.getShared("KFP001_DATAB");
+//                if (dataB != null) {
+//                    self.periodStartDate(moment.utc(dataB.periodStartDate).toISOString());
+//                    self.periodEndDate(moment.utc(dataB.periodEndDate).toISOString());
+//                } else {
+//                    self.periodStartDate(moment.utc().toISOString());
+//                    self.periodEndDate(moment.utc().toISOString());
+//                }
 
                 self.ccg001ComponentOption = {
                     /** Common properties */
