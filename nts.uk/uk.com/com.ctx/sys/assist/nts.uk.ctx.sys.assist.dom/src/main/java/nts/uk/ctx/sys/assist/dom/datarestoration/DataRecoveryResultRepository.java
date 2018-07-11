@@ -14,4 +14,6 @@ public interface DataRecoveryResultRepository {
 	void update(DataRecoveryResult domain);
 
 	void remove(String dataRecoveryProcessId);
+	
+	void updateEndDateTimeExecutionResult(String dataRecoveryProcessId, DataRecoveryOperatingCondition dataRecoveryOperatingCondition);
 }

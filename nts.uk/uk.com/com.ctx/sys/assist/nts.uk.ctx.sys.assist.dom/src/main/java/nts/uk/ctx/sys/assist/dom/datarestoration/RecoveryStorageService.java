@@ -50,6 +50,9 @@ public class RecoveryStorageService {
 
 	@Inject
 	private DataReEmployeeAdapter empDataMngRepo;
+	
+	@Inject
+	private DataRecoveryResultRepository dataRecoveryResultRepository;
 
 	private RecoveryStorageService self;
 
@@ -112,6 +115,9 @@ public class RecoveryStorageService {
 		
 		Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository.getDataRecoveryMngById(dataRecoveryProcessId);
 		if(dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition() == DataRecoveryOperatingCondition.INTERRUPTION_END) {
+			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, DataRecoveryOperatingCondition.INTERRUPTION_END);
+			performDataRecoveryRepository.remove(dataRecoveryProcessId);
+			performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
 			return;
 		}
 		
@@ -151,9 +157,14 @@ public class RecoveryStorageService {
 		if (condition == DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS) {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId,
 					DataRecoveryOperatingCondition.DONE);
+			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, DataRecoveryOperatingCondition.DONE);
 		} else {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, condition);
+			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, condition);
 		}
+		performDataRecoveryRepository.remove(dataRecoveryProcessId);
+		performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
+		
 	}
 
 	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
@@ -622,7 +633,7 @@ public class RecoveryStorageService {
 		return true;
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.NOT_SUPPORTED)
 	public DataRecoveryOperatingCondition exDataTabeRangeDate(List<List<String>> targetDataRecovery,
 			Optional<TableList> tableList, String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
