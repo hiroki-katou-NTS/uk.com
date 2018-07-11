@@ -23,7 +23,7 @@ module nts.uk.com.view.cmf002.s {
             return ajax('com', _path);
         }
         
-        export function updateFileSize(storeProcessingId: string, fileId): JQueryPromise<any> {
+        export function updateFileSize(storeProcessingId: string, fileId: string): JQueryPromise<any> {
             let _path = format(paths.updateFileSize, storeProcessingId, fileId);
             return ajax('com', _path);
         }

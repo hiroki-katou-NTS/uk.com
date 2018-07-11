@@ -46,7 +46,6 @@ public class ExiExecLogWebService extends WebService {
 	@Inject
 	private ExiExecLogExportService exportService;
 	
-	
 	@Inject
 	private ExOutOpMngFinder exOutOpMngFinder;
 	
@@ -97,12 +96,12 @@ public class ExiExecLogWebService extends WebService {
 	
 	@Path("getExterOutExecLog/{exterOutExecLogProcessId}")
 	@POST
-	public ExterOutExecLogDto getExterOutExecLogById(@PathParam("processId") String exterOutExecLogProcessId) {
+	public ExterOutExecLogDto getExterOutExecLogById(@PathParam("exterOutExecLogProcessId") String exterOutExecLogProcessId) {
 		return this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId);
 	}
 	
 	@POST
-	@Path("updateFileSize/{cId}/{storeProcessingId}/{fileId}")
+	@Path("updateFileSize/{storeProcessingId}/{fileId}")
 	public void updateFileSize( @PathParam("storeProcessingId") String storeProcessingId,
 			@PathParam("fileId") String fileId) {
 		String companyId = AppContexts.user().companyId();

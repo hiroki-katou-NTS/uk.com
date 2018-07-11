@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.exo.execlog;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -9,14 +8,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.execlog.ExternalOutLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExternalOutLogRepository;
 import nts.uk.ctx.exio.infra.entity.exo.execlog.OiomtExternalOutLog;
-import nts.uk.ctx.exio.infra.entity.exo.execlog.OiomtExternalOutLogPk;
 
 @Stateless
 public class JpaExternalOutLogRepository extends JpaRepository implements ExternalOutLogRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExternalOutLog f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.externalOutLogPk.cid =:cid AND  f.externalOutLogPk.outProcessId =:outProcessId ";
+			+ " WHERE  f.externalOutLogPk.cid =:cid AND  f.externalOutLogPk.outProcessId =:outProcessId AND f.processContent = :processContent";
 
 	@Override
 	public List<ExternalOutLog> getAllExternalOutLog() {
@@ -25,9 +23,11 @@ public class JpaExternalOutLogRepository extends JpaRepository implements Extern
 	}
 
 	@Override
-	public Optional<ExternalOutLog> getExternalOutLogById(String cid, String outProcessId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExternalOutLog.class).setParameter("cid", cid)
-				.setParameter("outProcessId", outProcessId).getSingle(c -> c.toDomain());
+	public List<ExternalOutLog> getExternalOutLogById(String cid, String outProcessId, int processContent) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExternalOutLog.class)
+				.setParameter("cid", cid)
+				.setParameter("outProcessId", outProcessId)
+				.setParameter("processContent", processContent).getList(c -> c.toDomain());
 	}
 
 	@Override

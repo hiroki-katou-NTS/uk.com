@@ -46,7 +46,7 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 	}
 
 	@Override
-	public void update(String cid, String outProcessId,Integer fileZise) {
+	public void update(String cid, String outProcessId,long fileZise) {
 		Optional<OiomtExterOutExecLog> entityOpt = this.queryProxy()
 				.query(SELECT_BY_KEY_STRING, OiomtExterOutExecLog.class).setParameter("cid", cid)
 				.setParameter("outProcessId", outProcessId).getSingle();

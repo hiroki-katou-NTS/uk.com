@@ -18,6 +18,6 @@ public interface ExterOutExecLogRepository {
 
 	void remove(String cid, String outProcessId);
 	
-	void update(String cid, String outProcessId, Integer fileSize);
+	void update(String cid, String outProcessId, long fileSize);
 
 }

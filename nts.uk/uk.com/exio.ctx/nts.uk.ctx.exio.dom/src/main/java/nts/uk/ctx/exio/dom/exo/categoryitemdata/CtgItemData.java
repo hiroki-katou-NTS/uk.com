@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.exo.categoryitemdata;
 
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -8,12 +7,12 @@ import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItemNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
-
 /**
-* 外部出力カテゴリ項目データ
-*/
+ * 外部出力カテゴリ項目データ
+ */
 
 @Getter
+
 public class CtgItemData extends AggregateRoot
 {
     
@@ -87,11 +86,13 @@ public class CtgItemData extends AggregateRoot
     */
     private String searchValueCd;
 
-	public CtgItemData(String tblAlias, int dataType, String tableName, String fieldName,
+	public CtgItemData(String tblAlias, int categoryId, int dataType, String tableName, String fieldName,
 			int primarykeyClassfication, String dateClassfication, int specialItem, String displayTableName,
-			int displayClassfication, String itemName, int requiredCategory, String searchValueCd) {
+			int displayClassfication, int itemNo, String itemName, int requiredCategory, String searchValueCd) {
 		super();
 		this.tblAlias = tblAlias;
+		this.dataType = EnumAdaptor.valueOf(dataType, DataType.class);
+		this.categoryId = EnumAdaptor.valueOf(categoryId, CategoryCd.class);
 		this.dataType = EnumAdaptor.valueOf(dataType, DataType.class);
 		this.tableName = tableName;
 		this.fieldName = fieldName;
@@ -100,10 +101,10 @@ public class CtgItemData extends AggregateRoot
 		this.specialItem = EnumAdaptor.valueOf(specialItem, SpecialItem.class);
 		this.displayTableName = displayTableName;
 		this.displayClassfication = EnumAdaptor.valueOf(displayClassfication, NotUseAtr.class);
+		this.itemNo = EnumAdaptor.valueOf(itemNo, CategoryItemNo.class);
 		this.itemName = itemName;
 		this.requiredCategory = requiredCategory;
 		this.searchValueCd = searchValueCd;
 	}
-    
-    
+
 }

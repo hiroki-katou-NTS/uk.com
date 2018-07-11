@@ -13,8 +13,8 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
-* 外部出力カテゴリ項目データ
-*/
+ * 外部出力カテゴリ項目データ
+ */
 
 @NoArgsConstructor
 @Entity
@@ -122,7 +122,7 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable
     }
 
     public CtgItemData toDomain() {
-        return new CtgItemData(this.tblAlias, this.dataType, this.tableName, this.fieldName, this.primarykeyClassfication, this.dateClassfication, this.specialItem, this.displayTableName, this.displayClassfication, this.itemName, this.requiredCategory, this.searchValueCd);
+        return new CtgItemData(this.tblAlias, this.dataType, this.dataType, this.tableName, this.fieldName, this.primarykeyClassfication, this.dateClassfication, this.specialItem, this.displayTableName, this.displayClassfication, dataType, this.itemName, this.requiredCategory, this.searchValueCd);
     }
     public static OiomtCtgItemData toEntity(CtgItemData domain) {
         return new OiomtCtgItemData(
@@ -141,8 +141,8 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable
         		domain.getSearchValueCd());
     }
 
-	public OiomtCtgItemData(OiomtCtgItemDataPk ctgItemDataPk, String tblAlias, int dataType,
-			String tableName, String fieldName, int primarykeyClassfication, String dateClassfication, int specialItem,
+	public OiomtCtgItemData(OiomtCtgItemDataPk ctgItemDataPk, String tblAlias, int dataType, String tableName,
+			String fieldName, int primarykeyClassfication, String dateClassfication, int specialItem,
 			String displayTableName, int displayClassfication, String itemName, int requiredCategory,
 			String searchValueCd) {
 		super();
@@ -160,6 +160,8 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable
 		this.requiredCategory = requiredCategory;
 		this.searchValueCd = searchValueCd;
 	}
-    
+
+	
+
 
 }
