@@ -21,6 +21,7 @@ public class JpaServerPrepareMngRepository extends JpaRepository implements Serv
 	@Override
 	public void add(ServerPrepareMng domain) {
 		this.commandProxy().insert(SspmtServerPrepareMng.toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override

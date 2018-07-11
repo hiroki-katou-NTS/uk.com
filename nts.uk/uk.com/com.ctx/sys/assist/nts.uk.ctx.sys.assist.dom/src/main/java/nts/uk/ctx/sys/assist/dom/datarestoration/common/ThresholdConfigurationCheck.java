@@ -5,20 +5,24 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
+import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
 @Stateless
 public class ThresholdConfigurationCheck {
-
+	@Inject
+	private ServerPrepareMngRepository serverPrepareMngRepository;
 	private static final String EXTENSION = ".csv";
 
 	// アルゴリズム「テーブル一覧の復元」を実行する
 	public ServerPrepareMng checkFileConfiguration(ServerPrepareMng serverPrepareMng, List<TableList> tableList) {
 		if(checkFileConfigError(serverPrepareMng, tableList)){
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.FILE_CONFIG_ERROR);
+			serverPrepareMngRepository.update(serverPrepareMng);
 		}
 		return serverPrepareMng;
 	}

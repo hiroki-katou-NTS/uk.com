@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
+import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
@@ -16,9 +17,14 @@ public class TableItemValidation {
 	
 	@Inject
 	private TableColumnNameNativeQueryRepository tableColumnRepository;
+	@Inject
+	private ServerPrepareMngRepository serverPrepareMngRepository;
 	// アルゴリズム「テーブル項目チェック」を実行する
 	public ServerPrepareMng checkTableItem(ServerPrepareMng serverPrepareMng, List<TableList> tableList){
-		if(compareItem(serverPrepareMng, tableList)) serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.TABLE_ITEM_DIFFERENCE);
+		if(compareItem(serverPrepareMng, tableList)){
+			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.TABLE_ITEM_DIFFERENCE);
+			serverPrepareMngRepository.update(serverPrepareMng);
+		}
 		return serverPrepareMng;
 	}
 	// テーブル一覧のすべての行をアルゴリズム「項目の比較」でチェックする
