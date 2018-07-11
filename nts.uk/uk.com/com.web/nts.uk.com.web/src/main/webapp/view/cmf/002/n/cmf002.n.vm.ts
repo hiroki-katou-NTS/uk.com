@@ -17,6 +17,7 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
         ]);
         modeScreen: KnockoutObservable<number>;
+        isEnable: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -25,10 +26,13 @@ module nts.uk.com.view.cmf002.n.viewmodel {
         initComponent() {
             var self = this;
             let parrams = getShared('CMF002CParams');
+            self.modeScreen(parrams.modeScreen);
             if (parrams.modeScreen) {
+                self.isEnable(false);
                 self.AtWorkDataOutputItem = ko.observable(new model.AtWorkDataOutputItem(parrams.closedOutput, parrams.absenceOutput, parrams.fixedValue, parrams.valueOfFixedValue, parrams.atWorkOutput, parrams.retirementOutput));
             }
             if (!parrams.modeScreen) {
+                self.isEnable(true);
                 service.getAWDataFormatSetting().done(function(data: Array<any>) {
                     if (data && data.length) {
                         let _rsList: Array<model.AtWorkDataOutputItem> = _.map(data, rs => {
@@ -42,9 +46,9 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             }
         }
 
-      /**
-        * Close dialog.
-        */
+        /**
+          * Close dialog.
+          */
         cancelSetting(): void {
             nts.uk.ui.windows.close();
         }
@@ -53,11 +57,10 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             let self = this;
             let command = ko.toJS(self.AtWorkDataOutputItem());
             service.setAWDataFormatSetting(command).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    $("#BTN_CLOSE").focus();
-                });
-            }).fail(error => {
-                alertError({ messageId: "Msg_513" });
-            }); 
-           }
+                nts.uk.ui.windows.close();
+            });
+        }).fail(error => {
+            alertError({ messageId: "Msg" });
+        });
+    }
 }
