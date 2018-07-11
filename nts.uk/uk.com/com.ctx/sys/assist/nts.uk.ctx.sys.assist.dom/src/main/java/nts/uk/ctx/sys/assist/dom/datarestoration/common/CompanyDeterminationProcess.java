@@ -11,6 +11,7 @@ import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.RecoveryMethod;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
+import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
@@ -22,6 +23,8 @@ public class CompanyDeterminationProcess {
 
 	@Inject
 	private TableListRepository tableListRepository;
+	@Inject
+	private ServerPrepareMngRepository serverPrepareMngRepository;
 
 	// アルゴリズム「別会社判定処理」を実行する
 	public List<Object> sperateCompanyDeterminationProcess(ServerPrepareMng serverPrepareMng,
@@ -50,6 +53,7 @@ public class CompanyDeterminationProcess {
 		// If no category can be recover other company
 		if (isRecoveryOtherCompanyNoOccur) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.NO_SEPARATE_COMPANY);
+			serverPrepareMngRepository.update(serverPrepareMng);
 		}
 		return Arrays.asList(serverPrepareMng, performDataRecovery, tableList);
 	}

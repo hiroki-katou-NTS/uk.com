@@ -29,6 +29,8 @@ public class ServerPreparationService {
 
 	@Inject
 	private EmployeeRestoration employeeRestoration;
+	@Inject
+	private ServerPrepareMngRepository serverPrepareMngRepository;
 
 	// アルゴリズム「サーバー準備処理」を実行する
 	public ServerPrepareMng serverPreparationProcessing(ServerPrepareMng serverPrepareMng) {
@@ -43,8 +45,10 @@ public class ServerPreparationService {
 			List<TableList> tableList = (List<TableList>) (restoreTableResult.get(1));
 			if (checkNormalFile(serverPrepareMng)) {
 				if (!tableList.isEmpty()) {
-					if (tableList.get(0).getSurveyPreservation() == NotUseAtr.USE)
+					if (tableList.get(0).getSurveyPreservation() == NotUseAtr.USE){
 						serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CAN_NOT_SAVE_SURVEY);
+						serverPrepareMngRepository.update(serverPrepareMng);
+					}
 				}
 				if (checkNormalFile(serverPrepareMng)) {
 					// アルゴリズム「テーブル一覧の復元」を実行する
@@ -69,6 +73,7 @@ public class ServerPreparationService {
 				}
 			}
 		}
+		serverPrepareMngRepository.update(serverPrepareMng);
 		return serverPrepareMng;
 	}
 

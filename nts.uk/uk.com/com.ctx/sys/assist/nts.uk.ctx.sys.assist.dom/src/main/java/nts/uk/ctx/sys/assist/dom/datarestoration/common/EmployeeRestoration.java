@@ -13,6 +13,7 @@ import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
+import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
@@ -25,6 +26,8 @@ public class EmployeeRestoration {
 	private PerformDataRecoveryRepository performDataRecoveryRepository;
 	@Inject
 	private ResultOfSavingRepository resultOfSavingRepository;
+	@Inject
+	private ServerPrepareMngRepository serverPrepareMngRepository;
 	private static final String TARGET_CSV = "対象社員";
 	private static final int FIRST_LINE = 0;
 
@@ -34,6 +37,7 @@ public class EmployeeRestoration {
 		List<List<String>> targetEmployee = CsvFileUtil.getAllRecord(serverPrepareMng.getFileId().get(), TARGET_CSV);
 		if (targetEmployee.isEmpty()) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
+			serverPrepareMngRepository.update(serverPrepareMng);
 			return serverPrepareMng;
 		}
 		try {
@@ -57,8 +61,10 @@ public class EmployeeRestoration {
 			performDataRecovery.setNumPeopleSave(numPeopleSave);
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECK_COMPLETED);
 			performDataRecoveryRepository.add(performDataRecovery);
+			serverPrepareMngRepository.update(serverPrepareMng);
 		} catch (Exception e) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
+			serverPrepareMngRepository.update(serverPrepareMng);
 			return serverPrepareMng;
 		}
 		return serverPrepareMng;
