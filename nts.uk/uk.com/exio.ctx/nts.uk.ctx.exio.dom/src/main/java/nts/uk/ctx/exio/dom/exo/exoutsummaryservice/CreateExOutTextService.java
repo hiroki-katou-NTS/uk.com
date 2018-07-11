@@ -1,8 +1,10 @@
 package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -69,13 +71,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 
 	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext) {
-		getServerExOutSetting(exOutSetting);
+		Map<String, Object> settingResult = getServerExOutSetting(exOutSetting);
 		initExOutLogInformation(exOutSetting);
-		serverExOutExecution(exOutSetting);
+		serverExOutExecution(exOutSetting, settingResult);
 	}
 	
-	private void getServerExOutSetting(ExOutSetting exOutSetting) {
+	private Map<String, Object> getServerExOutSetting(ExOutSetting exOutSetting) {
+		Map<String, Object> settingResult = new HashMap<String, Object>();
 		List<StdOutputCondSet> stdOutputCondSetList = acquisitionExOutSetting.getExOutSetting(null, true, exOutSetting.getConditionSetCd());
+		Optional<StdOutputCondSet> stdOutputCondSet = (stdOutputCondSetList.size() > 0) ? Optional.of(stdOutputCondSetList.get(0)) : Optional.empty();
+		
 		List<StandardOutputItem> standardOutputItemList = acquisitionExOutSetting.getExOutItemList(exOutSetting.getConditionSetCd(), null, "", true, true);
 		Set<CtgItemData> ctgItemDataList = new HashSet<CtgItemData>();
 		
@@ -87,6 +92,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 						categoryItem.getCategoryItemNo().v().length(), 1).ifPresent(item -> ctgItemDataList.add(item));
 			}
 		}
+		
+		settingResult.put("stdOutputCondSet", stdOutputCondSet);
+		settingResult.put("standardOutputItemList", standardOutputItemList);
+		return settingResult;
 	}
 	
 	// アルゴリズム「外部出力取得条件一覧」を実行する with type = fixed form (standard)
@@ -108,7 +117,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				continue;
 			}
 			
-			if("with".equals(ctgItemData.get().getSearchValueCd().toLowerCase())) {
+			if(ctgItemData.get().getSearchValueCd().isPresent() && "with".equals(ctgItemData.get().getSearchValueCd().get().toLowerCase())) {
 				for (SearchCodeList searchCodeItem: searchCodeList) {
 					cond.append(", ");
 					cond.append(searchCodeItem.getSearchCode());
@@ -155,7 +164,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 	
 	//サーバ外部出力実行
-	private void serverExOutExecution(ExOutSetting exOutSetting) {
+	private void serverExOutExecution(ExOutSetting exOutSetting, Map<String, Object> settingResult) {
 		
 		String processingId = exOutSetting.getProcessingId();
 		//TODO get lại setting name
@@ -163,7 +172,37 @@ public class CreateExOutTextService extends ExportService<Object> {
 		
 		exOutOpMngRepo.getExOutOpMngById(processingId).ifPresent(exOutOpMng -> {
 			exOutOpMng.setOpCond(ExIoOperationState.EXPORTING);
-			exOutOpMng.setProUnit(I18NText.getText("#CMF002_527"));
+			
+			// TODO chờ QA
+			if("type" == "data") {
+				exOutOpMng.setProUnit(I18NText.getText("#CMF002_527"));
+				exOutOpMng.setProCnt(0);
+				exOutOpMng.setTotalProCnt(exOutSetting.getSidList().size());
+			} else {
+				exOutOpMng.setProUnit(I18NText.getText("#CMF002_528"));
+			}
+			
+			exOutOpMngRepo.update(exOutOpMng);
 		});
+		
+		// TODO chờ QA
+		if("type" == "data") {
+			StdOutputCondSet stdOutputCondSet = (StdOutputCondSet) settingResult.get("stdOutputCondSet");
+			serverExOutTypeData(exOutSetting, stdOutputCondSet, fileName);
+		} else {
+			
+		}
+	}
+	
+	//サーバ外部出力タイプデータ系
+	private void serverExOutTypeData(ExOutSetting exOutSetting, StdOutputCondSet stdOutputCondSet, String fileName) {
+		//サーバ外部出力ファイル項目ヘッダ
+		if(stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE.value) {
+			
+		}
+		
+		if(stdOutputCondSet.getItemOutputName() == NotUseAtr.USE.value) {
+			
+		}
 	}
 }

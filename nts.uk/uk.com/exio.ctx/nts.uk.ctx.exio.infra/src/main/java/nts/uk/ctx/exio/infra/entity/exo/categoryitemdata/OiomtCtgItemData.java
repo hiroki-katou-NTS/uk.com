@@ -125,11 +125,11 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtCtgItemData toEntity(CtgItemData domain) {
-		return new OiomtCtgItemData(new OiomtCtgItemDataPk(domain.getCategoryId(), domain.getItemNo()),
-				domain.getTblAlias(), domain.getDataType(), domain.getTableName(), domain.getFieldName(),
-				domain.getPrimarykeyClassfication(), domain.getDateClassfication(), domain.getSpecialItem(),
-				domain.getDisplayTableName(), domain.getDisplayClassfication(), domain.getItemName(),
-				domain.getRequiredCategory(), domain.getSearchValueCd());
+		return new OiomtCtgItemData(new OiomtCtgItemDataPk(domain.getCategoryId().v().toString(), domain.getItemNo().v()),
+				domain.getTblAlias(), domain.getDataType().value, domain.getTableName(), domain.getFieldName(),
+				domain.getPrimarykeyClassfication().get().value, domain.getDateClassfication().get(), domain.getSpecialItem().value,
+				domain.getDisplayTableName(), domain.getDisplayClassfication().value, domain.getItemName(),
+				domain.getRequiredCategory().value, domain.getSearchValueCd().get());
 	}
 
 	public OiomtCtgItemData(OiomtCtgItemDataPk ctgItemDataPk, String tblAlias, int dataType, String tableName,
