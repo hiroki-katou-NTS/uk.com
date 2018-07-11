@@ -608,11 +608,13 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				result.setBirthDay(person.getBirthDate());
 
 				List<AffCompanyHistItem> lstAffComHistItem = mapAffComHistItem.get(employee.getEmployeeId());
+						
 
 				if (lstAffComHistItem != null) {
+					List<AffCompanyHistItem> lstAff = lstAffComHistItem.stream().sorted((f1, f2) -> f2.getDatePeriod().start().compareTo(f1.getDatePeriod().start())).collect(Collectors.toList());
 
-						result.setEntryDate(lstAffComHistItem.get(0).getDatePeriod().start());
-						result.setRetiredDate(lstAffComHistItem.get(0).getDatePeriod().end());
+						result.setEntryDate(lstAff.get(0).getDatePeriod().start());
+						result.setRetiredDate(lstAff.get(0).getDatePeriod().end());
 				}
 
 				result.setPId(employee.getPersonId());
