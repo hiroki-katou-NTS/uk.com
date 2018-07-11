@@ -25,22 +25,22 @@ public class BPSettingUpdateCommandHandler extends CommandHandlerWithResult<BPSe
 	protected List<RegisterErrorList> handle(CommandHandlerContext<BPSettingUpdateCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		BPSettingUpdateCommand bpSettingUpdateCommand = context.getCommand();
-		List<BPTimesheetUpdateCommand> lstBPTimesheetAddCommand = bpSettingUpdateCommand.getLstBonusPayTimesheet();
-		List<SpecBPTimesheetUpdateCommand> lstSpecBPTimesheetAddCommand = bpSettingUpdateCommand
+		List<BPTimesheetUpdateCommand> lstBPTimesheetUpdateCommand = bpSettingUpdateCommand.getLstBonusPayTimesheet();
+		List<SpecBPTimesheetUpdateCommand> lstSpecBPTimesheetUpdateCommand = bpSettingUpdateCommand
 				.getLstSpecBonusPayTimesheet();
-		if(lstBPTimesheetAddCommand.stream().allMatch(item -> item.useAtr == 0) 
-				&& lstSpecBPTimesheetAddCommand.stream().allMatch(item -> item.useAtr == 0)) {
+		if(lstBPTimesheetUpdateCommand.stream().allMatch(item -> item.useAtr == 0) 
+				&& lstSpecBPTimesheetUpdateCommand.stream().allMatch(item -> item.useAtr == 0)) {
 			throw new BusinessException("Msg_34");
 		}
 		List<RegisterErrorList> errorLists = new ArrayList<>();
-		lstBPTimesheetAddCommand.forEach(item ->{
+		lstBPTimesheetUpdateCommand.forEach(item ->{
 			if(item.getUseAtr() == 1 && item.getStartTime() > item.getEndTime()) {
 				errorLists.add(new RegisterErrorList(true, item.getTimeSheetNO(), "Msg_28"));
 			} else if (item.getUseAtr() == 1 && item.getStartTime() == item.getEndTime()) {
 				errorLists.add(new RegisterErrorList(true, item.getTimeSheetNO(), "Msg_33"));				
 			}
 		});
-		lstSpecBPTimesheetAddCommand.forEach(item ->{
+		lstSpecBPTimesheetUpdateCommand.forEach(item ->{
 			if(item.getUseAtr() == 1 && item.getStartTime() > item.getEndTime()) {
 				errorLists.add(new RegisterErrorList(false, item.getTimeSheetNO(), "Msg_28"));
 			} else if (item.getUseAtr() == 1 && item.getStartTime() == item.getEndTime()) {
@@ -48,24 +48,17 @@ public class BPSettingUpdateCommandHandler extends CommandHandlerWithResult<BPSe
 			}
 		});
 		if(errorLists.isEmpty()) {
-			bonusPaySettingService.updateBonusPaySetting(this.toBonusPaySettingDomain(bpSettingUpdateCommand,companyId));			
+			List<BonusPayTimesheet> lstBonusPayTimesheet = lstBPTimesheetUpdateCommand.stream()
+					.map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList());
+			List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet = lstSpecBPTimesheetUpdateCommand.stream()
+					.map(c -> toSpecBonusPayTimesheetDomain(c)).collect(Collectors.toList());
+			bonusPaySettingService.updateBonusPaySetting(this.toBonusPaySettingDomain(bpSettingUpdateCommand,companyId), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);			
 		}
 		return errorLists;
 	}
 
 	private BonusPaySetting toBonusPaySettingDomain(BPSettingUpdateCommand bpSettingUpdateCommand,String companyId) {
-		List<BPTimesheetUpdateCommand> lstBPTimesheetUpdateCommand = bpSettingUpdateCommand.getLstBonusPayTimesheet();
-		List<BonusPayTimesheet> lstBonusPayTimesheet = lstBPTimesheetUpdateCommand.stream()
-				.map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList());
-		List<SpecBPTimesheetUpdateCommand> lstSpecBPTimesheetUpdateCommand = bpSettingUpdateCommand
-				.getLstSpecBonusPayTimesheet();
-		List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet = lstSpecBPTimesheetUpdateCommand.stream()
-				.map(c -> toSpecBonusPayTimesheetDomain(c)).collect(Collectors.toList());
-		
-		return BonusPaySetting.createFromJavaType(companyId,
-				bpSettingUpdateCommand.code, bpSettingUpdateCommand.name,lstBonusPayTimesheet,lstSpecBonusPayTimesheet);
-//		bonusPaySetting.setListTimesheet(lstBonusPayTimesheet);
-//		bonusPaySetting.setListSpecialTimesheet(lstSpecBonusPayTimesheet);
+		return BonusPaySetting.createFromJavaType(companyId, bpSettingUpdateCommand.code, bpSettingUpdateCommand.name);
 	}
 
 	private BonusPayTimesheet toBonusPayTimesheetDomain(BPTimesheetUpdateCommand bpTimesheetUpdateCommand) {
@@ -82,7 +75,6 @@ public class BPSettingUpdateCommandHandler extends CommandHandlerWithResult<BPSe
 				specBPTimesheetUpdateCommand.startTime,
 				specBPTimesheetUpdateCommand.endTime, specBPTimesheetUpdateCommand.roundingTimeAtr,
 				specBPTimesheetUpdateCommand.roundingAtr, specBPTimesheetUpdateCommand.specialDateItemNO);
-
 	}
 
 }

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -15,7 +17,11 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -44,6 +50,12 @@ public abstract class CalculationTimeSheet {
 	protected List<SpecBonusPayTimeSheetForCalc> specBonusPayTimesheet = new ArrayList<>();
 	@Setter
 	protected Optional<MidNightTimeSheetForCalc> midNightTimeSheet = Optional.empty();
+	
+	@Inject
+	private static BPTimesheetRepository bonusPayTimeSheetRepo; 
+	
+	@Inject
+	private static SpecBPTimesheetRepository specialBonusPayTimeSheetRepo;
 
 	/**
 	 * @param 控除用
@@ -744,7 +756,8 @@ public abstract class CalculationTimeSheet {
 	public static List<BonusPayTimeSheetForCalc> getBonusPayTimeSheetIncludeDedTimeSheet(BonusPaySetting bonusPaySetting,TimeSpanForCalc duplicateTimeSheet,
 															   							  List<TimeSheetOfDeductionItem> dedTimeSheet,
 															   							  List<TimeSheetOfDeductionItem> recordTimeSheet){
-		val duplicatedBonusPay = getDuplicatedBonusPay(bonusPaySetting.getLstBonusPayTimesheet().stream()
+		List<BonusPayTimesheet> listBonusPayTimeSheet = bonusPayTimeSheetRepo.getListTimesheet(bonusPaySetting.getCompanyId(), bonusPaySetting.getCode());
+		val duplicatedBonusPay = getDuplicatedBonusPay(listBonusPayTimeSheet.stream()
 				  													   .filter(tc -> tc.getUseAtr().isUse())
 				  													   .map(tc ->BonusPayTimeSheetForCalc.convertForCalc(tc))
 				  													   .collect(Collectors.toList()),
@@ -759,7 +772,8 @@ public abstract class CalculationTimeSheet {
 	public static List<SpecBonusPayTimeSheetForCalc> getSpecBonusPayTimeSheetIncludeDedTimeSheet(BonusPaySetting bonusPaySetting,TimeSpanForCalc duplicateTimeSheet,
 															   		   						  List<TimeSheetOfDeductionItem> dedTimeSheet,
 															   		   						  List<TimeSheetOfDeductionItem> recordTimeSheet){
-		val duplicatedSpecBonusPay = getDuplicatedSpecBonusPay(bonusPaySetting.getLstSpecBonusPayTimesheet().stream()
+		List<SpecBonusPayTimesheet> listSpecialBonusPayTimeSheet = specialBonusPayTimeSheetRepo.getListTimesheet(bonusPaySetting.getCompanyId(), bonusPaySetting.getCode());
+		val duplicatedSpecBonusPay = getDuplicatedSpecBonusPay(listSpecialBonusPayTimeSheet.stream()
 				  													   .filter(tc -> tc.getUseAtr().isUse())
 				  													   .map(tc ->SpecBonusPayTimeSheetForCalc.convertForCalc(tc))
 				  													   .collect(Collectors.toList()),
