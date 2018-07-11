@@ -10,14 +10,14 @@ module nts.uk.com.view.cmf002.n.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        AtWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem>;
+        AtWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(new model.AtWorkDataOutputItem("", "", 2, "", "", ""));
         isUse: KnockoutObservable<boolean>;
         items: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
             new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
         ]);
-        modeScreen: KnockoutObservable<number>;
-        isEnable: KnockoutObservable<boolean>;
+        modeScreen: KnockoutObservable<number> = ko.observable(0);
+        isEnable: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             var self = this;
@@ -26,6 +26,14 @@ module nts.uk.com.view.cmf002.n.viewmodel {
         initComponent() {
             var self = this;
             let parrams = getShared('CMF002CParams');
+            if (parrams != null) {
+                if (parrams.modeScreen) {
+                    self.isEnable(false);
+                }
+                if (!parrams.modeScreen) {
+                    self.isEnable(true);
+                }
+            }
             self.modeScreen(parrams.modeScreen);
             service.getAWDataFormatSetting().done(function(data: Array<any>) {
                 if (data && data.length) {
@@ -36,12 +44,6 @@ module nts.uk.com.view.cmf002.n.viewmodel {
                 } else {
                     self.AtWorkDataOutputItem = ko.observable(new model.AtWorkDataOutputItem("", "", 2, "", "", ""));
                 }
-            }
-            if (parrams.modeScreen) {
-                self.isEnable(false);
-            }
-            if (!parrams.modeScreen) {
-                self.isEnable(true);
             }
         }
 

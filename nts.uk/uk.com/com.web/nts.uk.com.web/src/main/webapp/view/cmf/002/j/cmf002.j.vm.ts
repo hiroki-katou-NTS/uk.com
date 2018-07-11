@@ -30,6 +30,14 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         initComponent() {
             var self = this;
             let parrams = getShared('CMF002CParams');
+            if (parrams != null) {
+                if (parrams.modeScreen) {
+                    self.isEnable(false);
+                }
+                if (!parrams.modeScreen) {
+                    self.isEnable(true);
+                }
+            }
             self.modeScreen(parrams.modeScreen);
             self.codeConvertCode = ko.observable(new model.AcceptanceCodeConvert("", "", 0));
             self.dispConvertName = ko.observable(self.codeConvertCode().convertCode() + self.codeConvertCode().convertName());
@@ -42,12 +50,6 @@ module nts.uk.com.view.cmf002.j.viewmodel {
                 } else {
                     self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, null, null, 0, "", 0, ""));
                 }
-            }
-            if (parrams.modeScreen) {
-                self.isEnable(false);
-            }
-            if (!parrams.modeScreen) {
-                self.isEnable(true);
             }
 
             self.effectDigitLengthItem = ko.observableArray([
