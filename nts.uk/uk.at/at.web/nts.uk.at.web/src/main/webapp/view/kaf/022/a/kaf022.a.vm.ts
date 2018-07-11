@@ -366,14 +366,13 @@ module nts.uk.at.view.kmf022 {
             texteditorA16_10: any;
             texteditorA16_11: any;
 
-            //b  itemListB18 selectedIdB18
-            itemListB4: KnockoutObservableArray<ItemModel>;
+            //b  
             selectedIdB4: KnockoutObservable<number> = ko.observable(0);
-            
-            itemListB6: KnockoutObservableArray<ItemModel>;
+//            
+//            itemListB6: KnockoutObservableArray<ItemModel>;
             selectedIdB6: KnockoutObservable<number> = ko.observable(0);
-            
-            itemListB8: KnockoutObservableArray<ItemModel>;
+//            
+//            itemListB8: KnockoutObservableArray<ItemModel>;
             selectedIdB8: KnockoutObservable<number> = ko.observable(0);
             
             selectedIdB10: KnockoutObservable<number> = ko.observable(0);
@@ -1032,20 +1031,21 @@ module nts.uk.at.view.kmf022 {
                     readonly: ko.observable(false)
                 };
 
-                //b
-                self.itemListB4 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_420')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_421'))
-                ]);
-                self.itemListB6 = ko.observableArray([
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_137')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_136')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_37'))
-                ]);
-                self.itemListB8 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_36')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_37'))
-                ]);
+                //b 
+//                ver29
+//                self.itemListB4 = ko.observableArray([
+//                    new ItemModel(1, nts.uk.resource.getText('KAF022_420')),
+//                    new ItemModel(0, nts.uk.resource.getText('KAF022_421'))
+//                ]);
+//                self.itemListB6 = ko.observableArray([
+//                    new ItemModel(2, nts.uk.resource.getText('KAF022_137')),
+//                    new ItemModel(1, nts.uk.resource.getText('KAF022_136')),
+//                    new ItemModel(0, nts.uk.resource.getText('KAF022_37'))
+//                ]);
+//                self.itemListB8 = ko.observableArray([
+//                    new ItemModel(1, nts.uk.resource.getText('KAF022_36')),
+//                    new ItemModel(0, nts.uk.resource.getText('KAF022_37'))
+//                ]);
 
                 //                self.itemListB30 = ko.observableArray([
                 //                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
@@ -1902,6 +1902,7 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdA9_9(dataAppSet.priorityTimeReflectFlg);
                 }
             }
+            
             initDataB(allData: any): void {
                 let self = this;
                 let data = allData.appOt;
