@@ -28,6 +28,8 @@ import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
+import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
+import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.sys.auth.pub.employee.EmpWithRangeLogin;
 import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
 import nts.uk.ctx.sys.auth.pub.employee.NarrowEmpByReferenceRange;
@@ -74,6 +76,9 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 
 	@Inject
 	private RoleExportRepo roleExportRepo;
+	
+	@Inject
+	private WorkPlaceAuthorityRepository workPlaceAuthorityRepository;
 	
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType) {
@@ -190,7 +195,16 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	@Override
 	public List<String> getListEmployeeId(String workplaceId, GeneralDate referenceDate) {
 		// processing
-		return new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		
+		
+		
+		List<WorkPlaceAuthority> listWorkPlaceAuthority = workPlaceAuthorityRepository.getListWorkPlaceAuthority(companyId, 3, true);
+		
+		// fix data  
+		List<String> result = new ArrayList<>();
+		result.add("8f9edce4-e135-4a1e-8dca-ad96abe405d6");
+		return result;
 	}
 	
 }

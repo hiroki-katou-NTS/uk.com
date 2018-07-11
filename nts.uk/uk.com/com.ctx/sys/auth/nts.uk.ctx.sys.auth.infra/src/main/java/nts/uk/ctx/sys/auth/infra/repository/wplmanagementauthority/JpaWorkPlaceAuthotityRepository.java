@@ -73,4 +73,18 @@ public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements W
 		this.commandProxy().removeAll(KacmtWorkPlaceAuthority.class, deleteListPK);
 	}
 
+	private static final String  GET_LIST_WRK_AUTHORITY = "SELECT c FROM KacmtWorkPlaceAuthority c "
+			+ "WHERE c.kacmtWorkPlaceAuthorityPK.companyId  =:companyId "
+			+ "AND c.kacmtWorkPlaceAuthorityPK.functionNo =:functionNo "
+			+ "AND c.availability =:available ";
+	@Override
+	public List<WorkPlaceAuthority> getListWorkPlaceAuthority(String companyId, int functionNo, boolean available) {
+		List<WorkPlaceAuthority> data = this.queryProxy().query(GET_LIST_WRK_AUTHORITY,KacmtWorkPlaceAuthority.class)
+				.setParameter("companyId", companyId)
+				.setParameter("functionNo", functionNo)
+				.setParameter("available", available)
+				.getList(c->c.toDomain());
+		return data;
+	}
+
 }
