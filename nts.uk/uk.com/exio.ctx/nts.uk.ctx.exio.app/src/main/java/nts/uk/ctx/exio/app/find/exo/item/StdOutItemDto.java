@@ -60,5 +60,4 @@ public class StdOutItemDto {
 		this.itemType = itemType;
 		this.categoryItems = categoryItems;
 	}
-
 }

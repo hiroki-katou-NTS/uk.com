@@ -15,15 +15,15 @@ module nts.uk.com.view.cmf002.b {
         }
         
         export function getOutItem(cndSetcd: any): JQueryPromise<any> {
-            return nts.uk.request.ajax("com",path.getOutItem,cndSetcd);
+            return nts.uk.request.ajax("com", path.getOutItem,cndSetcd);
         }
         
         export function deleteCnd(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.deleteCnd, command);
+            return nts.uk.request.ajax("com", path.deleteCnd, command);
         }
         
         export function register(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.register, command);
+            return nts.uk.request.ajax("com", path.register, command);
         }
     }
 }

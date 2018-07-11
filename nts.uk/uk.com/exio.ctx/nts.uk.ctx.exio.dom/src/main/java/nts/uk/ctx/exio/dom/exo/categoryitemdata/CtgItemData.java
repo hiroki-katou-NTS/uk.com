@@ -2,7 +2,11 @@ package nts.uk.ctx.exio.dom.exo.categoryitemdata;
 
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
+import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItemNo;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
 /**
@@ -21,12 +25,12 @@ public class CtgItemData extends AggregateRoot
     /**
     * カテゴリID
     */
-    private String categoryId;
+    private CategoryCd categoryId;
     
     /**
     * データ型
     */
-    private int dataType;
+    private DataType dataType;
     
     /**
     * テーブル
@@ -41,7 +45,7 @@ public class CtgItemData extends AggregateRoot
     /**
     * 主キー区分
     */
-    private int primarykeyClassfication;
+    private NotUseAtr primarykeyClassfication;
     
     /**
     * 日付区分
@@ -51,7 +55,7 @@ public class CtgItemData extends AggregateRoot
     /**
     * 特殊項目
     */
-    private int specialItem;
+    private SpecialItem specialItem;
     
     /**
     * 表示テーブル名
@@ -61,12 +65,12 @@ public class CtgItemData extends AggregateRoot
     /**
     * 表示区分
     */
-    private int displayClassfication;
+    private NotUseAtr displayClassfication;
     
     /**
     * 項目NO
     */
-    private String itemNo;
+    private CategoryItemNo itemNo;
     
     /**
     * 項目名
@@ -88,14 +92,14 @@ public class CtgItemData extends AggregateRoot
 			int displayClassfication, String itemName, int requiredCategory, String searchValueCd) {
 		super();
 		this.tblAlias = tblAlias;
-		this.dataType = dataType;
+		this.dataType = EnumAdaptor.valueOf(dataType, DataType.class);
 		this.tableName = tableName;
 		this.fieldName = fieldName;
-		this.primarykeyClassfication = primarykeyClassfication;
+		this.primarykeyClassfication = EnumAdaptor.valueOf(primarykeyClassfication, NotUseAtr.class);
 		this.dateClassfication = dateClassfication;
-		this.specialItem = specialItem;
+		this.specialItem = EnumAdaptor.valueOf(specialItem, SpecialItem.class);
 		this.displayTableName = displayTableName;
-		this.displayClassfication = displayClassfication;
+		this.displayClassfication = EnumAdaptor.valueOf(displayClassfication, NotUseAtr.class);
 		this.itemName = itemName;
 		this.requiredCategory = requiredCategory;
 		this.searchValueCd = searchValueCd;

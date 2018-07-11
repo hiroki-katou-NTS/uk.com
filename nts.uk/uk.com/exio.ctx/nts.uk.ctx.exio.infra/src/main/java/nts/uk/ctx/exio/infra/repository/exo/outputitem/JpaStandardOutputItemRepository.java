@@ -19,7 +19,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.outItemCd =:outItemCd AND  f.stdOutItemPk.condSetCd =:condSetCd ";
 	private static final String SELECT_BY_CID_AND_SET_CODE = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.condSetCd =:condSetCd ORDER BY f.stdOutItemPk.condSetCd";
 
 	private static final String DELETE_BY_CID_CNDSETCD = "DELETE f FROM OiomtStdOutItem f "
 			+ "WHERE f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd";
@@ -61,5 +61,5 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 		this.queryProxy().query(DELETE_BY_CID_CNDSETCD, OiomtStdOutItemOrder.class).setParameter("cid", cid)
 				.setParameter("condSetCd", condSetCd);
 	}
-
+	
 }

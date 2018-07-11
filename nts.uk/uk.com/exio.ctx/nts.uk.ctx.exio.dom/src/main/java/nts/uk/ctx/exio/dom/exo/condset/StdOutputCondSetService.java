@@ -44,7 +44,14 @@ public class StdOutputCondSetService {
 		if (outputSetRegisConfir(screenMode, standType, stdOutputCondSet.getCid(), checkAutoExecution)) {
 			updateOutputCndSet(stdOutputCondSet,screenMode);
 		}
+		if (stdOutItemOrder != null && !stdOutItemOrder.isEmpty()) {
+			//call アルゴリズム「外部出力出力項目並び順登録」を実行する
+		}
+		if (screenMode.equals("update")) {
+			// update content (client)
+		}
 	}
+	
 	
 	//アルゴリズム「外部出力設定登録確認」を実行する
 	private boolean outputSetRegisConfir(String screenMode , String standType, String cId, boolean checkAutoExecution){

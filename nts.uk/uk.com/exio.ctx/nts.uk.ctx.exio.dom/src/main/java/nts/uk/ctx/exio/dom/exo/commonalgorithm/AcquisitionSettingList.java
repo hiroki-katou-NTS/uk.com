@@ -33,7 +33,7 @@ public class AcquisitionSettingList {
 	 */
 	public List<StdOutputCondSet> getAcquisitionSettingList(String cId, String conditionSettingCode) {
 		if (conditionSettingCode == null) {
-			return this.stdOutputCondSetRepository.getListStdOutputCondSetByCid(cId);
+			return this.stdOutputCondSetRepository.getStdOutCondSetByCid(cId);
 		}
 		return null;
 	}
