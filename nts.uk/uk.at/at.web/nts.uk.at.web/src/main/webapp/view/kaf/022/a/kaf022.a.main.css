@@ -15,6 +15,7 @@ td div {
 
 .a4_7, .a4_8, #a7_row1 {
 	width: 80px;
+	margin: 5px;
 }
 
 #a5_16{
@@ -36,6 +37,11 @@ td div {
 .a17 .ntsRadioBox span.label {
 	padding-right: 169px;
 }
+
+#a17_7 > label:nth-child(2){
+	margin-left: 92px;
+}
+
 
 .a6_text {
 	display: inline-block;
@@ -78,6 +84,10 @@ td div {
 
 .blockrow span.label {
 	padding-right: 111px;
+}
+  
+#b4 > label:nth-child(2){
+	margin-left: 100px;
 }
 
 #b29 span.label {
@@ -248,4 +258,12 @@ textarea {
 #tab-1, #tab-2, #tab-3, #tab-4, #tab-5, #tab-6, #tab-7, #tab-8, #tab-9,
 	#tab-10, #tab-11, #tab-12 {
 	width: 970px !important;
+}
+
+#b6 > label:nth-child(2){
+	margin-left: 85px;
+}
+
+#b6 > label:nth-child(3){
+	margin-left: 60px;
 }

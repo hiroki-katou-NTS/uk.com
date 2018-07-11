@@ -71,24 +71,10 @@ public class JpaAppOvertimeSettingRepository extends JpaRepository implements Ap
 	 */
 	@Override
 	public void update(AppOvertimeSetting appOverTime) {
-		KrqstAppOvertimeSet entity = toEntity(appOverTime);
-		KrqstAppOvertimeSet oldEntity = this.queryProxy().find(entity.getCid(), KrqstAppOvertimeSet.class).get();
-		oldEntity.setAttendanceId(entity.getAttendanceId());
-		oldEntity.setCalendarDispAtr(entity.getCalendarDispAtr());
-		oldEntity.setEarlyOverTimeUseAtr(entity.getEarlyOverTimeUseAtr());
-		oldEntity.setFlexExcessUseSetAtr(entity.getFlexExcessUseSetAtr());
-		oldEntity.setInstructExcessOtAtr(entity.getInstructExcessOtAtr());
-		oldEntity.setNormalOvertimeUseAtr(entity.getNormalOvertimeUseAtr());
-		oldEntity.setPostBreakReflectFlg(entity.getPostBreakReflectFlg());
-		oldEntity.setPostTypesiftReflectFlg(entity.getPostTypesiftReflectFlg());
-		oldEntity.setPostWorktimeReflectFlg(entity.getPostWorktimeReflectFlg());
-		oldEntity.setPreOvertimeReflectFlg(entity.getPreOvertimeReflectFlg());
-		oldEntity.setPreTypeSiftReflectFlg(entity.getPreTypeSiftReflectFlg());
-		oldEntity.setPriorityStampSetAtr(entity.getPriorityStampSetAtr());
-		oldEntity.setUnitAssignmentOvertime(entity.getUnitAssignmentOvertime());
-		oldEntity.setUseOt(entity.getUseOt());
-		oldEntity.setRestAtr(entity.getRestAtr());
-		oldEntity.setWorkTypeChangeFlag(entity.getWorkTypeChangeFlag());
+		KrqstAppOvertimeSet oldEntity = this.queryProxy().find(appOverTime.getCompanyID(), KrqstAppOvertimeSet.class).get();
+		oldEntity.setWorkTypeChangeFlag(appOverTime.getWorkTypeChangeFlag().value);
+		oldEntity.setFlexExcessUseSetAtr(appOverTime.getFlexJExcessUseSetAtr().value);
+		oldEntity.setPriorityStampSetAtr(appOverTime.getPriorityStampSetAtr().value);
 		this.commandProxy().update(oldEntity);
 	}
 	/**

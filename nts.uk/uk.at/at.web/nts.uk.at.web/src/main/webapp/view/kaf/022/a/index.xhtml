@@ -145,8 +145,9 @@
 									</tr>
 								</tbody>
 							</table>
-							<!-- A5 -->
-							<table class="viewmodel-a" id="fixed-table-a5">
+							
+							<!-- A5 update ver29 di chuyen-->
+							<!-- <table class="viewmodel-a" id="fixed-table-a5">
 								<colgroup>
 									<col width="250px" />
 									<col width="600px" />
@@ -301,7 +302,8 @@
 										</td>
 									</tr>
 								</tbody>
-							</table>
+							</table> -->
+							
 							<!-- A17 -->
 							<table class="viewmodel-a" id="fixed-table-a17">
 								<colgroup>
@@ -314,6 +316,20 @@
 									</tr>
 								</thead>
 								<tbody>
+									<!-- update ver29 -->
+									<tr>
+										<td class="color-header" id="a5_13">#{i18n.getText('KAF022_402')}</td>
+										<td>
+											<div id="a17_7" tabindex="26"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA17_7,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: baseDateFlg}">
+											</div>
+										</td>
+									</tr>
+								
 									<tr>
 										<td class="color-header" id="a5_13">#{i18n.getText('KAF022_366')}</td>
 										<td>
@@ -322,8 +338,7 @@
 													options: itemListA17_5,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: selectedIdA17_5,
-													enable: enableA5_14}">
+													value: selectedIdA17_5}"><!-- ver29 --><!-- enable: enableA5_14 -->
 											</div>
 										</td>
 									</tr>
@@ -335,8 +350,7 @@
 													options: itemListA17_4,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: selectedIdA17_4,
-													enable: enableA5_14}">
+													value: selectedIdA17_4}"><!-- ver29 --> <!-- enable: enableA5_14 -->
 											</div>
 										</td>
 									</tr>
@@ -491,13 +505,15 @@
 														tabindex:48
 													}">#{i18n.getText('KAF022_68')}</div></td>
 									</tr>
-									<tr data-bind="if: appType()!=0">
+									<!-- update ver29 -->
+									<tr data-bind="if: appType()!=0 &amp; appType()!=3 &amp; appType()!=8 &amp; appType()!=11 &amp; appType()!=13 &amp; appType()!=14">
 										<td class="color-header" id="a7_5" data-bind="text:appTypeName">#{i18n.getText('KAF022_4')}</td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
 														tabindex:48 + ($index()-1)*3
 													}">#{i18n.getText('KAF022_61')}</div></td>
-										<td><span class="label label-a27" id="a7_27">#{i18n.getText('KAF022_63')}</span>
+										<td class="flex valign-center">
+											<span class="label label-a27" id="a7_27">#{i18n.getText('KAF022_63')}</span>
 											<span  class ="a4_8"
 												data-bind="ntsComboBox: {
 													options: $parent.itemListA7_20,
@@ -512,7 +528,8 @@
 													]},attr:{
 														tabindex:49 + ($index()-1)*3
 													}">
-											</span> <span class="label" id="a7_29">#{i18n.getText('KAF022_65')}</span>
+											</span> 
+											<span class="label" id="a7_29">#{i18n.getText('KAF022_65')}</span>
 										</td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: retrictPostAllowFutureFlg },attr:{
@@ -592,8 +609,8 @@
 			
 								</tbody>
 							</table>
-							<!-- A9 -->
-							<table class="viewmodel-a" id="fixed-table-a9">
+							<!-- A9 update ver29 di chuyen-->
+							<!-- <table class="viewmodel-a" id="fixed-table-a9">
 								<colgroup>
 									<col width="300px" />
 									<col width="500px" />
@@ -644,9 +661,9 @@
 										</td>
 									</tr>
 								</tbody>
-							</table>
-							<!-- A10 -->
-							<table class="viewmodel-a" id="fixed-table-a10">
+							</table> -->
+							<!-- A10 update ver29 di chuyen-->
+							<!-- <table class="viewmodel-a" id="fixed-table-a10">
 								<colgroup>
 									<col width="300px" />
 									<col width="500px" />
@@ -671,7 +688,7 @@
 										</td>
 									</tr>
 								</tbody>
-							</table>
+							</table> -->
 							<!-- A11 -->
 							<table class="viewmodel-a" id="fixed-table-a11">
 								<colgroup>
@@ -789,7 +806,8 @@
 											</div>
 										</td>
 									</tr>
-									<tr>
+									<!-- update ver29 -->
+									<!-- <tr>
 										<td class="color-header" id="a12_3">#{i18n.getText('KAF022_97')}</td>
 										<td>
 											<div id="a12_6" class="a12_5" tabindex="221"
@@ -801,7 +819,7 @@
 													enable: enableA5_14}">
 											</div>
 										</td>
-									</tr>
+									</tr> -->
 									<tr>
 										<td class="color-header" id="a12_4">#{i18n.getText('KAF022_98')}</td>
 										<td>
@@ -1004,16 +1022,20 @@
 						<div class="tab-content-4">
 							<ui:include src="d.xhtml" />
 						</div>
-						<div class="tab-content-5">
+						
+						<!-- update ver29 -->
+						<!-- <div class="tab-content-5">
 							<ui:include src="e.xhtml" />
-						</div>
+						</div> -->
 						<div class="tab-content-6">
 							<ui:include src="f.xhtml" />
 						</div>
 						<div class="tab-content-7">
 							<ui:include src="g.xhtml" />
 						</div>
-						<div class="tab-content-8">
+						
+						<!-- update ver29 -->
+						<!-- <div class="tab-content-8">
 							<ui:include src="h.xhtml" />
 						</div>
 						<div class="tab-content-9">
@@ -1021,12 +1043,14 @@
 						</div>
 						<div class="tab-content-10">
 							<ui:include src="j.xhtml" />
-						</div>
+						</div> -->
 						<div class="tab-content-11">
 							<ui:include src="k.xhtml" />
 						</div>
-						<div class="tab-content-12">
-						</div>
+						
+						<!-- update ver29 -->
+						<!-- <div class="tab-content-12">
+						</div> -->
 					</div>
 
 				</div>

@@ -6,33 +6,17 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AppOvertimeSettingCommand {
-    private int flexExcessUseSetAtr;
-    
-    private int preTypeSiftReflectFlg;
-    
-    private int preOvertimeReflectFlg;
-    
-    private int postTypesiftReflectFlg;
-    
-    private int postBreakReflectFlg;
-    
-    private int postWorktimeReflectFlg;
-    
-    private int calendarDispAtr;
-    
-    private int earlyOverTimeUseAtr;
-    
-    private int instructExcessOtAtr;
-    
+    private String cid;
+    /**
+	 * 勤種変更可否フラグ
+	 */
+    private int workTypeChangeFlag;
+    /**
+	 * フレックス超過利用設定
+	 */
+    private int flexJExcessUseSetAtr;
+    /**
+     * 実績超過打刻優先設定
+     */
     private int priorityStampSetAtr;
-    
-    private int unitAssignmentOvertime;
-    
-    private int normalOvertimeUseAtr;
-    
-    private int attendanceId;
-    
-    private int useOt;
-    
-    private int restAtr;
 }

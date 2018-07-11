@@ -14,45 +14,50 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 @NoArgsConstructor
 public class AppOvertimeSettingDto {
     public String cid;
-    
-    public int flexExcessUseSetAtr;
-    
-    public int preTypeSiftReflectFlg;
-    
-    public int preOvertimeReflectFlg;
-    
-    public int postTypesiftReflectFlg;
-    
-    public int postBreakReflectFlg;
-    
-    public int postWorktimeReflectFlg;
-    
-    public int calendarDispAtr;
-    
-    public int earlyOverTimeUseAtr;
-    
-    public int instructExcessOtAtr;
-    
+    /**
+	 * 勤種変更可否フラグ
+	 */
+    public int workTypeChangeFlag;
+    /**
+	 * フレックス超過利用設定
+	 */
+    public int flexJExcessUseSetAtr;
+    /**
+     * 実績超過打刻優先設定
+     */
     public int priorityStampSetAtr;
     
-    public int unitAssignmentOvertime;
     
-    public int normalOvertimeUseAtr;
-    
-    public int attendanceId;
-    
-    public int useOt;
-    
-    public int restAtr;
+//    public int preTypeSiftReflectFlg;
+//    
+//    public int preOvertimeReflectFlg;
+//    
+//    public int postTypesiftReflectFlg;
+//    
+//    public int postBreakReflectFlg;
+//    
+//    public int postWorktimeReflectFlg;
+//    
+//    public int calendarDispAtr;
+//    
+//    public int earlyOverTimeUseAtr;
+//    
+//    public int instructExcessOtAtr;
+//    
+//    
+//    
+//    public int unitAssignmentOvertime;
+//    
+//    public int normalOvertimeUseAtr;
+//    
+//    public int attendanceId;
+//    
+//    public int useOt;
+//    
+//    public int restAtr;
     
     public static AppOvertimeSettingDto convertToDto(AppOvertimeSetting domain){
-    	return new AppOvertimeSettingDto(domain.getCompanyID(), domain.getFlexJExcessUseSetAtr().value, 
-    			domain.getPreTypeSiftReflectFlg().value, domain.getPreOvertimeReflectFlg().value, 
-    			domain.getPostTypeSiftReflectFlg().value, domain.getPostBreakReflectFlg().value, 
-    			domain.getPostWorktimeReflectFlg().value, domain.getCalendarDispAtr().value, 
-    			domain.getEarlyOvertimeUseAtr().value, domain.getInstructExcessOTAtr().value, 
-    			domain.getPriorityStampSetAtr().value, domain.getUnitAssignmentOvertime().value, 
-    			domain.getNormalOvertimeUseAtr().value, domain.getOtHour().getAttendanceId().value, 
-    			domain.getOtHour().getUseOt().value, domain.getRestAtr().value);
+    	return new AppOvertimeSettingDto(domain.getCompanyID(), domain.getWorkTypeChangeFlag().value, 
+										domain.getFlexJExcessUseSetAtr().value, domain.getPriorityStampSetAtr().value);
     }
 }
