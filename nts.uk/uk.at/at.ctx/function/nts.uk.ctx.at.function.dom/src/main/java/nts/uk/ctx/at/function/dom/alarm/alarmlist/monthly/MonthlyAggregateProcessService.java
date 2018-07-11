@@ -29,7 +29,6 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -387,7 +386,7 @@ public class MonthlyAggregateProcessService {
 										yearMonth.toString(),
 										TextResource.localize("KAL010_100"),
 										TextResource.localize("KAL010_60"),
-										alarmDescriptionValue,
+										alarmDescriptionValue,	
 										extra.getDisplayMessage()
 										);
 								listValueExtractAlarm.add(resultMonthlyValue);
