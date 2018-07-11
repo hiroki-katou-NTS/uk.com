@@ -139,11 +139,11 @@ module nts.uk.at.view.kmk006.a {
                 self.initDataSource();
                 self.initNextTabFeature();
                 
-                self.autoCalcOfLeaveLate = ko.observable(false);
-                self.autoCalcOfLeaveEarly = ko.observable(false);
-                self.raisingSalaryCalcAtr = ko.observable(false);
-                self.specificRaisingSalaryCalcAtr = ko.observable(false);
-                self.divergenceTime = ko.observable(0);
+                self.autoCalcOfLeaveLate = ko.observable(true);
+                self.autoCalcOfLeaveEarly = ko.observable(true);
+                self.raisingSalaryCalcAtr = ko.observable(true);
+                self.specificRaisingSalaryCalcAtr = ko.observable(true);
+                self.divergenceTime = ko.observable(1);
 
                 self.multiSelectedWorkplaceId = ko.observable('');
                 self.totalSelectedWorkplaceId = ko.observable('');
@@ -1522,8 +1522,8 @@ module nts.uk.at.view.kmk006.a {
             specificRaisingSalaryCalcAtr: KnockoutObservable<boolean>;    
             
             constructor(){
-                this.raisingSalaryCalcAtr = ko.observable(false);
-                this.specificRaisingSalaryCalcAtr = ko.observable(false);
+                this.raisingSalaryCalcAtr = ko.observable(true);
+                this.specificRaisingSalaryCalcAtr = ko.observable(true);
             }
             
             updateData(dto: AutoCalRaisingSalarySettingDto) {
@@ -1539,8 +1539,8 @@ module nts.uk.at.view.kmk006.a {
                 return dto;
             }
             resetData() {
-                this.raisingSalaryCalcAtr(false);
-                this.specificRaisingSalaryCalcAtr(false);
+                this.raisingSalaryCalcAtr(true);
+                this.specificRaisingSalaryCalcAtr(true);
             }
         }
         
@@ -1549,8 +1549,8 @@ module nts.uk.at.view.kmk006.a {
             autoCalcOfLeaveLate: KnockoutObservable<boolean>;
             autoCalcOfLeaveEarly: KnockoutObservable<boolean>;            
             constructor(){
-                this.autoCalcOfLeaveLate = ko.observable(false);
-                this.autoCalcOfLeaveEarly = ko.observable(false);    
+                this.autoCalcOfLeaveLate = ko.observable(true);
+                this.autoCalcOfLeaveEarly = ko.observable(true);    
             }
             
             updateData(dto: AutoCalcOfLeaveEarlySettingDto) {
@@ -1566,8 +1566,8 @@ module nts.uk.at.view.kmk006.a {
                 return dto;
             }
             resetData() {
-                this.autoCalcOfLeaveLate(false);
-                this.autoCalcOfLeaveEarly(false);
+                this.autoCalcOfLeaveLate(true);
+                this.autoCalcOfLeaveEarly(true);
             }
         }
                
@@ -1576,8 +1576,8 @@ module nts.uk.at.view.kmk006.a {
             upLimitOtSet: KnockoutObservable<number>;
             calAtr: KnockoutObservable<number>;
             constructor() {
-                this.upLimitOtSet = ko.observable(0);
-                this.calAtr = ko.observable(0);
+                this.upLimitOtSet = ko.observable(1);
+                this.calAtr = ko.observable(1);
             }
             updateData(dto: AutoCalSettingDto) {
                 this.upLimitOtSet(dto.upLimitOtSet);
@@ -1592,8 +1592,8 @@ module nts.uk.at.view.kmk006.a {
                 return dto;
             }
             resetData() {
-                this.upLimitOtSet(0);
-                this.calAtr(0);
+                this.upLimitOtSet(1);
+                this.calAtr(1);
             }
         }
 
