@@ -276,7 +276,7 @@ module nts.uk.at.view.kaf011.shr {
             }
             setDataFromWkDto(data) {
                 let self = this,
-                    vm = nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
+                    vm : nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
 
                 if (data) {
                     if (vm.screenModeNew()) {

@@ -8,29 +8,41 @@ __viewContext.ready(function() {
         switch(success.programID){
             case "ccg007": {
                 // forgot password screen
-                nts.uk.request.jump("com", "/view/ccg/007/"+success.screenID+"/index.xhtml");
+                nts.uk.request.jump("com", "/view/ccg/007/"+success.screenID+"/index.xhtml?id="+urlID);
+                break;
             }
             case "kaf002": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });    
+                break;
             }
             case "kaf004": {
-                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });     
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });  
+                break;   
             }
             case "kaf005": {
-                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });     
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });
+                break;     
             }
             case "kaf006": {
-                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });     
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });   
+                break;  
             }
             case "kaf007": {
-                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });      
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });   
+                break;   
             }
             case "kaf009": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });     
+                break;
             }
             case "kaf010": {
-                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] });     
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] }); 
+                break;    
             }   
+            case "cmm045": {
+                nts.uk.request.jump("at", "/view/cmm/045/a/index.xhtml?a=1");  
+                break;   
+            } 
             default: nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml");
         }
     })

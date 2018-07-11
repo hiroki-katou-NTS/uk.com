@@ -18,9 +18,9 @@ import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
  */
 public class JpaWorkLocationRepository extends JpaRepository implements WorkLocationRepository {
 
-	private final String SELECT= "SELECT c FROM KwlmtWorkLocation c";
-	private final String SELECT_SINGLE = "SELECT c FROM KwlmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD";
-	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
+	private static final String SELECT= "SELECT c FROM KwlmtWorkLocation c";
+	private static final String SELECT_SINGLE = "SELECT c FROM KwlmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD";
+	private static final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
 	
 	
 	@Override

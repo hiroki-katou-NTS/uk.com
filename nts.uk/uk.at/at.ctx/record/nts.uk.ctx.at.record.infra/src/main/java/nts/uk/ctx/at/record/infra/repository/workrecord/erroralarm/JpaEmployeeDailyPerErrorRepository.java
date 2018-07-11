@@ -124,6 +124,15 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			// TODO: handle exception
 		}
 	}
+	
+	@Override
+	public void insert(List<EmployeeDailyPerError> errors) {
+		if (errors.isEmpty()) {
+			return;
+		}
+		this.commandProxy().insertAll(errors.stream().map(e -> KrcdtSyainDpErList.toEntity(e)).collect(Collectors.toList()));
+//		this.getEntityManager().flush();
+	}
 
 	@Override
 	public boolean checkExistErrorCode(String employeeID, GeneralDate processingDate, String errorCode) {

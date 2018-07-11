@@ -224,7 +224,7 @@
 										</com:ko-if>
 
 										<com:ko-if bind="(selectedRuleCode() === 2 )">
-											<td class="input-units-3 flex valign-center">
+											<td class="input-units-3">
 												<!-- String  --> <com:ko-if bind="(dataType() === 1)">
 													<com:ko-if bind="(isRequired() === 1)">
 														<com:ko-if bind="(fixedItem === true)">
@@ -348,7 +348,9 @@
 															</div>
 														</com:ko-if>
 													</com:ko-if>
-												</com:ko-if> <!-- timeitem   --> <com:ko-if bind="(dataType() === 4)">
+												</com:ko-if> 
+												<!-- timeitem   --> 
+												<com:ko-if bind="(dataType() === 4)">
 													<com:ko-if bind="(isRequired() === 1)">
 														<input id="timeItem" class="sub-input-units save-error "
 															data-bind="ntsTimeEditor: {
@@ -376,7 +378,9 @@
 																attr: { NameID: itemName }" />
 
 													</com:ko-if>
-												</com:ko-if> <!-- 	 timepoint   --> <com:ko-if bind="(dataType() === 5)">
+												</com:ko-if> 
+												<!-- 	 timepoint   --> 
+												<com:ko-if bind="(dataType() === 5)">
 													<com:ko-if bind="(isRequired() === 1)">
 														<input id="timePoint" class="sub-input-units save-error"
 															data-bind="ntsTimeWithDayEditor: { 
@@ -399,7 +403,9 @@
 																readonly: false },
 																attr: { NameID: itemName }" />
 													</com:ko-if>
-												</com:ko-if> <!--   list box  --> <com:ko-if bind="(dataType() === 6)">
+												</com:ko-if> 
+												<!--   list box  --> 
+												<com:ko-if bind="(dataType() === 6)">
 													<div id="combox1"
 														data-bind="ntsComboBox: {
 																options: selection,
@@ -413,7 +419,9 @@
 																	{ prop: 'optionText', length: 10 },
 																]}">
 													</div>
-												</com:ko-if> <!-- number   --> <com:ko-if bind="(dataType() === 2)">
+												</com:ko-if> 
+												<!-- number   --> 
+												<com:ko-if bind="(dataType() === 2)">
 													<com:ko-if
 														bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart !== 0)) ">
 														<com:ko-if bind="(isRequired() === 1)">
@@ -497,6 +505,7 @@
 												</com:ko-if> 
 												
 												<com:ko-if bind="(dataType() === 8)">
+													<div class=" flex valign-center">
 													<button  data-bind='click: button, attr: {
 						                                    id: perInfoItemDefId, 
 						                                    nameid: perInfoItemDefId,
@@ -508,6 +517,7 @@
                                 							"data-defv": selectionName}'>#{i18n.getText('CPS009_37')}</button>
 													<span class="caret-right caret-inline"></span>
 													<span class="limited-label selectionName" data-bind="text: selectionName"></span>
+													</div>
 													
 												</com:ko-if>
 											</td>

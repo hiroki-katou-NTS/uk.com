@@ -304,6 +304,8 @@ module nts.uk.at.view.kwr001.c {
                     blockUI.clear();
                     if (err.messageId == "Msg_3") {
                         $("#C3_2").ntsError('set', { messageId: "Msg_3"});
+                    } else {
+                       nts.uk.ui.dialog.alertError(err);     
                     }
                     dfd.reject();
                 })
