@@ -117,7 +117,7 @@ public class ExOutSummarySettingService {
 				}
 			}
 			
-			if("with".equals(ctgItemData.get().getSearchValueCd().toLowerCase())) {
+			if(ctgItemData.get().getSearchValueCd().isPresent() && "with".equals(ctgItemData.get().getSearchValueCd().get().toLowerCase())) {
 				for (SearchCodeList searchCodeItem: searchCodeList) {
 					cond.append(", ");
 					cond.append(searchCodeItem.getSearchCode());
