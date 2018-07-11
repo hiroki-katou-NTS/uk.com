@@ -21,7 +21,7 @@
 				<a class="goback" tabindex="1"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF002_27')}</a>
 				<!-- X1_2 -->
-				<span class="label" style="margin-left: 1040px;">#{i18n.getText('CMF002_25')}</span>
+				<span id="X1_2" class="label">#{i18n.getText('CMF002_25')}</span>
 			</div>
 			<div id="contents-area">
 				<!-- X2 -->
@@ -40,6 +40,7 @@
 								<div
 									data-bind="ntsDateRangePicker: {name: '#[CMF002_305]', required: false, enable: true, showNextPrevious: false, value: exePeriod, maxRange: 'oneMonth'}" />
 							</div>
+							<div class="cell valign-center"></div>
 						</div>
 						<div class="table">
 							<div class="cell valign-top">
@@ -52,7 +53,6 @@
 									data-bind="ntsGridList: {								
 									rows: 5,
 									dataSource: cndSetList,
-									showNumbering: true,
 									primaryKey: 'code',
 									columns: colCndSet,
 									multiple: false,
@@ -61,7 +61,7 @@
 							</div>
 							<div class="cell valign-bottom">
 								<!-- X4 -->
-								<button class="large caret-bottom" style="margin-left: 30px">#{i18n.getText('#CMF002_344')}</button>
+								<button id="X4" class="large caret-bottom">#{i18n.getText('#CMF002_344')}</button>
 							</div>
 						</div>
 					</div>

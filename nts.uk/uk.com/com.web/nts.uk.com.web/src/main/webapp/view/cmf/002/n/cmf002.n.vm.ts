@@ -8,33 +8,60 @@ module nts.uk.com.view.cmf002.n.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    
+
     export class ScreenModel {
-        
+        AtWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(new model.AtWorkDataOutputItem("", "", 2, "", "", ""));
         isUse: KnockoutObservable<boolean>;
-        selectedValue1: KnockoutObservable<any>;
-        selectedValue2: KnockoutObservable<any>;
         items: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
             new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
-            ]);
-        getValue: KnockoutObservable<string>;
+        ]);
+        modeScreen: KnockoutObservable<number> = ko.observable(0);
+        isEnable: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             var self = this;
-            self.selectedValue1 = ko.observable(true);
-            self.selectedValue2 = ko.observable(false);
-            self.getValue = ko.observable('');
-            
+            self.initComponent();
         }
-        
-         /**
-         * Close dialog.
-         */
+        initComponent() {
+            var self = this;
+            let parrams = getShared('CMF002CParams');
+            if (parrams != null) {
+                if (parrams.modeScreen) {
+                    self.isEnable(false);
+                }
+                if (!parrams.modeScreen) {
+                    self.isEnable(true);
+                }
+            }
+            self.modeScreen(parrams.modeScreen);
+            service.getAWDataFormatSetting().done(function(data: Array<any>) {
+                if (data && data.length) {
+                    let _rsList: Array<model.AtWorkDataOutputItem> = _.map(data, rs => {
+                        return new model.AtWorkDataOutputItem(rs.closedOutput, rs.absenceOutput, rs.fixedValue, rs.valueOfFixedValue, rs.atWorkOutput, rs.retirementOutput);
+                    });
+                    self.AtWorkDataOutputItem(_rsList);
+                } else {
+                    self.AtWorkDataOutputItem = ko.observable(new model.AtWorkDataOutputItem("", "", 2, "", "", ""));
+                }
+            }
+        }
+
+        /**
+          * Close dialog.
+          */
         cancelSetting(): void {
             nts.uk.ui.windows.close();
         }
-        
-        saveSetting(){
+
+        saveSetting() {
+            let self = this;
+            let command = ko.toJS(self.AtWorkDataOutputItem());
+            service.setAWDataFormatSetting(command).done(function() {
+                nts.uk.ui.windows.close();
+            }).fail(error => {
+                alertError({ messageId: "Msg" });
+            });
         }
     }
 }

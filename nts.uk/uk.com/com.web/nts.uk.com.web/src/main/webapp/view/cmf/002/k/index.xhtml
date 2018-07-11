@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 500, height: 500 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf002.k.vm.js" />
+			<com:scriptfile path="cmf002.k.start.js" />
+			<com:stylefile path="cmf002.k.style.css" />
+			<com:scriptfile path="cmf002.k.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="contents-area dialog-content">
+				<div id="K1" class="dialog-title">#{i18n.getText('CMF002_178')}</div>
+				<div class="div-table">
+					<div class="div-table-row">
+						<div id="K2" class="div-table-col-standard"
+							data-bind="ntsFormLabel: {required : false }">#{i18n.getText('CMF002_179')}
+						</div>
+						<div id="K2_1" tabindex="1" class="div-table-col-standard">
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: formatSelection,
+								option: formatSelectionItems()[0],
+								enable: enableFormatSelection(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'formatSelection'}">
+							</div>
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: formatSelection,
+								option: formatSelectionItems()[1],
+								enable: enableFormatSelection(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'formatSelection'}">
+							</div>
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: formatSelection,
+								option: formatSelectionItems()[2],
+								enable: enableFormatSelection(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'formatSelection'}">
+							</div>
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: formatSelection,
+								option: formatSelectionItems()[3],
+								enable: enableFormatSelection(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'formatSelection'}">
+							</div>
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: formatSelection,
+								option: formatSelectionItems()[4],
+								enable: enableFormatSelection(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'formatSelection'}">
+							</div>
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: formatSelection,
+								option: formatSelectionItems()[5],
+								enable: enableFormatSelection(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'formatSelection'}">
+							</div>
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: formatSelection,
+								option: formatSelectionItems()[6],
+								enable: enableFormatSelection(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'formatSelection'}">
+							</div>
+						</div>
+					</div>
+					<div class="div-table-row">
+						<div id="K3" class="div-table-col-standard"
+							data-bind="ntsFormLabel: {required : false }">#{i18n.getText('CMF002_157')}
+						</div>
+						<div id="K3_1" tabindex="4" class="div-table-col-standard">
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: nullValueReplacementSelected,
+								option: nullValueReplacementItems()[0],
+								enable: enableNullValueReplacement(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'valueReplace'}">
+							</div>
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: nullValueReplacementSelected,
+								option: nullValueReplacementItems()[1],
+								enable: enableNullValueReplacement(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'valueReplace'}">
+							</div>
+						</div>
+						<div id="K3_2" tabindex="5" class="div-table-col-medium">
+							<input data-bind="ntsTextEditor: {
+									value: replacedValue,
+									name:'#{i18n.getText('CMF002_158')}',
+									required: true,
+									option : {width : '45px'},
+									enable: enableReplacedValueEditor()}" />
+						</div>
+					</div>
+					<div class="div-table-row">
+						<div id="K4" class="div-table-col-standard"
+							data-bind="ntsFormLabel: {required : false }">#{i18n.getText('CMF002_159')}
+						</div>
+						<div id="K4_1" tabindex="6" class="div-table-col-standard">
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: fixedValueSelected,
+								option: fixedValueItems()[0],
+								enable: enableFixedValue(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'fixedValue'}">
+							</div>
+							<div class="row-group"
+								data-bind="ntsRadioButton: {
+								checked: fixedValueSelected,
+								option: fixedValueItems()[1],
+								enable: enableFixedValue(),
+								optionValue: 'code',
+								optionText: 'name',
+								group: 'fixedValue'}">
+							</div>
+						</div>
+						<div id="K4_2" tabindex="7" class="div-table-col-medium">
+							<input data-bind="ntsTextEditor: {
+									value: fixedValue,
+									name:'#{i18n.getText('CMF002_160')}',
+									required: true,
+									option : {width : '45px'},
+									enable: enableFixedValueEditor()}" />
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div id="functions-area-bottom">
+				<button id="V22_1" class="x-large proceed "
+					data-bind="click: selectConvertCode">#{i18n.getText('CMF002_272')}</button>
+				<button id="V22_2" class="large"
+					data-bind="click: cancelSelectConvertCode">#{i18n.getText('CMF002_273')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

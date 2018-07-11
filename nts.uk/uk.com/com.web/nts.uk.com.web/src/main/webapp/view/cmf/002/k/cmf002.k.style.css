@@ -1,0 +1,34 @@
+.dialog-content{
+	width:410px; 
+	height:380px;
+	margin-left:20px;
+}
+.dialog-title{
+	padding-top: 25px;
+}
+.div-table {
+  display: table;         
+  width: 410px; 
+  border: 0,
+  background-color: #eee;          
+  border-spacing: 5px; 
+  margin-left: 20px; 
+  margin-top: 15px;
+}
+.div-table-row {
+  display: table-row;
+  width: 410px;
+  clear: both;
+}
+.div-table-col-standard {
+  float: left; 
+  display: table-column;         
+  width: 160px;
+}
+.div-table-col-medium {
+  float: left; 
+  display: table-column;         
+}
+.row-group{
+	display: table-row;
+}

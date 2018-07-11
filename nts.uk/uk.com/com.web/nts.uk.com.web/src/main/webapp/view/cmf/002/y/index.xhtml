@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { 
 					width: 600, 
-					height: 430 
+					height: 800
 			};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -31,7 +31,7 @@
 							<label>#{i18n.getText('CMF002_243')}</label>
 						</td>
 						<td id="Y2_1_2" width='400px'>
-							<label data-bind="text : nameSetting"></label>
+							<label data-bind="text : exterOutExecLog().nameSetting"></label>
 						</td>
 					</tr>
 					<tr>
@@ -39,9 +39,9 @@
 							<label>#{i18n.getText('CMF002_244')}</label>
 						</td>
 						<td width='400px'>
-							<label data-bind="text : specifiedStartDate"></label>
+							<label data-bind="text : exterOutExecLog().specifiedStartDate"></label>
 							<label>#{i18n.getText('CMF002_235')}</label>
-							<label data-bind="text : specifiedEndDate"></label>
+							<label data-bind="text : exterOutExecLog().specifiedEndDate"></label>
 						</td>
 					</tr>
 					<tr>
@@ -49,7 +49,7 @@
 							<label>#{i18n.getText('CMF002_329')}</label>
 						</td>
 						<td width='400px'>
-							<label data-bind="text : processStartDateTime"></label>
+							<label data-bind="text : exterOutExecLog().processStartDateTime"></label>
 						</td>
 					</tr>
 				</table>
@@ -62,8 +62,8 @@
 							<label>#{i18n.getText('CMF002_331')}</label>
 					</td>
 					<td width='400px'>
-							<label data-bind="text : totalCount"></label>
-							<label data-bind="text : processUnit"></label>
+							<label data-bind="text : exterOutExecLog().totalCount"></label>
+							<label data-bind="text : exterOutExecLog().processUnit"></label>
 					</td>
 					
 				</tr>
@@ -73,7 +73,7 @@
 					</td>
 					<td width='400px'>
 							<label data-bind="text : normalCount"></label>
-							<label data-bind="text : processUnit"></label>
+							<label data-bind="text : exterOutExecLog().processUnit"></label>
 					</td>
 					
 				</tr>
@@ -82,8 +82,8 @@
 							<label>#{i18n.getText('CMF002_333')}</label>
 					</td>
 					<td width='400px'>
-							<label data-bind="text : totalErrorCount"></label>
-							<label data-bind="text : processUnit"></label>
+							<label data-bind="text : exterOutExecLog().totalErrorCount"></label>
+							<label data-bind="text : exterOutExecLog().processUnit"></label>
 					</td>
 					
 				</tr>
@@ -91,13 +91,18 @@
 				<label id="Y_5" >#{i18n.getText('CMF002_335')}</label>
 				<table id="listlog" data-bind="ntsGridList: {
 						name:'#{i18n.getText('CMF002_354')}',
-						dataSource: externalOutLog,
-						primaryKey: 'code',
+						rows: 2,
+						options: externalOutLog,
+						optionsValue: 'code',
 						columns: columnsExternalOutLog,
-						multiple: false,
-						value: currentCode,
-						rows: 10
+						multiple: true,
+						value: currentCode
 				}"></table>
+				<hr/>
+				<div class="button">
+					<button id="Y20_1" class="large" tabindex="1" data-bind="click : close">#{i18n.getText('CMF002_340')}</button>
+					<button id="Y20_2" class="large" tabindex="2" data-bind="click : errorExport">#{i18n.getText('CMF002_341')}</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

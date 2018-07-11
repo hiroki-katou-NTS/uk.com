@@ -11,6 +11,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.c.start.js" />
+			<com:scriptfile path="cmf002.c.service.js" />
 			<com:scriptfile path="cmf002.c.vm.js" />
 			<com:stylefile path="cmf002.c.style.css" />
 			<com:ValidatorScript>
@@ -37,7 +38,7 @@
 				<button tabindex="7" data-bind="enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_77')}</button>
 			</div>
 			<div id="contents-area">
-				<div class="flex-layout">
+				<div class="flex-layout" data-bind="with: currentStandardOutputItem">
 					<!--C7 条件設定選択(パネル)-->
 					<div tabindex="12"
 						data-bind="ntsPanel:{width: '300px', height: '520px', direction: 'none', showIcon: false, visible: true}">
@@ -49,9 +50,9 @@
 								rows: 20,
 								name: '#[CMF002_346]', 
 								multiple: false,
-								dataSource: listStandardOutputItem,
+								dataSource: $parent.listStandardOutputItem,
 								primaryKey: 'dispOutputItemCode', 
-								value: itemCode,
+								value: $parent.selectedStandardOutputItemCode,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_60')}', key: 'dispOutputItemCode', width: 50, formatter: _.escape },
@@ -69,7 +70,7 @@
 									</td>
 									<td colspan="4">
 										<!--C2_1 条件設定--> <span class="label"
-										data-bind="text: conditionName"></span>
+										data-bind="text: $parent.conditionName"></span>
 									</td>
 								</tr>
 								<tr>
@@ -79,7 +80,7 @@
 									</td>
 									<td colspan="4">
 										<!--C3_1 カテゴリ名--> <span class="label"
-										data-bind="text: categoryName"></span>
+										data-bind="text: $parent.categoryName"></span>
 									</td>
 								</tr>
 								<tr>
@@ -91,15 +92,14 @@
 										<!--C4_1 項目コード--> 
 										<input tabindex="8" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_81]',
-			                                 value: itemCode,
+			                                 value: outputItemCode,
 			                                 constraint: 'ExternalOutputConditionCode',
 			                                 required: true,
-			                                 enable: isNewMode(),
 			                                 option: {width: '50px'}}" />
 										<!--C4_2 項目名称--> 
 										<input tabindex="9" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_82]',
-			                                 value: itemName,
+			                                 value: outputItemName,
 			                          		 constraint: 'ExternalOutputConditionName',
 			                          		 required: true}" />
 									</td>
@@ -111,14 +111,13 @@
 										<!--C5_1 項目型-->
 										<div tabindex="10" style="display: block"
 											data-bind="ntsComboBox: {
-											options: itemTypes,
+											options: $parent.itemTypes,
 											name: '#[CMF002_84]',
 											optionsValue: 'code',
 											visibleItemsCount: 5,
 											value: itemType,
 											optionsText: 'name',
 											editable: false,
-											enable: isNewMode(),
 											required: true,
 											columns: [
 													{ prop: 'name', length: 10 },
@@ -126,7 +125,7 @@
 									</td>
 									<td>
 										<!--C5_2 型条件編集-->
-										<button tabindex="11" data-bind="click: openItemTypeSetting">#{i18n.getText('CMF002_85')}</button>
+										<button tabindex="11" data-bind="click: $parent.openItemTypeSetting">#{i18n.getText('CMF002_85')}</button>
 									</td>
 								</tr>
 								<tr>
@@ -139,7 +138,7 @@
 										<input data-bind="ntsTextEditor: {
 											readonly: true,
 											enable: false,
-			                                value: formula,
+			                                value: formulaResult,
 			                                option: {width: '500px'}}" />
 									</td>
 								</tr>
@@ -156,23 +155,23 @@
 											searchMode: 'hightlight',
 											fields: ['code', 'name'], 
 											}" />
-								<table tabindex="14" id="C8_3"
+								<table id="C8_3" tabindex="14"
 									data-bind="ntsGridList: {
 								rows: 15,
-								multiple: false,
-								dataSource: listExternalOutputCategoryItemData,
-								value: selectedExternalOutputCategoryItemData,
+								multiple: true,
+								dataSource: $parent.listExternalOutputCategoryItemData,
+								value: $parent.selectedExternalOutputCategoryItemData,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
 									{ headerText: '', key: 'key1', width: 30, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_89')}', key: 'key2', width: 50, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_90')}', key: 'key3', width: 220, formatter: _.escape }
-					            ],
+					            ]
 							}"></table>
 							</div>
 							<div style="width: 70px; padding-top: 100px;">
 								<!--C9_1 ＆-->
-								<button style="margin: 0px 5px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
+								<button style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
 								<!--C9_2 ＋-->
 								<button class="small">#{i18n.getText('CMF002_92')}</button>
 								<!--C9_3 －-->
@@ -189,15 +188,15 @@
 								rows: 15,
 								name: '#[CMF002_348]', 
 								multiple: false,
-								dataSource: listCategoryItem,
-								value: selectedCategoryItem,
+								dataSource: $parent.listCategoryItem,
+								value: $parent.selectedCategoryItem,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
 									{ headerText: '', key: 'key1', width: 30, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_96')}', key: 'key2', width: 50, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_97')}', key: 'key3', width: 220, formatter: _.escape },
 					                { headerText: '', key: 'key4', width: 30, formatter: _.escape }
-					            ],
+					            ]
 							}"></table>
 								</div>
 							</div>

@@ -15,29 +15,11 @@ public class AWDataScreenFinder {
 	@Inject
 	AwDataFormatSetRepository awDataFormatSetRepository;
 
-	public AwDataFormatDTO getAWData(){
-		AwDataFormatDTO awDataFormatDTO = null;
+	public Optional<AwDataFormatDTO> getAWData(){
 		String cid = AppContexts.user().companyId();
 		Optional<AwDataFormatSet> awDataFormatSet = awDataFormatSetRepository
 				.getAwDataFormatSetById(cid);
-			if (awDataFormatSet.isPresent()) {
-				awDataFormatSet.get().getAbsenceOutput().ifPresent(x -> {
-					awDataFormatDTO.setAbsenceOutput(x.v());
-				});
-				awDataFormatSet.get().getAtWorkOutput().ifPresent(x -> {
-					awDataFormatDTO.setAtWorkOutput(x.v());
-				});
-				awDataFormatSet.get().getClosedOutput().ifPresent(x -> {
-					awDataFormatDTO.setClosedOutput(x.v());
-				});
-				awDataFormatSet.get().getRetirementOutput().ifPresent(x -> {
-					awDataFormatDTO.setRetirementOutput(x.v());
-				});
-				awDataFormatSet.get().getValueOfFixedValue().ifPresent(x -> {
-					awDataFormatDTO.setValueOfFixedValue(x.v());
-				});
-				awDataFormatDTO.setFixedValue(awDataFormatSet.get().getFixedValue().value);
-			}
-		return awDataFormatDTO;
+		if (!awDataFormatSet.isPresent()) return Optional.empty();
+		return Optional.of(AwDataFormatDTO.fromDomain(awDataFormatSet.get()));
 	}
 }

@@ -17,8 +17,8 @@ public class OutputCodeConvertFinder {
 	@Inject
 	private OutputCodeConvertRepository finder;
 
-	public List<OutputCodeConvertDto> getOutputCodeConvertByCid(String cid) {
-		return finder.getOutputCodeConvertByCid(cid).stream().map(item -> OutputCodeConvertDto.fromDomain(item))
+	public List<OutputCodeConvertDTO> getOutputCodeConvertByCid(String cid) {
+		return finder.getOutputCodeConvertByCid(cid).stream().map(item -> OutputCodeConvertDTO.fromDomain(item))
 				.collect(Collectors.toList());
 	}
 }
