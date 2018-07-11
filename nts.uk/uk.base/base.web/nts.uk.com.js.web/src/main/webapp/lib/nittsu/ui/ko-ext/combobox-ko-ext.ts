@@ -215,7 +215,7 @@ module nts.uk.ui.koExtentions {
                             let data = $element.data(DATA);
 
                             // select first if !select and !editable
-                            if (!data[EDITABLE] && !data[VALUE]) {
+                            if (!data[EDITABLE] && _.isNil(data[VALUE])) {
                                 $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
                                 //reload data
                                 data = $element.data(DATA);
@@ -421,7 +421,7 @@ module nts.uk.ui.koExtentions {
                 $element
                     .trigger(VALIDATE, [true]);
 
-                if (!value) {
+                if (_.isNil(value)) {
                     $element
                         .igCombo("deselectAll");
                 }
