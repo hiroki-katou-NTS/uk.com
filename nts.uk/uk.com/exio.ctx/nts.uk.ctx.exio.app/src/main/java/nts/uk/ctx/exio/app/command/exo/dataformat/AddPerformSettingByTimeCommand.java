@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.command.exo.datafomat;
+package nts.uk.ctx.exio.app.command.exo.dataformat;
 
 import lombok.Value;
 
