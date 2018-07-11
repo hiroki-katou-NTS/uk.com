@@ -19,4 +19,8 @@ public class GrantTime {
 	
 	/** 特別休暇付与テーブル */
 	private GrantDateTbl grantDateTbl;
+
+	public static GrantTime createFromJavaType(FixGrantDate fixGrantDate, GrantDateTbl grantDateTbl) {
+		return new GrantTime(fixGrantDate, grantDateTbl);
+	}
 }

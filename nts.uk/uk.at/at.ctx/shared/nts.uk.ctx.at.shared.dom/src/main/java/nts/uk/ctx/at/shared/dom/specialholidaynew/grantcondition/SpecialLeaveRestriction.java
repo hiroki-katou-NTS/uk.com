@@ -95,23 +95,6 @@ public class SpecialLeaveRestriction extends DomainObject {
 		}
 	}
 	
-	/**
-	 * Create from Java Type
-	 * 
-	 * @param companyId
-	 * @param specialHolidayCode
-	 * @param specialLeaveCode
-	 * @param restrictionCls
-	 * @param ageLimit
-	 * @param genderRest
-	 * @param restEmp
-	 * @param listCls
-	 * @param ageStandard
-	 * @param ageRange
-	 * @param gender
-	 * @param listEmp
-	 * @return
-	 */
 	public static SpecialLeaveRestriction createFromJavaType(String companyId, int specialHolidayCode, int specialLeaveCode, int restrictionCls, 
 			int ageLimit, int genderRest, int restEmp, List<String> listCls, AgeStandard ageStandard, AgeRange ageRange, int gender, List<String> listEmp) {
 		return new SpecialLeaveRestriction(companyId, 
@@ -126,5 +109,36 @@ public class SpecialLeaveRestriction extends DomainObject {
 				ageRange,
 				EnumAdaptor.valueOf(gender, GenderCls.class),
 				listEmp);
+	}
+
+	public static SpecialLeaveRestriction createFromJavaType(String companyId, int specialHolidayCode,
+			int specialLeaveCode, int restrictionCls, int ageLimit, int genderRest, int restEmp,
+			AgeStandard ageStandard, AgeRange ageRange, int gender) {
+		return new SpecialLeaveRestriction(companyId, 
+				new SpecialHolidayCode(specialHolidayCode),
+				specialLeaveCode,
+				EnumAdaptor.valueOf(restrictionCls, UseAtr.class),
+				EnumAdaptor.valueOf(ageLimit, UseAtr.class),
+				EnumAdaptor.valueOf(genderRest, UseAtr.class),
+				EnumAdaptor.valueOf(restEmp, UseAtr.class),
+				ageStandard,
+				ageRange,
+				EnumAdaptor.valueOf(gender, GenderCls.class));
+	}
+
+	public SpecialLeaveRestriction(String companyId, SpecialHolidayCode specialHolidayCode, int specialLeaveCode,
+			UseAtr restrictionCls, UseAtr ageLimit, UseAtr genderRest, UseAtr restEmp, AgeStandard ageStandard,
+			AgeRange ageRange, GenderCls gender) {
+		super();
+		this.companyId = companyId;
+		this.specialHolidayCode = specialHolidayCode;
+		this.specialLeaveCode = specialLeaveCode;
+		this.restrictionCls = restrictionCls;
+		this.ageLimit = ageLimit;
+		this.genderRest = genderRest;
+		this.restEmp = restEmp;
+		this.ageStandard = ageStandard;
+		this.ageRange = ageRange;
+		this.gender = gender;
 	}
 }

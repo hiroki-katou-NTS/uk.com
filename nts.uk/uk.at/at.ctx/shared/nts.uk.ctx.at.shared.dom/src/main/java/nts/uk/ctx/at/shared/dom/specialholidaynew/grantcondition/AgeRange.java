@@ -19,4 +19,8 @@ public class AgeRange {
 	
 	/** 年齢上限 */
 	private int ageHigherLimit;
+
+	public static AgeRange createFromJavaType(int ageLowerLimit, int ageHigherLimit) {
+		return new AgeRange(ageLowerLimit, ageHigherLimit);
+	}
 }

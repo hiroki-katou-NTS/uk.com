@@ -26,14 +26,6 @@ public interface SpecialHolidayRepository {
 	Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode);
 	
 	/**
-	 * Check exist Special Holiday Code
-	 * @param companyId
-	 * @param specialHolidayCode
-	 * @return
-	 */
-	boolean checkExists(String companyId, int specialHolidayCode);
-	
-	/**
 	 * Add Special Holiday
 	 * @param specialHoliday
 	 */

@@ -20,4 +20,8 @@ public class AvailabilityPeriod {
 	
 	/** 年数 */
 	private GeneralDate endDate;
+
+	public static AvailabilityPeriod createFromJavaType(GeneralDate startDate, GeneralDate endDate) {
+		return new AvailabilityPeriod(startDate, endDate);
+	}
 }

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,7 +33,7 @@ public class GrantRegular extends DomainObject {
 	private boolean allowDisappear;
 	
 	/** 取得できなかった端数は消滅する */
-	private Optional<GrantTime> grantTime;
+	private GrantTime grantTime;
 	
 	@Override
 	public void validate() {
@@ -53,7 +51,7 @@ public class GrantRegular extends DomainObject {
 	 * @param grantTime
 	 * @return
 	 */
-	public static GrantRegular createFromJavaType(String companyId, int specialHolidayCode, int typeTime, int grantDate, boolean allowDisappear, Optional<GrantTime> grantTime) {
+	public static GrantRegular createFromJavaType(String companyId, int specialHolidayCode, int typeTime, int grantDate, boolean allowDisappear, GrantTime grantTime) {
 		return new GrantRegular(companyId, 
 				new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(typeTime, TypeTime.class),
