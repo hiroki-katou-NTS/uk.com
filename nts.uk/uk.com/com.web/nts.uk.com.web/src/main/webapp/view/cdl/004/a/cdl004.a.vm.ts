@@ -14,17 +14,24 @@ module nts.uk.com.view.cdl004.a {
             baseDate: KnockoutObservable<Date>;
             jobtitles: ComponentOption;
             isMultiple: boolean;
+            isShowAlreadySet: boolean;
             isShowNoSelectRow: boolean;
             constructor(){
                 var self = this;
                 self.selectedMulJobtitle = ko.observableArray([]);
                 self.selectedSelJobtitle = ko.observable('');
                 self.isMultiple = false;
+                self.isShowAlreadySet = false;
                 self.isShowNoSelectRow = false;
                 self.baseDate = ko.observable(new Date());
                 var inputCDL004 = nts.uk.ui.windows.getShared('inputCDL004');
                 if(inputCDL004){
                     self.isMultiple = inputCDL004.isMultiple;
+                     if (_.isNil(inputCDL004.isShowAlreadySet)) {
+                        self.isShowAlreadySet = true;
+                    } else {
+                        self.isShowAlreadySet = inputCDL004.isShowAlreadySet ? true : false;
+                    }
                     self.baseDate(inputCDL004.baseDate);
                     self.isShowNoSelectRow = inputCDL004.showNoSelection;
                     if (self.isMultiple) {
@@ -36,7 +43,7 @@ module nts.uk.com.view.cdl004.a {
                 }
                 
                 self.jobtitles = {
-                    isShowAlreadySet: false,
+                    isShowAlreadySet: self.isShowAlreadySet,
                     baseDate: self.baseDate,
                     isMultiSelect: self.isMultiple,
                     listType: ListType.JOB_TITLE,
