@@ -9,12 +9,14 @@ import java.util.Set;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
@@ -69,6 +71,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext) {
 		getServerExOutSetting(exOutSetting);
 		initExOutLogInformation(exOutSetting);
+		serverExOutExecution(exOutSetting);
 	}
 	
 	private void getServerExOutSetting(ExOutSetting exOutSetting) {
@@ -79,6 +82,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		//TODO Ai siêu thì tối ưu giúp đoạn này
 		for (StandardOutputItem standardOutputItem : standardOutputItemList) {
 			for(CategoryItem categoryItem : standardOutputItem.getCategoryItems()) {
+				// TODO chờ sửa primative value của domain CategoryItem
 				ctgItemDataRepo.getCtgItemDataByIdAndDisplayClass(categoryItem.getCategoryId().v().toString(), 
 						categoryItem.getCategoryItemNo().v().length(), 1).ifPresent(item -> ctgItemDataList.add(item));
 			}
@@ -109,9 +113,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 					cond.append(", ");
 					cond.append(searchCodeItem.getSearchCode());
 	
-					// TODO Chờ domain sửa thì sửa lại số thành enum
-					if ((ctgItemData.get().getDataType() == 1) || (ctgItemData.get().getDataType() == 2) 
-							|| (ctgItemData.get().getDataType() == 3)) {
+					if ((ctgItemData.get().getDataType() == DataType.CHARACTER) || (ctgItemData.get().getDataType() == DataType.DATE) 
+							|| (ctgItemData.get().getDataType() == DataType.TIME)) {
 						cond.append("'");
 						cond.append(searchCodeItem.getSearchCode());
 						cond.append("'");
@@ -149,5 +152,18 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exOutOpMngRepo.add(exOutOpMng);
 		exterOutExecLogRepo.add(exterOutExecLog);
 		externalOutLogRepo.add(externalOutLog);
+	}
+	
+	//サーバ外部出力実行
+	private void serverExOutExecution(ExOutSetting exOutSetting) {
+		
+		String processingId = exOutSetting.getProcessingId();
+		//TODO get lại setting name
+		String fileName = exOutSetting.getConditionSetCd() + "settingName" + processingId;
+		
+		exOutOpMngRepo.getExOutOpMngById(processingId).ifPresent(exOutOpMng -> {
+			exOutOpMng.setOpCond(ExIoOperationState.EXPORTING);
+			exOutOpMng.setProUnit(I18NText.getText("#CMF002_527"));
+		});
 	}
 }
