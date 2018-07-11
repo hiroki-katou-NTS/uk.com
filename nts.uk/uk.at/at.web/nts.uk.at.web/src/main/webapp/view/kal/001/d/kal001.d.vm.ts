@@ -8,7 +8,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
 
     export class ScreenModel {
         // dialog mode
-        dialogMode: KnockoutObservable<string>;
+        dialogMode: KnockoutObservable<boolean>;
         isInterrupt: KnockoutObservable<boolean>;
         isExtracting: KnockoutObservable<boolean>;
 
@@ -21,9 +21,9 @@ module nts.uk.com.view.kal001.d.viewmodel {
         // D1_12
         timeStartStr: KnockoutObservable<string>;
 
-        empProcessCount: number;
-        empProcessStr: KnockoutObservable<string>;
-        empProcessTotalCount: KnockoutObservable<number>;
+        numberEmpSuccess: number;
+        numberEmpSuccessStr: KnockoutObservable<string>;
+        totalEmployees: KnockoutObservable<number>;
         employeeErrors: KnockoutObservableArray<String>;
         strPersion: KnockoutObservable<String> = ko.observable("人");
         strSlash: KnockoutObservable<String> = ko.observable("/");
@@ -44,10 +44,10 @@ module nts.uk.com.view.kal001.d.viewmodel {
             self.timeEnd = ko.observable("");
             self.timeProcess = ko.observable("");
             self.timeStartStr = ko.observable("");
-            self.empProcessStr = ko.observable("");
-            self.empProcessTotalCount = params.totalEmpProcess;
-            self.empProcessCount = 0;
-            self.dialogMode = ko.observable("processing");
+            self.numberEmpSuccessStr = ko.observable("");
+            self.totalEmployees = params.totalEmpProcess;
+            self.numberEmpSuccess = 0;
+            self.dialogMode = ko.observable(true);
             self.timeStartStr = moment.utc().format('YYYY/MM/DD H:mm');
 
             self.currentAlarmCode = params.currentAlarmCode;
@@ -103,15 +103,15 @@ module nts.uk.com.view.kal001.d.viewmodel {
                         _.forEach(dataExtractAlarm.extractedAlarmData, function(item: AlarmExtraValueWkReDto) {
                             self.listAlarmExtraValueWkReDto.push(item);
                         });
-                        self.empProcessCount = self.empProcessCount + 1;
-                        self.empProcessStr(self.empProcessCount);
+                        self.numberEmpSuccess = self.numberEmpSuccess + 1;
+                        self.numberEmpSuccessStr(self.numberEmpSuccess);
                     }
                    
                 }).fail((errorExtractAlarm) => {
                     self.employeeErrors.push(empObject.id);
                    
                 }).always(() => {
-                    if (countLoop == self.empProcessTotalCount - 1) {
+                    if (countLoop == self.totalEmployees - 1) {
                         self.setFinished();
                     } else if (!self.isInterrupt()) {
                         self.countLoop++;
@@ -136,7 +136,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
         // set time now
         public setFinished(): void {
             let self = this;
-            if (self.empProcessCount == self.empProcessTotalCount) {
+            if (self.numberEmpSuccess == self.totalEmployees) {
                 self.displayStrFinish(true);
             }
             // count time
@@ -147,7 +147,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             let result = time.toISOString().substr(11, 8);
             self.timeProcess(result);
             self.timeEnd(moment.utc().format('YYYY/MM/DD H:mm'));
-            self.dialogMode("done");
+            self.dialogMode(false);
 
         }
 

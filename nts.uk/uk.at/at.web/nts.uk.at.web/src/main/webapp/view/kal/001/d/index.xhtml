@@ -42,9 +42,9 @@
 					<tr>
 						<td class="columnLeft"><label class ="labeLeft">#{i18n.getText('KAL001_33')}</label></td>
 						<td>
-							<label class="labeRight" data-bind="text: empProcessStr"/>
+							<label class="labeRight" data-bind="text: numberEmpSuccessStr"/>
 							<label data-bind="text: strSlash"/>
-							<label data-bind="text: empProcessTotalCount"/>
+							<label data-bind="text: totalEmployees"/>
 							<label data-bind="text: strPersion"/>
 							<label class="labeRight" data-bind="text: strFinish, visible :displayStrFinish"/>
 						</td>
@@ -53,10 +53,10 @@
 			</div>
 			<hr />
 			<center>
-				<com:ko-if bind="(dialogMode() == 'processing')">
+				<com:ko-if bind="(dialogMode() == true)">
  						<button tabindex="1" id="D3_1" data-bind="click : interrupt" class="danger">#{i18n.getText('KAL001_36')}</button> 
  				</com:ko-if>
- 				<com:ko-if bind="(dialogMode() != 'processing')">
+ 				<com:ko-if bind="(dialogMode() == false)">
 	 					<button tabindex="2" id="D3_2" data-bind="click : closePopup" >#{i18n.getText('KAL001_37')}</button> 
 				</com:ko-if>
 			</center>
