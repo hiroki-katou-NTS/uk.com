@@ -99,5 +99,96 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	/** The late night time atr. */
 	@Column(name = "LATE_NIGHT_TIME_ATR")
 	private int lateNightTimeAtr;
+	
+	/** The raising calc atr. */
+	@Column(name = "RAISING_CALC_ATR")
+	private int raisingCalcAtr;
+	
+	/** The specific raising calc atr. */
+	@Column(name = "SPECIFIC_RAISING_CALC_ATR")
+	private int specificRaisingCalcAtr;
+	
+	/** The leave early. */
+	@Column(name = "LEAVE_EARLY")
+	private int leaveEarly;
+	
+	/** The leave late. */
+	@Column(name = "LEAVE_LATE")
+	private int leaveLate;
+	
+	/** The divergence. */
+	@Column(name = "DIVERGENCE")
+	private int divergence;
 
+	/**
+	 * Checks if is leave late.
+	 *
+	 * @return true, if is leave late
+	 */
+	public boolean isLeaveLate(){
+		return this.leaveLate == 0 ? false : true;
+	}
+	
+	/**
+	 * Checks if is leave early.
+	 *
+	 * @return true, if is leave early
+	 */
+	public boolean isLeaveEarly(){
+		return this.leaveEarly == 0 ? false : true;
+	}
+	
+	/**
+	 * Checks if is raising calc atr.
+	 *
+	 * @return true, if is raising calc atr
+	 */
+	public boolean isRaisingCalcAtr(){
+		return this.raisingCalcAtr == 0 ? false : true;
+	}
+	
+	/**
+	 * Checks if is specific raising calc atr.
+	 *
+	 * @return true, if is specific raising calc atr
+	 */
+	public boolean isSpecificRaisingCalcAtr(){
+		return this.specificRaisingCalcAtr == 0 ? false : true;
+	}
+
+	/**
+	 * Sets the leave early.
+	 *
+	 * @param val the new leave early
+	 */
+	public void setLeaveEarly(boolean val) {
+		this.leaveEarly = val ? 1 : 0;
+	}
+
+	/**
+	 * Sets the leave late.
+	 *
+	 * @param val the new leave late
+	 */
+	public void setLeaveLate(boolean val) {
+		this.leaveLate = val ? 1 : 0;
+	}
+
+	/**
+	 * Sets the raising calc atr.
+	 *
+	 * @param val the new raising calc atr
+	 */
+	public void setRaisingCalcAtr(boolean val) {
+		this.raisingCalcAtr = val ? 1 : 0;
+	}
+
+	/**
+	 * Sets the specific raising calc atr.
+	 *
+	 * @param val the new specific raising calc atr
+	 */
+	public void setSpecificRaisingCalcAtr(boolean val) {
+		this.specificRaisingCalcAtr = val ? 1 : 0;
+	}
 }

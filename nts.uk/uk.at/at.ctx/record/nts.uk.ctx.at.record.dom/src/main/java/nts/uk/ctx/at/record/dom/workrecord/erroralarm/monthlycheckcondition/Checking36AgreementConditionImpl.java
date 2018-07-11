@@ -72,16 +72,16 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 
 	
 	@Override
-	public boolean check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate,AgreementCheckCon36 agreementCheckCon36) {
+	public Check36AgreementValue check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate,AgreementCheckCon36 agreementCheckCon36) {
 		
-		boolean check = false;
+		Check36AgreementValue check36AgreementCon = new Check36AgreementValue(false,0,0);
 		//実績データに埋まっている「36協定エラー状態」を取得する : 202,203,204,205,206
 		//
 		Optional<AttendanceTimeOfMonthly> attdTimeOfMonthly = attendanceTimeOfMonthlyRepo.find(employeeId,yearMonth,
 				EnumAdaptor.valueOf(closureID, ClosureId.class),
 				closureDate);
 		if(!attdTimeOfMonthly.isPresent()) {
-			return false;
+			return check36AgreementCon;
 		}
 		
 		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
@@ -115,14 +115,16 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 		
 		//agreementTime : 202
 		int valueAgreementTime = agreementTimeOfMonthly.getAgreementTime().v();
-		
+		boolean check= false;
 		//error
 		if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ERROR) {
 			check = compareOperator(agreementCheckCon36.getCompareOperator().value,valueAgreementTime,valueError);
 		}else {//alarm
 			check = compareOperator(agreementCheckCon36.getCompareOperator().value,valueAgreementTime,valueAlarm);
 		}
-		
+		check36AgreementCon.setCheck36AgreementCon(check);
+		check36AgreementCon.setErrorValue(valueError);
+		check36AgreementCon.setAlarmValue(valueAlarm);
 		
 	//		//1名の36上限時間を取得
 	//		BasicAgreementSetting basicAgreementSet = this.getBasicAgreementSet(companyId, employeeId, date, yearMonth, year);
@@ -148,7 +150,7 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 	//		MonthlyRecordToAttendanceItemConverter monthlyRecord = attendanceItemConvertFactory.createMonthlyConverter();
 	//		Optional<ItemValue> itemValue = monthlyRecord.withAttendanceTime(attdTime.get(0)).convert(202);
 			
-		return check;
+		return check36AgreementCon;
 	}
 	
 	private boolean compareOperator(int valueAgreementTime,int value,int compareType) {
