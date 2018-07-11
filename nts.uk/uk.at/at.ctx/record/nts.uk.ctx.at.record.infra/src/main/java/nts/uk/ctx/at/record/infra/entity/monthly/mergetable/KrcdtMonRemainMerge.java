@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.mergetable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.Column;
@@ -12,19 +14,72 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.SpecialHolidayRemainDataMerge;
+import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedDays;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffDayAndTimes;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.RemainDataTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RealReserveLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveGrant;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeavaRemainTime;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveGrantUseDay;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveRemain;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveRemainDay;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUnDigestion;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUseDays;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUseNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUseTimes;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.UseNumber;
+import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
+import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -2472,6 +2527,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 	public double subofHdUnUsedDays;
 
 	/* KRCDT_MON_CHILD_HD_REMAIN */
+	//TODO - thiếu domain
 	@Column(name = "CHILD_CLOSURE_STATUS")
 	public double childClosureStatus;
 
@@ -2501,6 +2557,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 	
 	
 	/* KRCDT_MON_CARE_HD_REMAIN */
+	// TODO thiếu domain
 	@Column(name = "CARE_CLOSURE_STATUS")
 	public double careClosureStatus;
 
@@ -2533,6 +2590,16 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		return krcdtMonRemainPk;
 	}
 
+	public 	MonthMergeKey toDomainKey() {
+		MonthMergeKey key = new MonthMergeKey();
+		key.setEmployeeId(this.krcdtMonRemainPk.getEmployeeId());
+		key.setYearMonth(new YearMonth(this.krcdtMonRemainPk.getYearMonth()));
+		key.setClosureId(EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class));
+		key.setClosureDate(new ClosureDate(this.krcdtMonRemainPk.getClosureDay(),
+			(this.krcdtMonRemainPk.getIsLastDay() == 1)));
+		return key;
+		
+	}
 	public void toEntityRemainMerge(RemainMerge domain) {
           this.toEntityMonAnnleaRemain(domain.getAnnLeaRemNumEachMonth());
           this.toEntityRsvLeaRemNumEachMonth(domain.getRsvLeaRemNumEachMonth());
@@ -2930,10 +2997,22 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		
 	}
 	
-	/** KRCDT_MON_CHILD_HD_REMAIN **/
 	
-	/** KRCDT_MON_SP_REMAIN **/
+	
+	/** KRCDT_MON_CHILD_HD_REMAIN **/
+	public void toEntityMonthChildHolidayRemain() {
+		//TODO - code have not domain
+		
+	}
+	
+	/** KRCDT_MON_CARE_HD_REMAIN **/
+	public void toEntityMonthCareHolidayRemain() {
+		//TODO - code have not domain
+		
+	}
 
+
+	/** KRCDT_MON_SP_REMAIN **/
 	public void toEntityMonthSpeRemain1(SpecialHolidayRemainData domain) {
 
 		/** 特別休暇月別残数データ．実特別休暇 **/
@@ -6455,5 +6534,2325 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 			this.grantDays20 = leaveGrantDay.v().intValue();
 		}
 	}
+	/** KRCDT_MON_CHILD_HD_REMAIN **/
+	
+	/* KRCDT_MON_ANNLEA_REMAIN - エンティティ：年休月別残数データ */
+	/**
+	 * ドメインに変換
+	 * @return 年休月別残数データ
+	 */
+	public AnnLeaRemNumEachMonth toDomainAnnLeaRemNumEachMonth(){
+		
+		// 年休月別残数明細を分類する
 
+		
+		// 年休：使用時間
+		UsedMinutes valUsedMinutesAfter = null;
+		if (this.annleaUsedMinutesAfter != null){
+			valUsedMinutesAfter = new UsedMinutes(this.annleaUsedMinutesAfter);
+		}
+		TimeAnnualLeaveUsedTime valUsedTime = null;
+		if (this.annleaUsedTimes != null &&
+			this.annleaUsedMinutes != null &&
+			this.annleaUsedMinutesBefore != null){
+			valUsedTime = TimeAnnualLeaveUsedTime.of(
+					new UsedTimes(this.annleaUsedTimes),
+					new UsedMinutes(this.annleaUsedMinutes),
+					new UsedMinutes(this.annleaUsedMinutesBefore),
+					Optional.ofNullable(valUsedMinutesAfter));
+		}
+		
+		// 年休：残数付与後
+		AnnualLeaveRemainingNumber valRemainAfter = null;
+		if (this.annleaRemainingDaysAfter != null){
+			RemainingMinutes valRemainMinutesAfter = null;
+			if (this.annleaRemainingMinutesAfter != null){
+				valRemainMinutesAfter = new RemainingMinutes(this.annleaRemainingMinutesAfter);
+			}
+			valRemainAfter = AnnualLeaveRemainingNumber.of(
+					new AnnualLeaveRemainingDayNumber(this.annleaRemainingDaysAfter),
+					Optional.ofNullable(valRemainMinutesAfter),
+					new ArrayList<>());
+		}
+		
+		// 年休
+		AnnualLeaveUsedDayNumber valUsedDaysAfter = null;
+		if (this.annleaUsedDaysAfter != null){
+			valUsedDaysAfter = new AnnualLeaveUsedDayNumber(this.annleaUsedDaysAfter);
+		}
+		RemainingMinutes valRemainMinutes = null;
+		if (this.annleaRemainingMinutes != null){
+			valRemainMinutes = new RemainingMinutes(this.annleaRemainingMinutes);
+		}
+		RemainingMinutes valRemainMinutesBefore = null;
+		if (this.annleaRemainingMinutesBefore != null){
+			valRemainMinutesBefore = new RemainingMinutes(this.annleaRemainingMinutesBefore);
+		}
+		UndigestedTimeAnnualLeaveTime valUnusedMinutes = null;
+		if (this.annleaUnusedMinutes != null){
+			valUnusedMinutes = UndigestedTimeAnnualLeaveTime.of(new UsedMinutes(this.annleaUnusedMinutes));
+		}
+		AnnualLeave annualLeave = AnnualLeave.of(
+				AnnualLeaveUsedNumber.of(
+						AnnualLeaveUsedDays.of(
+								new AnnualLeaveUsedDayNumber(this.annleaUsedDays),
+								new AnnualLeaveUsedDayNumber(this.annleaUsedDaysBefore),
+								Optional.ofNullable(valUsedDaysAfter)),
+						Optional.ofNullable(valUsedTime)),
+				AnnualLeaveRemainingNumber.of(
+						new AnnualLeaveRemainingDayNumber(this.annleaRemainingDays),
+						Optional.ofNullable(valRemainMinutes),
+						new ArrayList<>()),
+				AnnualLeaveRemainingNumber.of(
+						new AnnualLeaveRemainingDayNumber(this.annleaRemainingDaysBefore),
+						Optional.ofNullable(valRemainMinutesBefore),
+						new ArrayList<>()),
+				Optional.ofNullable(valRemainAfter),
+				AnnualLeaveUndigestedNumber.of(
+						UndigestedAnnualLeaveDays.of(new AnnualLeaveUsedDayNumber(this.annleaUnusedDays)),
+						Optional.ofNullable(valUnusedMinutes)));
+
+		// 実年休：使用時間
+		UsedMinutes valFactUsedMinutesAfter = null;
+		if (this.annleaFactUsedMinutesAfter != null){
+			valFactUsedMinutesAfter = new UsedMinutes(this.annleaFactUsedMinutesAfter);
+		}
+		TimeAnnualLeaveUsedTime valFactUsedTime = null;
+		if (this.annleaFactUsedTimes != null &&
+			this.annleaFactUsedMinutes != null &&
+			this.annleaFactUsedMinutesBefore != null){
+			valFactUsedTime = TimeAnnualLeaveUsedTime.of(
+					new UsedTimes(this.annleaFactUsedTimes),
+					new UsedMinutes(this.annleaFactUsedMinutes),
+					new UsedMinutes(this.annleaFactUsedMinutesBefore),
+					Optional.ofNullable(valFactUsedMinutesAfter));
+		}
+		
+		// 実年休：残数付与後
+		AnnualLeaveRemainingNumber valFactRemainAfter = null;
+		if (this.annleaFactRemainingDaysAfter != null){
+			RemainingMinutes valFactRemainMinutesAfter = null;
+			if (this.annleaFactRemainingMinutesAfter != null){
+				valFactRemainMinutesAfter = new RemainingMinutes(this.annleaFactRemainingMinutesAfter);
+			}
+			valFactRemainAfter = AnnualLeaveRemainingNumber.of(
+					new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDaysAfter),
+					Optional.ofNullable(valFactRemainMinutesAfter),
+					new ArrayList<>());
+		}
+		
+		// 実年休
+		AnnualLeaveUsedDayNumber valFactUsedDaysAfter = null;
+		if (this.annleaFactUsedDaysAfter != null){
+			valFactUsedDaysAfter = new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysAfter);
+		}
+		RemainingMinutes valFactRemainMinutes = null;
+		if (this.annleaFactRemainingMinutes != null){
+			valFactRemainMinutes = new RemainingMinutes(this.annleaFactRemainingMinutes);
+		}
+		RemainingMinutes valFactRemainMinutesBefore = null;
+		if (this.annleaFactRemainingMinutesBefore != null){
+			valFactRemainMinutesBefore = new RemainingMinutes(this.annleaFactRemainingMinutesBefore);
+		}
+		RealAnnualLeave realAnnualLeave = RealAnnualLeave.of(
+				AnnualLeaveUsedNumber.of(
+						AnnualLeaveUsedDays.of(
+								new AnnualLeaveUsedDayNumber(this.annleaFactUsedDays),
+								new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysBefore),
+								Optional.ofNullable(valFactUsedDaysAfter)),
+						Optional.ofNullable(valFactUsedTime)),
+				AnnualLeaveRemainingNumber.of(
+						new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDays),
+						Optional.ofNullable(valFactRemainMinutes),
+						new ArrayList<>()),
+				AnnualLeaveRemainingNumber.of(
+						new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDaysBefore),
+						Optional.ofNullable(valFactRemainMinutesBefore),
+						new ArrayList<>()),
+				Optional.ofNullable(valFactRemainAfter));
+		
+		// 半日年休
+		HalfDayAnnualLeave halfDayAnnualLeave = null;
+		if (this.annleaHalfRemainingTimes != null &&
+			this.annleaHalfRemainingTimesBefore != null &&
+			this.annleaHalfUsedTimes != null &&
+			this.annleaHalfUsedTimesBefore != null){
+			RemainingTimes valHalfRemainTimesAfter = null;
+			if (this.annleaHalfRemainingTimesAfter != null){
+				valHalfRemainTimesAfter = new RemainingTimes(this.annleaHalfRemainingTimesAfter);
+			}
+			UsedTimes valHalfUsedTimesAfter = null;
+			if (this.annleaHalfUsedTimesAfter != null){
+				valHalfUsedTimesAfter = new UsedTimes(this.annleaHalfUsedTimesAfter);
+			}
+			halfDayAnnualLeave = HalfDayAnnualLeave.of(
+					HalfDayAnnLeaRemainingNum.of(
+							new RemainingTimes(this.annleaHalfRemainingTimes),
+							new RemainingTimes(this.annleaHalfRemainingTimesBefore),
+							Optional.ofNullable(valHalfRemainTimesAfter)),
+					HalfDayAnnLeaUsedNum.of(
+							new UsedTimes(this.annleaHalfUsedTimes),
+							new UsedTimes(this.annleaHalfUsedTimesBefore),
+							Optional.ofNullable(valHalfUsedTimesAfter)));
+		}
+		
+		// 実半日年休
+		HalfDayAnnualLeave realHalfDayAnnualLeave = null;
+		if (this.annleaFactHalfRemainingTimes != null &&
+			this.annleaFactHalfRemainingTimesBefore != null &&
+			this.annleaFactHalfUsedTimes != null &&
+			this.annleaFactHalfUsedTimesBefore != null){
+			RemainingTimes valFactHalfRemainTimesAfter = null;
+			if (this.annleaFactHalfRemainingTimesAfter != null){
+				valFactHalfRemainTimesAfter = new RemainingTimes(this.annleaFactHalfRemainingTimesAfter);
+			}
+			UsedTimes valFactHalfUsedTimesAfter = null;
+			if (this.annleaFactHalfUsedTimesAfter != null){
+				valFactHalfUsedTimesAfter = new UsedTimes(this.annleaFactHalfUsedTimesAfter);
+			}
+			realHalfDayAnnualLeave = HalfDayAnnualLeave.of(
+					HalfDayAnnLeaRemainingNum.of(
+							new RemainingTimes(this.annleaFactHalfRemainingTimes),
+							new RemainingTimes(this.annleaFactHalfRemainingTimesBefore),
+							Optional.ofNullable(valFactHalfRemainTimesAfter)),
+					HalfDayAnnLeaUsedNum.of(
+							new UsedTimes(this.annleaFactHalfUsedTimes),
+							new UsedTimes(this.annleaFactHalfUsedTimesBefore),
+							Optional.ofNullable(valFactHalfUsedTimesAfter)));
+		}
+		
+		// 年休付与情報
+		AnnualLeaveGrant annualLeaveGrant = null;
+		if (this.annleaGrantDays != null &&
+			this.annleaGrantLaborDays != null &&
+			this.annleaGrantPredeterminedDays != null &&
+			this.annleaGrantDeductionDays != null &&
+			this.annleaDeductionDaysBefore != null &&
+			this.annleaDeductionDaysAfter != null &&
+			this.annleaAttendanceRate != null){
+			annualLeaveGrant = AnnualLeaveGrant.of(
+					new AnnualLeaveGrantDayNumber(this.annleaGrantDays),
+					new YearlyDays((double)this.annleaGrantLaborDays),
+					new YearlyDays((double)this.annleaGrantPredeterminedDays),
+					new YearlyDays((double)this.annleaGrantDeductionDays),
+					new MonthlyDays((double)this.annleaDeductionDaysBefore),
+					new MonthlyDays((double)this.annleaDeductionDaysAfter),
+					new AttendanceRate(this.annleaAttendanceRate));
+		}
+		
+		// 上限残時間
+		AnnualLeaveMaxRemainingTime maxRemainingTime = null;
+		if (this.annleaTimeRemainingMinutes != null &&
+			this.annleaTimeRemainingMinutesBefore != null){
+			RemainingMinutes valTimeRemainMinutesAfter = null;
+			if (this.annleaTimeRemainingMinutesAfter != null){
+				valTimeRemainMinutesAfter = new RemainingMinutes(this.annleaTimeRemainingMinutesAfter);
+			}
+			maxRemainingTime = AnnualLeaveMaxRemainingTime.of(
+					new RemainingMinutes(this.annleaTimeRemainingMinutes),
+					new RemainingMinutes(this.annleaTimeRemainingMinutesBefore),
+					Optional.ofNullable(valTimeRemainMinutesAfter));
+		}
+		
+		// 実上限残時間
+		AnnualLeaveMaxRemainingTime realMaxRemainingTime = null;
+		if (this.annleaFactTimeRemainingMinutes != null &&
+			this.annleaFactTimeRemainingMinutesBefore != null){
+			RemainingMinutes valFactTimeRemainMinutesAfter = null;
+			if (this.annleaFactTimeRemainingMinutesAfter != null){
+				valFactTimeRemainMinutesAfter = new RemainingMinutes(this.annleaFactTimeRemainingMinutesAfter);
+			}
+			realMaxRemainingTime = AnnualLeaveMaxRemainingTime.of(
+					new RemainingMinutes(this.annleaFactTimeRemainingMinutes),
+					new RemainingMinutes(this.annleaFactTimeRemainingMinutesBefore),
+					Optional.ofNullable(valFactTimeRemainMinutesAfter));
+		}
+		
+		return AnnLeaRemNumEachMonth.of(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0)),
+				new DatePeriod(this.annleaStartDate, this.annleaEndDate),
+				EnumAdaptor.valueOf(this.annleaClosureStatus, ClosureStatus.class),
+				annualLeave,
+				realAnnualLeave,
+				Optional.ofNullable(halfDayAnnualLeave),
+				Optional.ofNullable(realHalfDayAnnualLeave),
+				Optional.ofNullable(annualLeaveGrant),
+				Optional.ofNullable(maxRemainingTime),
+				Optional.ofNullable(realMaxRemainingTime),
+				AnnualLeaveAttdRateDays.of(
+						new MonthlyDays((double)this.annleaLaborDays),
+						new MonthlyDays((double)this.annleaPredeterminedDays),
+						new MonthlyDays((double)this.annleaDeductionDays)),
+				(this.annleaGrantAtr != 0));
+	}
+	
+	
+	/**
+	 * KRCDT_MON_RSVLEA_REMAIN
+	 * ドメインに変換
+	 * @return 年休月別残数データ
+	 */
+	public RsvLeaRemNumEachMonth toDomainRsvLeaRemNumEachMonth(){
+		
+		// 積立年休月別残数明細を分類する
+		List<ReserveLeaveRemainingDetail> normalDetail = new ArrayList<>();
+		List<ReserveLeaveRemainingDetail> normalDetailBefore = new ArrayList<>();
+		List<ReserveLeaveRemainingDetail> normalDetailAfter = new ArrayList<>();
+		List<ReserveLeaveRemainingDetail> realDetail = new ArrayList<>();
+		List<ReserveLeaveRemainingDetail> realDetailBefore = new ArrayList<>();
+		List<ReserveLeaveRemainingDetail> realDetailAfter = new ArrayList<>();
+		
+		// 積立年休：残数付与後
+		ReserveLeaveRemainingNumber valRemainAfter = null;
+		if (this.rsvleaRemainingDaysAfter != null){
+			valRemainAfter = ReserveLeaveRemainingNumber.of(
+					new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDaysAfter),
+					normalDetailAfter);
+		}
+		
+		// 積立年休
+		ReserveLeaveUsedDayNumber valUsedDaysAfter = null;
+		if (this.rsvleaUsedDaysAfter != null){
+			valUsedDaysAfter = new ReserveLeaveUsedDayNumber(this.rsvleaUsedDaysAfter);
+		}
+		ReserveLeave reserveLeave = ReserveLeave.of(
+				ReserveLeaveUsedNumber.of(
+						new ReserveLeaveUsedDayNumber(this.rsvleaUsedDays),
+						new ReserveLeaveUsedDayNumber(this.rsvleaUsedDaysBefore),
+						Optional.ofNullable(valUsedDaysAfter)),
+				ReserveLeaveRemainingNumber.of(
+						new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDays),
+						normalDetail),
+				ReserveLeaveRemainingNumber.of(
+						new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDaysBefore),
+						normalDetailBefore),
+				Optional.ofNullable(valRemainAfter),
+				ReserveLeaveUndigestedNumber.of(
+						new ReserveLeaveRemainingDayNumber(this.rsvleaNotUsedDays)));
+
+		// 実積立年休：残数付与後
+		ReserveLeaveRemainingNumber valFactRemainAfter = null;
+		if (this.rsvleaFactRemainingDaysAfter != null){
+			valFactRemainAfter = ReserveLeaveRemainingNumber.of(
+					new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysAfter),
+					realDetailAfter);
+		}
+		
+		// 実積立年休
+		ReserveLeaveUsedDayNumber valFactUsedDaysAfter = null;
+		if (this.rsvleaFactUsedDaysAfter != null){
+			valFactUsedDaysAfter = new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDaysAfter);
+		}
+		RealReserveLeave realReserveLeave = RealReserveLeave.of(
+				ReserveLeaveUsedNumber.of(
+						new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDays),
+						new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDaysBefore),
+						Optional.ofNullable(valFactUsedDaysAfter)),
+				ReserveLeaveRemainingNumber.of(
+						new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDays),
+						realDetail),
+				ReserveLeaveRemainingNumber.of(
+						new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysBefore),
+						realDetailBefore),
+				Optional.ofNullable(valFactRemainAfter));
+		
+		// 積立年休付与情報
+		ReserveLeaveGrant reserveLeaveGrant = null;
+		if (this.rsvleaGrantDays != null){
+			reserveLeaveGrant = ReserveLeaveGrant.of(
+					new ReserveLeaveGrantDayNumber(this.rsvleaGrantDays));
+		}
+		
+		return RsvLeaRemNumEachMonth.of(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0)),
+				new DatePeriod(this.rsvleaStartDate, this.rsvleaEndDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
+				reserveLeave,
+				realReserveLeave,
+				Optional.ofNullable(reserveLeaveGrant),
+				(this.rsvleaGrantAtr != 0));
+	}
+	
+	
+	public SpecialHolidayRemainDataMerge toDomainSpecialHolidayRemainData() {
+		SpecialHolidayRemainDataMerge merge = new SpecialHolidayRemainDataMerge();
+		merge.setSpecialHolidayRemainData1	(this.toDomainSpecialHolidayRemainData1	());
+		merge.setSpecialHolidayRemainData2	(this.toDomainSpecialHolidayRemainData2	());
+		merge.setSpecialHolidayRemainData3	(this.toDomainSpecialHolidayRemainData3	());
+		merge.setSpecialHolidayRemainData4	(this.toDomainSpecialHolidayRemainData4	());
+		merge.setSpecialHolidayRemainData5	(this.toDomainSpecialHolidayRemainData5	());
+		merge.setSpecialHolidayRemainData6	(this.toDomainSpecialHolidayRemainData6	());
+		merge.setSpecialHolidayRemainData7	(this.toDomainSpecialHolidayRemainData7	());
+		merge.setSpecialHolidayRemainData8	(this.toDomainSpecialHolidayRemainData8	());
+		merge.setSpecialHolidayRemainData9	(this.toDomainSpecialHolidayRemainData9	());
+		merge.setSpecialHolidayRemainData10	(this.toDomainSpecialHolidayRemainData10	());
+		merge.setSpecialHolidayRemainData11	(this.toDomainSpecialHolidayRemainData11	());
+		merge.setSpecialHolidayRemainData12	(this.toDomainSpecialHolidayRemainData12	());
+		merge.setSpecialHolidayRemainData13	(this.toDomainSpecialHolidayRemainData13	());
+		merge.setSpecialHolidayRemainData14	(this.toDomainSpecialHolidayRemainData14	());
+		merge.setSpecialHolidayRemainData15	(this.toDomainSpecialHolidayRemainData15	());
+		merge.setSpecialHolidayRemainData16	(this.toDomainSpecialHolidayRemainData16	());
+		merge.setSpecialHolidayRemainData17	(this.toDomainSpecialHolidayRemainData17	());
+		merge.setSpecialHolidayRemainData18	(this.toDomainSpecialHolidayRemainData18	());
+		merge.setSpecialHolidayRemainData19	(this.toDomainSpecialHolidayRemainData19	());
+		merge.setSpecialHolidayRemainData20	(this.toDomainSpecialHolidayRemainData20	());
+
+		return merge;
+	}
+	
+	/**
+	 * KRCDT_MON_SP_REMAIN
+	 * 特別休暇月別残数データ
+	 *  
+	 */
+	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData1(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays1));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes1)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays1));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes1)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays1));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays1));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays1)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes1));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes1));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes1));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays1));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes1 == null ? null : this.afterFactRemainMinutes1.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays1));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes1)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays1));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes1)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays1));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays1));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays1)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes1));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes1));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes1));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays1));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes1)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays1));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes1 == null ? null : this.afterRemainMinutes1.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays1 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays1));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate1, this.closureEndDate1),
+				EnumAdaptor.valueOf(this.closureStatus1, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr1 !=  0));
+	}
+	
+	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData2(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays2));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes2)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays2));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes2)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays2));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays2));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays2)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes2));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes2));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes2));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays2));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes2 == null ? null : this.afterFactRemainMinutes2.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays2));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes2)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays2));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes2)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays2));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays2));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays2)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes2));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes2));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes2));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays2));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes2)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays2));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes2 == null ? null : this.afterRemainMinutes2.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays2 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays2));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate2, this.closureEndDate2),
+				EnumAdaptor.valueOf(this.closureStatus2, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr2 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData3(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays3));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes3)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays3));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes3)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays3));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays3));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays3)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes3));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes3));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes3));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays3));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes3 == null ? null : this.afterFactRemainMinutes3.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays3));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes3)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays3));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes3)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays3));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays3));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays3)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes3));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes3));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes3));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays3));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes3)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays3));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes3 == null ? null : this.afterRemainMinutes3.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays3 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays3));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate3, this.closureEndDate3),
+				EnumAdaptor.valueOf(this.closureStatus3, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr3 !=  0));
+	}
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData4(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays4));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes4)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays4));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes4)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays4));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays4));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays4)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes4));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes4));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes4));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays4));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes4 == null ? null : this.afterFactRemainMinutes4.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays4));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes4)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays4));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes4)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays4));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays4));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays4)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes4));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes4));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes4));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays4));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes4)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays4));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes4 == null ? null : this.afterRemainMinutes4.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays4 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays4));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate4, this.closureEndDate4),
+				EnumAdaptor.valueOf(this.closureStatus4, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr4 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData5(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays5));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes5)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays5));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes5)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays5));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays5));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays5)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes5));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes5));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes5));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays5));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes5 == null ? null : this.afterFactRemainMinutes5.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays5));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes5)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays5));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes5)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays5));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays5));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays5)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes5));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes5));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes5));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays5));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes5)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays5));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes5 == null ? null : this.afterRemainMinutes5.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays5 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays5));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate5, this.closureEndDate5),
+				EnumAdaptor.valueOf(this.closureStatus5, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr5 !=  0));
+	}
+	
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData6(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays6));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes6)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays6));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes6)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays6));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays6));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays6)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes6));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes6));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes6));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays6));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes6 == null ? null : this.afterFactRemainMinutes6.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays6));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes6)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays6));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes6)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays6));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays6));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays6)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes6));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes6));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes6));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays6));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes6)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays6));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes6 == null ? null : this.afterRemainMinutes6.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays6 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays6));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate6, this.closureEndDate6),
+				EnumAdaptor.valueOf(this.closureStatus6, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr6 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData7(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays7));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes7)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays7));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes7)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays7));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays7));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays7)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes7));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes7));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes7));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays7));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes7 == null ? null : this.afterFactRemainMinutes7.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays7));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes7)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays7));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes7)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays7));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays7));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays7)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes7));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes7));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes7));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays7));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes7)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays7));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes7 == null ? null : this.afterRemainMinutes7.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays7 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays7));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate7, this.closureEndDate7),
+				EnumAdaptor.valueOf(this.closureStatus7, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr7 !=  0));
+	}
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData8(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays8));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes8)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays8));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes8)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays8));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays8));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays8)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes8));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes8));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes8));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays8));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes8 == null ? null : this.afterFactRemainMinutes8.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays8));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes8)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays8));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes8)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays8));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays8));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays8)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes8));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes8));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes8));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays8));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes8)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays8));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes8 == null ? null : this.afterRemainMinutes8.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays8 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays8));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate8, this.closureEndDate8),
+				EnumAdaptor.valueOf(this.closureStatus8, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr8 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData9(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays9));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes9)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays9));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes9)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays9));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays9));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays9)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes9));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes9));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes9));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays9));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes9 == null ? null : this.afterFactRemainMinutes9.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays9));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes9)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays9));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes9)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays9));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays9));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays9)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes9));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes9));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes9));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays9));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes9)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays9));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes9 == null ? null : this.afterRemainMinutes9.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays9 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays9));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate9, this.closureEndDate9),
+				EnumAdaptor.valueOf(this.closureStatus9, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr9 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData10(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays10));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes10)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays10));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes10)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays10));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays10));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays10)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes10));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes10));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes10));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays10));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes10 == null ? null : this.afterFactRemainMinutes10.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays10));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes10)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays10));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes10)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays10));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays10));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays10)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes10));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes10));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes10));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays10));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes10)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays10));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes10 == null ? null : this.afterRemainMinutes10.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays10 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays10));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate10, this.closureEndDate10),
+				EnumAdaptor.valueOf(this.closureStatus10, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr10 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData11(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays11));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes11)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays11));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes11)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays11));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays11));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays11)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes11));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes11));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes11));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays11));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes11 == null ? null : this.afterFactRemainMinutes11.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays11));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes11)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays11));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes11)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays11));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays11));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays11)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes11));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes11));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes11));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays11));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes11)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays11));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes11 == null ? null : this.afterRemainMinutes11.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays11 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays11));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate11, this.closureEndDate11),
+				EnumAdaptor.valueOf(this.closureStatus11, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr11 !=  0));
+	}
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData12(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays12));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes12)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays12));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes12)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays12));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays12));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays12)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes12));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes12));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes12));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays12));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes12 == null ? null : this.afterFactRemainMinutes12.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays12));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes12)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays12));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes12)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays12));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays12));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays12)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes12));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes12));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes12));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays12));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes12)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays12));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes12 == null ? null : this.afterRemainMinutes12.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays12 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays12));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate12, this.closureEndDate12),
+				EnumAdaptor.valueOf(this.closureStatus12, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr12 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData13(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays13));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes13)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays13));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes13)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays13));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays13));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays13)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes13));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes13));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes13));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays13));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes13 == null ? null : this.afterFactRemainMinutes13.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays13));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes13)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays13));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes13)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays13));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays13));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays13)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes13));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes13));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes13));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays13));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes13)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays13));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes13 == null ? null : this.afterRemainMinutes13.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays13 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays13));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate13, this.closureEndDate13),
+				EnumAdaptor.valueOf(this.closureStatus13, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr13 !=  0));
+	}
+	
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData14(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays14));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes14)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays14));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes14)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays14));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays14));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays14)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes14));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes14));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes14));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays14));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes14 == null ? null : this.afterFactRemainMinutes14.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays14));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes14)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays14));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes14)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays14));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays14));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays14)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes14));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes14));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes14));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays14));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes14)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays14));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes14 == null ? null : this.afterRemainMinutes14.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays14 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays14));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate14, this.closureEndDate14),
+				EnumAdaptor.valueOf(this.closureStatus14, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr14 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData15(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays15));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes15)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays15));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes15)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays15));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays15));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays15)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes15));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes15));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes15));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays15));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes15 == null ? null : this.afterFactRemainMinutes15.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays15));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes15)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays15));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes15)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays15));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays15));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays15)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes15));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes15));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes15));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays15));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes15)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays15));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes15 == null ? null : this.afterRemainMinutes15.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays15 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays15));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate15, this.closureEndDate15),
+				EnumAdaptor.valueOf(this.closureStatus15, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr15 !=  0));
+	}
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData16(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays16));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes16)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays16));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes16)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays16));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays16));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays16)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes16));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes16));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes16));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays16));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes16 == null ? null : this.afterFactRemainMinutes16.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays16));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes16)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays16));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes16)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays16));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays16));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays16)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes16));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes16));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes16));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays16));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes16)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays16));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes16 == null ? null : this.afterRemainMinutes16.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays16 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays16));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate16, this.closureEndDate16),
+				EnumAdaptor.valueOf(this.closureStatus16, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr16 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData17(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays17));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes17)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays17));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes17)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays17));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays17));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays17)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes17));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes17));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes17));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays17));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes17 == null ? null : this.afterFactRemainMinutes17.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays17));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes17)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays17));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes17)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays17));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays17));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays17)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes17));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes17));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes17));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays17));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes17)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays17));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes17 == null ? null : this.afterRemainMinutes17.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays17 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays17));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate17, this.closureEndDate17),
+				EnumAdaptor.valueOf(this.closureStatus17, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr17 !=  0));
+	}
+	
+			public SpecialHolidayRemainData toDomainSpecialHolidayRemainData18(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays18));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes18)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays18));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes18)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays18));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays18));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays18)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes18));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes18));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes18));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays18));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes18 == null ? null : this.afterFactRemainMinutes18.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays18));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes18)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays18));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes18)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays18));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays18));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays18)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes18));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes18));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes18));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays18));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes18)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays18));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes18 == null ? null : this.afterRemainMinutes18.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays18 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays18));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate18, this.closureEndDate18),
+				EnumAdaptor.valueOf(this.closureStatus18, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr18 !=  0));
+	}
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData19(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays19));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes19)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays19));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes19)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays19));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays19));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays19)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes19));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes19));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes19));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays19));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes19 == null ? null : this.afterFactRemainMinutes19.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays19));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes19)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays19));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes19)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays19));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays19));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays19)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes19));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes19));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes19));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays19));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes19)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays19));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes19 == null ? null : this.afterRemainMinutes19.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays19 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays19));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate19, this.closureEndDate19),
+				EnumAdaptor.valueOf(this.closureStatus19, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr19 !=  0));
+	}
+	
+	
+		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData20(){
+		
+		/** 特別休暇月別残数データ．実特別休暇．残数 **/
+		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
+		factRemain.setDays(new SpecialLeaveRemainDay(this.factRemainDays20));
+		factRemain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.factRemainMinutes20)));
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与前 **/
+		SpecialLeaveRemain factBeforeRemainGrant = new SpecialLeaveRemain();
+		factBeforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeFactRemainDays20));
+		factBeforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeFactRemainMinutes20)));
+		
+
+		 //  使用日数 
+		SpecialLeaveUseDays factUseDays = new SpecialLeaveUseDays();
+		factUseDays.setUseDays(new SpecialLeaveRemainDay(this.factUseDays20));
+		factUseDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeFactUseDays20));
+		factUseDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterFactUseDays20)));
+		// 使用時間 
+		SpecialLeaveUseTimes factUseTimes = new SpecialLeaveUseTimes();
+		factUseTimes.setUseNumber(new UseNumber(this.factUseTimes20));
+		factUseTimes.setUseTimes(new SpecialLeavaRemainTime(this.factUseMinutes20));
+		factUseTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeFactUseMinutes20));
+		
+		/**	特別休暇月別残数データ．実特別休暇．使用数 **/
+		SpecialLeaveUseNumber factUseNumber = new SpecialLeaveUseNumber(factUseDays,factUseTimes );
+		
+		/** 特別休暇月別残数データ．実特別休暇.残数付与後  **/
+		SpecialLeaveRemain factAfterRemainGrant = new SpecialLeaveRemain();
+		factAfterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterFactRemainDays20));
+		factAfterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterFactRemainMinutes20 == null ? null : this.afterFactRemainMinutes20.intValue())));
+		
+		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(factRemain, factBeforeRemainGrant, factUseNumber, Optional.ofNullable(factAfterRemainGrant));
+		
+
+		/** 特別休暇月別残数データ．特別休暇．残数 **/
+		SpecialLeaveRemain remain = new SpecialLeaveRemain();
+		remain.setDays(new SpecialLeaveRemainDay(this.remainDays20));
+		remain.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.remainMinutes20)));
+		
+		/** 特別休暇月別残数データ．特別休暇.残数付与前 **/
+		SpecialLeaveRemain beforeRemainGrant = new SpecialLeaveRemain();
+		beforeRemainGrant.setDays(new SpecialLeaveRemainDay(this.beforeRemainDays20));
+		beforeRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.beforeRemainMinutes20)));
+		
+		/**	特別休暇月別残数データ.特別休暇．使用数 **/
+		 //  使用日数 
+		SpecialLeaveUseDays useDays = new SpecialLeaveUseDays();
+		useDays.setUseDays(new SpecialLeaveRemainDay(this.useDays20));
+		useDays.setBeforeUseGrantDays(new SpecialLeaveRemainDay(this.beforeUseDays20));
+		useDays.setAfterUseGrantDays(Optional.ofNullable(new SpecialLeaveRemainDay(this.afterUseDays20)));
+		// 使用時間 
+		SpecialLeaveUseTimes useTimes = new SpecialLeaveUseTimes();
+		useTimes.setUseNumber(new UseNumber(this.useTimes20));
+		useTimes.setUseTimes(new SpecialLeavaRemainTime(this.useMinutes20));
+		useTimes.setBeforeUseGrantTimes(new SpecialLeavaRemainTime(this.beforeUseMinutes20));
+		 //  使用日数 
+		SpecialLeaveUseNumber useNumber =  new SpecialLeaveUseNumber(factUseDays, factUseTimes);
+		
+		/** 特別休暇月別残数データ.特別休暇.未消化数  **/
+		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion();
+		unDegestionNumber.setDays(new  SpecialLeaveRemainDay(this.notUseDays20));
+		unDegestionNumber.setTimes(Optional.ofNullable(new SpecialLeavaRemainTime(this.notUseMinutes20)));
+		
+		/** 特別休暇月別残数データ．特別休暇 .残数付与後  **/
+		SpecialLeaveRemain afterRemainGrant = new SpecialLeaveRemain();
+		afterRemainGrant.setDays(new SpecialLeaveRemainDay(this.afterRemainDays20));
+		afterRemainGrant.setTime(Optional.ofNullable(new SpecialLeavaRemainTime(this.afterRemainMinutes20 == null ? null : this.afterRemainMinutes20.intValue())));
+		
+		/** 特別休暇月別残数データ.特別休暇.残数付与後  **/
+		/** 特別休暇月別残数データ．特別休暇  **/
+		SpecialLeave specialLeave = new SpecialLeave(remain, beforeRemainGrant, useNumber, unDegestionNumber, Optional.ofNullable(afterRemainGrant));
+		
+		
+		//特別休暇付与情報: 付与日数
+		SpecialLeaveGrantUseDay grantDays = null;
+		if(this.grantDays20 != null) {
+			grantDays = new SpecialLeaveGrantUseDay(new Double(this.grantDays20));
+		}
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(),
+				new DatePeriod(this.closureStartDate20, this.closureEndDate20),
+				EnumAdaptor.valueOf(this.closureStatus20, ClosureStatus.class),
+				actualSpecial,
+				specialLeave,
+				Optional.ofNullable(grantDays),
+				(this.grantAtr20 !=  0));
+	}
+	
+	
+	
+	/**
+	 * KRCDT_MON_DAYOFF_REMAIN
+	 * 代休月別残数データ
+	 * @return MonthlyDayoffRemainData
+	 */
+	
+	public MonthlyDayoffRemainData toDomainMonthlyDayoffRemainData() {
+		DayOffDayAndTimes occurrenceDayTimes = new DayOffDayAndTimes();
+		occurrenceDayTimes.setDay(new RemainDataDaysMonth(new Double(this.dayOffOccurredDays)));
+		occurrenceDayTimes.setTime(Optional.ofNullable(this.dayOffOccurredTimes == null ? null : new RemainDataTimesMonth(this.dayOffOccurredTimes)));
+		
+		DayOffDayAndTimes  useDayTimes = new DayOffDayAndTimes();
+		useDayTimes.setDay(new RemainDataDaysMonth(new Double(this.dayOffUsedDays)));
+		useDayTimes.setTime(Optional.ofNullable(this.dayOffUsedMinutes == null ? null : new RemainDataTimesMonth(this.dayOffUsedMinutes)));
+		
+		
+		DayOffRemainDayAndTimes remainingDayTimes = new DayOffRemainDayAndTimes();
+		remainingDayTimes.setDays(new AttendanceDaysMonthToTal(this.dayOffRemainingDays));
+		remainingDayTimes.setTimes(Optional.ofNullable(this.dayOffRemainingMinutes == null ? null : new RemainingMinutes(this.dayOffRemainingMinutes)));
+		
+		DayOffRemainDayAndTimes carryForWardDayTimes = new DayOffRemainDayAndTimes();
+		carryForWardDayTimes.setDays(new AttendanceDaysMonthToTal(this.dayOffCarryforwardDays));
+		carryForWardDayTimes.setTimes(Optional.ofNullable(this.dayOffCarryforwardMinutes == null ? null : new RemainingMinutes(this.dayOffCarryforwardMinutes)));
+		
+		DayOffDayAndTimes  unUsedDayTimes = new DayOffDayAndTimes();
+		unUsedDayTimes.setDay(new RemainDataDaysMonth(new Double(this.dayOffUnUsedDays)));
+		unUsedDayTimes.setTime(Optional.ofNullable(this.dayOffUnUsedTimes == null ? null : new RemainDataTimesMonth(this.dayOffUnUsedTimes)));
+		
+		return new MonthlyDayoffRemainData(this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()), this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0),
+				this.dayOffStartDate, this.dayOffEndDate,
+				occurrenceDayTimes,useDayTimes, remainingDayTimes, carryForWardDayTimes, unUsedDayTimes);
+	}
+	
+	/**
+	 * KRCDT_MON_SUBOFHD_REMAIN
+	 * 振休使用日数合計
+	 * @return AbsenceLeaveRemainData
+	 */
+	
+	public AbsenceLeaveRemainData toDomainAbsenceLeaveRemainData() {
+		RemainDataDaysMonth occurredDay = new RemainDataDaysMonth(this.subofHdOccurredDays);
+		RemainDataDaysMonth usedDays = new RemainDataDaysMonth(this.subofHdUsedDays);
+		AttendanceDaysMonthToTal remainingDays = new AttendanceDaysMonthToTal(this.subofHdRemainingDays);
+		AttendanceDaysMonthToTal carryforwardDays = new AttendanceDaysMonthToTal(this.subofHdCarryForWardDays);
+		RemainDataDaysMonth unUsedDays = new RemainDataDaysMonth(this.subofHdUnUsedDays);
+		return new AbsenceLeaveRemainData(this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()), this.krcdtMonRemainPk.getClosureId(),
+				this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0),
+				EnumAdaptor.valueOf(this.subofHdClosureStatus, ClosureStatus.class),
+				this.subofHdStartDate, this.subofHdEndDate,
+				occurredDay, usedDays, remainingDays, carryforwardDays, unUsedDays);
+	}
+	/**
+	 * KRCDT_MON_CHILD_HD_REMAIN
+	 */
+	public void  toDomainMonthChildHolidayRemain() {
+		//TODO - code have not domain , entity
+	}
+	
+	/**
+	 * KRCDT_MON_CARE_HD_REMAIN
+	 */
+	public void  toDomainMonthCareHolidayRemain() {
+		//TODO - code have not domain , entity
+	}
+	
 }

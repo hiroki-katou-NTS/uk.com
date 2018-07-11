@@ -17,4 +17,8 @@ public class RemainMerge {
 	MonthlyDayoffRemainData monthlyDayoffRemainData;
 	AbsenceLeaveRemainData absenceLeaveRemainData;
 
+	/**  KRCDT_MON_CHILD_HD_REMAIN */
+	//TODO code have not domain
+	/** * KRCDT_MON_CARE_HD_REMAIN */
+	//TODO code have not Domain
 }

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -62,6 +61,7 @@ import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregatePremiumTimeMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateSpecificDaysMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.ExcessOutsideWorkMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.ExcessOutsideWorkOfMonthlyMerge;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
@@ -103,21 +103,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.Premi
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonHdwkTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonOverTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpecDays;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonLeave;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrBnspyTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrDivgTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrGoout;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrPremTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonMedicalTime;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
@@ -1697,464 +1683,19 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "BUDGET_VARIENCE_TIME")
 	public int budgetVarienceTime;
 
-	/* KRCDT_MON_EXCESS_OUTSIDE 50 */
-
-	/** 週割増合計時間 */
+	/* KRCDT_MON_EXCESS_OUTSIDE  */
 	@Column(name = "TOTAL_WEEK_PRM_TIME_1")
 	public int totalWeeklyPremiumTime1;
 
-	@Column(name = "TOTAL_WEEK_PRM_TIME_2")
-	public int totalWeeklyPremiumTime2;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_3")
-	public int totalWeeklyPremiumTime3;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_4")
-	public int totalWeeklyPremiumTime4;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_5")
-	public int totalWeeklyPremiumTime5;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_6")
-	public int totalWeeklyPremiumTime6;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_7")
-	public int totalWeeklyPremiumTime7;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_8")
-	public int totalWeeklyPremiumTime8;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_9")
-	public int totalWeeklyPremiumTime9;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_10")
-	public int totalWeeklyPremiumTime10;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_11")
-	public int totalWeeklyPremiumTime11;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_12")
-	public int totalWeeklyPremiumTime12;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_13")
-	public int totalWeeklyPremiumTime13;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_14")
-	public int totalWeeklyPremiumTime14;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_15")
-	public int totalWeeklyPremiumTime15;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_16")
-	public int totalWeeklyPremiumTime16;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_17")
-	public int totalWeeklyPremiumTime17;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_18")
-	public int totalWeeklyPremiumTime18;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_19")
-	public int totalWeeklyPremiumTime19;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_20")
-	public int totalWeeklyPremiumTime20;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_21")
-	public int totalWeeklyPremiumTime21;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_22")
-	public int totalWeeklyPremiumTime22;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_23")
-	public int totalWeeklyPremiumTime23;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_24")
-	public int totalWeeklyPremiumTime24;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_25")
-	public int totalWeeklyPremiumTime25;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_26")
-	public int totalWeeklyPremiumTime26;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_27")
-	public int totalWeeklyPremiumTime27;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_28")
-	public int totalWeeklyPremiumTime28;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_29")
-	public int totalWeeklyPremiumTime29;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_30")
-	public int totalWeeklyPremiumTime30;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_31")
-	public int totalWeeklyPremiumTime31;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_32")
-	public int totalWeeklyPremiumTime32;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_33")
-	public int totalWeeklyPremiumTime33;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_34")
-	public int totalWeeklyPremiumTime34;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_35")
-	public int totalWeeklyPremiumTime35;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_36")
-	public int totalWeeklyPremiumTime36;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_37")
-	public int totalWeeklyPremiumTime37;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_38")
-	public int totalWeeklyPremiumTime38;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_39")
-	public int totalWeeklyPremiumTime39;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_40")
-	public int totalWeeklyPremiumTime40;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_41")
-	public int totalWeeklyPremiumTime41;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_4")
-	public int totalWeeklyPremiumTime42;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_43")
-	public int totalWeeklyPremiumTime43;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_44")
-	public int totalWeeklyPremiumTime44;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_45")
-	public int totalWeeklyPremiumTime45;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_46")
-	public int totalWeeklyPremiumTime46;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_47")
-	public int totalWeeklyPremiumTime47;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_48")
-	public int totalWeeklyPremiumTime48;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_49")
-	public int totalWeeklyPremiumTime49;
-
-	@Column(name = "TOTAL_WEEK_PRM_TIME_50")
-	public int totalWeeklyPremiumTime50;
-
-	/** 月割増合計時間 */
 	@Column(name = "TOTAL_MONTH_PRM_TIME_1")
 	public int totalMonthlyPremiumTime1;
 
-	@Column(name = "TOTAL_MONTH_PRM_TIME_2")
-	public int totalMonthlyPremiumTime2;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_3")
-	public int totalMonthlyPremiumTime3;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_4")
-	public int totalMonthlyPremiumTime4;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_5")
-	public int totalMonthlyPremiumTime5;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_6")
-	public int totalMonthlyPremiumTime6;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_7")
-	public int totalMonthlyPremiumTime7;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_8")
-	public int totalMonthlyPremiumTime8;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_9")
-	public int totalMonthlyPremiumTime9;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_10")
-	public int totalMonthlyPremiumTime10;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_11")
-	public int totalMonthlyPremiumTime11;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_12")
-	public int totalMonthlyPremiumTime12;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_13")
-	public int totalMonthlyPremiumTime13;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_14")
-	public int totalMonthlyPremiumTime14;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_15")
-	public int totalMonthlyPremiumTime15;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_16")
-	public int totalMonthlyPremiumTime16;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_17")
-	public int totalMonthlyPremiumTime17;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_18")
-	public int totalMonthlyPremiumTime18;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_19")
-	public int totalMonthlyPremiumTime19;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_20")
-	public int totalMonthlyPremiumTime20;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_21")
-	public int totalMonthlyPremiumTime21;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_22")
-	public int totalMonthlyPremiumTime22;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_23")
-	public int totalMonthlyPremiumTime23;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_24")
-	public int totalMonthlyPremiumTime24;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_25")
-	public int totalMonthlyPremiumTime25;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_26")
-	public int totalMonthlyPremiumTime26;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_27")
-	public int totalMonthlyPremiumTime27;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_28")
-	public int totalMonthlyPremiumTime28;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_29")
-	public int totalMonthlyPremiumTime29;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_30")
-	public int totalMonthlyPremiumTime30;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_31")
-	public int totalMonthlyPremiumTime31;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_32")
-	public int totalMonthlyPremiumTime32;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_33")
-	public int totalMonthlyPremiumTime33;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_34")
-	public int totalMonthlyPremiumTime34;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_35")
-	public int totalMonthlyPremiumTime35;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_36")
-	public int totalMonthlyPremiumTime36;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_37")
-	public int totalMonthlyPremiumTime37;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_38")
-	public int totalMonthlyPremiumTime38;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_39")
-	public int totalMonthlyPremiumTime39;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_40")
-	public int totalMonthlyPremiumTime40;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_41")
-	public int totalMonthlyPremiumTime41;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_4")
-	public int totalMonthlyPremiumTime42;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_43")
-	public int totalMonthlyPremiumTime43;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_44")
-	public int totalMonthlyPremiumTime44;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_45")
-	public int totalMonthlyPremiumTime45;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_46")
-	public int totalMonthlyPremiumTime46;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_47")
-	public int totalMonthlyPremiumTime47;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_48")
-	public int totalMonthlyPremiumTime48;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_49")
-	public int totalMonthlyPremiumTime49;
-
-	@Column(name = "TOTAL_MONTH_PRM_TIME_50")
-	public int totalMonthlyPremiumTime50;
-
-	/** 変形繰越時間 */
 	@Column(name = "DEFORM_CARRYFWD_TIME_1")
 	public int deformationCarryforwardTime1;
 
-	@Column(name = "DEFORM_CARRYFWD_TIME_2")
-	public int deformationCarryforwardTime2;
+	/* KRCDT_MON_EXCOUT_TIME 50*/
 
-	@Column(name = "DEFORM_CARRYFWD_TIME_3")
-	public int deformationCarryforwardTime3;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_4")
-	public int deformationCarryforwardTime4;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_5")
-	public int deformationCarryforwardTime5;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_6")
-	public int deformationCarryforwardTime6;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_7")
-	public int deformationCarryforwardTime7;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_8")
-	public int deformationCarryforwardTime8;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_9")
-	public int deformationCarryforwardTime9;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_10")
-	public int deformationCarryforwardTime10;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_11")
-	public int deformationCarryforwardTime11;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_12")
-	public int deformationCarryforwardTime12;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_13")
-	public int deformationCarryforwardTime13;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_14")
-	public int deformationCarryforwardTime14;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_15")
-	public int deformationCarryforwardTime15;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_16")
-	public int deformationCarryforwardTime16;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_17")
-	public int deformationCarryforwardTime17;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_18")
-	public int deformationCarryforwardTime18;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_19")
-	public int deformationCarryforwardTime19;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_20")
-	public int deformationCarryforwardTime20;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_21")
-	public int deformationCarryforwardTime21;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_22")
-	public int deformationCarryforwardTime22;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_23")
-	public int deformationCarryforwardTime23;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_24")
-	public int deformationCarryforwardTime24;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_25")
-	public int deformationCarryforwardTime25;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_26")
-	public int deformationCarryforwardTime26;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_27")
-	public int deformationCarryforwardTime27;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_28")
-	public int deformationCarryforwardTime28;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_29")
-	public int deformationCarryforwardTime29;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_30")
-	public int deformationCarryforwardTime30;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_31")
-	public int deformationCarryforwardTime31;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_32")
-	public int deformationCarryforwardTime32;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_33")
-	public int deformationCarryforwardTime33;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_34")
-	public int deformationCarryforwardTime34;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_35")
-	public int deformationCarryforwardTime35;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_36")
-	public int deformationCarryforwardTime36;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_37")
-	public int deformationCarryforwardTime37;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_38")
-	public int deformationCarryforwardTime38;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_39")
-	public int deformationCarryforwardTime39;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_40")
-	public int deformationCarryforwardTime40;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_41")
-	public int deformationCarryforwardTime41;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_4")
-	public int deformationCarryforwardTime42;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_43")
-	public int deformationCarryforwardTime43;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_44")
-	public int deformationCarryforwardTime44;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_45")
-	public int deformationCarryforwardTime45;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_46")
-	public int deformationCarryforwardTime46;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_47")
-	public int deformationCarryforwardTime47;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_48")
-	public int deformationCarryforwardTime48;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_49")
-	public int deformationCarryforwardTime49;
-
-	@Column(name = "DEFORM_CARRYFWD_TIME_50")
-	public int deformationCarryforwardTime50;
-
-	/* KRCDT_MON_EXCOUT_TIME */
-
-	/** 振替時間 - EXCESS_TIME_1 */
+	/** 振替時間 - EXCESS_TIME_1  */
 	@Column(name = "EXCESS_TIME_1")
 	public int excessTime1;
 
@@ -2377,6 +1918,17 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.krcdtMonMergePk;
 	}
+	
+	public 	MonthMergeKey toDomainKey() {
+		MonthMergeKey key = new MonthMergeKey();
+		key.setEmployeeId(this.krcdtMonMergePk.getEmployeeId());
+		key.setYearMonth(new YearMonth(this.krcdtMonMergePk.getYearMonth()));
+		key.setClosureId(EnumAdaptor.valueOf(this.krcdtMonMergePk.getClosureId(), ClosureId.class));
+		key.setClosureDate(new ClosureDate(this.krcdtMonMergePk.getClosureDay(),
+			(this.krcdtMonMergePk.getIsLastDay() == 1)));
+		return key;
+		
+	}
 
 	/** KRCDT_MON_AGGR_ABSN_DAYS 30 **/
 	public void toEntityAbsenceDays(AggregateAbsenceDaysMerge absenceDaysMerge) {
@@ -2508,56 +2060,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	/** KRCDT_MON_EXCESS_OUTSIDE 50 **/
 	public void toEntityExcessOutsideWorkOfMonthly(ExcessOutsideWorkOfMonthlyMerge domain) {
 		this.toEntityExcessOutsideWorkOfMonthly1(domain.getExcessOutsideWorkOfMonthly1());
-		this.toEntityExcessOutsideWorkOfMonthly2(domain.getExcessOutsideWorkOfMonthly2());
-		this.toEntityExcessOutsideWorkOfMonthly3(domain.getExcessOutsideWorkOfMonthly3());
-		this.toEntityExcessOutsideWorkOfMonthly4(domain.getExcessOutsideWorkOfMonthly4());
-		this.toEntityExcessOutsideWorkOfMonthly5(domain.getExcessOutsideWorkOfMonthly5());
-		this.toEntityExcessOutsideWorkOfMonthly6(domain.getExcessOutsideWorkOfMonthly6());
-		this.toEntityExcessOutsideWorkOfMonthly7(domain.getExcessOutsideWorkOfMonthly7());
-		this.toEntityExcessOutsideWorkOfMonthly8(domain.getExcessOutsideWorkOfMonthly8());
-		this.toEntityExcessOutsideWorkOfMonthly9(domain.getExcessOutsideWorkOfMonthly9());
-		this.toEntityExcessOutsideWorkOfMonthly10(domain.getExcessOutsideWorkOfMonthly10());
-		this.toEntityExcessOutsideWorkOfMonthly11(domain.getExcessOutsideWorkOfMonthly11());
-		this.toEntityExcessOutsideWorkOfMonthly12(domain.getExcessOutsideWorkOfMonthly12());
-		this.toEntityExcessOutsideWorkOfMonthly13(domain.getExcessOutsideWorkOfMonthly13());
-		this.toEntityExcessOutsideWorkOfMonthly14(domain.getExcessOutsideWorkOfMonthly14());
-		this.toEntityExcessOutsideWorkOfMonthly15(domain.getExcessOutsideWorkOfMonthly15());
-		this.toEntityExcessOutsideWorkOfMonthly16(domain.getExcessOutsideWorkOfMonthly16());
-		this.toEntityExcessOutsideWorkOfMonthly17(domain.getExcessOutsideWorkOfMonthly17());
-		this.toEntityExcessOutsideWorkOfMonthly18(domain.getExcessOutsideWorkOfMonthly18());
-		this.toEntityExcessOutsideWorkOfMonthly19(domain.getExcessOutsideWorkOfMonthly19());
-		this.toEntityExcessOutsideWorkOfMonthly20(domain.getExcessOutsideWorkOfMonthly20());
-		this.toEntityExcessOutsideWorkOfMonthly21(domain.getExcessOutsideWorkOfMonthly21());
-		this.toEntityExcessOutsideWorkOfMonthly22(domain.getExcessOutsideWorkOfMonthly22());
-		this.toEntityExcessOutsideWorkOfMonthly23(domain.getExcessOutsideWorkOfMonthly23());
-		this.toEntityExcessOutsideWorkOfMonthly24(domain.getExcessOutsideWorkOfMonthly24());
-		this.toEntityExcessOutsideWorkOfMonthly25(domain.getExcessOutsideWorkOfMonthly25());
-		this.toEntityExcessOutsideWorkOfMonthly26(domain.getExcessOutsideWorkOfMonthly26());
-		this.toEntityExcessOutsideWorkOfMonthly27(domain.getExcessOutsideWorkOfMonthly27());
-		this.toEntityExcessOutsideWorkOfMonthly28(domain.getExcessOutsideWorkOfMonthly28());
-		this.toEntityExcessOutsideWorkOfMonthly29(domain.getExcessOutsideWorkOfMonthly29());
-		this.toEntityExcessOutsideWorkOfMonthly30(domain.getExcessOutsideWorkOfMonthly30());
-		this.toEntityExcessOutsideWorkOfMonthly31(domain.getExcessOutsideWorkOfMonthly31());
-		this.toEntityExcessOutsideWorkOfMonthly32(domain.getExcessOutsideWorkOfMonthly32());
-		this.toEntityExcessOutsideWorkOfMonthly33(domain.getExcessOutsideWorkOfMonthly33());
-		this.toEntityExcessOutsideWorkOfMonthly34(domain.getExcessOutsideWorkOfMonthly34());
-		this.toEntityExcessOutsideWorkOfMonthly35(domain.getExcessOutsideWorkOfMonthly35());
-		this.toEntityExcessOutsideWorkOfMonthly36(domain.getExcessOutsideWorkOfMonthly36());
-		this.toEntityExcessOutsideWorkOfMonthly37(domain.getExcessOutsideWorkOfMonthly37());
-		this.toEntityExcessOutsideWorkOfMonthly38(domain.getExcessOutsideWorkOfMonthly38());
-		this.toEntityExcessOutsideWorkOfMonthly39(domain.getExcessOutsideWorkOfMonthly39());
-		this.toEntityExcessOutsideWorkOfMonthly40(domain.getExcessOutsideWorkOfMonthly40());
-		this.toEntityExcessOutsideWorkOfMonthly41(domain.getExcessOutsideWorkOfMonthly41());
-		this.toEntityExcessOutsideWorkOfMonthly42(domain.getExcessOutsideWorkOfMonthly42());
-		this.toEntityExcessOutsideWorkOfMonthly43(domain.getExcessOutsideWorkOfMonthly43());
-		this.toEntityExcessOutsideWorkOfMonthly44(domain.getExcessOutsideWorkOfMonthly44());
-		this.toEntityExcessOutsideWorkOfMonthly45(domain.getExcessOutsideWorkOfMonthly45());
-		this.toEntityExcessOutsideWorkOfMonthly46(domain.getExcessOutsideWorkOfMonthly46());
-		this.toEntityExcessOutsideWorkOfMonthly47(domain.getExcessOutsideWorkOfMonthly47());
-		this.toEntityExcessOutsideWorkOfMonthly48(domain.getExcessOutsideWorkOfMonthly48());
-		this.toEntityExcessOutsideWorkOfMonthly49(domain.getExcessOutsideWorkOfMonthly49());
-		this.toEntityExcessOutsideWorkOfMonthly50(domain.getExcessOutsideWorkOfMonthly50());
-
 	}
 
 	/** KRCDT_MON_EXCOUT_TIME **/
@@ -3672,299 +3174,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.deformationCarryforwardTime1 = domain.getDeformationCarryforwardTime().v();
 	}
 
-	public void toEntityExcessOutsideWorkOfMonthly2(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime2 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime2 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime2 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly3(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime3 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime3 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime3 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly4(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime4 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime4 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime4 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly5(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime5 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime5 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime5 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly6(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime6 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime6 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime6 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly7(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime7 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime7 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime7 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly8(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime8 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime8 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime8 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly9(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime9 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime9 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime9 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly10(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime10 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime10 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime10 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly11(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime11 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime11 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime11 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly12(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime12 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime12 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime12 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly13(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime13 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime13 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime13 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly14(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime14 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime14 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime14 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly15(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime15 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime15 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime15 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly16(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime16 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime16 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime16 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly17(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime17 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime17 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime17 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly18(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime18 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime18 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime18 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly19(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime19 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime19 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime19 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly20(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime20 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime20 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime20 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly21(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime21 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime21 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime21 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly22(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime22 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime22 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime22 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly23(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime23 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime23 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime23 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly24(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime24 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime24 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime24 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly25(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime25 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime25 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime25 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly26(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime26 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime26 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime26 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly27(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime27 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime27 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime27 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly28(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime28 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime28 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime28 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly29(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime29 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime29 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime29 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly30(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime30 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime30 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime30 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly31(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime31 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime31 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime31 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly32(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime32 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime32 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime32 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly33(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime33 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime33 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime33 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly34(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime34 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime34 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime34 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly35(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime35 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime35 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime35 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly36(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime36 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime36 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime36 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly37(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime37 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime37 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime37 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly38(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime38 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime38 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime38 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly39(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime39 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime39 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime39 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly40(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime40 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime40 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime40 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly41(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime41 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime41 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime41 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly42(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime42 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime42 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime42 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly43(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime43 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime43 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime43 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly44(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime44 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime44 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime44 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly45(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime45 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime45 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime45 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly46(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime46 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime46 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime46 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly47(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime47 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime47 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime47 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly48(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime48 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime48 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime48 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly49(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime49 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime49 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime49 = domain.getDeformationCarryforwardTime().v();
-	}
-
-	public void toEntityExcessOutsideWorkOfMonthly50(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime50 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime50 = domain.getMonthlyTotalPremiumTime().v();
-		this.deformationCarryforwardTime50 = domain.getDeformationCarryforwardTime().v();
-	}
 
 	/* KRCDT_MON_EXCOUT_TIME */
 	public void toEntityExcessOutsideWork1(ExcessOutsideWork domain) {
@@ -4304,7 +3513,69 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		merge.setSpecificDays10(toDomainSpecificDays10());
 		return merge;
 	}
+	
+	
+	public ExcessOutsideWorkOfMonthlyMerge toDomainExcessOutsideWorkOfMonthly() {
+		
+		ExcessOutsideWorkOfMonthlyMerge merge = new ExcessOutsideWorkOfMonthlyMerge();
+		return merge;
+	}
 
+	public ExcessOutsideWorkMerge toDomainExcessOutsideWork() {
+		ExcessOutsideWorkMerge merge = new ExcessOutsideWorkMerge();
+		merge.setExcessOutsideWork1(this.toDomainExcessOutsideWork1());
+		merge.setExcessOutsideWork2(this.toDomainExcessOutsideWork2());
+		merge.setExcessOutsideWork3(this.toDomainExcessOutsideWork3());
+		merge.setExcessOutsideWork4(this.toDomainExcessOutsideWork4());
+		merge.setExcessOutsideWork5(this.toDomainExcessOutsideWork5());
+		merge.setExcessOutsideWork6(this.toDomainExcessOutsideWork6());
+		merge.setExcessOutsideWork7(this.toDomainExcessOutsideWork7());
+		merge.setExcessOutsideWork8(this.toDomainExcessOutsideWork8());
+		merge.setExcessOutsideWork9(this.toDomainExcessOutsideWork9());
+		merge.setExcessOutsideWork10(this.toDomainExcessOutsideWork10());
+		merge.setExcessOutsideWork11(this.toDomainExcessOutsideWork11());
+		merge.setExcessOutsideWork12(this.toDomainExcessOutsideWork12());
+		merge.setExcessOutsideWork13(this.toDomainExcessOutsideWork13());
+		merge.setExcessOutsideWork14(this.toDomainExcessOutsideWork14());
+		merge.setExcessOutsideWork15(this.toDomainExcessOutsideWork15());
+		merge.setExcessOutsideWork16(this.toDomainExcessOutsideWork16());
+		merge.setExcessOutsideWork17(this.toDomainExcessOutsideWork17());
+		merge.setExcessOutsideWork18(this.toDomainExcessOutsideWork18());
+		merge.setExcessOutsideWork19(this.toDomainExcessOutsideWork19());
+		merge.setExcessOutsideWork20(this.toDomainExcessOutsideWork20());
+		merge.setExcessOutsideWork21(this.toDomainExcessOutsideWork21());
+		merge.setExcessOutsideWork22(this.toDomainExcessOutsideWork22());
+		merge.setExcessOutsideWork23(this.toDomainExcessOutsideWork23());
+		merge.setExcessOutsideWork24(this.toDomainExcessOutsideWork24());
+		merge.setExcessOutsideWork25(this.toDomainExcessOutsideWork25());
+		merge.setExcessOutsideWork26(this.toDomainExcessOutsideWork26());
+		merge.setExcessOutsideWork27(this.toDomainExcessOutsideWork27());
+		merge.setExcessOutsideWork28(this.toDomainExcessOutsideWork28());
+		merge.setExcessOutsideWork29(this.toDomainExcessOutsideWork29());
+		merge.setExcessOutsideWork30(this.toDomainExcessOutsideWork30());
+		merge.setExcessOutsideWork31(this.toDomainExcessOutsideWork31());
+		merge.setExcessOutsideWork32(this.toDomainExcessOutsideWork32());
+		merge.setExcessOutsideWork33(this.toDomainExcessOutsideWork33());
+		merge.setExcessOutsideWork34(this.toDomainExcessOutsideWork34());
+		merge.setExcessOutsideWork35(this.toDomainExcessOutsideWork35());
+		merge.setExcessOutsideWork36(this.toDomainExcessOutsideWork36());
+		merge.setExcessOutsideWork37(this.toDomainExcessOutsideWork37());
+		merge.setExcessOutsideWork38(this.toDomainExcessOutsideWork38());
+		merge.setExcessOutsideWork39(this.toDomainExcessOutsideWork39());
+		merge.setExcessOutsideWork40(this.toDomainExcessOutsideWork40());
+		merge.setExcessOutsideWork41(this.toDomainExcessOutsideWork41());
+		merge.setExcessOutsideWork42(this.toDomainExcessOutsideWork42());
+		merge.setExcessOutsideWork43(this.toDomainExcessOutsideWork43());
+		merge.setExcessOutsideWork44(this.toDomainExcessOutsideWork44());
+		merge.setExcessOutsideWork45(this.toDomainExcessOutsideWork45());
+		merge.setExcessOutsideWork46(this.toDomainExcessOutsideWork46());
+		merge.setExcessOutsideWork47(this.toDomainExcessOutsideWork47());
+		merge.setExcessOutsideWork48(this.toDomainExcessOutsideWork48());
+		merge.setExcessOutsideWork49(this.toDomainExcessOutsideWork49());
+		merge.setExcessOutsideWork50(this.toDomainExcessOutsideWork50());
+		return merge;
+		
+	}
 
 	/**
 	 * ドメインに変換
@@ -4671,21 +3942,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 集計残業時間
 	 */
-//	public AggregateOverTime toDomain(){
-//		
-//		return AggregateOverTime.of(
-//				new OverTimeFrameNo(1),
-//				new TimeMonthWithCalculation(
-//						new AttendanceTimeMonth(this.overTime1),
-//						new AttendanceTimeMonth(this.calcOverTime1)),
-//				new AttendanceTimeMonth(this.beforeOverTime1),
-//				new TimeMonthWithCalculation(
-//						new AttendanceTimeMonth(this.transferOverTime1),
-//						new AttendanceTimeMonth(this.calcTransferOverTime1)),
-//				new AttendanceTimeMonth(this.legalOverTime1),
-//				new AttendanceTimeMonth(this.legalTransferOverTime1));
-//	}
-
 	public AggregateOverTime toDomainOverTime1() {
 		return AggregateOverTime.of(new OverTimeFrameNo(1),
 				new TimeMonthWithCalculation(
@@ -4862,6 +4118,21 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
 	
+	public List<AggregateSpecificDays> getSpecificDaysLst(){
+		List<AggregateSpecificDays> lst= new ArrayList<>();
+		lst.add(this.toDomainSpecificDays1());
+		lst.add(this.toDomainSpecificDays2());
+		lst.add(this.toDomainSpecificDays3());
+		lst.add(this.toDomainSpecificDays4());
+		lst.add(this.toDomainSpecificDays5());
+		lst.add(this.toDomainSpecificDays6());
+		lst.add(this.toDomainSpecificDays7());
+		lst.add(this.toDomainSpecificDays8());
+		lst.add(this.toDomainSpecificDays9());
+		lst.add(this.toDomainSpecificDays10());
+		return lst;
+	}
+	
 	/**
 	 * ドメインに変換
 	 * @return 集計特定日数
@@ -4963,36 +4234,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonVactUseTime 月別実績の休暇使用時間
 	 * @return 集計総労働時間
 	 */
-	public AggregateTotalWorkingTime toDomainTotalWorkingTime(
-			KrcdtMonOverTime krcdtMonOverTime,
-			List<KrcdtMonAggrOverTime> krcdtMonAggrOverTimes,
-			KrcdtMonHdwkTime krcdtMonHdwkTime,
-			List<KrcdtMonAggrHdwkTime> krcdtMonAggrHdwkTimes,
-			KrcdtMonVactUseTime krcdtMonVactUseTime){
+	public AggregateTotalWorkingTime toDomainTotalWorkingTime(){
 		
 		// 月別実績の就業時間
 		val workTime = WorkTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.workTime),
 				new AttendanceTimeMonth(this.withinPrescribedPremiumTime),
 				new AttendanceTimeMonth(this.actualWorkTime));
-
-		// 月別実績の残業時間
-		OverTimeOfMonthly overTime = new OverTimeOfMonthly();
-		if (krcdtMonOverTime != null){
-			overTime = krcdtMonOverTime.toDomain(krcdtMonAggrOverTimes);
-		}
-		
-		// 月別実績の休出時間
-		HolidayWorkTimeOfMonthly holidayWorkTime = new HolidayWorkTimeOfMonthly();
-		if (krcdtMonHdwkTime != null){
-			holidayWorkTime = krcdtMonHdwkTime.toDomain(krcdtMonAggrHdwkTimes);
-		}
-		
-		// 月別実績の休暇使用時間
-		VacationUseTimeOfMonthly vacationUseTime = new VacationUseTimeOfMonthly();
-		if (krcdtMonVactUseTime != null){
-			vacationUseTime = krcdtMonVactUseTime.toDomain();
-		}
 		
 		// 月別実績の所定労働時間
 		val prescribedWorkingTime = PrescribedWorkingTimeOfMonthly.of(
@@ -5002,9 +4250,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		// 集計総労働時間
 		return AggregateTotalWorkingTime.of(
 				workTime,
-				overTime,
-				holidayWorkTime,
-				vacationUseTime,
+				null,
+				null,
+				null,
 				prescribedWorkingTime);
 	}
 	
@@ -5069,7 +4317,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @return 月別実績の休出時間
 	 */
 	public HolidayWorkTimeOfMonthly toDomainHolidayWorkTimeOfMonthly(){
-		//TODO
+		List<AggregateHolidayWorkTime> aggrHolidayWorkTimeLst = this.getAggrHolidayWorkTimeLst();
 		
 		return HolidayWorkTimeOfMonthly.of(
 				new TimeMonthWithCalculation(
@@ -5079,9 +4327,24 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.totalTransferTime),
 						new AttendanceTimeMonth(this.calcTotalTransferTime)),
-				new ArrayList<>());
+				aggrHolidayWorkTimeLst);
 	}
 	
+	public List<AggregateHolidayWorkTime> getAggrHolidayWorkTimeLst(){
+		List<AggregateHolidayWorkTime> aggrHolidayWorkTimeLst = new ArrayList<>();
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime1());
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime2());
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime3());
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime4());
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime5());
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime6());
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime7());
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime8());
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime9());
+		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime10());
+
+		return aggrHolidayWorkTimeLst;
+	}	
 	/** KRCDT_MON_LEAVE - リポジトリ：月別実績の休業 only update **/
 	/**
 	 * ドメインに変換
@@ -5148,7 +4411,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonAggrOverTimes 集計残業時間
 	 * @return 月別実績の残業時間
 	 */
-	public OverTimeOfMonthly toDomain(){
+	public OverTimeOfMonthly toDomainOverTimeOfMonthly(){
 		List<AggregateOverTime> overTimeList = this.getOverTimeLst();	
 		return OverTimeOfMonthly.of(
 				new TimeMonthWithCalculation(
@@ -5231,24 +4494,18 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonWorkClock 月別実績の勤務時刻
 	 * @return 月別実績の縦計
 	 */
-	public VerticalTotalOfMonthly toDomainVerticalTotalOfMonthly(
-			KrcdtMonLeave krcdtMonLeave,
-			List<KrcdtMonAggrAbsnDays> krcdtMonAggrAbsnDays,
-			List<KrcdtMonAggrSpecDays> krcdtMonAggrSpecDays,
-			List<KrcdtMonAggrBnspyTime> krcdtMonAggrBnspyTime,
-			List<KrcdtMonAggrGoout> krcdtMonAggrGoout,
-			List<KrcdtMonAggrPremTime> krcdtMonAggrPremTime,
-			List<KrcdtMonAggrDivgTime> krcdtMonAggrDivgTime,
-			List<KrcdtMonMedicalTime> krcdtMonMedicalTime,
-			KrcdtMonWorkClock krcdtMonWorkClock){
-		
-		if (krcdtMonAggrAbsnDays == null) krcdtMonAggrAbsnDays = new ArrayList<>();
-		if (krcdtMonAggrSpecDays == null) krcdtMonAggrSpecDays = new ArrayList<>();
-		if (krcdtMonAggrBnspyTime == null) krcdtMonAggrBnspyTime = new ArrayList<>();
-		if (krcdtMonAggrGoout == null) krcdtMonAggrGoout = new ArrayList<>();
-		if (krcdtMonAggrPremTime == null) krcdtMonAggrPremTime = new ArrayList<>();
-		if (krcdtMonAggrDivgTime == null) krcdtMonAggrDivgTime = new ArrayList<>();
-		if (krcdtMonMedicalTime == null) krcdtMonMedicalTime = new ArrayList<>();
+	public VerticalTotalOfMonthly toDomainVerticalTotalOfMonthly(){
+
+		LeaveOfMonthly  krcdtMonLeave = this.toDomainLeaveOfMonthly();
+		List<AggregateAbsenceDays> krcdtMonAggrAbsnDays  = this.getAbsenceDaysLst();
+		List<AggregateSpecificDays> krcdtMonAggrSpecDays  = this.getSpecificDaysLst();
+		List<AggregateBonusPayTime> krcdtMonAggrBnspyTime = this.getBonusPayTimeLst();
+		List<AggregateGoOut> krcdtMonAggrGoout = this.getGoOutLst();
+		List<AggregatePremiumTime> krcdtMonAggrPremTime = this.getPremiumTimeLst();
+		List<AggregateDivergenceTime> krcdtMonAggrDivgTime = this.getDivergenceTimeLst();
+		List<MedicalTimeOfMonthly> krcdtMonMedicalTime = new ArrayList<>();
+		krcdtMonMedicalTime.add(this.toDomainMedicalTimeOfMonthly());
+		KrcdtMonWorkClock krcdtMonWorkClock = null;
 		
 		// 育児外出
 		List<GoOutForChildCare> goOutForChildCares = new ArrayList<>();
@@ -5267,7 +4524,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		
 		// 月別実績の休業
 		LeaveOfMonthly leave = new LeaveOfMonthly();
-		if (krcdtMonLeave != null) leave = krcdtMonLeave.toDomain();
+		if (krcdtMonLeave != null) leave = krcdtMonLeave;
 		
 		// 月別実績の勤務日数
 		val workDays = WorkDaysOfMonthly.of(
@@ -5275,13 +4532,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				AbsenceDaysOfMonthly.of(
 						new AttendanceDaysMonth(this.totalAbsenceDays),
 						new AttendanceTimeMonth(this.totalAbsenceTime),
-						krcdtMonAggrAbsnDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+						krcdtMonAggrAbsnDays),
 				PredeterminedDaysOfMonthly.of(
 						new AttendanceDaysMonth(this.predetermineDays)),
 				WorkDaysDetailOfMonthly.of(new AttendanceDaysMonth(this.workDays)),
 				HolidayDaysOfMonthly.of(new AttendanceDaysMonth(this.holidayDays)),
 				SpecificDaysOfMonthly.of(
-						krcdtMonAggrSpecDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+						krcdtMonAggrSpecDays),
 				HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonth(this.holidayWorkDays)),
 				PayDaysOfMonthly.of(
 						new AttendanceDaysMonth(this.payAttendanceDays),
@@ -5294,12 +4551,12 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		// 月別実績の勤務時間
 		val workTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly.of(
 				BonusPayTimeOfMonthly.of(
-						krcdtMonAggrBnspyTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+						krcdtMonAggrBnspyTime),
 				GoOutOfMonthly.of(
-						krcdtMonAggrGoout.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+						krcdtMonAggrGoout,
 						goOutForChildCares),
 				PremiumTimeOfMonthly.of(
-						krcdtMonAggrPremTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+						krcdtMonAggrPremTime,
 						new AttendanceTimeMonth(this.premiumMidnightTime),
 						new AttendanceTimeMonth(this.premiumLegalOutsideWorkTime),
 						new AttendanceTimeMonth(this.premiumLegalHolidayWorkTime),
@@ -5348,13 +4605,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.attendanceLeaveGateStayingTime),
 						new AttendanceTimeMonth(this.attendanceLeaveGateUnemployedTime)),
 				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonth(this.budgetVarienceTime)),
-				DivergenceTimeOfMonthly.of(
-						krcdtMonAggrDivgTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
-				krcdtMonMedicalTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+				DivergenceTimeOfMonthly.of(krcdtMonAggrDivgTime), krcdtMonMedicalTime);
 		
 		// 月別実績の勤務時刻
 		WorkClockOfMonthly workClock = new WorkClockOfMonthly();
-		if (krcdtMonWorkClock != null) workClock = krcdtMonWorkClock.toDomain();
 		
 		return VerticalTotalOfMonthly.of(workDays, workTime, workClock);
 	}
@@ -5365,500 +4619,278 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonExcoutTime 時間外超過
 	 * @return 月別実績の時間外超過
 	 */
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly1(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime){
-
-		if (krcdtMonExcoutTime == null) krcdtMonExcoutTime = new ArrayList<>();
-		
+	
+	private List<ExcessOutsideWork> getExcessOutsideWorkLst(){
+		List<ExcessOutsideWork> excessOutsideWork = new ArrayList<>();
+		excessOutsideWork.add(this.toDomainExcessOutsideWork1());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork2());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork3());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork4());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork5());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork6());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork7());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork8());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork9());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork10());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork11());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork12());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork13());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork14());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork15());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork16());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork17());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork18());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork19());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork20());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork21());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork22());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork23());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork24());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork25());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork26());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork27());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork28());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork29());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork30());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork31());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork32());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork33());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork34());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork35());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork36());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork37());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork38());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork39());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork40());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork41());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork42());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork43());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork44());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork45());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork46());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork47());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork48());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork49());
+		excessOutsideWork.add(this.toDomainExcessOutsideWork50());
+		return excessOutsideWork;
+	}
+	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly1(){
+		List<ExcessOutsideWork> excessOutsideWork = this.getExcessOutsideWorkLst();		
 		return ExcessOutsideWorkOfMonthly.of(
 				new AttendanceTimeMonth(this.totalWeeklyPremiumTime1),
 				new AttendanceTimeMonth(this.totalMonthlyPremiumTime1),
 				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime1),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+				excessOutsideWork);
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly2(List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime2),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime2),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime2),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	/** KRCDT_MON_EXCOUT_TIME **/
+	/**
+	 * ドメインに変換
+	 * @return 時間外超過
+	 */
+	public ExcessOutsideWork toDomainExcessOutsideWork1() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime1));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly3(List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime3),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime3),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime3),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	
+	public ExcessOutsideWork toDomainExcessOutsideWork2() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime2));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly4(List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime4),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime4),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime4),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork3() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime3));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly5(List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime5),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime5),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime5),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork4() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime4));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly6(List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime6),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime6),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime6),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork5() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime5));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly7(List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime7),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime7),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime7),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork6() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime6));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly8(List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime8),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime8),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime8),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork7() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime7));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly9(List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime9),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime9),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime9),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork8() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime8));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly10(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime10),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime10),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime10),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork9() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime9));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly11(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime11),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime11),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime11),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork10() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime10));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly12(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime12),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime12),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime12),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork11() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime11));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly13(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime13),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime13),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime13),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork12() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime12));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly14(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime14),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime14),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime14),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork13() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime13));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly15(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime15),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime15),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime15),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork14() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime14));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly16(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime16),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime16),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime16),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork15() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime15));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly17(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime17),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime17),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime17),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork16() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime16));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly18(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime18),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime18),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime18),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork17() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime17));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly19(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime19),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime19),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime19),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork18() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime18));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly20(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime20),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime20),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime20),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork19() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime19));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly21(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime21),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime21),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime21),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork20() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime20));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly22(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime22),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime22),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime22),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork21() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime21));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly23(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime23),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime23),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime23),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork22() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime22));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly24(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime24),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime24),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime24),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork23() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime23));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly25(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime25),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime25),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime25),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork24() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime24));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly26(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime26),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime26),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime26),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork25() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime25));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly27(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime27),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime27),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime27),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork26() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime26));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly28(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime28),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime28),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime28),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork27() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime27));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly29(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime29),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime29),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime29),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork28() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime28));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly30(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime30),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime30),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime30),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork29() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime29));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly31(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime31),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime31),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime31),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork30() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime30));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly32(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime32),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime32),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime32),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork31() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime31));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly33(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime33),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime33),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime33),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork32() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime32));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly34(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime34),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime34),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime34),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork33() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime33));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly35(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime35),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime35),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime35),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork34() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime34));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly36(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime36),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime36),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime36),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork35() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime35));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly37(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime37),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime37),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime37),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork36() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime36));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly38(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime38),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime38),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime38),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork37() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime37));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly39(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime39),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime39),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime39),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork38() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime38));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly40(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime40),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime40),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime40),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork39() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime39));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly41(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime41),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime41),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime41),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork40() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime40));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly42(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime42),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime42),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime42),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork41() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime41));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly43(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime43),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime43),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime43),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork42() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime42));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly44(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime44),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime44),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime44),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork43() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime43));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly45(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime45),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime45),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime45),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork44() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime44));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly46(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime46),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime46),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime46),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork45() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime45));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly47(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime47),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime47),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime47),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork46() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime46));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly48(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime48),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime48),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime48),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork47() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime47));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly49(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime49),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime49),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime49),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork48() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime48));
 	}
 
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly50(
-			List<KrcdtMonExcoutTime> krcdtMonExcoutTime) {
-		if (krcdtMonExcoutTime == null)
-			krcdtMonExcoutTime = new ArrayList<>();
-		return ExcessOutsideWorkOfMonthly.of(new AttendanceTimeMonth(this.totalWeeklyPremiumTime50),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime50),
-				new AttendanceTimeMonthWithMinus(this.deformationCarryforwardTime50),
-				krcdtMonExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	public ExcessOutsideWork toDomainExcessOutsideWork49() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime49));
 	}
 
+	public ExcessOutsideWork toDomainExcessOutsideWork50() {
+		return ExcessOutsideWork.of(new AttendanceTimeMonth(this.excessTime50));
+	}
+
+	
+	
 	/** KRCDT_MON_AGREEMENT_TIME **/
 	/**
 	 * ドメインに変換
@@ -5870,9 +4902,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.agreementTime),
 				new LimitOneMonth(this.limitErrorTime),
 				new LimitOneMonth(this.limitAlarmTime),
-				(this.exceptionLimitErrorTime == null ?
+		(this.exceptionLimitErrorTime == null ?
 						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
-				(this.exceptionLimitAlarmTime == null ?
+		(this.exceptionLimitAlarmTime == null ?
 						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
 				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
 	}
@@ -5902,4 +4934,287 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new ClassificationCode(this.lastClassCd),
 						new BusinessTypeCode(this.lastBusinessTypeCd)));
 	}
+	
+	/** KRCDT_MON_AGGR_ABSN_DAYS
+	 * 
+	 */
+	public AggregateAbsenceDaysMerge toDomainAbsenceDays() {
+		
+		AggregateAbsenceDaysMerge merge = new AggregateAbsenceDaysMerge();
+		merge.setAbsenceDays1(this.toDomainAbsenceDays1());
+		merge.setAbsenceDays2(this.toDomainAbsenceDays2());
+		merge.setAbsenceDays3(this.toDomainAbsenceDays3());
+		merge.setAbsenceDays4(this.toDomainAbsenceDays4());
+		merge.setAbsenceDays5(this.toDomainAbsenceDays5());
+		merge.setAbsenceDays6(this.toDomainAbsenceDays6());
+		merge.setAbsenceDays7(this.toDomainAbsenceDays7());
+		merge.setAbsenceDays8(this.toDomainAbsenceDays8());
+		merge.setAbsenceDays9(this.toDomainAbsenceDays9());
+		merge.setAbsenceDays10(this.toDomainAbsenceDays10());
+		merge.setAbsenceDays11(this.toDomainAbsenceDays11());
+		merge.setAbsenceDays12(this.toDomainAbsenceDays12());
+		merge.setAbsenceDays13(this.toDomainAbsenceDays13());
+		merge.setAbsenceDays14(this.toDomainAbsenceDays14());
+		merge.setAbsenceDays15(this.toDomainAbsenceDays15());
+		merge.setAbsenceDays16(this.toDomainAbsenceDays16());
+		merge.setAbsenceDays17(this.toDomainAbsenceDays17());
+		merge.setAbsenceDays18(this.toDomainAbsenceDays18());
+		merge.setAbsenceDays19(this.toDomainAbsenceDays19());
+		merge.setAbsenceDays20(this.toDomainAbsenceDays20());
+		merge.setAbsenceDays21(this.toDomainAbsenceDays21());
+		merge.setAbsenceDays22(this.toDomainAbsenceDays22());
+		merge.setAbsenceDays23(this.toDomainAbsenceDays23());
+		merge.setAbsenceDays24(this.toDomainAbsenceDays24());
+		merge.setAbsenceDays25(this.toDomainAbsenceDays25());
+		merge.setAbsenceDays26(this.toDomainAbsenceDays26());
+		merge.setAbsenceDays27(this.toDomainAbsenceDays27());
+		merge.setAbsenceDays28(this.toDomainAbsenceDays28());
+		merge.setAbsenceDays29(this.toDomainAbsenceDays29());
+		merge.setAbsenceDays30(this.toDomainAbsenceDays30());
+		return merge;
+		
+	}
+	public  List<AggregateBonusPayTime> getBonusPayTimeLst() {
+		List<AggregateBonusPayTime> merge = new ArrayList<>();
+		merge.add(toDomainBonusPayTime1());
+		merge.add(toDomainBonusPayTime2());
+		merge.add(toDomainBonusPayTime3());
+		merge.add(toDomainBonusPayTime4());
+		merge.add(toDomainBonusPayTime5());
+		merge.add(toDomainBonusPayTime6());
+		merge.add(toDomainBonusPayTime7());
+		merge.add(toDomainBonusPayTime8());
+		merge.add(toDomainBonusPayTime9());
+		merge.add(toDomainBonusPayTime10());
+		return merge;
+	}
+	public List<AggregateAbsenceDays> getAbsenceDaysLst(){
+		List<AggregateAbsenceDays> lst = new ArrayList<>();
+		lst.add(this.toDomainAbsenceDays1());
+		lst.add(this.toDomainAbsenceDays2());
+		lst.add(this.toDomainAbsenceDays3());
+		lst.add(this.toDomainAbsenceDays4());
+		lst.add(this.toDomainAbsenceDays5());
+		lst.add(this.toDomainAbsenceDays6());
+		lst.add(this.toDomainAbsenceDays7());
+		lst.add(this.toDomainAbsenceDays8());
+		lst.add(this.toDomainAbsenceDays9());
+		lst.add(this.toDomainAbsenceDays10());
+		lst.add(this.toDomainAbsenceDays11());
+		lst.add(this.toDomainAbsenceDays12());
+		lst.add(this.toDomainAbsenceDays13());
+		lst.add(this.toDomainAbsenceDays14());
+		lst.add(this.toDomainAbsenceDays15());
+		lst.add(this.toDomainAbsenceDays16());
+		lst.add(this.toDomainAbsenceDays17());
+		lst.add(this.toDomainAbsenceDays18());
+		lst.add(this.toDomainAbsenceDays19());
+		lst.add(this.toDomainAbsenceDays20());
+		lst.add(this.toDomainAbsenceDays21());
+		lst.add(this.toDomainAbsenceDays22());
+		lst.add(this.toDomainAbsenceDays23());
+		lst.add(this.toDomainAbsenceDays24());
+		lst.add(this.toDomainAbsenceDays25());
+		lst.add(this.toDomainAbsenceDays26());
+		lst.add(this.toDomainAbsenceDays27());
+		lst.add(this.toDomainAbsenceDays28());
+		lst.add(this.toDomainAbsenceDays29());
+		lst.add(this.toDomainAbsenceDays30());
+		return lst;
+	}
+	
+	public List<AggregateGoOut> getGoOutLst() {
+		List<AggregateGoOut> merge = new ArrayList<>();
+		merge.add(toDomainGoOut1());
+		merge.add(toDomainGoOut2());
+		merge.add(toDomainGoOut3());
+		merge.add(toDomainGoOut4());
+		return merge;
+	}
+	
+	public List<AggregatePremiumTime> getPremiumTimeLst() {
+		List<AggregatePremiumTime> merge = new ArrayList<>();
+		merge.add(toDomainPremiumTime1());
+		merge.add(toDomainPremiumTime2());
+		merge.add(toDomainPremiumTime3());
+		merge.add(toDomainPremiumTime4());
+		merge.add(toDomainPremiumTime5());
+		merge.add(toDomainPremiumTime6());
+		merge.add(toDomainPremiumTime7());
+		merge.add(toDomainPremiumTime8());
+		merge.add(toDomainPremiumTime9());
+		merge.add(toDomainPremiumTime10());
+		return merge;
+	}
+	
+	
+	public List<AggregateDivergenceTime> getDivergenceTimeLst() {
+		List<AggregateDivergenceTime> merge = new ArrayList<>();
+		merge.add(toDomainDivergenceTime1());
+		merge.add(toDomainDivergenceTime2());
+		merge.add(toDomainDivergenceTime3());
+		merge.add(toDomainDivergenceTime4());
+		merge.add(toDomainDivergenceTime5());
+		merge.add(toDomainDivergenceTime6());
+		merge.add(toDomainDivergenceTime7());
+		merge.add(toDomainDivergenceTime8());
+		merge.add(toDomainDivergenceTime9());
+		merge.add(toDomainDivergenceTime10());
+		return merge;
+	}
+	
+	public AggregateAbsenceDays toDomainAbsenceDays1() {
+		return AggregateAbsenceDays.of(
+				new AttendanceDaysMonth(new Double(this.absenceDayNo1)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo1));
+		
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays2() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo2)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo2));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays3() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo3)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo3));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays4() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo4)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo4));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays5() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo5)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo5));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays6() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo6)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo6));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays7() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo7)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo7));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays8() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo8)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo8));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays9() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo9)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo9));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays10() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo10)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo10));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays11() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo11)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo11));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays12() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo12)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo12));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays13() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo13)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo13));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays14() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo14)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo14));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays15() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo15)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo15));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays16() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo16)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo16));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays17() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo17)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo17));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays18() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo18)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo18));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays19() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo19)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo19));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays20() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo20)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo20));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays21() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo21)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo21));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays22() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo22)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo22));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays23() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo23)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo23));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays24() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo24)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo24));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays25() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo25)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo25));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays26() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo26)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo26));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays27() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo27)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo27));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays28() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo28)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo28));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays29() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo29)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo29));
+	}
+
+	public AggregateAbsenceDays toDomainAbsenceDays30() {
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo30)),
+				new AttendanceTimeMonth((int) this.absenceTimeNo30));
+	}
+
+	
+	
 }
