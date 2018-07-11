@@ -435,30 +435,30 @@ module nts.uk.at.view.kmk006.a {
              * Initial data source 
              */
             public initDataSource(): void {
-                let self = this;                
+                let self = this;
                 self.autoCalcOfLeaveLateSetting = [
-                    { value: false, name: nts.uk.resource.getText("KMK006_42") },
-                    { value: true, name: nts.uk.resource.getText("KMK006_41") }
+                    { value: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { value: false, name: nts.uk.resource.getText("KMK006_42") }
                 ];
 
                 self.autoCalcOfLeaveEarlySetting = [
-                    { value: false, name: nts.uk.resource.getText("KMK006_42") },
-                    { value: true, name: nts.uk.resource.getText("KMK006_41") }
+                    { value: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { value: false, name: nts.uk.resource.getText("KMK006_42") }
                 ];
 
                 self.autoCalRaisingSalarySetting = [
-                    { value: false, name: nts.uk.resource.getText("KMK006_42") },
-                    { value: true, name: nts.uk.resource.getText("KMK006_41") }
+                    { value: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { value: false, name: nts.uk.resource.getText("KMK006_42") }
                 ];
 
                 self.autoCalSpecificRaisingSalarySetting = [
-                    { value: false, name: nts.uk.resource.getText("KMK006_42") },
-                    { value: true, name: nts.uk.resource.getText("KMK006_41") }
+                    { value: true, name: nts.uk.resource.getText("KMK006_41") },
+                    { value: false, name: nts.uk.resource.getText("KMK006_42") }
                 ];
-                
+
                 self.autoCalcSetOfDivergenceTime = [
-                    { code: 0, name: nts.uk.resource.getText("KMK006_42") },
-                    { code: 1, name: nts.uk.resource.getText("KMK006_41") }
+                    { code: 1, name: nts.uk.resource.getText("KMK006_41") },
+                    { code: 0, name: nts.uk.resource.getText("KMK006_42") }
                 ];
             }
             
