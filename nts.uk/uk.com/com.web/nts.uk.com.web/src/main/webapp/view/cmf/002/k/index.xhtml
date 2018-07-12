@@ -19,72 +19,82 @@
 
 		<ui:define name="content">
 			<div class="contents-area dialog-content">
+				<!-- K1: タイトル -->
 				<div id="K1" class="dialog-title">#{i18n.getText('CMF002_178')}</div>
 				<div class="div-table">
 					<div class="div-table-row">
+						<!-- K2: 形式選択(ラベル) -->
 						<div id="K2" class="div-table-col-standard"
 							data-bind="ntsFormLabel: {required : false }">#{i18n.getText('CMF002_179')}
 						</div>
+						<!-- K2_1: 形式選択 -->
 						<div id="K2_1" tabindex="1" class="div-table-col-standard">
-							<div class="row-group"
+							<!-- K2_1_1: YYYY/MM/DD -->
+							<div id="K2_1_1" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
 								option: formatSelectionItems()[0],
-								enable: enableFormatSelection(),
+								enable: enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
 							</div>
-							<div class="row-group"
+							<!-- K2_1_2: YYYYMMDD -->
+							<div id="K2_1_2" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
 								option: formatSelectionItems()[1],
-								enable: enableFormatSelection(),
+								enable: enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
 							</div>
-							<div class="row-group"
+							<!-- K2_1_3: YY/MM/DD -->
+							<div id="K2_1_3" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
 								option: formatSelectionItems()[2],
-								enable: enableFormatSelection(),
+								enable: enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
 							</div>
-							<div class="row-group"
+							<!-- K2_1_4: YYMMDD -->
+							<div id="K2_1_4" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
 								option: formatSelectionItems()[3],
-								enable: enableFormatSelection(),
+								enable: enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
 							</div>
-							<div class="row-group"
+							<!-- K2_1_5: JJYY/MM/DD -->
+							<div id="K2_1_5" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
 								option: formatSelectionItems()[4],
-								enable: enableFormatSelection(),
+								enable: enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
 							</div>
-							<div class="row-group"
+							<!-- K2_1_6: JJYYMMDD -->
+							<div id="K2_1_6" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
 								option: formatSelectionItems()[5],
-								enable: enableFormatSelection(),
+								enable: enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
 							</div>
-							<div class="row-group"
+							<!-- K2_1_7: 曜日 -->
+							<div id="K2_1_7" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
 								option: formatSelectionItems()[6],
-								enable: enableFormatSelection(),
+								enable: enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
@@ -92,31 +102,37 @@
 						</div>
 					</div>
 					<div class="div-table-row">
+						<!-- K3: NULL値置き換え(ラベル) -->
 						<div id="K3" class="div-table-col-standard"
 							data-bind="ntsFormLabel: {required : false }">#{i18n.getText('CMF002_157')}
 						</div>
+						<!-- K3_1: NULL値置き換え -->
 						<div id="K3_1" tabindex="4" class="div-table-col-standard">
-							<div class="row-group"
+							<!-- K3_1_1: 使用する -->
+							<div id="K3_1_1" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: nullValueReplacementSelected,
 								option: nullValueReplacementItems()[0],
-								enable: enableNullValueReplacement(),
+								enable: enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'valueReplace'}">
 							</div>
-							<div class="row-group"
+							<!-- K3_1_2: 使用しない -->
+							<div id="K3_1_2" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: nullValueReplacementSelected,
 								option: nullValueReplacementItems()[1],
-								enable: enableNullValueReplacement(),
+								enable: enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'valueReplace'}">
 							</div>
 						</div>
+						<!-- K3_2: NULL値置き換え値 -->
 						<div id="K3_2" tabindex="5" class="div-table-col-medium">
-							<input data-bind="ntsTextEditor: {
+							<input
+								data-bind="ntsTextEditor: {
 									value: replacedValue,
 									name:'#{i18n.getText('CMF002_158')}',
 									required: true,
@@ -125,11 +141,14 @@
 						</div>
 					</div>
 					<div class="div-table-row">
+						<!-- K4: 固定値(ラベル) -->
 						<div id="K4" class="div-table-col-standard"
 							data-bind="ntsFormLabel: {required : false }">#{i18n.getText('CMF002_159')}
 						</div>
+						<!-- K4_1: 固定値 -->
 						<div id="K4_1" tabindex="6" class="div-table-col-standard">
-							<div class="row-group"
+							<!-- K4_1_1: 使用する -->
+							<div id="K4_1_1" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: fixedValueSelected,
 								option: fixedValueItems()[0],
@@ -138,7 +157,8 @@
 								optionText: 'name',
 								group: 'fixedValue'}">
 							</div>
-							<div class="row-group"
+							<!-- K4_1_2: 使用しない -->
+							<div id="K4_1_2" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: fixedValueSelected,
 								option: fixedValueItems()[1],
@@ -148,22 +168,26 @@
 								group: 'fixedValue'}">
 							</div>
 						</div>
+						<!-- K4_2: 固定値の値 -->
 						<div id="K4_2" tabindex="7" class="div-table-col-medium">
-							<input data-bind="ntsTextEditor: {
+							<input
+								data-bind="ntsTextEditor: {
 									value: fixedValue,
 									name:'#{i18n.getText('CMF002_160')}',
 									required: true,
 									option : {width : '45px'},
-									enable: enableFixedValueEditor()}" />
+									enable: !enable()}" />
 						</div>
 					</div>
 				</div>
 
 			</div>
 			<div id="functions-area-bottom">
-				<button id="V22_1" class="x-large proceed "
+				<!-- K20_1: 設定 -->
+				<button id="K20_1" class="x-large proceed "
 					data-bind="click: selectConvertCode">#{i18n.getText('CMF002_272')}</button>
-				<button id="V22_2" class="large"
+				<!-- K20_2: キャンセル -->
+				<button id="K20_2" class="large"
 					data-bind="click: cancelSelectConvertCode">#{i18n.getText('CMF002_273')}</button>
 			</div>
 		</ui:define>
