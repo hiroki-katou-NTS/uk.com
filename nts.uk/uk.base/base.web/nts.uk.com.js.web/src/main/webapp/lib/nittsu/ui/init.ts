@@ -85,8 +85,7 @@ module nts.uk.ui {
         
         var startP = function(){
             _.defer(() => {
-                if (request.location.current.rawUrl.indexOf("view/common/error/sessiontimeout") === -1
-                    && request.location.current.rawUrl.indexOf("/view/ccg/007") === -1) {
+                if (cantCall()) {
                     loadEmployeeCodeConstraints().always(() => _start.call(__viewContext));
                 } else {
                     _start.call(__viewContext);
@@ -115,6 +114,19 @@ module nts.uk.ui {
                 }
             }
         }
+        
+        const noSessionWebScreens = [
+            "/view/sample/",
+            "/view/common/error/",
+            "/view/spr/index.xhtml",
+            "/view/ccg/007/",
+            "/view/kdw/003/a/index.xhtml"
+        ];
+        
+        let cantCall = function() {
+            return !_.some(noSessionWebScreens, w => request.location.current.rawUrl.indexOf(w) > -1)
+                || request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
+        };
         
         let loadEmployeeCodeConstraints = function() {
             let self = this,

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +13,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.ResponseImprovementAdapter;
+import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.Check36AgreementValueImport;
 import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.CheckResultMonthlyAdapter;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlAtdItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.ExtraResultMonthlyFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
@@ -24,7 +27,8 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -59,6 +63,9 @@ public class MonthlyAggregateProcessService {
 	
 	@Inject
 	private ClosureService closureService;
+	
+	@Inject
+	private AttendanceItemNameDomainService attdItemNameDomainService;
 	
 	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees){
 		
@@ -208,38 +215,33 @@ public class MonthlyAggregateProcessService {
 //						}
 						break;
 					case 1:
-						//TODO : chua biet date là gì
-						GeneralDate date = GeneralDate.today();
-						boolean checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
+						Check36AgreementValueImport checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
 								yearMonth,closureID,closureDate,extra.getAgreementCheckCon36());
-						if(checkAgreementError) {
+						
+						if(checkAgreementError.isCheck36AgreementCon()) {
 							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 									employee.getWorkplaceId(),
 									employee.getId(),
 									yearMonth.toString(),
 									TextResource.localize("KAL010_100"),
 									TextResource.localize("KAL010_204"),
-									//TODO : còn thiếu
-									TextResource.localize("KAL010_205"),
-									
+									TextResource.localize("KAL010_205",String.valueOf(checkAgreementError.getErrorValue()/60)+":"+String.valueOf(checkAgreementError.getErrorValue()%60)), 
 									extra.getDisplayMessage()
 									);
 							listValueExtractAlarm.add(resultMonthlyValue);
 						}
 						break;
 					case 2:
-						boolean checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
+						Check36AgreementValueImport checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
 								yearMonth,closureID,closureDate,extra.getAgreementCheckCon36());
-						if(checkAgreementAlarm) {
+						if(checkAgreementAlarm.isCheck36AgreementCon()) {
 							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 									employee.getWorkplaceId(),
 									employee.getId(),
 									yearMonth.toString(),
 									TextResource.localize("KAL010_100"),
 									TextResource.localize("KAL010_206"),
-									//TODO : còn thiếu
-									TextResource.localize("KAL010_207"),
-									
+									TextResource.localize("KAL010_207",String.valueOf(checkAgreementAlarm.getAlarmValue()/60)+":"+String.valueOf(checkAgreementAlarm.getAlarmValue()%60)),
 									extra.getDisplayMessage()
 									);
 							listValueExtractAlarm.add(resultMonthlyValue);
@@ -250,44 +252,274 @@ public class MonthlyAggregateProcessService {
 						break;
 					case 3 :
 						break;
-					case 4 : 
-						//Chưa có, chưa thiết kế	
-						break;
 					default:
 						boolean checkPerTimeMonActualResult = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
-								yearMonth, 1, 1, employee.getId(), extra.getCheckConMonthly());
+								yearMonth, closureID,closureDate, employee.getId(), extra.getCheckConMonthly());
 						if(checkPerTimeMonActualResult) {
 							if(extra.getTypeCheckItem() ==8) {
+								String alarmDescription1 = "";
+								String alarmDescription2 = "";
+								List<ErAlAtdItemConAdapterDto> listErAlAtdItemCon = extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon();
+								
+								//group 1 
+								for(ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemCon ) {
+									int compare = erAlAtdItemCon.getCompareOperator();
+									String startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue());
+									String endValue= "";
+									String nameErrorAlarm = "";
+									//get name attdanceName 
+									if(!erAlAtdItemCon.getCountableAddAtdItems().isEmpty()) {
+										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableAddAtdItems(), 0);
+										nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+									}else {
+										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableSubAtdItems(), 0);
+										nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+									}
+									//if type = time
+									if(erAlAtdItemCon.getConditionAtr() == 1) {
+										startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue().intValue()/60 +":"+erAlAtdItemCon.getCompareStartValue().intValue()%60);
+									}
+									CompareOperatorText compareOperatorText = convertCompareType(compare);
+									//0 : AND, 1 : OR
+									String compareAndOr = "";
+									if(extra.getCheckConMonthly().getGroup1().getConditionOperator() == 0) {
+										compareAndOr = "AND";
+									}else {
+										compareAndOr = "OR";
+									}
+									if(!alarmDescription1.equals("")) {
+										alarmDescription1 = compareAndOr +" "+ alarmDescription1;
+									}
+									if(compare<=5) {
+										alarmDescription1 =  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
+//												startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
+									}else {
+										endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue());
+										if(erAlAtdItemCon.getConditionAtr() == 1) {
+											endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue()/60)+":"+String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue()%60);
+										}
+										if(compare>5 && compare<=7) {
+											alarmDescription1 = startValue +" "+
+													compareOperatorText.getCompareLeft()+ " "+
+													nameErrorAlarm+ " "+
+													compareOperatorText.getCompareright()+ " "+
+													endValue+ " ";	
+										}else {
+											alarmDescription1 = nameErrorAlarm + " "+
+													compareOperatorText.getCompareLeft()+ " "+
+													startValue + ","+endValue+ " "+
+													compareOperatorText.getCompareright()+ " "+
+													nameErrorAlarm+ " " ;
+										}
+									}
+								}
+								if(!alarmDescription1.equals(""))
+									alarmDescription1 = "("+alarmDescription1+")";
+								
+								if(extra.getCheckConMonthly().isGroup2UseAtr()) {
+									List<ErAlAtdItemConAdapterDto> listErAlAtdItemCon2 = extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon();
+									//group 2 
+									for(ErAlAtdItemConAdapterDto erAlAtdItemCon2 : listErAlAtdItemCon2 ) {
+										int compare = erAlAtdItemCon2.getCompareOperator();
+										String startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue());
+										String endValue= "";
+										String nameErrorAlarm = "";
+										//get name attdanceName 
+										if(!erAlAtdItemCon2.getCountableAddAtdItems().isEmpty()) {
+											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableAddAtdItems(), 0);
+											nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+										}else {
+											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableSubAtdItems(), 0);
+											nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+										}
+										//if type = time
+										if(erAlAtdItemCon2.getConditionAtr() == 1) {
+											startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue().intValue()/60 +":"+erAlAtdItemCon2.getCompareStartValue().intValue()%60);
+										}
+										CompareOperatorText compareOperatorText = convertCompareType(compare);
+										//0 : AND, 1 : OR
+										String compareAndOr = "";
+										if(extra.getCheckConMonthly().getGroup1().getConditionOperator() == 0) {
+											compareAndOr = "AND";
+										}else {
+											compareAndOr = "OR";
+										}
+										if(!alarmDescription2.equals("")) {
+											alarmDescription2 = compareAndOr +" "+ alarmDescription2;
+										}
+										if(compare<=5) {
+											alarmDescription2 =  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
+//													startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
+										}else {
+											endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue());
+											if(erAlAtdItemCon2.getConditionAtr() == 1) {
+												endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue()/60)+":"+String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue()%60);
+											}
+											if(compare>5 && compare<=7) {
+												alarmDescription2 = startValue +" "+
+														compareOperatorText.getCompareLeft()+ " "+
+														nameErrorAlarm+ " "+
+														compareOperatorText.getCompareright()+ " "+
+														endValue+ " ";	
+											}else {
+												alarmDescription2 = nameErrorAlarm + " "+
+														compareOperatorText.getCompareLeft()+ " "+
+														startValue + ","+endValue+ " "+
+														compareOperatorText.getCompareright()+ " "+
+														nameErrorAlarm+ " " ;
+											}
+										}
+									}//end for
+									
+									if(!alarmDescription2.equals(""))
+										alarmDescription2 = "("+alarmDescription2+")";
+								}
+								String alarmDescriptionValue= "";
+								if(extra.getCheckConMonthly().getOperatorBetweenGroups() ==0) {//AND
+									alarmDescriptionValue = "("+alarmDescription1+") AND ("+alarmDescription2+")";
+								}
+									
+									
 								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 										employee.getWorkplaceId(),
 										employee.getId(),
 										yearMonth.toString(),
 										TextResource.localize("KAL010_100"),
 										TextResource.localize("KAL010_60"),
-										//TODO : còn thiếu
-										TextResource.localize("KAL010_207"),//fix tạm
-										
+										alarmDescriptionValue,	
 										extra.getDisplayMessage()
 										);
 								listValueExtractAlarm.add(resultMonthlyValue);
 							}else {
-								String nameItem = "";
+								ErAlAtdItemConAdapterDto erAlAtdItemConAdapterDto = extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon().get(0);
+								int compare = erAlAtdItemConAdapterDto.getCompareOperator();
+								BigDecimal startValue = erAlAtdItemConAdapterDto.getCompareStartValue();
+								BigDecimal endValue = erAlAtdItemConAdapterDto.getCompareEndValue();
+								CompareOperatorText compareOperatorText = convertCompareType(compare);
+								String nameErrorAlarm = "";
+								//0 is monthly,1 is dayly
+								if(!erAlAtdItemConAdapterDto.getCountableAddAtdItems().isEmpty()) {
+									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableAddAtdItems(), 0);
+									nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+								}else {
+									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableSubAtdItems(), 0);
+									nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+								}
 								
+								
+								String nameItem = "";
+								String alarmDescription = "";
 								switch(extra.getTypeCheckItem()) {
-								case 4 :
+								case 4 ://時間
 									nameItem = TextResource.localize("KAL010_47");
+									String startValueTime = String.valueOf(startValue.intValue()/60)+":"+String.valueOf(startValue.intValue()%60);
+									String endValueTime = "";
+									if(compare<=5) {
+										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime);
+									}else {
+										endValueTime = String.valueOf(endValue.intValue()/60)+":"+String.valueOf(endValue.intValue()%60);
+										if(compare>5 && compare<=7) {
+											alarmDescription = TextResource.localize("KAL010_277",startValueTime,
+													compareOperatorText.getCompareLeft(),
+													nameErrorAlarm,
+													compareOperatorText.getCompareright(),
+													endValueTime
+													);	
+										}else {
+											alarmDescription = TextResource.localize("KAL010_277",
+													nameErrorAlarm,
+													compareOperatorText.getCompareLeft(),
+													startValueTime + ","+endValueTime,
+													compareOperatorText.getCompareright(),
+													nameErrorAlarm
+													);
+										}
+									}
+									
 									break;
-								case 5 :
+								case 5 ://日数
 									nameItem = TextResource.localize("KAL010_113");
+									String startValueDays = String.valueOf(startValue.intValue());
+									String endValueDays = "";
+									if(compare<=5) {
+										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueDays);
+									}else {
+										endValueDays = String.valueOf(endValue.intValue());
+										if(compare>5 && compare<=7) {
+											alarmDescription = TextResource.localize("KAL010_277",startValueDays,
+													compareOperatorText.getCompareLeft(),
+													nameErrorAlarm,
+													compareOperatorText.getCompareright(),
+													endValueDays
+													);	
+										}else {
+											alarmDescription = TextResource.localize("KAL010_277",
+													nameErrorAlarm,
+													compareOperatorText.getCompareLeft(),
+													startValueDays + "," + endValueDays,
+													compareOperatorText.getCompareright(),
+													nameErrorAlarm
+													);
+										}
+									}
 									break;
-								case 6 :
+								case 6 ://回数
 									nameItem = TextResource.localize("KAL010_50");
+									String startValueTimes = String.valueOf(startValue.intValue());
+									String endValueTimes = "";
+									if(compare<=5) {
+										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTimes);
+									}else {
+										endValueDays = String.valueOf(endValue.intValue());
+										if(compare>5 && compare<=7) {
+											alarmDescription = TextResource.localize("KAL010_277",startValueTimes,
+													compareOperatorText.getCompareLeft(),
+													nameErrorAlarm,
+													compareOperatorText.getCompareright(),
+													endValueTimes
+													);	
+										}else {
+											alarmDescription = TextResource.localize("KAL010_277",
+													nameErrorAlarm,
+													compareOperatorText.getCompareLeft(),
+													startValueTimes + "," + endValueTimes,
+													compareOperatorText.getCompareright(),
+													nameErrorAlarm
+													);
+										}
+									}
 									break;
-								case 7 :
+								case 7 ://金額 money
 									nameItem = TextResource.localize("KAL010_51");
+									String startValueMoney = String.valueOf(startValue.intValue());
+									String endValueMoney = "";
+									if(compare<=5) {
+										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueMoney+".00");
+									}else {
+										endValueDays = String.valueOf(endValue.intValue());
+										if(compare>5 && compare<=7) {
+											alarmDescription = TextResource.localize("KAL010_277",startValueMoney+".00",
+													compareOperatorText.getCompareLeft(),
+													nameErrorAlarm,
+													compareOperatorText.getCompareright(),
+													endValueMoney+".00"
+													);	
+										}else {
+											alarmDescription = TextResource.localize("KAL010_277",
+													nameErrorAlarm,
+													compareOperatorText.getCompareLeft(),
+													startValueMoney + ".00," + endValueMoney+".00",
+													compareOperatorText.getCompareright(),
+													nameErrorAlarm
+													);
+										}
+									}
 									break;
 								default : break;
 								}
+								
+								
+								
 								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 										employee.getWorkplaceId(),
 										employee.getId(),
@@ -295,7 +527,7 @@ public class MonthlyAggregateProcessService {
 										TextResource.localize("KAL010_100"),
 										nameItem,
 										//TODO : còn thiếu
-										TextResource.localize("KAL010_207"),//fix tạm
+										alarmDescription,//fix tạm
 										
 										extra.getDisplayMessage()
 										);
@@ -312,6 +544,55 @@ public class MonthlyAggregateProcessService {
 		}
 		
 		return listValueExtractAlarm;
+	}
+	
+	private CompareOperatorText convertCompareType(int compareOperator) {
+		CompareOperatorText compare = new CompareOperatorText();
+		switch(compareOperator) {
+		case 0 :/* 等しい（＝） */
+			compare.setCompareLeft("＝");
+			compare.setCompareright("");
+			break; 
+		case 1 :/* 等しくない（≠） */
+			compare.setCompareLeft("≠");
+			compare.setCompareright("");
+			break; 
+		case 2 :/* より大きい（＞） */
+			compare.setCompareLeft("＞");
+			compare.setCompareright("");
+			break;
+		case 3 :/* 以上（≧） */
+			compare.setCompareLeft("≧");
+			compare.setCompareright("");
+			break;
+		case 4 :/* より小さい（＜） */
+			compare.setCompareLeft("＜");
+			compare.setCompareright("");
+			break;
+		case 5 :/* 以下（≦） */
+			compare.setCompareLeft("≦");
+			compare.setCompareright("");
+			break;
+		case 6 :/* 範囲の間（境界値を含まない）（＜＞） */
+			compare.setCompareLeft("＜");
+			compare.setCompareright("＜");
+			break;
+		case 7 :/* 範囲の間（境界値を含む）（≦≧） */
+			compare.setCompareLeft("≦");
+			compare.setCompareright("≦");
+			break;
+		case 8 :/* 範囲の外（境界値を含まない）（＞＜） */
+			compare.setCompareLeft("＞");
+			compare.setCompareright("＞");
+			break;
+		
+		default :/* 範囲の外（境界値を含む）（≧≦） */
+			compare.setCompareLeft("≧");
+			compare.setCompareright("≧");
+			break; 
+		}
+		
+		return compare;
 	}
 		
 

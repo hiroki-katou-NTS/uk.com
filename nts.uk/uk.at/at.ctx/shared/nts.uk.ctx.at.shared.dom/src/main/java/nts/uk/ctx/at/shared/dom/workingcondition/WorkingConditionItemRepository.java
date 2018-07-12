@@ -139,4 +139,12 @@ public interface WorkingConditionItemRepository {
 	 * @param item the item
 	 */
 	void updateWorkCond2(WorkingConditionItem item);
+	
+	/**
+	 * Gets the last working cond item.
+	 *
+	 * @param employeeIds the employee ids
+	 * @return the last working cond item
+	 */
+	List<WorkingConditionItem> getLastWorkingCondItem(List<String> employeeIds);
 }
