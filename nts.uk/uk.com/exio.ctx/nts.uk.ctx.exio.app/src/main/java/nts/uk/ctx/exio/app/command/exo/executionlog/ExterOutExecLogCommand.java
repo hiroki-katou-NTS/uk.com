@@ -22,11 +22,4 @@ public class ExterOutExecLogCommand {
 	 */
 	private String fileId;
 
-	public ExterOutExecLogCommand(String companyId, String outputProcessId, String fileId) {
-		super();
-		this.companyId = companyId;
-		this.outputProcessId = outputProcessId;
-		this.fileId = fileId;
-	}
-	
 }
