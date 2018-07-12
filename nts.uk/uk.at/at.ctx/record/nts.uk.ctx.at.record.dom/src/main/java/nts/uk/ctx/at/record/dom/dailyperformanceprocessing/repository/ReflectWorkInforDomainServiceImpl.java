@@ -1177,44 +1177,44 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 								workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode());
 						workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
 					}
-//					// to show clear attendance item
-//					List<Integer> timeleavingAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE);
-//					List<Integer> temporaryTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.TEMPORARY_TIME);
-//					List<Integer> breakTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME);
-//					List<Integer> shortTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SHORT_TIME);
-//					List<Integer> attTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDANCE_TIME);
-//					List<Integer> anyItemAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.OPTIONAL_ITEM);
-//					List<Integer> attItemList =  new ArrayList<>();
-////					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE));
-////					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.TEMPORARY_TIME));
-////					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME));
-////					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SHORT_TIME));
-////					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDANCE_TIME));
-////					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.OPTIONAL_ITEM));					
-//					attItemList.addAll(timeleavingAttItemIds);
-//					attItemList.addAll(temporaryTimeAttItemIds);
-//					attItemList.addAll(breakTimeAttItemIds);
-//					attItemList.addAll(shortTimeAttItemIds);
-//					attItemList.addAll(attTimeAttItemIds);
-//					attItemList.addAll(anyItemAttItemIds);
-//					
-//					// 休職・休業で不要なドメインモデルを削除する
-//					// 日別実績のドメインモデルを削除する
-//					this.timeLeavingOfDailyPerformanceRepository.delete(employeeId, day);
-//					// 日別実績の臨時出退勤
-//					this.temporaryTimeOfDailyPerformanceRepository.delete(employeeId, day);
-//					// 日別実績の休憩時間帯
-//					this.breakTimeOfDailyPerformanceRepository.delete(employeeId, day);
-//					// 日別実績の短時間勤務時間帯
-//					this.shortTimeOfDailyPerformanceRepository.deleteByEmployeeIdAndDate(employeeId, day);
-//					// 日別実績の勤怠時間
-//					this.attendanceTimeRepository.deleteByEmployeeIdAndDate(employeeId, day);
-//					// 日別実績の作業別勤怠時間 - TODO : has not entity
-//					// 日別実績の任意項目
-//					this.anyItemValueOfDailyRepo.removeByEmployeeIdAndDate(employeeId, day);
-//					
-//					// ドメインモデル「日別実績の編集状態」を削除する
-//					this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeId, day, attItemList);
+					// to show clear attendance item
+					List<Integer> timeleavingAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE);
+					List<Integer> temporaryTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.TEMPORARY_TIME);
+					List<Integer> breakTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME);
+					List<Integer> shortTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SHORT_TIME);
+					List<Integer> attTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDANCE_TIME);
+					List<Integer> anyItemAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.OPTIONAL_ITEM);
+					List<Integer> attItemList =  new ArrayList<>();
+//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE));
+//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.TEMPORARY_TIME));
+//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME));
+//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SHORT_TIME));
+//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDANCE_TIME));
+//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.OPTIONAL_ITEM));					
+					attItemList.addAll(timeleavingAttItemIds);
+					attItemList.addAll(temporaryTimeAttItemIds);
+					attItemList.addAll(breakTimeAttItemIds);
+					attItemList.addAll(shortTimeAttItemIds);
+					attItemList.addAll(attTimeAttItemIds);
+					attItemList.addAll(anyItemAttItemIds);
+					
+					// 休職・休業で不要なドメインモデルを削除する
+					// 日別実績のドメインモデルを削除する
+					this.timeLeavingOfDailyPerformanceRepository.delete(employeeId, day);
+					// 日別実績の臨時出退勤
+					this.temporaryTimeOfDailyPerformanceRepository.delete(employeeId, day);
+					// 日別実績の休憩時間帯
+					this.breakTimeOfDailyPerformanceRepository.delete(employeeId, day);
+					// 日別実績の短時間勤務時間帯
+					this.shortTimeOfDailyPerformanceRepository.deleteByEmployeeIdAndDate(employeeId, day);
+					// 日別実績の勤怠時間
+					this.attendanceTimeRepository.deleteByEmployeeIdAndDate(employeeId, day);
+					// 日別実績の作業別勤怠時間 - TODO : has not entity
+					// 日別実績の任意項目
+					this.anyItemValueOfDailyRepo.removeByEmployeeIdAndDate(employeeId, day);
+					
+					// ドメインモデル「日別実績の編集状態」を削除する
+					this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeId, day, attItemList);
 				}
 			}
 		}
