@@ -1,26 +1,17 @@
 package nts.uk.ctx.exio.dom.exo.outputitem;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.PrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
-import nts.arc.primitive.constraint.IntegerMinValue;
+import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /*
  * カテゴリID
  */
-@IntegerMaxValue(999)
-@IntegerMinValue(1)
-public class CategoryId extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
+@StringMaxLength(5)
+public class CategoryId extends StringPrimitiveValue<CategoryId> {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Contructor
-	 * 
-	 * @param rawValue
-	 */
-	public CategoryId(int rawValue) {
+	public CategoryId(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 }

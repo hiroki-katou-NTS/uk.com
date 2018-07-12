@@ -25,7 +25,7 @@ public class OiomtCtgItemPk implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "CTG_ITEM_NO")
-	public String ctgItemNo;
+	public int ctgItemNo;
 
 	/**
 	 * 会社ID
