@@ -101,7 +101,7 @@ module nts.uk.com.view.cli001.a {
                                     service.findAll().done((data: Array<LockOutDataUserDto>) => {
                                         data = _.uniqBy(data, 'userId');
                                         data.forEach(item => {
-                                            item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD hh:mm:ss');
+                                            item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD HH:mm:ss');
                                         });
                                         self.items(_.sortBy(data, item => item.loginId));
                                         self.currentCodeList([]);
