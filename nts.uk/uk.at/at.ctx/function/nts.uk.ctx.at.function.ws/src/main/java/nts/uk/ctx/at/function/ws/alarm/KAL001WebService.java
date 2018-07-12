@@ -62,9 +62,6 @@ public class KAL001WebService {
 	@Inject
 	private StartAlarmSendEmailProcessHandler startSendEmailHandler;
 	
-	@Inject
-	private AlarmListExportService alarmListExportService;
-	
 	@POST
 	@Path("pattern/setting")
 	public List<CodeNameAlarmDto> getAlarmByUser(){
@@ -108,17 +105,10 @@ public class KAL001WebService {
 	public List<EmployeeSendEmail> extractAlarm(List<EmployeeInfoInput> listEmployeeSendEmail) {
 		return employeeInfoFunFinder.getListEmployee(listEmployeeSendEmail);
 	}
-	
 
 	@POST
 	@Path("sendEmail")
 	public JavaTypeResult<List<String>> sendEmailStarting(ParamAlarmSendEmailCommand command) {
 		return new JavaTypeResult<List<String>>(startSendEmailHandler.handle(command));
-	}
-	
-	@POST
-	@Path("exportEmail")
-	public ExportServiceResult generateExcel(AlarmListExportServiceQuery query) {
-		return this.alarmListExportService.start(query);
 	}
 }
