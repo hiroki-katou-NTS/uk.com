@@ -368,16 +368,21 @@ module nts.uk.at.view.kmf022 {
 
             //b  
             selectedIdB4: KnockoutObservable<number> = ko.observable(0);
-//            
 //            itemListB6: KnockoutObservableArray<ItemModel>;
             selectedIdB6: KnockoutObservable<number> = ko.observable(0);
-//            
 //            itemListB8: KnockoutObservableArray<ItemModel>;
             selectedIdB8: KnockoutObservable<number> = ko.observable(0);
-            
             selectedIdB10: KnockoutObservable<number> = ko.observable(0);
-            
             selectedIdB12: KnockoutObservable<number> = ko.observable(0);
+            selectedIdB15: KnockoutObservable<number> = ko.observable(0);
+            selectedIdB17: KnockoutObservable<number> = ko.observable(0);
+            selectedIdB19: KnockoutObservable<number> = ko.observable(0);
+            selectedIdB21: KnockoutObservable<number> = ko.observable(0);
+            selectedIdB24: KnockoutObservable<number> = ko.observable(0);
+            selectedIdB26: KnockoutObservable<number> = ko.observable(0);
+            selectedIdB28: KnockoutObservable<number> = ko.observable(0);
+            selectedIdB30: KnockoutObservable<number> = ko.observable(0);
+            selectedIdB32: KnockoutObservable<number> = ko.observable(0);
             
             //i
             selectedIdI4: KnockoutObservable<number>;
@@ -1912,7 +1917,18 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdB6(data.flexJExcessUseSetAtr);
                     self.selectedIdB8(otRest.bonusTimeDisplayAtr);
                     self.selectedIdB10(otRest.divergenceReasonFormAtr);
-                    self.selectedIdB12(otRest.divergenceReasonInputAtr);  
+                    self.selectedIdB12(otRest.divergenceReasonInputAtr);
+                     
+                    self.selectedIdB15(otRest.performanceDisplayAtr);
+                    self.selectedIdB17(otRest.preDisplayAtr);
+                    self.selectedIdB19(otRest.calculationOvertimeDisplayAtr);
+                    self.selectedIdB21(otRest.extratimeDisplayAtr);
+                    
+                    self.selectedIdB24(otRest.preExcessDisplaySetting);
+                    self.selectedIdB26(otRest.performanceExcessAtr);
+                    self.selectedIdB28(data.priorityStampSetAtr);
+                    self.selectedIdB30(otRest.extratimeExcessAtr);
+                    self.selectedIdB32(otRest.appDateContradictionAtr);
 //                    self.selectedIdB18(data.flexExcessUseSetAtr);
 //                    self.selectedIdB19(data.priorityStampSetAtr);
 //                    self.selectedIdB21(data.preTypeSiftReflectFlg);
@@ -2231,7 +2247,7 @@ module nts.uk.at.view.kmf022 {
                     cid: self.companyId(),
                     workTypeChangeFlag: self.selectedIdB4(),
                     flexJExcessUseSetAtr: self.selectedIdB6(),
-                    priorityStampSetAtr: self.selectedIdB4(),
+                    priorityStampSetAtr: self.selectedIdB28(),
 //                    flexExcessUseSetAtr: self.selectedIdB18(),
 //                    priorityStampSetAtr: self.selectedIdB19(),
 //                    preTypeSiftReflectFlg: self.selectedIdB21(),
@@ -2251,14 +2267,14 @@ module nts.uk.at.view.kmf022 {
                     bonusTimeDisplayAtr: self.selectedIdB8(),
                     divergenceReasonFormAtr: self.selectedIdB10(),
                     divergenceReasonInputAtr: self.selectedIdB12(),
-                    performanceDisplayAtr: 0,
-                    preDisplayAtr: 0,
-                    calculationOvertimeDisplayAtr: 0,
-                    extratimeDisplayAtr: 0,
-                    preExcessDisplaySetting: 0,
-                    performanceExcessAtr: 0,
-                    extratimeExcessAtr: 0,
-                    appDateContradictionAtr: 0,
+                    performanceDisplayAtr: self.selectedIdB15(),
+                    preDisplayAtr: self.selectedIdB17(),
+                    calculationOvertimeDisplayAtr: self.selectedIdB19(),
+                    extratimeDisplayAtr: self.selectedIdB21(),
+                    preExcessDisplaySetting: self.selectedIdB24(),
+                    performanceExcessAtr: self.selectedIdB26(),
+                    extratimeExcessAtr: self.selectedIdB30(),
+                    appDateContradictionAtr: self.selectedIdB32(),
                 }
                 
                 data.hdSet = {
