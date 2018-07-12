@@ -93,18 +93,6 @@
  left: 0px !important;
 }
 
-#F5_5 .ntsCheckBox input[type="checkbox"][disabled]+span {
-	background: transparent;
-	border-color: #2FCC71;
-}
-
-#F5_5 .ntsCheckBox input[type="checkbox"]:checked+span:after {
-	border-color: #fff;
-	opacity: 1
-}
-#F5_5 .ntsCheckBox input[type="checkbox"]:checked+span {
-    background: #2FCC71;
-}
 .employeeList {
 	border: 1px solid #ccc !important;
 	border-radius: 5px;

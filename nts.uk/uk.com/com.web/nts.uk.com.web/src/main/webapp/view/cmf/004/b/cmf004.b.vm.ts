@@ -81,7 +81,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 alreadySettingList: ko.observableArray([]),
                 isShowWorkPlaceName: false,
                 isShowSelectAllButton: true,
-                maxRows: 15
+                maxRows: 15,
+                tabindex: -1
             };
 
             //_____KCP005H________
@@ -97,7 +98,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 alreadySettingList: ko.observableArray([]),
                 isShowWorkPlaceName: false,
                 isShowSelectAllButton: false,
-                maxRows: 20
+                maxRows: 20,
+                tabindex: -1
             };
 
             self.startDateString.subscribe(value => {
@@ -128,13 +130,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
             self.dataRecoverySummary().recoveryCategoryList.subscribe(value => {
                 self.setWidthScrollHeader('.contentH', value);
-            });
-            $(".inputs").keydown(function(e) {
-                if (e.which == 9)
-                    $(this).next('.inputs').focus();
-            });
-            $('kcp005components').bind("DOMSubtreeModified", function() {
-                $('#kcp005component .nts-gridlist').attr('tabindex', -1);
             });
         }
 

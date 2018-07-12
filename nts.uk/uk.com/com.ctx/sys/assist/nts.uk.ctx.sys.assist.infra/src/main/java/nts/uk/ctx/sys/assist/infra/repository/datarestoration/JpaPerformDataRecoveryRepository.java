@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -109,6 +111,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.SUPPORTS)
 	public Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 		

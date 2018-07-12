@@ -33,6 +33,7 @@ import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.datarestoration.common.CsvFileUtil;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class RecoveryStorageService {
@@ -114,7 +115,7 @@ public class RecoveryStorageService {
 		List<Category> listCategory = categoryRepository.findById(dataRecoveryProcessId, SELECTION_TARGET_FOR_RES);
 		
 		Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository.getDataRecoveryMngById(dataRecoveryProcessId);
-		if(dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition() == DataRecoveryOperatingCondition.INTERRUPTION_END) {
+		if(dataRecoveryMng.isPresent() && dataRecoveryMng.get().getSuspendedState() == NotUseAtr.USE) {
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, DataRecoveryOperatingCondition.INTERRUPTION_END);
 			performDataRecoveryRepository.remove(dataRecoveryProcessId);
 			performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
@@ -162,8 +163,10 @@ public class RecoveryStorageService {
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, condition);
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, condition);
 		}
-		performDataRecoveryRepository.remove(dataRecoveryProcessId);
+		
 		performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
+		performDataRecoveryRepository.remove(dataRecoveryProcessId);
+		
 		
 	}
 
@@ -441,7 +444,7 @@ public class RecoveryStorageService {
 			// Get trạng thái domain データ復旧動作管理
 			Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository
 					.getDataRecoveryMngById(dataRecoveryProcessId);
-			if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getOperatingCondition() == DataRecoveryOperatingCondition.INTERRUPTION_END) {
+			if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getSuspendedState() == NotUseAtr.USE) {
 				return DataRecoveryOperatingCondition.INTERRUPTION_END;
 			}
 
@@ -528,7 +531,7 @@ public class RecoveryStorageService {
 				Optional<DataRecoveryMng> dataRecovery = dataRecoveryMngRepository
 						.getDataRecoveryMngById(dataRecoveryProcessId);
 				if (dataRecovery.isPresent() && dataRecovery.get()
-						.getOperatingCondition() == DataRecoveryOperatingCondition.INTERRUPTION_END) {
+						.getSuspendedState() == NotUseAtr.USE) {
 					return DataRecoveryOperatingCondition.INTERRUPTION_END;
 				}
 			}
@@ -627,13 +630,13 @@ public class RecoveryStorageService {
 				|| (dateTo.year() < hDateCsv.year() || (dateTo.year() == hDateCsv.year() && hDateCsv.month() > dateTo.month()))) {
 				return false;
 			}
-		} else if (YEAR_MONTH_DAY.equals(resultsSetting.get(0)) && (!hDateCsv.after(dateFrom) || !hDateCsv.before(dateTo))) {
+		} else if (YEAR_MONTH_DAY.equals(resultsSetting.get(0)) && (dateFrom.after(hDateCsv) || dateTo.before(hDateCsv))) {
 			return false;
 		}
 		return true;
 	}
 
-	@Transactional(value = TxType.NOT_SUPPORTED)
+	
 	public DataRecoveryOperatingCondition exDataTabeRangeDate(List<List<String>> targetDataRecovery,
 			Optional<TableList> tableList, String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
