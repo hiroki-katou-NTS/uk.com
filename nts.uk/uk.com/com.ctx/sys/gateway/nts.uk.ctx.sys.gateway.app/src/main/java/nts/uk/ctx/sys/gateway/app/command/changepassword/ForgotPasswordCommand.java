@@ -8,7 +8,7 @@ import lombok.Setter;
 public class ForgotPasswordCommand {
 	
 	/** The url. */
-	private String url;
+	private String embeddedId;
 
 	/** The user id. */
 	private String userId;

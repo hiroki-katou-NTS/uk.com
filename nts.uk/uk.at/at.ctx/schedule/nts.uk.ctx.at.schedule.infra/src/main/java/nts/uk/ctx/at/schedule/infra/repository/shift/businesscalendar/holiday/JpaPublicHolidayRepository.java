@@ -24,13 +24,13 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.holiday.KsmmtP
 @Stateless
 public class JpaPublicHolidayRepository extends JpaRepository implements PublicHolidayRepository {
 
-	private final String SELECT_BY_LISTDATE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId AND a.ksmmtPublicHolidayPK.date IN :lstDate";
-	private final String SELECT_BY_DATE = "SELECT a FROM KsmmtPublicHoliday a "
+	private static final String SELECT_BY_LISTDATE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId AND a.ksmmtPublicHolidayPK.date IN :lstDate";
+	private static final String SELECT_BY_DATE = "SELECT a FROM KsmmtPublicHoliday a "
 			+ " WHERE a.ksmmtPublicHolidayPK.companyId = :companyId "
 			+ " AND a.ksmmtPublicHolidayPK.date = :date ";
-	private final String SELECT_ALL = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId";
-	private final String SELECT_SINGLE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyID AND a.ksmmtPublicHolidayPK.date = :date";
-	private final String SELECT_BY_SDATE_EDATE = "SELECT c FROM KsmmtPublicHoliday c"
+	private static final String SELECT_ALL = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId";
+	private static final String SELECT_SINGLE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyID AND a.ksmmtPublicHolidayPK.date = :date";
+	private static final String SELECT_BY_SDATE_EDATE = "SELECT c FROM KsmmtPublicHoliday c"
 			+ " WHERE c.ksmmtPublicHolidayPK.companyId = :companyId"
 			+ " AND c.ksmmtPublicHolidayPK.date >= :strDate"
 			+ " AND c.ksmmtPublicHolidayPK.date <= :endDate";

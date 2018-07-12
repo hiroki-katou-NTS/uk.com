@@ -23,7 +23,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KsmmtWor
 @Stateless
 public class JpaWorkplaceEventRepository extends JpaRepository implements WorkplaceEventRepository {
 
-	private final String SELECT_BY_LISTDATE = "SELECT a FROM KsmmtWorkplaceEvent a WHERE a.ksmmtWorkplaceEventPK.workplaceId = :workplaceId AND a.ksmmtWorkplaceEventPK.date IN :lstDate";
+	private static final String SELECT_BY_LISTDATE = "SELECT a FROM KsmmtWorkplaceEvent a WHERE a.ksmmtWorkplaceEventPK.workplaceId = :workplaceId AND a.ksmmtWorkplaceEventPK.date IN :lstDate";
 
 	@Override
 	public List<WorkplaceEvent> getWorkplaceEventsByListDate(String workplaceId, List<GeneralDate> lstDate) {

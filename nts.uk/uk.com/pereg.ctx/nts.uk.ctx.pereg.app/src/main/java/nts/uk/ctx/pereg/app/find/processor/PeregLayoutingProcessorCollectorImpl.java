@@ -194,8 +194,7 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00069 打刻カード番号
 			new TypeLiteral<PeregFinder<PeregStampCardDto>>(){},
 			// CS00070  労働条件２
-			new TypeLiteral<PeregFinder<WorkingCondition2Dto>>() {}
-			);
+			new TypeLiteral<PeregFinder<WorkingCondition2Dto>>(){});
 
 	@Override
 	public Set<PeregFinder<?>> peregFinderCollect() {

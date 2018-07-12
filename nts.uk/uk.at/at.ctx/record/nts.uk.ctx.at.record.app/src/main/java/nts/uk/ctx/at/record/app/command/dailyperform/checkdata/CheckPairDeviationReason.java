@@ -51,8 +51,8 @@ public class CheckPairDeviationReason {
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
 	static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length - 1).boxed()
 			.collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x / 3 + 1));
-	private static String ERROR = "D0";
-	private static Map<String, Integer> ERROR_NO_MAP = IntStream.range(0, 19).boxed()
+	private static final String ERROR = "D0";
+	private static final Map<String, Integer> ERROR_NO_MAP = IntStream.range(0, 19).boxed()
 			.collect(Collectors.toMap(x -> ERROR + String.format("%03d", (x + 1)), x -> x / 2 + 1));
 
 	// 乖離理由が選択、入力されているかチェックする

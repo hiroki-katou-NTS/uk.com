@@ -172,7 +172,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param executionType 実行種別　（通常、再実行）
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public ProcessState calculate(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod datePeriod, String empCalAndSumExecLogID, ExecutionType executionType,
 			ManagePerCompanySet companyCommonSetting) {
@@ -292,7 +292,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param datePeriod
 	 * @return
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private List<IntegrationOfDaily> createIntegrationOfDaily(String employeeId, DatePeriod datePeriod) {
 		val attendanceTimeList= workInformationRepository.findByPeriodOrderByYmd(employeeId, datePeriod);
 		

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
@@ -50,6 +51,15 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 
 		ExportData data = this.repostory.outputProcess(companyId, query.getSetItemsOutputCd(), fiscalYear, startYm,
 				endYm, employees, query.getPrintFormat(), query.getBreakPage());
+		val dataSetter = context.getDataSetter();
+		List<String> employeeError = data.getEmployeeError();
+		if (!employeeError.isEmpty()) {
+			dataSetter.setData("messageId", "Msg_1344");
+			dataSetter.setData("totalEmpErr", employeeError.size());
+			for (int i = 0; i < employeeError.size(); i++) {
+				dataSetter.setData("empErr" + i, employeeError.get(i));
+			}
+		}
 		// invoke generator
 		this.generator.generate(context.getGeneratorContext(), data);
 	}

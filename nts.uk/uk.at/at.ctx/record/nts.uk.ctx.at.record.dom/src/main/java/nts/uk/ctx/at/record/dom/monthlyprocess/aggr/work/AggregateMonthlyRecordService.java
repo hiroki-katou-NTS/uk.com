@@ -1,6 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.List;
+import java.util.Optional;
+
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -23,10 +28,13 @@ public interface AggregateMonthlyRecordService {
 	 * @param prevAggrResult 前回集計結果　（年休積立年休の集計結果）
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
+	 * @param dailyWorks 日別実績(WORK)List
+	 * @param monthlyWork 月別実績(WORK)
 	 * @return 集計結果
 	 */
 	AggregateMonthlyRecordValue aggregate(String companyId, String employeeId,
 			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
 			AggrResultOfAnnAndRsvLeave prevAggrResult,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets);
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
+			Optional<List<IntegrationOfDaily>> dailyWorks, Optional<IntegrationOfMonthly> monthlyWork);
 }
