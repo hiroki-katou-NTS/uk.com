@@ -11,6 +11,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
         dialogMode: KnockoutObservable<boolean>;
         isInterrupt: KnockoutObservable<boolean>;
         isExtracting: KnockoutObservable<boolean>;
+        extractingFlg: KnockoutObservable<boolean>;
 
 
         // time when start process
@@ -56,6 +57,8 @@ module nts.uk.com.view.kal001.d.viewmodel {
             self.listAlarmExtraValueWkReDto = ko.observableArray([]);
             self.employeeErrors = ko.observableArray([]);
             self.isInterrupt = ko.observable(false);
+            self.extractingFlg = ko.observable(false);
+            self.isExtracting = ko.observable(false);
 
             //process alam list 
 
@@ -63,6 +66,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             block.invisible();
             service.isExtracting().done((isExtracting: boolean) => {
                 if (isExtracting) {
+                    self.extractingFlg = ko.observable(isExtracting);
                     nts.uk.ui.dialog.info({ messageId: "Msg_993" });
                     block.clear();
                     return;
@@ -154,13 +158,13 @@ module nts.uk.com.view.kal001.d.viewmodel {
         //  process when click button closePopup 
         closePopup() {
             let self = this;
-            if (self.isExtracting) {
-                nts.uk.ui.dialog.info({ messageId: "Msg_993" });
-            }
-            if (self.listAlarmExtraValueWkReDto().length <= 0) {// same condiditon dataExtractAlarm.nullData
-                nts.uk.ui.dialog.info({ messageId: "Msg_835" });
-            }
-            nts.uk.ui.windows.setShared("KAL001_D_PARAMS",self.listAlarmExtraValueWkReDto());
+            
+            let params = {
+                extractingFlg : self.extractingFlg(),
+                isExtracting : self.isExtracting(),
+                listAlarmExtraValueWkReDto : self.listAlarmExtraValueWkReDto()
+            };
+            nts.uk.ui.windows.setShared("KAL001_D_PARAMS",params);
             close();
         }
     }
