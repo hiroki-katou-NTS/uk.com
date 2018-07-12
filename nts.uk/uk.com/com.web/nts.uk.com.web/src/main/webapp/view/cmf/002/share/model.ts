@@ -1,7 +1,4 @@
 module nts.uk.com.view.cmf002.share.model {
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    import modal = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
 
     export enum NOT_USE_ATR {
@@ -206,12 +203,19 @@ module nts.uk.com.view.cmf002.share.model {
         }
     }
 
-    export function getSystemTypes(): Array<ItemModel> {
+    export function getFixedLengthEditingMethod():Array<ItemModel>{
         return [
-            new ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
-            new ItemModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
-            new ItemModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
-            new ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
+            new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, getText('Enum_FixedLengthEditingMethod_ZERO_BEFORE')),
+            new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
+            new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, getText('Enum_FixedLengthEditingMethod_SPACE_BEFORE')),
+            new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('Enum_FixedLengthEditingMethod_SPACE_AFTER'))
+        ];
+    }
+
+    export function getNotUseAtr():Array<ItemModel> {
+        return [
+            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
+            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
         ];
     }
 
