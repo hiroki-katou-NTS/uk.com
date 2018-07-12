@@ -37,7 +37,7 @@ public class SpecialHolidayFinder {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	public SpecialHolidayDto getComByCode(int specialHolidayCode) {
+	public SpecialHolidayDto getSpecialHoliday(int specialHolidayCode) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
 
