@@ -134,8 +134,8 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		
 		// 社員の数だけループ　（並列処理）
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
-		employeeIds.parallelStream().forEach(employeeId -> {
-			if (stateHolder.isInterrupt()) return;
+		for (val employeeId : employeeIds){
+			if (stateHolder.isInterrupt()) break;
 		
 			ConcurrentStopwatches.start("10000:社員ごと：" + employeeId);
 			
@@ -161,7 +161,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 				dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
-		});
+		}
 		
 		ConcurrentStopwatches.printAll();
 		ConcurrentStopwatches.STOPWATCHES.clear();
