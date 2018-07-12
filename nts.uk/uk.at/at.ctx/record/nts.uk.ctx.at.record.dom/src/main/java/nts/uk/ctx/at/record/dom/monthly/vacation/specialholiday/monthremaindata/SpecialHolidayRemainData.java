@@ -2,11 +2,9 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -17,7 +15,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author do_dt
  *
  */
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class SpecialHolidayRemainData extends AggregateRoot {
@@ -103,5 +100,21 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		this.specialLeave = specialLeave;
 		this.grantDays = grantDays;
 		this.grantAtr = grantAtr;
+	}
+	public SpecialHolidayRemainData(String sid, YearMonth ym, int closureId, DatePeriod closurePeriod,
+			ClosureStatus closureStatus, int closureDay, int specialHolidayCd, ActualSpecialLeave actualSpecial,
+			SpecialLeave specialLeave, boolean grantAtr, Optional<SpecialLeaveGrantUseDay> grantDays) {
+		super();
+		this.sid = sid;
+		this.ym = ym;
+		this.closureId = closureId;
+		this.closurePeriod = closurePeriod;
+		this.closureStatus = closureStatus;
+		this.closureDay = closureDay;
+		this.specialHolidayCd = specialHolidayCd;
+		this.actualSpecial = actualSpecial;
+		this.specialLeave = specialLeave;
+		this.grantAtr = grantAtr;
+		this.grantDays = grantDays;
 	}
 }
