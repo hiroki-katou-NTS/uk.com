@@ -375,7 +375,7 @@ module nts.uk.at.view.kdw002.c {
                         for(let i =0;i<data.length;i++){
                             for(let j = 0;j<=dataNew.length; j++){
                                 if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceName = dataNew[j].attendanceItemName;
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
                                     break;
                                 }  
                             }    
