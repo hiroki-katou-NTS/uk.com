@@ -5,7 +5,8 @@ module nts.uk.com.view.cmf004.i.service {
     var paths = {
         performDataRecover: "ctx/sys/assist/datarestoration/performDataRecover",
         followProsess: "ctx/sys/assist/datarestoration/followProsess/{0}",
-        breakFollowProcessing: "ctx/sys/assist/datarestoration/breakFollowProcessing"
+        breakFollowProcessing: "ctx/sys/assist/datarestoration/breakFollowProcessing",
+        deletePerformDataRecover: "ctx/sys/assist/datarestoration/deletePerformDataRecover/{0}",
     }
     /**
        * send for screen I
@@ -25,6 +26,11 @@ module nts.uk.com.view.cmf004.i.service {
     * update status followProsess End
     */
 
+    export function deletePerformDataRecover(recoveryProcessingId: string): JQueryPromise<any> {
+        let _path = format(paths.deletePerformDataRecover, recoveryProcessingId);
+        return nts.uk.request.ajax('com', _path);
+    };
+    
     export function breakFollowProcessing(paramBreakFollowProcessing): JQueryPromise<any> {
         return nts.uk.request.ajax('com', paths.breakFollowProcessing, paramBreakFollowProcessing);
     };
