@@ -104,7 +104,8 @@ module nts.uk.com.view.cmf004.i.viewmodel {
 
                 // 完了, 中断終了, 異常終了
                 if ((recoveryProcessing.operatingCondition == 3) || (recoveryProcessing.operatingCondition == 1) || (recoveryProcessing.operatingCondition == 5)) {
-                    // stop auto request to server
+                    // stop auto request to servers
+                    service.deletePerformDataRecover(recoveryProcessingId);
                     clearInterval(self.interval);
                     self.isEnding(true);
                     $('#I5_2').focus();

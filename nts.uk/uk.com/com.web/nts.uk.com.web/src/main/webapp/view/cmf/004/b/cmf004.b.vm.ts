@@ -141,7 +141,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     fileId: fileInfo.id,
                     fileName: fileInfo.originalName
                 });
-                self.fileName("");
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                     setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
                     nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
