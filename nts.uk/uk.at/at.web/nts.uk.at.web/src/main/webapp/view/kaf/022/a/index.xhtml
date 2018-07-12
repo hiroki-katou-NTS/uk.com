@@ -26,6 +26,7 @@
 			
 			<com:scriptfile path="subviews/kaf022.b.vm.js" />
 			<com:scriptfile path="subviews/kaf022.d.vm.js" />
+			<com:scriptfile path="subviews/kaf022.f.vm.js" />
 			<com:scriptfile path="subviews/kaf022.g.vm.js" />
 			<com:scriptfile path="subviews/kaf022.k.vm.js" />
 			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" /> 
@@ -1062,7 +1063,17 @@
 							<ui:include src="e.xhtml" />
 						</div> -->
 						<div class="tab-content-6">
-							<ui:include src="f.xhtml" />
+							<kaf022-f params="{
+				                selectedIdF10: $vm.viewmodelA.selectedIdF10,
+				                selectedIdF11: $vm.viewmodelA.selectedIdF11,
+				                selectedIdF12: $vm.viewmodelA.selectedIdF12,
+				                selectedValueF13: $vm.viewmodelA.selectedValueF13,
+				                checkedF13_1: $vm.viewmodelA.checkedF13_1,
+				                enableF13_1: $vm.viewmodelA.enableF13_1,
+				                selectedIdF14: $vm.viewmodelA.selectedIdF14,
+				                texteditorF15: $vm.viewmodelA.texteditorF15,
+				                texteditorF16: $vm.viewmodelA.texteditorF16								
+							}"></kaf022-f>
 						</div>
 						<div class="tab-content-7">
 							<kaf022-g params="{							
