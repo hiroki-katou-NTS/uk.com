@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperrelationship.GrantDayPerRelationship;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -30,9 +32,6 @@ public class SpecialHolidayEvent extends AggregateRoot {
 
 	/* 固定上限日数 */
 	private FixedDayGrant fixedDayGrant;
-
-	/* 続柄毎の上限日数 */
-	private GrantDayPerRelationship grantDayPerRelp;
 
 	/* 忌引とする */
 	private UseAtr makeInvitation;
@@ -58,8 +57,17 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	private AgeRange ageRange;
 
 	/* 年齢基準 */
-	private AgeRange ageStandard;
+	private int ageStandardYear;
+	
+	/* 年齢基準 */
+	private GeneralDate ageStandardBaseDate;
 
 	/* メモ */
 	private Memo memo;
+	
+	/* 分類一覧 */
+	List<ClassificationList> clsList;
+
+	/* 雇用一覧 */
+	List<EmploymentList> empList;
 }
