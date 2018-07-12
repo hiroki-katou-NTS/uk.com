@@ -20,21 +20,21 @@ public class QueryPersonAdapterImpl extends JpaRepository implements QueryPerson
 
 	/** The find by name. */
 	private static final String FIND_BY_NAME = "SELECT c FROM BpsmtPerson c"
-			+ " WHERE c.personName LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.personName LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.personNameKana LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.businessName LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.businessNameKana LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.businessEnglishName LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.businessOtherName LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.personRomanji LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.personRomanjiKana LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.todokedeFullName LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.todokedeFullNameKana LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.oldName LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.oldNameKana LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.perNameMultilLang LIKE LOWER(CONCAT('%', :name, '%'))"
-			+ " OR c.perNameMultilLangKana LIKE LOWER(CONCAT('%', :name, '%'))";
+			+ " WHERE c.personName LIKE CONCAT('%', :name, '%')"
+			+ " OR c.personName LIKE CONCAT('%', :name, '%')"
+			+ " OR c.personNameKana LIKE CONCAT('%', :name, '%')"
+			+ " OR c.businessName LIKE CONCAT('%', :name, '%')"
+			+ " OR c.businessNameKana LIKE CONCAT('%', :name, '%')"
+			+ " OR c.businessEnglishName LIKE CONCAT('%', :name, '%')"
+			+ " OR c.businessOtherName LIKE CONCAT('%', :name, '%')"
+			+ " OR c.personRomanji LIKE CONCAT('%', :name, '%')"
+			+ " OR c.personRomanjiKana LIKE CONCAT('%', :name, '%')"
+			+ " OR c.todokedeFullName LIKE CONCAT('%', :name, '%')"
+			+ " OR c.todokedeFullNameKana LIKE CONCAT('%', :name, '%')"
+			+ " OR c.oldName LIKE CONCAT('%', :name, '%')"
+			+ " OR c.oldNameKana LIKE CONCAT('%', :name, '%')"
+			+ " OR c.perNameMultilLang LIKE CONCAT('%', :name, '%')"
+			+ " OR c.perNameMultilLangKana LIKE CONCAT('%', :name, '%')";
 
 	/*
 	 * (non-Javadoc)

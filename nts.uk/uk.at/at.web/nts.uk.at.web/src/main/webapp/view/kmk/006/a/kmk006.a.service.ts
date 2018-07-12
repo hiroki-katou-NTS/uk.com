@@ -123,32 +123,29 @@ module nts.uk.at.view.kmk006.a {
         export module model {
             //modelauto
 
-            export interface WkpJobAutoCalSettingDto {
+            export interface BaseAutoCalSettingDto{
+                normalOTTime: AutoCalOvertimeSettingDto;
+                flexOTTime: AutoCalFlexOvertimeSettingDto;
+                restTime: AutoCalRestTimeSettingDto;
+                leaveEarly: AutoCalcOfLeaveEarlySettingDto;
+                raisingSalary: AutoCalRaisingSalarySettingDto;
+                divergenceTime: number; 
+            }
+            
+            export interface WkpJobAutoCalSettingDto extends BaseAutoCalSettingDto{
                 wkpId: string;
                 jobId: string;
-                normalOTTime: AutoCalOvertimeSettingDto;
-                flexOTTime: AutoCalFlexOvertimeSettingDto;
-                restTime: AutoCalRestTimeSettingDto;
             }
 
-            export interface WkpAutoCalSettingDto {
+            export interface WkpAutoCalSettingDto extends BaseAutoCalSettingDto {
                 wkpId: string;
-                normalOTTime: AutoCalOvertimeSettingDto;
-                flexOTTime: AutoCalFlexOvertimeSettingDto;
-                restTime: AutoCalRestTimeSettingDto;
             }
 
-            export interface JobAutoCalSettingDto {
+            export interface JobAutoCalSettingDto extends BaseAutoCalSettingDto {
                 jobId: string;
-                normalOTTime: AutoCalOvertimeSettingDto;
-                flexOTTime: AutoCalFlexOvertimeSettingDto;
-                restTime: AutoCalRestTimeSettingDto;
             }
 
-            export interface ComAutoCalSettingDto {
-                normalOTTime: AutoCalOvertimeSettingDto;
-                flexOTTime: AutoCalFlexOvertimeSettingDto;
-                restTime: AutoCalRestTimeSettingDto;
+            export interface ComAutoCalSettingDto extends BaseAutoCalSettingDto {
             }
 
             export interface AutoCalFlexOvertimeSettingDto {
@@ -172,8 +169,16 @@ module nts.uk.at.view.kmk006.a {
                 upLimitOtSet: number;
                 calAtr: number;
             }
-
             
+            export interface AutoCalcOfLeaveEarlySettingDto {
+                late: boolean;
+                leaveEarly: boolean;
+            }
+
+            export interface AutoCalRaisingSalarySettingDto {
+                specificRaisingSalaryCalcAtr: boolean;
+                raisingSalaryCalcAtr: boolean;
+            }
 
             export class Enum {
                 value: number;
