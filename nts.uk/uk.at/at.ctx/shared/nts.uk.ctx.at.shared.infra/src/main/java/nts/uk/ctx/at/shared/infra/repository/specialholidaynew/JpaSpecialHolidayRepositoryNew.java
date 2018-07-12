@@ -32,10 +32,9 @@ import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayPK
  */
 @Stateless
 public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements SpecialHolidayRepository {
-	private final static String SELECT_SPHD_BY_COMPANY_ID_QUERY = "SELECT KshstSpecialHolidayNew.pk.specialHolidayCode, KshstSpecialHolidayNew.specialHolidayName"
-			+ " FROM KshstSpecialHolidayNew"
-			+ " WHERE KshstSpecialHolidayNew.pk.companyId = :companyId"
-			+ " ORDER BY KshstSpecialHolidayNew.pk.specialHolidayCode";
+	private final static String SELECT_SPHD_BY_COMPANY_ID_QUERY = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.memo FROM KshstSpecialHolidayNew e "
+			+ "WHERE e.pk.companyId = :companyId "
+			+ "ORDER BY e.pk.specialHolidayCode ASC";
 	
 	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.pk.companyId, sphd.pk.specialHolidayCode, sphd.specialHolidayName, sphd.memo,"
 			+ " gra.typeTime, gra.grantDate, gra.allowDisappear, gra.interval, gra.grantedDays,"
@@ -51,7 +50,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 			+ " WHERE sphd.pk.companyId = :companyId AND sphd.pk.specialHolidayCode = :specialHolidayCode"
 			+ " ORDER BY sphd.pk.specialHolidayCode";
 	
-	private SpecialHoliday createSphdDomainFromEntity(Object[] c) {
+	private SpecialHoliday createDomainFromEntity(Object[] c) {
 		String companyId = String.valueOf(c[0]);
 		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
 		String specialHolidayName = String.valueOf(c[2]);
@@ -62,21 +61,21 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		int interval = Integer.parseInt(String.valueOf(c[7]));
 		int grantedDays = Integer.parseInt(String.valueOf(c[8]));
 		int timeMethod = Integer.parseInt(String.valueOf(c[9]));
-		GeneralDate startDate = GeneralDate.fromString(c[10].toString(), "");
-		GeneralDate endDate = GeneralDate.fromString(c[11].toString(), "");
-		int deadlineMonths = Integer.parseInt(String.valueOf(c[12]));
-		int deadlineYears = Integer.parseInt(String.valueOf(c[13]));
-		int limitCarryoverDays = Integer.parseInt(String.valueOf(c[14]));
-		int specialLeaveCode = Integer.parseInt(String.valueOf(c[15]));
+		GeneralDate startDate = c[10] != null ? GeneralDate.fromString(c[10].toString(), "") : null;
+		GeneralDate endDate = c[11] != null ? GeneralDate.fromString(c[11].toString(), "") : null;
+		int deadlineMonths = c[12] != null ? Integer.parseInt(String.valueOf(c[12])) : 0;
+		int deadlineYears = c[13] != null ? Integer.parseInt(String.valueOf(c[13])) : 0;
+		int limitCarryoverDays = c[14] != null ? Integer.parseInt(String.valueOf(c[14])) : 0;
+		int specialLeaveCode = c[15] != null ? Integer.parseInt(String.valueOf(c[15])) : 0;
 		int restrictionCls = Integer.parseInt(String.valueOf(c[16]));
 		int ageLimit = Integer.parseInt(String.valueOf(c[17]));
 		int genderRest = Integer.parseInt(String.valueOf(c[18]));
 		int restEmp = Integer.parseInt(String.valueOf(c[19]));
-		int ageCriteriaCls = Integer.parseInt(String.valueOf(c[20]));
-		String ageBaseDate = String.valueOf(c[21]);
-		int ageLowerLimit = Integer.parseInt(String.valueOf(c[22]));
-		int ageHigherLimit = Integer.parseInt(String.valueOf(c[23]));
-		int gender = Integer.parseInt(String.valueOf(c[24]));
+		int ageCriteriaCls = c[20] != null ? Integer.parseInt(String.valueOf(c[20])) : 0;
+		String ageBaseDate = c[21] != null ? String.valueOf(c[21]) : "";
+		int ageLowerLimit = c[22] != null ? Integer.parseInt(String.valueOf(c[22])) : 0;
+		int ageHigherLimit = c[23] != null ? Integer.parseInt(String.valueOf(c[23])) : 0;
+		int gender = c[24] != null ? Integer.parseInt(String.valueOf(c[24])) : 0;
 		
 		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, new GrantedDays(grantedDays));
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
@@ -94,7 +93,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		return SpecialHoliday.createFromJavaType(companyId, specialHolidayCode, specialHolidayName, grantRegular, grantPeriodic, specialLeaveRestriction, memo);
 	}
 	
-	private SpecialHoliday createSingleSphdDomainFromEntity(Object[] c) {
+	private SpecialHoliday createSphdDomainFromEntity(Object[] c) {
 		String companyId = String.valueOf(c[0]);
 		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
 		String specialHolidayName = String.valueOf(c[2]);
@@ -123,7 +122,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.getSingle(c -> {
-					return createSingleSphdDomainFromEntity(c);
+					return createDomainFromEntity(c);
 				});
 	}
 

@@ -2,60 +2,47 @@
 
 #contents-area {
 	display: table;
+	padding: 20px;
+}
+
+.container {
+    padding-left: 15px;
+}
+
+.link-button.goback {
+	width: 150px;
+}
+
+#left-content {
+    float: left;
 }
 
 .right-content {
-	width: 75%;
-	padding-left: 50px;
-	display: table-cell;
+    float: left;
+    padding-left: 40px;
 }
 
-#tab-panel {
-	margin-top: 40px;
+table.top-content-tbl tr {
+	height: 60px;
 }
 
-.ui-tabs .ui-tabs-panel {
-	display: block;
-	border-width: 0;
-	padding: 1em 1.4em;
-	background: none;
-	height: 280px;
-	width: 683px;
+table.top-content-tbl td {
+	vertical-align: top;
 }
 
-button.nts-switch-button {
-	min-width: 60px;
-}
-#sw1{
-	margin-left: 40px!important;
-}
-#combo-box {
-	min-width: 44px !important;
-	width: 76px;
-	margin-left: 20px;
-	vertical-align: middle;
+.code {
+	width: 25px;
 }
 
-#code-sphd {
-	vertical-align: middle;
+.name {
+	width: 120px;
 }
 
-#input-code-sphd {
-	width: 40px;
-	margin-left: 45px;
+.workTypes {
+    width: 630px;
 }
 
-#radio-tab2-1, #radio-tab2-2 {
-	margin-top: 10px;
-}
-
-div#memo .nts-editor-wrapped {
-	position: absolute;
-}
-.label1{
-	margin-left: 137px;
-}
-
-.disabled {
-   color: darkgrey;
+.memo {
+    width: 700px;
+    height: 100px;
 }

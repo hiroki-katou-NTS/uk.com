@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Transactional
 @Stateless
-public class SpecialHolidayCommandHandler extends CommandHandler<SpecialHolidayCommand> {
+public class CreateSpecialHolidayCommandHandler extends CommandHandler<SpecialHolidayCommand> {
 	@Inject
 	private SpecialHolidayRepository sphdRepo;
 	

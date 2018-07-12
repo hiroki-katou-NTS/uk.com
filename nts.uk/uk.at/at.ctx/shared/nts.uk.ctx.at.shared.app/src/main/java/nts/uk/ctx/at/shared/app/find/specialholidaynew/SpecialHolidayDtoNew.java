@@ -4,7 +4,7 @@ import lombok.Value;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
 
 @Value
-public class SpecialHolidayDto {
+public class SpecialHolidayDtoNew {
 	/** 会社ID */
 	private String companyId;
 
@@ -17,12 +17,12 @@ public class SpecialHolidayDto {
 	/** メモ */
 	private String memo;
 
-	public static SpecialHolidayDto fromDomain(SpecialHoliday specialHoliday) {
+	public static SpecialHolidayDtoNew fromDomain(SpecialHoliday specialHoliday) {
 //		List<GrantDateSetDto> setDto = grantDateCom.getGrantDateSets().stream()
 //				.map(x-> GrantDateSetDto.fromDomain(x))
 //				.collect(Collectors.toList());
 		
-		return new SpecialHolidayDto(
+		return new SpecialHolidayDtoNew(
 				specialHoliday.getCompanyId(),
 				specialHoliday.getSpecialHolidayCode().v(),
 				specialHoliday.getSpecialHolidayName().v(),

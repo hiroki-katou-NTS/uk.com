@@ -9,11 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.specialholidaynew.CreateSpecialHolidayCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.DeleteSpecialHolidayCommandHandler;
+import nts.uk.ctx.at.shared.app.command.specialholidaynew.EditSpecialHolidayCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.SpecialHolidayCommand;
-import nts.uk.ctx.at.shared.app.command.specialholidaynew.SpecialHolidayCommandHandler;
-import nts.uk.ctx.at.shared.app.find.specialholidaynew.SpecialHolidayDto;
-import nts.uk.ctx.at.shared.app.find.specialholidaynew.SpecialHolidayFinder;
+import nts.uk.ctx.at.shared.app.find.specialholidaynew.SpecialHolidayDtoNew;
+import nts.uk.ctx.at.shared.app.find.specialholidaynew.SpecialHolidayFinderNew;
 
 /**
  * 
@@ -25,30 +26,39 @@ import nts.uk.ctx.at.shared.app.find.specialholidaynew.SpecialHolidayFinder;
 public class SpecialHolidayWebService extends WebService{
 	
 	@Inject
-	private SpecialHolidayFinder sphdFinder;
+	private SpecialHolidayFinderNew sphdFinder;
 	
 	@Inject
-	private SpecialHolidayCommandHandler sphdHandler;
+	private CreateSpecialHolidayCommandHandler add;
+	
+	@Inject
+	private EditSpecialHolidayCommandHandler update;
 	
 	@Inject
 	private DeleteSpecialHolidayCommandHandler deleteSphdHandler;
 	
 	@Path("findByCid")
 	@POST
-	public List<SpecialHolidayDto> findByCid() {
+	public List<SpecialHolidayDtoNew> findByCid() {
 		return sphdFinder.findByCompanyId();
 	}
 	
 	@Path("getSpecialHoliday/{specialHolidayCode}")
 	@POST
-	public SpecialHolidayDto getSpecialHoliday(@PathParam("specialHolidayCode") int specialHolidayCode) {
+	public SpecialHolidayDtoNew getSpecialHoliday(@PathParam("specialHolidayCode") int specialHolidayCode) {
 		return sphdFinder.getSpecialHoliday(specialHolidayCode);
+	}
+	
+	@Path("add")
+	@POST
+	public void add(SpecialHolidayCommand command) {
+		add.handle(command);
 	}
 	
 	@Path("update")
 	@POST
-	public void add(SpecialHolidayCommand command) {
-		sphdHandler.handle(command);
+	public void update(SpecialHolidayCommand command) {
+		update.handle(command);
 	}
 
 	@Path("delete")
