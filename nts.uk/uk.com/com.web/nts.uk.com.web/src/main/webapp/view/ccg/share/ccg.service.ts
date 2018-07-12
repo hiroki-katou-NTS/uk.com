@@ -176,6 +176,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 showQuickSearchTab?: boolean; // クイック検索
                 showAdvancedSearchTab?: boolean; // 詳細検索
                 showBaseDate?: boolean; // 基準日利用
+                showClosure?: boolean; // 就業締め日利用
                 showAllClosure?: boolean; // 全締め表示
                 showPeriod?: boolean; // 対象期間利用
                 periodFormatYM?: boolean; // 対象期間精度
