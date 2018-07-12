@@ -190,7 +190,7 @@ module nts.uk.at.view.kfp001.b {
                         self.dScreenmodel.listAggr(self.optionalList());
                         self.dScreenmodel.presenceOfError(self.status());
                         self.dScreenmodel.executionStatus(self.preOfError());
-                        if (self.currentItem() != null){
+                        if (self.mode() == 1){
                             self.cScreenmodel.periodStartDate(self.currentItem().startDate());
                             self.cScreenmodel.periodEndDate(self.currentItem().endDate());
                         } else {
