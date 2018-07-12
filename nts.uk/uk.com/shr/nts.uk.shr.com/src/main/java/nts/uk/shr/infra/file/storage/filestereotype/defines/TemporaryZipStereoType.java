@@ -21,11 +21,11 @@ public class TemporaryZipStereoType implements FileStereoTypeDescription {
 	
 	@Override
 	public boolean isPack() {
-		return true;
+		return false;
 	}
 	
 	@Override
 	public boolean  keepsPack(){
-		return true;
+		return false;
 	}
 }
