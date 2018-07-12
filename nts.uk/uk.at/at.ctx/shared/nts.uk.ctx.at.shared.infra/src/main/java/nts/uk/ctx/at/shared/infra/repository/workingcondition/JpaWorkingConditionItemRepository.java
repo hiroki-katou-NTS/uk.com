@@ -522,7 +522,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	public boolean copyLastMonthlyPatternSetting(String sourceSid, List<String> destSid) {
 		// Get items
 		Optional<WorkingConditionItem>  optSourceItem = this.getBySid(sourceSid);
-		List<KshmtWorkingCondItem> optDestItem = this.getLastWorkingCondItem(destSid);
+		List<KshmtWorkingCondItem> optDestItem = this.getLastWorkingCondItemEntities(destSid);
 
 		// Check 
 		if (!optSourceItem.isPresent() || optDestItem.isEmpty()) {
@@ -547,7 +547,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @param employeeId the employee id
 	 * @return the last working cond item
 	 */
-	private List<KshmtWorkingCondItem> getLastWorkingCondItem(List<String> employeeId) {
+	private List<KshmtWorkingCondItem> getLastWorkingCondItemEntities(List<String> employeeId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -617,6 +617,27 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				return new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e));
 			}));
 		}));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * getLastWorkingCondItem(java.util.List)
+	 */
+	@Override
+	public List<WorkingConditionItem> getLastWorkingCondItem(List<String> employeeIds) {
+		List<KshmtWorkingCondItem> result = this.getLastWorkingCondItemEntities(employeeIds);
+		// Check empty
+		if (CollectionUtil.isEmpty(result)) {
+			return Collections.emptyList();
+		}
+
+		// exclude select
+		return result.stream().map(
+				entity -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 }

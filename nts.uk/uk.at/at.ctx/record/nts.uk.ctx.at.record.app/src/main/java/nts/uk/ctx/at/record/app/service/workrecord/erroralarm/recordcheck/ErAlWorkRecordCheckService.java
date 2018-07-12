@@ -307,7 +307,7 @@ public class ErAlWorkRecordCheckService {
 				}
 				count++;
 			} else if (!setting.getIgnoreWorkType().contains(currentWTC)) {
-				if (count >= setting.getMaxContinuousDays()) {
+				if (count >= setting.getMaxContinuousDays().v()) {
 					result.put(markDate, count);
 				}
 				if (endMark.afterOrEquals(info.getYmd())) {
