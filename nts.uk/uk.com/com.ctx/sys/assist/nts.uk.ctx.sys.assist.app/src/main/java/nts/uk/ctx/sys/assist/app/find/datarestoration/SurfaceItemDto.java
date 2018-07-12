@@ -67,6 +67,10 @@ public class SurfaceItemDto {
 	 * 保存時保存範囲
 	 */
 	private int storageRangeSaved;
+	/**
+	 * 保存形態
+	 */
+	private String saveForm;
 
 	public static SurfaceItemDto fromDomain(TableList domain) {
 		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode().orElse(""),
@@ -74,6 +78,6 @@ public class SurfaceItemDto {
 				domain.getAnotherComCls().value, domain.getCategoryId(), domain.getTableNo(),
 				domain.getDataStorageProcessingId(), domain.getCategoryName(), domain.getRetentionPeriodCls().value,
 				domain.getSaveDateFrom().orElse(null), domain.getSaveDateTo().orElse(null),
-				domain.getCanNotBeOld().orElse(0), domain.getStorageRangeSaved().value);
+				domain.getCanNotBeOld().orElse(0), domain.getStorageRangeSaved().value, domain.getSaveForm());
 	}
 }

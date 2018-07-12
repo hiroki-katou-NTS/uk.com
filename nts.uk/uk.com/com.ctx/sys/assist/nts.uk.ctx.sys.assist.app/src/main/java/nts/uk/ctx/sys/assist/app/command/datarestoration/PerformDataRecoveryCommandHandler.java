@@ -33,11 +33,11 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 
 	public void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
 		PerformDataRecoveryCommand performDataCommand = context.getCommand();
-		String dataRecoveryProcessId = performDataCommand.recoveryProcessingId;
+		String dataRecoveryProcessId = performDataCommand.getRecoveryProcessingId();
 		String recoveryDate = null;
 		int categoryCnt = 0;
 		int errorCount = 0;
-		int categoryTotalCount = performDataCommand.recoveryCategoryList.size();
+		int categoryTotalCount = performDataCommand.getRecoveryCategoryList().size();
 		String processTargetEmpCode = "";
 		int suspendedState = 0;
 		int numOfProcesses = 0;
@@ -49,14 +49,14 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 		repoDataRecoveryMng.add(dataRecoveryMng);
 
 		// ドメインモデル「データ復旧の結果」を登録する
-		String cid = AppContexts.user().companyId();
-		String saveSetCode = null;
-		String practitioner = "";
-		String executionResult = null;
+		String cid                    = AppContexts.user().companyId();
+		String saveSetCode            = performDataCommand.getSaveSetCode();
+		String practitioner           = AppContexts.user().employeeId();
+		String executionResult        = null;
 		GeneralDateTime startDateTime = GeneralDateTime.now();
-		GeneralDateTime endDateTime = null;
-		Integer saveForm = 0;
-		String saveName = "";
+		GeneralDateTime endDateTime   = null;
+		Integer saveForm              = performDataCommand.getSaveForm();
+		String saveName               = performDataCommand.getSaveName();
 		DataRecoveryResult dataRecoveryResult = new DataRecoveryResult(dataRecoveryProcessId, cid, saveSetCode,
 				practitioner, executionResult, startDateTime, endDateTime, saveForm, saveName);
 		repoDataRecoveryResult.add(dataRecoveryResult);
@@ -66,31 +66,31 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 		Optional<PerformDataRecovery> performData = repoPerformDataRecovery
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 		performData.ifPresent(x -> {
-			x.setRecoveryMethod(EnumAdaptor.valueOf(performDataCommand.recoveryMethodOptions, RecoveryMethod.class));
+			x.setRecoveryMethod(EnumAdaptor.valueOf(performDataCommand.getRecoveryMethodOptions(), RecoveryMethod.class));
 			repoPerformDataRecovery.update(x);
 		});
 		// 復旧対象カテゴリ選別
 		// 抽出した非対象カテゴリをドメインモデル「テーブル一覧」の「復旧対象選択」を0（；復旧しない）に更新
-		List<String> listCheckCate = performDataCommand.recoveryCategoryList.stream().map(x -> x.categoryId)
+		List<String> listCheckCate = performDataCommand.getRecoveryCategoryList().stream().map(x -> x.categoryId)
 				.collect(Collectors.toList());
 		int selectionTarget = 1;
 		repoPerformDataRecovery.updateCategorySelect(selectionTarget, dataRecoveryProcessId, listCheckCate);
 
 		// 「復旧方法」の判別
-		if (EnumAdaptor.valueOf(performDataCommand.recoveryMethodOptions,
+		if (EnumAdaptor.valueOf(performDataCommand.getRecoveryMethodOptions(),
 				RecoveryMethod.class) == RecoveryMethod.RESTORE_SELECTED_RANGE) {
 
 			// 復旧期間の調整
 			for (int i = 0; i < listCheckCate.size(); i++) {
 				String checkCate = listCheckCate.get(i);
-				String startOfPeriod = performDataCommand.recoveryCategoryList.get(i).startOfPeriod;
-				String endOfPeriod = performDataCommand.recoveryCategoryList.get(i).endOfPeriod;
+				String startOfPeriod = performDataCommand.getRecoveryCategoryList().get(i).startOfPeriod;
+				String endOfPeriod = performDataCommand.getRecoveryCategoryList().get(i).endOfPeriod;
 				repoPerformDataRecovery.updateCategorySelectByDateFromTo(startOfPeriod, endOfPeriod,
 						dataRecoveryProcessId, checkCate);
 			}
 
 			// 対象社員の選別 performDataCommand.employeeList
-			List<String> employeeIdList = performDataCommand.employeeList.stream().map(x -> x.id)
+			List<String> employeeIdList = performDataCommand.getEmployeeList().stream().map(x -> x.id)
 					.collect(Collectors.toList());
 			repoPerformDataRecovery.deleteEmployeeDataRecovery(dataRecoveryProcessId, employeeIdList);
 		}

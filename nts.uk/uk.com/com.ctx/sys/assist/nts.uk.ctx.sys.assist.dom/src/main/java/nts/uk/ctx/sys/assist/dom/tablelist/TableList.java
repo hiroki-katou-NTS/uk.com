@@ -931,7 +931,7 @@ public class TableList extends DomainObject {
 
 	public TableList(String categoryId, String categoryName, String saveSetCode, String saveSetName,
 			String saveDateFrom, String saveDateTo, int storageRangeSaved, int retentionPeriodCls, int anotherComCls,
-			String compressedFileName, int canNotBeOld, String supplementaryExplanation) {
+			String compressedFileName, int canNotBeOld, String supplementaryExplanation, String saveForm) {
 		super();
 		this.categoryId = categoryId;
 		this.categoryName = categoryName;
@@ -945,5 +945,6 @@ public class TableList extends DomainObject {
 		this.compressedFileName = compressedFileName;
 		this.canNotBeOld = Optional.ofNullable(canNotBeOld);
 		this.supplementaryExplanation = Optional.ofNullable(supplementaryExplanation);
+		this.saveForm = saveForm;
 	}
 }
