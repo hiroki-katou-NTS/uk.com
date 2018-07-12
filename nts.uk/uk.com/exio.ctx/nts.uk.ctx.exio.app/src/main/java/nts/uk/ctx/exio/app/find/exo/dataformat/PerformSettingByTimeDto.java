@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.app.find.exo.dataformat;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSet;
@@ -40,7 +42,7 @@ public class PerformSettingByTimeDto {
 	/**
 	 * 固定長整数桁
 	 */
-	private int fixedLongIntegerDigit;
+	private Integer fixedLongIntegerDigit;
 
 	/**
 	 * 固定長編集方法
@@ -60,7 +62,7 @@ public class PerformSettingByTimeDto {
 	/**
 	 * 分/小数処理桁
 	 */
-	private int minuteFractionDigit;
+	private Integer minuteFractionDigit;
 
 	/**
 	 * 進数選択
@@ -80,7 +82,7 @@ public class PerformSettingByTimeDto {
 	/**
 	 * 固定値演算値
 	 */
-	private String fixedCalculationValue;
+	private BigDecimal fixedCalculationValue;
 
 	/**
 	 * NULL値置換の値
@@ -101,13 +103,15 @@ public class PerformSettingByTimeDto {
 				? domain.getMinuteFractionDigit().get().v() : null;
 		Integer fixedLongIntegerDigit = domain.getFixedLongIntegerDigit().isPresent()
 				? domain.getFixedLongIntegerDigit().get().v() : null;
+		BigDecimal fixedCalculationValue = domain.getFixedCalculationValue().isPresent()
+				? domain.getFixedCalculationValue().get().v() : null;
 
 		return new PerformSettingByTimeDto(domain.getCid(), domain.getNullValueSubs().value,
 				domain.getOutputMinusAsZero().value, domain.getFixedValue().value, valueOfFixedValue,
 				domain.getFixedLengthOutput().value, fixedLongIntegerDigit, domain.getFixedLengthEditingMothod().value,
 				domain.getDelimiterSetting().value, domain.getSelectHourMinute().value, minuteFractionDigit,
 				domain.getDecimalSelection().value, domain.getFixedValueOperationSymbol().value,
-				domain.getFixedValueOperation().value, domain.getFixedCalculationValue(), valueOfNullValueSubs,
+				domain.getFixedValueOperation().value, fixedCalculationValue, valueOfNullValueSubs,
 				domain.getMinuteFractionDigitProcessCla().value);
 	}
 }

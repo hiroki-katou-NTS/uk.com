@@ -72,8 +72,8 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         selectModeScreen: KnockoutObservable<number> = ko.observable(0);
 
         enableSettingSubmit: KnockoutObservable<boolean> = ko.observable(true);
-        enableRequired: KnockoutObservable<boolean> = ko.observable(true);
-        
+        enableRequired: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             var self = this;
             self.inputMode = true;
@@ -133,10 +133,22 @@ module nts.uk.com.view.cmf002.l.viewmodel {
 
         sendData() {
             var self = this;
-            if(self.minuteFractionDigit == null){
-                $('#L3_1').ntsError('set', {messageId:"Msg_658"});
-            }
+            self.minuteFractionDigit == null ? $('#L3_1').ntsError('set', { messageId: "Msg_658" });
             
+            self.fixedValueOperation.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0) {
+                    self.enableRequired(true);
+                    self.fixedCalculationValue == null ? $('#L7_3').ntsError('set', { messageId: "Msg_658" });
+                }
+            });
+
+            self.fixedLengthOutput.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0) {
+                    self.enableRequired(true);
+                    self.fixedLongIntegerDigit == null && self.fixedLongIntegerDigit < 1 ? $('#L8_2_2').ntsError('set', { messageId: "Msg_658" });
+                }
+            });
+
             let data = {
                 selectHourMinute: self.selectHourMinute(),
                 minuteFractionDigit: self.minuteFractionDigit(),
@@ -224,7 +236,6 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             //Check Mode Screen 
             if (self.selectModeScreen() == 0) {
                 self.enableSettingSubmit(false);
-                self.enableRequired(false);
             }
             service.findPerformSettingByTime().done(result => {
                 let getData = result;
