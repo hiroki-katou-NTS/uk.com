@@ -106,6 +106,11 @@ module kcp.share.tree {
          * Check is show no select row in grid list.
          */
         isShowNoSelectRow?: boolean;
+
+        /**
+         * Show all levels of workplace on start
+         */
+        isFullView?: boolean;
     }
 
     /**
@@ -214,6 +219,7 @@ module kcp.share.tree {
             self.$input = $input;
 
             // set parameter
+            self.isFullView(_.isNil(data.isFullView) ? false : data.isFullView); // default = false
             if (data.isMultipleUse) {
                 self.isMultipleUse = data.isMultipleUse;
             }

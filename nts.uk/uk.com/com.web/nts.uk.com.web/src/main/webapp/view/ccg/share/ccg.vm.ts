@@ -973,6 +973,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectedCode: self.selectedCodeEmployee,
                         isDialog: true,
                         isShowNoSelectRow: false,
+                        isShowWorkPlaceName: false,
                         maxRows: self.calculateKcp005Rows(Kcp005MarginHeight),
                         subscriptions: self.employeeSubscriptions
                     }
@@ -1228,7 +1229,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         .done(selectedCodes => {
                             self.selectedCodeWorkplace(selectedCodes);
                             $('#workplaceList').ntsTreeComponent(self.workplaces).done(() => {
-                                self.expandKCP004();
                                 dfd.resolve();
                             });
                         })
@@ -1274,23 +1274,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     // reload KCP004
                     self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
                     $('#workplaceList').ntsTreeComponent(self.workplaces);
-                });
-            }
-
-            /**
-             * Expand KCP004
-             */
-            public expandKCP004(): void {
-                let self = this;
-                $('#workplaceList').fullView();
-
-                _.defer(() => {
-                    const KCP004Width = $('#workplaceList').outerWidth(true);
-                    const KCPMargin = 30;
-                    const expandedWidth = KCP004Width + KCPMargin;
-
-                    // update accordion width
-                    $('.accordion').width(expandedWidth);
                 });
             }
 
@@ -1905,6 +1888,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     selectedWorkplaceId: self.selectedCodeWorkplace,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
+                    isFullView: true,
                     isDialog: true
                 }
             }
