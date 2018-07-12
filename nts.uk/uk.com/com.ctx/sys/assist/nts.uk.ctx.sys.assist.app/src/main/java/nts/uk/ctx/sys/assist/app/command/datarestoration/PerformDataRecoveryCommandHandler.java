@@ -67,6 +67,7 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 		performData.ifPresent(x -> {
 			x.setRecoveryMethod(EnumAdaptor.valueOf(performDataCommand.recoveryMethodOptions, RecoveryMethod.class));
+			x.setNumPeopleBeRestore(context.getCommand().employeeList.size());
 			repoPerformDataRecovery.update(x);
 		});
 		// 復旧対象カテゴリ選別
