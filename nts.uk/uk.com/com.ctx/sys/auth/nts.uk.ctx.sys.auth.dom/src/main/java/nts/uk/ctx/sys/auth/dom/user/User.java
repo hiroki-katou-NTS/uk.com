@@ -44,7 +44,7 @@ public class User extends AggregateRoot {
 	// メールアドレス
 	/** The mail address. */
 	private Optional<MailAddress> mailAddress;
-	
+
 	// ユーザ名
 	/** The user name. */
 	private Optional<UserName> userName;
@@ -59,7 +59,7 @@ public class User extends AggregateRoot {
 
 	public static User createFromJavatype(String userID, Boolean defaultUser, String password, String loginID,
 			String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent,
-			String mailAddress, String userName, String associatedPersonID , int passStatus) {
+			String mailAddress, String userName, String associatedPersonID, int passStatus) {
 
 		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID.trim()),
 				new ContractCode(contractCode), expirationDate, EnumAdaptor.valueOf(specialUser, DisabledSegment.class),
@@ -71,23 +71,7 @@ public class User extends AggregateRoot {
 	}
 
 	public boolean hasAssociatedPersonID() {
-		return !StringUtil.isNullOrEmpty( this.associatedPersonID.get(), false);
+		return !StringUtil.isNullOrEmpty(this.associatedPersonID.get(), false);
 	}
-	
-	/*public String getMailAddress(){
-		if(this.mailAddress.isPresent())
-			return this.mailAddress.get().v();
-		return "";
-	}
-	
-	public String getUserName(){
-		if(this.userName.isPresent())
-		return this.userName.get().v();
-		return "";
-}
-	public String getAssociatedPersonID(){
-		if(this.associatedPersonID.isPresent())
-			return this.associatedPersonID.get();
-		return "";
-	}*/
+
 }

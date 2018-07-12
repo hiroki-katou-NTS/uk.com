@@ -34,8 +34,8 @@ public class UserPublisherImpl implements UserPublisher {
 	private UserDto toDto(User user) {
 		return user != null 
 				? new UserDto(user.getUserID(),
-						user.getUserName().isPresent() ? user.getUserName().get().v() : Optional.empty().toString(),
-						user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : Optional.empty().toString() ) 
+						user.getUserName().isPresent() ? user.getUserName().get().v() : "",
+						user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : "" ) 
 				: null;
 	}
 
@@ -57,10 +57,10 @@ public class UserPublisherImpl implements UserPublisher {
 
 	private UserExport fromDomain(User domain) {
 		return new UserExport(domain.getUserID(), domain.getLoginID().v(), domain.getContractCode().v(),
-				domain.getUserName().isPresent() ? domain.getUserName().get().v() : Optional.empty().toString(),
+				domain.getUserName().isPresent() ? domain.getUserName().get().v() : "",
 				domain.getPassword().v(),
-				domain.getMailAddress().isPresent() ? domain.getMailAddress().get().v() : Optional.empty().toString() ,
-				domain.getAssociatedPersonID().isPresent() ? domain.getAssociatedPersonID().get() : Optional.empty().toString(),
+				domain.getMailAddress().isPresent() ? domain.getMailAddress().get().v() : "",
+				domain.getAssociatedPersonID().isPresent() ? domain.getAssociatedPersonID().get() : "",
 				domain.getExpirationDate(),
 				domain.getPassStatus().value);
 	}

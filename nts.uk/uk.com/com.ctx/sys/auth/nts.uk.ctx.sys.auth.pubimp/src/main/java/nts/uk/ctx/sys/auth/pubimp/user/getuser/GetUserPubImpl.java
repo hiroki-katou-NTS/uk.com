@@ -60,9 +60,9 @@ public class GetUserPubImpl implements GetUserPublish {
 	private GetUserDto createDto(User user) {
 		return new GetUserDto(user.getUserID(),
 				user.getLoginID().v(),
-				user.getUserName().isPresent() ? user.getUserName().get().v() : Optional.empty().toString(),
-				user.getAssociatedPersonID().isPresent() ? user.getUserName().get().toString() : Optional.empty().toString(),
-				user.getMailAddress().isPresent() ? user.getMailAddress().get().v() : Optional.empty().toString(),
+				user.getUserName().isPresent() ? user.getUserName().get().v() : "",
+				user.getAssociatedPersonID().isPresent() ? user.getUserName().get().toString() : "",
+				user.getMailAddress().isPresent() ? user.getMailAddress().get().v() : "",
 				user.getPassword().v());
 	}
 
