@@ -141,12 +141,19 @@ public interface WorkingConditionItemRepository {
 	 */
 	void updateWorkCond2(WorkingConditionItem item);
 
-
-
 	/**
 	 * Gets the list with period by sid and date period 
 	 * @param map of employeeId and date
 	 * @return the by sid ,generalDate and data 
 	 */
-	Map<String, Map<GeneralDate, WorkingConditionItem>> getBySidAndPeriod(Map<String, Set<GeneralDate>> params);;
+	Map<String, Map<GeneralDate, WorkingConditionItem>> getBySidAndPeriod(Map<String, Set<GeneralDate>> params);
+	
+	/**
+	 * Gets the last working cond item.
+	 *
+	 * @param employeeIds the employee ids
+	 * @return the last working cond item
+	 */
+	List<WorkingConditionItem> getLastWorkingCondItem(List<String> employeeIds);
+	
 }
