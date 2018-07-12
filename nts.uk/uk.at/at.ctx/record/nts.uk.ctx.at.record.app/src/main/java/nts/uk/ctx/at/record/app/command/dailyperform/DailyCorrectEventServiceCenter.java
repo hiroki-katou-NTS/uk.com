@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,7 +21,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeaveUpdateB
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeaveUpdateByWorkInfoChangeHandler;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -44,6 +44,8 @@ public class DailyCorrectEventServiceCenter {
 	@Inject
 	private WorkingConditionItemRepository workConditionRepo;
 	
+	public final static List<Integer> WORK_INFO_ITEMS = Arrays.asList(28, 29);
+	
 	public final static List<Integer> LEAVE_ITEMS = Arrays.asList(31, 41);
 	
 	public final static List<Integer> ATTENDANCE_ITEMS = Arrays.asList(34, 44);
@@ -52,30 +54,46 @@ public class DailyCorrectEventServiceCenter {
 			173, 175, 177, 178, 179, 181, 183, 184, 185, 187, 189, 190, 191, 193, 195, 196, 197, 199, 201, 202, 203,
 			205, 207, 208, 209, 211, 213, 214, 215);
 	
-	public List<IntegrationOfDaily> correctTimeLeaveAndBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
+	public List<DailyRecordWorkCommand> correctTimeLeaveAndBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(false).triggerBreakTime(true).triggerTimeLeave(true).build();
-		return prepareSourceAndFireEvent(sources, companyId, eventBus);
+		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, mergeItems(WORK_INFO_ITEMS, LEAVE_ITEMS, ATTENDANCE_ITEMS)), 
+				companyId, eventBus);
 	}
 	
-	public List<IntegrationOfDaily> correctTimeLeave(List<DailyRecordWorkCommand> sources, String companyId){
+	public List<DailyRecordWorkCommand> correctTimeLeave(List<DailyRecordWorkCommand> sources, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(true).triggerBreakTime(false).triggerTimeLeave(true).build();
-		return prepareSourceAndFireEvent(sources, companyId, eventBus);
+		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, mergeItems(WORK_INFO_ITEMS)), companyId, eventBus);
 	}
 	
-	public List<IntegrationOfDaily> correctBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
+	public List<DailyRecordWorkCommand> correctBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(true).triggerBreakTime(true).triggerTimeLeave(false).build();
-		return prepareSourceAndFireEvent(sources, companyId, eventBus);
+		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, mergeItems(LEAVE_ITEMS, ATTENDANCE_ITEMS)), companyId, eventBus);
+	}
+
+	private Map<DailyRecordWorkCommand, Boolean> mapShouldTriggerSources(List<DailyRecordWorkCommand> sources, List<Integer> triggerItems) {
+		return sources.stream().collect(Collectors.toMap(s -> s, s -> {
+			return s.itemValues().stream().filter(i -> triggerItems.contains(i.itemId())).findFirst().isPresent();
+		}));
 	}
 	
-	private List<IntegrationOfDaily> prepareSourceAndFireEvent(List<DailyRecordWorkCommand> sources, String companyId, EventTrigger eventBus){
+	@SafeVarargs
+	private final List<Integer> mergeItems(List<Integer>... sources) {
+		return Stream.of(sources).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
+	private List<DailyRecordWorkCommand> prepareSourceAndFireEvent(Map<DailyRecordWorkCommand, Boolean> sources, 
+			String companyId, EventTrigger eventBus){
 		if(sources.isEmpty()){
 			return new ArrayList<>();
 		}
+		if(!sources.values().stream().anyMatch(c -> c)){
+			return new ArrayList<>(sources.keySet()); 
+		}
 		Set<String> workTypeCode = new HashSet<>();
-		sources.stream().forEach(s -> {
+		sources.keySet().stream().forEach(s -> {
 			workTypeCode.add(s.getWorkInfo().getData().getRecordInfo().getWorkTypeCode().v());
 		});
-		Map<String, Set<GeneralDate>> employeeIds = sources.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
+		Map<String, Set<GeneralDate>> employeeIds = sources.keySet().stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
 					Collectors.collectingAndThen(Collectors.toList(), 
 						c -> c.stream().map(q -> q.getWorkDate()).collect(Collectors.toSet()))));
 		
@@ -90,43 +108,47 @@ public class DailyCorrectEventServiceCenter {
 		return eventBus.triggerTimeLeave ? null : workConditionRepo.getBySidAndPeriod(employeeIds);
 	}
 
-	private List<IntegrationOfDaily> triggerEvent(List<DailyRecordWorkCommand> sources, String companyId,
+	private List<DailyRecordWorkCommand> triggerEvent(Map<DailyRecordWorkCommand, Boolean> sources, String companyId,
 			Map<WorkTypeCode, WorkType> workTypes, Map<String, Map<GeneralDate, WorkingConditionItem>> workCondition,
 			EventTrigger eventTriggerBus) {
-		return sources.stream().map(c -> {
-			IntegrationOfDaily dailyRecord = c.toDomain();
-			WorkInfoOfDailyPerformance wi = dailyRecord.getWorkInformation();
+		return sources.entrySet().stream().map(c -> {
+			DailyRecordWorkCommand dailyRecord = c.getKey();
+			WorkInfoOfDailyPerformance wi = dailyRecord.getWorkInfo().getData();
 			
-			if(eventTriggerBus.triggerTimeLeave){
+			if(c.getValue() && eventTriggerBus.triggerTimeLeave){
 				TimeLeaveUpdateByWorkInfoChangeCommand timeLeaveEvent = TimeLeaveUpdateByWorkInfoChangeCommand
-						.builder().employeeId(c.getEmployeeId())
-						.targetDate(c.getWorkDate())
+						.builder().employeeId(dailyRecord.getEmployeeId())
+						.targetDate(dailyRecord.getWorkDate())
 						.companyId(Optional.of(companyId))
-						.cachedEditState(Optional.of(dailyRecord.getEditState()))
+						.cachedEditState(Optional.of(dailyRecord.getEditState().getData()))
 						.cachedWorkCondition(Optional.of(getBySidAndDate(workCondition, wi)))
 						.cachedWorkInfo(Optional.of(wi))
-						.cachedTimeLeave(dailyRecord.getAttendanceLeave())
+						.cachedTimeLeave(dailyRecord.getTimeLeaving().getData())
 						.isTriggerRelatedEvent(eventTriggerBus.isTriggerRelatedEvent)
 						.cachedWorkType(Optional.ofNullable(workTypes.get(wi.getRecordInfo().getWorkTypeCode()))).build();
 				TimeLeavingOfDailyPerformance  timeLeaveCorrected = timeLeaveCorrectHandler.handle(timeLeaveEvent);
-				dailyRecord.setAttendanceLeave(Optional.ofNullable(timeLeaveCorrected));
+				dailyRecord.getTimeLeaving().updateDataO(Optional.ofNullable(timeLeaveCorrected));
 			}
 			
-			if(eventTriggerBus.triggerBreakTime){
+			if(c.getValue() && eventTriggerBus.triggerBreakTime){
 				UpdateBreakTimeByTimeLeaveChangeCommand breakTimeEvent = UpdateBreakTimeByTimeLeaveChangeCommand
-						.builder().employeeId(c.getEmployeeId())
-						.workingDate(c.getWorkDate())
+						.builder().employeeId(dailyRecord.getEmployeeId())
+						.workingDate(dailyRecord.getWorkDate())
 						.companyId(Optional.of(companyId))
-						.cachedEditState(Optional.of(dailyRecord.getEditState()))
+						.cachedEditState(Optional.of(dailyRecord.getEditState().getData()))
 						.cachedWorkInfo(Optional.of(wi))
-						.cachedTimeLeave(dailyRecord.getAttendanceLeave())
+						.cachedTimeLeave(dailyRecord.getTimeLeaving().getData())
 						.cachedWorkType(Optional.ofNullable(workTypes.get(wi.getRecordInfo().getWorkTypeCode())))
 						.isTriggerRelatedEvent(eventTriggerBus.isTriggerRelatedEvent)
-						.cachedBreackTime(dailyRecord.getBreakTime().stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst())
+						.cachedBreackTime(dailyRecord.getBreakTime().getData()
+								.stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst())
 						.build();
 				BreakTimeOfDailyPerformance  breakTimeCorrected = breakTimeCorrectHandler.handle(breakTimeEvent);
-				dailyRecord.getBreakTime().removeIf(b -> b.getBreakType() == breakTimeCorrected.getBreakType());
-				dailyRecord.getBreakTime().add(breakTimeCorrected);
+				if(breakTimeCorrected == null){
+					dailyRecord.getBreakTime().getData().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
+				} else {
+					dailyRecord.getBreakTime().updateData(breakTimeCorrected);
+				}
 			}
 			
 			return dailyRecord;
