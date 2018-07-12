@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHolCheckSet;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousVacationDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -69,11 +70,11 @@ public class KrcctOtkVacationCk extends UkJpaEntity implements Serializable {
 								.map(c -> new WorkTypeCode(c.id.worktypeCd)).collect(Collectors.toList()), 
 						krcctOtkWtNonTarget == null ? new ArrayList<>() : krcctOtkWtNonTarget.stream()
 								.map(c -> new WorkTypeCode(c.id.worktypeCd)).collect(Collectors.toList()), 
-						useAtr == 1 ? true : false, new DisplayMessage(messageDisplay), continuousDays);
+						useAtr == 1 ? true : false, new DisplayMessage(messageDisplay), new ContinuousVacationDays(continuousDays));
 	}
 	
 	public static KrcctOtkVacationCk fromDomain(ContinuousHolCheckSet setting){
-		return new KrcctOtkVacationCk(setting.getCompanyId(), setting.isUseAtr() ? 1 : 0, setting.getMaxContinuousDays(),
+		return new KrcctOtkVacationCk(setting.getCompanyId(), setting.isUseAtr() ? 1 : 0, setting.getMaxContinuousDays().v(),
 				setting.getDisplayMessege() == null ? null : setting.getDisplayMessege().v());
 	}
 }
