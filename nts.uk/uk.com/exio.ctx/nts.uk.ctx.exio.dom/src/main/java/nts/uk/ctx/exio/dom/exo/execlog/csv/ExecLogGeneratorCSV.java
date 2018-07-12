@@ -13,7 +13,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
-public class ExecLogCSVGenerator extends AsposeCellsReportGenerator implements ExecLogCSVReportGenerator{
+public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements ExecLogReportCSVGenerator{
 
 	private static final String REPORT_ID = "CSV_GENERATOR";
 	
@@ -28,7 +28,7 @@ public class ExecLogCSVGenerator extends AsposeCellsReportGenerator implements E
 	private static final int CSV_DATA_START_ROW = 6;
 	
 	@Override
-	public void generate(FileGeneratorContext generatorContext, ExecLogCSVFileData dataSource) {
+	public void generate(FileGeneratorContext generatorContext, ExecLogFileDataCSV dataSource) {
 		val reportContext = this.createEmptyContext(REPORT_ID);
 
 		val workbook = reportContext.getWorkbook();

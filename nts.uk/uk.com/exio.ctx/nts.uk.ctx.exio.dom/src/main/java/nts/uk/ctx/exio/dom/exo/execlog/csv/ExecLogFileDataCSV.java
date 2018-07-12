@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExecLogCSVFileData {
+public class ExecLogFileDataCSV {
 	
 	private String fileName;
 	private List<String> resultLog;

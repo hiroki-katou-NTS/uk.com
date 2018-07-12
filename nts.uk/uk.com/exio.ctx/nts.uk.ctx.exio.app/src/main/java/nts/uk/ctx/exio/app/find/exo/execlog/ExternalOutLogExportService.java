@@ -6,19 +6,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ErrorContentDto;
-import nts.uk.ctx.exio.dom.exo.execlog.csv.ExecLogCSVFileData;
-import nts.uk.ctx.exio.dom.exo.execlog.csv.ExecLogCSVReportGenerator;
+import nts.uk.ctx.exio.dom.exo.execlog.csv.ExecLogFileDataCSV;
+import nts.uk.ctx.exio.dom.exo.execlog.csv.ExecLogReportCSVGenerator;
 import nts.uk.shr.com.i18n.TextResource;
 
+@Stateless
 public class ExternalOutLogExportService  extends ExportService<ErrorContentDto> {
 	
 	@Inject
-	private ExecLogCSVReportGenerator generator;
+	private ExecLogReportCSVGenerator generator;
 	
     private static final List<String> LST_NAME_ID_HEADER = Arrays.asList("","","","","","");
     private static final String FILE_NAME = "エラー一覧.csv";
@@ -60,7 +62,7 @@ public class ExternalOutLogExportService  extends ExportService<ErrorContentDto>
 				dataSource.add(errorItem);
 			}
 		}
-		ExecLogCSVFileData dataExport = new ExecLogCSVFileData(FILE_NAME, resultLog, header, dataSource);
+		ExecLogFileDataCSV dataExport = new ExecLogFileDataCSV(FILE_NAME, resultLog, header, dataSource);
 		this.generator.generate(context.getGeneratorContext(), dataExport);	
 	}
 	private List<String> getTextHeader() {

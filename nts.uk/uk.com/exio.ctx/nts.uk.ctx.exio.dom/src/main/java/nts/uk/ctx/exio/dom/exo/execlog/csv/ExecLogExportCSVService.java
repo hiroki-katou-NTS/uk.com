@@ -7,15 +7,15 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 
 @Stateless
-public class ExecLogCSVExportService extends ExportService<ExecLogCSVFileData>{
+public class ExecLogExportCSVService extends ExportService<ExecLogFileDataCSV>{
 	
 	@Inject
-	private ExecLogCSVReportGenerator generator;
+	private ExecLogReportCSVGenerator generator;
 
 	@Override
-	protected void handle(ExportServiceContext<ExecLogCSVFileData> context) {
+	protected void handle(ExportServiceContext<ExecLogFileDataCSV> context) {
 		
-		ExecLogCSVFileData data = context.getQuery();
+		ExecLogFileDataCSV data = context.getQuery();
 		
 		this.generator.generate(context.getGeneratorContext(), data);
 	}
