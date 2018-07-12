@@ -57,7 +57,7 @@ public class DeductionTimeSheet {
 		val ded = createDedctionTimeSheet(DeductionAtr.Deduction, setMethod, clockManage, dailyGoOutSheet, oneDayRange,
 				CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, Optional.empty(), Optional.empty(),
 				breakTimeOfDailyList);
-		return new DeductionTimeSheet(record, ded);
+		return new DeductionTimeSheet(ded,record);
 	}
 
 	/**

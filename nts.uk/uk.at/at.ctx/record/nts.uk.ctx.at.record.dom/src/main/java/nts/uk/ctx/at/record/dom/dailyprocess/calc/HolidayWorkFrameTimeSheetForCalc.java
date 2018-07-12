@@ -204,22 +204,22 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	}
 	
 	
-	/**
-	 *　指定条件の控除項目だけの控除時間
-	 * @param forcsList
-	 * @param atr
-	 * @return
-	 */
-	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
-		AttendanceTime dedTotalTime = new AttendanceTime(0);
-		val loopList = this.getDedTimeSheetByAtr(dedAtr, atr);
-		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
-			if(deduTimeSheet.checkIncludeCalculation(atr)) {
-				dedTotalTime = dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
-			}
-		}
-		return dedTotalTime;
-	}
+//	/**
+//	 *　指定条件の控除項目だけの控除時間
+//	 * @param forcsList
+//	 * @param atr
+//	 * @return
+//	 */
+//	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
+//		AttendanceTime dedTotalTime = new AttendanceTime(0);
+//		val loopList = this.getDedTimeSheetByAtr(dedAtr, atr);
+//		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
+//			if(deduTimeSheet.checkIncludeCalculation(atr)) {
+//				dedTotalTime = dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
+//			}
+//		}
+//		return dedTotalTime;
+//	}
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 	

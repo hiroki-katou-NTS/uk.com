@@ -184,9 +184,8 @@ public class HolidayWorkTimeSheet{
 	 */
 	public AttendanceTime calculationAllFrameDeductionTime(DeductionAtr dedAtr,ConditionAtr atr) {
 		AttendanceTime totalTime = new AttendanceTime(0);
-		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
 		for(HolidayWorkFrameTimeSheetForCalc frameTime : this.workHolidayTime) {
-			totalTime = totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+			totalTime = totalTime.addMinutes(frameTime.forcs(atr,dedAtr).valueAsMinutes());
 		}
 		return totalTime;
 	}

@@ -305,35 +305,6 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 //		}
 //	}
 	
-	/**
-	 *　指定条件の控除項目だけの控除時間
-	 * @param forcsList
-	 * @param atr
-	 * @return
-	 */
-	public AttendanceTime forcs(ConditionAtr atr,DeductionAtr dedAtr){
-		AttendanceTime dedTotalTime = new AttendanceTime(0);
-		val loopList = (dedAtr.isAppropriate())?this.getRecordedTimeSheet():this.deductionTimeSheet;
-		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
-			if(deduTimeSheet.checkIncludeCalculation(atr)) {
-				val addTime = deduTimeSheet.calcTotalTime().valueAsMinutes();
-				dedTotalTime = dedTotalTime.addMinutes(addTime);
-			}
-		}
-		return dedTotalTime;
-	}
-	
-//	
-//	/**
-//	 * 控除時間中の時間休暇相殺時間の計算
-//	 * @return
-//	 */
-//	public DeductionOffSetTime calcTotalDeductionOffSetTime() {
-//		
-//		//2017/10/13はここからスタート
-//		
-//		
-//	}
 	
 	/**
 	 * 時間休暇からの加算時間を取得

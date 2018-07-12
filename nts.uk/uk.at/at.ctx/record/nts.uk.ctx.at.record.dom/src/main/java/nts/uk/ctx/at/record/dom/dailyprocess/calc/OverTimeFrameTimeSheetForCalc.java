@@ -239,8 +239,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		
 		return new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),overTimeHourSet.getTimezone().getRounding()),
 											  	timeSpan,
-											  	dedTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 											  	recordTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
+											  	dedTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 											  	duplibonusPayTimeSheet,
 											  	duplispecifiedBonusPayTimeSheet,
 											  	duplicatemidNightTimeSheet,
@@ -463,12 +463,12 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                     										,this.getAdjustTime()));
         }
         else {
-        	//控除の控除時間帯
+        	//計上の控除時間帯
         	val beforeRec = this.getRecordedTimeSheet().stream()
         										.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(this.calcrange.getStart(), baseTime)).isPresent())
         										.map(tc -> tc.createDuplicateRange(new TimeSpanForCalc(this.calcrange.getStart(), baseTime)).get())
         										.collect(Collectors.toList());
-        	//計上の控除時間帯
+        	//控除の控除時間帯
         	val beforeDed = this.getDeductionTimeSheet().stream()
 												.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(this.calcrange.getStart(), baseTime)).isPresent())
 												.map(tc -> tc.createDuplicateRange(new TimeSpanForCalc(this.calcrange.getStart(), baseTime)).get())
@@ -493,12 +493,12 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                                                          ,this.payOrder
                                                          ,this.getAdjustTime()));
             
-        	//控除の控除時間帯
+        	//計上の控除時間帯
         	val afterRec = this.getRecordedTimeSheet().stream()
         										.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(baseTime, this.calcrange.getEnd())).isPresent())
         										.map(tc -> tc.createDuplicateRange(new TimeSpanForCalc(baseTime, this.calcrange.getEnd())).get())
         										.collect(Collectors.toList());
-        	//計上の控除時間帯
+        	//控除の控除時間帯
         	val afterDed = this.getDeductionTimeSheet().stream()
 												.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(baseTime, this.calcrange.getEnd())).isPresent())
 												.map(tc -> tc.createDuplicateRange(new TimeSpanForCalc(baseTime, this.calcrange.getEnd())).get())
@@ -561,23 +561,6 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		
 		return time;
 		
-	}
-
-	/**
-	 *　指定条件の控除項目だけの控除時間
-	 * @param forcsList
-	 * @param atr
-	 * @return
-	 */
-	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
-		AttendanceTime dedTotalTime = new AttendanceTime(0);
-		val loopList = this.getDedTimeSheetByAtr(dedAtr, atr);
-		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
-			if(deduTimeSheet.checkIncludeCalculation(atr)) {
-				dedTotalTime = dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
-			}
-		}
-		return dedTotalTime;
 	}
 
 }
