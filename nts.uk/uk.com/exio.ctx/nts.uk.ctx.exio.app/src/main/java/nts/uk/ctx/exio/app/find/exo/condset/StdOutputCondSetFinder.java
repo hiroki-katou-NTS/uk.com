@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.app.find.exo.condset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,6 +52,13 @@ public class StdOutputCondSetFinder {
 		Optional<StandardOutputItem> stdOutItemOpt = standardOutputItemRepository.getStdOutItemById(cId, outItemCode,
 				cndSetCd);
 		return stdOutItemOpt.map(StdOutItemDto::fromDomain).orElse(null);
+	}
+	public  List<StdOutputCondSet> getConditionSetting(String modeScreen, String cndSetCd) {
+		String cId = AppContexts.user().companyId();
+		List<StdOutputCondSet> stdOutputCondSetList = new ArrayList<StdOutputCondSet>();
+		finder.getStdOutputCondSetById(cId, cndSetCd)
+		.ifPresent(item -> stdOutputCondSetList.add(item));
+		return stdOutputCondSetList;
 	}
 
 }

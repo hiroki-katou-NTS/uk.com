@@ -121,7 +121,22 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         }
 
         selectStandardMode() {
-            $('#ex_output_wizard').ntsWizard("next");
+            let modeScreen = "a";
+            let cndSetCd ="b";
+            
+             service.getConditionSetting(modeScreen,cndSetCd).done(res => {               
+                 
+                      console.log(res);
+            }).fail(res => {
+                console.log("getConditionSetting fail");
+            });
+            
+            
+            
+            
+            
+            
+         
         }
 
         next() {

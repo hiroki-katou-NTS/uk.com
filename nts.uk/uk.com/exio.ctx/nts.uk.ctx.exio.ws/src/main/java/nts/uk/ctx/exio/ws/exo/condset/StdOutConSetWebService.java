@@ -78,4 +78,10 @@ public class StdOutConSetWebService extends WebService {
 		return ctgItemDataFinder.getAllCategoryItem(categoryId);
 	}
 
+	@POST
+	@Path("getCondSet/{modeScreen}/{cndSetCd}")
+	public List<StdOutputCondSet> getCondSet(@PathParam("modeScreen") String modeScreen,
+			@PathParam("cndSetCd") String cndSetCd) {
+		return stdOutputCondSetFinder.getConditionSetting(modeScreen,cndSetCd);
+	}
 }
