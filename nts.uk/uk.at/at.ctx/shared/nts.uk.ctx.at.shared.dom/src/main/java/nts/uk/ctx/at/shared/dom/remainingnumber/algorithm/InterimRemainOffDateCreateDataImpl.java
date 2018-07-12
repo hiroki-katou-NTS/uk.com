@@ -49,7 +49,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//残数作成元情報を作成する
 		InforFormerRemainData formerRemainData = this.createInforFormerRemainData(cid, sid, baseDate, detailData, dayOffTimeIsUse,
 				comHolidaySetting, employmentHolidaySetting);
-		if(!formerRemainData.getWorkTypeRemain().isPresent()) {
+		if(formerRemainData == null || !formerRemainData.getWorkTypeRemain().isPresent()) {
 			return null;
 		}
 		//残数作成元情報から暫定残数管理データを作成する
@@ -116,6 +116,9 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	public InforFormerRemainData createInterimDataFromecord(String cid,RecordRemainCreateInfor recordData, InforFormerRemainData outputData) {
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
 		WorkTypeRemainInfor dataDetail = this.createWorkTypeRemainInfor(cid, CreateAtr.RECORD, recordData.getWorkTypeCode());
+		if(dataDetail == null) {
+			return null;
+		}
 		outputData.setWorkTypeRemain(Optional.of(dataDetail));
 		//アルゴリズム「実績から代休振替情報を設定する」を実行する
 		DayoffTranferInfor dayOffInfor = this.createDayOffTranferFromRecord(cid, CreateAtr.RECORD, recordData, outputData.isDayOffTimeIsUse());
@@ -128,10 +131,17 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		WorkTypeRemainInfor outputData = new WorkTypeRemainInfor(null, null, new ArrayList<>(), new ArrayList<>());
 		//ドメインモデル「勤務種類」を取得する
 		Optional<WorkType> optWorkTypeData = workTypeRepo.findByPK(cid, workTypeCode);
+		
 		if(!optWorkTypeData.isPresent()) {
 			return outputData;
 		}
 		WorkType workTypeData = optWorkTypeData.get();
+		if(workTypeData.getDailyWork().isOneDay() && !lstZansu().contains(workTypeData.getDailyWork().getOneDay())
+				|| workTypeData.getDailyWork().IsLeaveForMorning() && !lstZansu().contains(workTypeData.getDailyWork().getMorning())
+				|| workTypeData.getDailyWork().IsLeaveForAfternoon() && !lstZansu().contains(workTypeData.getDailyWork().getAfternoon())) {
+			return null;
+		}
+		
 		//勤務種類別残数情報を作成する
 		outputData.setCreateData(createAtr);
 		outputData.setWorkTypeCode(workTypeCode);
@@ -223,6 +233,19 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		return occurrenceDetailData;
 	}
 
+	private List<WorkTypeClassification> lstZansu(){
+		List<WorkTypeClassification> lstOutput = new ArrayList<>();
+		lstOutput.add(WorkTypeClassification.AnnualHoliday);
+		lstOutput.add(WorkTypeClassification.YearlyReserved);
+		lstOutput.add(WorkTypeClassification.SubstituteHoliday);
+		lstOutput.add(WorkTypeClassification.Absence);
+		lstOutput.add(WorkTypeClassification.Pause);
+		lstOutput.add(WorkTypeClassification.TimeDigestVacation);
+		lstOutput.add(WorkTypeClassification.HolidayWork);
+		lstOutput.add(WorkTypeClassification.Shooting);
+		lstOutput.add(WorkTypeClassification.SpecialHoliday);
+		return lstOutput;
+	}
 	@Override
 	public WorkTypeRemainInfor createWithHaftDayWorkType(WorkType workType, WorkTypeRemainInfor dataOutput) {
 		//午前

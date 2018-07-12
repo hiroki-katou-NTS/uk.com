@@ -214,9 +214,12 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	@Override
 	public DailyInterimRemainMngData createInterimBreak(InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
-		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
+		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(WorkTypeClassification.AnnualHoliday);
 		//代休振替情報をチェックする
-		if(!occUseDetail.isPresent() || !inforData.getDayOffTranfer().isPresent()) {
+		if(occUseDetail.isPresent() || !inforData.getDayOffTranfer().isPresent()
+				|| (inforData.getDayOffTranfer().get().getTranferTimeInfor().getTranferTime() == 0
+						&& (!inforData.getDayOffTranfer().get().getTranferTimeInfor().getDays().isPresent())
+							|| inforData.getDayOffTranfer().get().getTranferTimeInfor().getDays().get() == 0)) {
 			return mngData;
 		}
 		//代休振替情報のアルゴリズム「振替時間情報を取得する」を実行する
