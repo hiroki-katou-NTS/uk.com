@@ -15,8 +15,8 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         decimalDigit: KnockoutObservable<number>;
         decimalPointClassification: KnockoutObservable<number>;
         decimalFraction: KnockoutObservable<number>;
-        outputMinusAsZeroChecked: KnockoutObservable<boolean> ;
-        outputMinusAsZero: KnockoutObservable<number>  = ko.observable(0);
+        outputMinusAsZeroChecked: KnockoutObservable<boolean>;
+        outputMinusAsZero: KnockoutObservable<number> = ko.observable(0);
         fixedValueOperation: KnockoutObservable<number> = ko.observable(0);
         fixedValueOperationSymbol: KnockoutObservable<number> = ko.observable(0);
         fixedCalculationValue: KnockoutObservable<number> = ko.observable(0);
@@ -38,7 +38,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         decimalSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDecimalSelect());
         decimalSelection: KnockoutObservable<number> = ko.observable(0);
         //L3_1
-        minuteFractionDigit: KnockoutObservable<number>  = ko.observable(0);
+        minuteFractionDigit: KnockoutObservable<number> = ko.observable(0);
         //L3_3
         itemListRounding: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRounding());
         minuteFractionDigitProcessCla: KnockoutObservable<number> = ko.observable(0);
@@ -120,26 +120,25 @@ module nts.uk.com.view.cmf002.l.viewmodel {
 
         sendData() {
             var self = this;
-            if (self.minuteFractionDigit == null) {
+            if (self.minuteFractionDigit() == "") {
                 $('#L3_1').ntsError('set', { messageId: "Msg_658" });
             }
 
-            self.fixedValueOperation().subscribe() {
-                if (self.fixedValueOperation() == 1) {
-                    self.enableRequired(true);
-                    if (self.fixedCalculationValue == null) {
-                        $('#L7_3').ntsError('set', { messageId: "Msg_658" });
-                    }
+
+            if (self.fixedValueOperation() == 1) {
+                self.enableRequired(true);
+                if (self.fixedCalculationValue() == "") {
+                    $('#L7_3').ntsError('set', { messageId: "Msg_658" });
                 }
-            });
-            self.fixedLengthOutput().subscribe() {
-                if (self.fixedLengthOutput() == 1) {
-                    self.enableRequired(true);
-                    if (self.fixedLongIntegerDigit == null && self.fixedLongIntegerDigit < 1) {
-                        $('#L8_2_2').ntsError('set', { messageId: "Msg_658" });
-                    }
+            }
+
+            if (self.fixedLengthOutput() == 1) {
+                self.enableRequired(true);
+                if (self.fixedLongIntegerDigit() == "" || self.fixedLongIntegerDigit() < 1) {
+                    $('#L8_2_2').ntsError('set', { messageId: "Msg_658" });
                 }
-            });
+            }
+
 
             let data = {
                 selectHourMinute: self.selectHourMinute(),
