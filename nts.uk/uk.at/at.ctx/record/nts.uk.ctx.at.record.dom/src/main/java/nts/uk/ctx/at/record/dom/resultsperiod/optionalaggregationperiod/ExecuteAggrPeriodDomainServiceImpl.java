@@ -75,9 +75,9 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 			// Get End Date Time Excution
 			GeneralDateTime endDateTime = GeneralDateTime.now();
 
-			// 状態を確認する
+			// 状態を確認する 
 			if (excutionPeriod.isPresent() && periodTarget.getState().value == 0) {
-				periodInforRepo.findAll(excuteId);
+				
 				List<AggrPeriodInfor> periodInforLst = periodInforRepo.findAll(excuteId);
 
 				if (periodInforLst.size() == 0) {
@@ -87,8 +87,10 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 				}
 			} else {
 				excutionRepo.updateExe(excutionPeriod.get(), 2, endDateTime);
+				
 			}
 		}
 		dataSetter.setData("aggCreateStatus", "完了");
+		dataSetter.setData("aggCreateHasError", "エラーなし");
 	}
 }

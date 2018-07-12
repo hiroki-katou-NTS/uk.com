@@ -13,6 +13,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionRepository;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInfor;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTarget;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetRepository;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
@@ -29,6 +31,8 @@ public class AddAggrPeriodCommandHandler
 	private AggrPeriodExcutionRepository excutionrRepository;
 	@Inject
 	private AggrPeriodTargetRepository targetRepository;
+	@Inject
+	private AggrPeriodInforRepository inforRepository; 
 
 	@Override
 	protected AddAggrPeriodCommandResult handle(CommandHandlerContext<AddAggrPeriodCommand> context) {
@@ -67,6 +71,9 @@ public class AddAggrPeriodCommandHandler
 
 				// Add Aggr Period Excution
 				excutionrRepository.addExcution(periodExcution);
+				
+				AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);
+				inforRepository.addPeriodInfor(periodInfors);
 
 			} else {
 				throw new BusinessException("Msg_1165");
@@ -82,6 +89,11 @@ public class AddAggrPeriodCommandHandler
 
 			// Add Aggr Period Excution
 			excutionrRepository.addExcution(periodExcution);
+			
+			AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);
+			inforRepository.addPeriodInfor(periodInfors);
+			
+			
 
 		}
 		AddAggrPeriodCommandResult aggrPeriodCommandResult = new AddAggrPeriodCommandResult();

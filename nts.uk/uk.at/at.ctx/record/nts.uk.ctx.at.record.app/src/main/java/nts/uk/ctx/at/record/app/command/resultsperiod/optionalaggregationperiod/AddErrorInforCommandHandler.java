@@ -20,9 +20,9 @@ public class AddErrorInforCommandHandler extends CommandHandler<AddErrorInforCom
 	protected void handle(CommandHandlerContext<AddErrorInforCommand> context) {
 		AddErrorInforCommand command = context.getCommand();
 		String memberId = AppContexts.user().employeeId();
-		AggrPeriodInfor infor = command.toDomain(memberId);
-			this.repository.addPeriodInfor(infor);
-		
+//		AggrPeriodInfor infor = command.toDomain(memberId);
+//			this.repository.addPeriodInfor(infor);
+//		
 	}
 
 }

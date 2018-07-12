@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -23,8 +25,8 @@ public class AddErrorInforCommand {
 	/** エラーメッセージ*/
 	private String errorMess;
 	
-	public AggrPeriodInfor toDomain(String memberId) {
-		return AggrPeriodInfor.createFromJavaType(memberId, this.periodArrgLogId, this.resourceId, this.processDay,
+	public AggrPeriodInfor toDomain(String memberId, String periodArrgLogId) {
+		return AggrPeriodInfor.createFromJavaType(memberId, periodArrgLogId, this.resourceId, this.processDay,
 				this.errorMess);
 
 	}

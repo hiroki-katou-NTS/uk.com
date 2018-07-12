@@ -38,9 +38,13 @@
 							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
 							<td><span data-bind="text: aggCreateCount"></span>/<span data-bind="text: peopleCount">
 							
-							</span><span style="margin-left: 10px;" data-bind="text: executionStatus"></span><span style="margin-left: 10px;" data-bind="text: presenceOfError">
+							</span>
+							<!-- <span style="margin-left: 10px;" data-bind="text: executionStatus"></span><span style="margin-left: 10px;" data-bind="text: presenceOfError">
+							</span> -->
+							<span class="process-status" data-bind="text: aggCreateStatus"></span>
+								<span class="process-error" data-bind="text: aggCreateHasError"></span>
+							</td>
 							
-							</span></td>
 						</tr>
 
 

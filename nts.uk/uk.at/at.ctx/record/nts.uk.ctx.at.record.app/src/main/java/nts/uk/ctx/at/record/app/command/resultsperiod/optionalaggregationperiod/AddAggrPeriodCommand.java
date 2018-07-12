@@ -14,6 +14,8 @@ public class AddAggrPeriodCommand{
 	private TargetCommand targetCommand;
 	
 	private ExecutionCommand executionCommand;
+	
+	private AddErrorInforCommand inforCommand;
 
 
 }

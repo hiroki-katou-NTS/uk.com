@@ -16,6 +16,7 @@ module nts.uk.at.view.kfp001.d {
             peopleCount: KnockoutObservable<string> = ko.observable('');
             presenceOfError: KnockoutObservable<string> = ko.observable('');
             executionStatus: KnockoutObservable<string> = ko.observable('');
+            addErrorInforCommand: KnockoutObservable<any> = ko.observable({});
 
             constructor() {
                 var self = this;
@@ -70,20 +71,35 @@ module nts.uk.at.view.kfp001.d {
                     peopleNo: self.peopleNo()
 
                 }
+
+                let resourceId = nts.uk.util.randomId().slice(0, 10);
+                if (self.aggrFrameCode() == '001') {
+                    self.addErrorInforCommand({
+                        resourceId: resourceId,
+                        periodArrgLogId: self.executionId(),
+                        processDay: moment(self.startDate()).utc(),
+                        errorMess: 'Loi roi'
+                    })
+                } else {
+                    self.addErrorInforCommand({})
+                }
+
                 var addAggrPeriodCommand = {
                     mode: self.mode(),
                     aggrPeriodCommand: aggrPeriodDto,
                     targetCommand: targetDto,
-                    executionCommand: executionDto
+                    executionCommand: executionDto,
+                    inforCommand: self.addErrorInforCommand()
 
                 }
+
 
                 service.addOptionalAggrPeriod(addAggrPeriodCommand).done(function(data) {
                     self.mode(1);
 
                     let exc = {
-                    presenceOfError : self.presenceOfError(),
-                    executionStatus : self.executionStatus()   
+                        presenceOfError: self.presenceOfError(),
+                        executionStatus: self.executionStatus()
                     }
                     nts.uk.ui.windows.setShared("KFP001_DATAD", data);
                     nts.uk.ui.windows.setShared("KFP001_DATA_EXC", exc);
@@ -95,21 +111,21 @@ module nts.uk.at.view.kfp001.d {
                     nts.uk.ui.block.clear();
                 })
 
-                // Test data error !!!
-                if (self.aggrFrameCode() == '001') {
-                    let resourceId = nts.uk.util.randomId().slice(0, 10);
-
-                    let addErrorInforCommand = {
-                        resourceId: resourceId,
-                        periodArrgLogId: self.executionId(),
-                        processDay: moment(self.startDate()).utc(),
-                        errorMess: 'Loi roi'
-                    }
-
-                    service.addErr(addErrorInforCommand).done(function(dataErr) {
-                    });
-
-                }
+                //                // Test data error !!!
+                //                if (self.aggrFrameCode() == '001') {
+                //                    let resourceId = nts.uk.util.randomId().slice(0, 10);
+                //
+                //                    let addErrorInforCommand = {
+                //                        resourceId: resourceId,
+                //                        periodArrgLogId: self.executionId(),
+                //                        processDay: moment(self.startDate()).utc(),
+                //                        errorMess: 'Loi roi'
+                //                    }
+                //
+                //                    service.addErr(addErrorInforCommand).done(function(dataErr) {
+                //                    });
+                //
+                //                }
                 nts.uk.ui.block.clear();
 
             }

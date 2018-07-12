@@ -165,7 +165,7 @@ module nts.uk.at.view.kfp001.c {
 
             opendScreenBorJ() {
                 let self = this;
-                if (self.selectedEmployee().length <= 0) {
+                if (self.selectedEmployee().length <= 0 || self.multiSelectedCode().length <=0) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_206" });
                     return;
                 }
