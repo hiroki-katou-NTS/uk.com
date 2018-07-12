@@ -22,7 +22,7 @@ public class StdOutputCondSetCommand {
 	/**
 	 * カテゴリID
 	 */
-	private String categoryId;
+	private int categoryId;
 
 	/**
 	 * 区切り文字

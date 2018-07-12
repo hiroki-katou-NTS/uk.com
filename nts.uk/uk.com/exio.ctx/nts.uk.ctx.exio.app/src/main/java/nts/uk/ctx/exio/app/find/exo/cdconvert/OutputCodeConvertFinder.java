@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionOutputConvertCode;
 
 /*
  * 出力コード変換
@@ -15,10 +15,11 @@ import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 public class OutputCodeConvertFinder {
 
 	@Inject
-	private OutputCodeConvertRepository finder;
+	private AcquisitionOutputConvertCode acquisitionOutputConvertCode;
 
-	public List<OutputCodeConvertDTO> getOutputCodeConvertByCid(String cid) {
-		return finder.getOutputCodeConvertByCid(cid).stream().map(item -> OutputCodeConvertDTO.fromDomain(item))
+	public List<OutputCodeConvertDTO> getOutputCodeConvertByCid() {
+		return acquisitionOutputConvertCode.getOutputCodeConverts(null)
+				.stream().map(OutputCodeConvertDTO::fromDomain)
 				.collect(Collectors.toList());
 	}
 }

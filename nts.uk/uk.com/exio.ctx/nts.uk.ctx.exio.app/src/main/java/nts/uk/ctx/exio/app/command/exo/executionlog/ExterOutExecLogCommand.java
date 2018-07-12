@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.command.exo.executionlog;
 
-import java.util.Optional;
-
 import lombok.Value;
 
 @Value

@@ -22,7 +22,7 @@
 				<!--B1_7 画面タイプ名-->
 				<label class="title-left">#{i18n.getText('#CMF002_35')}</label>
 				<!--B1_2 新規-->
-				<button id="B1_2" >#{i18n.getText('CMF002_28')}</button>
+				<button id="B1_2" data-bind="click: createNewCondition">#{i18n.getText('CMF002_28')}</button>
 				<!--B1_3 登録-->
 				<button id="B1_3" data-bind="click: register" class="proceed">#{i18n.getText('CMF002_29')}</button>
 				<!--B1_5 複製-->
@@ -109,7 +109,7 @@
 									<!--B6_1 カテゴリ名称-->
 									<label id="B6_1" style="display: inline-block;width: 200px;" data-bind="text: $parent.categoryName"></label>
 									<!--B6_2 カテゴリ選択-->
-									<button id="B6_2" tabindex="4">#{i18n.getText('CMF002_44')}</button>
+									<button id="B6_2" tabindex="4" data-bind="click: function (){$vm.openVScreen()}">#{i18n.getText('CMF002_44')}</button>
 								</div>
 								<div class="div-line">
 									<!--B7 条件名-->
@@ -180,7 +180,7 @@
 									<!--B12 出力条件の設定-->
 									<div id="B12" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_57')}</div>
 									<!--B12_1 出力条件を設定-->
-									<button id="B12_1" tabindex="10">#{i18n.getText('CMF002_58')}</button>
+									<button id="B12_1" tabindex="10" data-bind="click: function(){$vm.openDscreen()}" >#{i18n.getText('CMF002_58')}</button>
 								</div>
 							</div>
 							<div class="pull-left">

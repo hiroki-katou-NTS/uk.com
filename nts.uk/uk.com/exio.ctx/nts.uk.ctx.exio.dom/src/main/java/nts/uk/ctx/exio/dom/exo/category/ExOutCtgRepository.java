@@ -13,6 +13,8 @@ public interface ExOutCtgRepository {
 	List<ExOutCtg> getExOutCtgList();
 
 	Optional<ExOutCtg> getExOutCtgById(String categoryId);
+	
+	Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(Integer categoryId);
 
 	void add(ExOutCtg domain);
 

@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf002.d.start.js" />
+			<com:scriptfile path="cmf002.d.service.js" />
+			<com:scriptfile path="cmf002.d.vm.js" />
+			<com:stylefile path="cmf002.d.style.css" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!--D1_1 登録-->
+				<button id="D1_1" class="proceed" tabindex="1">#{i18n.getText('CMF002_98')}</button>
+				<!--F1_2 閉じる-->
+				<button id="D1_2" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('#CMF002_99')}</button>
+			</div>
+			<div id="contents-area" class="fixed-flex-layout">
+				<div class="container cf">
+					<div class="flex div-line">
+						<!--F2 条件コード/名称-->
+						<div id="D2" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_78')}</div>
+						<!--F2_1 条件設定名--> 
+						<span id="D2_1" class="label ellipsis" data-bind="text:conditionSetCode + '　' + conditionSetName"></span>
+					</div>
+					<div class="flex div-line">
+						<!--D3 カテゴリ名(ラベル)--> 
+						<div id="D3" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_79')}</div>
+						<!--D3_1 カテゴリ名--> 
+						<span id="D3_1" class="label ellipsis" data-bind="text:categoryName"></span>
+					</div>
+
+					<div class="flex div-line">
+						<!--F4 条件設定選択(パネル)--> 
+						<div id="D5" data-bind="ntsPanel:{width: '330px', height: '412px', direction: 'none', visible: true}">
+							<div class="div-line">
+								<!--D5_1 出力項目(ラベル)-->
+								<div style="width: 240px" 
+									data-bind="ntsSearchBox: {
+											   targetKey: 'outputItemCode', 
+								  			   mode:'igGrid', 
+											   comId:'D5_2', 
+											   items: outputItemList, 	
+											   selected: selectedOutputItemCode, 
+											   selectedKey: 'outputItemCode', 
+							
+											   fields: ['outputItemName', 'outputItemCode']}" />
+							</div>
+							<div class="div-line">
+								<!--F4_2 出力項目一覧--> 
+								<table id="D5_2"
+									data-bind="ntsGridList: {
+													dataSource: outputItemList,
+													primaryKey: 'outputItemCode',
+													columns: [
+																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outputItemCode', width: 50, formatter: _.escape},
+								                				{headerText: '#{i18n.getText('CMF002_61')}', key: 'outputItemName', width: 170, formatter: _.escape}
+								                			],
+													value: selectedOutputItemCode,
+													multiple: false,
+													rows: 15
+												}"></table>
+							</div>
+						</div>
+						<!--F5 条件設定選択(パネル)--> 
+						<div id="D5_4" data-bind="ntsPanel:{width: '260px', height: '460px', direction: 'none', showIcon: true, visible: true}">
+							<div class="div-line">
+								<!--F5_1_1 項目型-->
+								<!--F5_2 絞り込み検索-->
+								<div style="width: 240px"
+									data-bind="ntsSearchBox: {
+												
+												targetKey: 'itemNo',
+												comId: 'F5_3',
+												dataSource: categoryItemList,
+												selected: selectedCategoryItemCodeList,
+												selectedKey: 'itemNo',
+												fields: ['itemNo', 'itemName'],
+												mode: 'igGrid'
+											}"
+									/>
+							</div>
+							<div class="div-line">
+								<!--F5_3 カテゴリ項目一覧-->
+								<table id="F5_3"
+									data-bind="ntsGridList: {
+													dataSource: categoryItemList,
+													primaryKey: 'itemNo',
+													columns: [
+																{headerText: '#{i18n.getText('CMF002_89')}', key: 'itemNo', width: 50, formatter: _.escape},
+								                				{headerText: '#{i18n.getText('CMF002_90')}', key: 'itemName', width: 170, formatter: _.escape}
+								                			],
+													value: selectedCategoryItemCodeList,
+													multiple: false,
+													rows: 15
+												}"></table>
+							</div>
+						</div>
+						<div class="pull-left flex valign-center arrow-item">
+							<div>
+								<button data-bind="click: btnRightClick">
+									<i class="icon icon-button-arrow-right"></i>
+								</button>
+								<button data-bind="click: btnLeftClick">
+									<i class="icon icon-button-arrow-left"></i>
+								</button>
+							</div>
+						</div>
+						<div style="margin-top: 50px;">
+							<div class="div-line">
+								<!--F6 選択項目一覧(ラベル)--> 
+								<div id="F6" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF002_94')}</div>
+							</div>
+							<!--F6_1 選択項目一覧--> 
+							<div class="div-line">
+								<table id="F6_1"
+									data-bind="ntsGridList: {
+													dataSource: selectionItemList,
+													primaryKey: 'itemNo',
+													columns: [
+																{headerText: '#{i18n.getText('CMF002_89')}', key: 'itemNo', width: 50, formatter: _.escape},
+								                				{headerText: '#{i18n.getText('CMF002_90')}', key: 'itemName', width: 170, formatter: _.escape}
+								                			],
+													value: selectedSelectionItemList,
+													multiple: true,
+													rows: 15
+												}"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

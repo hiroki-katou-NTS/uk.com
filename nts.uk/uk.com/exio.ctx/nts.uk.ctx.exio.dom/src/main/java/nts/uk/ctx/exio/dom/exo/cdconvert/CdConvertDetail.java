@@ -2,7 +2,8 @@ package nts.uk.ctx.exio.dom.exo.cdconvert;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
 
 
 /**
@@ -10,13 +11,13 @@ import nts.arc.layer.dom.AggregateRoot;
 */
 @AllArgsConstructor
 @Getter
-public class CdConvertDetail extends AggregateRoot
+public class CdConvertDetail extends DomainObject
 {
     
     /**
     * コード変換コード
     */
-    private String convertCd;
+    private ConvertCode convertCd;
     
     /**
     * 出力項目
@@ -32,6 +33,14 @@ public class CdConvertDetail extends AggregateRoot
     * 行番号
     */
     private String lineNumber;
+
+	public CdConvertDetail(String convertCd, String outputItem, String systemCd, String lineNumber) {
+		super();
+		this.convertCd = EnumAdaptor.valueOf(Integer.parseInt(convertCd), ConvertCode.class);
+		this.outputItem = outputItem;
+		this.systemCd = systemCd;
+		this.lineNumber = lineNumber;
+	}
     
     
 }
