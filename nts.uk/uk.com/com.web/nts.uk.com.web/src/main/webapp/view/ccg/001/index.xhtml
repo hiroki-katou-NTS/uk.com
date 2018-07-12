@@ -35,7 +35,7 @@
 					<div id="com-ccg001"></div>
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
 					<note style="width:500px;">
-						<b>Update 2018/05/23</b> <br />
+						<b>Update 2018/07/23</b> <br />
 						- Add lazyload for tab 2 <br /><br />
 						<b>Important note: </b>
 						$('#com-ccg001').ntsGroupComponent(ccg001ComponentOption) can't be executed before __viewContext.bind(screenModel)
@@ -64,6 +64,7 @@
 						<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show QuickSearch (クイック検索)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show AdvancedSearch (詳細検索タブ)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showBaseDate}">Show BaseDate (基準日利用)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showClosure}">Show Closure (就業締め日利用)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showAllClosure}">Show All Closure (全締め表示)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showPeriod}">Show Period (対象期間利用)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: periodFormatYM}">Show period format: YM(対象期間精度)</div><br/>
@@ -194,6 +195,7 @@ const ccg001ComponentOption: GroupOption = {
 	showQuickSearchTab: true,
 	showAdvancedSearchTab: true,
 	showBaseDate: true,
+	showClosure: true,
 	showAllClosure: true,
 	showPeriod: true,
 	periodFormatYM: false,
@@ -241,6 +243,7 @@ export interface GroupOption {
     showQuickSearchTab?: boolean; // クイック検索
     showAdvancedSearchTab?: boolean; // 詳細検索
     showBaseDate?: boolean; // 基準日利用
+    showClosure?: boolean; // 就業締め日利用
     showAllClosure?: boolean; // 全締め表示
     showPeriod?: boolean; // 対象期間利用
     periodFormatYM?: boolean; // 対象期間精度
@@ -321,6 +324,10 @@ export interface Ccg001ReturnedData {
 										<tr>
 											<td>showBaseDate<br/><i>(optional)</i></td>
 											<td><b>Type:</b> boolean<br /><b>Default:</b> = true<br/> Show reference date</td>
+										</tr>
+										<tr>
+											<td>showClosure<br/><i>(optional)</i></td>
+											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/> Show closure selection</td>
 										</tr>
 										<tr>
 											<td>showAllClosure<br/><i>(optional)</i></td>
