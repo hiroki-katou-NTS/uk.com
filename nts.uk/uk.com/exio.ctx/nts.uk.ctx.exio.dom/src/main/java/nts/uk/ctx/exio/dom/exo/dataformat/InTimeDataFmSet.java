@@ -97,7 +97,7 @@ public class InTimeDataFmSet extends DataFormatSetting
 	public InTimeDataFmSet(int itemType, String cid, int nullValueSubs,
 			String valueOfNullValueSubs, int outputMinusAsZero, int fixedValue,
 			String valueOfFixedValue, int timeSeletion,
-			int fixedLengthOutput, int fixedLongIntegerDigit,
+			int fixedLengthOutput, Integer fixedLongIntegerDigit,
 			int fixedLengthEditingMothod, int delimiterSetting,
 			int previousDayOutputMethod, int nextDayOutputMethod,
 			int minuteFractionDigit, int decimalSelection,

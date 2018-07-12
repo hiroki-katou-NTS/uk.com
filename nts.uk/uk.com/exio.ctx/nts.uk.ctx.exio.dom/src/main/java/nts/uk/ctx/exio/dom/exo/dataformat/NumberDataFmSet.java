@@ -100,7 +100,7 @@ public class NumberDataFmSet extends AggregateRoot
 			String valueOfNullValueReplace, int outputMinusAsZero, int fixedValue,
 			String valueOfFixedValue, int fixedValueOperation, BigDecimal fixedCalculationValue,
 			int fixedValueOperationSymbol, int fixedLengthOutput,
-			int fixedLengthIntegerDigit, int fixedLengthEditingMethod, int decimalDigit,
+			Integer fixedLengthIntegerDigit, int fixedLengthEditingMethod, Integer decimalDigit,
 			int decimalPointClassification, int decimalFraction,
 			int formatSelection) {
 		this.cid = cid;
