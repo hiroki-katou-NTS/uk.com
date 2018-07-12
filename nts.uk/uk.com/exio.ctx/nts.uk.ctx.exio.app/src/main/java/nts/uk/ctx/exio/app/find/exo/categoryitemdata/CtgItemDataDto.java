@@ -7,7 +7,7 @@ public class CtgItemDataDto {
     /**
     * 項目NO
     */
-    private String itemNo;
+    private Integer itemNo;
     
     /**
     * 項目名
