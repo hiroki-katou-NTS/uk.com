@@ -19,7 +19,7 @@ public class RecoveryStogareAsysnCommandHandler extends CommandHandler<PerformDa
 	@Override
 	public void handle(CommandHandlerContext<PerformDataRecoveryCommand> context) {
 		PerformDataRecoveryCommand performDataCommand = context.getCommand();
-		String dataRecoveryProcessId = performDataCommand.recoveryProcessingId;
+		String dataRecoveryProcessId = performDataCommand.getRecoveryProcessingId();
 		// サーバー復旧処理
 		try {
 			recoveryStorageService.recoveryStorage(dataRecoveryProcessId);
