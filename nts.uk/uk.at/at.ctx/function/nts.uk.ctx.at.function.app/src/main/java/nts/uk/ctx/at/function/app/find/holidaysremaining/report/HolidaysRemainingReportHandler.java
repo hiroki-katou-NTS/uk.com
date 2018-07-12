@@ -1,12 +1,10 @@
 package nts.uk.ctx.at.function.app.find.holidaysremaining.report;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -56,26 +54,30 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		HolidaysRemainingReportQuery query = context.getQuery();
 		String cId = AppContexts.user().companyId();
-		GeneralDate baseDate = GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getBaseDate(), "yyyy/MM/dd");
+		GeneralDate baseDate = GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getBaseDate(),
+				"yyyy/MM/dd");
 		Optional<HolidaysRemainingManagement> hdManagement = hdFinder
 				.findByCode(query.getHolidayRemainingOutputCondition().getOutputItemSettingCode());
 		if (hdManagement.isPresent()) {
+			String endDate = query.getHolidayRemainingOutputCondition().getEndMonth();
 
-			LocalDate endDate = (GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getEndMonth(),
-					"yyyy/MM/dd")).toLocalDate();
-			List<String> employeeIds = query.getLstEmpIds().stream().map(m -> m.getEmployeeId())
+			List<String> employeeIds = query.getLstEmpIds().stream().map(EmployeeQuery::getEmployeeId)
 					.collect(Collectors.toList());
 			employeeIds = this.regulationInfoEmployeeAdapter.sortEmployee(cId, employeeIds,
 					AppContexts.system().getInstallationType().value, null, null,
-					GeneralDateTime.localDateTime(LocalDateTime.of(endDate, LocalTime.of(0, 0))));
+					GeneralDateTime.fromString(endDate, "yyyy/MM/dd"));
 
-			Map<String, String> empNameMap = query.getLstEmpIds().stream()
-					.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, EmployeeQuery::getEmployeeName));
+			Map<String, EmployeeQuery> empMap = query.getLstEmpIds().stream()
+					.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, Function.identity()));
 
 			Map<String, HolidaysRemainingEmployee> employees = new HashMap<>();
 
-			List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds,
-					GeneralDate.localDate(endDate), true, false, true, true, false, false));
+			List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter
+					.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds,
+							GeneralDate.fromString(endDate, "yyyy/MM/dd"), true, false, true, true, false, false));
+			boolean isSameCurrentMonth = true;
+			boolean isFirstEmployee = true;
+			Optional<YearMonth> currentMonthOfFirstEmp = Optional.empty();
 			for (EmployeeInformationImport emp : listEmployeeInformationImport) {
 				String wpCode = "";
 				String wpName = "";
@@ -91,11 +93,23 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				if (emp.getPosition() != null) {
 					positionName = emp.getPosition().getPositionName();
 				}
+				
+				Optional<YearMonth> currentMonth = this.getCurrentMonth(cId, emp.getEmployeeId(), baseDate);
+				if (isFirstEmployee) {
+					isFirstEmployee = false;
+					currentMonthOfFirstEmp = currentMonth;
+				}
+				else {
+					if (isSameCurrentMonth && currentMonth != currentMonthOfFirstEmp) {
+						isSameCurrentMonth = false;
+					}
+				}
 
 				employees.put(emp.getEmployeeId(),
 						new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
-								empNameMap.get(emp.getEmployeeId()), wpCode, wpName, empmentName, positionName,
-								this.getCurrentMonth(cId, emp.getEmployeeId(), baseDate)));
+								empMap.get(emp.getEmployeeId()).getEmployeeName(),
+								empMap.get(emp.getEmployeeId()).getWorkplaceId(), wpCode, wpName, empmentName,
+								positionName, currentMonth));
 			}
 
 			HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(
@@ -103,8 +117,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					query.getHolidayRemainingOutputCondition().getEndMonth(),
 					query.getHolidayRemainingOutputCondition().getOutputItemSettingCode(),
 					query.getHolidayRemainingOutputCondition().getPageBreak(),
-					query.getHolidayRemainingOutputCondition().getBaseDate(), hdManagement.get(), employeeIds,
-					employees);
+					query.getHolidayRemainingOutputCondition().getBaseDate(), hdManagement.get(), isSameCurrentMonth,
+					employeeIds, employees);
 
 			this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 		}
