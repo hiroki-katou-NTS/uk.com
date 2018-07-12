@@ -134,13 +134,16 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 
 	@Override
 	public void update(SpecialHoliday specialHoliday) {
-		// TODO Auto-generated method stub
-		
+		KshstSpecialHolidayPKNew pk = new KshstSpecialHolidayPKNew(specialHoliday.getCompanyId(), specialHoliday.getSpecialHolidayCode().v());
+		KshstSpecialHolidayNew old = this.queryProxy().find(pk, KshstSpecialHolidayNew.class).orElse(null);
+		old.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
+		old.memo = specialHoliday.getMemo().v();
+		this.commandProxy().update(old);
 	}
 
 	@Override
 	public void delete(String companyId, int specialHolidayCode) {
-		// TODO Auto-generated method stub
-		
+		KshstSpecialHolidayPKNew pk = new KshstSpecialHolidayPKNew(companyId, specialHolidayCode);
+		this.commandProxy().remove(KshstSpecialHolidayNew.class, pk);
 	}
 }
