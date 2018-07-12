@@ -157,11 +157,22 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     conditionSetCd:self.selectedConditionSetting().conditionSetCode , conditionName: self.selectedConditionSetting().conditionSetName});
             
             modal("/view/cmf/002/t/index.xhtml").onClosed(function() {
-//                let params = getShared('CMF002_B_PARAMS');
+                let params = getShared('CMF002_B_PARAMS');
                 
-//                if (params.isSuccess) {
-//                    self.updateDataList(false);
-//                }
+                if (params) {
+                    block.invisible();
+                    let override: params.isOverride;
+                    let destinationCode: params.conditionSetCode;
+                    let destinationName: params.conditionSetName;
+                    let copyParams: any = {
+                                            standType:self.standType(),
+                                            conditionSetCode: desCode,
+                                            conditionSetName: desName
+                    };
+                    service.copy(copyParams).done(result =>{
+                        //reload conditionlist
+                    });
+                }
                 
                 $('#T3_2').focus();
             });
