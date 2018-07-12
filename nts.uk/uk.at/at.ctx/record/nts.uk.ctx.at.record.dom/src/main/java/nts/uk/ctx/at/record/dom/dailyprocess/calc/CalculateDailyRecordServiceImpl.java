@@ -174,8 +174,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private GetOfStatutoryWorkTime getOfStatutoryWorkTime;
 	@Inject
-	private WorkInformationRepository workInformationRepository;
-	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
 	@Inject
 	private FlowWorkSettingRepository flowWorkSettingRepository;

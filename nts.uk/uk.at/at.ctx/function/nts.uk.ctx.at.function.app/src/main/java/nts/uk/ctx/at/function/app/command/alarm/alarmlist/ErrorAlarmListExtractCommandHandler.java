@@ -20,7 +20,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.ExtractedAlarmDto;
 @Stateless
 public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<ErrorAlarmListCommand> {
 
-	private final int MAX_LENGTH_FOR_DATA_SETTER = 1000;
+	private static final int MAX_LENGTH_FOR_DATA_SETTER = 1000;
 	@Inject
 	private ExtractAlarmListFinder extractAlarmFinder;
 

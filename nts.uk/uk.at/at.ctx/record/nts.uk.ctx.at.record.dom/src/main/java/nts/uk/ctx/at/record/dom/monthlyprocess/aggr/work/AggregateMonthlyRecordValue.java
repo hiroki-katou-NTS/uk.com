@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
@@ -59,6 +60,8 @@ public class AggregateMonthlyRecordValue {
 	private AggrResultOfAnnAndRsvLeave aggrResultOfAnnAndRsvLeave;
 	/** エラー情報 */
 	private Map<String, MonthlyAggregationErrorInfo> errorInfos;
+	/** 社員の月別実績エラー一覧 */
+	private List<EmployeeMonthlyPerError> perErrors;
 	/** 中断フラグ */
 	@Setter
 	private boolean interruption;
@@ -80,6 +83,7 @@ public class AggregateMonthlyRecordValue {
 		
 		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
 		this.errorInfos = new HashMap<>();
+		this.perErrors = new ArrayList<>();
 		this.interruption = false;
 	}
 	
@@ -196,6 +200,8 @@ public class AggregateMonthlyRecordValue {
 		MonthlyDayoffRemainData monthlyDayoffRemain = null;
 		if (this.monthlyDayoffRemainList.size() > 0) monthlyDayoffRemain = this.monthlyDayoffRemainList.get(0);
 		result.setMonthlyDayoffRemain(Optional.ofNullable(monthlyDayoffRemain));
+		result.getAttendanceTimeOfWeekList().addAll(this.attendanceTimeWeeks);
+		result.getEmployeeMonthlyPerErrorList().addAll(this.perErrors);
 		return result;
 	}
 }
