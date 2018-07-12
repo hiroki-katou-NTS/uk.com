@@ -18,6 +18,6 @@ public class CharacterDataSettingWebService {
 	@POST
 	@Path("getdatatype")
 	public SettingItemScreenDTO getCharDatatype(){
-		return settingTypeScreen.getActiveType();
+		return settingTypeScreen.getActiveType().get();
 	}
 }

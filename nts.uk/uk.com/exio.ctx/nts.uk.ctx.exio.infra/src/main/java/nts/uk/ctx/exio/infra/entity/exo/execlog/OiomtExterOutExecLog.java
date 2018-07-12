@@ -64,7 +64,7 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "FILE_SIZE")
-	public Integer fileSize;
+	public Long fileSize;
 
 	/**
 	 * ファイル削除
@@ -84,7 +84,7 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	 * ロール種類
 	 */
 	@Basic(optional = true)
-	@Column(name = "ROLL_TYPE")
+	@Column(name = "ROLE_TYPE")
 	public Integer roleType;
 
 	/**

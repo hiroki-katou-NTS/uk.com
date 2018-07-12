@@ -48,7 +48,7 @@ public class ExterOutExecLog extends AggregateRoot {
 	/**
 	 * ファイルサイズ
 	 */
-	private Optional<Integer> fileSize;
+	private Optional<Long> fileSize;
 
 	/**
 	 * ファイル削除
@@ -126,7 +126,7 @@ public class ExterOutExecLog extends AggregateRoot {
 	private ExternalOutputConditionName nameSetting;
 
 	public ExterOutExecLog(String companyId, String outputProcessId, String userId, int totalErrorCount, int totalCount,
-			String fileId, Integer fileSize, int deleteFile, String fileName, Integer roleType, String processUnit,
+			String fileId, Long fileSize, int deleteFile, String fileName, Integer roleType, String processUnit,
 			GeneralDateTime processEndDateTime, GeneralDateTime processStartDateTime, int standardClass,
 			int executeForm, String executeId, GeneralDate designatedReferenceDate, GeneralDate specifiedEndDate,
 			GeneralDate specifiedStartDate, String codeSettingCondition, Integer resultStatus, String nameSetting) {

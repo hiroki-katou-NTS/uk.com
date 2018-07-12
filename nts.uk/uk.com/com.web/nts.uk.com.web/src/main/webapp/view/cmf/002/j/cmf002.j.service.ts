@@ -3,8 +3,7 @@ module nts.uk.com.view.cmf002.j.service {
     import format = nts.uk.text.format;
     var paths = {
         getCharacterDataFormatSetting:          "exio/exo/char/getdatatype",
-        setCharacterDataFormatSetting:          "exio/exo/character/add",
-        regiterCharacterDataFormatSetting:          "exio/exo/character/update"
+        setCharacterDataFormatSetting:          "exio/exo/character/add"
 
     }
     
@@ -13,8 +12,5 @@ module nts.uk.com.view.cmf002.j.service {
     }
     export function setCharacterDataFormatSetting(chardataset: any): JQueryPromise<any>{
         return ajax("com", format(paths.setCharacterDataFormatSetting, chardataset));    
-    }
-    export function regiterCharacterDataFormatSetting(chardataset: any): JQueryPromise<any>{
-        return ajax("com", format(paths.regiterCharacterDataFormatSetting, chardataset));    
     }
 }

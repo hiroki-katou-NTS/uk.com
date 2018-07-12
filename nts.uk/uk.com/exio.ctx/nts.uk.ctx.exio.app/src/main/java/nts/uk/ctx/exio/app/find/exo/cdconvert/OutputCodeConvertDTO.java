@@ -9,7 +9,7 @@ import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
  */
 @AllArgsConstructor
 @Value
-public class OutputCodeConvertDto {
+public class OutputCodeConvertDTO {
 
 	private String convertCode;
 
@@ -19,8 +19,8 @@ public class OutputCodeConvertDto {
 
 	private int acceptWithoutSetting;
 
-	public static OutputCodeConvertDto fromDomain(OutputCodeConvert domain) {
-		return new OutputCodeConvertDto(domain.getConvertCode().v(), domain.getConvertName().v(), domain.getCid(),
+	public static OutputCodeConvertDTO fromDomain(OutputCodeConvert domain) {
+		return new OutputCodeConvertDTO(domain.getConvertCode().v(), domain.getConvertName().v(), domain.getCid(),
 				domain.getAcceptWithoutSetting().value);
 	}
 }

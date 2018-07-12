@@ -42,7 +42,7 @@
 							<!-- N2_1_2在職時 -->
 							<td class="col_right">
 								<input tabindex="1" style="width: 80px;" data-bind="ntsTextEditor: { 
-																 value: getValue,
+																 value: atWorkOutput,
 															     enable: true, 
 															     name: '#[CMF002_211]',
 															     required: true,
@@ -61,7 +61,7 @@
 							<td class="col_right">
 								<!-- N2_2_2休職時 -->
 								<input tabindex="2" style="width: 80px;" data-bind="ntsTextEditor: { 
-																 value: getValue,
+																 value: absenceOutput,
 															     enable: true, 
 															     name: '#[CMF002_212]',
 															     required: true,
@@ -80,7 +80,7 @@
 							<td class="col_right">
 								<!-- N2_3_2退職時-->
 								<input tabindex="3" style="width: 80px;" data-bind="ntsTextEditor: {
-																 value: getValue, 
+																 value: retirementOutput, 
 															     enable: true, 
 															     name: '#[CMF002_213]',
 															     required: true,
@@ -98,7 +98,7 @@
 							<td class="col_right">
 								<!--N2_4_2休業時 -->
 								<input tabindex="4" style="width: 80px;" data-bind="ntsTextEditor: { 
-																 value: getValue,
+																 value: closedOutput,
 															     enable: true, 
 															     name: '#[CMF002_214]',
 															     required: true,
@@ -119,14 +119,14 @@
 							<!-- N3_1固定値 -->
 							<!-- N3_1_1使用する -->
 							<td class="col_center_dv">
-								<div data-bind="ntsRadioButton: {checked: selectedValue1, 
+								<div data-bind="ntsRadioButton: {checked: fixedValue, 
 																enable: true, 
 																option: items()[0], 
 																optionValue: 'code', 
 																optionText: 'name',
 																group: 'effectDigitCls' }"></div>
 								<!-- N3_1_2使用しない -->								
-								<div data-bind="ntsRadioButton: {checked: selectedValue2, 
+								<div data-bind="ntsRadioButton: {checked: fixedValue, 
 																enable: true, 
 																option: items()[1], 
 																optionValue: 'code', 
@@ -136,7 +136,7 @@
 							<!-- N3_2固定値の値 -->
 							<td class="col_right_dv">
 								<input tabindex="2" style="width: 50px;" data-bind="ntsTextEditor: { 
-																 value: getValue,
+																 value: valueOfFixedValue,
 															     enable: true, 
 															     name: '#[CMF002_160]',
 															     required: true,
@@ -150,9 +150,9 @@
 			</div>
  			<div id="functions-area-bottom">
  				<!-- L3_1設定 -->
-				<button class="x-large" tabindex="12" data-bind="click: saveSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
+				<button class="x-large" tabindex="12" data-bind="click: $parent.saveSetting(), enable: isEnable">#{i18n.getText('CMF002_161')}</button>
 				<!-- L3_2キャンセル -->
-				<button class="large" tabindex="13" data-bind="click: cancelSetting">#{i18n.getText('CMF002_162')}</button>
+				<button id="BTN_CLOSE" class="large" tabindex="13" data-bind="click: cancelSetting">#{i18n.getText('CMF002_162')}</button>
 			</div> 
 		</ui:define>
 	</ui:composition>

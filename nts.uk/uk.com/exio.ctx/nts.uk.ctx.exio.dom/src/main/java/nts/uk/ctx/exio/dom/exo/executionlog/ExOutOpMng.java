@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.executionlog;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -9,6 +10,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * 外部出力動作管理
  */
 
+@Setter
 @Getter
 public class ExOutOpMng extends AggregateRoot {
 

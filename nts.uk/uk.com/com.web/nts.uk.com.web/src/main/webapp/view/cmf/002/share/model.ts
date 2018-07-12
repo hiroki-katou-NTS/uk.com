@@ -171,18 +171,38 @@ module nts.uk.com.view.cmf002.share.model {
             //this.dispOperationSymbol = operationSymbol;
         }
     }
+    
+    export class AtWorkDataOutputItem {
+        closedOutput: KnockoutObservable<string>;
+        absenceOutput: KnockoutObservable<string>;
+        fixedValue: KnockoutObservable<number>;
+        valueOfFixedValue: KnockoutObservable<string>;
+        atWorkOutput: KnockoutObservable<string>;
+        retirementOutput: KnockoutObservable<string>;
+
+        constructor(closedOutput: string, absenceOutput: string, fixedValue: number, valueOfFixedValue: string, atWorkOutput: string, retirementOutput: string) {
+            this.closedOutput = ko.observable(closedOutput);
+            this.absenceOutput = ko.observable(absenceOutput);
+            this.fixedValue = ko.observable(fixedValue);
+            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
+            this.atWorkOutput = ko.observable(atWorkOutput);
+            this.retirementOutput = ko.observable(retirementOutput);
+        }
+    }
 
     export class ExternalOutputCategoryItemData {
         itemNo: KnockoutObservable<string>;
         dispItemNo: string;
         itemName: KnockoutObservable<string>;
         dispitemName: string;
+        isCheck: KnockoutObservable<boolean>;
 
         constructor(itemNo: string, itemName: string) {
             this.itemNo = ko.observable(itemNo);
             this.dispItemNo = itemNo;
             this.itemName = ko.observable(itemName);
             this.dispitemName = itemName;
+            this.isCheck = ko.observable(false);
         }
     }
 
