@@ -84,6 +84,9 @@ public class HdAppSetDto {
 	/** 積立年休残数不足登録できる */
 	public int regisShortReser;
 	
+	// 未選択を表示する
+	public int displayUnselect;
+	
 	public static HdAppSetDto convertToDto(HdAppSet domain){
 		return new HdAppSetDto(domain.getCompanyId(), 
 				domain.getUse60h().value, domain.getObstacleName() == null ? null : domain.getObstacleName().v(), 
@@ -101,6 +104,7 @@ public class HdAppSetDto {
 				domain.getSpecialVaca() == null ? null : domain.getSpecialVaca().v(), 
 				domain.getConcheckDateRelease().value, domain.getAppDateContra().value, 
 				domain.getYearResig() == null ? null : domain.getYearResig().v(),
-				domain.getRegisShortReser().value);
+				domain.getRegisShortReser().value,
+				domain.getDisplayUnselect().value);
 	}
 }

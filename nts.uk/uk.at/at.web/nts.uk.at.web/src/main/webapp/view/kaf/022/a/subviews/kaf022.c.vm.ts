@@ -1,0 +1,320 @@
+import text = nts.uk.resource.getText;
+
+ko.components.register('kaf022-c', {
+    viewModel: {
+        createViewModel: function(params, componentInfo) {
+            let vm = {
+                itemListC27: ko.observableArray([
+                    { code: 1, name: text('KAF022_100') },
+                    { code: 0, name: text('KAF022_101') },
+                    { code: 2, name: text('KAF022_171') }
+                ]),
+                itemListC51: ko.observableArray([
+                    { code: 1, name: text('KAF022_36') },
+                    { code: 0, name: text('KAF022_37') }
+                ]),
+                itemListC48: ko.observableArray([
+                    { code: 1, name: text('KAF022_420') },
+                    { code: 0, name: text('KAF022_421') }
+                ]),
+                itemListC29: ko.observableArray([
+                    { code: 0, name: text('KAF022_173') },
+                    { code: 1, name: text('KAF022_174') },
+                    { code: 2, name: text('KAF022_175') },
+                ]),
+                itemListC30: ko.observableArray([
+                    { code: 0, name: text('KAF022_173') },
+                    { code: 1, name: text('KAF022_175') },
+                ]),
+//                texteditorH22 = {
+//                    constraint: 'NameWork',
+//                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+//                        textmode: "text",
+//                        placeholder: "",
+//                        width: "100px",
+//                        textalign: "left"
+//                    })),
+//                    required: ko.observable(false),
+//                    enable: ko.observable(true),
+//                    readonly: ko.observable(false)
+//                };
+            };
+
+            _.extend(vm, {
+                    selectedIdC51: params.selectedIdC51,
+                    selectedIdC48: params.selectedIdC48,
+                    selectedIdC38: params.selectedIdC38,
+                    selectedIdC39: params.selectedIdC39,
+                    selectedIdC40: params.selectedIdC40,
+                    selectedIdC27: params.selectedIdC27,
+                    selectedIdC28: params.selectedIdC28,
+                    
+                    selectedIdC29: params.selectedIdC29,
+                    selectedIdC30: params.selectedIdC30,
+                    selectedIdC31: params.selectedIdC31,
+                    selectedIdC32: params.selectedIdC32,
+                    selectedIdC33: params.selectedIdC33,
+                    selectedIdC34: params.selectedIdC34,
+                    selectedIdC35: params.selectedIdC35,
+                    selectedIdC36: params.selectedIdC36,
+                    selectedIdC37: params.selectedIdC37,
+                    selectedIdC49: params.selectedIdC49,
+            });
+
+//            _.extend(vm.texteditorH22, {
+//                value: params.texteditorH22.value
+//            });
+
+
+            return vm;
+        }
+    },
+    template: `
+    <!-- ko let: { $cv: $data, text: nts.uk.resource.getText } -->
+    <div class="fixed-table-container" style="width: 900px">
+        <table id="fixed-table-c1">
+            <thead>
+                <tr>
+                    <th class="color-header" colspan="2" data-bind = "text: text('KAF022_148')"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c3" data-bind = "text: text('KAF022_149')"></td>
+                    <td style="width: 650px">
+                        <div id="c27" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC27,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC27,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="color-header" id="c50" data-bind = "text: text('KAF022_401')"></td>
+                    <td>
+                        <div id="c51" tabindex="2" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC51,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC51,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="color-header" id="c25" data-bind = "text: text('KAF022_168')"></td>
+                    <td>
+                        <div class="blockrow" id="c48" tabindex="3" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC48,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC48,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="color-header" id="c15" data-bind = "text: text('KAF022_158')"></td>
+                    <td>
+                        <div class="blockrow" id="c38" tabindex="3" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC51,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC38,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="color-header" id="c16" data-bind = "text: text('KAF022_159')"></td>
+                    <td>
+                        <div class="blockrow" id="c39" tabindex="4" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC51,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC39,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="color-header" id="c17" data-bind = "text: text('KAF022_160')"></td>
+                    <td>
+                        <div class="blockrow" id="c40" tabindex="4" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC51,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC40,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fixed-table-container" style="width: 900px; margin-top: 20px;">
+        <table id="fixed-table-c2">
+            <thead>
+                <tr>
+                    <th class="color-header" colspan="2" data-bind = "text: text('KAF022_142')"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c4" data-bind = "text: text('KAF022_150')"></td>
+                    <td style="width: 650px">
+                        <div id="c28" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC51,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC28,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fixed-table-container" style="width: 900px; margin-top: 20px;">
+        <table id="fixed-table-c3">
+            <thead>
+                <tr>
+                    <th class="color-header" colspan="2" data-bind = "text: text('KAF022_143')"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c5" data-bind = "text: text('KAF022_145')"></td>
+                    <td style="width: 650px">
+                        <div id="c29" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC29,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC29,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c6" data-bind = "text: text('KAF022_152')"></td>
+                    <td style="width: 650px">
+                        <div id="c30" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC30,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC30,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c7" data-bind = "text: text('KAF022_153')"></td>
+                    <td style="width: 650px">
+                        <div id="c31" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC30,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC31,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c8" data-bind = "text: text('KAF022_154')"></td>
+                    <td style="width: 650px">
+                        <div id="c32" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC30,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC32,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c9" data-bind = "text: text('KAF022_155')"></td>
+                    <td style="width: 650px">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c10" data-bind = "text: text('KAF022_156')"></td>
+                    <td style="width: 650px">
+                        <div id="c33" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC30,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC33,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c11" data-bind = "text: text('KAF022_48')"></td>
+                    <td style="width: 650px">
+                        <div id="c34" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC30,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC34,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c12" data-bind = "text: text('KAF022_51')"></td>
+                    <td style="width: 650px">
+                        <div id="c35" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC30,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC35,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c13" data-bind = "text: text('KAF022_157')"></td>
+                    <td style="width: 650px">
+                        <div id="c36" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC30,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC36,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c14" data-bind = "text: text('KAF022_54')"></td>
+                    <td style="width: 650px">
+                        <div id="c37" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC30,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC37,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="c26" data-bind = "text: text('KAF022_169')"></td>
+                    <td style="width: 650px">
+                        <div id="c49" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $cv.itemListC29,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $cv.selectedIdC49,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- /ko -->
+    `
+});

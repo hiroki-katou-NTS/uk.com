@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
@@ -53,8 +54,8 @@ public class ApplicationReasonService extends WebService{
 	// insert a item application reason for KAF022
 	@POST
 	@Path("insert")
-	public void insert(ApplicationReasonCommand cmd){
-		 this.insert.handle(cmd);
+	public JavaTypeResult<String> insert(ApplicationReasonCommand cmd){
+		return new JavaTypeResult<String>(this.insert.handle(cmd));
 	}
 	
 	// insert a item application reason for KAF022

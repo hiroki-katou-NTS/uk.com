@@ -388,13 +388,14 @@ module nts.uk.at.view.kmf022 {
             selectedIdI4: KnockoutObservable<number>;
             itemListI4: KnockoutObservableArray<ItemModel>;
             //c
-            itemListC27: KnockoutObservableArray<ItemModel>;
+//            itemListC27: KnockoutObservableArray<ItemModel>;
             selectedIdC27: KnockoutObservable<number>;
-            itemListC28: KnockoutObservableArray<ItemModel>;
+//            itemListC28: KnockoutObservableArray<ItemModel>;
             selectedIdC28: KnockoutObservable<number>;
-            itemListC29: KnockoutObservableArray<ItemModel>;
+//            itemListC29: KnockoutObservableArray<ItemModel>;
             selectedIdC29: KnockoutObservable<number>;
-            itemListC30: KnockoutObservableArray<ItemModel>;
+//            itemListC30: KnockoutObservableArray<ItemModel>;
+            selectedIdC51: KnockoutObservable<number>;
             selectedIdC30: KnockoutObservable<number>;
             selectedIdC31: KnockoutObservable<number>;
             selectedIdC32: KnockoutObservable<number>;
@@ -1081,25 +1082,27 @@ module nts.uk.at.view.kmf022 {
                 ]);
                 self.selectedIdI4 = ko.observable(0);
                 //c
-                self.itemListC27 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_100')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_101')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_171')),
-                ]);
-                self.itemListC28 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
-                ]);
-                self.itemListC29 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
-                ]);
-                self.itemListC30 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_175'))
-                ]);
+//                self.itemListC27 = ko.observableArray([
+//                    new ItemModel(1, nts.uk.resource.getText('KAF022_100')),
+//                    new ItemModel(0, nts.uk.resource.getText('KAF022_101')),
+//                    new ItemModel(2, nts.uk.resource.getText('KAF022_171')),
+//                ]);
+//                self.itemListC28 = ko.observableArray([
+//                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
+//                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
+//                ]);
+//                self.itemListC29 = ko.observableArray([
+//                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
+//                    new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
+//                    new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
+//                ]);
+//                self.itemListC30 = ko.observableArray([
+//                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
+//                    new ItemModel(1, nts.uk.resource.getText('KAF022_175'))
+//                ]);
                 self.selectedIdC27 = ko.observable(0);
+                self.selectedIdC51 = ko.observable(0);
+                
                 self.selectedIdC28 = ko.observable(0);
                 self.selectedIdC29 = ko.observable(0);
                 self.selectedIdC30 = ko.observable(0);
@@ -1950,6 +1953,11 @@ module nts.uk.at.view.kmf022 {
                 let data = allData.hdSet;
                 if (data) {
                     self.selectedIdC27(data.wrkHours);
+                    self.selectedIdC51(data.displayUnselect);
+                    self.selectedIdC48(data.changeWrkHour);
+                    self.selectedIdC38(data.useYear);
+                    self.selectedIdC39(data.use60h);
+                    self.selectedIdC40(data.useGener);
                     self.selectedIdC28(data.actualDisp);
                     self.selectedIdC29(data.appDateContra);
                     self.selectedIdC30(data.concheckOutLegal);
@@ -1960,9 +1968,11 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdC35(data.regisShortReser);
                     self.selectedIdC36(data.regisLackPubHd);
                     self.selectedIdC37(data.regisInsuff);
-                    self.selectedIdC38(data.useYear);
-                    self.selectedIdC39(data.use60h);
-                    self.selectedIdC40(data.useGener);
+                    self.selectedIdC49(data.pridigCheck);
+                    
+                    
+                    
+                    
                     self.texteditorC41.value(data.yearHdName);
                     self.texteditorC42.value(data.obstacleName);
                     self.texteditorC43.value(data.absenteeism);
@@ -1970,9 +1980,7 @@ module nts.uk.at.view.kmf022 {
                     self.texteditorC45.value(data.yearResig);
                     self.texteditorC46.value(data.hdName);
                     self.texteditorC47.value(data.timeDigest);
-                    self.selectedIdC48(data.changeWrkHour);
-                    self.selectedIdC49(data.pridigCheck);
-                    self.texteditorC51.value(data.furikyuName);
+                    
                 }
             }
             initDataD(allData: any): void {
@@ -2279,6 +2287,21 @@ module nts.uk.at.view.kmf022 {
                 
                 data.hdSet = {
                     companyId: self.companyId(),
+                    yearHdName: self.texteditorC41.value(),
+                    obstacleName: self.texteditorC42.value(),
+                    absenteeism: self.texteditorC43.value(),
+                    specialVaca: self.texteditorC44.value(),
+                    yearResig: self.texteditorC45.value(),
+                    hdName: self.texteditorC46.value(),
+                    timeDigest: self.texteditorC47.value(),
+                    furikyuName: self.texteditorC51.value,
+                    
+                    
+                    displayUnselect: self.selectedIdC51(),
+                    changeWrkHour: self.selectedIdC48(),
+                    useYear: self.selectedIdC38(),
+                    use60h: self.selectedIdC39(),
+                    useGener: self.selectedIdC40(),
                     wrkHours: self.selectedIdC27(),
                     actualDisp: self.selectedIdC28(),
                     appDateContra: self.selectedIdC29(),
@@ -2290,20 +2313,7 @@ module nts.uk.at.view.kmf022 {
                     regisShortReser: self.selectedIdC35(),
                     regisLackPubHd: self.selectedIdC36(),
                     regisInsuff: self.selectedIdC37(),
-                    useYear: self.selectedIdC38(),
-                    use60h: self.selectedIdC39(),
-                    useGener: self.selectedIdC40(),
-                    yearHdName: self.texteditorC41.value(),
-                    obstacleName: self.texteditorC42.value(),
-                    absenteeism: self.texteditorC43.value(),
-                    specialVaca: self.texteditorC44.value(),
-                    yearResig: self.texteditorC45.value(),
-                    hdName: self.texteditorC46.value(),
-                    timeDigest: self.texteditorC47.value(),
-                    changeWrkHour: self.selectedIdC48(),
                     pridigCheck: self.selectedIdC49(),
-                    furikyuName: self.texteditorC51.value()
-
                 };
                 data.appChange = {
                     cid: self.companyId(),

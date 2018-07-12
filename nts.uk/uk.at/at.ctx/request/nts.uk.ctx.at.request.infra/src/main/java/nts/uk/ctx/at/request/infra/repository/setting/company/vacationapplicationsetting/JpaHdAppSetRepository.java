@@ -68,6 +68,7 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 		entity.wrkHours = domain.getWrkHours().value;
 		entity.yearHdName = domain.getYearHdName() == null ? null : domain.getYearHdName().v();
 		entity.yearResig = domain.getYearResig() == null ? null : domain.getYearResig().v();
+		entity.displayUnselect = domain.getDisplayUnselect().value;
 		return entity;
 	}
 	
@@ -112,6 +113,7 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 		oldEntity.wrkHours = entity.wrkHours;
 		oldEntity.yearHdName = entity.yearHdName;
 		oldEntity.yearResig = entity.yearResig;
+		oldEntity.displayUnselect = entity.displayUnselect;
 		this.commandProxy().update(oldEntity);
 	}
 	/**

@@ -13,20 +13,24 @@
 			<com:stylefile path="kaf022.a.main.css" />
 			<com:stylefile path="../l/kaf022.l.main.css" />
 			<!-- <com:stylefile path="../e/kmf004.e.main.css" /> -->
-			
+
 			<com:scriptfile path="kaf022.a.vm.js" />
 			<com:scriptfile path="kaf022.a.service.js" />
 			<com:scriptfile path="kaf022.a.start.js" />
-			<com:scriptfile path="../m/kaf022.m.vm.js" /> 
-			<com:scriptfile path="../m/kaf022.m.service.js" /> 
+			<com:scriptfile path="../m/kaf022.m.vm.js" />
+			<com:scriptfile path="../m/kaf022.m.service.js" />
 			<com:stylefile path="../m/kaf022.m.style.css" />
 			<com:scriptfile path="../l/kaf022.l.vm.js" />
 			<com:scriptfile path="../l/kaf022.l.service.js" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			
+
 			<com:scriptfile path="subviews/kaf022.b.vm.js" />
+			<com:scriptfile path="subviews/kaf022.c.vm.js" />
+			<com:scriptfile path="subviews/kaf022.d.vm.js" />
+			<com:scriptfile path="subviews/kaf022.f.vm.js" />
 			<com:scriptfile path="subviews/kaf022.g.vm.js" />
-			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" /> 
+			<com:scriptfile path="subviews/kaf022.k.vm.js" />
+			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" />
  			<com:scriptfile path="../e/kmf004.e.service.js" />  -->
  			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.Memo
@@ -61,16 +65,16 @@
 				<com:ko-if bind="currentTab()==='a'">
 					<!-- A2_1 -->
 					<button class="proceed" data-bind="click: function(){$parent.viewmodelA.save($parent.viewmodelA);}">#{i18n.getText('KMF004_2')}</button>
-					
+
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='l'">
 					<div class="center-content-kaf022l">
-                        <button  id="btn_001" class="button proceed separate-button fix-button"  
+                        <button  id="btn_001" class="button proceed separate-button fix-button"
                                 data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_1')}</button>
-                        <button  id="btn_002" class="button separate-button fix-button" 
+                        <button  id="btn_002" class="button separate-button fix-button"
                                 data-bind="click: function(){$parent.viewmodelL.copyEmploymentSet($parent.viewmodelL);},
                                 enable: $parent.viewmodelL.screenMode() == 1">#{i18n.getText('KAF022_274')}</button>
-                        <button  id="btn_004" class="button danger separate-button fix-button" 
+                        <button  id="btn_004" class="button danger separate-button fix-button"
                                 data-bind="click: function(){$parent.viewmodelL.deleteEmploymentSet($parent.viewmodelL);},
                                 enable: $parent.viewmodelL.screenMode() == 1" >#{i18n.getText('KAF022_275')}</button>
                     </div>
@@ -148,7 +152,7 @@
 									</tr>
 								</tbody>
 							</table>
-							
+
 							<!-- A5 update ver29 di chuyen-->
 							<!-- <table class="viewmodel-a" id="fixed-table-a5">
 								<colgroup>
@@ -306,7 +310,7 @@
 									</tr>
 								</tbody>
 							</table> -->
-							
+
 							<!-- A17 -->
 							<table class="viewmodel-a" id="fixed-table-a17">
 								<colgroup>
@@ -332,7 +336,7 @@
 											</div>
 										</td>
 									</tr>
-								
+
 									<tr>
 										<td class="color-header" id="a5_13">#{i18n.getText('KAF022_366')}</td>
 										<td>
@@ -411,14 +415,14 @@
 								<tbody data-bind="foreach:listDataA7">
 									<tr data-bind="if: appType() == 0">
 										<td class="color-header" id="a7_4" data-bind="text:appTypeName"></td>
-										<td><div 
+										<td><div
 												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
-														tabindex:42 
+														tabindex:42
 													}">#{i18n.getText('KAF022_61')}</div></td>
 										<td>
 										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="ntsControl"> <label
-													class="ntsRadioBox" tabindex="43"> <input 
+													class="ntsRadioBox" tabindex="43"> <input
 														type="radio" name="textRadioA7_18"
 														data-bind="checkedValue: 1, checked: retrictPreMethodFlg, enable: true,attr:{
 															tabindex:43
@@ -438,7 +442,7 @@
 														columns: [
 															{ prop: 'name', length: 4 }
 														]},attr:{
-															tabindex:44 
+															tabindex:44
 														}">
 												</span>
 												 <span class="label" id="a7_21">#{i18n.getText('KAF022_65')}</span>
@@ -448,12 +452,12 @@
 												<span tabindex="45">
 												<input  type="radio" name="textRadioA7_18"
 												data-bind="checkedValue: 0, checked: retrictPreMethodFlg, enable: true,attr:{
-													tabindex:45 
+													tabindex:45
 												}" />
 												<span class="box"></span><span class="label">#{i18n.getText('KAF022_66')}</span>
 												</span>
 												<span class="label" style = "margin-left: 5px;">#{i18n.getText('KAF022_374')}</span>
-												<span> <input id="a7_23" 
+												<span> <input id="a7_23"
 															data-bind="ntsTimeEditor: {
 														name:'#{i18n.getText('KAF022_67')}',
 														value: preOtTime,
@@ -464,13 +468,13 @@
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
-															tabindex:45 
+															tabindex:45
 														}" />
 												</span> <span class="label" id="a7_24">#{i18n.getText('KAF022_65')}</span>
 												</label>
 											</span>
 										</div>
-										
+
 										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="label" id="a7_22_2" style = "margin-left: 90px;">#{i18n.getText('KAF022_375')}</span>
 											<span> <input style = "width: 42px; margin-left: 40px" data-bind="ntsTimeEditor: {
@@ -483,10 +487,10 @@
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
-															tabindex:46 
+															tabindex:46
 														}" /></span>
 										</div>
-										
+
 										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="label" id="a7_22_3" style = "margin-left: 90px;">#{i18n.getText('KAF022_376')}</span>
 											<span> <input style = "width: 42px; margin-left: 5px; margin-bottom: 5px;" data-bind="ntsTimeEditor: {
@@ -499,11 +503,11 @@
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
-															tabindex:47 
+															tabindex:47
 														}" /></span>
 										</div>
 									</td>
-										<td><div 
+										<td><div
 												data-bind="ntsCheckBox: { checked: retrictPostAllowFutureFlg },attr:{
 														tabindex:48
 													}">#{i18n.getText('KAF022_68')}</div></td>
@@ -511,7 +515,7 @@
 									<!-- update ver29 -->
 									<tr data-bind="if: appType()!=0 &amp; appType()!=3 &amp; appType()!=8 &amp; appType()!=11 &amp; appType()!=13 &amp; appType()!=14">
 										<td class="color-header" id="a7_5" data-bind="text:appTypeName">#{i18n.getText('KAF022_4')}</td>
-										<td><div 
+										<td><div
 												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
 														tabindex:48 + ($index()-1)*3
 													}">#{i18n.getText('KAF022_61')}</div></td>
@@ -531,10 +535,10 @@
 													]},attr:{
 														tabindex:49 + ($index()-1)*3
 													}">
-											</span> 
+											</span>
 											<span class="label" id="a7_29">#{i18n.getText('KAF022_65')}</span>
 										</td>
-										<td><div 
+										<td><div
 												data-bind="ntsCheckBox: { checked: retrictPostAllowFutureFlg },attr:{
 														tabindex:50 + ($index()-1)*3
 													}">#{i18n.getText('KAF022_68')}</div></td>
@@ -557,7 +561,7 @@
 										<th class="ui-widget-header" id="a8_1" rowspan="2">#{i18n.getText('KAF022_45')}</th>
 										<th class="ui-widget-header" id="a8_2" rowspan="2">#{i18n.getText('KAF022_69')}
 											<div><button id = "a8_55" class="small" tabindex="210"
-													data-bind="click: openSDialog">#{i18n.getText('KAF022_444')}</button></div>										
+													data-bind="click: openSDialog">#{i18n.getText('KAF022_444')}</button></div>
 										</th>
 										<th class="ui-widget-header full-header" id="a8_3" rowspan="2">#{i18n.getText('KAF022_70')}</th>
 										<th class="ui-widget-header full-header" id="a8_4" rowspan="2">#{i18n.getText('KAF022_71')}</th>
@@ -571,19 +575,19 @@
 								<tbody data-bind="foreach:listDataA8">
 									<tr>
 										<td class="color-header"><span  id="a8_8" class="label" data-bind="text:appTypeName"></span></td>
-										<td><div 
+										<td><div
 												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
 														tabindex:87 + $index()*6
 													}">#{i18n.getText('KAF022_61')}</div></td>
-										<td><div 
+										<td><div
 												data-bind="ntsCheckBox: { checked: displayAppReason },attr:{
 														tabindex:88 + $index()*6
 													}">#{i18n.getText('KAF022_61')}</div></td>
-										<td><div 
+										<td><div
 												data-bind="ntsCheckBox: { checked: sendMailWhenRegister },attr:{
 														tabindex:89 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
-										<td><div 
+										<td><div
 												data-bind="ntsCheckBox: { checked: sendMailWhenApproval },attr:{
 														tabindex:90 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
@@ -609,7 +613,7 @@
 														tabindex:92 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
 									</tr>
-			
+
 								</tbody>
 							</table>
 							<!-- A9 update ver29 di chuyen-->
@@ -916,7 +920,7 @@
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: searchSetFlg,
-													enable: true}, 
+													enable: true},
 													attr:{
 														tabindex:226 + $index()
 													}">
@@ -1017,18 +1021,18 @@
 
 						</div>
 						<div class="tab-content-2">
-							<kaf022-b params="{ 
+							<kaf022-b params="{
 								selectedIdB4: $vm.viewmodelA.selectedIdB4,
 								selectedIdB6: $vm.viewmodelA.selectedIdB6,
 								selectedIdB8: $vm.viewmodelA.selectedIdB8,
 								selectedIdB10: $vm.viewmodelA.selectedIdB10,
 								selectedIdB12: $vm.viewmodelA.selectedIdB12,
-								
+
 								selectedIdB15: $vm.viewmodelA.selectedIdB15,
 								selectedIdB17: $vm.viewmodelA.selectedIdB17,
 								selectedIdB19: $vm.viewmodelA.selectedIdB19,
 								selectedIdB21: $vm.viewmodelA.selectedIdB21,
-								
+
 								selectedIdB24: $vm.viewmodelA.selectedIdB24,
 								selectedIdB26: $vm.viewmodelA.selectedIdB26,
 								selectedIdB28: $vm.viewmodelA.selectedIdB28,
@@ -1037,12 +1041,31 @@
 							}"></kaf022-b>
 						</div>
 						<div class="tab-content-3">
-							<ui:include src="c.xhtml" />
+							<kaf022-c params="{
+								selectedIdC51: $vm.viewmodelA.selectedIdC51,
+			                    selectedIdC48: $vm.viewmodelA.selectedIdC48,
+			                    selectedIdC38: $vm.viewmodelA.selectedIdC38,
+			                    selectedIdC39: $vm.viewmodelA.selectedIdC39,
+			                    selectedIdC40: $vm.viewmodelA.selectedIdC40,
+			                    selectedIdC27: $vm.viewmodelA.selectedIdC27,
+			                    selectedIdC28: $vm.viewmodelA.selectedIdC28,
+
+			                    selectedIdC29: $vm.viewmodelA.selectedIdC29,
+			                    selectedIdC30: $vm.viewmodelA.selectedIdC30,
+			                    selectedIdC31: $vm.viewmodelA.selectedIdC31,
+			                    selectedIdC32: $vm.viewmodelA.selectedIdC32,
+			                    selectedIdC33: $vm.viewmodelA.selectedIdC33,
+			                    selectedIdC34: $vm.viewmodelA.selectedIdC34,
+			                    selectedIdC35: $vm.viewmodelA.selectedIdC35,
+			                    selectedIdC36: $vm.viewmodelA.selectedIdC36,
+			                    selectedIdC37: $vm.viewmodelA.selectedIdC37,
+			                    selectedIdC49: $vm.viewmodelA.selectedIdC49,
+							}"></kaf022-c>
 						</div>
 						<div class="tab-content-4">
 							<ui:include src="d.xhtml" />
 						</div>
-						
+
 						<!-- update ver29 -->
 						<!-- <div class="tab-content-5">
 							<ui:include src="e.xhtml" />
@@ -1051,7 +1074,7 @@
 							<ui:include src="f.xhtml" />
 						</div>
 						<div class="tab-content-7">
-							<kaf022-g params="{							
+							<kaf022-g params="{
 				                selectedIdG16: $vm.viewmodelA.selectedIdG16,
 				                selectedIdG18: $vm.viewmodelA.selectedIdG18,
 				                selectedIdG20: $vm.viewmodelA.selectedIdG20,
@@ -1065,7 +1088,7 @@
 				                selectedIdG29: $vm.viewmodelA.selectedIdG29
 							}"></kaf022-g>
 						</div>
-						
+
 						<!-- update ver29 -->
 						<!-- <div class="tab-content-8">
 							<ui:include src="h.xhtml" />
@@ -1079,7 +1102,7 @@
 						<div class="tab-content-11">
 							<ui:include src="k.xhtml" />
 						</div>
-						
+
 						<!-- update ver29 -->
 						<!-- <div class="tab-content-12">
 						</div> -->
