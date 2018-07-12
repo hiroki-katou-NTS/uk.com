@@ -32,6 +32,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         recoverySourceCode: KnockoutObservable<string> = ko.observable("");
         recoverySourceName: KnockoutObservable<string> = ko.observable("");
         supplementaryExplanation: KnockoutObservable<string> = ko.observable("");
+        saveForm: KnockoutObservable<string> = ko.observable("");
         //Screen E
         recoveryMethodOptions: KnockoutObservableArray<any> = ko.observableArray([
             { value: RecoveryMethod.RESTORE_ALL, text: getText('CMF004_92') },
@@ -141,6 +142,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     fileId: fileInfo.id,
                     fileName: fileInfo.originalName
                 });
+                self.fileName("");
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                     setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
                     nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
@@ -270,6 +272,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     self.recoverySourceFile(data[0].compressedFileName + '.zip');
                     self.recoverySourceCode(data[0].saveSetCode);
                     self.recoverySourceName(data[0].saveSetName);
+                    self.saveForm(data[0].saveForm);
                     self.supplementaryExplanation(data[0].supplementaryExplanation);
                 }
 
@@ -486,6 +489,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         restoreData_click(): void {
             let self = this;
             setShared("CMF004IParams", {
+                saveForm: self.saveForm(),
                 employeeList: ko.toJS(self.employeeListScreenH),
                 recoveryCategoryList: ko.toJS(self.dataRecoverySummary().recoveryCategoryList),
                 recoveryFile: self.recoverySourceFile(),

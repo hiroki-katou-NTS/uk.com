@@ -41,7 +41,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static final String SELECT_ALL_TABLE_LIST_QUERY_STRING = "SELECT f FROM SspmtTableList f";
 
-	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT DISTINCT t.tableListPk.categoryId, t.categoryName, t.saveSetCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId GROUP BY t.tableListPk.categoryId, t.categoryName, t.saveSetCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation";
+	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT DISTINCT t.tableListPk.categoryId, t.categoryName, t.saveSetCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation, t.saveForm FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId GROUP BY t.tableListPk.categoryId, t.categoryName, t.saveSetCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation, t.saveForm";
 
 	private static final String SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID = "SELECT t FROM SspmtTarget t WHERE t.targetPk.dataRecoveryProcessId=:dataRecoveryProcessId";
 
@@ -235,7 +235,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 				objectSurfaceItem[5].toString(), Integer.parseInt(objectSurfaceItem[6].toString()),
 				Integer.parseInt(objectSurfaceItem[7].toString()), Integer.parseInt(objectSurfaceItem[8].toString()),
 				objectSurfaceItem[9].toString(), Integer.parseInt(objectSurfaceItem[10].toString()),
-				objectSurfaceItem[11].toString());
+				objectSurfaceItem[11].toString(), objectSurfaceItem[12].toString());
 	}
 
 	@Override

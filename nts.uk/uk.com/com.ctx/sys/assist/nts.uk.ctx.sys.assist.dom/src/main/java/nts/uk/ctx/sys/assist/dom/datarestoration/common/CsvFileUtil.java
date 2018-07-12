@@ -1,18 +1,22 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
-import nts.arc.system.ServerSystemProperties;
-import nts.gul.csv.CSVParsedResult;
-import nts.gul.csv.NtsCsvReader;
-import nts.gul.csv.NtsCsvRecord;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.logging.log4j.util.Strings;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.apache.commons.csv.CSVFormat;
+
+import nts.arc.system.ServerSystemProperties;
+import nts.gul.csv.CSVParsedResult;
+import nts.gul.csv.NtsCsvReader;
+import nts.gul.csv.NtsCsvRecord;
 
 public class CsvFileUtil {
 
@@ -87,7 +91,7 @@ public class CsvFileUtil {
 	}
 	
 	static InputStream createInputStreamFromFile(String fileId, String fileName) {
-		String filePath = getCsvStoragePath(fileId) + "//" + fileName + ".csv";
+		String filePath = getExtractDataStoragePath(fileId) + "//" + fileName + ".csv";
 		try {
 			return new FileInputStream(new File(filePath));
 		} catch (FileNotFoundException e) {
@@ -95,18 +99,7 @@ public class CsvFileUtil {
 		}
 	}
 
-	static String getCsvStoragePath(String fileId) {
-		String extractDataStoragePath = getExtractDataStoragePath(fileId);
-		File f = new File(extractDataStoragePath);
-		if (f.exists()){
-			if(Objects.requireNonNull(f.list()).length >0 ){
-				return extractDataStoragePath + "//" + Objects.requireNonNull(f.list())[0];
-			}
-		}
-		return Strings.EMPTY;
-	}
-
-	private static String getExtractDataStoragePath(String fileId){
+	public static String getExtractDataStoragePath(String fileId){
 		return DATA_STORE_PATH + "//packs//" + fileId;
 	}
 }

@@ -30,7 +30,7 @@ public class ThresholdConfigurationCheck {
 	private boolean checkFileConfigError(ServerPrepareMng serverPrepareMng, List<TableList> tableList) {
 		if (tableList.isEmpty())
 			return true;
-		String csvStoragePath = CsvFileUtil.getCsvStoragePath(serverPrepareMng.getFileId().get());
+		String csvStoragePath = CsvFileUtil.getExtractDataStoragePath(serverPrepareMng.getFileId().get());
 		File f = new File(csvStoragePath);
 		if (!f.exists())
 			return true;
