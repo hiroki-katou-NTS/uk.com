@@ -99,12 +99,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 			for(CategoryItem categoryItem : standardOutputItem.getCategoryItems()) {
 				// TODO chờ sửa primative value của domain CategoryItem
 				ctgItemDataRepo.getCtgItemDataByIdAndDisplayClass(categoryItem.getCategoryId().v().toString(), 
-						categoryItem.getCategoryItemNo().v().length(), 1).ifPresent(item -> ctgItemDataList.add(item));
+						categoryItem.getCategoryItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
 			}
 		}
 		
-		Optional<ExOutCtg> exOutCtg = exOutCtgRepo.getExOutCtgByIdAndCtgSetting(stdOutputCondSet.getCategoryId());
-		Optional<ExCndOutput> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId());
+		Optional<ExOutCtg> exOutCtg = exOutCtgRepo.getExOutCtgByIdAndCtgSetting(stdOutputCondSet.getCategoryId().v());
+		Optional<ExCndOutput> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId().v());
 		
 		settingResult.put("stdOutputCondSet", stdOutputCondSet);
 		settingResult.put("exOutCtg", exOutCtg);
@@ -189,7 +189,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<ExOutCtg> exOutCtg = (Optional<ExOutCtg>) settingResult.get("exOutCtg");
 		StdOutputCondSet stdOutputCondSet = (StdOutputCondSet) settingResult.get("stdOutputCondSet");
 		String settingName = "";
-		if (stdOutputCondSet != null) settingName = stdOutputCondSet.getConditionSetName();
+		if (stdOutputCondSet != null) settingName = stdOutputCondSet.getConditionSetName().v();
 		String fileName = exOutSetting.getConditionSetCd() + settingName + processingId;
 		
 		exOutOpMngRepo.getExOutOpMngById(processingId).ifPresent(exOutOpMng -> {
@@ -227,11 +227,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 		List<StandardOutputItem> standardOutputItemList =(List<StandardOutputItem>) settingResult.get("standardOutputItemList");
 		
 		//サーバ外部出力ファイル項目ヘッダ
-		if(stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE.value)) {
-			header.add(stdOutputCondSet.getConditionSetName());
+		if(stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
+			header.add(stdOutputCondSet.getConditionSetName().v());
 		}
-		
-		if(stdOutputCondSet != null && (stdOutputCondSet.getItemOutputName() == NotUseAtr.USE.value)) {
+		if(stdOutputCondSet != null && (stdOutputCondSet.getItemOutputName() == NotUseAtr.USE)) {
 			for(StandardOutputItem standardOutputItem : standardOutputItemList) {
 				header.add(standardOutputItem.getOutputItemName().v());
 			}
@@ -239,7 +238,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		
 		for (String sid : exOutSetting.getSidList()) {
 			Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
-			
+		
 			if(!exOutOpMng.isPresent()) {
 				return ExIoOperationState.FAULT_FINISH;
 			}

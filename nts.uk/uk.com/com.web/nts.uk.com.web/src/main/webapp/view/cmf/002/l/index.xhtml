@@ -9,11 +9,12 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 650, height: 500 };</script>
-			<!-- 			<com:ValidatorScript> -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed -->
-			<!--             </com:ValidatorScript> -->
+			<com:ValidatorScript>
+			   nts.uk.ctx.exio.dom.exo.dataformat.DataFormatDecimalDigit
+			   nts.uk.ctx.exio.dom.exo.dataformat.DataFormatFixedValueOperation
+			   nts.uk.ctx.exio.dom.exo.dataformat.DataFormatNullReplacement
+			   nts.uk.ctx.exio.dom.exo.dataformat.DataFormatIntegerDigit
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.l.vm.js" />
@@ -58,7 +59,7 @@
 								value: minuteFractionDigit,
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
-								required: true,
+								required: enableRequired(),
 								enable: decimalSelectionCls(),
 								option : {width : '35px'}}" />
 						</div>
@@ -79,7 +80,7 @@
 								optionsText: 'name',
 								editable: false,
 								enable: decimalSelectionCls(),
-								required: true,
+								required: enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
 									{ prop: 'name', length: 5 },
@@ -136,7 +137,7 @@
 								optionsText: 'name',
 								editable: false,
 								enable: enableFormatSelectionCls(),
-								required: true,
+								required: enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
 									{ prop: 'name', length: 5 },
@@ -151,9 +152,9 @@
 							<div id="L7" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_148')}</div>
 						</div>
 						<!-- L7_1 マイナス値チェック -->
-						<div id="I7_1" tabindex="7" class="div-table-col-standard"
+						<div id="L7_1" tabindex="7" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="I7_1_1" 
+							<div id="L7_1_1" 
 								data-bind="ntsRadioButton: {
 									checked: fixedValueOperation, 
 									option: fixedValueOperationItem()[0], 
@@ -164,7 +165,7 @@
 									group: 'fixedValueOperation' 
 									}">
 							</div>
-							<div id="I7_1_2" tabindex="-1" class=" radio-group"
+							<div id="L7_1_2" tabindex="-1" class=" radio-group"
 								data-bind="ntsRadioButton: {
 									checked: fixedValueOperation, 
 									option: fixedValueOperationItem()[1], 
@@ -198,9 +199,9 @@
 								value: fixedCalculationValue,
 								name:'#{i18n.getText('CMF002_152')}',
  								constraint: 'DecimalDigitNumber', 
-								required: true,
+								required: enableRequired(),
 								enable: enableFixedValueOperation(),
-								option : {width : '100px'}}" />
+								option : {width : '100px',decimallength: 2}}" />
 						</div>
 					</div>
 
@@ -241,8 +242,8 @@
 								data-bind="ntsNumberEditor: {
 								value: fixedLongIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
- 								constraint: 'DecimalDigitNumber', 
-								required: false,
+ 								constraint: 'DataFormatIntegerDigit', 
+								required: enableRequired(),
 								enable: enableFixedLengthOutput(),
 								option : {width : '35px'}}" />
 							<div id="L8_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
@@ -301,8 +302,8 @@
 								data-bind="ntsNumberEditor: {
 								value: valueOfNullValueSubs,
 								name:'#{i18n.getText('CMF002_158')}',
- 								constraint: 'DecimalDigitNumber', 
-								required: true,
+ 								constraint: 'DataFormatNullReplacement', 
+								required: enableRequired(),
 								enable: enableNullValueReplace(),
 								option : {width : '35px'}}" />
 						</div>
@@ -344,7 +345,7 @@
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
  								constraint: 'DecimalDigitNumber', 
-								required: true,
+								required: enableRequired(),
 								enable: enableFixedValue(),
 								option : {width : '35px'}}" />
 						</div>
@@ -356,7 +357,7 @@
 			<!--  I20  -->
 			<div id="functions-area-bottom">
 				<button tabindex="16" id="L20_1" class="x-large proceed "
-					data-bind="click: sendData">#{i18n.getText('CMF002_161')}</button>
+					data-bind="click: sendData, enable: enableSettingSubmit()">#{i18n.getText('CMF002_161')}</button>
 				<button tabindex="17" id="L20_2" class="large"
 					data-bind="click: cancelCharacterSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>

@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.infra.entity.exo.dataformat;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -167,7 +168,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
         		domain.getDecimalSelection().value,
         		domain.getFixedValueOperationSymbol().value,
         		domain.getFixedValueOperation().value,
-        		domain.getFixedCalculationValue(),
+        		domain.getFixedCalculationValue().get().v().toString(),
         		domain.getValueOfNullValueSubs().orElse(null).v(),
         		domain.getMinuteFractionDigitProcessCla().value);
     }

@@ -7,6 +7,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode;
+import nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionName;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

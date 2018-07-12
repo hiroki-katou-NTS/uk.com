@@ -9,10 +9,12 @@ import java.util.Optional;
 public interface ExOutCtgRepository {
 
 	List<ExOutCtg> getAllExOutCtg();
+	
+	List<ExOutCtg> getExOutCtgList();
 
 	Optional<ExOutCtg> getExOutCtgById(String categoryId);
 	
-	Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(String categoryId);
+	Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(Integer categoryId);
 
 	void add(ExOutCtg domain);
 

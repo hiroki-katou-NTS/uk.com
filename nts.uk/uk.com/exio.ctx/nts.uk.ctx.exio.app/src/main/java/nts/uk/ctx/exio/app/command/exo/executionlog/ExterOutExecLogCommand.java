@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.command.exo.executionlog;
 
-import java.util.Optional;
-
 import lombok.Value;
 
 @Value
@@ -22,11 +20,4 @@ public class ExterOutExecLogCommand {
 	 */
 	private String fileId;
 
-	public ExterOutExecLogCommand(String companyId, String outputProcessId, String fileId) {
-		super();
-		this.companyId = companyId;
-		this.outputProcessId = outputProcessId;
-		this.fileId = fileId;
-	}
-	
 }

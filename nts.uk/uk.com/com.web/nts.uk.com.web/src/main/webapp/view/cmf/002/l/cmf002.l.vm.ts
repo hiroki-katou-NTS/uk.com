@@ -30,6 +30,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         inputMode: boolean;
         selectedValue: KnockoutObservable<any>;
 
+
         //L2_1
         timeSelectedList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getTimeSelected());
         selectHourMinute: KnockoutObservable<number> = ko.observable(0);
@@ -64,6 +65,14 @@ module nts.uk.com.view.cmf002.l.viewmodel {
 
         //L10_1
         fixedValueItem: KnockoutObservableArray<model.ItemModel>;
+
+        //Defaut Mode Screen
+        // 0 = Individual
+        // 1 = initial
+        selectModeScreen: KnockoutObservable<number> = ko.observable(0);
+
+        enableSettingSubmit: KnockoutObservable<boolean> = ko.observable(true);
+        enableRequired: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             var self = this;
@@ -122,15 +131,24 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             ]);
         }
 
-        sendData() { 
+        sendData() {
             var self = this;
+            self.minuteFractionDigit == null ? $('#L3_1').ntsError('set', { messageId: "Msg_658" });
             
-            if (self.outputMinusAsZeroChecked()) {
-                self.outputMinusAsZero(1);
-            } else {
-                self.outputMinusAsZero(0);
-            }
-            
+            self.fixedValueOperation.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0) {
+                    self.enableRequired(true);
+                    self.fixedCalculationValue == null ? $('#L7_3').ntsError('set', { messageId: "Msg_658" });
+                }
+            });
+
+            self.fixedLengthOutput.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0) {
+                    self.enableRequired(true);
+                    self.fixedLongIntegerDigit == null && self.fixedLongIntegerDigit < 1 ? $('#L8_2_2').ntsError('set', { messageId: "Msg_658" });
+                }
+            });
+
             let data = {
                 selectHourMinute: self.selectHourMinute(),
                 minuteFractionDigit: self.minuteFractionDigit(),
@@ -215,8 +233,54 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             //block.invisible();
             var self = this;
             var dfd = $.Deferred();
-            dfd.resolve();
+            //Check Mode Screen 
+            if (self.selectModeScreen() == 0) {
+                self.enableSettingSubmit(false);
+            }
+            service.findPerformSettingByTime().done(result => {
+                let getData = result;
+                if (getData != null) {
+                    self.selectHourMinute(getData.selectHourMinute);
+                    self.minuteFractionDigit(getData.minuteFractionDigit);
+                    self.minuteFractionDigitProcessCla(getData.minuteFractionDigitProcessCla);
+                    self.decimalSelection(getData.decimalSelection);
+                    self.outputMinusAsZero(getData.outputMinusAsZero);
+                    self.delimiterSetting(getData.delimiterSetting);
+                    self.fixedValueOperation(getData.fixedValueOperation);
+                    self.fixedValueOperationSymbol(getData.fixedValueOperationSymbol);
+                    self.fixedCalculationValue(getData.fixedCalculationValue);
+                    self.fixedLengthOutput(getData.fixedLengthOutput);
+                    self.fixedLongIntegerDigit(getData.fixedLongIntegerDigit);
+                    self.fixedLengthEditingMothod(getData.fixedLengthEditingMothod);
+                    self.nullValueSubs(getData.nullValueSubs);
+                    self.valueOfNullValueSubs(getData.valueOfNullValueSubs);
+                    self.fixedValue(getData.fixedValue);
+                    self.valueOfFixedValue(getData.valueOfFixedValue);
+                } else {
+                    if (self.selectModeScreen = 1) {
+                        self.outputMinusAsZero = ko.observable(0);
+                        self.minuteFractionDigit = ko.observable(0);
+                        self.fixedValueOperation = ko.observable(0);
+                        self.fixedValueOperationSymbol = ko.observable(0);
+                        self.fixedCalculationValue = ko.observable(0);
+                        self.fixedLengthOutput = ko.observable(0);
+                        self.fixedLongIntegerDigit = ko.observable(0);
+                        self.fixedLengthEditingMothod = ko.observable(0);
+                        self.nullValueSubs = ko.observable(0);
+                        self.valueOfNullValueSubs = ko.observable(0);
+                        self.fixedValue = ko.observable(0);
+                        self.valueOfFixedValue = ko.observable("");
+                    } else {
 
+                    }
+                }
+            }).fail(function(error) {
+
+            });
+
+
+
+            dfd.resolve();
             return dfd.promise();
         }
 

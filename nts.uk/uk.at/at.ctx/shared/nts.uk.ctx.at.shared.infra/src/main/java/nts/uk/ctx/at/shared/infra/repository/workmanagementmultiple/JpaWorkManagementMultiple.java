@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.workmanagementmultiple.KshstWorkManagem
 public class JpaWorkManagementMultiple extends JpaRepository implements WorkManagementMultipleRepository {
 
 	/** The select single. */
-	private final String SELECT_SINGLE = "SELECT c FROM KshstWorkManagementMultiple c"
+	private static final String SELECT_SINGLE = "SELECT c FROM KshstWorkManagementMultiple c"
 			+ " WHERE c.companyID = :companyID";
 	
 	

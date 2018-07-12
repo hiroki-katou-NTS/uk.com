@@ -9,19 +9,19 @@ public class CategoryItemDto {
 	/**
 	 * カテゴリ項目NO
 	 */
-	private String categoryItemNo;
+	private int categoryItemNo;
 
 	/**
 	 * カテゴリID
 	 */
-	private int categoryId;
+	private String categoryId;
 
 	/**
 	 * 演算符号
 	 */
 	private int operationSymbol;
 
-	public CategoryItemDto(String categoryItemNo, int categoryId, int operationSymbol) {
+	public CategoryItemDto(int categoryItemNo, String categoryId, int operationSymbol) {
 		super();
 		this.categoryItemNo = categoryItemNo;
 		this.categoryId = categoryId;

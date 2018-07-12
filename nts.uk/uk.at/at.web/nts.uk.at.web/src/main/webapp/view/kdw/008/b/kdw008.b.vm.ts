@@ -178,6 +178,7 @@ module nts.uk.at.view.kdw008.b {
                     if (empSelect) {
                         self.currentBusinessTypeCode(empSelect.businessTypeCode);
                         self.currentBusinessTypeName(empSelect.businessTypeName);
+                        self.selectedSheetNo(1);
                         if (self.isDaily) {
                             self.getDetail(self.currentBusinessTypeCode());
                         } else {

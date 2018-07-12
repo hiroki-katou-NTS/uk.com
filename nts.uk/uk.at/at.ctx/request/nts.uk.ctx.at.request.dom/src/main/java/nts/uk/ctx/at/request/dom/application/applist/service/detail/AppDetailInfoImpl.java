@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.detail;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -77,8 +80,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private RecruitmentAppRepository recRepo;
-	@Inject
-	private BPTimeItemRepository bPTimeItemRepo;
 	/**
 	 * 残業申請
 	 * get Application Over Time Info
@@ -105,7 +106,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 							overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 				}else{
-					List<BonusPayTimeItem> specs = bPTimeItemRepo
+					List<BonusPayTimeItem> specs = repoBonusTime
 							.getListSpecialBonusPayTimeItemName(companyId, lstFrameNo);
 					lstFrame.add(new OverTimeFrame(4, specs.get(0).getId(),specs.get(0).getTimeItemName().v(),
 							specs.get(0).getTimeItemTypeAtr().value,
@@ -172,7 +173,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appGoBack.getWorkTimeEnd2().map(x -> x.v()).orElse(null)));
 	}
 	/**
-	 * 勤務変更申請
+	 * 休暇申請
 	 * get Application Holiday Work Info
 	 * appType = 6;
 	 * @param companyID
@@ -269,9 +270,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appWkChange.getBreakTimeEnd1()));
 	}
 	/**
-	 * 休暇申請
+	 * 休日出勤時間申請
 	 * get Application Absence Info
-	 * appType = 1;
+	 * appType = 6;
 	 * @param companyID
 	 * @param appId
 	 * @param day
@@ -349,7 +350,200 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		TimeWithDayAttr timeConvert = new TimeWithDayAttr(time);
 		return timeConvert.getDayDivision().description + timeConvert.getInDayTimeWithFormat();
 	}
-
-
-
+	/**
+	 * 残業申請
+	 * get list Application Over Time Info
+	 * appType = 0;
+	 * @param companyID
+	 * @param appId
+	 * @return list AppOverTimeInfoFull
+	 */
+	@Override
+	public List<AppOverTimeInfoFull> getListAppOverTimeInfo(String companyId, List<String> lstAppId) {
+		List<AppOverTimeInfoFull> lstAppFull = new ArrayList<>();
+		//1.加給時間 - BONUSPAYTIME
+		//1.A NORMAL_TYPE
+		List<BonusPayTimeItem> lstBonus = repoBonusTime.getListBonusPayTimeItem(companyId);
+		//1.B SPECIAL_TYPE
+		List<BonusPayTimeItem> lstSpBonus = repoBonusTime.getListSpecialBonusPayTimeItem(companyId);
+		//2.休出時間 - BREAKTIME
+		List<WorkdayoffFrame> lstWork = repoWork.getAllWorkdayoffFrame(companyId);
+		//3.残業時間 - NORMALOVERTIME
+		List<OvertimeWorkFrame> lstOtWork = repoOverTimeFr.getAllOvertimeWorkFrame(companyId);
+		//get list appOverTime detail
+		Map<String, AppOverTime> mapOvFrame = repoOverTime.getListAppOvertimeFrame(companyId, lstAppId);
+		for (String appId : lstAppId) {
+			AppOverTime appOt = mapOvFrame.get(appId);
+			List<OverTimeInput> lstOverTimeInput = appOt.getOverTimeInput();
+			List<OverTimeFrame> lstFrame = new ArrayList<>();
+			for (OverTimeInput overTime : lstOverTimeInput) {
+				int frameNo = overTime.getFrameNo();
+				if(overTime.getAttendanceType().equals(AttendanceType.BONUSPAYTIME)){//加給時間
+					if(overTime.getTimeItemTypeAtr().equals(TimeItemTypeAtr.NORMAL_TYPE)){//NORMAL_TYPE
+						String frameName = this.findBonusItem(lstBonus, frameNo);
+						lstFrame.add(new OverTimeFrame(3, frameNo, frameName, TimeItemTypeAtr.NORMAL_TYPE.value,
+								overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
+								overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+								overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
+					}else{//SPECIAL_TYPE
+						String frameName = this.findBonusItem(lstSpBonus, frameNo);
+						lstFrame.add(new OverTimeFrame(4, frameNo, frameName, TimeItemTypeAtr.SPECIAL_TYPE.value,
+								overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
+								overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+								overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
+					}
+				}
+				if(overTime.getAttendanceType().equals(AttendanceType.BREAKTIME)){//休出時間
+					String frameName = this.findWorkItem(lstWork, frameNo);
+					lstFrame.add(new OverTimeFrame(2, frameNo, frameName, null,
+							overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
+							overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
+				}
+				if(overTime.getAttendanceType().equals(AttendanceType.NORMALOVERTIME)){//残業時間
+					String name = "";
+					if(overTime.getFrameNo() == 11){
+						name = "時間外深夜時間";
+					}else if(overTime.getFrameNo() == 12){
+						name = "ﾌﾚｯｸｽ超過";
+					}else{
+						name = this.findOtWorkItem(lstOtWork, frameNo);
+					}
+					lstFrame.add(new OverTimeFrame(1, frameNo, name, null,
+							overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
+							overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
+				}
+			}
+			lstAppFull.add(new AppOverTimeInfoFull(appId,
+					this.convertTime(appOt.getWorkClockFrom1()),
+					this.convertTime(appOt.getWorkClockTo1()),
+					this.convertTime(appOt.getWorkClockFrom2()),
+					this.convertTime(appOt.getWorkClockTo2()),
+					lstFrame, this.convertTime(appOt.getOverTimeShiftNight()),
+					this.convertTime(appOt.getFlexExessTime())));
+		}
+		return lstAppFull;
+	}
+	/**
+	 * 休暇申請
+	 * get list Application Holiday Work Info
+	 * appType = 6;
+	 * @param companyID
+	 * @param appId
+	 * @return list AppHolidayWorkFull
+	 */
+	@Override
+	public List<AppHolidayWorkFull> getListAppHdWorkInfo(String companyId, List<String> lstAppId) {
+		List<AppHolidayWorkFull> lstAppFull = new ArrayList<>();
+		//1.加給時間 - BONUSPAYTIME
+		//1.A NORMAL_TYPE
+		List<BonusPayTimeItem> lstBonus = repoBonusTime.getListBonusPayTimeItem(companyId);
+		//2.休出時間 - BREAKTIME
+		List<WorkdayoffFrame> lstWork = repoWork.getAllWorkdayoffFrame(companyId);
+		//3.残業時間 - NORMALOVERTIME
+		List<OvertimeWorkFrame> lstOtWork = repoOverTimeFr.getAllOvertimeWorkFrame(companyId);
+		//get list appHoliday detail
+		Map<String, AppHolidayWork> mapHdFrame = repoHolidayWork.getListAppHdWorkFrame(companyId, lstAppId);
+		Map<String, String> mapWorkTimeName = new HashMap<>();
+		for (String appId : lstAppId) {
+			AppHolidayWork hdWork = mapHdFrame.get(appId);
+			List<HolidayWorkInput> lstHdInput = hdWork.getHolidayWorkInputs();
+			List<OverTimeFrame> lstFrame = new ArrayList<>();
+			for (HolidayWorkInput hd : lstHdInput) {
+				int frameNo = hd.getFrameNo();
+				if(hd.getAttendanceType().equals(AttendanceType.BONUSPAYTIME)){//加給時間
+					String frameName = this.findBonusItem(lstBonus, frameNo);
+					lstFrame.add(new OverTimeFrame(3, frameNo, frameName, TimeItemTypeAtr.NORMAL_TYPE.value,
+							hd.getApplicationTime() == null ? null : hd.getApplicationTime().v(),
+							hd.getStartTime() == null ? null : hd.getStartTime().v(),
+							hd.getEndTime() == null ? null : hd.getEndTime().v()));
+				}
+				if(hd.getAttendanceType().equals(AttendanceType.BREAKTIME)){//休出時間
+					String frameName = this.findWorkItem(lstWork, frameNo);
+					lstFrame.add(new OverTimeFrame(2, frameNo, frameName, null,
+							hd.getApplicationTime() == null ? null : hd.getApplicationTime().v(),
+							hd.getStartTime() == null ? null : hd.getStartTime().v(),
+							hd.getEndTime() == null ? null : hd.getEndTime().v()));
+				}
+				if(hd.getAttendanceType().equals(AttendanceType.NORMALOVERTIME)){//残業時間
+					if(frameNo == 11 || frameNo == 12){//appHd khong co loai 11,12
+						continue;
+					}
+					String name = this.findOtWorkItem(lstOtWork, frameNo);
+					lstFrame.add(new OverTimeFrame(1, frameNo, name, null,
+							hd.getApplicationTime() == null ? null : hd.getApplicationTime().v(),
+							hd.getStartTime() == null ? null : hd.getStartTime().v(),
+							hd.getEndTime() == null ? null : hd.getEndTime().v()));
+				}
+			}
+			String workTypeName = hdWork.getWorkTypeCode() == null ||  Strings.isBlank(hdWork.getWorkTypeCode().v()) ? "" :
+							repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v()).get().getName().v();
+			String workTimeName = "";
+			if(hdWork.getWorkTimeCode() != null && !hdWork.getWorkTimeCode().v().equals("000")){
+				String wkTimeCD = hdWork.getWorkTimeCode().v();
+				if(mapWorkTimeName.containsKey(wkTimeCD)){
+					workTimeName  = mapWorkTimeName.get(wkTimeCD);
+				}else{
+					Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyId, wkTimeCD);
+					if(workTime.isPresent()){
+						workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
+					}
+					mapWorkTimeName.put(wkTimeCD, workTimeName);
+				}
+			}
+			lstAppFull.add(new AppHolidayWorkFull(appId, workTypeName,workTimeName,
+					hdWork.getWorkClock1().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getStartTime().v()),
+					hdWork.getWorkClock1().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getEndTime().v()),
+					hdWork.getWorkClock2().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getStartTime().v()),
+					hdWork.getWorkClock2().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getEndTime().v()),
+					lstFrame));
+		}
+		return lstAppFull;
+	}
+	/**
+	 * 加給時間 - BONUSPAYTIME
+	 * find bonus item by frame No
+	 * @param lstBonus
+	 * @param frameNo
+	 * @return frame Name
+	 */
+	private String findBonusItem(List<BonusPayTimeItem> lstBonus, int frameNo){
+		for (BonusPayTimeItem bonus : lstBonus) {
+			if(bonus.getId() == frameNo){
+				return bonus.getTimeItemName().v();
+			}
+		}
+		return "";
+	}
+	/**
+	 * 2.休出時間 - BREAKTIME
+	 * find work item by frame No
+	 * @param lstWork
+	 * @param frameNo
+	 * @return frame Name
+	 */
+	private String findWorkItem(List<WorkdayoffFrame> lstWork, int frameNo){
+		for (WorkdayoffFrame work : lstWork) {
+			if(work.getWorkdayoffFrNo().v().equals(new BigDecimal(frameNo))){
+				return work.getWorkdayoffFrName().v();
+			}
+		}
+		return "";
+	}
+	/**
+	 * 残業時間 - NORMALOVERTIME
+	 * find overtime work item by frame No
+	 * @param lstOtWork
+	 * @param frameNo
+	 * @return frame Name
+	 */
+	private String findOtWorkItem(List<OvertimeWorkFrame> lstOtWork, int frameNo){
+		for (OvertimeWorkFrame otWork : lstOtWork) {
+			if(otWork.getOvertimeWorkFrNo().v().equals(new BigDecimal(frameNo))){
+				return otWork.getOvertimeWorkFrName().v();
+			}
+		}
+		return "";
+	}
 }

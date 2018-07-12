@@ -18,6 +18,6 @@ public class AWDataSettingWebService {
 	@POST
 	@Path("getdatatype")
 	public AwDataFormatDTO getAWDatatype(){
-		return aWDataScreenFinder.getAWData();
+		return aWDataScreenFinder.getAWData().get();
 	}
 }

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pubimp.role;
@@ -231,6 +231,25 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 			int result = optRole.get().getEmployeeReferenceRange().value;
 			return OptionalInt.of(result);
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findByRoleId(java.lang.
+	 * String)
+	 */
+	@Override
+	public Optional<RoleExport> findByRoleId(String roleId) {
+		Optional<Role> optRole = roleRepo.findByRoleId(roleId);
+		if (!optRole.isPresent()) {
+			return Optional.empty();
+		}
+
+		Role role = optRole.get();
+
+		return Optional
+				.of(new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v()));
 	}
 
 }

@@ -25,7 +25,7 @@ public class JpaExCndOutputRepository extends JpaRepository implements ExCndOutp
     }
 
     @Override
-    public Optional<ExCndOutput> getExCndOutputById(String categoryId){
+    public Optional<ExCndOutput> getExCndOutputById(Integer categoryId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExCndOutput.class)
         .setParameter("categoryId", categoryId)
         .getSingle(c->c.toDomain());

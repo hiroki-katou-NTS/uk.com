@@ -25,13 +25,19 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 	}
 
 	@Override
+	public List<ExOutCtg> getExOutCtgList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public Optional<ExOutCtg> getExOutCtgById(String categoryId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExOutCtg.class).setParameter("categoryId", categoryId)
 				.getSingle(c -> c.toDomain());
 	}
 	
 	@Override
-	public Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(String categoryId) {
+	public Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(Integer categoryId) {
 		return this.queryProxy().query(SELECT_BY_ID_AND_SETTING, OiomtExOutCtg.class)
 				.setParameter("categoryId", categoryId)
 				.getSingle(c -> c.toDomain());

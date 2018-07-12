@@ -19,10 +19,9 @@ public class AddStdOutputCondSetCommandHandler extends CommandHandler<StdOutputC
 	@Override
 	protected void handle(CommandHandlerContext<StdOutputCondSetCommand> context) {
 		StdOutputCondSetCommand addCommand = context.getCommand();
-		repository.add(StdOutputCondSet.createFromJavaType(addCommand.getCid(), addCommand.getConditionSetCd(),
+		repository.add(new StdOutputCondSet(addCommand.getCid(), addCommand.getConditionSetCd(),
 				addCommand.getCategoryId(), addCommand.getDelimiter(), addCommand.getItemOutputName(),
 				addCommand.getAutoExecution(), addCommand.getConditionSetName(), addCommand.getConditionOutputName(),
 				addCommand.getStringFormat()));
-
 	}
 }
