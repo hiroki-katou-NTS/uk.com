@@ -142,7 +142,7 @@ public class DPMonthFlexProcessor {
 						closingPeriod.get().getClosureDate().getLastDayOfMonth())));
 		
 		AgreementInfomationDto agreeDto = displayAgreementInfo.displayAgreementInfo(companyId, param.getEmployeeId(),
-				closingPeriod.get().getClosureEndDate().day(), closingPeriod.get().getClosureEndDate().month());
+				closingPeriod.get().getClosureEndDate().year(), closingPeriod.get().getClosureEndDate().month());
 		setAgreeItem(itemMonthFlexResults, agreeDto);
 		
 		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem,
