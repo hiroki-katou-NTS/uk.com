@@ -11,7 +11,7 @@ public interface ExCndOutputRepository
 
     List<ExCndOutput> getAllExCndOutput();
 
-    Optional<ExCndOutput> getExCndOutputById(String categoryId);
+    Optional<ExCndOutput> getExCndOutputById(Integer categoryId);
 
     void add(ExCndOutput domain);
 
