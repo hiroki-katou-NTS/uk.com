@@ -50,21 +50,21 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         delimiterSetting: KnockoutObservable<number> = ko.observable(0);
 
         //L7_1
-        fixedValueOperationItem: KnockoutObservableArray<model.ItemModel>;
+        fixedValueOperationItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         formatSelectionItem: KnockoutObservableArray<model.ItemModel>;
         //L7_2
-        fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel>;
+        fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
 
         //L8_1
-        fixedLengthOutputItem: KnockoutObservableArray<model.ItemModel>;
+        fixedLengthOutputItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         //L8_3_1
-        fixedLengthEditingMethodItem: KnockoutObservableArray<model.ItemModel>;
+        fixedLengthEditingMethodItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getFixedLengthEditingMethod());
 
         //L9_1
-        nullValueReplaceItem: KnockoutObservableArray<model.ItemModel>;
+        nullValueReplaceItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
 
         //L10_1
-        fixedValueItem: KnockoutObservableArray<model.ItemModel>;
+        fixedValueItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
 
         //Defaut Mode Screen
         // 0 = Individual
@@ -72,12 +72,11 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         selectModeScreen: KnockoutObservable<number> = ko.observable(0);
 
         enableSettingSubmit: KnockoutObservable<boolean> = ko.observable(true);
-        enableRequired: KnockoutObservable<boolean> = ko.observable(false);
-
+        enableRequired: KnockoutObservable<boolean> = ko.observable(true);
+        
         constructor() {
             var self = this;
             self.inputMode = true;
-            self.initComponent();
             //self.validateData();
             self.outputMinusAsZero = ko.observable(0);
             self.minuteFractionDigit = ko.observable(0);
@@ -92,63 +91,13 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             self.fixedValue = ko.observable(0);
             self.valueOfFixedValue = ko.observable("");
         }
-        initComponent() {
-            var self = this;
-            //self.numericDataFormatSetting = ko.observable(new model.NumericDataFormatSetting(0, null, null, null, 0, 0, null, null, 0, null, null, 0, null, 0, ""));
-            self.fixedValueOperationItem = ko.observableArray([
-                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
-                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
-            ]);
-            self.fixedValueItem = ko.observableArray([
-                new model.ItemModel(1, getText('CMF002_149')),
-                new model.ItemModel(0, getText('CMF002_150'))
-            ]);
-            self.fixedValueOperationSymbolItem = ko.observableArray([
-                new model.ItemModel(0, '+'),
-                new model.ItemModel(1, '-')
-            ]);
-
-            self.fixedLengthOutputItem = ko.observableArray([
-                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
-                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
-            ]);
-
-            self.fixedLengthEditingMethodItem = ko.observableArray([
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, getText('Enum_FixedLengthEditingMethod_ZERO_BEFORE')),
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, getText('Enum_FixedLengthEditingMethod_SPACE_BEFORE')),
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('Enum_FixedLengthEditingMethod_SPACE_AFTER'))
-            ]);
-
-            self.nullValueReplaceItem = ko.observableArray([
-                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
-                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
-            ]);
-
-            self.fixedValueItem = ko.observableArray([
-                new model.ItemModel(1, getText('CMF002_149')),
-                new model.ItemModel(0, getText('CMF002_150'))
-            ]);
-        }
 
         sendData() {
             var self = this;
-            self.minuteFractionDigit == null ? $('#L3_1').ntsError('set', { messageId: "Msg_658" });
+            if(self.minuteFractionDigit == null){
+                $('#L3_1').ntsError('set', {messageId:"Msg_658"});
+            }
             
-            self.fixedValueOperation.subscribe(function(selectedValue: any) {
-                if (selectedValue == 0) {
-                    self.enableRequired(true);
-                    self.fixedCalculationValue == null ? $('#L7_3').ntsError('set', { messageId: "Msg_658" });
-                }
-            });
-
-            self.fixedLengthOutput.subscribe(function(selectedValue: any) {
-                if (selectedValue == 0) {
-                    self.enableRequired(true);
-                    self.fixedLongIntegerDigit == null && self.fixedLongIntegerDigit < 1 ? $('#L8_2_2').ntsError('set', { messageId: "Msg_658" });
-                }
-            });
-
             let data = {
                 selectHourMinute: self.selectHourMinute(),
                 minuteFractionDigit: self.minuteFractionDigit(),
@@ -236,6 +185,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             //Check Mode Screen 
             if (self.selectModeScreen() == 0) {
                 self.enableSettingSubmit(false);
+                self.enableRequired(false);
             }
             service.findPerformSettingByTime().done(result => {
                 let getData = result;
@@ -256,30 +206,10 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                     self.valueOfNullValueSubs(getData.valueOfNullValueSubs);
                     self.fixedValue(getData.fixedValue);
                     self.valueOfFixedValue(getData.valueOfFixedValue);
-                } else {
-                    if (self.selectModeScreen = 1) {
-                        self.outputMinusAsZero = ko.observable(0);
-                        self.minuteFractionDigit = ko.observable(0);
-                        self.fixedValueOperation = ko.observable(0);
-                        self.fixedValueOperationSymbol = ko.observable(0);
-                        self.fixedCalculationValue = ko.observable(0);
-                        self.fixedLengthOutput = ko.observable(0);
-                        self.fixedLongIntegerDigit = ko.observable(0);
-                        self.fixedLengthEditingMothod = ko.observable(0);
-                        self.nullValueSubs = ko.observable(0);
-                        self.valueOfNullValueSubs = ko.observable(0);
-                        self.fixedValue = ko.observable(0);
-                        self.valueOfFixedValue = ko.observable("");
-                    } else {
-
-                    }
                 }
             }).fail(function(error) {
 
             });
-
-
-
             dfd.resolve();
             return dfd.promise();
         }
