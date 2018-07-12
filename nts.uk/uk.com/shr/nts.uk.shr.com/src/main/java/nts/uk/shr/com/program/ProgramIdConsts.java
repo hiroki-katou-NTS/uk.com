@@ -166,6 +166,8 @@ public class ProgramIdConsts {
 	public static final String CMM044D = "CMM044D";
 
 	public static final String CMM001E = "CMM001E";
+	
+	public static final String CMM020A = "CMM020A";
 
 	public static final String KSU001A = "KSU001A";
 
@@ -224,6 +226,14 @@ public class ProgramIdConsts {
 	public static final String KDL001A = "KDL001A";
 
 	public static final String KDL002A = "KDL002A";
+	
+	public static final String KDL005A = "KDL005A";
+	
+	public static final String KDL009A = "KDL009A";
+	
+	public static final String KDL005B = "KDL005A";
+	
+	public static final String KDL009B = "KDL009A";
 
 	public static final String KDL003A = "KDL003A";
 
@@ -838,7 +848,12 @@ public class ProgramIdConsts {
 	 */
 	public static final String CMM049A = "CMM049A";
 	public static final String CMM049B = "CMM049B";
-	
+
+	public static final String CMF003A = "CMF003A";
+	public static final String CMF003B = "CMF003B"; // B, D, E: is wizard
+	public static final String CMF003C = "CMF003C";
+	public static final String CMF003F = "CMF003F";
+
 	/**
 	 * KWR002
 	 */
@@ -847,7 +862,6 @@ public class ProgramIdConsts {
 	public static final String KWR002C = "KWR002C";
 	public static final String KWR002D = "KWR002D";
 	public static final String KWR002E = "KWR002E";
-	
 	
 	/**
 	 * CDL027
@@ -877,4 +891,8 @@ public class ProgramIdConsts {
 	/** KTG031 */
 	public static final String KTG031A = "KTG031A";
 	public static final String KTG031B = "KTG031B";
+	/** CLI001 */
+	public static final String CLI001A = "CLI001A";
+	public static final String CLI001B = "CLI001B";
+
 }

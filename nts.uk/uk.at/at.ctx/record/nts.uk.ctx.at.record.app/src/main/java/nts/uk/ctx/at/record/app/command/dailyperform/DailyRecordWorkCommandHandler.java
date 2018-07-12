@@ -25,6 +25,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyP
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.CheckPairDeviationReason;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandAddHandler;
@@ -50,7 +52,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCen
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
@@ -241,18 +242,21 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private CalculateDailyRecordServiceCenter calcService;
 	
-	@Inject 
-	private ErAlCheckService determineErrorAlarmWorkRecordService;
+//	@Inject 
+//	private ErAlCheckService determineErrorAlarmWorkRecordService;
 	
 	@Inject
-	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
+	private EmployeeDailyPerErrorRepository employeeErrorRepo;
 	
 	@Inject
 	private DailyRecordWorkFinder finder;
 	
-	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
+	@Inject
+	private CheckPairDeviationReason checkPairDeviationReason;
 	
-	private final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
+	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
+	
+	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
 		DOMAIN_CHANGED_BY_EVENT.put(DAILY_WORK_INFO_CODE, 
 									getArray(DAILY_ATTENDACE_LEAVE_CODE, 
@@ -277,23 +281,29 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		handler(command, false);
 	}
 	
-	public void handleUpdate(List<DailyRecordWorkCommand> command) {
-		handler(command, true);
+	public List<DPItemValueRC> handleUpdate(List<DailyRecordWorkCommand> command) {
+		return handler(command, true);
 	}
 
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
 		handler(Arrays.asList(command), isUpdate);
 	}
 	
-	private <T extends DailyWorkCommonCommand> void handler(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
+	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handler(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
 		registerNotCalcDomain(commands, isUpdate);
 		
 		List<IntegrationOfDaily> calced = calcIfNeed(commands);
 		
+		List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commands);
+		
+		if(!items.isEmpty()){
+			return items;
+		}
 		updateDomainAfterCalc(commands, isUpdate, calced);
 		
 		registerErrorWhenCalc(toMapParam(commands), 
 				calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
+		return items;
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -321,9 +331,11 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	private void registerErrorWhenCalc(Map<String, List<GeneralDate>> param, List<EmployeeDailyPerError> errors) {
 		//remove data error
-		employeeDailyPerErrorRepository.removeParam(param);
+		employeeErrorRepo.removeParam(param);
 		//insert error;
-		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
+		employeeErrorRepo.insert(errors.stream().filter(e -> e!= null && e.getAttendanceItemList().get(0) != null)
+				.collect(Collectors.toList()));
+//		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -340,14 +352,15 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 				}
 			});
 			
-			DOMAIN_CHANGED_BY_EVENT.values().stream().flatMap(x -> Arrays.stream(x)).distinct().forEach(layout -> {
-				if(mapped.contains(layout)){
+			DOMAIN_CHANGED_BY_EVENT.entrySet().stream().filter(entry -> mapped.contains(entry.getKey())).map(entry -> entry.getValue())
+				.flatMap(x -> Arrays.stream(x)).distinct().forEach(layout -> {
+//				if(mapped.contains(layout)){
 					FinderFacade cFinder = finder.getFinder(layout);
 					if(cFinder != null){
 						Object updatedD = cFinder.getDomain(command.getEmployeeId(), command.getWorkDate());
 						updateCommandData(command.getCommand(layout), updatedD);
 					}
-				}
+//				}
 			});
 		});
 	}

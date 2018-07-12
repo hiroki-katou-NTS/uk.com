@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.TranferTimeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 
 public interface ClassOccurrentUseDetailData {
@@ -13,4 +14,10 @@ public interface ClassOccurrentUseDetailData {
 	 * @return
 	 */
 	Optional<OccurrenceUseDetail> getOccurrenceUseDetail(InforFormerRemainData inforData, WorkTypeClassification workTypeClass);
+	/**
+	 * 振替時間情報を取得する
+	 * @param inforData
+	 * @return
+	 */
+	TranferTimeInfor getTranferTimeInfor(InforFormerRemainData inforData);
 }

@@ -175,21 +175,21 @@ public class DailyPerformanceSelectItemProcessor {
 										.map(x -> new DPAttendanceItem(x.getId(),
 												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
-												x.getTypeGroup()))
+												x.getTypeGroup(), x.getPrimitive()))
 										.collect(Collectors.toList());
+						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
+						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
+								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
+										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
+										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
 						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 					}
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
 						// chia cot con code name cua AttendanceItemId chinh va
 						// set
-						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
-						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
-								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
-										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
-										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
 						lstHeader.add(DPHeaderDto.createSimpleHeader(companyId, ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + PX, mapDP, optionalItemOpt, optionalItemAtrOpt));
+								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
 					}
 					result.setLstHeader(lstHeader);
 					// result.setLstSheet(lstSheet);
@@ -223,20 +223,21 @@ public class DailyPerformanceSelectItemProcessor {
 										.map(x -> new DPAttendanceItem(x.getId(),
 												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
-												x.getTypeGroup()))
+												x.getTypeGroup(), x.getPrimitive()))
 										.collect(Collectors.toList());
-						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
-					}
-					result.addColumnsToSheet(lstFormat, mapDP, true);
-					List<DPHeaderDto> lstHeader = new ArrayList<>();
-					for (FormatDPCorrectionDto dto : lstFormat) {
 						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
 						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
 								: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
 										.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
 										.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
+						
+						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+					}
+					result.addColumnsToSheet(lstFormat, mapDP, true);
+					List<DPHeaderDto> lstHeader = new ArrayList<>();
+					for (FormatDPCorrectionDto dto : lstFormat) {
 						lstHeader.add(DPHeaderDto.createSimpleHeader(companyId, ADD_CHARACTER+String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + PX, mapDP, optionalItemOpt, optionalItemAtrOpt));
+								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
 					}
 					result.setLstHeader(lstHeader);
 				}
@@ -294,7 +295,7 @@ public class DailyPerformanceSelectItemProcessor {
 			List<String> formatCodes) {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
-
+        String companyId = AppContexts.user().companyId();
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
 		 */
@@ -364,7 +365,7 @@ public class DailyPerformanceSelectItemProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
 				//screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
@@ -57,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
@@ -77,6 +80,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 1日の計算範囲
@@ -87,21 +91,41 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Getter
 public class CalculationRangeOfOneDay {
 
-	private Finally<WithinWorkTimeSheet> withinWorkingTimeSheet = Finally.empty();
-
-	@Setter
-	private Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet = Finally.empty();
-
+	//1日の範囲
 	private TimeSpanForCalc oneDayOfRange;
 
+	//勤務情報
 	private WorkInfoOfDailyPerformance workInformationOfDaily;
 	
 	@Setter
+	//出退勤
 	private TimeLeavingOfDailyPerformance attendanceLeavingWork;
 
+	//所定時間設定
 	private PredetermineTimeSetForCalc predetermineTimeSetForCalc;
-
+	
+	
+	//インターバル制度管理
+	
+	//休暇使用合計残時間未割当
 	private Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime = Finally.empty();// 時間休暇�?算残時�?
+	
+	//非勤務時間帯
+	
+	//加給時間
+	
+	//就業時間内時間帯
+	private Finally<WithinWorkTimeSheet> withinWorkingTimeSheet = Finally.empty();
+
+	@Setter
+	//就業時間外時間帯
+	private Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet = Finally.empty();
+
+	//出勤前時間
+	
+	//退勤後時間
+
+
 
 
 	public CalculationRangeOfOneDay(Finally<WithinWorkTimeSheet> withinWorkingTimeSheet,
@@ -301,7 +325,7 @@ public class CalculationRangeOfOneDay {
 					,bonusPaySetting,midNightTimeSheet,personalInfo,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, predetermineTimeSetForCalc, 
 					siftCode,  leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,
-					conditionItem,predetermineTimeSetByPersonInfo
+					conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting
 					);
 			if(!outsideWorkTimeSheet.isPresent()) {
 				//outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
@@ -327,6 +351,20 @@ public class CalculationRangeOfOneDay {
 			}
 		}
 		List<OverTimeFrameTimeSheetForCalc> paramList = new ArrayList<>();
+		if(!this.withinWorkingTimeSheet.isPresent()) {
+			this.withinWorkingTimeSheet = Finally.of(new WithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
+																									 new TimeZoneRounding(new TimeWithDayAttr(0), new TimeWithDayAttr(0), null), 
+																									 new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
+																									 Collections.emptyList(), 
+																									 Collections.emptyList(), 
+																									 Collections.emptyList(), 
+																									 Optional.empty(), 
+																									 Collections.emptyList(), 
+																									 Optional.empty(), 
+																									 Optional.empty())),
+																			 Optional.empty(),
+																			 Optional.empty()));
+		}
 		if(this.outsideWorkTimeSheet.isPresent()
 			&& this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
 			paramList = this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets();
@@ -352,7 +390,7 @@ public class CalculationRangeOfOneDay {
 							 illegularAddSetting,
 							 leaveEarly,commonSetting,
 							 conditionItem,
-							 predetermineTimeSetByPersonInfo);
+							 predetermineTimeSetByPersonInfo,coreTimeSetting);
 		if(!overTimeFrame.isEmpty()) {
 			if(outsideWorkTimeSheet.isPresent()) {
 				if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
@@ -416,7 +454,7 @@ public class CalculationRangeOfOneDay {
 									  PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, 
 									  boolean late, WorkingSystem workingSystem, HolidayAddtionSet holidayAddtionSet, WorkRegularAdditionSet regularAddSetting, 
 									  WorkFlexAdditionSet flexAddSetting, WorkDeformedLaborAdditionSet illegularAddSetting, boolean leaveEarly, Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
-									  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+									  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
 		
 		if(!this.withinWorkingTimeSheet.isPresent())
 			return Collections.emptyList();
@@ -498,7 +536,7 @@ public class CalculationRangeOfOneDay {
 															flexAddSetting, 
 															regularAddSetting, 
 															holidayAddtionSet,commonSetting,conditionItem,
-															predetermineTimeSetByPersonInfo
+															predetermineTimeSetByPersonInfo,coreTimeSetting
 															);
 	}
 
@@ -520,7 +558,7 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * 就�??残業�??休�?時間�??�?給時間の合計を求め�?
+	 * 加給時間を計算する(就内・残業・休出時間帯の
 	 */
 	public List<BonusPayTime> calcBonusPayTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
 											   CalAttrOfDailyPerformance calcAtrOfDaily, BonusPayAtr bonusPayAtr) {
@@ -528,16 +566,16 @@ public class CalculationRangeOfOneDay {
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
 		List<BonusPayTime> withinBonusPay = new ArrayList<>();
-		if(withinWorkingTimeSheet.isPresent())
+		if(this.withinWorkingTimeSheet != null && withinWorkingTimeSheet.isPresent())
 			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
 		
-		if(outsideWorkTimeSheet.isPresent())
+		if(this.outsideWorkTimeSheet != null && this.outsideWorkTimeSheet.isPresent())
 		{
-			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
+			if(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
 				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcBonusPayTimeInOverWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
 			}
 			
-			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+			if(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
 				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcBonusPayTimeInHolidayWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
 			}
 		}
@@ -890,5 +928,7 @@ public class CalculationRangeOfOneDay {
 	 public void clearLeavingTime() {
 		 this.attendanceLeavingWork = new TimeLeavingOfDailyPerformance(this.getAttendanceLeavingWork().getEmployeeId(), new WorkTimes(0), Collections.emptyList(), this.getAttendanceLeavingWork().getYmd());
 	 }
+	 
+
 	 
 }

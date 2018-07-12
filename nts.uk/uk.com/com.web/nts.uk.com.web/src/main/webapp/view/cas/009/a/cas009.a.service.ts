@@ -8,8 +8,8 @@ module cas009.a {
             'get': (rids: any) => ajax('com', 'ctx/sys/auth/role/find/person/role', rids)
         },
         permision: {
-            save: (command: any) => ajax('com', 'ctx/pereg/functions/auth/register', command),
-            remove: (command: any) => ajax('com', 'ctx/pereg/functions/auth/delete', command),
+            save: (command: any) => ajax('com', 'ctx/com/screen/person/role/register', command),
+            remove: (command: any) => ajax('com', 'ctx/com/screen/person/role/delete', command),
             person_info: (roleId: string) => ajax('com', 'ctx/pereg/functions/auth/find-with-role', roleId)
         },
     };

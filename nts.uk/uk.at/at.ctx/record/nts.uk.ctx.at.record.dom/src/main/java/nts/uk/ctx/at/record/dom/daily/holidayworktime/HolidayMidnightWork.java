@@ -94,9 +94,13 @@ public class HolidayMidnightWork {
 	 * 深夜時間(全List分)の時間合計を求める 
 	 * @return
 	 */
-	public AttendanceTime calcAllMidTime() {
-		return new AttendanceTime(this.getHolidayWorkMidNightTime().stream()
+	public TimeDivergenceWithCalculation calcAllMidTime() {
+		AttendanceTime time = new AttendanceTime(this.getHolidayWorkMidNightTime().stream()
 												.map(tc -> tc.getTime().getTime().valueAsMinutes())
 												.collect(Collectors.summingInt(tc -> tc)));
+		AttendanceTime calcTime = new AttendanceTime(this.getHolidayWorkMidNightTime().stream()
+																					  .map(tc -> tc.getTime().getCalcTime().valueAsMinutes())
+																					  .collect(Collectors.summingInt(tc -> tc)));
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
 }

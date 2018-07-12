@@ -24,4 +24,5 @@ public class TranferTimeInfor {
 	private Integer tranferTime;
 	/**	日数 */
 	private Optional<Double> days;
+
 }

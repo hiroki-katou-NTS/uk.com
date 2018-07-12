@@ -35,10 +35,10 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
-
-	/** The Constant DEFAULT_CODE. */
-	private static final String DEFAULT_CODE = "000";
-
+	
+	/**
+	 *  就業時間帯の必須チェック
+	 */
 	@Override
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
@@ -153,7 +153,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 		return WorkStyle.ONE_DAY_WORK;
 	}
-
+	
 	@Override
 	public SetupType checkRequired(SetupType morningWorkStyle, SetupType afternoonWorkStyle) {
 
@@ -222,7 +222,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public void checkWorkTimeMater(String companyId, String workTimeCode) {
 		// check default work time code
 		// 設定されていない（就業時間帯コード＝NULL || 就業時間帯コード＝000）
-		if ((DEFAULT_CODE.equals(workTimeCode) || StringUtil.isNullOrEmpty(workTimeCode, false))) {
+		if (StringUtil.isNullOrEmpty(workTimeCode, false)) {
 			return;
 		}
 

@@ -9,10 +9,11 @@
 						options: stampAtrList,
 						optionsValue: 'code',
 						optionsText: 'name',
-						value: stampAtr }"></div>
+						value: stampAtr,
+						enable: screenMode()==1 }"></div>
 		</div>
 	</div>
-	<div class="table m1-table">
+	<div class="table m1-table" data-bind="let: { screenEditable: editable }">
 		<div class="cell m1-column1">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
 		</div>
@@ -31,12 +32,12 @@
 													name: '#[KAF002_20]',
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													enable: checked }" />	
+													enable: checked()&amp;&amp;screenEditable() }" />	
 								</div>
 								<div class="m1-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m1-inline-div" data-bind="with: startLocation">
 										<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
-										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 										<span class="label m1-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m1DisableEdit: !checked() }"></span>
 									</div>
 								</div>					
@@ -53,12 +54,12 @@
 													name: '#[KAF002_20]', 
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													enable: checked }" />	
+													enable: checked()&amp;&amp;screenEditable() }" />	
 								</div>	
 								<div class="m1-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m1-inline-div" data-bind="with: endLocation">
 										<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 										<span class="label m1-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m1DisableEdit: !checked() }"></span>	
 									</div>
 								</div>			
@@ -70,7 +71,8 @@
 												options: $parent.stampGoOutAtrList,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: stampGoOutAtr }"></div>	
+												value: stampGoOutAtr,
+												enable: screenEditable }"></div>	
 						</div>
 					</div>
 				</div>
@@ -87,7 +89,7 @@
 													name: '#[KAF002_20]',
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													enable: checked }" />	
+													enable: checked()&amp;&amp;screenEditable() }" />	
 								</div>					
 							</div>
 						</div>
@@ -102,7 +104,7 @@
 													name: '#[KAF002_20]', 
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													enable: checked }" />	
+													enable: checked()&amp;&amp;screenEditable() }" />	
 								</div>						
 							</div>
 						</div>
@@ -121,7 +123,7 @@
 													name: '#[KAF002_20]',
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													enable: checked }" />	
+													enable: checked()&amp;&amp;screenEditable() }" />	
 								</div>					
 							</div>
 						</div>
@@ -136,7 +138,7 @@
 													name: '#[KAF002_20]', 
 													constraint:'TimeWithDayAttr', 
 													value: value,
-													enable: checked }" />	
+													enable: checked()&amp;&amp;screenEditable() }" />	
 								</div>							
 							</div>
 						</div>

@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.GetWeekStart;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
@@ -119,6 +120,8 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	PredetemineTimeSettingRepository getPredetermineTimeSet();
 	/** 締めの取得 */
 	ClosureRepository getClosure();
+	/** 実績ロック */
+	ActualLockRepository getActualLock();
 
 	/** 日の法定労働時間の取得 */
 	DailyStatutoryWorkingHours getDailyStatutoryWorkingHours();

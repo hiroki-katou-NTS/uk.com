@@ -14,11 +14,11 @@ import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStampPK;
 
 @Stateless
 public class JpaStampRepository extends JpaRepository implements StampRepository {
-	private final String SELECT_STAMP = "SELECT c FROM KwkdtStamp c";
-	private final String SELECT_NO_WHERE = "SELECT e.employeeID, d.workLocationName, c FROM KwkdtStamp c";
+	private static final String SELECT_STAMP = "SELECT c FROM KwkdtStamp c";
+	private static final String SELECT_NO_WHERE = "SELECT e.employeeID, d.workLocationName, c FROM KwkdtStamp c";
 
-	private final String SELECT_BY_LIST_CARD_NO = SELECT_STAMP + " WHERE c.kwkdtStampPK.cardNumber IN :lstCardNumber";
-	private final String SELECT_BY_EMPPLOYEE_ID = SELECT_NO_WHERE
+	private static final String SELECT_BY_LIST_CARD_NO = SELECT_STAMP + " WHERE c.kwkdtStampPK.cardNumber IN :lstCardNumber";
+	private static final String SELECT_BY_EMPPLOYEE_ID = SELECT_NO_WHERE
 			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
 			+ " INNER JOIN KwkdtStampCard e ON e.kwkdtStampCardPK.cardNumber = c.kwkdtStampPK.cardNumber"

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnualPlanM
 
 @Stateless
 public class JpaAnnualHolidayPlanManRepo extends JpaRepository implements AnnualHolidayPlanManRepository{
-	private String QUERY_BY_SID_WORKTYPE_PERIOD = "SELECT c FROM KrcdtAnnualPlanMana c"
+	private static final String QUERY_BY_SID_WORKTYPE_PERIOD = "SELECT c FROM KrcdtAnnualPlanMana c"
 			+ " WHERE c.pk.sId = :employeeId AND c.pk.workTypeCd = :workTypeCd "
 			+ " AND c.pk.ymd >= :startDate "
 			+ " AND c.pk.ymd <= :endDate"

@@ -18,8 +18,8 @@ import nts.uk.ctx.pr.core.infra.entity.personalinfo.commute.PprmtPersonCommutePK
 @Stateless
 public class JpaPersonalCommuteFeeRepository extends JpaRepository implements PersonalCommuteFeeRepository {
 
-	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute c WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId IN :pIds and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";
-	private final String SEL_1 = "SELECT c FROM PprmtPersonCommute c WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId = :pId and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";
+	private static final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute c WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId IN :pIds and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";
+	private static final String SEL_1 = "SELECT c FROM PprmtPersonCommute c WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId = :pId and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";
 
 	@Override
 	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIds, int baseYM) {

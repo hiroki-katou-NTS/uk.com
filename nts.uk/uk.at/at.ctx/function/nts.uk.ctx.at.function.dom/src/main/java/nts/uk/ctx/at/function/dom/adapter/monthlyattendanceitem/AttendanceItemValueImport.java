@@ -3,7 +3,9 @@ package nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem;
 import java.math.BigDecimal;
 
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
 public class AttendanceItemValueImport {
@@ -25,34 +27,12 @@ public class AttendanceItemValueImport {
 		value(value);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T value() {
-		if(value == null){
-			return null;
-		}
-		switch (this.valueType) {
-		case 0:
-			return this.value == null || this.value.isEmpty() ? null : (T) new Integer(this.value);
-		case 1:
-			return (T) this.value;
-		case 2:
-			return this.value == null || this.value.isEmpty() ? null : (T) new BigDecimal(this.value);
-		case 3:
-			return this.value == null || this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
-		case 4:
-			return this.value == null || this.value.isEmpty() ? null : (T) Boolean.valueOf(this.value);
-		case 5:
-			return this.value == null || this.value.isEmpty() ? null : (T) new Double(this.value);
-		default:
-			throw new RuntimeException("invalid type: " + this.valueType);
-		}
-	}
-	
 	public void value(Object value){
 		this.value = value == null ? null : value.toString();
 	}
 
 	public boolean isNumber() {
-		return valueType == 0 || valueType == 2 || valueType == 5;
+		ValueType valueType = EnumAdaptor.valueOf(this.valueType, ValueType.class);
+		return valueType.isInteger() || valueType.isDouble();
 	}
 }

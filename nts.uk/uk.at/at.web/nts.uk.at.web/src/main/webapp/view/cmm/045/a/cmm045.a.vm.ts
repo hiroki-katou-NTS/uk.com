@@ -549,7 +549,7 @@ module cmm045.a.viewmodel {
                 }
             });
             let other = count > 3 ? count - 3 : 0;
-            let otherInfo = other > 0 ? '他' + other + '枠' : '';
+            let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
             let result = self.convertTime_Short_HM(time) + '(' + framName + otherInfo + ')';
             return result;
         }
@@ -639,7 +639,7 @@ module cmm045.a.viewmodel {
                 }
             });
             let other = count > 2 ? count - 2 : 0;
-            let otherInfo = other > 0 ? '他' + other + '枠' : '';
+            let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
             let result = self.convertTime_Short_HM(time) + '(' + framName + otherInfo + ')';
             return result;
         }
@@ -876,7 +876,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
             //hdAppSet.specialVaca
-            let result = getText('CMM045_279') + getText('CMM045_248') + self.convertNameHoliday(absence.holidayAppType) + absence.relationshipName + day;
+            let result = getText('CMM045_279') + self.convertNameHoliday(absence.holidayAppType) + absence.relationshipName + day;
             return result;
         }
         //※休暇申請.終日半日休暇区分　＝　半日休暇
@@ -1498,7 +1498,10 @@ module cmm045.a.viewmodel {
                 block.clear();
                 return;
             }
-            service.approvalListApp(lstApp).done(function() {
+            service.approvalListApp(lstApp).done(function(data) {
+                if(data.length > 0){
+                    service.reflectListApp(data);
+                }
                 nts.uk.ui.dialog.info({ messageId: "Msg_220" });
                 self.filter();
                 block.clear();

@@ -3,9 +3,9 @@ module cps001.b.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getEmployeeInfo': 'basic/organization/deleteempmanagement/getemployeetodelete/{0}',
+        'getEmployeeInfo': 'ctx/pereg/deleteemployee/getemployeetodelete/{0}',
         'getPersonInfo': 'bs/employee/person/findBypId/{0}',
-        'deleteEmp': 'basic/organization/deleteempmanagement/deleteemployee',
+        'deleteEmp': 'ctx/pereg/deleteemployee/deleteemployee',
     };
 
 

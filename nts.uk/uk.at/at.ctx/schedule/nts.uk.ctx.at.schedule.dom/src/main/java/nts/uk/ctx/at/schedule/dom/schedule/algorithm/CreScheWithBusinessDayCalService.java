@@ -1,48 +1,20 @@
 package nts.uk.ctx.at.schedule.dom.schedule.algorithm;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
 public class CreScheWithBusinessDayCalService {
-	@Inject
-	WorkTypeRepository workTypeRepository;
-
-	@Inject
-	WorkTimeSettingRepository workTimeSettingRepository;
-
-	@Inject
-	FixedWorkSettingRepository fixedWorkSettingRepository;
-
-	@Inject
-	FlowWorkSettingRepository flowWorkSettingRepository;
-
-	@Inject
-	DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 
 	/**
 	 * 休憩予定時間帯を取得する
@@ -52,9 +24,11 @@ public class CreScheWithBusinessDayCalService {
 	 * @param workTimeCode
 	 */
 	public BusinessDayCal getScheduleBreakTime(String companyId, String workTypeCode, String workTimeCode,
-			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting) {
+			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		// 入力パラメータ「就業時間帯コード」をチェック
-		if (Strings.isBlank(workTimeCode) || "000".equals(workTimeCode)) {
+		if (Strings.isBlank(workTimeCode)) {
 			return null;
 		}
 
@@ -93,7 +67,7 @@ public class CreScheWithBusinessDayCalService {
 				// TODO:
 			} else {
 				return determineSetWorkingHours(workTimeSetting, companyId, workTimeCode, true,
-						workType.getDailyWork());
+						workType.getDailyWork(), mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 			}
 		} else {
 			// 就業時間帯の設定
@@ -103,7 +77,7 @@ public class CreScheWithBusinessDayCalService {
 				// TODO:
 			} else {
 				return determineSetWorkingHours(workTimeSetting, companyId, workTimeCode, false,
-						workType.getDailyWork());
+						workType.getDailyWork(), mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 			}
 		}
 
@@ -116,78 +90,68 @@ public class CreScheWithBusinessDayCalService {
 	 * @param workTimeSetting
 	 * @param companyId
 	 * @param workTimeCode
+	 * @param isHoliday
+	 * @param dailyWork
+	 * @param listFixedWorkSetting
+	 * @param listFlowWorkSetting
+	 * @param listDiffTimeWorkSetting
+	 * @return
 	 */
 	public BusinessDayCal determineSetWorkingHours(WorkTimeSetting workTimeSetting, String companyId,
-			String workTimeCode, boolean isHoliday, DailyWork dailyWork) {
+			String workTimeCode, boolean isHoliday, DailyWork dailyWork,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		BusinessDayCal data = new BusinessDayCal();
 
 		// 「就業時間帯勤務区分. 就業時間帯の設定方法」を判断
+		// EA修正履歴　No2104
 		switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
 		// ［固定勤務設定］
 		case FIXED_WORK:
-			Optional<FixedWorkSetting> fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workTimeCode);
-			if (!fixedWorkSetting.isPresent()) {
+			WorkRestTimeZoneDto fixedWorkSettingDto = mapFixedWorkSetting.get(workTimeCode);
+			
+			if (fixedWorkSettingDto ==null) {
 				return null;
 			}
 
 			if (isHoliday) {
 				// 固定勤務設定. 休日勤務時間帯. 休憩時間帯
-				data.setTimezones(fixedWorkSetting.get().getOffdayWorkTimezone().getRestTimezone().getLstTimezone());
+				data.setTimezones(fixedWorkSettingDto.getListOffdayWorkTimezone());
 			} else {
 				// 「固定勤務設定. 平日勤務時間帯. 休憩時間帯」
-				List<FixRestTimezoneSet> lstTimezone = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream()
-						.map(x -> x.getRestTimezone()).collect(Collectors.toList());
-				List<DeductionTime> timezones = new ArrayList<>();
-				lstTimezone.forEach(item -> {
-					timezones.addAll(item.getLstTimezone());
-				});
-				data.setTimezones(timezones);
+				data.setTimezones(fixedWorkSettingDto.getListHalfDayWorkTimezone());
 			}
 			break;
 		// ［流動勤務設定］
 		case FLOW_WORK:
-			Optional<FlowWorkSetting> flowWorkSetting = flowWorkSettingRepository.find(companyId, workTimeCode);
-			if (!flowWorkSetting.isPresent()) {
+			WorkRestTimeZoneDto flowWorkSettingDto = mapFlowWorkSetting.get(workTimeCode);
+			if (flowWorkSettingDto == null) {
 				return null;
 			}
 
 			if (isHoliday) {
 				// 流動勤務設定. 休日勤務時間帯. 休憩時間帯. 固定休憩時間帯
-				data.setTimezones(flowWorkSetting.get().getOffdayWorkTimezone().getRestTimeZone().getFixedRestTimezone()
-						.getTimezones());
+				data.setTimezones(flowWorkSettingDto.getListOffdayWorkTimezone());
 			} else {
 				// 流動勤務設定. 平日勤務時間帯. 休憩時間帯. 固定休憩時間帯」
-				data.setTimezones(flowWorkSetting.get().getHalfDayWorkTimezone().getRestTimezone()
-						.getFixedRestTimezone().getTimezones());
+				data.setTimezones(flowWorkSettingDto.getListHalfDayWorkTimezone());
 			}
 
 			break;
 		// ［時差勤務設定］
 		case DIFFTIME_WORK:
-			Optional<DiffTimeWorkSetting> diffTimeWorkSetting = diffTimeWorkSettingRepository.find(companyId,
-					workTimeCode);
+			WorkRestTimeZoneDto diffTimeWorkSettingDto = mapDiffTimeWorkSetting.get(workTimeCode);
 
-			if (!diffTimeWorkSetting.isPresent()) {
+			if (diffTimeWorkSettingDto == null) {
 				return null;
 			}
 
 			if (isHoliday) {
 				// 「時差勤務設定. 休日勤務時間帯. 休憩時間帯」
-				List<DiffTimeDeductTimezone> lsDiffTimeDeductTimezone = diffTimeWorkSetting.get()
-						.getDayoffWorkTimezone().getRestTimezone().getRestTimezones();
-				List<DeductionTime> lsDeductionTime = new ArrayList<DeductionTime>(lsDiffTimeDeductTimezone);
-				data.setTimezones(lsDeductionTime);
+				data.setTimezones(diffTimeWorkSettingDto.getListOffdayWorkTimezone());
 			} else {
 				// 「時差勤務設定. 平日勤務時間帯. 休憩時間帯」
-				List<DiffTimeHalfDayWorkTimezone> lsDiffTimeDeductTimezone = diffTimeWorkSetting.get()
-						.getHalfDayWorkTimezones();
-
-				List<DeductionTime> timezones = new ArrayList<>();
-				lsDiffTimeDeductTimezone.forEach(item -> {
-					timezones.addAll(item.getRestTimezone().getRestTimezones());
-				});
-
-				data.setTimezones(timezones);
+				data.setTimezones(diffTimeWorkSettingDto.getListHalfDayWorkTimezone());
 			}
 
 			break;
