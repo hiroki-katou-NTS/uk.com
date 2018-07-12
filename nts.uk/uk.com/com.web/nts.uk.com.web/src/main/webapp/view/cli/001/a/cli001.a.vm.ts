@@ -59,7 +59,10 @@ module nts.uk.com.view.cli001.a {
                         let userId = { userId: data.userID };
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
                             _self.items.push({ logType: dto.lockType, loginId: data.loginID, userId: dto.userId, userName: data.userName, lockOutDateTime: moment.utc(dto.logoutDateTime).format('YYYY/MM/DD HH:mm:ss')});
-                            _self.items(_.sortBy(_self.items(), item => item.loginId))
+                            _self.items(_.sortBy(_self.items(), item => item.loginId));
+                            if (!_.isEmpty($('.ntsSearchBox ')[0].value)) {
+                                $('.search-btn').click();
+                            }
                         });
                     }
                     nts.uk.ui.block.clear();
