@@ -4,8 +4,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -17,15 +17,17 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @Transactional
-public class InsertApplicationReasonCommandHandler extends CommandHandler<ApplicationReasonCommand>{
+public class InsertApplicationReasonCommandHandler extends CommandHandlerWithResult<ApplicationReasonCommand, String>{
 	@Inject
 	private ApplicationReasonRepository reasonRep;
 	
 	@Override
-	protected void handle(CommandHandlerContext<ApplicationReasonCommand> context) {
+	protected String handle(CommandHandlerContext<ApplicationReasonCommand> context) {
 		ApplicationReasonCommand insert = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		reasonRep.insertReason(ApplicationReason.createNew(companyId, insert.getAppType(), insert.getDispOrder(), insert.getReasonTemp(), insert.getDefaultFlg()));
+		ApplicationReason appReason = ApplicationReason.createNew(companyId, insert.getAppType(), insert.getDispOrder(), insert.getReasonTemp(), insert.getDefaultFlg());
+		reasonRep.insertReason(appReason);
+		return companyId + "-" +  insert.getAppType() + "-" + appReason.getReasonID();
 	}
 
 }
