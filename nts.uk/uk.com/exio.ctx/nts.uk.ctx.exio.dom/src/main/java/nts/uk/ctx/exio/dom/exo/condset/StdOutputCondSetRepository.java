@@ -17,12 +17,11 @@ public interface StdOutputCondSetRepository
 
     Optional<StdOutputCondSet> getStdOutputCondSetById(String cid, String conditionSetCd);
     
+    List<StdOutputCondSet> getStdOutputCondSetById(String cid, Optional<String>  conditionSetCd);
+    
     void add(StdOutputCondSet domain);
 
     void update(StdOutputCondSet domain);
 
-    void remove(String cid, String conditionSetCd);
-    
-    List<StdOutputCondSet> getListStdOutputCondSetByCid(String cid);
-
+	void remove(String cid, String conditionSetCd);
 }
