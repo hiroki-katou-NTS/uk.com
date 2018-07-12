@@ -197,11 +197,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 	//サーバ外部出力タイプデータ系
 	private void serverExOutTypeData(ExOutSetting exOutSetting, StdOutputCondSet stdOutputCondSet, String fileName) {
 		//サーバ外部出力ファイル項目ヘッダ
-		if(stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE.value) {
+		if(stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE) {
 			
 		}
 		
-		if(stdOutputCondSet.getItemOutputName() == NotUseAtr.USE.value) {
+		if(stdOutputCondSet.getItemOutputName() == NotUseAtr.USE) {
 			
 		}
 	}

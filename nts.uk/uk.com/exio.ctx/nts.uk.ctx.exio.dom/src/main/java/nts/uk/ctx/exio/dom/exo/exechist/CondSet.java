@@ -1,19 +1,24 @@
 package nts.uk.ctx.exio.dom.exo.exechist;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
+import nts.uk.ctx.exio.dom.exo.condset.Delimiter;
+import nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode;
+import nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionName;
+import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+import nts.uk.ctx.exio.dom.exo.condset.StringFormat;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 条件設定（定型/ユーザ）
  */
-@AllArgsConstructor
 @Getter
 public class CondSet {
 	/**
 	 * 定型区分
 	 */
-	int standardAttr;
+	StandardAttr standardAttr;
 
 	/**
 	 * 会社ID
@@ -26,49 +31,66 @@ public class CondSet {
 	private String userId;
 
 	/**
-	 * 外部出力条件コード
+	 * 条件設定コード
 	 */
-	private String conditionSetCode;
+	private ExternalOutputConditionCode conditionSetCode;
 
 	/**
 	 * カテゴリID
 	 */
-	private String categoryId;
+	private CategoryCd categoryId;
 
 	/**
 	 * 区切り文字
 	 */
-	private int delimiter;
+	private Delimiter delimiter;
 
 	/**
 	 * するしない区分
 	 */
-	private int itemOutputName;
+	private NotUseAtr itemOutputName;
 
 	/**
 	 * するしない区分
 	 */
-	private int autoExecution;
+	private NotUseAtr autoExecution;
 
 	/**
-	 * 外部出力条件名称
+	 * 条件設定名称
 	 */
-	private String conditionSetName;
+	private ExternalOutputConditionName conditionSetName;
 
 	/**
 	 * するしない区分
 	 */
-	private int conditionOutputName;
+	private NotUseAtr conditionOutputName;
 
 	/**
 	 * 文字列形式
 	 */
-	private int stringFormat;
+	private StringFormat stringFormat;
 
 	public static CondSet fromStdOutputCondSet(StdOutputCondSet domain) {
-		CondSet condSet = new CondSet(0, domain.getCid(), null, domain.getConditionSetCode(), domain.getCategoryId(),
-				domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
+		CondSet condSet = new CondSet(StandardAttr.STANDARD, domain.getCid(), null, domain.getConditionSetCode(),
+				domain.getCategoryId(), domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
 				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat());
 		return condSet;
+	}
+
+	public CondSet(StandardAttr standardAttr, String cid, String userId, ExternalOutputConditionCode conditionSetCode,
+			CategoryCd categoryId, Delimiter delimiter, NotUseAtr itemOutputName, NotUseAtr autoExecution,
+			ExternalOutputConditionName conditionSetName, NotUseAtr conditionOutputName, StringFormat stringFormat) {
+		super();
+		this.standardAttr = standardAttr;
+		this.cid = cid;
+		this.userId = userId;
+		this.conditionSetCode = conditionSetCode;
+		this.categoryId = categoryId;
+		this.delimiter = delimiter;
+		this.itemOutputName = itemOutputName;
+		this.autoExecution = autoExecution;
+		this.conditionSetName = conditionSetName;
+		this.conditionOutputName = conditionOutputName;
+		this.stringFormat = stringFormat;
 	}
 }

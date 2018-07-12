@@ -24,9 +24,12 @@ public class RegisterStdOutputCondSetCommandHandler extends CommandHandler<StdOu
 		String screenMode = command.getScreenMode();
 		String standType = command.getStandType();
 		List<StandardOutputItemOrder> stdOutItemOrder = command.getStdOutItemOrder();
-		StdOutputCondSet stdOutputCondSet = StdOutputCondSet.createFromJavaType(command.getCid(), command.getConditionSetCd(), command.getCategoryId(), command.getDelimiter(),
-				command.getItemOutputName(),command.getAutoExecution(), command.getConditionSetName(), command.getConditionOutputName(), command.getStringFormat());
-		stdOutputCondSetService.registerOutputSet(screenMode, standType, stdOutputCondSet, command.isCheckAutoExecution(), stdOutItemOrder);
+		StdOutputCondSet stdOutputCondSet = new StdOutputCondSet(command.getCid(), command.getConditionSetCd(),
+				command.getCategoryId(), command.getDelimiter(), command.getItemOutputName(),
+				command.getAutoExecution(), command.getConditionSetName(), command.getConditionOutputName(),
+				command.getStringFormat());
+		stdOutputCondSetService.registerOutputSet(screenMode, standType, stdOutputCondSet,
+				command.isCheckAutoExecution(), stdOutItemOrder);
 	}
 	
 }
