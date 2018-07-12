@@ -69,7 +69,7 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
     }
     public static OiomtCdConvertDetail toEntity(CdConvertDetail domain) {
         return new OiomtCdConvertDetail(
-        		new OiomtCdConvertDetailPk(domain.getConvertCd(),domain.getOutputItem(),domain.getSystemCd()),
+        		new OiomtCdConvertDetailPk(domain.getConvertCd().v(),domain.getOutputItem(),domain.getSystemCd()),
         		domain.getLineNumber());
     }
 

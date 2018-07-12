@@ -69,6 +69,7 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 							x.getOrder());
 				}).collect(Collectors.toList()));
 	}
+	
 
 	public static OiomtStdOutItem toEntity(StandardOutputItem domain) {
 		return new OiomtStdOutItem(
@@ -79,9 +80,8 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 					return new OiomtCtgItem(
 							new OiomtCtgItemPk(item.getCategoryItemNo().v(), domain.getCid(),
 									domain.getOutputItemCode().v(), domain.getConditionSettingCode().v()),
-							item.getCategoryId().v().intValue(), item.getOperationSymbol().value, item.getOrder(),
-							null);
+							item.getCategoryId().v(), item.getOperationSymbol().value, item.getOrder(), null);
 				}).collect(Collectors.toList()));
 	}
-	
+
 }

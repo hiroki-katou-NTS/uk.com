@@ -5,8 +5,6 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
-import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItemNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -24,7 +22,7 @@ public class CtgItemData extends AggregateRoot {
 	/**
 	 * カテゴリID
 	 */
-	private CategoryCd categoryId;
+	private String categoryId;
 
 	/**
 	 * データ型
@@ -69,7 +67,7 @@ public class CtgItemData extends AggregateRoot {
 	/**
 	 * 項目NO
 	 */
-	private CategoryItemNo itemNo;
+	private ItemNo itemNo;
 
 	/**
 	 * 項目名
@@ -109,7 +107,7 @@ public class CtgItemData extends AggregateRoot {
 			int displayClassfication, String itemNo, String itemName, int requiredCategory, String searchValueCd) {
 		super();
 		this.tblAlias = tblAlias;
-		this.categoryId = EnumAdaptor.valueOf(Integer.parseInt(categoryId), CategoryCd.class);
+		this.categoryId = categoryId;
 		this.dataType = EnumAdaptor.valueOf(dataType, DataType.class);
 		this.tableName = tableName;
 		this.fieldName = fieldName;
@@ -118,7 +116,7 @@ public class CtgItemData extends AggregateRoot {
 		this.specialItem = EnumAdaptor.valueOf(specialItem, SpecialItem.class);
 		this.displayTableName = displayTableName;
 		this.displayClassfication = EnumAdaptor.valueOf(displayClassfication, NotUseAtr.class);
-		this.itemNo = EnumAdaptor.valueOf(Integer.parseInt(itemNo), CategoryItemNo.class);
+		this.itemNo = new ItemNo(Integer.parseInt(itemNo));
 		this.itemName = itemName;
 		this.requiredCategory = EnumAdaptor.valueOf(requiredCategory, NotUseAtr.class);
 		this.searchValueCd = Optional.of(new String(searchValueCd));

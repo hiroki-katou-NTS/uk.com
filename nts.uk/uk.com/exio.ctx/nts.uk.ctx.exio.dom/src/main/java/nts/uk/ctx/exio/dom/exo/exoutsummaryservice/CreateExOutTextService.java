@@ -89,7 +89,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			for(CategoryItem categoryItem : standardOutputItem.getCategoryItems()) {
 				// TODO chờ sửa primative value của domain CategoryItem
 				ctgItemDataRepo.getCtgItemDataByIdAndDisplayClass(categoryItem.getCategoryId().v().toString(), 
-						categoryItem.getCategoryItemNo().v().length(), 1).ifPresent(item -> ctgItemDataList.add(item));
+						categoryItem.getCategoryItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
 			}
 		}
 		

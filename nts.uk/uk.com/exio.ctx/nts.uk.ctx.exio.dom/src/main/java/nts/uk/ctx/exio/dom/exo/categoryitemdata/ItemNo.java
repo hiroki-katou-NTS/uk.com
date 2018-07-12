@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exo.outputitem;
+package nts.uk.ctx.exio.dom.exo.categoryitemdata;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
@@ -7,12 +7,12 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 /*
  * カテゴリ項目NO
  */
-@IntegerMaxValue(9999)
 @IntegerMinValue(1)
-public class CategoryItemNo extends IntegerPrimitiveValue<CategoryItemNo> {
+@IntegerMaxValue(9999)
+public class ItemNo extends IntegerPrimitiveValue<ItemNo> {
 	private static final long serialVersionUID = 1L;
 
-	public CategoryItemNo(Integer rawValue) {
+	public ItemNo(int rawValue) {
 		super(rawValue);
 	}
 }

@@ -49,8 +49,8 @@ public class OiomtUserOutCndDetail extends UkJpaEntity implements Serializable
     }
     public static OiomtUserOutCndDetail toEntity(UserOutCndDetail domain) {
         return new OiomtUserOutCndDetail(
-        		new OiomtUserOutCndDetailPk(domain.getUserId(),domain.getCndSetCd()),
-        		domain.getCndSql());
+        		new OiomtUserOutCndDetailPk(domain.getUserId(), domain.getCndSetCd().v()),
+        		domain.getCndSql().v());
     }
 
 	public OiomtUserOutCndDetail(OiomtUserOutCndDetailPk userOutCndDetailPk, String cndSql) {
