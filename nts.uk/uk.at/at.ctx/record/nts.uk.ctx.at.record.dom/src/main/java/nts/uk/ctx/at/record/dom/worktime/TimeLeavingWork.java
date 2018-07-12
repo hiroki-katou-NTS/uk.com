@@ -107,12 +107,12 @@ public class TimeLeavingWork extends DomainObject{
 	 * @return　調整後の処理
 	 */
 	public TimeLeavingWork correctJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave) {
-		TimeActualStamp newAttendance = attendanceStamp.get();
-		TimeActualStamp newLeave = leaveStamp.get();
-		if(isJustTimeLateAttendance) {
+		TimeActualStamp newAttendance = attendanceStamp.isPresent()?attendanceStamp.get():null;
+		TimeActualStamp newLeave = leaveStamp.isPresent()?leaveStamp.get():null;
+		if(isJustTimeLateAttendance&&newAttendance!=null) {
 			newAttendance = attendanceStamp.get().moveAheadStampTime(1);
 		}
-		if(isJustEarlyLeave) {
+		if(isJustEarlyLeave&&newLeave!=null) {
 			newLeave = leaveStamp.get().moveBackStampTime(1);
 		}
 		return new TimeLeavingWork(this.workNo, newAttendance , newLeave);
