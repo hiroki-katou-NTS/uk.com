@@ -118,7 +118,7 @@ module nts.uk.ui.koExtentions {
             
             $input.on("change", (e) => {
                 var onChanging = container.data("changed");
-                if(onChanging){
+                if(onChanging === true){
                     return;
                 }
                 
