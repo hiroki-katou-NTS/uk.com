@@ -613,6 +613,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 localStorage.removeItem(window.location.href + '/miGrid');
                 self.getNameMonthly();
                 //
+            }else{
+                self.agreementInfomation().mapDataAgreement({showAgreement: false}); 
             }
             
             if (data.monthResult != null &&  data.monthResult.flexShortage != null && data.monthResult.flexShortage.showFlex && self.displayFormat() == 0) {
@@ -3462,13 +3464,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
          
         mapDataAgreement(data: any) : void{
+            this.showAgreement(data.showAgreement);
             if(!data.showAgreement) return;
             this.agreementTime(nts.uk.resource.getText("KDW003_74", [data.agreementTime36, data.maxTime]));
             this.cssAgree = data.cssAgree;
             this.agreementExcess(nts.uk.resource.getText("KDW003_76", [data.excessFrequency, data.maxNumber]));
             this.cssFrequency = data.cssFrequency;
-            
-            this.showAgreement(data.showAgreement);
             
             this.processState(data.cssAgree, data.cssFrequency);
         }
