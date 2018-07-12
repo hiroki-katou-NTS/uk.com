@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;

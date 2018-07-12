@@ -87,9 +87,6 @@ module nts.uk.com.view.kfp001.h.viewmodel {
                     }
                 ]
             });
-            $("#list").blur(() => {
-                $(".ntsStartDatePicker").focus();
-            });
         }
 
         openKfp001fDialog(logId: string) {

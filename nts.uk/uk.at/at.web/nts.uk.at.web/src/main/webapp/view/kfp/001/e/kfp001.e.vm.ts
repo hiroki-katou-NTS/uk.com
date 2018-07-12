@@ -70,14 +70,14 @@ module nts.uk.at.view.kfp001.e {
                         self.taskId(res.id);
                         self.aggrFrameCode(dataE.aggrPeriodCommand.aggrFrameCode);
                         self.optionalAggrName(dataE.aggrPeriodCommand.optionalAggrName);
-                        if(self.aggrFrameCode() == '001'){
-                        self.presenceOfError('エラーあり');
-                        self.executionStatus('完了');    
-                        }else{
-                        self.presenceOfError('エラーなし');
-                        self.executionStatus('完了');    
+                        if (self.aggrFrameCode() == '001') {
+                            self.presenceOfError('エラーあり');
+                            self.executionStatus('完了');
+                        } else {
+                            self.presenceOfError('エラーなし');
+                            self.executionStatus('完了');
                         }
-                        
+
                         self.startTime(moment.utc(dataD.startDateTime).format("YYYY/MM/DD HH:mm:ss"));
                         self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataE.aggrPeriodCommand.peopleNo]));
                         nts.uk.deferred.repeat(conf => conf
@@ -127,26 +127,27 @@ module nts.uk.at.view.kfp001.e {
 
             private getLogData(): void {
                 var self = this;
-                service.getErrorMessageInfo(self.logId()).done((res) => {
-                    let numberNo;
 
-                    let errs = [];
-
-                    _.forEach(res, function(sRes) {
+                service.getErrorInfos(self.logId()).done((result) => {
+                       let errs = [];
+                    _.forEach(result, function(sRes) {
                         errs = [];
                         var errorMess = {
-                            personCode: self.aggrFrameCode(),
-                            personName: self.optionalAggrName(),
-                            disposalDay: sRes.processDay,
-                            messageError: sRes.errorMess
+                            personCode: sRes.employeeCode,
+                            personName: sRes.employeeName,
+                            disposalDay: sRes.procDate,
+                            messageError: sRes.errorMessage
                         };
-                        for (let i = 0; i < res.length; i++) {
+                        for (let i = 0; i < result.length; i++) {
                             errorMess["no"] = i + 1;
                             errs.push(new PersonInfoErrMessageLog(errorMess));
                         }
 
                     });
                     self.errorMessageInfo(errs);
+                })
+                service.getErrorMessageInfo(self.logId()).done((res) => {
+                 
                 })
             }
 

@@ -8,11 +8,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInfor;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodinfor.ErrorMess;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodInfor;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodInforPK;
-import nts.uk.ctx.at.record.infra.entity.resultsperiod.optionalaggregationperiod.KrcmtOptionalAggrPeriod;
-import nts.uk.ctx.at.record.infra.entity.resultsperiod.optionalaggregationperiod.KrcmtOptionalAggrPeriodPK;
 
 /**
  * 

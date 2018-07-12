@@ -15,9 +15,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandResult;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddErrorInforCommand;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddErrorInforCommandHandler;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommandHandler;
@@ -36,7 +33,6 @@ import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.Per
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.PeriodTargetDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorInfoExportService;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorQuery;
-import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInfor;
 
 @Path("ctx/at/record/optionalaggr/")
 @Produces("application/json")
@@ -72,8 +68,7 @@ public class OptionalAggrPeriodWs {
 	@Inject
 	private AggrPeriodErrorInfoFinder infoFinder;
 	
-	@Inject
-	private AddErrorInforCommandHandler inforHandler;
+
 	
 	/**
 	 * Find all.
@@ -202,10 +197,4 @@ public class OptionalAggrPeriodWs {
 		return this.infoFinder.findAllInfo(excuteId);
 	}
 	
-	@POST
-	@Path("addErr")
-
-	public void addErr(AddErrorInforCommand command) {
-		this.inforHandler.handle(command);
-	}
 }

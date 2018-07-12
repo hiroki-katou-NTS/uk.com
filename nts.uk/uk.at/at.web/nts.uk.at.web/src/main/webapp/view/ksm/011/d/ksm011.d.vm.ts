@@ -8,17 +8,8 @@ module nts.uk.at.view.ksm011.d.viewmodel {
 
     export class ScreenModel {
         component: ccg.component.viewmodel.ComponentModel;
-        component026: ccg026.component.viewmodel.ComponentModel;
-        componentWorkplace: ccg026.component.viewmodel.ComponentModel;
-        componentEmployee: ccg026.component.viewmodel.ComponentModel;
-        componentDate: ccg026.component.viewmodel.ComponentModel;
-        componentShift: ccg026.component.viewmodel.ComponentModel;
+
         currentCodeItem: KnockoutObservable<any>;
-        listPermissionCommon: KnockoutObservableArray<any>;
-        listPermissionWorkplace: KnockoutObservableArray<any>;
-        listPermissionEmployee: KnockoutObservableArray<any>;
-        listPermissionDate: KnockoutObservableArray<any>;
-        listPermissionShift: KnockoutObservableArray<any>;
         listDeadline: KnockoutObservableArray<any>;
         itemBaseAtr: KnockoutObservableArray<any>;
         outputAtr: KnockoutObservableArray<any>;
@@ -28,19 +19,37 @@ module nts.uk.at.view.ksm011.d.viewmodel {
         items: KnockoutObservableArray<PermissonDto>;
         correctDeadline: KnockoutObservable<number>;
         roleId: KnockoutObservable<any>;
+        permisionCommon: KnockoutObservable<any> = ko.observableArray([]);
+        listCommon: KnockoutObservable<any> = ko.observableArray([]);
+        listWorkplace: KnockoutObservable<any> = ko.observableArray([]);
+        listAuthority: KnockoutObservable<any> = ko.observableArray([]);
+        listDate: KnockoutObservable<any> = ko.observableArray([]);
+        listShift: KnockoutObservable<any> = ko.observableArray([]);
+        listCommonDes: KnockoutObservable<any> = ko.observableArray([]);
+        listWorkplaceDes: KnockoutObservable<any> = ko.observableArray([]);
+        listAuthorityDes: KnockoutObservable<any> = ko.observableArray([]);
+        listDateDes: KnockoutObservable<any> = ko.observableArray([]);
+        listShiftDes: KnockoutObservable<any> = ko.observableArray([]);
+
         constructor() {
             let self = this;
             let dfd = $.Deferred();
             self.roleId = ko.observable();
             self.currentCodeItem = ko.observable();
 
-            self.initComponent();
+            self.permisionCommon([{
+                functionNo: 1,
+                functionName: 'dddd',
+                available: true,
+                description: 'Phong dep trai'
+            }, {
+                    functionNo: 2,
+                    functionName: 'ddddc',
+                    available: true,
+                    description: 'Phong dep trai'
+                }]);
 
-            self.listPermissionCommon = ko.observableArray([]);
-            self.listPermissionWorkplace = ko.observableArray([]);
-            self.listPermissionEmployee = ko.observableArray([]);
-            self.listPermissionDate = ko.observableArray([]);
-            self.listPermissionShift = ko.observableArray([]);
+            self.initComponent();
             self.listDeadline = ko.observableArray([]);
             self.outputAtr = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText("KSM011_8") },
@@ -70,7 +79,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            self.getListWorkplace();
             $.when(self.getData()).done(function() {
                 dfd.resolve();
             });
@@ -79,53 +87,73 @@ module nts.uk.at.view.ksm011.d.viewmodel {
 
         initComponent() {
             let self = this;
+            service.findDes().done(function(data) {
+
+                let listData = [];
+                _.forEach(data.common, function(sRes) {
+                    var commonData = {
+                        functionNo: sRes.functionNoCom,
+                        functionName: sRes.displayNameCom,
+                        available: sRes.initialValueCom,
+                        description: sRes.descripptionCom
+                    }
+                    listData.push(commonData);
+                })
+                self.listCommon(listData);
+
+                listData = [];
+                _.forEach(data.authority, function(sRes) {
+                    var authorityData = {
+                        functionNo: sRes.functionNoAuth,
+                        functionName: sRes.displayNameAuth,
+                        available: sRes.initialValueAuth,
+                        description: sRes.descripptionAuth
+                    }
+
+                    listData.push(authorityData);
+                })
+                self.listAuthority(listData);
+
+                listData = [];
+                _.forEach(data.date, function(sRes) {
+                    var dateData = {
+                        functionNo: sRes.functionNoDate,
+                        functionName: sRes.displayNameDate,
+                        available: sRes.initialValueDate,
+                        description: sRes.descripptionDate
+                    }
+                    listData.push(dateData);
+                })
+                self.listDate(listData);
+
+                listData = [];
+                _.forEach(data.shift, function(sRes) {
+                    var shiftData = {
+                        functionNo: sRes.functionNoShift,
+                        functionName: sRes.displayNameShift,
+                        available: sRes.initialValueShift,
+                        description: sRes.descripptionShift
+                    }
+                    listData.push(shiftData);
+                })
+                self.listShift(listData);
+
+                listData = [];
+                _.forEach(data.workplace, function(sRes) {
+                    var workData = {
+                        functionNo: sRes.functionNoWork,
+                        functionName: sRes.displayNameWork,
+                        available: sRes.initialValueWork,
+                        description: sRes.descripptionWork
+                    }
+                    listData.push(workData);
+                })
+                self.listWorkplace(listData);
+
+            })
             self.component = new ccg.component.viewmodel.ComponentModel({
                 roleType: 1,
                 multiple: false
-            });
-
-            self.component026 = new ccg026.component.viewmodel.ComponentModel({
-                classification: 1,
-                maxRow: 3
-            });
-
-            self.componentWorkplace = new ccg026.component.viewmodel.ComponentModel({
-                classification: 1,
-                maxRow: 3
-            });
-            self.componentEmployee = new ccg026.component.viewmodel.ComponentModel({
-                classification: 1,
-                maxRow: 3
-            });
-
-            self.componentDate = new ccg026.component.viewmodel.ComponentModel({
-                classification: 1,
-                maxRow: 3
-            });
-
-            self.componentShift = new ccg026.component.viewmodel.ComponentModel({
-                classification: 1,
-                maxRow: 3
-            });
-
-            self.component026.startPage().done(function() {
-                self.listPermissionCommon(self.component026.listPermissions());
-            }).then(() => {
-                self.componentWorkplace.startPage().done(function() {
-                    self.listPermissionWorkplace(self.componentWorkplace.listPermissions());
-                });
-            }).then(() => {
-                self.componentEmployee.startPage().done(function() {
-                    self.listPermissionEmployee(self.componentEmployee.listPermissions());
-                });
-            }).then(() => {
-                self.componentDate.startPage().done(function() {
-                    self.listPermissionDate(self.componentDate.listPermissions());
-                });
-            }).then(() => {
-                self.componentShift.startPage().done(function() {
-                    self.listPermissionShift(self.componentShift.listPermissions());
-                });
             });
         }
 
@@ -141,47 +169,47 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             var dateAuthority = [];
             var shiftPermisson = [];
             _.forEach(self.items(), function(itemPer: IPermissonDto) {
+                    _.forEach(self.listCommon(), function(sRes) {
+                        commonAuthor.push({
+                            roleId: data.roleId,
+                            availableCommon: sRes.available ? 1 : 0,
+                            functionNoCommon: sRes.functionNo
+                        });
+                    })
 
-                _.forEach(self.component026.listPermissions(), function(itemCom) {
-                    commonAuthor.push({
-                        roleId: data.roleId,
-                        availableCommon: itemCom.availability() ? 1 : 0,
-                        functionNoCommon: itemCom.functionNo
-                    });
-                });
+                    _.forEach(self.listWorkplace(), function(sRes) {
+                        perWorkplace.push({
+                            roleId: data.roleId,
+                            availableWorkplace: sRes.available ? 1 : 0,
+                            functionNoWorkplace: sRes.functionNo
+                        });
+                    })
 
-                _.forEach(self.componentWorkplace.listPermissions(), function(itemWork) {
-                    perWorkplace.push({
-                        roleId: data.roleId,
-                        availableWorkplace: itemWork.availability() ? 1 : 0,
-                        functionNoWorkplace: itemWork.functionNo
+                    _.forEach(self.listAuthority(), function(sRes) {
+                        persAuthority.push({
+                            roleId: data.roleId,
+                            availablePers: sRes.available ? 1 : 0,
+                            functionNoPers: sRes.functionNo
+                        });
 
-                    });
-                });
+                    })
 
-                _.forEach(self.componentEmployee.listPermissions(), function(itemPers) {
-                    persAuthority.push({
-                        roleId: data.roleId,
-                        availablePers: itemPers.availability() ? 1 : 0,
-                        functionNoPers: itemPers.functionNo
-                    });
-                });
+                    _.forEach(self.listDate(), function(sRes) {
+                        dateAuthority.push({
+                            roleId: data.roleId,
+                            availableDate: sRes.available ? 1 : 0,
+                            functionNoDate: sRes.functionNo
+                        });
+                    })
 
-                _.forEach(self.componentDate.listPermissions(), function(itemDate) {
-                    dateAuthority.push({
-                        roleId: data.roleId,
-                        availableDate: itemDate.availability() ? 1 : 0,
-                        functionNoDate: itemDate.functionNo
-                    });
-                });
+                    _.forEach(self.listShift(), function(sRes) {
+                        shiftPermisson.push({
+                            roleId: data.roleId,
+                            availableShift: sRes.available ? 1 : 0,
+                            functionNoShift: sRes.functionNo
+                        });
+                    })
 
-                _.forEach(self.componentShift.listPermissions(), function(itemShift) {
-                    shiftPermisson.push({
-                        roleId: data.roleId,
-                        availableShift: itemShift.availability() ? 1 : 0,
-                        functionNoShift: itemShift.functionNo
-                    });
-                });
             })
             var schemodifyDeadline: IModifyDeadlineDto = {
                 roleId: data.roleId,
@@ -217,21 +245,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * get list workplace
-         */
-        private getListWorkplace() {
-            let self = this;
-            let dfd = $.Deferred();
-
-            self.componentWorkplace.roleId(self.component.currentCode());
-            self.component026.roleId(self.component.currentCode());
-            self.componentEmployee.roleId(self.component.currentCode());
-            self.componentDate.roleId(self.component.currentCode());
-            self.componentShift.roleId(self.component.currentCode());
-        }
-
-
         findAll(roleId: string): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -250,94 +263,70 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                     self.items.push(new PermissonDto(totalTime));
 
                     var listCommon = [];
-                    _.forEach(self.listPermissionCommon(), function(item) {
+                    _.forEach(self.listCommon(), function(item) {
                         var author = _.find(permissonTotalArr.commonAuthor, function(a: any) { return a.functionNoCommon == item.functionNo });
                         if (author) {
-                            item.availability(!!author.availableCommon);
+                            item.available = author.availableCommon ? 1 : 0;
 
                         } else {
-                            item.availability(!!item.availability()) ? 1 : 0;
+                            item.available = item.available ? 1 : 0;
                         }
                         listCommon.push(item);
-                        self.listPermissionCommon(listCommon);
+                        self.listCommon(listCommon);
 
-                        if (author) {
-                            self.component026.listPermissions(self.listPermissionCommon());
-                        } else {
-                            self.component026.roleId(roleId);
-                        }
                     });
 
-                    var listWorkplace = [];
-                    _.forEach(self.listPermissionWorkplace(), function(item) {
+                    var listWorkp = [];
+                    _.forEach(self.listWorkplace(), function(item) {
                         var author = _.find(permissonTotalArr.perWorkplace, function(a: any) { return a.functionNoWorkplace == item.functionNo });
                         if (author) {
-                            item.availability(!!author.availableWorkplace);
+                            item.available = !!author.availableWorkplace ? 1 : 0;
                         } else {
-                            item.availability(!!item.availability()) ? 1 : 0;
+                            item.available = !!item.availability ? 1 : 0;
                         }
-                        listWorkplace.push(item);
-                        self.listPermissionWorkplace(listWorkplace);
+                        listWorkp.push(item);
+                        self.listWorkplace(listWorkp);
 
-                        if (author) {
-                            self.componentWorkplace.listPermissions(self.listPermissionWorkplace());
-                        } else {
-                            self.componentWorkplace.roleId(roleId);
-                        }
+
                     });
 
                     var listEmployee = [];
-                    _.forEach(self.listPermissionEmployee(), function(item) {
+                    _.forEach(self.listAuthority(), function(item) {
                         var author = _.find(permissonTotalArr.persAuthority, function(a: any) { return a.functionNoPers == item.functionNo });
                         if (author) {
-                            item.availability(!!author.availablePers);
+                            item.available = !!author.availablePers ? 1 : 0;
                         } else {
-                            item.availability(!!item.availability()) ? 1 : 0;
+                            item.available = !!item.availability ? 1 : 0;
                         }
                         listEmployee.push(item);
-                        self.listPermissionEmployee(listEmployee);
+                        self.listAuthority(listEmployee);
 
-                        if (author) {
-                            self.componentEmployee.listPermissions(self.listPermissionEmployee());
-                        } else {
-                            self.componentEmployee.roleId(roleId);
-                        }
                     });
 
                     var listDate = [];
-                    _.forEach(self.listPermissionDate(), function(item) {
+                    _.forEach(self.listDate(), function(item) {
                         var author = _.find(permissonTotalArr.dateAuthority, function(a: any) { return a.functionNoDate == item.functionNo });
                         if (author) {
-                            item.availability(!!author.availableDate);
+                            item.available = !!author.availableDate  ? 1 : 0;
                         } else {
-                            item.availability(!!item.availability()) ? 1 : 0;
+                            item.available = !!item.availability ? 1 : 0;
                         }
                         listDate.push(item);
-                        self.listPermissionDate(listDate);
+                        self.listDate(listDate);
 
-                        if (author) {
-                            self.componentDate.listPermissions(self.listPermissionDate());
-                        } else {
-                            self.componentDate.roleId(roleId);
-                        }
                     });
 
-                    var listShift = [];
-                    _.forEach(self.listPermissionShift(), function(item) {
+                    var listShiftDes = [];
+                    _.forEach(self.listShift(), function(item) {
                         var author = _.find(permissonTotalArr.shiftPermisson, function(a: any) { return a.functionNoShift == item.functionNo });
                         if (author) {
-                            item.availability(!!author.availableShift);
+                            item.available = !!author.availableShift  ? 1 : 0;
                         } else {
-                            item.availability(!!item.availability()) ? 1 : 0;
+                            item.available = !!item.availability ? 1 : 0;
                         }
-                        listShift.push(item);
-                        self.listPermissionShift(listShift);
+                        listShiftDes.push(item);
+                        self.listShift(listShiftDes);
 
-                        if (author) {
-                            self.componentShift.listPermissions(self.listPermissionShift());
-                        } else {
-                            self.componentShift.roleId(roleId);
-                        }
                     });
 
                     _.forEach(permissonTotalArr.schemodifyDeadline, function(item) {

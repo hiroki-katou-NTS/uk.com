@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodinfor.ErrorMess;
-import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodtarget.State;
 /**
  * 任意期間集計エラーメッセージ情報
  * @author phongtq

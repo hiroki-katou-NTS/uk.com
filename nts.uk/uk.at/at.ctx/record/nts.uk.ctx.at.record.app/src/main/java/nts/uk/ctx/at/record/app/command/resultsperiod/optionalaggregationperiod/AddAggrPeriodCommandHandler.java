@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
