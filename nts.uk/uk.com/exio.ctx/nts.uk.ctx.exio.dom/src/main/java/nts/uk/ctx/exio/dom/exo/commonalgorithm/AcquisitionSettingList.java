@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.exio.dom.exo.condset.CondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
-import nts.uk.ctx.exio.dom.exo.exechist.CondSet;
 
 /**
  * 外部出力取得設定一覧

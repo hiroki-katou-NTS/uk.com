@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
+import nts.uk.ctx.exio.dom.exo.condset.CondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.shr.com.context.AppContexts;
