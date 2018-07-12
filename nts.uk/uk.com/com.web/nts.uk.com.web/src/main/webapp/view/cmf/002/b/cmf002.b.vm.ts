@@ -36,8 +36,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             //let domainmode = 1;
             self.initScreen();
             self.selectedConditionSettingCode.subscribe((data) => {
-                self.getOutItem(data);
-                self.selectedConditionSetting(self.getConditionName(data));
+                //self.getOutItem(data);
+                //self.selectedConditionSetting(self.getConditionName(data));
                 //self.settingCurrentCondition(self.selectedConditionSetting());
             });
         }
@@ -57,7 +57,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             service.getCndSet().done((itemList: Array<IConditionSet>) =>{
                 if (itemList && itemList.length > 0) {
                     self.conditionSettingList(itemList);
-                    let index = 0;
                     let index : number = 0;
                     if (conditionSetCode) {
                         index = _.findIndex(self.conditionSettingList(), function(x: IConditionSet)
@@ -68,7 +67,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.settingCurrentCondition(_conditionSet);
                     self.selectedConditionSetting(self.conditionSettingList()[index]);
                     self.selectedConditionSettingCode(self.conditionSettingList()[index].conditionSetCode);
-                    self.getOutItem(self.selectedConditionSettingCode());
+                    //self.getOutItem(self.selectedConditionSettingCode());
                     self.settingUpdateMode();
                 } else {
                     self.settingNewMode();
@@ -128,7 +127,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
         getConditionName(conditionCode){
             let self = this;
-            for (var i = 0 ; i < self.conditionSettingList().length ; i++) {
+            for (let i = 0 ; i < self.conditionSettingList().length ; i++) {
                 if ( conditionCode == self.conditionSettingList()[i].conditionCode){
                     return self.conditionSettingList()[i];
                 }
@@ -136,17 +135,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         }
         
         
-        public addNew(){
-            let self = this;
-            dialog.info({ messageId: "Msg_737" });      
-        }
+       
         
         public delete() {
             let self = this;
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let data = {
                     cId: self.cId(),
-                    conditionSetCode: self.conditionSetCode(),
+                    conditionSetCode: self.conditionSetCode()
                 };
                 service.deleteCnd(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
@@ -161,7 +157,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     conditionSetCd:self.selectedConditionSetting().conditionSetCode , conditionName: self.selectedConditionSetting().conditionSetName});
             
             modal("/view/cmf/002/t/index.xhtml").onClosed(function() {
-//                let params = getShared('KDM001_A_PARAMS');
+//                let params = getShared('CMF002_B_PARAMS');
                 
 //                if (params.isSuccess) {
 //                    self.updateDataList(false);
@@ -170,21 +166,55 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 $('#T3_2').focus();
             });
         }
+        
+        
+        openVScreen(){
+            let self = this;
+            setShared('CMF002_T_PARAMS', {
+                    categoryName: self.categoryName()});
+            
+            modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
+                let params = getShared('CMF002_B_PARAMS');
+                if (params.seletion) {
+                    self.conditionSetData().categoryId = params.categoryId;
+                    self.categoryName(categoryName);
+                }
+                
+                $('#V3_1').focus();
+            });
+        }
+
+        openDscreen(){
+            let self = this;
+            nts.uk.request.jump("/view/cmf/002/d/index.xhtml", {
+            });
+            setShared('CMF002_D_PARAMS', {
+                    categoryName: self.categoryName});
+            
+//            modal("/view/cmf/002/d/index.xhtml").onClosed(function() {
+//                let params = getShared('CMF002_B_PARAMS');
+//                if (params.seletion) {
+//                    self.conditionSetData().categoryId = params.categoryId;
+//                    self.categoryName(categoryName);
+//                }
+//                
+//                $('#D5_1').focus();
+//            });
+        }
+        
+        public createNewCondition() {
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            self.selectedConditionSettingCode('');
+//            self.selectedConditionSetting(new (self.systemType(), '', '', 1));
+            self.isNewMode(true); 
+            $("#B4_3").focus();
+        }
            
     
         public register(){
-            let self = this;
-            let data = {
-                isNewMode: self.isNewMode(),
-                screenMode: self.pickUp(),
-                standType: moment.standType,
-                conditionSetCode: self.selectedConditionSetting().conditionSetCode,
-                conditionSetName: self.selectedConditionSetting().conditionSetName
-
-            };
-            
-            service.register(data).done(result => {
-         
+            service.register(self.conditionSetData()).done(result => {
+                // reload list
             }).fail(function(res: any) {
                 dialog.info({ messageId: "Msg_737" })
             });

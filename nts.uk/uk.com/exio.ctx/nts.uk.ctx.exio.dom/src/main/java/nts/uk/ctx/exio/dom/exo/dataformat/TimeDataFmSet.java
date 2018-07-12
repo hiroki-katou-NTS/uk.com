@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.dataformat;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -86,7 +87,7 @@ public class TimeDataFmSet extends DataFormatSetting
     /**
     * 固定値演算値
     */
-    private String fixedCalculationValue;
+    private Optional<DataFormatFixedValueOperation> fixedCalculationValue;
     
     /**
     * NULL値置換の値
@@ -118,7 +119,7 @@ public class TimeDataFmSet extends DataFormatSetting
 		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection,DecimalSelection.class);
 		this.fixedValueOperationSymbol = EnumAdaptor.valueOf(fixedValueOperationSymbol,FixedValueOperationSymbol.class);
 		this.fixedValueOperation = EnumAdaptor.valueOf(fixedValueOperation,NotUseAtr.class);
-		this.fixedCalculationValue = fixedCalculationValue;
+		this.fixedCalculationValue = Optional.of(new DataFormatFixedValueOperation(new BigDecimal(fixedCalculationValue)));
 		this.valueOfNullValueSubs = Optional.of(new DataFormatNullReplacement(valueOfNullValueSubs));
 		this.minuteFractionDigitProcessCla = EnumAdaptor.valueOf(minuteFractionDigitProcessCla,Rounding.class);
 	}
