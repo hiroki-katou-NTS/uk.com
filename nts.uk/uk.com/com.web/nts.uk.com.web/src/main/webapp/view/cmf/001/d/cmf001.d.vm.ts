@@ -80,7 +80,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         }
 
         private scrollIntoSelectedAcceptItem(data: number): void {
-            $("#fixed-table tr[data-id='" + data + "']")[0].scrollIntoView();
+            $("#fixed-table tr[data-id='" + data + "']")[0].focus();
         }
 
         finished(fileInfo: any) {
