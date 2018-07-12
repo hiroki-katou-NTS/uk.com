@@ -208,7 +208,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		occurrenceDetailData.add(detailData);
 		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.YearlyReserved);
 		occurrenceDetailData.add(detailData);
-		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.SpecialHoliday);
+		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.SubstituteHoliday);
 		occurrenceDetailData.add(detailData);
 		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.Absence);
 		occurrenceDetailData.add(detailData);
@@ -272,11 +272,11 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//アルゴリズム「代休振替時間を算出する」を実行する
 		String workTimeCode = recordData.getWorkTimeCode().isPresent() ? recordData.getWorkTimeCode().get() : "000";
 		tranferBreakTime = this.calDayoffTranferTime(cid, createAtr, workTimeCode, recordData.getTransferTotal(), DayoffChangeAtr.BREAKTIME);
-		outputData.setTranferBreakTime(Optional.of(tranferBreakTime));
+		outputData.setTranferBreakTime(tranferBreakTime != null ? Optional.of(tranferBreakTime) : Optional.empty());
 		//アルゴリズム「実績から振替残業時間を作成する」を実行する
 		if(dayOffTimeIsUse) {
 			TranferTimeInfor tranferOvertime = this.calDayoffTranferTime(cid, createAtr, workTimeCode, recordData.getTransferOvertimesTotal(), DayoffChangeAtr.OVERTIME);
-			outputData.setTranferOverTime(Optional.of(tranferOvertime));
+			outputData.setTranferOverTime(tranferOvertime != null ? Optional.of(tranferOvertime) : Optional.empty());
 		}
 		return outputData;
 	}
@@ -444,7 +444,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//実績をチェックする
 		if(createInfo.getRecordData().isPresent()) {
 			//アルゴリズム「就業時間帯から代休振替情報を作成する」を実行する
-			return this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, null, createAtr, createInfo.getRecordData().get().getTransferOvertimesTotal(), dayOffTimeIsUse);			
+			RecordRemainCreateInfor recordData = createInfo.getRecordData().get();
+			return this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, recordData.getTransferTotal(), createAtr, recordData.getTransferOvertimesTotal(), dayOffTimeIsUse);			
 		} else {
 			//アルゴリズム「就業時間帯から代休振替情報を作成する」を実行する
 			return this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, null, createAtr, null, dayOffTimeIsUse);

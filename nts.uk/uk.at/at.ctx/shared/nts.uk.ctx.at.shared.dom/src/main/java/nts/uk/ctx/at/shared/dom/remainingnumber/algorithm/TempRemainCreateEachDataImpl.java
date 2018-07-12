@@ -127,7 +127,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
 		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
 		if(occUseDetail.isPresent()) {
-			if(!occUseDetail.get().isUseAtr()) {
+			if(!inforData.isDayOffTimeIsUse()) {
 				String mngId = IdentifierUtil.randomUniqueId();
 				InterimRemain mngDataRemain = new InterimRemain(mngId, inforData.getSid(), inforData.getYmd(), 
 						inforData.getWorkTypeRemain().get().getCreateData(), RemainType.SUBHOLIDAY, RemainAtr.SINGLE);
@@ -214,8 +214,9 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	@Override
 	public DailyInterimRemainMngData createInterimBreak(InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
+		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
 		//代休振替情報をチェックする
-		if(!inforData.getDayOffTranfer().isPresent()) {
+		if(!occUseDetail.isPresent() || !inforData.getDayOffTranfer().isPresent()) {
 			return mngData;
 		}
 		//代休振替情報のアルゴリズム「振替時間情報を取得する」を実行する
@@ -231,9 +232,12 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 				RemainAtr.SINGLE);
 		List<InterimRemain> lstRecAbsData = new ArrayList<>(mngData.getRecAbsData());
 		lstRecAbsData.add(recAbsData);
-		mngData.setRecAbsData(lstRecAbsData);
+		
 		//時間代休を利用するかチェックする		
 		if(inforData.isDayOffTimeIsUse()) {
+			if(dataChange.getTranferTime() == 0) {
+				return mngData;
+			}
 			//振替時間をチェックする
 			InterimBreakMng breakMng = new InterimBreakMng(mngId,
 					new AttendanceTime(0),
@@ -245,16 +249,22 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 					new UnUsedDay(0.0));
 			mngData.setBreakData(Optional.of(breakMng));
 		} else {
+			if(!dataChange.getDays().isPresent()
+					|| dataChange.getDays().get() == 0) {
+				return mngData;
+			}
+			Double days = dataChange.getDays().get();
 			InterimBreakMng breakMng = new InterimBreakMng(mngId,
 					new AttendanceTime(0),
 					useDate,
 					new OccurrenceTime(0),
-					new OccurrenceDay(dataChange.getDays().isPresent() ? dataChange.getDays().get() : 0.0),
+					new OccurrenceDay(days),
 					new AttendanceTime(0),
 					new UnUsedTime(0), 
-					new UnUsedDay(dataChange.getDays().isPresent() ? dataChange.getDays().get() : 0.0));
+					new UnUsedDay(days));
 			mngData.setBreakData(Optional.of(breakMng));
 		}
+		mngData.setRecAbsData(lstRecAbsData);
 		return mngData;
 	}
 

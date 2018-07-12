@@ -467,24 +467,22 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		AbsDaysRemain outputData = new AbsDaysRemain(0, 0);
 		
 		//パラメータ「List<振休振出明細>」を取得
-		List<AbsRecDetailPara> lstDetailTmp = new ArrayList<>();
-		for (AbsRecDetailPara detailData : lstDetailTmp) {
-			if(!detailData.getYmdData().getDayoffDate().isPresent()
-					|| detailData.getYmdData().getDayoffDate().get().beforeOrEquals(dateData.end())
-						&& detailData.getYmdData().getDayoffDate().get().afterOrEquals(dateData.start())) {
-				lstDetailTmp.add(detailData);				
+		for (AbsRecDetailPara detailData : lstDetailData) {
+			if(!detailData.getYmdData().isUnknownDate()
+					&& !detailData.getYmdData().getDayoffDate().isPresent()
+					&& detailData.getYmdData().getDayoffDate().get().beforeOrEquals(dateData.end())
+					&& detailData.getYmdData().getDayoffDate().get().afterOrEquals(dateData.start())) {
+				//処理中の振出振休明細．発生消化区分をチェック
+				if(detailData.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
+					//振出発生日数 += 振出の未使用．発生日数
+					outputData.setRemainDays(outputData.getRemainDays() + detailData.getUnUseOfRec().get().getUnUseDays());
+				} else {
+					//振休使用日数 += 振休の未相殺．必要日数
+					outputData.setUnDigestedDays(outputData.getUnDigestedDays() + detailData.getUnOffsetOfAb().get().getRequestDays());
+				}				
 			}
 		}
-		for (AbsRecDetailPara detailChk : lstDetailTmp) {
-			//処理中の振出振休明細．発生消化区分をチェック
-			if(detailChk.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
-				//振出発生日数 += 振出の未使用．発生日数
-				outputData.setRemainDays(outputData.getRemainDays() + detailChk.getUnUseOfRec().get().getUnUseDays());
-			} else {
-				//振休使用日数 += 振休の未相殺．必要日数
-				outputData.setUnDigestedDays(outputData.getUnDigestedDays() + detailChk.getUnOffsetOfAb().get().getRequestDays());
-			}
-		}
+		
 		return outputData;
 	}
 

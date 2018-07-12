@@ -61,7 +61,7 @@ public interface InterimRemainOffDateCreateData {
 	/**
 	 * 実績から代休振替情報を作成する
 	 * @param recordData
-	 * @param dayOffTimeIsUse
+	 * @param dayOffTimeIsUse 時間代休利用
 	 * @return
 	 */
 	public DayoffTranferInfor createDayOffTranferFromRecord(String cid, CreateAtr createAtr, RecordRemainCreateInfor recordData, boolean dayOffTimeIsUse);
