@@ -330,6 +330,7 @@ module kcp.share.list {
                     self.addOptionalContentToItemList();
                 }
                 self.hasUpdatedOptionalContent(false);
+                self.initNoSelectRow();
                 self.reloadNtsGridList();
                 self.createGlobalVarDataList(newList, $input);
             });
@@ -560,7 +561,6 @@ module kcp.share.list {
                 })
             }
             self.itemList(dataList);
-            self.initNoSelectRow(data.isShowNoSelectRow);
             
             // Init component.
             var fields: Array<string> = ['name', 'code'];
@@ -616,14 +616,16 @@ module kcp.share.list {
         /**
          * Add No select row to list
          */
-        private initNoSelectRow(isShowNoSelectRow: boolean) {
+        private initNoSelectRow() {
             var self = this;
-            // Remove No select row.
-            self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
+            let noSelectRow = _.find(self.itemList(), item => item.code === '');
             
             // Check is show no select row.
-            if (isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultipleSelect) {
-                self.itemList.unshift({code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+            if (self.isShowNoSelectRow && !self.isMultipleSelect && _.isNil(noSelectRow)) {
+                self.itemList.unshift({ code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false });
+            }
+            if ((!self.isShowNoSelectRow || self.isMultipleSelect) && !_.isNil(noSelectRow)) {
+                self.itemList.remove(noSelectRow);
             }
         }
         
@@ -880,7 +882,6 @@ module kcp.share.list {
                 }
                 _.defer(() => {
                     self.itemList(data);
-                    self.initNoSelectRow(self.isShowNoSelectRow);
                 });
             });
         }
@@ -895,8 +896,6 @@ module kcp.share.list {
                     self.addAreadySettingAttr(data, self.alreadySettingList());
                 }
                 self.itemList(data);
-                self.initNoSelectRow(self.isShowNoSelectRow);
-
             })
         }
         
