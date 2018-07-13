@@ -15,6 +15,8 @@ public interface ExOutCtgRepository {
 	Optional<ExOutCtg> getExOutCtgById(String categoryId);
 	
 	Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(Integer categoryId);
+	
+	List<List<String>> getData(String sql);
 
 	void add(ExOutCtg domain);
 
