@@ -58,14 +58,15 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcmtBusinessTypeMonthly a ");
-		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.attendanceItemId IN :attendanceItemIds ");
+		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.attendanceItemId IN :attendanceItemIds ");
 		REMOVE_EXIST_DATA = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KrcmtBusinessTypeMonthly a ");
-		builderString
-				.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
+		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
 		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.businessTypeCode = :businessTypeCode ");
 		IS_EXIST_DATA = builderString.toString();
 		
@@ -96,8 +97,11 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	 * Remove attendanceItemId not exist in list that need update
 	 */
 	@Override
-	public void deleteExistData(List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
+	public void deleteExistData(String companyId, String businessTypeCode, List<Integer> attendanceItemIds) {
+		this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
+		.setParameter("companyId", companyId)
+		.setParameter("businessTypeCode", businessTypeCode)
+		.setParameter("attendanceItemIds", attendanceItemIds)
 				.executeUpdate();
 	}
 

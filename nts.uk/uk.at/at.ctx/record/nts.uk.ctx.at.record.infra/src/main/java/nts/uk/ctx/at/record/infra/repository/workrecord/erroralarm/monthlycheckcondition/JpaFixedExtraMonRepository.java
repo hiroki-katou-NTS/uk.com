@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondi
 @Stateless
 public class JpaFixedExtraMonRepository extends JpaRepository implements FixedExtraMonRepository {
 
-	private final String SELECT_FROM_FIXED_EXTRA = " SELECT c FROM KrcmtFixedExtraMon c "
+	private static final String SELECT_FROM_FIXED_EXTRA = " SELECT c FROM KrcmtFixedExtraMon c "
 			+ " WHERE c.krcmtFixedExtraMonPK.monAlarmCheckID = :monAlarmCheckID";
 	
 	@Override
@@ -46,7 +46,7 @@ public class JpaFixedExtraMonRepository extends JpaRepository implements FixedEx
 		
 	}
 
-	private final String DELETE_FIXED_BY_ERAL_ID =  "DELETE FROM KrcmtFixedExtraMon c "
+	private static final String DELETE_FIXED_BY_ERAL_ID =  "DELETE FROM KrcmtFixedExtraMon c "
 			+ " WHERE c.krcmtFixedExtraMonPK.monAlarmCheckID = :monAlarmCheckID ";
 	
 	@Override

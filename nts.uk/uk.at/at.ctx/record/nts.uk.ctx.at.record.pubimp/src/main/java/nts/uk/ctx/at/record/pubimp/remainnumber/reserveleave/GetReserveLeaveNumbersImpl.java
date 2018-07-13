@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.record.pubimp.remainnumber.reserveleave;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetReserveLeaveNumbers;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.ReserveLeaveNowExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
@@ -33,8 +36,8 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 	@Inject
 	private ClosureService closureService;
 	/** 期間中の積立年休を取得 */
-	//@Inject
-	//*****（未）　未実装。2018.5.29 shuichi_ishida
+	@Inject
+	private GetRsvLeaRemNumWithinPeriod getRsvLeaRemNumWithinPeriod;
 	
 	/** 社員の積立年休の月初残・使用・残数・未消化を取得する */
 	@Override
@@ -68,8 +71,11 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		val closurePeriod = this.closureService.getClosurePeriod(closure.getClosureId().value, currentMonth);
 		
 		// 期間中の積立年休を取得
-		//*****（未）　処理未実装のため、空クラスを仮に返却。2018.5.29 shuichi_ishida
-		val aggrResultOfReserveOpt = Optional.of(new AggrResultOfReserveLeave());
+		GetRsvLeaRemNumWithinPeriodParam param = new GetRsvLeaRemNumWithinPeriodParam(
+				closure.getCompanyId().v(), employeeId, closurePeriod, TempAnnualLeaveMngMode.OTHER,
+				closurePeriod.end(), false, new ArrayList<>(), Optional.empty(), Optional.empty(),
+				Optional.empty(), Optional.of(true), Optional.empty());
+		val aggrResultOfReserveOpt = this.getRsvLeaRemNumWithinPeriod.algorithm(param);
 		if (!aggrResultOfReserveOpt.isPresent()) return result;
 		val aggrResultOfReserve = aggrResultOfReserveOpt.get();
 		

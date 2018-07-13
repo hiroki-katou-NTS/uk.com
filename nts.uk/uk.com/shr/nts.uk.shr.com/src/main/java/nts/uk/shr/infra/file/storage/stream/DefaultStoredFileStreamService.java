@@ -20,7 +20,6 @@ import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.file.FileUtil;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
-import nts.uk.shr.infra.file.storage.filestereotype.FileStereoTypeDescriptionExtend;
 import nts.uk.shr.infra.file.storage.info.StoredPackInfoRepository;
 
 @Stateless
@@ -68,7 +67,7 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 	@Override
 	public InputStream takeOut(StoredFileInfo fileInfo) {
 		Path filePath = null;
-		if (FileStereoTypeDescriptionExtend.of(fileInfo.getFileType()).get().isPack()) {
+		if (fileInfo.isZipEntryFile()) {
 			filePath = pathToStoredZipEntry(fileInfo);
 		} else {
 			filePath = pathToTargetStoredFile(fileInfo.getId());
@@ -81,7 +80,7 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 	@Override
 	public InputStream takeOutDeleteOnClosed(StoredFileInfo fileInfo) {
 		Path filePath = null;
-		if (fileInfo.getOriginalName().indexOf("/") > -1) {
+		if (fileInfo.isZipEntryFile()) {
 			filePath = pathToStoredZipEntry(fileInfo);
 		} else {
 			filePath = pathToTargetStoredFile(fileInfo.getId());

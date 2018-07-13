@@ -15,7 +15,7 @@ public class PermissionOfEmploymentFinder {
 	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
 
 	/** 機能NO　=　4(年間勤務表) */
-	private final int FUNCTION_NO = 4;
+	private static final int FUNCTION_NO = 4;
 
 	/**
 	 * ドメインモデル「就業帳票の権限」を取得する

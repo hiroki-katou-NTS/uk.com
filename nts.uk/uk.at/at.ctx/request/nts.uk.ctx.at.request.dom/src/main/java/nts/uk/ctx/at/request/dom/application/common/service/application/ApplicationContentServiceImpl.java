@@ -267,8 +267,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						count++;
 					}
 				}
-				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + " ") : "");
-				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
+				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
+//				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
 				content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
 						+ I18NText.getText("CMM045_230", frameInfo);
 				break;
@@ -346,8 +346,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							count++;
 						}
 					}
-					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + " ") : "");
-					frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
+					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
+//					frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
 					content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
 							+ I18NText.getText("CMM045_230", frameInfo);
 				}
@@ -421,8 +421,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						}
 					}
 				}
-				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + " ") : "");
-				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
+				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
+//				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
 				content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
 						+ I18NText.getText("CMM045_230", frameInfo);
 			}

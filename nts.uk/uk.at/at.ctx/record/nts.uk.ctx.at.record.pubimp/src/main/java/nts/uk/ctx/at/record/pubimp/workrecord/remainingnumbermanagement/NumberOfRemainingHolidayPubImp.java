@@ -46,7 +46,7 @@ public class NumberOfRemainingHolidayPubImp implements NumberOfRemainingHolidays
 																										TempAnnualLeaveMngMode.OTHER, referenceDate, false, 
 																										false, Optional.empty(), 
 																										Optional.empty(), Optional.empty(), Optional.empty(), 
-																										Optional.empty());
+																										Optional.empty(), Optional.empty(), Optional.empty());
 		if(!numberOfHolidaysRemaining.getReserveLeave().isPresent()) {
 			throw new RuntimeException("積立年休  Not Present");
 		}

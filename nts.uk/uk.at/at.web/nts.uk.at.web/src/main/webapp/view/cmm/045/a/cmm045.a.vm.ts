@@ -549,7 +549,7 @@ module cmm045.a.viewmodel {
                 }
             });
             let other = count > 3 ? count - 3 : 0;
-            let otherInfo = other > 0 ? '他' + other + '枠' : '';
+            let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
             let result = self.convertTime_Short_HM(time) + '(' + framName + otherInfo + ')';
             return result;
         }
@@ -639,7 +639,7 @@ module cmm045.a.viewmodel {
                 }
             });
             let other = count > 2 ? count - 2 : 0;
-            let otherInfo = other > 0 ? '他' + other + '枠' : '';
+            let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
             let result = self.convertTime_Short_HM(time) + '(' + framName + otherInfo + ')';
             return result;
         }
