@@ -37,18 +37,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             self.roleId = ko.observable();
             self.currentCodeItem = ko.observable();
 
-            self.permisionCommon([{
-                functionNo: 1,
-                functionName: 'dddd',
-                available: true,
-                description: 'Phong dep trai'
-            }, {
-                    functionNo: 2,
-                    functionName: 'ddddc',
-                    available: true,
-                    description: 'Phong dep trai'
-                }]);
-
             self.initComponent();
             self.listDeadline = ko.observableArray([]);
             self.outputAtr = ko.observableArray([
@@ -88,45 +76,28 @@ module nts.uk.at.view.ksm011.d.viewmodel {
         initComponent() {
             let self = this;
             service.findDes().done(function(data) {
+                self.listCommon(_.map(data.common, (d: any) => ({
+                    functionNo: d.functionNoCom,
+                    functionName: d.displayNameCom,
+                    available: d.initialValueCom,
+                    description: d.descripptionCom
+                })));
+
+                self.listAuthority(_.map(data.authority, (sRes: any) => ({
+                    functionNo: sRes.functionNoAuth,
+                    functionName: sRes.displayNameAuth,
+                    available: sRes.initialValueAuth,
+                    description: sRes.descripptionAuth
+                })));
+
+                self.listDate(_.map(data.date, (sRes: any) => ({
+                    functionNo: sRes.functionNoDate,
+                    functionName: sRes.displayNameDate,
+                    available: sRes.initialValueDate,
+                    description: sRes.descripptionDate
+                })));
 
                 let listData = [];
-                _.forEach(data.common, function(sRes) {
-                    var commonData = {
-                        functionNo: sRes.functionNoCom,
-                        functionName: sRes.displayNameCom,
-                        available: sRes.initialValueCom,
-                        description: sRes.descripptionCom
-                    }
-                    listData.push(commonData);
-                })
-                self.listCommon(listData);
-
-                listData = [];
-                _.forEach(data.authority, function(sRes) {
-                    var authorityData = {
-                        functionNo: sRes.functionNoAuth,
-                        functionName: sRes.displayNameAuth,
-                        available: sRes.initialValueAuth,
-                        description: sRes.descripptionAuth
-                    }
-
-                    listData.push(authorityData);
-                })
-                self.listAuthority(listData);
-
-                listData = [];
-                _.forEach(data.date, function(sRes) {
-                    var dateData = {
-                        functionNo: sRes.functionNoDate,
-                        functionName: sRes.displayNameDate,
-                        available: sRes.initialValueDate,
-                        description: sRes.descripptionDate
-                    }
-                    listData.push(dateData);
-                })
-                self.listDate(listData);
-
-                listData = [];
                 _.forEach(data.shift, function(sRes) {
                     var shiftData = {
                         functionNo: sRes.functionNoShift,
@@ -151,6 +122,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 self.listWorkplace(listData);
 
             })
+            
             self.component = new ccg.component.viewmodel.ComponentModel({
                 roleType: 1,
                 multiple: false
@@ -169,46 +141,46 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             var dateAuthority = [];
             var shiftPermisson = [];
             _.forEach(self.items(), function(itemPer: IPermissonDto) {
-                    _.forEach(self.listCommon(), function(sRes) {
-                        commonAuthor.push({
-                            roleId: data.roleId,
-                            availableCommon: sRes.available ? 1 : 0,
-                            functionNoCommon: sRes.functionNo
-                        });
-                    })
+                _.forEach(self.listCommon(), function(sRes) {
+                    commonAuthor.push({
+                        roleId: data.roleId,
+                        availableCommon: sRes.available ? 1 : 0,
+                        functionNoCommon: sRes.functionNo
+                    });
+                })
 
-                    _.forEach(self.listWorkplace(), function(sRes) {
-                        perWorkplace.push({
-                            roleId: data.roleId,
-                            availableWorkplace: sRes.available ? 1 : 0,
-                            functionNoWorkplace: sRes.functionNo
-                        });
-                    })
+                _.forEach(self.listWorkplace(), function(sRes) {
+                    perWorkplace.push({
+                        roleId: data.roleId,
+                        availableWorkplace: sRes.available ? 1 : 0,
+                        functionNoWorkplace: sRes.functionNo
+                    });
+                })
 
-                    _.forEach(self.listAuthority(), function(sRes) {
-                        persAuthority.push({
-                            roleId: data.roleId,
-                            availablePers: sRes.available ? 1 : 0,
-                            functionNoPers: sRes.functionNo
-                        });
+                _.forEach(self.listAuthority(), function(sRes) {
+                    persAuthority.push({
+                        roleId: data.roleId,
+                        availablePers: sRes.available ? 1 : 0,
+                        functionNoPers: sRes.functionNo
+                    });
 
-                    })
+                })
 
-                    _.forEach(self.listDate(), function(sRes) {
-                        dateAuthority.push({
-                            roleId: data.roleId,
-                            availableDate: sRes.available ? 1 : 0,
-                            functionNoDate: sRes.functionNo
-                        });
-                    })
+                _.forEach(self.listDate(), function(sRes) {
+                    dateAuthority.push({
+                        roleId: data.roleId,
+                        availableDate: sRes.available ? 1 : 0,
+                        functionNoDate: sRes.functionNo
+                    });
+                })
 
-                    _.forEach(self.listShift(), function(sRes) {
-                        shiftPermisson.push({
-                            roleId: data.roleId,
-                            availableShift: sRes.available ? 1 : 0,
-                            functionNoShift: sRes.functionNo
-                        });
-                    })
+                _.forEach(self.listShift(), function(sRes) {
+                    shiftPermisson.push({
+                        roleId: data.roleId,
+                        availableShift: sRes.available ? 1 : 0,
+                        functionNoShift: sRes.functionNo
+                    });
+                })
 
             })
             var schemodifyDeadline: IModifyDeadlineDto = {
@@ -307,7 +279,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                     _.forEach(self.listDate(), function(item) {
                         var author = _.find(permissonTotalArr.dateAuthority, function(a: any) { return a.functionNoDate == item.functionNo });
                         if (author) {
-                            item.available = !!author.availableDate  ? 1 : 0;
+                            item.available = !!author.availableDate ? 1 : 0;
                         } else {
                             item.available = !!item.availability ? 1 : 0;
                         }
@@ -320,7 +292,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                     _.forEach(self.listShift(), function(item) {
                         var author = _.find(permissonTotalArr.shiftPermisson, function(a: any) { return a.functionNoShift == item.functionNo });
                         if (author) {
-                            item.available = !!author.availableShift  ? 1 : 0;
+                            item.available = !!author.availableShift ? 1 : 0;
                         } else {
                             item.available = !!item.availability ? 1 : 0;
                         }
