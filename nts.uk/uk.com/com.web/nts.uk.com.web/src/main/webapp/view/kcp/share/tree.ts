@@ -269,10 +269,6 @@ module kcp.share.tree {
                 self.createGlobalVarDataList();
             });
 
-            self.itemList.subscribe(vl => {
-                self.reloadNtsTreeGrid();
-            });
-
             // Find data.
             const param = <service.WorkplaceParam>{};
             param.baseDate = self.baseDate();
@@ -656,6 +652,12 @@ module kcp.share.tree {
         // set up on selected code changed event
         private initEvent(): void {
             let self = this;
+
+            // Reload NtsTreeGrid when itemList changed.
+            self.itemList.subscribe(vl => {
+                self.reloadNtsTreeGrid();
+            });
+
             $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridselectionrowselectionchanged", (evt, ui) => {
                 const selecteds = _.map(ui.selectedRows, o => o.id);
                 if (self.isMultiSelect) {
@@ -679,7 +681,12 @@ module kcp.share.tree {
 
         private reloadNtsTreeGrid(): void {
             let self = this;
-            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setDataSource", self.itemList());
+            const treeGrid = $('#' + self.getComIdSearchBox());
+            const searchBox = $('#' + self.searchBoxId);
+            if (!_.isEmpty(treeGrid) && !_.isEmpty(searchBox)) {
+                treeGrid.ntsTreeGrid("setDataSource", self.itemList());
+                searchBox.ntsSearchBox("setDataSource", self.itemList());
+            }
         }
 
         /**

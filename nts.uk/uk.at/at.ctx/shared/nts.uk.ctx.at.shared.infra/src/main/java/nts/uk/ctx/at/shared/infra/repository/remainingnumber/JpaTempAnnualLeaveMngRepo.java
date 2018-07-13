@@ -39,7 +39,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 
 	private static final String SELECT_BY_WORKTYPE_PERIOD = "SELECT a FROM KrcdtAnnleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.workTypeCode = :workTypeCode"			
+			+ "AND a.workTypeCode = :workTypeCode "			
 			+ "AND a.PK.ymd >= :startYmd "
 			+ "AND a.PK.ymd <= :endYmd "
 			+ "ORDER BY a.PK.ymd ";

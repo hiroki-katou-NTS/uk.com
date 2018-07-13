@@ -142,7 +142,7 @@ public class DPMonthFlexProcessor {
 						closingPeriod.get().getClosureDate().getLastDayOfMonth())));
 		
 		AgreementInfomationDto agreeDto = displayAgreementInfo.displayAgreementInfo(companyId, param.getEmployeeId(),
-				closingPeriod.get().getClosureEndDate().day(), closingPeriod.get().getClosureEndDate().month());
+				closingPeriod.get().getClosureEndDate().year(), closingPeriod.get().getClosureEndDate().month());
 		setAgreeItem(itemMonthFlexResults, agreeDto);
 		
 		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem,
@@ -155,8 +155,8 @@ public class DPMonthFlexProcessor {
 			List<ItemValue> values = itemMonthFlexResults.get(0).getItems().stream()
 					.filter(x -> (x.getItemId() == 202 || x.getItemId() == 204))
 					.sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
-			agreeDto.setAgreementTime36(values.get(0).getValue() == null ? convertTime(Integer.parseInt(values.get(0).getValue())) : "0:00");
-			agreeDto.setMaxTime(values.get(1).getValue() == null ? convertTime(Integer.parseInt(values.get(1).getValue())) : "0:00");
+			agreeDto.setAgreementTime36(values.get(0).getValue() != null ? convertTime(Integer.parseInt(values.get(0).getValue())) : "0:00");
+			agreeDto.setMaxTime(values.get(1).getValue() != null ? convertTime(Integer.parseInt(values.get(1).getValue())) : "0:00");
 		}
 	}
 	
