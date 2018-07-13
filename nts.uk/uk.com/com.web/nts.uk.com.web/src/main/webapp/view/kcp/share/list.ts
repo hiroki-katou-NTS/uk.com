@@ -246,7 +246,7 @@ module kcp.share.list {
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         componentWrapperId: string;
         searchBoxId: string;
-        hasLoaded: boolean;
+        hasLoaded: boolean = false;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -358,7 +358,9 @@ module kcp.share.list {
         private reloadNtsGridList(): void {
             let self = this;
             if (self.hasLoaded) {
+                self.initSelectedValue();
                 $('#' + self.componentGridId).ntsGridList("setDataSource", self.itemList());
+                $('#' + self.componentGridId).ntsGridList("setSelectedValue", self.selectedCodes());
                 $('#' + self.searchBoxId).ntsSearchBox("setDataSource", self.itemList());
             }
         }
@@ -879,7 +881,6 @@ module kcp.share.list {
                 _.defer(() => {
                     self.itemList(data);
                     self.initNoSelectRow(self.isShowNoSelectRow);
-                    self.reloadNtsGridList();
                 });
             });
         }
@@ -896,14 +897,6 @@ module kcp.share.list {
                 self.itemList(data);
                 self.initNoSelectRow(self.isShowNoSelectRow);
 
-                // set selected codes
-                const selectedCodes = _.filter(self.selectedCodes(), code => _.find(data, item => code == item.code));
-                if (nts.uk.util.isNullOrEmpty(selectedCodes)) {
-                    self.selectedCodes(self.isMultipleSelect ? [] : null);
-                } else {
-                    self.selectedCodes(selectedCodes);
-                }
-                self.reloadNtsGridList();
             })
         }
         
