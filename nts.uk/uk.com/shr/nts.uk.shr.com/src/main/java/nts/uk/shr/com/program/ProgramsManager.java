@@ -1214,13 +1214,12 @@ public class ProgramsManager {
 	 */
 	public static final Program CPS002I = new Program(WebAppId.COM, ProgramIdConsts.CPS002I, "CPS002_9",
 			"/view/cps/002/i/index.xhtml");
-	
+
 	/**
 	 * CPS002J
 	 */
 	public static final Program CPS002J = new Program(WebAppId.COM, ProgramIdConsts.CPS002J, "CPS002_111",
 			"/view/cps/002/j/index.xhtml");
-	
 
 	public static final Program CMM008A = new Program(WebAppId.COM, ProgramIdConsts.CMM008A, null,
 			"/view/cmm/008/a/index.xhtml");
@@ -1298,7 +1297,7 @@ public class ProgramsManager {
 	/** The Constant KMK015B. */
 	public static final Program KMK015B = new Program(WebAppId.AT, ProgramIdConsts.KMK015B, "KMK015_25",
 			"/view/kmk/015/b/index.xhtml");
-	
+
 	/** The Constant KMK015C. */
 	public static final Program KMK015C = new Program(WebAppId.AT, ProgramIdConsts.KMK015C, "KMK015_26",
 			"/view/kmk/015/c/index.xhtml");
@@ -1839,11 +1838,11 @@ public class ProgramsManager {
 	public static final Program CMF002Y = new Program(WebAppId.COM, ProgramIdConsts.CMF002Y, "CMF002_24",
 			"/view/cmf/002/y/index.xhtml");
 	public static final Program CMF002V2 = new Program(WebAppId.COM, ProgramIdConsts.CMF002V2, "CMF002_21",
-			"/view/cmf/002/v2/index.xhtml");	
+			"/view/cmf/002/v2/index.xhtml");
 
-    /**
-     * CMF003
-     */
+	/**
+	 * CMF003
+	 */
 	public static final Program CMF003A = new Program(WebAppId.COM, ProgramIdConsts.CMF003A, "CMF003_1",
 			"/view/cmf/003/a/index.xhtml");
 	public static final Program CMF003B = new Program(WebAppId.COM, ProgramIdConsts.CMF003B, "CMF003_2",
@@ -1895,10 +1894,14 @@ public class ProgramsManager {
 	 */
 	public static final Program KWR002A = new Program(WebAppId.AT, ProgramIdConsts.KWR002A, "KWR002_1",
 			"/view/kwr/002/a/index.xhtml");
-	public static final Program KWR002B = new Program(WebAppId.AT, ProgramIdConsts.KWR002B, "KWR002_2", "/view/kwr/002/b/index.xhtml");
-	public static final Program KWR002C = new Program(WebAppId.AT, ProgramIdConsts.KWR002C, "KWR002_3", "/view/kwr/002/c/index.xhtml");
-	public static final Program KWR002D = new Program(WebAppId.AT, ProgramIdConsts.KWR002D, "KWR002_4", "/view/kwr/002/d/index.xhtml");
-	public static final Program KWR002E = new Program(WebAppId.AT, ProgramIdConsts.KWR002E, "KWR002_5", "/view/kwr/002/e/index.xhtml");
+	public static final Program KWR002B = new Program(WebAppId.AT, ProgramIdConsts.KWR002B, "KWR002_2",
+			"/view/kwr/002/b/index.xhtml");
+	public static final Program KWR002C = new Program(WebAppId.AT, ProgramIdConsts.KWR002C, "KWR002_3",
+			"/view/kwr/002/c/index.xhtml");
+	public static final Program KWR002D = new Program(WebAppId.AT, ProgramIdConsts.KWR002D, "KWR002_4",
+			"/view/kwr/002/d/index.xhtml");
+	public static final Program KWR002E = new Program(WebAppId.AT, ProgramIdConsts.KWR002E, "KWR002_5",
+			"/view/kwr/002/e/index.xhtml");
 
 	/** KDM001 */
 	public static final Program KDM001A = new Program(WebAppId.AT, ProgramIdConsts.KDM001A, "KDM001_131",
@@ -1986,7 +1989,7 @@ public class ProgramsManager {
 	/** CCG009 */
 	public static final Program CCG009A = new Program(WebAppId.COM, ProgramIdConsts.CCG009A, "CCG009_1",
 			"/view/ccg/009/index.xhtml");
-	
+
 	/** CLI001 */
 	public static final Program CLI001A = new Program(WebAppId.COM, ProgramIdConsts.CLI001A, "CLI001_1",
 			"/view/cli/001/a/index.xhtml");
@@ -1998,7 +2001,13 @@ public class ProgramsManager {
 			"/view/ktg/031/a/index.xhtml");
 	public static final Program KTG031B = new Program(WebAppId.COM, ProgramIdConsts.KTG031B, "KTG031_5",
 			"/view/ktg/031/b/index.xhtml");
-	
+
+	/** CAS004 */
+	public static final Program CAS004A = new Program(WebAppId.COM, ProgramIdConsts.CAS004A, "CAS004_1",
+			"/view/cas/004/a/index.xhtml");
+	public static final Program CAS004B = new Program(WebAppId.COM, ProgramIdConsts.CAS004B, "CAS004_2",
+			"/view/cas/004/b/index.xhtml");
+
 	/**
 	 * All programs map.
 	 */

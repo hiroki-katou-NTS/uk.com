@@ -884,5 +884,9 @@ public class ProgramIdConsts {
 	/** CLI001 */
 	public static final String CLI001A = "CLI001A";
 	public static final String CLI001B = "CLI001B";
+	
+	/** CAS004 */
+	public static final String CAS004A = "CAS004A";
+	public static final String CAS004B = "CAS004B";
 
 }
