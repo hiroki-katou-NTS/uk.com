@@ -9,9 +9,9 @@ public enum ItemType {
 	//日付型
 	DATE(2, "Enum_ItemType_DATE"),
 	//時刻型
-	INS_TIME(3, "Enum_ItemType_INS_TIME"),
+	TIME(3, "Enum_ItemType_TIME"),
 	//時刻型
-	TIME(4, "Enum_ItemType_TIME"),
+	INS_TIME(4, "Enum_ItemType_INS_TIME"),
 	//在職区分
 	ATWORK(5, "Enum_ItemType_ATWORK");
 	/** The value. */

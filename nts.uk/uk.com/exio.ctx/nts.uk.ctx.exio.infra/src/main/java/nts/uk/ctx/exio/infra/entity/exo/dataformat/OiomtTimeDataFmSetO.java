@@ -175,7 +175,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
 	public OiomtTimeDataFmSetO(OiomtTimeDataFmSetPk timeDataFmSetPk, int nullValueSubs,
 			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int fixedLengthOutput,
 			Integer fixedLongIntegerDigit, int fixedLengthEditingMothod, int delimiterSetting, int selectHourMinute,
-			int minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, int fixedValueOperation,
+			Integer minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, int fixedValueOperation,
 			String fixedCalculationValue, String valueOfNullValueSubs, int minuteFractionDigitProcessCla) {
 		super();
 		this.timeDataFmSetPk = timeDataFmSetPk;
