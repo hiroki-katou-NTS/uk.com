@@ -2,61 +2,31 @@ package nts.uk.ctx.at.record.infra.repository.monthly;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
+import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCount;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.OverTimeOfTimeSeries;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAgreementTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.flex.KrcdtMonFlexTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtMonAggrTotalWrk;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonHdwkTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonOverTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcessOutside;
-import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMerge;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.totalcount.KrcdtMonTotalTimes;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalTotal;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpecDays;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonLeave;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrBnspyTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrDivgTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrGoout;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrPremTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonMedicalTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 
 /**
  * リポジトリ実装：月別実績の勤怠時間
@@ -93,42 +63,120 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	private static final String DELETE_BY_YEAR_MONTH = String.join(" ", "DELETE FROM KrcdtMonMerge a ",
 			 "WHERE  a.krcdtMonMergePk.employeeId = :employeeId ",
 			 "AND 	 a.krcdtMonMergePk.yearMonth = :yearMonth ");	
+	
+	private static final String SEL_NO_WHERE_TOTAL_TIMES = "SELECT a FROM KrcdtMonTotalTimes a";
+	
+	private static final String FIND_TOTAL_TIMES_BY_YEAR_MONTH = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
+			"WHERE a.PK.employeeID =:employeeId",
+			"AND a.PK.yearMonth =:yearMonth");
+	
+	private static final String FIND_TOTAL_TIMES_BY_YM_AND_CLOSURE_ID = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
+			"WHERE a.PK.employeeID =:employeeId",
+			"AND   a.PK.yearMonth =:yearMonth",
+			"AND   a.PK.closureId =:closureId");
+	
+	private static final String FIND_TOTAL_TIMES_BY_EMPLOYEES = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
+			"WHERE a.PK.employeeID IN :employeeIds",
+			"AND   a.PK.yearMonth =:yearMonth",
+			"AND   a.PK.closureId =:closureId",
+			"AND   a.PK.closureDay =:closureDay",
+			"AND   a.PK.isLastDay =:isLastDay",
+			"ORDER BY a.PK.employeeId");
+	
+	private static final String FIND_TOTAL_TIMES_BY_SIDS_AND_YEARMONTHS = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
+			"WHERE a.PK.employeeID IN :employeeIds",
+			"AND   a.PK.yearMonth IN :yearMonths",
+			"ORDER BY a.PK.employeeID, a.PK.yearMonth");
+	
+	private static final String FIND_TOTAL_TIMES_BY_PERIOD = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
+			 "WHERE a.PK.employeeId = :employeeId ");
+	
+	
+	private static final String SEL_WORK_CLOCK_NO_WHERE = "SELECT a FROM KrcdtMonWorkClock a";
+	private static final String FIND_WORK_CLOCK_BY_YEAR_MONTH = String.join(" ", SEL_WORK_CLOCK_NO_WHERE,
+			"WHERE a.PK.employeeId =:employeeId",
+			"AND   a.PK.yearMonth =:yearMonth");
+	private static final String FIND_WORK_CLOCK_BY_YM_AND_CLOSURE_ID = String.join(" ", SEL_WORK_CLOCK_NO_WHERE,
+			"WHERE a.PK.employeeId =:employeeId",
+			"AND   a.PK.yearMonth =:yearMonth",
+			"AND   a.PK.closureId =:closureId");
+	private static final String FIND_WORK_CLOCK_BY_EMPLOYEES = String.join(" ", SEL_WORK_CLOCK_NO_WHERE,
+			"WHERE a.PK.employeeId IN :employeeIds",
+			"AND   a.PK.yearMonth =:yearMonth",
+			"AND   a.PK.closureId =:closureId",
+			"AND   a.PK.closureDay =:closureDay",
+			"AND   a.PK.isLastDay =:isLastDay",
+			"ORDER BY a.PK.employeeId");
+	private static final String FIND_WORK_CLOCK_BY_SIDS_AND_YEARMONTHS = String.join(" ", SEL_WORK_CLOCK_NO_WHERE,
+			"WHERE a.PK.employeeId IN :employeeIds",
+			"AND   a.PK.yearMonth IN :yearMonths",
+			"ORDER BY a.PK.employeeId, a.PK.yearMonth");
+	private static final String FIND_WORK_CLOCK_BY_PERIOD = String.join(" ", SEL_WORK_CLOCK_NO_WHERE,
+			 "WHERE a.PK.employeeId = :employeeId ");
 	/** 検索 */
 	@Override
 	public Optional<AttendanceTimeOfMonthly> find(String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
-		
-		return this.queryProxy()
-				.find(new KrcdtMonMergePk(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0)),
-						KrcdtMonMerge.class)
-				.map(c -> c.toDomainAttendanceTimeOfMonthly());
+	 val key = new KrcdtMonMergePk(
+				employeeId,
+				yearMonth.v(),
+				closureId.value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+	 
+		List<TotalCount> totalCountLst = new ArrayList<>();
+		List<WorkClockOfMonthly> workClockLst = new ArrayList<>();
+		Optional<TotalCount> totalCount = this.queryProxy().find(key, KrcdtMonTotalTimes.class).map( c -> c.toDomain());
+		Optional<WorkClockOfMonthly> workClock = this.queryProxy().find(key, KrcdtMonWorkClock.class).map(c -> c.toDomain());
+
+		if(totalCount.isPresent()) {
+			totalCountLst.add(totalCount.get());
+		}
+		if(workClock.isPresent()) {
+			workClockLst.add(workClock.get());
+		}
+		return this.queryProxy().find(key, KrcdtMonMerge.class)
+				.map(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClockLst));
 	}
 
 	/** 検索　（年月） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
+		List<TotalCount> totalCountLst = this.queryProxy().query(FIND_TOTAL_TIMES_BY_YEAR_MONTH, KrcdtMonTotalTimes.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.getList( c -> c.toDomain());
 		
+		List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_YEAR_MONTH, KrcdtMonWorkClock.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+		.getList( c -> c.toDomain());
 		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
-				.getList(c -> c.toDomainAttendanceTimeOfMonthly());
+				.getList(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst));
 	}
 	
 	/** 検索　（年月と締めID） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
 			ClosureId closureId) {
+		List<TotalCount> totalCountLst = this.queryProxy().query(FIND_TOTAL_TIMES_BY_YM_AND_CLOSURE_ID, KrcdtMonTotalTimes.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.getList( c -> c.toDomain());
 		
+		List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_YM_AND_CLOSURE_ID, KrcdtMonWorkClock.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.getList( c -> c.toDomain());
 		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.setParameter("closureId", closureId.value)
-				.getList(c -> c.toDomainAttendanceTimeOfMonthly());
+				.getList(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClockLst));
 	}
 
 	/** 検索　（社員IDリスト） */
@@ -138,13 +186,27 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		
 		List<AttendanceTimeOfMonthly> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			List<TotalCount> totalCountLst = this.queryProxy().query(FIND_TOTAL_TIMES_BY_EMPLOYEES, KrcdtMonTotalTimes.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.getList( c -> c.toDomain());
+			List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_EMPLOYEES, KrcdtMonWorkClock.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.getList( c -> c.toDomain());
 			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonMerge.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
 					.setParameter("closureId", closureId.value)
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-					.getList(c -> c.toDomainAttendanceTimeOfMonthly()));
+					.getList(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClockLst)));
 		});
 		return results;
 	}
@@ -157,10 +219,20 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		
 		List<AttendanceTimeOfMonthly> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			List<TotalCount> totalCountLst = this.queryProxy().query(FIND_TOTAL_TIMES_BY_SIDS_AND_YEARMONTHS, KrcdtMonTotalTimes.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonths", yearMonthValues)
+					.getList( c -> c.toDomain());
+			
+			List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_SIDS_AND_YEARMONTHS, KrcdtMonWorkClock.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonths", yearMonthValues)
+					.getList( c -> c.toDomain());
+			
 			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMerge.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomainAttendanceTimeOfMonthly()));
+					.getList(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClockLst)));
 		});
 		return results;
 	}
@@ -168,12 +240,18 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	/** 検索　（基準日） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByDate(String employeeId, GeneralDate criteriaDate) {
+		List<TotalCount> totalCountLst = this.queryProxy().query(FIND_TOTAL_TIMES_BY_PERIOD, KrcdtMonTotalTimes.class)
+				.setParameter("employeeId", employeeId)
+				.getList( c -> c.toDomain());
 		
+		List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_PERIOD, KrcdtMonWorkClock.class)
+				.setParameter("employeeId", employeeId)
+				.getList( c -> c.toDomain());
 		return this.queryProxy().query(FIND_BY_PERIOD, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", criteriaDate)
 				.setParameter("endDate", criteriaDate)
-				.getList(c -> c.toDomainAttendanceTimeOfMonthly());
+				.getList(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClockLst));
 	}
 			
 	/** 登録および更新 */
