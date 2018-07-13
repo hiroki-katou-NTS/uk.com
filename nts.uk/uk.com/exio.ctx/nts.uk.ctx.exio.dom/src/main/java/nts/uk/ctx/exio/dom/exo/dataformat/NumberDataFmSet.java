@@ -6,14 +6,13 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
 * 数値型データ形式設定
 */
 @Getter
-public class NumberDataFmSet extends AggregateRoot
+public class NumberDataFmSet extends DataFormatSetting
 {
     
     /**
@@ -96,13 +95,14 @@ public class NumberDataFmSet extends AggregateRoot
     */
     private DecimalDivision formatSelection;
 
-	public NumberDataFmSet(String cid, int nullValueReplace,
+	public NumberDataFmSet(int itemType,String cid, int nullValueReplace,
 			String valueOfNullValueReplace, int outputMinusAsZero, int fixedValue,
 			String valueOfFixedValue, int fixedValueOperation, BigDecimal fixedCalculationValue,
 			int fixedValueOperationSymbol, int fixedLengthOutput,
 			Integer fixedLengthIntegerDigit, int fixedLengthEditingMethod, Integer decimalDigit,
 			int decimalPointClassification, int decimalFraction,
 			int formatSelection) {
+		super(itemType);
 		this.cid = cid;
 		this.nullValueReplace = EnumAdaptor.valueOf(nullValueReplace, NotUseAtr.class);
 		this.valueOfNullValueReplace = Optional.of(new DataFormatNullReplacement(valueOfNullValueReplace));
