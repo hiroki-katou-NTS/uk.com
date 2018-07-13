@@ -169,7 +169,7 @@ public class AttendanceItemUtil implements ItemConst {
 				Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
 						x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
 				
-				List<T> originalL = ReflectionUtil.getFieldValue(field, attendanceItems);
+				List<T> originalL = getOriginalList(attendanceItems, field);
 				
 				List<Integer> originalIdx = getOriginalIdx(idxField, originalL);
 				
@@ -229,6 +229,11 @@ public class AttendanceItemUtil implements ItemConst {
 		});
 
 		return attendanceItems;
+	}
+
+	private static <T> List<T> getOriginalList(T attendanceItems, Field field) {
+		List<T> originalL = ReflectionUtil.getFieldValue(field, attendanceItems);
+		return originalL == null ? new ArrayList<>() : originalL;
 	}
 
 	private static <T> void correctList(boolean listNoIdx, Field idxField, Map<Integer, List<ItemValue>> itemsForIdx,
