@@ -101,8 +101,8 @@ public class RecoveryStorageService {
     private static final Map<String, Integer> datetimeRange = new HashMap<String, Integer>();
     static {
     	datetimeRange.put(YEAR_MONTH_DAY, 10);
-    	datetimeRange.put(YEAR_MONTH, 6);
-    	datetimeRange.put(YEAR, 3);
+    	datetimeRange.put(YEAR_MONTH, 7);
+    	datetimeRange.put(YEAR, 4);
     }
 
 	public void recoveryStorage(String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
