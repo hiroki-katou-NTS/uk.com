@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.services.BonusPaySettingService;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -52,17 +53,30 @@ public class BPSettingAddCommandHandler extends CommandHandlerWithResult<BPSetti
 			}
 		});
 		if(errorLists.isEmpty()) {
-			List<BonusPayTimesheet> lstBonusPayTimesheet = lstBPTimesheetAddCommand.stream()
-					.map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList());
-			List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet = lstSpecBPTimesheetAddCommand.stream()
-					.map(c -> toSpecBonusPayTimesheetDomain(c)).collect(Collectors.toList());
-			bonusPaySettingService.addBonusPaySetting(this.ToBonusPaySettingDomain(bpSettingAddCommand,companyId), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);			
+			bpSettingAddCommand.setLstBonusPayTimesheet(bpSettingAddCommand.getLstBonusPayTimesheet().stream()
+				.map(x -> new BPTimesheetAddCommand(x.timeSheetNO, x.useAtr, x.bonusPaySettingCode, 
+						x.timeItemID, x.startTime, x.endTime, x.roundingTimeAtr, x.roundingAtr)).collect(Collectors.toList()));
+			bpSettingAddCommand.setLstSpecBonusPayTimesheet(bpSettingAddCommand.getLstSpecBonusPayTimesheet().stream()
+					.map(x -> new SpecBPTimesheetAddCommand(x.timeSheetNO, x.useAtr, x.bonusPaySettingCode, 
+							x.timeItemID, x.startTime, x.endTime, x.roundingTimeAtr, x.roundingAtr, x.specialDateItemNO)).collect(Collectors.toList()));
+			bonusPaySettingService.addBonusPaySetting(this.ToBonusPaySettingDomain(bpSettingAddCommand,companyId));			
 		}
 		return errorLists;
 	}
 
 	private BonusPaySetting ToBonusPaySettingDomain(BPSettingAddCommand bpSettingAddCommand,String companyId) {
-		return BonusPaySetting.createFromJavaType(companyId, bpSettingAddCommand.getCode(), bpSettingAddCommand.getName());
+		List<BPTimesheetAddCommand> lstBPTimesheetAddCommand = bpSettingAddCommand.getLstBonusPayTimesheet();
+		List<BonusPayTimesheet> lstBonusPayTimesheet = lstBPTimesheetAddCommand.stream()
+				.map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList());
+		List<SpecBPTimesheetAddCommand> lstSpecBPTimesheetAddCommand = bpSettingAddCommand
+				.getLstSpecBonusPayTimesheet();
+		List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet = lstSpecBPTimesheetAddCommand.stream()
+				.map(c -> toSpecBonusPayTimesheetDomain(c)).collect(Collectors.toList());
+		return BonusPaySetting.createFromJavaType(companyId, bpSettingAddCommand.getCode(),
+				bpSettingAddCommand.getName(), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);
+		// bonusPaySetting.setListTimesheet(lstBonusPayTimesheet);
+		// bonusPaySetting.setListSpecialTimesheet(lstSpecBonusPayTimesheet);
+
 	}
 
 	private BonusPayTimesheet toBonusPayTimesheetDomain(BPTimesheetAddCommand bpTimesheetAddCommand) {
@@ -78,6 +92,7 @@ public class BPSettingAddCommandHandler extends CommandHandlerWithResult<BPSetti
 				specBPTimesheetAddCommand.startTime, specBPTimesheetAddCommand.endTime,
 				specBPTimesheetAddCommand.roundingTimeAtr, specBPTimesheetAddCommand.roundingAtr,
 				specBPTimesheetAddCommand.specialDateItemNO);
+
 	}
 
 }

@@ -26,7 +26,7 @@ public class BonusPaySettingDomainService implements BonusPaySettingService {
 	private BPSettingRepository bpSettingRepository;
 
 	@Override
-	public void addBonusPaySetting(BonusPaySetting domain, List<BonusPayTimesheet> listBonusPayTimeSheet, List<SpecBonusPayTimesheet> listSpecBonusPayTimeSheet) {
+	public void addBonusPaySetting(BonusPaySetting domain) {
 		String code = domain.getCode().v();
 		if(code.length()==1){
 			code = "00"+code;
@@ -34,18 +34,18 @@ public class BonusPaySettingDomainService implements BonusPaySettingService {
 			code = "0"+code;
 		}
 		bpTimesheetRepository.addListTimesheet(domain.getCompanyId().toString(),
-				new BonusPaySettingCode(code), listBonusPayTimeSheet);
+				new BonusPaySettingCode(code), domain.getLstBonusPayTimesheet());
 		specBPTimesheetRepository.addListTimesheet(domain.getCompanyId().toString(),
-				new BonusPaySettingCode(code), listSpecBonusPayTimeSheet);
-		bpSettingRepository.addBonusPaySetting(domain);
+				new BonusPaySettingCode(code), domain.getLstSpecBonusPayTimesheet());
+		bpSettingRepository.addBonusPaySetting(BonusPaySetting.createFromJavaType(domain.getCompanyId().toString(), code, domain.getName().v(), domain.getLstBonusPayTimesheet(), domain.getLstSpecBonusPayTimesheet()));
 	}
 
 	@Override
-	public void updateBonusPaySetting(BonusPaySetting domain, List<BonusPayTimesheet> listBonusPayTimeSheet, List<SpecBonusPayTimesheet> listSpecBonusPayTimeSheet) {
+	public void updateBonusPaySetting(BonusPaySetting domain) {
 		bpTimesheetRepository.updateListTimesheet(domain.getCompanyId().toString(),
-				new BonusPaySettingCode(domain.getCode().toString()), listBonusPayTimeSheet);
+				new BonusPaySettingCode(domain.getCode().toString()), domain.getLstBonusPayTimesheet());
 		specBPTimesheetRepository.updateListTimesheet(domain.getCompanyId().toString(),
-				new BonusPaySettingCode(domain.getCode().toString()), listSpecBonusPayTimeSheet);
+				new BonusPaySettingCode(domain.getCode().toString()), domain.getLstSpecBonusPayTimesheet());
 		bpSettingRepository.updateBonusPaySetting(domain);
 	}
 

@@ -53,7 +53,7 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 
 	private BonusPaySetting toBonusPaySettingDomain(KbpmtBonusPaySetting kbpmtBonusPaySetting) {
 		return BonusPaySetting.createFromJavaType(kbpmtBonusPaySetting.kbpmtBonusPaySettingPK.companyId,
-				kbpmtBonusPaySetting.kbpmtBonusPaySettingPK.code, kbpmtBonusPaySetting.name);
+				kbpmtBonusPaySetting.kbpmtBonusPaySettingPK.code, kbpmtBonusPaySetting.name, new ArrayList<BonusPayTimesheet>(), new ArrayList<SpecBonusPayTimesheet>());
 	}
 
 	private KbpmtBonusPaySetting toBonusPaySettingEntity(BonusPaySetting bonusPaySetting) {

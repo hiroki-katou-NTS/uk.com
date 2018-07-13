@@ -546,7 +546,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				oneRange.createTimeSheetAsFlex(personalInfo.getWorkingSystem(),oneRange.getPredetermineTimeSetForCalc(),
 												BonusPaySetting.createFromJavaType(companyId,
 														"01"/*ここは聞く*/,
-														"テスト加給設定"/*ここは聞く*/
+														"テスト加給設定"/*ここは聞く*/,
+														Collections.emptyList(),
+														Collections.emptyList()
 														),
 												flexWorkSetOpt.get().getOffdayWorkTime().getLstWorkTimezone(),
 												useLstTimeZone,
@@ -663,7 +665,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						oneRange.getPredetermineTimeSetForCalc(), fixedWorkSetting.get(), 
 						BonusPaySetting.createFromJavaType(companyId,
 						"01"/*ここは聞く*/,
-						"テスト加給設定"/*ここは聞く*/
+						"テスト加給設定"/*ここは聞く*/,
+						Collections.emptyList(),
+						Collections.emptyList()
 						)
 						,fixOtSetting ,
 						fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone(), 
