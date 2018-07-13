@@ -148,7 +148,7 @@ module nts.uk.at.view.kdm002.b {
                                         let errorContent: IErrorLog = {
                                             employeeCode: error.employeeCode,
                                             employeeName: error.employeeName,
-                                            errorMessage: nts.uk.resource.getMessage(error.errorMessage)
+                                            errorMessage: nts.uk.resource.getMessage(error.errorMessage, [self.pmaxday()])
                                         }
                                         self.imErrorLog.push(errorContent);
                                     } else if (item.key == 'NUMBER_OF_SUCCESS') {
@@ -253,9 +253,9 @@ module nts.uk.at.view.kdm002.b {
                                         }
                                         self.startExportExcel(true);
                                         $('#BTN_ERROR_EXPORT').focus();
-                                    } else if (res.cancelled) {
-                                        self.status(getText("KDM002_23"));
                                     }
+                                } else if (res.cancelled) {
+                                    self.status(getText("KDM002_23"));
                                 }
 
                                 self.isStop(true);
@@ -274,9 +274,9 @@ module nts.uk.at.view.kdm002.b {
                                             $('#BTN_ERROR_EXPORT').focus();
                                         }
                                         $('#BTN_ERROR_EXPORT').focus();
-                                    } else if (res.cancelled) {
-                                        $('#BTN_CLOSE').focus();
                                     }
+                                } else if (res.cancelled) {
+                                    $('#BTN_CLOSE').focus();
                                 }
                             }
                         });

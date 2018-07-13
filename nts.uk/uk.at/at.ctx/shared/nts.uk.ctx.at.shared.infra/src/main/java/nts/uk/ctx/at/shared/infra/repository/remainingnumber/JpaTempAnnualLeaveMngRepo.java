@@ -117,12 +117,12 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 
 	@Override
 	public List<TempAnnualLeaveManagement> findBySidWorkTypePeriod(String employeeId, String workTypeCode,
-			Period period) {
+			DatePeriod period) {
 		return this.queryProxy().query(SELECT_BY_WORKTYPE_PERIOD, KrcdtAnnleaMngTemp.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("workTypeCode", workTypeCode)
-				.setParameter("startYmd", period.getStartDate())
-				.setParameter("endYmd", period.getEndDate())
+				.setParameter("startYmd", period.start())
+				.setParameter("endYmd", period.end())
 				.getList(c -> c.toDomain());
 	}
 

@@ -27,12 +27,12 @@ public class ShortWorkTimeSheetDto implements ItemConst {
 
 	/** 開始: 時刻(日区分付き) */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = START, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer startTime;
 
 	/** 終了: 時刻(日区分付き) */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = END, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer endTime;
 
 	/** 控除時間: 勤怠時間 */
