@@ -1,0 +1,75 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.sys.log.infra.repository.loginrecord;
+
+import nts.uk.ctx.sys.log.dom.loginrecord.LoginMethod;
+import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento;
+import nts.uk.ctx.sys.log.dom.loginrecord.LoginStatus;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecord;
+
+/**
+ * The Class JpaPasswordChangeLogSetMemento.
+ */
+public class JpaLoginRecordSetMemento implements LoginRecordSetMemento {
+
+	/** The entity. */
+	private SrcdtLoginRecord entity;
+
+	/**
+	 * Instantiates a new jpa login record set memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaLoginRecordSetMemento(SrcdtLoginRecord entity) {
+		super();
+		this.entity = entity;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento#setOperationId(java.lang.String)
+	 */
+	@Override
+	public void setOperationId(String operationId) {
+		this.entity.setOperationId(operationId);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento#setLoginMethod(nts.uk.ctx.sys.log.dom.loginrecord.LoginMethod)
+	 */
+	@Override
+	public void setLoginMethod(LoginMethod loginMethod) {
+		this.entity.setLoginMethod(loginMethod.value);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento#setLoginStatus(nts.uk.ctx.sys.log.dom.loginrecord.LoginStatus)
+	 */
+	@Override
+	public void setLoginStatus(LoginStatus loginStatus) {
+		this.entity.setLoginStatus(loginStatus.value);
+	}
+	
+	@Override
+	public void setLockStatus(Integer lockStatus) {
+		this.entity.setLockStatus(lockStatus);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento#setUrl(java.lang.String)
+	 */
+	@Override
+	public void setUrl(String url) {
+		this.entity.setUrl(url);
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento#setRemarks(java.lang.String)
+	 */
+	@Override
+	public void setRemarks(String remarks) {
+		this.entity.setRemarks(remarks);
+	}
+
+}
