@@ -120,17 +120,18 @@ public class DailyCorrectEventServiceCenter {
 			WorkInfoOfDailyPerformance wi = dailyRecord.getWorkInfo().getData();
 			
 			if(c.getValue().shouldCorrectTimeLeave() && eventTriggerBus.triggerTimeLeave){
-				TimeLeaveUpdateByWorkInfoChangeCommand timeLeaveEvent = TimeLeaveUpdateByWorkInfoChangeCommand
-						.builder().employeeId(dailyRecord.getEmployeeId())
+				TimeLeaveUpdateByWorkInfoChangeCommand timeLeaveEvent = (TimeLeaveUpdateByWorkInfoChangeCommand) TimeLeaveUpdateByWorkInfoChangeCommand
+						.builder()
+						.cachedWorkCondition(getBySidAndDate(workCondition, wi))
+						.employeeId(dailyRecord.getEmployeeId())
 						.targetDate(dailyRecord.getWorkDate())
-						.companyId(Optional.of(companyId))
-						.cachedEditState(Optional.of(dailyRecord.getEditState().getData()))
-						.cachedWorkCondition(Optional.of(getBySidAndDate(workCondition, wi)))
-						.cachedWorkInfo(Optional.of(wi))
-						.cachedTimeLeave(dailyRecord.getTimeLeaving().getData())
+						.companyId(companyId)
+						.cachedEditState(dailyRecord.getEditState().getData())
+						.cachedWorkInfo(wi)
+						.cachedTimeLeave(dailyRecord.getTimeLeaving().getData().orElse(null))
 						.actionOnCache(true)
 						.isTriggerRelatedEvent(eventTriggerBus.isTriggerRelatedEvent)
-						.cachedWorkType(Optional.ofNullable(workTypes.get(wi.getRecordInfo().getWorkTypeCode()))).build();
+						.cachedWorkType(workTypes.get(wi.getRecordInfo().getWorkTypeCode())).build();
 				EventHandleResult<TimeLeavingOfDailyPerformance> timeLeaveCorrected = timeLeaveCorrectHandler.handle(timeLeaveEvent);
 				if(timeLeaveCorrected.action != EventHandleAction.ABORT){
 					dailyRecord.getTimeLeaving().updateDataO(Optional.ofNullable(timeLeaveCorrected.data));
@@ -139,18 +140,19 @@ public class DailyCorrectEventServiceCenter {
 			}
 			
 			if(c.getValue().shouldCorreactBreakTime() && eventTriggerBus.triggerBreakTime){
-				UpdateBreakTimeByTimeLeaveChangeCommand breakTimeEvent = UpdateBreakTimeByTimeLeaveChangeCommand
-						.builder().employeeId(dailyRecord.getEmployeeId())
-						.workingDate(dailyRecord.getWorkDate())
-						.companyId(Optional.of(companyId))
-						.cachedEditState(Optional.of(dailyRecord.getEditState().getData()))
-						.cachedWorkInfo(Optional.of(wi))
-						.actionOnCache(true)
-						.cachedTimeLeave(dailyRecord.getTimeLeaving().getData())
-						.cachedWorkType(Optional.ofNullable(workTypes.get(wi.getRecordInfo().getWorkTypeCode())))
-						.isTriggerRelatedEvent(eventTriggerBus.isTriggerRelatedEvent)
+				UpdateBreakTimeByTimeLeaveChangeCommand breakTimeEvent = (UpdateBreakTimeByTimeLeaveChangeCommand) UpdateBreakTimeByTimeLeaveChangeCommand
+						.builder()
 						.cachedBreackTime(dailyRecord.getBreakTime().getData()
-								.stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst())
+								.stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst().orElse(null))
+						.employeeId(dailyRecord.getEmployeeId())
+						.targetDate(dailyRecord.getWorkDate())
+						.companyId(companyId)
+						.cachedEditState(dailyRecord.getEditState().getData())
+						.cachedWorkInfo(wi)
+						.actionOnCache(true)
+						.cachedTimeLeave(dailyRecord.getTimeLeaving().getData().orElse(null))
+						.cachedWorkType(workTypes.get(wi.getRecordInfo().getWorkTypeCode()))
+						.isTriggerRelatedEvent(eventTriggerBus.isTriggerRelatedEvent)
 						.build();
 				EventHandleResult<BreakTimeOfDailyPerformance>  breakTimeCorrected = breakTimeCorrectHandler.handle(breakTimeEvent);
 				if(breakTimeCorrected.action == EventHandleAction.DELETE){

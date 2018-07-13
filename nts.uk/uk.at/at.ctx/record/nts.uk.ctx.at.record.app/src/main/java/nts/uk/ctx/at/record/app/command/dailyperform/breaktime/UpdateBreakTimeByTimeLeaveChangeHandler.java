@@ -70,7 +70,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 		if (!wt.isWokingDay()) {
 			/** 「日別実績の休憩時間帯」を削除する */
 			if(!command.actionOnCache){
-				this.breakTimeRepo.delete(command.getEmployeeId(), command.getWorkingDate());
+				this.breakTimeRepo.delete(command.getEmployeeId(), command.targetDate);
 			}
 			return EventHandleResult.withResult(EventHandleAction.DELETE, null);
 		}
@@ -85,7 +85,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 		}
 		/** 「日別実績の休憩時間帯」を削除する */
 		if(!command.actionOnCache){
-			this.breakTimeRepo.delete(command.getEmployeeId(), command.getWorkingDate());
+			this.breakTimeRepo.delete(command.getEmployeeId(), command.targetDate);
 		}
 		return EventHandleResult.withResult(EventHandleAction.DELETE, null);
 	}
@@ -96,10 +96,10 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 		TimeLeavingOfDailyPerformance timeLeave = command.cachedTimeLeave.orElse(getTimeLeaveDefault(command));
 		
 		BreakTimeOfDailyPerformance breakTime = reflectBreakTimeService.reflectBreakTime(companyId, command.employeeId,
-				command.workingDate, null, timeLeave, wi);
+				command.targetDate, null, timeLeave, wi);
 		
 		BreakTimeOfDailyPerformance breakTimeRecord = command.cachedBreackTime.orElse(getBreakTimeDefault(command.employeeId,
-				command.workingDate));
+				command.targetDate));
 		
 		if (breakTimeRecord != null) {
 			return mergeWithEditStates(command, breakTime, breakTimeRecord);
@@ -119,7 +119,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 					inputByHandItems);
 			if(ipByHandValues != null){
 				return AttendanceItemUtil.fromItemValues(BreakTimeDailyDto.getDto(breakTime), ipByHandValues.stream().filter(c -> c != null).collect(Collectors.toList()))
-					.toDomain(command.employeeId, command.workingDate);
+					.toDomain(command.employeeId, command.targetDate);
 			}
 		}
 		return breakTime;
@@ -142,7 +142,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	}
 
 	private TimeLeavingOfDailyPerformance getTimeLeaveDefault(UpdateBreakTimeByTimeLeaveChangeCommand command) {
-		return timeLeaveRepo.findByKey(command.employeeId, command.workingDate).orElse(null);
+		return timeLeaveRepo.findByKey(command.employeeId, command.targetDate).orElse(null);
 	}
 
 	private WorkType getDefaultWorkType(String workTypeCode, String companyId) {
@@ -150,11 +150,11 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	}
 
 	private WorkInfoOfDailyPerformance getDefaultWorkInfo(UpdateBreakTimeByTimeLeaveChangeCommand command) {
-		return this.workInfoRepo.find(command.employeeId, command.workingDate).orElse(null);
+		return this.workInfoRepo.find(command.employeeId, command.targetDate).orElse(null);
 	}
 
 	private List<EditStateOfDailyPerformance> getDefaultEditStates(UpdateBreakTimeByTimeLeaveChangeCommand command,
 			List<Integer> needCheckItems) {
-		return this.editStateRepo.findByItems(command.employeeId, command.workingDate, needCheckItems);
+		return this.editStateRepo.findByItems(command.employeeId, command.targetDate, needCheckItems);
 	}
 }
