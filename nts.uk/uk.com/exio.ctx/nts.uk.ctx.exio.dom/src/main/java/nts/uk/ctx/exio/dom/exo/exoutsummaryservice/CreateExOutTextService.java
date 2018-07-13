@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,11 +18,13 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
+import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
@@ -74,6 +78,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	@Inject
 	private ExCndOutputRepository exCndOutputRepo;
+	
+	private final static String GET_ASSOCIATION = "getOutCondAssociation";
+	private final static String GET_ITEM_NAME = "getOutCondItemName";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -98,7 +105,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		for (StandardOutputItem standardOutputItem : standardOutputItemList) {
 			for(CategoryItem categoryItem : standardOutputItem.getCategoryItems()) {
 				// TODO chờ sửa primative value của domain CategoryItem
-				ctgItemDataRepo.getCtgItemDataByIdAndDisplayClass(categoryItem.getCategoryId().v().toString(), 
+				ctgItemDataRepo.getCtgItemDataByIdAndDisplayClass(categoryItem.getCategoryId().v(), 
 						categoryItem.getCategoryItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
 			}
 		}
@@ -116,45 +123,39 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 	
 	// アルゴリズム「外部出力取得条件一覧」を実行する with type = fixed form (standard)
-	private List<CtgItemDataCustom> getExOutCond(String code) {
+	private OutCndDetailItem getExOutCond(String code) {
 		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
-		List<CtgItemDataCustom> ctgItemDataCustomList = new ArrayList<CtgItemDataCustom>();
+		OutCndDetailItem outCndDetailItem = null;
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;
 		StringBuilder cond = new StringBuilder();
-
-		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-			searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(
-					outCndDetailItem.getCategoryId(), outCndDetailItem.getCategoryItemNo().v());
-			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId(),
-					outCndDetailItem.getCategoryItemNo().v());
-			cond.setLength(0);
-			
-			if(ctgItemData.isPresent()) {
-				continue;
-			}
-			
-			if(ctgItemData.get().getSearchValueCd().isPresent() && "with".equals(ctgItemData.get().getSearchValueCd().get().toLowerCase())) {
-				for (SearchCodeList searchCodeItem: searchCodeList) {
-					cond.append(", ");
-					cond.append(searchCodeItem.getSearchCode());
-	
-					if ((ctgItemData.get().getDataType() == DataType.CHARACTER) || (ctgItemData.get().getDataType() == DataType.DATE) 
-							|| (ctgItemData.get().getDataType() == DataType.TIME)) {
-						cond.append("'");
-						cond.append(searchCodeItem.getSearchCode());
-						cond.append("'");
-					} else {
-						cond.append(searchCodeItem.getSearchCode());
-					}
-				}
-			}
-			
-			ctgItemDataCustomList.add(new CtgItemDataCustom(ctgItemData.get().getItemName(), cond.toString()));
+		if(outCndDetailItemList.size() > 0) {
+			outCndDetailItem = outCndDetailItemList.get(0);
+		} else {
+			return null;
 		}
 
-		//TODO Làm xong thì xem lại
-		return ctgItemDataCustomList;
+		searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(
+				outCndDetailItem.getCategoryId(), outCndDetailItem.getCategoryItemNo().v());
+		ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId(),
+				outCndDetailItem.getCategoryItemNo().v());
+		cond.setLength(0);
+		
+		for (SearchCodeList searchCodeItem: searchCodeList) {
+			cond.append(", ");
+			cond.append(searchCodeItem.getSearchCode());
+
+			if (ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == DataType.CHARACTER) || 
+					(ctgItemData.get().getDataType() == DataType.DATE) || (ctgItemData.get().getDataType() == DataType.TIME))) {
+				cond.append("'");
+				cond.append(searchCodeItem.getSearchCode());
+				cond.append("'");
+			} else {
+				cond.append(searchCodeItem.getSearchCode());
+			}
+		}
+		
+		return outCndDetailItem;
 	}
 	
 	
@@ -260,6 +261,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	//サーバ外部出力データ取得SQL
 	@SuppressWarnings("unchecked")
 	private String getExOutDataSQL(String sid, boolean isdataType, ExOutSetting exOutSetting, Map<String, Object> settingResult) {
+		String cid = AppContexts.user().companyId();
 		StringBuilder sql = new StringBuilder();
 		sql.append("select");
 		
@@ -279,9 +281,75 @@ public class CreateExOutTextService extends ExportService<Object> {
 			sql.append(" ");
 			sql.append(item.getForm2().v());
 			sql.append(" ");
+			sql.append("where ");
+			
+			if(exCndOutput.get().getConditions().v().length() > 0) {
+				boolean isDate = false;
+				boolean isOutDate = false;
+				String startDateItemName = "";
+				String endDateItemName = "";
+				Method getAssociation;
+				Method getItemName;
+				Optional<Association> asssociation;
+				Optional<PhysicalProjectName> itemName;
+				try {
+					for(int i = 1; i <= 10; i++) {
+						getAssociation = ExCndOutput.class.getMethod(GET_ASSOCIATION + i);
+						getItemName = ExCndOutput.class.getMethod(GET_ITEM_NAME + i);
+						
+						asssociation = (Optional<Association>) getAssociation.invoke(null);
+						itemName = (Optional<PhysicalProjectName>) getItemName.invoke(null);
+						
+						if(!asssociation.isPresent() || !itemName.isPresent()) {
+							continue;
+						}
+						
+						if(asssociation.get() == Association.CCD) {
+							sql.append(itemName.get().v());
+							sql.append(" = ");
+							sql.append(cid);
+							sql.append(" and ");
+						} else if(asssociation.get() == Association.ECD) {
+							sql.append(itemName.get().v());
+							sql.append(" = ");
+							sql.append(sid);
+							sql.append(" and ");
+						} else if(asssociation.get() == Association.DATE) {
+							if(!isDate) {
+								isDate = true;
+								startDateItemName = itemName.get().v();
+							} else {
+								isOutDate = true;
+								endDateItemName = itemName.get().v();
+							}
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				if(isOutDate) {
+					sql.append(startDateItemName);
+					sql.append(" <= ");
+					sql.append(exOutSetting.getEndDate());
+					sql.append(" and ");
+					sql.append(endDateItemName);
+					sql.append(" >= ");
+					sql.append(exOutSetting.getStartDate());
+					sql.append(" and ");
+				} else if(isDate) {
+					sql.append(startDateItemName);
+					sql.append(" >= ");
+					sql.append(exOutSetting.getStartDate());
+					sql.append(" and ");
+					sql.append(startDateItemName);
+					sql.append(" <= ");
+					sql.append(exOutSetting.getEndDate());
+					sql.append(" and ");
+				}
+			}
 		});
 		
-		sql.append("where ");
 		
 		return sql.toString();
 	}
