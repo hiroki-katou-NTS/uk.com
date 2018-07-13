@@ -84,8 +84,9 @@ module nts.uk.at.view.kaf022.s.viewmodel {
 
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
+            let self = this,
+                dfd = $.Deferred();
+            self.listReason.removeAll();
             self.getData(self.selectedAppType()).done(function() {
                 if(self.listReason()){
                     self.isUpdate(true);
@@ -284,10 +285,9 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                     service.update(listUpdate).done(function() {
                         // insert item to list
                         self.getData(appTypeNow).done(function() {
-                            
-                            
+                            if(self.listReason().length > 0){
                             // delete the last item
-                            if (count == ((self.listReason().length))) {
+                            if (count == ((self.listReason().length)) ) {
                                 self.selectedOrder(self.listReason()[count - 1].keyToOrder);
                                 return;
                             }
@@ -301,6 +301,13 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                                 self.selectedOrder(self.listReason()[count].keyToOrder);
                                 return;
                             }
+                           }
+                            else{
+                               
+                            self.selectedOrder(undefined);
+                           
+                           }
+
                             
                             
                             

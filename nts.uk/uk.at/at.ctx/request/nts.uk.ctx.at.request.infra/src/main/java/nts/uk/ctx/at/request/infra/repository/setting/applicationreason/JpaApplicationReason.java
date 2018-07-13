@@ -145,7 +145,7 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 	 */
 	@Override
 	public void insertReason(ApplicationReason insert) {
-		this.commandProxy().insert(this.toEntity(insert));
+		this.commandProxy().insert(toEntity(insert));
 	}
 
 	@Override
