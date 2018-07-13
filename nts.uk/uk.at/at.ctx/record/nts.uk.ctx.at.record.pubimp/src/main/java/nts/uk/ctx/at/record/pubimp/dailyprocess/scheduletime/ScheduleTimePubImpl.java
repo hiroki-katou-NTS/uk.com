@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.pubimp.dailyprocess.scheduletime;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
@@ -22,7 +25,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 										 new AttendanceTime(0),
 										 new AttendanceTime(0),
 										 new AttendanceTime(0),
-										 new AttendanceTime(0)
+										 Collections.emptyList()
 										 );
 	}
 
