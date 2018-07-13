@@ -2,7 +2,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
     var lstWkp = [];
 
     export class ScreenModel {
-        // update ver27
+        // update ver27enumVer27z
         enumVer27 = ko.observableArray([
             { code: 0, name: nts.uk.resource.getText("KAF022_378") },
             { code: 1, name: nts.uk.resource.getText("KAF022_379") }
@@ -77,6 +77,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 systemType: 2,
                 treeType: 1
             };
+            
             self.selectedWorkplaceId.subscribe((val) => {
                 let exsistedSetting = _.find(self.lstAppApprovalSettingWkp, (setting: IApplicationApprovalSettingWkp) => {
                     return val === setting.wkpId;
@@ -88,18 +89,12 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 }
                 self.selectedSetting.wkpId(val);
             });
-            self.isUpdateMode = ko.computed(() => {
-                for (let i = 0; i < self.alreadySettingList().length; i++) {
-                    if (self.alreadySettingList()[i].workplaceId === self.selectedWorkplaceId()) {
-                        return true;
-                    }
-                }
-                return false;
-            });
+            
             $('#wkp-list').ntsTreeComponent(self.kcp004WorkplaceListOption).done(() => {
                 self.reloadData();
                 $('#wkp-list').focusTreeGridComponent();
             });
+            
             $("#fixed-table-wkp-setting").ntsFixedTable({});
             
             self.selectVer27.subscribe((value) => {
