@@ -128,7 +128,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 
 	@Override
 	public WorkTypeRemainInfor createWorkTypeRemainInfor(String cid, CreateAtr createAtr, String workTypeCode) {
-		WorkTypeRemainInfor outputData = new WorkTypeRemainInfor(null, null, new ArrayList<>(), new ArrayList<>());
+		WorkTypeRemainInfor outputData = new WorkTypeRemainInfor(null, null,null, new ArrayList<>(), new ArrayList<>());
 		//ドメインモデル「勤務種類」を取得する
 		Optional<WorkType> optWorkTypeData = workTypeRepo.findByPK(cid, workTypeCode);
 		
@@ -136,9 +136,17 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			return outputData;
 		}
 		WorkType workTypeData = optWorkTypeData.get();
-		if(workTypeData.getDailyWork().isOneDay() && !lstZansu().contains(workTypeData.getDailyWork().getOneDay())
-				|| workTypeData.getDailyWork().IsLeaveForMorning() && !lstZansu().contains(workTypeData.getDailyWork().getMorning())
-				|| workTypeData.getDailyWork().IsLeaveForAfternoon() && !lstZansu().contains(workTypeData.getDailyWork().getAfternoon())) {
+		WorkTypeClassification workTypeClass = WorkTypeClassification.Attendance;
+		if(workTypeData.getDailyWork().isOneDay()) {
+			workTypeClass = workTypeData.getDailyWork().getOneDay();
+		} else if (workTypeData.getDailyWork().IsLeaveForMorning()) {
+			workTypeClass = workTypeData.getDailyWork().getMorning();
+		} else if (workTypeData.getDailyWork().IsLeaveForAfternoon()) {
+			workTypeClass = workTypeData.getDailyWork().getAfternoon();
+			
+		}
+		outputData.setWorkTypeClass(workTypeClass);
+		if(!lstZansu().contains(workTypeClass)) {
 			return null;
 		}
 		
@@ -153,15 +161,13 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	@Override
 	public WorkTypeRemainInfor createWithOneDayWorkType(WorkType workType, WorkTypeRemainInfor dataOutput) {
 		//アルゴリズム「残数発生使用対象の勤務種類の分類かを判定」を実行する
-		JudgmentTypeOfWorkType judmentType = this.judgmentType(workType.getDailyWork().getOneDay());
+		JudgmentTypeOfWorkType judmentType = this.judgmentType(dataOutput.getWorkTypeClass());
 		if(judmentType == JudgmentTypeOfWorkType.REMAINOCCNOTCOVER) {
 			return dataOutput;
 		}
 		List<WorkTypeSet> workTypeSetList = workType.getWorkTypeSetList();
 		//勤務種類の分類をチェックする
-		if((workType.getDailyWork().isOneDay() && workType.getDailyWork().getOneDay() == WorkTypeClassification.SpecialHoliday)
-				|| (workType.getDailyWork().IsLeaveForMorning() && workType.getDailyWork().getMorning() == WorkTypeClassification.SpecialHoliday)
-				|| (workType.getDailyWork().IsLeaveForAfternoon() && workType.getDailyWork().getAfternoon() == WorkTypeClassification.SpecialHoliday)) {
+		if(dataOutput.getWorkTypeClass() == WorkTypeClassification.SpecialHoliday) {
 			//特休使用明細を追加する
 			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(dataOutput.getSpeHolidayDetailData());
 			workTypeSetList.stream().forEach(x -> {
@@ -170,9 +176,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			});
 			dataOutput.setSpeHolidayDetailData(lstSpeUseDetail);
 			return dataOutput;
-		} else if((workType.getDailyWork().isOneDay() && workType.getDailyWork().getOneDay() == WorkTypeClassification.HolidayWork)
-				|| (workType.getDailyWork().IsLeaveForMorning() && workType.getDailyWork().getMorning() == WorkTypeClassification.HolidayWork)
-				|| (workType.getDailyWork().IsLeaveForAfternoon() && workType.getDailyWork().getAfternoon() == WorkTypeClassification.HolidayWork)) {
+		} else if(dataOutput.getWorkTypeClass() == WorkTypeClassification.HolidayWork) {
 			//代休を発生させるかをチェックする
 			for (WorkTypeSet workTypeSet : workTypeSetList) {
 				if(workTypeSet.getGenSubHodiday() == WorkTypeSetCheck.NO_CHECK) {
@@ -181,9 +185,9 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			}
 		}
 		if(workType.getDailyWork().isOneDay()) {
-			return this.setData(dataOutput, 1.0, workType.getDailyWork().getOneDay());
+			return this.setData(dataOutput, 1.0, dataOutput.getWorkTypeClass());
 		} else {
-			return this.setData(dataOutput, 0.5, workType.getDailyWork().IsLeaveForMorning() ?  workType.getDailyWork().getMorning() : workType.getDailyWork().getAfternoon());
+			return this.setData(dataOutput, 0.5, dataOutput.getWorkTypeClass());
 		}
 		
 	}	
@@ -203,9 +207,9 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			return JudgmentTypeOfWorkType.REMAIN;
 		} else if (typeAtr == WorkTypeClassification.HolidayWork
 				|| typeAtr == WorkTypeClassification.Shooting) {
-			return JudgmentTypeOfWorkType.REMAINOCCNOTCOVER;
-		} else {
 			return JudgmentTypeOfWorkType.REMAINOCC;
+		} else {
+			return JudgmentTypeOfWorkType.REMAINOCCNOTCOVER;
 		}
 	}
 	/**
@@ -308,22 +312,25 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
-		//振休
-		outputData = createEachData.createInterimAbsData(inforData, WorkTypeClassification.Pause, outputData);
-		//代休
-		outputData = createEachData.createInterimDayOffData(inforData, WorkTypeClassification.SubstituteHoliday, outputData);
-		//年休
-		outputData = createEachData.createInterimAnnualHoliday(inforData, WorkTypeClassification.AnnualHoliday, outputData);
-		//積立
-		outputData = createEachData.createInterimReserveHoliday(inforData, WorkTypeClassification.YearlyReserved,	outputData);
-		//特休
-		outputData = createEachData.createInterimSpecialHoliday(inforData, WorkTypeClassification.SpecialHoliday, outputData);
-		//振出
-		outputData = createEachData.createInterimRecData(inforData, WorkTypeClassification.Shooting, outputData);
-		//休出
-		outputData = createEachData.createInterimBreak(inforData, WorkTypeClassification.HolidayWork, outputData);
+			switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
+				case Pause:
+					return createEachData.createInterimAbsData(inforData, WorkTypeClassification.Pause, outputData);
+				case SubstituteHoliday:	
+					return createEachData.createInterimDayOffData(inforData, WorkTypeClassification.SubstituteHoliday, outputData);
+				case AnnualHoliday:
+					return createEachData.createInterimAnnualHoliday(inforData, WorkTypeClassification.AnnualHoliday, outputData);
+				case YearlyReserved:
+					return createEachData.createInterimReserveHoliday(inforData, WorkTypeClassification.YearlyReserved,	outputData);
+				case SpecialHoliday:
+					return createEachData.createInterimSpecialHoliday(inforData, WorkTypeClassification.SpecialHoliday, outputData);
+				case Shooting:
+					return createEachData.createInterimRecData(inforData, WorkTypeClassification.Shooting, outputData);
+				case HolidayWork:
+					return createEachData.createInterimBreak(inforData, WorkTypeClassification.HolidayWork, outputData);
+					default:
+						return outputData;
+			}
 		
-		return outputData;
 	}
 
 	
