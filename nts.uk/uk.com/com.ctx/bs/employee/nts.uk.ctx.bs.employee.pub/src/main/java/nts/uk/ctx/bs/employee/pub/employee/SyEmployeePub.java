@@ -133,6 +133,7 @@ public interface SyEmployeePub {
 	boolean isEmployeeDelete(String sid);
 	
 	/**
+	 * 社員ID(List)から個人社員基本情報を取得
 	 * @param lstSid
 	 * @return
 	 */
