@@ -273,7 +273,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 	}
 
 	@Override
-	public List<PlanVacationHistory> findByWorkTypeAndPeriod(String cid, String workTypeCode, Period dateData) {
+	public List<PlanVacationHistory> findByWorkTypeAndPeriod(String cid, String workTypeCode, DatePeriod dateData) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -299,10 +299,10 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 				workTypeCode));
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
 				root.get(KrqmtVacationHistory_.startDate),
-				dateData.getStartDate()));
+				dateData.start()));
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(KrqmtVacationHistory_.endDate),
-				dateData.getStartDate()));
+				dateData.end()));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
