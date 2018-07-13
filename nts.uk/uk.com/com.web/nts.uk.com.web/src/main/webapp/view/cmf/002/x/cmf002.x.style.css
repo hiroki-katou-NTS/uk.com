@@ -30,3 +30,7 @@
 #execHistGrid .hide div {
 	display: none;
 }
+
+#execHistGrid .img-icon.icon-download {
+	margin-top: 5px;
+}
