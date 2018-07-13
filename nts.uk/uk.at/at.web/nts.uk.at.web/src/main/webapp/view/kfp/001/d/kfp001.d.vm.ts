@@ -71,7 +71,7 @@ module nts.uk.at.view.kfp001.d {
                     peopleNo: self.peopleNo()
 
                 }
-
+                let addAggrPeriodCommand;
                 let resourceId = nts.uk.util.randomId().slice(0, 10);
                 if (self.aggrFrameCode() == '001') {
                     self.addErrorInforCommand({
@@ -80,11 +80,8 @@ module nts.uk.at.view.kfp001.d {
                         processDay: moment(self.startDate()).utc(),
                         errorMess: 'Loi roi'
                     })
-                } else {
-                    self.addErrorInforCommand({})
-                }
-
-                var addAggrPeriodCommand = {
+                    
+                    addAggrPeriodCommand = {
                     mode: self.mode(),
                     aggrPeriodCommand: aggrPeriodDto,
                     targetCommand: targetDto,
@@ -92,6 +89,15 @@ module nts.uk.at.view.kfp001.d {
                     inforCommand: self.addErrorInforCommand()
 
                 }
+                    
+                }else{
+                    addAggrPeriodCommand = {
+                    mode: self.mode(),
+                    aggrPeriodCommand: aggrPeriodDto,
+                    targetCommand: targetDto,
+                    executionCommand: executionDto
+                    }
+                } 
 
 
                 service.addOptionalAggrPeriod(addAggrPeriodCommand).done(function(data) {

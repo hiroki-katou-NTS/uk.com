@@ -71,8 +71,10 @@ public class AddAggrPeriodCommandHandler
 				// Add Aggr Period Excution
 				excutionrRepository.addExcution(periodExcution);
 				
+				if(optionalAggrPeriod.getAggrFrameCode().v() == "001"){
 				AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);
 				inforRepository.addPeriodInfor(periodInfors);
+				}
 
 			} else {
 				throw new BusinessException("Msg_1165");
@@ -88,10 +90,12 @@ public class AddAggrPeriodCommandHandler
 
 			// Add Aggr Period Excution
 			excutionrRepository.addExcution(periodExcution);
-			
+
+			// Add 
+			if(optionalAggrPeriod.getAggrFrameCode().v() == "001"){
 			AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);
 			inforRepository.addPeriodInfor(periodInfors);
-			
+			}
 			
 
 		}
