@@ -51,4 +51,7 @@ public class TimeLeaveUpdateByWorkInfoChangeCommand {
 
 	@Builder.Default
 	Optional<WorkingConditionItem> cachedWorkCondition = Optional.empty();
+	
+	@Builder.Default
+	boolean actionOnCache = false;
 }

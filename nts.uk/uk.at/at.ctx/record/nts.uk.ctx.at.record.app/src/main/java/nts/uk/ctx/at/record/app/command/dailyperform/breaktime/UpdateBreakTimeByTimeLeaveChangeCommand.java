@@ -48,4 +48,7 @@ public class UpdateBreakTimeByTimeLeaveChangeCommand {
 
 	@Builder.Default
 	Optional<BreakTimeOfDailyPerformance> cachedBreackTime = Optional.empty();
+	
+	@Builder.Default
+	boolean actionOnCache = false;
 }

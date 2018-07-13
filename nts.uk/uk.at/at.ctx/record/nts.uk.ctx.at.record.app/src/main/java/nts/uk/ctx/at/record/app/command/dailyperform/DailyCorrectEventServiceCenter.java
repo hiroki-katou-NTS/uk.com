@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.UpdateBreakTimeByTimeLeaveChangeCommand;
@@ -127,10 +128,14 @@ public class DailyCorrectEventServiceCenter {
 						.cachedWorkCondition(Optional.of(getBySidAndDate(workCondition, wi)))
 						.cachedWorkInfo(Optional.of(wi))
 						.cachedTimeLeave(dailyRecord.getTimeLeaving().getData())
+						.actionOnCache(true)
 						.isTriggerRelatedEvent(eventTriggerBus.isTriggerRelatedEvent)
 						.cachedWorkType(Optional.ofNullable(workTypes.get(wi.getRecordInfo().getWorkTypeCode()))).build();
-				TimeLeavingOfDailyPerformance  timeLeaveCorrected = timeLeaveCorrectHandler.handle(timeLeaveEvent);
-				dailyRecord.getTimeLeaving().updateDataO(Optional.ofNullable(timeLeaveCorrected));
+				EventHandleResult<TimeLeavingOfDailyPerformance> timeLeaveCorrected = timeLeaveCorrectHandler.handle(timeLeaveEvent);
+				if(timeLeaveCorrected.action != EventHandleAction.ABORT){
+					dailyRecord.getTimeLeaving().updateDataO(Optional.ofNullable(timeLeaveCorrected.data));
+					dailyRecord.getBreakTime().shouldDeleteIfNull();
+				}
 			}
 			
 			if(c.getValue().shouldCorreactBreakTime() && eventTriggerBus.triggerBreakTime){
@@ -140,16 +145,18 @@ public class DailyCorrectEventServiceCenter {
 						.companyId(Optional.of(companyId))
 						.cachedEditState(Optional.of(dailyRecord.getEditState().getData()))
 						.cachedWorkInfo(Optional.of(wi))
+						.actionOnCache(true)
 						.cachedTimeLeave(dailyRecord.getTimeLeaving().getData())
 						.cachedWorkType(Optional.ofNullable(workTypes.get(wi.getRecordInfo().getWorkTypeCode())))
 						.isTriggerRelatedEvent(eventTriggerBus.isTriggerRelatedEvent)
 						.cachedBreackTime(dailyRecord.getBreakTime().getData()
 								.stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst())
 						.build();
-				BreakTimeOfDailyPerformance  breakTimeCorrected = breakTimeCorrectHandler.handle(breakTimeEvent);
-				if(breakTimeCorrected == null){
+				EventHandleResult<BreakTimeOfDailyPerformance>  breakTimeCorrected = breakTimeCorrectHandler.handle(breakTimeEvent);
+				if(breakTimeCorrected.action == EventHandleAction.DELETE){
 					dailyRecord.getBreakTime().getData().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
-				} else {
+					dailyRecord.getBreakTime().shouldDeleteIfNull();
+				} else if(breakTimeCorrected.action == EventHandleAction.INSERT || breakTimeCorrected.action == EventHandleAction.INSERT) {
 					dailyRecord.getBreakTime().updateData(breakTimeCorrected);
 				}
 			}
@@ -164,6 +171,31 @@ public class DailyCorrectEventServiceCenter {
 			return null;
 		}
 		return workCondition.get(wi.getEmployeeId()).get(wi.getYmd());
+	}
+	
+	@AllArgsConstructor
+	public static class EventHandleResult<T> {
+		
+		EventHandleAction action;
+		
+		T data;
+		
+		public static <T> EventHandleResult<T> withResult(EventHandleAction action, T data){
+			return new EventHandleResult<T>(action, data);
+		}
+	}
+	
+	@AllArgsConstructor
+	public enum EventHandleAction {
+		
+		DELETE(1, "DELETE"),
+		UPDATE(2, "UPDATE"),
+		INSERT(3, "INSERT"),
+		ABORT(4, "ABORT");
+		
+		final int value;
+		
+		final String name;
 	}
 	
 	@Builder

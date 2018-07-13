@@ -22,7 +22,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLog
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandUpdateHandler;
@@ -52,6 +51,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDai
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -265,6 +265,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private DailyCorrectionLogCommandHandler handlerLog;
 	
+	@Inject
+	private AdTimeAndAnyItemAdUpService registerCalcedService;
+	
 	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
@@ -316,7 +319,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		if(!items.isEmpty()){
 			return items;
 		}
-		updateDomainAfterCalc(commands, isUpdate, calced);
+		updateDomainAfterCalc(calced);
 		
 		registerErrorWhenCalc(toMapParam(commands), 
 				calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
@@ -345,7 +348,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		}
 		//TODO update data
 		registerNotCalcDomain(commandNewAfter, isUpdate);
-		updateDomainAfterCalc(commandNewAfter, isUpdate, domainDailyNew);
+		updateDomainAfterCalc(domainDailyNew);
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
@@ -353,27 +356,29 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		return items;
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<DailyRecordWorkCommand> commands,
-			boolean isUpdate, List<IntegrationOfDaily> calced) {
-		commands.stream().forEach(c -> {
-			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
-					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
-			.findFirst().ifPresent(d -> {
-				DOMAIN_CHANGED_BY_CALCULATE.stream().forEach(layout -> {
-					T command = (T) c.getCommand(layout);
-					Object updatedD = getDomain(layout, d);
-					if(updatedD != null){
-						updateCommandData(command, updatedD);
-						CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
-						if(handler != null){
-							handler.handle(command);
-						}
-					}
-				});
-				
-			});
+	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
+		calced.stream().forEach(c -> {
+			registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
+					c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
 		});
+//		commands.stream().forEach(c -> {
+//			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
+//					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
+//			.findFirst().ifPresent(d -> {
+//				DOMAIN_CHANGED_BY_CALCULATE.stream().forEach(layout -> {
+//					T command = (T) c.getCommand(layout);
+//					Object updatedD = getDomain(layout, d);
+//					if(updatedD != null){
+//						updateCommandData(command, updatedD);
+//						CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
+//						if(handler != null){
+//							handler.handle(command);
+//						}
+//					}
+//				});
+//				
+//			});
+//		});
 	}
 	
 	@SuppressWarnings({ "unchecked" })
