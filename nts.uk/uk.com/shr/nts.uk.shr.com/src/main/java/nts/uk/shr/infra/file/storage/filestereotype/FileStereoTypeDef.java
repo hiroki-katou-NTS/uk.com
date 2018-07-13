@@ -11,6 +11,7 @@ import nts.uk.shr.infra.file.storage.filestereotype.defines.DocumentFileStereoTy
 import nts.uk.shr.infra.file.storage.filestereotype.defines.FlowMenuStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SampleFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SamplePackStereoType;
+import nts.uk.shr.infra.file.storage.filestereotype.defines.TemporaryZipStereoType;
 
 final class FileStereoTypeDef {
 	
