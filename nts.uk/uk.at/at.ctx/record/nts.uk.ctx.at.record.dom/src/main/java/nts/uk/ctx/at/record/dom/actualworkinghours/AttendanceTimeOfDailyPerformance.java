@@ -292,7 +292,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 									|| workType.getDailyWork().isHolidayWork()
 									|| recordOneDay.getPredetermineTimeSetForCalc() == null)
 									?new AttendanceTime(0)
-									:recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
+//									:recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
+									:recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());	
 		//予定勤務種類が設定されてなかったら、実績の所定労働のみ埋めて返す
 		if(!scheRegetManage.getWorkType().isPresent()) return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime),new AttendanceTime(0),actualPredWorkTime);
 		
@@ -322,7 +323,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			//計画所定時間の計算
 			schePreTimeSet = Optional.of(scheRegetManage.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
 			shedulePreWorkTime = (schePreTimeSet.isPresent() && !scheRegetManage.getWorkType().get().getDailyWork().isHolidayWork())
-									  ? schePreTimeSet.get().getPredetermineTimeByAttendanceAtr(scheRegetManage.getWorkType().get().getDailyWork().decisionNeedPredTime())
+//									  ? schePreTimeSet.get().getPredetermineTimeByAttendanceAtr(scheRegetManage.getWorkType().get().getDailyWork().decisionNeedPredTime())
+					                  ? schePreTimeSet.get().getpredetermineTime(scheRegetManage.getWorkType().get().getDailyWork())
 									  :new AttendanceTime(0);
 		}
 		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime),shedulePreWorkTime,actualPredWorkTime);
