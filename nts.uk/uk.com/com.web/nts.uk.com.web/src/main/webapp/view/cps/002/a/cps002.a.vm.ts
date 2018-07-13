@@ -644,6 +644,7 @@ module cps002.a.vm {
         prev() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.layout().listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }

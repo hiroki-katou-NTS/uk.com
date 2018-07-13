@@ -25,12 +25,27 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KfnmtItemWorkSchedule.
- * @author HoangDD
+ */
+
+/**
+ * Gets the lst kfnmt print remark cont.
+ *
+ * @return the lst kfnmt print remark cont
  */
 @Getter
+
+/**
+ * Sets the lst kfnmt print remark cont.
+ *
+ * @param lstKfnmtPrintRemarkCont the new lst kfnmt print remark cont
+ */
 @Setter
 @Entity
 @Table(name="KFNMT_ITEM_WORK_SCHEDULE")
+
+/**
+ * Instantiates a new kfnmt item work schedule.
+ */
 @NoArgsConstructor
 public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	
@@ -48,6 +63,10 @@ public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	/** The work type name display. */
 	@Column(name="WORKTYPE_NAME_DISPLAY")
 	private BigDecimal workTypeNameDisplay;
+	
+	/** The remark input no. */
+	@Column(name="REMARK_INPUT_NO")
+	private BigDecimal remarkInputNo; 
 
 	/** The lst kfnmt attendance display. */
 	@OneToMany(cascade=CascadeType.ALL)
