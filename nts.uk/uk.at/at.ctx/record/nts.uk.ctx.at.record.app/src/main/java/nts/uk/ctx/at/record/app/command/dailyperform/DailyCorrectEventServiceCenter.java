@@ -56,23 +56,26 @@ public class DailyCorrectEventServiceCenter {
 	
 	public List<DailyRecordWorkCommand> correctTimeLeaveAndBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(false).triggerBreakTime(true).triggerTimeLeave(true).build();
-		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, mergeItems(WORK_INFO_ITEMS, LEAVE_ITEMS, ATTENDANCE_ITEMS)), 
+		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, eventBus), 
 				companyId, eventBus);
 	}
 	
 	public List<DailyRecordWorkCommand> correctTimeLeave(List<DailyRecordWorkCommand> sources, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(true).triggerBreakTime(false).triggerTimeLeave(true).build();
-		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, mergeItems(WORK_INFO_ITEMS)), companyId, eventBus);
+		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, eventBus), companyId, eventBus);
 	}
 	
 	public List<DailyRecordWorkCommand> correctBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(true).triggerBreakTime(true).triggerTimeLeave(false).build();
-		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, mergeItems(LEAVE_ITEMS, ATTENDANCE_ITEMS)), companyId, eventBus);
+		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, eventBus), companyId, eventBus);
 	}
 
-	private Map<DailyRecordWorkCommand, Boolean> mapShouldTriggerSources(List<DailyRecordWorkCommand> sources, List<Integer> triggerItems) {
+	private Map<DailyRecordWorkCommand, EventTriggerBus> mapShouldTriggerSources(List<DailyRecordWorkCommand> sources, EventTrigger eventBus) {
+		List<Integer> timeLeaveItems = mergeItems(ATTENDANCE_ITEMS, LEAVE_ITEMS);
 		return sources.stream().collect(Collectors.toMap(s -> s, s -> {
-			return s.itemValues().stream().filter(i -> triggerItems.contains(i.itemId())).findFirst().isPresent();
+			boolean workInfoChanged = s.itemValues().stream().anyMatch(i -> WORK_INFO_ITEMS.contains(i.itemId()));
+			boolean timeLeaveChanged = s.itemValues().stream().anyMatch(i -> timeLeaveItems.contains(i.itemId()));
+			return EventTriggerBus.builder().workInfoChanged(workInfoChanged).timeLeaveChanged(timeLeaveChanged).build();
 		}));
 	}
 	
@@ -81,12 +84,12 @@ public class DailyCorrectEventServiceCenter {
 		return Stream.of(sources).flatMap(List::stream).collect(Collectors.toList());
 	}
 	
-	private List<DailyRecordWorkCommand> prepareSourceAndFireEvent(Map<DailyRecordWorkCommand, Boolean> sources, 
+	private List<DailyRecordWorkCommand> prepareSourceAndFireEvent(Map<DailyRecordWorkCommand, EventTriggerBus> sources, 
 			String companyId, EventTrigger eventBus){
 		if(sources.isEmpty()){
 			return new ArrayList<>();
 		}
-		if(!sources.values().stream().anyMatch(c -> c)){
+		if(!sources.values().stream().anyMatch(c -> c.shouldTriggerEvent())){
 			return new ArrayList<>(sources.keySet()); 
 		}
 		Set<String> workTypeCode = new HashSet<>();
@@ -105,17 +108,17 @@ public class DailyCorrectEventServiceCenter {
 
 	private Map<String, Map<GeneralDate, WorkingConditionItem>> getWorkCondition(EventTrigger eventBus,
 			Map<String, Set<GeneralDate>> employeeIds) {
-		return eventBus.triggerTimeLeave ? null : workConditionRepo.getBySidAndPeriod(employeeIds);
+		return !eventBus.triggerTimeLeave ? null : workConditionRepo.getBySidAndPeriod(employeeIds);
 	}
 
-	private List<DailyRecordWorkCommand> triggerEvent(Map<DailyRecordWorkCommand, Boolean> sources, String companyId,
+	private List<DailyRecordWorkCommand> triggerEvent(Map<DailyRecordWorkCommand, EventTriggerBus> sources, String companyId,
 			Map<WorkTypeCode, WorkType> workTypes, Map<String, Map<GeneralDate, WorkingConditionItem>> workCondition,
 			EventTrigger eventTriggerBus) {
 		return sources.entrySet().stream().map(c -> {
 			DailyRecordWorkCommand dailyRecord = c.getKey();
 			WorkInfoOfDailyPerformance wi = dailyRecord.getWorkInfo().getData();
 			
-			if(c.getValue() && eventTriggerBus.triggerTimeLeave){
+			if(c.getValue().shouldCorrectTimeLeave() && eventTriggerBus.triggerTimeLeave){
 				TimeLeaveUpdateByWorkInfoChangeCommand timeLeaveEvent = TimeLeaveUpdateByWorkInfoChangeCommand
 						.builder().employeeId(dailyRecord.getEmployeeId())
 						.targetDate(dailyRecord.getWorkDate())
@@ -130,7 +133,7 @@ public class DailyCorrectEventServiceCenter {
 				dailyRecord.getTimeLeaving().updateDataO(Optional.ofNullable(timeLeaveCorrected));
 			}
 			
-			if(c.getValue() && eventTriggerBus.triggerBreakTime){
+			if(c.getValue().shouldCorreactBreakTime() && eventTriggerBus.triggerBreakTime){
 				UpdateBreakTimeByTimeLeaveChangeCommand breakTimeEvent = UpdateBreakTimeByTimeLeaveChangeCommand
 						.builder().employeeId(dailyRecord.getEmployeeId())
 						.workingDate(dailyRecord.getWorkDate())
@@ -172,4 +175,25 @@ public class DailyCorrectEventServiceCenter {
 		
 		boolean triggerBreakTime;
 	}
+	
+	@Builder
+	private static class EventTriggerBus {
+		
+		boolean workInfoChanged;
+		
+		boolean timeLeaveChanged;
+		
+		boolean shouldCorreactBreakTime() { 
+			return timeLeaveChanged || shouldCorrectTimeLeave();
+		}
+		
+		boolean shouldCorrectTimeLeave() { 
+			return workInfoChanged;
+		}
+		
+		boolean shouldTriggerEvent() {
+			return shouldCorreactBreakTime();
+		}
+	}
+	
 }
