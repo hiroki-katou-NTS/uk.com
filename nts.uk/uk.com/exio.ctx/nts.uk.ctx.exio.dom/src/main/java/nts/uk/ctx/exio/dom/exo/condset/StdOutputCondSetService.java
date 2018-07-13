@@ -1,12 +1,17 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -15,6 +20,8 @@ public class StdOutputCondSetService {
 	
 	@Inject
 	private StdOutputCondSetRepository stdOutputCondSetRepository;
+	@Inject
+	private AcquisitionExOutSetting mAcquisitionExOutSetting;
 	
 	
 	//Screen T
@@ -79,6 +86,18 @@ public class StdOutputCondSetService {
 		if (screenMode.equals("update")) {
 			stdOutputCondSetRepository.update(stdOutputCondSet);
 		}
+	}
+	public List<StdOutputCondSet> getListStandardOutputItem(List<StdOutputCondSet> data){
+		String userID = AppContexts.user().userId();
+		
+		for(StdOutputCondSet temp: data){
+			if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(),userID,temp.getItemOutputName().toString(),true,true).isEmpty()){
+				data.remove(temp);
+			}
+		}
+		
+		return data;
+		
 	}
 	
 	

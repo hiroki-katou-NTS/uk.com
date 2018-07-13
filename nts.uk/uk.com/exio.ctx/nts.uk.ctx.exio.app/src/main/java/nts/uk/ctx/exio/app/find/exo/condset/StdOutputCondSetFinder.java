@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.app.find.exo.condset;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,7 +11,9 @@ import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
 import nts.uk.ctx.exio.dom.exo.condset.CondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,6 +32,9 @@ public class StdOutputCondSetFinder {
 
 	@Inject
 	private StandardOutputItemRepository standardOutputItemRepository;
+	
+	@Inject
+	private StdOutputCondSetService mStdOutputCondSetService;
 
 	public List<StdOutputCondSetDto> getAllStdOutputCondSet() {
 		return finder.getAllStdOutputCondSet().stream().map(item -> StdOutputCondSetDto.fromDomain(item))
@@ -56,12 +60,13 @@ public class StdOutputCondSetFinder {
 				cndSetCd);
 		return stdOutItemOpt.map(StdOutItemDto::fromDomain).orElse(null);
 	}
-	public  List<StdOutputCondSet> getConditionSetting(String modeScreen, String cndSetCd) {
+
+	public List<StdOutputCondSet> getConditionSetting(String modeScreen, String cndSetCd) {
 		String cId = AppContexts.user().companyId();
-		List<StdOutputCondSet> stdOutputCondSetList = new ArrayList<StdOutputCondSet>();
-		finder.getStdOutputCondSetById(cId, cndSetCd)
-		.ifPresent(item -> stdOutputCondSetList.add(item));
-		return stdOutputCondSetList;
+	
+		return  mStdOutputCondSetService.getListStandardOutputItem(finder.getStdOutputCondSetById(cId, Optional.ofNullable(cndSetCd)));
 	}
+
+	
 
 }

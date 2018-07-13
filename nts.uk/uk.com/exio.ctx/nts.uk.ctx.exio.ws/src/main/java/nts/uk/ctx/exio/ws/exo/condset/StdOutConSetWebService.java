@@ -18,6 +18,7 @@ import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.dom.exo.condset.CondSet;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 
 @Path("exio/exo/condset")
 @Produces("application/json")
