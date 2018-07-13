@@ -144,7 +144,7 @@ public class JpaMonthMergeRepository extends JpaRepository implements MonthMerge
 
 		entity.toEntityOverTime(monthMerge.getOverTimeMerge());
 		entity.toEntityPremiumTime(monthMerge.getPremiumTimeMerge());
-		entity.toEntityExcessOutsideWorkOfMonthly(monthMerge.getExcessOutsideWorkOfMonthlyMerge());
+		entity.toEntityExcessOutsideWorkOfMonthly(monthMerge.getExcessOutsideWorkOfMonthly());
 		entity.toEntityExcessOutsideWorkMerge(monthMerge.getExcessOutsideWorkMerge());
 		entity.toEntitySpecificDays(monthMerge.getSpecificDaysMerge());
 
@@ -228,7 +228,7 @@ public class JpaMonthMergeRepository extends JpaRepository implements MonthMerge
 		monthMerge.setRegularAndIrregularTimeOfMonthly(entity.toDomainRegularAndIrregularTimeOfMonthly());
 		monthMerge.setVacationUseTimeOfMonthly(entity.toDomainVacationUseTimeOfMonthly());
 		monthMerge.setVerticalTotalOfMonthly(entity.toDomainVerticalTotalOfMonthly());
-		monthMerge.setExcessOutsideWorkOfMonthlyMerge(entity.toDomainExcessOutsideWorkOfMonthly());
+		monthMerge.setExcessOutsideWorkOfMonthly(entity.toDomainExcessOutsideWorkOfMonthly());
 		monthMerge.setExcessOutsideWorkMerge(entity.toDomainExcessOutsideWork());
 		monthMerge.setAgreementTimeOfMonthly(entity.toDomainAgreementTimeOfMonthly());
 		monthMerge.setAffiliationInfoOfMonthly(entity.toDomainAffiliationInfoOfMonthly());

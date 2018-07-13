@@ -4280,10 +4280,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.totalWorkingTime), 
 				aggregateTotalTimeSpent, 
 				agreementTime);
-		// TODO:LamVT-HERE ----------------------------()()()()()()()()()()-----------
 		// 月別実績の時間外超過
 		ExcessOutsideWorkOfMonthly excessOutsideWork = toDomainExcessOutsideWorkOfMonthly();
 		
+		// TODO:LamVT-HERE ----------------------------()()()()()()()()()()-----------
 		// 月別実績の縦計
 		VerticalTotalOfMonthly verticalTotal = toDomainVerticalTotalOfMonthly();
 		
