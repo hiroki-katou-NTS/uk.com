@@ -272,14 +272,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 */
 	// init session
 	public CheckChangePassDto initSession(UserImportNew user) {
-		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
+		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId().get());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
+			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(), null,
 					null, null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
-					user.getAssociatePersonId());
+					user.getAssociatePersonId().get());
 
 			if (opEm.isPresent()) {
 				// Check employee deleted status.
@@ -291,12 +291,12 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					.findById(lstCompanyId.get(FIST_COMPANY));
 			if (opEm.isPresent()) {
 				// set info to session if em # null
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(),
+				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
 						companyInformation.getCompanyId(), companyInformation.getCompanyCode(),
 						opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
 			} else {
 				// set info to session
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(),
+				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
 						companyInformation.getCompanyId(), companyInformation.getCompanyCode(), null, null);
 			}
 		}
@@ -643,8 +643,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		
 		List<EmployeeInfoDtoImport> employees = new ArrayList<>();
 		
-		if (!user.get().getAssociatePersonId().isEmpty()){
-			employees.addAll(this.employeeInfoAdapter.getEmpInfoByPid(user.get().getAssociatePersonId()));
+		if (!user.get().getAssociatePersonId().get().isEmpty()){
+			employees.addAll(this.employeeInfoAdapter.getEmpInfoByPid(user.get().getAssociatePersonId().get()));
 			
 			employees.forEach(empItem -> {
 				//アルゴリズム「社員が削除されたかを取得」を実行する (Execute the algorithm "社員が削除されたかを取得")
