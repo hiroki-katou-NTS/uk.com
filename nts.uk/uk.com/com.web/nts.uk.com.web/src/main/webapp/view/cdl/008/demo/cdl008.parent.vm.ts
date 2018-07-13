@@ -29,7 +29,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 {code : 5, name: '管理者', enable: self.enable}
             ]);   
             self.selectedSystemType = ko.observable(5);         
-            self.restrictionOfReferenceRange = false;
+            self.restrictionOfReferenceRange = true;
             self.isDisplayUnselect = ko.observable(false);
             self.isShowBaseDate = ko.observable(false);
 

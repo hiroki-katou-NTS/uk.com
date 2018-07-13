@@ -29,7 +29,7 @@ module nts.uk.com.view.cdl008.a {
                 self.isMultipleSelect = false;
                 self.isMultipleUse = false;
                 self.selectedSystemType = ko.observable(5);
-                self.restrictionOfReferenceRange = false;
+                self.restrictionOfReferenceRange = true;
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
