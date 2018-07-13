@@ -23,7 +23,8 @@ final class FileStereoTypeDef {
 				new FlowMenuStereoType(), 
 				new AvatarFileStereoType(),
 				new CsvFileStereoType(),
-				new DocumentFileStereoType()
+				new DocumentFileStereoType(),
+				new TemporaryZipStereoType()
 				
 				).stream().forEach(d -> {
 					map.put(d.name(), d);
