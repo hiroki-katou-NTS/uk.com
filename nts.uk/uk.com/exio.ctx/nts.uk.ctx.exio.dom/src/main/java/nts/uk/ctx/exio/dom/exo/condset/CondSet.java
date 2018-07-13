@@ -1,13 +1,7 @@
-package nts.uk.ctx.exio.dom.exo.exechist;
+package nts.uk.ctx.exio.dom.exo.condset;
 
 import lombok.Getter;
 import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
-import nts.uk.ctx.exio.dom.exo.condset.Delimiter;
-import nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode;
-import nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionName;
-import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
-import nts.uk.ctx.exio.dom.exo.condset.StringFormat;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

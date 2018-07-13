@@ -17,7 +17,7 @@ import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+import nts.uk.ctx.exio.dom.exo.condset.CondSet;
 
 @Path("exio/exo/condset")
 @Produces("application/json")
@@ -43,7 +43,7 @@ public class StdOutConSetWebService extends WebService {
 
 	@POST
 	@Path("getCndSet")
-	public List<StdOutputCondSet> getCndSet() {
+	public List<CondSet> getCndSet() {
 		return stdOutputCondSetFinder.getCndSet();
 	}
 

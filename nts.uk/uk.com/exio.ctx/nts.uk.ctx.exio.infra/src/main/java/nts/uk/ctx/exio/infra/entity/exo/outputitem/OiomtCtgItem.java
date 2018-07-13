@@ -38,7 +38,7 @@ public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "CTG_ID")
-	public String ctgId;
+	public int ctgId;
 
 	/**
 	 * 演算符号

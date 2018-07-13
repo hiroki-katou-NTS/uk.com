@@ -15,18 +15,18 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         decimalDigit: KnockoutObservable<number>;
         decimalPointClassification: KnockoutObservable<number>;
         decimalFraction: KnockoutObservable<number>;
-        outputMinusAsZeroChecked: KnockoutObservable<boolean> = ko.observable(false);
-        outputMinusAsZero: KnockoutObservable<number>;
-        fixedValueOperation: KnockoutObservable<number>;
-        fixedValueOperationSymbol: KnockoutObservable<number>;
-        fixedCalculationValue: KnockoutObservable<number>;
-        fixedLengthOutput: KnockoutObservable<number>;
-        fixedLongIntegerDigit: KnockoutObservable<number>;
-        fixedLengthEditingMothod: KnockoutObservable<number>;
-        nullValueSubs: KnockoutObservable<number>;
-        valueOfNullValueSubs: KnockoutObservable<number>;
-        fixedValue: KnockoutObservable<number>;
-        valueOfFixedValue: KnockoutObservable<string>;
+        outputMinusAsZeroChecked: KnockoutObservable<boolean>;
+        outputMinusAsZero: KnockoutObservable<number> = ko.observable(0);
+        fixedValueOperation: KnockoutObservable<number> = ko.observable(0);
+        fixedValueOperationSymbol: KnockoutObservable<number> = ko.observable(0);
+        fixedCalculationValue: KnockoutObservable<number> = ko.observable(0);
+        fixedLengthOutput: KnockoutObservable<number> = ko.observable(0);
+        fixedLongIntegerDigit: KnockoutObservable<number> = ko.observable(0);
+        fixedLengthEditingMothod: KnockoutObservable<number> = ko.observable(0);
+        nullValueSubs: KnockoutObservable<number> = ko.observable(0);
+        valueOfNullValueSubs: KnockoutObservable<number> = ko.observable(0);
+        fixedValue: KnockoutObservable<number> = ko.observable(0);
+        valueOfFixedValue: KnockoutObservable<string> = ko.observable("");
         inputMode: boolean;
         selectedValue: KnockoutObservable<any>;
 
@@ -38,7 +38,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         decimalSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDecimalSelect());
         decimalSelection: KnockoutObservable<number> = ko.observable(0);
         //L3_1
-        minuteFractionDigit: KnockoutObservable<number>;
+        minuteFractionDigit: KnockoutObservable<number> = ko.observable(0);
         //L3_3
         itemListRounding: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRounding());
         minuteFractionDigitProcessCla: KnockoutObservable<number> = ko.observable(0);
@@ -69,35 +69,37 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         //Defaut Mode Screen
         // 0 = Individual
         // 1 = initial
-        selectModeScreen: KnockoutObservable<number> = ko.observable(0);
+        selectModeScreen: KnockoutObservable<number> = ko.observable(1);
 
         enableSettingSubmit: KnockoutObservable<boolean> = ko.observable(true);
-        enableRequired: KnockoutObservable<boolean> = ko.observable(true);
-        
+        enableRequired: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             var self = this;
             self.inputMode = true;
-            //self.validateData();
-            self.outputMinusAsZero = ko.observable(0);
-            self.minuteFractionDigit = ko.observable(0);
-            self.fixedValueOperation = ko.observable(0);
-            self.fixedValueOperationSymbol = ko.observable(0);
-            self.fixedCalculationValue = ko.observable(0);
-            self.fixedLengthOutput = ko.observable(0);
-            self.fixedLongIntegerDigit = ko.observable(0);
-            self.fixedLengthEditingMothod = ko.observable(0);
-            self.nullValueSubs = ko.observable(0);
-            self.valueOfNullValueSubs = ko.observable(0);
-            self.fixedValue = ko.observable(0);
-            self.valueOfFixedValue = ko.observable("");
         }
 
         sendData() {
             var self = this;
-            if(self.minuteFractionDigit == null){
-                $('#L3_1').ntsError('set', {messageId:"Msg_658"});
+            if (self.minuteFractionDigit() == "") {
+                $('#L3_1').ntsError('set', { messageId: "Msg_658" });
             }
-            
+
+            if (self.fixedValueOperation() == 1) {
+                self.enableRequired(true);
+                if (self.fixedCalculationValue() == "") {
+                    $('#L7_3').ntsError('set', { messageId: "Msg_658" });
+                }
+            }
+
+            if (self.fixedLengthOutput() == 1) {
+                self.enableRequired(true);
+                if (self.fixedLongIntegerDigit() == "" || self.fixedLongIntegerDigit() < 1) {
+                    $('#L8_2_2').ntsError('set', { messageId: "Msg_658" });
+                }
+            }
+
+
             let data = {
                 selectHourMinute: self.selectHourMinute(),
                 minuteFractionDigit: self.minuteFractionDigit(),
@@ -185,7 +187,6 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             //Check Mode Screen 
             if (self.selectModeScreen() == 0) {
                 self.enableSettingSubmit(false);
-                self.enableRequired(false);
             }
             service.findPerformSettingByTime().done(result => {
                 let getData = result;
@@ -206,6 +207,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                     self.valueOfNullValueSubs(getData.valueOfNullValueSubs);
                     self.fixedValue(getData.fixedValue);
                     self.valueOfFixedValue(getData.valueOfFixedValue);
+                    self.outputMinusAsZero() == 1 ? self.outputMinusAsZeroChecked(true) : self.outputMinusAsZeroChecked(false);
                 }
             }).fail(function(error) {
 

@@ -20,8 +20,8 @@ public class OutputCodeConvertWebService extends WebService {
 	private OutputCodeConvertFinder outputCodeConvertFinder;
 
 	@POST
-	@Path("getAllOutputCodeConvert/{cid}")
-	public List<OutputCodeConvertDTO> getAllOutputCodeConvert(@PathParam("cid") String cid) {
-		return this.outputCodeConvertFinder.getOutputCodeConvertByCid(cid);
+	@Path("getOutputCodeConvertByCompanyId")
+	public List<OutputCodeConvertDTO> getOutputCodeConvertByCid() {
+		return this.outputCodeConvertFinder.getOutputCodeConvertByCid();
 	}
 }

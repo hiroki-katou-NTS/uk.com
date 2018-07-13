@@ -259,5 +259,20 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(5, getText('CMF002_371'))
         ];
     }
+    
+    export class OutputCodeConvert {
+        convertCode: KnockoutObservable<string>;
+        convertName: KnockoutObservable<string>;
+        acceptWithoutSetting: KnockoutObservable<number>;
+        dispConvertCode: string;
+        dispConvertName: string;
 
+        constructor(code: string, name: string, acceptWithoutSetting: number) {
+            this.convertCode = ko.observable(code);
+            this.convertName = ko.observable(name);
+            this.acceptWithoutSetting = ko.observable(acceptWithoutSetting);
+            this.dispConvertCode = code;
+            this.dispConvertName = name;
+        }
+    }
 }

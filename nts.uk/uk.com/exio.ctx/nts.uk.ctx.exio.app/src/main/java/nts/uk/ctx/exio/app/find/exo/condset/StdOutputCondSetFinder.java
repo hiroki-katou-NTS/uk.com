@@ -9,7 +9,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+import nts.uk.ctx.exio.dom.exo.condset.CondSet;
+import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
@@ -35,9 +36,11 @@ public class StdOutputCondSetFinder {
 				.collect(Collectors.toList());
 	}
 
-	public List<StdOutputCondSet> getCndSet() {
+	public List<CondSet> getCndSet() {
 		String cId = AppContexts.user().companyId();
-		return acquisitionSettingList.getAcquisitionSettingList(cId, null);
+		String employeeId = AppContexts.user().employeeId();
+		return acquisitionSettingList.getAcquisitionSettingList(cId, employeeId, StandardAttr.STANDARD,
+				Optional.empty());
 	}
 
 	public List<StdOutItemDto> getOutItem(String cndSetCd) {

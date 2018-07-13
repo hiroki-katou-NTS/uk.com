@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
+import nts.uk.ctx.exio.dom.exo.condset.CondSet;
 
 @AllArgsConstructor
 @Getter
