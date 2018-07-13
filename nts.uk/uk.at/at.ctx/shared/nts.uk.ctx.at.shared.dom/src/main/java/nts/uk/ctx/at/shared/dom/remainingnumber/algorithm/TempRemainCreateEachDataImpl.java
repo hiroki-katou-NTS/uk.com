@@ -147,33 +147,33 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	public DailyInterimRemainMngData createInterimRecData(InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
 		// 残数作成元情報のアルゴリズム「分類を指定して発生使用明細を取得する」を実行する
-		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
-		if(!occUseDetail.isPresent()) {
-			return mngData;
-		}
-		//アルゴリズム「振休使用期限日の算出」を実行する
-		GeneralDate useDate = this.getUseDays(inforData);
-		String mngId = IdentifierUtil.randomUniqueId();
-		InterimRemain remainMng = new InterimRemain(mngId,
-				inforData.getSid(),
-				inforData.getYmd(),
-				inforData.getWorkTypeRemain().get().getCreateData(), 
-				RemainType.PICKINGUP, 
-				RemainAtr.SINGLE);
-		List<OccurrenceUseDetail> occurrenceDetailData =  inforData.getWorkTypeRemain().get().getOccurrenceDetailData()
-				.stream().filter(x -> x.getWorkTypeAtr() == workTypeClass)
-				.collect(Collectors.toList());
-		
-		InterimRecMng recMng = new InterimRecMng(mngId,
-				useDate,
-				new OccurrenceDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()),
-				StatutoryAtr.NONSTATURORY,
-				new UnUsedDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()));
-		mngData.setRecData(Optional.of(recMng));
-		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
-		recAbsData.add(remainMng);
-		mngData.setRecAbsData(recAbsData);
-		return mngData;
+				Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
+				if(!occUseDetail.isPresent()) {
+					return mngData;
+				}
+				//アルゴリズム「振休使用期限日の算出」を実行する
+				GeneralDate useDate = this.getUseDays(inforData);
+				String mngId = IdentifierUtil.randomUniqueId();
+				InterimRemain remainMng = new InterimRemain(mngId,
+						inforData.getSid(),
+						inforData.getYmd(),
+						inforData.getWorkTypeRemain().get().getCreateData(), 
+						RemainType.PICKINGUP, 
+						RemainAtr.SINGLE);
+				List<OccurrenceUseDetail> occurrenceDetailData =  inforData.getWorkTypeRemain().get().getOccurrenceDetailData()
+						.stream().filter(x -> x.getWorkTypeAtr() == workTypeClass)
+						.collect(Collectors.toList());
+				
+				InterimRecMng recMng = new InterimRecMng(mngId,
+						useDate,
+						new OccurrenceDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()),
+						StatutoryAtr.NONSTATURORY,
+						new UnUsedDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()));
+				mngData.setRecData(Optional.of(recMng));
+				List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
+				recAbsData.add(remainMng);
+				mngData.setRecAbsData(recAbsData);
+				return mngData;
 	}
 	/**
 	 * 振休使用期限日を取得する
@@ -211,9 +211,8 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	@Override
 	public DailyInterimRemainMngData createInterimBreak(InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
-		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(WorkTypeClassification.AnnualHoliday);
 		//代休振替情報をチェックする
-		if(occUseDetail.isPresent() || !inforData.getDayOffTranfer().isPresent()
+		if(!inforData.getDayOffTranfer().isPresent()
 				|| (inforData.getDayOffTranfer().get().getTranferTimeInfor().getTranferTime() == 0
 						&& (!inforData.getDayOffTranfer().get().getTranferTimeInfor().getDays().isPresent())
 							|| inforData.getDayOffTranfer().get().getTranferTimeInfor().getDays().get() == 0)) {
