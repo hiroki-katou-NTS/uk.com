@@ -298,10 +298,10 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 				root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.worktypeCd),
 				workTypeCode));
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(KrqmtVacationHistory_.startDate),
+				root.get(KrqmtVacationHistory_.endDate),
 				dateData.start()));
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(KrqmtVacationHistory_.endDate),
+				root.get(KrqmtVacationHistory_.startDate),
 				dateData.end()));
 
 		// set where to SQL
