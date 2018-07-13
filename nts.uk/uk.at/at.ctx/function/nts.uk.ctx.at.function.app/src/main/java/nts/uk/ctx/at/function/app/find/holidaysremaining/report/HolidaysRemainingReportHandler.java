@@ -65,7 +65,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					.collect(Collectors.toList());
 			employeeIds = this.regulationInfoEmployeeAdapter.sortEmployee(cId, employeeIds,
 					AppContexts.system().getInstallationType().value, null, null,
-					GeneralDateTime.fromString(endDate, "yyyy/MM/dd"));
+					GeneralDateTime.fromString(endDate + " 00:00", "yyyy/MM/dd HH:mm"));
 
 			Map<String, EmployeeQuery> empMap = query.getLstEmpIds().stream()
 					.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, Function.identity()));
