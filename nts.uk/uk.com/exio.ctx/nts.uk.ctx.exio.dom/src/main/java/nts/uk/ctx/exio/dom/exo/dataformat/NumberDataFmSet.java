@@ -94,7 +94,7 @@ public class NumberDataFmSet extends AggregateRoot
     /**
     * 形式選択
     */
-    private DateOutputFormat formatSelection;
+    private DecimalDivision formatSelection;
 
 	public NumberDataFmSet(String cid, int nullValueReplace,
 			String valueOfNullValueReplace, int outputMinusAsZero, int fixedValue,
