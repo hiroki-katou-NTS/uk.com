@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmf002.g.style.css" />
+			<com:scriptfile path="cmf002.g.service.js" />
+			<com:scriptfile path="cmf002.g.vm.js" />
+			<com:scriptfile path="cmf002.g.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="A_BTN_NEW">#{i18n.getText('CPS008_3')}</button>
+				<button id="A_BTN_REGISTER" class="proceed">#{i18n.getText('CPS008_4')}</button>
+				<button id="A_BTN_COPPY">#{i18n.getText('CPS008_5')}</button>
+				<button id="A_BTN_DELETE" class="danger">#{i18n.getText('CPS008_6')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="left-content" class="relative bg-green caret-background">
+					<i class="icon icon-searchbox"></i>
+					<div class="cf">
+						<div style="float: left">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</div>
+							<div
+								data-bind="ntsSearchBox: {
+									searchMode :'highlight',
+									targetKey: 'code', 
+									mode: 'igGrid',
+									comId: 'single-list',
+									items: items, 
+									selected: 'code',
+									selectedKey: 'code', 
+									fields: ['name', 'code'] }" />
+							<table id="single-list"
+								data-bind="ntsGridList: {								
+											height: 450,
+											dataSource: items,
+											primaryKey: 'code',
+											columns: columns,
+											multiple: false,
+											value: currentCode}">
+							</table>
+						</div>
+					</div>
+				</div>
+				<div id="right-content">
+					<div id="content" class="cf">
+						<button data-bind="click: addItem">Add</button>
+						<button data-bind="click: removeItem">Delete</button>
+						<table id="fixed-table">
+							<colgroup>
+								<col width="100px" />
+								<col width="100px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header">Code</th>
+									<th class="ui-widget-header">Name</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: itemList">
+								<tr>
+									<td><input data-bind="ntsTextEditor: {value: code}" /></td>
+									<td><input data-bind="ntsTextEditor: {value: name}" /></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
