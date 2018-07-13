@@ -13,6 +13,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleG
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
 import nts.uk.shr.com.context.AppContexts;
@@ -90,5 +91,13 @@ public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDaily
 	@Override
 	public NameWorkTypeOrHourZone getWorkTypeNameDisplay() {
 		return NameWorkTypeOrHourZone.valueOf(this.kfnmtItemWorkSchedule.getWorkTypeNameDisplay().intValue());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getRemarkInputNo()
+	 */
+	@Override
+	public RemarkInputContent getRemarkInputNo() {
+		return RemarkInputContent.valueOf(this.kfnmtItemWorkSchedule.getRemarkInputNo().intValue());
 	}
 }

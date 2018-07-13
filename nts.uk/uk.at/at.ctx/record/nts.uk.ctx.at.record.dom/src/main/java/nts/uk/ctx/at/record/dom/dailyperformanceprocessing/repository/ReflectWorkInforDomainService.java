@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * 
@@ -25,10 +27,15 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 public interface ReflectWorkInforDomainService {
 
 	void reflectWorkInformation(String companyID, String employeeID, GeneralDate processingDate,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport, Optional<StampReflectionManagement> stampReflectionManagement);
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem);
 
 	void reflectWorkInformationWithNoInfoImport(String companyID, String employeeID, GeneralDate processingDate,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType, Optional<StampReflectionManagement> stampReflectionManagement);
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			Optional<StampReflectionManagement> stampReflectionManagement);
 
 	AffiliationInforState createAffiliationInforOfDailyPerfor(String companyId, String employeeId, GeneralDate day,
 			String empCalAndSumExecLogID);
@@ -72,9 +79,11 @@ public interface ReflectWorkInforDomainService {
 	 * @param day
 	 * @return
 	 */
-	CalAttrOfDailyPerformance reflectCalAttOfDaiPer(String companyId, String employeeId, GeneralDate day, AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
-	
-	TimeLeavingOfDailyPerformance createStamp(String companyId, WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
+	CalAttrOfDailyPerformance reflectCalAttOfDaiPer(String companyId, String employeeId, GeneralDate day,
+			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
+
+	TimeLeavingOfDailyPerformance createStamp(String companyId,
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
 			Optional<WorkingConditionItem> workingConditionItem, TimeLeavingOfDailyPerformance timeLeavingOptional,
 			String employeeID, GeneralDate day, Optional<StampReflectionManagement> stampReflectionManagement);
 }

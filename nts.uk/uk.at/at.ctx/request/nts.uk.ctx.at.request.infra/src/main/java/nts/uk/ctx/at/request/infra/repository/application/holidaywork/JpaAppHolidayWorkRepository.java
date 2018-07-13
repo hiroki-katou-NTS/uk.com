@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.infra.repository.application.holidaywork;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,9 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 	private static final String FIND_ALL = "SELECT e FROM KrqdtAppHolidayWork e";
 
 	private static final String FIND_BY_APPID;
+	private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppHolidayWork a"
+			+ " WHERE a.krqdtAppHolidayWorkPK.cid = :companyID"
+			+ " AND a.krqdtAppHolidayWorkPK.appId IN :lstAppID";
 	static {
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
@@ -125,5 +130,27 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
 		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toDomain();
 		return Optional.of(appHolidayWork);
+	}
+	/**
+	 * get list Application Holiday Work and Frame
+	 * @author hoatt
+	 * @param companyID
+	 * @param lstAppID
+	 * @return map: key - appID, value - AppHolidayWork
+	 */
+	@Override
+	public Map<String, AppHolidayWork> getListAppHdWorkFrame(String companyID, List<String> lstAppID) {
+		Map<String, AppHolidayWork> lstMap = new HashMap<>();
+		if(lstAppID.isEmpty()){
+			return lstMap;
+		}
+		List<AppHolidayWork> lstHd =  this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppHolidayWork.class)
+			.setParameter("companyID", companyID)
+			.setParameter("lstAppID", lstAppID)
+			.getList(c -> c.toDomain());
+		for (AppHolidayWork hd : lstHd) {
+			lstMap.put(hd.getAppID(), hd);
+		}
+		return lstMap;
 	}
 }
