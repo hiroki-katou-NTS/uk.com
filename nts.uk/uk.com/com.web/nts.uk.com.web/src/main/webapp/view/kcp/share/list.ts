@@ -246,7 +246,7 @@ module kcp.share.list {
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         componentWrapperId: string;
         searchBoxId: string;
-        hasLoaded: boolean;
+        hasLoaded: boolean = false;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -324,16 +324,6 @@ module kcp.share.list {
             // Setup list column.
             self.setupListColumns();
 
-            // When itemList change -> refesh data list.
-            self.itemList.subscribe(newList => {
-                if(self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
-                    self.addOptionalContentToItemList();
-                }
-                self.hasUpdatedOptionalContent(false);
-                self.reloadNtsGridList();
-                self.createGlobalVarDataList(newList, $input);
-            });
-            
             // With list type is employee list, use employee input.
             if (self.listType == ListType.EMPLOYEE) {
                 self.initEmployeeSubscription(data);
@@ -358,7 +348,9 @@ module kcp.share.list {
         private reloadNtsGridList(): void {
             let self = this;
             if (self.hasLoaded) {
+                self.initSelectedValue();
                 $('#' + self.componentGridId).ntsGridList("setDataSource", self.itemList());
+                $('#' + self.componentGridId).ntsGridList("setSelectedValue", self.selectedCodes());
                 $('#' + self.searchBoxId).ntsSearchBox("setDataSource", self.itemList());
             }
         }
@@ -558,7 +550,6 @@ module kcp.share.list {
                 })
             }
             self.itemList(dataList);
-            self.initNoSelectRow(data.isShowNoSelectRow);
             
             // Init component.
             var fields: Array<string> = ['name', 'code'];
@@ -575,6 +566,17 @@ module kcp.share.list {
                     $input.find('.base-date-editor').find('.nts-input').width(133);
 
                     self.loadNtsGridList();
+
+                    // ReloadNtsGridList when itemList changed
+                    self.itemList.subscribe(newList => {
+                        if (self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
+                            self.addOptionalContentToItemList();
+                        }
+                        self.hasUpdatedOptionalContent(false);
+                        self.initNoSelectRow();
+                        self.reloadNtsGridList();
+                        self.createGlobalVarDataList(newList, $input);
+                    });
                     dfd.resolve();
                 });
             });
@@ -614,14 +616,16 @@ module kcp.share.list {
         /**
          * Add No select row to list
          */
-        private initNoSelectRow(isShowNoSelectRow: boolean) {
+        private initNoSelectRow() {
             var self = this;
-            // Remove No select row.
-            self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
+            let noSelectRow = _.find(self.itemList(), item => item.code === '');
             
             // Check is show no select row.
-            if (isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultipleSelect) {
-                self.itemList.unshift({code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+            if (self.isShowNoSelectRow && !self.isMultipleSelect && _.isNil(noSelectRow)) {
+                self.itemList.unshift({ code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false });
+            }
+            if ((!self.isShowNoSelectRow || self.isMultipleSelect) && !_.isNil(noSelectRow)) {
+                self.itemList.remove(noSelectRow);
             }
         }
         
@@ -878,8 +882,6 @@ module kcp.share.list {
                 }
                 _.defer(() => {
                     self.itemList(data);
-                    self.initNoSelectRow(self.isShowNoSelectRow);
-                    self.reloadNtsGridList();
                 });
             });
         }
@@ -894,16 +896,6 @@ module kcp.share.list {
                     self.addAreadySettingAttr(data, self.alreadySettingList());
                 }
                 self.itemList(data);
-                self.initNoSelectRow(self.isShowNoSelectRow);
-
-                // set selected codes
-                const selectedCodes = _.filter(self.selectedCodes(), code => _.find(data, item => code == item.code));
-                if (nts.uk.util.isNullOrEmpty(selectedCodes)) {
-                    self.selectedCodes(self.isMultipleSelect ? [] : null);
-                } else {
-                    self.selectedCodes(selectedCodes);
-                }
-                self.reloadNtsGridList();
             })
         }
         
