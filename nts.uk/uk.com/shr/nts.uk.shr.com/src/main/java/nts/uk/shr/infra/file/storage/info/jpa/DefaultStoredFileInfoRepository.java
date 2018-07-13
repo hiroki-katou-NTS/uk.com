@@ -31,7 +31,11 @@ public class DefaultStoredFileInfoRepository extends JpaRepository implements St
 		return this.queryProxy().query(jpql, CisdtStoredFile.class)
 				.setParameter("packId", packId)
 				.setParameter("entryName", entryName)
-				.getSingle(e -> e.toDomain());
+				.getSingle(e -> {
+					StoredFileInfo domain = e.toDomain();
+					domain.asZipEntryFile();
+					return domain;
+				});
 	}
 
 	@Override

@@ -56,11 +56,12 @@
 }
 
 .C8 {
-	width: 80%;
+	width: 75%;
 }
 
 .check-box-list {
 	float: right;
+	margin-left: 65px;
 }
 
 .check-box-list > ul > li{
@@ -142,4 +143,14 @@ button.ntsUpButton, button.ntsDownButton {
 
 .ntsUpButton {
 	margin-top: 75px;
+}
+
+.remarkInput {
+	display: flex;
+	margin-left: 65px;
+}
+
+#combo-box-remarkInput {
+	margin-left: 42px;
+	width: 152px;
 }
