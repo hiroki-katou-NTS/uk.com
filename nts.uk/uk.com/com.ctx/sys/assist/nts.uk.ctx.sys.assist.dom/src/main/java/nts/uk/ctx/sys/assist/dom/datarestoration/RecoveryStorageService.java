@@ -117,8 +117,8 @@ public class RecoveryStorageService {
 		Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository.getDataRecoveryMngById(dataRecoveryProcessId);
 		if(dataRecoveryMng.isPresent() && dataRecoveryMng.get().getSuspendedState() == NotUseAtr.USE) {
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, DataRecoveryOperatingCondition.INTERRUPTION_END);
-			performDataRecoveryRepository.remove(dataRecoveryProcessId);
-			performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
+			/*performDataRecoveryRepository.remove(dataRecoveryProcessId);
+			performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);*/
 			return;
 		}
 		
@@ -164,8 +164,8 @@ public class RecoveryStorageService {
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, condition);
 		}
 		
-		performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
-		performDataRecoveryRepository.remove(dataRecoveryProcessId);
+		/*performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
+		performDataRecoveryRepository.remove(dataRecoveryProcessId);*/
 		
 		
 	}
