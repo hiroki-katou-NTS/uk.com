@@ -14,7 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInfor;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
@@ -72,7 +72,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 				String url = null;
 				String remark = TextResource.localize("Msg_1308");
 				
-				LoginRecordInfor infor = new LoginRecordInfor(programId, screenId, queryParam, loginStatus, loginMethod, url, remark);
+				LoginRecordInput infor = new LoginRecordInput(programId, screenId, queryParam, loginStatus, loginMethod, url, remark);
 				
 				//アルゴリズム「ログイン記録」を実行する１
 				this.loginRecord(infor, null);

@@ -23,7 +23,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInfor;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
@@ -43,7 +43,7 @@ import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord.LoginRecordAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord.LoginRecordDto;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord.LoginRecordInfor;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
@@ -452,7 +452,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		return roleId;
 	}
 	
-	protected void loginRecord(LoginRecordInfor infor, String companyId){
+	protected void loginRecord(LoginRecordInput infor, String companyId){
 		//Todo: 基盤(KIBAN)よりログイン者の基本情報を取得する (Acquire the basic information of the login from the from KIBAN)
 		
 		//実行日時を取得する (Acquire execution date and time)
@@ -481,14 +481,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		
 		boolean lockStatus = false;
 		
-		LoginRecordDto loginRecord = new LoginRecordDto(operationId, infor.loginMethod, infor.loginStatus, lockStatus, infor.url, infor.remark);
+		LoginRecordInfor loginRecord = new LoginRecordInfor(operationId, infor.loginMethod, infor.loginStatus, lockStatus, infor.url, infor.remark);
 		
 		this.registLoginInfor(logBasicInfor, loginRecord);
 		
 	}
 	
 	@Transactional
-	protected void registLoginInfor(LogBasicInformation logBasicInfor, LoginRecordDto loginRecord){
+	protected void registLoginInfor(LogBasicInformation logBasicInfor, LoginRecordInfor loginRecord){
 		//ドメインモデル「ログ基本情報」に追加する(Add to domain model "Log basic information")
 		this.logBasicInfor.add(logBasicInfor);
 		

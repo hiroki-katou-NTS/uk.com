@@ -14,5 +14,5 @@ public interface LoginRecordAdapter {
 	 *
 	 * @param loginRecord the login record
 	 */
-	public void addLoginRecord(LoginRecordDto dto);
+	public void addLoginRecord(LoginRecordInfor dto);
 }

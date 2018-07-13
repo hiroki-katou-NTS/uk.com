@@ -7,7 +7,7 @@ package nts.uk.ctx.sys.gateway.app.command.login.dto;
 /**
  * The Class LoginRecordInfor.
  */
-public class LoginRecordInfor {
+public class LoginRecordInput {
 	
 	/** The program id. */
 	public String programId;
@@ -41,7 +41,7 @@ public class LoginRecordInfor {
 	 * @param url the url
 	 * @param remark the remark
 	 */
-	public LoginRecordInfor(String programId, String screenId, String queryParam, Integer loginStatus, Integer loginMethod, String url, String remark){
+	public LoginRecordInput(String programId, String screenId, String queryParam, Integer loginStatus, Integer loginMethod, String url, String remark){
 		this.programId = programId;
 		this.screenId = screenId;
 		this.queryParam = queryParam;

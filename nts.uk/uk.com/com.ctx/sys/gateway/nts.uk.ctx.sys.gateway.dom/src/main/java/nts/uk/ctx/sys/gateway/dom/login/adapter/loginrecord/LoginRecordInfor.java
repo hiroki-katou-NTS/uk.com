@@ -6,7 +6,7 @@ import lombok.Data;
  * @see java.lang.Object#toString()
  */
 @Data
-public class LoginRecordDto {
+public class LoginRecordInfor {
 
 	/** The operation id. */
 	public String operationId;
@@ -42,7 +42,7 @@ public class LoginRecordDto {
 	 * @param remarks
 	 *            the remarks
 	 */
-	public LoginRecordDto(String operationId, Integer loginMethod, Integer loginStatus, boolean lockStatus, String url,
+	public LoginRecordInfor(String operationId, Integer loginMethod, Integer loginStatus, boolean lockStatus, String url,
 			String remarks) {
 		this.operationId = operationId;
 		this.loginMethod = loginMethod;
