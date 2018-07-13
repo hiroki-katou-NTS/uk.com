@@ -24,18 +24,19 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             // subscribe combobox for grid list change
             self.selectedAppType.subscribe((value) => {
                 if(!_.isNil(value)){
-                    $('#reason-temp').ntsError('clear');
+                    nts.uk.ui.errors.clearAll();
                     self.getData(value);                    
                 }
             });
 
             // subscribe a item in the list
             self.selectedOrder.subscribe((value) => {
-                if(!isNullOrEmpty(value)){
-                    let reason = _.find(self.listReason(), (o) => { return o.keyToOrder == value});
+                if (!isNullOrEmpty(value)) {
+                    nts.uk.ui.errors.clearAll();
+                    let reason = _.find(self.listReason(), (o) => { return o.keyToOrder == value });
                     if (!isNullOrEmpty(reason)) {
                         self.selectedReason(new ApplicationReason(reason));
-                        self.isUpdate(true);    
+                        self.isUpdate(true);
                     }
                 }
             });
