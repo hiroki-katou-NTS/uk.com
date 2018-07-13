@@ -15,7 +15,8 @@ public enum ValueType {
 	UNKNOWN(11, "UNKNOWN", "UNKNOWN"),
 	DAYS(12, "DAYS", "日数"),
 	AMOUNT(13, "AMOUNT", "金額"),
-	NUMBER(14, "NUMBER", "数");
+	NUMBER(14, "NUMBER", "数"),
+	TIME_WITH_DAY(15, "TIME_WITH_DAY", "時刻（日区分付き）");
 
 	public final int value;
 	public final String name;

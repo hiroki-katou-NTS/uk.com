@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
-import nts.uk.ctx.at.record.app.command.dailyperform.editstatecolor.EditStateColorOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
@@ -27,7 +26,6 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamI
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
@@ -45,8 +43,8 @@ public class DailyModifyCommandFacade {
 	@Inject
 	private DailyRecordWorkCommandHandler handler;
 
-	@Inject
-	private EditStateColorOfDailyPerformCommandAddHandler editStateHandler;
+//	@Inject
+//	private EditStateColorOfDailyPerformCommandAddHandler editStateHandler;
 
 	@Inject
 	private RegisterIdentityConfirmDay registerIdentityConfirmDay;
@@ -58,50 +56,48 @@ public class DailyModifyCommandFacade {
 	private OptionalItemRepository optionalMasterRepo;
 
 	public void handleAdd(DailyModifyQuery query) {
-		this.handler.handleAdd(createCommand(AppContexts.user().employeeId(), toDto(query), query));
+//		handleAdd(createCommand(AppContexts.user().employeeId(), toDto(query), query));
+		handleAdd(Arrays.asList(query));
 	}
 
 	public void handleUpdate(DailyModifyQuery query) {
-		this.handler.handleUpdate(createCommand(AppContexts.user().employeeId(), toDto(query), query));
+//		this.handler.handleUpdate(createCommand(AppContexts.user().employeeId(), toDto(query), query));
+		handleUpdate(Arrays.asList(query));
 	}
 	
 	public void handleAdd(List<DailyModifyQuery> querys) {
-		String sid = AppContexts.user().employeeId();
-		List<DailyRecordDto> dto = toDto(querys);
-		this.handler.handleAdd(dto.stream().map(o -> {
-			DailyModifyQuery query = querys.stream().filter(q -> q.getBaseDate().equals(o.workingDate()) 
-										&& q.getEmployeeId().equals(o.employeeId()))
-					.findFirst().get();
-			return createCommand(sid, o, query);
-		}).collect(Collectors.toList()));
+//		String sid = AppContexts.user().employeeId();
+//		List<DailyRecordDto> dto = toDto(querys);
+//		this.handler.handleAdd(dto.stream().map(o -> {
+//			DailyModifyQuery query = querys.stream().filter(q -> q.getBaseDate().equals(o.workingDate()) 
+//										&& q.getEmployeeId().equals(o.employeeId()))
+//					.findFirst().get();
+//			return createCommand(sid, o, query);
+//		}).collect(Collectors.toList()));
+		this.handler.handleAdd(createCommands(querys, AppContexts.user().employeeId()));
 	}
 
 	public List<DPItemValueRC> handleUpdate(List<DailyModifyQuery> querys) {
-		String sid = AppContexts.user().employeeId();
-		List<DailyRecordDto> dto = toDto(querys);
-		List<DailyRecordWorkCommand> command = dto.stream().map(o -> {
-						DailyModifyQuery query = querys.stream().filter(q -> q.getBaseDate().equals(o.workingDate()) 
-								&& q.getEmployeeId().equals(o.employeeId()))
-			.findFirst().get();
-			return createCommand(sid, o, query);
-			}).collect(Collectors.toList());
-		return this.handler.handleUpdate(command);
+//		String sid = AppContexts.user().employeeId();
+//		List<DailyRecordDto> dto = toDto(querys);
+//		List<DailyRecordWorkCommand> command = dto.stream().map(o -> {
+//						DailyModifyQuery query = querys.stream().filter(q -> q.getBaseDate().equals(o.workingDate()) 
+//								&& q.getEmployeeId().equals(o.employeeId()))
+//			.findFirst().get();
+//			return createCommand(sid, o, query);
+//			}).collect(Collectors.toList());
+		return this.handler.handleUpdate(createCommands(querys, AppContexts.user().employeeId()));
 	}
 
 	private List<EditStateOfDailyPerformance> convertTo(String sid, DailyModifyQuery query) {
-		List<EditStateOfDailyPerformance> editData = query.getItemValues().stream().map(x -> {
+		return query.getItemValues().stream().map(x -> {
 			return new EditStateOfDailyPerformance(query.getEmployeeId(), x.getItemId(), query.getBaseDate(),
 					sid.equals(query.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
 							: EditStateSetting.HAND_CORRECTION_OTHER);
 		}).collect(Collectors.toList());
-		return editData;
-	}
-
-	private DailyRecordDto toDto(DailyModifyQuery query) {
-		return toDto(Arrays.asList(query)).get(0);
 	}
 	
-	private List<DailyRecordDto> toDto(List<DailyModifyQuery> query) {
+	private List<DailyRecordWorkCommand> createCommands(List<DailyModifyQuery> query, String sID) {
 		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE)
 				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
@@ -111,10 +107,10 @@ public class DailyModifyCommandFacade {
 													c -> c.stream().map(q -> q.getBaseDate())
 																	.collect(Collectors.toList())))));
 		return oldValues.stream().map(o -> {
-			List<ItemValue> itemValues = query.stream().filter(q -> q.getBaseDate().equals(o.workingDate()) 
+			DailyModifyQuery dq = query.stream().filter(q -> q.getBaseDate().equals(o.workingDate()) 
 																&& q.getEmployeeId().equals(o.employeeId()))
-									.findFirst().get().getItemValues();
-			AttendanceItemUtil.fromItemValues(o, itemValues);
+									.findFirst().get();
+			AttendanceItemUtil.fromItemValues(o, dq.getItemValues());
 			o.getOptionalItem().ifPresent(optional -> {
 				optional.correctItems(optionalMaster);
 			});
@@ -122,7 +118,7 @@ public class DailyModifyCommandFacade {
 				if(dto.getWorkAndLeave() != null) 
 					dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
 			});
-			return o;
+			return createCommand(sID, o, dq);
 		}).collect(Collectors.toList());
 	}
 

@@ -126,10 +126,17 @@ public interface SyEmployeePub {
 	
 	/**
 	 * 社員が削除されたかを取得			
-	 * request list #248
+	 * RequestList248
 	 * @param sid
 	 * @return
 	 */
 	boolean isEmployeeDelete(String sid);
+	
+	/**
+	 * @param lstSid
+	 * @return
+	 */
+	// RequestList61
+	List<EmpInfoExport> getEmpInfo(List<String> lstSid);
 	
 }
