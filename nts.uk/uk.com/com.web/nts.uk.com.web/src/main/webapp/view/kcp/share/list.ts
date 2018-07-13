@@ -246,7 +246,6 @@ module kcp.share.list {
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         componentWrapperId: string;
         searchBoxId: string;
-        hasLoaded: boolean = false;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -347,11 +346,13 @@ module kcp.share.list {
          */
         private reloadNtsGridList(): void {
             let self = this;
-            if (self.hasLoaded) {
+            const gridList = $('#' + self.componentGridId);
+            const searchBox = $('#' + self.searchBoxId);
+            if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
                 self.initSelectedValue();
-                $('#' + self.componentGridId).ntsGridList("setDataSource", self.itemList());
-                $('#' + self.componentGridId).ntsGridList("setSelectedValue", self.selectedCodes());
-                $('#' + self.searchBoxId).ntsSearchBox("setDataSource", self.itemList());
+                gridList.ntsGridList("setDataSource", self.itemList());
+                gridList.ntsGridList("setSelectedValue", self.selectedCodes());
+                searchBox.ntsSearchBox("setDataSource", self.itemList());
             }
         }
 
@@ -384,7 +385,6 @@ module kcp.share.list {
                 // load ntsGrid & searchbox component
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
                 $('#' + self.componentGridId).ntsGridList(options);
-                self.hasLoaded = true;
 
                 // setup event
                 self.initEvent();

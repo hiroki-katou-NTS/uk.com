@@ -681,7 +681,12 @@ module kcp.share.tree {
 
         private reloadNtsTreeGrid(): void {
             let self = this;
-            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setDataSource", self.itemList());
+            const treeGrid = $('#' + self.getComIdSearchBox());
+            const searchBox = $('#' + self.searchBoxId);
+            if (!_.isEmpty(treeGrid) && !_.isEmpty(searchBox)) {
+                treeGrid.ntsTreeGrid("setDataSource", self.itemList());
+                searchBox.ntsSearchBox("setDataSource", self.itemList());
+            }
         }
 
         /**
