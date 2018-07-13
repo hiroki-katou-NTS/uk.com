@@ -60,9 +60,7 @@ import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateOverTimeMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregatePremiumTimeMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateSpecificDaysMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.ExcessOutsideWorkMerge;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
-import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
@@ -3800,7 +3798,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime2() {
 		return AggregateHolidayWorkTime.of(
-		new HolidayWorkFrameNo(1),
+		new HolidayWorkFrameNo(2),
 		new TimeMonthWithCalculation(
 			new AttendanceTimeMonth(this.holidayWorkTime2),
 			new AttendanceTimeMonth(this.calcHolidayWorkTime2)),
@@ -3814,7 +3812,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime3() {
 		return AggregateHolidayWorkTime.of(
-		new HolidayWorkFrameNo(1),
+		new HolidayWorkFrameNo(3),
 		new TimeMonthWithCalculation(
 			new AttendanceTimeMonth(this.holidayWorkTime3),
 			new AttendanceTimeMonth(this.calcHolidayWorkTime3)),
@@ -3828,7 +3826,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime4() {
 		return AggregateHolidayWorkTime.of(
-		new HolidayWorkFrameNo(1),
+		new HolidayWorkFrameNo(4),
 		new TimeMonthWithCalculation(
 			new AttendanceTimeMonth(this.holidayWorkTime4),
 			new AttendanceTimeMonth(this.calcHolidayWorkTime4)),
@@ -3842,7 +3840,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime5() {
 		return AggregateHolidayWorkTime.of(
-		new HolidayWorkFrameNo(1),
+		new HolidayWorkFrameNo(5),
 		new TimeMonthWithCalculation(
 		new AttendanceTimeMonth(this.holidayWorkTime5),
 			new AttendanceTimeMonth(this.calcHolidayWorkTime5)),
@@ -3856,7 +3854,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime6() {
 		return AggregateHolidayWorkTime.of(
-		new HolidayWorkFrameNo(1),
+		new HolidayWorkFrameNo(6),
 		new TimeMonthWithCalculation(
 			new AttendanceTimeMonth(this.holidayWorkTime6),
 			new AttendanceTimeMonth(this.calcHolidayWorkTime6)),
@@ -3870,7 +3868,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime7() {
 		return AggregateHolidayWorkTime.of(
-		new HolidayWorkFrameNo(1),
+		new HolidayWorkFrameNo(7),
 		new TimeMonthWithCalculation(
 			new AttendanceTimeMonth(this.holidayWorkTime7),
 			new AttendanceTimeMonth(this.calcHolidayWorkTime7)),
@@ -3884,7 +3882,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime8() {
 		return AggregateHolidayWorkTime.of(
-		new HolidayWorkFrameNo(1),
+		new HolidayWorkFrameNo(8),
 		new TimeMonthWithCalculation(
 			new AttendanceTimeMonth(this.holidayWorkTime8),
 			new AttendanceTimeMonth(this.calcHolidayWorkTime8)),
@@ -3898,7 +3896,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime9() {
 		return AggregateHolidayWorkTime.of(
-		new HolidayWorkFrameNo(1),
+		new HolidayWorkFrameNo(9),
 		new TimeMonthWithCalculation(
 			new AttendanceTimeMonth(this.holidayWorkTime9),
 			new AttendanceTimeMonth(this.calcHolidayWorkTime9)),
@@ -3912,7 +3910,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime10() {
 		return AggregateHolidayWorkTime.of(
-		new HolidayWorkFrameNo(1),
+		new HolidayWorkFrameNo(10),
 		new TimeMonthWithCalculation(
 			new AttendanceTimeMonth(this.holidayWorkTime10),
 			new AttendanceTimeMonth(this.calcHolidayWorkTime10)),
@@ -3943,7 +3941,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	public AggregateOverTime toDomainOverTime2() {
-		return AggregateOverTime.of(new OverTimeFrameNo(1),
+		return AggregateOverTime.of(new OverTimeFrameNo(2),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime2), 
 						new AttendanceTimeMonth(this.calcOverTime2)),
@@ -3956,7 +3954,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	public AggregateOverTime toDomainOverTime3() {
-		return AggregateOverTime.of(new OverTimeFrameNo(1),
+		return AggregateOverTime.of(new OverTimeFrameNo(3),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime3), 
 						new AttendanceTimeMonth(this.calcOverTime3)),
@@ -3969,7 +3967,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	public AggregateOverTime toDomainOverTime4() {
-		return AggregateOverTime.of(new OverTimeFrameNo(1),
+		return AggregateOverTime.of(new OverTimeFrameNo(4),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime4), 
 						new AttendanceTimeMonth(this.calcOverTime4)),
@@ -3982,7 +3980,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	public AggregateOverTime toDomainOverTime5() {
-		return AggregateOverTime.of(new OverTimeFrameNo(1),
+		return AggregateOverTime.of(new OverTimeFrameNo(5),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime5), 
 						new AttendanceTimeMonth(this.calcOverTime5)),
@@ -3994,7 +3992,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	public AggregateOverTime toDomainOverTime6() {
-		return AggregateOverTime.of(new OverTimeFrameNo(1),
+		return AggregateOverTime.of(new OverTimeFrameNo(6),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime6), 
 						new AttendanceTimeMonth(this.calcOverTime6)),
@@ -4007,7 +4005,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	public AggregateOverTime toDomainOverTime7() {
-		return AggregateOverTime.of(new OverTimeFrameNo(1),
+		return AggregateOverTime.of(new OverTimeFrameNo(7),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime7), 
 						new AttendanceTimeMonth(this.calcOverTime7)),
@@ -4020,7 +4018,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	public AggregateOverTime toDomainOverTime8() {
-		return AggregateOverTime.of(new OverTimeFrameNo(1),
+		return AggregateOverTime.of(new OverTimeFrameNo(8),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime8), 
 						new AttendanceTimeMonth(this.calcOverTime8)),
@@ -4033,7 +4031,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	public AggregateOverTime toDomainOverTime9() {
-		return AggregateOverTime.of(new OverTimeFrameNo(1),
+		return AggregateOverTime.of(new OverTimeFrameNo(9),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime9), 
 						new AttendanceTimeMonth(this.calcOverTime9)),
@@ -4046,7 +4044,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	public AggregateOverTime toDomainOverTime10() {
-		return AggregateOverTime.of(new OverTimeFrameNo(1),
+		return AggregateOverTime.of(new OverTimeFrameNo(10),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime10), 
 						new AttendanceTimeMonth(this.calcOverTime10)),
@@ -5240,38 +5238,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	public AggregateAbsenceDays toDomainAbsenceDays30() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDayNo30)),
 				new AttendanceTimeMonth((int) this.absenceTimeNo30));
-	}
-
-	
-	public  MonthMerge toDomainMonthMerge(KrcdtMonMerge entity) {
-		MonthMerge monthMerge = new MonthMerge();
-		monthMerge.setMonthMergeKey(entity.toDomainKey());
-		monthMerge.setAbsenceDaysMerge(entity.toDomainAbsenceDays());
-		monthMerge.setBonusPayTimeMerge(entity.toDomainBonusPayTimeMerge());
-		monthMerge.setDivergenceTimeMerge(entity.toDomainDivergenceTimeMerge());
-		monthMerge.setGoOutMerge(entity.toDomainGoOut());
-		monthMerge.setHolidayWorkTimeMerge(entity.toDomainHolidayWorkTimeMerge());
-		monthMerge.setOverTimeMerge(entity.toDomainOverTimeMerge());
-		monthMerge.setPremiumTimeMerge(entity.toDomainPremiumTimeMerge());
-		monthMerge.setSpecificDaysMerge(entity.toDomainSpecificDaysMerge());
-		monthMerge.setTotalTimeSpentAtWork(entity.toDomainTotalTimeSpentAtWork());
-		monthMerge.setTotalWorkingTime(entity.toDomainTotalWorkingTime());
-		monthMerge.setAttendanceTimeOfMonthly(entity.toDomainAttendanceTimeOfMonthly());
-		monthMerge.setFlexTimeOfMonthly(entity.toDomainFlexTimeOfMonthly());
-		monthMerge.setHolidayWorkTimeOfMonthly(entity.toDomainHolidayWorkTimeOfMonthly());
-		monthMerge.setLeaveOfMonthly(entity.toDomainLeaveOfMonthly());
-		monthMerge.setMedicalTimeOfMonthly(entity.toDomainMedicalTimeOfMonthly());
-		monthMerge.setOverTimeOfMonthly(entity.toDomainOverTimeOfMonthly());
-		monthMerge.setMedicalTimeOfMonthly(entity.toDomainMedicalTimeOfMonthly());
-		monthMerge.setOverTimeOfMonthly(entity.toDomainOverTimeOfMonthly());
-		monthMerge.setRegularAndIrregularTimeOfMonthly(entity.toDomainRegularAndIrregularTimeOfMonthly());
-		monthMerge.setVacationUseTimeOfMonthly(entity.toDomainVacationUseTimeOfMonthly());
-		monthMerge.setVerticalTotalOfMonthly(entity.toDomainVerticalTotalOfMonthly());
-		monthMerge.setExcessOutsideWorkOfMonthly(entity.toDomainExcessOutsideWorkOfMonthly());
-		monthMerge.setExcessOutsideWorkMerge(entity.toDomainExcessOutsideWork());
-		monthMerge.setAgreementTimeOfMonthly(entity.toDomainAgreementTimeOfMonthly());
-		monthMerge.setAffiliationInfoOfMonthly(entity.toDomainAffiliationInfoOfMonthly());
-		return monthMerge;
 	}
 	
 	
