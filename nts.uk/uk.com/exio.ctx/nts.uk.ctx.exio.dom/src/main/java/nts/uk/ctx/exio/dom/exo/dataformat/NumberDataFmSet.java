@@ -94,7 +94,7 @@ public class NumberDataFmSet extends AggregateRoot
     /**
     * 形式選択
     */
-    private DateOutputFormat formatSelection;
+    private DecimalDivision formatSelection;
 
 	public NumberDataFmSet(String cid, int nullValueReplace,
 			String valueOfNullValueReplace, int outputMinusAsZero, int fixedValue,
@@ -118,7 +118,7 @@ public class NumberDataFmSet extends AggregateRoot
 		this.decimalDigit = Optional.of(new DataFormatDecimalDigit(decimalDigit));
 		this.decimalPointClassification = EnumAdaptor.valueOf(decimalPointClassification,DecimalPointClassification.class) ;
 		this.decimalFraction = EnumAdaptor.valueOf(decimalFraction,Rounding.class);
-		this.formatSelection = EnumAdaptor.valueOf(formatSelection,DateOutputFormat.class);
+		this.formatSelection = EnumAdaptor.valueOf(formatSelection,DecimalDivision.class);
 	}
     
     

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.adapter.user;
 
+import java.util.Optional;
+
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
@@ -25,13 +27,13 @@ public class UserImport {
 	private String loginId;
 	
 	/** The mail address. */
-	private String mailAddress;
+	private Optional<String> mailAddress;
 	
 	/** The user name. */
-	private String userName;
+	private Optional<String> userName;
 	
 	/** The person id. */
-	private String associatePersonId;
+	private Optional<String> associatePersonId;
 	
 	/** The contract code. */
 	private String contractCode;

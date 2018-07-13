@@ -69,11 +69,11 @@ public class SendMailInfoFormGCommandHandler
 
 				if (user.isPresent()) {
 					// check mail present
-					if (user.get().getMailAddress().isEmpty()) {
+					if (user.get().getMailAddress().get().isEmpty()) {
 						throw new BusinessException("Msg_1129");
 					} else {
 						// Send Mail アルゴリズム「メール送信実行」を実行する
-						return this.sendMail(user.get().getMailAddress(), user.get().getLoginId(), command, employee);
+						return this.sendMail(user.get().getMailAddress().get(), user.get().getLoginId(), command, employee);
 					}
 				}
 				return new SendMailReturnDto(null);
